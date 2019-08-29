@@ -1877,6 +1877,8 @@ indicators:
     anomalyFilters:
     - fieldName: direction
       fieldValue: OUTBOUND
+    - fieldName: domain.isNewOccurrence
+      fieldValue: true
   splitFields:
     - domain.name
   historicalData:
@@ -1895,11 +1897,33 @@ indicators:
     anomalyFilters:
     - fieldName: direction
       fieldValue: OUTBOUND
+    - fieldName: dstOrg.isNewOccurrence
+      fieldValue: true
   splitFields:
     - dstOrg.name
   historicalData:
     type: hourly_aggregations
     featureName: sumOfBytesSentToNewDstOrgSslSubjectOutboundTlsHourly
+  classification: data_exfiltration
+
+- id: sumOfBytesSentToNewDstPortScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_to_new_dst_port_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - dstPort.name
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+    - fieldName: dstPort.isNewOccurrence
+      fieldValue: true
+  splitFields:
+    - dstPort.name
+  historicalData:
+    type: hourly_aggregations
+    featureName: sumOfBytesSentToNewDstPortSslSubjectOutboundTlsHourly
   classification: data_exfiltration
 
 #***************************************

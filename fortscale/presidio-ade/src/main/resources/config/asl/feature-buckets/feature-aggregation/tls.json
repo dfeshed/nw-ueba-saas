@@ -911,6 +911,42 @@
           }
         }
       ]
+    },
+    {
+      "name": "numOfBytesSentSummationToNewDstPortSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstPort.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstOrg.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
     }
   ]
 }
