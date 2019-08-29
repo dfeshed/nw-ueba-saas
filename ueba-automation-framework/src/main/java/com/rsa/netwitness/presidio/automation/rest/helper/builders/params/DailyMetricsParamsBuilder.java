@@ -5,7 +5,7 @@ import org.junit.Assert;
 
 class DailyMetricsParamsBuilder extends PresidioUrl {
 
-    // REST API - http://10.110.12.33:8882/ueba-daily-metrics?metricNames=output-processor.active_users_count_last_day
+    // http://10.64.152.170:8882/ueba-daily-metrics?metricNames=output-processor.active_users_count_last_day
 
     private DailyMetricsParamsBuilder(String url) {
         super(url);
