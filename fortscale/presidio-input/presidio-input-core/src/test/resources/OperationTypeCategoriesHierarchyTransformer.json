@@ -1,0 +1,6 @@
+{
+  "type": "operation-type-categories-hierarchy-transformer",
+  "schema": "authentication",
+  "inputFieldName": "bla",
+  "outputFieldName": "blu"
+}

@@ -1,5 +1,10 @@
 package presidio.input.core.services.transformation.transformer;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -8,45 +13,55 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.util.*;
 
-public class OperationTypeCategoriesHierarchyTransformer implements Transformer {
+@JsonAutoDetect(
+        creatorVisibility = JsonAutoDetect.Visibility.ANY,
+        fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonTypeName("operation-type-categories-hierarchy-transformer")
+public class OperationTypeCategoriesHierarchyTransformer extends OperationTypeMappingTransformer {
 
     private static final Logger logger = Logger.getLogger(OperationTypeCategoriesHierarchyTransformer.class);
 
-    private final Map<String, List<String>> operationTypeCategoriesHierarchyMapping;
+    private Map<String, List<String>> operationTypeCategoriesHierarchyMapping;
     private final String inputFieldName;
     private final String outputFieldName;
 
-    public OperationTypeCategoriesHierarchyTransformer(Map<String, List<String>> operationTypeCategoriesHierarchyMapping, String inputFieldName, String outputFieldName) {
-        this.operationTypeCategoriesHierarchyMapping = operationTypeCategoriesHierarchyMapping;
+    @JsonCreator
+    public OperationTypeCategoriesHierarchyTransformer(@JsonProperty("schema") Schema schema,
+                                                       @JsonProperty("inputFieldName") String inputFieldName,
+                                                       @JsonProperty("outputFieldName") String outputFieldName) {
         this.inputFieldName = inputFieldName;
         this.outputFieldName = outputFieldName;
+        this.operationTypeCategoriesHierarchyMapping = getMappingBySchema(schema);
+    }
+
+    public void setOperationTypeCategoriesHierarchyMapping(Map<String, List<String>> operationTypeCategoriesHierarchyMapping) {
+        this.operationTypeCategoriesHierarchyMapping = operationTypeCategoriesHierarchyMapping;
     }
 
     @Override
-    public List<AbstractInputDocument> transform(List<AbstractInputDocument> documents) {
-
+    public AbstractInputDocument transform(AbstractInputDocument document) {
         if (MapUtils.isNotEmpty(operationTypeCategoriesHierarchyMapping)) {
-            documents.forEach((AbstractInputDocument inputDocument) -> {
-
-                List<String> operationTypeCategories =  (List<String>) PresidioReflectionUtils.getFieldValue(inputDocument, inputFieldName);
-
-                if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
-                    Set<String> additionalCategories = new HashSet<>();
-                    operationTypeCategories.forEach(s -> additionalCategories.addAll(getAdditionalCategories(s)));
-
-                    if (CollectionUtils.isNotEmpty(additionalCategories)) {
-                        additionalCategories.addAll(operationTypeCategories);
-                        try {
-                            PresidioReflectionUtils.setFieldValue(inputDocument, outputFieldName, new ArrayList<>(additionalCategories));
-                        } catch (IllegalAccessException e) {
-                            logger.error("error setting the {} field value", outputFieldName, e);
-                        }
+            List<String> operationTypeCategories =  (List<String>) PresidioReflectionUtils.getFieldValue(document, inputFieldName);
+            if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
+                Set<String> additionalCategories = new HashSet<>();
+                operationTypeCategories.forEach(s -> additionalCategories.addAll(getAdditionalCategories(s)));
+                if (CollectionUtils.isNotEmpty(additionalCategories)) {
+                    additionalCategories.addAll(operationTypeCategories);
+                    try {
+                        PresidioReflectionUtils.setFieldValue(document, outputFieldName, new ArrayList<>(additionalCategories));
+                    } catch (IllegalAccessException e) {
+                        logger.error("error setting the {} field value", outputFieldName, e);
                     }
                 }
-            });
+            }
         }
+        return document;
+    }
 
-        return documents;
+    @Override
+    boolean isCategoryHierarchy() {
+        return true;
     }
 
     private List<String> getAdditionalCategories(String operationTypeCategory) {
