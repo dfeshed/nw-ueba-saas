@@ -5,6 +5,7 @@ import fortscale.utils.time.TimeRange;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.DailyHistogram;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,5 +46,13 @@ public interface HistoricalDataFetcher {
      */
     List<DailyHistogram<Integer, Double>> getDailyHistogramsForAggregatedFeature(
             TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName,
+            HistoricalDataConfig historicalDataConfig);
+
+    List<DailyHistogram<Integer, Double>> getNewOccurrenceDailyHistogramsForAggregatedFeature(
+            TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName,
+            HistoricalDataConfig historicalDataConfig);
+
+    List<DailyHistogram<Integer, HashMap<String, Double>>> getGlobalDailyHistogramsForAggregatedFeature(
+            TimeRange timeRange, Schema schema, String featureName,
             HistoricalDataConfig historicalDataConfig);
 }

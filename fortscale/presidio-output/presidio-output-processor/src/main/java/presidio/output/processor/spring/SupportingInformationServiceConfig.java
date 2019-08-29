@@ -116,6 +116,11 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
     }
 
     @Bean
+    public HistoricalDataCountByTimeForNewOccurrencesPopulator historicalDataCountByTimeForNewOccrurencesPopulator() {
+        return new HistoricalDataCountByTimeForNewOccurrencesPopulator(historicalDataFetcher);
+    }
+
+    @Bean
     public HistoricalDataCountByValuePopulator historicalDataCountByValuePopulator() {
         return new HistoricalDataCountByValuePopulator(historicalDataFetcher);
     }
