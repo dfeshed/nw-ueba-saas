@@ -131,6 +131,27 @@ module('Integration | Component | property-panel-policy/edr-policy', function(ho
     }
   };
 
+  const runNoDaysOfWeekData = {
+    ...policyData,
+    policy: {
+      ...policy,
+      edrPolicy: {
+        ...edrPolicy,
+        scheduledScanConfig: {
+          ...scheduledScanConfig,
+          recurrentSchedule: {
+            recurrence: {
+              interval: 1,
+              unit: 'DAYS'
+            },
+            runAtTime: '09:00:00',
+            scheduleStartDate: '2019-03-22'
+          }
+        }
+      }
+    }
+  };
+
   test('it renders', async function(assert) {
     new ReduxDataHelper(setState).policy(policyData).build();
     await render(hbs`{{property-panel-policy/edr-policy}}`);
@@ -180,4 +201,10 @@ module('Integration | Component | property-panel-policy/edr-policy', function(ho
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[4].textContent.trim(), '25 %', '25 % value is shows');
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[5].textContent.trim(), '10 %', '10 % value is shows');
   });
+  test('Content data runNoDaysOfWeekData', async function(assert) {
+    new ReduxDataHelper(setState).policy(runNoDaysOfWeekData).build();
+    await render(hbs`{{property-panel-policy/edr-policy}}`);
+    assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[3].textContent.trim(), 'Every 1 day(s)', 'Every 1 day(s) no day showing');
+  });
+
 });
