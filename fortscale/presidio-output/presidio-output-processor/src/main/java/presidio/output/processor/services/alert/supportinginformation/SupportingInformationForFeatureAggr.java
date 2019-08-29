@@ -14,6 +14,7 @@ import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.repositories.EventMongoPageIterator;
 import presidio.output.domain.services.event.EventPersistencyService;
+import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.config.IndicatorConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulator;
@@ -87,35 +88,41 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
 
         HistoricalDataPopulator historicalDataPopulator;
 
-        // create populator
-        try {
-            String anomalyField = indicatorConfig.getAnomalyDescriptior().getAnomalyField();
-            String historicalDataType = indicatorConfig.getHistoricalData().getType();
-            historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(historicalDataType);
-        } catch (IllegalArgumentException ex) {
-            //TODO logger
-            return null;
+        List<HistoricalData> historicalDataList = new ArrayList<>();
+
+        List<HistoricalDataConfig> historicalDataConfigList = indicatorConfig.getHistoricalData();
+
+        for(HistoricalDataConfig historicalDataConfig : historicalDataConfigList){
+            // create populator
+            try {
+                String anomalyField = indicatorConfig.getAnomalyDescriptior().getAnomalyField();
+                String historicalDataType = historicalDataConfig.getType();
+                historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(historicalDataType);
+            } catch (IllegalArgumentException ex) {
+                //TODO logger
+                return null;
+            }
+
+            // populate historical data
+            Instant startInstant = adeAggregationRecord.getStartInstant().minus(historicalPeriodInDays, ChronoUnit.DAYS);
+            TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
+            Map<String, String> modelContexts = indicatorConfig.getModelContextFields().stream().collect(Collectors.toMap(
+                    Function.identity(),
+                    field -> indicator.getContexts().get(field),
+                    (oldValue, newValue) -> oldValue,
+                    LinkedHashMap::new));
+            Schema schema = indicatorConfig.getSchema();
+            String anomalyValue = indicator.getAnomalyValue();
+            String featureName = historicalDataConfig.getFeatureName() == null? adeAggregationRecord.getFeatureName():historicalDataConfig.getFeatureName() ;
+
+            HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, modelContexts, schema, featureName, anomalyValue, historicalDataConfig);
+
+            historicalData.setIndicatorId(indicator.getId());
+            historicalData.setSchema(indicator.getSchema());
+            historicalDataList.add(historicalData);
         }
 
-        // populate historical data
-        Instant startInstant = adeAggregationRecord.getStartInstant().minus(historicalPeriodInDays, ChronoUnit.DAYS);
-        TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
-        Map<String, String> modelContexts = indicatorConfig.getModelContextFields().stream().collect(Collectors.toMap(
-                Function.identity(),
-                field -> indicator.getContexts().get(field),
-                (oldValue, newValue) -> oldValue,
-                LinkedHashMap::new));
-        Schema schema = indicatorConfig.getSchema();
-        String featureName = indicatorConfig.getHistoricalData().getFeatureName() == null? adeAggregationRecord.getFeatureName():indicatorConfig.getHistoricalData().getFeatureName() ;
-        String anomalyValue = indicator.getAnomalyValue();
-
-        List<HistoricalData> historicalData = historicalDataPopulator.createHistoricalData(timeRange, modelContexts, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
-        for (HistoricalData hd : historicalData) {
-            hd.setIndicatorId(indicator.getId());
-            hd.setSchema(indicator.getSchema());
-        }
-
-        return historicalData;
+        return historicalDataList;
     }
 
 

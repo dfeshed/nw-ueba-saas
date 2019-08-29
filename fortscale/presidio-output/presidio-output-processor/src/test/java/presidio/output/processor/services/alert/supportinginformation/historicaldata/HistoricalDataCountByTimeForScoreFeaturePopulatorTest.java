@@ -38,7 +38,7 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
     @Test
     public void test_NoEvents() {
         String featureName = "highestNumOfPagesScoreUserIdPrintHourly";
-        HistoricalDataConfig historicalDataConfig = config.getIndicatorConfig(featureName).getHistoricalData();
+        List<HistoricalDataConfig> historicalDataConfig = config.getIndicatorConfig(featureName).getHistoricalData();
         String contextValue = "contextValue";
         List<DailyHistogram<String, Number>> result = new ArrayList<>();
         LocalDate date = LocalDate.of(2018, 2, 25);
@@ -51,14 +51,14 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         String anomalyValue = String.valueOf(2370.0);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
-        List<HistoricalData> historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
-        Assert.assertTrue(CollectionUtils.isEmpty(historicalData.get(0).getAggregation().getBuckets()));
+        HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig.get(0));
+        Assert.assertTrue(CollectionUtils.isEmpty(historicalData.getAggregation().getBuckets()));
     }
 
     @Test
     public void test_createHistoricalData() {
         String featureName = "highestNumOfPagesScoreUserIdPrintHourly";
-        HistoricalDataConfig historicalDataConfig = config.getIndicatorConfig(featureName).getHistoricalData();
+        List<HistoricalDataConfig> historicalDataConfig = config.getIndicatorConfig(featureName).getHistoricalData();
         String contextValue = "contextValue";
         List<DailyHistogram<String, Number>> result = new ArrayList<>();
         LocalDate date = LocalDate.of(2018, 2, 25);
@@ -80,11 +80,11 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         String anomalyValue = String.valueOf(2370);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
-        List<HistoricalData> historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
-        Assert.assertTrue(CollectionUtils.isNotEmpty(historicalData.get(0).getAggregation().getBuckets()));
-        Assert.assertEquals(9, historicalData.get(0).getAggregation().getBuckets().size());
+        HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig.get(0));
+        Assert.assertTrue(CollectionUtils.isNotEmpty(historicalData.getAggregation().getBuckets()));
+        Assert.assertEquals(9, historicalData.getAggregation().getBuckets().size());
 
-        for (Object object : historicalData.get(0).getAggregation().getBuckets()) {
+        for (Object object : historicalData.getAggregation().getBuckets()) {
             Bucket bucket = (Bucket)object;
             if (anomalyValue.equals(bucket.getValue().toString())) Assert.assertTrue(bucket.isAnomaly());
         }

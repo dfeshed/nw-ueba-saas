@@ -25,7 +25,7 @@ public interface HistoricalDataPopulator {
      *
      * @return Historical data with anomaly value indication
      */
-    List<HistoricalData> createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig);
+    HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig);
 
     String getType();
 

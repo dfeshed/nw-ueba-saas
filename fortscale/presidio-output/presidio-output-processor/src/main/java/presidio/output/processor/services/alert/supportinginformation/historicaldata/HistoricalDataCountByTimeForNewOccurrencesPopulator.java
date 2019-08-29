@@ -25,7 +25,7 @@ public class HistoricalDataCountByTimeForNewOccurrencesPopulator implements Hist
     }
 
     @Override
-    public List<HistoricalData> createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
 
         List<Bucket<String, List<Bucket<String, Bucket<String, Double>>>>> buckets = new ArrayList<>();
@@ -81,7 +81,7 @@ public class HistoricalDataCountByTimeForNewOccurrencesPopulator implements Hist
         buckets.add(new Bucket<>(CONTEXT_KEY, context_buckets));
 
         NewOccurrencesAggregation aggregation = new NewOccurrencesAggregation(buckets);
-        return Arrays.asList(new HistoricalData(aggregation));
+        return new HistoricalData(aggregation);
     }
 
 

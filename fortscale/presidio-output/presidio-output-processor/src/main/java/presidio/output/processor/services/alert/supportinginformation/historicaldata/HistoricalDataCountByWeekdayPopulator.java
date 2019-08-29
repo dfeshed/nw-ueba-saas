@@ -25,7 +25,7 @@ public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopu
     }
 
     @Override
-    public List<HistoricalData> createHistoricalData(TimeRange timeRange,Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public HistoricalData createHistoricalData(TimeRange timeRange,Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
         // map of day of week -> <hour -> count>
         Map<Integer, Map<Integer, Double>> weekdayMap = new HashMap<Integer, Map<Integer, Double>>();
@@ -85,7 +85,7 @@ public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopu
         }
 
         WeekdayAggregation aggregation = new WeekdayAggregation(buckets);
-        return Arrays.asList(new HistoricalData(aggregation));
+        return new HistoricalData(aggregation);
     }
 
 

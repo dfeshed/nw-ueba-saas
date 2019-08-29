@@ -29,7 +29,7 @@ public class HistoricalDataCountByTimePopulator implements HistoricalDataPopulat
     }
 
     @Override
-    public List<HistoricalData> createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
         List<Bucket<String,Double >> buckets = new ArrayList<Bucket<String, Double>>();
 
@@ -57,7 +57,7 @@ public class HistoricalDataCountByTimePopulator implements HistoricalDataPopulat
         }
 
         TimeAggregation aggregation = new TimeAggregation(buckets);
-        return Arrays.asList(new HistoricalData(aggregation));
+        return new HistoricalData(aggregation);
     }
 
 

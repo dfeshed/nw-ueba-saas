@@ -365,16 +365,16 @@ public class RestAlertServiceImpl implements RestAlertService {
         return restEvent;
     }
 
-    private List<presidio.webapp.model.HistoricalData> createRestHistorical(List<presidio.output.domain.records.alerts.HistoricalData> historicalData) {
+    private List<presidio.webapp.model.HistoricalData> createRestHistorical(List<presidio.output.domain.records.alerts.HistoricalData> historicalDataList) {
 
         List<presidio.webapp.model.HistoricalData> restHistoricalDataList = new ArrayList<>();
 
 
-        for (presidio.output.domain.records.alerts.HistoricalData hd : historicalData) {
+        for (presidio.output.domain.records.alerts.HistoricalData historicalData : historicalDataList) {
             presidio.webapp.model.HistoricalData restHistoricalData = null;
-            if (hd.getAggregation() instanceof CountAggregation) {
+            if (historicalData.getAggregation() instanceof CountAggregation) {
 
-                CountAggregation aggr = (CountAggregation) hd.getAggregation();
+                CountAggregation aggr = (CountAggregation) historicalData.getAggregation();
                 List<Bucket<String, Double>> buckets = aggr.getBuckets();
                 restHistoricalData = new HistoricalDataCountAggregation();
                 CountBuckets restBuckets = new CountBuckets();
@@ -390,9 +390,9 @@ public class RestAlertServiceImpl implements RestAlertService {
 
             }
 
-            if (hd.getAggregation() instanceof TimeAggregation) {
+            if (historicalData.getAggregation() instanceof TimeAggregation) {
 
-                TimeAggregation aggr = (TimeAggregation) hd.getAggregation();
+                TimeAggregation aggr = (TimeAggregation) historicalData.getAggregation();
                 List<Bucket<String, Double>> buckets = aggr.getBuckets();
 
 
@@ -414,9 +414,9 @@ public class RestAlertServiceImpl implements RestAlertService {
             }
 
 
-            if (hd.getAggregation() instanceof WeekdayAggregation) {
+            if (historicalData.getAggregation() instanceof WeekdayAggregation) {
 
-                WeekdayAggregation aggr = (WeekdayAggregation) hd.getAggregation();
+                WeekdayAggregation aggr = (WeekdayAggregation) historicalData.getAggregation();
 
                 restHistoricalData = new HistoricalDataWeekdayAggregation();
 

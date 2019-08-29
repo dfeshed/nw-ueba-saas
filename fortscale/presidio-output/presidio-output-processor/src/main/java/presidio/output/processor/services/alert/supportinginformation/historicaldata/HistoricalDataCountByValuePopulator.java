@@ -23,7 +23,7 @@ public class HistoricalDataCountByValuePopulator implements HistoricalDataPopula
     }
 
     @Override
-    public List<HistoricalData> createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema,
+    public HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema,
                                                String featureName, String anomalyValue,
                                                HistoricalDataConfig historicalDataConfig) {
 
@@ -51,7 +51,7 @@ public class HistoricalDataCountByValuePopulator implements HistoricalDataPopula
                 .collect(Collectors.toList());
 
         CountAggregation countAggregation = new CountAggregation(buckets);
-        return Arrays.asList(new HistoricalData(countAggregation));
+        return new HistoricalData(countAggregation);
     }
 
     @Override
