@@ -3086,7 +3086,8 @@ export default {
         checkboxLabel: 'Add your IPs to the Exclusion List',
         checkboxDescription: 'Default IPs excluded from isolation include Endpoint Server, Relay Server, DNS, DNCP, Gateways, 0.0.0.0, 255.255.255.255.',
         exclusionListPlaceholder: 'Enter one or more valid IPv4/IPv6 addresses. Multiple values can be separated by commas.',
-        errorMessage: 'One or more of the IPv4/IPv6 addresses are invalid',
+        invalidIp: 'One or more of the IPv4/IPv6 addresses are invalid',
+        ipListLimit: 'A maximum of a 100 IPs can be excluded',
         comments: 'COMMENTS<sup>*</sup>',
         placeholder: 'Enter comments',
         success: 'Host Isolation initiated successfully'

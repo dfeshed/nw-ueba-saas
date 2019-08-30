@@ -360,8 +360,28 @@ const downloadMFT = (agentId, serverId, callbacks = callbacksDefault) => {
       callbacks.onFailure(message.message);
     });
 };
+const _processExclusionListIps = (exclusionList) => {
+  const formattedExclusionList = exclusionList.map((ip) => {
+    const IPv4Regex = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
+    const v4 = IPv4Regex.test(ip);
+    return {
+      ip,
+      v4
+    };
+  });
+  return formattedExclusionList;
+};
 
 const isolateHostRequest = (data, serverId, callbacks = callbacksDefault) => {
+
+  const { exclusionList = [] } = data;
+  if (exclusionList.length) {
+
+    const formattedExclusionList = _processExclusionListIps(exclusionList);
+    data.exclusionList = [...formattedExclusionList];
+
+  }
+
   Machines.isolateHostRequest(data, serverId)
     .then(() => {
       callbacks.onSuccess();

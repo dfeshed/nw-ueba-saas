@@ -3,7 +3,8 @@ import { module, test } from 'qunit';
 import {
   generateColumns,
   getSelectedAgentIds,
-  isAlreadySelected
+  isAlreadySelected,
+  isolateMachineValidation
 } from 'investigate-hosts/util/util';
 
 module('Unit | Util');
@@ -93,4 +94,20 @@ test('isAlreadySelected', function(assert) {
   assert.deepEqual(result1, { id: 2 });
   const result2 = isAlreadySelected(selectedItems, { id: 3 });
   assert.equal(result2, false);
+});
+
+test('IsolateMachineValidation', function(assert) {
+  const value1 = '1.2.3.4, , 3ffe:1900:4545:3:200:f8ff:fe21:67cf';
+  const result1 = isolateMachineValidation(value1);
+  assert.deepEqual(result1, {
+    isInvalidIPFormatPresent: false,
+    listOfIPs: ['1.2.3.4', '3ffe:1900:4545:3:200:f8ff:fe21:67cf']
+  });
+
+  const value2 = '1.2.3.4, 00:0a:95:9d:68:16 ,3ffe:1900:4545:3:200:f8ff:fe21:67cf';
+  const result2 = isolateMachineValidation(value2);
+  assert.deepEqual(result2, {
+    isInvalidIPFormatPresent: true,
+    listOfIPs: ['1.2.3.4', '00:0a:95:9d:68:16', '3ffe:1900:4545:3:200:f8ff:fe21:67cf']
+  });
 });
