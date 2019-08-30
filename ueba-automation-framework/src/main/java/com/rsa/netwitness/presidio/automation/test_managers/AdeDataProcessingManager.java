@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.utils.ade;
+package com.rsa.netwitness.presidio.automation.test_managers;
 
 
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
@@ -13,10 +13,10 @@ import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfE
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class AdeDataProcessingHelper {
+public class AdeDataProcessingManager {
 
     static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(AdeDataProcessingHelper.class.getName());
+            LoggerFactory.getLogger(AdeDataProcessingManager.class.getName());
 
     private static final String JAVA_CMD = "java -jar -Duser.timezone=UTC ";
     private static final String PRESIDIO_ADE_APP_SCORE_AGGR = "presidio-ade-app-score-aggr";

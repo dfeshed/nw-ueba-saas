@@ -12,7 +12,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import presidio.ade.domain.record.RecordReaderFactoryServiceConfig;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
-import com.rsa.netwitness.presidio.automation.utils.ade.ADETestManager;
+import com.rsa.netwitness.presidio.automation.test_managers.ADETestManager;
 import com.rsa.netwitness.presidio.automation.utils.ade.inserter.AdeInserterFactory;
 import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;

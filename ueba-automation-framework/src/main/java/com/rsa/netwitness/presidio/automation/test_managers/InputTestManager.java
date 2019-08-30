@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.utils.input;
+package com.rsa.netwitness.presidio.automation.test_managers;
 
 //TODO: resolve? TESTS SHOULD NOT DEPEND ON product packages, except SDKs!
 

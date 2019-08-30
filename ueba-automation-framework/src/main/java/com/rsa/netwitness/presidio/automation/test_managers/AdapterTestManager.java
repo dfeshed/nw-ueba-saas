@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.utils.adapter;
+package com.rsa.netwitness.presidio.automation.test_managers;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;

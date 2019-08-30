@@ -1,7 +1,7 @@
 package com.rsa.netwitness.presidio.automation.scripts.pre_processing;
 
 import com.rsa.netwitness.presidio.automation.enums.ConfigurationScenario;
-import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
+import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
 import org.assertj.core.util.Lists;
 
 import java.time.Instant;

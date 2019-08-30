@@ -4,7 +4,7 @@ import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
-import com.rsa.netwitness.presidio.automation.utils.output.OutputDataProcessingHelper;
+import com.rsa.netwitness.presidio.automation.test_managers.OutputDataProcessingManager;
 import org.json.JSONException;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -28,7 +28,7 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(OutputRunPrepareData.class.getName());
     private static ASCIIArtGenerator ART_GEN = new ASCIIArtGenerator();
 
-    private OutputDataProcessingHelper dataProcessingHelper = new OutputDataProcessingHelper();
+    private OutputDataProcessingManager dataProcessingHelper = new OutputDataProcessingManager();
 
     private List<String> SMART_RECORD_CONF_NAMES = newArrayList("userId_hourly", "sslSubject_hourly", "ja3_hourly");
     private List<String> ENTITIES_TO_PROCESS = newArrayList("userId", "ja3", "sslSubject");
@@ -80,13 +80,13 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
 
 
 
-    private List<OutputDataProcessingHelper.ProcessorRun> processorRun(Instant startDate, Instant endDate) {
+    private List<OutputDataProcessingManager.ProcessorRun> processorRun(Instant startDate, Instant endDate) {
         return SMART_RECORD_CONF_NAMES.stream()
                 .map(smartRecordConfName -> dataProcessingHelper.processorRun(startDate, endDate, smartRecordConfName))
                 .collect(toList());
     }
 
-    private List<OutputDataProcessingHelper.RecalculateUserScore> recalculateUserScore(Instant startDate, Instant endDate) {
+    private List<OutputDataProcessingManager.RecalculateUserScore> recalculateUserScore(Instant startDate, Instant endDate) {
         return ENTITIES_TO_PROCESS.stream()
                 .map(entity -> dataProcessingHelper.recalculateUserScore(startDate, endDate, entity))
                 .collect(toList());

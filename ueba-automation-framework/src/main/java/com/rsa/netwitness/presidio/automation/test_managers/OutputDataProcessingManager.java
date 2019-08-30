@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.utils.output;
+package com.rsa.netwitness.presidio.automation.test_managers;
 
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.ssh.TerminalCommandsSshUtils;
@@ -11,9 +11,9 @@ import java.util.concurrent.Callable;
 import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OutputDataProcessingHelper {
+public class OutputDataProcessingManager {
     static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(OutputDataProcessingHelper.class.getName());
+            LoggerFactory.getLogger(OutputDataProcessingManager.class.getName());
 
 
     public ProcessorRun processorRun(Instant startDate, Instant endDate, String smartRecordConfName) {
