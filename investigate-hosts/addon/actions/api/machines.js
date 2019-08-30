@@ -265,14 +265,21 @@ const downloadMFT = (data) => {
 const downloadSystemDump = (data, socketUrlPostfix) => {
   const request = lookup('service:request');
   const streamSelector = lookup('service:stream-selector');
-
   const modelName = 'endpoint';
   const method = 'downloadSystemDump';
+
+  if (socketUrlPostfix) {
+    return request.promiseRequest({
+      method,
+      modelName,
+      query: { data },
+      streamOptions: streamSelector.streamOptionSelector({ modelName, method, customOptions: { socketUrlPostfix } })
+    });
+  }
   return request.promiseRequest({
     method,
     modelName,
-    query: { data },
-    streamOptions: streamSelector.streamOptionSelector({ modelName, method, customOptions: { socketUrlPostfix } })
+    query: { data }
   });
 };
 
