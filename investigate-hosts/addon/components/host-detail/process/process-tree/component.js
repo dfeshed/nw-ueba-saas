@@ -234,7 +234,7 @@ const TreeComponent = Component.extend({
       const { contextSelection: item, contextItems } = menu;
       const machineName = this.get('hostName');
 
-      if (!this.get('contextItems')) {
+      if (contextItems.length) {
         // Need to store this locally set it back again to menu object
         this.set('contextItems', contextItems);
       }

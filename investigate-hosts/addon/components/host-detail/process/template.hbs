@@ -47,8 +47,7 @@
           restrictedFileList=restrictedFileList
           isRemediationAllowed=isRemediationAllowed
           retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
-          showResetRiskScore=false
-          showDownloadProcessDump = true
+          showDownloadProcessDump = showDownloadProcessDump
           fileDownloadButtonStatus=fileDownloadButtonStatus
           isFloatingOrMemoryDll=isFloatingOrMemoryDll
           downloadFiles=(action 'onDownloadFilesToServer')
@@ -63,6 +62,7 @@
         openPropertyPanel=(action layout.open 'right')
         closePropertyPanel=(action layout.close 'right')
         fileDownloadButtonStatus=fileDownloadButtonStatus
+        showDownloadProcessDump=showDownloadProcessDump
         downloadFiles=(action 'onDownloadFilesToServer')
         downloadProcessDump=(action 'onDownloadProcessDump')
         saveLocalCopy=(action 'onSaveLocalCopy')

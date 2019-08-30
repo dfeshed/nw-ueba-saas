@@ -178,6 +178,10 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .sortField('name')
       .isDescOrder(true)
       .searchResultProcessList([])
+      .isLatestSnapshot(true)
+      .hostOverview({
+        machineIdentity: { machineOsType: 'windows', agentMode: 'advanced', agentVersion: '11.4.0.0' }
+      })
       .build();
     await render(hbs`{{host-detail/process}}`);
     assert.equal(findAll('.process-list-actions .pivot-to-process-analysis .rsa-form-button').length, 1, 'Analyze Process button is present');
@@ -291,7 +295,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .searchResultProcessList([])
       .build();
     await render(hbs`{{host-detail/process}}`);
-    assert.equal(findAll('.download-process-dump.is-disabled').length, 1, 'Download Process Dump to Server is disabled');
+    assert.equal(findAll('.download-process-dump').length, 0, 'Download Process Dump to Server is not present');
     await click('.more-action-button .rsa-form-button');
     return settled().then(() => {
       assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li').length, 2, 'File download options are not present in more actions.');

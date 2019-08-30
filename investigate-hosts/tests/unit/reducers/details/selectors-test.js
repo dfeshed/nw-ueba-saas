@@ -8,7 +8,8 @@ import {
   hostDetailPropertyTabs,
   downloadLink,
   updateConfig,
-  savedColumnsConfig
+  savedColumnsConfig,
+  isProcessDumpDownloadSupported
 } from 'investigate-hosts/reducers/details/selectors';
 
 module('Unit | selectors | details');
@@ -186,3 +187,59 @@ test('savedColumnsConfig returns empty columns', function(assert) {
   const result = savedColumnsConfig(state, 'FILE');
   assert.equal(result.length, 0);
 });
+
+
+test('isProcessDumpDownloadSupported is true when all conditions are met', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      detailsInput: {
+        isLatestSnapshot: true
+      },
+      overview: {
+        hostOverview: {
+          machineIdentity: {
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '11.4.0.0'
+          }
+        }
+      }
+    }
+  });
+  assert.equal(isProcessDumpDownloadSupported(state), true);
+});
+
+test('isProcessDumpDownloadSupported is false when conditions are met', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      detailsInput: {
+        isLatestSnapshot: true
+      },
+      overview: {
+        hostOverview: {
+          machineIdentity: {
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '11.3.0.0'
+          }
+        }
+      }
+    }
+  });
+  assert.equal(isProcessDumpDownloadSupported(state), false);
+});
+
+test('isProcessDumpDownloadSupported is false when machineIdentity is not present', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      detailsInput: {
+        isLatestSnapshot: true
+      },
+      overview: {
+        hostOverview: { }
+      }
+    }
+  });
+  assert.equal(isProcessDumpDownloadSupported(state), false);
+});
+

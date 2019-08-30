@@ -15,7 +15,7 @@ import {
   selectedFileList,
   isAnyFileFloatingOrMemoryDll
 } from 'investigate-hosts/reducers/details/file-context/selectors';
-import { hostDetailPropertyTabs } from 'investigate-hosts/reducers/details/selectors';
+import { hostDetailPropertyTabs, isProcessDumpDownloadSupported } from 'investigate-hosts/reducers/details/selectors';
 import { hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
 
@@ -41,6 +41,11 @@ const callBackOptions = (context) => ({
   onFailure: (message) => context.get('flashMessage').showErrorMessage(message)
 });
 
+const processDumpCallBackOptions = (context) => ({
+  onSuccess: () => success('investigateHosts.flash.genericFileDownloadRequestSent'),
+  onFailure: (message) => context.get('flashMessage').showErrorMessage(message)
+});
+
 const stateToComputed = (state, { storeName }) => ({
   selectedFileList: selectedFileList(state, storeName),
   fileProperty: fileContextFileProperty(state, storeName),
@@ -52,6 +57,7 @@ const stateToComputed = (state, { storeName }) => ({
   selectedFileChecksums: selectedFileChecksums(state, storeName),
   isRemediationAllowed: isRemediationAllowed(state, storeName),
   agentId: state.endpoint.detailsInput.agentId,
+  isProcessDumpDownloadSupported: isProcessDumpDownloadSupported(state),
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   restrictedFileList: state.fileStatus.restrictedFileList,
@@ -92,9 +98,13 @@ const ContextWrapper = Component.extend({
 
   tabName: '',
 
+  accessControl: service(),
+
   flashMessage: service(),
 
   callBackOptions,
+
+  processDumpCallBackOptions,
 
   @computed('tabName')
   isDisplayTabLabel(tabName) {
@@ -104,12 +114,10 @@ const ContextWrapper = Component.extend({
     });
   },
 
-  @computed('tabName')
-  showDownloadProcessDump(tabName) {
+  @computed('tabName', 'isProcessDumpDownloadSupported')
+  showDownloadProcessDump(tabName, isProcessDumpDownloadSupported) {
     const tabsWithDownloadProcessDump = ['LIBRARY', 'IMAGEHOOK', 'THREAD'];
-    return tabsWithDownloadProcessDump.some((tab) => {
-      return tab === tabName;
-    });
+    return this.get('accessControl.endpointCanManageFiles') && tabsWithDownloadProcessDump.includes(tabName) && isProcessDumpDownloadSupported;
   },
 
   actions: {
@@ -122,7 +130,7 @@ const ContextWrapper = Component.extend({
 
     onDownloadProcessDump() {
       const fileContextSelections = this.get('fileContextSelections');
-      const callBackOptions = this.get('callBackOptions')(this);
+      const callBackOptions = this.get('processDumpCallBackOptions')(this);
       const agentId = this.get('agentId');
       this.send('downloadProcessDump', agentId, fileContextSelections, callBackOptions);
     },

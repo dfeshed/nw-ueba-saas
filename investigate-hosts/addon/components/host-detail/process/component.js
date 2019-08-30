@@ -12,7 +12,7 @@ import computed from 'ember-computed-decorators';
 import { toggleProcessView, setRowIndex } from 'investigate-hosts/actions/data-creators/process';
 import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
 import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
-import { getColumnsConfig, hostDetailPropertyTabs } from 'investigate-hosts/reducers/details/selectors';
+import { getColumnsConfig, hostDetailPropertyTabs, isProcessDumpDownloadSupported } from 'investigate-hosts/reducers/details/selectors';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 
 import summaryItems from './summary-item-config';
@@ -41,11 +41,17 @@ const callBackOptions = (context) => ({
   onFailure: (message) => context.get('flashMessage').showErrorMessage(message)
 });
 
+const processDumpCallBackOptions = (context) => ({
+  onSuccess: () => success('investigateHosts.flash.genericFileDownloadRequestSent'),
+  onFailure: (message) => context.get('flashMessage').showErrorMessage(message)
+});
+
 const stateToComputed = (state) => ({
   isTreeView: state.endpoint.visuals.isTreeView,
   hostDetailPropertyTabs: hostDetailPropertyTabs(state),
   activeHostDetailPropertyTab: state.endpoint.detailsInput.activeHostDetailPropertyTab,
   agentId: state.endpoint.detailsInput.agentId,
+  isProcessDumpDownloadSupported: isProcessDumpDownloadSupported(state),
   process: getProcessData(state),
   isNavigatedFromExplore: isNavigatedFromExplore(state),
   summaryConfig: getColumnsConfig(state, summaryItems),
@@ -88,6 +94,8 @@ const Container = Component.extend({
 
   classNames: ['host-process-info', 'host-process-wrapper'],
 
+  accessControl: service(),
+
   propertyConfig: CONFIG,
 
   tabName: 'PROCESS',
@@ -95,6 +103,13 @@ const Container = Component.extend({
   flashMessage: service(),
 
   callBackOptions,
+
+  processDumpCallBackOptions,
+
+  @computed('isProcessDumpDownloadSupported')
+  showDownloadProcessDump(isProcessDumpDownloadSupported) {
+    return (this.get('accessControl.endpointCanManageFiles') && isProcessDumpDownloadSupported);
+  },
 
   @computed('process')
   loadedDLLNote({ machineOsType }) {
@@ -132,7 +147,7 @@ const Container = Component.extend({
 
     onDownloadProcessDump() {
       const selectedProcessList = this.get('selectedProcessList');
-      const callBackOptions = this.get('callBackOptions')(this);
+      const callBackOptions = this.get('processDumpCallBackOptions')(this);
       const agentId = this.get('agentId');
       this.send('downloadProcessDump', agentId, selectedProcessList, callBackOptions);
     },

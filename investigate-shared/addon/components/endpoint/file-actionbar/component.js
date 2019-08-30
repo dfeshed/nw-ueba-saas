@@ -63,6 +63,11 @@ export default Component.extend({
     return !(itemList.length > 0);
   },
 
+  @computed('itemList')
+  isProcessDumpDownloadDisabled(itemList) {
+    return itemList && itemList.length != 1;
+  },
+
   @computed('fileDownloadButtonStatus', 'showResetRiskScore', 'itemList')
   fileActionOptions(fileDownloadButtonStatus, showResetRiskScore, itemList) {
 

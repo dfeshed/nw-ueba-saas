@@ -48,9 +48,18 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), false, 'Edit file status Button is enabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
-    assert.equal(findAll('.file-actionbar .download-process-dump')[0].classList.contains('is-disabled'), false, 'Download process dump to server is disabled when multiple files are selected.');
+    assert.equal(findAll('.file-actionbar .download-process-dump')[0].classList.contains('is-disabled'), true, 'Download process dump to server is disabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].title, 'Select a single file to analyze.', 'Pivot-to-investigate Button is disabled tooltip should be Select a single file to analyze.');
+  });
 
+  test('Buttons enabling/disabling for no files selection', async function(assert) {
+    this.set('itemList', []);
+    this.set('showDownloadProcessDump', true);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump}}`);
+    assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), true, 'Edit file status Button is disabled when multiple files are selected.');
+    assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
+    assert.equal(findAll('.file-actionbar .download-process-dump')[0].classList.contains('is-disabled'), true, 'Download process dump to server is disabled when multiple files are selected.');
+    assert.equal(findAll('.file-actionbar .event-analysis')[0].title, 'Select a single file to analyze.', 'Pivot-to-investigate Button is disabled tooltip should be Select a single file to analyze.');
   });
 
   test('Click on Download Process Dump to Server calls the passed action', async function(assert) {

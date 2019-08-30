@@ -8,6 +8,7 @@ const dataInitialState = Immutable.from({
   // Host inputs
   agentId: null,
   scanTime: null,
+  isLatestSnapshot: null,
   animation: 'default',
 
   snapShots: null,
@@ -23,7 +24,8 @@ const data = handleActions({
 
   [ACTION_TYPES.INITIALIZE_DATA]: (state, { payload }) => state.merge({
     agentId: payload.agentId,
-    scanTime: payload.scanTime
+    scanTime: payload.scanTime,
+    isLatestSnapshot: state.snapShots[0] ? state.snapShots[0].scanStartTime === payload.scanTime : false
   }),
 
   [ACTION_TYPES.FETCH_ALL_SNAP_SHOTS]: (state, action) => {

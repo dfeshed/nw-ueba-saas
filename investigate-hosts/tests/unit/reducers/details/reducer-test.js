@@ -11,7 +11,7 @@ const initialState = {
   agentId: null,
   scanTime: null,
   animation: 'default',
-
+  isLatestSnapshot: null,
   snapShots: null,
   isDetailRightPanelVisible: true,
   isSnapshotsLoading: false,
@@ -38,11 +38,26 @@ test('The RESET_INPUT_DATA action reset the state to initial state', function(as
 test('The INITIALIZE_DATA will set the agentId and scan time', function(assert) {
   const previous = Immutable.from({
     agentId: null,
-    scanTime: null
+    scanTime: null,
+    snapShots: []
   });
   const result = reducer(previous, { type: ACTION_TYPES.INITIALIZE_DATA, payload: { agentId: 111 } });
 
-  assert.equal(result.agentId, 111, 'Expecting agentIe equals to 111');
+  assert.equal(result.agentId, 111, 'Expecting agentId equals to 111');
+  assert.equal(result.isLatestSnapshot, false, 'No latest snapshot present, hence false');
+});
+
+test('The INITIALIZE_DATA will set the agentId and scan time and isLatestSnapshot', function(assert) {
+  const previous = Immutable.from({
+    agentId: null,
+    scanTime: null,
+    snapShots: [{ scanStartTime: '2019-08-29T11:18:21.557+0000', serviceId: 'b0624320-0175-4ee1-9c8b-48e0bc7dfe4b', serviceName: 'EPS1 - Endpoint Server' },
+      { scanStartTime: '2019-08-29T11:14:20.559+0000', serviceId: 'b0624320-0175-4ee1-9c8b-48e0bc7dfe4b', serviceName: 'EPS1 - Endpoint Server' }]
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.INITIALIZE_DATA, payload: { agentId: 111, scanTime: '2019-08-29T11:18:21.557+0000' } });
+
+  assert.equal(result.agentId, 111, 'Expecting agentId equals to 111');
+  assert.equal(result.isLatestSnapshot, true, 'Latest snapshot selected, hence true');
 });
 
 test('The SET_ANIMATION will sets the animation to the state', function(assert) {

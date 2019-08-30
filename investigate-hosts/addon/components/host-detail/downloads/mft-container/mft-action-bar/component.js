@@ -8,7 +8,7 @@ import { downloadFilesToServer } from 'investigate-hosts/actions/data-creators/f
 import { agentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
 
 const callBackOptions = (context) => ({
-  onSuccess: () => success('investigateHosts.flash.mftFileDownloadRequestSent'),
+  onSuccess: () => success('investigateHosts.flash.genericFileDownloadRequestSent'),
   onFailure: (message) => context.get('flashMessage').showErrorMessage(message)
 });
 

@@ -22,7 +22,7 @@
     isIconOnly=showOnlyIcons
     title=(t 'investigateHosts.process.downloadProcessDump')
     click=(action 'onDownloadProcessDump')
-    isDisabled=fileDownloadButtonStatus.isDownloadToServerDisabled}}
+    isDisabled=isProcessDumpDownloadDisabled}}
     {{rsa-icon name='download-2'}}
     {{#unless showOnlyIcons}}
       {{t 'investigateHosts.process.downloadProcessDump'}}

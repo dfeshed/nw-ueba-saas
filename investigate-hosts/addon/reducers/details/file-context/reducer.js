@@ -25,9 +25,10 @@ const LOADING_STATUS = 'loading';
 
 const _toggleSelection = (state, payload) => {
   const { fileContextSelections } = state;
-  const { id, fileName, fileProperties, machineOsType, path, machineName, pid } = payload;
+  const { id, fileName, fileProperties, machineOsType, path, machineName } = payload;
   const { signature, size, checksumSha256, checksumSha1, checksumMd5, format, pe, downloadInfo = {} } = fileProperties;
   const features = pe ? pe.features : [];
+  const pid = payload.pid || (payload.process ? payload.process.pid : null);
   let selectedList = [];
   // Previously selected driver
   if (fileContextSelections.some((file) => file.id === id)) {

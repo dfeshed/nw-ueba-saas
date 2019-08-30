@@ -143,6 +143,41 @@ module('Unit | Reducers | File Context', function() {
     assert.equal(result.fileContextSelections.length, 0);
   });
 
+  test('TOGGLE_FILE_CONTEXT_ROW_SELECTION should toggle the selected image hook where pid is present inside process', function(assert) {
+    const previous = Immutable.from({
+      selectedRowId: '123',
+      fileContextSelections: [],
+      pid: 1
+    });
+    const hook = {
+      id: 0,
+      checksumSha256: 0,
+      signature: '',
+      size: 0,
+      fileProperties: {
+        checksumSha256: 'test',
+        checksumSha1: 'test',
+        checksumMd5: 'test',
+        signature: {
+          thumbprint: 1
+        }
+      },
+      process: {
+        pid: 4200
+      }
+    };
+    let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: hook, meta: { belongsTo: 'IMAGEHOOK' } });
+    assert.equal(result.fileContextSelections.length, 1);
+    assert.equal(result.fileContextSelections[0].id, 0);
+    assert.equal(result.fileContextSelections[0].pid, 4200);
+    const next = Immutable.from({
+      selectedRowId: '123',
+      fileContextSelections: [hook]
+    });
+    result = reducer(next, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: hook, meta: { belongsTo: 'IMAGEHOOK' } });
+    assert.equal(result.fileContextSelections.length, 0);
+  });
+
   test('TOGGLE_FILE_CONTEXT_ALL_SELECTION should toggle the selected driver', function(assert) {
     const previous = Immutable.from({
       selectedRowId: '123',

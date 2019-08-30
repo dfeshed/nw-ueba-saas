@@ -1,6 +1,10 @@
 import reselect from 'reselect';
+import { isOSWindows, isModeAdvance, isAgentVersionAdvanced } from 'investigate-hosts/reducers/utils/mft-utils';
+
 const { createSelector } = reselect;
 const _snapShots = (state) => state.endpoint.detailsInput.snapShots;
+const _isLatestSnapshot = (state) => state.endpoint.detailsInput.isLatestSnapshot;
+const _hostOverview = (state) => state.endpoint.overview.hostOverview || {};
 const _activeHostDetailPropertyTab = (state) => state.endpoint.detailsInput.activeHostDetailPropertyTab || 'FILE_DETAILS';
 const _downloadLink = (state) => state.endpoint.detailsInput.downloadLink;
 const _preferences = (state) => state.preferences.preferences;
@@ -92,3 +96,14 @@ export const updateConfig = (schema, savedConfig) => {
   return schema;
 };
 
+export const isProcessDumpDownloadSupported = createSelector(
+  [_isLatestSnapshot, _hostOverview],
+  (isLatestSnapshot, { machineIdentity }) => {
+    if (machineIdentity) {
+      const { machineOsType, agentMode, agentVersion } = machineIdentity;
+      return isLatestSnapshot && isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion);
+    } else {
+      return false;
+    }
+  }
+);

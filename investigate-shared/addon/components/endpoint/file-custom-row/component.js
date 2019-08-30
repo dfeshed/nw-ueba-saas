@@ -35,7 +35,6 @@ export default DataTableBodyRow.extend({
   @computed('item')
   contextItems() {
     const canManageFiles = this.get('accessControl.endpointCanManageFiles');
-
     const contextConf = [
       {
         label: 'editFileStatus',
@@ -177,13 +176,12 @@ export default DataTableBodyRow.extend({
         order: 1
       });
     }
-
     if (this.get('showDownloadProcessDump')) {
       contextConf.push({
         label: 'downloadProcessDump',
         prefix: 'investigateHosts.process.',
         disabled(selection, context) {
-          return context.get('osType') === 'linux' || context.get('osType') === 'mac' || context.get('selections').length > 1;
+          return context.get('selections').length > 1;
         },
         action(selection, context) {
           context.downloadProcessDump();

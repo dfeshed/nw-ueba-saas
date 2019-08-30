@@ -569,6 +569,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
   test('It renders the context menu', async function(assert) {
     this.set('closePropertyPanel', () => {});
+    this.set('showDownloadProcessDump', true);
     new ReduxDataHelper(setState)
       .processList(modifiedList)
       .processTree(modifiedTree)
@@ -585,7 +586,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
+      {{host-detail/process/process-tree showDownloadProcessDump=showDownloadProcessDump closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(() => {
@@ -607,6 +608,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .searchResultProcessList([])
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+    this.set('showDownloadProcessDump', true);
     this.set('analyzeFile', function() {
       assert.ok('AnalyzeFiles Called');
     });
@@ -622,7 +624,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) closePropertyPanel=closePropertyPanel fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
+      {{host-detail/process/process-tree showDownloadProcessDump=showDownloadProcessDump analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) closePropertyPanel=closePropertyPanel fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -969,7 +971,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
-      await click(`#${menuItems[8].id}`); // Analyze File
+      await click(`#${menuItems[7].id}`); // Analyze File
     });
 
   });
@@ -977,6 +979,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   test('Request Process dump action is getting called', async function(assert) {
     assert.expect(1);
     this.set('closePropertyPanel', function() { });
+    this.set('showDownloadProcessDump', true);
     new ReduxDataHelper(setState)
       .processList(processData.processList)
       .processTree([
@@ -1018,8 +1021,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree downloadProcessDump=(action downloadProcessDump) closePropertyPanel=closePropertyPanel fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
-
+      {{host-detail/process/process-tree downloadProcessDump=(action downloadProcessDump) showDownloadProcessDump=showDownloadProcessDump closePropertyPanel=closePropertyPanel fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';

@@ -182,7 +182,7 @@ const FileContextTable = Component.extend({
         this.closePropertyPanel();
         this.send('onHostFileSelection', this.get('tabName'), this.get('storeName'), item, null);
       }
-      if (!this.get('contextItems')) {
+      if (contextItems.length) {
         // Need to store this locally set it back again to menu object
         this.set('contextItems', contextItems);
       }// For anchor tag hide the context menu and show browser default right click menu

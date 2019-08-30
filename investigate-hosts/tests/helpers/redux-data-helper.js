@@ -339,6 +339,11 @@ export default class DataHelper {
     return this;
   }
 
+  isLatestSnapshot(flag) {
+    _set(this.state, 'detailsInput.isLatestSnapshot', flag);
+    return this;
+  }
+
   hostExportStatus(exportStatus) {
     _set(this.state, 'machines.hostExportStatus', exportStatus);
     return this;
