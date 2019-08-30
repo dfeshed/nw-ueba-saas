@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { listOfMftFiles, isAllMftSelected, areMftFilesLoading, nextLoadCount, pageStatus } from 'investigate-hosts/reducers/details/mft-directory/selectors';
+import { agentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
 import {
   getPageOfMftFiles,
   toggleMftFileSelection,
@@ -40,7 +41,8 @@ const stateToComputed = (state) => ({
   nextLoadCount: nextLoadCount(state),
   servers: state.endpointServer.serviceData,
   pageStatus: pageStatus(state),
-  agentId: state.endpoint.detailsInput.agentId
+  agentId: state.endpoint.detailsInput.agentId,
+  isAgentMigrated: agentMigrated(state)
 });
 
 const dispatchToActions = {
@@ -78,10 +80,10 @@ const DownloadedFileList = Component.extend({
     direction: 'desc'
   },
 
-  @computed('selections')
-  disableActions(selections) {
+  @computed('selections', 'isAgentMigrated')
+  disableActions(selections, isAgentMigrated) {
     const hasManageAccess = this.get('accessControl.endpointCanManageFiles');
-    return { downloadFileToServer: selections.length !== 1, hasManageAccess };
+    return { downloadFileToServer: (isAgentMigrated || !selections.length), hasManageAccess };
   },
   actions: {
 

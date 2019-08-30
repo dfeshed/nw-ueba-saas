@@ -175,5 +175,31 @@ module('Integration | Component | mft-container/mft-action-bar', function(hooks)
     assert.equal(findAll('.download-to-server').length, 0, 'download to server button not rendered');
 
   });
+  test('mft-action-bar has render download to server disabled for migrated agents', async function(assert) {
+    new ReduxDataHelper(initState)
+      .hostDownloads(hostDownloads)
+      .selectedDirectoryForDetails(true)
+      .selectedHostList([ { version: '11.3', managed: false, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'idle' }])
+      .selectedMftFileList([{}])
+      .build();
+    await render(hbs`{{host-detail/downloads/mft-container/mft-action-bar}}`);
+    assert.equal(findAll('.mft-action-bar').length, 1, 'mft-action-bar rendered');
+    assert.equal(findAll('.download-to-server').length, 1, 'download to server button rendered');
+    assert.equal(findAll('.download-to-server')[0].classList.contains('is-disabled'), true, 'download to server button is disabled');
 
+  });
+
+  test('mft-action-bar has render download to server disabled for normal agents but no file selection', async function(assert) {
+    new ReduxDataHelper(initState)
+      .hostDownloads(hostDownloads)
+      .selectedDirectoryForDetails(true)
+      .selectedHostList([ { version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'idle' }])
+      .selectedMftFileList([])
+      .build();
+    await render(hbs`{{host-detail/downloads/mft-container/mft-action-bar}}`);
+    assert.equal(findAll('.mft-action-bar').length, 1, 'mft-action-bar rendered');
+    assert.equal(findAll('.download-to-server').length, 1, 'download to server button rendered');
+    assert.equal(findAll('.download-to-server')[0].classList.contains('is-disabled'), true, 'download to server button is disabled');
+
+  });
 });

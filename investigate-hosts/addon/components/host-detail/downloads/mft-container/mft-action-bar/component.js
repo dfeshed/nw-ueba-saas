@@ -4,9 +4,8 @@ import { toggleMftView } from 'investigate-hosts/actions/data-creators/downloads
 import { connect } from 'ember-redux';
 import computed, { alias } from 'ember-computed-decorators';
 import { success } from 'investigate-shared/utils/flash-messages';
-
 import { downloadFilesToServer } from 'investigate-hosts/actions/data-creators/file-context';
-import { allAreMigratedHosts } from 'investigate-hosts/reducers/hosts/selectors';
+import { agentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
 
 const callBackOptions = (context) => ({
   onSuccess: () => success('investigateHosts.flash.mftFileDownloadRequestSent'),
@@ -19,7 +18,7 @@ const stateToComputed = (state) => ({
   selections: state.endpoint.hostDownloads.mft.mftDirectory.selectedMftFileList,
   agentId: state.endpoint.detailsInput.agentId,
   selectedDirectory: state.endpoint.hostDownloads.mft.mftDirectory.selectedDirectoryForDetails,
-  isHostMigrated: allAreMigratedHosts(state)
+  isAgentMigrated: agentMigrated(state)
 });
 
 const dispatchToActions = {
@@ -39,9 +38,9 @@ const mftActionBar = Component.extend({
   @alias('focusedHost')
   machineId: null,
 
-  @computed('selections', 'isHostMigrated')
-  isDownloadToServerDisabled(selections, isHostMigrated) {
-    return !selections.length && !isHostMigrated;
+  @computed('selections', 'isAgentMigrated')
+  isDownloadToServerDisabled(selections, isAgentMigrated) {
+    return isAgentMigrated || !selections.length;
   },
   @computed('selectedDirectory')
   isShowActions(selectedDirectory) {

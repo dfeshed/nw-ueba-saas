@@ -212,6 +212,7 @@ module('Integration | Component | mft-list', function(hooks) {
     assert.equal(findAll('.rsa-icon-folder-2-filled').length, 1, 'one folder icon displayed for folder');
 
   });
+
   test('When mft-list-table click on the select all checkbox..', async function(assert) {
     new ReduxDataHelper(initState)
       .hostDownloads(hostDownloads)
@@ -284,6 +285,31 @@ module('Integration | Component | mft-list', function(hooks) {
       const items = findAll(`${selector} > .context-menu__item`);
       assert.equal(items.length, 0, 'Context menu rendered with 1 items');
       assert.equal(findAll('.is-row-checked').length, 1, 'Row is selected');
+    });
+  });
+  test('On Migrated agent mft row on right clicking the download to server should disabled', async function(assert) {
+    new ReduxDataHelper(initState)
+      .hostDownloads(hostDownloads)
+      .selectedDirectoryForDetails(true)
+      .mftFiles(mftData)
+      .selectedHostList([{ version: '11.3', managed: false, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'idle' }])
+      .selectedMftFileList([])
+      .build();
+    await render(hbs`
+      <div id="modalDestination"></div>
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-detail/downloads/mft-container/mft-list}}{{context-menu}}`);
+    triggerEvent(findAll('.realSize')[1], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 1, 'Context menu rendered with 1 items');
+      assert.equal(findAll('.is-row-checked').length, 1, 'Row is selected');
+      assert.equal(items[0].classList.contains('context-menu__item--disabled'), true, 'Dowload to server menu disabled for migrated agent');
     });
   });
   test('mft row on click', async function(assert) {
