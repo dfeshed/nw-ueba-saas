@@ -28,6 +28,7 @@ import {
   addParens,
   addTextFilter,
   batchAddPills,
+  cancelPillCreation,
   deleteGuidedPill,
   deleteSelectedGuidedPills,
   deselectAllGuidedPills,
@@ -74,6 +75,7 @@ const dispatchToActions = {
   addParens,
   addTextFilter,
   batchAddPills,
+  cancelPillCreation,
   deleteGuidedPill,
   deleteSelectedGuidedPills,
   deselectAllGuidedPills,
@@ -232,7 +234,7 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL]: (data) => this._deletePressedOnFocusedPill(data),
       [MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL]: (pillData) => this._enterPressedOnFocusedPill(pillData),
       [MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS]: (data) => this._fetchValueSuggestions(data),
-      [MESSAGE_TYPES.PILL_ADD_CANCELLED]: (data, position) => this._pillAddCancelled(data, position),
+      [MESSAGE_TYPES.PILL_ADD_CANCELLED]: (data, position) => this._pillAddCancelled(position),
       [MESSAGE_TYPES.PILL_CREATED]: (data, position) => this._pillCreated(data, position),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._pillDeleted(data),
       [MESSAGE_TYPES.PILL_DESELECTED]: (data) => this._pillsDeselected([data]),
@@ -352,7 +354,8 @@ const QueryPills = RsaContextMenu.extend({
     next(this, () => this._cleanupTrailingText(true));
   },
 
-  _pillAddCancelled() {
+  _pillAddCancelled(position) {
+    this.send('cancelPillCreation', position);
     this._pillsExited();
   },
 

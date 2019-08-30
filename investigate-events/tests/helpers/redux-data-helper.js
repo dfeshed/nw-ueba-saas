@@ -149,6 +149,16 @@ const PILLS_WITH_PARENS = [{
   twinId: 'twinPill_11'
 }];
 
+const PILLS_WITH_EMPTY_PARENS = [{
+  type: 'open-paren',
+  id: '1',
+  twinId: 'twinPill_11'
+}, {
+  type: 'close-paren',
+  id: '2',
+  twinId: 'twinPill_11'
+}];
+
 
 const _optionsInitialState = {
   size: 20,
@@ -626,6 +636,11 @@ export default class DataHelper {
   }
 
   pillsDataWithParens(pD = PILLS_WITH_PARENS) {
+    _set(this.state, 'queryNode.pillsData', pD);
+    return this;
+  }
+
+  pillsDataWithEmptyParens(pD = PILLS_WITH_EMPTY_PARENS) {
     _set(this.state, 'queryNode.pillsData', pD);
     return this;
   }

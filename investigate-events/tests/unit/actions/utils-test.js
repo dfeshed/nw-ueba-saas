@@ -3,6 +3,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { setupTest } from 'ember-qunit';
 import queryUtils from 'investigate-events/actions/utils';
 import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
+import { CLOSE_PAREN, OPEN_PAREN, QUERY_FILTER } from 'investigate-events/constants/pill';
 
 const params = {
   et: 0,
@@ -133,4 +134,124 @@ module('Unit | Helper | Actions Utils', function(hooks) {
     ]);
   });
 
+  test('hasEmptyParensAt properly detects empty parentheses', function(assert) {
+    let result;
+    let pillsData = [];
+
+    result = queryUtils.hasEmptyParensAt(pillsData, 0);
+    assert.notOk(result, 'no pills');
+
+    pillsData = [
+      { type: OPEN_PAREN },
+      { type: CLOSE_PAREN }
+    ];
+    result = queryUtils.hasEmptyParensAt(pillsData, 1);
+    assert.ok(result, 'just parens');
+    result = queryUtils.hasEmptyParensAt(pillsData, 0);
+    assert.notOk(result, 'just parens with incorrect index');
+    result = queryUtils.hasEmptyParensAt(pillsData, 2);
+    assert.notOk(result, 'just parens with out of bounds index');
+
+    pillsData = [
+      { type: OPEN_PAREN },
+      { type: QUERY_FILTER },
+      { type: CLOSE_PAREN }
+    ];
+    result = queryUtils.hasEmptyParensAt(pillsData, 1);
+    assert.notOk(result, 'query filter wrapped in parens');
+    result = queryUtils.hasEmptyParensAt(pillsData, 0);
+    assert.notOk(result, 'query filter wrapped in parens with incorrect index');
+
+    pillsData = [
+      { type: OPEN_PAREN },
+      { type: OPEN_PAREN },
+      { type: CLOSE_PAREN },
+      { type: CLOSE_PAREN }
+    ];
+    result = queryUtils.hasEmptyParensAt(pillsData, 2);
+    assert.ok(result, 'nested parens');
+    result = queryUtils.hasEmptyParensAt(pillsData, 0);
+    assert.notOk(result, 'nested parens with incorrect index');
+  });
+
+  test('findEmptyParensAtPosition properly detects empty parentheses', function(assert) {
+    let result;
+    let pillsData = [];
+    result = queryUtils.findEmptyParensAtPosition(pillsData, 0);
+    assert.deepEqual(result, [], 'no pills');
+
+    pillsData = [
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: CLOSE_PAREN, twinId: 1 }
+    ];
+    result = queryUtils.findEmptyParensAtPosition(pillsData, 1);
+    assert.deepEqual(result, pillsData, 'just parens');
+    result = queryUtils.findEmptyParensAtPosition(pillsData, 2);
+    assert.deepEqual(result, [], 'just parens with out of bounds index');
+
+    pillsData = [
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: QUERY_FILTER },
+      { type: CLOSE_PAREN, twinId: 1 }
+    ];
+    result = queryUtils.findEmptyParensAtPosition(pillsData, 1);
+    assert.deepEqual(result, [], 'query filter wrapped in parens');
+    result = queryUtils.findEmptyParensAtPosition(pillsData, 2);
+    assert.deepEqual(result, [], 'query filter wrapped in parens with incorrect index');
+
+    pillsData = [
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: OPEN_PAREN, twinId: 2 },
+      { type: OPEN_PAREN, twinId: 3 },
+      { type: CLOSE_PAREN, twinId: 3 }, // <-- 3
+      { type: CLOSE_PAREN, twinId: 2 },
+      { type: CLOSE_PAREN, twinId: 1 }
+    ];
+    result = queryUtils.findEmptyParensAtPosition(pillsData, 3);
+    assert.deepEqual(result, [
+      { type: OPEN_PAREN, twinId: 3 },
+      { type: CLOSE_PAREN, twinId: 3 },
+      { type: OPEN_PAREN, twinId: 2 },
+      { type: CLOSE_PAREN, twinId: 2 },
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: CLOSE_PAREN, twinId: 1 }
+    ], 'deeply nested parens');
+
+    pillsData = [
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: OPEN_PAREN, twinId: 2 },
+      { type: CLOSE_PAREN, twinId: 2 }, // <-- 2
+      { type: CLOSE_PAREN, twinId: 1 },
+      { type: OPEN_PAREN, twinId: 3 },
+      { type: CLOSE_PAREN, twinId: 3 }
+    ];
+    result = queryUtils.findEmptyParensAtPosition(pillsData, 2);
+    assert.deepEqual(result, [
+      { type: OPEN_PAREN, twinId: 2 },
+      { type: CLOSE_PAREN, twinId: 2 },
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: CLOSE_PAREN, twinId: 1 }
+    ], 'nested parens with trailing empty parens');
+
+    pillsData = [
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: CLOSE_PAREN, twinId: 1 }, // <-- 1
+      { type: OPEN_PAREN, twinId: 2 },
+      { type: OPEN_PAREN, twinId: 3 },
+      { type: CLOSE_PAREN, twinId: 3 }, // <-- 4
+      { type: CLOSE_PAREN, twinId: 2 }
+    ];
+    result = queryUtils.findEmptyParensAtPosition(pillsData, 4);
+    assert.deepEqual(result, [
+      { type: OPEN_PAREN, twinId: 3 },
+      { type: CLOSE_PAREN, twinId: 3 },
+      { type: OPEN_PAREN, twinId: 2 },
+      { type: CLOSE_PAREN, twinId: 2 }
+    ], 'nested parens with leading empty parens, index 4');
+    result = queryUtils.findEmptyParensAtPosition(pillsData, 1);
+    assert.deepEqual(result, [
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: CLOSE_PAREN, twinId: 1 }
+    ], 'nested parens with leading empty parens, index 1');
+  });
 });

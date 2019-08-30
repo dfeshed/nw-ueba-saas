@@ -9,7 +9,7 @@ import { LIFECYCLE } from 'redux-pack';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 
 
-module('Unit | Reducers | query-node | Investigate');
+module('Unit | Reducers | QueryNode');
 
 const urlParsedParamsState = Immutable.from({
   serviceId: '2',

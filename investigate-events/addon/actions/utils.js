@@ -3,9 +3,9 @@ import { getProperties } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
-
 import { encodeMetaFilterConditions, addSessionIdFilter } from 'investigate-shared/actions/api/events/utils';
 import { getTimeRangeIdFromRange } from 'investigate-shared/utils/time-range-utils';
+import { OPEN_PAREN, CLOSE_PAREN } from 'investigate-events/constants/pill';
 
 /**
  * Creates (but does not start) a stream to fetch a given number of events.
@@ -161,7 +161,7 @@ function filterIsPresent(filters, freeFormText) {
   return currentFilters === freeFormText.trim();
 }
 
-const selectPillsFromPosition = (pills, position, direction) => {
+function selectPillsFromPosition(pills, position, direction) {
   let newPills = [];
   if (direction === 'right') {
     newPills = pills.filter((pill) => pills.indexOf(pill) >= position);
@@ -169,12 +169,67 @@ const selectPillsFromPosition = (pills, position, direction) => {
     newPills = pills.filter((pill) => pills.indexOf(pill) <= position);
   }
   return newPills;
-};
+}
+
+/**
+ * Looks for an open paren immediately preceding a closed paren, based off of
+ * the close paren's position.
+ * @param {Object[]} arr Array of filters
+ * @param {number} closeParenIndex Index of closed paren
+ */
+function hasEmptyParensAt(arr, closeParenIndex) {
+  const op = arr[closeParenIndex - 1];
+  const cp = arr[closeParenIndex];
+  return op && op.type === OPEN_PAREN && cp && cp.type === CLOSE_PAREN;
+}
+
+/**
+ * Find empty paren sets within the array of filters. This is a recursive
+ * function, so if you have nested parens like ( ( ( ) ) ), it will find all
+ * paren sets if you start from the inner empty paren set.
+ * @param {Object[]} pillsData Array of filters
+ * @param {number} position Index within `pillsData` to look for empty parens
+ */
+function findEmptyParensAtPosition(pillsData, position) {
+  const pillsDataCopy = [...pillsData];
+  let emptyParenSets = [];
+  let currentPosition = position;
+  while (currentPosition >= 0 && hasEmptyParensAt(pillsDataCopy, currentPosition)) {
+    emptyParenSets = emptyParenSets.concat(pillsDataCopy.splice(currentPosition - 1, 2));
+    currentPosition--;
+  }
+  return emptyParenSets;
+}
+
+// export const isEmptyParenSetAt = (arr, i) => {
+//   const op = arr[i];
+//   const cp = arr[i + 1];
+//   return op && op.type === OPEN_PAREN && cp && cp.type === CLOSE_PAREN;
+// };
+
+// export const removeEmptyParens = (pillsData) => {
+//   for (let i = 0; i < pillsData.length; i++) {
+//     if (isEmptyParenSetAt(pillsData, i)) {
+//       if (pillsData.length === 2) {
+//         return [];
+//       } else {
+//         const newPillsData = [
+//           ...pillsData.slice(0, i),
+//           ...pillsData.slice(i + 2)
+//         ];
+//         return removeEmptyParens(newPillsData);
+//       }
+//     }
+//   }
+//   return pillsData;
+// };
 
 export {
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,
   filterIsPresent,
+  findEmptyParensAtPosition,
+  hasEmptyParensAt,
   parseBasicQueryParams,
   selectPillsFromPosition
 };

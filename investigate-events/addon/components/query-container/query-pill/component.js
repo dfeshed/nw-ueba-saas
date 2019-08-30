@@ -949,7 +949,7 @@ export default Component.extend({
       });
     }
     // Inform container that this pill component is cancelling out of creation
-    this._broadcast(MESSAGE_TYPES.PILL_ADD_CANCELLED, pD);
+    this._broadcast(MESSAGE_TYPES.PILL_ADD_CANCELLED);
   },
 
   _cancelPillEdit() {

@@ -537,7 +537,6 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk1(firstDispatch, getState);
   });
 
-
   test('_serverSideValidation will flag isInvalid and add a validation error in state from the response returned from web socket', async function(assert) {
     assert.expect(2);
 
@@ -791,4 +790,41 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk(deleteAllPillsDispatch, getState);
   });
 
+  test('cancelPillCreation dispatches action to delete parens if they are empty', function(assert) {
+    const done = assert.async();
+    const getState = () => {
+      return new ReduxDataHelper()
+        .language()
+        .pillsDataWithEmptyParens() // op, cp
+        .build();
+    };
+    // extract pillsData for testing
+    const { investigate: { queryNode: { pillsData } } } = getState();
+
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData, pillsData, 'action payload has the right value');
+      done();
+    };
+
+    const thunk = guidedCreators.cancelPillCreation(1);
+    thunk(dispatch, getState);
+  });
+
+  test('cancelPillCreation DOES NOT dispatches action to delete parens if they are populated', function(assert) {
+    assert.expect(0);
+    const getState = () => {
+      return new ReduxDataHelper()
+        .language()
+        .pillsDataWithParens() // op, qp, cp
+        .build();
+    };
+
+    const dispatch = (action) => {
+      assert.notOk(true, `dispatched ${action.type} when it should not have`);
+    };
+
+    const thunk = guidedCreators.cancelPillCreation(2);
+    thunk(dispatch, getState);
+  });
 });

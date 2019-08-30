@@ -43,12 +43,14 @@ const deleteSelectedGuidedPillsSpy = sinon.spy(guidedCreators, 'deleteSelectedGu
 const recentQueriesSpy = sinon.spy(initializationCreators, 'getRecentQueries');
 const batchAddQueriesSpy = sinon.spy(guidedCreators, 'batchAddPills');
 const valueSuggestionsSpy = sinon.spy(initializationCreators, 'valueSuggestions');
+const cancelPillCreationSpy = sinon.spy(guidedCreators, 'cancelPillCreation');
 // const addFreeFormFilterSpy = sinon.spy(guidedCreators, 'addFreeFormFilterSpy');
 const spys = [
   newActionSpy, deleteActionSpy, editGuidedPillSpy, selectActionSpy,
   deselectActionSpy, openGuidedPillForEditSpy, resetGuidedPillSpy,
   selectAllPillsTowardsDirectionSpy, deleteSelectedGuidedPillsSpy,
-  recentQueriesSpy, batchAddQueriesSpy, valueSuggestionsSpy
+  recentQueriesSpy, batchAddQueriesSpy, valueSuggestionsSpy,
+  cancelPillCreationSpy
 ];
 
 const allPillsAreClosed = (assert) => {
@@ -506,8 +508,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.activePills).length, 2, 'Two active pills, one is the end of line template.');
   });
 
-  // Ember 3.3
-  skip('clicking escape inside an editing pill will message out', async function(assert) {
+  test('clicking ESC inside an editing pill will message out', async function(assert) {
     const { pillsData } = new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -518,13 +519,10 @@ module('Integration | Component | Query Pills', function(hooks) {
       .queryNode;
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
-
     await click(PILL_SELECTORS.meta);
     await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
-
-    assert.equal(resetGuidedPillSpy.callCount, 1, 'The reset pill action creator was called once');
-    const [ [ calledWith ] ] = resetGuidedPillSpy.args;
-    assert.deepEqual(calledWith.id, pillsData[0].id, 'shows as being selected as is being sent to be deselected');
+    assert.ok(resetGuidedPillSpy.calledOnce, 'The reset pill action creator was called once');
+    assert.equal(resetGuidedPillSpy.getCall(0).args[0].id, pillsData[0].id, 'shows as being selected as is being sent to be deselected');
   });
 
   test('If a pill is doubled clicked, a message will be sent to  mark it for editing', async function(assert) {
@@ -3075,5 +3073,23 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     const placeholder = find(PILL_SELECTORS.metaSelectInput).getAttribute('placeholder');
     assert.ok(placeholder.length === 0, 'Should not see a placeholder');
+  });
+
+  test('canceling a pill sends action for redux state update', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithEmptyParens() // op, cp
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true }}`);
+    const triggers = await findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 2, 'correct number of triggers');
+
+    await click(triggers[1]);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+    assert.ok(cancelPillCreationSpy.calledWith(1), 'called with position 1');
+    assert.notOk(find(PILL_SELECTORS.openParen), 'all parens should be removed');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'all parens should be removed');
   });
 });

@@ -2,7 +2,7 @@ import * as ACTION_TYPES from './types';
 import { selectedPills, focusedPill, pillsData } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import validateQueryFragment from './fetch/query-validation';
-import { selectPillsFromPosition } from 'investigate-events/actions/utils';
+import { findEmptyParensAtPosition, selectPillsFromPosition } from 'investigate-events/actions/utils';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { ValidatableFilter } from 'investigate-events/util/filter-types';
 import { COMPLEX_FILTER, TEXT_FILTER } from 'investigate-events/constants/pill';
@@ -149,6 +149,21 @@ export const batchAddPills = ({ pillsData, initialPosition }) => {
         }));
       }
     });
+  };
+};
+
+export const cancelPillCreation = (position) => {
+  return (dispatch, getState) => {
+    const { investigate: { queryNode: { pillsData } } } = getState();
+    const emptyParens = findEmptyParensAtPosition(pillsData, position);
+    if (emptyParens.length > 0) {
+      dispatch({
+        type: ACTION_TYPES.DELETE_GUIDED_PILLS,
+        payload: {
+          pillData: emptyParens
+        }
+      });
+    }
   };
 };
 

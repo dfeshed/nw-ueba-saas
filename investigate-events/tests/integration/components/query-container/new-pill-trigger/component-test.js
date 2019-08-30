@@ -123,7 +123,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.PILL_ADD_CANCELLED, 'Wrong message type');
-      assert.deepEqual(data, null, 'Cancel does not include pill data');
+      assert.deepEqual(data, undefined, 'Cancel should not include data');
       assert.equal(position, 5, 'Wrong position number');
     });
 
