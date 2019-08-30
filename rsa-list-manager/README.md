@@ -10,15 +10,20 @@ The list manager can be used in your template as follows:
   helpId=helpId
   as |manager|}}
 
-  {{!--renders the filter component--}}
+  {{!-- optional -- renders the filter component--}}
   {{manager.filter filterAction=customFilterAction}}
 
-  {{!--renders the main list--}}
+  {{!-- required -- renders the main list--}}
   {{#manager.itemList as |list|}}
     {{#list.item as |item|}}
       {{!--render the item in desired format --}}
     {{/list.item}}
   {{/manager.itemList}}
+
+  {{!-- required --}}
+  {{#manager.details as |item|}}
+    {{!-- render item details as desired --}}
+  {{/manager.details}}
 
 {{/list-manager}}
 ```

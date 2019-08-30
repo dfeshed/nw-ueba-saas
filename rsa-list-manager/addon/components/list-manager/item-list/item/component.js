@@ -14,11 +14,6 @@ export default Component.extend({
   highlightedId: null,
   editItem: null,
 
-  // Action that should be triggered when an item is clicked
-  itemSelection: () => {},
-
-  isExpanded: true,
-
   // Item that may be currently applied
   @computed('selectedItem', 'item')
   isSelected(selectedItem, item) {
@@ -41,13 +36,6 @@ export default Component.extend({
   actions: {
     editDetails() {
       this.get('editItem')(this.get('item'));
-    },
-
-    clickAction() {
-      if (!this.get('isSelected')) {
-        this.get('itemSelection')(this.get('item'));
-      }
-      this.toggleProperty('isExpanded');
     }
   }
 });

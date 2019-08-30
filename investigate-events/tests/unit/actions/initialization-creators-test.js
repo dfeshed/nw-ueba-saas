@@ -144,7 +144,7 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
       assert.equal(action.type, ACTION_TYPES.SET_RECENT_QUERIES, 'action has the correct type');
       action.promise.then((resolve) => {
         const responseQueryArray = resolve.data.map((ob) => ob.query);
-        assert.equal(responseQueryArray.length, 10, 'Correct number of queries returned');
+        assert.equal(responseQueryArray.length, 7, 'Correct number of queries returned');
         done();
       });
     };

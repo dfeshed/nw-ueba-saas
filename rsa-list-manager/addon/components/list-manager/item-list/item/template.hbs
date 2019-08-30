@@ -1,4 +1,4 @@
-<a {{action 'clickAction'}} title="{{item.name}}">
+<a {{action itemSelection item}} title="{{item.name}}">
   {{#if hasOOTBIndicators}}
     {{#rsa-form-button class='ootb-icon-wrapper' isIconOnly=true}}
       {{rsa-icon style='lined' class='ootb-indicator' name=iconName}}

@@ -15,4 +15,8 @@
     {{/itemList.item}}
   {{/manager.itemList}}
 
+  {{#manager.details as |item|}}
+    {{events-table-container/header-container/column-groups/column-group-details columnGroup=item}}
+  {{/manager.details}}
+
 {{/list-manager}}

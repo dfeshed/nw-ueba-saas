@@ -38,7 +38,7 @@
                 listName=listName
                 list=filteredList
                 selectedItem=selectedItem
-                itemSelection=itemSelection
+                itemSelection=(action 'handleItemSelection')
                 isExpanded=isExpanded
                 highlightedIndex=highlightedIndex
                 editItem=(action 'editItem')
@@ -55,10 +55,15 @@
 
         {{else}}
 
-          {{list-manager/item-details
-            itemType=itemType
-            detailsDone=(action 'detailsDone')
-            item=itemForEdit
+          {{yield (hash
+            details=(component 'list-manager/item-details'
+              itemType=itemType
+              detailsDone=(action 'detailsDone')
+              item=itemForEdit
+              itemSelection=(action 'handleItemSelection')
+              helpId=helpId
+            )
+           )
           }}
 
         {{/if}}

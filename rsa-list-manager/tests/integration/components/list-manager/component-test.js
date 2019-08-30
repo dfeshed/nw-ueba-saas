@@ -33,10 +33,10 @@ module('Integration | Component | list-manager', function(hooks) {
   const listItems = `${buttonMenuSelector}.expanded .rsa-item-list > li.rsa-list-item`;
 
   const items = [
-    { id: 3, name: 'eba' },
-    { id: 1, name: 'foo' },
-    { id: 2, name: 'bar' },
-    { id: 4, name: 'Baz' }
+    { id: 3, name: 'eba', subItems: [ 'a', 'b', 'c' ] },
+    { id: 1, name: 'foo', subItems: [ 'a', 'b' ] },
+    { id: 2, name: 'bar', subItems: [ 'e', 'b', 'c' ] },
+    { id: 4, name: 'Baz', subItems: [ 'c' ] }
   ];
 
   const assertForListManager = async function(assert, expectedCaption, tooltip, noOfItems, hasSelectedItem, optionToClick) {
@@ -56,11 +56,11 @@ module('Integration | Component | list-manager', function(hooks) {
 
   };
 
-  const assertForViewToggle = async function(assert, buttonsBefore, isListView) {
+  const assertForViewToggle = async function(assert, footerButtons, isListView) {
     assert.equal(findAll('.list-body ul.rsa-item-list').length == 1, isListView);
     assert.equal(findAll('footer.list-footer').length == 1, isListView);
     const buttons = findAll('footer button');
-    assert.equal(getTextFromDOMArray(buttons), buttonsBefore);
+    assert.equal(getTextFromDOMArray(buttons), footerButtons);
 
   };
 
@@ -640,6 +640,9 @@ module('Integration | Component | list-manager', function(hooks) {
            {{item.name}}
           {{/list.item}}
         {{/manager.itemList}}
+        {{#manager.details as |item|}}
+          Item Name: {{item.name}}
+        {{/manager.details}}
       {{/list-manager}}`);
 
     // expand button menu
@@ -650,6 +653,7 @@ module('Integration | Component | list-manager', function(hooks) {
     await click(findAll('footer button')[0]);
     await assertForViewToggle(assert, 'CloseSaveMyItem', false);
 
+    assert.ok(find('.list-body .new-item'));
     // click on close
     await click(findAll('footer button')[0]);
     await assertForViewToggle(assert, 'NewMyItem', true);
@@ -658,16 +662,24 @@ module('Integration | Component | list-manager', function(hooks) {
 
   test('clicking on info icon on an item navigates to item details', async function(assert) {
 
-    this.set('name', 'My Items');
+    this.set('listName', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});
 
-    await render(hbs`{{#list-manager listName=name list=list itemSelection=handleSelection as |manager|}}
+    await render(hbs`{{#list-manager listName=listName list=list itemSelection=handleSelection as |manager|}}
         {{#manager.itemList as |list|}}
           {{#list.item as |item|}}
            {{item.name}}
           {{/list.item}}
         {{/manager.itemList}}
+
+        {{#manager.details as |item|}}
+           <ul>
+             {{#each item.subItems as |subItem|}}
+               <li>{{subItem}}</li>
+             {{/each}}
+           </ul>
+        {{/manager.details}}
       {{/list-manager}}`);
 
     // expand button menu
@@ -677,8 +689,90 @@ module('Integration | Component | list-manager', function(hooks) {
     const itemDetailsButtons = findAll('.edit-icon button');
 
     await click(itemDetailsButtons[0]);
+    assert.equal(find('.list-body .details-header .title').textContent.trim().toUpperCase(), 'MY ITEM DETAILS');
+    assert.equal(getTextFromDOMArray(findAll('.list-body .details-body ul li')), 'abc');
+
     await assertForViewToggle(assert, 'CloseSelectMyItem', false);
 
-    assert.equal(find('.item-name').textContent.trim(), items[0].name);
   });
+
+  test('clicking on `Select Item` in an unselected item\'s details causes item seletion', async function(assert) {
+    assert.expect(3);
+
+    this.set('listName', 'My Items');
+    this.set('list', items);
+    this.set('selectedItem', items[1]);
+    this.set('handleSelection', (item) => {
+      assert.ok(`${item.name} is selected`);
+    });
+
+    await render(hbs`{{#list-manager selectedItem=selectedItem listName=listName list=list itemSelection=handleSelection as |manager|}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+
+        {{#manager.details as |item|}}
+           <ul>
+             {{#each item.subItems as |subItem|}}
+               <li>{{subItem}}</li>
+             {{/each}}
+           </ul>
+        {{/manager.details}}
+      {{/list-manager}}`);
+
+    // expand button menu
+    await click(`${buttonGroupSelector} button`);
+
+    const itemDetailsButtons = findAll('.edit-icon button');
+
+    await click(itemDetailsButtons[0]);
+
+    assert.ok(find('.rsa-button-menu.expanded'));
+    // Select Item
+    await click(findAll('footer button')[1]);
+    assert.ok(find('.rsa-button-menu.collapsed'), 'Item selection from details causes list to collapse');
+  });
+
+  test('clicking on `Select Item` in an already  selected item\'s details just collapses the list', async function(assert) {
+    assert.expect(2);
+
+    this.set('listName', 'My Items');
+    this.set('list', items);
+    this.set('selectedItem', items[1]);
+    this.set('handleSelection', (item) => {
+      assert.ok(`Action not triggered as ${item.name} is already selected`);
+    });
+
+    await render(hbs`{{#list-manager selectedItem=selectedItem listName=listName list=list itemSelection=handleSelection as |manager|}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+
+        {{#manager.details as |item|}}
+           <ul>
+             {{#each item.subItems as |subItem|}}
+               <li>{{subItem}}</li>
+             {{/each}}
+           </ul>
+        {{/manager.details}}
+      {{/list-manager}}`);
+
+    // expand button menu
+    await click(`${buttonGroupSelector} button`);
+
+    const itemDetailsButtons = findAll('.edit-icon button');
+
+    await click(itemDetailsButtons[1]);
+
+    assert.ok(find('.rsa-button-menu.expanded'));
+    // Select Item
+    await click(findAll('footer button')[1]);
+
+    assert.ok(find('.rsa-button-menu.collapsed'), 'Item selection from details causes list to collapse');
+  });
+
 });

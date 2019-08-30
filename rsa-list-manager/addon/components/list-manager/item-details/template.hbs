@@ -1,10 +1,18 @@
 <div class='list-body'>
   {{#if item}}
     <div class='details-header'>
-      <div class='item-name'>
-        {{item.name}}
+      <div class='title'>
+        {{itemType}} details
       </div>
+      {{#if hasContextualHelp}}
+        {{#rsa-form-button class='list-help-icon' defaultAction=(action 'goToHelp')}}
+          {{rsa-icon name='help-circle' style='lined'}}
+        {{/rsa-form-button}}
+      {{/if}}
       {{!-- delete component here --}}
+    </div>
+    <div class='details-body'>
+      {{yield item}}
     </div>
     {{! other details of list to follow --}}
   {{else}}
@@ -16,4 +24,5 @@
   item=item
   itemType=itemType
   detailsDone=detailsDone
+  itemSelection=itemSelection
 }}

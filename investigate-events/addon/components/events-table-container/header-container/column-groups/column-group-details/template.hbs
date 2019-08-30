@@ -1,0 +1,16 @@
+<div class='group-name'>
+  <label> Group Name </label>
+  <h3>{{columnGroup.name}}</h3>
+</div>
+
+<div class='group-details'>
+  <label> Displayed Meta Keys </label>
+  <ul class='column-list'>
+    {{#each columnGroup.columns as |column|}}
+      <li>
+        <span>{{column.field}}</span>
+        <span>{{column.title}}</span>
+      </li>
+    {{/each}}
+  </ul>
+</div>

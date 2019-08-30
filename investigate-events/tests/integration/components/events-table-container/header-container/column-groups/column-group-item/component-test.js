@@ -16,7 +16,7 @@ module('Integration | Component | Column Group Item', function(hooks) {
     initialize(this.owner);
   });
 
-  test('columnGroup item should render specific item details', async function(assert) {
+  test('columnGroup item should render correctly', async function(assert) {
 
     this.set('item', EventColumnGroups[8]);
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-item columnGroup=item}}`);

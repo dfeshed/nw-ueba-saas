@@ -114,16 +114,50 @@
             }
           }
         }
-
-     }
-     span.option-name {
-        width: 160px;
-        vertical-align: middle;
-        overflow-x: hidden;
-        white-space: nowrap;
-        display: inline-block;
-        text-overflow: ellipsis;
       }
+      .rsa-button-menu {
+
+        span.option-name {
+          width: 160px;
+          vertical-align: middle;
+          overflow-x: hidden;
+          white-space: nowrap;
+          display: inline-block;
+          text-overflow: ellipsis;
+        }
+
+        .column-group-details {
+
+          label {
+            text-transform: uppercase;
+            font-size:10px;
+          }
+          h3 {
+            margin-top: rsa-whitespace(less);
+          }
+
+          .group-details {
+            margin-top: 0.8rem;;
+
+            ul.column-list {
+              margin-top:0.4rem;
+
+              height: 160px;
+              width: 100%;
+              overflow-y: auto;
+              li {
+                line-height: 2em;
+                span {
+                  display: inline-table;
+                  width: 48%
+                }
+              }
+            }
+
+          }
+        }
+      }
+
     }
 
     &__manageIncident {

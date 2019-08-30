@@ -107,6 +107,16 @@ const ListManager = Component.extend({
       this.set('highlightedIndex', -1);
     },
 
+    handleItemSelection(item) {
+      const selectedItem = this.get('selectedItem');
+      // Some types of lists don't have an active/selected item, in those cases once
+      // the selection is processed the list-manager returns to an unselected state
+      if (!selectedItem || (selectedItem && selectedItem.id !== item.id)) {
+        this.get('itemSelection')(item);
+      }
+      this.toggleProperty('isExpanded');
+    },
+
     updateFilteredList(newList) {
       this.set('filteredList', newList);
     },

@@ -12,7 +12,7 @@
       padding: 0;
     }
 
-    input, li, button, .details-header {
+    input, li, button {
       font-size: 12px;
       font-weight: lighter;
       color: text-color(primary, lightest);
@@ -32,7 +32,7 @@
     }
 
     .list-body {
-      height: 242px;
+      height: 262px;
       background: background-color(primary, darker);
       // Manager's filter component
       .list-filter {
@@ -52,7 +52,7 @@
 
       // Manager's itemList component
       ul.rsa-item-list {
-        height: 210px;
+        height: 230px;
         overflow-y: auto;
         li.no-results {
           padding: rsa-whitespace(less);
@@ -118,19 +118,28 @@
 
     .item-details {
       min-width: 300px;
-    }
 
-    .details-header {
-      justify-content: flex-start;
-      width: 93%;
-      display: inline-flex;
-      padding: .8rem;
-      .item-name {
-        width: 100%; // may change to incorporate other buttons in header
-        padding-bottom: 0.6rem;
-        border-bottom: 1px solid border-color(primary,light);
+      // TODO list-body to something else
+      .list-body {
+        color: text-color(primary, lighter);
+        padding:0.4rem;;
+        > div {
+          padding: 0.4rem;;
+        }
+        .details-header {
+          justify-content: space-between;
+          display: inline-flex;
+          width: 96%;
+          text-transform: uppercase;
+          font-size: 12px;
+          i {
+            margin-right: 0;
+          }
+        }
       }
     }
+
+
     // Manager's create item controls component
     footer {
       border-top: 1px solid border-color(primary,light);

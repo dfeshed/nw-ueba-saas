@@ -145,4 +145,26 @@ module('Integration | Component | Column Groups', function(hooks) {
     assert.equal(findAll(columnGroupItem).length, 11, 'filter is reset when dropdown is closed and reopened');
 
   });
+
+  test('clicking the edit icon shows details of the columnGroup', async function(assert) {
+
+    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().build();
+    await render(hbs`<div class = 'other-div'></div>{{events-table-container/header-container/column-groups}}`);
+
+    await click(dropdownSelector);
+
+    // Go to column Group details
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[8]);
+    assert.equal(find('.group-name h3').textContent.trim(), 'Threat Analysis');
+    assert.equal(findAll('.group-details ul.column-list li').length, 57, '57 columns for Threat Analysis rendered');
+
+    // Go to list view
+    await click(findAll('footer button')[0]);
+
+    // Go to column Group details
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[3]);
+    assert.equal(find('.group-name h3').textContent.trim(), 'Summary List');
+    assert.equal(findAll('.group-details ul.column-list li').length, 5, '5 columns for Summary List rendered');
+
+  });
 });

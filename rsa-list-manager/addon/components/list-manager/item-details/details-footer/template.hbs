@@ -3,8 +3,7 @@
     Close
   {{/rsa-form-button}}
   {{#if item}}
-    {{!-- temporarily disabling Select from details readonly TODO part 2/2--}}
-    {{#rsa-form-button isDisabled=true defaultAction=detailsDone}}
+    {{#rsa-form-button defaultAction=(action itemSelection item)}}
       Select {{itemType}}
     {{/rsa-form-button}}
   {{else}}
