@@ -46,23 +46,23 @@ class SshCommandExecutor {
             channel = (ChannelExec) session.openChannel("exec");
             System.out.println("\n>>> Run SSH command: [" + CMD + "]");
             channel.setCommand(CMD);
-            channel.connect();
 
             BufferedReader input = new BufferedReader(new InputStreamReader(channel.getInputStream()));
             BufferedReader error = new BufferedReader(new InputStreamReader(channel.getErrStream()));
+            channel.connect();
 
             String line = null;
-            List<String> errorResponse = new LinkedList<>();
-            while ((line = error.readLine()) != null) {
-                if (verbose) { LOGGER.error(line); }
-                errorResponse.add(line);
-            }
-
-            line = null;
             List<String> inputResponse = new LinkedList<>();
             while ((line = input.readLine()) != null) {
                 if (verbose) { LOGGER.info(line); }
                 inputResponse.add(line);
+            }
+
+            line = null;
+            List<String> errorResponse = new LinkedList<>();
+            while ((line = error.readLine()) != null) {
+                if (verbose) { LOGGER.error(line); }
+                errorResponse.add(line);
             }
 
             input.close();
