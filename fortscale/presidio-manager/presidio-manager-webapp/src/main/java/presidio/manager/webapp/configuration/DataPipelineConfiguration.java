@@ -11,6 +11,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import javax.annotation.Generated;
 import java.time.Instant;
 import java.util.List;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 @Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2019-04-15T00:00:00.000Z")
 public class DataPipelineConfiguration {
@@ -41,6 +43,13 @@ public class DataPipelineConfiguration {
 
     public void setStartTime(Instant startTime) {
         this.startTime = startTime;
+    }
+
+    public Properties toProperties() {
+        Properties properties = new Properties();
+        properties.put("schemas", schemas.stream().map(Schema::name).collect(Collectors.joining(",")));
+        properties.put("startTime", startTime.toString());
+        return properties;
     }
 
     @Override
