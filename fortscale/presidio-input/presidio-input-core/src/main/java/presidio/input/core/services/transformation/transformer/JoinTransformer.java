@@ -5,10 +5,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.PresidioReflectionUtils;
-import presidio.sdk.api.domain.AbstractInputDocument;
+import fortscale.utils.transform.AbstractJsonObjectTransformer;
+import org.json.JSONObject;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("join-transformer")
-public class JoinTransformer extends AbstractInputDocumentTransformer {
+public class JoinTransformer extends AbstractJsonObjectTransformer {
 
     private static final Logger logger = Logger.getLogger(JoinTransformer.class);
 
@@ -28,37 +27,34 @@ public class JoinTransformer extends AbstractInputDocumentTransformer {
     private String delimiter;
 
     @JsonCreator
-    public JoinTransformer(@JsonProperty("inputFieldNames") List<String> inputFieldNames,
+    public JoinTransformer(@JsonProperty("name") String name,
+                           @JsonProperty("inputFieldNames") List<String> inputFieldNames,
                            @JsonProperty("outputFieldName") String outputFieldName,
                            @JsonProperty("delimiter") String delimiter) {
+        super(name);
         this.inputFieldNames = inputFieldNames;
         this.outputFieldName = outputFieldName;
         this.delimiter = delimiter;
     }
 
     @Override
-    public AbstractInputDocument transform(AbstractInputDocument document) {
+    public JSONObject transform(JSONObject document) {
         try {
             Map<String, Object> requiredFieldNameToValueMap = getInputFields(document);
-
             if (requiredFieldNameToValueMap.size() == inputFieldNames.size()) {
                 String outputFieldValue = inputFieldNames.stream().map(fieldName -> requiredFieldNameToValueMap.get(fieldName).toString()).collect(Collectors.joining(delimiter));
-                PresidioReflectionUtils.setFieldValue(document, outputFieldName, outputFieldValue);
+                document.put(outputFieldName, outputFieldValue);
             }
-        } catch (ReflectiveOperationException e) {
+        } catch (Exception e) {
             logger.error("error setting the {} field value", outputFieldName, e);
         }
         return document;
     }
 
-    private Map<String, Object> getInputFields(AbstractInputDocument document) throws ReflectiveOperationException {
-
+    private Map<String, Object> getInputFields(JSONObject document) {
         Map<String, Object> requiredFieldNameToValueMap = new HashMap<>();
-
         for (String requiredFieldName : inputFieldNames) {
-            Field field = org.springframework.util.ReflectionUtils.findField(document.getClass(), requiredFieldName);
-            if (field == null) throw new ReflectiveOperationException();
-            requiredFieldNameToValueMap.put(requiredFieldName, PresidioReflectionUtils.getFieldValue(document, requiredFieldName));
+            requiredFieldNameToValueMap.put(requiredFieldName, document.get(requiredFieldName));
         }
         return requiredFieldNameToValueMap;
     }
