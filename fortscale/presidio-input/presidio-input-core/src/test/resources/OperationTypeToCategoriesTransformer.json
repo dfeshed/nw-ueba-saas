@@ -1,5 +1,6 @@
 {
   "type": "operation-type-categories-transformer",
+  "name": "name",
   "schema": "authentication",
   "inputOperationTypeFieldName": "bla",
   "inputOperationTypeCategoriesFieldName": "blu",

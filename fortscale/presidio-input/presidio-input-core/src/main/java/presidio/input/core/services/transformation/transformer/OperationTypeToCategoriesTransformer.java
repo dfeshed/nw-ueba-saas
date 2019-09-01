@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import presidio.sdk.api.domain.AbstractInputDocument;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -26,10 +26,12 @@ public class OperationTypeToCategoriesTransformer extends OperationTypeMappingTr
     private final String inputOperationTypeCategoriesFieldName;
     private final String outputOperationTypeCategoriesFieldName;
 
-    public OperationTypeToCategoriesTransformer(@JsonProperty("schema") Schema schema,
+    public OperationTypeToCategoriesTransformer(@JsonProperty("name") String name,
+                                                @JsonProperty("schema") Schema schema,
                                                 @JsonProperty("inputOperationTypeFieldName") String inputOperationTypeFieldName,
                                                 @JsonProperty("inputOperationTypeCategoriesFieldName") String inputOperationTypeCategoriesFieldName,
                                                 @JsonProperty("outputOperationTypeCategoriesFieldName") String outputOperationTypeCategoriesFieldName) {
+        super(name);
         this.inputOperationTypeFieldName = inputOperationTypeFieldName;
         this.inputOperationTypeCategoriesFieldName = inputOperationTypeCategoriesFieldName;
         this.outputOperationTypeCategoriesFieldName = outputOperationTypeCategoriesFieldName;
@@ -41,24 +43,21 @@ public class OperationTypeToCategoriesTransformer extends OperationTypeMappingTr
     }
 
     @Override
-    public AbstractInputDocument transform(AbstractInputDocument document) {
+    public JSONObject transform(JSONObject document) {
         if (MapUtils.isNotEmpty(operationTypeCategoriesMapping)) {
-            String operationType =  (String) PresidioReflectionUtils.getFieldValue(document, inputOperationTypeFieldName);
-
-            List<String> operationTypeCategories = operationTypeCategoriesMapping.get(operationType);
-
-            if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
-                Set<String> additionalCategories = new HashSet<>(operationTypeCategories);
-
-                List<String> existingOperationTypeCategories = (List<String>) PresidioReflectionUtils.getFieldValue(document, inputOperationTypeCategoriesFieldName);
-                if (existingOperationTypeCategories != null) {
-                    additionalCategories.addAll(existingOperationTypeCategories);
+            try {
+                String operationType = (String) document.get(inputOperationTypeFieldName);
+                List<String> operationTypeCategories = operationTypeCategoriesMapping.get(operationType);
+                if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
+                    Set<String> additionalCategories = new HashSet<>(operationTypeCategories);
+                    List<String> existingOperationTypeCategories = jsonArrayToList((JSONArray) document.get(inputOperationTypeCategoriesFieldName));
+                    if (existingOperationTypeCategories != null) {
+                        additionalCategories.addAll(existingOperationTypeCategories);
+                    }
+                    document.put(outputOperationTypeCategoriesFieldName, new ArrayList<>(additionalCategories));
                 }
-                try {
-                    PresidioReflectionUtils.setFieldValue(document, outputOperationTypeCategoriesFieldName, new ArrayList<>(additionalCategories));
-                } catch (IllegalAccessException e) {
-                    logger.error("error setting the {} field value", outputOperationTypeCategoriesFieldName, e);
-                }
+            } catch (Exception e) {
+                logger.error("error setting the {} field value", outputOperationTypeCategoriesFieldName, e);
             }
         }
         return document;

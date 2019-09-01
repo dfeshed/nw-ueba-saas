@@ -6,10 +6,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.ActiveDirectoryRawEvent;
-import presidio.sdk.api.domain.transformedevents.ActiveDirectoryTransformedEvent;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 
@@ -17,7 +16,7 @@ import java.util.*;
 public class OperationTypeCategoriesHierarchyTransformerTest extends TransformerJsonTest {
 
     @Test
-    public void testOneLevelHierarchy() {
+    public void testOneLevelHierarchy() throws IOException {
         List<String> operationTypeCategory = new ArrayList<>();
         operationTypeCategory.add("A");
         ActiveDirectoryRawEvent event = createEvent(operationTypeCategory);
@@ -27,15 +26,14 @@ public class OperationTypeCategoriesHierarchyTransformerTest extends Transformer
         operationCategories.add("B");
         operationTypeCategoryHierarchyMapping.put("A", operationCategories);
 
-        OperationTypeCategoriesHierarchyTransformer operationTypeCategoriesHierarchyTransformer = new OperationTypeCategoriesHierarchyTransformer(Schema.ACTIVE_DIRECTORY, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
+        OperationTypeCategoriesHierarchyTransformer operationTypeCategoriesHierarchyTransformer = new OperationTypeCategoriesHierarchyTransformer("name", Schema.ACTIVE_DIRECTORY, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
         operationTypeCategoriesHierarchyTransformer.setOperationTypeCategoriesHierarchyMapping(operationTypeCategoryHierarchyMapping);
-        AbstractInputDocument transformed = operationTypeCategoriesHierarchyTransformer.transform(new ActiveDirectoryTransformedEvent(event));
-
-        Assert.assertEquals(2, ((ActiveDirectoryRawEvent)transformed).getOperationTypeCategories().size());
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = (ActiveDirectoryRawEvent) transformEvent(event, operationTypeCategoriesHierarchyTransformer, ActiveDirectoryRawEvent.class);
+        Assert.assertEquals(2, activeDirectoryRawEvent.getOperationTypeCategories().size());
     }
 
     @Test
-    public void testTwoLevelHierarchy() {
+    public void testTwoLevelHierarchy() throws IOException {
         List<String> operationTypeCategory = new ArrayList<>();
         operationTypeCategory.add("A");
         ActiveDirectoryRawEvent event = createEvent(operationTypeCategory);
@@ -44,15 +42,14 @@ public class OperationTypeCategoriesHierarchyTransformerTest extends Transformer
         operationTypeCategoryHierarchyMapping.put("A", Arrays.asList("B", "C"));
         operationTypeCategoryHierarchyMapping.put("B", Arrays.asList("C", "D"));
 
-        OperationTypeCategoriesHierarchyTransformer operationTypeCategoriesHierarchyTransformer = new OperationTypeCategoriesHierarchyTransformer(Schema.ACTIVE_DIRECTORY, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
+        OperationTypeCategoriesHierarchyTransformer operationTypeCategoriesHierarchyTransformer = new OperationTypeCategoriesHierarchyTransformer("name", Schema.ACTIVE_DIRECTORY, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
         operationTypeCategoriesHierarchyTransformer.setOperationTypeCategoriesHierarchyMapping(operationTypeCategoryHierarchyMapping);
-        AbstractInputDocument transformed = operationTypeCategoriesHierarchyTransformer.transform(new ActiveDirectoryTransformedEvent(event));
-
-        Assert.assertEquals(4, ((ActiveDirectoryRawEvent) transformed).getOperationTypeCategories().size());
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = (ActiveDirectoryRawEvent) transformEvent(event, operationTypeCategoriesHierarchyTransformer, ActiveDirectoryRawEvent.class);
+        Assert.assertEquals(4, activeDirectoryRawEvent.getOperationTypeCategories().size());
     }
 
     @Test
-    public void testNoHierarchy() {
+    public void testNoHierarchy() throws IOException {
         List<String> operationTypeCategory = new ArrayList<>();
         operationTypeCategory.add("C");
         ActiveDirectoryRawEvent event = createEvent(operationTypeCategory);
@@ -62,45 +59,38 @@ public class OperationTypeCategoriesHierarchyTransformerTest extends Transformer
         operationCategories.add("B");
         operationTypeCategoryHierarchyMapping.put("A", operationCategories);
 
-        OperationTypeCategoriesHierarchyTransformer operationTypeCategoriesHierarchyTransformer = new OperationTypeCategoriesHierarchyTransformer(Schema.ACTIVE_DIRECTORY, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
+        OperationTypeCategoriesHierarchyTransformer operationTypeCategoriesHierarchyTransformer = new OperationTypeCategoriesHierarchyTransformer("name", Schema.ACTIVE_DIRECTORY, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
         operationTypeCategoriesHierarchyTransformer.setOperationTypeCategoriesHierarchyMapping(operationTypeCategoryHierarchyMapping);
-        AbstractInputDocument transformed = operationTypeCategoriesHierarchyTransformer.transform(new ActiveDirectoryTransformedEvent(event));
-
-        Assert.assertEquals(1, ((ActiveDirectoryRawEvent)transformed).getOperationTypeCategories().size());
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = (ActiveDirectoryRawEvent) transformEvent(event, operationTypeCategoriesHierarchyTransformer, ActiveDirectoryRawEvent.class);
+        Assert.assertEquals(1, activeDirectoryRawEvent.getOperationTypeCategories().size());
     }
 
     @Test
-    public void testEmptyMapping() {
+    public void testEmptyMapping() throws IOException {
         List<String> operationTypeCategory = new ArrayList<>();
         operationTypeCategory.add("C");
         ActiveDirectoryRawEvent event = createEvent(operationTypeCategory);
-
         Map<String, List<String>> operationTypeCategoryHierarchyMapping = new HashMap<>();
-
-        OperationTypeCategoriesHierarchyTransformer operationTypeCategoriesHierarchyTransformer = new OperationTypeCategoriesHierarchyTransformer(Schema.ACTIVE_DIRECTORY, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
-        AbstractInputDocument transformed = operationTypeCategoriesHierarchyTransformer.transform(new ActiveDirectoryTransformedEvent(event));
-
-        Assert.assertEquals(1, ((ActiveDirectoryRawEvent)transformed).getOperationTypeCategories().size());
+        OperationTypeCategoriesHierarchyTransformer operationTypeCategoriesHierarchyTransformer = new OperationTypeCategoriesHierarchyTransformer("name", Schema.ACTIVE_DIRECTORY, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = (ActiveDirectoryRawEvent) transformEvent(event, operationTypeCategoriesHierarchyTransformer, ActiveDirectoryRawEvent.class);
+        Assert.assertEquals(1, activeDirectoryRawEvent.getOperationTypeCategories().size());
     }
 
     @Test
-    public void testMappingNull() {
+    public void testMappingNull() throws IOException {
         List<String> operationTypeCategory = new ArrayList<>();
         operationTypeCategory.add("C");
         ActiveDirectoryRawEvent event = createEvent(operationTypeCategory);
-
-        OperationTypeCategoriesHierarchyTransformer operationTypeCategoriesHierarchyTransformer = new OperationTypeCategoriesHierarchyTransformer(Schema.ACTIVE_DIRECTORY, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
-        AbstractInputDocument transformed = operationTypeCategoriesHierarchyTransformer.transform(new ActiveDirectoryTransformedEvent(event));
-
-        Assert.assertEquals(1, ((ActiveDirectoryRawEvent)transformed).getOperationTypeCategories().size());
+        OperationTypeCategoriesHierarchyTransformer operationTypeCategoriesHierarchyTransformer = new OperationTypeCategoriesHierarchyTransformer("name", Schema.ACTIVE_DIRECTORY, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = (ActiveDirectoryRawEvent) transformEvent(event, operationTypeCategoriesHierarchyTransformer, ActiveDirectoryRawEvent.class);
+        Assert.assertEquals(1, activeDirectoryRawEvent.getOperationTypeCategories().size());
     }
 
     public ActiveDirectoryRawEvent createEvent(List<String> operationTypeCategory) {
-        ActiveDirectoryRawEvent activeDirectoryRawEvent = new ActiveDirectoryRawEvent(Instant.now(), "eventId",
+        return new ActiveDirectoryRawEvent(Instant.now(), "eventId",
                 "dataSource", "userId", "operationType", operationTypeCategory,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
                  "objectId", "resultCode");
-        return activeDirectoryRawEvent;
     }
 
     @Override

@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import presidio.sdk.api.domain.AbstractInputDocument;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -27,9 +27,11 @@ public class OperationTypeCategoriesHierarchyTransformer extends OperationTypeMa
     private final String outputFieldName;
 
     @JsonCreator
-    public OperationTypeCategoriesHierarchyTransformer(@JsonProperty("schema") Schema schema,
+    public OperationTypeCategoriesHierarchyTransformer(@JsonProperty("name") String name,
+                                                       @JsonProperty("schema") Schema schema,
                                                        @JsonProperty("inputFieldName") String inputFieldName,
                                                        @JsonProperty("outputFieldName") String outputFieldName) {
+        super(name);
         this.inputFieldName = inputFieldName;
         this.outputFieldName = outputFieldName;
         this.operationTypeCategoriesHierarchyMapping = getMappingBySchema(schema);
@@ -40,20 +42,20 @@ public class OperationTypeCategoriesHierarchyTransformer extends OperationTypeMa
     }
 
     @Override
-    public AbstractInputDocument transform(AbstractInputDocument document) {
+    public JSONObject transform(JSONObject document) {
         if (MapUtils.isNotEmpty(operationTypeCategoriesHierarchyMapping)) {
-            List<String> operationTypeCategories =  (List<String>) PresidioReflectionUtils.getFieldValue(document, inputFieldName);
-            if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
-                Set<String> additionalCategories = new HashSet<>();
-                operationTypeCategories.forEach(s -> additionalCategories.addAll(getAdditionalCategories(s)));
-                if (CollectionUtils.isNotEmpty(additionalCategories)) {
-                    additionalCategories.addAll(operationTypeCategories);
-                    try {
-                        PresidioReflectionUtils.setFieldValue(document, outputFieldName, new ArrayList<>(additionalCategories));
-                    } catch (IllegalAccessException e) {
-                        logger.error("error setting the {} field value", outputFieldName, e);
+            try {
+                List<String> operationTypeCategories = jsonArrayToList((JSONArray) document.get(inputFieldName));
+                if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
+                    Set<String> additionalCategories = new HashSet<>();
+                    operationTypeCategories.forEach(s -> additionalCategories.addAll(getAdditionalCategories(s)));
+                    if (CollectionUtils.isNotEmpty(additionalCategories)) {
+                        additionalCategories.addAll(operationTypeCategories);
+                            document.put(outputFieldName, new ArrayList<>(additionalCategories));
                     }
                 }
+            } catch (Exception e) {
+                logger.error("error setting the {} field value", outputFieldName, e);
             }
         }
         return document;
