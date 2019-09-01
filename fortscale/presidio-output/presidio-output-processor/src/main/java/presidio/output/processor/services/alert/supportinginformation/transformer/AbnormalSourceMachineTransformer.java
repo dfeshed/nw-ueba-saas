@@ -14,13 +14,14 @@ public class AbnormalSourceMachineTransformer implements SupportingInformationTr
 
     @Override
     public void transformHistoricalData(HistoricalData historicalData) {
-        Aggregation aggr = historicalData.getAggregation();
-        List<Bucket<String, Integer>> buckets = aggr.getBuckets();
-        for (Bucket<String, Integer> bucket: buckets) {
-            if (NOT_AVAILABLE.equals(bucket.getKey())) {
-                bucket.setKey(UNRESOLVED);
+        List<Aggregation> aggregations = historicalData.getAggregation();
+        for (Aggregation aggr : aggregations) {
+            List<Bucket<String, Integer>> buckets = aggr.getBuckets();
+            for (Bucket<String, Integer> bucket: buckets) {
+                if (NOT_AVAILABLE.equals(bucket.getKey())) {
+                    bucket.setKey(UNRESOLVED);
+                }
             }
         }
-
     }
 }

@@ -2,8 +2,8 @@ package presidio.output.processor.services.alert.supportinginformation.historica
 
 import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeRange;
+import presidio.output.domain.records.alerts.Aggregation;
 import presidio.output.domain.records.alerts.Bucket;
-import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.domain.records.alerts.NewOccurrenceAggregation;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
@@ -12,18 +12,18 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-public class HistoricalDataCountByTimeForNewOccurrencesPopulator implements HistoricalDataPopulator {
+public class AggregationDataCountByTimeForNewOccurrencesPopulator implements AggregationDataPopulator {
 
     private static final String HOURLY_AGGREGATIONS_NEW_OCCURRENCES = "hourly_aggregations_new_occurrence";
 
     private HistoricalDataFetcher historicalDataFetcher;
 
-    public HistoricalDataCountByTimeForNewOccurrencesPopulator(HistoricalDataFetcher historicalDataFetcher) {
+    public AggregationDataCountByTimeForNewOccurrencesPopulator(HistoricalDataFetcher historicalDataFetcher) {
         this.historicalDataFetcher = historicalDataFetcher;
     }
 
     @Override
-    public HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
         List<Bucket<String, Bucket<String, Double>>> context_buckets = new ArrayList<>();
 
@@ -50,8 +50,7 @@ public class HistoricalDataCountByTimeForNewOccurrencesPopulator implements Hist
             }
         }
 
-        NewOccurrenceAggregation aggregation = new NewOccurrenceAggregation(context_buckets);
-        return new HistoricalData(aggregation);
+        return new NewOccurrenceAggregation(context_buckets);
     }
 
     @Override

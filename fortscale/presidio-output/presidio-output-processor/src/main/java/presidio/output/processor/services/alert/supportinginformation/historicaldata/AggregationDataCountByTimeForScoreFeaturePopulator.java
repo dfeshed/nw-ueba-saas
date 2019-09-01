@@ -3,8 +3,8 @@ package presidio.output.processor.services.alert.supportinginformation.historica
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
+import presidio.output.domain.records.alerts.Aggregation;
 import presidio.output.domain.records.alerts.Bucket;
-import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.domain.records.alerts.TimeAggregation;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
@@ -13,20 +13,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class HistoricalDataCountByTimeForScoreFeaturePopulator implements HistoricalDataPopulator {
-    Logger logger = Logger.getLogger(HistoricalDataCountByTimeForScoreFeaturePopulator.class);
+public class AggregationDataCountByTimeForScoreFeaturePopulator implements AggregationDataPopulator {
+    Logger logger = Logger.getLogger(AggregationDataCountByTimeForScoreFeaturePopulator.class);
 
     public static final String HOURLY_SCORED_AGGREGATIONS = "hourly_scored_aggregations";
 
 
     HistoricalDataFetcher historicalDataFetcher;
 
-    public HistoricalDataCountByTimeForScoreFeaturePopulator(HistoricalDataFetcher historicalDataFetcher) {
+    public AggregationDataCountByTimeForScoreFeaturePopulator(HistoricalDataFetcher historicalDataFetcher) {
         this.historicalDataFetcher = historicalDataFetcher;
     }
 
     @Override
-    public HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
         List<Bucket<String, Double>> buckets = new ArrayList<>();
 
@@ -53,8 +53,7 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulator implements Histor
             }
         }
 
-        TimeAggregation aggregation = new TimeAggregation(buckets);
-        return new HistoricalData(aggregation);
+        return new TimeAggregation(buckets);
     }
 
 

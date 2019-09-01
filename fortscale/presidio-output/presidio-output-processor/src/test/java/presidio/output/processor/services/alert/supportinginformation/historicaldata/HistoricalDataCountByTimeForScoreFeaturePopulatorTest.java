@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.domain.records.alerts.Aggregation;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.proccesor.spring.TestConfig;
@@ -32,8 +33,8 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
 
     private HistoricalDataFetcher historicalDataFetcher =
             Mockito.mock(HistoricalDataFetcher.class);
-    private HistoricalDataCountByTimeForScoreFeaturePopulator historicalDataCountByTimeForScoreFeaturePopulator =
-            new HistoricalDataCountByTimeForScoreFeaturePopulator(historicalDataFetcher);
+    private AggregationDataCountByTimeForScoreFeaturePopulator aggregationDataCountByTimeForScoreFeaturePopulator =
+            new AggregationDataCountByTimeForScoreFeaturePopulator(historicalDataFetcher);
 
     @Test
     public void test_NoEvents() {
@@ -51,8 +52,9 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         String anomalyValue = String.valueOf(2370.0);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
-        HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig.get(0));
-        Assert.assertTrue(CollectionUtils.isEmpty(historicalData.getAggregation().getBuckets()));
+        Aggregation aggregation = aggregationDataCountByTimeForScoreFeaturePopulator.createAggregationData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig.get(0));
+        HistoricalData historicalData = new HistoricalData(Arrays.asList(aggregation));
+        Assert.assertTrue(CollectionUtils.isEmpty(historicalData.getAggregation().get(0).getBuckets()));
     }
 
     @Test
@@ -80,11 +82,12 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         String anomalyValue = String.valueOf(2370);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
-        HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig.get(0));
-        Assert.assertTrue(CollectionUtils.isNotEmpty(historicalData.getAggregation().getBuckets()));
-        Assert.assertEquals(9, historicalData.getAggregation().getBuckets().size());
+        Aggregation aggregation = aggregationDataCountByTimeForScoreFeaturePopulator.createAggregationData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig.get(0));
+        HistoricalData historicalData = new HistoricalData(Arrays.asList(aggregation));
+        Assert.assertTrue(CollectionUtils.isNotEmpty(historicalData.getAggregation().get(0).getBuckets()));
+        Assert.assertEquals(9, historicalData.getAggregation().get(0).getBuckets().size());
 
-        for (Object object : historicalData.getAggregation().getBuckets()) {
+        for (Object object : historicalData.getAggregation().get(0).getBuckets()) {
             Bucket bucket = (Bucket)object;
             if (anomalyValue.equals(bucket.getValue().toString())) Assert.assertTrue(bucket.isAnomaly());
         }

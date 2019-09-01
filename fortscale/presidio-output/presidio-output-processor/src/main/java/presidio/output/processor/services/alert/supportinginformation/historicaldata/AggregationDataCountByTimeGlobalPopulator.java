@@ -2,9 +2,9 @@ package presidio.output.processor.services.alert.supportinginformation.historica
 
 import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeRange;
+import presidio.output.domain.records.alerts.Aggregation;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.GlobalAggregation;
-import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
 
@@ -12,18 +12,18 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-public class HistoricalDataCountByTimeGlobalPopulator implements HistoricalDataPopulator {
+public class AggregationDataCountByTimeGlobalPopulator implements AggregationDataPopulator {
 
     private static final String HOURLY_AGGREGATIONS_NEW_OCCURRENCES_GLOBAL = "hourly_aggregations_global";
 
     private HistoricalDataFetcher historicalDataFetcher;
 
-    public HistoricalDataCountByTimeGlobalPopulator(HistoricalDataFetcher historicalDataFetcher) {
+    public AggregationDataCountByTimeGlobalPopulator(HistoricalDataFetcher historicalDataFetcher) {
         this.historicalDataFetcher = historicalDataFetcher;
     }
 
     @Override
-    public HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
         List<Bucket<String, Bucket<String, Double>>> global_buckets = new ArrayList<>();
         List<DailyHistogram<Integer, HashMap<String, Double>>> globalDailyHistograms = historicalDataFetcher.getGlobalDailyHistogramsForAggregatedFeature(timeRange, schema, featureName, historicalDataConfig);
@@ -46,8 +46,7 @@ public class HistoricalDataCountByTimeGlobalPopulator implements HistoricalDataP
             }
         }
 
-        GlobalAggregation aggregation = new GlobalAggregation(global_buckets);
-        return new HistoricalData(aggregation);
+        return new GlobalAggregation(global_buckets);
     }
 
     @Override

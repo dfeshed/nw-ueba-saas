@@ -80,7 +80,7 @@ public class Indicator {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("historicalData")
-    private List<HistoricalData> historicalData = null;
+    private HistoricalData historicalData = null;
 
     @JsonProperty("contexts")
     private Map<String, String> contexts = null;
@@ -256,7 +256,7 @@ public class Indicator {
         this.score = score;
     }
 
-    public Indicator historicalData(List<HistoricalData> historicalData) {
+    public Indicator historicalData(HistoricalData historicalData) {
         this.historicalData = historicalData;
         return this;
     }
@@ -267,11 +267,11 @@ public class Indicator {
      * @return List<HistoricalData>
      **/
     @ApiModelProperty(value = "")
-    public List<HistoricalData> getHistoricalData() {
+    public HistoricalData getHistoricalData() {
         return historicalData;
     }
 
-    public void setHistoricalData(List<HistoricalData> historicalData) {
+    public void setHistoricalData(HistoricalData historicalData) {
         this.historicalData = historicalData;
     }
 

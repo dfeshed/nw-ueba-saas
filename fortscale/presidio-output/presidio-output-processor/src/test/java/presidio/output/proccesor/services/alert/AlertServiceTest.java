@@ -293,8 +293,8 @@ public class AlertServiceTest {
         Alert alert = alertService.generateAlert(smart, entity, 50);
         assertNotNull(alert);
         assertEquals(1, alert.getIndicators().size());
-        assertEquals(2000d, ((Bucket)alert.getIndicators().get(0).getHistoricalData().get(0).getAggregation().getBuckets().get(0)).getValue());
-        assertTrue(((Bucket)alert.getIndicators().get(0).getHistoricalData().get(0).getAggregation().getBuckets().get(0)).isAnomaly());
+        assertEquals(2000d, ((Bucket)alert.getIndicators().get(0).getHistoricalData().getAggregation().get(0).getBuckets().get(0)).getValue());
+        assertTrue(((Bucket)alert.getIndicators().get(0).getHistoricalData().getAggregation().get(0).getBuckets().get(0)).isAnomaly());
     }
 
     @Test
@@ -315,7 +315,7 @@ public class AlertServiceTest {
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
         Alert alert = alertService.generateAlert(smart, entity, 50);
         assertNotNull(alert);
-        Bucket bucket = (Bucket)alert.getIndicators().get(0).getHistoricalData().get(0).getAggregation().getBuckets().get(0);
+        Bucket bucket = (Bucket)alert.getIndicators().get(0).getHistoricalData().getAggregation().get(0).getBuckets().get(0);
         assertEquals("Unresolved", bucket.getKey());
     }
 

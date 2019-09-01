@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
+import presidio.output.domain.records.alerts.Aggregation;
 import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
@@ -17,8 +18,8 @@ import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.config.IndicatorConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
-import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulator;
-import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulatorFactory;
+import presidio.output.processor.services.alert.supportinginformation.historicaldata.AggregationDataPopulator;
+import presidio.output.processor.services.alert.supportinginformation.historicaldata.AggregationDataPopulatorFactory;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -38,17 +39,17 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
 
     private EventPersistencyService eventPersistencyService;
 
-    private HistoricalDataPopulatorFactory historicalDataPopulatorFactory;
+    private AggregationDataPopulatorFactory aggregationDataPopulatorFactory;
 
     private ObjectMapper objectMapper;
 
     private SupportingInformationUtils supportingInfoUtils;
 
 
-    public SupportingInformationForFeatureAggr(SupportingInformationConfig config, EventPersistencyService eventPersistencyService, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, SupportingInformationUtils supportingInfoUtils) {
+    public SupportingInformationForFeatureAggr(SupportingInformationConfig config, EventPersistencyService eventPersistencyService, AggregationDataPopulatorFactory aggregationDataPopulatorFactory, SupportingInformationUtils supportingInfoUtils) {
         this.config = config;
         this.eventPersistencyService = eventPersistencyService;
-        this.historicalDataPopulatorFactory = historicalDataPopulatorFactory;
+        this.aggregationDataPopulatorFactory = aggregationDataPopulatorFactory;
         this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
         this.supportingInfoUtils = supportingInfoUtils;
     }
@@ -83,46 +84,47 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     }
 
     @Override
-    public List<HistoricalData> generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) {
+    public HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) {
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
 
-        HistoricalDataPopulator historicalDataPopulator;
-
-        List<HistoricalData> historicalDataList = new ArrayList<>();
+        AggregationDataPopulator aggregationDataPopulator;
 
         List<HistoricalDataConfig> historicalDataConfigList = indicatorConfig.getHistoricalData();
 
+        List<Aggregation> aggregations = new ArrayList<>();
+
+        Instant startInstant = adeAggregationRecord.getStartInstant().minus(historicalPeriodInDays, ChronoUnit.DAYS);
+        TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
+        Map<String, String> modelContexts = indicatorConfig.getModelContextFields().stream().collect(Collectors.toMap(
+                Function.identity(),
+                field -> indicator.getContexts().get(field),
+                (oldValue, newValue) -> oldValue,
+                LinkedHashMap::new));
+        Schema schema = indicatorConfig.getSchema();
+        String anomalyValue = indicator.getAnomalyValue();
+
         for(HistoricalDataConfig historicalDataConfig : historicalDataConfigList){
-            // create populator
+            Aggregation aggregation;
+
+            // create aggregation populator
             try {
-                String anomalyField = indicatorConfig.getAnomalyDescriptior().getAnomalyField();
-                String historicalDataType = historicalDataConfig.getType();
-                historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(historicalDataType);
+                aggregationDataPopulator = aggregationDataPopulatorFactory.createAggregationDataPopulation(historicalDataConfig.getType());
             } catch (IllegalArgumentException ex) {
                 //TODO logger
                 return null;
             }
 
             // populate historical data
-            Instant startInstant = adeAggregationRecord.getStartInstant().minus(historicalPeriodInDays, ChronoUnit.DAYS);
-            TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
-            Map<String, String> modelContexts = indicatorConfig.getModelContextFields().stream().collect(Collectors.toMap(
-                    Function.identity(),
-                    field -> indicator.getContexts().get(field),
-                    (oldValue, newValue) -> oldValue,
-                    LinkedHashMap::new));
-            Schema schema = indicatorConfig.getSchema();
-            String anomalyValue = indicator.getAnomalyValue();
             String featureName = historicalDataConfig.getFeatureName() == null? adeAggregationRecord.getFeatureName():historicalDataConfig.getFeatureName() ;
-
-            HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, modelContexts, schema, featureName, anomalyValue, historicalDataConfig);
-
-            historicalData.setIndicatorId(indicator.getId());
-            historicalData.setSchema(indicator.getSchema());
-            historicalDataList.add(historicalData);
+            aggregation = aggregationDataPopulator.createAggregationData(timeRange, modelContexts, schema, featureName, anomalyValue, historicalDataConfig);
+            aggregations.add(aggregation);
         }
 
-        return historicalDataList;
+        HistoricalData historicalData = new HistoricalData(aggregations);
+        historicalData.setIndicatorId(indicator.getId());
+        historicalData.setSchema(indicator.getSchema());
+
+        return historicalData;
     }
 
 

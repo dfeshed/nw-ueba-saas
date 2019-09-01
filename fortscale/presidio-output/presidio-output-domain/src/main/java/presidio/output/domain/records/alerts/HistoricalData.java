@@ -2,18 +2,20 @@ package presidio.output.domain.records.alerts;
 
 import fortscale.common.general.Schema;
 
+import java.util.List;
+
 public class HistoricalData {
 
     private String indicatorId;
 
     private Schema schema;
 
-    private Aggregation aggregation;
+    private List<Aggregation> aggregation;
 
     public HistoricalData() {
     }
 
-    public HistoricalData(Aggregation aggregation) {
+    public HistoricalData(List<Aggregation> aggregation) {
         this.aggregation = aggregation;
     }
 
@@ -33,11 +35,11 @@ public class HistoricalData {
         this.schema = schema;
     }
 
-    public Aggregation getAggregation() {
+    public List<Aggregation> getAggregation() {
         return aggregation;
     }
 
-    public void setAggregation(Aggregation aggregation) {
+    public void setAggregation(List<Aggregation> aggregation) {
         this.aggregation = aggregation;
     }
 }
