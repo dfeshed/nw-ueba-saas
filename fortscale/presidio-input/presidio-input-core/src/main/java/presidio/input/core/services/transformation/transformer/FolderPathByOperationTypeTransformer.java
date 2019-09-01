@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.PresidioReflectionUtils;
+import fortscale.utils.transform.AbstractJsonObjectTransformer;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
-import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +20,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("folder-path-by-operation-type-transformer")
-public class FolderPathByOperationTypeTransformer extends AbstractInputDocumentTransformer {
+public class FolderPathByOperationTypeTransformer extends AbstractJsonObjectTransformer {
 
     private static final Logger logger = Logger.getLogger(FolderPathByOperationTypeTransformer.class);
     private final FileToFolderPathTransformer folderPathTransformer;
@@ -33,11 +33,13 @@ public class FolderPathByOperationTypeTransformer extends AbstractInputDocumentT
     private List<String> folderOperations;
 
     @JsonCreator
-    public FolderPathByOperationTypeTransformer(@JsonProperty("inputPathFieldName") String inputPathFieldName,
+    public FolderPathByOperationTypeTransformer(@JsonProperty("name") String name,
+                                                @JsonProperty("inputPathFieldName") String inputPathFieldName,
                                                 @JsonProperty("filePathFieldName") String filePathFieldName,
                                                 @JsonProperty("folderPathFieldName") String folderPathFieldName,
                                                 @JsonProperty("operationTypeFieldName") String operationTypeFieldName) {
-        this.folderPathTransformer = new FileToFolderPathTransformer(inputPathFieldName, folderPathFieldName);
+        super(name);
+        this.folderPathTransformer = new FileToFolderPathTransformer(name, inputPathFieldName, folderPathFieldName);
         this.inputPathFieldName = inputPathFieldName;
         this.filePathFieldName = filePathFieldName;
         this.folderPathFieldName = folderPathFieldName;
@@ -54,25 +56,25 @@ public class FolderPathByOperationTypeTransformer extends AbstractInputDocumentT
      * If the events operation type is in the folderOperations list the received path is a folder path.
      * If the events operation type is not in the list - extract the folder path from the received path.
      */
-    public AbstractInputDocument transform(AbstractInputDocument document) {
-        String filePathValue = (String) PresidioReflectionUtils.getFieldValue(document, inputPathFieldName);
-        if (isNotBlank(filePathValue)) {
-            if (isFolderOperation(document)) {
-                try {
-                    PresidioReflectionUtils.setFieldValue(document, folderPathFieldName, filePathValue);
-                    PresidioReflectionUtils.setFieldValue(document, filePathFieldName, null);
-                } catch (IllegalAccessException e) {
-                    logger.error("error setting one of {} {} field values", filePathFieldName, folderPathFieldName, e);
+    public JSONObject transform(JSONObject document) {
+        try {
+            String filePathValue = (String) document.get(inputPathFieldName);
+            if (isNotBlank(filePathValue)) {
+                if (isFolderOperation(document)) {
+                    document.put(folderPathFieldName, filePathValue);
+                    document.put(filePathFieldName, JSONObject.NULL);
+                } else {
+                    this.folderPathTransformer.transform(document);
                 }
-            } else {
-                this.folderPathTransformer.transform(document);
             }
+        } catch (Exception e) {
+            logger.error("error setting one of {} {} field values", filePathFieldName, folderPathFieldName, e);
         }
         return document;
     }
 
-    private boolean isFolderOperation(AbstractInputDocument document) {
-        String operationType = (String) PresidioReflectionUtils.getFieldValue(document, operationTypeFieldName);
+    private boolean isFolderOperation(JSONObject document) {
+        String operationType = (String) document.get(operationTypeFieldName);
         return CollectionUtils.contains(folderOperations.iterator(), operationType);
     }
 }
