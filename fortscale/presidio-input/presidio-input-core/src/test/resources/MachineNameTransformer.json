@@ -1,5 +1,6 @@
 {
   "type": "machine-name-transformer",
+  "name": "sfgfdg",
   "inputFieldName": "bla",
   "outputFieldName": "blue",
   "pattern": "regex",
