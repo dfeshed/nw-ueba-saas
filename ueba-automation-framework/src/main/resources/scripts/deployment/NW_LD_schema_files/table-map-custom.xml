@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mappings>
 <mapping envisionName="event.time" nwName="time" flags="Transient" format="TimeT"/>
+<mapping envisionName="event.source.id" nwName="event.source.id" flags="None" format="Text"/>
 <mapping envisionName="ssl.subject" nwName="ssl.subject" flags="None" format="Text"/>
 <mapping envisionName="ssl.ca" nwName="ssl.ca" flags="None" format="Text"/>
 <mapping envisionName="asn.dst" nwName="asn.dst" flags="None" format="Text"/>
