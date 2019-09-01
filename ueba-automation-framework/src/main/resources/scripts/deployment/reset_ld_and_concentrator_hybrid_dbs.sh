@@ -2,7 +2,7 @@
 set -e
 LogDecoderHost=$1
 BrokerHost=$2
-ENV_PROPERTIES_PATH="/home/presidio/env.properties"
+ENV_PROPERTIES_PATH="/home/presidio/environment.properties"
 
 echo "%%%%%%%%%%%% Start Running Hybrid Reset DBs Script %%%%%%%%%%%%"
 
