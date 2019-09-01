@@ -6,4 +6,5 @@ public class ActiveDirectoryTransformedEvent extends ActiveDirectoryRawEvent {
     public ActiveDirectoryTransformedEvent(ActiveDirectoryRawEvent rawEvent) {
         super(rawEvent);
     }
+    public ActiveDirectoryTransformedEvent() {}
 }

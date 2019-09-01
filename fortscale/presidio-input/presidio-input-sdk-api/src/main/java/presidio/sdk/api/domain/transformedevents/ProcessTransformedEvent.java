@@ -13,6 +13,7 @@ public class ProcessTransformedEvent extends ProcessRawEvent {
     public ProcessTransformedEvent(ProcessRawEvent rawEvent) {
         super(rawEvent);
     }
+    public ProcessTransformedEvent(){}
 
     public String getSrcProcessFilePath() {
         return srcProcessFilePath;

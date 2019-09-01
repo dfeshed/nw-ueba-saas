@@ -1,9 +1,7 @@
 package presidio.input.core.services.transformation.transformer;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.EventResult;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,16 +25,9 @@ public class RegexTransformerTest extends TransformerJsonTest {
                 filePath, false, 0L, "resultCode");
 
         RegexTransformer regexTransformer = new RegexTransformer("name","srcFilePath", "srcFolderPath", ".*\\\\(?!.*\\\\)|.*/(?!.*/)");
-        FileTransformedEvent fileTransformedEvent = transformEvent(fileRawEvent, regexTransformer);
+        FileTransformedEvent fileTransformedEvent = (FileTransformedEvent)transformEvent(fileRawEvent, regexTransformer, FileTransformedEvent.class);
         Assert.assertEquals(String.format("C:\\Users\\alexp\\Desktop\\", File.separator), fileTransformedEvent.getSrcFolderPath());
         Assert.assertEquals(filePath, fileTransformedEvent.getSrcFilePath());
-    }
-
-    private FileTransformedEvent transformEvent(FileRawEvent fileRawEvent, RegexTransformer regexTransformer) throws IOException {
-        ObjectMapper mapper = createObjectMapper();
-        JSONObject jsonObject = new JSONObject(mapper.writeValueAsString(fileRawEvent));
-        JSONObject transformed = regexTransformer.transform(jsonObject);
-        return mapper.readValue(transformed.toString(), FileTransformedEvent.class);
     }
 
     @Test
@@ -47,7 +38,7 @@ public class RegexTransformerTest extends TransformerJsonTest {
                 null, false, 0L, "resultCode");
 
         RegexTransformer regexTransformer = new RegexTransformer("name", "srcFilePath", "srcFolderPath", ".*\\\\(?!.*\\\\)|.*/(?!.*/)");
-        FileTransformedEvent fileTransformedEvent = transformEvent(fileRawEvent, regexTransformer);
+        FileTransformedEvent fileTransformedEvent = (FileTransformedEvent)transformEvent(fileRawEvent, regexTransformer, FileTransformedEvent.class);
         Assert.assertNull(fileTransformedEvent.getSrcFolderPath());
         Assert.assertNull(fileTransformedEvent.getSrcFilePath());
     }
@@ -60,7 +51,7 @@ public class RegexTransformerTest extends TransformerJsonTest {
                 null, false, 0L, "resultCode");
 
         RegexTransformer regexTransformer = new RegexTransformer("name", "srcFilePath", "srcFolderPath", ".*\\\\(?!.*\\\\)|.*/(?!.*/)");
-        FileTransformedEvent fileTransformedEvent = transformEvent(fileRawEvent, regexTransformer);
+        FileTransformedEvent fileTransformedEvent = (FileTransformedEvent)transformEvent(fileRawEvent, regexTransformer, FileTransformedEvent.class);
         Assert.assertNull(fileTransformedEvent.getSrcFilePath());
     }
 

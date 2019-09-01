@@ -7,5 +7,6 @@ public class IocTransformedEvent extends IocRawEvent {
     public IocTransformedEvent(IocRawEvent rawEvent) {
         super(rawEvent);
     }
+    public IocTransformedEvent(){}
 
 }

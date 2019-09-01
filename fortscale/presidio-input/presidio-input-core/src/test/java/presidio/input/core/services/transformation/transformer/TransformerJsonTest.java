@@ -6,8 +6,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.utils.reflection.PresidioReflectionUtils;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,5 +50,14 @@ public abstract class TransformerJsonTest {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
         return objectMapper;
+    }
+
+    protected AbstractInputDocument transformEvent(AbstractInputDocument rawEvent,
+                                                 AbstractJsonObjectTransformer transformer,
+                                                 Class<? extends AbstractInputDocument> clazz) throws IOException {
+        ObjectMapper mapper = createObjectMapper();
+        JSONObject jsonObject = new JSONObject(mapper.writeValueAsString(rawEvent));
+        JSONObject transformed = transformer.transform(jsonObject);
+        return mapper.readValue(transformed.toString(), clazz);
     }
 }
