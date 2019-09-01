@@ -15,7 +15,7 @@ import presidio.sdk.api.domain.AbstractInputDocument;
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("pattern-replacement-transformer")
-public class PatternReplacementTransformer implements InputDocumentTransformer {
+public class PatternReplacementTransformer extends AbstractInputDocumentTransformer {
 
     private static final Logger logger = Logger.getLogger(PatternReplacementTransformer.class);
 

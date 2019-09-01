@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("join-transformer")
-public class JoinTransformer implements InputDocumentTransformer {
+public class JoinTransformer extends AbstractInputDocumentTransformer {
 
     private static final Logger logger = Logger.getLogger(JoinTransformer.class);
 

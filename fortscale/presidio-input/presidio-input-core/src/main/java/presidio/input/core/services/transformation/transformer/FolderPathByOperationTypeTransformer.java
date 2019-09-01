@@ -20,7 +20,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("folder-path-by-operation-type-transformer")
-public class FolderPathByOperationTypeTransformer implements InputDocumentTransformer {
+public class FolderPathByOperationTypeTransformer extends AbstractInputDocumentTransformer {
 
     private static final Logger logger = Logger.getLogger(FolderPathByOperationTypeTransformer.class);
     private final FileToFolderPathTransformer folderPathTransformer;
