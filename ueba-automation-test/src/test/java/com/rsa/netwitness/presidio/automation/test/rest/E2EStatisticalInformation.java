@@ -5,7 +5,7 @@ import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
 import com.rsa.netwitness.presidio.automation.utils.common.FileCommands;
-import com.rsa.netwitness.presidio.automation.utils.output.OutputTestManager;
+import com.rsa.netwitness.presidio.automation.test_managers.OutputTestManager;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

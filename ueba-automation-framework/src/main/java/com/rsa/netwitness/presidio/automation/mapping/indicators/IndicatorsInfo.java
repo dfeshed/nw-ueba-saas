@@ -1,29 +1,31 @@
 package com.rsa.netwitness.presidio.automation.mapping.indicators;
 
+import com.google.common.collect.ImmutableList;
 import fortscale.common.general.Schema;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import static com.google.common.collect.ImmutableList.copyOf;
 
 public class IndicatorsInfo {
 
-    public static List<String> TLS_MANDATORY_INDICATORS = NetworkIndicators.TLS_MANDATORY_INDICATORS;
-    public static List<String> AUTHENTICATION_MANDATORY_INDICATORS = OperationsIndicators.AUTHENTICATION_MANDATORY_INDICATORS;
-    public static List<String> ACTIVE_DIRECTORY_MANDATORY_INDICATORS = OperationsIndicators.ACTIVE_DIRECTORY_MANDATORY_INDICATORS;
-    public static List<String> FILE_MANDATORY_INDICATORS = OperationsIndicators.FILE_MANDATORY_INDICATORS;
-    public static List<String> PROCESS_MANDATORY_INDICATORS = OperationsIndicators.PROCESS_MANDATORY_INDICATORS;
-    public static List<String> REGISTRY_MANDATORY_INDICATORS = OperationsIndicators.REGISTRY_MANDATORY_INDICATORS;
+    public static final ImmutableList<String> TLS_MANDATORY_INDICATORS = copyOf(NetworkIndicators.TLS_MANDATORY_INDICATORS);
+    public static final ImmutableList<String> AUTHENTICATION_MANDATORY_INDICATORS = copyOf(OperationsIndicators.AUTHENTICATION_MANDATORY_INDICATORS);
+    public static final ImmutableList<String> ACTIVE_DIRECTORY_MANDATORY_INDICATORS =  copyOf(OperationsIndicators.ACTIVE_DIRECTORY_MANDATORY_INDICATORS);
+    public static final ImmutableList<String> FILE_MANDATORY_INDICATORS =  copyOf(OperationsIndicators.FILE_MANDATORY_INDICATORS);
+    public static final ImmutableList<String> PROCESS_MANDATORY_INDICATORS =  copyOf(OperationsIndicators.PROCESS_MANDATORY_INDICATORS);
+    public static final ImmutableList<String> REGISTRY_MANDATORY_INDICATORS =  copyOf(OperationsIndicators.REGISTRY_MANDATORY_INDICATORS);
 
-    public static List<String> ALL_MANDATORY_INDICATORS = Stream.of(
+    public static final ImmutableList<String> ALL_MANDATORY_INDICATORS =  copyOf(Stream.of(
             TLS_MANDATORY_INDICATORS.stream(),
             AUTHENTICATION_MANDATORY_INDICATORS.stream(),
             ACTIVE_DIRECTORY_MANDATORY_INDICATORS.stream(),
             FILE_MANDATORY_INDICATORS.stream(),
             PROCESS_MANDATORY_INDICATORS.stream(),
             REGISTRY_MANDATORY_INDICATORS.stream()
-    ).flatMap(e -> e).collect(Collectors.toList());
+    ).flatMap(e -> e).collect(Collectors.toList()));
 
 
     public static Map<String, Schema> getIndicatorsToSchemaMap() {

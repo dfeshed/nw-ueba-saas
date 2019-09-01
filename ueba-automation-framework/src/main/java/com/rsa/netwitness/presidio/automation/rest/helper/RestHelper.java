@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.automation.rest.helper;
 
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.url.AlertsUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.url.DailyMetricsUrlBuilder;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.url.EntitiesUrlBuilder;
 
 public class RestHelper {
@@ -12,4 +13,9 @@ public class RestHelper {
     public EntitiesUrlBuilder entities() {
         return new EntitiesUrlBuilder("/entities");
     }
+
+    public DailyMetricsUrlBuilder dailyMetrics() {
+        return new DailyMetricsUrlBuilder("/ueba-daily-metrics");
+    }
+
 }

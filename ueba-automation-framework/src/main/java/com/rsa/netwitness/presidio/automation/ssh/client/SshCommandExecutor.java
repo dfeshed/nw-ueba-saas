@@ -4,11 +4,11 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import org.slf4j.LoggerFactory;
-import org.testng.collections.Lists;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,28 +46,28 @@ class SshCommandExecutor {
             channel = (ChannelExec) session.openChannel("exec");
             System.out.println("\n>>> Run SSH command: [" + CMD + "]");
             channel.setCommand(CMD);
-            channel.connect();
 
             BufferedReader input = new BufferedReader(new InputStreamReader(channel.getInputStream()));
             BufferedReader error = new BufferedReader(new InputStreamReader(channel.getErrStream()));
+            channel.connect();
 
             String line = null;
-            List<String> errorRepose = Lists.newArrayList();
-            while ((line = error.readLine()) != null) {
-                if (verbose) { LOGGER.error(line); }
-                errorRepose.add(line);
+            List<String> inputResponse = new LinkedList<>();
+            while ((line = input.readLine()) != null) {
+                if (verbose) { LOGGER.info(line); }
+                inputResponse.add(line);
             }
 
             line = null;
-            List<String> inputRepose = Lists.newArrayList();
-            while ((line = input.readLine()) != null) {
-                if (verbose) { LOGGER.info(line); }
-                inputRepose.add(line);
+            List<String> errorResponse = new LinkedList<>();
+            while ((line = error.readLine()) != null) {
+                if (verbose) { LOGGER.error(line); }
+                errorResponse.add(line);
             }
 
             input.close();
             error.close();
-            return new SshResponse(channel.getExitStatus(), inputRepose, errorRepose);
+            return new SshResponse(channel.getExitStatus(), inputResponse, errorResponse);
 
 
         }  catch (IOException | JSchException ioX) {

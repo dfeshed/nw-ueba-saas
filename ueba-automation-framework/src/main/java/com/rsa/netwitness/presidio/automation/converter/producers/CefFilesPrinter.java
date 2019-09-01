@@ -1,9 +1,7 @@
 package com.rsa.netwitness.presidio.automation.converter.producers;
 
-import com.rsa.netwitness.presidio.automation.converter.events.ConverterEventBase;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
-import com.rsa.netwitness.presidio.automation.converter.formatters.CefFormatterImpl;
-import com.rsa.netwitness.presidio.automation.converter.formatters.NetwitnessEventFormatter;
+import com.rsa.netwitness.presidio.automation.converter.formatters.EventFormatter;
 import fortscale.common.general.Schema;
 import org.slf4j.LoggerFactory;
 import org.testng.collections.Maps;
@@ -17,6 +15,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static com.rsa.netwitness.presidio.automation.config.AutomationConf.LOG_GEN_OUTPUT;
@@ -24,28 +23,30 @@ import static com.rsa.netwitness.presidio.automation.log_player.LogPlayerResultU
 import static java.util.stream.Collectors.*;
 
 class CefFilesPrinter {
+    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(CefFilesPrinter.class.getName());
+    private static final long GEN_START_TIME = System.currentTimeMillis();
+    private Map<Schema, String> logPlayerFolders = Maps.newHashMap();
+    private EventFormatter<String> formatter;
 
-    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(CefFilesPrinter.class.getName());
 
-    public static final long GEN_START_TIME = System.currentTimeMillis();
+    CefFilesPrinter(EventFormatter<String> formatter){
+        this.formatter = Objects.requireNonNull(formatter);
+    }
 
-    Map<Schema, String> logPlayerFolders = Maps.newHashMap();
 
-    Map<Schema, Long> printDailyFiles(List<ConverterEventBase> eventsList) {
+    Map<Schema, Long> printDailyFiles(List<NetwitnessEvent> eventsList) {
         return printFiles(eventsList, ChronoUnit.DAYS);
     }
 
-    Map<Schema, Long>  printHourlyFiles(List<ConverterEventBase> eventsList) {
+    Map<Schema, Long>  printHourlyFiles(List<NetwitnessEvent> eventsList) {
         return printFiles(eventsList, ChronoUnit.HOURS);
     }
 
-    private Map<Schema, Long> printFiles(List<ConverterEventBase> eventsList, ChronoUnit truncatedTo) {
+    private Map<Schema, Long> printFiles(List<NetwitnessEvent> eventsList, ChronoUnit truncatedTo) {
         logPlayerFolders.clear();
 
         // add destination file path
         Map<Path, List<NetwitnessEvent>> eventsByFilePath = eventsList.parallelStream()
-                .map(ConverterEventBase::getAsNetwitnessEvent)
                 .collect(groupingBy(e -> eventFilePath(e, truncatedTo)));
 
         // create destination files
@@ -56,7 +57,7 @@ class CefFilesPrinter {
         eventsByFilePath.entrySet().parallelStream()
                 .forEach(e -> writeToFile(e.getKey(), e.getValue()));
 
-        return eventsList.parallelStream().collect(groupingBy(ConverterEventBase::mongoSchema, counting()));
+        return eventsList.parallelStream().collect(groupingBy(ev -> ev.schema, counting()));
     }
 
     // send by NWLogPlayer
@@ -67,10 +68,8 @@ class CefFilesPrinter {
 
     private void writeToFile(Path path, List<NetwitnessEvent> events) {
         try {
-            NetwitnessEventFormatter<String> cefFormatter = new CefFormatterImpl();
-
             List<String> stringStream = events.parallelStream()
-                    .map(e -> cefFormatter.format(e).concat("\n"))
+                    .map(e -> formatter.format(e).concat("\n"))
                     .collect(toList());
 
             Path result = Files.write(path, stringStream, StandardOpenOption.APPEND);
@@ -82,7 +81,6 @@ class CefFilesPrinter {
 
     private void writeLineByLine(NetwitnessEvent event, ChronoUnit truncatedTo) {
         try {
-            CefFormatterImpl formatter = new CefFormatterImpl();
             Path path = eventFilePath(event, truncatedTo);
             Files.write(path, formatter.format(event).concat("\n").getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
@@ -101,13 +99,13 @@ class CefFilesPrinter {
     }
 
     private Instant getEventTime(NetwitnessEvent event, ChronoUnit truncatedTo) {
-        return event.getEventTimeEpoch().truncatedTo(truncatedTo);
+        return event.eventTimeEpoch.truncatedTo(truncatedTo);
     }
 
     private Path eventFilePath(NetwitnessEvent event, ChronoUnit truncatedTo) {
         String eventFolder = eventFilePath.apply(event).toString();
-        logPlayerFolders.putIfAbsent(event.mongoSchema(), eventFolder);
-        String fileName = event.mongoSchema() + "_" + instantToString(getEventTime(event, truncatedTo));
+        logPlayerFolders.putIfAbsent(event.schema, eventFolder);
+        String fileName = event.schema + "_" + instantToString(getEventTime(event, truncatedTo));
         return Paths.get(eventFolder,fileName.concat(".cef"));
     }
 
@@ -116,7 +114,7 @@ class CefFilesPrinter {
     }
 
     private Function<NetwitnessEvent, String> eventFolderName = event ->
-            event.mongoSchema().getName().concat("_").concat(instantToString(Instant.ofEpochMilli(GEN_START_TIME)));
+            event.schema.getName().concat("_").concat(instantToString(Instant.ofEpochMilli(GEN_START_TIME)));
 
     private Function<NetwitnessEvent, Path> eventFilePath = event ->
             Paths.get(LOG_GEN_OUTPUT.toAbsolutePath().toString(), eventFolderName.apply(event)).toAbsolutePath();

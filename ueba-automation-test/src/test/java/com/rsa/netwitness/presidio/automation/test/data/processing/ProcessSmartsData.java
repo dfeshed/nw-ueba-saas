@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.data.processing;
 
-import com.rsa.netwitness.presidio.automation.utils.ade.AdeDataProcessingHelper;
+import com.rsa.netwitness.presidio.automation.test_managers.AdeDataProcessingManager;
 import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -27,7 +27,7 @@ public class ProcessSmartsData extends AbstractTestNGSpringContextTests {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ProcessSmartsData.class.getName());
     private static ASCIIArtGenerator ART_GEN = new ASCIIArtGenerator();
 
-    private AdeDataProcessingHelper adeTestManagerPar = new AdeDataProcessingHelper();
+    private AdeDataProcessingManager adeTestManagerPar = new AdeDataProcessingManager();
     private List<String> SCHEMAS_TO_PROCESS = newArrayList("file", "active_directory", "authentication", "process", "registry", "tls");
     private List<String> ENTITIES_TO_PROCESS = newArrayList("userId_hourly", "sslSubject_hourly", "ja3_hourly");
 
@@ -72,41 +72,41 @@ public class ProcessSmartsData extends AbstractTestNGSpringContextTests {
         }
     }
 
-    private List<AdeDataProcessingHelper.ProcessScoreAggr> processScoreAggr(Instant start, Instant end, String timeFrame) {
+    private List<AdeDataProcessingManager.ProcessScoreAggr> processScoreAggr(Instant start, Instant end, String timeFrame) {
         return SCHEMAS_TO_PROCESS.stream()
                 .map(schema -> adeTestManagerPar.processScoreAggr(start, end, timeFrame, schema))
                 .collect(toList());
     }
 
-    private List<AdeDataProcessingHelper.ProcessModelFeatureBuckets> processModelFeatureBuckets(Instant start, Instant end, String timeFrame) {
+    private List<AdeDataProcessingManager.ProcessModelFeatureBuckets> processModelFeatureBuckets(Instant start, Instant end, String timeFrame) {
         return SCHEMAS_TO_PROCESS.stream()
                 .map(schema -> adeTestManagerPar.processModelFeatureBuckets(start, end, timeFrame, schema))
                 .collect(toList());
     }
 
-    private List<AdeDataProcessingHelper.ProcessSmart> processSmart(Instant start, Instant end) {
+    private List<AdeDataProcessingManager.ProcessSmart> processSmart(Instant start, Instant end) {
         return ENTITIES_TO_PROCESS.stream()
                 .map(entity -> adeTestManagerPar.processSmart(start, end, entity))
                 .collect(toList());
     }
 
-    private List<AdeDataProcessingHelper.ProcessAccumulateSmart> processAccumulateSmart(Instant start, Instant end) {
+    private List<AdeDataProcessingManager.ProcessAccumulateSmart> processAccumulateSmart(Instant start, Instant end) {
         return ENTITIES_TO_PROCESS.stream()
                 .map(entity -> adeTestManagerPar.processAccumulateSmart(start, end, entity))
                 .collect(toList());
     }
 
-    private List<AdeDataProcessingHelper.ProcessModeling> processModeling(String group_name, String session_id, Instant end) {
+    private List<AdeDataProcessingManager.ProcessModeling> processModeling(String group_name, String session_id, Instant end) {
         return Lists.newArrayList(adeTestManagerPar.processModeling(group_name, session_id, end));
     }
 
-    private List<AdeDataProcessingHelper.ProcessAccumulateAggr> processAccumulateAggr(Instant start, Instant end) {
+    private List<AdeDataProcessingManager.ProcessAccumulateAggr> processAccumulateAggr(Instant start, Instant end) {
         return SCHEMAS_TO_PROCESS.stream()
                 .map(schema -> adeTestManagerPar.processAccumulateAggr(start, end, schema))
                 .collect(toList());
     }
 
-    private List<AdeDataProcessingHelper.ProcessFeatureAggr> processFeatureAggr(Instant start, Instant end, String timeFrame) {
+    private List<AdeDataProcessingManager.ProcessFeatureAggr> processFeatureAggr(Instant start, Instant end, String timeFrame) {
         return SCHEMAS_TO_PROCESS.stream()
                 .map(schema -> adeTestManagerPar.processFeatureAggr(start, end, timeFrame, schema))
                 .collect(toList());

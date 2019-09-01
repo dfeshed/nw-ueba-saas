@@ -64,6 +64,13 @@ public class ActiveDirectoryOperationTypeMapping {
         return eventCodeMapToOperationTypeMap;
     }
 
+    public Optional<Integer> getEventCode(String operationType) {
+        return eventCodeMapToOperationTypeMap.entrySet().parallelStream()
+                .filter(map -> map.getValue().equalsIgnoreCase(operationType))
+                .map(Map.Entry::getKey)
+                .findAny();
+    }
+
 
     private void setOperationTypeToCategoryMap() {
         JsonArray transformerList = gson.toJsonTree(root).getAsJsonObject().get("transformerList").getAsJsonArray();

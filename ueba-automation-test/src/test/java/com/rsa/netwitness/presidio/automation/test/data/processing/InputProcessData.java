@@ -3,7 +3,7 @@ package com.rsa.netwitness.presidio.automation.test.data.processing;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
-import com.rsa.netwitness.presidio.automation.utils.input.InputTestManager;
+import com.rsa.netwitness.presidio.automation.test_managers.InputTestManager;
 import com.rsa.netwitness.presidio.automation.utils.input.config.InputTestManagerConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -7,18 +7,16 @@ import java.io.UnsupportedEncodingException;
 import static java.net.URLEncoder.encode;
 
 
-public class ParametersUrlBuilder {
-
-    private final String URL;
+class ParametersUrlBuilder extends PresidioUrl {
 
     private ParametersUrlBuilder(String url) {
-        URL = url;
+        super(url);
     }
 
 
     // pageSize=10000&pageNumber=0&expand=true
     // sortDirection=DESC&sortFieldNames=START_DATE&pageSize=200&pageNumber=0
-    public static class Builder {
+    static class Builder {
 
         private StringBuilder URL = new StringBuilder();
 
@@ -103,10 +101,4 @@ public class ParametersUrlBuilder {
             return new ParametersUrlBuilder(URL.toString().substring(0, URL.length()-1));
         }
     }
-
-    @Override
-    public String toString() {
-        return URL;
-    }
-
 }

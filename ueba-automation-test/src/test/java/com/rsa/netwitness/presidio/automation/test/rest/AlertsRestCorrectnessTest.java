@@ -3,7 +3,7 @@ package com.rsa.netwitness.presidio.automation.test.rest;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.json.JSONException;
@@ -35,7 +35,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @BeforeClass
     public void preconditionCheck() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withNoParameters();
+        PresidioUrl url = restHelper.alerts().url().withNoParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         assertThat(alerts)
                 .as(url + "\nAlerts list is empty or unable to getOperationTypeToCategoryMap response from the output.")
@@ -62,7 +62,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void alerts_count_of_default_request_should_be_correct() throws JSONException {
-        ParametersUrlBuilder url = restHelper.alerts().url().withNoParameters();
+        PresidioUrl url = restHelper.alerts().url().withNoParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         assertThat(alerts.size())
                 .as(url + "\nThe alert count is not 10 as should be by default")
@@ -71,7 +71,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void alerts_count_of_page_size_should_be_correct() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withPageParameters(3, 1);
+        PresidioUrl url = restHelper.alerts().url().withPageParameters(3, 1);
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         assertThat(alerts.size())
@@ -81,7 +81,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void total_alerts_count_should_be_correct() throws JSONException {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         int totalAlertsSize = alerts.size();
 
@@ -96,7 +96,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void severity_score_should_be_in_configuration_score_range() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         Map<String, Integer> configurationSeverityScores = OutputTestsUtils.getSeveritiesValues();
 
@@ -135,7 +135,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void entity_score_contribution_should_match_alert_severity_range() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         Map<String, Integer> configurationScoreContributions = OutputTestsUtils.getAlertEntityScoreContributions();
 
@@ -157,7 +157,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void no_missing_classifications_and_right_order() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         for (AlertsStoredRecord alert : alerts) {
@@ -220,7 +220,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void response_values_are_not_null() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withNoParameters();
+        PresidioUrl url = restHelper.alerts().url().withNoParameters();
         List<AlertsStoredRecord> alertList = restHelper.alerts().request().getAlerts(url);
         assertThat(alertList)
                 .as(url + "\nEmpty response.")
@@ -272,7 +272,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void indicators_list_is_not_empty() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         for (AlertsStoredRecord alert : alerts) {
@@ -286,7 +286,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void alert_indicator_list_size_equals_to_indicators_name_size_and_indicators_num() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         for (AlertsStoredRecord alert : alerts) {
@@ -304,7 +304,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void alerts_indicator_list_names_equals_to_indicator_name_list() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         for (AlertsStoredRecord alert : alerts) {
@@ -324,7 +324,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void indicators_list_sorted_by_score_contribution_descending() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         for (AlertsStoredRecord alert : alerts) {
@@ -341,7 +341,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void indicators_start_end_time_inside_alert_time_range() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         for (AlertsStoredRecord alert : alerts) {
@@ -367,7 +367,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void sum_of_indicator_contribution_result_is_correct() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         for (AlertsStoredRecord alert : alerts) {
@@ -387,7 +387,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void alert_time_range_is_one_hour() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         for (AlertsStoredRecord alert : alerts) {

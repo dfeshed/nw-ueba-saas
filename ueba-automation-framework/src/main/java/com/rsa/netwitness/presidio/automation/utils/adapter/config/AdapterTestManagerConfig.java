@@ -2,7 +2,7 @@ package com.rsa.netwitness.presidio.automation.utils.adapter.config;
 
 import com.rsa.netwitness.presidio.automation.domain.config.MongoPropertiesReader;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoPropertiesReaderConfig;
-import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
+import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
 import fortscale.utils.mongodb.index.DynamicIndexingApplicationListenerConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.mockito.Mock;

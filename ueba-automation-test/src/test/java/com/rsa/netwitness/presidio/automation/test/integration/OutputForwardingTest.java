@@ -5,10 +5,10 @@ import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshExecutor;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
-import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
+import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.assertj.core.util.Lists;
 import org.junit.Ignore;
@@ -130,7 +130,7 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
 
     private List<String> alertsIndicatorsInTimeRange() {
         RestHelper restHelper = new RestHelper();
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> allAlerts = restHelper.alerts().request().getAlerts(url);
 
         Stream<String> distinctIndicatorsInTimeRange = allAlerts.stream()

@@ -5,7 +5,7 @@ import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEven
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.log_player.MongoCollectionsMonitor;
-import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
+import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.HOURS;
 
 
 /**
@@ -58,8 +60,6 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
     @Autowired
     private NetwitnessEventStore netwitnessEventStore;
 
-    // Will wait until reach hour 23:00 on "days back" 1. (all anomalies happen until DB 1 end of day, stopping at hour 23 - to avoid heavy run of modeling at this hour)
-
     private Instant startDate = Instant.now();
     private Instant endDate = Instant.now();
 
@@ -70,8 +70,9 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
     @BeforeClass
     public void setup(@Optional("30") int historicalDaysBack, @Optional("1") int anomalyDay) {
         logger.debug("historicalDaysBack =" + historicalDaysBack);
-        endDate = Instant.now().truncatedTo(ChronoUnit.DAYS);
-        startDate = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
+        /** Latest collection sample time must be after the 'endDate' to pass the below test.*/
+        endDate = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(3, HOURS);
+        startDate = Instant.now().minus(historicalDaysBack, ChronoUnit.DAYS);
     }
 
 

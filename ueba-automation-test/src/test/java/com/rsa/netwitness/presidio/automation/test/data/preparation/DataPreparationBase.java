@@ -1,11 +1,12 @@
 package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
+import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter;
+import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverterFactory;
+import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
+import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducer;
+import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducerFactory;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
-import com.rsa.netwitness.presidio.automation.converter.conveters.PresidioEventConverter;
-import com.rsa.netwitness.presidio.automation.converter.events.ConverterEventBase;
-import com.rsa.netwitness.presidio.automation.converter.producers.NetwitnessEventsProducer;
-import com.rsa.netwitness.presidio.automation.converter.TestContextSupplier;
 import com.rsa.netwitness.presidio.automation.enums.GeneratorFormat;
 import fortscale.common.general.Schema;
 import fortscale.utils.mongodb.config.MongoConfig;
@@ -23,7 +24,6 @@ import presidio.data.generators.common.GeneratorException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})
@@ -34,10 +34,9 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
     @Autowired
     private NetwitnessEventStore netwitnessEventStore;
 
-
+    private GeneratorFormat generatorFormat;
     protected int historicalDaysBack;
     protected int anomalyDay;
-    protected GeneratorFormat generatorFormat;
     protected Map<Schema, Long> generatorResultCount;
 
     protected abstract List<? extends Event> generate() throws GeneratorException;
@@ -50,32 +49,30 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
                       @Optional("MONGO_ADAPTER") GeneratorFormat generatorFormat) throws GeneratorException {
 
         setParams(historicalDaysBack, anomalyDay, generatorFormat);
-        LOGGER.info(" #######   Generate and send");
+        LOGGER.info("  ++++++ Going to generate.");
         List<? extends Event> precidioEvents = generate();
-        Stream<ConverterEventBase> convertedEvents = convert(precidioEvents.stream().map(e -> (Event) e).collect(Collectors.toList()));
-        generatorResultCount = send(convertedEvents);
-        LOGGER.info("   ++++++   Generated count: ");
+
+        LOGGER.info("  ++++++ Going to convert.");
+        List<NetwitnessEvent> converted = precidioEvents.parallelStream()
+                .map(getConverter()::convert)
+                .collect(Collectors.toList());
+
+        LOGGER.info("  ++++++ Going to send.");
+        generatorResultCount = getProducer().send(converted);
+
+        LOGGER.info("   ++++++  Sent events count result:");
         generatorResultCount.forEach(
                 (schema, count) -> LOGGER.info(schema.toString().concat(" -> ").concat(String.valueOf(count))));
     }
 
-    private PresidioEventConverter getConverter() {
-        return new TestContextSupplier(netwitnessEventStore).getConverter(generatorFormat);
+    private EventsProducer<List<NetwitnessEvent>> getProducer() {
+        return new EventsProducerFactory(netwitnessEventStore).get(generatorFormat);
     }
 
-    private NetwitnessEventsProducer getProducer() {
-        return new TestContextSupplier(netwitnessEventStore).getDispatcher(generatorFormat);
+    private EventConverter<Event> getConverter() {
+        return new EventConverterFactory().get();
     }
 
-
-    private Stream<ConverterEventBase> convert(List<Event> netwitnessEvents){
-        return netwitnessEvents.stream().map(getConverter()::convert);
-    }
-
-    private Map<Schema, Long> send(Stream<ConverterEventBase> convertedEvents){
-        List<ConverterEventBase> collect = convertedEvents.collect(Collectors.toList());
-        return getProducer().send(collect);
-    }
 
     private void setParams(int historicalDaysBack, int anomalyDay, GeneratorFormat generatorFormat){
         this.historicalDaysBack = historicalDaysBack;

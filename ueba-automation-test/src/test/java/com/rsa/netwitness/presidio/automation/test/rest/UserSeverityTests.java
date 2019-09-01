@@ -4,8 +4,8 @@ import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
-import com.rsa.netwitness.presidio.automation.utils.output.OutputTestManager;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
+import com.rsa.netwitness.presidio.automation.test_managers.OutputTestManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
 
     @BeforeClass
     public void prepareData() throws JSONException {
-        ParametersUrlBuilder url = restHelper.entities().url().withMaxSizeAndSortedParameters("ASC", "SCORE");
+        PresidioUrl url = restHelper.entities().url().withMaxSizeAndSortedParameters("ASC", "SCORE");
         allEntities = restHelper.entities().request().getEntities(url);
         severityMap = getSeverityMap();
         getSeveritiesBoundariesIndexes();
@@ -56,7 +56,7 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void checkPecentageDividing() {
-        ParametersUrlBuilder url = restHelper.entities().url().withSortedParameters("ASC", "SCORE");
+        PresidioUrl url = restHelper.entities().url().withSortedParameters("ASC", "SCORE");
         JSONObject users = restHelper.entities().request().getRestApiResponseAsJsonObj(url);
 
         int total = 0;
@@ -180,7 +180,7 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
     @Test
     public void calcUserScore() {
         RestHelper restHelper = new RestHelper();
-        ParametersUrlBuilder url = restHelper.entities().url().withMaxSizeAndSortedAndExpendedParameters("DESC", "SCORE");
+        PresidioUrl url = restHelper.entities().url().withMaxSizeAndSortedAndExpendedParameters("DESC", "SCORE");
         List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
 
         assertThat(entities)
@@ -216,7 +216,7 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
 
     private Map<String, Integer> getSeverityMap() {
         Map<String, Integer> severities = new HashMap<>();
-        ParametersUrlBuilder url = restHelper.entities().url().withAggregatedFieldParameter("SEVERITY");
+        PresidioUrl url = restHelper.entities().url().withAggregatedFieldParameter("SEVERITY");
         JSONObject agg = restHelper.entities().request().getRestApiResponseAsJsonObj(url);
 
         try {

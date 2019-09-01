@@ -2,7 +2,7 @@ package com.rsa.netwitness.presidio.automation.rest.helper.rest;
 
 import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -14,13 +14,13 @@ public interface IRestCallHelper {
     ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(IRestCallHelper.class.getName());
 
-    default RestApiResponse getRestApiResponse(ParametersUrlBuilder parametersUrlBuilder) {
+    default RestApiResponse getRestApiResponse(PresidioUrl parametersUrlBuilder) {
         String URL = parametersUrlBuilder.toString();
         LOGGER.debug("Sending request: " + URL);
         return RestAPI.sendGet(URL);
     }
 
-    default JSONObject getRestApiResponseAsJsonObj(ParametersUrlBuilder url) {
+    default JSONObject getRestApiResponseAsJsonObj(PresidioUrl url) {
         JSONObject users;
         RestApiResponse response = getRestApiResponse(url);
         assertThat(response).as(url + "\nReturn null").isNotNull();

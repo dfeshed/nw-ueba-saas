@@ -345,6 +345,7 @@ public class AuthenticationOperationActions {
     private static List<OperationType> buildOperationTypesList() {
         List<OperationType> operationTypes = new ArrayList();
         operationTypes.add(new OperationType("INTERACTIVE"));
+        operationTypes.add(new OperationType("NETWORK"));
         operationTypes.add(new OperationType("USER_FAILED_TO_LOG_ON_INTERACTIVELY"));
         operationTypes.add(new OperationType("REMOTE_INTERACTIVE"));
         operationTypes.add(new OperationType("USER_FAILED_TO_LOG_ON_INTERACTIVELY_FROM_A_REMOTE_COMPUTER"));
@@ -356,6 +357,7 @@ public class AuthenticationOperationActions {
         List<OperationType> operationTypes = new ArrayList();
         operationTypes.add(new OperationType("INTERACTIVE"));
         operationTypes.add(new OperationType("REMOTE_INTERACTIVE"));
+        operationTypes.add(new OperationType("NETWORK"));
         return operationTypes;
     }
 }

@@ -44,14 +44,14 @@ public class MongoCollectionsMonitor {
         scheduler = Executors.newScheduledThreadPool(corePoolSize);
 
         tasks = collectiontToMonitor.stream()
-                .map(e -> new MongoProgressTask(e, startDate, endDate))
+                .map(mongoRepository -> new MongoProgressTask(mongoRepository, startDate, endDate))
                 .collect(Collectors.toList());
 
     }
 
     public List<ScheduledFuture> execute() {
         return tasks.stream()
-                .map(e -> scheduler.scheduleAtFixedRate(e, DELAY_BEFORE_FIRST_TASK_STARTED, TASK_FREQUENCY_MINUTES, TIME_UNITS))
+                .map(mongoProgressTask -> scheduler.scheduleAtFixedRate(mongoProgressTask, DELAY_BEFORE_FIRST_TASK_STARTED, TASK_FREQUENCY_MINUTES, TIME_UNITS))
                 .collect(Collectors.toList());
     }
 
@@ -67,26 +67,28 @@ public class MongoCollectionsMonitor {
         LOGGER.info("Going to check if data processing started.");
         boolean isDataProcessingStarted = tasks.stream()
                 .map(MongoProgressTask::isProcessingStarted)
-                .reduce(false, (agg, e) -> agg | e);
+                .reduce(Boolean::logicalOr).orElse(false);
+
         LOGGER.info("isDataProcessingStarted=" + isDataProcessingStarted);
+        String errorMessage = "Not a single event reached any input collection after " +
+                DELAY_BEFORE_FIRST_TASK_STARTED + " minutes. Aborting wait.";
 
         assertThat(isDataProcessingStarted)
-                .overridingErrorMessage("Not a single event reached any input collection after " +
-                        DELAY_BEFORE_FIRST_TASK_STARTED + " minutes.\nAborting wait.\n")
+                .overridingErrorMessage(errorMessage)
                 .isTrue();
 
         while (dataProcessingStillInProgress) {
             TIME_UNITS.sleep(TASK_STATUS_CHECK_FREQUENCY);
 
             dataProcessingStillInProgress = tasks.stream()
-                    .map(e -> e.isProcessingStillInProgress(TIME_BUCKETES_TO_CHECK))
-                    .reduce(false, (agg, e) -> agg | e);
+                    .map(mongoProgressTask -> mongoProgressTask.isProcessingStillInProgress(TIME_BUCKETES_TO_CHECK))
+                    .reduce(Boolean::logicalOr).orElse(false);
             LOGGER.info("dataProcessingStillInProgress=" + dataProcessingStillInProgress);
         }
 
         boolean allCollectionsHaveFinalDaySamples = tasks.stream()
-                .map(e -> e.isFinalDaySampleExist(0, DAYS))
-                .reduce(true, (agg, e) -> agg & e);
+                .map(mongoProgressTask -> mongoProgressTask.isFinalDaySampleExist(0, DAYS))
+                .reduce(Boolean::logicalAnd).orElse(false);
 
         LOGGER.info("waitForResult has finished with " + allCollectionsHaveFinalDaySamples);
         return allCollectionsHaveFinalDaySamples;

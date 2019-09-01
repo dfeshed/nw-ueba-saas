@@ -1,33 +1,24 @@
 package com.rsa.netwitness.presidio.automation.rest.helper.builders.params;
 
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.url.UrlBase;
-import org.slf4j.LoggerFactory;
-
-
-public class ParametersUrlHelper extends UrlBase {
-    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(ParametersUrlHelper.class.getName());
+public class ParametersUrlHelper {
+    private String URL;
 
     public ParametersUrlHelper(String url) {
         this.URL = url;
     }
 
-    public ParametersUrlBuilder.Builder parametersBuilder() {
-        return new ParametersUrlBuilder.Builder(URL);
-    }
-
-    public ParametersUrlBuilder withNoParameters() {
+    public PresidioUrl withNoParameters() {
         return new ParametersUrlBuilder.Builder(URL).build();
     }
 
-    public ParametersUrlBuilder withPageParameters(int pageSize, int pageNumber) {
+    public PresidioUrl withPageParameters(int pageSize, int pageNumber) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setPageSize(pageSize)
                 .setPageNumber(pageNumber)
                 .build();
     }
 
-    public ParametersUrlBuilder withMaxSizeParameters() {
+    public PresidioUrl withMaxSizeParameters() {
         return new ParametersUrlBuilder.Builder(URL)
                 .setPageSize(10000)
                 .setPageNumber(0)
@@ -35,7 +26,7 @@ public class ParametersUrlHelper extends UrlBase {
                 .build();
     }
 
-    public ParametersUrlBuilder withMaxSizeAndExpendedParameters() {
+    public PresidioUrl withMaxSizeAndExpendedParameters() {
         return new ParametersUrlBuilder.Builder(URL)
                 .setPageSize(10000)
                 .setPageNumber(0)
@@ -43,14 +34,14 @@ public class ParametersUrlHelper extends UrlBase {
                 .build();
     }
 
-    public ParametersUrlBuilder withSortedParameters(String sortDirection, String sortFieldNames) {
+    public PresidioUrl withSortedParameters(String sortDirection, String sortFieldNames) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setSortDirection(sortDirection)
                 .setSortFieldNames(sortFieldNames)
                 .build();
     }
 
-    public ParametersUrlBuilder withMaxSizeAndSortedParameters(String sortDirection, String sortFieldNames) {
+    public PresidioUrl withMaxSizeAndSortedParameters(String sortDirection, String sortFieldNames) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setPageSize(10000)
                 .setPageNumber(0)
@@ -59,7 +50,7 @@ public class ParametersUrlHelper extends UrlBase {
                 .build();
     }
 
-    public ParametersUrlBuilder withMaxSizeAndSortedAndExpendedParameters(String sortDirection, String sortFieldNames) {
+    public PresidioUrl withMaxSizeAndSortedAndExpendedParameters(String sortDirection, String sortFieldNames) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setPageSize(10000)
                 .setPageNumber(0)
@@ -69,7 +60,7 @@ public class ParametersUrlHelper extends UrlBase {
                 .build();
     }
 
-    public ParametersUrlBuilder withMaxSizeAndSortedAscAndMinMaxScoreParameters(long minScore, long maxScore) {
+    public PresidioUrl withMaxSizeAndSortedAscAndMinMaxScoreParameters(long minScore, long maxScore) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setPageSize(10000)
                 .setPageNumber(0)
@@ -80,7 +71,7 @@ public class ParametersUrlHelper extends UrlBase {
                 .build();
     }
 
-    public ParametersUrlBuilder withMaxSizeAndSortedAscAndMinScoreParameters(long minScore) {
+    public PresidioUrl withMaxSizeAndSortedAscAndMinScoreParameters(long minScore) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setPageSize(10000)
                 .setPageNumber(0)
@@ -90,7 +81,7 @@ public class ParametersUrlHelper extends UrlBase {
                 .build();
     }
 
-    public ParametersUrlBuilder withMaxSizeAndSortedAscAndMaxScoreParameters(long maxScore) {
+    public PresidioUrl withMaxSizeAndSortedAscAndMaxScoreParameters(long maxScore) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setPageSize(10000)
                 .setPageNumber(0)
@@ -100,26 +91,26 @@ public class ParametersUrlHelper extends UrlBase {
                 .build();
     }
 
-    public ParametersUrlBuilder withEntityNamesParameters(String entityNames) {
+    public PresidioUrl withEntityNamesParameters(String entityNames) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setEntityNames(entityNames)
                 .build();
     }
 
-    public ParametersUrlBuilder withEntityNamesExpandedParameters(String entityNames) {
+    public PresidioUrl withEntityNamesExpandedParameters(String entityNames) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setEntityNames(entityNames)
                 .setExpand(true)
                 .build();
     }
 
-    public ParametersUrlBuilder withSeverityParameter(String severity) {
+    public PresidioUrl withSeverityParameter(String severity) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setSeverity(severity)
                 .build();
     }
 
-    public ParametersUrlBuilder withMaxSizeAndIndicatorNameParameters(String indicatorName) {
+    public PresidioUrl withMaxSizeAndIndicatorNameParameters(String indicatorName) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setIndicatorName(indicatorName)
                 .setPageSize(10000)
@@ -127,13 +118,13 @@ public class ParametersUrlHelper extends UrlBase {
                 .build();
     }
 
-    public ParametersUrlBuilder withAggregatedFieldParameter(String fieldName) {
+    public PresidioUrl withAggregatedFieldParameter(String fieldName) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setAggregateBy(fieldName)
                 .build();
     }
 
-    public ParametersUrlBuilder withExpandedParameter() {
+    public PresidioUrl withExpandedParameter() {
         return new ParametersUrlBuilder.Builder(URL)
                 .setExpand(true)
                 .build();

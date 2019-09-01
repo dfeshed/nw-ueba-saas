@@ -3,7 +3,7 @@ package com.rsa.netwitness.presidio.automation.rest.helper.rest;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +19,7 @@ public class AlertsRestCallHelper implements IRestCallHelper{
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(AlertsRestCallHelper.class.getName());
 
-    public List<AlertsStoredRecord> getAlerts(ParametersUrlBuilder alertsParametersUrlBuilder) {
+    public List<AlertsStoredRecord> getAlerts(PresidioUrl alertsParametersUrlBuilder) {
         String URL = alertsParametersUrlBuilder.toString();
 
         List<AlertsStoredRecord> alertsStoredRecords = new ArrayList<>();

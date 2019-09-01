@@ -1,5 +1,5 @@
 package com.rsa.netwitness.presidio.automation.enums;
 
 public enum GeneratorFormat {
-    CEF_DAILY, CEF_HOURLY, MONGO_ADAPTER, CEF_DAILY_NOT_SEND
+    CEF_DAILY_BROKER, CEF_HOURLY_BROKER, MONGO_ADAPTER, CEF_DAILY_FILE
 }

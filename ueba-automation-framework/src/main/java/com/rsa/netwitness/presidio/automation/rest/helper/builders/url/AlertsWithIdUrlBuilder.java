@@ -1,5 +1,7 @@
 package com.rsa.netwitness.presidio.automation.rest.helper.builders.url;
 
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlHelper;
+
 public class AlertsWithIdUrlBuilder extends UrlBase {
 
     AlertsWithIdUrlBuilder(String url) {
@@ -10,4 +12,7 @@ public class AlertsWithIdUrlBuilder extends UrlBase {
         return new IndicatorUrlBuilder(this.URL.concat("/indicators"));
     }
 
+    public ParametersUrlHelper url() {
+        return new ParametersUrlHelper(URL);
+    }
 }
