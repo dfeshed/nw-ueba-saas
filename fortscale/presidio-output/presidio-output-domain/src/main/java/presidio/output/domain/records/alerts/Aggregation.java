@@ -10,7 +10,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = CountAggregation.class, name = CountAggregation.TYPE),
         @JsonSubTypes.Type(value = TimeAggregation.class, name = TimeAggregation.TYPE),
         @JsonSubTypes.Type(value = WeekdayAggregation.class, name = WeekdayAggregation.TYPE),
-        @JsonSubTypes.Type(value = NewOccurrencesAggregation.class, name = NewOccurrencesAggregation.TYPE)
+        @JsonSubTypes.Type(value = NewOccurrenceAggregation.class, name = NewOccurrenceAggregation.TYPE),
+        @JsonSubTypes.Type(value = NewOccurrenceAggregation.class, name = GlobalAggregation.TYPE)
 })
 public abstract class Aggregation<K,V> {
 
