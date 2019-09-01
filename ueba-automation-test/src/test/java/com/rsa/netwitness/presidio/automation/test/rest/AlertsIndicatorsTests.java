@@ -35,6 +35,7 @@ import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUti
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
@@ -206,7 +207,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
         try {
             IndicatorResult actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
-            List<HistoricalDataBucket> anomalyBuckets = getAnomalyHistoricalDataBuckets(actualIndicator);
+            List<HistoricalDataBucket> anomalyBuckets = getAnomalyHistoricalDataBuckets(actualIndicator, url);
             List<Boolean> anomalyFlags = anomalyBuckets.stream().map(e -> e.anomaly).collect(toList());
 
             if (actualIndicator.historicalDataType.equals("TimeAggregation")) {
@@ -232,7 +233,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
 
         IndicatorResult actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
-        List<HistoricalDataBucket> anomalyBuckets = getAnomalyHistoricalDataBuckets(actualIndicator);
+        List<HistoricalDataBucket> anomalyBuckets = getAnomalyHistoricalDataBuckets(actualIndicator, url);
 
         List<String> historicalDataAnomalyValues = anomalyBuckets.stream().map(e -> e.value).collect(toList());
         assertThat(historicalDataAnomalyValues).as(url + "\nhistoricalData anomaly value is missing").isNotEmpty();
@@ -502,23 +503,30 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         return new IndicatorResult(new Gson().fromJson(response.getResultBody(), JsonElement.class));
     }
 
-    private List<HistoricalDataBucket> getAnomalyHistoricalDataBuckets(IndicatorResult indicator) {
-        JsonObject historicalData = indicator.json.getAsJsonObject().get("historicalData").getAsJsonObject();
-        JsonArray buckets = historicalData.get("buckets").getAsJsonArray();
+    private List<HistoricalDataBucket> getAnomalyHistoricalDataBuckets(IndicatorResult indicator, PresidioUrl url) {
+        try {
+            JsonObject historicalData = indicator.json.getAsJsonObject().getAsJsonObject("historicalData");
+            JsonArray buckets = historicalData.getAsJsonArray("buckets");
 
-        boolean isValueArray = buckets.getAsJsonArray().get(0).getAsJsonObject().get("value").isJsonArray();
-        List<HistoricalDataBucket> historicalDataBuckets = Lists.newArrayList();
+            boolean isValueArray = buckets.getAsJsonArray().get(0).getAsJsonObject().get("value").isJsonArray();
+            List<HistoricalDataBucket> historicalDataBuckets = Lists.newArrayList();
 
-        if (isValueArray) {
-            buckets.forEach(
-                    bucket -> bucket.getAsJsonObject().get("value").getAsJsonArray()
-                            .forEach(
-                                    value -> getAllAnomalyBuckets.apply(value.getAsJsonObject()).ifPresent(historicalDataBuckets::add)));
-        } else {
-            buckets.forEach(
-                    bucket -> getAllAnomalyBuckets.apply(bucket.getAsJsonObject()).ifPresent(historicalDataBuckets::add));
+            if (isValueArray) {
+                buckets.forEach(
+                        bucket -> bucket.getAsJsonObject().get("value").getAsJsonArray()
+                                .forEach(
+                                        value -> getAllAnomalyBuckets.apply(value.getAsJsonObject()).ifPresent(historicalDataBuckets::add)));
+            } else {
+                buckets.forEach(
+                        bucket -> getAllAnomalyBuckets.apply(bucket.getAsJsonObject()).ifPresent(historicalDataBuckets::add));
+            }
+            return historicalDataBuckets;
+        } catch (Exception e) {
+            fail(url + "\nFailed to parse historicalData.buckets.value from\n"  + indicator.json.toString());
         }
-        return historicalDataBuckets;
+
+        LOGGER.error("should not get there");
+        return Lists.newArrayList();
     }
 
     private Function<JsonObject, Optional<HistoricalDataBucket>> getAllAnomalyBuckets = obj -> {
