@@ -14,7 +14,10 @@ public interface AdapterActiveDirectoryStoredDataRepository extends MongoReposit
     List<AdapterActiveDirectoryStoredData> findByUsername(Instant start, Instant end, String username);
 
     @CountQuery("{ 'dateTime': { $gte: ?0 }, $and: [ { 'dateTime': { $lt: ?1 } } ] }")
-    long findByTime(Instant start, Instant end);
+    long countByTime(Instant start, Instant end);
+
+    @Query("{ 'dateTime': { $gte: ?0 }, $and: [ { 'dateTime': { $lt: ?1 } } ] }")
+    List<AdapterActiveDirectoryStoredData> findByTime(Instant start, Instant end);
 
     @Query("{ userId :?0 }")
     List<AdapterActiveDirectoryStoredData> findByUserId(String userId, Sort sort);
