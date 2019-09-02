@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -62,7 +63,8 @@ public class MongoCollectionsMonitor {
 
     public boolean waitForResult() throws InterruptedException {
         boolean dataProcessingStillInProgress = true;
-
+        
+        LOGGER.info("First check time is " + Instant.now().plus(DELAY_BEFORE_FIRST_TASK_STARTED + 1, ChronoUnit.MINUTES));
         TIME_UNITS.sleep(DELAY_BEFORE_FIRST_TASK_STARTED + 1); // 26 min
         LOGGER.info("Going to check if data processing started.");
         boolean isDataProcessingStarted = tasks.stream()
