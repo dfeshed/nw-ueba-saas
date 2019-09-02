@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.Schema;
 import fortscale.utils.reflection.PresidioReflectionUtils;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
-import presidio.input.core.services.transformation.transformer.AbstractInputDocumentTransformer;
+import fortscale.utils.transform.BeanPropertiesAutowireService;
 
 import java.io.File;
 import java.time.Instant;
@@ -23,7 +23,7 @@ public class DeserializerTransformationService {
     private String configurationFilePath;
     private ObjectMapper objectMapper;
     private BeanPropertiesAutowireService beanPropertiesAutowireService;
-    private List<AbstractInputDocumentTransformer> transformers = new ArrayList<>();
+    private List<AbstractJsonObjectTransformer> transformers = new ArrayList<>();
 
     public DeserializerTransformationService(ObjectMapper objectMapper, String configurationFilePath, BeanPropertiesAutowireService beanPropertiesAutowireService){
         this.objectMapper = objectMapper;
@@ -31,7 +31,7 @@ public class DeserializerTransformationService {
         this.beanPropertiesAutowireService = beanPropertiesAutowireService;
     }
 
-    public List<AbstractInputDocumentTransformer> getTransformers(Schema schema, Instant startDate, Instant endDate) {
+    public List<AbstractJsonObjectTransformer> getTransformers(Schema schema, Instant startDate, Instant endDate) {
         try {
             //Inject runtime dynamic values to object mapper
             InjectableValues.Std injectableValues = new InjectableValues.Std();
@@ -43,7 +43,7 @@ public class DeserializerTransformationService {
             // Register all transformer subtypes so that the object mapper can deserialize them by their 'type'
             registerTransformerSubTypes(objectMapper);
 
-            AbstractInputDocumentTransformer transformer = objectMapper.readValue(new File(String.format("%s%s.json", configurationFilePath, schema.getName())), AbstractInputDocumentTransformer.class);
+            AbstractJsonObjectTransformer transformer = objectMapper.readValue(new File(String.format("%s%s.json", configurationFilePath, schema.getName())), AbstractJsonObjectTransformer.class);
             transformer.postAutowireProcessor(beanPropertiesAutowireService);
             transformers.add(transformer);
             return transformers;

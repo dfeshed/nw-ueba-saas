@@ -4,6 +4,7 @@ import fortscale.common.general.Schema;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReader;
 import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.apache.commons.lang3.Validate;
+import org.springframework.beans.factory.annotation.Value;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Duration;
@@ -16,6 +17,13 @@ public class NewOccurrenceTransformer implements Transformer {
     private final String entityType;
     private final Duration expirationDelta;
     private final String booleanFieldName;
+
+    // TODO: Temporarily add a default start_date.
+    // @Value("#{T(java.time.Instant).parse('${start_date}')}")
+    private Instant workflowStartDate = Instant.parse("2019-01-01T00:00:00Z");
+
+    @Value("#{T(java.time.Duration).parse('${presidio.input.core.transformation.waiting.duration:P10D}')}")
+    private Duration transformationWaitingDuration;
 
     public NewOccurrenceTransformer(
             LastOccurrenceInstantReader lastOccurrenceInstantReader,
