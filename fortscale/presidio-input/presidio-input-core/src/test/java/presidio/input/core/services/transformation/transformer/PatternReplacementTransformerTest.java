@@ -6,10 +6,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
-import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
 
+import java.io.IOException;
 import java.time.Instant;
 
 /**
@@ -19,9 +19,9 @@ import java.time.Instant;
 public class PatternReplacementTransformerTest extends TransformerJsonTest {
 
     @Test
-    public void testTransformAuthenticationEventResolvedSrcMachineName() {
+    public void testTransformAuthenticationEventResolvedSrcMachineName() throws IOException {
         PatternReplacementTransformer patternReplacementTransformer =
-                new PatternReplacementTransformer(
+                new PatternReplacementTransformer("name",
                         AuthenticationRawEvent.SRC_MACHINE_NAME_FIELD_NAME,
                         AuthenticationTransformedEvent.SRC_MACHINE_CLUSTER_FIELD_NAME,
                         AuthenticationTransformerManager.CLUSTER_REPLACEMENT_PATTERN,
@@ -30,9 +30,8 @@ public class PatternReplacementTransformerTest extends TransformerJsonTest {
                         AuthenticationTransformerManager.CLUSTER_POST_REPLACEMENT_CONDITION);
 
         AuthenticationRawEvent authRawEvent = createAuthenticationEvent(Instant.now(), "dwef043.fortscale.com");
-        AbstractInputDocument transformedEvents = patternReplacementTransformer.transform(new AuthenticationTransformedEvent(authRawEvent));
-
-        Assert.assertEquals("dwef.fortscale.com", ((AuthenticationTransformedEvent) transformedEvents).getSrcMachineCluster());
+        AuthenticationTransformedEvent authenticationTransformedEvent = (AuthenticationTransformedEvent) transformEvent(authRawEvent, patternReplacementTransformer, AuthenticationTransformedEvent.class);
+        Assert.assertEquals("dwef.fortscale.com", authenticationTransformedEvent.getSrcMachineCluster());
     }
 
     private AuthenticationRawEvent createAuthenticationEvent(Instant eventDate, String srcMachineName) {

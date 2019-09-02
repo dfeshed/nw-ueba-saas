@@ -1,5 +1,6 @@
 {
   "type": "pattern-replacement-transformer",
+  "name": "name",
   "inputFieldName": "inputFieldName",
   "outputFieldName": "outputFieldName",
   "pattern": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
