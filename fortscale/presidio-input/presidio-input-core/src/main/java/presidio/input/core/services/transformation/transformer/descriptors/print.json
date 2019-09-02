@@ -1,6 +1,7 @@
 [
   {
     "type": "machine-name-transformer",
+    "name": "machine name to cluster name",
     "inputFieldName": "srcMachineName",
     "outputFieldName": "srcMachineCluster",
     "pattern": "[0-9]",
@@ -10,6 +11,7 @@
   },
   {
     "type": "machine-name-transformer",
+    "name": "printer name to cluster name",
     "inputFieldName": "printerName",
     "outputFieldName": "printerCluster",
     "pattern": "[0-9]",
@@ -19,16 +21,19 @@
   },
   {
     "type": "file-to-folder-path-transformer",
+    "name": "file to folder path",
     "inputFieldName": "srcFilePath",
     "outputFieldName": "srcFolderPath"
   },
   {
     "type": "file-extension-transformer",
+    "name": "file to file extension",
     "inputFieldName": "srcFilePath",
     "outputFieldName": "srcFileExtension"
   },
   {
     "type": "pattern-replacement-transformer",
+    "name": "replace source machine id's ip",
     "inputFieldName": "srcMachineId",
     "outputFieldName": "srcMachineId",
     "pattern": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
@@ -38,6 +43,7 @@
   },
   {
     "type": "pattern-replacement-transformer",
+    "name": "replace printer id's ip",
     "inputFieldName": "printerId",
     "outputFieldName": "printerId",
     "pattern": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",

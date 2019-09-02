@@ -2,12 +2,14 @@
   {
     "type": "operation-type-categories-transformer",
     "schema": "active_directory",
+    "name": "operation-type-categories",
     "inputOperationTypeFieldName": "operationType",
     "inputOperationTypeCategoriesFieldName": "operationTypeCategories",
     "outputOperationTypeCategoriesFieldName": "operationTypeCategories"
   },
   {
     "type": "operation-type-categories-hierarchy-transformer",
+    "name": "operation-type-hierarchy",
     "schema": "active_directory",
     "inputFieldName": "operationTypeCategories",
     "outputFieldName": "operationTypeCategories"
