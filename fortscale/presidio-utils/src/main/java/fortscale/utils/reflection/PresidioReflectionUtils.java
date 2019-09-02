@@ -4,10 +4,7 @@ import org.reflections.Reflections;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -82,7 +79,7 @@ public class PresidioReflectionUtils {
         return fields;
     }
 
-    public static <T> Set<Class<? extends T>> getSubTypes(String[] packagePaths, Class<T> parentClass) {
+    public static <T> Collection<Class<? extends T>> getSubTypes(String[] packagePaths, Class<T> parentClass) {
         Set<Class<? extends T>> allSubTypes = new HashSet<>();
         for (String packagePath: packagePaths) {
             allSubTypes.addAll(new Reflections(packagePath).getSubTypesOf(parentClass));
