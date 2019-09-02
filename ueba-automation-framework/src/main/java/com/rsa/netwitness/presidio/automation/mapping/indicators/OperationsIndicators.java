@@ -47,9 +47,7 @@ class OperationsIndicators {
             "high_number_of_failed_file_permission_change_attempts", /** File, 	Multiple Failed File Access Permission Changes**/
             "high_number_of_successful_file_action_operations",   /**File, Multiple Access Events  **/
             "high_number_of_failed_file_action_attempts",         /** File, Multiple Failed File Access Events**/
-            "high_number_of_distinct_files_opened_attempts",      /** File, 	Multiple Open Events **/
-            "abnormal_file_action_operation_type",
-            "abnormal_file_permision_change_operation_type"
+            "high_number_of_distinct_files_opened_attempts"      /** File, 	Multiple Open Events **/
     );
 
     static final List<String> PROCESS_MANDATORY_INDICATORS = Lists.newArrayList(
