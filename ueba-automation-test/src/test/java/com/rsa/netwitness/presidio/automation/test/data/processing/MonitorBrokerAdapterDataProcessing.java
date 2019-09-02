@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -56,6 +55,8 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
     @Autowired
     private AdapterRegistryStoredDataRepository registryRepository;
     @Autowired
+    private AdapterProcessStoredDataRepository processRepository;
+    @Autowired
     private AdapterTlsStoredDataRepository tlsRepository;
     @Autowired
     private NetwitnessEventStore netwitnessEventStore;
@@ -79,11 +80,12 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
     @Test
     public void waitForComplete_Test() throws InterruptedException {
 
-        List<MongoRepository> repositories =
+        List<AdapterAbstractStoredDataRepository> repositories =
                 new LinkedList<>(Arrays.asList(
                         activeDirectoryRepository,
                         authenticationRepository,
                         fileRepository,
+                        processRepository,
                         registryRepository,
                         tlsRepository
                 ));

@@ -1,15 +1,8 @@
 package com.rsa.netwitness.presidio.automation.log_player;
 
 
-import com.rsa.netwitness.presidio.automation.domain.activedirectory.AdapterActiveDirectoryStoredData;
-import com.rsa.netwitness.presidio.automation.domain.authentication.AdapterAuthenticationStoredData;
-import com.rsa.netwitness.presidio.automation.domain.file.AdapterFileStoredData;
-import com.rsa.netwitness.presidio.automation.domain.process.AdapterRegistryStoredData;
-import com.rsa.netwitness.presidio.automation.domain.repository.*;
-import com.rsa.netwitness.presidio.automation.domain.tls.AdapterTlsStoredData;
+import com.rsa.netwitness.presidio.automation.domain.repository.AdapterAbstractStoredDataRepository;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -21,23 +14,24 @@ public class MongoProgressTask implements Runnable {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(MongoProgressTask.class.getName());
 
-    private String collectionName;
-    private MongoRepository obj;
-    private Instant start;
+    private final String collectionName;
+    private final AdapterAbstractStoredDataRepository dataRepo;
     private final Instant end;
+    private Instant start;
     private Instant lastEventTime;
     private LinkedList<Instant> eventTimeHistory = new LinkedList<>();
 
-    MongoProgressTask(MongoRepository obj, Instant start, Instant end) {
-        LOGGER.info("New task created. start = " + start + " end = " + end);
-        this.obj = obj;
+    MongoProgressTask(AdapterAbstractStoredDataRepository dataRepo, Instant start, Instant end) {
+        this.collectionName = dataRepo.getName();
+        LOGGER.info("[" + collectionName + "] - New task created. start = " + start + " end = " + end);
+        this.dataRepo = dataRepo;
         this.start = start;
         this.end = end;
     }
 
     public void run() {
-        Optional<Instant> result = findByTimeAppliedOnObj(obj, start, end);
-        LOGGER.info("#### [" + collectionName + "] - Query result from start_time=" + start + " is " + result);
+        Optional<Instant> result = Optional.ofNullable(dataRepo.maxDateTimeBetween(start, end));
+        LOGGER.info("[" + collectionName + "] - Query result from start_time=" + start + " is " + result);
 
         if (result.isPresent() && result.get().isAfter(start)) start = result.get().minusSeconds(10);
         result.ifPresent(e -> eventTimeHistory.push(e));
@@ -104,49 +98,5 @@ public class MongoProgressTask implements Runnable {
             LOGGER.error("[" + collectionName + "] - eventTimeHistory=" + eventTimeHistory);
         }
         return result;
-    }
-
-
-    private Optional<Instant> findByTimeAppliedOnObj(MongoRepository obj, Instant start, Instant end) {
-        Sort sort = new Sort(Sort.Direction.DESC, "dateTime");
-
-        if (obj instanceof AdapterActiveDirectoryStoredDataRepository) {
-            collectionName = "ActiveDirectory";
-            LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
-            AdapterActiveDirectoryStoredData result = ((AdapterActiveDirectoryStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
-            if (result == null) return Optional.empty();
-            else return Optional.of(result.getDateTime());
-        }
-        if (obj instanceof AdapterAuthenticationStoredDataRepository) {
-            collectionName = "Authentication";
-            LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
-            AdapterAuthenticationStoredData result = ((AdapterAuthenticationStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
-            if (result == null) return Optional.empty();
-            else return Optional.of(result.getDateTime());
-        }
-        if (obj instanceof AdapterFileStoredDataRepository) {
-            collectionName = "File";
-            LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
-            AdapterFileStoredData result = ((AdapterFileStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
-            if (result == null) return Optional.empty();
-            else return Optional.of(result.getDateTime());
-        }
-        if (obj instanceof AdapterRegistryStoredDataRepository) {
-            collectionName = "Registry";
-            LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
-            AdapterRegistryStoredData result = ((AdapterRegistryStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
-            if (result == null) return Optional.empty();
-            else return Optional.of(result.getDateTime());
-        }
-        if (obj instanceof AdapterTlsStoredDataRepository) {
-            collectionName = "TLS";
-            LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
-            AdapterTlsStoredData result = ((AdapterTlsStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
-            if (result == null) return Optional.empty();
-            else return Optional.of(result.getDateTime());
-        }
-
-        LOGGER.error("No collection name mapping found for AdapterRepository class: " + obj);
-        return Optional.empty();
     }
 }

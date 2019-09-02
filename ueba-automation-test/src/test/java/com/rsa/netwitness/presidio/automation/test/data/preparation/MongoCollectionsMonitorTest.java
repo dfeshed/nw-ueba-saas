@@ -2,7 +2,7 @@ package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
-import com.rsa.netwitness.presidio.automation.domain.repository.AdapterTlsStoredDataRepository;
+import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.domain.tls.AdapterTlsStoredData;
 import com.rsa.netwitness.presidio.automation.log_player.MongoCollectionsMonitor;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
@@ -28,7 +28,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class MongoCollectionsMonitorTest extends AbstractTestNGSpringContextTests {
-
+    @Autowired
+    private AdapterActiveDirectoryStoredDataRepository activeDirectoryRepository;
+    @Autowired
+    private AdapterAuthenticationStoredDataRepository authenticationRepository;
+    @Autowired
+    private AdapterFileStoredDataRepository fileRepository;
+    @Autowired
+    private AdapterProcessStoredDataRepository processRepository;
+    @Autowired
+    private AdapterRegistryStoredDataRepository registryRepository;
     @Autowired
     private AdapterTlsStoredDataRepository tlsRepository;
 
@@ -46,7 +55,8 @@ public class MongoCollectionsMonitorTest extends AbstractTestNGSpringContextTest
 
     @Test
     public void mongo_monitoring_test() throws NoSuchFieldException, IllegalAccessException, InterruptedException {
-        task = new MongoCollectionsMonitor(Lists.newArrayList(tlsRepository));
+        task = new MongoCollectionsMonitor(Lists.newArrayList(activeDirectoryRepository, authenticationRepository,fileRepository,
+                processRepository, registryRepository, tlsRepository));
 
         setField("TIME_UNITS", SECONDS);
         setField("DELAY_BEFORE_FIRST_TASK_STARTED", 3);

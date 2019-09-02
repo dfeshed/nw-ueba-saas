@@ -1,7 +1,7 @@
 package com.rsa.netwitness.presidio.automation.log_player;
 
+import com.rsa.netwitness.presidio.automation.domain.repository.AdapterAbstractStoredDataRepository;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -21,7 +21,7 @@ public class MongoCollectionsMonitor {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(MongoCollectionsMonitor.class.getName());
 
-    private List<MongoRepository> collectiontToMonitor = new LinkedList<>();
+    private List<AdapterAbstractStoredDataRepository> collectiontToMonitor = new LinkedList<>();
     private ScheduledExecutorService scheduler;
     private int corePoolSize = 5;
     private long TASK_FREQUENCY_MINUTES = 15;
@@ -33,7 +33,7 @@ public class MongoCollectionsMonitor {
     private TimeUnit TIME_UNITS = MINUTES;
 
 
-    public MongoCollectionsMonitor(List<? extends MongoRepository> collectionToMonitor) {
+    public MongoCollectionsMonitor(List<? extends AdapterAbstractStoredDataRepository> collectionToMonitor) {
         if (collectionToMonitor != null && !collectionToMonitor.isEmpty())
             this.collectiontToMonitor.addAll(collectionToMonitor);
         else throw new RuntimeException("Empty collections list");
@@ -45,9 +45,8 @@ public class MongoCollectionsMonitor {
         scheduler = Executors.newScheduledThreadPool(corePoolSize);
 
         tasks = collectiontToMonitor.stream()
-                .map(mongoRepository -> new MongoProgressTask(mongoRepository, startDate, endDate))
+                .map(abstractRepository -> new MongoProgressTask(abstractRepository, startDate, endDate))
                 .collect(Collectors.toList());
-
     }
 
     public List<ScheduledFuture> execute() {
