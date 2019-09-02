@@ -32,7 +32,7 @@ class NetwitnessRegistryEventBuilder extends EndpointEvent {
     }
 
     NetwitnessRegistryEventBuilder getRegistryEvent() {
-
+        category = "Registry Event";
         event_source_id = event.getEventId();
         device_type = "Netwitness Endpoint";
         user_src= event.getUser().getUserId();

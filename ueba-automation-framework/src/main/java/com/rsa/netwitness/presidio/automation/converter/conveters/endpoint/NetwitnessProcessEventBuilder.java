@@ -30,6 +30,7 @@ class NetwitnessProcessEventBuilder extends EndpointEvent {
     }
 
     NetwitnessProcessEventBuilder getProcessEvent() {
+        category = "Process Event";
         event_source_id = event.getEventId();
         device_type = "Netwitness Endpoint";
         user_src= event.getUser().getUserId();
