@@ -72,7 +72,7 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
         logger.debug("historicalDaysBack =" + historicalDaysBack);
         /** Latest collection sample time must be after the 'endDate' to pass the below test.*/
         endDate = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(3, HOURS);
-        startDate = Instant.now().minus(historicalDaysBack, ChronoUnit.DAYS);
+        startDate = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(historicalDaysBack, ChronoUnit.DAYS);
     }
 
 
