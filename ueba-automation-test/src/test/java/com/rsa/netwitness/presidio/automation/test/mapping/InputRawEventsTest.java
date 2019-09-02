@@ -79,7 +79,7 @@ public class InputRawEventsTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void missingValuesAuthenticationTest() {
-        List<String> exclusions = list("additionalInfo");
+        List<String> exclusions = list("additionalInfo", "dstMachineDomain", "site", "country", "city");
         List<AdapterAuthenticationStoredData> input = authenticationRepository.findByTime(startDate, endDate);
         List<Field> classFields = Arrays.stream(AdapterAuthenticationStoredData.class.getDeclaredFields())
                 .filter(field -> !exclusions.contains(field.getName())).collect(toList());
@@ -88,7 +88,8 @@ public class InputRawEventsTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void missingValuesFileTest() {
-        List<String> exclusions = list("additionalInfo");
+        List<String> exclusions = list("additionalInfo", "dstFilePath", "srcMachineName", "dstMachineName",
+                "srcMachineId", "dstMachineId", "isDstDriveShared");
         List<AdapterFileStoredData> input = fileRepository.findByTime(startDate, endDate);
         List<Field> classFields = Arrays.stream(AdapterFileStoredData.class.getDeclaredFields())
                 .filter(field -> !exclusions.contains(field.getName())).collect(toList());
@@ -106,7 +107,8 @@ public class InputRawEventsTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void missingValuesRegistryTest() {
-        List<String> exclusions = list("additionalInfo");
+        List<String> exclusions = list("additionalInfo", "srcFilePath", "dstFilePath", "result",
+                "srcMachineName", "srcMachineId", "dstMachineName", "dstMachineId", "isSrcDriveShared", "isDstDriveShared");
         List<AdapterRegistryStoredData> input = registryRepository.findByTime(startDate, endDate);
         List<Field> classFields = Arrays.stream(AdapterRegistryStoredData.class.getDeclaredFields())
                 .filter(field -> !exclusions.contains(field.getName())).collect(toList());
@@ -146,6 +148,7 @@ public class InputRawEventsTest extends AbstractTestNGSpringContextTests {
                             .areAtLeastOne(notNull);
 
                 } else if (field.getType().isPrimitive()
+                        || Boolean.class.isAssignableFrom(field.getType())
                         || String.class.isAssignableFrom(field.getType())
                         || Instant.class.isAssignableFrom(field.getType())) {
 
