@@ -24,9 +24,8 @@ public class TransformationServiceImpl implements TransformationService {
     @Autowired
     private SchemaFactory schemaFactory;
 
-    // TODO: Temporarily add a default start_date.
-    // @Value("#{T(java.time.Instant).parse('${start_date}')}")
-    private Instant workflowStartDate = Instant.parse("2019-01-01T00:00:00Z");
+    @Value("#{T(java.time.Instant).parse('${dataPipeline.startTime}')}")
+    private Instant workflowStartDate;
 
     @Value("#{T(java.time.Duration).parse('${presidio.input.core.transformation.waiting.duration:P10D}')}")
     private Duration transformationWaitingDuration;
