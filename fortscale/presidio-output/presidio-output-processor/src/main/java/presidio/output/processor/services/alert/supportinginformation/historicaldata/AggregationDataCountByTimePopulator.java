@@ -32,7 +32,7 @@ public class AggregationDataCountByTimePopulator implements AggregationDataPopul
         List<Bucket<String,Double >> buckets = new ArrayList<Bucket<String, Double>>();
 
         // fetch daily histograms
-        List<DailyHistogram<Integer, Double>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForAggregatedFeature(timeRange, contexts, schema, featureName, historicalDataConfig);
+        List<DailyHistogram<Integer, Double>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForAggregatedFeature(timeRange, contexts, schema, featureName);
 
         // iterate over days
         for (DailyHistogram<Integer, Double> dailyHistogram: dailyHistograms) {

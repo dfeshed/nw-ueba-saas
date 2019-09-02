@@ -116,8 +116,8 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
     }
 
     @Bean
-    public AggregationDataCountByTimeForNewOccurrencesPopulator aggregationDataCountByTimeForNewOccrurencesPopulator() {
-        return new AggregationDataCountByTimeForNewOccurrencesPopulator(historicalDataFetcher);
+    public AggregationDataCountByTimeForNewOccurrencePopulator aggregationDataCountByTimeForNewOccrurencesPopulator() {
+        return new AggregationDataCountByTimeForNewOccurrencePopulator(historicalDataFetcher);
     }
 
     @Bean
