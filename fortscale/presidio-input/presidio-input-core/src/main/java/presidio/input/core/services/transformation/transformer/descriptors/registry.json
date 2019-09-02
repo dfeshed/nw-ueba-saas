@@ -1,9 +1,9 @@
 [
   {
-    "type": "join-transformer",
+    "type": "join",
     "name": "join process directory and file name",
-    "inputFieldNames": ["processDirectory", "processFileName"],
-    "outputFieldName": "processFilePath",
-    "delimiter": "\\"
+    "values": ["${processDirectory}", "${processFileName}"],
+    "destinationKey": "processFilePath",
+    "separator": "\\"
   }
 ]

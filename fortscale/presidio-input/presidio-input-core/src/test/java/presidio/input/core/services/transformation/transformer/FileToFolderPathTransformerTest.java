@@ -1,6 +1,7 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.domain.core.EventResult;
+import fortscale.utils.transform.FileToFolderPathTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

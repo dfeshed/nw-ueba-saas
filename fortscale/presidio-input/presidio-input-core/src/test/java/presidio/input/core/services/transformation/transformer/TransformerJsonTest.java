@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public abstract class TransformerJsonTest {
 
-    private static final String TRANSFORMERS_PACKAGE_LOCATION = "presidio.input.core.services.transformation.transformer";
+    private static final String TRANSFORMERS_PACKAGE_LOCATION = "fortscale.utils.transform";
     private ClassLoader classLoader = getClass().getClassLoader();
 
     abstract String getResourceFilePath();

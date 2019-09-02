@@ -1,16 +1,16 @@
 [
   {
-    "type": "join-transformer",
+    "type": "join",
     "name": "join src process directory and file name",
-    "inputFieldNames": ["srcProcessDirectory", "srcProcessFileName"],
-    "outputFieldName": "srcProcessFilePath",
-    "delimiter": "\\"
+    "values": ["${srcProcessDirectory}", "${srcProcessFileName}"],
+    "destinationKey": "srcProcessFilePath",
+    "separator": "\\"
   },
   {
-    "type": "join-transformer",
+    "type": "join",
     "name": "join dst process directory and file name",
-    "inputFieldNames": ["dstProcessDirectory", "dstProcessFileName"],
-    "outputFieldName": "dstProcessFilePath",
-    "delimiter": "\\"
+    "values": ["${dstProcessDirectory}", "${dstProcessFileName}"],
+    "destinationKey": "dstProcessFilePath",
+    "separator": "\\"
   }
 ]

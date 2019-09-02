@@ -1,11 +1,10 @@
-package presidio.input.core.services.transformation.transformer;
+package fortscale.utils.transform;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;

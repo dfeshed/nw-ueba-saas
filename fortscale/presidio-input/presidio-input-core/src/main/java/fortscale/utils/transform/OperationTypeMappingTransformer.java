@@ -1,10 +1,9 @@
-package presidio.input.core.services.transformation.transformer;
+package fortscale.utils.transform;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import org.json.JSONArray;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;

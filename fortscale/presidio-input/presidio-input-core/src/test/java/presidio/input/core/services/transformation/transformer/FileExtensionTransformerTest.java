@@ -2,6 +2,7 @@ package presidio.input.core.services.transformation.transformer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.EventResult;
+import fortscale.utils.transform.FileExtensionTransformer;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;

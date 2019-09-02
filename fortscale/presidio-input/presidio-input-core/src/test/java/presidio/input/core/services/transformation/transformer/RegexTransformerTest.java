@@ -2,6 +2,7 @@ package presidio.input.core.services.transformation.transformer;
 
 
 import fortscale.domain.core.EventResult;
+import fortscale.utils.transform.RegexTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

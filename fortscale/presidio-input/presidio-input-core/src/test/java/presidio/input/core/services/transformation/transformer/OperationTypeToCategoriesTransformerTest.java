@@ -3,6 +3,8 @@ package presidio.input.core.services.transformation.transformer;
 import com.google.common.collect.Lists;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
+import fortscale.utils.transform.OperationTypeMappingTransformer;
+import fortscale.utils.transform.OperationTypeToCategoriesTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
