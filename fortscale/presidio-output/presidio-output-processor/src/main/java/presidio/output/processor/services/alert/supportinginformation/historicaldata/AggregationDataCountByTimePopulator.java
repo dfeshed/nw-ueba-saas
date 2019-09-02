@@ -54,7 +54,7 @@ public class AggregationDataCountByTimePopulator implements AggregationDataPopul
             }
         }
 
-        return new TimeAggregation(buckets);
+        return new TimeAggregation(buckets, contexts);
     }
 
 

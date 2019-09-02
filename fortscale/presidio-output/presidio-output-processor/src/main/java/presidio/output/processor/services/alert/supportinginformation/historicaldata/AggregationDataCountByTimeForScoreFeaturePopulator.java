@@ -53,7 +53,7 @@ public class AggregationDataCountByTimeForScoreFeaturePopulator implements Aggre
             }
         }
 
-        return new TimeAggregation(buckets);
+        return new TimeAggregation(buckets, contexts);
     }
 
 

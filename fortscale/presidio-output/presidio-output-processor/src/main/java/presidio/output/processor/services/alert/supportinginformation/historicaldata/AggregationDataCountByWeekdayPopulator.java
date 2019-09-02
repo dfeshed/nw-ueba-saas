@@ -84,7 +84,7 @@ public class AggregationDataCountByWeekdayPopulator implements AggregationDataPo
             buckets.add(dayOfWeekBucket);
         }
 
-        return new WeekdayAggregation(buckets);
+        return new WeekdayAggregation(buckets, contexts);
     }
 
 

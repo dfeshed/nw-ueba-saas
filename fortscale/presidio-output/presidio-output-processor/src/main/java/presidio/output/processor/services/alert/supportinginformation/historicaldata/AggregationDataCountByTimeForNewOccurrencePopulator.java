@@ -25,12 +25,10 @@ public class AggregationDataCountByTimeForNewOccurrencePopulator implements Aggr
     @Override
     public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
-        List<Bucket<String, Double>> context_buckets = new ArrayList<>();
+        List<Bucket<String, Double>> buckets = new ArrayList<>();
 
         // fetch daily histograms from memory
         List<DailyHistogram<Integer, Double>> dailyHistogramsByContext = historicalDataFetcher.getNewOccurrenceDailyHistogramsForAggregatedFeature(timeRange, contexts, schema, featureName);
-
-        String contextValue = contexts.entrySet().iterator().next().getValue();
 
         // iterate over days
         for (DailyHistogram<Integer, Double> dailyHistogram : dailyHistogramsByContext) {
@@ -45,11 +43,11 @@ public class AggregationDataCountByTimeForNewOccurrencePopulator implements Aggr
                 Double valueForHour = dailyHistogram.getHistogram().get(hour);
                 boolean isAnomaly = anomalyValue.equals(valueForHour.toString());
                 Bucket<String, Double> bucket = new Bucket<>(Long.toString(epocTime), valueForHour, isAnomaly);
-                context_buckets.add(bucket);
+                buckets.add(bucket);
             }
         }
 
-        return new TimeAggregation(context_buckets);
+        return new TimeAggregation(buckets, contexts);
     }
 
     @Override

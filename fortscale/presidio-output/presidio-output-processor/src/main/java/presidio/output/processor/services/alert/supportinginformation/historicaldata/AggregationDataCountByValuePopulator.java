@@ -49,7 +49,7 @@ public class AggregationDataCountByValuePopulator implements AggregationDataPopu
                 .map(entry -> new Bucket<>(entry.getKey(), entry.getValue(), entry.getKey().equals(anomalyValue)))
                 .collect(Collectors.toList());
 
-        return new CountAggregation(buckets);
+        return new CountAggregation(buckets, contexts);
     }
 
     @Override
