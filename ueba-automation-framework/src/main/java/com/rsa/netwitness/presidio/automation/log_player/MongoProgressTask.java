@@ -90,7 +90,10 @@ public class MongoProgressTask implements Runnable {
 
     boolean isFinalDaySampleExist(long timeFromJobEndTime, ChronoUnit units) {
         Instant finalDay = end.minus(timeFromJobEndTime, units).truncatedTo(units);
-        if (lastEventTime == null) return false;
+        if (lastEventTime == null) {
+            LOGGER.error("[" + collectionName + "] - Collection has no samples.");
+            return false;
+        }
 
         boolean result = lastEventTime.isAfter(finalDay);
 
@@ -108,35 +111,35 @@ public class MongoProgressTask implements Runnable {
         Sort sort = new Sort(Sort.Direction.DESC, "dateTime");
 
         if (obj instanceof AdapterActiveDirectoryStoredDataRepository) {
-            collectionName = "AdapterActiveDirectory";
+            collectionName = "ActiveDirectory";
             LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
             AdapterActiveDirectoryStoredData result = ((AdapterActiveDirectoryStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
             if (result == null) return Optional.empty();
             else return Optional.of(result.getDateTime());
         }
         if (obj instanceof AdapterAuthenticationStoredDataRepository) {
-            collectionName = "AdapterAuthentication";
+            collectionName = "Authentication";
             LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
             AdapterAuthenticationStoredData result = ((AdapterAuthenticationStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
             if (result == null) return Optional.empty();
             else return Optional.of(result.getDateTime());
         }
         if (obj instanceof AdapterFileStoredDataRepository) {
-            collectionName = "AdapterFile";
+            collectionName = "File";
             LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
             AdapterFileStoredData result = ((AdapterFileStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
             if (result == null) return Optional.empty();
             else return Optional.of(result.getDateTime());
         }
         if (obj instanceof AdapterRegistryStoredDataRepository) {
-            collectionName = "AdapterRegistry";
+            collectionName = "Registry";
             LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
             AdapterRegistryStoredData result = ((AdapterRegistryStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
             if (result == null) return Optional.empty();
             else return Optional.of(result.getDateTime());
         }
         if (obj instanceof AdapterTlsStoredDataRepository) {
-            collectionName = "TlsRegistry";
+            collectionName = "TLS";
             LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
             AdapterTlsStoredData result = ((AdapterTlsStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
             if (result == null) return Optional.empty();
