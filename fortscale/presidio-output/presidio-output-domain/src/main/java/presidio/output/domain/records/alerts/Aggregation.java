@@ -23,6 +23,11 @@ public abstract class Aggregation<K,V> {
 
     public Aggregation(List<Bucket<K,V>> buckets, Map<String, String> contexts) {
         this.buckets = buckets;
+        this.contexts = contexts;
+    }
+
+    public Aggregation(List<Bucket<K,V>> buckets) {
+        this.buckets = buckets;
     }
 
     public List<Bucket<K,V>> getBuckets() {

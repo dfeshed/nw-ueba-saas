@@ -44,7 +44,7 @@ public class AggregationDataCountByTimeGlobalPopulator implements AggregationDat
             }
         }
 
-        return new TimeAggregation(global_buckets, contexts);
+        return new TimeAggregation(global_buckets);
     }
 
     @Override

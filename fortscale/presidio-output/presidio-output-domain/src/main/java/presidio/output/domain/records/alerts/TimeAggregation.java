@@ -19,4 +19,9 @@ public class TimeAggregation extends Aggregation<String, Double> {
 
         super(buckets, contexts);
     }
+
+    public TimeAggregation(List<Bucket<String, Double>> buckets) {
+
+        super(buckets);
+    }
 }
