@@ -45,14 +45,33 @@ public interface HistoricalDataFetcher {
      *                Aggregated Feature: numberOfFailedAuthentications, Date: 01/02/2017, histogram {0:0, 2:1, 3:0 ...}
      */
     List<DailyHistogram<Integer, Double>> getDailyHistogramsForAggregatedFeature(
-            TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName,
-            HistoricalDataConfig historicalDataConfig);
+            TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName);
 
+
+    /**
+     * Fetches the historical aggregated feature usage of new occurrence context (i.e. user) during the specified time period (last day) grouped by day
+     *
+     * @param timeRange   the time period
+     * @param contexts    map of contexts (context id (i.e userId) to context value (i.e the user name))
+     * @param schema      the schema for which to populate historical behavior
+     * @param featureName the feature for which to populate historical behavior (e.g: login time)
+     * @return List of aggregated feature histogram for each day in the range. The histogram key is hour of the day (0 .. 23)
+     *         e.g:   Aggregated Feature: numberOfFailedAuthentications, Date: 01/01/2017, histogram {0:1, 2:0, 3:0 ...}
+     *                Aggregated Feature: numberOfFailedAuthentications, Date: 01/02/2017, histogram {0:0, 2:1, 3:0 ...}
+     */
     List<DailyHistogram<Integer, Double>> getNewOccurrenceDailyHistogramsForAggregatedFeature(
-            TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName,
-            HistoricalDataConfig historicalDataConfig);
+            TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName);
 
-    List<DailyHistogram<Integer, HashMap<String, Double>>> getGlobalDailyHistogramsForAggregatedFeature(
-            TimeRange timeRange, Schema schema, String featureName,
-            HistoricalDataConfig historicalDataConfig);
+    /**
+     * Fetches the organization historical max aggregated feature usage during the specified time period grouped by day
+     *
+     * @param timeRange   the time period
+     * @param schema      the schema for which to populate historical behavior
+     * @param featureName the feature for which to populate historical behavior (e.g: login time)
+     * @return List of aggregated feature histogram for each day in the range. The histogram key is hour of the day (0 .. 23)
+     *         e.g:   Aggregated Feature: numberOfFailedAuthentications, Date: 01/01/2017, histogram {0:1, 2:0, 3:0 ...}
+     *                Aggregated Feature: numberOfFailedAuthentications, Date: 01/02/2017, histogram {0:0, 2:1, 3:0 ...}
+     */
+    List<DailyHistogram<Integer, Double>> getGlobalMaxDailyHistogramsForAggregatedFeature(
+            TimeRange timeRange, Schema schema, String featureName);
 }
