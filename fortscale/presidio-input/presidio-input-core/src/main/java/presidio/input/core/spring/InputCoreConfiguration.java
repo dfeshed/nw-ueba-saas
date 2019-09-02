@@ -20,12 +20,14 @@ import presidio.input.core.services.converters.ConverterServiceImpl;
 import presidio.input.core.services.converters.ade.*;
 import presidio.input.core.services.converters.output.*;
 import presidio.input.core.services.data.AdeDataService;
+import presidio.input.core.services.transformation.DeserializerTransformationService;
 import presidio.input.core.services.impl.InputCoreManager;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
 import presidio.input.core.services.transformation.managers.*;
+import fortscale.utils.transform.BeanPropertiesAutowireService;
 import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
@@ -50,6 +52,15 @@ import java.util.Map;
 public class InputCoreConfiguration {
     private static final Logger logger = Logger.getLogger(InputCoreConfiguration.class);
 
+    @Value("${operation.type.category.mapping.file.path}")
+    private String operationTypeCategoryMappingFilePath;
+
+    @Value("${operation.type.category.hierarchy.mapping.file.path}")
+    private String operationTypeCategoryHierarchyMappingFilePath;
+
+    @Value("${transformers.file.path}")
+    private String configurationFilePath;
+
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -68,11 +79,15 @@ public class InputCoreConfiguration {
     @Autowired
     private FactoryService<Transformer> transformerFactoryService;
 
-    @Value("${operation.type.category.mapping.file.path}")
-    private String operationTypeCategoryMappingFilePath;
+    @Autowired
+    public BeanPropertiesAutowireService beanPropertiesAutowireService;
 
-    @Value("${operation.type.category.hierarchy.mapping.file.path}")
-    private String operationTypeCategoryHierarchyMappingFilePath;
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private DeserializerTransformationService deserializerTransformationService;
+
 
     public Map<Schema, Map<String, List<String>>> getMapping(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
@@ -95,6 +110,22 @@ public class InputCoreConfiguration {
         return transformerFactoryService;
     }
 
+    //todo: necessary or can be removed?
+    @Bean
+    public BeanPropertiesAutowireService deserializedAutowireService(){
+        return new BeanPropertiesAutowireService();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    @Bean
+    public DeserializerTransformationService deserializerTransformationService(){
+        return new DeserializerTransformationService(objectMapper, configurationFilePath, beanPropertiesAutowireService);
+    }
+
     @Bean
     public TransformationService transformationService() {
         return new TransformationServiceImpl();
@@ -112,7 +143,7 @@ public class InputCoreConfiguration {
 
     @Bean
     public InputCoreManager inputCoreManager() {
-        return new InputCoreManager(presidioInputPersistencyService, adeDataService, outputDataServiceSDK, transformationService(), converterService());
+        return new InputCoreManager(presidioInputPersistencyService, adeDataService, outputDataServiceSDK, transformationService(), converterService(), deserializerTransformationService);
     }
 
     @Bean

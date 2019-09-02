@@ -2,6 +2,7 @@ package presidio.input.core.services.transformation.managers;
 
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
+import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +16,7 @@ import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,11 +30,13 @@ public class AuthenticationTransformationServiceTest {
     private TransformationService transformationService;
     private Instant endDate = Instant.now();
 
+    private List<AbstractJsonObjectTransformer> transformers = new ArrayList<>();
+
     @Test
     public void testRunAuthenticationSchemaSrcMachineTransformations_unresolvedMachineNameAndId() {
         AuthenticationRawEvent authenticationRawEvent = createAuthenticationEvent(Instant.now(), "10.20.3.40", "1.34.56.255", "12.4.6.74", "10.65.20.88");
         List<AbstractInputDocument> events = Collections.singletonList(authenticationRawEvent);
-        List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION, endDate);
+        List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION, endDate, transformers);
         Assert.assertEquals("", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getSrcMachineCluster());
         Assert.assertEquals("", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getSrcMachineId());
         Assert.assertEquals("", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getDstMachineCluster());
@@ -43,7 +47,7 @@ public class AuthenticationTransformationServiceTest {
     public void testRunAuthenticationSchemaSrcMachineTransformations_resolvedMachineNameAndId() {
         AuthenticationRawEvent authenticationRawEvent = createAuthenticationEvent(Instant.now(), "nameSPBGDCW01.prod.quest.corp", "idSPBGDCW01.prod.quest.corp", "nameSPBGDCW02.prod.quest.corp", "idSPBGDCW02.prod.quest.corp");
         List<AbstractInputDocument> events = Collections.singletonList(authenticationRawEvent);
-        List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION, endDate);
+        List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION, endDate, transformers);
         Assert.assertEquals("nameSPBGDCW.prod.quest.corp", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getSrcMachineCluster());
         Assert.assertEquals("idSPBGDCW01.prod.quest.corp", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getSrcMachineId());
         Assert.assertEquals("nameSPBGDCW.prod.quest.corp", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getDstMachineCluster());
