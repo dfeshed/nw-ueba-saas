@@ -3,7 +3,7 @@ package fortscale.utils.transform;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fortscale.common.general.Schema;
+import fortscale.utils.json.JacksonUtils;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -27,18 +27,14 @@ public class OperationTypeToCategoriesTransformer extends OperationTypeMappingTr
     private final String outputOperationTypeCategoriesFieldName;
 
     public OperationTypeToCategoriesTransformer(@JsonProperty("name") String name,
-                                                @JsonProperty("schema") Schema schema,
                                                 @JsonProperty("inputOperationTypeFieldName") String inputOperationTypeFieldName,
                                                 @JsonProperty("inputOperationTypeCategoriesFieldName") String inputOperationTypeCategoriesFieldName,
-                                                @JsonProperty("outputOperationTypeCategoriesFieldName") String outputOperationTypeCategoriesFieldName) {
+                                                @JsonProperty("outputOperationTypeCategoriesFieldName") String outputOperationTypeCategoriesFieldName,
+                                                @JsonProperty("operationTypeCategoriesMapping") Map<String, List<String>> operationTypeCategoriesMapping) {
         super(name);
         this.inputOperationTypeFieldName = inputOperationTypeFieldName;
         this.inputOperationTypeCategoriesFieldName = inputOperationTypeCategoriesFieldName;
         this.outputOperationTypeCategoriesFieldName = outputOperationTypeCategoriesFieldName;
-        this.operationTypeCategoriesMapping = getMappingBySchema(schema);
-    }
-
-    public void setOperationTypeCategoriesMapping(Map<String, List<String>> operationTypeCategoriesMapping) {
         this.operationTypeCategoriesMapping = operationTypeCategoriesMapping;
     }
 
@@ -50,9 +46,12 @@ public class OperationTypeToCategoriesTransformer extends OperationTypeMappingTr
                 List<String> operationTypeCategories = operationTypeCategoriesMapping.get(operationType);
                 if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
                     Set<String> additionalCategories = new HashSet<>(operationTypeCategories);
-                    List<String> existingOperationTypeCategories = jsonArrayToList((JSONArray) document.get(inputOperationTypeCategoriesFieldName));
-                    if (existingOperationTypeCategories != null) {
-                        additionalCategories.addAll(existingOperationTypeCategories);
+                    Object operationalTypeCategories = document.get(inputOperationTypeCategoriesFieldName);
+                    if (operationalTypeCategories != JSONObject.NULL) {
+                        List<String> existingOperationTypeCategories = JacksonUtils.jsonArrayToList((JSONArray) operationalTypeCategories);
+                        if (CollectionUtils.isNotEmpty(existingOperationTypeCategories)) {
+                            additionalCategories.addAll(existingOperationTypeCategories);
+                        }
                     }
                     document.put(outputOperationTypeCategoriesFieldName, new ArrayList<>(additionalCategories));
                 }
@@ -61,10 +60,5 @@ public class OperationTypeToCategoriesTransformer extends OperationTypeMappingTr
             }
         }
         return document;
-    }
-
-    @Override
-    boolean isCategoryHierarchy() {
-        return false;
     }
 }

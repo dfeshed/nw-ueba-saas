@@ -1,7 +1,6 @@
 package presidio.input.core.services.transformation.transformer;
 
 import com.google.common.collect.Lists;
-import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.utils.transform.OperationTypeMappingTransformer;
 import fortscale.utils.transform.OperationTypeToCategoriesTransformer;
@@ -33,8 +32,7 @@ public class OperationTypeToCategoriesTransformerTest extends TransformerJsonTes
         List<String> operationCategories = new ArrayList<>();
         operationCategories.add("category");
         operationTypeMap.put("operationType", operationCategories);
-        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer("name", Schema.FILE,  FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
-        operationTypeToCategoriesTransformer.setOperationTypeCategoriesMapping(operationTypeMap);
+        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer("name",  FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, operationTypeMap);
         transformEvent(fileRawEvent, operationTypeToCategoriesTransformer, FileTransformedEvent.class);
     }
 
@@ -50,8 +48,7 @@ public class OperationTypeToCategoriesTransformerTest extends TransformerJsonTes
         operationCategories.add("category");
         operationTypeMap.put("operationType", operationCategories);
 
-        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer("name", Schema.FILE,  FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
-        operationTypeToCategoriesTransformer.setOperationTypeCategoriesMapping(operationTypeMap);
+        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer("name",  FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, operationTypeMap);
         FileRawEvent transformed = (FileRawEvent) transformEvent(fileRawEvent, operationTypeToCategoriesTransformer, FileRawEvent.class);
         Assert.assertNull(transformed.getOperationTypeCategories());
     }
@@ -68,8 +65,7 @@ public class OperationTypeToCategoriesTransformerTest extends TransformerJsonTes
         operationCategories.add("category");
         operationTypeMap.put("operationType", operationCategories);
 
-        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer("name", Schema.FILE,  FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
-        operationTypeToCategoriesTransformer.setOperationTypeCategoriesMapping(operationTypeMap);
+        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer("name",  FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, operationTypeMap);
         FileRawEvent transformed = (FileRawEvent) transformEvent(fileRawEvent, operationTypeToCategoriesTransformer, FileRawEvent.class);
         Assert.assertEquals(2, transformed.getOperationTypeCategories().size());
     }
@@ -83,7 +79,7 @@ public class OperationTypeToCategoriesTransformerTest extends TransformerJsonTes
                 "dstMachineName", "dstMachineDomain", "resultCode", "site",
                 "country", "city");
 
-        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer("name", Schema.AUTHENTICATION,  AuthenticationRawEvent.OPERATION_TYPE_FIELD_NAME, AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
+        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer("name", AuthenticationRawEvent.OPERATION_TYPE_FIELD_NAME, AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, null);
         AuthenticationRawEvent transformed = (AuthenticationRawEvent) transformEvent(authenticationRawEvent, operationTypeToCategoriesTransformer, AuthenticationRawEvent.class);
         Assert.assertNull(transformed.getOperationTypeCategories());
     }
@@ -97,7 +93,7 @@ public class OperationTypeToCategoriesTransformerTest extends TransformerJsonTes
                 "dstMachineName", "dstMachineDomain", "resultCode", "site",
                 "country", "city");
 
-        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer("name", Schema.AUTHENTICATION,  AuthenticationRawEvent.OPERATION_TYPE_FIELD_NAME, AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
+        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer("name",  AuthenticationRawEvent.OPERATION_TYPE_FIELD_NAME, AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, null);
         AuthenticationRawEvent transformed = (AuthenticationRawEvent) transformEvent(authenticationRawEvent, operationTypeToCategoriesTransformer, AuthenticationRawEvent.class);
         Assert.assertNull(transformed.getOperationTypeCategories());
     }

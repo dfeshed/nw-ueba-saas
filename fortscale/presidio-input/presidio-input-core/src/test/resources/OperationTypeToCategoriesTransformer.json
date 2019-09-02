@@ -1,8 +1,10 @@
 {
   "type": "operation-type-categories-transformer",
   "name": "name",
-  "schema": "authentication",
   "inputOperationTypeFieldName": "bla",
   "inputOperationTypeCategoriesFieldName": "blu",
-  "outputOperationTypeCategoriesFieldName": "glue"
+  "outputOperationTypeCategoriesFieldName": "glue",
+  "operationTypeCategoriesMapping": {
+    "Howdy": ["1", "2", "3"]
+  }
 }

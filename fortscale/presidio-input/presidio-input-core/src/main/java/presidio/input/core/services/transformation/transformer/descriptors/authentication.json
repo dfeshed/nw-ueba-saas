@@ -42,16 +42,16 @@
   {
     "type": "operation-type-categories-transformer",
     "name": "operation-type-categories",
-    "schema": "authentication",
     "inputOperationTypeFieldName": "operationType",
     "inputOperationTypeCategoriesFieldName": "operationTypeCategories",
-    "outputOperationTypeCategoriesFieldName": "operationTypeCategories"
+    "outputOperationTypeCategoriesFieldName": "operationTypeCategories",
+    "operationTypeCategoriesMapping": {}
   },
   {
     "type": "operation-type-categories-hierarchy-transformer",
     "name": "operation-type-hierarchy",
-    "schema": "active_directory",
     "inputFieldName": "operationTypeCategories",
-    "outputFieldName": "operationTypeCategories"
+    "outputFieldName": "operationTypeCategories",
+    "operationTypeCategoriesHierarchyMapping": {}
   }
 ]
