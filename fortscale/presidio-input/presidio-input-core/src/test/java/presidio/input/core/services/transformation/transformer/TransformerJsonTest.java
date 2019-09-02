@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class TransformerJsonTest {
@@ -35,10 +34,10 @@ public abstract class TransformerJsonTest {
         File file = new File(Objects.requireNonNull(classLoader.getResource(resourceFilePath)).getFile());
         ObjectMapper objectMapper = createObjectMapper();
         String json = FileUtils.readFileToString(file);
-        Set<Class<? extends AbstractJsonObjectTransformer>> subTypes = PresidioReflectionUtils.getSubTypes(
+        Collection<Class<? extends AbstractJsonObjectTransformer>> subTypes = PresidioReflectionUtils.getSubTypes(
                 new String[]{TRANSFORMERS_PACKAGE_LOCATION},
                 AbstractJsonObjectTransformer.class);
-        Collection collect = subTypes.stream().map(x -> (Class) x).collect(Collectors.toList());
+        Collection<Class<?>> collect = subTypes.stream().map(x -> (Class<?>) x).collect(Collectors.toList());
         objectMapper.registerSubtypes(collect);
         return objectMapper.readValue(json, AbstractJsonObjectTransformer.class);
     }
