@@ -28,13 +28,13 @@
     <span class="toggle-icon additional-header">
       {{rsa-icon
         name=(concat 'arrow-' collapseArrowDirection '-12')
-        click=(action 'toggleEmailExpansion')
+        click=(action 'toggleEmailHeadersExpansion')
       }}
       {{t 'recon.emailView.additionalHeaderDetails'}}
     </span>
   </div>
 
-  {{#if isEmailExpanded}}
+  {{#if isEmailHeadersExpanded}}
     {{#each-in additionalHeaderFields as |headerField headerValue|}}
       <hbox class="recon-meta-content-item">
         <box class="meta-name header-label">{{ headerField }}</box>

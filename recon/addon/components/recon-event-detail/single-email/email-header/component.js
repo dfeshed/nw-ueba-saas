@@ -6,7 +6,7 @@ import { headers } from 'recon/reducers/emails/selectors';
 
 export default Component.extend({
   layout,
-  isEmailExpanded: false,
+  isEmailHeadersExpanded: false,
 
   @computed('email')
   headerFields(email) {
@@ -24,18 +24,14 @@ export default Component.extend({
     return createdHeaders;
   },
 
-  @computed('isEmailExpanded')
-  collapseArrowDirection(isEmailExpanded) {
-    return isEmailExpanded ? 'down' : 'right';
+  @computed('isEmailHeadersExpanded')
+  collapseArrowDirection(isEmailHeadersExpanded) {
+    return isEmailHeadersExpanded ? 'down' : 'right';
   },
 
   actions: {
-    toggleEmailExpansion() {
-      const isEmailExpanded = this.toggleProperty('isEmailExpanded');
-      if (this.toggleEmailExpansion) {
-        this.toggleEmailExpansion(isEmailExpanded);
-      }
-
+    toggleEmailHeadersExpansion() {
+      this.toggleProperty('isEmailHeadersExpanded');
     }
   }
 });
