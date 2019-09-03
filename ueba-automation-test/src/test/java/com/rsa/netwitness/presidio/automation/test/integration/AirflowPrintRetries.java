@@ -37,7 +37,7 @@ public class AirflowPrintRetries extends AbstractTestNGSpringContextTests {
     @Autowired
     private AdapterTestManager adapterTestManager;
 
-    private final int MIN_RETRIES_TO_DISPLAY = 1;
+    private final int MIN_TRIES_TO_DISPLAY = 2;
 
     private Instant endTime = Instant.now();
     private Instant startTime = Instant.now().minus(1, DAYS);
@@ -54,7 +54,7 @@ public class AirflowPrintRetries extends AbstractTestNGSpringContextTests {
 
         airflowTasksWithRetries = airflowDbHelper.fetchRetries(startTime)
                 .parallelStream()
-                .filter(task -> task.tryNumber >= MIN_RETRIES_TO_DISPLAY)
+                .filter(task -> task.tryNumber >= MIN_TRIES_TO_DISPLAY)
                 .collect(Collectors.toList());
     }
 
@@ -62,7 +62,7 @@ public class AirflowPrintRetries extends AbstractTestNGSpringContextTests {
     @Test
     public void print_retries() {
         if (airflowTasksWithRetries.isEmpty()) {
-            LOGGER.info("Not found tasks with reties amount more then " + MIN_RETRIES_TO_DISPLAY);
+            LOGGER.info("Not found tasks with reties amount more then " + MIN_TRIES_TO_DISPLAY);
             assertThat(true).isTrue();
         }
 
