@@ -27,7 +27,6 @@ import presidio.input.core.services.impl.SchemaFactory;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
 import presidio.input.core.services.transformation.managers.*;
-import fortscale.utils.transform.BeanPropertiesAutowireService;
 import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
@@ -80,9 +79,6 @@ public class InputCoreConfiguration {
     private FactoryService<Transformer> transformerFactoryService;
 
     @Autowired
-    public BeanPropertiesAutowireService beanPropertiesAutowireService;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -110,12 +106,6 @@ public class InputCoreConfiguration {
         return transformerFactoryService;
     }
 
-    //todo: necessary or can be removed?
-    @Bean
-    public BeanPropertiesAutowireService deserializedAutowireService(){
-        return new BeanPropertiesAutowireService();
-    }
-
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
@@ -123,7 +113,7 @@ public class InputCoreConfiguration {
 
     @Bean
     public DeserializerTransformationService deserializerTransformationService(){
-        return new DeserializerTransformationService(objectMapper, configurationFilePath, beanPropertiesAutowireService);
+        return new DeserializerTransformationService(objectMapper, configurationFilePath);
     }
 
     @Bean

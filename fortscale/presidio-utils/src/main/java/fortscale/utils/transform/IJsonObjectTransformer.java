@@ -26,4 +26,5 @@ import org.json.JSONObject;
 public interface IJsonObjectTransformer extends GenericTransformer<JSONObject> {
     JSONObject transform(JSONObject jsonObject);
     String getName();
+    default void postAutowireProcessor() {};
 }

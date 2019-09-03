@@ -3,7 +3,7 @@ package presidio.input.core.services.impl;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.transform.AbstractJsonObjectTransformer;
+import fortscale.utils.transform.IJsonObjectTransformer;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,7 +66,7 @@ public class InputCoreManager {
         if (pageSize == null) {
             pageSize = DEFAULT_PAGE_SIZE;
         }
-        List<AbstractJsonObjectTransformer> transformers = deserializerTransformationService.getTransformers(schema, startDate, endDate);
+        List<IJsonObjectTransformer> transformers = deserializerTransformationService.getTransformers(schema, startDate, endDate);
         RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, inputPersistencyService, schema, pageSize);
         List transformedEvents = null;
         List nextEvents = null;

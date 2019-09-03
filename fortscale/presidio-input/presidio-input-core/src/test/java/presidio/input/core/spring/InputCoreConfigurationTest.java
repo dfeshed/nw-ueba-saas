@@ -28,7 +28,6 @@ import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputCoreManager;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
-import fortscale.utils.transform.BeanPropertiesAutowireService;
 import presidio.input.core.services.transformation.DeserializerTransformationService;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
@@ -68,9 +67,6 @@ public class InputCoreConfigurationTest {
     private OutputDataServiceSDK outputDataServiceSDK;
 
     @Autowired
-    public BeanPropertiesAutowireService beanPropertiesAutowireService;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -81,12 +77,6 @@ public class InputCoreConfigurationTest {
         return new HashMap<>();
     }
 
-    //todo: necessarily?
-    @Bean
-    public BeanPropertiesAutowireService deserializedAutowireService(){
-        return new BeanPropertiesAutowireService();
-    }
-
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
@@ -94,7 +84,7 @@ public class InputCoreConfigurationTest {
 
     @Bean
     public DeserializerTransformationService deserializerTransformationService(){
-        return new DeserializerTransformationService(objectMapper, configurationFilePath, beanPropertiesAutowireService);
+        return new DeserializerTransformationService(objectMapper, configurationFilePath);
     }
 
     @Bean
