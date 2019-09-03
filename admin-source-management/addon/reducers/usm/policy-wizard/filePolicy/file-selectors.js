@@ -173,6 +173,8 @@ export const exFilterValidator = (state) => {
   let error = false;
   let enableMessage = false;
   let message = '';
+  let invalidFilter = '';
+  let invalidFilterIndex = -1;
   const value = sources(state);
 
   if (value) {
@@ -192,7 +194,8 @@ export const exFilterValidator = (state) => {
             new RegExp(filter);
           } catch (e) {
             error = true;
-            enableMessage = true;
+            invalidFilter = filter;
+            invalidFilterIndex = s;
             message = 'adminUsm.policyWizard.filePolicy.exclusionFiltersSyntaxError';
             return false;
           }
@@ -204,7 +207,9 @@ export const exFilterValidator = (state) => {
   return {
     isError: error,
     showError: enableMessage,
-    errorMessage: message
+    errorMessage: message,
+    invalidFilter,
+    invalidFilterIndex
   };
 };
 

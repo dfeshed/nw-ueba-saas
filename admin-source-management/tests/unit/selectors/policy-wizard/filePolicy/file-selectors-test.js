@@ -297,8 +297,10 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
       .build();
     let validExpected = {
       isError: true,
-      showError: true,
-      errorMessage: 'adminUsm.policyWizard.filePolicy.exclusionFiltersSyntaxError'
+      showError: false,
+      errorMessage: 'adminUsm.policyWizard.filePolicy.exclusionFiltersSyntaxError',
+      invalidFilter: '[',
+      invalidFilterIndex: 1
     };
     let validActual = exFilterValidator(fullState);
     assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
@@ -313,7 +315,9 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     validExpected = {
       isError: true,
       showError: true,
-      errorMessage: 'adminUsm.policyWizard.filePolicy.exclusionFiltersLengthError'
+      errorMessage: 'adminUsm.policyWizard.filePolicy.exclusionFiltersLengthError',
+      invalidFilter: '',
+      invalidFilterIndex: -1
     };
 
     validActual = exFilterValidator(fullState);
@@ -326,7 +330,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
       .policyWizFileSources(newSource)
       .policyWizVisited(visited)
       .build();
-    validExpected = { isError: false, showError: false, errorMessage: '' };
+    validExpected = { isError: false, showError: false, errorMessage: '', invalidFilter: '', invalidFilterIndex: -1 };
     validActual = exFilterValidator(fullState);
     assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
   });

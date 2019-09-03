@@ -18,6 +18,14 @@ export default DataTableBody.extend({
     }
   },
 
+  @computed('exFilterInvalidIndex')
+  exFiltersErrLineIndex(invalidIndex) {
+    // if there is an invalid exclusion filter, add +1 to index to get the line number
+    if (invalidIndex !== -1) {
+      return ++invalidIndex;
+    }
+  },
+
   actions: {
     setSelected(column, value) {
       this.set(`item.${column}`, value);

@@ -231,7 +231,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
     const isErrorClass = findAll('.exclusion-filters .is-error');
     assert.equal(isErrorClass.length, 1, 'is-error class is rendered');
-    assert.equal(findAll('.exclusion-filter-error')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
+    assert.equal(findAll('.exclusion-filter-error')[0].innerText, `${expectedMessage}1`, `Correct error message is showing: ${expectedMessage}`);
   });
 
   test('It shows the correct error message when the number of exclusion filters are invalid', async function(assert) {

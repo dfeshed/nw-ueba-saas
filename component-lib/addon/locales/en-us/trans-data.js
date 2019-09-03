@@ -5001,7 +5001,7 @@ effects the previewed source.',
         invalidDirPath: 'Path cannot be empty',
         invalidPathAngleBrackets: 'Path cannot contain angle brackets',
         dirPathEmpty: 'Provide at least one valid path',
-        exclusionFiltersSyntaxError: 'Syntax Error in the Regular Expression',
+        exclusionFiltersSyntaxError: 'Syntax error in the Regular Expression on line ',
         exclusionFiltersLengthError: 'Please limit the filters to 16',
         fileSourceType: {
           add: 'Add Selected File Type',
