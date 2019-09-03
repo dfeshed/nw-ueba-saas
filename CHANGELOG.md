@@ -1,3 +1,23 @@
+# [14.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.1.0)
+## Features
+* [ASOC-72705](https://bedfordjira.na.rsa.net/browse/ASOC-72705):&emsp;Meta-Value Suggestion Keyboard Navigation/Highlighting
+* [ASOC-72706](https://bedfordjira.na.rsa.net/browse/ASOC-72706):&emsp;Meta-Value Suggestion Pill Creation/Edit
+* [ASOC-73648](https://bedfordjira.na.rsa.net/browse/ASOC-73648):&emsp;Cache Reconstructed content
+* [ASOC-74227](https://bedfordjira.na.rsa.net/browse/ASOC-74227):&emsp;Automatically Insert Open/Close Parens Around Pills
+* [ASOC-74228](https://bedfordjira.na.rsa.net/browse/ASOC-74228):&emsp;Adding Pills In/Around Parens
+* [ASOC-74229](https://bedfordjira.na.rsa.net/browse/ASOC-74229):&emsp;Handling Close Paren
+* [ASOC-76124](https://bedfordjira.na.rsa.net/browse/ASOC-76124):&emsp;Handle Large Messages
+* [ASOC-76126](https://bedfordjira.na.rsa.net/browse/ASOC-76126):&emsp;Allow Expand Collapse When Multiple Messages or Threads
+* [ASOC-77262](https://bedfordjira.na.rsa.net/browse/ASOC-77262):&emsp;Ensure file policy entries are adequately validated when navigating through policy creation steps
+* [ASOC-77913](https://bedfordjira.na.rsa.net/browse/ASOC-77913):&emsp;Nest All Events that are Children
+* [ASOC-81368](https://bedfordjira.na.rsa.net/browse/ASOC-81368):&emsp;Misc Query Pill Updates v1
+* [ASOC-81825](https://bedfordjira.na.rsa.net/browse/ASOC-81825):&emsp;Validate that paths do not include <> characters
+* [ASOC-82037](https://bedfordjira.na.rsa.net/browse/ASOC-82037):&emsp;Create a cluster-force for entity-types
+* [ASOC-82059](https://bedfordjira.na.rsa.net/browse/ASOC-82059):&emsp;Get the performance tests running again in master.
+* [ASOC-82116](https://bedfordjira.na.rsa.net/browse/ASOC-82116):&emsp;Column Group keyboard navigation
+* [ASOC-82405](https://bedfordjira.na.rsa.net/browse/ASOC-82405):&emsp;Add sliders to allow user to adjust link strength in nodal graph of incidents
+
+
 # [13.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v13.5.0)
 ## Features
 * [ASOC-74233](https://bedfordjira.na.rsa.net/browse/ASOC-74233):&emsp;Paren Selection
