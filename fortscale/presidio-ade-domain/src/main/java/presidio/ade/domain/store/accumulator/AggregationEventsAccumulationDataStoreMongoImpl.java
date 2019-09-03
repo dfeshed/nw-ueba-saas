@@ -140,20 +140,42 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
             String contextId,
             Instant startTimeFrom,
             Instant startTimeTo) {
-        logger.debug("getting accumulated events for featureName={}", aggregatedFeatureName);
-
-
-        AccumulatedRecordsMetaData metadata = new AccumulatedRecordsMetaData(aggregatedFeatureName);
-        String collectionName = getCollectionName(metadata);
-
         Query query = new Query();
-        if (contextId != null) {
-            query.addCriteria(where(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD)
-                    .is(contextId));
-        }
+        addContextIdCriteria(query, contextId);
+        addStartTimeRangeCriteria(query, startTimeFrom, startTimeTo);
+
+        return findAccumulatedEventsByQuery(aggregatedFeatureName, query);
+    }
+
+    @Override
+    public List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByStartTimeRange(
+            String aggregatedFeatureName,
+            Instant startTimeFrom,
+            Instant startTimeTo) {
+        Query query = new Query();
+        addStartTimeRangeCriteria(query, startTimeFrom, startTimeTo);
+
+        return findAccumulatedEventsByQuery(aggregatedFeatureName, query);
+    }
+
+    private void addContextIdCriteria(Query query, String contextId){
+        query.addCriteria(where(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD)
+                .is(contextId));
+    }
+
+    private void addStartTimeRangeCriteria(Query query, Instant startTimeFrom, Instant startTimeTo){
         query.addCriteria(where(AdeRecord.START_INSTANT_FIELD)
                 .gte(startTimeFrom)
                 .lt(startTimeTo));
+    }
+
+    private List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByQuery(
+            String aggregatedFeatureName,
+            Query query){
+        logger.debug("getting accumulated events for featureName={}", aggregatedFeatureName);
+
+        String collectionName = getCollectionName(new AccumulatedRecordsMetaData(aggregatedFeatureName));
+
         List<AccumulatedAggregationFeatureRecord> accumulatedAggregatedFeatureEvents =
                 mongoTemplate.find(query, AccumulatedAggregationFeatureRecord.class, collectionName);
 

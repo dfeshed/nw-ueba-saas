@@ -3,8 +3,7 @@ package fortscale.ml.model.retriever;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.ml.model.metrics.AccumulatedAggregatedFeatureValueGlobalRetrieverMetricsContainer;
-import fortscale.ml.model.metrics.MaxContinuousModelRetrieverMetricsContainer;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 
@@ -33,9 +32,8 @@ public class AccumulatedAggregatedFeatureValueGlobalRetriever extends AbstractAg
                                                                    Date startTime,
                                                                    Date endTime) {
         Validate.isTrue(contextId == null, "contextId is expected to be null.");
-        List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecords = aggregationEventsAccumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(
+        List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecords = aggregationEventsAccumulationDataReader.findAccumulatedEventsByStartTimeRange(
                 aggregatedFeatureEventConf.getName(),
-                null,
                 getStartTime(endTime).toInstant(),
                 endTime.toInstant()
         );
@@ -45,11 +43,11 @@ public class AccumulatedAggregatedFeatureValueGlobalRetriever extends AbstractAg
 
         //ret.compute((long)occurrence, (k,v) -> v == null ? 1 : v+1);
         accumulatedAggregationFeatureRecords.forEach(accumulatedRecord -> {
-                    accumulatedRecord.getAggregatedFeatureValues().entrySet().stream().
-                            forEach(entry ->
+                    accumulatedRecord.getAggregatedFeatureValues().
+                            forEach((key,value) ->
                                     startInstantToValue.compute(
-                                            accumulatedRecord.getStartInstant().plus(Duration.ofHours(entry.getKey())),
-                                            (k, v) -> v == null ? entry.getValue() : Math.max(v, entry.getValue())));
+                                            accumulatedRecord.getStartInstant().plus(Duration.ofHours(key)),
+                                            (k, v) -> v == null ? value : Math.max(v, value)));
                 }
         );
 

@@ -35,6 +35,19 @@ public interface AggregationEventsAccumulationDataReader {
             Instant endTime);
 
     /**
+     *
+     * @param aggregatedFeatureName feature name
+     * @param contextId context id
+     * @param startTime start date
+     * @param endTime end date
+     * @return accumulated records by contextId and start timeRange
+     */
+    List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByStartTimeRange(
+            String aggregatedFeatureName,
+            Instant startTime,
+            Instant endTime);
+
+    /**
      * @see this#findAccumulatedEventsByContextIdAndStartTimeRange(String, String, Instant, Instant) - this method is just syntactic sugar
      */
     default List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByContextIdAndStartTimeRange(
