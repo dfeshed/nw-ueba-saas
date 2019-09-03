@@ -117,23 +117,55 @@
     }
 
     .item-details {
-      min-width: 300px;
+      min-width: 400px;
 
       // TODO list-body to something else
       .list-body {
-        color: text-color(primary, lighter);
-        padding:0.4rem;;
+        padding:0.4rem;
         > div {
-          padding: 0.4rem;;
+          padding: 0.4rem;
         }
         .details-header {
           justify-content: space-between;
           display: inline-flex;
           width: 96%;
           text-transform: uppercase;
-          font-size: 12px;
+          .title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: text-color(primary, lighter);
+            letter-spacing: 1px;
+          }
           i {
             margin-right: 0;
+          }
+        }
+
+        .details-body {
+          > div > div {
+            padding-bottom: 1.15rem;
+          }
+        }
+        .name {
+          letter-spacing: 0.75px;
+          color: text-color(primary, lighter);
+          text-transform: uppercase;
+          font-size: 0.7rem;
+          font-weight: 700;
+          padding-bottom: 0.25rem;
+        }
+        .value {
+          color: text-color(primary, lightest);
+          font-size: 0.85rem;
+          font-weight: 300;
+          line-height: 1.5rem;
+        }
+        ul {
+          height: 160px;
+          width: 100%;
+          overflow-y: auto;
+          li {
+            line-height: 2em;
           }
         }
       }

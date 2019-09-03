@@ -1,11 +1,11 @@
 <div class='group-name'>
-  <label> Group Name </label>
-  <h3>{{columnGroup.name}}</h3>
+  <div class='name'> Group Name </div>
+  <div class='value'>{{columnGroup.name}}</div>
 </div>
 
 <div class='group-details'>
-  <label> Displayed Meta Keys </label>
-  <ul class='column-list'>
+  <div class='name'> Displayed Meta Keys </div>
+  <ul class='column-list value'>
     {{#each columnGroup.columns as |column|}}
       <li>
         <span>{{column.field}}</span>

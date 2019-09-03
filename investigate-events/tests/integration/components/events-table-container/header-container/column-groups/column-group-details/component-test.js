@@ -22,9 +22,9 @@ module('Integration | Component | Column Group Details', function(hooks) {
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details columnGroup=item}}`);
 
     assert.ok(find('.column-group-details'), 'Column Group Details rendered correctly');
-    assert.equal(find('.group-name label').textContent.trim(), 'Group Name');
-    assert.equal(find('.group-name h3').textContent.trim(), 'Threat Analysis');
-    assert.equal(find('.group-details label').textContent.trim(), 'Displayed Meta Keys');
+    assert.equal(find('.group-name .name').textContent.trim(), 'Group Name');
+    assert.equal(find('.group-name .value').textContent.trim(), 'Threat Analysis');
+    assert.equal(find('.group-details .name').textContent.trim(), 'Displayed Meta Keys');
     assert.equal(findAll('.group-details ul.column-list li').length, 57, '57 columns for Threat Analysis rendered');
   });
 
