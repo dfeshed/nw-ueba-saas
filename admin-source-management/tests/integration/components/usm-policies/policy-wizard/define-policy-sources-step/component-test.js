@@ -234,6 +234,21 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(findAll('.exclusion-filter-error')[0].innerText, `${expectedMessage}1`, `Correct error message is showing: ${expectedMessage}`);
   });
 
+  test('It shows the correct error message when the exclusion filter has empty lines', async function(assert) {
+    const invalidSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: 'apache-server-1', exclusionFilters: ['abc', '', 'def'], paths: ['path1', 'path2'] } ];
+    const translation = this.owner.lookup('service:i18n');
+    const expectedMessage = translation.t('adminUsm.policyWizard.filePolicy.exclusionFiltersEmptyLines');
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(invalidSource)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    const isErrorClass = findAll('.exclusion-filters .is-error');
+    assert.equal(isErrorClass.length, 1, 'is-error class is rendered');
+    assert.equal(findAll('.exclusion-filter-error')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
+  });
+
   test('It shows the correct error message when the number of exclusion filters are invalid', async function(assert) {
     const invalidSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: 'apache-server-1', exclusionFilters: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17'], paths: ['path1', 'path2'] } ];
     const translation = this.owner.lookup('service:i18n');

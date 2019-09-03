@@ -5003,6 +5003,7 @@ effects the previewed source.',
         dirPathEmpty: 'Provide at least one valid path',
         exclusionFiltersSyntaxError: 'Syntax error in the Regular Expression on line ',
         exclusionFiltersLengthError: 'Please limit the filters to 16',
+        exclusionFiltersEmptyLines: 'Exclusion Filters cannot contain empty lines',
         fileSourceType: {
           add: 'Add Selected File Type',
           placeholder: 'Pick a Log File Type'

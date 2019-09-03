@@ -323,6 +323,24 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     validActual = exFilterValidator(fullState);
     assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
 
+    // invalid - when the there are empty lines in exclusion filters
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: '10.42.42.42', exclusionFilters: ['1', '2', '', '4'], paths: ['path1', 'path2'] } ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.policyWizard.filePolicy.exclusionFiltersEmptyLines',
+      invalidFilter: '',
+      invalidFilterIndex: -1
+    };
+
+    validActual = exFilterValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
+
     // valid value
     newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
     fullState = new ReduxDataHelper()

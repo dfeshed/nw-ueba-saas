@@ -37,8 +37,7 @@ export default DataTableBody.extend({
       // convert the entered string into an array delimited by a new line and store in state
       let arr = [];
       if (value.trim()) {
-        // filter to remove empty/null/whitespace entries from array
-        arr = value.trim().split('\n').filter((e) => Boolean(e.trim()));
+        arr = value.trim().split('\n');
       }
       this.set(`item.${column}`, arr);
       this.get('sourceUpdated')();

@@ -181,6 +181,13 @@ export const exFilterValidator = (state) => {
     // sources is an array of objects, loop through each obj and validate the sourceName within
     value.every((obj) => {
       const { exclusionFilters } = obj;
+      // exclusion filters should not contain any empty lines
+      if (exclusionFilters && exclusionFilters.indexOf('') > -1) {
+        error = true;
+        enableMessage = true;
+        message = 'adminUsm.policyWizard.filePolicy.exclusionFiltersEmptyLines';
+        return false;
+      }
       if (exclusionFilters && exclusionFilters.length > 16) {
         error = true;
         enableMessage = true;
