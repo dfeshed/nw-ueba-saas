@@ -41,7 +41,6 @@ public class AccumulatedAggregatedFeatureValueGlobalRetriever extends AbstractAg
 
         TreeMap<Instant, Double> startInstantToValue = new TreeMap<>();
 
-        //ret.compute((long)occurrence, (k,v) -> v == null ? 1 : v+1);
         accumulatedAggregationFeatureRecords.forEach(accumulatedRecord -> {
                     accumulatedRecord.getAggregatedFeatureValues().
                             forEach((key,value) ->

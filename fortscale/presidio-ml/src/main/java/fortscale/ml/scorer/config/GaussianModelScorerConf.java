@@ -22,7 +22,7 @@ public class GaussianModelScorerConf extends ModelScorerConf{
 								   @JsonProperty("global-influence") Integer globalInfluence) {
         super(name, modelInfo, additionalModelInfos);
         Assert.isTrue(additionalModelInfos == null || additionalModelInfos.size() <= 1,
-                "additional model info should not contain more than 1 model.");
+                "additional model infos should not contain more than 1 model.");
         SMARTValuesModelScorerAlgorithm.assertGlobalInfluence(globalInfluence);
         this.globalInfluence = globalInfluence;
     }

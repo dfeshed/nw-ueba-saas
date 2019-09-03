@@ -47,7 +47,7 @@ public class GaussianModelScorer extends AbstractModelTerminalScorer {
         if(additionalModels.size() > 0) {
             if (additionalModels.size() > 1 || !(additionalModels.get(0) instanceof GaussianPriorModel)) {
                 throw new IllegalArgumentException(this.getClass().getSimpleName() +
-                        ".calculateScore expects to get one additional model of type " + GaussianPriorModel.class.getSimpleName());
+                        ".calculateScore expects to get at most one additional model of type " + GaussianPriorModel.class.getSimpleName());
             }
             gaussianPriorModel = (GaussianPriorModel) additionalModels.get(0);
         }

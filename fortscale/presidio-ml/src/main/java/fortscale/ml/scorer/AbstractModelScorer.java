@@ -53,10 +53,11 @@ public abstract class AbstractModelScorer extends AbstractScorer {
             Assert.hasText(additionalModelName, "additional model names cannot be empty or blank.");
         }
 
-//        Assert.notEmpty(contextFieldNames, "List of context field names cannot be empty.");
+        Assert.notNull(contextFieldNames, "List of context field names cannot be null.");
         for (String contextFieldName : contextFieldNames) {
             Assert.hasText(contextFieldName, "context field name cannot be null, empty or blank.");
         }
+        Assert.notNull(additionalContextFieldNames, "List of additional context field names cannot be null.");
         for (List<String> c : additionalContextFieldNames) {
             for (String contextFieldName : c) {
                 Assert.hasText(contextFieldName, "context field name cannot be null, empty or blank.");
