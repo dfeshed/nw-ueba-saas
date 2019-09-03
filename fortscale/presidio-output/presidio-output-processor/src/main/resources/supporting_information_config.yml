@@ -1714,7 +1714,7 @@ indicators:
 
 - id: numberOfDistinctSrcIpToNewDomainScoresSumSslSubjectOutboundTlsHourly
   type: FEATURE_AGGREGATION
-  name: high_number_of_distinct_src_ip_to_new_domain_for_new_ssl_subject_outbound
+  name: high_number_of_distinct_src_ip_to_new_domain_for_ssl_subject_outbound
   schema: TLS
   adeEventType: tls
   modelContextFields:
@@ -1733,7 +1733,7 @@ indicators:
 
 - id: numberOfDistinctSrcIpToNewDstOrgScoresSumSslSubjectOutboundTlsHourly
   type: FEATURE_AGGREGATION
-  name: high_number_of_distinct_src_ip_to_new_dst_org_for_new_ssl_subject_outbound
+  name: high_number_of_distinct_src_ip_to_new_dst_org_for_ssl_subject_outbound
   schema: TLS
   adeEventType: tls
   modelContextFields:
@@ -1752,7 +1752,7 @@ indicators:
 
 - id: numberOfDistinctSrcIpToNewDstPortScoresSumSslSubjectOutboundTlsHourly
   type: FEATURE_AGGREGATION
-  name: high_number_of_distinct_src_ip_to_new_dst_port_for_new_ssl_subject_outbound
+  name: high_number_of_distinct_src_ip_to_new_dst_port_for_ssl_subject_outbound
   schema: TLS
   adeEventType: tls
   modelContextFields:
