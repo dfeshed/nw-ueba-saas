@@ -1,17 +1,82 @@
 [
   {
     "type": "operation-type-categories-transformer",
-    "schema": "active_directory",
     "name": "operation-type-categories",
     "inputOperationTypeFieldName": "operationType",
     "inputOperationTypeCategoriesFieldName": "operationTypeCategories",
-    "outputOperationTypeCategoriesFieldName": "operationTypeCategories"
+    "outputOperationTypeCategoriesFieldName": "operationTypeCategories",
+    "operationTypeCategoriesMapping": {
+      "USER_ACCOUNT_ENABLED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_DISABLED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_LOCKED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_UNLOCKED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_PASSWORD_CHANGED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_PASSWORD_RESET": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_RE_ENABLED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_TYPE_CHANGED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_PASSWORD_NEVER_EXPIRES_OPTION_CHANGED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_DO_NOT_REQUIRE_KERBEROS_PREAUTHENTICATION_OPTION_CHANGED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_IS_TRUSTED_FOR_DELEGATION_OPTION_CHANGED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_IS_SENSITIVE_AND_CANNOT_BE_DELEGATED_OPTION_CHANGED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ]
+    }
   },
   {
     "type": "operation-type-categories-hierarchy-transformer",
     "name": "operation-type-hierarchy",
-    "schema": "active_directory",
     "inputFieldName": "operationTypeCategories",
-    "outputFieldName": "operationTypeCategories"
+    "outputFieldName": "operationTypeCategories",
+    "operationTypeCategoriesHierarchyMapping": {
+      "COMPUTER_MANAGEMENT": [
+        "OBJECT_MANAGEMENT"
+      ],
+      "GROUP_MANAGEMENT": [
+        "OBJECT_MANAGEMENT"
+      ],
+      "DOMAIN_MANAGEMENT": [
+        "OBJECT_MANAGEMENT"
+      ],
+      "GROUP_MEMBERSHIP_ADD_OPERATION": [
+        "GROUP_MEMBERSHIP_OPERATION"
+      ],
+      "GROUP_MEMBERSHIP_REMOVE_OPERATION": [
+        "GROUP_MEMBERSHIP_OPERATION"
+      ]
+    }
   }
 ]
