@@ -25,8 +25,10 @@ const getFileAnalysisData = (data, format, socketUrlPostfix, callback = { onSucc
           });
         },
         onFailure: (response) => {
-          const { meta: { message } } = response;
-          callback.onFailure(message);
+          const { meta } = response;
+          if (meta) {
+            callback.onFailure(meta.message);
+          }
         }
       }
     });

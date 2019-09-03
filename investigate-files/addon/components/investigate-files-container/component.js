@@ -115,11 +115,11 @@ const Files = Component.extend({
 
     onAnalyzeFile() {
       const [selectedDetailFile] = this.get('selections');
-      const { serviceId } = selectedDetailFile;
+      const { serviceId, downloadInfo: { serviceId: sourceSid } } = selectedDetailFile;
       if (serviceId) {
         const { format, checksumSha256 } = selectedDetailFile;
         const fileFormat = componentSelectionForFileType(format).format || '';
-        window.open(`${window.location.origin}/investigate/files/${checksumSha256}?checksum=${checksumSha256}&sid=${serviceId}&fileFormat=${fileFormat}&tabName=ANALYSIS`, '_self');
+        window.open(`${window.location.origin}/investigate/files/${checksumSha256}?checksum=${checksumSha256}&sid=${serviceId}&sourceSid=${sourceSid}&fileFormat=${fileFormat}&tabName=ANALYSIS`, '_self');
       }
     },
 
