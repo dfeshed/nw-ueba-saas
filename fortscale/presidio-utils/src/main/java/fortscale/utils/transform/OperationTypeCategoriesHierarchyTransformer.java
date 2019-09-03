@@ -18,7 +18,7 @@ import java.util.*;
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("operation-type-categories-hierarchy-transformer")
-public class OperationTypeCategoriesHierarchyTransformer extends OperationTypeMappingTransformer {
+public class OperationTypeCategoriesHierarchyTransformer extends AbstractJsonObjectTransformer {
 
     private static final Logger logger = Logger.getLogger(OperationTypeCategoriesHierarchyTransformer.class);
 
