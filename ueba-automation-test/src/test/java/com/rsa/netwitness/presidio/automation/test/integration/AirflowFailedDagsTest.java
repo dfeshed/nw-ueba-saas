@@ -6,7 +6,6 @@ import com.rsa.netwitness.presidio.automation.jdbc.AirflowDbHelper;
 import com.rsa.netwitness.presidio.automation.jdbc.model.AirflowTaskFailTable;
 import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +20,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -52,19 +52,10 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
         List<AirflowTaskFailTable> airflowTaskFailTables = airflowDbHelper.fetchFailedTasks(startTime);
 
         assertThat(airflowTaskFailTables)
-                .overridingErrorMessage("Found Airflow failed DAGs." + errorMessage(airflowTaskFailTables))
+                .overridingErrorMessage("Found Airflow failed DAGs.\n" +
+                        airflowTaskFailTables.stream().map(AirflowTaskFailTable::toString).collect(joining("\n")))
                 .isEmpty();
     }
-
-    private String errorMessage(List<AirflowTaskFailTable> tasks) {
-        LOGGER.error("***********************************");
-        LOGGER.error("Failed DAGs: ");
-        System.out.println(StringUtils.join(tasks, "\n"));
-        LOGGER.error("***********************************");
-        return "";
-    }
-
-
 }
 
 
