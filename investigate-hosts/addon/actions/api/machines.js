@@ -289,7 +289,8 @@ const downloadSystemDump = (data, socketUrlPostfix) => {
  * @returns Promise that will resolve with the server response.
  * @public
  */
-const getMFTSubfolders = (pageNumber, pageSize, key, descending, expressionList) => {
+const getMFTSubfolders = (pageNumber, pageSize, key, descending, expressionList, socketUrlPostfix) => {
+
   let data = {
     pageNumber: pageNumber || 0,
     pageSize: pageSize || 100,
@@ -298,12 +299,16 @@ const getMFTSubfolders = (pageNumber, pageSize, key, descending, expressionList)
 
   data = addFilter(data, expressionList, 'mft');
   const request = lookup('service:request');
+  const streamSelector = lookup('service:stream-selector');
+
+  const method = 'mftGetRecords';
+  const modelName = 'endpoint';
+
   return request.promiseRequest({
-    method: 'mftGetRecords',
-    modelName: 'endpoint',
-    query: {
-      data
-    }
+    method,
+    modelName,
+    query: { data },
+    streamOptions: streamSelector.streamOptionSelector({ modelName, method, customOptions: { socketUrlPostfix } })
   });
 };
 

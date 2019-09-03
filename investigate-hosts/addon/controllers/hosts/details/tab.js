@@ -10,6 +10,8 @@ export default Controller.extend({
 
   checksum: null,
 
-  searchKey: null
+  searchKey: null,
+
+  mftSid: null
 
 });

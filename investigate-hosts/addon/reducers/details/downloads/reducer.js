@@ -19,7 +19,8 @@ const initialState = Immutable.from({
   isShowMFTView: false,
   selectedMftFile: null,
   selectedMftName: null,
-  hasNext: false
+  hasNext: false,
+  mftSid: null
 });
 
 const _toggleSelectedFile = (state, payload) => {
@@ -110,7 +111,9 @@ const hostDownloads = reduxActions.handleActions({
 
   [ACTION_TYPES.SET_SELECTED_DOWNLOADED_FILE_INDEX]: (state, { payload }) => state.set('selectedIndex', payload),
 
-  [ACTION_TYPES.SET_SELECTED_DOWNLOADED_MFT_FILE_INDEX]: (state, { payload }) => state.set('selectedMftIndex', payload)
+  [ACTION_TYPES.SET_SELECTED_DOWNLOADED_MFT_FILE_INDEX]: (state, { payload }) => state.set('selectedMftIndex', payload),
+
+  [ACTION_TYPES.SET_MFT_EPS]: (state, { payload }) => state.set('mftSid', payload)
 
 }, initialState);
 

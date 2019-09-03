@@ -166,7 +166,7 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
     await click('.downloaded-file-name a');
     assert.deepEqual(transitions, [{
       name: 'hosts.details.tab.mft',
-      queryParams: { sid: 'abcd' }
+      queryParams: { mftSid: 'abcd' }
     }]);
   });
 

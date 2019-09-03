@@ -19,7 +19,8 @@ const initialState = {
   isShowMFTView: false,
   selectedMftFile: null,
   selectedMftName: null,
-  hasNext: false
+  hasNext: false,
+  mftSid: null
 };
 
 module('Unit | Reducers | downloads', function() {
@@ -175,6 +176,15 @@ module('Unit | Reducers | downloads', function() {
     const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_DOWNLOADED_MFT_FILE_INDEX, payload: 3 });
 
     assert.equal(result.selectedMftIndex, 3);
+  });
+
+  test('The SET_MFT_EPS will set the selected MFT sid ', function(assert) {
+    const previous = Immutable.from({
+      mftSid: 'testMftSid'
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_MFT_EPS, payload: 'updatedTestMftSid' });
+
+    assert.equal(result.mftSid, 'updatedTestMftSid');
   });
 
 });

@@ -169,7 +169,7 @@ const toggleMftView = (selectedFile) => ({ type: ACTION_TYPES.TOGGLE_MFT_VIEW, p
 const _fetchMFTDirectory = (type, recordNumber, isApplyfilter = true, pageNumberReset = false) => {
   return (dispatch, getState) => {
     const state = getState();
-    const { selectedMftFile } = state.endpoint.hostDownloads.downloads;
+    const { selectedMftFile, mftSid } = state.endpoint.hostDownloads.downloads;
     const { sortField, isSortDescending, pageNumber, pageSize, isDirectories, inUse, fileSource } = state.endpoint.hostDownloads.mft.mftDirectory;
     // Filter needs to be used only for the table structure
     const expressionList = isApplyfilter ? state.endpoint.hostDownloads.mft.filter.expressionList : [];
@@ -228,7 +228,7 @@ const _fetchMFTDirectory = (type, recordNumber, isApplyfilter = true, pageNumber
 
     dispatch({
       type,
-      promise: Machines.getMFTSubfolders(pageNumberUpdated, pageSize, sortField, isSortDescending, updatedExpressionList),
+      promise: Machines.getMFTSubfolders(pageNumberUpdated, pageSize, sortField, isSortDescending, updatedExpressionList, mftSid),
       meta: {
         onSuccess: (response) => {
           const debugResponse = JSON.stringify(response);
