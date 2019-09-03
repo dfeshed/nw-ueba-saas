@@ -31,7 +31,7 @@ public class MongoProgressTask implements Runnable {
 
     public void run() {
         Optional<Instant> result = Optional.ofNullable(dataRepo.maxDateTimeBetween(start, end));
-        LOGGER.info("[" + collectionName + "] - Query result from start_time=" + start + " is " + result);
+        LOGGER.info("[" + collectionName + "] - Max dateTime = " + result + " (start_time=" + start + ")");
 
         if (result.isPresent() && result.get().isAfter(start)) start = result.get().minusSeconds(10);
         result.ifPresent(e -> eventTimeHistory.push(e));
@@ -49,7 +49,7 @@ public class MongoProgressTask implements Runnable {
 
 
     boolean isProcessingStillInProgress(int bucketsToCheck) {
-        LOGGER.info("[" + collectionName + "] - Last samples: " + eventTimeHistory);
+        LOGGER.info("[" + collectionName + "] - dateTime history: " + eventTimeHistory);
 
         if (eventTimeHistory.isEmpty()) return false;
 

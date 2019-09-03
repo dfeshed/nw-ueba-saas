@@ -11,10 +11,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MongoCollectionsMonitor {
@@ -30,8 +30,8 @@ public class MongoCollectionsMonitor {
     private long DELAY_BEFORE_FIRST_TASK_STARTED = TASK_FREQUENCY_MINUTES + ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK; // 25 min
     private List<MongoProgressTask> tasks;
     private int TIME_BUCKETES_TO_CHECK = 6;
-    private TimeUnit TIME_UNITS = MINUTES;
-
+    private TimeUnit TIME_UNITS = TimeUnit.MINUTES;
+    private Supplier<ChronoUnit> TIME_UNITS_CHRONO = () -> ChronoUnit.valueOf(TIME_UNITS.name());
 
     public MongoCollectionsMonitor(List<? extends AdapterAbstractStoredDataRepository> collectionToMonitor) {
         if (collectionToMonitor != null && !collectionToMonitor.isEmpty())
@@ -62,8 +62,8 @@ public class MongoCollectionsMonitor {
 
     public boolean waitForResult() throws InterruptedException {
         boolean dataProcessingStillInProgress = true;
-        
-        LOGGER.info("First check time is " + Instant.now().plus(DELAY_BEFORE_FIRST_TASK_STARTED + 1, ChronoUnit.MINUTES));
+
+        LOGGER.info("First check time: " + Instant.now().plus(DELAY_BEFORE_FIRST_TASK_STARTED + 1, TIME_UNITS_CHRONO.get()));
         TIME_UNITS.sleep(DELAY_BEFORE_FIRST_TASK_STARTED + 1); // 26 min
         LOGGER.info("Going to check if data processing started.");
         boolean isDataProcessingStarted = tasks.stream()
@@ -79,6 +79,7 @@ public class MongoCollectionsMonitor {
                 .isTrue();
 
         while (dataProcessingStillInProgress) {
+            LOGGER.info("Next check: " + Instant.now().plus(TASK_STATUS_CHECK_FREQUENCY, TIME_UNITS_CHRONO.get()));
             TIME_UNITS.sleep(TASK_STATUS_CHECK_FREQUENCY);
 
             dataProcessingStillInProgress = tasks.stream()

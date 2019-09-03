@@ -43,7 +43,6 @@ public class MongoCollectionsMonitorTest extends AbstractTestNGSpringContextTest
 
     MongoCollectionsMonitor task;
 
-
     @Test
     public void tls_input_table_query_test() {
         Sort sort = new Sort(Sort.Direction.DESC, "dateTime");
@@ -55,8 +54,8 @@ public class MongoCollectionsMonitorTest extends AbstractTestNGSpringContextTest
 
     @Test
     public void mongo_monitoring_test() throws NoSuchFieldException, IllegalAccessException, InterruptedException {
-        task = new MongoCollectionsMonitor(Lists.newArrayList(activeDirectoryRepository, authenticationRepository,fileRepository,
-                processRepository, registryRepository, tlsRepository));
+        task = new MongoCollectionsMonitor(Lists.newArrayList(activeDirectoryRepository, authenticationRepository,
+                fileRepository, processRepository, registryRepository, tlsRepository));
 
         setField("TIME_UNITS", SECONDS);
         setField("DELAY_BEFORE_FIRST_TASK_STARTED", 3);
