@@ -1395,7 +1395,14 @@ indicators:
       - domain.name
     historicalData:
       - type: hourly_aggregations
+        featureName: maxSumOfBytesSentBySrcIpToDomainSslSubjectOutboundTlsHourly
+        contexts:
+          - domain.name
+          - sslSubject.name
+      - type: hourly_aggregations
         featureName: maxSumOfBytesSentBySrcIpToDomainOutboundTlsHourly
+        contexts:
+          - domain.name
     classification: data_exfiltration
 
   - id: maxSumOfBytesSentBySrcIpToSslSubjectOutboundTlsHourly

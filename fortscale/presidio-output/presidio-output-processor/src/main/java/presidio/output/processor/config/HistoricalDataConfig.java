@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "type",
@@ -20,6 +22,9 @@ public class HistoricalDataConfig {
 
     @JsonProperty("featureName")
     private String featureName;
+
+    @JsonProperty("contexts")
+    private List<String> contexts;
 
     @JsonProperty("type")
     public String getType() {
@@ -49,5 +54,15 @@ public class HistoricalDataConfig {
     @JsonProperty("featureName")
     public void setFeatureName(String featureName) {
         this.featureName = featureName;
+    }
+
+    @JsonProperty("contexts")
+    public List<String> getContexts() {
+        return contexts;
+    }
+
+    @JsonProperty("contexts")
+    public void setContexts(List<String> contexts) {
+        this.contexts = contexts;
     }
 }

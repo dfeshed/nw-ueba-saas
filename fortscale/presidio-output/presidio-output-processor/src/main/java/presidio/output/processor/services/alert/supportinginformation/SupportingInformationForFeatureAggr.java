@@ -95,11 +95,6 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
 
         Instant startInstant = adeAggregationRecord.getStartInstant().minus(historicalPeriodInDays, ChronoUnit.DAYS);
         TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
-        Map<String, String> modelContexts = indicatorConfig.getModelContextFields().stream().collect(Collectors.toMap(
-                Function.identity(),
-                field -> indicator.getContexts().get(field),
-                (oldValue, newValue) -> oldValue,
-                LinkedHashMap::new));
         Schema schema = indicatorConfig.getSchema();
         String anomalyValue = indicator.getAnomalyValue();
 
@@ -116,7 +111,8 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
 
             // populate historical data
             String featureName = historicalDataConfig.getFeatureName() == null? adeAggregationRecord.getFeatureName():historicalDataConfig.getFeatureName() ;
-            aggregation = aggregationDataPopulator.createAggregationData(timeRange, modelContexts, schema, featureName, anomalyValue, historicalDataConfig);
+            Map<String, String> contexts = historicalDataConfig.getContexts() == null ? getHistoricalDataContexts(indicatorConfig.getModelContextFields(), indicator) : getHistoricalDataContexts(historicalDataConfig.getContexts(), indicator);
+            aggregation = aggregationDataPopulator.createAggregationData(timeRange, contexts, schema, featureName, anomalyValue, historicalDataConfig);
             aggregations.add(aggregation);
         }
 
@@ -125,6 +121,15 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         historicalData.setSchema(indicator.getSchema());
 
         return historicalData;
+    }
+
+    private Map<String, String> getHistoricalDataContexts(List<String> contexts, Indicator indicator){
+        return contexts.stream().collect(Collectors.toMap(
+                Function.identity(),
+                field -> indicator.getContexts().get(field),
+                (oldValue, newValue) -> oldValue,
+                LinkedHashMap::new));
+
     }
 
 
