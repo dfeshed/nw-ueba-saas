@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render } from '@ember/test-helpers';
+import { findAll, render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -155,19 +155,52 @@ module('Integration | Component | mft-container/mft-file-path', function(hooks) 
     assert.equal(findAll('.filter')[0].textContent.trim().includes('No'), true, 'No filters applied');
 
   });
+  test('mft-file-path has slash if no selected directory name', async function(assert) {
+    new ReduxDataHelper(initState)
+      .hostDownloads(hostDownloads)
+      .selectedDirectoryForDetails(true)
+      .mftFilterExpressionList([{}])
+      .build();
+    await render(hbs`{{host-detail/downloads/mft-container/mft-file-path}}`);
+    assert.equal(findAll('.mft-file-path').length, 1, 'mft-file-path rendered');
+    assert.equal(findAll('.label')[0].textContent.trim().includes('Directory'), true, 'Directory label');
+    assert.equal(findAll('.path')[0].textContent.trim(), '/', 'default path');
+    assert.equal(findAll('.filter')[0].textContent.trim().includes('1'), true, 'One filters applied');
+
+  });
   test('mft-file-path has display message on One filters applied', async function(assert) {
     new ReduxDataHelper(initState)
       .hostDownloads(hostDownloads)
       .selectedDirectoryForDetails(true)
       .mftFilterExpressionList([{}])
       .mftFilePath('c:/')
+      .mftDirectoryName('temp')
       .build();
     await render(hbs`{{host-detail/downloads/mft-container/mft-file-path}}`);
     assert.equal(findAll('.mft-file-path').length, 1, 'mft-file-path rendered');
     assert.equal(findAll('.label')[0].textContent.trim().includes('Directory'), true, 'Directory label');
-    assert.equal(findAll('.path')[0].textContent.trim(), 'c:/', 'Path');
+    assert.equal(findAll('.path')[0].textContent.trim(), 'c:/temp', 'Path');
     assert.equal(findAll('.filter')[0].textContent.trim().includes('1'), true, 'One filters applied');
 
+  });
+
+  test('If click on mft-file-path', async function(assert) {
+    assert.expect(2);
+    this.set('openPanel', function() {
+      assert.ok(true, 'open panel is called');
+    });
+    new ReduxDataHelper(initState)
+      .hostDownloads(hostDownloads)
+      .selectedDirectoryForDetails(true)
+      .mftFilterExpressionList([{}])
+      .mftFilePath('c:/')
+      .mftDirectoryName('temp')
+      .build();
+    await render(hbs`{{host-detail/downloads/mft-container/mft-file-path openFilterPanel=openPanel}}`);
+    await click('.filter');
+    const state = this.owner.lookup('service:redux').getState();
+    const { showFilter } = state.endpoint.hostDownloads.mft.mftDirectory;
+    assert.equal(showFilter, true, 'Filter panel should open');
   });
 
 });

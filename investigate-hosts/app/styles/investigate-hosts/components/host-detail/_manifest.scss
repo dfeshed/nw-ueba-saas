@@ -27,6 +27,7 @@
     height: 0;
     display: none;
   }
+  height: 107vh;
 }
 .host-detail-wrapper {
   .manual-section ~ .manual-section {
@@ -37,7 +38,7 @@
   .rsa-data-table-header-cell:first-child {
     padding-left: 0.5rem;
   }
-  .rsa-data-table-body-row{
+  .rsa-data-table-body-row {
     left: 0;
     width: fit-content;
     min-width: 98%;

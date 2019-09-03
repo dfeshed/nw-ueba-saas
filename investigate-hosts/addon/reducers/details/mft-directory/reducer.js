@@ -29,7 +29,8 @@ const initialState = Immutable.from({
   hasMftNext: false,
   loading: 'wait',
   showFilter: false,
-  fullPathName: ''
+  fullPathName: '',
+  name: ''
 });
 
 const _addSubdirectoriesToParent = (directories, selectedParentDirectory, subDirectories, ancestors, recordNumber, subDirectoriesLevel) => {
@@ -140,7 +141,7 @@ const mftDirectory = reduxActions.handleActions({
 
 
   [ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY]: (state, { payload }) => {
-    const { selectedParentDirectory, pageSize, isDirectories, inUse, fullPathName } = payload;
+    const { selectedParentDirectory, pageSize, isDirectories, inUse, fullPathName, name } = payload;
     const { ancestors, recordNumber, close } = selectedParentDirectory;
     const { openDirectories } = state;
     const updatedAncestors = [...ancestors, recordNumber];
@@ -154,16 +155,17 @@ const mftDirectory = reduxActions.handleActions({
         }
       });
     }
-    return state.merge({ selectedParentDirectory, openDirectories: copyOfOpenDirectories, pageSize, isDirectories, inUse, fullPathName });
+    return state.merge({ selectedParentDirectory, openDirectories: copyOfOpenDirectories, pageSize, isDirectories, inUse, fullPathName, name });
   },
 
-  [ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS]: (state, { payload: { selectedDirectoryForDetails, fileSource, pageSize, isDirectories, inUse, fullPathName } }) => state.merge({
+  [ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS]: (state, { payload: { selectedDirectoryForDetails, fileSource, pageSize, isDirectories, inUse, fullPathName, name } }) => state.merge({
     selectedDirectoryForDetails,
     fileSource,
     pageSize,
     isDirectories,
     inUse,
     fullPathName,
+    name,
     selectedMftFileList: []
   }),
 

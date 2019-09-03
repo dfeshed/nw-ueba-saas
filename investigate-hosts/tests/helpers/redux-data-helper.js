@@ -467,6 +467,10 @@ export default class DataHelper {
     _set(this.state, 'hostDownloads.mft.mftDirectory.fullPathName', path);
     return this;
   }
+  mftDirectoryName(name) {
+    _set(this.state, 'hostDownloads.mft.mftDirectory.name', name);
+    return this;
+  }
   showMftFilter(value) {
     _set(this.state, 'hostDownloads.mft.mftDirectory.showFilter', value);
     return this;

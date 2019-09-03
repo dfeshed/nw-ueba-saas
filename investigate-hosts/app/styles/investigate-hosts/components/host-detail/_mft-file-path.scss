@@ -9,4 +9,10 @@
   .path {
     color: text-color(primary,lighter);
   }
+  .filter {
+    cursor: pointer;
+    label {
+      cursor: pointer;
+    }
+  }
 }

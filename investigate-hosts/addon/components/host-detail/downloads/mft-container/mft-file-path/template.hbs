@@ -1,10 +1,10 @@
 <span class='label'>
   {{t 'investigateHosts.downloads.mftViewer.fileLocation'}}
   <span class='path'>
-    {{fullPathName}}
+    {{location}}
   </span>
 </span>
-<span class='filter'>
-  |{{rsa-icon name='filter-2' size='small'}}
-  {{t 'investigateHosts.downloads.mftViewer.filtersApplied' count=filterCountLabel}}
+<span class='filter' {{action 'filterAction'}}>
+  |{{rsa-icon name='filter-2' size='small' }}
+  <label>{{t 'investigateHosts.downloads.mftViewer.filtersApplied' count=filterCountLabel}}</label>
 </span>

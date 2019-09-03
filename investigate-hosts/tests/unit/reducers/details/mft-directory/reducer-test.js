@@ -28,7 +28,8 @@ const initialState = {
   hasMftNext: false,
   loading: 'wait',
   showFilter: false,
-  fullPathName: ''
+  fullPathName: '',
+  name: ''
 };
 
 module('Unit | Reducers | mft-directory', function() {

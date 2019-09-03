@@ -4,7 +4,9 @@ import { connect } from 'ember-redux';
 import { setSelectedParentDirectory, getSubDirectories } from 'investigate-hosts/actions/data-creators/downloads';
 
 const stateToComputed = (state) => ({
-  openDirectories: state.endpoint.hostDownloads.mft.mftDirectory.openDirectories
+  openDirectories: state.endpoint.hostDownloads.mft.mftDirectory.openDirectories,
+  fullPathName: state.endpoint.hostDownloads.mft.mftDirectory.fullPathName,
+  directoryName: state.endpoint.hostDownloads.mft.mftDirectory.name
 });
 
 const dispatchToActions = {
@@ -34,6 +36,8 @@ const SubdirectoryAccess = Component.extend({
   actions: {
     toggleSubdirectories() {
       const { ancestors, recordNumber, children } = this.get('data');
+      const fullPathName = this.get('fullPathName');
+      const name = this.get('directoryName');
       // max number of folders is 65000 and fetch only directories is true for a fresh subdirectory fetch.
       let isDirectories = false;
       const inUse = true;
@@ -43,9 +47,9 @@ const SubdirectoryAccess = Component.extend({
           this.send('getSubDirectories');
           isDirectories = true;
         }
-        this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors, close: false }, pageSize: 65000, isDirectories, inUse });
+        this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors, close: false }, pageSize: 65000, isDirectories, inUse, fullPathName, name });
       } else {
-        this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors: [], close: true }, pageSize: 100, isDirectories, inUse });
+        this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors: [], close: true }, pageSize: 100, isDirectories, inUse, fullPathName, name });
       }
       this.toggleProperty('close');
     }
