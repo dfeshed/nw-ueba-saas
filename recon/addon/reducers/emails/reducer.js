@@ -5,7 +5,8 @@ import * as ACTION_TYPES from 'recon/actions/types';
 const emailsInitialState = Immutable.from({
   isEmail: true,
   emails: null,
-  renderIds: null
+  renderIds: null,
+  renderedAll: null
 });
 
 const emailsReducer = handleActions({
@@ -22,7 +23,8 @@ const emailsReducer = handleActions({
   },
 
   [ACTION_TYPES.EMAIL_RECEIVE_PAGE]: (state, { payload }) => {
-    return state.set('emails', state.emails ? state.emails.concat(payload) : payload);
+    const emailData = state.emails ? state.emails.concat(payload.data) : payload.data;
+    return state.merge({ ...state, emails: emailData, renderedAll: payload.meta.complete });
   }
 
 }, emailsInitialState);

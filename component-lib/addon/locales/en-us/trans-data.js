@@ -302,7 +302,8 @@ export default {
       replyTo: 'replyTo',
       sent: 'sent',
       additionalHeaderDetails: 'Additional Header Details',
-      attachmentWarningMessage: 'Warning: Email attachments contain the original raw unsecured content. Use caution when opening or downloading files; they may contain malicious data.'
+      attachmentWarningMessage: 'Warning: Email attachments contain the original raw unsecured content. Use caution when opening or downloading files; they may contain malicious data.',
+      showMore: 'Show More'
     },
     textView: {
       compressToggleLabel: 'Display Compressed Payloads',

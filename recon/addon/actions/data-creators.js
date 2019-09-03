@@ -167,7 +167,7 @@ const _handleFetchingNewData = (newViewCode) => {
       case RECON_VIEW_TYPES_BY_NAME.MAIL.code:
         fetchEmailData(
           _getTextAndPacketInputs(state),
-          (payload) => dispatch({ type: ACTION_TYPES.EMAIL_RECEIVE_PAGE, payload: payload.data }),
+          (payload) => dispatch({ type: ACTION_TYPES.EMAIL_RECEIVE_PAGE, payload }),
           (payload) => dispatch({ type: ACTION_TYPES.EMAIL_RENDER_NEXT, payload }),
           (response) => dispatch(_handleContentError(response, 'email'))
         );

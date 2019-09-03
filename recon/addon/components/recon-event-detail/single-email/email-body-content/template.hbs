@@ -1,3 +1,12 @@
 <div class="email-body-text">
-  {{renderEmailBodyContent}}
+  <div class="emailContent">
+    {{renderEmailBodyContent}}
+  </div>
+  {{#if displayShowMoreButton}}
+    <div class="email-show-more">
+      {{#rsa-form-button defaultAction= (action 'showRemainingEmailContent')}}
+        {{t 'recon.emailView.showMore' }}
+      {{/rsa-form-button}}
+    </div>
+  {{/if}}
 </div>

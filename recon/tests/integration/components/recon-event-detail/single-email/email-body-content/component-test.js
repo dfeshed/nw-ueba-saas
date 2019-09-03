@@ -1,73 +1,95 @@
 import wait from 'ember-test-helpers/wait';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render, find, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import EmberObject from '@ember/object';
-
-let emailData;
+import emailData from '../../../../../data/subscriptions/reconstruction-email-data/stream/data';
+import { patchReducer } from '../../../../../helpers/vnext-patch';
+import Immutable from 'seamless-immutable';
 
 module('Integration | Component | recon-event-detail/single-email/email-body-content', function(hooks) {
   setupRenderingTest(hooks);
-  hooks.beforeEach(function() {
-    emailData = {
-      'messageId': '6eea4274b865446289540926194068e9',
-      'messageKind': 'SMTP',
-      'from': 'eddard.stark@verizon.net',
-      'to': ['sansa.stark@verizon.net', 'arya.stark@verizon.net', 'robb.stark@verizon.net'],
-      'replyTo': '',
-      'cc': [],
-      'bcc': ['jon.snow@verizon.net'],
-      'subject': 'Winter is coming. Did anyone pay the plow guy?',
-      'sent': 1554308061869,
-      'received': 1554308861869,
-      'headers': [
-        {
-          'name': 'Received',
-          'value': 'from gwia.nw.gwu.edu ([161.253.150.112])rn  by iron3-smtp.tops.gwu.edu with ESMTP; 13 Feb 2008 11:55:13 -0500'
-        },
-        {
-          'name': 'Received',
-          'value': 'from GWIADOM-MTA by gwia.nw.gwu.edurntwith Novell_GroupWise; Wed, 13 Feb 2008 11:55:13 -0500'
-        },
-        { 'name': 'Mime-Version', 'value': '1.0' },
-        { 'name': 'Content-Type', 'value': 'text/plain; charset=US-ASCII' },
-        { 'name': 'Delivered-To', 'value': 'sansa.stark@verizon.net' }],
-      'bodyContentType': 'PlainText',
-      'bodyContent': 'email message text1 ...'
-    };
-  });
 
-  test('renders single email body content, if data present', async function(assert) {
-    this.set('email', EmberObject.create(emailData));
-    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
+  test('renders single email body content, if response is not splitted and body content is less then 10K characters', async function(assert) {
+    this.set('email', EmberObject.create(emailData[1]));
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email renderedAll=true}}`);
     return wait().then(() => {
       assert.ok(find('.email-body-text'), 'show single email message content');
+      assert.notOk(find('.email-show-more'), 'do not display show more button');
       const str = find('.email-body-text').textContent.trim().replace(/\s/g, '').substring(0, 200);
-      assert.equal(str, 'emailmessagetext1...');
+      assert.equal(str, 'emailmessagetext2...');
+    });
+  });
+
+  test('renders single email body content, if response is splitted and body content is more then 10K characters', async function(assert) {
+    const state = {
+      recon: {
+        emails: {
+          emails: emailData,
+          renderIds: ['6eea4274b86544628954f0926194068e9', '6eea4274b865446289540926194068e8']
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    this.set('email', EmberObject.create(emailData[0]));
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email renderedAll=false}}`);
+    return wait().then(() => {
+      assert.ok(find('.email-body-text'), 'show single email message content');
+      assert.ok(find('.email-show-more'), 'display show more button');
+      assert.equal(find('.emailContent').innerText.length, 10000, '10000 characters of email content has rendered');
+    });
+  });
+
+  test('click on show more button should render the remaining characters less than 10K ', async function(assert) {
+    const state = {
+      recon: {
+        emails: {
+          emails: emailData,
+          renderIds: ['6eea4274b86544628954f0926194068e9', '6eea4274b865446289540926194068e8']
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    this.set('email', EmberObject.create(emailData[0]));
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email renderedAll=false}}`);
+    assert.ok(find('.email-body-text'), 'show single email message content');
+    assert.ok(find('.email-show-more'), 'display show more button');
+    await click('.email-show-more .rsa-form-button');
+    return wait().then(() => {
+      assert.equal(find('.emailContent').innerText.length, 13222, 'remaining characters of email content has rendered on show more');
+      assert.notOk(find('.email-show-more'), 'do not display show more button');
+    });
+  });
+
+  test('click on show more button should render the remaining characters more than 10K ', async function(assert) {
+    const state = {
+      recon: {
+        emails: {
+          emails: emailData,
+          renderIds: ['6eea4274b86544628954f0926194068e9', '6eea4274b865446289540926194068e8']
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    this.set('email', EmberObject.create(emailData[3]));
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email renderedAll=false}}`);
+    assert.ok(find('.email-body-text'), 'show single email message content');
+    assert.ok(find('.email-show-more'), 'display show more button');
+    await click('.email-show-more .rsa-form-button');
+    return wait().then(() => {
+      assert.equal(find('.emailContent').innerText.length, 20000, '20000 remaining characters of email content has rendered on show more');
+      assert.ok(find('.email-show-more'), 'display show more button');
     });
   });
 
   test('renders single email html body content, if data present', async function(assert) {
-    emailData = EmberObject.create(emailData);
-    emailData.bodyContent = '&lt;BODY&gt;&lt;P&gt;email message text content&lt;/P&gt;&lt;/BODY&gt;';
-    this.set('email', EmberObject.create(emailData));
-    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
-    return wait().then(() => {
-      assert.ok(find('.email-body-text'), 'show single email message content');
-      const str = find('.email-body-text').textContent.trim().replace(/\s/g, '').substring(0, 200);
-      assert.equal(str, '&lt;BODY&gt;&lt;P&gt;emailmessagetextcontent&lt;/P&gt;&lt;/BODY&gt;');
-    });
+    this.set('email', EmberObject.create(emailData[2]));
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email renderedAll=true}}`);
+    assert.ok(find('.email-body-text'), 'show single email message content');
+    const str = find('.email-body-text').textContent.trim().replace(/\s/g, '').substring(0, 200);
+    assert.equal(str, '&lt;BODY&gt;&lt;P&gt;emailmessagetextcontent&lt;/P&gt;&lt;/BODY&gt;');
   });
-
-  test('do not renders single email body content, if data is not present', async function(assert) {
-    this.set('email', null);
-    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
-    return wait().then(() => {
-      assert.equal(find('.email-body-text').textContent.trim().length, 0);
-    });
-  });
-
 });
 
 
