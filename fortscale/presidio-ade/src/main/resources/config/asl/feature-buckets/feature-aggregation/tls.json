@@ -18,7 +18,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "distinctSrcIpHistogram",
+          "name": "srcIpHistogram",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -530,7 +530,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "distinctSrcIpHistogram",
+          "name": "srcIpHistogram",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -566,7 +566,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "distinctSrcIpHistogram",
+          "name": "srcIpHistogram",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -602,7 +602,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "distinctSrcIpHistogram",
+          "name": "srcIpHistogram",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -638,7 +638,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "distinctSrcIpHistogram",
+          "name": "srcIpHistogram",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"

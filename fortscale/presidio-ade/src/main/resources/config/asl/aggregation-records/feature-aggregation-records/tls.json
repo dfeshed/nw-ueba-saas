@@ -233,7 +233,7 @@
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "distinctSrcIpHistogram"
+          "srcIpHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -248,7 +248,7 @@
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "distinctSrcIpHistogram"
+          "srcIpHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -263,7 +263,7 @@
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "distinctSrcIpHistogram"
+          "srcIpHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -278,7 +278,7 @@
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "distinctSrcIpHistogram"
+          "srcIpHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -293,7 +293,7 @@
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "distinctSrcIpHistogram"
+          "srcIpHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
