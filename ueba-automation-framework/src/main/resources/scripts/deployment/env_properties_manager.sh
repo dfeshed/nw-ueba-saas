@@ -16,7 +16,7 @@ function createEnvironmentPropertiesFile {
     	    ADD_PARAMETER="--broker nw-node-zero"
     	fi
 
-    	orchestration-cli-client ${ADD_PARAMETER} --list-services | grep -oP 'NAME=\K([\w-]+), HOST=([\d\.]+)' | sed 's/, HOST//g' > ${ENV_PROPERTIES_PATH}
+    	orchestration-cli-client ${ADD_PARAMETER} --list-services | grep -oP 'NAME=\K([\w-]+), HOST=([\d\.]+)' | sed 's/, HOST//g' | sort > ${ENV_PROPERTIES_PATH}
         chmod 777 ${ENV_PROPERTIES_PATH}
         cat ${ENV_PROPERTIES_PATH}
 
