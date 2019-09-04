@@ -61,21 +61,24 @@ public class AirflowPrintRetries extends AbstractTestNGSpringContextTests {
 
     @Test
     public void print_retries() {
+        LOGGER.warn("Started on " + Instant.now());
+        LOGGER.warn("");
+
         if (airflowTasksWithRetries.isEmpty()) {
-            LOGGER.info("Not found tasks with reties amount more then " + MIN_TRIES_TO_DISPLAY);
-            assertThat(true).isTrue();
+            LOGGER.warn("Not found tasks with reties amount more then " + MIN_TRIES_TO_DISPLAY);
+        } else {
+            Stream<AirflowTaskInstanceTable> sorted = airflowTasksWithRetries.stream()
+                    .sorted(comparing(e -> e.executionDate, reverseOrder()));
+
+            LOGGER.warn("*************************************************");
+            LOGGER.warn("****** List of tasks with tries number > " + MIN_TRIES_TO_DISPLAY + " ******");
+            LOGGER.warn("*************************************************");
+
+            LOGGER.warn(String.format("%-22s%-65s%-11s%-6s", EXECUTION_DATE, TASK_ID, TRY_NUMBER, MAX_TRIES));
+            sorted.forEachOrdered(line -> LOGGER.warn(String.format("%-22s%-70s%-6s%-6s",
+                    line.executionDate, line.taskId, line.tryNumber, line.maxTries)));
+            LOGGER.warn("*************************************************");
         }
-
-        Stream<AirflowTaskInstanceTable> sorted = airflowTasksWithRetries.stream()
-                .sorted(comparing(e -> e.executionDate, reverseOrder()));
-
-        LOGGER.info("***********************************************");
-        LOGGER.info("****** List of tasks with retries number ******");
-        LOGGER.info("***********************************************");
-
-        System.out.format("%-22s%-65s%-11s%-6s\n", EXECUTION_DATE, TASK_ID, TRY_NUMBER, MAX_TRIES);
-        sorted.forEachOrdered(e -> System.out.format("%-22s%-70s%-6s%-6s\n", e.executionDate, e.taskId, e.tryNumber, e.maxTries));
-        LOGGER.info("***********************************************");
         assertThat(true).isTrue();
     }
 }

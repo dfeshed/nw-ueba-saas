@@ -10,6 +10,7 @@ public class AutomationConf {
     public static final Path USER_DIR = Paths.get(System.getProperty("user.dir"));
     public static final Path LOG_GEN_OUTPUT = Paths.get(USER_DIR.toAbsolutePath().toString(), "target", "netwitness_events_gen");
     public static final Path DEPLOYMENT_SCRIPTS_DIR = Paths.get(USER_DIR.toAbsolutePath().toString(), "target", "scripts", "deployment");
+    public static final Path TARGET_DIR = Paths.get(USER_DIR.toAbsolutePath().toString(), "target", "log");
 
     public static final String UEBA_HOST = getEnvOrTryResolveNameElseDefault("UEBA_HOST", "localhost");
     public static final String UEBA_IP = tryToResolveIpElseDefault();

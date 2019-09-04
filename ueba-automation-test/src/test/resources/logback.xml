@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <timestamp key="time" datePattern="yyyy-MM-dd_HH-mm"/>
 
     <!-- Send debug messages to System.out -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -8,23 +9,17 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
         </encoder>
     </appender>
-    <!-- Send debug messages to a file at "Logs/presidio-teevevent.log" -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>Logs/presidio-integration-tests.event</file>
+
+    <appender name="AIRFLOW_PRINT_RETRIES" class="ch.qos.logback.core.FileAppender">
+        <file>target/log/airflow_retries.log</file>
+        <append>false</append>
+        <prudent>false</prudent>
+
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%d{yyyy-MM-dd_HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</Pattern>
+            <Pattern>%msg%n</Pattern>
         </encoder>
-
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <FileNamePattern>Logs/presidio-tests.%i.event.zip</FileNamePattern>
-            <MinIndex>1</MinIndex>
-            <MaxIndex>10</MaxIndex>
-        </rollingPolicy>
-
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>2MB</MaxFileSize>
-        </triggeringPolicy>
     </appender>
+
 
     <!--need this in DEBUG to print mongo Queries to sysout -->
     <logger name="org.springframework.data.mongodb.core.MongoTemplate" level="INFO" />
@@ -33,10 +28,14 @@
         <level value="INFO" />
     </logger>
 
+    <logger name="com.rsa.netwitness.presidio.automation.test.integration.AirflowPrintRetries">
+        <level value="WARN" />
+        <appender-ref ref="AIRFLOW_PRINT_RETRIES"/>
+    </logger>
+
 
     <!-- By default, the level of the root level is set to DEBUG -->
     <root level="ERROR">
         <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
     </root>
 </configuration>
