@@ -39,7 +39,7 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
 
     @Parameters({"historical_days_back", "anomaly_day"})
     @BeforeClass
-    public void setup(@Optional("14") int historicalDaysBack, @Optional("1") int anomalyDay) {
+    public void setup(@Optional("44") int historicalDaysBack, @Optional("1") int anomalyDay) {
 
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack="
                 + historicalDaysBack + " anomalyDay=" + anomalyDay);
@@ -52,8 +52,10 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
         List<AirflowTaskFailTable> airflowTaskFailTables = airflowDbHelper.fetchFailedTasks(startTime);
 
         assertThat(airflowTaskFailTables)
-                .overridingErrorMessage("Found Airflow failed DAGs.\n" +
-                        airflowTaskFailTables.stream().map(AirflowTaskFailTable::toString).collect(joining("\n")))
+                .overridingErrorMessage("Found Airflow failed DAGs.\n" + airflowTaskFailTables.stream()
+                                .map(AirflowTaskFailTable::toString)
+                                .peek(e -> LOGGER.warn(e))
+                                .collect(joining("\n")))
                 .isEmpty();
     }
 }
