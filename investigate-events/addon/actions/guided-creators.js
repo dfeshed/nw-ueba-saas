@@ -2,7 +2,11 @@ import * as ACTION_TYPES from './types';
 import { selectedPills, focusedPill, pillsData } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import validateQueryFragment from './fetch/query-validation';
-import { findEmptyParensAtPosition, selectPillsFromPosition } from 'investigate-events/actions/utils';
+import {
+  findAllEmptyParens,
+  findEmptyParensAtPosition,
+  selectPillsFromPosition
+} from 'investigate-events/actions/utils';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { ValidatableFilter } from 'investigate-events/util/filter-types';
 import { COMPLEX_FILTER, TEXT_FILTER } from 'investigate-events/constants/pill';
@@ -88,6 +92,47 @@ const _clientSideValidation = ({ pillData, position, isFromParser = false }) => 
     // before being sent to this method. Those are already marked invalid in
     // state, so no work needs to be done.
   };
+};
+
+const _pillSelectDeselect = (actionType, pillData, shouldIgnoreFocus = false) => {
+  return (dispatch, getState) => {
+
+    // now locate potential twins
+    const { investigate: { queryNode: { pillsData } } } = getState();
+    const missingTwins = _findMissingTwins(pillData, pillsData);
+    if (missingTwins.length > 0) {
+      dispatch({
+        type: actionType,
+        payload: {
+          pillData: missingTwins,
+          // twins don't get focus, not yet at least
+          shouldIgnoreFocus: true
+        }
+      });
+    }
+
+    // handle the ones being passed in
+    dispatch({
+      type: actionType,
+      payload: {
+        pillData,
+        shouldIgnoreFocus
+      }
+    });
+  };
+};
+
+const _removeAnyEmptyParens = (dispatch, getState) => {
+  const pillsData = getState().investigate.queryNode.pillsData.asMutable();
+  const emptyParens = findAllEmptyParens(pillsData);
+  if (emptyParens.length > 0) {
+    dispatch({
+      type: ACTION_TYPES.DELETE_GUIDED_PILLS,
+      payload: {
+        pillData: emptyParens
+      }
+    });
+  }
 };
 
 export const _serverSideValidation = (pillData, position) => {
@@ -185,17 +230,19 @@ export const editGuidedPill = ({ pillData, position }) => {
 export const deleteGuidedPill = ({ pillData }) => {
   return (dispatch, getState) => {
     const missingTwins = _findMissingTwins(pillData, pillsData(getState()));
-
     if (missingTwins.length > 0) {
       pillData = [...pillData, ...missingTwins];
     }
-
+    // Delete passed in pills
     dispatch({
       type: ACTION_TYPES.DELETE_GUIDED_PILLS,
       payload: {
         pillData
       }
     });
+    // look for empty parens that may have resulted from the deletion of pills
+    _removeAnyEmptyParens(dispatch, getState);
+    // Deselect any pills
     dispatch(deselectAllGuidedPills());
   };
 };
@@ -207,15 +254,13 @@ export const deleteAllGuidedPills = () => {
   };
 };
 
-// can come from right-click action
-// can come from delete pressed on focused pill
 export const deleteSelectedGuidedPills = (pillData) => {
-  // keyPress delete
+  // can come from right-click action
+  // can come from delete pressed on a selected, focused pill
   return (dispatch, getState) => {
-
     // if no pill is sent, it's a right click action - delete all selected
-    // or if a focused pill is passed that is also selected - delete all selected
-    if (!pillData || (pillData && pillData.isSelected)) {
+    // or if a pill is passed that is selected - delete all selected
+    if (!pillData || pillData.isSelected) {
       const selectedPD = selectedPills(getState());
       if (selectedPD.length > 0) {
         dispatch({
@@ -224,6 +269,8 @@ export const deleteSelectedGuidedPills = (pillData) => {
             pillData: selectedPD
           }
         });
+        // look for empty parens that may have resulted from the deletion of pills
+        _removeAnyEmptyParens(dispatch, getState);
       }
     } else {
       dispatch(deleteGuidedPill({ pillData: [pillData] }));
@@ -259,33 +306,6 @@ export const deselectAllGuidedPills = () => {
     if (pillData.length > 0) {
       dispatch(deselectGuidedPills({ pillData }, true));
     }
-  };
-};
-
-const _pillSelectDeselect = (actionType, pillData, shouldIgnoreFocus = false) => {
-  return (dispatch, getState) => {
-
-    // now locate potential twins
-    const missingTwins = _findMissingTwins(pillData, pillsData(getState()));
-    if (missingTwins.length > 0) {
-      dispatch({
-        type: actionType,
-        payload: {
-          pillData: missingTwins,
-          // twins don't get focus, not yet at least
-          shouldIgnoreFocus: true
-        }
-      });
-    }
-
-    // handle the ones being passed in
-    dispatch({
-      type: actionType,
-      payload: {
-        pillData,
-        shouldIgnoreFocus
-      }
-    });
   };
 };
 

@@ -280,6 +280,40 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk1(firstDispatch, getState);
   });
 
+  test('deleteGuidedPill action creator removes empty paren sets resulting from deleting pill', function(assert) {
+    const done = assert.async(2);
+    let state = new ReduxDataHelper()
+      .pillsDataWithParens()
+      .markSelected(['2'])
+      .build();
+    const [, deletedPill] = state.investigate.queryNode.pillsData;
+    let firstCall = true;
+    let openParen, closeParen;
+
+    const dispatch = (action) => {
+      if (action.type === ACTION_TYPES.DELETE_GUIDED_PILLS && firstCall) {
+        assert.deepEqual(action.payload.pillData, [deletedPill], 'action pillData has the right value, first call');
+        // set state to what it should be at this point
+        state = new ReduxDataHelper()
+          .pillsDataWithEmptyParens()
+          .build();
+        // save off the parens for testing later
+        [openParen, closeParen] = state.investigate.queryNode.pillsData;
+        firstCall = false;
+        done();
+      } else if (action.type === ACTION_TYPES.DELETE_GUIDED_PILLS) {
+        assert.deepEqual(action.payload.pillData, [openParen, closeParen], 'action pillData has the right value, second call');
+        done();
+      }
+    };
+
+    const thunk = guidedCreators.deleteGuidedPill({
+      pillData: [deletedPill]
+    });
+
+    thunk(dispatch, () => state);
+  });
+
   test('deleteGuidedPill action creator includes missins twins', function(assert) {
     const done = assert.async(2);
     const state = new ReduxDataHelper()

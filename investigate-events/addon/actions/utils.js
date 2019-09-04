@@ -201,11 +201,28 @@ function findEmptyParensAtPosition(pillsData, position) {
   return emptyParenSets;
 }
 
-// export const isEmptyParenSetAt = (arr, i) => {
-//   const op = arr[i];
-//   const cp = arr[i + 1];
-//   return op && op.type === OPEN_PAREN && cp && cp.type === CLOSE_PAREN;
-// };
+function findAllEmptyParens(pillsData) {
+  const emptyParenSets = [];
+  let i = pillsData.length - 1;
+  for (i; i >= 0; i--) {
+    if (isEmptyParenSetAt(pillsData, i)) {
+      if (pillsData.length === 2) {
+        return pillsData;
+      } else {
+        // remove empty paren set by mutating the pillsData array
+        emptyParenSets.push(...pillsData.splice(i, 2));
+        return emptyParenSets.concat(findAllEmptyParens(pillsData));
+      }
+    }
+  }
+  return emptyParenSets;
+}
+
+export const isEmptyParenSetAt = (arr, i) => {
+  const op = arr[i];
+  const cp = arr[i + 1];
+  return op && op.type === OPEN_PAREN && cp && cp.type === CLOSE_PAREN;
+};
 
 // export const removeEmptyParens = (pillsData) => {
 //   for (let i = 0; i < pillsData.length; i++) {
@@ -228,6 +245,7 @@ export {
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,
   filterIsPresent,
+  findAllEmptyParens,
   findEmptyParensAtPosition,
   hasEmptyParensAt,
   parseBasicQueryParams,

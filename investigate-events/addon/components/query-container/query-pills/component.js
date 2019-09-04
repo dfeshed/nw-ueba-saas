@@ -506,7 +506,7 @@ const QueryPills = RsaContextMenu.extend({
   _addFocusToLeftPill(position) {
     if (position !== 0) {
       this.send('addPillFocus', position - 1);
-      this._pillAddCancelled();
+      this._pillsExited();
     }
   },
 
@@ -514,7 +514,7 @@ const QueryPills = RsaContextMenu.extend({
     const pillsData = this.get('pillsData');
     if (position < pillsData.length) {
       this.send('addPillFocus', position);
-      this._pillAddCancelled();
+      this._pillsExited();
     }
   },
 
@@ -663,7 +663,7 @@ const QueryPills = RsaContextMenu.extend({
 
   _insertParens(position) {
     // inserting parens will move the current pill one position to the right
-    this._pillAddCancelled();
+    this._pillsExited();
     this.send('addParens', { position });
     next(this, this._openNewPillTriggerRight, position);
   },
@@ -680,7 +680,7 @@ const QueryPills = RsaContextMenu.extend({
       this._moveToRightFrom(pillsData, position);
     } else if (_hasMoreOpenThanCloseParens(pillsData, position)) {
       const { isEditing } = pillsData[position];
-      this._pillAddCancelled();
+      this._pillsExited();
       if (isEditing) {
         this.send('addIntraParens', { position });
         next(this, this._openNewPillTriggerRight, position + 1);

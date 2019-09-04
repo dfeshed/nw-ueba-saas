@@ -3092,4 +3092,20 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.notOk(find(PILL_SELECTORS.openParen), 'all parens should be removed');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'all parens should be removed');
   });
+
+  test('deleting a pill wrapped in parens also deletes the parens', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens() // op, qp, cp
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true }}`);
+    await leaveNewPillTemplate();
+    await click(PILL_SELECTORS.deletePill);
+
+    assert.notOk(find(PILL_SELECTORS.queryPillNotTemplate), 'query pill should be removed');
+    assert.notOk(find(PILL_SELECTORS.openParen), 'open paren should be removed');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'close paren should be removed');
+  });
 });
