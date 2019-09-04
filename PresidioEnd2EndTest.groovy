@@ -179,4 +179,5 @@ def runSuiteXmlFile(String suiteXmlFile) {
 
 def copyScripts() {
     sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/env_properties_manager.sh /home/presidio/"
+    sh "sudo bash /home/presidio/env_properties_manager.sh --create"
 }
