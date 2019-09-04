@@ -46,7 +46,6 @@ public class DeserializerTransformationService implements ApplicationContextAwar
             List<IJsonObjectTransformer> transformers = new ArrayList<>();
             //Inject runtime dynamic values to object mapper
             InjectableValues.Std injectableValues = new InjectableValues.Std();
-            injectableValues.addValue(SCHEMA, schema);
             injectableValues.addValue(START_DATE, startDate);
             injectableValues.addValue(END_DATE, endDate);
             objectMapper.setInjectableValues(injectableValues);

@@ -2,7 +2,6 @@ package presidio.input.core.services.transformation.transformer;
 
 import com.google.common.collect.Lists;
 import fortscale.domain.core.EventResult;
-import fortscale.utils.transform.OperationTypeMappingTransformer;
 import fortscale.utils.transform.OperationTypeToCategoriesTransformer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -105,6 +104,6 @@ public class OperationTypeToCategoriesTransformerTest extends TransformerJsonTes
 
     @Override
     Class getTransformerClass() {
-        return OperationTypeMappingTransformer.class;
+        return OperationTypeToCategoriesTransformer.class;
     }
 }
