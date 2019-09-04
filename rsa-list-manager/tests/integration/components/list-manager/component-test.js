@@ -5,11 +5,9 @@ import { typeInSearch } from 'ember-power-select/test-support/helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../helpers/vnext-patch';
+import { getTextFromDOMArray } from '../../../helpers/util';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
-const getTextFromDOMArray = (arr) => {
-  return arr.reduce((a, c) => a + c.textContent.trim().replace(/\s+/g, ''), '');
-};
 
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;

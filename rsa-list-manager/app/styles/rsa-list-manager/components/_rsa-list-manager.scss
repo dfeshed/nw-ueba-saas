@@ -73,7 +73,7 @@
             }
           }
           &.is-highlighted {
-            &:hover .edit-icon {
+            .edit-icon {
               visibility: visible;
               &:active {
                 background: background-color(secondary, darker);
@@ -85,7 +85,7 @@
             cursor: pointer;
           }
           &:not(.is-highlighted) {
-            &:hover .edit-icon {
+            .edit-icon {
               visibility: hidden;
             }
             // to override li a:hover style from component-lib
