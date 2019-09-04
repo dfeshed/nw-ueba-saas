@@ -67,9 +67,6 @@ public class InputCoreConfigurationTest {
     private OutputDataServiceSDK outputDataServiceSDK;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private DeserializerTransformationService deserializerTransformationService;
 
     @Bean
@@ -78,13 +75,8 @@ public class InputCoreConfigurationTest {
     }
 
     @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
-
-    @Bean
     public DeserializerTransformationService deserializerTransformationService(){
-        return new DeserializerTransformationService(objectMapper, configurationFilePath);
+        return new DeserializerTransformationService(configurationFilePath);
     }
 
     @Bean

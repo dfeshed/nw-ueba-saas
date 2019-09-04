@@ -11,12 +11,19 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
 
 public class DeserializerTransformationService implements ApplicationContextAware {
 
@@ -24,20 +31,19 @@ public class DeserializerTransformationService implements ApplicationContextAwar
     private static final String START_DATE = "startDate";
     private static final String END_DATE = "endDate";
     private static final String TRANSFORMERS_PACKAGE_LOCATION = "fortscale.utils.transform";
-    private static final String TRANSFORMERS_PACKAGE_LOCATION_INPUT = "presidio.input.core.services.transformation.transformer";
 
     private String configurationFilePath;
     private ObjectMapper objectMapper;
-    private List<IJsonObjectTransformer> transformers = new ArrayList<>();
     private ApplicationContext applicationContext;
 
-    public DeserializerTransformationService(ObjectMapper objectMapper, String configurationFilePath) {
-        this.objectMapper = objectMapper;
+    public DeserializerTransformationService(String configurationFilePath) {
+        this.objectMapper = new ObjectMapper();
         this.configurationFilePath = configurationFilePath;
     }
 
     public List<IJsonObjectTransformer> getTransformers(Schema schema, Instant startDate, Instant endDate) {
         try {
+            List<IJsonObjectTransformer> transformers = new ArrayList<>();
             //Inject runtime dynamic values to object mapper
             InjectableValues.Std injectableValues = new InjectableValues.Std();
             injectableValues.addValue(SCHEMA, schema);
@@ -59,17 +65,12 @@ public class DeserializerTransformationService implements ApplicationContextAwar
     }
 
     /**
-     * Autowire Beans and @Value properties after json was desirialize and call postAutowireProcessor.
+     * Autowire Beans and @Value properties after json was desirialize and invoke  post constructor method.
+     *
      * @param transformer IJsonObjectTransformer
      */
     public void autowireProcessor(IJsonObjectTransformer transformer) {
-        List<Object> result = PresidioReflectionUtils.findNestedObjectsByType(transformer, IJsonObjectTransformer.class);
-        result.add(transformer);
-        result.forEach(obj -> {
-                    applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(obj, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
-                    ((IJsonObjectTransformer) obj).postAutowireProcessor();
-                }
-        );
+        findNestedObjectsToAutowire(transformer);
     }
 
 
@@ -84,5 +85,74 @@ public class DeserializerTransformationService implements ApplicationContextAwar
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+
+    private void findNestedObjectsToAutowire(Object objectToScan) {
+        if (objectToScan == null) {
+            return;
+        }
+
+        Class clazz = objectToScan.getClass();
+        for (Field declaredField : clazz.getDeclaredFields()) {
+            // skip static fields
+            if (Modifier.isStatic(declaredField.getModifiers())) {
+                continue;
+            }
+            // skip primitives
+            if (declaredField.getType().isPrimitive()) {
+                continue;
+            }
+            try {
+                if (Collection.class.isAssignableFrom(declaredField.getType())) {
+                    declaredField.setAccessible(true);
+                    Collection<?> collection = (Collection) declaredField.get(objectToScan);
+                    if (collection != null) {
+                        collection.forEach(this::findNestedObjectsToAutowire);
+                    }
+                } else if (Map.class.isAssignableFrom(declaredField.getType())) {
+                    declaredField.setAccessible(true);
+                    Map<?, ?> map = (Map) declaredField.get(objectToScan);
+                    if (map != null) {
+                        map.forEach((key, value) -> {
+                            if (!key.getClass().isPrimitive()) {
+                                findNestedObjectsToAutowire(key);
+                            }
+                            if (!value.getClass().isPrimitive()) {
+                                findNestedObjectsToAutowire(value);
+                            }
+                        });
+                    }
+                } else {
+                    declaredField.setAccessible(true);
+                    Object item = declaredField.get(objectToScan);
+                    findNestedObjectsToAutowire(item);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(objectToScan, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
+        invokePostConstructMethod(objectToScan);
+    }
+
+
+    /**
+     * Invoke post constructor method
+     *
+     * @param objectToScan
+     */
+    private void invokePostConstructMethod(Object objectToScan) {
+        try {
+            Method[] methods = objectToScan.getClass().getDeclaredMethods();
+            for (Method method : methods) {
+                if (method.isAnnotationPresent(PostConstruct.class)) {
+                    method.invoke(objectToScan);
+                }
+            }
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -79,9 +79,6 @@ public class InputCoreConfiguration {
     private FactoryService<Transformer> transformerFactoryService;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private DeserializerTransformationService deserializerTransformationService;
 
 
@@ -107,13 +104,8 @@ public class InputCoreConfiguration {
     }
 
     @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
-
-    @Bean
     public DeserializerTransformationService deserializerTransformationService(){
-        return new DeserializerTransformationService(objectMapper, configurationFilePath);
+        return new DeserializerTransformationService(configurationFilePath);
     }
 
     @Bean

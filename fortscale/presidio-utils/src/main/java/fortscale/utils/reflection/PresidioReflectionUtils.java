@@ -87,72 +87,6 @@ public class PresidioReflectionUtils {
         return fields;
     }
 
-
-
-    public static List<Object> findNestedObjectsByType(Object objectToScan, Class<?> fieldType) {
-        List<Object> result = new ArrayList<>();
-        findNestedObjectsByType( objectToScan, fieldType, result);
-        return result;
-    }
-
-
-    private static void findNestedObjectsByType(Object objectToScan, Class<?> fieldType, List<Object> result) {
-        notNull(objectToScan, NULL_OBJ_EXCEPTION_MESSAGE);
-        notNull(fieldType, NULL_FIELD_TYPE_EXCEPTION_MESSAGE);
-
-        Class clazz = objectToScan.getClass();
-
-        for (Field declaredField : clazz.getDeclaredFields()) {
-
-            // skip static fields
-            if (Modifier.isStatic(declaredField.getModifiers())) {
-                continue;
-            }
-            // skip primitives
-            if (declaredField.getType().isPrimitive()) {
-                continue;
-            }
-            try {
-                if (fieldType.isAssignableFrom(declaredField.getType())) {
-                    Field field = getAccessibleFieldByType(clazz, declaredField.getType());
-                    Object item = field.get(objectToScan);
-                    findNestedObjectsByType(item, fieldType, result);
-                    result.add(item);
-                }
-                else if (Collection.class.isAssignableFrom(declaredField.getType())) {
-                    Field field = getAccessibleFieldByType(clazz, declaredField.getType());
-                    Collection collection = (Collection) field.get(objectToScan);
-                    if (collection.stream().findFirst().isPresent() & fieldType.isAssignableFrom(collection.stream().findFirst().get().getClass())) {
-                        if(collection != null){
-                            collection.forEach(item -> {
-                                findNestedObjectsByType(item, fieldType, result);
-                            });
-                            result.addAll(collection);
-                        }
-                    }
-                }
-                else if (Map.class.isAssignableFrom(declaredField.getType())) {
-                    Field field = getAccessibleFieldByType(clazz, declaredField.getType());
-                    Map map = (Map) field.get(objectToScan);
-                    if(map != null){
-                        map.forEach((key, value) -> {
-                            if (fieldType.isAssignableFrom(key.getClass())) {
-                                findNestedObjectsByType(key, fieldType, result);
-                                result.add(key);
-                            }
-                            if (fieldType.isAssignableFrom(value.getClass())) {
-                                findNestedObjectsByType(value, fieldType, result);
-                                result.add(value);
-                            }
-                        });
-                    }
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public static <T> Collection<Class<? extends T>> getSubTypes(String[] packagePaths, Class<T> parentClass) {
         Set<Class<? extends T>> allSubTypes = new HashSet<>();
         for (String packagePath: packagePaths) {
@@ -192,11 +126,4 @@ public class PresidioReflectionUtils {
         return field;
     }
 
-    private static @NotNull Field getAccessibleFieldByType(@NotNull Class clazz, @NotNull Class<?> fieldType) {
-        Assert.notNull(clazz, "Class must not be null");
-        Field field = findField(clazz, null, fieldType);
-        notNull(field, FIELD_TYPE_NOT_DECLARED_EXCEPTION_MESSAGE_FORMAT, clazz.getName(), fieldType);
-        field.setAccessible(true);
-        return field;
-    }
 }
