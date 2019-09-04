@@ -4,7 +4,7 @@ import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint
 
 import { startScanCommand, stopScanCommand } from 'investigate-hosts/util/scan-command';
 import { inject as service } from '@ember/service';
-import { isScanStartButtonDisabled, warningMessages, extractAgentIds, mftDownloadButtonStatus, agentMigrated } from 'investigate-hosts/reducers/hosts/selectors';
+import { isScanStartButtonDisabled, warningMessages, extractAgentIds, mftDownloadButtonStatus, isAgentMigrated } from 'investigate-hosts/reducers/hosts/selectors';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
@@ -20,7 +20,7 @@ const stateToComputed = (state) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   isMFTEnabled: mftDownloadButtonStatus(state),
-  isAgentMigrated: agentMigrated(state)
+  isAgentMigrated: isAgentMigrated(state)
 });
 
 const dispatchToActions = {

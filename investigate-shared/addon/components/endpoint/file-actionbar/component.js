@@ -63,9 +63,9 @@ export default Component.extend({
     return !(itemList.length > 0);
   },
 
-  @computed('itemList')
-  isProcessDumpDownloadDisabled(itemList) {
-    return itemList && itemList.length != 1;
+  @computed('itemList', 'isAgentMigrated')
+  isProcessDumpDownloadDisabled(itemList, isAgentMigrated) {
+    return (itemList && itemList.length != 1) || isAgentMigrated;
   },
 
   @computed('fileDownloadButtonStatus', 'showResetRiskScore', 'itemList')

@@ -185,7 +185,7 @@ export const isScanStartButtonDisabled = createSelector(
   }
 );
 
-export const agentMigrated = createSelector(
+export const isAgentMigrated = createSelector(
   [allAreMigratedHosts, isBrokerView],
   (allAreMigratedHosts, isBrokerView) => {
     return allAreMigratedHosts && (!isBrokerView);

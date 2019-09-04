@@ -45,17 +45,24 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
   test('Buttons enabling/disabling for multiple files selection', async function(assert) {
     this.set('itemList', [{ machineOSType: 'windows' }, { machineOSType: 'windows' }]);
     this.set('showDownloadProcessDump', true);
-    await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump}}`);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump isAgentMigrated=false}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), false, 'Edit file status Button is enabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .download-process-dump')[0].classList.contains('is-disabled'), true, 'Download process dump to server is disabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].title, 'Select a single file to analyze.', 'Pivot-to-investigate Button is disabled tooltip should be Select a single file to analyze.');
   });
 
+  test('Download process dump, disabled for migrated agent', async function(assert) {
+    this.set('itemList', [{ machineOSType: 'windows' }, { machineOSType: 'windows' }]);
+    this.set('showDownloadProcessDump', true);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump isAgentMigrated=true}}`);
+    assert.equal(findAll('.file-actionbar .download-process-dump')[0].classList.contains('is-disabled'), true, 'Download process dump to server is disabled when agent is migrated.');
+  });
+
   test('Buttons enabling/disabling for no files selection', async function(assert) {
     this.set('itemList', []);
     this.set('showDownloadProcessDump', true);
-    await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump}}`);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump isAgentMigrated=false}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), true, 'Edit file status Button is disabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .download-process-dump')[0].classList.contains('is-disabled'), true, 'Download process dump to server is disabled when multiple files are selected.');

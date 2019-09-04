@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { listOfMftFiles, isAllMftSelected, areMftFilesLoading, nextLoadCount, pageStatus } from 'investigate-hosts/reducers/details/mft-directory/selectors';
-import { agentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
+import { isAgentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
 import {
   getPageOfMftFiles,
   toggleMftFileSelection,
@@ -42,7 +42,7 @@ const stateToComputed = (state) => ({
   servers: state.endpointServer.serviceData,
   pageStatus: pageStatus(state),
   agentId: state.endpoint.detailsInput.agentId,
-  isAgentMigrated: agentMigrated(state)
+  isAgentMigrated: isAgentMigrated(state)
 });
 
 const dispatchToActions = {

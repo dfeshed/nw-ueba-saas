@@ -24,7 +24,7 @@ import {
   mftDownloadButtonStatusDetails,
   getRARStatus,
   hostOverviewServerId,
-  agentMigrated,
+  isAgentMigrated,
   policyAdminUsm } from 'investigate-hosts/reducers/details/overview/selectors';
 
 let setState;
@@ -766,7 +766,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: true, editExclusionList: false, agentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: true, editExclusionList: false, isAgentMigrated: true });
   });
 
   test('mftDownloadButtonStatusDetails when agentVersion is wrong', function(assert) {
@@ -783,7 +783,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false, editExclusionList: false, agentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: false, editExclusionList: false, isAgentMigrated: true });
   });
 
   test('mftDownloadButtonStatusDetails when machineOsType is wrong', function(assert) {
@@ -800,7 +800,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false, editExclusionList: false, agentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: false, editExclusionList: false, isAgentMigrated: true });
   });
 
   test('mftDownloadButtonStatusDetails when agentMode is wrong', function(assert) {
@@ -817,7 +817,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false, editExclusionList: false, agentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: false, editExclusionList: false, isAgentMigrated: true });
   });
 
   test('getRARStatus', function(assert) {
@@ -827,7 +827,7 @@ module('Unit | Selectors | overview', function(hooks) {
     assert.equal(result2, false, 'Is not a roaming agent');
   });
 
-  test('agentMigrated is not broker', function(assert) {
+  test('isAgentMigrated is not broker', function(assert) {
     const state = Immutable.from({
       endpoint: {
         overview: {
@@ -847,11 +847,11 @@ module('Unit | Selectors | overview', function(hooks) {
         serverId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
       }
     });
-    const result = agentMigrated(state);
+    const result = isAgentMigrated(state);
     assert.equal(result, true);
   });
 
-  test('agentMigrated is broker', function(assert) {
+  test('isAgentMigrated is broker', function(assert) {
     const state = Immutable.from({
       endpoint: {
         overview: {
@@ -871,7 +871,7 @@ module('Unit | Selectors | overview', function(hooks) {
         serverId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
       }
     });
-    const result = agentMigrated(state);
+    const result = isAgentMigrated(state);
     assert.equal(result, false);
   });
 });

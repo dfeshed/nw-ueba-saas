@@ -21,7 +21,7 @@ import {
   isInsightsAgent,
   allAreMigratedHosts,
   mftDownloadButtonStatus,
-  agentMigrated,
+  isAgentMigrated,
   actionsDisableMessage } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
@@ -1000,7 +1000,7 @@ test('processedHostList', function(assert) {
   assert.equal(result5[0].isMFTEnabled, true);
 });
 
-test('agentMigrated is not broker', function(assert) {
+test('isAgentMigrated is not broker', function(assert) {
   const state = Immutable.from({
     endpoint: {
       machines: {
@@ -1027,11 +1027,11 @@ test('agentMigrated is not broker', function(assert) {
       serverId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
     }
   });
-  const result = agentMigrated(state);
+  const result = isAgentMigrated(state);
   assert.equal(result, true);
 });
 
-test('agentMigrated is broker', function(assert) {
+test('isAgentMigrated is broker', function(assert) {
   const state = Immutable.from({
     endpoint: {
       machines: {
@@ -1058,6 +1058,6 @@ test('agentMigrated is broker', function(assert) {
       serverId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
     }
   });
-  const result = agentMigrated(state);
+  const result = isAgentMigrated(state);
   assert.equal(result, false);
 });

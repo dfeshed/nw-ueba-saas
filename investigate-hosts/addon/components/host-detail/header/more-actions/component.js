@@ -5,7 +5,7 @@ import { hostWithStatus,
   mftDownloadButtonStatusDetails,
   isJsonExportCompleted,
   isSnapshotsAvailable,
-  agentMigrated,
+  isAgentMigrated,
   hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { exportFileContext } from 'investigate-hosts/actions/data-creators/details';
 import { downloadMFT, downloadSystemDump } from 'investigate-hosts/actions/data-creators/host';
@@ -21,7 +21,7 @@ const stateToComputed = (state) => ({
   agentId: state.endpoint.detailsInput.agentId,
   serverId: state.endpointQuery.selectedMachineServerId,
   isMFTEnabled: mftDownloadButtonStatusDetails(state),
-  isAgentMigrated: agentMigrated(state)
+  isAgentMigrated: isAgentMigrated(state)
 });
 
 const dispatchToActions = {

@@ -289,7 +289,7 @@ module('Integration | Component | host table action bar more actions', function(
                       requestSystemDumpDownload=requestSystemDumpDownload}}`);
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 4, '4 options should render.');
-    assert.equal(findAll('.download-system-dump').length, 1, 'Download System dump option is rendered.');
+    assert.equal(findAll('.download-system-dump-button').length, 1, 'Download System dump option is rendered.');
   });
 
   test('Hide the download memory dump button, when there is no right permission', async function(assert) {
@@ -317,7 +317,7 @@ module('Integration | Component | host table action bar more actions', function(
                       requestMFTDownload=requestMFTDownload
                       requestSystemDumpDownload=requestSystemDumpDownload}}`);
     await click('.host_more_actions button');
-    assert.equal(findAll('.download-system-dump').length, 0, 'Download System dump option is hidden.');
+    assert.equal(findAll('.download-system-dump-button').length, 0, 'Download System dump option is hidden.');
   });
 
   test('Hide the download memory dump option, for multiple files selected', async function(assert) {
@@ -340,7 +340,7 @@ module('Integration | Component | host table action bar more actions', function(
                       selectedHostList=selectedHostList
                       noHostsSelected=noHostsSelected}}`);
     await click('.host_more_actions button');
-    assert.equal(findAll('.download-system-dump').length, 0, 'Download System dump option is hidden.');
+    assert.equal(findAll('.download-system-dump-button').length, 0, 'Download System dump option is hidden.');
   });
 
   test('Hide the download memory dump option, when isMFTEnabled is false', async function(assert) {
@@ -363,7 +363,7 @@ module('Integration | Component | host table action bar more actions', function(
                       selectedHostList=selectedHostList
                       noHostsSelected=noHostsSelected}}`);
     await click('.host_more_actions button');
-    assert.equal(findAll('.download-system-dump').length, 0, 'Download System dump option is hidden.');
+    assert.equal(findAll('.download-system-dump-button').length, 0, 'Download System dump option is hidden.');
   });
 
   test('Request for download system dump is sent, on selecting Download System Dump option', async function(assert) {
@@ -378,8 +378,12 @@ module('Integration | Component | host table action bar more actions', function(
     this.set('requestSystemDumpDownload', () => {
       assert.ok(true);
     });
+    this.set('requestMFTDownload', () => {
+      assert.ok(true);
+    });
     this.set('isMFTEnabled', { isDisplayed: true });
     this.set('noHostsSelected', false);
+    this.set('isAgentMigrated', false);
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('roles', ['endpoint-server.agent.manage']);
 
@@ -389,11 +393,55 @@ module('Integration | Component | host table action bar more actions', function(
                       deleteAction=deleteAction 
                       selectedHostList=selectedHostList
                       noHostsSelected=noHostsSelected
+                      isAgentMigrated=isAgentMigrated
+                      requestMFTDownload=requestMFTDownload
                       requestSystemDumpDownload=requestSystemDumpDownload}}`);
     await click('.host_more_actions button');
-    await click('.download-system-dump');
+    await click('.download-system-dump-button button');
   });
 
+  test('Download system dump option disabled when agent is migrated and not broker', async function(assert) {
+    const selectedData = {
+      id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+      machineIdentity: {
+        machineName: 'RemDbgDrv',
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      },
+      version: '11.4.0.0',
+      managed: true,
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    };
+    new ReduxDataHelper(setState).scanCount(selectedData).build();
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true, 'passed action is called');
+    });
+    this.set('isMFTEnabled', { isDisplayed: true });
+    this.set('requestMFTDownload', () => {
+      assert.ok(true);
+    });
+    this.set('selectedHostList', [selectedData]);
+    this.set('isAgentMigrated', true);
+
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions
+      showRiskScoreModal=showRiskScoreModal
+      deleteAction=deleteAction
+      isMFTEnabled=isMFTEnabled
+      selectedHostList=selectedHostList
+      isAgentMigrated=isAgentMigrated
+      requestMFTDownload=requestMFTDownload
+      requestSystemDumpDownload=requestSystemDumpDownload}}`);
+
+    await click('.host_more_actions button');
+    assert.equal(findAll('.rsa-dropdown-action-list li.download-system-dump-button .is-disabled').length, 1, 'Download MFT option is disabled.');
+  });
 });
 
 

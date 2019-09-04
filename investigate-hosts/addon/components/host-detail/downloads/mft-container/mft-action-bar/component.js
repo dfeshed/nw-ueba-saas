@@ -5,7 +5,7 @@ import { connect } from 'ember-redux';
 import computed, { alias } from 'ember-computed-decorators';
 import { success } from 'investigate-shared/utils/flash-messages';
 import { downloadFilesToServer } from 'investigate-hosts/actions/data-creators/file-context';
-import { agentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
+import { isAgentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
 
 const callBackOptions = (context) => ({
   onSuccess: () => success('investigateHosts.flash.genericFileDownloadRequestSent'),
@@ -18,7 +18,7 @@ const stateToComputed = (state) => ({
   selections: state.endpoint.hostDownloads.mft.mftDirectory.selectedMftFileList,
   agentId: state.endpoint.detailsInput.agentId,
   selectedDirectory: state.endpoint.hostDownloads.mft.mftDirectory.selectedDirectoryForDetails,
-  isAgentMigrated: agentMigrated(state)
+  isAgentMigrated: isAgentMigrated(state)
 });
 
 const dispatchToActions = {

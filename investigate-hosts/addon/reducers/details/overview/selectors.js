@@ -428,7 +428,7 @@ export const policiesUnavailableMessage = createSelector(
   (tab, policiesPropertyData) => tab === 'POLICIES' && _.isEmpty(policiesPropertyData) ? 'Policy unavailable' : null
 );
 
-export const agentMigrated = createSelector(
+export const isAgentMigrated = createSelector(
   [_hostDetails, isBrokerView],
   ({ groupPolicy }, isBrokerView) => {
     const { managed } = groupPolicy ? groupPolicy : { managed: false };
@@ -437,8 +437,8 @@ export const agentMigrated = createSelector(
 );
 
 export const mftDownloadButtonStatusDetails = createSelector(
-  [_hostDetails, agentMigrated],
-  ({ machineIdentity = {}, groupPolicy = {} }, agentMigrated) => {
+  [_hostDetails, isAgentMigrated],
+  ({ machineIdentity = {}, groupPolicy = {} }, isAgentMigrated) => {
     // Temp key editExclusionList, needs to check if machine has been isolated and exclusion list can be edited.
     const { editExclusionList = false } = groupPolicy ? groupPolicy : { editExclusionList: false };
     const { machineOsType, agentMode, agentVersion } = machineIdentity;
@@ -446,7 +446,7 @@ export const mftDownloadButtonStatusDetails = createSelector(
     if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion)) {
       isMFTEnabled = true;
     }
-    return { isDisplayed: isMFTEnabled, agentMigrated, editExclusionList };
+    return { isDisplayed: isMFTEnabled, isAgentMigrated, editExclusionList };
   }
 );
 
