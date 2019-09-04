@@ -82,6 +82,7 @@ pipeline {
     post {
         always {
             junit '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
+            archiveArtifacts allowEmptyArchive: true, artifacts: '**/ueba-automation-test/target/log/*.log, **/ueba-automation-test/target/environment.properties'
         }
     }
 }
