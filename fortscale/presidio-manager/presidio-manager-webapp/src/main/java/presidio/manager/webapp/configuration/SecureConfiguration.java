@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.annotation.Generated;
+import java.util.Properties;
 
 @Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2019-04-15T00:00:00.000Z")
 public class SecureConfiguration {
@@ -49,6 +50,14 @@ public class SecureConfiguration {
 
     public void setUiIntegration(UiIntegrationConfiguration uiIntegration) {
         this.uiIntegration = uiIntegration;
+    }
+
+    public Properties toProperties() {
+        Properties properties = new Properties();
+        dataPipeline.toProperties().forEach((key, value) -> properties.put("dataPipeline." + key, value));
+        outputForwarding.toProperties().forEach((key, value) -> properties.put("outputForwarding." + key, value));
+        uiIntegration.toProperties().forEach((key, value) -> properties.put("uiIntegration." + key, value));
+        return properties;
     }
 
     @Override

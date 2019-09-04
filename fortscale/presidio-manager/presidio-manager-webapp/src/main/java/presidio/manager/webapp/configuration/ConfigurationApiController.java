@@ -16,9 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import presidio.config.server.client.ConfigurationServerClientService;
 
 import javax.annotation.Generated;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
@@ -26,6 +24,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 @Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2019-04-15T00:00:00.000Z")
@@ -39,6 +38,7 @@ public class ConfigurationApiController implements ConfigurationApi {
     private final String keytabFilePathname;
     private final String workflowsModuleName;
     private final String workflowsConfigurationPath;
+    private final String applicationPropertiesPathname;
     private final ConfigurationServerClientService configurationServerClientService;
 
     public ConfigurationApiController(
@@ -46,12 +46,14 @@ public class ConfigurationApiController implements ConfigurationApi {
             String keytabFilePathname,
             String workflowsModuleName,
             String workflowsConfigurationPath,
+            String applicationPropertiesPathname,
             ConfigurationServerClientService configurationServerClientService) {
 
         this.profiles = profiles;
         this.keytabFilePathname = keytabFilePathname;
         this.workflowsModuleName = workflowsModuleName;
         this.workflowsConfigurationPath = workflowsConfigurationPath;
+        this.applicationPropertiesPathname = applicationPropertiesPathname;
         this.configurationServerClientService = configurationServerClientService;
     }
 
@@ -140,6 +142,7 @@ public class ConfigurationApiController implements ConfigurationApi {
         JsonNode jsonNode = objectMapper.valueToTree(configuration);
         configurationServerClientService.storeConfigurationFile(CONFIGURATION_FILE_NAME, jsonNode);
         updateWorkflowsConfiguration();
+        updateApplicationProperties(configuration);
     }
 
     private void updateStartTimeConfiguration(Configuration configuration) {
@@ -166,17 +169,40 @@ public class ConfigurationApiController implements ConfigurationApi {
                 fileWriter.write(string);
                 fileWriter.close();
                 // Set posix file permissions to the workflows JSON file
-                Set<PosixFilePermission> posixFilePermissions = new HashSet<>();
-                posixFilePermissions.add(PosixFilePermission.OWNER_READ);
-                posixFilePermissions.add(PosixFilePermission.OWNER_WRITE);
-                posixFilePermissions.add(PosixFilePermission.GROUP_READ);
-                posixFilePermissions.add(PosixFilePermission.GROUP_WRITE);
-                posixFilePermissions.add(PosixFilePermission.OTHERS_READ);
-                posixFilePermissions.add(PosixFilePermission.OTHERS_WRITE);
-                Files.setPosixFilePermissions(Paths.get(pathname), posixFilePermissions);
+                setPosixFilePermissions(pathname);
             }
         } catch (Exception e) {
             logger.error("Failed to update the workflows configuration", e);
+        }
+    }
+
+    private void updateApplicationProperties(Configuration configuration) {
+        try {
+            File file = new File(applicationPropertiesPathname);
+
+            if (!file.exists()) {
+                logger.error("Application properties {} does not exist", applicationPropertiesPathname);
+                return;
+            } else if (!file.isFile()) {
+                logger.error("Application properties {} is not a file", applicationPropertiesPathname);
+                return;
+            }
+
+            Properties properties = new Properties();
+            // Read the already existing application properties
+            FileReader fileReader = new FileReader(file);
+            properties.load(fileReader);
+            fileReader.close();
+            // Copy the secure configuration to the application properties (override values of already existing keys)
+            properties.putAll(configuration.toSecureConfiguration().toProperties());
+            // Write the updated application properties
+            FileWriter fileWriter = new FileWriter(file, false);
+            properties.store(fileWriter, null);
+            fileWriter.close();
+            // Set posix file permissions to the application properties file
+            setPosixFilePermissions(applicationPropertiesPathname);
+        } catch (Exception e) {
+            logger.error("Failed to update the application properties", e);
         }
     }
 
@@ -187,5 +213,16 @@ public class ConfigurationApiController implements ConfigurationApi {
         ConfigurationResponse configurationResponse = new ConfigurationResponse(message, e);
         logger.error(configurationResponse.toString());
         return new ResponseEntity<>(configurationResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private static void setPosixFilePermissions(String pathname) throws IOException {
+        Set<PosixFilePermission> posixFilePermissions = new HashSet<>();
+        posixFilePermissions.add(PosixFilePermission.OWNER_READ);
+        posixFilePermissions.add(PosixFilePermission.OWNER_WRITE);
+        posixFilePermissions.add(PosixFilePermission.GROUP_READ);
+        posixFilePermissions.add(PosixFilePermission.GROUP_WRITE);
+        posixFilePermissions.add(PosixFilePermission.OTHERS_READ);
+        posixFilePermissions.add(PosixFilePermission.OTHERS_WRITE);
+        Files.setPosixFilePermissions(Paths.get(pathname), posixFilePermissions);
     }
 }

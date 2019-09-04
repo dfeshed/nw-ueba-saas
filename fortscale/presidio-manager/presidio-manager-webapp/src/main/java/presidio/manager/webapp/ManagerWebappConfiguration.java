@@ -24,6 +24,8 @@ public class ManagerWebappConfiguration {
     private String workflowsModuleName;
     @Value("${presidio.workflows.configuration.path:/etc/netwitness/presidio/configserver/configurations/airflow}")
     private String workflowsConfigurationPath;
+    @Value("${presidio.application.properties.pathname:/etc/netwitness/presidio/configserver/configurations/application.properties}")
+    private String applicationPropertiesPathname;
 
     @Autowired
     private ConfigurationServerClientService configurationServerClientService;
@@ -35,6 +37,7 @@ public class ManagerWebappConfiguration {
                 keytabFilePathname,
                 workflowsModuleName,
                 workflowsConfigurationPath,
+                applicationPropertiesPathname,
                 configurationServerClientService);
     }
 }

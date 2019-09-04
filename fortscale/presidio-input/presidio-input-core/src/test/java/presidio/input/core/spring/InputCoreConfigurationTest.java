@@ -1,6 +1,5 @@
 package presidio.input.core.spring;
 
-
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import org.springframework.beans.factory.FactoryBean;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -45,19 +43,6 @@ import java.util.Map;
 @Configuration
 @Import({PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class, OutputDataServiceConfig.class})
 public class InputCoreConfigurationTest {
-
-    @Autowired
-    private ApplicationContext applicationContext;
-
-
-    @Value("${operation.type.category.mapping.file.path}")
-    private String operationTypeCategoryMappingFilePath;
-
-    @Bean
-    public Map<Schema, Map<String, List<String>>> getMapping() {
-        return new HashMap<>();
-    }
-
     @Autowired
     private PresidioInputPersistencyService presidioInputPersistencyService;
 
@@ -66,6 +51,14 @@ public class InputCoreConfigurationTest {
 
     @Autowired
     private OutputDataServiceSDK outputDataServiceSDK;
+
+    @Value("${operation.type.category.mapping.file.path}")
+    private String operationTypeCategoryMappingFilePath;
+
+    @Bean
+    public Map<Schema, Map<String, List<String>>> getMapping() {
+        return new HashMap<>();
+    }
 
     @Bean
     public TransformationService transformationService() {
@@ -165,5 +158,4 @@ public class InputCoreConfigurationTest {
     public PrintInputToAdeConverter printInputToAdeConverter() {
         return new PrintInputToAdeConverter();
     }
-
 }
