@@ -136,6 +136,7 @@ public class NewOccurrenceTransformerTest extends TransformerJsonTest {
                 inputFieldName,
                 booleanFieldName);
         newOccurrenceTransformer.setLastOccurrenceInstantReader(occurrenceInstantReader);
+        newOccurrenceTransformer.setEndDate(Instant.now());
         newOccurrenceTransformer.setTransformationWaitingDuration(Duration.ZERO);
         newOccurrenceTransformer.setWorkflowStartDate(Instant.EPOCH);
         return newOccurrenceTransformer;

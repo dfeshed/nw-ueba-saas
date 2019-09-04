@@ -1,6 +1,7 @@
 package presidio.input.core.services.transformation.transformer;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -14,6 +15,7 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -22,6 +24,7 @@ public abstract class TransformerJsonTest {
 
     private static final String TRANSFORMERS_UTIL_PACKAGE_LOCATION = "fortscale.utils.transform";
     private static final String TRANSFORMERS_INPUT_PACKAGE_LOCATION = "presidio.input.core.services.transformation.transformer";
+    private static final String END_DATE = "endDate";
     private ClassLoader classLoader = getClass().getClassLoader();
 
     abstract String getResourceFilePath();
@@ -52,6 +55,9 @@ public abstract class TransformerJsonTest {
         objectMapper.configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
         objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
         objectMapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+        InjectableValues.Std injectableValues = new InjectableValues.Std();
+        injectableValues.addValue(END_DATE, Instant.now());
+        objectMapper.setInjectableValues(injectableValues);
         return objectMapper;
     }
 

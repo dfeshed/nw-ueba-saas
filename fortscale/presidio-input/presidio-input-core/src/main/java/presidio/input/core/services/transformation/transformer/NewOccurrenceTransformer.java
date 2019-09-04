@@ -1,9 +1,6 @@
 package presidio.input.core.services.transformation.transformer;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.*;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReader;
@@ -45,6 +42,9 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
     @Value("#{T(java.time.Duration).parse('${presidio.input.core.transformation.waiting.duration:P10D}')}")
     private Duration transformationWaitingDuration;
 
+    @JacksonInject("endDate")
+    private Instant endDate;
+
     @JsonCreator
     public NewOccurrenceTransformer(@JsonProperty("name") String name,
                                     @JsonProperty("schema") String schema,
@@ -73,8 +73,15 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
         this.transformationWaitingDuration = transformationWaitingDuration;
     }
 
+    public void setEndDate(Instant endDate) {
+        this.endDate = endDate;
+    }
+
     @Override
     public JSONObject transform(JSONObject document) {
+        if (!shouldTransform()) {
+            return document;
+        }
         Boolean isNewOccurrence = false;
         try {
             String fieldValue = (String)jacksonUtil.getFieldValue(document, inputFieldName, null);
@@ -104,5 +111,9 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
     private boolean isLastOccurrenceInstantExpired(Instant lastOccurrenceInstant, Instant logicalInstant) {
         Instant expirationInstant = logicalInstant.minus(EXPIRATION_DELTA);
         return lastOccurrenceInstant.compareTo(expirationInstant) <= 0;
+    }
+
+    private boolean shouldTransform() {
+        return endDate.isAfter(workflowStartDate.plus(transformationWaitingDuration));
     }
 }
