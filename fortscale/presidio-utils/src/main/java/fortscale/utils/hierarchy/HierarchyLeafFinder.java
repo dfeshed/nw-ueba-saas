@@ -24,7 +24,7 @@ public abstract class HierarchyLeafFinder <T> {
         String lastFieldName = fieldName;
         try {
             for (String subfieldName : new HierarchyIterator(fieldName)) {
-                if (value == null) {
+                if (isNull(value)) {
                     return new HierarchyValidatingLeaf<>(fieldName, subfieldName);
                 }
 

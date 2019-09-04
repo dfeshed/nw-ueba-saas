@@ -4,6 +4,7 @@ import fortscale.utils.hierarchy.HierarchyLeafFinder;
 import fortscale.utils.hierarchy.HierarchyValidatingLeaf;
 import org.apache.commons.lang3.ClassUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 public class JacksonUtils extends HierarchyLeafFinder<JSONObject> {
+
     private static final String PRIMITIVE_FIELD_NAME = "$$primitive$$";
     public static List<String> jsonArrayToList(JSONArray jsonArray) {
         ArrayList<String> toReturn = new ArrayList<>();
@@ -26,7 +28,7 @@ public class JacksonUtils extends HierarchyLeafFinder<JSONObject> {
         Object toReturn = defaultValue;
         HierarchyValidatingLeaf<JSONObject> hierarchyValidatingLeaf = getLeaf(document, fieldName);
         if (!hierarchyValidatingLeaf.isHierarchyBroken()) {
-            if (hierarchyValidatingLeaf.getValue().has(PRIMITIVE_FIELD_NAME)) {
+            if (hierarchyValidatingLeaf.getValue() != null && hierarchyValidatingLeaf.getValue().has(PRIMITIVE_FIELD_NAME)) {
                 toReturn = hierarchyValidatingLeaf.getValue().get(PRIMITIVE_FIELD_NAME);
             } else {
                 toReturn = hierarchyValidatingLeaf.getValue();
@@ -60,7 +62,7 @@ public class JacksonUtils extends HierarchyLeafFinder<JSONObject> {
      * @param fieldName  the field name belonging to the object which should be set to the given value
      * @param fieldValue the value to set the object's field to
      */
-    public void setFieldValue(JSONObject document, String fieldName, Object fieldValue) throws IllegalAccessException {
+    public void setFieldValue(JSONObject document, String fieldName, Object fieldValue) {
         HierarchyValidatingLeaf<JSONObject> hierarchyValidatingLeaf = getLeaf(document, fieldName);
         hierarchyValidatingLeaf.validateHierarchyNotBroken();
         hierarchyValidatingLeaf.getParent().put(hierarchyValidatingLeaf.getFieldName(), fieldValue);
@@ -72,7 +74,7 @@ public class JacksonUtils extends HierarchyLeafFinder<JSONObject> {
     }
 
     @Override
-    protected JSONObject getChild(JSONObject parent, String subFieldName) throws Exception {
+    protected JSONObject getChild(JSONObject parent, String subFieldName) throws JSONException {
         Object nestedObject = parent.get(subFieldName);
         if (nestedObject == JSONObject.NULL) return null;
         if (ClassUtils.isPrimitiveOrWrapper(nestedObject.getClass()) || nestedObject instanceof String) {
