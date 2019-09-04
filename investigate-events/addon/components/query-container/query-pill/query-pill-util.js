@@ -1,4 +1,11 @@
+import { next } from '@ember/runloop';
+
 import { filterValidMeta } from 'investigate-events/util/meta';
+import {
+  NO_RESULTS_MESSAGE_SELECTOR,
+  LOADING_SPINNER_SELECTOR,
+  POWER_SELECT_OPTIONS
+} from 'investigate-events/constants/pill';
 
 const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
 /**
@@ -155,3 +162,106 @@ export const isSubmitClicked = (target) => {
     target.classList.contains('query-button-wrapper') ||
     (target.parentElement && isSubmitClicked(target.parentElement));
 };
+
+// ************************ DOM Manipulation *************************  //
+
+export function removeNoResultsMessage(context) {
+  addNoResultsMessage(' ', context);
+}
+
+export function addNoResultsMessage(message, context) {
+
+  next(context, () => {
+    if (context.get('isActive')) {
+      const targetElement = document.querySelector(NO_RESULTS_MESSAGE_SELECTOR);
+      const powerSelectOptions = document.querySelector(POWER_SELECT_OPTIONS);
+      if (targetElement && targetElement.firstChild) {
+        const newEl = targetElement.firstChild;
+        const oldTextElement = targetElement.firstChild;
+
+        newEl.textContent = message;
+        targetElement.replaceChild(newEl, oldTextElement);
+      } else if (powerSelectOptions) {
+        // Insert a li node with the message
+        // This is a case where value suggestions will always have a default option,
+        // but we still need to display no results message.
+        const fragment = createNoMessageFragment(message);
+        powerSelectOptions.appendChild(fragment);
+      }
+    }
+  });
+}
+
+const createNoMessageFragment = (message) => {
+  const frag = document.createDocumentFragment();
+  const textNode = document.createTextNode(message);
+
+  const li = document.createElement('li');
+  li.setAttribute('class', 'ember-power-select-option ember-power-select-option--no-matches-message');
+  li.setAttribute('role', 'option');
+  li.appendChild(textNode);
+
+  frag.appendChild(li);
+  return frag;
+
+};
+
+/**
+ * Appends a spinner to power-select-options in dom
+ */
+export function addSpinnerToDOM(context) {
+
+  next(context, () => {
+    const targetElement = document.querySelector(POWER_SELECT_OPTIONS);
+
+    if (targetElement) {
+      const fragment = document.createDocumentFragment();
+
+      const span = document.createElement('span');
+      span.setAttribute('class', 'ember-power-select-loading-options-spinner');
+
+      const div = document.createElement('div');
+      div.setAttribute('class', 'rsa-loader is-medium');
+
+      const divWheel = document.createElement('div');
+      divWheel.setAttribute('class', 'rsa-loader__wheel');
+
+      div.appendChild(divWheel);
+
+      span.appendChild(div);
+
+      fragment.appendChild(span);
+
+      targetElement.appendChild(fragment);
+    }
+  });
+}
+
+export function addAndRemoveElements(propertyFlag, context) {
+  if (context.get('isActive')) {
+    const loadingSpinner = document.querySelector(LOADING_SPINNER_SELECTOR);
+    if (propertyFlag) {
+
+      removeNoResultsMessage(context);
+
+      // call in progress, but there is no spinner
+      // probably the first time, so add one
+      if (!loadingSpinner) {
+        addSpinnerToDOM(context);
+      } else {
+        // call in progress, but there is already a spinner present.
+        // just style it.
+        loadingSpinner.style.display = 'inline';
+      }
+    } else {
+      // Hide the spinner when call gets completed.
+      if (loadingSpinner) {
+        loadingSpinner.style.display = 'none';
+      }
+      if (context.hasOwnProperty('triggerRecentQueryMaintenance')) {
+        context.toggleProperty('triggerRecentQueryMaintenance');
+      }
+    }
+  }
+}
+// **********************************************************************  //

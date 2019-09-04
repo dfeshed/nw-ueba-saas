@@ -227,6 +227,7 @@ export default {
     metaNoMatch: 'All meta keys filtered out',
     operatorNoMatch: 'All operators filtered out',
     recentQueriesNoMatch: 'No recent queries found',
+    valueSuggestionsNoMatch: 'No suggestions found',
     valueSuggestionsGroupName: 'Suggestions',
     validationMessages: {
       time: 'You must enter a valid date.',

@@ -64,7 +64,8 @@ const stateToComputed = (state) => ({
   pillsData: enrichedPillsData(state),
   selectedPills: selectedPills(state),
   canPerformTextSearch: hasMinimumCoreServicesVersionForTextSearch(state),
-  valueSuggestions: state.investigate.queryNode.valueSuggestions || []
+  valueSuggestions: state.investigate.queryNode.valueSuggestions || [],
+  isValueSuggestionsCallInProgress: state.investigate.queryNode.isValueSuggestionsCallInProgress
 });
 
 const dispatchToActions = {

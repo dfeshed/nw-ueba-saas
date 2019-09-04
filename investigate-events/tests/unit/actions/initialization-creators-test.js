@@ -243,12 +243,13 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
     const getState = () => {
       return new ReduxDataHelper()
         .hasRequiredValuesToQuery()
+        .language()
         .build();
     };
     const prefixText = 'test';
     const metaName = 'action';
 
-    const expectedSuggestionsForTest = ['foo', 'bar', 'foobar'];
+    const expectedSuggestionsForTest = ['testfoo', 'testbar', 'testfoobar'];
 
     const dispatchValueSuggestions = (action) => {
       assert.equal(action.type, ACTION_TYPES.SET_VALUE_SUGGESTIONS, 'action has the correct type');
@@ -269,6 +270,7 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
 
     const getState = () => {
       return new ReduxDataHelper()
+        .language()
         .hasRequiredValuesToQuery()
         .build();
     };

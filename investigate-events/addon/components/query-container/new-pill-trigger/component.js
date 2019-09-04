@@ -66,6 +66,12 @@ export default Component.extend({
    */
   valueSuggestions: [],
 
+  /**
+   * Is value suggestions API call in progress
+   */
+  isValueSuggestionsCallInProgress: false,
+
+
   init() {
     this._super(...arguments);
 

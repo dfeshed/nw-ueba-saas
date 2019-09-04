@@ -27,6 +27,11 @@ import * as MESSAGE_TYPES from '../message-types';
 import Ember from 'ember';
 import BoundedList from 'investigate-events/util/bounded-list';
 import { hasComplexText } from 'investigate-events/util/query-parsing';
+import {
+  addAndRemoveElements,
+  addNoResultsMessage,
+  removeNoResultsMessage
+} from '../query-pill/query-pill-util';
 
 const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
 
@@ -66,12 +71,13 @@ const { Handlebars: { Utils } } = Ember;
 const defaultOption = (searchString) => {
   return {
     displayName: searchString,
-    description: POWER_SELECT_OPTIONS_QUERY_LABEL
+    description: POWER_SELECT_OPTIONS_QUERY_LABEL,
+    type: 'default'
   };
 };
 
 export default Component.extend({
-  classNameBindings: ['isPopulated', ':pill-value'],
+  classNameBindings: ['isPopulated', ':pill-value', 'inProgress'],
 
   i18n: service(),
 
@@ -149,13 +155,23 @@ export default Component.extend({
   valueSuggestions: [],
 
   /**
+   * Is value suggestions API call in progress
+   */
+  isValueSuggestionsCallInProgress: false,
+
+  /**
   * The options used for the power-select. They are grouped to provide a way to
   * have 2 "lists". One list is the default type of pill to create, the second
   * list is suggested values if available.
   * If no suggestions are available, display default `Query Filter` option
   */
   @computed('_searchString', 'valueSuggestions', 'i18n')
-  _options(searchString, valueSuggestions) {
+  _options(searchString, valueSuggestions, i18n) {
+    if (valueSuggestions.length > 0) {
+      removeNoResultsMessage(this);
+    } else {
+      addNoResultsMessage(i18n.t('queryBuilder.valueSuggestionsNoMatch'), this);
+    }
     return [defaultOption(searchString), ...valueSuggestions];
   },
 
@@ -185,6 +201,11 @@ export default Component.extend({
    * @private
    */
   _searchString: null,
+
+  @computed('isValueSuggestionsCallInProgress')
+  inProgress(isValueSuggestionsCallInProgress) {
+    addAndRemoveElements(isValueSuggestionsCallInProgress, this);
+  },
 
   /**
    * Prepares `valueString` for display in the template. If the incoming value
@@ -394,10 +415,10 @@ export default Component.extend({
       if (selection !== null) {
 
         let searchText, value;
-        if (selection.description === POWER_SELECT_OPTIONS_QUERY_LABEL) {
+        if (selection.type === 'default') {
           // If Default option was chosen, pick out the text typed in.
           searchText = powerSelectAPI.searchText;
-        } else if (selection.description === 'Suggestions') {
+        } else if (selection.type === 'Suggestions') {
           // Otherwise, one of the display values were picked.
           searchText = selection.displayName;
         }
@@ -636,10 +657,14 @@ export default Component.extend({
    */
   _matcher(value, input) {
     const _input = input.toLowerCase().replace(LEADING_SPACES, '');
-    if (value.description === POWER_SELECT_OPTIONS_QUERY_LABEL) {
+    const _displayName = value.displayName ? value.displayName.toLowerCase() : '';
+    const _aliases = value.description ? value.description.toLowerCase() : '';
+    if (
+      value.description === POWER_SELECT_OPTIONS_QUERY_LABEL ||
+      (_displayName.startsWith(_input) || _aliases.startsWith(_input))
+    ) {
       return 0;
     }
-    const _displayName = value.displayName.toLowerCase();
-    return _displayName.indexOf(_input);
+    return -1;
   }
 });

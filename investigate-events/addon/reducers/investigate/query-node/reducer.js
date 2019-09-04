@@ -72,7 +72,7 @@ const _initialState = Immutable.from({
   recentQueriesCallInProgress: false,
 
   valueSuggestions: [],
-  valueSuggestionsCallInProgress: false
+  isValueSuggestionsCallInProgress: false
 
 });
 
@@ -143,6 +143,20 @@ const handlePillSelection = (state, pillData, isSelected) => {
     return pD;
   });
   return state.set('pillsData', newPillsData);
+};
+
+const enrichValueSuggestions = (metaName, aliases, values) => {
+  const valueAliases = aliases[metaName];
+  return values.map((v) => {
+    if (valueAliases.hasOwnProperty(v.displayName)) {
+      return {
+        ...v,
+        description: valueAliases[v.displayName]
+      };
+    } else {
+      return v;
+    }
+  });
 };
 
 const _shouldRemoveFocus = (selectedOrDeselectedPills, focusedPillData) => {
@@ -685,23 +699,26 @@ export default handleActions({
 
   [ACTION_TYPES.SET_VALUE_SUGGESTIONS]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.set('valueSuggestionsCallInProgress', true),
+      start: (s) => s.set('isValueSuggestionsCallInProgress', true),
       success: (s) => {
-        const { payload: { data } } = action;
+        const { payload: { data }, meta: { metaName, aliases } } = action;
         // Max cap at 100 values
         const valuesList = data.slice(0, 100);
-        const values = valuesList.map((d) => ({
+        let values = valuesList.map((d) => ({
           // MT returns Number for certain meta.
           // Our EPS expects all values to be String
           displayName: `${d.value}`,
-          description: 'Suggestions'
+          type: 'Suggestions'
         }));
+        if (!!aliases && aliases.hasOwnProperty(metaName)) {
+          values = enrichValueSuggestions(metaName, aliases, values);
+        }
         return s.merge({
           valueSuggestions: values,
-          valueSuggestionsCallInProgress: false
+          isValueSuggestionsCallInProgress: false
         });
       },
-      failure: (s) => s.set('valueSuggestionsCallInProgress', false)
+      failure: (s) => s.set('isValueSuggestionsCallInProgress', false)
     });
   },
 

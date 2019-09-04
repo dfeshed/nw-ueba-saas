@@ -1311,7 +1311,7 @@ test('INSERT_INTRA_PARENS adds parens when editing a pill that is within a paren
 test('SET_VALUE_SUGGESTIONS init marks callInProgress as true', function(assert) {
 
   const initialState = Immutable.from({
-    valueSuggestionsCallInProgress: false
+    isValueSuggestionsCallInProgress: false
   });
 
   const successAction = makePackAction(LIFECYCLE.START, {
@@ -1319,14 +1319,14 @@ test('SET_VALUE_SUGGESTIONS init marks callInProgress as true', function(assert)
   });
 
   const result = reducer(initialState, successAction);
-  assert.ok(result.valueSuggestionsCallInProgress, 'Call should be in progress');
+  assert.ok(result.isValueSuggestionsCallInProgress, 'Call should be in progress');
 });
 
 test('SET_VALUE_SUGGESTIONS success saves value suggestions and marks callInProgress as false', function(assert) {
 
   const initialState = Immutable.from({
     valueSuggestions: [],
-    valueSuggestionsCallInProgress: true
+    isValueSuggestionsCallInProgress: true
   });
 
   const expectedData = ['foo', 'bar', 'baz'];
@@ -1350,11 +1350,48 @@ test('SET_VALUE_SUGGESTIONS success saves value suggestions and marks callInProg
   assert.notOk(result.valueSuggestionCallInProgress, 'Call should not be in progess');
 });
 
+
+test('SET_VALUE_SUGGESTIONS success enriches values with aliases if available', function(assert) {
+
+  const initialState = Immutable.from({
+    valueSuggestions: [],
+    isValueSuggestionsCallInProgress: true
+  });
+
+  const expectedData = ['20', '80'];
+
+  const serverResponse = expectedData.map((d) => {
+    return { value: d };
+  });
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.SET_VALUE_SUGGESTIONS,
+    payload: {
+      data: serverResponse
+    },
+    meta: {
+      metaName: 'service',
+      aliases: {
+        'service': {
+          '20': 'FOO',
+          '80': 'BAR'
+        }
+      }
+    }
+  });
+
+  const result = reducer(initialState, successAction);
+  const suggestions = result.valueSuggestions.map((s) => s.description);
+
+  assert.ok(suggestions.includes('FOO'), 'expected value aliases not found');
+  assert.ok(suggestions.includes('BAR'), 'expected value aliases not found');
+});
+
 test('if SET_VALUE_SUGGESTIONS response has 100 or less, values will be saved', function(assert) {
 
   const initialState = Immutable.from({
     valueSuggestions: [],
-    valueSuggestionsCallInProgress: true
+    isValueSuggestionsCallInProgress: true
   });
 
   const data = Array.from({ length: 100 }, () => 0);
@@ -1376,7 +1413,7 @@ test('if SET_VALUE_SUGGESTIONS response has more than 100 values, we slice it of
 
   const initialState = Immutable.from({
     valueSuggestions: [],
-    valueSuggestionsCallInProgress: true
+    isValueSuggestionsCallInProgress: true
   });
 
   const data = Array.from({ length: 101 }, () => 0);
@@ -1397,7 +1434,7 @@ test('if SET_VALUE_SUGGESTIONS response has more than 100 values, we slice it of
 test('SET_VALUE_SUGGESTIONS failure marks callInProgress as false', function(assert) {
 
   const initialState = Immutable.from({
-    valueSuggestionsCallInProgress: true
+    isValueSuggestionsCallInProgress: true
   });
 
   const successAction = makePackAction(LIFECYCLE.FAILURE, {

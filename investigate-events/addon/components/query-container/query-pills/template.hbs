@@ -9,6 +9,7 @@
     pillPlaceholder=pillPlaceholder
     startTriggeredPosition=startTriggeredPosition
     valueSuggestions=(readonly valueSuggestions)
+    isValueSuggestionsCallInProgress=isValueSuggestionsCallInProgress
   }}
 
   {{#if (eq pillData.type COMPLEX_FILTER)}}
@@ -51,6 +52,7 @@
       pillPlaceholder=pillPlaceholder
       isActive=pillData.isEditing
       valueSuggestions=(readonly valueSuggestions)
+      isValueSuggestionsCallInProgress=isValueSuggestionsCallInProgress
     }}
   {{/if}}
 
@@ -68,5 +70,6 @@
   pillPlaceholder=pillPlaceholder
   sendMessage=(action 'handleMessage')
   valueSuggestions=(readonly valueSuggestions)
+  isValueSuggestionsCallInProgress=isValueSuggestionsCallInProgress
 }}
 

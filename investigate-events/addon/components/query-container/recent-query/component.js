@@ -2,6 +2,8 @@ import Component from '@ember/component';
 import computed, { alias } from 'ember-computed-decorators';
 import { assert } from '@ember/debug';
 import { connect } from 'ember-redux';
+import { next, scheduleOnce, debounce, later } from '@ember/runloop';
+import { isEmpty } from '@ember/utils';
 
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
@@ -10,15 +12,11 @@ import {
   AFTER_OPTION_TAB_RECENT_QUERIES,
   AFTER_OPTION_TAB_META,
   LOADING_SPINNER_SELECTOR,
-  NO_RESULTS_MESSAGE_SELECTOR,
   POWER_SELECT_INPUT,
-  POWER_SELECT_TRIGGER_INPUT,
-  POWER_SELECT_OPTIONS
+  POWER_SELECT_TRIGGER_INPUT
 } from 'investigate-events/constants/pill';
-import { isEmpty } from '@ember/utils';
 import * as MESSAGE_TYPES from '../message-types';
 import BoundedList from 'investigate-events/util/bounded-list';
-import { next, scheduleOnce, debounce, later } from '@ember/runloop';
 import {
   isArrowDown,
   isArrowUp,
@@ -27,6 +25,11 @@ import {
   isShiftTab,
   isTab
 } from 'investigate-events/util/keys';
+import {
+  addAndRemoveElements,
+  addNoResultsMessage,
+  removeNoResultsMessage
+} from '../query-pill/query-pill-util';
 
 const DISABLED_TEXT_SEARCH = {
   label: AFTER_OPTION_TEXT_DISABLED_LABEL,
@@ -182,30 +185,7 @@ const RecentQueryComponent = Component.extend({
    */
   @computed('recentQueriesCallInProgress')
   inProgress(recentQueriesCallInProgress) {
-    if (this.get('isActive')) {
-      const loadingSpinner = document.querySelector(LOADING_SPINNER_SELECTOR);
-      if (recentQueriesCallInProgress) {
-
-        // Remove No results message
-        this._addNoResultsMessage(' ');
-
-        // call in progress, but there is no spinner
-        // probably the first time, so add one
-        if (!loadingSpinner) {
-          this._addSpinnerToDOM();
-        } else {
-          // call in progress, but there is already a spinner present.
-          // just style it.
-          loadingSpinner.style.display = '';
-        }
-      } else {
-        // Hide the spinner when call gets completed.
-        if (loadingSpinner) {
-          loadingSpinner.style.display = 'none';
-        }
-        this.toggleProperty('triggerRecentQueryMaintenance');
-      }
-    }
+    addAndRemoveElements(recentQueriesCallInProgress, this);
   },
 
   init() {
@@ -409,7 +389,7 @@ const RecentQueryComponent = Component.extend({
     this._afterOptionsMenu.clearHighlight();
     const el = this.element.querySelector(POWER_SELECT_INPUT);
     const { value } = el;
-    this._addNoResultsMessage(' ');
+    removeNoResultsMessage(this);
     this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, { data: value, dataSource: this.get('source') });
   },
 
@@ -527,10 +507,10 @@ const RecentQueryComponent = Component.extend({
   _handleNoResultsMessage(optionsArray) {
     if (optionsArray) {
       if (optionsArray.length > 0) {
-        this._addNoResultsMessage(' ');
+        removeNoResultsMessage(this);
       } else {
         const i18n = this.get('i18n');
-        this._addNoResultsMessage(i18n.t('queryBuilder.recentQueriesNoMatch'));
+        addNoResultsMessage(i18n.t('queryBuilder.recentQueriesNoMatch'), this);
       }
     }
   },
@@ -562,59 +542,7 @@ const RecentQueryComponent = Component.extend({
     const _input = input.toLowerCase().replace(LEADING_SPACES, '');
     const _query = option.query.toLowerCase();
     return _query.indexOf(_input);
-  },
-  // ************************ DOM Manipulation *************************  //
-
-  /**
-  * Customize the message in dom when we need it
-  */
-  _addNoResultsMessage(message) {
-
-    next(() => {
-      if (this.get('isActive')) {
-        const targetElement = document.querySelector(NO_RESULTS_MESSAGE_SELECTOR);
-        if (targetElement && targetElement.firstChild) {
-          const newEl = targetElement.firstChild;
-          const oldTextElement = targetElement.firstChild;
-
-          newEl.textContent = message;
-          targetElement.replaceChild(newEl, oldTextElement);
-        }
-      }
-    });
-  },
-
-  /**
-   * Appends a spinner to power-select-options in dom
-   */
-  _addSpinnerToDOM() {
-
-    next(() => {
-      const targetElement = document.querySelector(POWER_SELECT_OPTIONS);
-
-      if (targetElement) {
-        const fragment = document.createDocumentFragment();
-
-        const span = document.createElement('span');
-        span.setAttribute('class', 'ember-power-select-loading-options-spinner');
-
-        const div = document.createElement('div');
-        div.setAttribute('class', 'rsa-loader is-medium');
-
-        const divWheel = document.createElement('div');
-        divWheel.setAttribute('class', 'rsa-loader__wheel');
-
-        div.appendChild(divWheel);
-
-        span.appendChild(div);
-
-        fragment.appendChild(span);
-
-        targetElement.appendChild(fragment);
-      }
-    });
   }
-
 });
 
 export default connect(stateToComputed, undefined)(RecentQueryComponent);

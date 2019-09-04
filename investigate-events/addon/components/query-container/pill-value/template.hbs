@@ -14,7 +14,7 @@
     defaultHighlighted=_highlighter
     dropdownClass='investigate-query-dropdown meta-tab'
     initiallyOpened=true
-    noMatchesMessage=undefined
+    noMatchesMessage=' '
     matcher=_matcher
     matchTriggerWidth=false
     onblur=(action 'onBlur')
@@ -32,9 +32,8 @@
     as |option|
   }}
     <span class="value">{{option.displayName}}</span>
-    {{#if (eq option.description 'Query Filter')}}
-      <span class="description">{{option.description}}</span>
-    {{/if}}
+    <span class="description">{{option.description}}</span>
+
   {{/power-select-typeahead}}
 {{else}}
   {{valueDisplay}}

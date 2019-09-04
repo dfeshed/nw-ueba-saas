@@ -422,11 +422,13 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     const suggestions = [
       {
         displayName: 'fooboom',
-        description: 'Suggestions'
+        description: 'BOO',
+        type: 'Suggestions'
       },
       {
         displayName: 'barboom',
-        description: 'Suggestions'
+        description: 'BOO',
+        type: 'Suggestions'
       }
     ];
     this.set('valueSuggestions', suggestions);

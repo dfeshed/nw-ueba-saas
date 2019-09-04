@@ -25,7 +25,7 @@ export default {
     if (value === 'test') {
       return {
         code: 0,
-        data: [{ value: 'foo' }, { value: 'bar' }, { value: 'foobar' }]
+        data: [{ value: 'testfoo' }, { value: 'testbar' }, { value: 'testfoobar' }]
       };
     } else if (value === 'test100') {
       return {
@@ -35,7 +35,12 @@ export default {
     } else if (metaName.value == 'service') {
       return {
         code: 0,
-        data: Array.from({ length: 10 }, () => ({ value: 12 }))
+        data: Array.from({ length: 10 }, () => ({ value: 20 }))
+      };
+    } else if (value == 'test0') {
+      return {
+        code: 0,
+        data: []
       };
     }
 

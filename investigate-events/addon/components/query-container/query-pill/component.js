@@ -119,6 +119,11 @@ export default Component.extend({
   valueSuggestions: [],
 
   /**
+   * Is value suggestions API call in progress
+   */
+  isValueSuggestionsCallInProgress: false,
+
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public

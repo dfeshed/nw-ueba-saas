@@ -679,12 +679,12 @@ module('Integration | Component | Pill Value', function(hooks) {
   test('value suggestions will display default options plus suggestions', async function(assert) {
     const suggestions = [
       {
-        displayName: 'fooboom',
-        description: 'Suggestions'
+        displayName: 'boomfoo',
+        type: 'Suggestions'
       },
       {
-        displayName: 'barboom',
-        description: 'Suggestions'
+        displayName: 'boombar',
+        type: 'Suggestions'
       }
     ];
     this.set('valueSuggestions', suggestions);
@@ -701,18 +701,18 @@ module('Integration | Component | Pill Value', function(hooks) {
 
     const values = findAll('.value').map((v) => v.textContent.trim()).filter((t) => !!t);
 
-    assert.deepEqual(values, ['boom', 'fooboom', 'barboom'], 'Incorrect options being displayed');
+    assert.deepEqual(values, ['boom', 'boomfoo', 'boombar'], 'Incorrect options being displayed');
   });
 
   test('Description for options will only ever be for Query Filter, and not for suggestions', async function(assert) {
     const suggestions = [
       {
         displayName: 'foo',
-        description: 'Suggestions'
+        type: 'Suggestions'
       },
       {
         displayName: 'bar',
-        description: 'Suggestions'
+        type: 'Suggestions'
       }
     ];
     this.set('valueSuggestions', suggestions);
@@ -735,11 +735,11 @@ module('Integration | Component | Pill Value', function(hooks) {
     const suggestions = [
       {
         displayName: 'fooboom',
-        description: 'Suggestions'
+        type: 'Suggestions'
       },
       {
         displayName: 'barboom',
-        description: 'Suggestions'
+        type: 'Suggestions'
       }
     ];
     this.set('valueSuggestions', suggestions);
@@ -759,11 +759,11 @@ module('Integration | Component | Pill Value', function(hooks) {
     const suggestions = [
       {
         displayName: 'fooboom',
-        description: 'Suggestions'
+        types: 'Suggestions'
       },
       {
         displayName: 'barboom',
-        description: 'Suggestions'
+        type: 'Suggestions'
       }
     ];
     this.set('valueSuggestions', suggestions);
@@ -784,11 +784,11 @@ module('Integration | Component | Pill Value', function(hooks) {
     const suggestions = [
       {
         displayName: 'foo',
-        description: 'Suggestions'
+        type: 'Suggestions'
       },
       {
         displayName: 'foobar',
-        description: 'Suggestions'
+        type: 'Suggestions'
       }
     ];
     this.set('valueSuggestions', suggestions);
@@ -814,4 +814,37 @@ module('Integration | Component | Pill Value', function(hooks) {
     assert.ok(find(PILL_SELECTORS.powerSelectOptionHighlight).textContent.trim().includes('foobar'), 'Did not highlight last option in values drop-down');
 
   });
+
+  test('It renders spinner when valueSuggestionsCall is in progress', async function(assert) {
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    await render(hbs`
+      {{query-container/pill-value
+        activePillTab=activePillTab
+        isValueSuggestionsCallInProgress=true
+        isActive=true
+      }}
+    `);
+
+    assert.ok(find(PILL_SELECTORS.loadingSpinnerSelector), 'Did not find the loading spinner');
+    // will never find spinner and no results message together
+    assert.ok(find(PILL_SELECTORS.noResultsMessageSelector).textContent.trim(), '', 'Should not have found no results message');
+  });
+
+  test('It renders no options message when valueSuggestions are empty', async function(assert) {
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('valueSuggestions', []);
+    await render(hbs`
+      {{query-container/pill-value
+        activePillTab=activePillTab
+        isValueSuggestionsCallInProgress=false
+        valueSuggestions=valueSuggestions
+        isActive=true
+      }}
+    `);
+
+    assert.ok(find(PILL_SELECTORS.noResultsMessageSelector), 'Did not find no results message');
+    assert.ok(find(PILL_SELECTORS.noResultsMessageSelector).textContent.includes('suggestions'), 'Message not found');
+  });
+
+
 });
