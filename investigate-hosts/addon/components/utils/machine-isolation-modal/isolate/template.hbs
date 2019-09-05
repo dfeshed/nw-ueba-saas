@@ -43,7 +43,7 @@
         keyUp=(action 'onKeyUpValidateComment' isolationComment)
         focusOut=(action 'onFocusOutValidateComment' isolationComment)
       }}
-      {{#if isCharacterLimitReached}}
+      {{#if isolationCommentInfo.isCharacterLimitReached}}
         <span class='limit-reached'>
           {{t 'investigateFiles.editFileStatus.commentLimitError'}}
         </span>
@@ -56,7 +56,7 @@
     {{#rsa-form-button defaultAction=closeConfirmModal}}
       {{t 'investigateHosts.networkIsolation.buttons.cancel'}}
     {{/rsa-form-button}}
-    {{#rsa-form-button style='primary' defaultAction=(action 'confirmIsolation')}}
+    {{#rsa-form-button style='primary' isDisabled=isolationCommentInfo.isIsolateHostDisabled defaultAction=(action 'confirmIsolation')}}
       {{t 'investigateHosts.networkIsolation.buttons.isolateHost'}}
     {{/rsa-form-button}}
   </hbox>

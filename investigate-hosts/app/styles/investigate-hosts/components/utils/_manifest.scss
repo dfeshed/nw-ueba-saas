@@ -7,12 +7,24 @@
   }
   .isolation-modal-content{
     padding: rsa-whitespace(more) rsa-whitespace();
+    overflow: auto;
+    max-height: 500px;
     .isolate-description-text {
       margin-bottom: rsa-whitespace();
     }
     .exclusion-list-wrapper {
       .comment-box-label {
         margin: rsa-whitespace() rsa-whitespace() rsa-whitespace(more) 1.5rem;
+      }
+    }
+
+    textarea {
+      max-width: 470px;
+    }
+
+    .comment-wrapper {
+      textarea {
+        resize: none;
       }
     }
   }

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, find, click, fillIn, triggerKeyEvent } from '@ember/test-helpers';
+import { render, findAll, find, click, fillIn, triggerKeyEvent, blur } from '@ember/test-helpers';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { patchSocket } from '../../../../../helpers/patch-socket';
@@ -299,9 +299,49 @@ module('Integration | Component | Utils | machine-isolation-modal/isolation', fu
       selectedModal=selectedModal
       serverId=serverId}}`);
 
-    await fillIn('.comment-box textarea', '');
-    await click(find('.modal-footer-buttons .is-primary button'));
+    await fillIn('.comment-wrapper textarea', '');
+    await blur(find('.comment-box textarea'));
     assert.equal(findAll('.rsa-form-textarea.is-error').length, 1, 'Error is set');
+  });
+
+  test('Isolate host button will not be enabled without comment.', async function(assert) {
+
+    this.set('closeConfirmModal', function() {
+      assert.ok(true);
+    });
+    this.set('agentId', 'agentID');
+    this.set('serverId', 'serverId');
+    this.set('selectedModal', 'isolate');
+    await render(hbs `<div id='modalDestination'></div>
+      {{utils/machine-isolation-modal/isolate
+      closeConfirmModal=closeConfirmModal
+      agentId=agentId
+      selectedModal=selectedModal
+      serverId=serverId}}`);
+
+    await fillIn('.comment-box textarea', '');
+
+    assert.equal(findAll('.modal-footer-buttons .is-disabled.is-primary').length, 1, 'Button is disabled');
+  });
+
+  test('Isolate host button will be enabled when comment is added.', async function(assert) {
+
+    this.set('closeConfirmModal', function() {
+      assert.ok(true);
+    });
+    this.set('agentId', 'agentID');
+    this.set('serverId', 'serverId');
+    this.set('selectedModal', 'isolate');
+    await render(hbs `<div id='modalDestination'></div>
+      {{utils/machine-isolation-modal/isolate
+      closeConfirmModal=closeConfirmModal
+      agentId=agentId
+      selectedModal=selectedModal
+      serverId=serverId}}`);
+
+    await fillIn('.comment-box textarea', 'Test');
+
+    assert.equal(findAll('.modal-footer-buttons .is-disabled.is-primary').length, 0, 'Button will be enabled when comment is added');
   });
 
 

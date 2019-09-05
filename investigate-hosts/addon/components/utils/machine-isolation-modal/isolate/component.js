@@ -28,8 +28,11 @@ const Isolate = Component.extend({
   isIsolationCommentEmpty: false,
 
   @computed('isolationComment')
-  isCharacterLimitReached(isolationComment) {
-    return isolationComment.length === 900;
+  isolationCommentInfo(isolationComment) {
+    return {
+      isCharacterLimitReached: isolationComment.length === 900,
+      isIsolateHostDisabled: !isolationComment.length
+    };
   },
 
   actions: {

@@ -3079,15 +3079,15 @@ export default {
       },
       buttons: {
         cancel: 'Cancel',
-        isolateHost: 'Isolate host',
-        releaseHost: 'Release host',
+        isolateHost: 'Isolate Host',
+        releaseHost: 'Release Host',
         save: 'Save'
       },
       isolate: {
         descriptionText: 'Network Isolation blocks the host from connecting to the network. All attempted network connections are monitored and reported to the endpoint server.',
         checkboxLabel: 'Add your IPs to the Exclusion List',
         checkboxDescription: 'Default IPs excluded from isolation include Endpoint Server, Relay Server, DNS, DNCP, Gateways, 0.0.0.0, 255.255.255.255.',
-        exclusionListPlaceholder: 'Enter one or more valid IPv4/IPv6 addresses. Multiple values can be separated by commas.',
+        exclusionListPlaceholder: 'Enter one or more valid IPv4/IPv6 addresses. Use commas to separate multiple values.',
         invalidIp: 'One or more of the IPv4/IPv6 addresses are invalid',
         ipListLimit: 'A maximum of a 100 IPs can be excluded',
         comments: 'COMMENTS<sup>*</sup>',
