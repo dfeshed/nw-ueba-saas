@@ -50,13 +50,19 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
     public void airflow_failed_dags_test() {
         AirflowDbHelper airflowDbHelper = new AirflowDbHelper();
         List<AirflowTaskFailTable> airflowTaskFailTables = airflowDbHelper.fetchFailedTasks(startTime);
+        LOGGER.warn("Started on " + Instant.now());
+        LOGGER.warn("");
 
-        assertThat(airflowTaskFailTables)
-                .overridingErrorMessage("Found Airflow failed DAGs.\n" + airflowTaskFailTables.stream()
-                                .map(AirflowTaskFailTable::toString)
-                                .peek(e -> LOGGER.warn(e))
-                                .collect(joining("\n")))
-                .isEmpty();
+        if (airflowTaskFailTables.isEmpty()) {
+            LOGGER.warn("No failures since " + startTime);
+        } else {
+            assertThat(airflowTaskFailTables)
+                    .overridingErrorMessage("Found Airflow failed DAGs.\n" + airflowTaskFailTables.stream()
+                            .map(AirflowTaskFailTable::toString)
+                            .peek(e -> LOGGER.warn(e))
+                            .collect(joining("\n")))
+                    .isEmpty();
+        }
     }
 }
 
