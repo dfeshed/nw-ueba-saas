@@ -19,6 +19,7 @@ public class MongoProgressTask implements Runnable {
     private final Instant end;
     private Instant start;
     private Instant lastEventTime;
+    private Instant taskLastWakeup;
     private LinkedList<Instant> eventTimeHistory = new LinkedList<>();
 
     MongoProgressTask(AdapterAbstractStoredDataRepository dataRepo, Instant start, Instant end) {
@@ -30,6 +31,7 @@ public class MongoProgressTask implements Runnable {
     }
 
     public void run() {
+        taskLastWakeup = Instant.now();
         Optional<Instant> result = Optional.ofNullable(dataRepo.maxDateTimeBetween(start, end));
         LOGGER.info("[" + collectionName + "] - Max dateTime = " + result + " (start_time=" + start + ")");
 
@@ -98,5 +100,9 @@ public class MongoProgressTask implements Runnable {
             LOGGER.error("[" + collectionName + "] - eventTimeHistory=" + eventTimeHistory);
         }
         return result;
+    }
+
+    Instant getTaskLastWakeupTime() {
+      return taskLastWakeup;
     }
 }
