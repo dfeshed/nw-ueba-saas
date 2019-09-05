@@ -5,17 +5,13 @@ import org.junit.Assert;
 
 class DailyMetricsParamsBuilder extends PresidioUrl {
 
-    // http://10.64.152.170:8882/ueba-daily-metrics?metricNames=output-processor.active_users_count_last_day
-
     private DailyMetricsParamsBuilder(String url) {
         super(url);
     }
 
-
     static class Builder {
-
-        private StringBuilder URL = new StringBuilder();
         private final String METRIC_NAMES = "metricNames";
+        private StringBuilder URL = new StringBuilder();
 
         Builder(String base_url) {
             Assert.assertNotNull(base_url);
@@ -27,9 +23,8 @@ class DailyMetricsParamsBuilder extends PresidioUrl {
             return this;
         }
 
-
         public DailyMetricsParamsBuilder build() {
-            return new DailyMetricsParamsBuilder(URL.toString().substring(0, URL.length()-1));
+            return new DailyMetricsParamsBuilder(URL.toString().substring(0, URL.length() - 1));
         }
     }
 }

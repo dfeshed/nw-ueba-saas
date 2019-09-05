@@ -15,11 +15,10 @@ import org.testng.annotations.Test;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {OutputTestManager.class, MongoConfig.class})
@@ -32,10 +31,12 @@ public class DailyMetricsTest extends AbstractTestNGSpringContextTests {
 
 
     @Test
-    public void active_userId_count_last_day() {
-        PresidioUrl url = restHelper.dailyMetrics().url().withOutputProcessorActiveUsersCountLastDay();
-        Optional<DailyMetricRecord> metric = restHelper.dailyMetrics().request().getActiveUserIdCountLastDay(url);
-        DailyMetricRecord actualMetric = metric.orElseGet(() -> fail(url + "\nRequired metric not found:'output-processor.active_userId_count_last_day'"));
+    public void active_userId_count_last_day_equals_to_userId_table_count() {
+        PresidioUrl url = restHelper.dailyMetrics().url().withOutputProcessorActiveUserIdCountLastDay();
+        List<DailyMetricRecord> actualMetrics = restHelper.dailyMetrics().request().getOutputProcessorActiveUsersCountLastDay(url);
+        assertThat(actualMetrics).withFailMessage(url+ "\nExpected one metric exactly.").hasSize(1);
+        
+        DailyMetricRecord actualMetric = actualMetrics.get(0);
         Instant logicalTime = Instant.parse(actualMetric.logicalTime);
         Instant reportTime = Instant.parse(actualMetric.reportTime).truncatedTo(DAYS);
 
@@ -45,6 +46,53 @@ public class DailyMetricsTest extends AbstractTestNGSpringContextTests {
         assertThat(actualMetric.metricValue)
                 .withFailMessage(url + "\nuserId count mismatch.\nCompared to 'smart_userId_hourly' from "+ logicalTime + " to " + reportTime)
                 .isEqualTo(expectedUserIdCount);
+    }
+
+
+    @Test
+    public void events_processed_count_daily_has_3_values_more_then_zero() {
+        PresidioUrl url = restHelper.dailyMetrics().url().withOutputProcessorEventsProcessedCountDaily();
+        List<DailyMetricRecord> actualMetrics = restHelper.dailyMetrics().request().getOutputProcessorEventsProcessedCountDaily(url);
+        assertThat(actualMetrics).withFailMessage(url.toString()).hasSize(3);
+        Stream<Integer> metricValues = actualMetrics.stream().map(e -> e.metricValue);
+        assertThat(metricValues).allMatch(metricValue -> metricValue > 0);
+    }
+
+    @Test
+    public void smarts_count_last_day_has_3_values_more_then_zero() {
+        PresidioUrl url = restHelper.dailyMetrics().url().withOutputProcessorSmartsCountLastDay();
+        List<DailyMetricRecord> actualMetrics = restHelper.dailyMetrics().request().getOutputProcessorSmartsCountLastDay(url);
+        assertThat(actualMetrics).withFailMessage(url.toString()).hasSize(3);
+        Stream<Integer> metricValues = actualMetrics.stream().map(e -> e.metricValue);
+        assertThat(metricValues).allMatch(metricValue -> metricValue > 0);
+    }
+
+    @Test
+    public void alerts_count_last_day_has_3_values_more_then_zero() {
+        PresidioUrl url = restHelper.dailyMetrics().url().withOutputProcessorAlertsCountLastDay();
+        List<DailyMetricRecord> actualMetrics = restHelper.dailyMetrics().request().getOutputProcessorAlertsCountLastDay(url);
+        assertThat(actualMetrics).withFailMessage(url.toString()).hasSize(3);
+        Stream<Integer> metricValues = actualMetrics.stream().map(e -> e.metricValue);
+        assertThat(metricValues).allMatch(metricValue -> metricValue > 0);
+    }
+
+    @Test
+    public void smart_indicators_count_daily_has_3_values_more_then_zero() {
+        PresidioUrl url = restHelper.dailyMetrics().url().withOutputProcessorSmartIndicatorsCountDaily();
+        List<DailyMetricRecord> actualMetrics = restHelper.dailyMetrics().request().getOutputProcessorSmartIndicatorsCountDaily(url);
+        assertThat(actualMetrics).withFailMessage(url.toString()).hasSize(3);
+        Stream<Integer> metricValues = actualMetrics.stream().map(e -> e.metricValue);
+        assertThat(metricValues).allMatch(metricValue -> metricValue > 0);
+    }
+
+    @Test
+    public void alert_indicators_count_daily_has_3_values_more_then_zero() {
+        PresidioUrl url = restHelper.dailyMetrics().url().withOutputProcessorAlertIndicatorsCountDaily();
+        List<DailyMetricRecord> actualMetrics = restHelper.dailyMetrics().request().getOutputProcessorAlertIndicatorsCountDaily(url);
+        assertThat(actualMetrics).withFailMessage(url.toString()).hasSize(3);
+        Stream<Integer> metricValues = actualMetrics.stream().map(e -> e.metricValue);
+        /** need to add network data in future time **/
+        //assertThat(metricValues).allMatch(metricValue -> metricValue > 0);
     }
 
 }
