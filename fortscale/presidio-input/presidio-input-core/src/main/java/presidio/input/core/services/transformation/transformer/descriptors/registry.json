@@ -1,9 +1,16 @@
-[
-  {
-    "type": "join",
-    "name": "join process directory and file name",
-    "values": ["${processDirectory}", "${processFileName}"],
-    "destinationKey": "processFilePath",
-    "separator": "\\"
-  }
-]
+{
+  "type": "chain",
+  "name": "tls-transformer",
+  "transformerList": [
+    {
+      "type": "join",
+      "name": "join process directory and file name",
+      "values": [
+        "${processDirectory}",
+        "${processFileName}"
+      ],
+      "destinationKey": "processFilePath",
+      "separator": "\\"
+    }
+  ]
+}
