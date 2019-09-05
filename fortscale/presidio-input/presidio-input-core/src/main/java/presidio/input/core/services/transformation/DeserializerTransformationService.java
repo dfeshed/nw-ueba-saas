@@ -27,8 +27,8 @@ public class DeserializerTransformationService implements ApplicationContextAwar
 
     private static final String START_DATE = "startDate";
     private static final String END_DATE = "endDate";
-    private static final String TRANSFORMERS_PACKAGE_LOCATION = "fortscale.utils.transform";
-
+    private static final String TRANSFORMERS_UTIL_PACKAGE_LOCATION = "fortscale.utils.transform";
+    private static final String TRANSFORMERS_INPUT_PACKAGE_LOCATION = "presidio.input.core.services.transformation.transformer";
     private String configurationFilePath;
     private ObjectMapper objectMapper;
     private ApplicationContext applicationContext;
@@ -72,7 +72,7 @@ public class DeserializerTransformationService implements ApplicationContextAwar
 
     private void registerTransformerSubTypes(ObjectMapper objectMapper) {
         Collection<Class<? extends AbstractJsonObjectTransformer>> subTypes =
-                PresidioReflectionUtils.getSubTypes(new String[]{TRANSFORMERS_PACKAGE_LOCATION},
+                PresidioReflectionUtils.getSubTypes(new String[]{TRANSFORMERS_INPUT_PACKAGE_LOCATION, TRANSFORMERS_UTIL_PACKAGE_LOCATION},
                 AbstractJsonObjectTransformer.class);
         List<Class<?>> subTypesAsGenericClasses = subTypes.stream().map(x -> (Class<?>) x).collect(Collectors.toList());
         objectMapper.registerSubtypes(subTypesAsGenericClasses);
