@@ -3,6 +3,7 @@ package presidio.input.core.services.transformation;
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
+import fortscale.utils.transform.IJsonObjectTransformer;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class TransformationServiceImpl implements TransformationService {
 
     @NumberOfFilteredEvents
     @Override
-    public List<AbstractInputDocument> run(List<AbstractInputDocument> events, Schema schema, Instant endDate, List<AbstractJsonObjectTransformer> transformers) {
+    public List<AbstractInputDocument> run(List<AbstractInputDocument> events, Schema schema, Instant endDate, List<IJsonObjectTransformer> transformers) {
         String transformationManagerName = String.format("%s.%s", schema.toString(), "transformer");
 
 //        todo: remove after event will be jsonObject

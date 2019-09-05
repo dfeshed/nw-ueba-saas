@@ -1,6 +1,9 @@
 package fortscale.utils.transform;
 
+import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.apache.commons.lang3.Validate;
+
+import java.util.List;
 
 
 public abstract class AbstractJsonObjectTransformer implements IJsonObjectTransformer {
@@ -11,9 +14,6 @@ public abstract class AbstractJsonObjectTransformer implements IJsonObjectTransf
         this.name = Validate.notBlank(name, "name cannot be blank, empty or null.");
     }
 
-    public void postAutowireProcessor(BeanPropertiesAutowireService beanPropertiesAutowireService) {
-        beanPropertiesAutowireService.autowireBeanProperties(this);
-    }
 
     @Override
     public String getName(){
