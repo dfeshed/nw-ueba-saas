@@ -11,6 +11,10 @@ import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.io.File;
@@ -20,15 +24,22 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class TransformerJsonTest {
+public abstract class TransformerJsonTest implements ApplicationContextAware {
 
     private static final String TRANSFORMERS_UTIL_PACKAGE_LOCATION = "fortscale.utils.transform";
     private static final String TRANSFORMERS_INPUT_PACKAGE_LOCATION = "presidio.input.core.services.transformation.transformer";
     private static final String END_DATE = "endDate";
+    @Autowired
+    private ApplicationContext applicationContext;
     private ClassLoader classLoader = getClass().getClassLoader();
 
     abstract String getResourceFilePath();
     abstract Class getTransformerClass();
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     @Test
     public void testDeserializingTransformer() throws IOException {
@@ -68,6 +79,8 @@ public abstract class TransformerJsonTest {
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         JSONObject jsonObject = new JSONObject(mapper.writeValueAsString(rawEvent));
+        NewOccurrenceTransformer t = (NewOccurrenceTransformer) loadTransformer(getResourceFilePath());
+        applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(t, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
         JSONObject transformed = transformer.transform(jsonObject);
         return mapper.readValue(transformed.toString(), clazz);
     }

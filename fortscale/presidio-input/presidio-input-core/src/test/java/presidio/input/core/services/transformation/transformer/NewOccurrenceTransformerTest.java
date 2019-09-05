@@ -2,9 +2,18 @@ package presidio.input.core.services.transformation.transformer;
 
 import fortscale.domain.core.entityattributes.*;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReader;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.test.context.junit4.SpringRunner;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
 
@@ -12,8 +21,15 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Properties;
 
-public class NewOccurrenceTransformerTest extends TransformerJsonTest {
+@Configuration
+@RunWith(SpringRunner.class)
+@Import({NewOccurrenceTransformerTest.PropertiesClass.class})
+public class NewOccurrenceTransformerTest extends TransformerJsonTest implements ApplicationContextAware {
+
+    @MockBean(name = "lastOccurrenceInstantReaderCache")
+    private LastOccurrenceInstantReader lastOccurrenceInstantReader;
 
     @Test
     public void testHierarchyDomainTransformation() {
@@ -135,10 +151,10 @@ public class NewOccurrenceTransformerTest extends TransformerJsonTest {
                 "tls",
                 inputFieldName,
                 booleanFieldName);
-        newOccurrenceTransformer.setLastOccurrenceInstantReader(occurrenceInstantReader);
-        newOccurrenceTransformer.setEndDate(Instant.now());
-        newOccurrenceTransformer.setTransformationWaitingDuration(Duration.ZERO);
-        newOccurrenceTransformer.setWorkflowStartDate(Instant.EPOCH);
+
+        //newOccurrenceTransformer.setLastOccurrenceInstantReader(occurrenceInstantReader);
+        //newOccurrenceTransformer.setTransformationWaitingDuration(Duration.ZERO);
+        //newOccurrenceTransformer.setWorkflowStartDate(Instant.EPOCH);
         return newOccurrenceTransformer;
     }
 
@@ -156,5 +172,17 @@ public class NewOccurrenceTransformerTest extends TransformerJsonTest {
     @Override
     Class getTransformerClass() {
         return NewOccurrenceTransformer.class;
+    }
+
+    @Configuration
+    @EnableSpringConfigured
+    public static class PropertiesClass {
+        @Bean
+        public static TestPropertiesPlaceholderConfigurer testPropertiesPlaceholderConfigurer() {
+            Properties properties = new Properties();
+            properties.put("dataPipeline.startTime", "2019-01-01T00:00:00Z");
+            properties.put("presidio.input.core.transformation.waiting.duration", Duration.ZERO.toString());
+            return new TestPropertiesPlaceholderConfigurer(properties);
+        }
     }
 }
