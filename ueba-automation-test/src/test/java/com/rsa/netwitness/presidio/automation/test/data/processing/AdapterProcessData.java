@@ -6,7 +6,7 @@ import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
-import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
+import com.rsa.netwitness.presidio.automation.utils.common.TitlesPrinter;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +25,7 @@ import java.time.temporal.ChronoUnit;
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(AdapterProcessData.class.getName());
-    private static ASCIIArtGenerator ART_GEN = new ASCIIArtGenerator();
+    private static TitlesPrinter ART_GEN = new TitlesPrinter();
 
     @Autowired
     private AdapterTestManager adapterTestManager;
@@ -53,7 +53,7 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     public void setup(@Optional("10") int historicalDaysBack,
                       @Optional("1") int anomalyDay) {
 
-        ART_GEN.printTextArt(getClass().getSimpleName());
+        TitlesPrinter.printTitle(getClass().getSimpleName());
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay);
         endDate = Instant.now().truncatedTo(ChronoUnit.DAYS);
         startDate = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);

@@ -3,7 +3,7 @@ package com.rsa.netwitness.presidio.automation.test.data.processing;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
-import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
+import com.rsa.netwitness.presidio.automation.utils.common.TitlesPrinter;
 import com.rsa.netwitness.presidio.automation.test_managers.OutputDataProcessingManager;
 import org.json.JSONException;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ import static presidio.data.generators.utils.TimeUtils.calcDaysBack;
 
 public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(OutputRunPrepareData.class.getName());
-    private static ASCIIArtGenerator ART_GEN = new ASCIIArtGenerator();
+    private static TitlesPrinter ART_GEN = new TitlesPrinter();
 
     private OutputDataProcessingManager dataProcessingHelper = new OutputDataProcessingManager();
 
@@ -36,7 +36,7 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
     @Parameters("historical_days_back")
     @BeforeClass
     public void beforeClass(@Optional("10") int historicalDaysBack) throws JSONException, InterruptedException {
-        ART_GEN.printTextArt(getClass().getSimpleName());
+        TitlesPrinter.printTitle(getClass().getSimpleName());
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack);
 
         List<List<? extends Callable<Integer>>> parallelTasksToExecute = Stream.of(
