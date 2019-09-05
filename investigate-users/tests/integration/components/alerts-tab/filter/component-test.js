@@ -80,7 +80,7 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
   });
 
   test('it should render alert tab filter for update filters for entity type', async function(assert) {
-    assert.expect(3);
+    assert.expect(2);
     new ReduxDataHelper(setState).existAnomalyTypesForFilter({
       abnormal_file_action_operation_type: 45,
       abnormal_logon_day_time: 25,
@@ -88,10 +88,9 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
     }).build();
     await render(hbs`{{alerts-tab/filter}}`);
     await clickTrigger('.users-tab_filter_filter_select:nth-child(5)');
-    assert.equal(findAll('.ember-power-select-option').length, 3);
+    assert.equal(findAll('.ember-power-select-option').length, 4);
     await selectChoose('.users-tab_filter_filter_select:nth-child(5)', 'JA3');
-    assert.equal(findAll('.ember-power-select-multiple-option').length, 1);
-    assert.equal(find('.ember-power-select-multiple-option').innerText, '× JA3 Certificates');
+    assert.equal(find('.ember-power-select-selected-item').innerText, 'JA3 Certificates');
     return settled();
   });
 

@@ -59,7 +59,9 @@
       selected=entityType
       searchEnabled=false
       onchange=(action 'updateFilterForEntityType') as |option|}}
-      <span title='{{option}}'>{{t (concat 'investigateUsers.entityTypes.' option)}}</span>
+      {{#if option}}
+        <span title='{{option}}'>{{t (concat 'investigateUsers.entityTypes.' option)}}</span>
+      {{/if}}
     {{/power-select}}
   </label>
 </div>

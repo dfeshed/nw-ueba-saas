@@ -42,13 +42,19 @@
     <div class="label-text">
       {{t 'investigateUsers.alerts.filters.entityType'}}
     </div>
-    {{#power-select-multiple
+    {{#power-select
       options=entityFilter
       selected=selectedEntities
       searchEnabled=false
       onchange=(action 'updateEntityTypes') as |option|}}
-      <span title='{{option}}'>{{t (concat 'investigateUsers.entityTypes.' option)}}</span>
-    {{/power-select-multiple}}
+      {{#if option}}
+        <span title='{{t (concat 'investigateUsers.severity.' option)}}'>
+          <span title='{{option}}'>{{t (concat 'investigateUsers.entityTypes.' option)}}</span>
+        </span>
+      {{else}}
+        &nbsp;
+      {{/if}}
+    {{/power-select}}
   </label>
   <div>
     <div class="label-text">

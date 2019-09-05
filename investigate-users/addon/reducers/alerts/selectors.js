@@ -83,7 +83,7 @@ export const selectedEntities = createSelector(
   [getFilter],
   (filter) => {
     if (filter.entityTypes) {
-      return filter.entityTypes.asMutable();
+      return filter.entityTypes;
     }
   });
 
@@ -91,7 +91,8 @@ export const getAlertsSeverity = createSelector(
   [_alertsSeverity],
   (alertsSeverity) => {
     if (alertsSeverity) {
-      return alertsSeverity.total_severity_count;
+      const { Critical, High, Medium, Low } = alertsSeverity.total_severity_count;
+      return { Critical, High, Medium, Low };
     }
   });
 
