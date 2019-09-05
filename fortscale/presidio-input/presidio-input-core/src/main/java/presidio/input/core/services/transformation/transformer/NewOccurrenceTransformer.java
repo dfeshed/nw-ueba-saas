@@ -6,16 +6,17 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReader;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReaderCacheConfiguration;
 import fortscale.utils.json.JacksonUtils;
+import fortscale.utils.time.TimeUtils;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import org.apache.commons.lang3.Validate;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Import;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZonedDateTime;
 
 @Import(LastOccurrenceInstantReaderCacheConfiguration.class)
 @JsonAutoDetect(
@@ -33,6 +34,7 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
     private final String inputFieldName;
     private final String booleanFieldName;
 
+    @Autowired
     @Qualifier("lastOccurrenceInstantReaderCache")
     private LastOccurrenceInstantReader lastOccurrenceInstantReader;
 
@@ -92,7 +94,7 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
                 // If the entity does not appear in the past, it is a new occurrence.
                 isNewOccurrence = true;
             } else {
-                Instant logicalInstant = Instant.from(ZonedDateTime.parse((String)document.get(AbstractAuditableDocument.DATE_TIME_FIELD_NAME)));
+                Instant logicalInstant = TimeUtils.parseInstant((String)document.get(AbstractAuditableDocument.DATE_TIME_FIELD_NAME));
                 // If the entity appears in the future, it is unknown whether it is a new occurrence or not.
                 if (lastOccurrenceInstant.isAfter(logicalInstant)) isNewOccurrence = null;
                     // If the entity appears too long ago in the past, it is a new occurrence.
