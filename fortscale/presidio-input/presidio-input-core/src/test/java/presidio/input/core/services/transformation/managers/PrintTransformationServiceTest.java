@@ -3,6 +3,7 @@ package presidio.input.core.services.transformation.managers;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
+import fortscale.utils.transform.IJsonObjectTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +27,7 @@ public class PrintTransformationServiceTest {
     @Autowired
     private TransformationService transformationService;
 
-    private List<AbstractJsonObjectTransformer> transformers = new ArrayList<>();
+    private List<IJsonObjectTransformer> transformers = new ArrayList<>();
 
     private Instant endDate = Instant.now();
 
