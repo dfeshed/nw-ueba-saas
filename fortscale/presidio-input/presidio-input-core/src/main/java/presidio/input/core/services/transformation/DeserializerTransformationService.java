@@ -2,6 +2,7 @@ package presidio.input.core.services.transformation;
 
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import fortscale.common.general.Schema;
 import fortscale.utils.reflection.PresidioReflectionUtils;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
@@ -18,16 +19,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 public class DeserializerTransformationService implements ApplicationContextAware {
 
-    private static final String SCHEMA = "schema";
     private static final String START_DATE = "startDate";
     private static final String END_DATE = "endDate";
     private static final String TRANSFORMERS_PACKAGE_LOCATION = "fortscale.utils.transform";
@@ -69,7 +66,7 @@ public class DeserializerTransformationService implements ApplicationContextAwar
      * @param transformer IJsonObjectTransformer
      */
     public void autowireProcessor(IJsonObjectTransformer transformer) {
-        autowire(transformer);
+        autowire(transformer, new HashSet<>());
     }
 
 
@@ -87,13 +84,17 @@ public class DeserializerTransformationService implements ApplicationContextAwar
     }
 
 
-    private void autowire(Object objectToScan) {
+    private void autowire(Object objectToScan, Set<Object> scanned) {
         if (objectToScan == null) {
+            return;
+        }
+        //prevent endless scan loops
+        if (!scanned.add(objectToScan)) {
             return;
         }
 
         Class clazz = objectToScan.getClass();
-        for (Field declaredField : clazz.getDeclaredFields()) {
+        for (Field declaredField : getDeclaredFieldsUpFrom(clazz)) {
             // skip static fields
             if (Modifier.isStatic(declaredField.getModifiers())) {
                 continue;
@@ -107,31 +108,46 @@ public class DeserializerTransformationService implements ApplicationContextAwar
                 if (Collection.class.isAssignableFrom(declaredField.getType())) {
                     Collection<?> collection = (Collection) declaredField.get(objectToScan);
                     if (collection != null) {
-                        collection.forEach(this::autowire);
+                        collection.forEach(item -> autowire(item, scanned));
                     }
                 } else if (Map.class.isAssignableFrom(declaredField.getType())) {
                     Map<?, ?> map = (Map) declaredField.get(objectToScan);
                     if (map != null) {
                         map.forEach((key, value) -> {
                             if (!key.getClass().isPrimitive()) {
-                                autowire(key);
+                                autowire(key, scanned);
                             }
                             if (!value.getClass().isPrimitive()) {
-                                autowire(value);
+                                autowire(value, scanned);
                             }
                         });
                     }
                 } else {
                     Object item = declaredField.get(objectToScan);
-                    autowire(item);
+                    autowire(item, scanned);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
-
         applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(objectToScan, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
         invokePostConstructMethod(objectToScan);
+    }
+
+    /**
+     * @param clazz start class
+     * @return list of all fields for clazz and base classes
+     */
+    private List<Field> getDeclaredFieldsUpFrom(Class clazz) {
+
+        List<Field> currentClassFields = Lists.newArrayList(clazz.getDeclaredFields());
+        Class<?> parentClass = clazz.getSuperclass();
+        if (parentClass != null) {
+            List<Field> parentClassFields = (List<Field>) getDeclaredFieldsUpFrom(parentClass);
+            currentClassFields.addAll(parentClassFields);
+        }
+
+        return currentClassFields;
     }
 
 
