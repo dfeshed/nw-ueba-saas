@@ -3,8 +3,7 @@ import _ from 'lodash';
 
 import {
   mergeFilterStrings,
-  removeEmptyFilters,
-  removeEmptyParens
+  removeEmptyFilters
 } from 'investigate-shared/actions/api/events/utils';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 import * as LEXEMES from 'investigate-events/constants/lexemes';
@@ -357,7 +356,6 @@ const _criteriaToPill = (criteria) => {
  * @returns {string}
  */
 export const metaFiltersAsString = (filters = [], shouldEncode = true) => {
-  filters = removeEmptyParens(filters);
   const filtersAsString = filters
     .map((d) => {
       const str = _asString(d);

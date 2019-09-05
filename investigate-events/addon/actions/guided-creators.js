@@ -398,3 +398,10 @@ export const addIntraParens = ({ position }) => ({
     position
   }
 });
+
+export const replaceAllGuidedPills = (pillData) => ({
+  type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
+  payload: {
+    pillData
+  }
+});

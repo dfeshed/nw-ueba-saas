@@ -245,7 +245,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
     };
 
     await route.model(params);
-    await settled();
+
     return waitUntil(() => {
       const baseComplete = isBaseInvestigateIntializationComplete();
       const calledFetchData = fetchInvestigateDataSpy.callCount === 1;
@@ -254,6 +254,9 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       // The mocks for persisting params returns a 4-character string for each filter
       const pillDataHashesPresent = hashes.length === 1 && hashes[0] === 's09e';
       const pillsDataPopulated = queryNode.pillsData.length === 1;
+      // queryNode.pillsData having data in it is a side effect of
+      // InitializationCreator::_handleSearchParamsInQueryParams() calling
+      // REPLACE_ALL_GUIDED_PILLS action for non-internal queries
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
         assert.ok(true, 'all the expected initial data was populated and query executed');
         fetchInvestigateDataSpy.restore();

@@ -18,6 +18,8 @@ import {
 import { hasMinimumCoreServicesVersionForColumnSorting } from '../reducers/investigate/services/selectors';
 import { hasInvalidPill, isPillValidationInProgress } from '../reducers/investigate/query-node/selectors';
 import { teardownNotifications, initializeNotifications } from '../actions/notification-creators';
+import { replaceAllGuidedPills } from 'investigate-events/actions/guided-creators';
+import { removeEmptyParens } from 'investigate-shared/actions/api/events/utils';
 
 const SUMMARY_CALL_INTERVAL = 60000;
 let timerId;
@@ -188,10 +190,20 @@ export default Route.extend({
         return;
       }
 
+      // It's possible that the user can craft a query that includes empty
+      // paren sets. This is invalid query syntax, so we'll remove them if they
+      // exist.
+      const pillsDataWithoutEmptyParens = removeEmptyParens(pillsData);
+      if (pillsData.length !== pillsDataWithoutEmptyParens.length) {
+        // If there were empty parens, we need to re-render the pills with the
+        // updated pillsData.
+        redux.dispatch(replaceAllGuidedPills(pillsDataWithoutEmptyParens));
+      }
+
       const qp = {
         eid: undefined,
         et: endTime,
-        mf: metaFiltersAsString(pillsData),
+        mf: metaFiltersAsString(pillsDataWithoutEmptyParens),
         mps: metaPanelSize,
         rs: reconSize,
         sid: serviceId,
@@ -205,7 +217,7 @@ export default Route.extend({
       }
 
       if (externalLink) {
-        const selectedPills = pillsData.filter((pill) => pill.isSelected);
+        const selectedPills = pillsDataWithoutEmptyParens.filter((pill) => pill.isSelected);
         if (selectedPills.length > 0) { // if no selected pills in state, exit
           const pillString = metaFiltersAsString(selectedPills);
           qp.mf = encodeURIComponent(pillString);

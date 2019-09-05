@@ -224,23 +224,6 @@ export const isEmptyParenSetAt = (arr, i) => {
   return op && op.type === OPEN_PAREN && cp && cp.type === CLOSE_PAREN;
 };
 
-// export const removeEmptyParens = (pillsData) => {
-//   for (let i = 0; i < pillsData.length; i++) {
-//     if (isEmptyParenSetAt(pillsData, i)) {
-//       if (pillsData.length === 2) {
-//         return [];
-//       } else {
-//         const newPillsData = [
-//           ...pillsData.slice(0, i),
-//           ...pillsData.slice(i + 2)
-//         ];
-//         return removeEmptyParens(newPillsData);
-//       }
-//     }
-//   }
-//   return pillsData;
-// };
-
 export {
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,
