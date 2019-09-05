@@ -10,9 +10,12 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
     Ensure that dag instance are running sequentially after all the specified dag_ids instances finished running.
     The sensor checks every poked interval if all the previous dag_ids instances ran already
     (reached to one of the following states: success, failed).
+    In case the execution_date can be before the machine start_time, we need to pass the machine start_time.
 
     :param dag_ids: The dag_ids that you want to wait for
     :type dag_ids: list
+    :param start_time: The machine start_time
+    :type start_time: datetime
     """
     ui_color = '#19647e'
     ui_fgcolor = '#fff'
@@ -20,6 +23,7 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
     def __init__(
             self,
             dag_ids,
+            start_time=None,
             *args, **kwargs):
         super(RootDagGapSequentialSensorOperator, self).__init__(
             retries=99999,
@@ -29,6 +33,8 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
             *args,
             **kwargs
         )
+
+        self.start_time = start_time
         self._dag_ids = dag_ids
 
     def poke(self, context):
@@ -47,6 +53,10 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
 
     @provide_session
     def _is_finished_wait_for_gapped_dag(self, execution_date, session=None):
+
+        if self.start_time:
+            if execution_date < self.start_time:
+                return True
 
         for dag_id in self._dag_ids:
             gapped_root_dag_run = session.query(DagRun).filter(
