@@ -21,7 +21,10 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 import static fortscale.domain.core.AbstractDocument.ID_FIELD;
 
@@ -159,21 +162,5 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
 
     private String namePath(String prefixPath) {
         return prefixPath + NAME_FIELD_SUFFIX;
-    }
-
-    // todo: move to json
-    public List<String> getProjectionFields() {
-        List<String> projectionFields = new ArrayList<>();
-        projectionFields.add(TlsRawEvent.SOURCE_IP_FIELD_NAME);
-        projectionFields.add(TlsRawEvent.DESTINATION_IP_FIELD_NAME);
-        projectionFields.add(TlsRawEvent.SOURCE_PORT_FIELD_NAME);
-        projectionFields.add(TlsRawEvent.DESTINATION_PORT_FIELD_NAME);
-        projectionFields.add(TlsRawEvent.JA3_FIELD_NAME);
-        projectionFields.add(TlsRawEvent.JA3S_FIELD_NAME);
-        projectionFields.add(TlsRawEvent.DATE_TIME_FIELD_NAME);
-        projectionFields.add(TlsRawEvent.SESSION_SPLIT_FIELD_NAME);
-        projectionFields.add(TlsRawEvent.SSL_SUBJECT_FIELD_NAME);
-        projectionFields.add(TlsRawEvent.SSL_CAS_FIELD_NAME);
-        return projectionFields;
     }
 }

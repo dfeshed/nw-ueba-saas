@@ -1,5 +1,11 @@
 [
   {
+    "type": "session-split-transformer",
+    "name": "Session Split Transformer",
+    "schema": "tls",
+    "projectionFields": ["srcIp", "dstIp", "srcPort", "dstPort", "ja3", "ja3s", "dateTime", "sessionSplit", "sslSubject", "sslCas"]
+  },
+  {
     "type": "new-occurrence-transformer",
     "name": "Ssl Subject New Occurrence",
     "schema": "tls",
