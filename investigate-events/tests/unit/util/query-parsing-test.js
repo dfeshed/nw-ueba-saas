@@ -515,6 +515,62 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].validationError.string, 'The second number in the range must be greater than the first.', 'validation error should be correct');
   });
 
+  test('transformTextToPillData returns valid pill with l', function(assert) {
+    const text = 'medium = l-5';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, 'l-5', 'value should match');
+    assert.notOk(result[0].isInvalid, 'pill should be valid');
+  });
+
+  test('transformTextToPillData returns valid pill with L', function(assert) {
+    const text = 'medium = L-5';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, 'L-5', 'value should match');
+    assert.notOk(result[0].isInvalid, 'pill should be valid');
+  });
+
+  test('transformTextToPillData returns valid pill with l', function(assert) {
+    const text = 'medium = 5-u';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '5-u', 'value should match');
+    assert.notOk(result[0].isInvalid, 'pill should be valid');
+  });
+
+  test('transformTextToPillData returns valid pill with L', function(assert) {
+    const text = 'medium = 5-U';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '5-U', 'value should match');
+    assert.notOk(result[0].isInvalid, 'pill should be valid');
+  });
+
+  test('transformTextToPillData returns complex pill with l on the wrong side', function(assert) {
+    const text = 'medium = 5-l';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.equal(result[0].type, COMPLEX_FILTER, 'type should match');
+  });
+
+  test('transformTextToPillData returns invalid pill with u on the wrong side', function(assert) {
+    const text = 'medium = u-5';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.ok(result[0].isInvalid, 'should be invalid');
+  });
+
   test('transformTextToPillData returns pills with comma-separated values', function(assert) {
     const text = 'medium = 1,3,7,9';
     const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });

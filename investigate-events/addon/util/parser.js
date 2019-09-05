@@ -179,15 +179,16 @@ class Parser {
     let result = null;
     const isInvalid = valuesToCheck.some((value, index) => {
       if (value.type !== expectedType) {
-        if (aliases[meta.text]) {
-          // The call to Object.values().some() returns true if the text given is a
-          // valid alias. Return the negation of that, because this function
-          // returns true if invalid.
-          return !Object.values(aliases[meta.text]).some((text) => {
-            return value.text.toLowerCase() === text.toLowerCase();
-          });
+        if (aliases[meta.text] && Object.values(aliases[meta.text]).find((alias) => {
+          return alias.toLowerCase() === value.text.toLowerCase();
+        })) {
+          return false;
         } else if (expectedType === LEXEMES.FLOAT && value.type === LEXEMES.INTEGER) {
           // Numbers without decimal points are still valid floats
+          return false;
+        } else if (range.from && ((range.from.text.toLowerCase() === 'l' && index === 0) ||
+          (range.to.text.toLowerCase() === 'u' && index === 1))) {
+          // If using range shorthand for upper or lower bound, that's okay
           return false;
         } else {
           // Type mismatch but no aliases, invalid
@@ -515,9 +516,9 @@ class Parser {
     if (this._nextTokenIsOfType([ LEXEMES.HYPHEN ])) {
       // Consume the range token first
       this._consume([ LEXEMES.HYPHEN ]);
-      if (!this._nextTokenIsOfType(VALUE_TYPES)) {
+      if (!this._nextTokenIsOfType(VALUE_TYPES) && (this._peek() && this._peek().text.toLowerCase()) !== 'u') {
         // If there is not a value token next, abort
-        if (this._peekNext() && this._peekNext().type === LEXEMES.AND || this._peekNext().type === LEXEMES.OR) {
+        if (this._peekNext() && (this._peekNext().type === LEXEMES.AND || this._peekNext().type === LEXEMES.OR)) {
           // If the bad token has an operator after it, include the bad token
           // in the complex pill. Otherwise, leave it out.
           const badToken = this._advance();
@@ -527,9 +528,9 @@ class Parser {
         }
       }
       const { value: to, validationError: validationError2 } = this._metaValue();
-      if ((value.type !== LEXEMES.INTEGER && value.type !== LEXEMES.FLOAT) ||
-        (to.type !== LEXEMES.INTEGER && to.type !== LEXEMES.FLOAT)) {
-        // If either side of the range is not a number...
+      if ((value.type !== LEXEMES.INTEGER && value.type !== LEXEMES.FLOAT && value.text.toLowerCase() !== 'l') ||
+        (to.type !== LEXEMES.INTEGER && to.type !== LEXEMES.FLOAT && to.text.toLowerCase() !== 'u')) {
+        // If either side of the range is not a number or the lower side is "l" or the upper side is "u"...
         const i18n = lookup('service:i18n');
         validationError = i18n.t('queryBuilder.validationMessages.nonNumericRange');
       }
