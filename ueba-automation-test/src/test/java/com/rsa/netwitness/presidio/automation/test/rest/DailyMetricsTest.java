@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -36,7 +37,7 @@ public class DailyMetricsTest extends AbstractTestNGSpringContextTests {
         Optional<DailyMetricRecord> metric = restHelper.dailyMetrics().request().getActiveUserIdCountLastDay(url);
         DailyMetricRecord actualMetric = metric.orElseGet(() -> fail(url + "\nRequired metric not found:'output-processor.active_userId_count_last_day'"));
         Instant logicalTime = Instant.parse(actualMetric.logicalTime);
-        Instant reportTime = Instant.parse(actualMetric.reportTime);
+        Instant reportTime = Instant.parse(actualMetric.reportTime).truncatedTo(DAYS);
 
         List<SmartUserIdStoredRecored> byTime = smartRepository.findByTime(logicalTime, reportTime);
         long expectedUserIdCount = byTime.parallelStream().map(e -> e.getContext().getUserId()).distinct().count();
