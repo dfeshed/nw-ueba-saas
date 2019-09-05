@@ -1,13 +1,16 @@
 package com.rsa.netwitness.presidio.automation.domain.repository;
 
+import com.rsa.netwitness.presidio.automation.domain.output.SmartUserIdStoredRecored;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-import com.rsa.netwitness.presidio.automation.domain.output.SmartUserIdStoredRecored;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface SmartUserIdHourlyRepository extends MongoRepository<SmartUserIdStoredRecored, String>  {
 
+    @Query ("{ 'startInstant': { $gte: ?0 }, $and: [ { 'startInstant': { $lt: ?1 } } ] }")
+    List<SmartUserIdStoredRecored> findByTime(Instant start, Instant end);
 
     @Query("{ 'smartScore': { $gte: 50.0 } }")
     List<SmartUserIdStoredRecored> findAllBiggerThan50();

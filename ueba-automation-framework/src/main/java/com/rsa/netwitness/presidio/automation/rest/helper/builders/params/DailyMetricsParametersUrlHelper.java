@@ -18,7 +18,7 @@ public class DailyMetricsParametersUrlHelper extends PresidioUrl {
     }
 
     public PresidioUrl withOutputProcessorActiveUsersCountLastDay() {
-        return withPageParameters("output-processor.active_users_count_last_day");
+        return withPageParameters("output-processor.active_userId_count_last_day");
     }
 
 }
