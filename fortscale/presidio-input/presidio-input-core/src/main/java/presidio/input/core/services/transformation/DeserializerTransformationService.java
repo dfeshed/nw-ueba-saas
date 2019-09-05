@@ -69,7 +69,7 @@ public class DeserializerTransformationService implements ApplicationContextAwar
      * @param transformer IJsonObjectTransformer
      */
     public void autowireProcessor(IJsonObjectTransformer transformer) {
-        findNestedObjectsToAutowire(transformer);
+        autowire(transformer);
     }
 
 
@@ -87,7 +87,7 @@ public class DeserializerTransformationService implements ApplicationContextAwar
     }
 
 
-    private void findNestedObjectsToAutowire(Object objectToScan) {
+    private void autowire(Object objectToScan) {
         if (objectToScan == null) {
             return;
         }
@@ -103,29 +103,27 @@ public class DeserializerTransformationService implements ApplicationContextAwar
                 continue;
             }
             try {
+                declaredField.setAccessible(true);
                 if (Collection.class.isAssignableFrom(declaredField.getType())) {
-                    declaredField.setAccessible(true);
                     Collection<?> collection = (Collection) declaredField.get(objectToScan);
                     if (collection != null) {
-                        collection.forEach(this::findNestedObjectsToAutowire);
+                        collection.forEach(this::autowire);
                     }
                 } else if (Map.class.isAssignableFrom(declaredField.getType())) {
-                    declaredField.setAccessible(true);
                     Map<?, ?> map = (Map) declaredField.get(objectToScan);
                     if (map != null) {
                         map.forEach((key, value) -> {
                             if (!key.getClass().isPrimitive()) {
-                                findNestedObjectsToAutowire(key);
+                                autowire(key);
                             }
                             if (!value.getClass().isPrimitive()) {
-                                findNestedObjectsToAutowire(value);
+                                autowire(value);
                             }
                         });
                     }
                 } else {
-                    declaredField.setAccessible(true);
                     Object item = declaredField.get(objectToScan);
-                    findNestedObjectsToAutowire(item);
+                    autowire(item);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
