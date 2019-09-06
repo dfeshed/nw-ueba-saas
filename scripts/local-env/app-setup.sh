@@ -67,6 +67,7 @@ yarn
 # prepareApp expects to be only one folder level deep when it starts
 cd ..
 
+prepareApp ember-computed-decorators
 prepareApp component-lib
 prepareApp rsa-context-menu
 prepareApp rsa-data-filters

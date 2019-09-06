@@ -19,11 +19,10 @@ module.exports = EngineAddon.extend({
     // investigate working by itself outside of sa
     this._super.init && this._super.init.apply(this, arguments);
     this.options = this.options || {};
-    this.options.babel = this.options.babel || {};
-    this.options.babel.plugins = [
-      'transform-object-rest-spread',
-      'transform-decorators-legacy'
-    ];
+    this.options = {
+      ...this.options,
+      ...common.basicOptions
+    };
   },
 
   // This allows node environment variables

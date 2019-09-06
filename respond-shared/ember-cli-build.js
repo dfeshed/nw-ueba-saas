@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-env node */
 
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 const shim = require('@html-next/flexi-layouts/lib/pod-templates-shim');

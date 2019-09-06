@@ -6,11 +6,12 @@ module.exports = {
   name: 'ember-computed-decorators',
   options: {
     'ember-cli-babel': {
-      includePolyfill: true
+      includePolyfill: false,
+      throwUnlessParallelizable: false
     },
     babel: {
       plugins: [
-        'transform-object-rest-spread'
+        '@babel/plugin-proposal-object-rest-spread'
       ]
     }
   }

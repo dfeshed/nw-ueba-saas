@@ -73,7 +73,7 @@ module.exports = {
       'uninitialized': 'always',
       'initialized': 'never'
     }],
-    'operator-linebreak': ['error', 'after'],
+    'operator-linebreak': ['error', 'after', { "overrides": { "|>": "before" } }],
     'prefer-const': 'error',
     'prefer-spread': 'error',
     'prefer-template': 'error',

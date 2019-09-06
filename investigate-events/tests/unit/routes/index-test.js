@@ -117,10 +117,13 @@ module('Unit | Route | investigate-events.index', function(hooks) {
         return true;
       }
       if (isBaseInvestigateIntializationComplete()) {
-        assert.ok(true, 'all the expected initial data was populated');
         const { investigate } = redux.getState();
+        if (!investigate.queryNode.currentQueryHash) {
+          return false;
+        }
         // when coming in with service, the times are set automatically and
         // the query is initialized not not executed
+        assert.ok(true, 'all the expected initial data was populated');
         if (investigate.queryNode.currentQueryHash.startsWith('555d9a6fe4b0d37c827d402e')) {
           assert.ok(true, 'currentQueryHash populated');
           fetchInvestigateDataSpy.restore();

@@ -50,18 +50,21 @@ export function maximum(data, accessorFn = undefined) {
  * @return {Array}               A 2 element Array with min/max values
  */
 export function computeExtent(data, accessorFn, extents) {
-  let min = undefined;
-  let max = undefined;
+
+  // Can't use max/min because they shadow the max/min coming
+  // in from d3-array and that became a problem with babel trasnpilation
+  // with babel 7
+  let minn, maxx;
   if (extents && extents.fixed) {
-    [min, max] = extents.fixed;
+    [minn, maxx] = extents.fixed;
   }
-  if (min === undefined || min === null) {
-    min = minimum(data, accessorFn);
+  if (minn === undefined || minn === null) {
+    minn = minimum(data, accessorFn);
   }
-  if (max === undefined || max === null) {
-    max = maximum(data, accessorFn);
+  if (maxx === undefined || maxx === null) {
+    maxx = maximum(data, accessorFn);
   }
-  return [min, max];
+  return [minn, maxx];
 }
 
 /**

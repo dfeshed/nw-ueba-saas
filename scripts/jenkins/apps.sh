@@ -53,8 +53,8 @@ function runEmberTestWithMockServer {
 
   # now run the tests
   info "Running 'ember exam' for $1 on port $testemPort"
-  info "COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort ember exam --split=4 --parallel --test-port $testemPort"
-  COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort ember exam --split=4 --parallel --test-port $testemPort
+  info "COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort"
+  COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort
   local status=$?
 
   # kill mock server
@@ -92,8 +92,8 @@ function runEmberTestNoMockServer {
   fi
 
   info "Running 'ember exam' for $1 on port $testemPort"
-  info "COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF ember exam --split=4 --parallel --test-port $testemPort"
-  COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF ember exam --split=4 --parallel --test-port $testemPort
+  info "COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort"
+  COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort
   checkError "Ember exam/test failed for $1"
   success "'ember exam' for $1 was successful"
   # Push the newly generated coverage directory to the mount '/mnt/libhq-SA/SAStyle/sa-ui-coverage/<submodule>/coverage/*';
@@ -118,6 +118,7 @@ function runEmberBuild {
 #      when the app is deployable
 # $3 = whether or not a mock server is needed
 # $4 = Used for coverage.
+# $5 = memory required to run
 
 function buildEmberApp {
 
@@ -144,11 +145,11 @@ function buildEmberApp {
     if [ "$3" = true ]
     then
       info '1 running tests with mock server'
-      runEmberTestWithMockServer $1 $4
+      runEmberTestWithMockServer $1 $4 $5
       info '2 running tests with mock server done'
     else
       info '3 running tests with no mock server'
-      runEmberTestNoMockServer $1 $4
+      runEmberTestNoMockServer $1 $4 $5
     fi
 
     # 'ember build' when running full build
@@ -247,34 +248,34 @@ buildMockServer
 yarn link mock-server
 
 . ./scripts/jenkins/ngcoreui.sh
-buildEmberApp streaming-data false true true
-buildEmberApp component-lib false false true
-buildEmberApp packager false true true
-buildEmberApp endpoint-rar false true true
-buildEmberApp entity-details false true true
-buildEmberApp rsa-dashboard false true true
-buildEmberApp license false true true
-buildEmberApp rsa-context-menu false false true
-buildEmberApp rsa-data-filters false false true
-buildEmberApp recon false true true
-buildEmberApp context false true true
-buildEmberApp investigate-shared false false true
-buildEmberApp preferences false true true
-buildEmberApp test-helpers false false false
-buildEmberApp style-guide true false false
-buildEmberApp investigate-events false true true
-buildEmberApp investigate-hosts false true true
-buildEmberApp investigate-files false true true
-buildEmberApp investigate-users false true true
-buildEmberApp investigate false true true
-buildEmberApp respond-shared false true true
-buildEmberApp rsa-list-manager false true true
-buildEmberApp respond false true true
-buildEmberApp configure false true true
-buildEmberApp investigate-process-analysis false true true
-buildEmberApp admin-source-management false true true
-buildEmberApp admin false true true
-buildEmberApp sa true true true
+buildEmberApp streaming-data false true true 512
+buildEmberApp component-lib false false true 512
+buildEmberApp packager false true true 512
+buildEmberApp endpoint-rar false true true 512
+buildEmberApp entity-details false true true 512
+buildEmberApp rsa-dashboard false true true 512
+buildEmberApp license false true true 512
+buildEmberApp rsa-context-menu false false true 512
+buildEmberApp rsa-data-filters false false true 512
+buildEmberApp recon false true true 512
+buildEmberApp context false true true 512
+buildEmberApp investigate-shared false false true 512
+buildEmberApp preferences false true true 512
+buildEmberApp test-helpers false false false 512
+buildEmberApp style-guide true false false 512
+buildEmberApp investigate-events false true true 1024
+buildEmberApp investigate-hosts false true true 512
+buildEmberApp investigate-files false true true 512
+buildEmberApp investigate-users false true true 512
+buildEmberApp investigate false true true 2048
+buildEmberApp respond-shared false true true 512
+buildEmberApp rsa-list-manager false false true 512
+buildEmberApp respond false true true 512
+buildEmberApp configure false true true 1024
+buildEmberApp investigate-process-analysis false true true 1024
+buildEmberApp admin-source-management false true true 512
+buildEmberApp admin false true true 1024
+buildEmberApp sa true true true 2048
 
 success "All apps built successfully"
 

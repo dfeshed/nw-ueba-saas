@@ -3,7 +3,7 @@
 
 const path = require('path');
 const EngineAddon = require('ember-engines/lib/engine-addon');
-const { isDevelopingAddon } = require('../common');
+const { isDevelopingAddon, basicOptions } = require('../common');
 
 const projectName = 'admin-source-management';
 const subscriptionPath = path.join(__dirname, 'tests', 'data');
@@ -20,11 +20,10 @@ module.exports = EngineAddon.extend({
     // by itself outside of sa.
     this._super.init && this._super.init.apply(this, arguments);
     this.options = this.options || {};
-    this.options.babel = this.options.babel || {};
-    this.options.babel.plugins = [
-      'transform-object-rest-spread',
-      'transform-decorators-legacy'
-    ];
+    this.options = {
+      ...this.options,
+      ...basicOptions
+    };
   },
 
   // This allows node environment variables to be added to the ember config.

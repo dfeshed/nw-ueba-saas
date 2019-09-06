@@ -1,9 +1,8 @@
 /* eslint-env node */
-'use strict';
 
 const replace = require('broccoli-replace');
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
-const { isDevelopingAddon } = require('../common');
+const { isDevelopingAddon, babelPlugins } = require('../common');
 const projectName = 'component-lib';
 const WebpackWriter = require('broccoli-webpack');
 
@@ -17,30 +16,37 @@ if (EmberApp.env() === 'development') {
 
 module.exports = {
   name: projectName,
-  postprocessTree: function (type, tree) {
-    if (type !== 'css') { return tree; }
+  postprocessTree(type, tree) {
+    if (type !== 'css') {
+      return tree;
+    }
 
     return replace(tree, {
       files: ['assets/*.css'],
       patterns: [
         {
           match: /rgbx/g,
-          replacement: "rgba"
+          replacement: 'rgba'
         }
       ]
     });
   },
   options: {
-    'ember-cli-babel': {
-      includePolyfill: true
-    },
-    babel: {
-      plugins: [
-        'transform-object-rest-spread',
-        'transform-decorators-legacy'
-      ]
-    },
     nodeAssets: {
+      'core-js': {
+        vendor: {
+          processTree(tree) {
+            return new WebpackWriter([tree], {
+              entry: './core-js/index.js',
+              output: {
+                library: 'core-js',
+                libraryTarget: 'window',
+                filename: 'core-js.amd.js'
+              }
+            });
+          }
+        }
+      },
       clipboard: {
         srcDir: 'dist',
         import: ['clipboard.js']
@@ -188,17 +194,10 @@ module.exports = {
     });
     this.import('vendor/redux-persist-transform-filter.amd.js');
     this.import('vendor/reselect.amd.js');
+    this.import('vendor/core-js.amd.js');
 
     // Sanitize Html
     this.import('vendor/sanitize-html/sanitize-html.js');
     this.import('vendor/shims/sanitize-shim.js');
-  },
-
-  init() {
-    this._super.init && this._super.init.apply(this, arguments);
-    this.options = this.options || {};
-    this.options.babel = this.options.babel || {};
-    this.options.babel.stage = 0;
   }
-
 };

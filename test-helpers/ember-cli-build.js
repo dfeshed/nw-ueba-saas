@@ -2,19 +2,10 @@
 'use strict';
 
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
+const { basicOptions } = require('../common');
 
 module.exports = function(defaults) {
-  let app = new EmberAddon(defaults, {
-    'ember-cli-babel': {
-      includePolyfill: true
-    },
-    babel: {
-      plugins: [
-        'transform-object-rest-spread',
-        'transform-decorators-legacy'
-      ]
-    }
-  });
+  const app = new EmberAddon(defaults, basicOptions);
 
   /*
     This build file specifies the options for the dummy test app of this

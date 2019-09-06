@@ -1,4 +1,5 @@
- /* eslint-env node */
+/* eslint-env node */
+
 const os = require('os');
 const fs = require('fs');
 const { WatchedDir } = require('broccoli-source');
@@ -20,7 +21,7 @@ if (process.env.FF_OFF) {
 
 const developedAddons = [];
 
- /**
+/**
   * Allows live-reloading when this addon changes even when being served by another projects `ember serve`.
   *
   * But isDevelopingAddon isn't just about live reload, it also controls
@@ -227,6 +228,39 @@ const addFeatureFlags = function(environment) {
   return featureFlagConfig;
 };
 
+const babelPlugins = [
+  // RSA!
+  '@babel/plugin-proposal-object-rest-spread',
+
+  // Stage 1
+  '@babel/plugin-proposal-export-default-from',
+  '@babel/plugin-proposal-logical-assignment-operators',
+  ['@babel/plugin-proposal-optional-chaining', { 'loose': false }],
+  '@babel/plugin-proposal-partial-application',
+  ['@babel/plugin-proposal-pipeline-operator', { 'proposal': 'minimal' }],
+  ['@babel/plugin-proposal-nullish-coalescing-operator', { 'loose': false }],
+  '@babel/plugin-proposal-do-expressions',
+
+  // Stage 2
+  '@babel/plugin-proposal-function-sent',
+  '@babel/plugin-proposal-export-namespace-from',
+  '@babel/plugin-proposal-numeric-separator',
+  '@babel/plugin-proposal-throw-expressions',
+
+  // Stage 3
+  '@babel/plugin-syntax-import-meta'
+];
+
+const basicOptions = {
+  'ember-cli-babel': {
+    includePolyfill: false,
+    throwUnlessParallelizable: false
+  },
+  babel: {
+    plugins: babelPlugins
+  }
+};
+
 const commonBuildOptions = function(projectDir) {
   const templateTrees = [
     `${projectDir}/addon/components`,
@@ -238,18 +272,9 @@ const commonBuildOptions = function(projectDir) {
   }).filter((aTree) => !!aTree);
 
   return {
-    babel: {
-      plugins: [
-        'transform-object-rest-spread',
-        'transform-decorators-legacy'
-      ],
-      throwUnlessParallelizable: true
-    },
+    ...basicOptions,
     'ember-cli-template-lint': {
       testGenerator: 'qunit' // or 'mocha', etc.
-    },
-    'ember-cli-babel': {
-      includePolyfill: true
     },
     trees: {
       templates: mergeTrees(templateTrees)
@@ -259,12 +284,12 @@ const commonBuildOptions = function(projectDir) {
         'node_modules/ember-power-select/app/styles/',
         'node_modules/ember-basic-dropdown/app/styles/'
       ]
-      // onlyIncluded: false
     }
   };
 };
 
 module.exports = {
+  basicOptions,
   isDevelopingAddon,
   determineSocketUrl,
   mergeSocketConfigs,
