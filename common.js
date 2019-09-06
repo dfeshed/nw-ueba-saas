@@ -251,11 +251,15 @@ const babelPlugins = [
   '@babel/plugin-syntax-import-meta'
 ];
 
-const basicOptions = {
+const emberCliBabelConfig = {
   'ember-cli-babel': {
     includePolyfill: false,
     throwUnlessParallelizable: false
-  },
+  }
+};
+
+const basicOptions = {
+  ...emberCliBabelConfig,
   babel: {
     plugins: babelPlugins
   }
@@ -289,6 +293,7 @@ const commonBuildOptions = function(projectDir) {
 };
 
 module.exports = {
+  emberCliBabelConfig,
   basicOptions,
   isDevelopingAddon,
   determineSocketUrl,
