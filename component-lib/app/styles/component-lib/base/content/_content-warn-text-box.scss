@@ -1,0 +1,31 @@
+.rsa-content-warn-text-box {
+  @include rsa-font(paragraph);
+  position: relative;
+  padding: rsa-whitespace(less);
+  width: 100%;
+  border: 1px solid border-color(accentFour);
+  background-color: rgba(var(--text-color-accent-four-dark), $rsa-nearly-transparent);
+  border-radius: 5px;
+  .rsa-icon {
+    color: text-color(accentFour);
+  }
+  .message {
+    padding-left: 25px;
+  }
+  .icon {
+    position: absolute;
+  }
+  div {
+    float: left;
+  }
+  &.is-showing {
+    display: block;
+  }
+  &.is-alert {
+    .rsa-icon {
+      color: text-color(accentOne, dark);
+    }
+    border: 1px solid border-color(accentOne, dark);
+    background-color: rgba(var(--text-color-accent-one-dark), $rsa-nearly-transparent);
+  }
+}

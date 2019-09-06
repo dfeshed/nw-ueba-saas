@@ -4733,7 +4733,8 @@ effects the previewed source.',
         generic: 'An unexpected error has occurred attempting to retrieve this data'
       },
       rankingSavedSuccessful: 'Group ranking has been published successfully.',
-      rankingSavedFailed: 'A problem occurred while trying to publish group ranking.'
+      rankingSavedFailed: 'A problem occurred while trying to publish group ranking.',
+      unpublishedEdits: 'Settings show one or more unpublished edits. Publish the relevant policies for sources to recieve these settings.'
     },
     policyWizard: {
       // it is used in investigate hosts to display policy stettings
@@ -4789,6 +4790,7 @@ effects the previewed source.',
       publishPolicy: 'Publish Policy',
       saveAndClose: 'Save and Close',
       cancel: 'Cancel',
+      missingTypespec: 'One or more typespec files are missing from the NetWitness Server and logs are not collected from thet file type.',
       modals: {
         discardChanges: {
           title: 'Discard Changes',
