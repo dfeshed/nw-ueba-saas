@@ -50,7 +50,7 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
     assert.expect(1);
     redux.dispatch(getAlertsForGivenTimeInterval());
     await render(hbs`{{alerts-tab/body/alerts-table}}`);
-    assert.equal(findAll('.alerts-tab_body_body-table_body_row_date_icon').length, 2);
+    assert.equal(findAll('.alerts-tab_body_body-table_body_row_date_icon').length, 12);
   });
 
   test('it should render alert tab body should show indicators inside alerts', async function(assert) {
@@ -61,14 +61,14 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
     return waitUntil(() => document.querySelectorAll('.alerts-tab_body_body-table_body_row_alerts').length === 1, { timeout: 30000 }).then(async() => {
       await click('.alerts-tab_body_body-table_body_row_alerts_alert');
       later(() => {
-        assert.equal(findAll('.rsa-data-table-body-row').length, 17);
+        assert.equal(findAll('.rsa-data-table-body-row').length, 4);
         click('.rsa-data-table-body-row');
         const select = waitForReduxStateChange(redux, 'user.indicatorId');
         return select.then(() => {
           const state = redux.getState();
-          assert.equal(state.user.userId, 'a0979b0c-7214-4a53-8114-c1552aa0952c');
-          assert.equal(state.user.alertId, '5090a7fc-1218-4b74-b05a-6b197601d18d');
-          assert.equal(state.user.indicatorId, '07ce09d8-9f43-4d8a-aad0-f955c1bb413f');
+          assert.equal(state.user.userId, 'c291d9ad-d056-42f9-9f0c-f3a40517a392');
+          assert.equal(state.user.alertId, '513c7308-b3f6-4a80-a3ba-27896fd79b9b');
+          assert.equal(state.user.indicatorId, 'ddc95b75-b55c-4116-abb2-5c0922205bec');
           done();
         });
       }, 500);

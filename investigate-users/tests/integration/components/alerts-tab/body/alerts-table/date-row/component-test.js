@@ -84,13 +84,13 @@ module('Integration | Component | alerts-tab/body/alerts-table/date-row', functi
     const done = assert.async();
     await render(hbs`{{alerts-tab/body/alerts-table/date-row timestamp=timestamp alerts=alerts}}`);
     click('.alerts-tab_body_body-table_body_row_date');
-    return waitUntil(() => document.querySelectorAll('.alerts-tab_body_body-table_body_row_alerts').length === 1, { timeout: 30000 }).then(async() => {
-      assert.equal(findAll('.alerts-tab_body_body-table_body_row_alerts').length, 1);
-      assert.equal(findAll('.alerts-tab_body_body-table_body_row_alerts_alert').length, 3);
+    return waitUntil(() => document.querySelectorAll('.alerts-tab_body_body-table_body_row_alerts').length === 0, { timeout: 30000 }).then(async() => {
+      assert.equal(findAll('.alerts-tab_body_body-table_body_row_alerts').length, 0);
+      assert.equal(findAll('.alerts-tab_body_body-table_body_row_alerts_alert').length, 0);
       click('.alerts-tab_body_body-table_body_row_date');
-      return waitUntil(() => document.querySelectorAll('.alerts-tab_body_body-table_body_row_alerts').length === 0, { timeout: 30000 }).then(async() => {
-        assert.equal(findAll('.alerts-tab_body_body-table_body_row_alerts').length, 0);
-        assert.equal(findAll('.alerts-tab_body_body-table_body_row_alerts_alert').length, 0);
+      return waitUntil(() => document.querySelectorAll('.alerts-tab_body_body-table_body_row_alerts').length === 1, { timeout: 30000 }).then(async() => {
+        assert.equal(findAll('.alerts-tab_body_body-table_body_row_alerts').length, 1);
+        assert.equal(findAll('.alerts-tab_body_body-table_body_row_alerts_alert').length, 3);
         done();
       });
     });

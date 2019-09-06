@@ -276,15 +276,15 @@ const networkColumns = [{
   visible: true,
   disableSort: true
 }, {
-  field: 'sslSubject',
-  title: 'SSL Subject',
+  field: 'sslSubject.name',
+  title: 'SSL',
   width: '10vw',
   visible: true,
   disableSort: true
 }, {
-  field: 'ja3',
+  field: 'ja3.name',
   width: '10vw',
-  title: 'JA3 Certificate',
+  title: 'JA3',
   visible: true,
   linkField: 'user_link',
   disableSort: true
