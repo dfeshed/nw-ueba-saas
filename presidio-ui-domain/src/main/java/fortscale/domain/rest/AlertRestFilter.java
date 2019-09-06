@@ -25,6 +25,7 @@ public class AlertRestFilter extends RestFilter {
     private DateRange alertStartRange;
     private String entityName;
     private String entityTags;
+    private String entityType;
     private String entityId;
     private boolean totalSeverityCount;
     private boolean loadComments;
@@ -122,7 +123,13 @@ public class AlertRestFilter extends RestFilter {
         this.totalSeverityCount = totalSeverityCount;
     }
 
+    public String getEntityType() {
+        return entityType;
+    }
 
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
+    }
 
 
     public static class DataSourceAnomalyTypePairListWrapper{
