@@ -1513,6 +1513,97 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
+  test('Right click deleting parens will remove all the selected parens', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    const done = assert.async();
+
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+        {{context-menu}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    await click(PILL_SELECTORS.openParen);
+
+    assert.ok(find(PILL_SELECTORS.openParenSelected), 'Did not find paren selected');
+    assert.ok(find(PILL_SELECTORS.closeParenSelected), 'Did not find paren selected');
+
+    await triggerEvent(find(PILL_SELECTORS.openParenSelected), 'contextmenu', { clientX: 100, clientY: 100 });
+
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      await click(`#${items[2].id}`); // delete option
+      return settled().then(() => {
+        assert.equal(deleteSelectedGuidedPillsSpy.callCount, 1, 'The delete selected pill action creator was called once');
+        assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Number of pills present');
+        assert.notOk(find(PILL_SELECTORS.openParenSelected), 'Should not have found paren');
+        assert.notOk(find(PILL_SELECTORS.closeParenSelected), 'Should not have found paren');
+        done();
+      });
+    });
+  });
+
+  test('Right click option Delete selection will delete both selected parens and pills if present', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    const done = assert.async();
+
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+        {{context-menu}}
+      </div>
+    `);
+
+    // create one more pill
+    await selectChoose(PILL_SELECTORS.meta, 'medium');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, '32');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+
+    await leaveNewPillTemplate();
+
+    await click(PILL_SELECTORS.openParen);
+    const pills = findAll(PILL_SELECTORS.queryPill);
+    const lastPillId = pills[pills.length - 2].id; // second last pill
+    await click(`#${lastPillId}`);
+
+    await triggerEvent(find(PILL_SELECTORS.openParenSelected), 'contextmenu', { clientX: 100, clientY: 100 });
+
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      await click(`#${items[2].id}`); // delete option
+      return settled().then(() => {
+        assert.equal(deleteSelectedGuidedPillsSpy.callCount, 1, 'The delete selected pill action creator was called once');
+        assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Number of pills present');
+        assert.notOk(find(PILL_SELECTORS.openParenSelected), 'Should not have found paren');
+        assert.notOk(find(PILL_SELECTORS.closeParenSelected), 'Should not have found paren');
+        done();
+      });
+    });
+  });
+
   test('Clicking an inactive pill switches focus from any other pill that has focus', async function(assert) {
     new ReduxDataHelper(setState)
       .language()

@@ -207,7 +207,7 @@ export default {
   },
   queryBuilder: {
     cancelQuery: 'Cancel Query',
-    delete: 'Delete selected filters',
+    delete: 'Delete selection',
     deleteFilter: 'Delete this filter',
     edit: 'Edit this filter',
     enterValue: 'Enter a single value',

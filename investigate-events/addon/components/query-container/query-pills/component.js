@@ -124,6 +124,44 @@ const _hasMoreOpenThanCloseParens = (pd, position) => {
   return count > 0;
 };
 
+function getContextItems(context, i18n) {
+  const _this = context;
+  return [{
+    label: i18n.t('queryBuilder.querySelected'),
+    disabled() {
+      return _this.get('hasInvalidSelectedPill');
+    },
+    action() {
+      // Delete all deselected pills first
+      // submit query with remaining selected pills
+      _this.send('deleteGuidedPill', { pillData: _this.get('deselectedPills') });
+      _this._submitQuery();
+    }
+  },
+  {
+    label: i18n.t('queryBuilder.querySelectedNewTab'),
+    disabled() {
+      return _this.get('hasInvalidSelectedPill');
+    },
+    action() {
+      // Do not want to check canQueryGuided because user might
+      // want to execute the same query in new tab
+      _this.get('executeQuery')(true);
+      // deselect all the pills and remove focus. Can't trigger this first, as
+      // route action picks up selected pills from state to executeQ
+      _this.send('removePillFocus');
+      _this.send('deselectAllGuidedPills');
+    }
+  },
+  {
+    label: i18n.t('queryBuilder.delete'),
+    action() {
+      _this.send('deleteSelectedGuidedPills');
+    }
+  }];
+}
+
+
 const QueryPills = RsaContextMenu.extend({
   tagName: null,
 
@@ -163,6 +201,8 @@ const QueryPills = RsaContextMenu.extend({
   // Is a pill trigger open for add?
   isPillTriggerOpenForAdd: false,
 
+  contextItems: undefined,
+
   /**
    * Clean up input trailing text current pill's meta, operator and value.
    * @type {Object}
@@ -189,45 +229,6 @@ const QueryPills = RsaContextMenu.extend({
 
   @computed('pillsData')
   lastIndex: (pillsData) => pillsData.length,
-
-  @computed
-  contextItems() {
-    const _this = this;
-    const i18n = this.get('i18n');
-    return [{
-      label: i18n.t('queryBuilder.querySelected'),
-      disabled() {
-        return _this.get('hasInvalidSelectedPill');
-      },
-      action() {
-        // Delete all deselected pills first
-        // submit query with remaining selected pills
-        _this.send('deleteGuidedPill', { pillData: _this.get('deselectedPills') });
-        _this._submitQuery();
-      }
-    },
-    {
-      label: i18n.t('queryBuilder.querySelectedNewTab'),
-      disabled() {
-        return _this.get('hasInvalidSelectedPill');
-      },
-      action() {
-        // Do not want to check canQueryGuided because user might
-        // want to execute the same query in new tab
-        _this.get('executeQuery')(true);
-        // deselect all the pills and remove focus. Can't trigger this first, as
-        // route action picks up selected pills from state to executeQ
-        _this.send('removePillFocus');
-        _this.send('deselectAllGuidedPills');
-      }
-    },
-    {
-      label: i18n.t('queryBuilder.delete'),
-      action() {
-        _this.send('deleteSelectedGuidedPills');
-      }
-    }];
-  },
 
   init() {
     this._super(...arguments);
@@ -266,6 +267,7 @@ const QueryPills = RsaContextMenu.extend({
       OPEN_PAREN,
       TEXT_FILTER
     });
+    this.set('contextItems', getContextItems(this, this.get('i18n')));
   },
 
   didInsertElement() {

@@ -139,7 +139,7 @@ const PILLS_WITH_PARENS = [{
   isInvalid: false,
   isSelected: false,
   isValidationInProgress: false,
-  meta: 'action',
+  meta: 'alert',
   operator: '=',
   value: '\'foo\'',
   type: 'query'
