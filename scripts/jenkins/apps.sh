@@ -51,6 +51,9 @@ function runEmberTestWithMockServer {
     SHOULD_COVERAGE="false"
   fi
 
+  # attempting temp fix for babel issue
+  SHOULD_COVERAGE="false"
+
   # now run the tests
   info "Running 'ember exam' for $1 on port $testemPort"
   info "COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort"
