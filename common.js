@@ -265,7 +265,7 @@ const basicOptions = {
   }
 };
 
-const commonBuildOptions = function(projectDir) {
+const commonBuildOptionsNoBabel = function(projectDir) {
   const templateTrees = [
     `${projectDir}/addon/components`,
     `${projectDir}/tests/dummy/app/templates`
@@ -276,7 +276,6 @@ const commonBuildOptions = function(projectDir) {
   }).filter((aTree) => !!aTree);
 
   return {
-    ...basicOptions,
     'ember-cli-template-lint': {
       testGenerator: 'qunit' // or 'mocha', etc.
     },
@@ -292,8 +291,18 @@ const commonBuildOptions = function(projectDir) {
   };
 };
 
+const commonBuildOptions = function(projectDir) {
+  const opts = commonBuildOptionsNoBabel(projectDir);
+  return {
+    ...basicOptions,
+    ...opts
+  };
+};
+
+
 module.exports = {
   emberCliBabelConfig,
+  commonBuildOptionsNoBabel,
   basicOptions,
   isDevelopingAddon,
   determineSocketUrl,
