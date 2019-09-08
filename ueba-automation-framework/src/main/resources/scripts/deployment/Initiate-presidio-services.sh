@@ -5,8 +5,15 @@ OLD_RPM_VERSION=$2
 SCHEDULER_STATUS=$(systemctl is-active airflow-scheduler)
 echo "######################################## Running Initiate-presidio-services.sh ########################################" 
 echo "####################################### Starting UEBA Services: #######################################"
+counter=1
 sudo systemctl restart presidio-configserver
-while ! curl --output /dev/null --silent --head --fail http://localhost:8888/application-default.properties; do sleep 1 && echo -n .; done;
+while ! curl --output /dev/null --silent --head --fail http://localhost:8888/application-default.properties ; do
+echo -n . && sleep 1 && counter=$[$counter+1]
+if [[ $counter -gt 122 ]] ; then
+    echo 'presidio-configserver service did not go up after 2 minutes'
+    exit 1
+fi
+done;
 sudo systemctl restart presidio-manager
 sudo systemctl restart presidio-ui
 sudo systemctl restart presidio-output
