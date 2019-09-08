@@ -2,12 +2,12 @@
 'use strict';
 
 const path = require('path');
-const { isDevelopingAddon, emberCliBabelConfig } = require('../common');
+const { isDevelopingAddon, basicOptions } = require('../common');
 const projectName = 'rsa-data-filters';
 
 module.exports = {
   name: projectName,
-  options: emberCliBabelConfig,
+  options: basicOptions,
   isDevelopingAddon: isDevelopingAddon(projectName),
   mockDestinations: path.join(__dirname, 'tests', 'data', 'subscriptions')
 };
