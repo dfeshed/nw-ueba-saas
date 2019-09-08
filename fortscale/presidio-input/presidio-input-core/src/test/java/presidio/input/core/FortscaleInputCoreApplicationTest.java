@@ -107,6 +107,7 @@ public class FortscaleInputCoreApplicationTest {
             properties.put("enable.metrics.export", "false");
             properties.put("input.events.retention.in.days", "2");
             properties.put("operation.type.category.mapping.file.path", "file:/home/presidio/presidio-core/configurations/operation-type-category-mapping.json");
+            properties.put("dataPipeline.startTime", "2019-01-01T00:00:00Z");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }

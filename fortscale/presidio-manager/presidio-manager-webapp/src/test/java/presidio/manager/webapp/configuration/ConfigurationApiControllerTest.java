@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import presidio.config.server.client.ConfigurationServerClientService;
 
 import static java.lang.System.getProperty;
+import static java.nio.file.Paths.get;
 import static java.util.Collections.singletonList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -23,6 +24,7 @@ public class ConfigurationApiControllerTest {
             null,
             "workflows",
             getProperty("user.dir"),
+            get(getProperty("user.dir"), "application.properties").toString(),
             configurationServerClientService);
 
     @Test

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.annotation.Generated;
+import java.util.Properties;
 
 @Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2019-04-15T00:00:00.000Z")
 public class UiIntegrationConfiguration {
@@ -37,6 +38,13 @@ public class UiIntegrationConfiguration {
 
     public void setAdminServer(String adminServer) {
         this.adminServer = adminServer;
+    }
+
+    public Properties toProperties() {
+        Properties properties = new Properties();
+        properties.put("brokerId", brokerId);
+        properties.put("adminServer", adminServer);
+        return properties;
     }
 
     @Override
