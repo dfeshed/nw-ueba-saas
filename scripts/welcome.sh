@@ -1,6 +1,6 @@
 # Use this script if you need the entire environment set up
-# Though it is not be harmful to run this regardless what
-# state your environment is in.
+# Though it is not be harmful to run this regardless
+# what state your environment is in.
 
 scriptDir="$(dirname "$0")"
 
