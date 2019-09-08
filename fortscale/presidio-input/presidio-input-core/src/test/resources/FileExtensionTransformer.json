@@ -2,6 +2,5 @@
   "type": "file-extension-transformer",
   "name": "file-extension-transformer",
   "inputFieldName": "bla",
-  "outputFieldName": "blue",
-  "regex": "bww"
+  "outputFieldName": "blue"
 }
