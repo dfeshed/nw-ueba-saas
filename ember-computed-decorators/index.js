@@ -8,18 +8,11 @@ module.exports = {
     'ember-cli-babel': {
       includePolyfill: false,
       throwUnlessParallelizable: false
-    }
-  },
-
-  init() {
-    // babel stuff declared here in order to enable
-    // investigate working by itself outside of sa
-    this._super.init && this._super.init.apply(this, arguments);
-    this.options = this.options || {};
-    this.options.babel = {
+    },
+    babel: {
       plugins: [
         '@babel/plugin-proposal-object-rest-spread'
       ]
-    };
+    }
   }
 };
