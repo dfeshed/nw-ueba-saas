@@ -7,6 +7,7 @@ from presidio.builders.rerun_ueba_flow_dag_builder import get_registered_presidi
 
 # clean old full flow- logs and postgres
 full_flow_dag_ids_to_clean = get_dags_ids_by_prefix("full_flow")
+pause_dags(full_flow_dag_ids_to_clean)
 cleanup_dags_from_postgres(full_flow_dag_ids_to_clean)
 airflow_log_folders_list = get_airflow_log_folders(full_flow_dag_ids_to_clean)
 airflow_log_folder_str = ' '.join(airflow_log_folders_list)
