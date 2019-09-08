@@ -8,9 +8,5 @@ import java.time.Instant;
 import java.util.List;
 
 public interface TransformationManager {
-    default void init(Instant workflowStartDate, Instant intervalEndDate, Duration transformationWaitingDuration) {}
-
-    List<Transformer> getTransformers();
-
     <U extends AbstractInputDocument> U getTransformedDocument(AbstractInputDocument rawEvent);
 }

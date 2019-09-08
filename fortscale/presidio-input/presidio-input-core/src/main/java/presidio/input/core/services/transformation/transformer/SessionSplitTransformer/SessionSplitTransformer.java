@@ -86,7 +86,7 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
             String eventSrcIp = (String)document.get(TlsTransformedEvent.SOURCE_IP_FIELD_NAME);
             String eventDstIp = (String)document.get(TlsTransformedEvent.DESTINATION_IP_FIELD_NAME);
             String eventSrcPort = (String)document.get(TlsTransformedEvent.SOURCE_PORT_FIELD_NAME);
-            String eventDstPort = (String)(String) jacksonUtils.getFieldValue(document, namePath(TlsTransformedEvent.DESTINATION_PORT_FIELD_NAME), null);;
+            String eventDstPort = (String)(String) jacksonUtils.getFieldValue(document, namePath(TlsTransformedEvent.DESTINATION_PORT_FIELD_NAME), null);
             SessionSplitTransformerKey key = new SessionSplitTransformerKey(eventSrcIp, eventDstIp, eventDstPort, eventSrcPort);
 
             TreeSet<SessionSplitTransformerValue> treeSet = splitTransformerMap.get(key);

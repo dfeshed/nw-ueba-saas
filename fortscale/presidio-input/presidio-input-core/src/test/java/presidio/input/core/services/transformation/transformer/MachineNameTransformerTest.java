@@ -16,6 +16,8 @@ import java.time.Instant;
  * Created by barak_schuster on 11/9/17.
  */
 public class MachineNameTransformerTest extends TransformerJsonTest {
+    public static final String CLUSTER_REPLACEMENT_PATTERN = "[0-9]";
+    public static final String CLUSTER_POST_REPLACEMENT_CONDITION = "(.*[a-zA-Z]){5}.*";
 
     @Test
     public void testTransformAuthenticationEventResolvedSrcMachineName() throws IOException {
@@ -23,10 +25,10 @@ public class MachineNameTransformerTest extends TransformerJsonTest {
                 new MachineNameTransformer("name",
                         AuthenticationRawEvent.SRC_MACHINE_NAME_FIELD_NAME,
                         AuthenticationTransformedEvent.SRC_MACHINE_CLUSTER_FIELD_NAME,
-                        AuthenticationTransformerManager.CLUSTER_REPLACEMENT_PATTERN,
+                        CLUSTER_REPLACEMENT_PATTERN,
                         "",
                         null,
-                        AuthenticationTransformerManager.CLUSTER_POST_REPLACEMENT_CONDITION);
+                        CLUSTER_POST_REPLACEMENT_CONDITION);
 
         AuthenticationRawEvent authRawEvent = new AuthenticationRawEvent(Instant.now(), "eventId",
                 "dataSource", "userId", "operationType", null,
@@ -44,10 +46,10 @@ public class MachineNameTransformerTest extends TransformerJsonTest {
                 new MachineNameTransformer("name",
                         AuthenticationRawEvent.SRC_MACHINE_NAME_FIELD_NAME,
                         AuthenticationTransformedEvent.SRC_MACHINE_CLUSTER_FIELD_NAME,
-                        AuthenticationTransformerManager.CLUSTER_REPLACEMENT_PATTERN,
+                        CLUSTER_REPLACEMENT_PATTERN,
                         "",
                         null,
-                        AuthenticationTransformerManager.CLUSTER_POST_REPLACEMENT_CONDITION);
+                        CLUSTER_POST_REPLACEMENT_CONDITION);
 
         AuthenticationRawEvent authRawEvent = new AuthenticationRawEvent(Instant.now(), "eventId",
                 "dataSource", "userId", "operationType", null,
@@ -66,10 +68,10 @@ public class MachineNameTransformerTest extends TransformerJsonTest {
                 new MachineNameTransformer("name",
                         AuthenticationRawEvent.SRC_MACHINE_NAME_FIELD_NAME,
                         AuthenticationTransformedEvent.SRC_MACHINE_CLUSTER_FIELD_NAME,
-                        AuthenticationTransformerManager.CLUSTER_REPLACEMENT_PATTERN,
+                        CLUSTER_REPLACEMENT_PATTERN,
                         "",
                         null,
-                        AuthenticationTransformerManager.CLUSTER_POST_REPLACEMENT_CONDITION);
+                        CLUSTER_POST_REPLACEMENT_CONDITION);
 
         AuthenticationRawEvent authRawEvent = new AuthenticationRawEvent(Instant.now(), "eventId",
                 "dataSource", "userId", "operationType", null,
