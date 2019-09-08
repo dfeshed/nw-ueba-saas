@@ -2,7 +2,7 @@
 
 const replace = require('broccoli-replace');
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
-const { isDevelopingAddon } = require('../common');
+const { isDevelopingAddon, babelPlugins } = require('../common');
 const projectName = 'component-lib';
 const WebpackWriter = require('broccoli-webpack');
 
