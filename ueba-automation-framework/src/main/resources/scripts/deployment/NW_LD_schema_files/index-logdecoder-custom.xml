@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <language level="IndexNone" defaultAction="Auto">
+    <key description="Netname" name="netname" format="Text" level="IndexValues"/>
     <key description="Event Source ID" name="event.source.id" format="Text" level="IndexValues"/>
     <key description="Destination ASN" name="asn.dst" format="Text" level="IndexValues"/>
-	<key description="Number Of Bytes Sent" name="payload.req" format="UInt32" level="IndexValues"/>
-	<key description="Number Of Bytes Recieved" name="payload.res" format="UInt32" level="IndexValues"/>
+    <key description="Number Of Bytes Sent" name="payload.req" format="UInt32" level="IndexValues"/>
+    <key description="Number Of Bytes Recieved" name="payload.res" format="UInt32" level="IndexValues"/>
     <key description="Network" name="network" format="Text" level="IndexValues"/>
     <key description="Session Split" name="session.split" format="UInt16" level="IndexValues"/>
     <key description="SSL Subject" name="ssl.subject" format="Text" level="IndexValues"/>
