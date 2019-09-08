@@ -187,6 +187,17 @@
                         </mapping>
                         <mapping>
                             <directoryIncluded>true</directoryIncluded>
+                            <directory>${presidio-app.directory}/input-transformers/</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../../fortscale/presidio-input/presidio-input-core/src/main/resources/descriptors</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>true</directoryIncluded>
                             <directory>${presidio-app.directory}/input-mapping</directory>
                             <username>${presidio.username}</username>
                             <groupname>${presidio.groupname}</groupname>
