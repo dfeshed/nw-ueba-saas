@@ -1,12 +1,12 @@
 /* eslint-env node */
 
 const path = require('path');
-const { isDevelopingAddon, emberCliBabelConfig } = require('../common');
+const { isDevelopingAddon, basicOptions } = require('../common');
 const projectName = 'endpoint-rar';
 
 module.exports = {
   name: projectName,
-  options: emberCliBabelConfig,
+  options: basicOptions,
   isDevelopingAddon: isDevelopingAddon(projectName),
   socketRouteGenerator: require('./config/socketRoutes'),
   mockDestinations: path.join(__dirname, 'tests', 'data', 'subscriptions')

@@ -2,11 +2,11 @@
 
 'use strict';
 
-const { isDevelopingAddon, emberCliBabelConfig } = require('../common');
+const { isDevelopingAddon, basicOptions } = require('../common');
 const projectName = 'rsa-list-manager';
 
 module.exports = {
   name: projectName,
-  options: emberCliBabelConfig,
+  options: basicOptions,
   isDevelopingAddon: isDevelopingAddon(projectName)
 };
