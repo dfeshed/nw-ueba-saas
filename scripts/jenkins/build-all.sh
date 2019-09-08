@@ -43,7 +43,7 @@ then
 fi
 
 # testing
-IS_MASTER_BUILD=false
+IS_MASTER_BUILD="false"
 
 # bring in utilities and settings
 scriptDir="$(dirname "$0")"
