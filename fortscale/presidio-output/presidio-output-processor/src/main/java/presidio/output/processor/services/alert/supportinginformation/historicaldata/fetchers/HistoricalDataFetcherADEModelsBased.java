@@ -30,9 +30,7 @@ import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.DailyHistogram;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
@@ -244,7 +242,9 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
         List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecordsInMemory = new ArrayList<AccumulatedAggregationFeatureRecord>();
 
         Instant start = TimeService.floorTime(inMemoryTimeRange.getStart(), FixedDurationStrategy.DAILY.toDuration());
-        Instant end = TimeService.floorTime(inMemoryTimeRange.getEnd().minus(1, ChronoUnit.DAYS), FixedDurationStrategy.DAILY.toDuration());
+        Instant end = getHourOfInstant(inMemoryTimeRange.getEnd()) == 0 ?
+                TimeService.floorTime(inMemoryTimeRange.getEnd().minus(1, ChronoUnit.DAYS), FixedDurationStrategy.DAILY.toDuration()) :
+                TimeService.floorTime(inMemoryTimeRange.getEnd(), FixedDurationStrategy.DAILY.toDuration());
         TimeRange flooredTimeRange = new TimeRange(start, end);
         List<TimeRange> dayPartitions = FixedDurationStrategyUtils.splitTimeRangeByStrategy(flooredTimeRange, FixedDurationStrategy.DAILY);
         dayPartitions.add(new TimeRange(end, inMemoryTimeRange.getEnd())); //add last partial day
@@ -287,6 +287,9 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
         return accumulatedAggregationFeatureRecordsInMemory;
     }
 
+    private int getHourOfInstant(Instant instant) {
+        return LocalDateTime.ofInstant(instant, ZoneId.of("UTC")).getHour();
+    }
 
     private List<DailyHistogram<String, Number>> convertFeatureBucketsToHistograms(String featureName, List<FeatureBucket> featureBuckets) {
         List<DailyHistogram<String, Number>> dailyHistogramList = new <DailyHistogram<String, Number>>ArrayList();
