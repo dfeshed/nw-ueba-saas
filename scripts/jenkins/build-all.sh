@@ -42,9 +42,6 @@ then
   IS_MASTER_BUILD=true
 fi
 
-# testing
-IS_MASTER_BUILD="false"
-
 # bring in utilities and settings
 scriptDir="$(dirname "$0")"
 . $scriptDir/../_util.sh
