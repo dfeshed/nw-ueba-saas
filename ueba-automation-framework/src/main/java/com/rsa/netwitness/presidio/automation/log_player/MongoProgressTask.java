@@ -31,6 +31,7 @@ public class MongoProgressTask implements Runnable {
     }
 
     public void run() {
+        LOGGER.info("[" + collectionName + "] Started");
         taskLastWakeup = Instant.now();
         Optional<Instant> result = Optional.ofNullable(dataRepo.maxDateTimeBetween(start, end));
         LOGGER.info("[" + collectionName + "] - Max dateTime = " + result + " (start_time=" + start + ")");
