@@ -63,22 +63,6 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
         this.booleanFieldName = booleanFieldName;
     }
 
-    public void setLastOccurrenceInstantReader(LastOccurrenceInstantReader lastOccurrenceInstantReader) {
-        this.lastOccurrenceInstantReader = lastOccurrenceInstantReader;
-    }
-
-    public void setWorkflowStartDate(Instant workflowStartDate) {
-        this.workflowStartDate = workflowStartDate;
-    }
-
-    public void setTransformationWaitingDuration(Duration transformationWaitingDuration) {
-        this.transformationWaitingDuration = transformationWaitingDuration;
-    }
-
-    public void setEndDate(Instant endDate) {
-        this.endDate = endDate;
-    }
-
     @Override
     public JSONObject transform(JSONObject document) {
         if (!shouldTransform()) {
