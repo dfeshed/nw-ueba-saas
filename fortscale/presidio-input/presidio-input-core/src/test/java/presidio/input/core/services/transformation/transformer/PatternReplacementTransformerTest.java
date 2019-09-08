@@ -18,6 +18,8 @@ import java.time.Instant;
  */
 @RunWith(SpringRunner.class)
 public class PatternReplacementTransformerTest extends TransformerJsonTest {
+    public static final String CLUSTER_REPLACEMENT_PATTERN = "[0-9]";
+    public static final String CLUSTER_POST_REPLACEMENT_CONDITION = "(.*[a-zA-Z]){5}.*";
 
     @Test
     public void testTransformAuthenticationEventResolvedSrcMachineName() throws IOException {
@@ -25,10 +27,10 @@ public class PatternReplacementTransformerTest extends TransformerJsonTest {
                 new PatternReplacementTransformer("name",
                         AuthenticationRawEvent.SRC_MACHINE_NAME_FIELD_NAME,
                         AuthenticationTransformedEvent.SRC_MACHINE_CLUSTER_FIELD_NAME,
-                        AuthenticationTransformerManager.CLUSTER_REPLACEMENT_PATTERN,
+                        CLUSTER_REPLACEMENT_PATTERN,
                         "",
                         null,
-                        AuthenticationTransformerManager.CLUSTER_POST_REPLACEMENT_CONDITION);
+                        CLUSTER_POST_REPLACEMENT_CONDITION);
 
         AuthenticationRawEvent authRawEvent = createAuthenticationEvent(Instant.now(), "dwef043.fortscale.com");
         AuthenticationTransformedEvent authenticationTransformedEvent = (AuthenticationTransformedEvent) transformEvent(authRawEvent, patternReplacementTransformer, AuthenticationTransformedEvent.class);
