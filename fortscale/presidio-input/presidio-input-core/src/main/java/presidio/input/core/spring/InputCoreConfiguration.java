@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
+import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReaderCacheConfiguration;
 import fortscale.utils.elasticsearch.config.ElasticsearchConfig;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
@@ -46,7 +47,8 @@ import java.util.Map;
         AdeDataServiceConfig.class,
         OutputDataServiceConfig.class,
         PresidioMonitoringConfiguration.class,
-        ElasticsearchConfig.class
+        ElasticsearchConfig.class,
+        LastOccurrenceInstantReaderCacheConfiguration.class
 })
 public class InputCoreConfiguration {
     private static final Logger logger = Logger.getLogger(InputCoreConfiguration.class);
