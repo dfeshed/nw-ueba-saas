@@ -13,7 +13,6 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.spring.TlsTransformerConfigTest;
@@ -24,7 +23,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Configuration
 @RunWith(SpringRunner.class)
 @Import({TlsTransformerConfigTest.class})
 public class NewOccurrenceTransformerTest extends TransformerJsonTest implements ApplicationContextAware {
@@ -84,8 +82,7 @@ public class NewOccurrenceTransformerTest extends TransformerJsonTest implements
     }
 
     private List<NewOccurrenceTransformer> generateNewOccurrenceTransformers() throws IOException {
-        LastOccurrenceInstantReader occurrenceInstantReader = Mockito.mock(LastOccurrenceInstantReader.class);
-        Mockito.when(occurrenceInstantReader.read(Mockito.any(), Mockito.any(String.class), Mockito.any(String.class)))
+        Mockito.when(lastOccurrenceInstantReader.read(Mockito.any(), Mockito.any(String.class), Mockito.any(String.class)))
                 .thenReturn(Instant.now());
         List<AbstractJsonObjectTransformer> abstractJsonObjectTransformers = loadTransformers("NewOccurrenceTransformers.json");
         return abstractJsonObjectTransformers.stream().map(t -> {

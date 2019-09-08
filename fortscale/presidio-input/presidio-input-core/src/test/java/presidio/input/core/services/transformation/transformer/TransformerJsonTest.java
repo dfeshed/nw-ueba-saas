@@ -72,7 +72,7 @@ public abstract class TransformerJsonTest {
         return objectMapper.readValue(transformed.toString(), clazz);
     }
 
-    private AbstractJsonObjectTransformer loadTransformer(String resourceFilePath) throws IOException {
+    protected AbstractJsonObjectTransformer loadTransformer(String resourceFilePath) throws IOException {
         String json = readFileToStr(resourceFilePath);
         return objectMapper.readValue(json, AbstractJsonObjectTransformer.class);
     }

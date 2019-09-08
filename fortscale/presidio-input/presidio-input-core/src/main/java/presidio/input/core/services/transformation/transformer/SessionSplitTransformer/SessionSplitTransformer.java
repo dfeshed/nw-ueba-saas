@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-import static fortscale.domain.core.AbstractDocument.ID_FIELD;
-
 
 @JsonAutoDetect(
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
@@ -40,6 +38,7 @@ import static fortscale.domain.core.AbstractDocument.ID_FIELD;
 public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
 
     private static final Logger logger = Logger.getLogger(SessionSplitTransformer.class);
+    private static final String DOCUMENT_ID_FIELD = "id";
     private static final String NAME_FIELD_SUFFIX = ".name";
     private static final int zeroSessionSplit = 0;
     private static final JacksonUtils jacksonUtils = new JacksonUtils();
@@ -105,17 +104,17 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
                             document.put(TlsTransformedEvent.SSL_CAS_FIELD_NAME, document.get(TlsTransformedEvent.SSL_CAS_FIELD_NAME));
                             document.put(TlsTransformedEvent.JA3S_FIELD_NAME, document.get(TlsTransformedEvent.JA3S_FIELD_NAME));
                             value.setSessionSplit(eventSessionSplit);
-                            logger.debug("Enrich {} tls event with missed fields.", document.get(ID_FIELD));
+                            logger.debug("Enrich {} tls event with missed fields.", document.get(DOCUMENT_ID_FIELD));
                         } else {
                             //remove key of closed session
                             splitTransformerMap.remove(key);
-                            logger.info("The {} tls event can't be enriched due to missing zero session split event.", document.get(ID_FIELD));
+                            logger.info("The {} tls event can't be enriched due to missing zero session split event.", document.get(DOCUMENT_ID_FIELD));
                         }
                         break;
                     }
                 }
             } else {
-                logger.info("There is no appropriate tls event with zero session split for {} event.", document.get(ID_FIELD));
+                logger.info("There is no appropriate tls event with zero session split for {} event.", document.get(DOCUMENT_ID_FIELD));
             }
         }
         return document;
