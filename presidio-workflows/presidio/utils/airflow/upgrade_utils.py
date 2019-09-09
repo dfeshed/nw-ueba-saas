@@ -66,7 +66,7 @@ def run_reset_presidio_for_upgrade():
 
 def get_dags_by_prefix(dag_id_prefix):
     """
-    :return: list of DAG id's by prefix given
+    :return: list of DAG by prefix given
     :rtype: List[DAG]
     """
     dag_models = find_dag_models()
