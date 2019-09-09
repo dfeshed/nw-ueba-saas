@@ -64,7 +64,7 @@ def run_reset_presidio_for_upgrade():
             raise ValueError("The triggered 'Reset Presidio' DAG run is in an unknown state (%s)." % state)
 
 
-def get_dags_ids_by_prefix(dag_id_prefix):
+def get_dags_by_prefix(dag_id_prefix):
     """
     :return: list of DAG id's by prefix given
     :rtype: List[DAG]
