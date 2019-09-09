@@ -3,19 +3,18 @@ package com.rsa.netwitness.presidio.automation.test.data.preparation;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
-import com.rsa.netwitness.presidio.automation.domain.tls.AdapterTlsStoredData;
 import com.rsa.netwitness.presidio.automation.log_player.MongoCollectionsMonitor;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Field;
 import java.time.Instant;
+import java.util.Optional;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -45,11 +44,10 @@ public class MongoCollectionsMonitorTest extends AbstractTestNGSpringContextTest
 
     @Test
     public void tls_input_table_query_test() {
-        Sort sort = new Sort(Sort.Direction.DESC, "dateTime");
-        AdapterTlsStoredData result = tlsRepository
-                .findTopByDateTimeBetween(Instant.now().minus(15, DAYS), Instant.now(), sort);
-
-        assertThat(result).isNotNull();
+        Instant start = Instant.now().plus(10, DAYS);
+        Instant end = Instant.now().plus(11, DAYS);
+        Optional<Instant> result = Optional.ofNullable(tlsRepository.maxDateTimeBetween(start, end));
+        assertThat(result).isEmpty();
     }
 
     @Test
