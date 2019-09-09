@@ -1,7 +1,9 @@
-{{entity-details-container/body/alerts-container}}
+{{#unless showOnlyIndicator}}
+  {{entity-details-container/body/alerts-container}}
+{{/unless}}  
 <div class='entity-details-container-body_details'>
   {{#if selectedIndicatorId}}
-    {{entity-details-container/body/indicator-details}}
+    {{entity-details-container/body/indicator-details showOnlyIndicator=showOnlyIndicator}}
   {{else}}
     {{entity-details-container/body/alert-details}}
   {{/if}}

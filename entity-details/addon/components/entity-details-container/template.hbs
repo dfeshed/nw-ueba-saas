@@ -1,2 +1,4 @@
-{{entity-details-container/header}}
-{{entity-details-container/body}}
+{{#unless showOnlyIndicator}}
+  {{entity-details-container/header}}
+{{/unless}}
+{{entity-details-container/body showOnlyIndicator=showOnlyIndicator}}

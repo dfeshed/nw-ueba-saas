@@ -31,6 +31,9 @@ export const getEvents = (indicatorId) => {
 
 export const getHistoricalData = (indicatorId) => {
   return (dispatch, getState) => {
+    if (!indicatorMapSettings(getState())) {
+      return;
+    }
     const fetchObj = {
       restEndpointLocation: 'historicalData',
       data: indicatorMapSettings(getState()).params,

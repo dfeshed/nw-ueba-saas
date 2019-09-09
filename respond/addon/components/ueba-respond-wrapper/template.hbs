@@ -17,19 +17,10 @@
         </vbox>
       </hbox>
     </header>
-
-    {{#ueba-iframe-container ueba=ueba as |iframeUrl hasUEBAError iframeVisible iframeLoad|}}
-      {{#if hasUEBAError}}
-        <div class="ueba-error" test-id="uebaError">
-          {{rsa-panel-message class="ueba-error" message=(t 'respond.ueba.error')}}
-        </div>
-      {{else}}
-        {{#if (not iframeVisible)}}
-          {{ueba-loader}}
-        {{/if}}
-        {{ueba-iframe iframeUrl=iframeUrl iframeVisible=iframeVisible testId="uebaIframe" class="ueba-iframe" handleOnLoad=iframeLoad}}
+    <div class='ueba-container'>
+      {{#if entityModel}}
+        {{mount "entity-details" model=entityModel}}
       {{/if}}
-    {{/ueba-iframe-container}}
-
+    </div>
   </vbox>
 </hbox>

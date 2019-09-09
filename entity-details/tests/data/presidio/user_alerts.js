@@ -41,7 +41,6 @@ export default {
       'endDate': 1543183200000,
       'retentionDate': null,
       'anomalyType': 'Abnormal Active Directory Change Time',
-      'anomalyTypeFieldName': 'abnormal_active_directory_day_time_operation',
       'name': 'Abnormal Active Directory Change Time',
       'anomalyValue': '2018-11-25T22:00:00Z',
       'dataEntitiesIds': [

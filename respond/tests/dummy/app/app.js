@@ -25,6 +25,21 @@ const App = Application.extend({
           protected: 'protected'
         }
       }
+    },
+    entityDetails: {
+      dependencies: {
+        services: [
+          '-document',
+          'access-control',
+          'contextual-help',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'eventBus',
+          'flashMessages'
+        ]
+      }
     }
   }
 });

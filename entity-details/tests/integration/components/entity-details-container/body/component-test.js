@@ -50,4 +50,14 @@ module('Integration | Component | entity-details-container/body', function(hooks
     assert.equal(findAll('.entity-details-container-body-indicator-details_header').length, 1);
     assert.equal(findAll('.entity-details-container-body-alert-details_header').length, 0);
   });
+
+  test('it should not renders alerts if showOnlyIndicator is true', async function(assert) {
+
+    new ReduxDataHelper(setState).build();
+    await render(hbs`{{entity-details-container/body showOnlyIndicator=true}}`);
+    assert.equal(findAll('.entity-details-container-body_alerts_list').length, 0);
+    assert.equal(findAll('.entity-details-container-body_details').length, 1);
+    assert.equal(findAll('.entity-details-container-body-indicator-details_header').length, 1);
+    assert.equal(findAll('.entity-details-container-body-alert-details_header').length, 0);
+  });
 });

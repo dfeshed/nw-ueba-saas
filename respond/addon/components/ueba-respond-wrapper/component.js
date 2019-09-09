@@ -20,6 +20,22 @@ const UebaWrapper = Component.extend({
   resolvedWidth(width) {
     return htmlSafe(`width: calc(100% - ${width}px);`);
   },
+  @computed('ueba')
+  entityModel(ueba) {
+    if (!ueba) {
+      return null;
+    }
+    const [, entityId] = ueba.match(/user\/(.*)\/alert/i);
+    const [, alertId] = ueba.match(/alert\/(.*)\/indicator/i);
+    const [, indicatorId] = ueba.match(/indicator\/(.*)/i);
+    return {
+      entityType: 'user',
+      showOnlyIndicator: true,
+      entityId,
+      alertId,
+      indicatorId
+    };
+  },
   actions: {
     close() {
       get(this, 'uebaClose')();

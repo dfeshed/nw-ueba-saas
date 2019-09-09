@@ -96,6 +96,7 @@
       "../streaming-data",
       "../recon",
       "../context",
+      "../entity-details",
       "../rsa-context-menu",
       "../license"
     ]

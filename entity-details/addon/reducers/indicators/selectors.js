@@ -95,7 +95,7 @@ export const brokerId = createSelector(
   (events, type) => {
     if (events) {
       const [event] = events;
-      if (type === 'user' && event) {
+      if (type === 'user' && event && event.user_link) {
         return event.user_link.match(/investigation\/(.*)\/events/i) ? event.user_link.match(/investigation\/(.*)\/events/i)[1] : '';
       }
     }

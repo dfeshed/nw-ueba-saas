@@ -28,5 +28,13 @@ module('Integration | Component | entity-details-container/body/indicator-detail
 
     await render(hbs`{{entity-details-container/body/indicator-details/header}}`);
     assert.equal(findAll('.entity-details-container-body-alert-details_header_details_severity.Critical').length, 1);
+    assert.equal(findAll('.entity-details-container-body-indicator-navigator').length, 1);
+  });
+
+  test('it should render header without navigation and close if showOnlyIndicator is true', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
+    await render(hbs`{{entity-details-container/body/indicator-details/header showOnlyIndicator=true}}`);
+    assert.equal(findAll('.entity-details-container-body-indicator-navigator').length, 0);
   });
 });

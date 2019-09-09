@@ -13,8 +13,10 @@
   </div>
 </div>
 <div class='entity-details-container-body-alert-details_header_control'>
-  {{entity-details-container/body/indicator-navigator}}
-  {{#rsa-form-button isIconOnly=true defaultAction=(action 'resetIndicators')}}
-    {{rsa-icon name='close'}}
-  {{/rsa-form-button}}
+  {{#unless showOnlyIndicator}}
+    {{entity-details-container/body/indicator-navigator}}
+    {{#rsa-form-button isIconOnly=true defaultAction=(action 'resetIndicators')}}
+      {{rsa-icon name='close'}}
+    {{/rsa-form-button}}
+  {{/unless}}
 </div>

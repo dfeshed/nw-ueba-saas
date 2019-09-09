@@ -235,5 +235,20 @@ test('test getIncidentPositionAndNextIncidentId should return correct position i
       }
     };
     assert.notOk(brokerId(newState));
+
+    newState = {
+      entity: {
+        entityType: 'user'
+      },
+      alerts: {
+        selectedAlertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
+        alerts: userAlerts.data
+      },
+      indicators: {
+        selectedIndicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
+        events: [{}]
+      }
+    };
+    assert.notOk(brokerId(newState));
   });
 });

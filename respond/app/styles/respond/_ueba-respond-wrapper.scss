@@ -14,6 +14,7 @@
 
     .ueba-container__main__inner {
       flex: 1 1 auto;
+      width: 100%;
     }
 
     .ueba-container__header {
@@ -64,6 +65,12 @@
     background-color: background-color(primary, darkest);
     margin-left: 1px;
     overflow: hidden;
+    > page {
+      min-width: auto;
+      .entity-details-container-body_details {
+        width: calc(100% - 4rem);
+      }
+    }
   }
 
   .ueba-error {

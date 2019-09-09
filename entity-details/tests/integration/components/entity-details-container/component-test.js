@@ -29,4 +29,10 @@ module('Integration | Component | entity-details-container', function(hooks) {
     await render(hbs`{{entity-details-container entityId='123' entityType='user' alertId='0bd963d0-a0ae-4601-8497-b0c363becd1f' indicatorId='8614aa7f-c8ee-4824-9eaf-e0bb199cd006'}}`);
     assert.equal(findAll('.entity-details-container-header').length, 1);
   });
+  test('it not render header if showOnlyIndicator is true', async function(assert) {
+
+    new ReduxDataHelper(setState).build();
+    await render(hbs`{{entity-details-container entityId='123' entityType='user' alertId='0bd963d0-a0ae-4601-8497-b0c363becd1f' indicatorId='8614aa7f-c8ee-4824-9eaf-e0bb199cd006' showOnlyIndicator=true}}`);
+    assert.equal(findAll('.entity-details-container-header').length, 0);
+  });
 });

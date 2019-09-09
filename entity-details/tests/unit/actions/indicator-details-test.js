@@ -129,6 +129,17 @@ module('Unit | Actions | indicator-details Actions', (hooks) => {
     getHistoricalData({ entityId: '123' })(dispatch, getState);
   });
 
+  test('it should not fetch getHistoricalData if method is unknown', (assert) => {
+    const dispatch = () => {
+      assert.notOk(true, 'This should be dispatch anything.');
+    };
+    const newState = { ...state };
+    newState.indicators.selectedIndicatorId = '277cdcca-4a55-4d0f-8a8e-750aee9c438f';
+    const getState = () => newState;
+    const data = getHistoricalData({ entityId: '123' })(dispatch, getState);
+    assert.notOk(data, 'This should be any data.');
+  });
+
   test('it can reset indicator', (assert) => {
     assert.expect(1);
     const dispatch = ({ type }) => {

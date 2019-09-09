@@ -18,6 +18,8 @@
 /* Pulling in local respond styles */
 @import 'respond/manifest';
 
+/* putting the engines styles */
+@import "entity-details/manifest";
 // Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
 body.respond-engine-dummy {
   color: text-color(primary, light);
