@@ -5,17 +5,17 @@ import fortscale.utils.transform.FolderPathByOperationTypeTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.input.core.spring.TransformerConfigTest;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.domain.transformedevents.FileTransformedEvent;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
+@Import({TransformerConfigTest.class})
 public class FolderPathByOperationTypeTransformerTest extends TransformerJsonTest {
 
     @Test
@@ -29,7 +29,7 @@ public class FolderPathByOperationTypeTransformerTest extends TransformerJsonTes
         FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("name","srcFilePath",
                 "srcFilePath", "srcFolderPath", "operationType");
         FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, folderPathByOperationTypeTransformer, FileTransformedEvent.class);
-        Assert.assertEquals(String.format("C:\\Users\\alexp\\Desktop\\", File.separator), fileTransformedEvent.getSrcFolderPath());
+        Assert.assertEquals("C:\\Users\\alexp\\Desktop\\", fileTransformedEvent.getSrcFolderPath());
         Assert.assertEquals(filePath, fileTransformedEvent.getSrcFilePath());
     }
 
@@ -43,25 +43,8 @@ public class FolderPathByOperationTypeTransformerTest extends TransformerJsonTes
         FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("name", "srcFilePath",
                 "srcFilePath", "srcFolderPath", "operationType");
         FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, folderPathByOperationTypeTransformer, FileTransformedEvent.class);
-        Assert.assertEquals(String.format("/folder/", File.separator), fileTransformedEvent.getSrcFolderPath());
+        Assert.assertEquals("/folder/", fileTransformedEvent.getSrcFolderPath());
         Assert.assertEquals(filePath, fileTransformedEvent.getSrcFilePath());
-    }
-
-    @Test
-    public void testFolderPathTransformation_FolderOperation() throws IOException {
-        FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
-                "Folder", null, EventResult.SUCCESS, "userName",
-                "displayName", null, "C://file", false,
-                "C://dst/file.txt", false, 0L, "resultCode");
-
-        List<String> folderOperations = new ArrayList<>();
-        folderOperations.add("Folder");
-        FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("name","srcFilePath",
-                "srcFilePath", "srcFolderPath", "operationType");
-        folderPathByOperationTypeTransformer.setFolderOperations(folderOperations);
-        FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, folderPathByOperationTypeTransformer, FileTransformedEvent.class);
-        Assert.assertNull(fileTransformedEvent.getSrcFilePath());
-        Assert.assertEquals("C://file", fileTransformedEvent.getSrcFolderPath());
     }
 
     @Test

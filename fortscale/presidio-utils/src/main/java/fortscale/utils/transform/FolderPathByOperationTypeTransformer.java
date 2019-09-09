@@ -46,10 +46,6 @@ public class FolderPathByOperationTypeTransformer extends AbstractJsonObjectTran
         this.folderOperations = new LinkedList<>();
     }
 
-    public void setFolderOperations(List<String> folderOperations) {
-        this.folderOperations = folderOperations;
-    }
-
     @Override
     /*
      * If the events operation type is in the folderOperations list the received path is a folder path.
