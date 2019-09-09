@@ -417,6 +417,7 @@ public class AlertApiControllerModuleTest {
         restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate().getTime()));
         restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate().getTime()));
         restAlert.setId(alert.getId());
+        restAlert.setEntityType(alert.getEntityType());
         restAlert.setEntityScoreContribution(alert.getContributionToEntityScore() == null ? BigDecimal.valueOf(0) : new BigDecimal(alert.getContributionToEntityScore()));
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setEntityName(alert.getEntityName());

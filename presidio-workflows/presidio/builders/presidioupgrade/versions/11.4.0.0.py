@@ -1,12 +1,14 @@
 import os
 from elasticsearch import Elasticsearch
-from presidio.utils.airflow.upgrade_utils import run_reset_presidio_for_upgrade, get_dags_ids_by_prefix
+from presidio.utils.airflow.upgrade_utils import run_reset_presidio_for_upgrade, get_dags_by_prefix
 from presidio.builders.rerun_ueba_flow_dag_builder import get_registered_presidio_dags, pause_dags, \
     kill_dags_task_instances, \
     cleanup_dags_from_postgres, get_airflow_log_folders
 
 # clean old full flow- logs and postgres
-full_flow_dag_ids_to_clean = get_dags_ids_by_prefix("full_flow")
+full_flow_to_clean = get_dags_by_prefix("full_flow")
+full_flow_dag_ids_to_clean = map(lambda x: x.dag_id, full_flow_to_clean)
+pause_dags(full_flow_to_clean)
 cleanup_dags_from_postgres(full_flow_dag_ids_to_clean)
 airflow_log_folders_list = get_airflow_log_folders(full_flow_dag_ids_to_clean)
 airflow_log_folder_str = ' '.join(airflow_log_folders_list)

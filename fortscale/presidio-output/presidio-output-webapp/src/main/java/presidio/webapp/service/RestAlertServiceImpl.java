@@ -320,6 +320,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setScore(Double.valueOf(alert.getScore()).intValue());
         restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate().getTime()));
         restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate().getTime()));
+        restAlert.setEntityType(alert.getEntityType());
         restAlert.setId(alert.getId());
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setEntityName(alert.getEntityName());
