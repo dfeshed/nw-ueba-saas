@@ -185,7 +185,8 @@ def copyScripts() {
 }
 
 def transformerConf() {
-    sh "sed -i 's|(.+) src|(^((?!other).+) src|g' /var/netwitness/presidio/flume/conf/adapter/transformers/tls.json"
-    sh "sed -i 's|(.+) dst|(^((?!other).+) dst|g' /var/netwitness/presidio/flume/conf/adapter/transformers/tls.json"
+    sh "echo workaround for TLS netname array"
+    sh "sed -i 's|(.+) src|^((?!other).+) src|g' /var/netwitness/presidio/flume/conf/adapter/transformers/tls.json"
+    sh "sed -i 's|(.+) dst|^((?!other).+) dst|g' /var/netwitness/presidio/flume/conf/adapter/transformers/tls.json"
 }
 
