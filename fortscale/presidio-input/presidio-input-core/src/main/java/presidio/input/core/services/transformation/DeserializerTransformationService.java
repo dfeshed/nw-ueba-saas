@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,6 +30,7 @@ public class DeserializerTransformationService implements ApplicationContextAwar
     private static final String END_DATE = "endDate";
     private static final String TRANSFORMERS_UTIL_PACKAGE_LOCATION = "fortscale.utils.transform";
     private static final String TRANSFORMERS_INPUT_PACKAGE_LOCATION = "presidio.input.core.services.transformation.transformer";
+    private static final String CLASSPATH_PREFIX = "classpath:";
     private String configurationFilePath;
     private ObjectMapper objectMapper;
     private ApplicationContext applicationContext;
@@ -50,12 +52,12 @@ public class DeserializerTransformationService implements ApplicationContextAwar
             // Register all transformer subtypes so that the object mapper can deserialize them by their 'type'
             registerTransformerSubTypes(objectMapper);
 
-            IJsonObjectTransformer transformer = objectMapper.readValue(new File(String.format("%s%s.json", configurationFilePath, schema.getName())), IJsonObjectTransformer.class);
+            IJsonObjectTransformer transformer = objectMapper.readValue(getFile(String.format("%s%s.json", configurationFilePath, schema.getName())), IJsonObjectTransformer.class);
             autowireProcessor(transformer);
             transformers.add(transformer);
             return transformers;
         } catch (Exception e) {
-            String msg = String.format("Failed deserialize %s.", configurationFilePath);
+            String msg = String.format("Failed deserialize %s%s.json", configurationFilePath, schema);
             throw new IllegalArgumentException(msg, e);
         }
     }
@@ -69,6 +71,11 @@ public class DeserializerTransformationService implements ApplicationContextAwar
         autowire(transformer, new HashSet<>());
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
 
     private void registerTransformerSubTypes(ObjectMapper objectMapper) {
         Collection<Class<? extends AbstractJsonObjectTransformer>> subTypes =
@@ -78,9 +85,11 @@ public class DeserializerTransformationService implements ApplicationContextAwar
         objectMapper.registerSubtypes(subTypesAsGenericClasses);
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    private File getFile(String filePath) throws IOException {
+        if (filePath.startsWith(CLASSPATH_PREFIX)) {
+            return applicationContext.getResource(filePath).getFile();
+        }
+        return new File(filePath);
     }
 
 
@@ -143,7 +152,7 @@ public class DeserializerTransformationService implements ApplicationContextAwar
         List<Field> currentClassFields = Lists.newArrayList(clazz.getDeclaredFields());
         Class<?> parentClass = clazz.getSuperclass();
         if (parentClass != null) {
-            List<Field> parentClassFields = (List<Field>) getDeclaredFieldsUpFrom(parentClass);
+            List<Field> parentClassFields = getDeclaredFieldsUpFrom(parentClass);
             currentClassFields.addAll(parentClassFields);
         }
 

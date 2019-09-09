@@ -15,7 +15,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.input.core.spring.TlsTransformerConfigTest;
+import presidio.input.core.spring.TransformerConfigTest;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
-@Import({TlsTransformerConfigTest.class})
+@Import({TransformerConfigTest.class})
 public class NewOccurrenceTransformerTest extends TransformerJsonTest implements ApplicationContextAware {
 
     @Autowired

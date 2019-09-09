@@ -15,7 +15,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.transformation.transformer.SessionSplitTransformer.SessionSplitTransformer;
-import presidio.input.core.spring.TlsTransformerConfigTest;
+import presidio.input.core.spring.TransformerConfigTest;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
 import presidio.sdk.api.domain.transformedevents.TlsTransformedEvent;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.time.Instant;
 
 @RunWith(SpringRunner.class)
-@Import({TlsTransformerConfigTest.class})
+@Import({TransformerConfigTest.class})
 public class SessionSplitTransformerTest extends TransformerJsonTest implements ApplicationContextAware {
 
     @Autowired
