@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.repository.Query;
 import java.time.Instant;
 import java.util.List;
 
+import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.getOrNull;
+
 public interface AdapterTlsStoredDataRepository extends AdapterAbstractStoredDataRepository<AdapterTlsStoredData, String> {
     @Override
     default String getName() {
@@ -24,7 +26,7 @@ public interface AdapterTlsStoredDataRepository extends AdapterAbstractStoredDat
     @Override
     default Instant maxDateTimeBetween(Instant start, Instant end) {
         Sort sort = new Sort(Sort.Direction.DESC, "dateTime");
-        return findTopByDateTimeBetween(start, end, sort).getDateTime();
+        return getOrNull(findTopByDateTimeBetween(start, end, sort), AdapterTlsStoredData::getDateTime);
     }
 
     AdapterTlsStoredData findByEventId(String eventId);

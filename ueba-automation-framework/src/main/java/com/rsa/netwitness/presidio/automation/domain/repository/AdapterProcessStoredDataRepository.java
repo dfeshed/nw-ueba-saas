@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.repository.Query;
 import java.time.Instant;
 import java.util.List;
 
+import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.getOrNull;
+
 public interface AdapterProcessStoredDataRepository extends AdapterAbstractStoredDataRepository<AdapterProcessStoredData, String> {
     @Override
     default String getName() {
@@ -21,7 +23,7 @@ public interface AdapterProcessStoredDataRepository extends AdapterAbstractStore
     @Override
     default Instant maxDateTimeBetween(Instant start, Instant end) {
         Sort sort = new Sort(Sort.Direction.DESC, "dateTime");
-        return findTopByDateTimeBetween(start, end, sort).getDateTime();
+        return getOrNull(findTopByDateTimeBetween(start, end, sort), AdapterProcessStoredData::getDateTime);
     }
 
     @Query("{ 'dateTime': { $gte: ?0 }, $and: [ { 'dateTime': { $lt: ?1 } } ] }")
