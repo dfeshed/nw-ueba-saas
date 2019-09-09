@@ -1,6 +1,6 @@
 {
   "type": "chain",
-  "name": "tls-transformer",
+  "name": "registry-transformer",
   "transformerList": [
     {
       "type": "join",

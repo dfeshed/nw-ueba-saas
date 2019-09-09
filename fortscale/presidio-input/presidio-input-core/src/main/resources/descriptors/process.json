@@ -1,6 +1,6 @@
 {
   "type": "chain",
-  "name": "tls-transformer",
+  "name": "process-transformer",
   "transformerList": [
     {
       "type": "join",

@@ -1,6 +1,6 @@
 {
   "type": "chain",
-  "name": "tls-transformer",
+  "name": "file-transformer",
   "transformerList": [
     {
       "type": "folder-path-by-operation-type-transformer",

@@ -1,6 +1,6 @@
 {
   "type": "chain",
-  "name": "tls-transformer",
+  "name": "authentication-transformer",
   "transformerList": [
     {
       "type": "machine-name-transformer",
