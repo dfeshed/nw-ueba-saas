@@ -5990,15 +5990,6 @@ ember-source@3.12.0:
     jquery "^3.4.1"
     resolve "^1.11.1"
 
-ember-symbol-observable@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/ember-symbol-observable/-/ember-symbol-observable-1.0.2.tgz#1bc4febad8cb4e367eaee434ccb2f939f75bc201"
-  dependencies:
-    broccoli-merge-trees "^2.0.0"
-    broccoli-string-replace "^0.1.2"
-    ember-cli-babel "^6.1.0"
-    symbol-observable "^1.0.4"
-
 ember-template-lint@^0.8.16:
   version "0.8.23"
   resolved "https://registry.npmjs.org/ember-template-lint/-/ember-template-lint-0.8.23.tgz#45170d6f2fe6336635df1d1067cabab6b5eb02d0"
@@ -12046,7 +12037,7 @@ swiper@^3.4.2:
   version "3.4.2"
   resolved "https://registry.npmjs.org/swiper/-/swiper-3.4.2.tgz#39d6b410b1a39833e1f72d3b72999df5f5e38392"
 
-symbol-observable@^1.0.4, symbol-observable@^1.2.0:
+symbol-observable@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
 
