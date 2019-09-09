@@ -165,33 +165,6 @@ module('Integration | Component | host-detail', function(hooks) {
     assert.equal(findAll('.is-show-file-analysis').length, 0, 'File analysis is not visible');
   });
 
-  test('file analysis view visible when isFileAnalysisView is set to true', async function(assert) {
-    const fileAnalysis = {
-      'fileData': [{
-        text: 'OHE3',
-        offset: '0x00017d66',
-        unicode: false
-      },
-      {
-        text: 'E;uht',
-        offset: '0x00017a66',
-        unicode: false
-      }],
-      'filePropertiesData': { format: 'pe' },
-      'isFileAnalysisView': true
-    };
-    new ReduxDataHelper(setState)
-      .isSnapshotsLoading(false)
-      .isSnapshotsAvailable(true)
-      .selectedTabComponent('FILES')
-      .fileAnalysis(fileAnalysis)
-      .build();
-
-    await render(hbs`{{host-detail}}`);
-
-    assert.equal(findAll('.is-show-file-analysis').length, 1, 'File analysis is visible');
-  });
-
   test('it renders loader when isSnapshotsLoading is true', async function(assert) {
     const host = {
       id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',

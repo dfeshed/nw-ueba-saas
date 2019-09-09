@@ -95,6 +95,12 @@ export default function() {
     this.use('toLeft'),
     this.reverse('toRight')
   );
+  this.transition(
+    this.toRoute('hosts.details.tab'),
+    this.toRoute('hosts.details.tab.fileanalysis'),
+    this.use('toLeft'),
+    this.reverse('toRight')
+  );
 
   // Investigate files route
   this.transition(

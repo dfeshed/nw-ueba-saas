@@ -13,5 +13,4 @@ export default Controller.extend({
   searchKey: null,
 
   mftSid: null
-
 });

@@ -51,7 +51,7 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
     await render(hbs`{{host-detail/utils/file-analysis-wrapper}}`);
 
     assert.equal(findAll('.file-analysis-header').length, 1, 'File analysis rendered');
-    assert.equal(findAll('.file-analysis-header button').length, 1, 'File analysis back button rendered');
+    assert.equal(findAll('.file-analysis-header a .close-action-wrapper').length, 1, 'File analysis back button rendered');
     assert.equal(findAll('.file-analysis-header .view-type').length, 1, 'view type title rendered');
     assert.equal(findAll('.string-view').length, 1, 'String view rendered');
     assert.equal(findAll('.string-filter-wrapper .rsa-form-input').length, 1, 'String filter present');

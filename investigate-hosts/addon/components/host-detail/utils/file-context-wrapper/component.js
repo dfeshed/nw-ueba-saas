@@ -16,7 +16,7 @@ import {
   isAnyFileFloatingOrMemoryDll
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { hostDetailPropertyTabs, isProcessDumpDownloadSupported } from 'investigate-hosts/reducers/details/selectors';
-import { hostName } from 'investigate-hosts/reducers/details/overview/selectors';
+import { hostName, isAgentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
 import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
 
 import {
@@ -66,7 +66,8 @@ const stateToComputed = (state, { storeName }) => ({
   risk: riskState(state),
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, storeName),
   hostName: hostName(state),
-  isInsightsAgent: isInsightsAgent(state)
+  isInsightsAgent: isInsightsAgent(state),
+  isAgentMigrated: isAgentMigrated(state)
 });
 
 const dispatchToActions = {
@@ -153,7 +154,7 @@ const ContextWrapper = Component.extend({
       const [{ checksumSha256, format = '', downloadInfo: { serviceId } }] = fileContextSelections;
       const fileFormat = componentSelectionForFileType(format).format;
 
-      this.send('getFileAnalysisData', checksumSha256, fileFormat, serviceId, callBackOptions);
+      this.analyzeFile(checksumSha256, fileFormat, serviceId, callBackOptions);
     }
   }
 

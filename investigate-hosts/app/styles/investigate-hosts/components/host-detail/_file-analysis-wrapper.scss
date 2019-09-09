@@ -2,9 +2,6 @@
   background-color: background-color(primary, darkest);
   height: 100%;
   width: 100%;
-  z-index: 3;
-  position: absolute;
-  left: 100%;
   @include rsa-vendor-prefix(transition-property, left);
   @include rsa-vendor-prefix(transition-duration, 0.4s);
   .file-analysis-header {
@@ -85,14 +82,24 @@
   }
 }
 .host-detail-wrapper {
+  .file-analysis_close-action {
+    margin-right: 10px;
+    color: text-color(primary, light);
+  }
+  .file-analysis-header {
+    a {
+      text-decoration: none;
+    }
+  }
   .file-analysis-wrapper {
     .close-zone {
       padding-top: 0;
     }
-  }
-}
-.is-show-file-analysis {
-  .file-analysis-wrapper {
-    left: 0;
+    .close-action-wrapper {
+      display: inline-block;
+      border: 1px solid #d3d3d3;
+      margin: 0px;
+      padding-right: 10px;
+    }
   }
 }

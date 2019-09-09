@@ -2,10 +2,11 @@
   {{#rsa-page-layout showRightZone=true as |layout|}}
     {{#layout.center}}
       <div class='file-analysis-header'>
-        {{#rsa-form-button class='close-zone' defaultAction=(action 'closeFileAnalysis')}}
-          {{rsa-icon size="small" name="arrow-left-12"}}
-          <span class='backButton'>{{t backToActiveHostDatailTab}}</span>
-        {{/rsa-form-button}}
+        {{#link-to 'hosts.details.tab' agentId activeHostDetailTab}}
+          <div class='close-action-wrapper file-analysis-title'>
+            {{rsa-icon size="small" name="arrow-left-12"}} <span class='backButton'>{{t backToActiveHostDatailTab}}</span>
+          </div>
+        {{/link-to}}
         <span class='file-analysis-title'>{{t 'investigateShared.endpoint.fileAnalysis.title'}}</span>
         -
         <span class='view-type'>{{t componentConfig.title}}</span>
@@ -31,10 +32,12 @@
         <h3 class='title'>
           {{filePropertiesData.fileName}}
         </h3>
+        <span class='file-analysis_close-action'>
+          {{#link-to 'hosts.details.tab' agentId activeHostDetailTab}}
+            {{rsa-icon class='close-icon' name='close' size='smaller' title=(t 'investigateHosts.context.button.close')}}
+          {{/link-to}}
+        </span>
 
-        {{#rsa-form-button class='close-zone' isIconOnly=true defaultAction=(action 'closeFileAnalysis') }}
-          {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
-        {{/rsa-form-button}}
 
       {{/rightPanel.header}}
       <div class="rsa-nav-tab is-active is-left-aligned-primary">

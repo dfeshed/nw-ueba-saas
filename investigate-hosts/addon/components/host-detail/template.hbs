@@ -1,7 +1,6 @@
 {{#if selectedServiceData.isServiceOnline}}
-  <box class="host-detail-wrapper {{if isFileAnalysisView 'is-show-file-analysis'}}">
+  <box class="host-detail-wrapper">
     <iframe src="{{downloadLink}}" class="save-files-iframe"></iframe>
-    {{host-detail/utils/file-analysis-wrapper}}
     {{#if showSnapshotEmptyMessage}}
       {{rsa-panel-message message=(t 'investigateHosts.noSnapshotMessage')}}
     {{else if isSnapshotsLoading}}
@@ -9,7 +8,7 @@
         {{rsa-loader size='larger'}}
       </centered>
     {{else}}
-      {{component selectedTabComponent}}
+      {{component selectedTabComponent analyzeFile=analyzeFile}}
     {{/if}}
 
   </box>

@@ -11,7 +11,6 @@ const stateToComputed = (state) => ({
   isSnapshotsAvailable: isSnapshotsAvailable(state),
   isSnapshotsLoading: state.endpoint.detailsInput.isSnapshotsLoading,
   selectedServiceData: selectedServiceWithStatus(state),
-  isFileAnalysisView: state.endpoint.fileAnalysis.isFileAnalysisView,
   downloadLink: downloadLink(state)
 });
 

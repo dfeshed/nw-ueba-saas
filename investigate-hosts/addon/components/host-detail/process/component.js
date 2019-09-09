@@ -33,7 +33,7 @@ import {
 } from 'investigate-hosts/actions/data-creators/file-context';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success } from 'investigate-shared/utils/flash-messages';
-import { getFileAnalysisData, saveLocalFileCopy } from 'investigate-shared/actions/data-creators/file-analysis-creators';
+import { saveLocalFileCopy } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
 
 const callBackOptions = (context) => ({
@@ -83,7 +83,6 @@ const dispatchToActions = {
   retrieveRemediationStatus,
   downloadProcessDump,
   downloadFilesToServer,
-  getFileAnalysisData,
   setHostDetailPropertyTab,
   getUpdatedRiskScoreContext,
   saveLocalFileCopy
@@ -173,7 +172,7 @@ const Container = Component.extend({
       const [{ checksumSha256, format = '', downloadInfo: { serviceId } }] = selectedProcessList;
       const fileFormat = componentSelectionForFileType(format).format;
 
-      this.send('getFileAnalysisData', checksumSha256, fileFormat, serviceId, callBackOptions);
+      this.analyzeFile(checksumSha256, fileFormat, serviceId, callBackOptions);
     }
   }
 

@@ -6,7 +6,6 @@ import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
 import sinon from 'sinon';
 import fileContextCreators from 'investigate-hosts/actions/data-creators/file-context';
-import analyzeCreators from 'investigate-shared/actions/data-creators/file-analysis-creators';
 
 import {
   processDetails,
@@ -25,11 +24,9 @@ const fileProperties = {
   downloadInfo: { status: 'Downloaded' }
 };
 const downloadFilesToServerSpy = sinon.spy(fileContextCreators, 'downloadFilesToServer');
-const getFileAnalysisDataSpy = sinon.spy(analyzeCreators, 'getFileAnalysisData');
 
 const spys = [
-  downloadFilesToServerSpy,
-  getFileAnalysisDataSpy
+  downloadFilesToServerSpy
 ];
 
 module('Integration | Component | endpoint host detail/process', function(hooks) {
@@ -369,7 +366,8 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     });
   });
 
-  test('The getFileAnalysisData action called, when getFileAnalysisData is clicked from more actions', async function(assert) {
+  test('The analyze file action is triggered from more actions', async function(assert) {
+    assert.expect(1);
     new ReduxDataHelper(setState)
       .serviceId('123456')
       .timeRange({ value: 7, unit: 'days' })
@@ -394,12 +392,12 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       }])
       .searchResultProcessList([])
       .build();
-    await render(hbs`{{host-detail/process}}`);
+    this.set('analyzeFile', () => {
+      assert.ok(true);
+    });
+    await render(hbs`{{host-detail/process analyzeFile=analyzeFile}}`);
     await click('.more-action-button .rsa-form-button');
     await click(findAll('.file-action-selector-panel .rsa-dropdown-action-list li')[4]);
-    return settled().then(() => {
-      assert.equal(getFileAnalysisDataSpy.callCount, 1, 'The getFileAnalysisData action creator was called once');
-    });
   });
 
   test('in insight agent mode, info message is shown in risk panel', async function(assert) {

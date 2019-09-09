@@ -3,7 +3,6 @@ import api from 'investigate-shared/actions/api/file-analysis/file-analysis-api'
 import { lookup } from 'ember-dependency-lookup';
 
 const NOOP = () => ({});
-const toggleFileAnalysisView = (payload) => ({ type: ACTION_TYPES.TOGGLE_FILE_ANALYZER, payload });
 /**
  * An action creator for getting the saved filter information
  * @returns {function(*)}
@@ -18,12 +17,6 @@ const getFileAnalysisData = (data, format, socketUrlPostfix, callback = { onSucc
       type: ACTION_TYPES.FETCH_FILE_ANALYZER_FILE_PROPERTIES_DATA,
       promise: api.getFileAnalysisData(data),
       meta: {
-        onSuccess: () => {
-          dispatch({
-            type: ACTION_TYPES.TOGGLE_FILE_ANALYZER,
-            payload: true
-          });
-        },
         onFailure: (response) => {
           const { meta } = response;
           if (meta) {
@@ -70,6 +63,5 @@ const saveLocalFileCopy = (selectedFile, callback) => {
 
 export {
   getFileAnalysisData,
-  toggleFileAnalysisView,
   saveLocalFileCopy
 };

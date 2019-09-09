@@ -7,6 +7,7 @@ export default buildRoutes(function() {
       this.route('tab', { path: '/:tabName' }, function() {
         this.route('info', { path: '/:rowId' });
         this.route('mft', { path: '/:mftName/:mftFile' });
+        this.route('fileanalysis', { path: '/:fileHash/:fileFormat/:fileSid' });
       });
     });
   });
