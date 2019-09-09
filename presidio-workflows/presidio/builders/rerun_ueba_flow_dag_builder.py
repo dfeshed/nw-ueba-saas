@@ -101,20 +101,23 @@ def load_dags(dag_ids, session=None):
         raise ValueError(e)
 
 
-def pause_dag(dag_id):
+def pause_dag(dag):
     """
 
-    :param dag_id: single dag id
-    :type dag_id: str
+    :param dag: single dag
+    :type dag: DAG
     """
-    cli.set_is_paused(is_paused=True, dag=dag_id, args=None)
+    cli.set_is_paused(is_paused=True, dag=dag, args=None)
+
+    # while not dag.is_pause:
+    #     continue
 
 
 def pause_dags(dags):
     """
 
-    :param dags: list of dag_ids to be paused
-    :type dags: list[str]
+    :param dags: list of dags to be paused
+    :type dags: list[DAG]
     """
     for dag in dags:
         pause_dag(dag)
