@@ -1,13 +1,17 @@
 package presidio.input.core.services.transformation.managers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.domain.rawevents.PrintRawEvent;
 import presidio.sdk.api.domain.transformedevents.PrintTransformedEvent;
+
+import java.io.IOException;
 
 public class PrintTransformerManager implements TransformationManager {
 
     @Override
-    public <U extends AbstractInputDocument> U getTransformedDocument(AbstractInputDocument rawEvent) {
-        return (U) new PrintTransformedEvent((PrintRawEvent) rawEvent);
+    @SuppressWarnings("unchecked")
+    public <U extends AbstractInputDocument> U getTransformedDocument(ObjectMapper objectMapper, JSONObject jsonObject) throws IOException {
+        return (U) objectMapper.readValue(jsonObject.toString(), PrintTransformedEvent.class);
     }
 }

@@ -50,8 +50,7 @@ public class TransformationServiceImpl implements TransformationService {
                     try {
                         JSONObject jsonObj = new JSONObject(mapper.writeValueAsString(event));
                         transformer.transform(jsonObj);
-                        AbstractInputDocument rawEvent = mapper.readValue(jsonObj.toString(), event.getClass());
-                        AbstractInputDocument transformedEvent = transformationManager.getTransformedDocument(rawEvent);
+                        AbstractInputDocument transformedEvent = transformationManager.getTransformedDocument(mapper, jsonObj);
                         transformedEvents.add(transformedEvent);
                     } catch (IOException e) {
                         e.printStackTrace();
