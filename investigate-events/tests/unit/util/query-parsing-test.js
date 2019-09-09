@@ -244,6 +244,30 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[7].type, CLOSE_PAREN, 'pill should be paren');
   });
 
+  test('transformTextToPillData makes an extra close paren a complex pill', function(assert) {
+    const text = 'medium = 1)';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '1', 'value should match');
+    assert.equal(result[1].type, COMPLEX_FILTER, 'pill should be complex');
+    assert.equal(result[1].complexFilterText, ')', 'text should be )');
+  });
+
+  test('transformTextToPillData makes an unterminated group a complex pill', function(assert) {
+    const text = 'medium = 1 && (medium = 2';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '1', 'value should match');
+    assert.equal(result[1].type, COMPLEX_FILTER, 'pill should be complex');
+    assert.equal(result[1].complexFilterText, '(medium = 2', 'text should be )');
+  });
+
   test('transformTextToPillData does not break order of operations when combining OR into one complex pill', function(assert) {
     const text = "(filename = 'firefox-33.1.1.complete.mar' || (sessionid = 80 && medium exists)) || b exists";
     const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });

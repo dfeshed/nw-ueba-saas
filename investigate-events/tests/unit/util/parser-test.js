@@ -199,21 +199,6 @@ module('Unit | Util | Parser', function(hooks) {
     ]);
   });
 
-  test('throws error for mismatched parentheses', function(assert) {
-    const tokens = [
-      { type: LEXEMES.LEFT_PAREN, text: '(' },
-      { type: LEXEMES.LEFT_PAREN, text: '(' },
-      { type: LEXEMES.META, text: 'medium' },
-      { type: LEXEMES.OPERATOR_EQ, text: '=' },
-      { type: LEXEMES.INTEGER, text: '3' },
-      { type: LEXEMES.RIGHT_PAREN, text: ')' }
-    ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
-    assert.throws(() => {
-      p.parse();
-    }, new Error('Expected token of type RIGHT_PAREN but reached the end of the input'));
-  });
-
   test('throws an error for a meta without operator', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'b' },

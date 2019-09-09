@@ -317,7 +317,11 @@ class Parser {
   _group() {
     this._consume([ LEXEMES.LEFT_PAREN ]);
     const inside = this._whereCriteria();
-    this._consume([ LEXEMES.RIGHT_PAREN ]);
+    if (!this._nextTokenIsOfType([ LEXEMES.RIGHT_PAREN ])) {
+      return this._createComplexString(`(${Parser.transformToString(inside)}`);
+    } else {
+      this._consume([ LEXEMES.RIGHT_PAREN ]);
+    }
     return {
       type: GRAMMAR.GROUP,
       group: inside
