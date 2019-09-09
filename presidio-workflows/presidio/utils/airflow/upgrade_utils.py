@@ -67,13 +67,13 @@ def run_reset_presidio_for_upgrade():
 def get_dags_ids_by_prefix(dag_id_prefix):
     """
     :return: list of DAG id's by prefix given
-    :rtype: List[String]
+    :rtype: List[DAG]
     """
     dag_models = find_dag_models()
 
     dag_models_by_prefix = [x for x in dag_models if x.dag_id.startswith(dag_id_prefix)]
 
-    return map(lambda x: x.dag_id, dag_models_by_prefix)
+    return dag_models_by_prefix
 
 
 @provide_session
