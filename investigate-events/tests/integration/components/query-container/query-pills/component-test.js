@@ -40,6 +40,7 @@ const openGuidedPillForEditSpy = sinon.spy(guidedCreators, 'openGuidedPillForEdi
 const resetGuidedPillSpy = sinon.spy(guidedCreators, 'resetGuidedPill');
 const selectAllPillsTowardsDirectionSpy = sinon.spy(guidedCreators, 'selectAllPillsTowardsDirection');
 const deleteSelectedGuidedPillsSpy = sinon.spy(guidedCreators, 'deleteSelectedGuidedPills');
+const deleteSelectedParenContentsSpy = sinon.spy(guidedCreators, 'deleteSelectedParenContents');
 const recentQueriesSpy = sinon.spy(initializationCreators, 'getRecentQueries');
 const batchAddQueriesSpy = sinon.spy(guidedCreators, 'batchAddPills');
 const valueSuggestionsSpy = sinon.spy(initializationCreators, 'valueSuggestions');
@@ -50,7 +51,7 @@ const spys = [
   deselectActionSpy, openGuidedPillForEditSpy, resetGuidedPillSpy,
   selectAllPillsTowardsDirectionSpy, deleteSelectedGuidedPillsSpy,
   recentQueriesSpy, batchAddQueriesSpy, valueSuggestionsSpy,
-  cancelPillCreationSpy
+  cancelPillCreationSpy, deleteSelectedParenContentsSpy
 ];
 
 const allPillsAreClosed = (assert) => {
@@ -1544,7 +1545,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      await click(`#${items[2].id}`); // delete option
+      await click(`#${items[1].id}`); // delete option
       return settled().then(() => {
         assert.equal(deleteSelectedGuidedPillsSpy.callCount, 1, 'The delete selected pill action creator was called once');
         assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Number of pills present');
@@ -1593,10 +1594,57 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      await click(`#${items[2].id}`); // delete option
+      await click(`#${items[1].id}`); // delete option
       return settled().then(() => {
         assert.equal(deleteSelectedGuidedPillsSpy.callCount, 1, 'The delete selected pill action creator was called once');
         assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Number of pills present');
+        assert.notOk(find(PILL_SELECTORS.openParenSelected), 'Should not have found paren');
+        assert.notOk(find(PILL_SELECTORS.closeParenSelected), 'Should not have found paren');
+        done();
+      });
+    });
+  });
+
+  test('Right click option Delete parens and contents will remove anything between those parens', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    const done = assert.async();
+
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+        {{context-menu}}
+      </div>
+    `);
+
+    // create one more pill
+    await selectChoose(PILL_SELECTORS.meta, 'medium');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, '32');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+
+    await leaveNewPillTemplate();
+
+    await click(PILL_SELECTORS.openParen);
+
+    await triggerEvent(find(PILL_SELECTORS.openParenSelected), 'contextmenu', { clientX: 100, clientY: 100 });
+
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 2, 'Incorrect number of options for parens');
+      await click(`#${items[0].id}`); // delete parens and contents option
+      return settled().then(() => {
+        assert.equal(deleteSelectedParenContentsSpy.callCount, 1, 'The delete selected pill action creator was called once');
+        assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Number of pills present'); // NPT + medium=32
         assert.notOk(find(PILL_SELECTORS.openParenSelected), 'Should not have found paren');
         assert.notOk(find(PILL_SELECTORS.closeParenSelected), 'Should not have found paren');
         done();

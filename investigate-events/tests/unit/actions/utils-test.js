@@ -3,7 +3,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { setupTest } from 'ember-qunit';
 import queryUtils from 'investigate-events/actions/utils';
 import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
-import { CLOSE_PAREN, OPEN_PAREN, QUERY_FILTER } from 'investigate-events/constants/pill';
+import { CLOSE_PAREN, OPEN_PAREN, QUERY_FILTER, TEXT_FILTER } from 'investigate-events/constants/pill';
 
 const params = {
   et: 0,
@@ -253,5 +253,54 @@ module('Unit | Helper | Actions Utils', function(hooks) {
       { type: OPEN_PAREN, twinId: 1 },
       { type: CLOSE_PAREN, twinId: 1 }
     ], 'nested parens with leading empty parens, index 1');
+  });
+
+  test('it returns all pills between a set of parens including themselves', function(assert) {
+    const pillsData = [
+      { type: OPEN_PAREN, twinId: 1, id: 1 },
+      { type: QUERY_FILTER, id: 2 },
+      { type: TEXT_FILTER, id: 3 },
+      { type: CLOSE_PAREN, twinId: 1, id: 4 },
+      { type: QUERY_FILTER, id: 5 }
+    ];
+    const result = queryUtils.contentBetweenParens([pillsData[0]], pillsData);
+    assert.equal(result.length, 4, 'Did not find the correct number of pills');
+    assert.deepEqual(result,
+      [
+        { type: OPEN_PAREN, twinId: 1, id: 1 },
+        { type: QUERY_FILTER, id: 2 },
+        { type: TEXT_FILTER, id: 3 },
+        { type: CLOSE_PAREN, twinId: 1, id: 4 }
+      ],
+      'Did not find the correct pills');
+  });
+
+  test('It returns all unique pills from between a set of parens', function(assert) {
+    // (pill (text) pill)
+    const pillsData = [
+      { type: OPEN_PAREN, twinId: 1, id: 1 },
+      { type: QUERY_FILTER, id: 2 },
+      { type: OPEN_PAREN, twinId: 2, id: 3 },
+      { type: TEXT_FILTER, id: 4 },
+      { type: CLOSE_PAREN, twinId: 2, id: 5 },
+      { type: QUERY_FILTER, id: 6 },
+      { type: CLOSE_PAREN, twinId: 1, id: 7 }
+    ];
+
+    let result = queryUtils.contentBetweenParens([pillsData[0], pillsData[2]], pillsData);
+    assert.equal(result.length, 7, 'Did not find the correct number of pills');
+    assert.deepEqual(result,
+      pillsData,
+      'Did not find the correct pills');
+
+    result = queryUtils.contentBetweenParens([pillsData[2]], pillsData);
+    assert.equal(result.length, 3, 'Did not find the correct number of pills');
+    assert.deepEqual(result,
+      [
+        { type: OPEN_PAREN, twinId: 2, id: 3 },
+        { type: TEXT_FILTER, id: 4 },
+        { type: CLOSE_PAREN, twinId: 2, id: 5 }
+      ],
+      'Did not find the correct pills');
   });
 });

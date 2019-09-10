@@ -31,6 +31,7 @@ import {
   cancelPillCreation,
   deleteGuidedPill,
   deleteSelectedGuidedPills,
+  deleteSelectedParenContents,
   deselectAllGuidedPills,
   deselectGuidedPills,
   editGuidedPill,
@@ -79,6 +80,7 @@ const dispatchToActions = {
   cancelPillCreation,
   deleteGuidedPill,
   deleteSelectedGuidedPills,
+  deleteSelectedParenContents,
   deselectAllGuidedPills,
   deselectGuidedPills,
   editGuidedPill,
@@ -124,41 +126,72 @@ const _hasMoreOpenThanCloseParens = (pd, position) => {
   return count > 0;
 };
 
-function getContextItems(context, i18n) {
-  const _this = context;
-  return [{
+const rightClickQueryWithSelected = (context, i18n) => {
+  return {
     label: i18n.t('queryBuilder.querySelected'),
     disabled() {
-      return _this.get('hasInvalidSelectedPill');
+      return context.get('hasInvalidSelectedPill');
     },
     action() {
       // Delete all deselected pills first
       // submit query with remaining selected pills
-      _this.send('deleteGuidedPill', { pillData: _this.get('deselectedPills') });
-      _this._submitQuery();
+      context.send('deleteGuidedPill', { pillData: context.get('deselectedPills') });
+      context._submitQuery();
     }
-  },
-  {
+  };
+};
+
+const rightClickQueryWithSelectedNewTab = (context, i18n) => {
+  return {
     label: i18n.t('queryBuilder.querySelectedNewTab'),
     disabled() {
-      return _this.get('hasInvalidSelectedPill');
+      return context.get('hasInvalidSelectedPill');
     },
     action() {
       // Do not want to check canQueryGuided because user might
       // want to execute the same query in new tab
-      _this.get('executeQuery')(true);
+      context.get('executeQuery')(true);
       // deselect all the pills and remove focus. Can't trigger this first, as
       // route action picks up selected pills from state to executeQ
-      _this.send('removePillFocus');
-      _this.send('deselectAllGuidedPills');
+      context.send('removePillFocus');
+      context.send('deselectAllGuidedPills');
     }
-  },
-  {
+  };
+};
+
+const rightClickDeleteSelection = (context, i18n) => {
+  return {
     label: i18n.t('queryBuilder.delete'),
     action() {
-      _this.send('deleteSelectedGuidedPills');
+      context.send('deleteSelectedGuidedPills');
     }
-  }];
+  };
+};
+
+const rightClickParenDeleteContents = (context, i18n) => {
+  return {
+    label: i18n.t('queryBuilder.deleteParenContents'),
+    action() {
+      context.send('deleteSelectedParenContents');
+      context.send('deselectAllGuidedPills');
+    }
+  };
+};
+
+// Prepare an object that contains all possible list of options
+function getContextItems(context, i18n) {
+  const _this = context;
+  return {
+    pills: [
+      rightClickQueryWithSelected(_this, i18n),
+      rightClickQueryWithSelectedNewTab(_this, i18n),
+      rightClickDeleteSelection(_this, i18n)
+    ],
+    parens: [
+      rightClickParenDeleteContents(_this, i18n),
+      rightClickDeleteSelection(_this, i18n)
+    ]
+  };
 }
 
 
@@ -201,6 +234,14 @@ const QueryPills = RsaContextMenu.extend({
   // Is a pill trigger open for add?
   isPillTriggerOpenForAdd: false,
 
+  /**
+   * List of all possible right click options for pills and parens
+   */
+  contextOptions: undefined,
+
+  /**
+   * Current list that's displayed on right-click
+   */
   contextItems: undefined,
 
   /**
@@ -213,9 +254,15 @@ const QueryPills = RsaContextMenu.extend({
     const currentClass = target.classList.contains('is-selected');
     const parentClass = target.parentElement.classList.contains('is-selected');
     if (currentClass || parentClass) {
-      this.setProperties({
-        contextItems: this.get('contextItems')
-      });
+      const isParen = target.classList.contains('open-paren') ||
+        target.classList.contains('close-paren') ||
+        target.parentElement.classList.contains('open-paren') ||
+        target.parentElement.classList.contains('close-paren');
+      if (isParen) {
+        this.set('contextItems', this.get('contextOptions').parens);
+      } else {
+        this.set('contextItems', this.get('contextOptions').pills);
+      }
       this._super(...arguments);
     } else {
       if (this.get('contextMenuService').deactivate) {
@@ -267,7 +314,7 @@ const QueryPills = RsaContextMenu.extend({
       OPEN_PAREN,
       TEXT_FILTER
     });
-    this.set('contextItems', getContextItems(this, this.get('i18n')));
+    this.set('contextOptions', getContextItems(this, this.get('i18n')));
   },
 
   didInsertElement() {

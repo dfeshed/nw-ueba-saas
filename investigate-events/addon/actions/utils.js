@@ -224,8 +224,20 @@ export const isEmptyParenSetAt = (arr, i) => {
   return op && op.type === OPEN_PAREN && cp && cp.type === CLOSE_PAREN;
 };
 
+// Get all the stuff between sets of parens
+const contentBetweenParens = (openParensSelected, pillsData) => {
+  const result = openParensSelected.reduce((acc, openParen) => {
+    const stIndex = pillsData.indexOf(openParen);
+    const enIndex = pillsData.findIndex((pill) => pill.id !== openParen.id && pill.twinId === openParen.twinId);
+    return acc.concat(pillsData.slice(stIndex, enIndex + 1));
+  }, []);
+  // remove duplicates
+  return [...new Set(result)];
+};
+
 export {
   buildMetaValueStreamInputs,
+  contentBetweenParens,
   executeMetaValuesRequest,
   filterIsPresent,
   findAllEmptyParens,

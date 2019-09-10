@@ -1,8 +1,9 @@
 import * as ACTION_TYPES from './types';
-import { selectedPills, focusedPill, pillsData } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { selectedPills, focusedPill, pillsData, selectedOpenParens } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import validateQueryFragment from './fetch/query-validation';
 import {
+  contentBetweenParens,
   findAllEmptyParens,
   findEmptyParensAtPosition,
   selectPillsFromPosition
@@ -122,17 +123,19 @@ const _pillSelectDeselect = (actionType, pillData, shouldIgnoreFocus = false) =>
   };
 };
 
-const _removeAnyEmptyParens = (dispatch, getState) => {
-  const pillsData = getState().investigate.queryNode.pillsData.asMutable();
-  const emptyParens = findAllEmptyParens(pillsData);
-  if (emptyParens.length > 0) {
-    dispatch({
-      type: ACTION_TYPES.DELETE_GUIDED_PILLS,
-      payload: {
-        pillData: emptyParens
-      }
-    });
-  }
+const _removeAnyEmptyParens = () => {
+  return (dispatch, getState) => {
+    const pillsData = getState().investigate.queryNode.pillsData.asMutable();
+    const emptyParens = findAllEmptyParens(pillsData);
+    if (emptyParens.length > 0) {
+      dispatch({
+        type: ACTION_TYPES.DELETE_GUIDED_PILLS,
+        payload: {
+          pillData: emptyParens
+        }
+      });
+    }
+  };
 };
 
 export const _serverSideValidation = (pillData, position) => {
@@ -241,7 +244,7 @@ export const deleteGuidedPill = ({ pillData }) => {
       }
     });
     // look for empty parens that may have resulted from the deletion of pills
-    _removeAnyEmptyParens(dispatch, getState);
+    dispatch(_removeAnyEmptyParens());
     // Deselect any pills
     dispatch(deselectAllGuidedPills());
   };
@@ -252,6 +255,27 @@ export const deleteAllGuidedPills = () => {
     const { investigate: { queryNode: { pillsData } } } = getState();
     dispatch(deleteGuidedPill({ pillData: pillsData }));
   };
+};
+
+export const deleteSelectedParenContents = () => {
+  return (dispatch, getState) => {
+
+    const openParensSelected = selectedOpenParens(getState());
+    const { investigate: { queryNode: { pillsData } } } = getState();
+    const pillsToDelete = contentBetweenParens(openParensSelected, pillsData);
+    if (pillsToDelete.length > 0) {
+      dispatch({
+        type: ACTION_TYPES.DELETE_GUIDED_PILLS,
+        payload: {
+          pillData: pillsToDelete
+        }
+      });
+      // look for empty parens that may have resulted from the deletion of pills
+      dispatch(_removeAnyEmptyParens());
+    }
+  };
+
+
 };
 
 export const deleteSelectedGuidedPills = (pillData) => {
@@ -270,7 +294,7 @@ export const deleteSelectedGuidedPills = (pillData) => {
           }
         });
         // look for empty parens that may have resulted from the deletion of pills
-        _removeAnyEmptyParens(dispatch, getState);
+        dispatch(_removeAnyEmptyParens());
       }
     } else {
       dispatch(deleteGuidedPill({ pillData: [pillData] }));

@@ -189,6 +189,11 @@ export const canQueryGuided = createSelector(
   (hasInvalidPill, hasRequiredValuesToQuery) => hasRequiredValuesToQuery && !hasInvalidPill
 );
 
+export const selectedOpenParens = createSelector(
+  [pillsData],
+  (_pillsData) => _pillsData.filter((pD) => pD.isSelected === true && pD.type === 'open-paren')
+);
+
 export const selectedPills = createSelector(
   [pillsData],
   (_pillsData) => {
