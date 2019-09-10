@@ -50,13 +50,13 @@ public class SessionSplitTransformerTest extends TransformerJsonTest implements 
 
     private TlsRawEvent generateTlsRawEvent() {
         Instant laterInstant = Instant.now().plusSeconds(10000L * 182 * 60 * 60);
-        return new TlsRawEvent(laterInstant, "TLS", "dataSource", null, "", "", "", "",
+        return new TlsRawEvent(laterInstant, "TLS", "dataSource", null, "", "", "123", "",
                 new DestinationCountry("dstCountry"),
                 new SslSubject("ssl"), new Domain("google.com"),
                 new DestinationOrganization("dstOrg"),
                 new DestinationAsn("dstAsn"), 0L, 0L, "", "",
                 new Ja3("ja3"), "", "",
-                new DestinationPort("dstPort"), null, null, 2);
+                new DestinationPort("12345"), null, null, 2);
     }
 
     @Override

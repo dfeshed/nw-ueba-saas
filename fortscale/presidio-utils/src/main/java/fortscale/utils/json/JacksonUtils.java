@@ -78,7 +78,7 @@ public class JacksonUtils extends HierarchyLeafFinder<JSONObject> {
         Object nestedObject = parent.get(subFieldName);
         if (nestedObject == JSONObject.NULL) return null;
         if (ClassUtils.isPrimitiveOrWrapper(nestedObject.getClass()) || nestedObject instanceof String) {
-            return new JSONObject(format("{\"%s\": %s}", PRIMITIVE_FIELD_NAME, nestedObject));
+            return new JSONObject(format("{\"%s\": \"%s\"}", PRIMITIVE_FIELD_NAME, nestedObject));
         }
         return parent.getJSONObject(subFieldName);
     }
