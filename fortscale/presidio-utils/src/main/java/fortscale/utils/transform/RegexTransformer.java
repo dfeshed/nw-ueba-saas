@@ -39,13 +39,16 @@ public class RegexTransformer extends AbstractJsonObjectTransformer {
     public JSONObject transform(JSONObject jsonObject) {
         String outputFieldData = null;
         try {
-            String filePathValue = (String) jsonObject.get(inputFieldName);
-            if (isNotBlank(filePathValue)) {
-                Matcher matcher = pattern.matcher(filePathValue);
-                if (matcher.find()) {
-                    outputFieldData = matcher.group();
+            Object filePathObj = jsonObject.get(inputFieldName);
+            if (filePathObj != JSONObject.NULL) {
+                String filePathValue = (String) filePathObj;
+                if (isNotBlank(filePathValue)) {
+                    Matcher matcher = pattern.matcher(filePathValue);
+                    if (matcher.find()) {
+                        outputFieldData = matcher.group();
+                    }
+                    jsonObject.put(outputFieldName, outputFieldData);
                 }
-                jsonObject.put(outputFieldName, outputFieldData);
             }
         } catch (Exception e) {
             logger.error("error getting/setting {} to {} with {} field value", inputFieldName, outputFieldName, outputFieldData, e);

@@ -46,22 +46,26 @@ public class MachineNameTransformer extends AbstractJsonObjectTransformer {
     @Override
     public JSONObject transform(JSONObject document) {
         try {
-            String fieldValue1Str = (String) document.get(inputFieldName);
-            if (StringUtils.isNotEmpty(fieldValue1Str)) {
+            Object fieldValue = document.get(inputFieldName);
+            if (JSONObject.NULL != fieldValue) {
+                String fieldValueStr = (String) fieldValue;
+                if (StringUtils.isNotEmpty(fieldValueStr)) {
 
-                // IP address is transformed to empty string
-                String replacedPattern;
-                Matcher matcher = ipPattern.matcher(fieldValue1Str);
-                if (matcher.matches()) {
-                    replacedPattern = StringUtils.EMPTY;
-                } else {
-                    replacedPattern = this.patternReplacement.replacePattern(fieldValue1Str);
+                    // IP address is transformed to empty string
+                    String replacedPattern;
+                    Matcher matcher = ipPattern.matcher(fieldValueStr);
+                    if (matcher.matches()) {
+                        replacedPattern = StringUtils.EMPTY;
+                    } else {
+                        replacedPattern = this.patternReplacement.replacePattern(fieldValueStr);
+                    }
+                    document.put(outputFieldName, replacedPattern);
                 }
-                document.put(outputFieldName, replacedPattern);
             }
         } catch (Exception e) {
             logger.error("error setting the {} field value", outputFieldName, e);
         }
+
         return document;
     }
 }

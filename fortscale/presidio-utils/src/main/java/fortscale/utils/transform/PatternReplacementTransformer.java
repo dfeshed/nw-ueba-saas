@@ -41,8 +41,10 @@ public class PatternReplacementTransformer extends AbstractJsonObjectTransformer
     public JSONObject transform(JSONObject document) {
         try {
             Object fieldValue = document.get(inputFieldName);
-            String replacedPattern = this.patternReplacement.replacePattern((String) fieldValue);
-            document.put(outputFieldName, replacedPattern);
+            if (fieldValue != JSONObject.NULL) {
+                String replacedPattern = this.patternReplacement.replacePattern((String) fieldValue);
+                document.put(outputFieldName, replacedPattern);
+            }
         } catch (Exception e) {
             logger.error("error setting the {} field value", outputFieldName, e);
         }

@@ -51,13 +51,16 @@ public class FolderPathByOperationTypeTransformer extends AbstractJsonObjectTran
      */
     public JSONObject transform(JSONObject document) {
         try {
-            String filePathValue = (String) document.get(inputPathFieldName);
-            if (isNotBlank(filePathValue)) {
-                if (isFolderOperation(document)) {
-                    document.put(folderPathFieldName, filePathValue);
-                    document.put(filePathFieldName, JSONObject.NULL);
-                } else {
-                    this.folderPathTransformer.transform(document);
+            Object filePathValueObj = document.get(inputPathFieldName);
+            if (filePathValueObj != JSONObject.NULL) {
+                String filePathValue = (String) filePathValueObj;
+                if (isNotBlank(filePathValue)) {
+                    if (isFolderOperation(document)) {
+                        document.put(folderPathFieldName, filePathValue);
+                        document.put(filePathFieldName, JSONObject.NULL);
+                    } else {
+                        this.folderPathTransformer.transform(document);
+                    }
                 }
             }
         } catch (Exception e) {

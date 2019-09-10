@@ -42,18 +42,21 @@ public class OperationTypeToCategoriesTransformer extends AbstractJsonObjectTran
     public JSONObject transform(JSONObject document) {
         if (MapUtils.isNotEmpty(operationTypeCategoriesMapping)) {
             try {
-                String operationType = (String) document.get(inputOperationTypeFieldName);
-                List<String> operationTypeCategories = operationTypeCategoriesMapping.get(operationType);
-                if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
-                    Set<String> additionalCategories = new HashSet<>(operationTypeCategories);
-                    Object operationalTypeCategories = document.get(inputOperationTypeCategoriesFieldName);
-                    if (operationalTypeCategories != JSONObject.NULL) {
-                        List<String> existingOperationTypeCategories = JacksonUtils.jsonArrayToList((JSONArray) operationalTypeCategories);
-                        if (CollectionUtils.isNotEmpty(existingOperationTypeCategories)) {
-                            additionalCategories.addAll(existingOperationTypeCategories);
+                Object operationTypeObj = document.get(inputOperationTypeFieldName);
+                if (operationTypeObj != JSONObject.NULL) {
+                    String operationType = (String) operationTypeObj;
+                    List<String> operationTypeCategories = operationTypeCategoriesMapping.get(operationType);
+                    if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
+                        Set<String> additionalCategories = new HashSet<>(operationTypeCategories);
+                        Object operationalTypeCategories = document.get(inputOperationTypeCategoriesFieldName);
+                        if (operationalTypeCategories != JSONObject.NULL) {
+                            List<String> existingOperationTypeCategories = JacksonUtils.jsonArrayToList((JSONArray) operationalTypeCategories);
+                            if (CollectionUtils.isNotEmpty(existingOperationTypeCategories)) {
+                                additionalCategories.addAll(existingOperationTypeCategories);
+                            }
                         }
+                        document.put(outputOperationTypeCategoriesFieldName, new ArrayList<>(additionalCategories));
                     }
-                    document.put(outputOperationTypeCategoriesFieldName, new ArrayList<>(additionalCategories));
                 }
             } catch (Exception e) {
                 logger.error("error setting the {} field value", outputOperationTypeCategoriesFieldName, e);
