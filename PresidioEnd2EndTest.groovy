@@ -10,7 +10,7 @@ pipeline {
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
     }
-    tools { jdk env.JDK }
+    //tools { jdk env.JDK }
     agent { label env.NODE }
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
