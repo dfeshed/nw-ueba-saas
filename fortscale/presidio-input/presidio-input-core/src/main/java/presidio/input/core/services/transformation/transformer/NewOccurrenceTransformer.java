@@ -97,6 +97,7 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
     }
 
     private boolean shouldTransform() {
-        return endDate.isAfter(workflowStartDate.plus(transformationWaitingDuration));
+        return false;
+        // return endDate.isAfter(workflowStartDate.plus(transformationWaitingDuration));
     }
 }
