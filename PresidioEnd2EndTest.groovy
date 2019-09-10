@@ -65,7 +65,6 @@ pipeline {
                 expression { return params.DATA_PROCESSING }
             }
             steps {
-                transformerConf()
                 runSuiteXmlFile('e2e/E2E_ConfigAndDataProcessing.xml')
             }
         }
@@ -183,10 +182,3 @@ def copyScripts() {
     sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/env_properties_manager.sh /home/presidio/"
     sh "sudo bash /home/presidio/env_properties_manager.sh --create"
 }
-
-def transformerConf() {
-    sh "echo workaround for TLS netname array"
-    sh "sed -i 's|(.+) src|^((?!other).+) src|g' /var/netwitness/presidio/flume/conf/adapter/transformers/tls.json"
-    sh "sed -i 's|(.+) dst|^((?!other).+) dst|g' /var/netwitness/presidio/flume/conf/adapter/transformers/tls.json"
-}
-
