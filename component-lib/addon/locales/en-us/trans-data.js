@@ -4296,7 +4296,7 @@ export default {
     },
     tabs: {
       properties: 'Properties',
-      events: 'Events List ({{count}})',
+      events: 'Events ({{count}})',
       all: 'All',
       alerts: 'Alerts ({{count}})',
       hosts: 'Hosts ({{count}})'
@@ -4308,7 +4308,12 @@ export default {
       title: 'Filters',
       filterReset: 'Reset Filter'
     },
-    error: 'No relationship views for the process {{processName}} as there are no "create process" events. Try changing the time range or refer to the Events tab to view timeline of all events for the process'
+    eventsTitle: {
+      file: 'File',
+      registry: 'Registry',
+      network: 'Network'
+    },
+    error: 'There is no “createProcess” event for the selected process. Change the time range or go to the Events List tab to view all events for the process'
   },
   // Begin context menu
   contextmenu: {

@@ -96,7 +96,7 @@ module('Integration | Component | process-analysis-container', function(hooks) {
     dateFormat.set('_selected', { format: 'YYYY-MM-DD' });
 
     await render(hbs`{{process-analysis-container}}`);
-    await waitUntil(() => find('.rsa-nav-tab.is-active .label').textContent.trim() === 'Events List (4)', { timeout: Infinity });
+    await waitUntil(() => find('.rsa-nav-tab.is-active .label').textContent.trim() === 'Events (4)', { timeout: Infinity });
     await click('.rsa-nav-tab.is-active .label');
 
     assert.equal(findAll('.rsa-data-table-body-rows').length, 1, 'table row is displayed');

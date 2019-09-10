@@ -79,7 +79,7 @@ module('Integration | Component | filter-popup', function(hooks) {
     await render(hbs`{{filter-popup model=model}}`);
     await click(findAll('.process-filter-popup .rsa-nav-tab')[1]);
     assert.equal(findAll(selectors.networkTab).length, 1, 'network tab is selected');
-    assert.equal(find(selectors.selectedTab).textContent.trim(), '(1)', 'process with network event count = 1');
+    assert.equal(find(selectors.selectedTab).textContent.trim(), 'network (1)', 'process with network event count = 1');
     assert.equal(findAll(selectors.processList).length, 1, '1 process is displayed');
     await click(findAll('.rsa-data-table-body-row .rsa-form-checkbox')[0]);
     assert.equal(find(selectors.selectedProcessCount).textContent.trim(), '2 Process selected', 'Selected process count is 2');
@@ -91,7 +91,7 @@ module('Integration | Component | filter-popup', function(hooks) {
     await render(hbs`{{filter-popup model=model}}`);
     await click(findAll('.process-filter-popup .rsa-nav-tab')[2]);
     assert.equal(findAll(selectors.fileTab).length, 1, 'registry tab is selected');
-    assert.equal(find(selectors.selectedTab).textContent.trim(), '(2)', 'process with file events count = 2');
+    assert.equal(find(selectors.selectedTab).textContent.trim(), 'file (2)', 'process with file events count = 2');
     await click(findAll('.rsa-data-table-body-row .rsa-form-checkbox')[0]);
     assert.equal(find(selectors.selectedProcessCount).textContent.trim(), '2 Process selected', 'Selected process count is 2, one in all and one in file tab');
     assert.equal(findAll(selectors.processList).length, 2, '2 processes are displayed');
@@ -103,7 +103,7 @@ module('Integration | Component | filter-popup', function(hooks) {
     await render(hbs`{{filter-popup model=model}}`);
     await click(findAll('.process-filter-popup .rsa-nav-tab')[3]);
     assert.equal(findAll(selectors.registryTab).length, 1, 'registry tab is selected');
-    assert.equal(find(selectors.selectedTab).textContent.trim(), '(0)', 'process with registry events count = 0');
+    assert.equal(find(selectors.selectedTab).textContent.trim(), 'registry (0)', 'process with registry events count = 0');
     assert.equal(findAll(selectors.processList).length, 0, '0 process are displayed');
     assert.equal(find(selectors.noResultsMessage).textContent.trim(), 'No Results');
     assert.equal(findAll(selectors.selectAllChecked).length, 0, 'select all is not checked');

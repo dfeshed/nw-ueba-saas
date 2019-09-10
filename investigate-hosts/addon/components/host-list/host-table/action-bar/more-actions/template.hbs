@@ -22,8 +22,9 @@
     isPopover=true
     panelId='host-more-actions'
     position='bottom-right'
+    as |hideTooltip|
   }}
-    <ul class="rsa-dropdown-action-list">
+    <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
       {{#each moreOptions as |moreOption|}}
         {{#if (eq moreOption.buttonId 'delete-button')}}
           <li {{action deleteAction}}>{{t moreOption.name}}</li>
