@@ -28,7 +28,8 @@ class E2eBrokerConfigScenario implements PreProcessingConfigScenario {
         adapterTestManager.setAdapterConfigurationPropertiesToProductionMode();
         adapterTestManager.runUebaServerConfigScript(startDate);
         adapterTestManager.setEngineConfigurationParametersToTestingValues();
-        adapterTestManager.setTlsTimeFieldToEventTime();
+        adapterTestManager.setBrokerConfigurationForAdapterAndTransformer();
+        adapterTestManager.touchTransformerBackupConfig();
         adapterTestManager.setBuildingModelsRange(7, 2, 2);
         SshExecutor.executeOnUebaHostRoot("systemctl start airflow-scheduler");
     }

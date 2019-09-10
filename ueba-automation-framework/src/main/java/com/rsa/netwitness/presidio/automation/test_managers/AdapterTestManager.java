@@ -242,7 +242,7 @@ public class AdapterTestManager {
         assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
-    public void setTlsTimeFieldToEventTime() {
+    public void setBrokerConfigurationForAdapterAndTransformer() {
         URL url = this.getClass().getClassLoader()
                 .getResource("scripts/setBrokerInputConfiguration.sh");
 
@@ -291,9 +291,9 @@ public class AdapterTestManager {
 
 
     public void backupTransformerConfig() {
-        String command = "mkdir -p /var/netwitness/presidio/flume/conf/adapter/transformers/backup " +
-                "&& cp -n /var/netwitness/presidio/flume/conf/adapter/transformers/*.json " +
-                "/var/netwitness/presidio/flume/conf/adapter/transformers/backup/";
+        String command = " mkdir -p /var/netwitness/presidio/flume/conf/adapter/transformers/backup " +
+                "&& rsync --progress -r -u /var/netwitness/presidio/flume/conf/adapter/transformers/*.json " +
+                "/var/netwitness/presidio/flume/conf/adapter/transformers/backup";
 
         TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
     }
@@ -303,6 +303,11 @@ public class AdapterTestManager {
         String command = "cp -f  /var/netwitness/presidio/flume/conf/adapter/transformers/backup/*.json " +
                 "/var/netwitness/presidio/flume/conf/adapter/transformers/";
 
+        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
+    }
+
+    public void touchTransformerBackupConfig(){
+        String command = "touch /var/netwitness/presidio/flume/conf/adapter/transformers/backup/*";
         TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
     }
 }
