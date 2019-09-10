@@ -31,8 +31,18 @@ public class BrokerCefFormatter implements EventFormatter<String> {
         mapToFormat.put("event.time", converted.brokerEventTime);
         mapToFormat.putAll(filtered);
 
+        replaceByCustomField(mapToFormat, "netname");
+        replaceByCustomField(mapToFormat, "org.dst");
+
         mapToFormat.entrySet().forEach(e -> eventBuilder.append(fieldToCefValue(e)));
         return eventBuilder.toString().trim();
+    }
+
+    private void replaceByCustomField(Map<String, Object> mapToFormat, String replace) {
+        if (mapToFormat.containsKey(replace)) {
+            mapToFormat.put("presidio." + replace, mapToFormat.get(replace));
+            mapToFormat.remove(replace);
+        }
     }
 
     private String headerToString(CefHeader header) {
