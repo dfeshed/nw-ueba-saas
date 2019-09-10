@@ -71,14 +71,14 @@ public class AlertsServiceImpl implements AlertsService {
 
     @Override
     public Alerts findAll(PageRequest pageRequest,boolean expand) {
-        return findAlertsByFilters(pageRequest, null, null, null, null, null, null, null, null,expand,false);
+        return findAlertsByFilters(pageRequest, null, null, null, null, null, null, null, null,null, expand,false);
     }
 
 
     @Override
     public Long count(PageRequest pageRequest) {
         try {
-            AlertQuery query = alertConverterHelper.convertUiFilterToQueryDto(pageRequest,null,null,null,null,null,null,null,null,false);
+            AlertQuery query = alertConverterHelper.convertUiFilterToQueryDto(pageRequest,null,null,null,null,null,null,null,null, null,false);
             AlertsWrapper alertsBean = remoteAlertClientService.getConterollerApi().getAlerts(query);
 
             return alertsBean.getTotal().longValue();
@@ -104,12 +104,12 @@ public class AlertsServiceImpl implements AlertsService {
     @Override
     public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
                                       String feedbackArrayFilter, DateRange dateRangeFilter, String entityName, String entityTags, String entityId,
-                                      Set<String> indicatorTypes, boolean expand, boolean loadComments) {
+                                      Set<String> indicatorTypes, String entityType, boolean expand, boolean loadComments) {
 
         entityId = extendEntityIdWithTaggedUsers(entityTags, entityId);
 
         AlertQuery query = alertConverterHelper.convertUiFilterToQueryDto(pageRequest,severityArray,statusArrayFilter,feedbackArrayFilter,dateRangeFilter,
-                entityName,entityTags,entityId,indicatorTypes,expand);
+                entityName,entityTags,entityId,indicatorTypes,entityType,expand);
 
         Alerts alerts = null;
         try {
@@ -186,10 +186,10 @@ public class AlertsServiceImpl implements AlertsService {
     @Override
     public Long countAlertsByFilters(String severityArray, String statusArrayFilter,
                                      String feedbackArrayFilter, DateRange dateRangeFilter, String entityName, String entityTags, String entityId,
-                                     Set<String> indicatorTypes) {
+                                     Set<String> indicatorTypes, String entityType) {
 
 
-        return findAlertsByFilters(null, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entityTags, entityId, indicatorTypes,false,false).getTotalCount();
+        return findAlertsByFilters(null, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entityTags, entityId, indicatorTypes,entityType, false,false).getTotalCount();
     }
 
 
@@ -208,11 +208,11 @@ public class AlertsServiceImpl implements AlertsService {
     @Override
     public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
                                            String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
-                                           String entityTags, String entityId, Set<String> indicatorTypes) {
+                                           String entityTags, String entityId, Set<String> indicatorTypes, String entityType) {
 
 
         AlertQuery query=alertConverterHelper.convertUiFilterToQueryDto(null,severityArrayFilter,statusArrayFilter,feedbackArrayFilter,dateRangeFilter,entityName,
-                entityTags,entityId,indicatorTypes,false);
+                entityTags,entityId,indicatorTypes, entityType, false);
 
         AlertQuery.AggregateByEnum aggregateByEnum=null;
 
@@ -326,7 +326,7 @@ public class AlertsServiceImpl implements AlertsService {
     private List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities, boolean excludeEvidences, boolean loadComments) {
         return findAlertsByFilters(null, null,
                 StringUtils.join(severities, ","), null,
-                dateRange, null, null, null, null,!excludeEvidences,loadComments).getAlerts();
+                dateRange, null, null, null, null, null, !excludeEvidences,loadComments).getAlerts();
     }
 
 
@@ -336,7 +336,7 @@ public class AlertsServiceImpl implements AlertsService {
 
 
         AlertQuery alertQuery = alertConverterHelper.convertUiFilterToQueryDto(null,null,null,null,null,
-                null,null,null,null,false );
+                null,null,null,null, null,false );
         alertQuery.addAggregateByItem(AlertQuery.AggregateByEnum.INDICATOR_NAMES);
 
         try {
@@ -356,7 +356,7 @@ public class AlertsServiceImpl implements AlertsService {
     @Override
     public Alerts getAlertsByUsername(String userName) {
         PageRequest p = new PageRequest(-1, 10000);
-        return findAlertsByFilters(p, null, null, null, null, userName, null, null, null,true,false);
+        return findAlertsByFilters(p, null, null, null, null, userName, null, null, null, null,true,false);
     }
 
     public List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(DateRange alertStartRange) {
@@ -409,7 +409,7 @@ public class AlertsServiceImpl implements AlertsService {
         Map<Long,DailySeveiryConuntDTO> orderedByDaySeveritiyCount = new LinkedHashMap();
 
         AlertQuery alertQuery = alertConverterHelper.convertUiFilterToQueryDto(null,null,null,null,alertStartRange,
-                null,null,null,null,false );
+                null,null,null,null, null, false );
         alertQuery.addAggregateByItem(AlertQuery.AggregateByEnum.SEVERITY_DAILY);
         try {
             Map<String,Map<String,Long>> aggregationData = remoteAlertClientService.getConterollerApi().getAlerts(alertQuery).getAggregationData();
@@ -456,7 +456,7 @@ public class AlertsServiceImpl implements AlertsService {
     @Override
     public List<Alert> getOpenAlertsByUsername(String userName) {
         return findAlertsByFilters(null, null, AlertStatus.Open.name(), AlertFeedback.None.name(),
-                null, null, null, null, null,false,false).getAlerts();
+                null, null, null, null, null,null, false,false).getAlerts();
 
     }
 
