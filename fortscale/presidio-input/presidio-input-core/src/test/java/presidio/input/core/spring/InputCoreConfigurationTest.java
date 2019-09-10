@@ -1,7 +1,6 @@
 package presidio.input.core.spring;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import org.springframework.beans.factory.FactoryBean;
@@ -47,9 +46,6 @@ import java.util.Map;
 @Configuration
 @Import({PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class, OutputDataServiceConfig.class})
 public class InputCoreConfigurationTest {
-
-    @Value("${operation.type.category.mapping.file.path}")
-    private String operationTypeCategoryMappingFilePath;
 
     @Value("${transformers.file.path}")
     private String configurationFilePath;

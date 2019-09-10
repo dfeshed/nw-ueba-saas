@@ -9,16 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Lazy;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.converters.ConverterServiceImpl;
 import presidio.input.core.services.converters.ade.*;
 import presidio.input.core.services.converters.output.*;
 import presidio.input.core.services.data.AdeDataService;
-import presidio.input.core.services.transformation.DeserializerTransformationService;
 import presidio.input.core.services.impl.InputCoreManager;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
+import presidio.input.core.services.transformation.DeserializerTransformationService;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
 import presidio.input.core.services.transformation.managers.*;
@@ -40,12 +43,6 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 })
 public class InputCoreConfiguration {
     private static final Logger logger = Logger.getLogger(InputCoreConfiguration.class);
-
-    @Value("${operation.type.category.mapping.file.path}")
-    private String operationTypeCategoryMappingFilePath;
-
-    @Value("${operation.type.category.hierarchy.mapping.file.path}")
-    private String operationTypeCategoryHierarchyMappingFilePath;
 
     @Value("${transformers.file.path}")
     private String configurationFilePath;
