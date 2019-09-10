@@ -8,6 +8,7 @@ const FILTER_TYPES = [
     'name': 'firstFileName',
     'label': 'investigateFiles.fields.firstFileName',
     'type': 'text',
+    useI18N: true,
     'validations': {
       length: {
         validator: (value) => {
@@ -22,7 +23,7 @@ const FILTER_TYPES = [
         message: 'investigateFiles.filter.invalidCharsAlphaNumericOnly'
       }
     },
-    'placeholder': 'e.g., Filename.dll'
+    'placeholder': 'investigateFiles.filter.fileNamePlaceholder'
   },
   {
     name: 'fileStatus',
@@ -78,16 +79,17 @@ const FILTER_TYPES = [
     'name': 'size',
     'label': 'investigateFiles.fields.size',
     'type': 'number',
+    'useI18N': true,
     'operators': [
-      { label: 'Greater Than', type: 'GREATER_THAN' },
-      { label: 'Less Than', type: 'LESS_THAN' },
-      { label: 'Between', type: 'BETWEEN' }
+      { label: 'investigateFiles.filter.label.greaterThan', type: 'GREATER_THAN' },
+      { label: 'investigateFiles.filter.label.lessThan', type: 'LESS_THAN' },
+      { label: 'investigateFiles.filter.label.between', type: 'BETWEEN' }
     ],
     'units': [
-      { label: 'Bytes', type: 'bytes' },
-      { label: 'KB', type: 'KB' },
-      { label: 'MB', type: 'MB' },
-      { label: 'GB', type: 'GB' }
+      { label: 'investigateFiles.filter.label.bytes', type: 'bytes' },
+      { label: 'investigateFiles.filter.label.kb', type: 'KB' },
+      { label: 'investigateFiles.filter.label.mb', type: 'MB' },
+      { label: 'investigateFiles.filter.label.gb', type: 'GB' }
     ]
   },
   {

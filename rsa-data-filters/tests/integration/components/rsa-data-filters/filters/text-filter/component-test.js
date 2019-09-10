@@ -127,7 +127,7 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
   test('Placeholder should show correct message', async function(assert) {
     this.set('options', { filterValue: { operator: 'IN', value: [] }, filterOnBlur: true });
     await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options}}`);
-    assert.equal(document.querySelector('.file-name-input input').placeholder, 'Enter value');
+    assert.equal(document.querySelector('.file-name-input input').placeholder, 'Enter Value');
 
     this.set('options', { filterValue: { operator: 'IN', value: [] }, filterOnBlur: true, placeholder: 'test-placeholder' });
     await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options}}`);

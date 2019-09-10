@@ -7,7 +7,11 @@
     selected=filterValue.operator
     searchEnabled=false
     onchange=(action 'changeOperator') as |option|}}
-    {{option.label}}
+    {{#if options.useI18N}}
+      {{t option.label}}
+    {{else}}
+      {{option.label}}
+    {{/if}}
   {{/power-select}}
 
   {{#if isOperatorBetween}}
@@ -15,14 +19,14 @@
       {{input
         type="number"
         value=(readonly filterValue.value.[0])
-        placeholder='Enter Value'
+        placeholder=(t 'dataFilters.textPlaceholder')
         key-up=(action 'handleKeyUp')}}
     </div>
     <div class="number-input end rsa-form-input">
       {{input
         type="number"
         value=(readonly filterValue.value.[1])
-        placeholder='Enter Value'
+        placeholder=(t 'dataFilters.textPlaceholder')
         key-up=(action 'handleKeyUp')}}
     </div>
   {{else}}
@@ -42,7 +46,11 @@
       selected=filterValue.unit
       searchEnabled=false
       onchange=(action 'chageUnit') as |option|}}
-      {{option.label}}
+      {{#if options.useI18N}}
+        {{t option.label}}
+      {{else}}
+        {{option.label}}
+      {{/if}}
     {{/power-select}}
   {{/if}}
 </hbox>

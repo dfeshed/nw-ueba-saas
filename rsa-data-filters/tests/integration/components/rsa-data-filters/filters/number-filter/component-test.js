@@ -43,6 +43,7 @@ module('Integration | Component | rsa-data-filters/filters/number-filter', funct
     assert.equal(document.querySelectorAll('.number-input').length, 2, 'Two text boxes');
     assert.equal(document.querySelector('.number-input.start input').value, 10, 'Two text boxes');
     assert.equal(document.querySelector('.number-input.end input').value, 20, 'Two text boxes');
+    assert.equal(document.querySelector('.number-input input').placeholder, 'Enter Value');
   });
 
   test('onChange is called on update', async function(assert) {

@@ -4,6 +4,7 @@ import { assign } from '@ember/polyfills';
 import { isEmpty } from '@ember/utils';
 import { computed } from '@ember/object';
 import { debounce } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
 
@@ -11,12 +12,14 @@ export default Component.extend({
 
   classNames: ['text-filter'],
 
+  i18n: service(),
+
   defaults: {
     maxLength: 256,
     filterOnBlur: false,
     operators: [
-      { type: 'IN', label: 'Equals' },
-      { type: 'LIKE', label: 'Contains' }
+      { type: 'IN', label: 'dataFilters.label.equals' },
+      { type: 'LIKE', label: 'dataFilters.label.contains' }
     ],
     filterValue: {
       operator: 'IN',
@@ -31,10 +34,12 @@ export default Component.extend({
   filterValue: computed('options', {
 
     get() {
-      const { filterValue: { operator, value }, operators, placeholder } = this.get('options');
+      const { filterValue: { operator, value }, operators, useI18N } = this.get('options');
+      let { placeholder } = this.get('options');
       const selectedOperator = operators.findBy('type', operator);
       const val = value.join('||');
-      const placeholderText = placeholder ? placeholder : 'Enter value';
+      placeholder = useI18N ? this.i18n.t(placeholder) : placeholder;
+      const placeholderText = placeholder ? placeholder : this.i18n.t('dataFilters.textPlaceholder');
       return { operator: selectedOperator, value: val, placeholderText };
     },
 

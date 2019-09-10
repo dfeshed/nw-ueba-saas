@@ -2467,6 +2467,17 @@ export default {
         equals: 'Equals',
         contains: 'Contains'
       },
+      textPlaceholder: 'Enter value',
+      fileNamePlaceholder: 'e.g., Filename.dll',
+      label: {
+        greaterThan: 'Greater than',
+        lessThan: 'Less than',
+        between: 'Between',
+        bytes: 'Bytes',
+        kb: 'KB',
+        mb: 'MB',
+        gb: 'GB'
+      },
       customFilters: {
         save: {
           description: 'Choose a name that contains 1-256 alphanumeric characters, underscores, and hyphen. <br>The name must not match an already existing filter name.',
@@ -6129,6 +6140,11 @@ effects the previewed source.',
     startDate: 'Start Date',
     endDate: 'End Date',
     customDateErrorStartAfterEnd: 'The start date and time cannot be the same or later than the end date',
-    accessError: 'You do not have the required permission to save the filter.'
+    accessError: 'You do not have the required permission to save the filter.',
+    textPlaceholder: 'Enter Value',
+    label: {
+      equals: 'Equals',
+      contains: 'Contains'
+    }
   }
 };
