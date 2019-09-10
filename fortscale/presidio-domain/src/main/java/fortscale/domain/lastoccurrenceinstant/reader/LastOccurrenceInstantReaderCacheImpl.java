@@ -5,7 +5,7 @@ import fortscale.utils.data.LfuCache;
 import org.apache.commons.lang3.Validate;
 
 import java.time.Instant;
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.function.Function.identity;
@@ -50,7 +50,7 @@ public class LastOccurrenceInstantReaderCacheImpl implements LastOccurrenceInsta
     }
 
     @Override
-    public Map<String, Instant> readAll(Schema schema, String entityType, Collection<String> entityIds) {
+    public Map<String, Instant> readAll(Schema schema, String entityType, List<String> entityIds) {
         return entityIds.stream().collect(toMap(identity(), entityId -> read(schema, entityType, entityId)));
     }
 

@@ -10,7 +10,6 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Instant;
-import java.util.Map;
 
 @Configuration
 @Import(RedisConfiguration.class)
@@ -23,12 +22,11 @@ public class LastOccurrenceInstantStoreRedisConfiguration {
     }
 
     @Bean
-    public RedisTemplate<String, Map<String, Instant>> redisTemplate() {
-        RedisTemplate<String, Map<String, Instant>> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, Instant> redisTemplate() {
+        RedisTemplate<String, Instant> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(jedisConnectionFactory);
         redisTemplate.setKeySerializer(RedisSerializers.getStringRedisSerializer());
-        redisTemplate.setHashKeySerializer(RedisSerializers.getStringRedisSerializer());
-        redisTemplate.setHashValueSerializer(RedisSerializers.getInstantRedisSerializer());
+        redisTemplate.setValueSerializer(RedisSerializers.getInstantRedisSerializer());
         return redisTemplate;
     }
 

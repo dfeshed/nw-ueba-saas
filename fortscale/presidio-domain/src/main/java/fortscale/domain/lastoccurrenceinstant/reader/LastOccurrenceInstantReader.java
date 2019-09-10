@@ -3,7 +3,7 @@ package fortscale.domain.lastoccurrenceinstant.reader;
 import fortscale.common.general.Schema;
 
 import java.time.Instant;
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public interface LastOccurrenceInstantReader {
@@ -25,5 +25,5 @@ public interface LastOccurrenceInstantReader {
      * @param entityIds  The IDs of the entities (e.g. "amazon.com", "google.com", "apple.com").
      * @return A map from an entity ID to the {@link Instant} of its last occurrence.
      */
-    Map<String, Instant> readAll(Schema schema, String entityType, Collection<String> entityIds);
+    Map<String, Instant> readAll(Schema schema, String entityType, List<String> entityIds);
 }
