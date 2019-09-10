@@ -9,10 +9,12 @@ import {
 } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 import {
   fileSources,
+  fileSourcesIds,
+  fileSourceById,
+  fileSourceExclusionFilters,
   fileSourcesList,
   selectedFileSource,
   selectedFileSourceDefaults,
-  sources,
   sourceNameValidator,
   exFilterValidator
 } from 'admin-source-management/reducers/usm/policy-wizard/filePolicy/file-selectors';
@@ -67,7 +69,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
   });
 
   test('fileSources', function(assert) {
-    const expectedValue = [ { fileType: 'apache', fileTypePrettyName: 'Apache Web Server', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    const expectedValue = [ { fileType: 'apache', fileTypePrettyName: 'Apache Web Server', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
     const fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSources(expectedValue)
@@ -75,6 +77,54 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
       .build();
     const result = fileSources(Immutable.from(fullState));
     assert.deepEqual(result, expectedValue, `should return fileSources with value ${expectedValue}`);
+  });
+
+  test('fileSourcesIds', function(assert) {
+    const sources = [
+      { fileType: 'accurev', fileTypePrettyName: 'AccuRev', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'accurev-server-1', exclusionFilters: ['accurev-filter-1', 'accurev-filter-2'], paths: ['path1', 'path2'] },
+      { fileType: 'apache', fileTypePrettyName: 'Apache Web Server', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['apache-filter-1', 'apache-filter-2'], paths: ['path1', 'path2'] },
+      { fileType: 'exchange', fileTypePrettyName: 'Microsoft Exchange', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'exchange-server-1', exclusionFilters: ['exchange-filter-1', 'exchange-filter-2'], paths: ['path1', 'path2'] }
+    ];
+    const expectedValue = ['0', '1', '2']; // currently array indices
+    const fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(sources)
+      .policyWizFileSourceTypes()
+      .build();
+    const result = fileSourcesIds(Immutable.from(fullState));
+    assert.deepEqual(result, expectedValue, `should return fileSourcesIds with value ${expectedValue}`);
+  });
+
+  test('fileSourceById', function(assert) {
+    const sources = [
+      { fileType: 'accurev', fileTypePrettyName: 'AccuRev', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'accurev-server-1', exclusionFilters: ['accurev-filter-1', 'accurev-filter-2'], paths: ['path1', 'path2'] },
+      { fileType: 'apache', fileTypePrettyName: 'Apache Web Server', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['apache-filter-1', 'apache-filter-2'], paths: ['path1', 'path2'] },
+      { fileType: 'exchange', fileTypePrettyName: 'Microsoft Exchange', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'exchange-server-1', exclusionFilters: ['exchange-filter-1', 'exchange-filter-2'], paths: ['path1', 'path2'] }
+    ];
+    const [,, expectedValue] = sources; // [2];
+    const fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(sources)
+      .policyWizFileSourceTypes()
+      .build();
+    const result = fileSourceById(Immutable.from(fullState), 2);
+    assert.deepEqual(result, expectedValue, `should return fileSourceById with value ${expectedValue}`);
+  });
+
+  test('fileSourceExclusionFilters', function(assert) {
+    const sources = [
+      { fileType: 'accurev', fileTypePrettyName: 'AccuRev', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'accurev-server-1', exclusionFilters: ['accurev-filter-1', 'accurev-filter-2'], paths: ['path1', 'path2'] },
+      { fileType: 'apache', fileTypePrettyName: 'Apache Web Server', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['apache-filter-1', 'apache-filter-2'], paths: ['path1', 'path2'] },
+      { fileType: 'exchange', fileTypePrettyName: 'Microsoft Exchange', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'exchange-server-1', exclusionFilters: ['exchange-filter-1', 'exchange-filter-2'], paths: ['path1', 'path2'] }
+    ];
+    const expectedValue = sources[2].exclusionFilters.join('\n');
+    const fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(sources)
+      .policyWizFileSourceTypes()
+      .build();
+    const result = fileSourceExclusionFilters(Immutable.from(fullState), 2);
+    assert.deepEqual(result, expectedValue, `should return fileSourceExclusionFilters with value ${expectedValue}`);
   });
 
   test('fileSourcesList selector', function(assert) {
@@ -126,16 +176,6 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     };
     const defaults = selectedFileSourceDefaults(Immutable.from(fullState));
     assert.deepEqual(defaults, defaultsExpected, 'The returned defaults value from the selectedFileSourceDefaults selector is as expected');
-  });
-
-  test('sources', function(assert) {
-    const expectedValue = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
-    const fullState = new ReduxDataHelper()
-      .policyWiz('filePolicy')
-      .policyWizFileSources(expectedValue)
-      .build();
-    const result = sources(Immutable.from(fullState));
-    assert.deepEqual(result, expectedValue, `should return sources with value ${expectedValue}`);
   });
 
   test('sourceNameValidator selector with invalid source name', function(assert) {

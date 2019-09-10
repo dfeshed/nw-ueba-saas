@@ -8,24 +8,14 @@
 </div>
 <div class="file-source-parent-container">
   <div class="source-container">
-    {{#rsa-data-table lazy=true  items=fileSources columnsConfig=columns}}
-
+    {{#rsa-data-table lazy=true items=sourcesIds columnsConfig=columns}}
+      {{!-- note that 'item' below will currently be the source index --}}
       {{#rsa-data-table/body as |item index column|}}
         {{usm-policies/policy-wizard/define-policy-sources-step/body-cell
-          item=item
+          itemId=item
           index=index
           column=column
-          delete=(action "deleteRow")
-          invalidTableItem=sourceNameValidator.invalidTableItem
-          invalidPath=sourceNameValidator.invalidPath
-          dirPathEmptyMsg = sourceNameValidator.dirPathEmptyMsg
-          dirPathLength = sourceNameValidator.dirPathLength
-          errorMessage=sourceNameValidator.errorMessage
-          exFilterErrorMsg=exFilterValidator.errorMessage
-          exFilterErr=exFilterValidator.showError
-          exFilterInvalid=exFilterValidator.invalidFilter
-          exFilterInvalidIndex=exFilterValidator.invalidFilterIndex
-          sourceUpdated=(action 'sourceUpdated')}}
+        }}
       {{/rsa-data-table/body}}
     {{/rsa-data-table}}
   </div>

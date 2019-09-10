@@ -9,7 +9,7 @@
         <span class="text">{{t column.title}}</span>
       {{/rsa-text-with-tooltip}}
       <span class="remove-setting"
-        {{action delete index bubble=false}}>
+        {{action 'handleRemoveSource' index bubble=false}}>
         {{rsa-icon name="remove-circle-1" style="lined"}}
       </span>
     </h4>
@@ -19,7 +19,7 @@
         selected=item.fileTypePrettyName
         searchPlaceholder=(t 'packager.searchPlaceholder')
         disabled=true
-        onchange=(action 'setSelected' column.field bubbles=false) as |option|
+        onchange=(action 'handleSelectionChange' column.field bubbles=false) as |option|
       }}
         <span title={{option}}>{{option}}</span>
       {{/power-select}}
@@ -42,7 +42,7 @@
         selected=item.fileEncoding
         searchPlaceholder=(t 'packager.searchPlaceholder')
         searchEnabled=false
-        onchange=(action 'setSelected' column.field bubbles=false) as |option|}}
+        onchange=(action 'handleSelectionChange' column.field bubbles=false) as |option|}}
         {{option}}
       {{/power-select}}
     </div>
@@ -64,7 +64,7 @@
             classNames='rsa-form-radio-wrapper'
             value=option.name
             groupValue=(readonly item.enabled)
-            changed=(action 'setSelected' column.field bubbles=false)
+            changed=(action 'handleSelectionChange' column.field bubbles=false)
           }}
             <span>{{t option.label}}</span>
           {{/radio-button}}
@@ -89,7 +89,7 @@
             classNames='rsa-form-radio-wrapper'
             value=option.name
             groupValue=(readonly item.startOfEvents)
-            changed=(action 'setSelected' column.field bubbles=false)
+            changed=(action 'handleSelectionChange' column.field bubbles=false)
           }}
             <span>{{t option.label}}</span>
           {{/radio-button}}
@@ -108,11 +108,11 @@
       {{/rsa-text-with-tooltip}}
     </h4>
     <div class="source-name">
-      {{rsa-form-input
+      {{rsa-form-input-oneway
         value=item.sourceName
         isError=(eq (get item column.field) invalidTableItem)
         errorMessage=(t errorMessage)
-        focusOut=sourceUpdated
+        onFocusOut=(action 'handleSourceNameChange' column.field)
       }}
     </div>
 
@@ -129,15 +129,15 @@
     {{#each item.paths key="@index" as |path index|}}
       <hbox>
         <vbox class="directory-path">
-          {{rsa-form-input
-            value=(readonly path)
-            focusOut=(action 'focusOut' index)
+          {{rsa-form-input-oneway
+            value=path
             isError=(eq (get item.paths (concat index)) invalidPath)
             errorMessage=(t errorMessage)
+            onFocusOut=(action 'handlePathChange' column.field index)
           }}
         </vbox>
         <vbox class="delete-path">
-          {{#rsa-form-button isIconOnly=true defaultAction=(action 'deletePath' index) }}
+          {{#rsa-form-button isIconOnly=true defaultAction=(action 'handleDeletePath' index) }}
             {{rsa-icon name='bin-1' size='small' class='delete-button'}}
           {{/rsa-form-button}}
         </vbox>
@@ -153,7 +153,7 @@
       {{#rsa-form-button
         class='add-directory-path'
         isDisabled=(eq item.paths.length 16)
-        click=(action 'addPath')
+        click=(action 'handleAddPath')
       }}
         {{t 'adminUsm.policyWizard.filePolicy.addPath'}}
       {{/rsa-form-button}}
@@ -174,10 +174,10 @@
       {{rsa-form-textarea
         tabIndex='3'
         placeholder=(t 'adminUsm.policyWizard.descPlaceholder')
-        value=exclusionFilters
+        value=(readonly exclusionFilters)
         maxLength=8000
         isError=(or (eq (get item.exclusionFilters exFilterInvalidIndex) exFilterInvalid) exFilterErr)
-        focusOut=(action 'setexclusionFilters' column.field bubbles=false)
+        focusOut=(action 'handleExclusionFiltersChange' column.field bubbles=false)
       }}
     </div>
     <div class="exclusion-filter-error">

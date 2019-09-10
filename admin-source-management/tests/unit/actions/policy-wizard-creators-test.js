@@ -306,4 +306,24 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
     const thunk = policyWizardCreators.updatePolicyProperty('anyOtherField', 2);
     thunk(dispatch);
   });
+
+  test('updatePolicyFileSourceProperty action creator returns proper default type and payload', function(assert) {
+    assert.expect(2);
+    const expectedPayload = [
+      { sourceId: 0, field: 'policy.sources.0.myDefaultField', value: 'myDefaultValue' }
+    ];
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.UPDATE_POLICY_FILE_SOURCE_PROPERTY:
+          assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_FILE_SOURCE_PROPERTY, 'action has the correct type of UPDATE_POLICY_FILE_SOURCE_PROPERTY');
+          assert.deepEqual(action.payload, expectedPayload, 'action has the correct payload');
+          break;
+        default:
+          assert.equal(true, false, 'default case... action has the correct type');
+      }
+    };
+    const thunk = policyWizardCreators.updatePolicyFileSourceProperty(0, 'myDefaultField', 'myDefaultValue');
+    thunk(dispatch);
+  });
+
 });

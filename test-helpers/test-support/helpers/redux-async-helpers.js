@@ -60,7 +60,7 @@ const waitForReduxStateChange = function(redux, stateString) {
   });
 };
 
-const waitForReduxStateToEqual = function(app, stateString, stateValue) {
+export const waitForReduxStateToEqual = function(app, stateString, stateValue) {
   const redux = app.__container__.lookup('service:redux');
 
   return new TestPromise(function(resolve) {

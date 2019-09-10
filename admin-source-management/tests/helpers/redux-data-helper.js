@@ -343,7 +343,20 @@ export default class DataHelper {
     return this;
   }
 
-  policyWizFileSources(sources) {
+  policyWizFileSources(sources, addSourceWithDefaults) {
+    // add a default source
+    if (sources.length === 0 && addSourceWithDefaults) {
+      sources.push({
+        fileType: 'apache',
+        fileTypePrettyName: 'Apache Web Server',
+        enabled: true,
+        startOfEvents: false,
+        fileEncoding: 'UTF-8 / ASCII', // Local Encoding
+        paths: ['path-1', 'path-2'],
+        sourceName: 'apache-server-1',
+        exclusionFilters: ['filter-1', 'filter-2']
+      });
+    }
     _set(this.state, 'usm.policyWizard.policy.sources', sources);
     return this;
   }

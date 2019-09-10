@@ -349,6 +349,54 @@ const fetchFileSourceTypes = () => {
   };
 };
 
+/**
+ * Adds the given filePolicy source into the policy.sources[] Array
+ * @param {*} source
+ * @public
+ */
+const addPolicyFileSource = (source) => {
+  return {
+    type: ACTION_TYPES.ADD_POLICY_FILE_SOURCE,
+    payload: source
+  };
+};
+
+/**
+ * Removes a source by the given id/index from the policy.sources[] Array
+ * @param {*} sourceId (currently the array index)
+ * @public
+ */
+const removePolicyFileSource = (sourceId) => {
+  return {
+    type: ACTION_TYPES.REMOVE_POLICY_FILE_SOURCE,
+    payload: sourceId
+  };
+};
+
+/**
+ * Updates policy.sources[sourceId] prop(s) in Redux state by specifying the field name(s) (fully qualified, e.g., 'policy.sources.sourceName')
+ * and the new value(s) that should be set
+ * @param sourceId (currently the array index)
+ * @param field single field or a some.attr.path to be parsed and used with seamless-immutable's setIn()
+ * @param value
+ * @public
+ */
+const updatePolicyFileSourceProperty = (sourceId, field, value) => {
+  return (dispatch) => {
+    const type = ACTION_TYPES.UPDATE_POLICY_FILE_SOURCE_PROPERTY;
+    let payload = {};
+    switch (field) {
+      // case 'someNonDefaultFieldOrPath':
+      //   type = ACTION_TYPES.SOME_OTHER_TYPE_IF_NEEDED;
+      //   payload = someOtherPayloadFormatIfNeeded;
+      //   break;
+      default:
+        payload = [{ sourceId, field: `policy.sources.${sourceId}.${field}`, value }];
+    }
+    dispatch({ type, payload });
+  };
+};
+
 export {
   initializePolicy,
   newPolicy,
@@ -368,5 +416,8 @@ export {
   // windowsLogPolicy specific action creators
   fetchLogServers,
   // filePolicy specific action creators
-  fetchFileSourceTypes
+  fetchFileSourceTypes,
+  addPolicyFileSource,
+  removePolicyFileSource,
+  updatePolicyFileSourceProperty
 };

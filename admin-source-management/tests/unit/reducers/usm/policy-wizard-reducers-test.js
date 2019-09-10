@@ -14,6 +14,7 @@ import {
 
 const initialStateEdr = new ReduxDataHelper().policyWiz().build().usm.policyWizard;
 const initialStateWinLog = new ReduxDataHelper().policyWiz('windowsLogPolicy').build().usm.policyWizard;
+const initialStateFile = new ReduxDataHelper().policyWiz('filePolicy').build().usm.policyWizard;
 const scanScheduleId = 'scanType';
 const scanStartDateId = 'scanStartDate';
 
@@ -27,6 +28,11 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   test('should return the correct initial state when type is windowsLogPolicy', function(assert) {
     assert.equal(initialStateWinLog.policy.policyType, 'windowsLogPolicy', 'correct policyType is loaded in initialState when type is windowsLogPolicy');
     assert.equal(initialStateWinLog.availableSettings.length, 7, 'correct availableSettings are loaded in initialState when type is windowsLogPolicy');
+  });
+
+  test('should return the correct initial state when type is filePolicy', function(assert) {
+    assert.equal(initialStateFile.policy.policyType, 'filePolicy', 'correct policyType is loaded in initialState when type is filePolicy');
+    assert.equal(initialStateFile.availableSettings.length, 6, 'correct availableSettings are loaded in initialState when type is filePolicy');
   });
 
   test('on NEW_POLICY, state should be reset to the initial state', function(assert) {
@@ -286,6 +292,64 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
     assert.deepEqual(endState.policy.recurrenceUnit, recurrenceUnitExpected, 'recurrenceUnit is updated');
     assert.deepEqual(endState.policy.recurrenceInterval, recurrenceIntervalExpected, 'recurrenceInterval is updated');
+  });
+
+  test('on ADD_POLICY_FILE_SOURCE, a source object is added to policy.sources', function(assert) {
+    const sourceState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources([], true) // adds one source to the empty array
+      .build().usm.policyWizard;
+
+    const expectedValue = _.cloneDeep(sourceState.policy.sources[0]);
+    const sourceAction = {
+      type: ACTION_TYPES.ADD_POLICY_FILE_SOURCE,
+      payload: expectedValue
+    };
+    const sourceEndState = reducers(Immutable.from(_.cloneDeep(sourceState)), sourceAction);
+    assert.equal(sourceEndState.policy.sources.length, 2, 'policy.sources.length is 2');
+    assert.deepEqual(sourceEndState.policy.sources[1], expectedValue, 'policy.sources[1] added as expected');
+  });
+
+  test('on REMOVE_POLICY_FILE_SOURCE, a source object is removed from policy.sources', function(assert) {
+    const sourceState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources([], true) // adds one source to the empty array
+      .build().usm.policyWizard;
+
+    const sourceAction = {
+      type: ACTION_TYPES.REMOVE_POLICY_FILE_SOURCE,
+      payload: 0
+    };
+    const sourceEndState = reducers(Immutable.from(_.cloneDeep(sourceState)), sourceAction);
+    assert.equal(sourceEndState.policy.sources.length, 0, 'policy.sources.length is 0 - source removed as expected');
+  });
+
+  test('on UPDATE_POLICY_FILE_SOURCE_PROPERTY, policy.sources[sourceId] prop(s) are properly set', function(assert) {
+    const sourceState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources([], true) // adds one source to the empty array
+      .build().usm.policyWizard;
+
+    // test enabled prop to cover policy.sources[0].someProp
+    let expectedValue = false;
+    let sourcePropAction = {
+      type: ACTION_TYPES.UPDATE_POLICY_FILE_SOURCE_PROPERTY,
+      payload: [{ sourceId: 0, field: 'policy.sources.0.enabled', value: expectedValue }]
+    };
+    let sourceEndState = reducers(Immutable.from(_.cloneDeep(sourceState)), sourcePropAction);
+    assert.deepEqual(sourceEndState.policy.sources[0].enabled, expectedValue, `policy.sources[0].enabled is ${expectedValue}`);
+
+    // test paths prop to cover policy.sources[0].someProp[0]
+    expectedValue = 'path-1/Updated/0';
+    sourcePropAction = {
+      type: ACTION_TYPES.UPDATE_POLICY_FILE_SOURCE_PROPERTY,
+      payload: [{ sourceId: 0, field: 'policy.sources.0.paths.0', value: expectedValue }]
+    };
+    sourceEndState = reducers(Immutable.from(_.cloneDeep(sourceState)), sourcePropAction);
+    assert.deepEqual(sourceEndState.policy.sources[0].paths[0], expectedValue, `policy.sources[0].paths[0] is ${expectedValue}`);
   });
 
   test('TOGGLE_SCAN_TYPE sets the scan type correctly', function(assert) {

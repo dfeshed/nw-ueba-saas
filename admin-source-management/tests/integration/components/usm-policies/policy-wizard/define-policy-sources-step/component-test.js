@@ -10,7 +10,7 @@ import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import sinon from 'sinon';
 
-let setState, updatePolicyPropertySpy;
+let setState, updatePolicyPropertySpy, addPolicyFileSourceSpy;
 const spys = [];
 const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: 'apache-server-1', exclusionFilters: ['abc', 'def'], paths: ['path1', 'path2'] } ];
 
@@ -21,6 +21,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
 
   hooks.before(function() {
     spys.push(updatePolicyPropertySpy = sinon.spy(policyWizardCreators, 'updatePolicyProperty'));
+    spys.push(addPolicyFileSourceSpy = sinon.spy(policyWizardCreators, 'addPolicyFileSource'));
   });
 
   hooks.beforeEach(function() {
@@ -125,31 +126,6 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
     await selectChoose('.file-source-type__list', '.ember-power-select-option', 2);
-    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
-  });
-
-  test('It triggers the update policy action creator when the file encoding is changed', async function(assert) {
-    new ReduxDataHelper(setState)
-      .policyWiz('filePolicy')
-      .policyWizFileSourceTypes()
-      .policyWizFileSources(sources)
-      .build();
-    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    await selectChoose('.file-encoding', '.ember-power-select-option', 2);
-    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
-  });
-
-  test('It triggers the update policy action creator when the source name is changed', async function(assert) {
-    new ReduxDataHelper(setState)
-      .policyWiz('filePolicy')
-      .policyWizFileSourceTypes()
-      .policyWizFileSources(sources)
-      .build();
-    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    const value = 'new-server';
-    const [eventIdEl] = findAll('.source-name input');
-    await fillIn(eventIdEl, value);
-    await triggerEvent(eventIdEl, 'blur');
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
   });
 
@@ -287,69 +263,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(findAll('.paths .no-path')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
   });
 
-  test('It triggers the update policy action creator when the exclusion filter is changed', async function(assert) {
-    new ReduxDataHelper(setState)
-      .policyWiz('filePolicy')
-      .policyWizFileSourceTypes()
-      .policyWizFileSources(sources)
-      .build();
-    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    const value = 'filter-1\nfilter-2\nfilter-3';
-    const [eventIdEl] = findAll('.exclusion-filters textarea');
-    await fillIn(eventIdEl, value);
-    await triggerEvent(eventIdEl, 'blur');
-    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
-  });
-
-  test('It triggers the update policy action creator when a new directory path is added', async function(assert) {
-    new ReduxDataHelper(setState)
-      .policyWiz('filePolicy')
-      .policyWizFileSourceTypes()
-      .policyWizFileSources(sources)
-      .build();
-    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    const addPath = document.querySelector('.paths .add-path .add-directory-path');
-    await click(addPath);
-    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
-  });
-
-  test('It triggers the update policy action creator when an existing directory path is removed', async function(assert) {
-    new ReduxDataHelper(setState)
-      .policyWiz('filePolicy')
-      .policyWizFileSourceTypes()
-      .policyWizFileSources(sources)
-      .build();
-    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    const [, deletePath] = document.querySelectorAll('.paths .delete-button');
-    await click(deletePath);
-    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
-  });
-
-  test('It triggers the update policy action creator when the enabled radio button is changed', async function(assert) {
-    new ReduxDataHelper(setState)
-      .policyWiz('filePolicy')
-      .policyWizFileSourceTypes()
-      .policyWizFileSources(sources)
-      .build();
-    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    const radioBtn = document.querySelector('.enabled .rsa-form-radio-wrapper:nth-of-type(2) input');
-    await click(radioBtn);
-    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
-  });
-
-  test('It triggers the update policy action creator when the data collection radio button is changed', async function(assert) {
-    new ReduxDataHelper(setState)
-      .policyWiz('filePolicy')
-      .policyWizFileSourceTypes()
-      .policyWizFileSources(sources)
-      .build();
-    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    const radioBtn = document.querySelector('.startOfEvents .rsa-form-radio-wrapper:nth-of-type(1) input');
-    await click(radioBtn);
-    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
-  });
-
-  test('It triggers the update policy action creator when a new file type is added', async function(assert) {
+  test('It triggers the addPolicyFileSource action creator when a new file type is added', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz('filePolicy')
       .policyWizFileSourceTypes()
@@ -358,18 +272,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
     const btn = document.querySelector('.file-source-type__list .add-row button');
     await click(btn);
-    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
+    assert.equal(addPolicyFileSourceSpy.callCount, 1, 'Update policy property action creator was called once');
   });
 
-  test('It triggers the update policy action creator when an existing file type is removed', async function(assert) {
-    new ReduxDataHelper(setState)
-      .policyWiz('filePolicy')
-      .policyWizFileSourceTypes()
-      .policyWizFileSources(sources)
-      .build();
-    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    const btn = document.querySelector('.remove-setting .rsa-icon');
-    await click(btn);
-    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
-  });
 });

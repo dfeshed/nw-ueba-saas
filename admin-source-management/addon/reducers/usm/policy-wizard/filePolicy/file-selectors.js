@@ -16,19 +16,37 @@ import {
 const { createSelector } = reselect;
 
 const _policyWizardState = (state) => state.usm.policyWizard;
-const policy = (state) => _policyWizardState(state).policy;
-
+const _policy = (state) => _policyWizardState(state).policy;
+const _fileSources = (state) => _policy(state).sources || [];
 const _listOfFileSourceTypes = (state) => _policyWizardState(state).listOfFileSourceTypes || [];
 
 export const fileSources = createSelector(
-  policy, _listOfFileSourceTypes,
-  (policy, _listOfFileSourceTypes) => {
-    const sources = policy.sources.map((source) => {
+  _fileSources, _listOfFileSourceTypes,
+  (_fileSources, _listOfFileSourceTypes) => {
+    const sources = _fileSources.map((source) => {
       return { ...source, fileTypePrettyName: getFileSourceTypeDisplayName(source.fileType, _listOfFileSourceTypes) };
     });
     return sources;
   }
 );
+
+export const fileSourcesIds = createSelector(
+  fileSources,
+  (sources) => Object.keys(sources) // currently really the array indexes (or is it indices?)
+);
+
+export const fileSourceById = (state, id) => {
+  const sources = fileSources(state);
+  return sources[id];
+};
+
+export const fileSourceExclusionFilters = (state, id) => {
+  const source = fileSourceById(state, id);
+  // Since filter is stored as an array in state, convert to string and display it in the textarea.
+  if (source && source.exclusionFilters) {
+    return source.exclusionFilters.join('\n');
+  }
+};
 
 export const fileSourcesList = createSelector(
   [_listOfFileSourceTypes],
@@ -52,13 +70,13 @@ export const fileSourcesList = createSelector(
  * @return  {obj} {name: "apache", prettyName: "apache"}
  */
 export const selectedFileSource = createSelector(
-  policy, fileSourcesList,
-  (policy, fileSourcesList) => {
+  _policy, fileSourcesList,
+  (_policy, fileSourcesList) => {
     let selected = null;
 
     for (let s = 0; s < fileSourcesList.length; s++) {
       const source = fileSourcesList[s];
-      if (policy.selectedFileSource === source.name) {
+      if (_policy.selectedFileSource === source.name) {
         selected = source;
         break;
       }
@@ -83,7 +101,7 @@ export const selectedFileSourceDefaults = createSelector(
         startOfEvents: false,
         sourceName: '',
         exclusionFilters: [],
-        paths: selectedFileSource.paths
+        paths: [...selectedFileSource.paths]
       };
       return defaults;
     }
@@ -91,11 +109,6 @@ export const selectedFileSourceDefaults = createSelector(
 );
 
 export const sourceConfig = () => SOURCE_CONFIG;
-
-export const sources = createSelector(
-  policy,
-  (policy) => policy.sources
-);
 
 /**
  * validates the array elments in the sources array.
@@ -109,7 +122,7 @@ export const sourceNameValidator = (state) => {
   let error = false;
   let message = '';
   let invalidEntry = 'invalid';
-  const value = sources(state);
+  const value = fileSources(state);
   let invalidDirPath = 'invalid';
   let dirPathEmptyMsg = '';
   let dirPathLength = '';
@@ -175,7 +188,7 @@ export const exFilterValidator = (state) => {
   let message = '';
   let invalidFilter = '';
   let invalidFilterIndex = -1;
-  const value = sources(state);
+  const value = fileSources(state);
 
   if (value) {
     // sources is an array of objects, loop through each obj and validate the sourceName within

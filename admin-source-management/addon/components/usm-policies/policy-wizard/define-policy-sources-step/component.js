@@ -2,32 +2,29 @@ import Component from '@ember/component';
 import { scheduleOnce } from '@ember/runloop';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import _ from 'lodash';
 import {
-  updatePolicyProperty
+  updatePolicyProperty,
+  addPolicyFileSource
 } from 'admin-source-management/actions/creators/policy-wizard-creators';
 import {
-  fileSources,
+  fileSourcesIds,
   sourceConfig,
   fileSourcesList,
   selectedFileSource,
-  selectedFileSourceDefaults,
-  sourceNameValidator,
-  exFilterValidator
+  selectedFileSourceDefaults
 } from 'admin-source-management/reducers/usm/policy-wizard/filePolicy/file-selectors';
 
 const stateToComputed = (state) => ({
-  sources: fileSources(state),
+  sourcesIds: fileSourcesIds(state),
   columns: sourceConfig(),
   fileSourcesList: fileSourcesList(state),
   selectedFileSource: selectedFileSource(state),
-  selectedFileSourceDefaults: selectedFileSourceDefaults(state),
-  sourceNameValidator: sourceNameValidator(state),
-  exFilterValidator: exFilterValidator(state)
+  selectedFileSourceDefaults: selectedFileSourceDefaults(state)
 });
 
 const dispatchToActions = {
-  updatePolicyProperty
+  updatePolicyProperty,
+  addPolicyFileSource
 };
 
 const DefinePolicySourcesStep = Component.extend({
@@ -38,14 +35,6 @@ const DefinePolicySourcesStep = Component.extend({
   panelId() {
     return `fileTypeSourcesTooltip-${this.get('elementId')}`;
   },
-  @computed('sources')
-  fileSources(sources) {
-    return _.cloneDeep(sources);
-  },
-
-  _updateFileSources() {
-    this.send('updatePolicyProperty', 'sources', this.get('fileSources'));
-  },
 
   _scrollToAddSelectedFileTypeBtn() {
     this.get('element').querySelector('.add-selected-file-type').scrollIntoView(false);
@@ -55,18 +44,8 @@ const DefinePolicySourcesStep = Component.extend({
     // adding a container to the sources
     addRowFilter() {
       const selectedFileSourceDefaults = this.get('selectedFileSourceDefaults');
-      this.get('fileSources').pushObject(selectedFileSourceDefaults);
-      this._updateFileSources();
+      this.send('addPolicyFileSource', selectedFileSourceDefaults);
       scheduleOnce('afterRender', this, '_scrollToAddSelectedFileTypeBtn');
-    },
-    // pass the index of the row to delete the row in the sources
-    deleteRow(index) {
-      this.get('fileSources').removeAt(index);
-      this._updateFileSources();
-    },
-    // when the child component `body cell` modifies fileSources, this gets called
-    sourceUpdated() {
-      this._updateFileSources();
     }
   }
 });

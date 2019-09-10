@@ -367,7 +367,6 @@ export default reduxActions.handleActions({
 
   // edrPolicy actions
   [ACTION_TYPES.FETCH_ENDPOINT_SERVERS]: edrPolicyReducers.fetchEndpointServers,
-
   [ACTION_TYPES.EDR_DEFAULT_POLICY]: edrPolicyReducers.edrDefaultPolicy,
 
   // windowsLogPolicy actions
@@ -375,6 +374,9 @@ export default reduxActions.handleActions({
 
   // filePolicy actions
   [ACTION_TYPES.FETCH_FILE_SOURCE_TYPES]: filePolicyReducers.fetchFileSourceTypes,
+  [ACTION_TYPES.ADD_POLICY_FILE_SOURCE]: filePolicyReducers.addPolicyFileSource,
+  [ACTION_TYPES.REMOVE_POLICY_FILE_SOURCE]: filePolicyReducers.removePolicyFileSource,
+  [ACTION_TYPES.UPDATE_POLICY_FILE_SOURCE_PROPERTY]: filePolicyReducers.updatePolicyFileSourceProperty,
 
   // define-policy-step -
   [ACTION_TYPES.TOGGLE_SCAN_TYPE]: edrPolicyReducers.toggleScanType,
@@ -397,6 +399,7 @@ export default reduxActions.handleActions({
     return newState;
   },
 
+  // updates the passed policy properties
   [ACTION_TYPES.UPDATE_POLICY_PROPERTY]: (state, action) => {
     let newState = state;
     const fieldValuePairs = action.payload;
