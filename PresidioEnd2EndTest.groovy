@@ -123,7 +123,6 @@ def setBaseUrl(
 }
 
 def uebaInstallRPMs() {
-    sh "rm -rf /var/netwitness/presidio/flume/conf/adapter/transformers/backup/"
     if (params.SIDE_BRANCH_JOD_NUMBER == '') {
         sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/install_upgrade_rpms.sh $VERSION $env.OLD_UEBA_RPMS"
     } else {
