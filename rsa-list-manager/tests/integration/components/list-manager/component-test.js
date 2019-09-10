@@ -8,7 +8,6 @@ import { patchReducer } from '../../../helpers/vnext-patch';
 import { getTextFromDOMArray } from '../../../helpers/util';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
-
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
 const ENTER_KEY = 13;
@@ -51,7 +50,6 @@ module('Integration | Component | list-manager', function(hooks) {
     assert.equal(findAll(`${listItems}.is-selected a`).length == 1, hasSelectedItem);
 
     await click(optionToClick);
-
   };
 
   const assertForViewToggle = async function(assert, footerButtons, isListView) {
@@ -59,13 +57,11 @@ module('Integration | Component | list-manager', function(hooks) {
     assert.equal(findAll('footer.list-footer').length == 1, isListView);
     const buttons = findAll('footer button');
     assert.equal(getTextFromDOMArray(buttons), footerButtons);
-
   };
 
   test('The list-manager component renders to the DOM with selected item in the caption', async function(assert) {
     assert.expect(9);
-    new ReduxDataHelper(setState).foo('test').build();
-
+    new ReduxDataHelper(setState).build();
     this.set('name', 'My Items');
     this.set('list', items);
     this.set('selectedItem', items[1]);
@@ -87,6 +83,7 @@ module('Integration | Component | list-manager', function(hooks) {
 
   test('Select action on item does nothing if same item is selected, but collapses dropdown', async function(assert) {
     assert.expect(10);
+    new ReduxDataHelper(setState).build();
 
     this.set('name', 'My Items');
     this.set('list', items);
@@ -115,6 +112,7 @@ module('Integration | Component | list-manager', function(hooks) {
 
   test('list-manager component renders caption without selected item, renders icons indicating if ootb or not', async function(assert) {
     assert.expect(12);
+    new ReduxDataHelper(setState).build();
 
     this.set('name', 'Other Items');
     this.set('list', [{ id: 1, name: 'a', ootb: true }, { id: 2, name: 'b', ootb: false }]);
@@ -144,6 +142,8 @@ module('Integration | Component | list-manager', function(hooks) {
 
   test('Use Up Arrow Key to traverse through items', async function(assert) {
     assert.expect(6);
+    new ReduxDataHelper(setState).build();
+
     this.set('name', 'Some Column Groups');
     this.set('list', items);
     this.set('selectedItem', items[1]);
@@ -156,7 +156,6 @@ module('Integration | Component | list-manager', function(hooks) {
       listName=name
       list=list
       selectedItem=selectedItem
-      highlightedIndex=highlightedIndex
       itemSelection=handleSelection as |manager|}}
         {{#manager.itemList as |list|}}
           {{#list.item as |item|}}
@@ -172,23 +171,28 @@ module('Integration | Component | list-manager', function(hooks) {
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[3].name,
       'Focus shall be on the last item');
-    assert.equal(this.get('highlightedIndex'), 3, 'highlightedIndex shall be set correctly');
+    const state1 = this.owner.lookup('service:redux').getState();
+    assert.equal(state1.listManager.highlightedIndex, 3, 'highlightedIndex shall be set correctly');
 
     // Up Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[2].name,
       'Focus shall be on the previous item');
-    assert.equal(this.get('highlightedIndex'), 2, 'highlightedIndex shall be set correctly');
+    const state2 = this.owner.lookup('service:redux').getState();
+    assert.equal(state2.listManager.highlightedIndex, 2, 'highlightedIndex shall be set correctly');
 
     // Up Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[0].name,
       'Focus shall be on the item before the selected item, skipping the selected item');
-    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+    const state3 = this.owner.lookup('service:redux').getState();
+    assert.equal(state3.listManager.highlightedIndex, 0, 'highlightedIndex shall be set correctly');
   });
 
   test('Use Down Arrow Key to traverse through items', async function(assert) {
     assert.expect(6);
+    new ReduxDataHelper(setState).build();
+
     this.set('name', 'Some Column Groups');
     this.set('list', items);
     this.set('selectedItem', items[2]);
@@ -200,7 +204,6 @@ module('Integration | Component | list-manager', function(hooks) {
     await render(hbs`{{#list-manager
       listName=name
       list=list
-      highlightedIndex=highlightedIndex
       selectedItem=selectedItem
       itemSelection=handleSelection as |manager|}}
         {{#manager.itemList as |list|}}
@@ -217,23 +220,28 @@ module('Integration | Component | list-manager', function(hooks) {
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[0].name,
       'Focus shall be on the first item');
-    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+    const state1 = this.owner.lookup('service:redux').getState();
+    assert.equal(state1.listManager.highlightedIndex, 0, 'highlightedIndex shall be set correctly');
 
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[1].name,
       'Focus shall be on the next item');
-    assert.equal(this.get('highlightedIndex'), 1, 'highlightedIndex shall be set correctly');
+    const state2 = this.owner.lookup('service:redux').getState();
+    assert.equal(state2.listManager.highlightedIndex, 1, 'highlightedIndex shall be set correctly');
 
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[3].name,
       'Focus shall be on the item after the selected item, skipping the selected item');
-    assert.equal(this.get('highlightedIndex'), 3, 'highlightedIndex shall be set correctly');
+    const state3 = this.owner.lookup('service:redux').getState();
+    assert.equal(state3.listManager.highlightedIndex, 3, 'highlightedIndex shall be set correctly');
   });
 
   test('Use Up and Down Arrow Keys to traverse through items and Enter Key to select item', async function(assert) {
     assert.expect(11);
+    new ReduxDataHelper(setState).build();
+
     this.set('name', 'Some Column Groups');
     this.set('list', items);
     this.set('selectedItem', items[2]);
@@ -245,7 +253,6 @@ module('Integration | Component | list-manager', function(hooks) {
     await render(hbs`{{#list-manager
       listName=name
       list=list
-      highlightedIndex=highlightedIndex
       selectedItem=selectedItem
       itemSelection=handleSelection as |manager|}}
         {{#manager.itemList as |list|}}
@@ -262,25 +269,29 @@ module('Integration | Component | list-manager', function(hooks) {
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[0].name, 'Focus shall be on the first item');
-    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+    const state1 = this.owner.lookup('service:redux').getState();
+    assert.equal(state1.listManager.highlightedIndex, 0, 'highlightedIndex shall be set correctly');
 
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[1].name,
       'Focus shall be on the next item');
-    assert.equal(this.get('highlightedIndex'), 1, 'highlightedIndex shall be set correctly');
+    const state2 = this.owner.lookup('service:redux').getState();
+    assert.equal(state2.listManager.highlightedIndex, 1, 'highlightedIndex shall be set correctly');
 
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[3].name,
       'Focus shall be on the item after the selected item, skipping the selected item');
-    assert.equal(this.get('highlightedIndex'), 3, 'highlightedIndex shall be set correctly');
+    const state3 = this.owner.lookup('service:redux').getState();
+    assert.equal(state3.listManager.highlightedIndex, 3, 'highlightedIndex shall be set correctly');
 
     // Up Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[1].name,
       'Focus shall be on the previous item, skipping the selected item');
-    assert.equal(this.get('highlightedIndex'), 1, 'highlightedIndex shall be set correctly');
+    const state4 = this.owner.lookup('service:redux').getState();
+    assert.equal(state4.listManager.highlightedIndex, 1, 'highlightedIndex shall be set correctly');
 
     // Enter
     await triggerKeyEvent(buttonMenuSelector, 'keyup', ENTER_KEY);
@@ -288,6 +299,8 @@ module('Integration | Component | list-manager', function(hooks) {
   });
 
   test('Use Mouse and Up and Down Arrow Keys to highlight item', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
     this.set('name', 'Some Column Groups');
     this.set('list', items);
     this.set('selectedItem', items[2]);
@@ -297,7 +310,6 @@ module('Integration | Component | list-manager', function(hooks) {
     await render(hbs`{{#list-manager
       listName=name
       list=list
-      highlightedIndex=highlightedIndex
       selectedItem=selectedItem
       itemSelection=handleSelection as |manager|}}
         {{#manager.itemList as |list|}}
@@ -314,7 +326,8 @@ module('Integration | Component | list-manager', function(hooks) {
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[0].name, 'Focus shall be on the first item');
-    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+    const state1 = this.owner.lookup('service:redux').getState();
+    assert.equal(state1.listManager.highlightedIndex, 0, 'highlightedIndex shall be set correctly');
 
     // Mouseover on the second item from top
     // trigger 'mousemove' event first to set onMouse property
@@ -322,15 +335,19 @@ module('Integration | Component | list-manager', function(hooks) {
     await triggerEvent('li:nth-of-type(2)', 'mouseover');
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[1].name,
       'Focus shall be on the item with mouseover');
-    assert.equal(this.get('highlightedIndex'), 1, 'highlightedIndex shall be set correctly');
+    const state2 = this.owner.lookup('service:redux').getState();
+    assert.equal(state2.listManager.highlightedIndex, 1, 'highlightedIndex shall be set correctly');
 
     // Up Arrow while on the second item from top - to highlight the first item
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), items[0].name, 'Focus shall be on the previous item');
-    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+    const state3 = this.owner.lookup('service:redux').getState();
+    assert.equal(state3.listManager.highlightedIndex, 0, 'highlightedIndex shall be set correctly');
   });
 
   test('Use Mouse and Up and Down Arrow Keys to navigate from bottom to top with scrolling', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
     // longer list so scroll bar would be present
     const moreItems = [
       { id: 1, name: 'eba' },
@@ -361,7 +378,6 @@ module('Integration | Component | list-manager', function(hooks) {
     await render(hbs`{{#list-manager
       listName=name
       list=list
-      highlightedIndex=highlightedIndex
       selectedItem=selectedItem
       itemSelection=handleSelection as |manager|}}
         {{#manager.itemList as |list|}}
@@ -378,7 +394,8 @@ module('Integration | Component | list-manager', function(hooks) {
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[0].name, 'Focus shall be on the first item');
-    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+    const state1 = this.owner.lookup('service:redux').getState();
+    assert.equal(state1.listManager.highlightedIndex, 0, 'highlightedIndex shall be set correctly');
 
     // Mouseover on an item near bottom
     // trigger 'mousemove' event first to set onMouse property
@@ -386,25 +403,31 @@ module('Integration | Component | list-manager', function(hooks) {
     await triggerEvent('li:nth-of-type(15)', 'mouseover');
     assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[14].name,
       'Focus shall be on the item with mouseover');
-    assert.equal(this.get('highlightedIndex'), 14, 'highlightedIndex shall be set correctly');
+    const state2 = this.owner.lookup('service:redux').getState();
+    assert.equal(state2.listManager.highlightedIndex, 14, 'highlightedIndex shall be set correctly');
 
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[15].name, 'Focus shall be on the next item');
-    assert.equal(this.get('highlightedIndex'), 15, 'highlightedIndex shall be set correctly');
+    const state3 = this.owner.lookup('service:redux').getState();
+    assert.equal(state3.listManager.highlightedIndex, 15, 'highlightedIndex shall be set correctly');
 
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[0].name, 'Focus shall be on the first item');
-    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+    const state4 = this.owner.lookup('service:redux').getState();
+    assert.equal(state4.listManager.highlightedIndex, 0, 'highlightedIndex shall be set correctly');
 
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[1].name, 'Focus shall be on the next item');
-    assert.equal(this.get('highlightedIndex'), 1, 'highlightedIndex shall be set correctly');
+    const state5 = this.owner.lookup('service:redux').getState();
+    assert.equal(state5.listManager.highlightedIndex, 1, 'highlightedIndex shall be set correctly');
   });
 
   test('Use Mouse and Up and Down Arrow Keys to navigate from top to bottom with scrolling', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
     // longer list so scroll bar would be present
     const moreItems = [
       { id: 1, name: 'eba' },
@@ -435,7 +458,6 @@ module('Integration | Component | list-manager', function(hooks) {
     await render(hbs`{{#list-manager
       listName=name
       list=list
-      highlightedIndex=highlightedIndex
       selectedItem=selectedItem
       itemSelection=handleSelection as |manager|}}
         {{#manager.itemList as |list|}}
@@ -452,7 +474,8 @@ module('Integration | Component | list-manager', function(hooks) {
     // Up Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[15].name, 'Focus shall be on the last item');
-    assert.equal(this.get('highlightedIndex'), 15, 'highlightedIndex shall be set correctly');
+    const state1 = this.owner.lookup('service:redux').getState();
+    assert.equal(state1.listManager.highlightedIndex, 15, 'highlightedIndex shall be set correctly');
 
     // Mouseover on an item near top
     // trigger 'mousemove' event first to set onMouse property
@@ -460,30 +483,37 @@ module('Integration | Component | list-manager', function(hooks) {
     await triggerEvent('li:nth-of-type(3)', 'mouseover');
     assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[2].name,
       'Focus shall be on the item with mouseover');
-    assert.equal(this.get('highlightedIndex'), 2, 'highlightedIndex shall be set correctly');
+    const state2 = this.owner.lookup('service:redux').getState();
+    assert.equal(state2.listManager.highlightedIndex, 2, 'highlightedIndex shall be set correctly');
 
     // Up Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[1].name, 'Focus shall be on the previous item');
-    assert.equal(this.get('highlightedIndex'), 1, 'highlightedIndex shall be set correctly');
+    const state3 = this.owner.lookup('service:redux').getState();
+    assert.equal(state3.listManager.highlightedIndex, 1, 'highlightedIndex shall be set correctly');
 
     // Up Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[0].name, 'Focus shall be on the first item');
-    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+    const state4 = this.owner.lookup('service:redux').getState();
+    assert.equal(state4.listManager.highlightedIndex, 0, 'highlightedIndex shall be set correctly');
 
     // Up Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[15].name, 'Focus shall be on the last item');
-    assert.equal(this.get('highlightedIndex'), 15, 'highlightedIndex shall be set correctly');
+    const state5 = this.owner.lookup('service:redux').getState();
+    assert.equal(state5.listManager.highlightedIndex, 15, 'highlightedIndex shall be set correctly');
 
     // Up Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
     assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[14].name, 'Focus shall be on the previous item');
-    assert.equal(this.get('highlightedIndex'), 14, 'highlightedIndex shall be set correctly');
+    const state6 = this.owner.lookup('service:redux').getState();
+    assert.equal(state6.listManager.highlightedIndex, 14, 'highlightedIndex shall be set correctly');
   });
 
   test('Filtering should be available via contextual API', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
     this.set('name', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});
@@ -518,16 +548,14 @@ module('Integration | Component | list-manager', function(hooks) {
 
 
   test('filtering should not be retained when dropdown is closed', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
     this.set('name', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});
-    this.set('resetHighlightedIndex', () => {
-      this.set('highlightedIndex', -1);
-    });
 
     await render(hbs`{{#list-manager
       listName=name
-      highlightedIndex=highlightedIndex
       list=list itemSelection=handleSelection as |manager|}}
         {{manager.filter}}
         {{#manager.itemList as |list|}}
@@ -553,11 +581,14 @@ module('Integration | Component | list-manager', function(hooks) {
     await click(`${buttonGroupSelector} button`);
 
     assert.equal(findAll(listItems).length, 4, 'Filter reset');
-    assert.equal(this.get('highlightedIndex'), -1, 'highlightedIndex shall be reset');
+    const state1 = this.owner.lookup('service:redux').getState();
+    assert.equal(state1.listManager.highlightedIndex, -1, 'highlightedIndex shall be reset');
 
   });
 
   test('displays no results message when everything is filtered out', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
     this.set('name', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});
@@ -587,6 +618,8 @@ module('Integration | Component | list-manager', function(hooks) {
   });
 
   test('Filtering function can be provided outside the addon', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
     assert.expect(6);
 
     this.set('name', 'My Items');
@@ -627,6 +660,7 @@ module('Integration | Component | list-manager', function(hooks) {
   });
 
   test('clicking on the footer buttons toggles between list-view and details-view', async function(assert) {
+    new ReduxDataHelper(setState).build();
 
     this.set('name', 'My Items');
     this.set('list', items);
@@ -659,6 +693,7 @@ module('Integration | Component | list-manager', function(hooks) {
   });
 
   test('clicking on info icon on an item navigates to item details', async function(assert) {
+    new ReduxDataHelper(setState).build();
 
     this.set('listName', 'My Items');
     this.set('list', items);
@@ -696,6 +731,7 @@ module('Integration | Component | list-manager', function(hooks) {
 
   test('clicking on `Select Item` in an unselected item\'s details causes item seletion', async function(assert) {
     assert.expect(3);
+    new ReduxDataHelper(setState).build();
 
     this.set('listName', 'My Items');
     this.set('list', items);
@@ -735,6 +771,7 @@ module('Integration | Component | list-manager', function(hooks) {
 
   test('clicking on `Select Item` in an already  selected item\'s details just collapses the list', async function(assert) {
     assert.expect(2);
+    new ReduxDataHelper(setState).build();
 
     this.set('listName', 'My Items');
     this.set('list', items);
@@ -772,5 +809,4 @@ module('Integration | Component | list-manager', function(hooks) {
 
     assert.ok(find('.rsa-button-menu.collapsed'), 'Item selection from details causes list to collapse');
   });
-
 });

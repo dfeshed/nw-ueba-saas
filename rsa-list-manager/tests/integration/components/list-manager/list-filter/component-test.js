@@ -3,14 +3,26 @@ import hbs from 'htmlbars-inline-precompile';
 import { render, click, find } from '@ember/test-helpers';
 import { typeInSearch } from 'ember-power-select/test-support/helpers';
 import { setupRenderingTest } from 'ember-qunit';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { patchReducer } from '../../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+
+let setState;
 
 module('Integration | Component | list filter', function(hooks) {
   setupRenderingTest(hooks);
 
+  hooks.beforeEach(function() {
+    setState = (state) => {
+      patchReducer(this, state);
+    };
+    initialize(this.owner);
+  });
+
   const originalList = [ { id: '1', name: 'foo' }, { id: '2', name: 'bar' }];
 
   test('Filters list with default filtering', async function(assert) {
-
+    new ReduxDataHelper(setState).build();
     this.set('originalList', originalList);
     this.set('listName', 'List of Things');
     this.set('updateFilteredList', (updatedList) => {
@@ -37,6 +49,7 @@ module('Integration | Component | list filter', function(hooks) {
   });
 
   test('clear filter resets the filter input, results, highlightedIndex', async function(assert) {
+    new ReduxDataHelper(setState).build();
     this.set('originalList', originalList);
     this.set('listName', 'List of Things');
     this.set('updateFilteredList', (updatedList) => {
@@ -65,12 +78,13 @@ module('Integration | Component | list filter', function(hooks) {
     await click(find('.list-filter .clear-filter button'));
     assert.equal(filterInput.value, '', 'Filter input cleared');
     assert.equal(this.get('filteredList').length, 2, 'filter cleared to render original list back');
-    assert.equal(this.get('highlightedIndex'), -1, 'highlightedIndex shall be reset');
+    const state1 = this.owner.lookup('service:redux').getState();
+    assert.equal(state1.listManager.highlightedIndex, -1, 'highlightedIndex shall be reset');
   });
 
   test('Filters list with custom filtering', async function(assert) {
+    new ReduxDataHelper(setState).build();
     assert.expect(3);
-
     this.set('originalList', originalList);
     this.set('listName', 'List of Things');
     this.set('filterAction', (value) => {
@@ -91,6 +105,7 @@ module('Integration | Component | list filter', function(hooks) {
   });
 
   test('highlightedIndex is reset when filter is in focus', async function(assert) {
+    new ReduxDataHelper(setState).build();
     this.set('originalList', originalList);
     this.set('listName', 'List of Things');
     this.set('filterAction', (value) => {
@@ -100,20 +115,17 @@ module('Integration | Component | list filter', function(hooks) {
     this.set('updateFilteredList', (updatedList) => {
       this.set('filteredList', updatedList);
     });
-    this.set('resetHighlightedIndex', () => {
-      assert.ok(true, 'resetHighlightedIndex shall be triggered when filter input field is in focus');
-      this.set('highlightedIndex', -1);
-    });
-    this.set('highlightedIndex', 0);
 
     await render(hbs`{{list-manager/list-filter listName=listName originalList=originalList 
       resetHighlightedIndex=resetHighlightedIndex filterAction=filterAction updateFilteredList=updateFilteredList}}`);
 
     await click(find('.list-filter input'));
-    assert.equal(this.get('highlightedIndex'), -1, 'highlightedIndex shall be reset');
+    const state1 = this.owner.lookup('service:redux').getState();
+    assert.equal(state1.listManager.highlightedIndex, -1, 'highlightedIndex shall be reset');
   });
 
   test('highlightedIndex is reset when filterText changes', async function(assert) {
+    new ReduxDataHelper(setState).build();
     this.set('originalList', originalList);
     this.set('listName', 'List of Things');
     this.set('filterAction', (value) => {
@@ -123,25 +135,21 @@ module('Integration | Component | list filter', function(hooks) {
     this.set('updateFilteredList', (updatedList) => {
       this.set('filteredList', updatedList);
     });
-    this.set('resetHighlightedIndex', () => {
-      assert.ok(true, 'resetHighlightedIndex shall be triggered when filter input field is in focus');
-      this.set('highlightedIndex', -1);
-    });
-    this.set('highlightedIndex', 0);
 
     await render(hbs`{{list-manager/list-filter listName=listName originalList=originalList
       filterText=filterText resetHighlightedIndex=resetHighlightedIndex
       filterAction=filterAction updateFilteredList=updateFilteredList}}`);
 
     await click(find('.list-filter input'));
-    assert.equal(this.get('highlightedIndex'), -1, 'highlightedIndex shall be reset');
-    this.set('highlightedIndex', 1);
+    const state1 = this.owner.lookup('service:redux').getState();
+    assert.equal(state1.listManager.highlightedIndex, -1, 'highlightedIndex shall be reset');
     await typeInSearch('a');
     assert.equal(this.get('filterText'), 'a', 'filterText shall be set correctly');
-    assert.equal(this.get('highlightedIndex'), -1, 'highlightedIndex shall be reset');
-    this.set('highlightedIndex', 1);
+    const state2 = this.owner.lookup('service:redux').getState();
+    assert.equal(state2.listManager.highlightedIndex, -1, 'highlightedIndex shall be reset');
     await typeInSearch('an');
     assert.equal(this.get('filterText'), 'an', 'filterText shall be set correctly');
-    assert.equal(this.get('highlightedIndex'), -1, 'highlightedIndex shall be reset');
+    const state3 = this.owner.lookup('service:redux').getState();
+    assert.equal(state3.listManager.highlightedIndex, -1, 'highlightedIndex shall be reset');
   });
 });

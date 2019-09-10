@@ -31,7 +31,7 @@ export default class DataHelper {
   // in case it needs to be used/checked
   build() {
     const state = Immutable.from({
-      listManagers: this.state
+      listManager: this.state
     });
     if (this.setState) {
       this.setState(state);
@@ -39,8 +39,8 @@ export default class DataHelper {
     return state.asMutable();
   }
 
-  foo(value = 'bar') {
-    _set(this.state, 'foo', value);
+  highlightedIndex(index = -1) {
+    _set(this.state, 'highlightedIndex', index);
     return this;
   }
 }

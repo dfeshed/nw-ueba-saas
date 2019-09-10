@@ -1,15 +1,25 @@
 import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
+import { connect } from 'ember-redux';
+import { setHighlightedIndex } from 'rsa-list-manager/actions/creators/creators';
+import { highlightedIndex } from 'rsa-list-manager/selectors/list-manager/selectors';
 
-export default Component.extend({
+const stateToComputed = (state) => ({
+  highlightedIndex: highlightedIndex(state)
+});
+
+const dispatchToActions = {
+  setHighlightedIndex
+};
+
+const ItemList = Component.extend({
   layout,
   tagName: 'ul',
   classNames: ['rsa-item-list'],
   listName: null,
   list: null,
   selectedItem: null,
-  highlightedIndex: -1,
   onMouse: null, // true if user is using the mouse to navigate
 
   @computed('list', 'highlightedIndex')
@@ -75,7 +85,7 @@ export default Component.extend({
       if (el) {
         const selectorAll = this.element.querySelectorAll('.rsa-item-list li');
         const newCurrentIndex = Array.from(selectorAll).indexOf(el);
-        this.set('highlightedIndex', newCurrentIndex);
+        this.send('setHighlightedIndex', newCurrentIndex);
         el.focus();
       }
     }
@@ -128,7 +138,7 @@ export default Component.extend({
     const currentIndexIsLast = highlightedIndex === (list.get('length') - 1);
 
     // if there is no highlightedIndex, start at the first item
-    if (highlightedIndex < 0) {
+    if (highlightedIndex === undefined || highlightedIndex < 0) {
       nextIndex = 0;
     } else {
       // if at the last item, go to the first item
@@ -136,7 +146,7 @@ export default Component.extend({
       nextIndex = currentIndexIsLast ? 0 : this.get('highlightedIndex') + 1;
     }
 
-    this.set('highlightedIndex', nextIndex);
+    this.send('setHighlightedIndex', nextIndex);
 
     // if item is already selected, go to the next item
     if (nextIndex === selectedIndex) {
@@ -156,15 +166,14 @@ export default Component.extend({
     let nextIndex;
 
     // if there is no highlightedIndex, start at the last item
-    if (highlightedIndex < 0) {
+    if (highlightedIndex === undefined || highlightedIndex < 0) {
       nextIndex = list.length - 1;
     } else {
       // if at the first item, go to the last item
       // else, go to the previous item
       nextIndex = this.get('highlightedIndex') === 0 ? list.length - 1 : this.get('highlightedIndex') - 1;
     }
-
-    this.set('highlightedIndex', nextIndex);
+    this.send('setHighlightedIndex', nextIndex);
 
     // if item is already selected, go to the previous item
     if (nextIndex === selectedIndex) {
@@ -175,3 +184,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed, dispatchToActions)(ItemList);

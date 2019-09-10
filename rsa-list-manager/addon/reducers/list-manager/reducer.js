@@ -1,19 +1,15 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
-import { handle } from 'redux-pack';
-
 import * as ACTION_TYPES from 'rsa-list-manager/actions/types';
 
-const _initialState = Immutable.from({
-  foo: null
+const listManagerInitialState = Immutable.from({
+  highlightedIndex: -1
 });
 
-export default handleActions({
-  [ACTION_TYPES.SOME_ACTION_1]: (state, action) => {
-    return handle(state, action, {
-      success: (s) => {
-        return s;
-      }
-    });
+const listManagerReducer = handleActions({
+  [ACTION_TYPES.SET_HIGHLIGHTED_INDEX]: (state, action) => {
+    return state.set('highlightedIndex', action.payload);
   }
-}, _initialState);
+}, listManagerInitialState);
+
+export default listManagerReducer;

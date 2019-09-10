@@ -3,12 +3,15 @@ import layout from './template';
 import { htmlSafe } from '@ember/string';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
+import { setHighlightedIndex } from 'rsa-list-manager/actions/creators/creators';
+import { highlightedIndex } from 'rsa-list-manager/selectors/list-manager/selectors';
 
-const stateToComputed = () => ({
-  foo: 'bar'
+const stateToComputed = (state) => ({
+  highlightedIndex: highlightedIndex(state)
 });
 
 const dispatchToActions = {
+  setHighlightedIndex
 };
 
 const menuOffsetsStyle = (el) => {
@@ -38,9 +41,6 @@ const ListManager = Component.extend({
 
   // list rendered on filtering
   filteredList: null,
-
-  // highlightedIndex in list
-  highlightedIndex: -1,
 
   // View to be rendered through button actions (list-view, detail-view, etc)
   viewName: null,
@@ -104,7 +104,7 @@ const ListManager = Component.extend({
       this.set('offsetsStyle', menuOffsetsStyle(this.get('element')));
       this.set('viewName', 'list-view');
       this.toggleProperty('isExpanded');
-      this.set('highlightedIndex', -1);
+      this.send('setHighlightedIndex', -1);
     },
 
     handleItemSelection(item) {
@@ -121,10 +121,6 @@ const ListManager = Component.extend({
       this.set('filteredList', newList);
     },
 
-    resetHighlightedIndex() {
-      this.set('highlightedIndex', -1);
-    },
-
     editItem(item) {
       this.set('itemForEdit', item);
       this._updateView('edit-view');
@@ -133,7 +129,6 @@ const ListManager = Component.extend({
     detailsDone() {
       this._updateView('list-view');
     }
-
   }
 });
 

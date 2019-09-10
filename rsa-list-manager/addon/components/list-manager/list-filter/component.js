@@ -1,8 +1,19 @@
 import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
+import { connect } from 'ember-redux';
+import { setHighlightedIndex } from 'rsa-list-manager/actions/creators/creators';
+import { highlightedIndex } from 'rsa-list-manager/selectors/list-manager/selectors';
 
-export default Component.extend({
+const stateToComputed = (state) => ({
+  highlightedIndex: highlightedIndex(state)
+});
+
+const dispatchToActions = {
+  setHighlightedIndex
+};
+
+const ListFilter = Component.extend({
   layout,
   classNames: ['list-filter'],
   listName: null,
@@ -10,7 +21,6 @@ export default Component.extend({
   filterAction: null,
   updateFilteredList: null,
   filterText: '',
-  resetHighlightedIndex: () => {},
 
   didInsertElement() {
     this.initializeElement();
@@ -19,7 +29,7 @@ export default Component.extend({
   initializeElement() {
     this.set('filterText', '');
     this.get('updateFilteredList')(this.get('originalList'));
-    this.get('resetHighlightedIndex')();
+    this.send('setHighlightedIndex', -1);
   },
 
   filterList(value) {
@@ -35,7 +45,7 @@ export default Component.extend({
       }
     }
     this.get('updateFilteredList')(filteredList);
-    this.get('resetHighlightedIndex')();
+    this.send('setHighlightedIndex', -1);
   },
 
   @computed('listName')
@@ -51,7 +61,7 @@ export default Component.extend({
     },
 
     handleFocus() {
-      this.get('resetHighlightedIndex')();
+      this.send('setHighlightedIndex', -1);
     },
 
     resetFilter() {
@@ -59,3 +69,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed, dispatchToActions)(ListFilter);
