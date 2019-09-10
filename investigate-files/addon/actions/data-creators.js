@@ -30,6 +30,7 @@ import { setNewFileTab } from 'investigate-files/actions/visual-creators';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { parseQueryString } from 'investigate-shared/utils/query-util';
 import { extractFilesColumns } from 'investigate-files/reducers/schema/selectors';
+import { failure } from 'investigate-shared/utils/flash-messages';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -485,7 +486,10 @@ const _fetchAgentIdsByChecksum = (checksum, serviceId, callbacks) => {
           const computedAgentIds = agentIds.map((id) => ({ agentId: id }));
           dispatch({ type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: computedAgentIds });
           dispatch(_fetchFileNameForChecksum(checksum, serviceId, callbacks, metaSelectorConfig));
+        } else {
+          failure('investigateHosts.flash.hostUnavailable');
         }
+
       }
     };
     _getMetaValues(dispatch, input);

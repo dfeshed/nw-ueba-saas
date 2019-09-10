@@ -3937,7 +3937,8 @@ export default {
     },
     flash: {
       fileDownloadRequestSent: 'Files are set for download. Check the "Downloaded" column for status.',
-      genericFileDownloadRequestSent: 'Files are set for download. Check the "Downloads" tab for status.'
+      genericFileDownloadRequestSent: 'Files are set for download. Check the "Downloads" tab for status.',
+      hostUnavailable: 'File cannot be downloaded as there is no host associated with this file.'
     },
     detailsColumns: {
       fileName: 'Filename',
