@@ -5,6 +5,9 @@ import fortscale.utils.transform.FolderPathByOperationTypeTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.spring.TransformerConfigTest;
@@ -18,6 +21,9 @@ import java.time.Instant;
 @Import({TransformerConfigTest.class})
 public class FolderPathByOperationTypeTransformerTest extends TransformerJsonTest {
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     @Test
     public void testFolderPathTransformation_windows_FileOperation() throws IOException {
         String filePath = "C:\\Users\\alexp\\Desktop\\file.txt";
@@ -28,6 +34,7 @@ public class FolderPathByOperationTypeTransformerTest extends TransformerJsonTes
 
         FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("name","srcFilePath",
                 "srcFilePath", "srcFolderPath", "operationType");
+        applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(folderPathByOperationTypeTransformer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
         FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, folderPathByOperationTypeTransformer, FileTransformedEvent.class);
         Assert.assertEquals("C:\\Users\\alexp\\Desktop\\", fileTransformedEvent.getSrcFolderPath());
         Assert.assertEquals(filePath, fileTransformedEvent.getSrcFilePath());
@@ -42,6 +49,7 @@ public class FolderPathByOperationTypeTransformerTest extends TransformerJsonTes
                 filePath, false, 0L, "resultCode");
         FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("name", "srcFilePath",
                 "srcFilePath", "srcFolderPath", "operationType");
+        applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(folderPathByOperationTypeTransformer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
         FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, folderPathByOperationTypeTransformer, FileTransformedEvent.class);
         Assert.assertEquals("/folder/", fileTransformedEvent.getSrcFolderPath());
         Assert.assertEquals(filePath, fileTransformedEvent.getSrcFilePath());

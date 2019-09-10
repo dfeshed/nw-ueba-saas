@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -28,7 +27,7 @@ public class FolderPathByOperationTypeTransformer extends AbstractJsonObjectTran
     private final String operationTypeFieldName;
     private final String folderPathFieldName;
 
-    @Value("${folder.operation.types}")
+    @Value("#{'${folder.operation.types}'.split(',')}")
     private List<String> folderOperations;
 
     @JsonCreator
@@ -43,7 +42,6 @@ public class FolderPathByOperationTypeTransformer extends AbstractJsonObjectTran
         this.filePathFieldName = filePathFieldName;
         this.folderPathFieldName = folderPathFieldName;
         this.operationTypeFieldName = operationTypeFieldName;
-        this.folderOperations = new LinkedList<>();
     }
 
     @Override
