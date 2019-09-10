@@ -28,11 +28,11 @@ public class BrokerCefFormatter implements EventFormatter<String> {
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
         Map<String, Object> mapToFormat = Maps.newLinkedHashMap();
-        mapToFormat.put("event.time", converted.brokerEventTime);
+        mapToFormat.put("event_time", converted.brokerEventTime);
         mapToFormat.putAll(filtered);
 
         replaceByCustomField(mapToFormat, "netname");
-        replaceByCustomField(mapToFormat, "org.dst");
+        replaceByCustomField(mapToFormat, "org_dst");
 
         mapToFormat.entrySet().forEach(e -> eventBuilder.append(fieldToCefValue(e)));
         return eventBuilder.toString().trim();
@@ -40,7 +40,7 @@ public class BrokerCefFormatter implements EventFormatter<String> {
 
     private void replaceByCustomField(Map<String, Object> mapToFormat, String replace) {
         if (mapToFormat.containsKey(replace)) {
-            mapToFormat.put("presidio." + replace, mapToFormat.get(replace));
+            mapToFormat.put("presidio_" + replace, mapToFormat.get(replace));
             mapToFormat.remove(replace);
         }
     }
