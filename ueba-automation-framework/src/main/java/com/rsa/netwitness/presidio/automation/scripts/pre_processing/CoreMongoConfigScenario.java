@@ -23,6 +23,7 @@ class CoreMongoConfigScenario implements PreProcessingConfigScenario {
 
     @Override
     public void execute() {
+        adapterTestManager.restoreDefaultTransformerConfig();
         adapterTestManager.submitMongoDbDetailsIntoAdapterConfigurationProperties();
         adapterTestManager.setAdapterConfigurationPropertiesToTestMode();
         adapterTestManager.runUebaServerConfigScript(startDate);

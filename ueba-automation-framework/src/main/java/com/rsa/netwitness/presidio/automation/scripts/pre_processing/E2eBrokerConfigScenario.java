@@ -24,6 +24,7 @@ class E2eBrokerConfigScenario implements PreProcessingConfigScenario {
 
     @Override
     public void execute() {
+        adapterTestManager.restoreDefaultTransformerConfig();
         adapterTestManager.setAdapterConfigurationPropertiesToProductionMode();
         adapterTestManager.runUebaServerConfigScript(startDate);
         adapterTestManager.setEngineConfigurationParametersToTestingValues();

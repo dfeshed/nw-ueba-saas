@@ -288,4 +288,21 @@ public class AdapterTestManager {
             e.printStackTrace();
         }
     }
+
+
+    public void backupTransformerConfig() {
+        String command = "mkdir -p /var/netwitness/presidio/flume/conf/adapter/transformers/backup " +
+                "&& cp -n /var/netwitness/presidio/flume/conf/adapter/transformers/*.json " +
+                "/var/netwitness/presidio/flume/conf/adapter/transformers/backup/";
+
+        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
+    }
+
+    public void restoreDefaultTransformerConfig() {
+        backupTransformerConfig();
+        String command = "cp -f  /var/netwitness/presidio/flume/conf/adapter/transformers/backup/*.json " +
+                "/var/netwitness/presidio/flume/conf/adapter/transformers/";
+
+        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
+    }
 }
