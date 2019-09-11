@@ -97,12 +97,10 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
                     if (value.getDateTime().compareTo(eventDateTime) <= 0) {
                         // handle missing events
                         if (value.getSessionSplit() == eventSessionSplit - 1) {
-                            String sslSubjectName = (String) jacksonUtils.getFieldValue(document, namePath(TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME), null);
-                            String ja3Name = (String) jacksonUtils.getFieldValue(document, namePath(TlsTransformedEvent.JA3_FIELD_NAME), null);
-                            setEntityAttribute(document, TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME, new SslSubject(sslSubjectName));
-                            setEntityAttribute(document, TlsTransformedEvent.JA3_FIELD_NAME, new Ja3(ja3Name));
-                            document.put(TlsTransformedEvent.SSL_CAS_FIELD_NAME, document.get(TlsTransformedEvent.SSL_CAS_FIELD_NAME));
-                            document.put(TlsTransformedEvent.JA3S_FIELD_NAME, document.get(TlsTransformedEvent.JA3S_FIELD_NAME));
+                            setEntityAttribute(document, TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME, new SslSubject(value.getSslSubject().getName()));
+                            setEntityAttribute(document, TlsTransformedEvent.JA3_FIELD_NAME, new Ja3(value.getJa3().getName()));
+                            document.put(TlsTransformedEvent.SSL_CAS_FIELD_NAME, value.getSslCas());
+                            document.put(TlsTransformedEvent.JA3S_FIELD_NAME, value.getJa3s());
                             value.setSessionSplit(eventSessionSplit);
                             logger.debug("Enrich {} tls event with missed fields.", document.get(DOCUMENT_ID_FIELD));
                         } else {
