@@ -189,7 +189,10 @@ public class AlertsServiceImpl implements AlertsService {
                                      Set<String> indicatorTypes, String entityType) {
 
 
-        return findAlertsByFilters(null, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entityTags, entityId, indicatorTypes,entityType, false,false).getTotalCount();
+        return findAlertsByFilters(null, severityArray, statusArrayFilter, feedbackArrayFilter,
+                dateRangeFilter, entityName, entityTags, entityId,
+                indicatorTypes,entityType, false,false)
+                .getTotalCount();
     }
 
 
@@ -211,7 +214,8 @@ public class AlertsServiceImpl implements AlertsService {
                                            String entityTags, String entityId, Set<String> indicatorTypes, String entityType) {
 
 
-        AlertQuery query=alertConverterHelper.convertUiFilterToQueryDto(null,severityArrayFilter,statusArrayFilter,feedbackArrayFilter,dateRangeFilter,entityName,
+        AlertQuery query=alertConverterHelper.convertUiFilterToQueryDto(null,severityArrayFilter,statusArrayFilter,
+                feedbackArrayFilter,dateRangeFilter,entityName,
                 entityTags,entityId,indicatorTypes, entityType, false);
 
         AlertQuery.AggregateByEnum aggregateByEnum=null;
@@ -356,7 +360,8 @@ public class AlertsServiceImpl implements AlertsService {
     @Override
     public Alerts getAlertsByUsername(String userName) {
         PageRequest p = new PageRequest(-1, 10000);
-        return findAlertsByFilters(p, null, null, null, null, userName, null, null, null, null,true,false);
+        return findAlertsByFilters(p, null, null, null,
+                null, userName, null, null, null, null,true,false);
     }
 
     public List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(DateRange alertStartRange) {

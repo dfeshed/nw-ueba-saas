@@ -209,7 +209,8 @@ public class ApiAlertController extends BaseController {
 		} else {
 
 			//Todo: pass the filter itself and not list of values for both findAlertsByFilters  countAlertsByFilters
-			alerts = alertsService.findAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), filter.getAlertStartRange(), filter.getEntityName(),
+			alerts = alertsService.findAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(),
+					filter.getAlertStartRange(), filter.getEntityName(),
 					filter.getEntityTags(), filter.getEntityId(), filter.getIndicatorTypes(), filter.getEntityType(), true,filter.isLoadComments());
 			count = alerts.getTotalCount();
 		}
@@ -288,7 +289,8 @@ public class ApiAlertController extends BaseController {
 		results.setAlertStatus(statusCounts);
 
 		//Add severities
-		Map<String,Integer> severityCounts = alertsService.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null, startRange,null, null, null, null, null);
+		Map<String,Integer> severityCounts = alertsService.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null,
+				startRange,null, null, null, null, null);
 
 		results.setAlertOpenSeverity(severityCounts);
 
