@@ -4,6 +4,7 @@ import com.rsa.netwitness.presidio.automation.domain.output.SmartJa3Hourly;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface SmartJa3HourlyRepository extends MongoRepository<SmartJa3Hourly, String>  {
@@ -23,5 +24,10 @@ public interface SmartJa3HourlyRepository extends MongoRepository<SmartJa3Hourly
 
     @Query("{ 'smartScore': { $gte: ?0 }, $and: [ { 'contextId': ?1 } ] }")
     List<SmartJa3HourlyRepository> findByContextIdAndRequestedScore(Double score, String contextId);
+
+    Instant findFirstByOrderByCreatedDateAsc();
+
+    @Query("{ 'dateTime': { $gte: ?0 }, $and: [ { 'dateTime': { $lt: ?1 } } ] }")
+    List<SmartJa3HourlyRepository> findByStartInstant(Instant start, Instant end);
 
 }

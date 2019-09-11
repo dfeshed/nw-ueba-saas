@@ -38,6 +38,9 @@ public class SmartJa3Hourly {
     private Instant startInstant;
 
     @Expose
+    private Instant createdDate;
+
+    @Expose
     @Field("smartAggregationRecords")
     private smartAggregationRecords[] smartAggregationRecords;
 
@@ -113,9 +116,17 @@ public class SmartJa3Hourly {
         this.startInstant = startInstant;
     }
 
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
     @Override
     public String toString() {
-        return "SmartUserIdStoredRecored{" +
+        return "SmartJa3Hourly{" +
                 "id='" + id + '\'' +
                 ", fixedDurationStrategy='" + fixedDurationStrategy + '\'' +
                 ", smartValue=" + smartValue +
@@ -124,7 +135,8 @@ public class SmartJa3Hourly {
                 ", context=" + context +
                 ", contextId='" + contextId + '\'' +
                 ", startInstant=" + startInstant +
-                ", aggregationRecords=" + Arrays.toString(smartAggregationRecords) +
+                ", createdDate=" + createdDate +
+                ", smartAggregationRecords=" + Arrays.toString(smartAggregationRecords) +
                 '}';
     }
 

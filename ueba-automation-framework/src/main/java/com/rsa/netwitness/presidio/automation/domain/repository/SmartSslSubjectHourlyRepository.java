@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import com.rsa.netwitness.presidio.automation.domain.output.SmartSslSubjectHourly;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface SmartSslSubjectHourlyRepository extends MongoRepository<SmartSslSubjectHourly, String>  {
@@ -24,6 +25,9 @@ public interface SmartSslSubjectHourlyRepository extends MongoRepository<SmartSs
     @Query("{ 'smartScore': { $gte: ?0 }, $and: [ { 'contextId': ?1 } ] }")
     List<SmartSslSubjectHourlyRepository> findByContextIdAndRequestedScore(Double score, String contextId);
 
+    Instant findFirstByOrderByCreatedDateAsc();
 
+    @Query("{ 'dateTime': { $gte: ?0 }, $and: [ { 'dateTime': { $lt: ?1 } } ] }")
+    List<SmartSslSubjectHourlyRepository> findByStartInstant(Instant start, Instant end);
 
 }

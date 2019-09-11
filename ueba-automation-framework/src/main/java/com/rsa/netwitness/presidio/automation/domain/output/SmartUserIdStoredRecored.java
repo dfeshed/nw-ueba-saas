@@ -38,6 +38,10 @@ public class SmartUserIdStoredRecored {
     private Instant startInstant;
 
     @Expose
+    private Instant createdDate;
+
+
+    @Expose
     @Field("smartAggregationRecords")
     private smartAggregationRecords[] smartAggregationRecords;
 
@@ -113,6 +117,14 @@ public class SmartUserIdStoredRecored {
         this.startInstant = startInstant;
     }
 
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
     @Override
     public String toString() {
         return "SmartUserIdStoredRecored{" +
@@ -124,7 +136,8 @@ public class SmartUserIdStoredRecored {
                 ", context=" + context +
                 ", contextId='" + contextId + '\'' +
                 ", startInstant=" + startInstant +
-                ", aggregationRecords=" + Arrays.toString(smartAggregationRecords) +
+                ", createdDate=" + createdDate +
+                ", smartAggregationRecords=" + Arrays.toString(smartAggregationRecords) +
                 '}';
     }
 
