@@ -24,7 +24,7 @@ public class NetworkDataPreparation extends DataPreparationBase {
         UnusualTrafficVolumeAlerts unusualTrafficVolumeAlerts = new UnusualTrafficVolumeAlerts(historicalDaysBack, anomalyDay);
         HighNumberOf highNumberOfGen = new HighNumberOf(historicalDaysBack, anomalyDay);
         SessionSplitEnrichmentData sessionSplitEnrichmentData = new SessionSplitEnrichmentData();
-        FutureEventsForMetrics futureEventsGen = new FutureEventsForMetrics(3);
+        FutureEventsForMetrics futureEventsGen = new FutureEventsForMetrics(10);
 
         Stream<NetworkEvent> resultingStream = Stream.of(
                 sessionSplitEnrichmentData.generateAll(),
