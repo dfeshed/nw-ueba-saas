@@ -183,7 +183,7 @@ public class AlertConverterHelper {
      */
     public AlertQuery convertUiFilterToQueryDto(PageRequest pageRequest, String severityArray, String statusArrayFilter,
                                       String feedbackArrayFilter, DateRange dateRangeFilter, String entityName, String entityTags, String entityId,
-                                      Set<String> indicatorTypes, boolean expand) {
+                                      Set<String> indicatorTypes, String entityType, boolean expand) {
 
         AlertQuery alertQuery = new AlertQuery();
 
@@ -209,7 +209,7 @@ public class AlertConverterHelper {
         alertQuery.setEntityDocumentIds(entityIds);
 
         alertQuery.setIndicatorsName(indicatorTypesConverter.convertUiFilterToQueryDto(indicatorTypes));
-
+        alertQuery.setEntityType(entityType);
 
         alertQuery.setExpand(expand);
 

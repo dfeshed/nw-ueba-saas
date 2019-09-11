@@ -39,7 +39,7 @@ public interface AlertsService {
 	 */
 	Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 							   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
-							   String entityTags, String entityId, Set<String> indicatorTypes, boolean expand,boolean loadComments);
+							   String entityTags, String entityId, Set<String> indicatorTypes,String entityType, boolean expand,boolean loadComments);
 
 	/**
 	 * returns a the number of all alerts matching filters
@@ -47,7 +47,7 @@ public interface AlertsService {
 	 */
 	Long countAlertsByFilters(String severityArray, String statusArrayFilter,
 							  String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
-							  String entityTags, String entityId, Set<String> indicatorTypes);
+							  String entityTags, String entityId, Set<String> indicatorTypes, String entityType);
 
 
 
@@ -74,7 +74,7 @@ public interface AlertsService {
 	 */
 	Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
 									String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
-									String entityTags, String entityId, Set<String> indicatorTypes);
+									String entityTags, String entityId, Set<String> indicatorTypes, String entityType);
 
 
 	/**
