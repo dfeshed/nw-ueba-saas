@@ -11,23 +11,23 @@ public interface SmartSslSubjectHourlyRepository extends MongoRepository<SmartSs
 
 
     @Query("{ 'smartScore': { $gte: 50.0 } }")
-    List<SmartSslSubjectHourlyRepository> findAllBiggerThan50();
+    List<SmartSslSubjectHourly> findAllBiggerThan50();
 
     @Query("{ 'smartScore': { $gte: ?0 } }")
-    List<SmartSslSubjectHourlyRepository> findAllBiggerThanRequestedScore(Double score);
+    List<SmartSslSubjectHourly> findAllBiggerThanRequestedScore(Double score);
 
     @Query("{ 'contextId': ?0 }")
-    List<SmartSslSubjectHourlyRepository> findByContextId(String contextId);
+    List<SmartSslSubjectHourly> findByContextId(String contextId);
 
     @Query("{ 'smartScore': { $gte: 50.0 }, $and: [ { 'contextId': ?0 } ] }")
-    List<SmartSslSubjectHourlyRepository> findByContextIdAndGreaterThan50(String contextId);
+    List<SmartSslSubjectHourly> findByContextIdAndGreaterThan50(String contextId);
 
     @Query("{ 'smartScore': { $gte: ?0 }, $and: [ { 'contextId': ?1 } ] }")
-    List<SmartSslSubjectHourlyRepository> findByContextIdAndRequestedScore(Double score, String contextId);
+    List<SmartSslSubjectHourly> findByContextIdAndRequestedScore(Double score, String contextId);
 
-    Instant findFirstByOrderByCreatedDateAsc();
+    SmartSslSubjectHourly findFirstByOrderByCreatedDateAsc();
 
     @Query("{ 'dateTime': { $gte: ?0 }, $and: [ { 'dateTime': { $lt: ?1 } } ] }")
-    List<SmartSslSubjectHourlyRepository> findByStartInstant(Instant start, Instant end);
+    List<SmartSslSubjectHourly> findByStartInstant(Instant start, Instant end);
 
 }

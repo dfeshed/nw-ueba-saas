@@ -27,7 +27,7 @@ public interface SmartUserIdHourlyRepository extends MongoRepository<SmartUserId
     @Query("{ 'smartScore': { $gte: ?0 }, $and: [ { 'contextId': ?1 } ] }")
     List<SmartUserIdStoredRecored> findByContextIdAndRequestedScore(Double score, String contextId);
 
-    Instant findFirstByOrderByCreatedDateAsc();
+    SmartUserIdStoredRecored findFirstByOrderByCreatedDateAsc();
 
     @Query("{ 'dateTime': { $gte: ?0 }, $and: [ { 'dateTime': { $lt: ?1 } } ] }")
     List<SmartUserIdStoredRecored> findByStartInstant(Instant start, Instant end);

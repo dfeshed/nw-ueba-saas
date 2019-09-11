@@ -2,6 +2,9 @@ package com.rsa.netwitness.presidio.automation.test.rest;
 
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
+import com.rsa.netwitness.presidio.automation.domain.output.SmartJa3Hourly;
+import com.rsa.netwitness.presidio.automation.domain.output.SmartSslSubjectHourly;
+import com.rsa.netwitness.presidio.automation.domain.output.SmartUserIdStoredRecored;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.mongo.SmartHourlyEntitiesHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
@@ -16,13 +19,14 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static java.lang.String.join;
+import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,7 +43,13 @@ public class E2EMongoRestValidation extends AbstractTestNGSpringContextTests {
     private OutputTestManager testManager;
 
     @Autowired
-    private SmartUserIdHourlyRepository smartRepository;
+    private SmartUserIdHourlyRepository smartUserIdHourlyRepository;
+
+    @Autowired
+    private SmartJa3HourlyRepository smartJa3HourlyRepository;
+
+    @Autowired
+    private SmartSslSubjectHourlyRepository smartSslSubjectHourlyRepository;
 
     @Autowired
     private OutputActiveDirectoryStoredDataRepository adRepository;
@@ -62,9 +72,8 @@ public class E2EMongoRestValidation extends AbstractTestNGSpringContextTests {
     private int historicalDaysBack;
 
     private RestHelper restHelper = new RestHelper();
-    private SmartHourlyEntitiesHelper entitiesHelper;
     private PresidioUrl allEntitiesUrl = restHelper.entities().url().withMaxSizeParameters();
-    private List<EntitiesStoredRecord> restEntities;
+    private List<EntitiesStoredRecord> allRestEntities;
 
     @Parameters({"outputProcessingStartDaysBack", "outputProcessingEndDaysBack", "historical_days_back"})
     @BeforeClass
@@ -75,9 +84,8 @@ public class E2EMongoRestValidation extends AbstractTestNGSpringContextTests {
         this.outputProcessingStartDaysBack = outputProcessingStartDaysBack;
         this.outputProcessingEndDaysBack = outputProcessingEndDaysBack;
         this.historicalDaysBack = historicalDaysBack;
-        this.entitiesHelper = new SmartHourlyEntitiesHelper(mongoTemplate, historicalDaysBack, 1);
-        this.restEntities = restHelper.entities().request().getEntities(allEntitiesUrl);
-        assertThat(restEntities).withFailMessage(allEntitiesUrl + "\nIs null or empty").isNotNull().isNotEmpty();
+        this.allRestEntities = restHelper.entities().request().getEntities(allEntitiesUrl);
+        assertThat(allRestEntities).withFailMessage(allEntitiesUrl + "\nIs null or empty").isNotNull().isNotEmpty();
     }
 
     @BeforeMethod
@@ -86,16 +94,17 @@ public class E2EMongoRestValidation extends AbstractTestNGSpringContextTests {
         System.out.println("Start running test: " + testName);
     }
 
-    private BiFunction<String, Set<String>, String> errorMessage = (label, gap) ->
-            allEntitiesUrl
-                    + "\nMongo query: " + entitiesHelper.getQuery()
-                    + "\nMessage: " + gap.size() + " " + label + " Mongo entities are missing from REST result."
-                    + "\nSubset of missing elements:\n "
-                    + join("\n", gap.stream().limit(10).collect(toSet()));
 
+    private String errorMessageGen(String label, Set<String> gap, Instant anomalyDateEnd) {
+        return allEntitiesUrl
+                + "\nUrl result compared to Mongo query limited by startInstant < " + anomalyDateEnd
+                + "\nError message: " + gap.size() + " " + label + " Mongo entities are missing from REST result."
+                + "\nSubset of missing elements:\n "
+                + join("\n", gap.stream().limit(10).collect(toSet()));
+    }
 
     private Function<String, Set<String>> getRestEntitiesByType = type ->
-            restEntities.parallelStream()
+            allRestEntities.parallelStream()
                     .filter(e -> e.getEntityType().equals(type))
                     .map(EntitiesStoredRecord::getEntityId)
                     .collect(toSet());
@@ -104,7 +113,7 @@ public class E2EMongoRestValidation extends AbstractTestNGSpringContextTests {
     public void all_rest_response_entities_must_be_unique_by_entity_type(){
         List<String> entityTypes = list("userId", "ja3", "sslSubject");
         Map<String, List<EntitiesStoredRecord>> actual =
-                restEntities.parallelStream().collect(groupingBy(EntitiesStoredRecord::getEntityType));
+                allRestEntities.parallelStream().collect(groupingBy(EntitiesStoredRecord::getEntityType));
 
         entityTypes.forEach(entityType ->
                 softly.assertThat(actual.get(entityType)).as(entityType + " entity type")
@@ -114,29 +123,56 @@ public class E2EMongoRestValidation extends AbstractTestNGSpringContextTests {
 
     @Test
     public void all_mongo_user_id_entities_existing_in_rest_response() {
-        Set<String> mongoEntities = entitiesHelper.getEntitiesUserId();
-        assertThat(mongoEntities).withFailMessage("No users in smart_userId_hourly table").isNotEmpty();
+        SmartUserIdStoredRecored entity = smartUserIdHourlyRepository.findFirstByOrderByCreatedDateAsc();
+        assertThat(entity).overridingErrorMessage("smart_userId_hourly table is empty").isNotNull();
+        Instant anomalyDayEndTime = entity.getCreatedDate().truncatedTo(DAYS);
+
+        SmartHourlyEntitiesHelper mongoEntitiesHelper = new SmartHourlyEntitiesHelper(mongoTemplate);
+        Set<String> actualMongoEntities = mongoEntitiesHelper.getEntitiesUserId(anomalyDayEndTime);
+        assertThat(actualMongoEntities).withFailMessage("No users in smart_userId_hourly table").isNotEmpty();
+
         Set<String> restUniqueEntities = getRestEntitiesByType.apply("userId");
-        mongoEntities.removeAll(restUniqueEntities);
-        assertThat(mongoEntities).overridingErrorMessage(errorMessage.apply("smart_userId_hourly", mongoEntities)).isEmpty();
+        actualMongoEntities.removeAll(restUniqueEntities);
+
+        assertThat(actualMongoEntities)
+                .overridingErrorMessage(errorMessageGen("smart_userId_hourly", actualMongoEntities, anomalyDayEndTime))
+                .isEmpty();
     }
 
     @Test
     public void all_mongo_ja3_entities_existing_in_rest_response() {
-        Set<String> mongoEntities = entitiesHelper.getEntitiesJa3();
-        assertThat(mongoEntities).withFailMessage("No users in smart_ja3_hourly table").isNotEmpty();
+        SmartJa3Hourly entity = smartJa3HourlyRepository.findFirstByOrderByCreatedDateAsc();
+        assertThat(entity).overridingErrorMessage("smart_ja3_hourly table is empty").isNotNull();
+        Instant anomalyDayEndTime = entity.getCreatedDate().truncatedTo(DAYS);
+
+        SmartHourlyEntitiesHelper mongoEntitiesHelper = new SmartHourlyEntitiesHelper(mongoTemplate);
+        Set<String> actualMongoEntities = mongoEntitiesHelper.getEntitiesJa3(anomalyDayEndTime);
+        assertThat(actualMongoEntities).withFailMessage("No users in smart_ja3_hourly table").isNotEmpty();
+
         Set<String> restUniqueEntities = getRestEntitiesByType.apply("ja3");
-        mongoEntities.removeAll(restUniqueEntities);
-        assertThat(mongoEntities).overridingErrorMessage(errorMessage.apply("smart_ja3_hourly", mongoEntities)).isEmpty();
+        actualMongoEntities.removeAll(restUniqueEntities);
+
+        assertThat(actualMongoEntities)
+                .overridingErrorMessage(errorMessageGen("smart_ja3_hourly", actualMongoEntities, anomalyDayEndTime))
+                .isEmpty();
     }
 
     @Test
     public void all_mongo_ssl_subject_entities_existing_in_rest_response() {
-        Set<String> mongoEntities = entitiesHelper.getEntitiesSslSubject();
-        assertThat(mongoEntities).withFailMessage("No users in smart_sslSubject_hourly table").isNotEmpty();
+        SmartSslSubjectHourly entity = smartSslSubjectHourlyRepository.findFirstByOrderByCreatedDateAsc();
+        assertThat(entity).overridingErrorMessage("smart_sslSubject_hourly table is empty").isNotNull();
+        Instant anomalyDayEndTime = entity.getCreatedDate().truncatedTo(DAYS);
+
+        SmartHourlyEntitiesHelper mongoEntitiesHelper = new SmartHourlyEntitiesHelper(mongoTemplate);
+        Set<String> actualMongoEntities = mongoEntitiesHelper.getEntitiesSslSubject(anomalyDayEndTime);
+        assertThat(actualMongoEntities).withFailMessage("No users in smart_sslSubject_hourly table").isNotEmpty();
+
         Set<String> restUniqueEntities = getRestEntitiesByType.apply("sslSubject");
-        mongoEntities.removeAll(restUniqueEntities);
-        assertThat(mongoEntities).overridingErrorMessage(errorMessage.apply("smart_sslSubject_hourly", mongoEntities)).isEmpty();
+        actualMongoEntities.removeAll(restUniqueEntities);
+
+        assertThat(actualMongoEntities)
+                .overridingErrorMessage(errorMessageGen("smart_sslSubject_hourly", actualMongoEntities, anomalyDayEndTime))
+                .isEmpty();
     }
 
     @Test
