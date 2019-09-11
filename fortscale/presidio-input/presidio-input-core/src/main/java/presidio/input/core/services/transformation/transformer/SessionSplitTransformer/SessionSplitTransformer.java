@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.domain.core.entityattributes.EntityAttributes;
-import fortscale.domain.core.entityattributes.Ja3;
-import fortscale.domain.core.entityattributes.SslSubject;
 import fortscale.utils.json.JacksonUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -97,8 +95,8 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
                     if (value.getDateTime().compareTo(eventDateTime) <= 0) {
                         // handle missing events
                         if (value.getSessionSplit() == eventSessionSplit - 1) {
-                            setEntityAttribute(document, TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME, new SslSubject(value.getSslSubject().getName()));
-                            setEntityAttribute(document, TlsTransformedEvent.JA3_FIELD_NAME, new Ja3(value.getJa3().getName()));
+                            setEntityAttribute(document, TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME, value.getSslSubject());
+                            setEntityAttribute(document, TlsTransformedEvent.JA3_FIELD_NAME, value.getJa3());
                             document.put(TlsTransformedEvent.SSL_CAS_FIELD_NAME, value.getSslCas());
                             document.put(TlsTransformedEvent.JA3S_FIELD_NAME, value.getJa3s());
                             value.setSessionSplit(eventSessionSplit);
