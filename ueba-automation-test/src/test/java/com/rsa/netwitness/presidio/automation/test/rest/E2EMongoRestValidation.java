@@ -17,13 +17,16 @@ import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static java.lang.String.join;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.util.Lists.list;
 
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
@@ -90,11 +93,24 @@ public class E2EMongoRestValidation extends AbstractTestNGSpringContextTests {
                     + "\nSubset of missing elements:\n "
                     + join("\n", gap.stream().limit(10).collect(toSet()));
 
+
     private Function<String, Set<String>> getRestEntitiesByType = type ->
             restEntities.parallelStream()
                     .filter(e -> e.getEntityType().equals(type))
                     .map(EntitiesStoredRecord::getEntityId)
                     .collect(toSet());
+
+    @Test
+    public void all_rest_response_entities_must_be_unique_by_entity_type(){
+        List<String> entityTypes = list("userId", "ja3", "sslSubject");
+        Map<String, List<EntitiesStoredRecord>> actual =
+                restEntities.parallelStream().collect(groupingBy(EntitiesStoredRecord::getEntityType));
+
+        entityTypes.forEach(entityType ->
+                softly.assertThat(actual.get(entityType)).as(entityType + " entity type")
+                    .extracting("entityId").doesNotHaveDuplicates());
+        softly.assertAll();
+    }
 
     @Test
     public void all_mongo_user_id_entities_existing_in_rest_response() {
