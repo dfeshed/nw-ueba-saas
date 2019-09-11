@@ -1,9 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
-import com.rsa.netwitness.presidio.automation.common.scenarios.tls.HighNumberOf;
-import com.rsa.netwitness.presidio.automation.common.scenarios.tls.SessionSplitEnrichmentData;
-import com.rsa.netwitness.presidio.automation.common.scenarios.tls.UncommonValuesAlerts;
-import com.rsa.netwitness.presidio.automation.common.scenarios.tls.UnusualTrafficVolumeAlerts;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.*;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -27,10 +24,12 @@ public class NetworkDataPreparation extends DataPreparationBase {
         UnusualTrafficVolumeAlerts unusualTrafficVolumeAlerts = new UnusualTrafficVolumeAlerts(historicalDaysBack, anomalyDay);
         HighNumberOf highNumberOfGen = new HighNumberOf(historicalDaysBack, anomalyDay);
         SessionSplitEnrichmentData sessionSplitEnrichmentData = new SessionSplitEnrichmentData();
-
+        FutureEventsForMetrics futureEventsGen = new FutureEventsForMetrics(3);
 
         Stream<NetworkEvent> resultingStream = Stream.of(
                 sessionSplitEnrichmentData.generateAll(),
+                futureEventsGen.get(),
+
                 uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(),
                 uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(),
                 uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(),
@@ -38,34 +37,7 @@ public class NetworkDataPreparation extends DataPreparationBase {
                 unusualTrafficVolumeAlerts.fromSourceIpToSslSubjectDomainOrganisationDestPort(),
                 unusualTrafficVolumeAlerts.toSslSubjectDomainOrganisationDestPortJa3(),
 
-                highNumberOfGen.distinctSourceIpForJA3()                            // ?
-
-
-//                uncommonValuesAlerts.createUncommonCountryForSslSubject(),          // 90
-//                uncommonValuesAlerts.createUncommonDestPortForSslSubject(),         // 90
-//                uncommonValuesAlerts.createUncommonDomainForJa3(),                  // 90
-//                uncommonValuesAlerts.createUncommonDestPortForJa3(),                // 90
-//                uncommonValuesAlerts.createUncommonDomainForSrcNetname(),           // 90
-//                uncommonValuesAlerts.createUncommonDestPortForSrcNetname(),         // 90
-//                uncommonValuesAlerts.createUncommonDestPortForDomain(),             // 90
-//                uncommonValuesAlerts.createUncommonDestPortForDestOrg(),            // 90
-//                uncommonValuesAlerts.createUncommonSslSubjectForSrcNetname(),       // 90
-//                uncommonValuesAlerts.createUncommonDestOrganisationForSrcNetname(), // 90
-//                uncommonValuesAlerts.createUncommonJa3ForSrcNetname(),              // 90
-//                uncommonValuesAlerts.createUncommonSslSubjForJa3(),                 // 90
-//
-//                uncommonValuesAlerts.createUncommonStartInstantForSslSubject(),     // 90
-//                uncommonValuesAlerts.createUncommonStartInstantForJa3(),            // 90
-
-//                unusualTrafficVolumeAlerts.fromSourceIpToDestPort(),                   // ?
-//                unusualTrafficVolumeAlerts.fromSourceIpToDomain(),                     // 100
-//                unusualTrafficVolumeAlerts.fromSourceIpToOrganisation(),               // 100
-//                unusualTrafficVolumeAlerts.fromSourceIpToSslSubject(),                 // 100
-//                unusualTrafficVolumeAlerts.toDestPort(),                               // ?
-//                unusualTrafficVolumeAlerts.toDomain(),                                 // 100
-//                unusualTrafficVolumeAlerts.toJa3(),                                    // 100
-//                unusualTrafficVolumeAlerts.toOrganisation(),                           // 100
-//                unusualTrafficVolumeAlerts.toSslSubject(),                             // 100
+                highNumberOfGen.distinctSourceIpForJA3()
 
         ).flatMap(i -> i);
 

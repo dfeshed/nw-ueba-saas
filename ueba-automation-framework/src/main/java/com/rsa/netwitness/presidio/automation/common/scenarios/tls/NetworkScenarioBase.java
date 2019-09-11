@@ -11,7 +11,7 @@ abstract class NetworkScenarioBase {
     protected int startHourOfDay = 8;
     protected int endHourOfDay = 17;
     protected int daysBackFrom = 30;
-    protected int daysBackTo = 0;
+    protected int daysBackTo = 0;   // -1 is current day
     protected int startHourOfDayAnomaly = 8;
     protected int endHourOfDayAnomaly = 17;
     protected int daysBackFromAnomaly = 1;
@@ -48,7 +48,7 @@ abstract class NetworkScenarioBase {
 
     protected ITimeGenerator getTimeGen(int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo, int intervalMinutes) {
         try {
-            return new SingleTimeGeneratorFactory(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo-1, intervalMinutes)
+            return new SingleTimeGeneratorFactory(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes)
                     .createTimeGenerator();
         } catch (GeneratorException e) {
             e.printStackTrace();
