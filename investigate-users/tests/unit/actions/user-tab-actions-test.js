@@ -167,8 +167,18 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
   });
 
   test('it can updateFilter', (assert) => {
-    assert.expect(5);
-    const actions = ['INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS', 'INVESTIGATE_USER::RESET_USERS', 'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS', 'INVESTIGATE_USER::GET_USERS'];
+    assert.expect(7);
+    const actions = [
+      'INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS',
+      'INVESTIGATE_USER::RESET_USERS',
+      'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS',
+      'INVESTIGATE_USER::GET_WATCHED_USER_COUNT',
+      'INVESTIGATE_USER::GET_RISKY_USER_COUNT',
+      'INVESTIGATE_USER::GET_USERS'
+    ];
+    const getState = () => {
+      return Immutable.from({ users: { filter: { entityType: 'userId' } } });
+    };
     const dispatch = (obj) => {
       if (obj.type) {
         assert.ok(actions.includes(obj.type));
@@ -179,15 +189,18 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
       if (typeof obj === 'function') {
         obj(({ type }) => {
           assert.ok(actions.includes(type));
-        });
+        }, getState);
       }
     };
-    updateFilter(initialFilterState)(dispatch);
+    updateFilter(initialFilterState)(dispatch, getState);
   });
 
   test('it should reset Filter', (assert) => {
     assert.expect(2);
     const actions = ['INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS', 'INVESTIGATE_USER::RESET_USERS', 'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS', 'INVESTIGATE_USER::GET_USERS'];
+    const getState = () => {
+      return Immutable.from({ users: { filter: { entityType: 'userId' } } });
+    };
     const dispatch = (obj) => {
       if (obj.type) {
         assert.ok(actions.includes(obj.type));
@@ -201,12 +214,15 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
         });
       }
     };
-    updateFilter('RESET', true)(dispatch);
+    updateFilter('RESET', true)(dispatch, getState);
   });
 
   test('it can updateFilter without fetching user details', (assert) => {
     assert.expect(3);
     const actions = ['INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS', 'INVESTIGATE_USER::RESET_USERS', 'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS', 'INVESTIGATE_USER::GET_USERS'];
+    const getState = () => {
+      return Immutable.from({ users: { filter: { entityType: 'userId' } } });
+    };
     const dispatch = (obj) => {
       if (obj.type) {
         assert.ok(actions.includes(obj.type));
@@ -220,7 +236,7 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
         });
       }
     };
-    updateFilter(initialFilterState, true)(dispatch);
+    updateFilter(initialFilterState, true)(dispatch, getState);
   });
 
   test('it can getUsers', (assert) => {

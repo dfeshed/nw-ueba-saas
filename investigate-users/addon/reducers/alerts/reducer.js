@@ -9,7 +9,7 @@ export const initialFilterState = Immutable.from({
   sort_direction: 'DESC',
   sort_field: 'startDate',
   total_severity_count: true,
-  entityTypes: null,
+  entityType: null,
   severity: null,
   feedback: null,
   indicator_types: null,

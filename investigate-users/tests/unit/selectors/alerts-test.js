@@ -31,7 +31,7 @@ const state = Immutable.from({
       sort_field: 'startDate',
       total_severity_count: true,
       severity: ['high'],
-      entityTypes: null,
+      entityType: null,
       feedback: 'none',
       alert_start_range: null,
       showCustomDate: false,
@@ -157,11 +157,11 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
     const newState = Immutable.from({
       alerts: {
         filter: {
-          entityTypes: ['user', 'ja3']
+          entityType: 'ja3'
         }
       }
     });
-    assert.deepEqual(Alerts.selectedEntities(newState), ['user', 'ja3']);
+    assert.deepEqual(Alerts.selectedEntities(newState), 'ja3');
   });
 
   test('test Exist Anomaly Types', function(assert) {

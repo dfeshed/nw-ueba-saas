@@ -194,6 +194,9 @@ module('Unit | Actions | User Details Actions', (hooks) => {
       'INVESTIGATE_USER::GET_WATCHED_USER_COUNT',
       'INVESTIGATE_USER::GET_TOP_RISKY_USER'
     ];
+    const getState = () => {
+      return Immutable.from({ users: { filter: { entityType: 'userId' } } });
+    };
     const dispatch = (obj) => {
       if (obj.type) {
         assert.ok(actions.includes(obj.type));
@@ -204,11 +207,8 @@ module('Unit | Actions | User Details Actions', (hooks) => {
       if (typeof obj === 'function') {
         obj(({ type }) => {
           assert.ok(actions.includes(type));
-        });
+        }, getState);
       }
-    };
-    const getState = () => {
-      return Immutable.from({ users: { filter: { entityType: 'userId' } } });
     };
     updateEntityType('sslSubject')(dispatch, getState);
   });

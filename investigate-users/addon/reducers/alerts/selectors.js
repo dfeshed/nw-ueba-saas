@@ -82,8 +82,8 @@ export const getSelectedSeverity = createSelector(
 export const selectedEntities = createSelector(
   [getFilter],
   (filter) => {
-    if (filter.entityTypes) {
-      return filter.entityTypes;
+    if (filter.entityType) {
+      return filter.entityType;
     }
   });
 

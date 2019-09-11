@@ -1,7 +1,7 @@
 import * as ACTION_TYPES from './types';
 import { fetchData, exportData } from './fetch/data';
-import { getUserFilter } from 'investigate-users/reducers/users/selectors';
-import { getWatchedUserCount } from './user-details';
+import { getUserFilter, selectedEntityType } from 'investigate-users/reducers/users/selectors';
+import { getWatchedUserCount, getRiskyUserCount } from './user-details';
 import { flashErrorMessage } from 'investigate-users/utils/flash-message';
 import _ from 'lodash';
 
@@ -14,6 +14,7 @@ const _removeUnwantedPropertyFromObject = (obj = {}) => {
 const _followUnfollowUsers = (endpointLocation) => {
   return (dispatch, getState) => {
     let filter = getUserFilter(getState());
+    const entityType = selectedEntityType(getState());
     const filterForPost = _removeUnwantedPropertyFromObject(filter);
     fetchData(endpointLocation, filterForPost, 'POST').then((result) => {
       if (result === 'error') {
@@ -26,7 +27,7 @@ const _followUnfollowUsers = (endpointLocation) => {
       }
       dispatch(getUsers(filter));
       dispatch(getSeverityDetailsForUserTabs(filter));
-      dispatch(getWatchedUserCount());
+      dispatch(getWatchedUserCount(entityType));
     });
   };
 };
@@ -113,9 +114,11 @@ const getUsers = (filter) => {
 const updateFilter = (filter, needNotToPullUsers) => {
   return (dispatch, getState) => {
     filter = (filter === 'RESET') ? null : filter || getUserFilter(getState());
+    let entityType = selectedEntityType(getState());
     dispatch(resetUsers());
     if (filter) {
       filter = filter.setIn(['fromPage'], 1);
+      entityType = filter.entityType;
     }
     dispatch({
       type: ACTION_TYPES.UPDATE_FILTER_FOR_USERS,
@@ -123,6 +126,8 @@ const updateFilter = (filter, needNotToPullUsers) => {
     });
     if (true !== needNotToPullUsers) {
       dispatch(getSeverityDetailsForUserTabs(filter));
+      dispatch(getWatchedUserCount(entityType));
+      dispatch(getRiskyUserCount(entityType));
       dispatch(getUsers(filter));
     }
   };
