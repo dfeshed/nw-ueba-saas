@@ -141,9 +141,12 @@ public class AlertsScenario {
         authenticationEvents.addAll(AuthenticationHighNumberOfOperations.getMultipleNormalUsersActivity(userNameGenerator.getNext()));
         authenticationEvents.addAll(AuthenticationHighNumberOfOperations.getFutureHighNumOfDistinctMachinesAndSameSrcDstMachines(userNameGenerator.getNext(), true, anomalyDay));
         authenticationEvents.addAll(AuthenticationHighNumberOfOperations.getFutureLogonAttemptstoMultipleSourceComputersTEMP(userNameGenerator.getNext(), anomalyDay));
+        registryEvents.addAll(RegistryOperationAnomalies.getFutureAbnormalProcessModifiedServiceKey(userNameGenerator.getNext(), anomalyDay)); // "reg_modif_key_" + 1
 
         // registry schema indicator events
         registryEvents.addAll(RegistryOperationAnomalies.getAbnormalProcessModifiedServiceKey(userNameGenerator.getNext(), anomalyDay)); // "reg_modif_key_" + 1
+
+
 
         // process schema indicator events
         for (int i = 0; i < 4; i++) {

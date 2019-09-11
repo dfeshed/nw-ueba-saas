@@ -43,6 +43,34 @@ public class RegistryOperationAnomalies {
         return events;
     }
 
+    public static List<RegistryEvent> getFutureAbnormalProcessModifiedServiceKey(String testUser, int anomalyDay) throws GeneratorException {
+        /**
+         * Indicator display name: "Abnormal Process Modified a Service Key registry"
+         *
+         * Normal behavior: users are running a number 'common' processes that modify registry key in a group
+         * Anomaly: some new process (by process full path) also modifies a service key
+         *
+         * Model:
+         * Categorial Rarity Model:
+         * context:registryKeyGroup && operationType == MODIFY_REGISTRY_VALUE
+         * feature: processFilePath
+         *
+         */
+        EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(testUser);
+        SingleUserGenerator userGenerator = new SingleUserGenerator(testUser);
+
+        ITimeGenerator timeGenerator =
+                new MinutesIncrementTimeGenerator(LocalTime.of(8, 30), LocalTime.of(16, 30), 45, 30, 0);
+        List<RegistryEvent> events = getNormalRegistryKeyChangeOperations(eventIdGen, timeGenerator, userGenerator);
+
+        //Anomaly:
+        ITimeGenerator abnormalTimeGenerator =
+                new MinutesIncrementTimeGenerator(LocalTime.of(10, 00), LocalTime.of(12, 30), 15, -10, 0);
+        events.addAll(getAbnormalRegistryKeyChangeOperations(eventIdGen, abnormalTimeGenerator, userGenerator));
+
+        return events;
+    }
+
     public static List<RegistryEvent> getNormalRegistryKeyChangeOperations(EntityEventIDFixedPrefixGenerator eventIdGen, ITimeGenerator timeGenerator, SingleUserGenerator userGenerator) throws GeneratorException {
         // List of processes used to change a key
         final Pair[] PROCESS_FILES = {
