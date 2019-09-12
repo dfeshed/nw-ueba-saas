@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
 import {
   focusedPolicy
 } from 'admin-source-management/reducers/usm/policies-selectors';
@@ -13,7 +14,11 @@ const stateToComputed = (state) => ({
 });
 
 const UsmPoliciesInspector = Component.extend({
-  classNames: ['usm-policies-inspector']
+  classNames: ['usm-policies-inspector'],
+  @computed('focusedPolicy')
+  hasError(focusedPolicy) {
+    return focusedPolicy?.errorState?.state;
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(UsmPoliciesInspector);

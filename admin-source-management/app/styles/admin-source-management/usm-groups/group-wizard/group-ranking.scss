@@ -95,8 +95,8 @@
       padding-top: rsa-whitespace();
       display: inline-block;
       width: 100%;
-      max-height: calc(100vh - #{$wizardStepMaxHeight} - 105px);
-      min-height: calc(100vh - #{$wizardStepMaxHeight} - 105px);
+      max-height: calc(100vh - #{$wizardStepMaxHeight} - 160px);
+      min-height: calc(100vh - #{$wizardStepMaxHeight} - 160px);
       overflow: auto;
       scroll-behavior: smooth;
       table {

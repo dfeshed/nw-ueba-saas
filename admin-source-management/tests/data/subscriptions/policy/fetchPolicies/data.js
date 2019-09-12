@@ -500,6 +500,10 @@ export default [
     lastPublishedOn: 0,
     lastPublishedCopy: null,
     enabled: true,
+    errorState: {
+      state: 1,
+      errors: ['MISSING_TYPE_SPECIFICATION']
+    },
     protocol: 'TCP',
     sendTestLog: false,
     primaryDestination: '10.10.10.10',
@@ -512,7 +516,11 @@ export default [
         fileEncoding: 'UTF-8 / ASCII',
         paths: ['/c/apache_path-hint-1/*.log', '/c/Program Files/Apache Group/Apache[2-9]/*.log', 'apache_path-hint-2'],
         sourceName: 'Meta-Source-Name',
-        exclusionFilters: ['exclude-string-1', 'exclude-string-2', 'exclude-string-3']
+        exclusionFilters: ['exclude-string-1', 'exclude-string-2', 'exclude-string-3'],
+        errorState: {
+          state: 1,
+          errors: ['MISSING_TYPE_SPECIFICATION']
+        }
       },
       {
         fileType: 'exchange',
@@ -521,7 +529,11 @@ export default [
         fileEncoding: 'UTF-8 / ASCII',
         paths: ['/[cd]/exchange/logs/*.log'],
         sourceName: 'Exchange aye!',
-        exclusionFilters: []
+        exclusionFilters: [],
+        errorState: {
+          state: 1,
+          errors: ['MISSING_TYPE_SPECIFICATION']
+        }
       }
     ],
     associatedGroups: [

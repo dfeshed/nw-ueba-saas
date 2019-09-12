@@ -3,7 +3,8 @@
   position: relative;
   padding: rsa-whitespace(less);
   width: 100%;
-  border: 1px solid border-color(accentFour);
+  @include border(1px, solid, accentFour);
+  border-color: text-color(accentFour);
   background-color: rgba(var(--text-color-accent-four-dark), $rsa-nearly-transparent);
   border-radius: 5px;
   .rsa-icon {
@@ -25,7 +26,7 @@
     .rsa-icon {
       color: text-color(accentOne, dark);
     }
-    border: 1px solid border-color(accentOne, dark);
+    border-color: text-color(accentOne, dark);
     background-color: rgba(var(--text-color-accent-one-dark), $rsa-nearly-transparent);
   }
 }

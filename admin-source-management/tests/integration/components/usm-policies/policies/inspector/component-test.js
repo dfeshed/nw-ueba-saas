@@ -91,13 +91,14 @@ module('Integration | Component | Policy Inspector', function(hooks) {
     assert.equal(findAll('.usm-policies-inspector .value')[19].innerText, '2018-05-28 02:32', 'last published on value shows as expected');
   });
 
-  test('It does not show the groups section when no groups', async function(assert) {
+  test('It does not show the groups section when no groups. Test no error', async function(assert) {
     new ReduxDataHelper(setState)
       .focusedPolicy(testPolicy)
       .setPolicyGroups([])
       .build();
 
     await render(hbs`{{usm-policies/policies/inspector}}`);
+    assert.equal(findAll('.rsa-content-warn-text-box').length, 0, 'rsa-content-warn-text-box is NOT showing');
     assert.equal(findAll('.usm-policies-inspector .heading').length, 6, 'expected headings are shown');
     assert.equal(findAll('.usm-policies-inspector .heading')[5].innerText, 'History', 'history section is last as expected');
   });
@@ -130,4 +131,38 @@ module('Integration | Component | Policy Inspector', function(hooks) {
     assert.equal(findAll('.usm-policies-inspector .lastModifiedBy').length, 0, 'last modified by is missing as expected');
     assert.equal(findAll('.usm-policies-inspector .lastPublishedOn').length, 0, 'last published on is missing as expected');
   });
+
+  const testTilePolicyPolicyWithNoError = {
+    ...testPolicy,
+    policyType: 'filePolicy'
+  };
+
+  test('filePolicy error is NOT present', async function(assert) {
+    new ReduxDataHelper(setState)
+      .focusedPolicy(testTilePolicyPolicyWithNoError)
+      .setPolicyGroups([])
+      .build();
+
+    await render(hbs`{{usm-policies/policies/inspector}}`);
+    assert.equal(findAll('.rsa-content-warn-text-box').length, 0, 'rsa-content-warn-text-box is NOT showing');
+  });
+
+  const testTilePolicyPolicyWithError = {
+    ...testTilePolicyPolicyWithNoError,
+    errorState: {
+      state: 1,
+      errors: ['MISSING_TYPE_SPECIFICATION']
+    }
+  };
+
+  test('filePolicy error is present', async function(assert) {
+    new ReduxDataHelper(setState)
+      .focusedPolicy(testTilePolicyPolicyWithError)
+      .setPolicyGroups([])
+      .build();
+
+    await render(hbs`{{usm-policies/policies/inspector}}`);
+    assert.equal(findAll('.rsa-content-warn-text-box').length, 1, 'rsa-content-warn-text-box is showing');
+  });
+
 });

@@ -91,7 +91,7 @@ module('Integration | Component | Policy Inspector | File Policy', function(hook
     assert.equal(findAll('.value')[12].innerText, 'Collect historical and new data', 'exchange source startOfEvents: Collect historical and new data');
   });
 
-  test('It does NOT show blank properties', async function(assert) {
+  test('It does NOT show blank properties and NO error souce is present', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizWinLogLogServers()
@@ -111,6 +111,7 @@ module('Integration | Component | Policy Inspector | File Policy', function(hook
       .build();
 
     await render(hbs`{{usm-policies/policies/inspector/file-policy}}`);
+    assert.equal(findAll('.has-errorx').length, 0, 'has-error in sources is NOT showing');
     assert.equal(findAll('.heading').length, 2, '1 file settings heading + 1 source settings heading');
     assert.equal(findAll('.heading')[0].innerText, 'Connection Settings', 'Connection Settings heading is as expected');
     assert.equal(findAll('.heading')[1].innerText, 'Source Settings (Apache Web Server)', 'apache source heading is as expected');
@@ -131,6 +132,31 @@ module('Integration | Component | Policy Inspector | File Policy', function(hook
     assert.equal(findAll('.heading')[0].innerText, 'Connection Settings', 'Connection Settings heading is as expected');
     assert.equal(findAll('.title').length, 5, '5 property names are shown');
     assert.equal(findAll('.value').length, 5, '5 value elements are shown');
+  });
+
+  test('Error source is present', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .focusedPolicy({ ...testPolicy })
+      .setPolicyFileSources([
+        {
+          fileType: 'apache',
+          enabled: false,
+          startOfEvents: false,
+          fileEncoding: '',
+          paths: [],
+          sourceName: '',
+          exclusionFilters: [],
+          errorState: {
+            state: 1,
+            errors: ['MISSING_TYPE_SPECIFICATION']
+          }
+        }
+      ])
+      .build();
+    await render(hbs`{{usm-policies/policies/inspector/file-policy}}`);
+    assert.equal(findAll('.has-error').length, 1, 'has-error in sources is showing');
+    assert.equal(findAll('.heading').length, 2, '1 file settings heading + 1 source settings heading');
   });
 
 });

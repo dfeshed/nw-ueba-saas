@@ -4808,7 +4808,8 @@ effects the previewed source.',
       publishPolicy: 'Publish Policy',
       saveAndClose: 'Save and Close',
       cancel: 'Cancel',
-      missingTypespec: 'One or more typespec files are missing from the NetWitness Server and logs are not collected from thet file type.',
+      missingTypespec: 'One or more typespec files are missing from the NetWitness Server and logs are not collected from that file type.',
+      MISSING_TYPE_SPECIFICATION: 'Missing typespec',
       modals: {
         discardChanges: {
           title: 'Discard Changes',

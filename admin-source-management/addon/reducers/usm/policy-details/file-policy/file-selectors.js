@@ -129,6 +129,8 @@ const _getSourceSection = (source, _listOfFileSourceTypes, _focusedPolicyOrigin,
     }
   }
   const sourceSection = {
+    hasError: source?.errorState?.state ? 'has-error' : '',
+    error: source?.errorState?.state ? source.errorState.errors[0] : '',
     header: 'adminUsm.policies.detail.sourceSettings',
     headerVars: { fileType: getFileSourceTypeDisplayName(source.fileType, _listOfFileSourceTypes) },
     props: sourceSettings

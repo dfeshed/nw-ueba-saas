@@ -2,7 +2,34 @@
 
   .usm-groups-inspector, .usm-policies-inspector, .usm-sources-inspector, .usm-policies-inspector-edr, .usm-policies-inspector-windows-log {
     height: 100%;
+    .rsa-content-warn-text-box {
+      width: fit-content;
+    }
+    div.has-error {
+      flex-wrap: wrap;
+      position: relative;
+      @include border-left(4px, solid, accentOne);
+      border-color: text-color(accentOne, dark);
+      @include border-top(1px, solid, primary);
+      margin-top: rsa-whitespace(more);
 
+      .heading {
+        padding-left: rsa-whitespace(more);
+        &::before {
+          display: none;
+        }
+      }
+      .rsa-icon {
+        color: text-color(accentOne, dark);
+        position: absolute;
+        top: 15px;
+        left: 5px;
+      }
+      .tooltip-text {
+        float: left;
+        margin-left: rsa-whitespace();
+      }
+    }
     .heading {
       font-size: 14px;
       line-height: 20px;

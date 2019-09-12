@@ -1,4 +1,15 @@
 <vbox class="rsa-application-layout-panel-content" xs="12" fit>
+
+  {{#if (eq focusedPolicy.policyType 'filePolicy')}}
+    {{#if hasError}}
+      {{#rsa-content-warn-text-box
+        value=(t 'adminUsm.policyWizard.missingTypespec')
+        isShowing=true
+        isAlert=true}}
+      {{/rsa-content-warn-text-box}}
+    {{/if}}
+  {{/if}}
+
   {{#if focusedPolicy.associatedGroups}}
     <hbox class="heading">{{t 'adminUsm.policies.list.associatedGroups'}}</hbox>
     {{#each focusedPolicy.associatedGroups as |group|}}
