@@ -99,6 +99,6 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
         monitor.shutdown();
         Assert.assertTrue(allCollectionsHaveSampleFromTheFinalDay, "Data processing has not reached the last day.");
         LOGGER.info("Going to stop airflow-scheduler.");
-        SshExecutor.executeOnUebaHost("sudo systemctl stop airflow-scheduler");
+        SshExecutor.executeOnUebaHostRoot("systemctl stop airflow-scheduler");
     }
 }
