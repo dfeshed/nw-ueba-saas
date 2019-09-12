@@ -16,7 +16,7 @@ import { inject as service } from '@ember/service';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { failure } from 'investigate-shared/utils/flash-messages';
 import { serviceList, isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
-import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
+import { machineOsType, hostName, isAgentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
 import { fileStatus, isRemediationAllowed } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
 import { once } from '@ember/runloop';
@@ -77,7 +77,8 @@ const stateToComputed = (state) => ({
   serverId: state.endpointQuery.serverId,
   isInsightsAgent: isInsightsAgent(state),
   savedProcessColumns: savedProcessColumns(state),
-  defaultSchema: schema(state)
+  defaultSchema: schema(state),
+  isAgentMigrated: isAgentMigrated(state)
 });
 
 

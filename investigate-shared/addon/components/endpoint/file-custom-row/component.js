@@ -181,7 +181,7 @@ export default DataTableBodyRow.extend({
         label: 'downloadProcessDump',
         prefix: 'investigateHosts.process.',
         disabled(selection, context) {
-          return context.get('selections').length > 1;
+          return context.get('selections').length > 1 || context.get('isAgentMigrated');
         },
         action(selection, context) {
           context.downloadProcessDump();

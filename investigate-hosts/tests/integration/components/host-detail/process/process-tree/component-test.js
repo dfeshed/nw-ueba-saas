@@ -981,6 +981,24 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     this.set('closePropertyPanel', function() { });
     this.set('showDownloadProcessDump', true);
     new ReduxDataHelper(setState)
+      .host({
+        serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0',
+        agentStatus: {
+          agentId: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+          lastSeenTime: '2019-05-09T09:22:09.713+0000',
+          scanStatus: 'completed'
+        },
+        machineIdentity: {
+          id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+          machineName: 'RemDbgDrv',
+          agentMode: 'advanced',
+          agentVersion: '11.4.0.0',
+          machineOsType: 'windows'
+        },
+        groupPolicy: {
+          managed: true
+        }
+      })
       .processList(processData.processList)
       .processTree([
         {
