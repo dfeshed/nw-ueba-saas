@@ -1,19 +1,19 @@
 package fortscale.domain.lastoccurrenceinstant.store;
 
 import fortscale.common.general.Schema;
+import org.apache.commons.lang3.Validate;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.serializer.RedisSerializer;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import static java.util.Collections.emptyMap;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.lang3.Validate.notNull;
+import java.util.function.Consumer;
 
 /**
  * A Redis based implementation of {@link LastOccurrenceInstantStore}.
@@ -23,10 +23,19 @@ import static org.apache.commons.lang3.Validate.notNull;
 public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstantStore {
     private static final String REDIS_KEY_PREFIX = "last-occurrence-instant";
 
+    private final RedisTemplate<String, Instant> redisTemplate;
     private final ValueOperations<String, Instant> valueOperations;
+    private final RedisSerializer<String> stringRedisSerializer;
+    private final RedisSerializer<Instant> instantRedisSerializer;
+    private final Duration timeout;
 
-    public LastOccurrenceInstantStoreRedisImpl(RedisTemplate<String, Instant> redisTemplate) {
-        valueOperations = notNull(redisTemplate, "redisTemplate cannot be null.").opsForValue();
+    @SuppressWarnings("unchecked")
+    public LastOccurrenceInstantStoreRedisImpl(RedisTemplate<String, Instant> redisTemplate, Duration timeout) {
+        this.redisTemplate = Validate.notNull(redisTemplate, "redisTemplate cannot be null.");
+        this.valueOperations = redisTemplate.opsForValue();
+        this.stringRedisSerializer = (RedisSerializer<String>)redisTemplate.getKeySerializer();
+        this.instantRedisSerializer = (RedisSerializer<Instant>)redisTemplate.getValueSerializer();
+        this.timeout = Validate.notNull(timeout, "timeout cannot be null.");
     }
 
     @Override
@@ -36,24 +45,34 @@ public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstan
 
     @Override
     public Map<String, Instant> readAll(Schema schema, String entityType, List<String> entityIds) {
-        List<Instant> lastOccurrenceInstants = valueOperations.multiGet(getRedisKeys(schema, entityType, entityIds));
-        return lastOccurrenceInstants == null ? emptyMap() : entityIds.stream().collect(toMap(
-                identity(),
-                entityId -> lastOccurrenceInstants.remove(0)
-        ));
+        Map<String, Instant> entityIdToLastOccurrenceInstantMap = new HashMap<>();
+        redisTemplate.executePipelined(action(redisConnection -> {
+            for (String entityId : entityIds) {
+                byte[] key = stringRedisSerializer.serialize(getRedisKey(schema, entityType, entityId));
+                byte[] value = key == null ? null : redisConnection.get(key);
+                Instant lastOccurrenceInstant = value == null ? null : instantRedisSerializer.deserialize(value);
+                entityIdToLastOccurrenceInstantMap.put(entityId, lastOccurrenceInstant);
+            }
+        }));
+        return entityIdToLastOccurrenceInstantMap;
     }
 
     @Override
     public void write(Schema schema, String entityType, String entityId, Instant lastOccurrenceInstant) {
-        valueOperations.set(getRedisKey(schema, entityType, entityId), lastOccurrenceInstant);
+        valueOperations.set(getRedisKey(schema, entityType, entityId), lastOccurrenceInstant, timeout);
     }
 
     @Override
     public void writeAll(Schema schema, String entityType, Map<String, Instant> entityIdToLastOccurrenceInstantMap) {
-        valueOperations.multiSet(entityIdToLastOccurrenceInstantMap.entrySet().stream().collect(toMap(
-                entry -> getRedisKey(schema, entityType, entry.getKey()),
-                Entry::getValue
-        )));
+        redisTemplate.executePipelined(action(redisConnection -> {
+            for (Map.Entry<String, Instant> mapEntry : entityIdToLastOccurrenceInstantMap.entrySet()) {
+                byte[] key = stringRedisSerializer.serialize(getRedisKey(schema, entityType, mapEntry.getKey()));
+                byte[] value = instantRedisSerializer.serialize(mapEntry.getValue());
+                if (key != null)
+                    // noinspection ConstantConditions - value can be null.
+                    redisConnection.setEx(key, timeout.getSeconds(), value);
+            }
+        }));
     }
 
     @Override
@@ -63,7 +82,10 @@ public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstan
         return String.format("%s:%s:%s:%s", REDIS_KEY_PREFIX, schema.getName(), entityType, entityId);
     }
 
-    private static List<String> getRedisKeys(Schema schema, String entityType, List<String> entityIds) {
-        return entityIds.stream().map(entityId -> getRedisKey(schema, entityType, entityId)).collect(toList());
+    private static RedisCallback<?> action(Consumer<RedisConnection> redisConnectionConsumer) {
+        return redisConnection -> {
+            redisConnectionConsumer.accept(redisConnection);
+            return null;
+        };
     }
 }

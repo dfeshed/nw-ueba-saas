@@ -11,12 +11,12 @@ public class RedisSerializers {
     private static final RedisSerializer<Instant> instantRedisSerializer = new RedisSerializer<Instant>() {
         @Override
         public byte[] serialize(Instant instant) throws SerializationException {
-            return instant.toString().getBytes();
+            return instant == null ? null : instant.toString().getBytes();
         }
 
         @Override
         public Instant deserialize(byte[] bytes) throws SerializationException {
-            return Instant.parse(new String(bytes));
+            return bytes == null ? null : Instant.parse(new String(bytes));
         }
     };
 
