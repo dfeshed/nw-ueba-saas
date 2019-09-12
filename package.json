@@ -62,7 +62,6 @@
     "ember-cli-nouislider": "1.1.0",
     "ember-cli-sass": "10.0.0",
     "ember-cli-seamless-immutable-shim": "1.0.0",
-    "ember-cli-shims": "1.1.0",
     "ember-cli-sri": "2.1.1",
     "ember-cli-swiper": "0.6.1",
     "ember-cli-template-lint": "0.7.6",

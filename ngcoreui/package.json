@@ -39,7 +39,6 @@
     "ember-cli-node-assets": "0.2.0",
     "ember-cli-sass": "10.0.0",
     "ember-cli-seamless-immutable-shim": "1.0.0",
-    "ember-cli-shims": "^1.1.0",
     "ember-cli-sri": "^2.1.0",
     "ember-cli-template-lint": "0.7.6",
     "ember-cli-uglify": "2.1.0",

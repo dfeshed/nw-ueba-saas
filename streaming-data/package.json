@@ -52,7 +52,6 @@
     "ember-cli-code-coverage": "1.0.0-beta.3",
     "ember-cli-htmlbars-inline-precompile": "^1.0.0",
     "ember-cli-inject-live-reload": "2.0.1",
-    "ember-cli-shims": "^1.1.0",
     "ember-cli-sri": "^2.1.0",
     "ember-cli-uglify": "2.1.0",
     "ember-dependency-lookup": "2.0.0",
