@@ -8,6 +8,13 @@
   /* Tab strip for sub-routes: Incidents, Alerts, Remediation Tasks. Matches investigate color. */
   > .rsa-nav-tab-group {
     background-color: background-color(primary, darker);
+    border-bottom: 1px solid border-color(secondary);
+
+    a, .label {
+      position: relative;
+      top: 2px;
+      cursor: pointer;
+    }
   }
 
   .error-page .bottom-links {

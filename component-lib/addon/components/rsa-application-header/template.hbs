@@ -5,21 +5,22 @@
 {{/if}}
 
 <div class="global">
-  {{#if (and session.isAuthenticated displayPreferences)}}
-    {{#rsa-form-button
-      defaultAction=(action 'toggleUserPreferences')
-      class=(if layoutService.userPreferencesActive 'user-preferences-trigger is-active' 'user-preferences-trigger ')}}
-      {{rsa-icon name='account-circle-1' style='lined'}}
-      {{username}}
-    {{/rsa-form-button}}
-  {{/if}}
-
   {{#if contextualHelp.module}}
     {{#rsa-form-button
       isIconOnly=true
       class="global-contextual-help"
       defaultAction=(action 'goToGlobalHelp')}}
-      {{rsa-icon name="help-circle" style="lined"}}
+      {{rsa-icon name="help-circle" style="filled"}}
     {{/rsa-form-button}}
   {{/if}}
+
+  {{#if (and session.isAuthenticated displayPreferences)}}
+    {{#rsa-form-button
+      defaultAction=(action 'toggleUserPreferences')
+      class=(if layoutService.userPreferencesActive 'user-preferences-trigger is-active' 'user-preferences-trigger ')}}
+      <span class="username">{{username}}</span>
+      {{rsa-icon name='arrow-down-12'}}
+    {{/rsa-form-button}}
+  {{/if}}
+
 </div>

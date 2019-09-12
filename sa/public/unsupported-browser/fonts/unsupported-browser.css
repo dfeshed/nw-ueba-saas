@@ -1,9 +1,8 @@
 @font-face {
-    font-family: "Open Sans";
-    src: url("open-sans-v13-latin-regular.eot");
-    /* IE9 Compat Modes */
-    src: local("Open Sans"), local("OpenSans"), url("open-sans-v13-latin-regular.eot?#iefix") format("embedded-opentype"), url("open-sans-v13-latin-regular.woff2") format("woff2"), url("open-sans-v13-latin-regular.woff") format("woff"), url("open-sans-v13-latin-regular.ttf") format("truetype"), url("open-sans-v13-latin-regular.svg#OpenSans") format("svg");
-    /* Legacy iOS */
+  font-family: "Lato";
+  src: url('../fonts/Lato-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
 body {
@@ -36,7 +35,7 @@ body {
 }
 
 .unsupported-browser-message span {
-    font-family: "Open Sans";
+    font-family: "Lato";
     font-size: .85rem;;
     font-weight: 400;
     font-style: normal;

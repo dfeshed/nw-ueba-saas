@@ -145,29 +145,16 @@ module.exports = {
     this.import('vendor/fonts/nw-icon-library-all-v12.ttf', { destDir: 'assets/fonts/' });
     this.import('vendor/fonts/nw-icon-library-all-v12.woff', { destDir: 'assets/fonts/' });
 
-    this.import('vendor/fonts/open-sans-v13-latin-regular.eot', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-regular.svg', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-regular.ttf', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-regular.woff', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-regular.woff2', { destDir: 'assets/fonts/' });
-
-    this.import('vendor/fonts/open-sans-v13-latin-300.eot', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-300.svg', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-300.ttf', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-300.woff', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-300.woff2', { destDir: 'assets/fonts/' });
-
-    this.import('vendor/fonts/open-sans-v13-latin-700.eot', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-700.svg', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-700.ttf', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-700.woff', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-700.woff2', { destDir: 'assets/fonts/' });
-
-    this.import('vendor/fonts/open-sans-v13-latin-800.eot', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-800.svg', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-800.ttf', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-800.woff', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/open-sans-v13-latin-800.woff2', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/Lato-Black.ttf', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/Lato-BlackItalic.ttf', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/Lato-Bold.ttf', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/Lato-BoldItalic.ttf', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/Lato-Light.ttf', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/Lato-LightItalic.ttf', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/Lato-Regular.ttf', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/Lato-RegularItalic.ttf', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/Lato-Thin.ttf', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/Lato-ThinItalic.ttf', { destDir: 'assets/fonts/' });
 
     this.import('vendor/NW-Background-Blur.jpg', { destDir: 'assets/images/' });
     this.import('vendor/NW-Login-Header.png', { destDir: 'assets/images/' });

@@ -1,18 +1,19 @@
 .rsa-application-header {
-  background: $applicationHeaderBackground;
-  height: $applicationHeaderHeight;
+  height: 47px;
   overflow: hidden;
   position: relative;
   z-index: 2;
+  @include border-bottom(1px, solid, primary, lighter);
 
   > a {
     float: left;
     position: relative;
-    padding: 0 rsa-whitespace();
-    @include rsa-font(navigation, large);
+    top: 3px;
+    margin: 0 rsa-whitespace();
     text-decoration: none;
-    color: text-color(navigation, link);
-    line-height: $applicationHeaderHeight;
+    color: text-color(primary, lighter);
+    line-height: 42px;
+    font-size: 1.2rem;
     vertical-align: bottom;
 
     &:hover {
@@ -20,23 +21,8 @@
     }
 
     &.active {
-      color: text-color(navigation, linkActive);
-
-      &::after {
-        content: '';
-        display: block;
-        position: absolute;
-        overflow: hidden;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0;
-        height: 0;
-        margin: 0 auto;
-        border-left: $applicationHeaderLinkActiveArrowSize solid transparent;
-        border-right: $applicationHeaderLinkActiveArrowSize solid transparent;
-        border-bottom: $applicationHeaderLinkActiveArrowSize solid $applicationHeaderLinkActiveArrowColor;
-      }
+      color: text-color(primary, lightest);
+      @include border-bottom(3px, solid, primary, lighter);
     }
   }
 
@@ -44,66 +30,66 @@
     position: absolute;
     right: 0;
     top: 0;
-    line-height: $applicationHeaderHeight;
-
-    .global-contextual-help.is-icon-only {
-      .rsa-form-button {
-        color: text-color(navigation, linkLighter);
-      }
-    }
+    line-height: 47px;
+    color: text-color(primary, lighter);
 
     .rsa-form-button-wrapper {
-      border-left: 1px solid border-color(navigation, menu);
-      border-bottom: rsa-whitespace(least) solid transparent;
+      border-bottom: 3px solid transparent;
       text-align: center;
-      height: $applicationHeaderHeight;
+      height: 47px;
 
       &.user-preferences-trigger {
         vertical-align: middle;
         position: relative;
+        margin-right: 9px;
+
+        .rsa-form-button {
+          padding-left: 0;
+          margin-left: rsa-whitespace();
+          color: text-color(primary, lighter);
+        }
 
         .rsa-icon {
           padding: rsa-whitespace(least) 0;
           vertical-align: text-bottom;
+          position: relative;
+          top: 3px;
+        }
+
+        &:hover {
+          .rsa-form-button {
+            color: text-color(primary, lightest);
+          }
         }
       }
 
       &.is-active {
-        border-bottom: rsa-whitespace(least) solid border-color(secondary);
+        @include border-bottom(4px, solid, secondary);
 
         .rsa-form-button {
-          background: background-color(navigation, menu);
-          color: text-color(navigation, linkLighter);
+          color: text-color(primary, lightest);
         }
-      }
-
-      i {
-        position: relative;
-        left: 2px;
-      }
-
-      &.is-icon-only.is-standard:hover:not(.is-active):not(.is-disabled) .rsa-form-button {
-        background: background-color(navigation, menuHover);
-        color: text-color(navigation, linkHover);
       }
 
       .rsa-form-button {
         border-width: 0;
-        color: text-color(navigation, linkLighter);
-
-        .expand {
-          left: 0;
-        }
-
-        &:hover {
-          background: background-color(navigation, menuHover);
-          color: text-color(navigation, linkHover);
-        }
       }
     }
 
     ul {
       margin-right: rsa-whitespace();
+    }
+
+    .rsa-form-button-wrapper.global-contextual-help.is-icon-only.is-standard {
+      .rsa-form-button {
+        color: text-color(primary, lighter);
+      }
+
+      &:hover {
+        .rsa-form-button {
+          color: text-color(primary, lightest);
+        }
+      }
     }
   }
 
@@ -112,11 +98,9 @@
 
     &__svg {
       position: relative;
-      width: calc(#{$applicationHeaderHeight} - #{rsa-whitespace(least)} - #{rsa-whitespace(least)});
-      height: $applicationHeaderHeight;
-      padding: 0 rsa-whitespace(least);
-      margin: 0 auto;
-      background-image: linear-gradient(180deg, #BE3A34, #81312F);
+      width: 64px;
+      height: 48px;
+      padding: 0 rsa-whitespace();
 
       .rsa-logo__letter {
         fill: rgba(255,255,255, 1);

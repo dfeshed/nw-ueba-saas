@@ -4,10 +4,10 @@
 }
 
 .rsa-nav-tab {
-  padding: rsa-whitespace();
+  margin: rsa-whitespace();
   flex-grow: 1;
   box-sizing: border-box;
-  border-bottom: rsa-whitespace(least) solid transparent;
+  border-bottom: 2px solid transparent;
 
   .imagery {
     font-size: 2rem;
@@ -17,33 +17,16 @@
   }
 
   a {
+    position: relative;
+    top: 2px;
     text-decoration: none;
   }
 
   .label, a {
+    padding: rsa-whitespace(least) 0;
     @include rsa-font(navigation);
     text-align: center;
     color: $navTabLabelTypeColor;
-  }
-
-  &:hover {
-    .imagery,
-    .label,
-    .label a {
-      color: $navTabHoverTypeColor;
-    }
-  }
-
-  &.is-active {
-    border-color: $navTabActiveBorderBottomColor;
-    align-self: center;
-    cursor: default;
-
-    .imagery,
-    .label,
-    .label a {
-      color: $navTabActiveTypeColor;
-    }
   }
 
   &.is-left-aligned-primary {
@@ -83,10 +66,10 @@
   }
 
   &.is-left-aligned-secondary {
-    padding: 0 0.3rem;
+    margin: 0 rsa-whitespace();
     flex-grow: 0;
     text-align: center;
-    line-height: 3rem;
+    line-height: 2rem;
 
     .imagery {
       display: none;
@@ -96,6 +79,28 @@
       @include rsa-font(navigation);
       display: inline-block;
       margin: 0;
+    }
+  }
+
+  &.is-active {
+    border-color: $navTabActiveBorderBottomColor;
+    align-self: center;
+    cursor: default;
+
+    .imagery,
+    .label,
+    .label a,
+    a {
+      color: $navTabActiveTypeColor;
+    }
+  }
+
+  &:hover {
+    .imagery,
+    .label,
+    .label a,
+    a {
+      color: $navTabHoverTypeColor;
     }
   }
 

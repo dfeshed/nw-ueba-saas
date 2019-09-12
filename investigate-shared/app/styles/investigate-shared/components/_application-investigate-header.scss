@@ -1,43 +1,9 @@
-$investigateBorderBottomColor: border-color(secondary);
-
 .rsa-investigate__nav {
   @include rsa-vendor-prefix(flex-shrink, 0);
   @include rsa-vendor-prefix(flex-grow, 0);
-  background-color: background-color(primary, darker);
   @include rsa-row(justify, middle);
-  border-bottom: 1px solid border-color(secondary);
-
-  ul {
-    &:first-of-type {
-      @include rsa-vendor-prefix(flex-shrink, 0);
-      @include rsa-vendor-prefix(flex-grow, 0);
-    }
-    &:last-of-type {
-      text-align: right;
-    }
-
-    li {
-      list-style: none;
-      display: inline;
-      .is-active {
-        padding-bottom: 0.5rem;
-        border-bottom: 0.25rem solid $investigateBorderBottomColor;
-      }
-    }
-    a {
-      @include rsa-font(navigation);
-      display: inline-block;
-      padding: 0 rsa-whitespace();
-      text-decoration: none;
-      white-space: nowrap;
-      color: text-color(primary, lighter);
-
-      &.active,
-      &:hover {
-        color: text-color(primary, lightest);
-      }
-    }
-  }
+  @include border-bottom(1px, solid, secondary);
+  background-color: background-color(primary, darker);
 
   .investigate-controls {
     display: flex;

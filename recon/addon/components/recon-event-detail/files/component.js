@@ -41,7 +41,7 @@ const dispatchToActions = {
 const calculateColumnWidth = (text) => {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
-  context.font = "11.9px 'Open Sans'";
+  context.font = "11.9px 'Lato'";
   const { width } = context.measureText(text);
   return width;
 };
