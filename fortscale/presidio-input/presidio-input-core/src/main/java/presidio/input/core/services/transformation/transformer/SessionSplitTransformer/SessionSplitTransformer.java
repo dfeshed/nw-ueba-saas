@@ -151,8 +151,10 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
     }
 
     private void setEntityAttribute(JSONObject jsonObject, String fieldName, EntityAttributes entityAttributes) {
-        JSONObject entityObject = new JSONObject(entityAttributes);
-        jsonObject.put(fieldName, entityObject);
+        if (entityAttributes != null) {
+            JSONObject entityObject = new JSONObject(entityAttributes);
+            jsonObject.put(fieldName, entityObject);
+        }
     }
 
     private String namePath(String prefixPath) {
