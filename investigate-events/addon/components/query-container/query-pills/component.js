@@ -412,10 +412,15 @@ const QueryPills = RsaContextMenu.extend({
   /**
    * Adjusts flags to indicate that no pills are currently open/focused
    * for edit/add
+   * @param {boolean} shouldResetStartTrigger - You want to prevent the default
+   * behavior of setting `startTriggeredPosition` to `undefined` if it was set
+   * to a desired value before calling this function.
    * @private
    */
-  _pillsExited() {
-    this.set('startTriggeredPosition', undefined);
+  _pillsExited(shouldResetStartTrigger = true) {
+    if (shouldResetStartTrigger) {
+      this.set('startTriggeredPosition', undefined);
+    }
     this.set('isPillOpen', false);
     this.set('isPillOpenForEdit', false);
 
@@ -446,12 +451,16 @@ const QueryPills = RsaContextMenu.extend({
    * @private
    */
   _pillCreated(pillData, position) {
-    let shouldAddFocusToNewPill = false;
+    const shouldAddFocusToNewPill = false;
     // if true, it means a pill is being created in the middle of pills
     if (this.get('isPillTriggerOpenForAdd')) {
-      shouldAddFocusToNewPill = true;
+      // adjust the startTriggeredPosition to point to the new-pill-trigger
+      // that's after the position where this pill will be inserted
+      this.set('startTriggeredPosition', position + 1);
     }
-    this._pillsExited();
+    // Don't reset startTriggeredPosition because it's pointing to where we want
+    // to be after this pill is added
+    this._pillsExited(false);
     this.send('addGuidedPill', { pillData, position, shouldAddFocusToNewPill });
   },
 
@@ -563,8 +572,8 @@ const QueryPills = RsaContextMenu.extend({
   _addFocusToRightPill(position) {
     const pillsData = this.get('pillsData');
     if (position < pillsData.length) {
-      this.send('addPillFocus', position);
       this._pillsExited();
+      this.send('addPillFocus', position);
     }
   },
 

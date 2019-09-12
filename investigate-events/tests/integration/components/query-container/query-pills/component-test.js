@@ -156,7 +156,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 3, 'There should now be three new pill triggers.');
   });
 
-  test('Creating a pill in the middle of pills creates a focused pill', async function(assert) {
+  test('Creating a pill in the middle of pills forwards focus to new pill creation to the right', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -164,17 +164,19 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await leaveNewPillTemplate();
     await click(PILL_SELECTORS.newPillTrigger);
-    await createBasicPill(true);
+    await createBasicPill(true, undefined, '!=');
 
     // action to store in state called
     assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
-    assert.propEqual(
-      newActionSpy.args[0][0],
-      { pillData: { meta: 'a', operator: '=', value: '\'x\'', type: 'query' }, position: 0, shouldAddFocusToNewPill: true },
-      'The action creator was called with the right arguments including the proper position'
-    );
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+    const [[spyArgs]] = newActionSpy.args;
+    assert.propEqual(spyArgs, {
+      pillData: { meta: 'a', operator: '!=', value: '\'x\'', type: 'query' },
+      position: 0,
+      shouldAddFocusToNewPill: false
+    }, 'The action creator was called with the right arguments including the proper position');
+    assert.equal(findAll(PILL_SELECTORS.pillTriggerOpenForAdd).length, 1, 'should have a trigger open for add');
   });
 
   test('Creating a FF pill in the middle of pills creates a focused pill', async function(assert) {
@@ -260,18 +262,18 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await leaveNewPillTemplate();
     await click(PILL_SELECTORS.newPillTrigger);
     await createBasicPill(true);
-    await waitUntil(() => findAll(PILL_SELECTORS.queryPill).length === 4);
 
     // action to store in state called
     assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
-    assert.propEqual(
-      newActionSpy.args[0][0],
-      { pillData: { meta: 'a', operator: '=', value: '\'x\'', type: 'query' }, position: 0, shouldAddFocusToNewPill: true },
-      'The action creator was called with the right arguments including the proper position'
-    );
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+    const [[spyArgs]] = newActionSpy.args;
+    assert.propEqual(spyArgs, {
+      pillData: { meta: 'a', operator: '=', value: '\'x\'', type: 'query' },
+      position: 0,
+      shouldAddFocusToNewPill: false
+    }, 'The action creator was called with the right arguments including the proper position');
   });
 
   test('Deleting a pill sends action for redux state update', async function(assert) {
@@ -325,21 +327,6 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(async() => {
       assert.equal(openGuidedPillForEditSpy.callCount, 0, 'The openGuidedPillForEditSpy pill action not called at all');
     });
-  });
-
-  test('Creating a pill leaves no classes indicating pills are open', async function(assert) {
-    new ReduxDataHelper(setState)
-      .language()
-      .canQueryGuided()
-      .pillsDataPopulated()
-      .build();
-
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
-    await click(PILL_SELECTORS.newPillTrigger);
-    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
-    await createBasicPill(true);
-
-    allPillsAreClosed(assert);
   });
 
   test('Cancelling out of pill creation leaves no classes indicating pills are open', async function(assert) {
@@ -2828,6 +2815,7 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   test('Can create a new pill inside a pair of parens', async function(assert) {
+    const done = assert.async();
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -2846,12 +2834,16 @@ module('Integration | Component | Query Pills', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
     // Test that new pill is in between open and close parens, and is focused.
     const items = document.querySelectorAll('.query-pills > div');
-    // NPT, OP, NPT, Pill, NPT, CP, NPT
+    // NPT, OP, NPT, Pill, NPT(open), CP, NPT
     assert.equal(items.length, 7, 'Incorrect number of query items');
     assert.equal(trim(items[1].textContent), '(', 'Should be an open paren');
     assert.equal(trim(items[3].textContent), 'a=\'b\'', 'Should be correct pill text');
-    assert.ok(items[3].getAttribute('class').includes('is-focused'), 'Should be focused');
     assert.equal(trim(items[5].textContent), ')', 'Should be a close paren');
+    // need to give the new-pill-trigger a second to open
+    await waitUntil(() => find(PILL_SELECTORS.pillTriggerOpenForAdd)).then(async function() {
+      assert.ok(true, 'Should be a pill open for creation');
+      done();
+    });
   });
 
   test('new pill triggers render appropriately when including parens', async function(assert) {

@@ -71,12 +71,8 @@ export default Component.extend({
    */
   isValueSuggestionsCallInProgress: false,
 
-
-  init() {
+  didReceiveAttrs() {
     this._super(...arguments);
-
-    // If this trigger should be open as soon as it renders,
-    // then set it as such
     if (this.get('startTriggeredPosition') === this.get('newPillPosition')) {
       this.set('isAddNewPill', true);
     }
