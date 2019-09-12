@@ -1,0 +1,77 @@
+<hbox>
+  {{#click-outside action=(action 'collapseManagerList')}}
+
+    <div class='rsa-button-group'>
+      {{#rsa-form-button
+        class='list-caption'
+        defaultAction=(action 'toggleExpandManagerList')
+        title=titleTooltip
+      }}
+        {{caption}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button
+        class='rsa-split-dropdown'
+        defaultAction=(action 'toggleExpandManagerList')
+      }}
+        {{rsa-icon name='arrow-down-12'}}
+      {{/rsa-form-button}}
+    </div>
+
+    {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
+
+      {{#if isExpanded}}
+
+        {{#if isListView}}
+          <div class='list-body'>
+
+            {{yield (hash
+                filter=(component listFilterComponent
+                  listLocation=listLocation
+                  listName=listName
+                  originalList=list
+                  updateFilteredList=(action 'updateFilteredList')
+                )
+              )
+            }}
+            
+            {{yield (hash
+                itemList=(component itemListComponent
+                  listLocation=listLocation
+                  listName=listName
+                  list=filteredList
+                  selectedItem=selectedItem
+                  itemSelection=(action 'handleItemSelection')
+                  isExpanded=isExpanded
+                  editItem=(action 'editItem')
+                )
+              )
+            }}
+          </div>
+
+          {{list-manager/list-manager-container/list-footer
+            itemType=itemType
+            createItem=(action 'editItem')
+            helpId=helpId
+          }}
+
+        {{else}}
+
+          {{yield (hash
+              details=(component itemDetailsComponent
+                listLocation=listLocation
+                itemType=itemType
+                detailsDone=(action 'detailsDone')
+                item=itemForEdit
+                itemSelection=(action 'handleItemSelection')
+                helpId=helpId
+              )
+            )
+          }}
+
+        {{/if}}
+
+      {{/if}}
+
+    {{/rsa-button-menu}}
+  {{/click-outside}}
+</hbox>

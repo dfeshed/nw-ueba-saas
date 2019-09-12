@@ -2,25 +2,43 @@ import reselect from 'reselect';
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
-// TODO such as _listManagers, _listName
+const _rootState = (state, listLocation) => {
+  let location;
+  if (listLocation) {
+    location = listLocation;
+  } else if (state.listLocation) {
+    location = state.listLocation;
+  } else {
+    location = undefined;
+  }
 
-// temporary until listName is set up
-const _columnGroupsListManager = (state) => state.listManagers ? state.listManagers.columnGroups : undefined;
-const _listManager = (state) => state.listManager;
-
-// SELECTORS
-
-// TODO update this selector to use listName
-// hardcoded for Column Groups for now
-export const highlightedIndex = createSelector(
-  [_columnGroupsListManager, _listManager],
-  (columnGroupsListManager, listManager) => {
-    if (columnGroupsListManager) {
-      return columnGroupsListManager.highlightedIndex;
-    } else {
-      if (listManager) {
-        return listManager.highlightedIndex;
+  if (location) {
+    const locationSplit = location.split('.');
+    let obj = state;
+    for (let i = 0; i < locationSplit.length; i++) {
+      obj = obj[locationSplit[i]];
+      if (!obj) {
+        // nested obj does not exist
+        return false;
       }
     }
+    return obj;
+  } else {
+    return state;
+  }
+};
+
+// SELECTORS
+export const highlightedIndex = createSelector(
+  _rootState,
+  (rootState) => {
+    return rootState.highlightedIndex;
+  }
+);
+
+export const isListManagerReady = createSelector(
+  [_rootState],
+  (rootState) => {
+    return !!rootState.listLocation;
   }
 );

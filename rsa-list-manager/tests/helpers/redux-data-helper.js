@@ -43,4 +43,9 @@ export default class DataHelper {
     _set(this.state, 'highlightedIndex', index);
     return this;
   }
+
+  listLocation(location) {
+    _set(this.state, 'listLocation', location);
+    return this;
+  }
 }

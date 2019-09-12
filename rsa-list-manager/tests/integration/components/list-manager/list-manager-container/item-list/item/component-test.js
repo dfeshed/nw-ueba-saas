@@ -1,0 +1,81 @@
+import { module, test } from 'qunit';
+import hbs from 'htmlbars-inline-precompile';
+import { render, find, click } from '@ember/test-helpers';
+import { setupRenderingTest } from 'ember-qunit';
+
+module('Integration | Component | item ', function(hooks) {
+  setupRenderingTest(hooks);
+
+  const nonOOTB = 'rsa-icon-settings-1-lined';
+
+  const item = { id: '1', name: 'foo' };
+
+  test('Component for item renders when no selectedItem is passed, no OOTB indicators', async function(assert) {
+    assert.expect(6);
+
+    this.set('item', item);
+    this.set('itemSelection', (itemClicked) => {
+      assert.deepEqual(itemClicked, item, 'Clicking an Item causes triggers itemSelection');
+    });
+    this.set('hasOOTBIndicators', false);
+
+    await render(hbs`{{list-manager/list-manager-container/item-list/item item=item itemSelection=itemSelection hasOOTBIndicators=hasOOTBIndicators}}`);
+
+    assert.ok(find('li.rsa-list-item'), 'list found');
+    assert.notOk(find('li .ootb-indicator'), 'ootb indicator found');
+    assert.notOk(find('li.is-selected'));
+    assert.equal(find('li a').getAttribute('title'), 'foo', 'tooltip for item on hover shows item name');
+    assert.equal(find('li').getAttribute('tabindex'), -1, 'tabindex attribute exists');
+
+    await click('li a');
+  });
+
+  test('Component for item renders when selectedItem is clicked', async function(assert) {
+    assert.expect(3);
+
+    this.set('item', item);
+    this.set('selectedItem', item);
+    this.set('itemSelection', (itemClicked) => {
+      assert.deepEqual(itemClicked, item, 'Clicking an Item causes triggers itemSelection');
+    });
+    this.set('hasOOTBIndicators', true);
+
+    await render(hbs`{{list-manager/list-manager-container/item-list/item item=item selectedItem=selectedItem itemSelection=itemSelection hasOOTBIndicators=hasOOTBIndicators}}`);
+
+    assert.ok(find('li.is-selected'), 'the item rendered is a selected item');
+    assert.ok(find('li .ootb-indicator').classList.contains(nonOOTB), 'icon is non-ootb');
+
+    await click('li.is-selected a');
+  });
+
+  test('Component for item renders correctly when item should be highlighted', async function(assert) {
+    const item = { id: 'someid', name: 'foo' };
+
+    this.set('item', item);
+    this.set('itemSelection', () => {
+    });
+    this.set('hasOOTBIndicators', true);
+    this.set('highlightedId', 'someid');
+
+    await render(hbs`{{list-manager/list-manager-container/item-list/item item=item selectedItem=selectedItem
+      highlightedId=highlightedId itemSelection=itemSelection hasOOTBIndicators=hasOOTBIndicators}}`);
+
+    assert.ok(find('li.is-highlighted'), 'the item shall have is-highlighted class');
+  });
+
+  test('Component for item renders correctly when item should not be highlighted', async function(assert) {
+    const item = { id: 'someid', name: 'foo' };
+
+    this.set('item', item);
+    this.set('itemSelection', () => {
+    });
+    this.set('hasOOTBIndicators', true);
+    this.set('highlightedId', 'not-someid');
+
+    await render(hbs`{{list-manager/list-manager-container/item-list/item item=item selectedItem=selectedItem
+      highlightedId=highlightedId itemSelection=itemSelection hasOOTBIndicators=hasOOTBIndicators}}`);
+
+    assert.notOk(find('li.is-highlighted'), 'the item shall not have is-highlighted class');
+  });
+
+});

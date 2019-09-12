@@ -8,6 +8,10 @@ import { createColumnGroup,
   deleteColumnGroup
 } from 'investigate-events/actions/column-group';
 import { inject as service } from '@ember/service';
+import {
+  COLUMN_GROUPS_LIST_LOCATION as listLocation,
+  COLUMN_GROUPS_LIST_NAME as listName
+} from 'investigate-events/constants/columnGroups';
 
 const dispatchToActions = {
   setColumnGroup,
@@ -24,6 +28,8 @@ const stateToComputed = (state) => ({
 const ColumnGroups = Component.extend({
   classNames: ['rsa-investigate-events-table__header__columnGroups'],
   eventBus: service(),
+  listName,
+  listLocation,
 
   @computed()
   helpId() {
