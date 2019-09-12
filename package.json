@@ -119,8 +119,6 @@
     "normalizr": "3.3.0",
     "patch-package": "6.1.2",
     "pikaday-time": "1.4.1",
-    "postcss": "6.0.14",
-    "postcss-custom-properties": "6.2.0",
     "postinstall-postinstall": "2.0.0",
     "qunit-dom": "^0.8.0",
     "redux": "4.0.0",
