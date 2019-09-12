@@ -58,6 +58,7 @@ public class UncommonValuesAlerts extends NetworkScenarioBase{
                 .fixDestinationOrganization()
                 .setJa3EntityValue(Ja3Entity(1))
                 .fixSourceNetname()
+                .setDistinctSrcIps(5,7)
                 .generate();
 
         NetworkEventsGenerator sslSubjGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
@@ -72,6 +73,7 @@ public class UncommonValuesAlerts extends NetworkScenarioBase{
                 .nextDestinationOrganization()
                 .setJa3EntityValue(Ja3Entity(1))
                 .fixSourceNetname()
+                .setDistinctSrcIps(10,50)
                 .generateAndAppendTo(events);
 
         return events.stream();

@@ -17,7 +17,7 @@ abstract class NetworkScenarioBase {
     protected int daysBackFromAnomaly = 1;
     protected int daysBackToAnomaly = 0;
     protected int intervalMinutes = 10;
-    protected int intervalMinutesAnomaly = 30;
+    protected int intervalMinutesAnomaly = 15;
 
 
     abstract String getScenarioName();
