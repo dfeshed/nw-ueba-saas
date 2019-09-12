@@ -5332,6 +5332,7 @@ effects the previewed source.',
       date: 'Date',
       feedback: 'Feedback',
       indicators: 'Indicators',
+      noAlertsError: 'No alerts present.',
       error: 'Some problem while fetching entity alerts. Please retry after some time.',
       errorDetails: 'Some problem while fetching alert details. Please retry after some time.',
       alertNames: {

@@ -9,7 +9,7 @@ const state = {
     selectedAlertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
     sortBy: 'severity',
     alerts: userAlerts.data,
-    alertError: false
+    errorMessage: null
   }
 };
 
@@ -18,13 +18,13 @@ test('test alert state for selected alert id', function(assert) {
 });
 
 test('test alert state for error', function(assert) {
-  assert.equal(alertError(state), false);
+  assert.equal(alertError(state), null);
   const newState = {
     alerts: {
-      alertError: true
+      errorMessage: 'noAlertsData'
     }
   };
-  assert.equal(alertError(newState), true);
+  assert.equal(alertError(newState), 'noAlertsData');
 });
 
 test('test alert state for alert data for given entity', function(assert) {

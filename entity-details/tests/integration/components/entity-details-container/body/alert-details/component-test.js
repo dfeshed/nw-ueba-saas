@@ -39,7 +39,7 @@ module('Integration | Component | entity-details-container/body/alert-details', 
   });
 
   test('it should show error for some server problem', async function(assert) {
-    new ReduxDataHelper(setState).alerts([]).alertError(true).build();
+    new ReduxDataHelper(setState).alerts([]).errorMessage('noAlertsData').build();
 
     await render(hbs`{{entity-details-container/body/alert-details}}`);
     // SHould have loader div but should display error text not rsa loader in case of error.

@@ -59,7 +59,7 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
       selectedAlertId: 'alert-1',
       sortBy: 'severity',
       alerts: [],
-      alertError: false
+      errorMessage: null
     });
 
     result = reducer(Immutable.from({}), {
@@ -70,7 +70,7 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
       selectedAlertId: null,
       sortBy: 'severity',
       alerts: [],
-      alertError: false
+      errorMessage: null
     });
   });
 
@@ -80,18 +80,25 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
       type: ACTION_TYPES.INITIATE_ALERT,
       payload: 'alert-1'
     });
-
     assert.deepEqual(result, {
       selectedAlertId: 'alert-1',
       sortBy: 'severity',
       alerts: [],
-      alertError: false
+      errorMessage: null
     });
 
     result = reducer(Immutable.from({}), {
       type: ACTION_TYPES.ALERT_ERROR
     });
 
-    assert.equal(result.alertError, true);
+    assert.equal(result.errorMessage, 'error');
+
+    result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.ALERT_ERROR,
+      payload: 'noAlertsData'
+    });
+
+    assert.equal(result.errorMessage, 'noAlertsData');
+
   });
 });

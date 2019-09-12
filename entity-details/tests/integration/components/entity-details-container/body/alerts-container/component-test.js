@@ -45,7 +45,7 @@ module('Integration | Component | entity-details-container/body/alerts-container
   });
 
   test('it should show error for some server problem', async function(assert) {
-    new ReduxDataHelper(setState).alerts([]).alertError(true).build();
+    new ReduxDataHelper(setState).alerts([]).errorMessage('noAlertsData').build();
 
     await render(hbs`{{entity-details-container/body/alerts-container}}`);
 

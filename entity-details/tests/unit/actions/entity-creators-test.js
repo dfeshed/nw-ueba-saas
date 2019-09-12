@@ -60,6 +60,40 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
     initializeEntityDetails({ entityId: '123' })(dispatch);
   });
 
+  test('it can intialize entity when there is no alerts', (assert) => {
+    assert.expect(3);
+    const types = ['ENTITY_DETAILS::GET_ENTITY_DETAILS', 'ENTITY_DETAILS::ALERT_ERROR', 'ENTITY_DETAILS::INITIATE_ENTITY'];
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return {
+              data: [{
+                id: 'a9f12bca-9e9f-4686-9653-064d632d76d9',
+                displayName: '4a49ff8ff53a4b1e8e64c2d8abdc9922',
+                entityType: null,
+                username: '4a49ff8ff53a4b1e8e64c2d8abdc9922',
+                followed: false,
+                scoreSeverity: 'Low',
+                score: 0.0,
+                alertsCount: 0,
+                alerts: null
+              }]
+            };
+          }
+        });
+      });
+    });
+    const dispatch = ({ type }) => {
+      if (type) {
+        assert.ok(types.includes(type));
+      }
+    };
+    initializeEntityDetails({ entityId: '123' })(dispatch);
+  });
+
+
   test('it should fail if some error from server', (assert) => {
     assert.expect(2);
     patchFetch(() => {

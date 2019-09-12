@@ -29,7 +29,7 @@
           {{t (concat 'investigateUsers.alerts.indicator.indicatorNames.' indicator.anomalyTypeFieldName '.name')}}
         </div>
         <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill_time'>
-          {{rsa-content-datetime timestamp=(get indicator 'startTime') displayMilliseconds=false}}
+          {{rsa-content-datetime timestamp=indicator.startDate displayMilliseconds=false}}
         </div>
       </div>
     {{/each}}

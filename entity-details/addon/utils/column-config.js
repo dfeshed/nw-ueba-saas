@@ -270,7 +270,7 @@ const registryColumns = [{
 }];
 
 const networkColumns = [{
-  field: 'eventDate.epochSecond',
+  field: 'time_detected',
   type: 'DATE_TIME',
   title: 'Time',
   visible: true,

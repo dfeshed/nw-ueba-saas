@@ -37,7 +37,7 @@ export default class DataHelper {
       alerts: {
         selectedAlertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
         alerts: userAlerts.data,
-        alertError: false,
+        errorMessage: null,
         sortBy: 'severity'
       },
       indicators: {
@@ -99,8 +99,8 @@ export default class DataHelper {
     return this;
   }
 
-  alertError(alertError) {
-    _set(this.state, 'alerts.alertError', alertError);
+  errorMessage(alertError) {
+    _set(this.state, 'alerts.errorMessage', alertError);
     return this;
   }
 

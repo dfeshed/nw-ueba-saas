@@ -1,4 +1,4 @@
-import { INITIATE_ENTITY, GET_ENTITY_DETAILS, UPDATE_FOLLOW, ENTITY_ERROR } from './types';
+import { INITIATE_ENTITY, GET_ENTITY_DETAILS, UPDATE_FOLLOW, ENTITY_ERROR, ALERT_ERROR } from './types';
 import { fetchData } from './fetch/data';
 import { initializeAlert } from './alert-details';
 import { initializeIndicator } from './indicator-details';
@@ -37,6 +37,11 @@ export const initializeEntityDetails = ({ entityId, entityType, alertId, indicat
         if (!alertId && userDetails) {
           if (userDetails.alerts && userDetails.alerts[0]) {
             dispatch(initializeAlert(userDetails.alerts[0].id));
+          } else {
+            dispatch({
+              type: ALERT_ERROR,
+              payload: 'noAlertsError'
+            });
           }
         }
       }
