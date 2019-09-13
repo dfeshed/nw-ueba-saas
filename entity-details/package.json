@@ -67,7 +67,6 @@
     "ember-engines": "0.8.2",
     "ember-exam": "1.0.0",
     "ember-sinon": "4.0.0",
-    "ember-export-application-global": "^2.0.0",
     "ember-load-initializers": "2.0.0",
     "ember-qunit": "4.4.1",
     "ember-resolver": "4.3.0",
