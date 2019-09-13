@@ -36,6 +36,13 @@ export const highlightedIndex = createSelector(
   }
 );
 
+export const listName = createSelector(
+  _rootState,
+  (rootState) => {
+    return rootState.listName;
+  }
+);
+
 export const isListManagerReady = createSelector(
   [_rootState],
   (rootState) => {

@@ -4,9 +4,10 @@ import { htmlSafe } from '@ember/string';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { setHighlightedIndex } from 'rsa-list-manager/actions/creators/creators';
-import { highlightedIndex } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { highlightedIndex, listName } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
+  listName: listName(state, attrs.listLocation),
   highlightedIndex: highlightedIndex(state, attrs.listLocation)
 });
 
@@ -27,17 +28,11 @@ const COMPONENT_PATH = 'list-manager/list-manager-container';
 
 const ListManagerContainer = Component.extend({
   layout,
-  classNames: ['list-manager'],
+  classNames: ['list-manager-container'],
   listFilterComponent: `${COMPONENT_PATH}/list-filter`,
   itemListComponent: `${COMPONENT_PATH}/item-list`,
   itemDetailsComponent: `${COMPONENT_PATH}/item-details`,
   listLocation: undefined,
-
-  /*
-   * Name identifying the list used to label buttons in the manager.
-   * Name should sound plural, ending in 's'
-   */
-  listName: null,
 
   // Object to identify an item as selected in the manager's button caption
   selectedItem: null,

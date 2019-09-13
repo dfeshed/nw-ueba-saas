@@ -30,13 +30,11 @@ module('Integration | Component | list-manager', function(hooks) {
 
   test('list manager is rendered', async function(assert) {
     new ReduxDataHelper(setState).build();
-    this.set('name', 'My Items');
     this.set('listLocation', listLocation1);
     this.set('list', items);
 
     await render(hbs`{{#list-manager
       listLocation=listLocation
-      listName=name
       list=list
     }}
     {{/list-manager}}`);
@@ -46,13 +44,11 @@ module('Integration | Component | list-manager', function(hooks) {
 
   test('listLocation exists', async function(assert) {
     new ReduxDataHelper(setState).build();
-    this.set('name', 'My Items');
     this.set('listLocation', listLocation1);
     this.set('list', items);
 
     await render(hbs`{{#list-manager
       listLocation=listLocation
-      listName=name
       list=list
     }}
     {{/list-manager}}`);

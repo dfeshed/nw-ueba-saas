@@ -27,7 +27,6 @@
             {{yield (hash
                 filter=(component listFilterComponent
                   listLocation=listLocation
-                  listName=listName
                   originalList=list
                   updateFilteredList=(action 'updateFilteredList')
                 )
@@ -37,7 +36,6 @@
             {{yield (hash
                 itemList=(component itemListComponent
                   listLocation=listLocation
-                  listName=listName
                   list=filteredList
                   selectedItem=selectedItem
                   itemSelection=(action 'handleItemSelection')

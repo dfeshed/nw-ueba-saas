@@ -3,9 +3,10 @@ import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { setHighlightedIndex } from 'rsa-list-manager/actions/creators/creators';
-import { highlightedIndex } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { highlightedIndex, listName } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
+  listName: listName(state, attrs.listLocation),
   highlightedIndex: highlightedIndex(state, attrs.listLocation)
 });
 
@@ -18,7 +19,6 @@ const ItemList = Component.extend({
   tagName: 'ul',
   classNames: ['rsa-item-list'],
   listLocation: undefined,
-  listName: null,
   list: null,
   selectedItem: null,
   onMouse: null, // true if user is using the mouse to navigate

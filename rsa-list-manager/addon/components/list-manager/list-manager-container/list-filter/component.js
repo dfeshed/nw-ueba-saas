@@ -3,9 +3,10 @@ import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { setHighlightedIndex } from 'rsa-list-manager/actions/creators/creators';
-import { highlightedIndex } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { highlightedIndex, listName } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
+  listName: listName(state, attrs.listLocation),
   highlightedIndex: highlightedIndex(state, attrs.listLocation)
 });
 
@@ -17,7 +18,6 @@ const ListFilter = Component.extend({
   layout,
   classNames: ['list-filter'],
   listLocation: undefined,
-  listName: null,
   originalList: null,
   filterAction: null,
   updateFilteredList: null,

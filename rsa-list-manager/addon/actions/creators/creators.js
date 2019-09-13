@@ -1,10 +1,14 @@
 import * as ACTION_TYPES from 'rsa-list-manager/actions/types';
 
 // TODO add more properties later
-export const initializeListManager = (listLocation) => ({
+/**
+ *
+ * @param {object} inputs { listLocation, listName, ... }
+ */
+export const initializeListManager = (inputs) => ({
   type: ACTION_TYPES.INITIALIZE_LIST_MANAGER,
-  payload: listLocation,
-  meta: { belongsTo: listLocation }
+  payload: inputs,
+  meta: { belongsTo: inputs.listLocation }
 });
 
 export const setHighlightedIndex = (index, listLocation) => ({

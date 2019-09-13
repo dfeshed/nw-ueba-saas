@@ -1,5 +1,9 @@
-.list-manager {
+.list-manager .list-manager-container {
   display: inline-flex;
+
+  .list-caption {
+    top: -1px;
+  }
 
   .rsa-button-menu {
     .rsa-form-button-wrapper:not(.is-icon-only) {

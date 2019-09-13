@@ -20,17 +20,22 @@ module('Integration | Component | list filter', function(hooks) {
   });
 
   const originalList = [ { id: '1', name: 'foo' }, { id: '2', name: 'bar' }];
+  const listLocation1 = 'listManager';
+  const listName1 = 'List of Things';
 
   test('Filters list with default filtering', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
+    this.set('listLocation', listLocation1);
     this.set('originalList', originalList);
-    this.set('listName', 'List of Things');
     this.set('updateFilteredList', (updatedList) => {
       this.set('filteredList', updatedList);
     });
 
-    await render(hbs`{{list-manager/list-manager-container/list-filter listName=listName originalList=originalList
-      updateFilteredList=updateFilteredList}}`);
+    await render(hbs`{{list-manager/list-manager-container/list-filter
+      listLocation=listLocation
+      originalList=originalList
+      updateFilteredList=updateFilteredList
+    }}`);
 
     assert.ok(find('.list-filter'), 'list filter component found');
     assert.ok(find('.list-filter .rsa-icon-filter-2-filled'), 'filter icon found');
@@ -49,9 +54,9 @@ module('Integration | Component | list filter', function(hooks) {
   });
 
   test('clear filter resets the filter input, results, highlightedIndex', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('originalList', originalList);
-    this.set('listName', 'List of Things');
+    this.set('listLocation', listLocation1);
     this.set('updateFilteredList', (updatedList) => {
       this.set('filteredList', updatedList);
     });
@@ -60,8 +65,10 @@ module('Integration | Component | list filter', function(hooks) {
       this.set('highlightedIndex', -1);
     });
 
-    await render(hbs`{{list-manager/list-manager-container/list-filter listName=listName
-      originalList=originalList updateFilteredList=updateFilteredList
+    await render(hbs`{{list-manager/list-manager-container/list-filter
+      listLocation=listLocation
+      originalList=originalList
+      updateFilteredList=updateFilteredList
       resetHighlightedIndex=resetHighlightedIndex}}`);
 
     assert.notOk(find('.list-filter .clear-filter'), 'Clear filter not found when input is clear');
@@ -83,10 +90,10 @@ module('Integration | Component | list filter', function(hooks) {
   });
 
   test('Filters list with custom filtering', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     assert.expect(3);
     this.set('originalList', originalList);
-    this.set('listName', 'List of Things');
+    this.set('listLocation', listLocation1);
     this.set('filterAction', (value) => {
       assert.ok(true, 'Custom function called when passed');
       return this.get('originalList').filter((item) => item.name.toLowerCase().includes(value.toLowerCase()));
@@ -95,7 +102,12 @@ module('Integration | Component | list filter', function(hooks) {
       this.set('filteredList', updatedList);
     });
 
-    await render(hbs`{{list-manager/list-manager-container/list-filter listName=listName originalList=originalList filterAction=filterAction updateFilteredList=updateFilteredList}}`);
+    await render(hbs`{{list-manager/list-manager-container/list-filter
+      listLocation=listLocation
+      originalList=originalList
+      filterAction=filterAction
+      updateFilteredList=updateFilteredList
+    }}`);
 
     await click(find('.list-filter input'));
     await typeInSearch('f');
@@ -105,9 +117,9 @@ module('Integration | Component | list filter', function(hooks) {
   });
 
   test('highlightedIndex is reset when filter is in focus', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('originalList', originalList);
-    this.set('listName', 'List of Things');
+    this.set('listLocation', listLocation1);
     this.set('filterAction', (value) => {
       assert.ok(true, 'Custom function called when passed');
       return this.get('originalList').filter((item) => item.name.toLowerCase().includes(value.toLowerCase()));
@@ -116,8 +128,13 @@ module('Integration | Component | list filter', function(hooks) {
       this.set('filteredList', updatedList);
     });
 
-    await render(hbs`{{list-manager/list-manager-container/list-filter listName=listName originalList=originalList 
-      resetHighlightedIndex=resetHighlightedIndex filterAction=filterAction updateFilteredList=updateFilteredList}}`);
+    await render(hbs`{{list-manager/list-manager-container/list-filter
+      listLocation=listLocation
+      originalList=originalList
+      resetHighlightedIndex=resetHighlightedIndex
+      filterAction=filterAction
+      updateFilteredList=updateFilteredList
+    }}`);
 
     await click(find('.list-filter input'));
     const state1 = this.owner.lookup('service:redux').getState();
@@ -125,9 +142,9 @@ module('Integration | Component | list filter', function(hooks) {
   });
 
   test('highlightedIndex is reset when filterText changes', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('originalList', originalList);
-    this.set('listName', 'List of Things');
+    this.set('listLocation', listLocation1);
     this.set('filterAction', (value) => {
       assert.ok(true, 'Custom function called when passed');
       return this.get('originalList').filter((item) => item.name.toLowerCase().includes(value.toLowerCase()));
@@ -136,9 +153,14 @@ module('Integration | Component | list filter', function(hooks) {
       this.set('filteredList', updatedList);
     });
 
-    await render(hbs`{{list-manager/list-manager-container/list-filter listName=listName originalList=originalList
-      filterText=filterText resetHighlightedIndex=resetHighlightedIndex
-      filterAction=filterAction updateFilteredList=updateFilteredList}}`);
+    await render(hbs`{{list-manager/list-manager-container/list-filter
+      listLocation=listLocation
+      originalList=originalList
+      filterText=filterText
+      resetHighlightedIndex=resetHighlightedIndex
+      filterAction=filterAction
+      updateFilteredList=updateFilteredList
+    }}`);
 
     await click(find('.list-filter input'));
     const state1 = this.owner.lookup('service:redux').getState();

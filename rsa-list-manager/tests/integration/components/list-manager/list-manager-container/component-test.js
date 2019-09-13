@@ -24,11 +24,12 @@ module('Integration | Component | list-manager-container', function(hooks) {
     initialize(this.owner);
   });
 
-  const listManagerSelector = '.list-manager';
-  const buttonGroupSelector = `${listManagerSelector} .rsa-button-group`;
-  const buttonMenuSelector = `${listManagerSelector} .rsa-button-menu`;
+  const listManagerContainerSelector = '.list-manager-container';
+  const buttonGroupSelector = `${listManagerContainerSelector} .rsa-button-group`;
+  const buttonMenuSelector = `${listManagerContainerSelector} .rsa-button-menu`;
   const listItems = `${buttonMenuSelector}.expanded .rsa-item-list > li.rsa-list-item`;
   const listLocation1 = 'listManager';
+  const listName1 = 'My Items';
 
   const items = [
     { id: 3, name: 'eba', subItems: [ 'a', 'b', 'c' ] },
@@ -38,11 +39,11 @@ module('Integration | Component | list-manager-container', function(hooks) {
   ];
 
   const assertForListManager = async function(assert, expectedCaption, tooltip, noOfItems, hasSelectedItem, optionToClick) {
-    assert.equal(findAll(listManagerSelector).length, 1, 'The list manager component should be found in the DOM');
-    assert.ok(find(buttonGroupSelector), 'The list manager component should have a drop down button');
+    assert.equal(findAll(listManagerContainerSelector).length, 1, 'The list-manager-container component should be found in the DOM');
+    assert.ok(find(buttonGroupSelector), 'The list-manager-container component should have a drop down button');
     assert.equal(find(`${buttonGroupSelector} .list-caption`).textContent.trim(), expectedCaption, 'caption is displayed correctly');
     assert.equal(find(`${buttonGroupSelector} .list-caption`).getAttribute('title'), tooltip, 'tooltip is displayed correctly');
-    assert.ok(find(`${buttonMenuSelector}.collapsed`), 'The List manager component should render rsa-button-menu');
+    assert.ok(find(`${buttonMenuSelector}.collapsed`), 'The list-manager-container component should render rsa-button-menu');
     await click(`${buttonGroupSelector} button`);
     assert.ok(find(`${buttonMenuSelector}.expanded`), 'The button menu should expand on click of the drop down button');
     assert.equal(findAll(listItems).length, noOfItems);
@@ -57,10 +58,9 @@ module('Integration | Component | list-manager-container', function(hooks) {
     assert.equal(getTextFromDOMArray(buttons), footerButtons);
   };
 
-  test('The list-manager component renders to the DOM with selected item in the caption', async function(assert) {
+  test('The list-manager-container component renders to the DOM with selected item in the caption', async function(assert) {
     assert.expect(9);
-    new ReduxDataHelper(setState).build();
-    this.set('listName', 'My Items');
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
     this.set('list', items);
     this.set('selectedItem', items[1]);
@@ -70,7 +70,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
     await render(hbs`{{#list-manager/list-manager-container 
       listLocation=listLocation
-      listName=listName
       list=list
       selectedItem=selectedItem
       itemSelection=handleSelection
@@ -89,9 +88,8 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
   test('Select action on item does nothing if same item is selected, but collapses dropdown', async function(assert) {
     assert.expect(10);
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
-    this.set('listName', 'My Items');
     this.set('list', items);
     this.set('selectedItem', items[0]);
     this.set('handleSelection', () => {
@@ -100,7 +98,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
     await render(hbs`{{#list-manager/list-manager-container
       listLocation=listLocation
-      listName=listName
       list=list
       selectedItem=selectedItem
       itemSelection=handleSelection
@@ -122,45 +119,44 @@ module('Integration | Component | list-manager-container', function(hooks) {
     assert.notOk(find('.ootb-indicator'), 'column for ootb indicators not rendered');
   });
 
-  test('list-manager component renders caption without selected item, renders icons indicating if ootb or not', async function(assert) {
-    assert.expect(12);
-    new ReduxDataHelper(setState).build();
+  test('list-manager-container component renders caption without selected item, renders icons indicating if ootb or not',
+    async function(assert) {
+      assert.expect(12);
+      new ReduxDataHelper(setState).listName(listName1).build();
+      this.set('listLocation', listLocation1);
+      this.set('list', [{ id: 1, name: 'a', ootb: true }, { id: 2, name: 'b', ootb: false }]);
+      this.set('handleSelection', () => {
+        assert.ok(true, 'Action will be called on click of any item if there is no such thing as selected item');
+      });
 
-    this.set('name', 'Other Items');
-    this.set('list', [{ id: 1, name: 'a', ootb: true }, { id: 2, name: 'b', ootb: false }]);
-    this.set('handleSelection', () => {
-      assert.ok(true, 'Action will be called on click of any item if there is no such thing as selected item');
+      await render(hbs`{{#list-manager/list-manager-container
+        list=list
+        listLocation=listLocation
+        itemSelection=handleSelection
+        as |manager|}}
+          {{#manager.itemList as |list|}}
+            {{#list.item as |item|}}
+            {{item.name}}
+            {{/list.item}}
+          {{/manager.itemList}}
+        {{/list-manager/list-manager-container}}`);
+
+      const option = `${listItems} a`;
+      await assertForListManager(assert, listName1, null, 2, false, option);
+
+      // reopen dropdown
+      await click(`${buttonGroupSelector} button`);
+      assert.ok(find('.ootb-indicator'), 'column for ootb indicators rendered');
+
+      const options = findAll(`${listItems} a .ootb-icon-wrapper i`);
+      assert.ok(options[0].classList.contains('rsa-icon-lock-close-1-lined'), 'ootb icon rendered');
+      assert.ok(options[1].classList.contains('rsa-icon-settings-1-lined'), 'non-ootb icon rendered');
     });
-
-    await render(hbs`{{#list-manager/list-manager-container
-      listName=name
-      list=list
-      itemSelection=handleSelection
-      as |manager|}}
-        {{#manager.itemList as |list|}}
-          {{#list.item as |item|}}
-           {{item.name}}
-          {{/list.item}}
-        {{/manager.itemList}}
-      {{/list-manager/list-manager-container}}`);
-
-    const option = `${listItems} a`;
-    await assertForListManager(assert, 'Other Items', null, 2, false, option);
-
-    // reopen dropdown
-    await click(`${buttonGroupSelector} button`);
-    assert.ok(find('.ootb-indicator'), 'column for ootb indicators rendered');
-
-    const options = findAll(`${listItems} a .ootb-icon-wrapper i`);
-    assert.ok(options[0].classList.contains('rsa-icon-lock-close-1-lined'), 'ootb icon rendered');
-    assert.ok(options[1].classList.contains('rsa-icon-settings-1-lined'), 'non-ootb icon rendered');
-  });
 
   test('Use Up Arrow Key to traverse through items', async function(assert) {
     assert.expect(6);
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
-    this.set('listName', 'Some Column Groups');
     this.set('list', items);
     this.set('selectedItem', items[1]);
     this.set('handleSelection', () => {
@@ -170,7 +166,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
     await render(hbs`{{#list-manager/list-manager-container
       listLocation=listLocation
-      listName=listName
       list=list
       selectedItem=selectedItem
       itemSelection=handleSelection as |manager|}}
@@ -208,9 +203,8 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
   test('Use Down Arrow Key to traverse through items', async function(assert) {
     assert.expect(6);
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
-    this.set('listName', 'Some Column Groups');
     this.set('list', items);
     this.set('selectedItem', items[2]);
     this.set('handleSelection', () => {
@@ -220,7 +214,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
     await render(hbs`{{#list-manager/list-manager-container
       listLocation=listLocation
-      listName=listName
       list=list
       selectedItem=selectedItem
       itemSelection=handleSelection as |manager|}}
@@ -258,9 +251,8 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
   test('Use Up and Down Arrow Keys to traverse through items and Enter Key to select item', async function(assert) {
     assert.expect(11);
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
-    this.set('listName', 'Some Column Groups');
     this.set('list', items);
     this.set('selectedItem', items[2]);
     this.set('handleSelection', () => {
@@ -270,7 +262,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
     await render(hbs`{{#list-manager/list-manager-container
       listLocation=listLocation
-      listName=listName
       list=list
       selectedItem=selectedItem
       itemSelection=handleSelection as |manager|}}
@@ -318,8 +309,7 @@ module('Integration | Component | list-manager-container', function(hooks) {
   });
 
   test('Use Mouse and Up and Down Arrow Keys to highlight item', async function(assert) {
-    new ReduxDataHelper(setState).build();
-    this.set('listName', 'Some Column Groups');
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
     this.set('list', items);
     this.set('selectedItem', items[2]);
@@ -327,7 +317,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
     });
 
     await render(hbs`{{#list-manager/list-manager-container
-      listName=listName
       listLocation=listLocation
       list=list
       selectedItem=selectedItem
@@ -367,7 +356,7 @@ module('Integration | Component | list-manager-container', function(hooks) {
   });
 
   test('Use Mouse and Up and Down Arrow Keys to navigate from bottom to top with scrolling', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
 
     // longer list so scroll bar would be present
     const moreItems = [
@@ -389,7 +378,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
       { id: 88, name: 'Baz4' }
     ];
     this.set('listLocation', listLocation1);
-    this.set('listName', 'Some Column Groups');
     this.set('list', moreItems);
     this.set('selectedItem', moreItems[2]);
     this.set('handleSelection', () => {
@@ -399,7 +387,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
     await render(hbs`{{#list-manager/list-manager-container
       listLocation=listLocation
-      listName=listName
       list=list
       selectedItem=selectedItem
       itemSelection=handleSelection
@@ -450,7 +437,7 @@ module('Integration | Component | list-manager-container', function(hooks) {
   });
 
   test('Use Mouse and Up and Down Arrow Keys to navigate from top to bottom with scrolling', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
 
     // longer list so scroll bar would be present
     const moreItems = [
@@ -472,7 +459,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
       { id: 88, name: 'Baz4' }
     ];
     this.set('listLocation', listLocation1);
-    this.set('listName', 'Some Column Groups');
     this.set('list', moreItems);
     this.set('selectedItem', moreItems[2]);
     this.set('handleSelection', () => {
@@ -481,7 +467,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
     });
 
     await render(hbs`{{#list-manager/list-manager-container
-      listName=listName
       listLocation=listLocation
       list=list
       selectedItem=selectedItem
@@ -539,14 +524,12 @@ module('Integration | Component | list-manager-container', function(hooks) {
   });
 
   test('Filtering should be available via contextual API', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
-    this.set('listName', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});
 
     await render(hbs`{{#list-manager/list-manager-container
-      listName=listName
       listLocation=listLocation
       list=list
       itemSelection=handleSelection
@@ -580,14 +563,12 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
 
   test('filtering should not be retained when dropdown is closed', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
-    this.set('listName', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});
 
     await render(hbs`{{#list-manager/list-manager-container
-      listName=listName
       listLocation=listLocation
       list=list itemSelection=handleSelection
       as |manager|}}
@@ -621,14 +602,12 @@ module('Integration | Component | list-manager-container', function(hooks) {
   });
 
   test('displays no results message when everything is filtered out', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
-    this.set('listName', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});
 
     await render(hbs`{{#list-manager/list-manager-container
-      listName=listName
       listLocation=listLocation
       list=list
       itemSelection=handleSelection
@@ -657,11 +636,10 @@ module('Integration | Component | list-manager-container', function(hooks) {
   });
 
   test('Filtering function can be provided outside the addon', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
 
     assert.expect(6);
     this.set('listLocation', listLocation1);
-    this.set('listName', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});
     this.set('handleFilter', (value) => {
@@ -673,7 +651,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
     });
 
     await render(hbs`{{#list-manager/list-manager-container
-      listName=listName
       listLocation=listLocation
       list=list
       itemSelection=handleSelection
@@ -704,14 +681,12 @@ module('Integration | Component | list-manager-container', function(hooks) {
   });
 
   test('clicking on the footer buttons toggles between list-view and details-view', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
-    this.set('listName', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});
 
     await render(hbs`{{#list-manager/list-manager-container
-      listName=listName
       listLocation=listLocation
       list=list
       itemSelection=handleSelection
@@ -742,14 +717,12 @@ module('Integration | Component | list-manager-container', function(hooks) {
   });
 
   test('clicking on info icon on an item navigates to item details', async function(assert) {
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
-    this.set('listName', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});
 
     await render(hbs`{{#list-manager/list-manager-container
-      listName=listName
       listLocation=listLocation
       list=list
       itemSelection=handleSelection
@@ -759,7 +732,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
            {{item.name}}
           {{/list.item}}
         {{/manager.itemList}}
-
         {{#manager.details as |item|}}
            <ul>
              {{#each item.subItems as |subItem|}}
@@ -785,9 +757,8 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
   test('clicking on `Select Item` in an unselected item\'s details causes item seletion', async function(assert) {
     assert.expect(3);
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
-    this.set('listName', 'My Items');
     this.set('list', items);
     this.set('selectedItem', items[1]);
     this.set('handleSelection', (item) => {
@@ -796,7 +767,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
     await render(hbs`{{#list-manager/list-manager-container
       selectedItem=selectedItem
-      listName=listName
       listLocation=listLocation
       list=list
       itemSelection=handleSelection
@@ -806,7 +776,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
            {{item.name}}
           {{/list.item}}
         {{/manager.itemList}}
-
         {{#manager.details as |item|}}
            <ul>
              {{#each item.subItems as |subItem|}}
@@ -831,9 +800,8 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
   test('clicking on `Select Item` in an already  selected item\'s details just collapses the list', async function(assert) {
     assert.expect(2);
-    new ReduxDataHelper(setState).build();
+    new ReduxDataHelper(setState).listName(listName1).build();
     this.set('listLocation', listLocation1);
-    this.set('listName', 'My Items');
     this.set('list', items);
     this.set('selectedItem', items[1]);
     this.set('handleSelection', (item) => {
@@ -842,7 +810,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
     await render(hbs`{{#list-manager/list-manager-container
       selectedItem=selectedItem
-      listName=listName
       listLocation=listLocation
       list=list
       itemSelection=handleSelection
@@ -852,7 +819,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
            {{item.name}}
           {{/list.item}}
         {{/manager.itemList}}
-
         {{#manager.details as |item|}}
            <ul>
              {{#each item.subItems as |subItem|}}

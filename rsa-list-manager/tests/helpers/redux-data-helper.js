@@ -48,4 +48,9 @@ export default class DataHelper {
     _set(this.state, 'listLocation', location);
     return this;
   }
+
+  listName(name) {
+    _set(this.state, 'listName', name);
+    return this;
+  }
 }

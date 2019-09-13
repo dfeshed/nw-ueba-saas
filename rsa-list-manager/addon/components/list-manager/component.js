@@ -22,6 +22,8 @@ const ListManager = Component.extend({
    */
   listName: null,
 
+  classNames: ['list-manager'],
+
   // Object to identify an item as selected in the manager's button caption
   selectedItem: null,
 
@@ -29,7 +31,8 @@ const ListManager = Component.extend({
   list: null,
 
   didInsertElement() {
-    this.send('initializeListManager', this.get('listLocation'));
+    const initialProperties = this.getProperties('listLocation', 'listName');
+    this.send('initializeListManager', initialProperties);
   }
 });
 
