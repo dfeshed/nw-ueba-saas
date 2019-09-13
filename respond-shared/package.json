@@ -68,7 +68,6 @@
     "eslint-plugin-ember-suave": "^1.0.0",
     "liquid-fire": "0.30.0",
     "loader.js": "4.7.0",
-    "qunit-dom": "^0.8.0",
     "sass": "1.17.2",
     "ember-sinon": "4.0.0"
   },

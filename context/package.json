@@ -71,7 +71,6 @@
     "ember-sinon": "4.0.0",
     "ember-source": "3.12.0",
     "eslint-plugin-ember-suave": "^1.0.0",
-    "qunit-dom": "^0.8.0",
     "sass": "1.17.2",
     "seamless-immutable": "7.1.2",
     "loader.js": "4.7.0"
