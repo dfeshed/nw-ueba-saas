@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { render, find } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
@@ -15,7 +14,6 @@ module('Integration | Component | list-manager', function(hooks) {
     setState = (state) => {
       patchReducer(this, state);
     };
-    initialize(this.owner);
   });
 
   const listManagerSelector = '.list-manager';

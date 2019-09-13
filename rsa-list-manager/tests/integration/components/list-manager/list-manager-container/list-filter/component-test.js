@@ -3,7 +3,6 @@ import hbs from 'htmlbars-inline-precompile';
 import { render, click, find } from '@ember/test-helpers';
 import { typeInSearch } from 'ember-power-select/test-support/helpers';
 import { setupRenderingTest } from 'ember-qunit';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 
@@ -16,7 +15,6 @@ module('Integration | Component | list filter', function(hooks) {
     setState = (state) => {
       patchReducer(this, state);
     };
-    initialize(this.owner);
   });
 
   const originalList = [ { id: '1', name: 'foo' }, { id: '2', name: 'bar' }];

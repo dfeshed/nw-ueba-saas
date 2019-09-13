@@ -3,7 +3,6 @@ import hbs from 'htmlbars-inline-precompile';
 import { render, findAll, find, click, triggerKeyEvent, triggerEvent } from '@ember/test-helpers';
 import { typeInSearch } from 'ember-power-select/test-support/helpers';
 import { setupRenderingTest } from 'ember-qunit';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { getTextFromDOMArray } from '../../../../helpers/util';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
@@ -21,7 +20,6 @@ module('Integration | Component | list-manager-container', function(hooks) {
     setState = (state) => {
       patchReducer(this, state);
     };
-    initialize(this.owner);
   });
 
   const listManagerContainerSelector = '.list-manager-container';
@@ -68,7 +66,7 @@ module('Integration | Component | list-manager-container', function(hooks) {
       assert.ok(true, 'Action passed will be called, as new item is selected');
     });
 
-    await render(hbs`{{#list-manager/list-manager-container 
+    await render(hbs`{{#list-manager/list-manager-container
       listLocation=listLocation
       list=list
       selectedItem=selectedItem
