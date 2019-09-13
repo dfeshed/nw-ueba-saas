@@ -7,6 +7,7 @@
   {{#spec-category title="Date"}}
     {{#spec-member title="Default configurations"}}
       {{rsa-form-datetime
+        value=0
         label='Date Label'
         placeholder='Date Placeholder'
         onChange=(action (mut dateValue))
@@ -24,6 +25,7 @@
     {{#spec-member title="Date Picker disabled configurations"
       subtitle="The disabled attribute is supported as binding so you can disabled the datepicker entirely. If the datepicker is shown to the user and it gets disabled it will close the datepicker itself."}}
       {{rsa-form-datetime
+        value=0
         label='Date Label'
         isDisabled=true
         onChange=(action (mut dateValue))
@@ -41,6 +43,7 @@
     {{#spec-member title="Date Picker with errors"
       subtitle="Errors can be passed to the component and messages displayed under the field"}}
       {{rsa-form-datetime
+        value=0
         label='Date Label'
         isError=true
         errorMessage="Error message"

@@ -6,6 +6,7 @@ export default Controller.extend({
   display: null,
 
   init() {
+    this._super(...arguments);
     this.setRandom();
   },
 
