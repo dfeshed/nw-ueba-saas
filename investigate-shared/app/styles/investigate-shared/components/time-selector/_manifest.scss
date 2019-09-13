@@ -1,7 +1,24 @@
 .rsa-investigate-query-container {
   &__time-selector {
     margin-right: rsa-whitespace(less);
+    border: 1px solid text-color(primary, light);
+    &.time-range-invalid {
+      border-color: text-color(accentOne);
+    }
+    .rsa-date-time-range {
+      border: none;
+    }
+    .rsa-form-button {
+      border: none;
+    }
   }
+  &__time-selector:hover {
+    &.time-range-invalid {
+      border-color: text-color(accentOne);
+    }
+    border-color: text-color(primary, lightest);
+  }
+
 }
 .rsa-investigate-time-range {
   display: inline;
