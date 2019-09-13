@@ -16,8 +16,8 @@ const stateToComputed = (state) => ({
 const UsmPoliciesInspector = Component.extend({
   classNames: ['usm-policies-inspector'],
   @computed('focusedPolicy')
-  hasError(focusedPolicy) {
-    return focusedPolicy?.errorState?.state;
+  hasSourceError(focusedPolicy) {
+    return focusedPolicy.sources ? focusedPolicy.sources.filter((source) => source?.errorState?.state) : '';
   }
 });
 

@@ -1,7 +1,7 @@
 <vbox class="rsa-application-layout-panel-content" xs="12" fit>
 
   {{#if (eq focusedPolicy.policyType 'filePolicy')}}
-    {{#if hasError}}
+    {{#if hasSourceError}}
       {{#rsa-content-warn-text-box
         value=(t 'adminUsm.policyWizard.missingTypespec')
         isShowing=true

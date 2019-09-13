@@ -178,7 +178,7 @@ module('Unit | Selectors | Policy Details | file-policy | file-selectors', funct
     assert.equal(policyDetails[2].header, 'adminUsm.policies.detail.sourceSettings', 'sourceSettings section is as expected');
     assert.equal(policyDetails[2].props.length, 6, 'sourceSettings section has 6 properties when enabled');
     assert.equal(policyDetails[2].props[0].value, 'Enabled', 'Enabled apache fileType correct');
-    assert.equal(policyDetails[2].props[1].value, 'Collect new data only', 'startOfEvents valus correct');
+    assert.equal(policyDetails[2].props[1].value, 'Collect historical and new data', 'startOfEvents valus correct');
     assert.equal(policyDetails[2].props[2].value, 'utf-8', 'fileEncoding value is correct');
     assert.equal(policyDetails[2].props[3].value, '/*foo/bar*/*.txt', 'path value is correct');
     assert.equal(policyDetails[2].props[4].value, 'testSource2', 'sourceName value is correct');

@@ -188,7 +188,7 @@ module('Integration | Component | property-panel-policy/file-policy', function(h
     assert.equal(document.querySelectorAll('.file-value .tooltip-text')[3].textContent.trim(), 'Disabled', 'Disabled value is showing');
     assert.equal(document.querySelectorAll('.property-name')[5].textContent.trim(), 'Data Collection', 'Data Collection lable shows');
     assert.equal(document.querySelectorAll('.file-value .tooltip-text')[4].textContent.trim(), 'Enabled', 'Enabled value shows');
-    assert.equal(document.querySelectorAll('.file-value .tooltip-text')[5].textContent.trim(), 'Collect new data only', 'Collect new data only value shows');
+    assert.equal(document.querySelectorAll('.file-value .tooltip-text')[5].textContent.trim(), 'Collect historical and new data', 'Collect historical and new data value shows');
   });
 
 });

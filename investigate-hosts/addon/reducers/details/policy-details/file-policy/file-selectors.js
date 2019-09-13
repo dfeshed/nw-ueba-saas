@@ -151,7 +151,7 @@ const _getSourceSetting = (prop, source, sourceEnabled, noSources) => {
       },
       startOfEvents: {
         name: 'adminUsm.policyWizard.filePolicy.dataCollection',
-        value: (source[prop] === true) ? _i18n.t('adminUsm.policyWizard.filePolicy.collectNew') : _i18n.t('adminUsm.policyWizard.filePolicy.collectAll')
+        value: (source[prop] === true) ? _i18n.t('adminUsm.policyWizard.filePolicy.collectAll') : _i18n.t('adminUsm.policyWizard.filePolicy.collectNew')
       },
       fileEncoding: {
         name: 'adminUsm.policyWizard.filePolicy.fileEncoding',

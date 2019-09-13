@@ -149,10 +149,10 @@ module('Integration | Component | Policy Inspector', function(hooks) {
 
   const testTilePolicyPolicyWithError = {
     ...testTilePolicyPolicyWithNoError,
-    errorState: {
+    sources: [{ errorState: {
       state: 1,
       errors: ['MISSING_TYPE_SPECIFICATION']
-    }
+    } }]
   };
 
   test('filePolicy error is present', async function(assert) {
