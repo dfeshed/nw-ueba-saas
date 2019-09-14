@@ -1,6 +1,6 @@
 <div class="email-body-text">
   <div class="emailContent">
-    {{renderEmailBodyContent}}
+    <iframe id="{{emailRenderId}}" srcdoc="{{renderEmailBodyContent}}" width="100%" height="100%"></iframe>
   </div>
   {{#if displayShowMoreButton}}
     <div class="email-show-more">

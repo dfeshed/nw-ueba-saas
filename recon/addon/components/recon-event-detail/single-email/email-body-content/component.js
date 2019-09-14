@@ -2,6 +2,8 @@ import Component from '@ember/component';
 import layout from './template';
 import { inject } from '@ember/service';
 import computed from 'ember-computed-decorators';
+import { run } from '@ember/runloop';
+import _ from 'lodash';
 
 const CHUNK_SIZE = 10000;
 
@@ -10,6 +12,28 @@ export default Component.extend({
   portionsToRender: [],
   chunkToRender: 0,
   redux: inject(),
+  frame: null,
+  resizeIframe: null,
+
+  didRender() {
+    this.set('frame', document.getElementById(this.emailRenderId));
+    this.get('frame').addEventListener('load', this.resizeIframe = () => {
+      run.next(() => {
+        const iframeHeight = this.get('frame').contentWindow.document.body.scrollHeight + 70;
+        this.get('frame').style.height = iframeHeight.toString().concat('px');
+      });
+    });
+  },
+
+  willDestroyElement() {
+    this._super(...arguments);
+    this.get('frame').removeEventListener('load', this.resizeIframe);
+  },
+
+  @computed('email')
+  emailRenderId(email) {
+    return 'emailId-'.concat(email.messageId);
+  },
 
   @computed('portionsToRender', 'renderedAll', 'email')
   displayShowMoreButton(portionsToRender, renderedAll, email) {
@@ -49,9 +73,9 @@ export default Component.extend({
   renderEmailBodyContent(portionsToRender, emailPortions) {
     if (emailPortions.length > 0 && portionsToRender.length <= 0) {
       this.set('portionsToRender', [emailPortions[0]]);
-      return this.get('portionsToRender');
+      return _.unescape(this.get('portionsToRender'));
     } else if (portionsToRender.length > 0) {
-      return portionsToRender.join('');
+      return _.unescape(portionsToRender.join(''));
     } else {
       return [];
     }

@@ -8,6 +8,8 @@ import emailData from '../../../../../data/subscriptions/reconstruction-email-da
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 
+const _first200 = (str) => str.trim().replace(/\s/g, '').substring(0, 200);
+
 module('Integration | Component | recon-event-detail/single-email/email-body-content', function(hooks) {
   setupRenderingTest(hooks);
 
@@ -17,8 +19,7 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     return wait().then(() => {
       assert.ok(find('.email-body-text'), 'show single email message content');
       assert.notOk(find('.email-show-more'), 'do not display show more button');
-      const str = find('.email-body-text').textContent.trim().replace(/\s/g, '').substring(0, 200);
-      assert.equal(str, 'emailmessagetext2...');
+      assert.equal(_first200(find('iframe').contentDocument.body.innerText), 'emailmessagetext2...');
     });
   });
 
@@ -37,7 +38,7 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     return wait().then(() => {
       assert.ok(find('.email-body-text'), 'show single email message content');
       assert.ok(find('.email-show-more'), 'display show more button');
-      assert.equal(find('.emailContent').innerText.length, 10000, '10000 characters of email content has rendered');
+      assert.equal(find('iframe').contentDocument.body.innerText.length, 10000, '10000 characters of email content has rendered');
     });
   });
 
@@ -57,7 +58,7 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     assert.ok(find('.email-show-more'), 'display show more button');
     await click('.email-show-more .rsa-form-button');
     return wait().then(() => {
-      assert.equal(find('.emailContent').innerText.length, 13222, 'remaining characters of email content has rendered on show more');
+      assert.equal(find('iframe').contentDocument.body.innerText.length, 13258, 'remaining characters of email content has rendered on show more');
       assert.notOk(find('.email-show-more'), 'do not display show more button');
     });
   });
@@ -78,7 +79,7 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     assert.ok(find('.email-show-more'), 'display show more button');
     await click('.email-show-more .rsa-form-button');
     return wait().then(() => {
-      assert.equal(find('.emailContent').innerText.length, 20000, '20000 remaining characters of email content has rendered on show more');
+      assert.equal(find('iframe').contentDocument.body.innerText.length, 20000, '20000 remaining characters of email content has rendered on show more');
       assert.ok(find('.email-show-more'), 'display show more button');
     });
   });
@@ -87,8 +88,7 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     this.set('email', EmberObject.create(emailData[2]));
     await render(hbs`{{recon-event-detail/single-email/email-body-content email=email renderedAll=true}}`);
     assert.ok(find('.email-body-text'), 'show single email message content');
-    const str = find('.email-body-text').textContent.trim().replace(/\s/g, '').substring(0, 200);
-    assert.equal(str, '&lt;BODY&gt;&lt;P&gt;emailmessagetextcontent&lt;/P&gt;&lt;/BODY&gt;');
+    assert.equal(_first200(find('iframe').contentDocument.body.innerText), 'emailmessagetextcontent');
   });
 });
 
