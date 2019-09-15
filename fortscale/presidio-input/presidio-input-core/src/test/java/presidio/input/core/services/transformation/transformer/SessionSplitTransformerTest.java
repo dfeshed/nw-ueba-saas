@@ -2,6 +2,7 @@ package presidio.input.core.services.transformation.transformer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.entityattributes.*;
+import fortscale.domain.sessionsplit.cache.ISessionSplitStoreCache;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,9 @@ public class SessionSplitTransformerTest extends TransformerJsonTest implements 
 
     @MockBean
     private PresidioInputPersistencyService inputPersistencyService;
+
+    @MockBean
+    private ISessionSplitStoreCache sessionSplitStoreCache;
 
     @Test
     public void testSessionSplitNull() throws IOException {
