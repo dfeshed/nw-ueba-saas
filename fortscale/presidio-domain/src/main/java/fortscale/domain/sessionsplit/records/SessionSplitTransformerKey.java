@@ -1,4 +1,4 @@
-package presidio.input.core.services.transformation.transformer.SessionSplitTransformer;
+package fortscale.domain.sessionsplit.records;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 

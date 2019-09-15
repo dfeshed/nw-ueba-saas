@@ -1,9 +1,12 @@
 package presidio.input.core.services.transformation;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.common.general.Schema;
+import fortscale.utils.flushable.FlushableService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.transform.IJsonObjectTransformer;
 import org.json.JSONObject;
@@ -28,6 +31,9 @@ public class TransformationServiceImpl implements TransformationService {
 
     @Autowired
     private SchemaFactory schemaFactory;
+
+    @Autowired
+    private FlushableService flushableService;
 
     public TransformationServiceImpl() {
         mapper = new ObjectMapper();
@@ -60,6 +66,9 @@ public class TransformationServiceImpl implements TransformationService {
                 logger.error(String.format("Exception caught while transforming event: %s.", event.toString()), e);
             }
         }
+
+
+        flushableService.flush();
         return transformedEvents;
     }
 }

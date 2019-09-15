@@ -14,7 +14,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.input.core.services.transformation.transformer.SessionSplitTransformer.SessionSplitTransformer;
 import presidio.input.core.spring.TransformerConfigTest;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
 import presidio.sdk.api.domain.transformedevents.TlsTransformedEvent;
@@ -44,7 +43,6 @@ public class SessionSplitTransformerTest extends TransformerJsonTest implements 
         Mockito.when(inputPersistencyService.count(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
                 .thenReturn(0L);
         applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(sessionSplitTransformer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
-        sessionSplitTransformer.postAutowireProcessor();
         transformEvent(tlsTransformedEventWithId, sessionSplitTransformer, TlsTransformedEvent.class);
     }
 

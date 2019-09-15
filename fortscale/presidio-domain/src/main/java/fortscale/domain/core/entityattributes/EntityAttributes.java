@@ -8,10 +8,11 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
-public abstract class EntityAttributes {
+public abstract class EntityAttributes implements Serializable {
 
     @JsonProperty("name")
     protected String name;
