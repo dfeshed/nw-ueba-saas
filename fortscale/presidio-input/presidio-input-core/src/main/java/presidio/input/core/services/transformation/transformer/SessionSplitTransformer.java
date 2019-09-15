@@ -104,8 +104,8 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
 
             if (value != null && value.getDateTime().compareTo(eventDateTime) <= 0) {
                 if (value.getSessionSplit() == eventSessionSplit - 1) {
-                    setEntityAttribute(document, TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME, new SslSubject(value.getSslSubject().getName()));
-                    setEntityAttribute(document, TlsTransformedEvent.JA3_FIELD_NAME, new Ja3(value.getJa3().getName()));
+                    setEntityAttribute(document, TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME, value.getSslSubject());
+                    setEntityAttribute(document, TlsTransformedEvent.JA3_FIELD_NAME, value.getJa3());
                     document.put(TlsTransformedEvent.SSL_CAS_FIELD_NAME, value.getSslCas());
                     document.put(TlsTransformedEvent.JA3S_FIELD_NAME, value.getJa3s());
 
@@ -123,10 +123,14 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
     }
 
     private void setEntityAttribute(JSONObject jsonObject, String fieldName, EntityAttributes entityAttributes) {
-        JSONObject entityObject = new JSONObject(entityAttributes);
+        JSONObject entityObject;
+        if (entityAttributes == null) {
+            entityObject = new JSONObject(JSONObject.NULL);
+        } else {
+            entityObject = new JSONObject(entityAttributes);
+        }
         jsonObject.put(fieldName, entityObject);
     }
-
     private String namePath(String prefixPath) {
         return prefixPath + NAME_FIELD_SUFFIX;
     }
