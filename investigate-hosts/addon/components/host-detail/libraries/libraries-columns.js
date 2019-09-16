@@ -32,11 +32,9 @@ const defaultColumns = [
     width: '8vw'
   },
   {
-    field: 'machineCount',
-    title: 'investigateHosts.detailsColumns.machineCount',
-    width: '4vw',
-    disableSort: true,
-    visible: false
+    field: 'fileProperties.hostCount',
+    title: 'investigateHosts.detailsColumns.hostCount',
+    width: '4vw'
   },
   {
     field: 'fileProperties.reputationStatus',

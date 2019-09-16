@@ -257,7 +257,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
     await render(hbs`{{host-detail/process/process-tree}}`);
 
-    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 7, '7 columns in header, including the checkbox');
+    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 6, '6 columns in header, including the checkbox');
     assert.equal(findAll('.rsa-data-table-header-cell')[1].textContent.trim(), 'Process Name', 'First column is Process Name');
     assert.equal(findAll('.rsa-data-table-header-cell')[2].textContent.trim(), 'Local Risk Score', 'Second column is Local Risk Score');
   });

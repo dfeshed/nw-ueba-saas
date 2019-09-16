@@ -195,9 +195,9 @@ module('Integration | Component | file list', function(hooks) {
       .setSelectedFileList([])
       .build();
     await render(hbs`{{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-header-cell').length, 5, 'Returned the number of columns of the datatable');
-    assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 4, '4 movable columns present');
-    assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 4, '4 sortable columns present');
+    assert.equal(findAll('.rsa-data-table-header-cell').length, 6, 'Returned the number of columns of the datatable');
+    assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 5, '4 movable columns present');
+    assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 5, '4 sortable columns present');
   });
 
   test('Should return the number of cells in datatable body', async function(assert) {
@@ -214,7 +214,7 @@ module('Integration | Component | file list', function(hooks) {
         }
       </style>
     {{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-body-cell').length, 10, 'Returned the number of cells in data-table body');
+    assert.equal(findAll('.rsa-data-table-body-cell').length, 12, 'Returned the number of cells in data-table body');
   });
 
   test('Check that no results message rendered if no data items', async function(assert) {
@@ -283,8 +283,7 @@ module('Integration | Component | file list', function(hooks) {
       </style>
       {{file-list}}`);
     return settled().then(() => {
-      assert.equal(findAll('.rsa-data-table-body-cell')[6].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
-      assert.equal(findAll('.rsa-data-table-body-cell')[18].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[7].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
     });
   });
 
@@ -476,10 +475,10 @@ module('Integration | Component | file list', function(hooks) {
 
     await settled();
 
-    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'initial visible column count is 5');
+    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'initial visible column count is 5');
     findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[10].click();
-    await waitUntil(() => findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 5);
-    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'visible column is 5');
+    await waitUntil(() => findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 6);
+    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 6, 'visible column is 5');
   });
 
   test('on row click, file details panel opens up', async function(assert) {
@@ -705,40 +704,6 @@ module('Integration | Component | file list', function(hooks) {
       {{file-list}}`);
     return settled().then(() => {
       assert.equal(findAll('.download-status').length, 1, 'Download status is rendered');
-    });
-  });
-
-  test('it renders the active on field', async function(assert) {
-    new ReduxDataHelper(initState)
-      .files(dataItems)
-      .agentCountMapping({})
-      .coreServerId('serverId')
-      .preferences({ filePreference: {
-        columnConfig: [
-          {
-            tableId: 'files',
-            columns: [
-              {
-                field: 'machineCount',
-                displayIndex: 2
-              }
-            ]
-          }
-        ],
-        sortField: '{ "sortField": "firstFileName", "isSortDescending": false }'
-      } })
-      .setSelectedFileList([])
-      .build();
-    await render(hbs`
-      <style>
-        box, section {
-          min-height: 1000px
-        }
-      </style>
-      {{file-list}}`);
-    return settled().then(() => {
-      assert.ok(findAll('.machine-count')[0], 3, 'Active on count is properly set for first file');
-      assert.ok(findAll('.machine-count')[1], 2, 'Active on count is properly set for second file');
     });
   });
 

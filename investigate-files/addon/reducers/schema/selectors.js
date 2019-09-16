@@ -49,6 +49,15 @@ const DEFAULT_COLUMN = Immutable.from([
     searchable: false,
     title: 'investigateFiles.fields.score',
     preferredDisplayIndex: 3
+  },
+  {
+    dataType: 'string',
+    width: '6vw',
+    visible: true,
+    field: 'hostCount',
+    searchable: false,
+    title: 'investigateFiles.fields.hostCount',
+    preferredDisplayIndex: 4
   }
 ]);
 
@@ -64,7 +73,8 @@ const SUPPORTED_SORT_TYPES = [
   'size',
   'signature.features',
   'firstSeenTime',
-  'machineOsType'
+  'machineOsType',
+  'hostCount'
 ];
 
 

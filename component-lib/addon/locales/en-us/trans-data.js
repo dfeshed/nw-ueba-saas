@@ -2541,7 +2541,7 @@ export default {
       machineOsType: 'Operating System',
       reputationStatus: 'Reputation',
       score: 'Risk Score',
-      machineCount: 'Active On',
+      hostCount: 'Active On',
       remediationAction: 'Remediation',
       elf: {
         classType: 'ELF.Class Type',
@@ -3957,7 +3957,7 @@ export default {
       fileName: 'Filename',
       machineFileScore: 'Local Risk Score',
       globalScore: 'Global Risk Score',
-      machineCount: 'Active On',
+      hostCount: 'Active On',
       reputationStatus: 'Reputation',
       fileStatus: 'File Status',
       signature: 'Signature',

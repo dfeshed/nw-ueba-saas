@@ -86,9 +86,9 @@ const config = [
     format: 'SIGNATURE'
   },
   {
-    field: 'machineCount',
-    title: 'Machine Count',
-    format: 'MACHINECOUNT'
+    field: 'fileProperties.hostCount',
+    title: 'Host Count',
+    format: 'HOSTCOUNT'
   },
   {
     field: 'machineFileScore',
@@ -456,27 +456,6 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     assert.equal(findAll('.modal-content.reset-risk-score').length, 0, 'Reset confirmation dialog is closed');
   });
 
-  test('Machine count component is loaded for host-count column', async function(assert) {
-    initState({
-      endpoint: {
-        drivers: {
-          fileContext,
-          contextLoadingStatus: 'completed'
-        }
-      }
-    });
-    await render(hbs`
-      <style>
-        box, section {
-          min-height: 1000px
-        }
-      </style>
-    {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
-    return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(() => {
-      assert.equal(findAll('.machine-count').length, 3, 'Machine count is displayed, the three items in the table');
-    });
-  });
-
   test('insight agent N/A is displayed', async function(assert) {
     initState({
       endpoint: {
@@ -505,35 +484,13 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     });
   });
 
-  test('Sorting is disabled for active on column', async function(assert) {
-    assert.expect(1);
-    initState({
-      endpoint: {
-        drivers: {
-          fileContext,
-          contextLoadingStatus: 'completed'
-        }
-      }
-    });
-    await render(hbs`
-      <style>
-        box, section {
-          min-height: 1000px
-        }
-      </style>
-    {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
-    return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(async() => {
-      assert.equal(findAll('.rsa-data-table-header-cell:nth-child(3) .column-sort').length, 0, 'Sorting is disabled for the column');
-    });
-  });
-
   test('It calls the external function when data is loading ', async function(assert) {
     assert.expect(1);
     initState({
       endpoint: {
         drivers: {
           fileContext,
-          contextLoadingStatus: 'completed'
+          contextLoadingStatus: 'streaming'
         }
       }
     });
@@ -611,7 +568,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     const redux = this.owner.lookup('service:redux');
     const { selectedRowId } = redux.getState().endpoint.drivers;
     assert.equal(selectedRowId, 2, 'Focus set on first row');
-    triggerEvent(findAll('.machine-count')[2], 'contextmenu', e);
+    triggerEvent(findAll('.machineFileScore')[2], 'contextmenu', e);
     return settled().then(async() => {
       const newSelectedRowIndex = redux.getState().endpoint.drivers.selectedRowIndex;
       assert.equal(newSelectedRowIndex, null, 'Focus on previous row is removed.');

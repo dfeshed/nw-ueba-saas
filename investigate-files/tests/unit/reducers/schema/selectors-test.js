@@ -17,7 +17,7 @@ const SCHEMA = Immutable.from({
           'visible': false
         },
         {
-          'name': 'machineCount',
+          'name': 'hostCount',
           'visible': true
         }
       ]
@@ -31,7 +31,7 @@ const SCHEMA = Immutable.from({
           tableId: 'files',
           columns: [
             {
-              field: 'machineCount',
+              field: 'hostCount',
               width: '7vw',
               displayIndex: 3
             }
@@ -102,7 +102,7 @@ test('columns will return the updated config with saved config', function(assert
   assert.equal(result.length, 50, '50 visible columns.');
   assert.equal(result[1].field, 'firstFileName');
   assert.equal(result[2].field, 'score');
-  assert.equal(result[3].preferredDisplayIndex, 6);
+  assert.equal(result[3].preferredDisplayIndex, 4);
 });
 
 test('columns will return the default config', function(assert) {

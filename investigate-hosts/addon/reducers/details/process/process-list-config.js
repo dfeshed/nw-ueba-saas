@@ -19,10 +19,9 @@ export default [
     isDescending: false
   },
   {
-    field: 'machineCount',
+    field: 'fileProperties.hostCount',
     title: 'investigateHosts.process.machineCount',
-    width: '6vw',
-    disableSort: true
+    width: '6vw'
   },
   {
     field: 'fileProperties.reputationStatus',

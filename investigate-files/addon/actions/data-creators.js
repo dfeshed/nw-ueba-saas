@@ -321,9 +321,6 @@ const getSavedFileStatus = (selections) => ({
   promise: getFileStatus(selections)
 });
 
-
-const fetchMachineCount = (checksums) => ({ type: ACTION_TYPES.GET_AGENTS_COUNT_SAGA, payload: checksums });
-
 const _setSelectedFile = (item) => ({ type: ACTION_TYPES.SET_SELECTED_FILE, payload: item });
 
 const onFileSelection = (item) => {
@@ -615,7 +612,6 @@ export {
   selectAllFiles,
   deSelectAllFiles,
   saveFileStatus,
-  fetchMachineCount,
   getSavedFileStatus,
   fetchAgentId,
   getFirstPageOfFiles,

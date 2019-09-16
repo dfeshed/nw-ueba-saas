@@ -6,7 +6,7 @@ export default RSADataTableHeader.extend({
     toggleColumn(column) {
       const field = column.get('field');
       // File name and Scores are required columns, don't allow to deselect
-      if (field === 'firstFileName' || field === 'score') {
+      if (field === 'firstFileName' || field === 'score' || field === 'hostCount') {
         return;
       }
       column.toggleProperty('selected');

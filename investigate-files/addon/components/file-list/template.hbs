@@ -40,7 +40,7 @@
       {{rsa-loader size='larger'}}
     </centered>
   {{else}}
-    {{#file-list/body
+    {{#rsa-data-table/body
       rowComponentClass=(
         component 'endpoint/file-custom-row'
         serviceList=serviceList
@@ -78,8 +78,6 @@
             </div>
           {{else if (eq column.field 'size')}}
             {{rsa-content-memsize size=(get item column.field)}}
-          {{else if (eq column.field 'machineCount')}}
-            {{endpoint/machine-count item=item machineCountMapping=agentCountMapping}}
           {{else if (eq column.field 'pe.imageSize')}}
             {{rsa-content-memsize size=(get item column.field)}}
           {{else if (eq column.field 'signature.features')}}
@@ -115,7 +113,7 @@
           {{/if}}
         {{/rsa-data-table/body-cell}}
       {{/if}}
-    {{/file-list/body}}
+    {{/rsa-data-table/body}}
     {{endpoint/load-more
       status=loadMoreStatus
       serverId=serverId
