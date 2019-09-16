@@ -43,7 +43,10 @@ public class AirflowDagsPostgres {
         try (Connection con = PostgresAirflowConnection.getConnection();
              PreparedStatement pst = con.prepareStatement(SQL_QUERY);
              ResultSet rs = pst.executeQuery()) {
-             return Optional.ofNullable(rs.getTimestamp("max_execution_date").toInstant());
+
+            if (rs.next()) {
+                return Optional.ofNullable(rs.getTimestamp(1).toInstant());
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
