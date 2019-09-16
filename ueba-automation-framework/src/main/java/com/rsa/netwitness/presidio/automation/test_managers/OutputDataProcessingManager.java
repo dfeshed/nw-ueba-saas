@@ -1,14 +1,15 @@
 package com.rsa.netwitness.presidio.automation.test_managers;
 
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
-import com.rsa.netwitness.presidio.automation.ssh.TerminalCommandsSshUtils;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
+import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
-import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
+import static com.rsa.netwitness.presidio.automation.domain.config.Consts.PRESIDIO_DIR;
+import static com.rsa.netwitness.presidio.automation.file.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OutputDataProcessingManager {
@@ -44,8 +45,8 @@ public class OutputDataProcessingManager {
             // store the data in the collections for data source
             String logPath = "/tmp/presidio-output-processor_run_" + smart_record_conf_name + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
-            SshResponse p = TerminalCommandsSshUtils.runCommand(
-                    Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR, "run", "--start_date " + startDate,
+            SshResponse p =  new SshHelper().uebaHostExec().setUserDir(PRESIDIO_DIR).run(
+                    Consts.PRESIDIO_OUTPUT, "run", "--start_date " + startDate,
                     "--end_date " + endDate, "--smart_record_conf_name " + smart_record_conf_name,
                     " > " + logPath);
 
@@ -76,11 +77,10 @@ public class OutputDataProcessingManager {
             LOGGER.info("RecalculateUserScore started for " + entity.toUpperCase());
             String logPath = "/tmp/presidio-output_recalc_user_score_" + entity + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
-            SshResponse p = TerminalCommandsSshUtils.runCommand(Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR,
+            SshResponse p =  new SshHelper().uebaHostExec().setUserDir(PRESIDIO_DIR).run(Consts.PRESIDIO_OUTPUT,
                     "recalculate-entity-score", "--start_date " + startDate, "--end_date " + endDate,
                     "--fixed_duration_strategy 86400.0 ", " --smart_record_conf_name " + entity + "_hourly ",
                     "--entity_type " + entity, " > " + logPath);
-
 
             printLogIfError(logPath);
             assertThat(p.exitCode)

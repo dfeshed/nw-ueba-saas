@@ -5,7 +5,7 @@ import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEven
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.log_player.MongoCollectionsMonitor;
-import com.rsa.netwitness.presidio.automation.ssh.client.SshExecutor;
+import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.slf4j.LoggerFactory;
@@ -99,6 +99,6 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
         monitor.shutdown();
         Assert.assertTrue(allCollectionsHaveSampleFromTheFinalDay, "Data processing has not reached the last day.");
         LOGGER.info("Going to stop airflow-scheduler.");
-        SshExecutor.executeOnUebaHostRoot("systemctl stop airflow-scheduler");
+        new SshHelper().uebaHostRootExec().run("systemctl stop airflow-scheduler");
     }
 }

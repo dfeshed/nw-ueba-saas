@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.automation.ssh.client;
 
 import com.jcraft.jsch.Session;
+import com.rsa.netwitness.presidio.automation.ssh.helper.ServerDetails;
 import org.apache.commons.pool.KeyedObjectPool;
 import org.apache.commons.pool.impl.StackKeyedObjectPool;
 

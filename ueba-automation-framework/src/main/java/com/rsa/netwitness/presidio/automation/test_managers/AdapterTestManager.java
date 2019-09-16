@@ -2,11 +2,10 @@ package com.rsa.netwitness.presidio.automation.test_managers;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoPropertiesReader;
-import com.rsa.netwitness.presidio.automation.ssh.SedSshUtil;
-import com.rsa.netwitness.presidio.automation.ssh.TerminalCommandsSshUtils;
+import com.rsa.netwitness.presidio.automation.file.SedSshUtil;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
+import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import fortscale.common.general.Schema;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -26,15 +25,15 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.rsa.netwitness.presidio.automation.config.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
-import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
+import static com.rsa.netwitness.presidio.automation.domain.config.Consts.PRESIDIO_DIR;
+import static com.rsa.netwitness.presidio.automation.file.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdapterTestManager {
-    @Autowired
-    private MongoTemplate mongoTemplate;
-    private MongoPropertiesReader mongoPropertiesReader;
-
     public static final String PROPERTIES_CONFIGURATION = "/var/lib/netwitness/presidio/flume/conf/adapter/";
+    public static final String NW_LOG_PLAYER_APP = "NwLogPlayer";
+    public static final String EVENTS_LOGS_PATH = "/var/netwitness/presidio/event_logs/";
+    public static final String PRESIDIO_ADAPTER_APP = "java -Xms2048m -Xmx2048m -Duser.timezone=UTC -cp /var/lib/netwitness/presidio/batch/presidio-adapter.jar -Dloader.main=presidio.adapter.FortscaleAdapterApplication org.springframework.boot.loader.PropertiesLauncher";
     private static final String PROPERTIES = ".properties";
     private static final String TEST = ".test" + PROPERTIES;
     private static final String PROD = ".prod" + PROPERTIES;
@@ -62,11 +61,10 @@ public class AdapterTestManager {
 
     static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(AdapterTestManager.class.getName());
-
-    public static final String NW_LOG_PLAYER_APP = "NwLogPlayer";
-    public static final String EVENTS_LOGS_PATH = "/var/netwitness/presidio/event_logs/";
-
-    public static final String PRESIDIO_ADAPTER_APP = "java -Xms2048m -Xmx2048m -Duser.timezone=UTC -cp /var/lib/netwitness/presidio/batch/presidio-adapter.jar -Dloader.main=presidio.adapter.FortscaleAdapterApplication org.springframework.boot.loader.PropertiesLauncher";
+    @Autowired
+    private MongoTemplate mongoTemplate;
+    private MongoPropertiesReader mongoPropertiesReader;
+    private SshHelper sshHelper = new SshHelper();
 
     public AdapterTestManager(MongoPropertiesReader mongoPropertiesReader) {
         this.mongoPropertiesReader = mongoPropertiesReader;
@@ -101,9 +99,8 @@ public class AdapterTestManager {
         String logPath = "/tmp/presidio-adapter_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
 
         // Runs adapter for entire events time range at once
-        SshResponse adapterProcess = TerminalCommandsSshUtils.runCommand(flumeHome + PRESIDIO_ADAPTER_APP,
-                true, Consts.PRESIDIO_DIR, "run",
-                "--fixed_duration_strategy " + getFixedDuration(timeFrame),
+        SshResponse adapterProcess = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(flumeHome + PRESIDIO_ADAPTER_APP,
+                "run", "--fixed_duration_strategy " + getFixedDuration(timeFrame),
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--schema " + schema,
                 "> " + logPath);
 
@@ -156,11 +153,11 @@ public class AdapterTestManager {
 
 
         files.forEach(file -> {
-            SedSshUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.host=.*", "mongoSource.host=" + mongoHostName);
-            SedSshUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.dbName=.*", "mongoSource.dbName=" + mongoDBName);
-            SedSshUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.username=.*", "mongoSource.username=" + mongoUserName);
-            SedSshUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.password=.*", "mongoSource.password=" + mongoPassword);
-            SedSshUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.port=.*", "mongoSource.port=" + mongoHostPort);
+            SedSshUtil.replaceTextInFile(file, PRESIDIO_DIR, "mongoSource.host=.*", "mongoSource.host=" + mongoHostName);
+            SedSshUtil.replaceTextInFile(file, PRESIDIO_DIR, "mongoSource.dbName=.*", "mongoSource.dbName=" + mongoDBName);
+            SedSshUtil.replaceTextInFile(file, PRESIDIO_DIR, "mongoSource.username=.*", "mongoSource.username=" + mongoUserName);
+            SedSshUtil.replaceTextInFile(file, PRESIDIO_DIR, "mongoSource.password=.*", "mongoSource.password=" + mongoPassword);
+            SedSshUtil.replaceTextInFile(file, PRESIDIO_DIR, "mongoSource.port=.*", "mongoSource.port=" + mongoHostPort);
         });
     }
 
@@ -174,7 +171,7 @@ public class AdapterTestManager {
                         + "cp -n " + PROCESS_CONFIGURATION + " " + PROD_PROCESS_CONFIGURATION + ";"
                         + "cp -n " + TLS_CONFIGURATION + " " + PROD_TLS_CONFIGURATION;
 
-        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
+        sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
     }
 
     public void setAdapterConfigurationPropertiesToTestMode() {
@@ -188,7 +185,7 @@ public class AdapterTestManager {
                         + "cp -f " + TEST_PROCESS_CONFIGURATION + " " + PROCESS_CONFIGURATION + ";"
                         + "cp -f " + TEST_TLS_CONFIGURATION + " " + TLS_CONFIGURATION;
 
-        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
+        sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
     }
 
     public void setAdapterConfigurationPropertiesToProductionMode() {
@@ -202,21 +199,21 @@ public class AdapterTestManager {
                         + "cp -f " + PROD_PROCESS_CONFIGURATION + " " + PROCESS_CONFIGURATION + ";"
                         + "cp -f " + PROD_TLS_CONFIGURATION + " " + TLS_CONFIGURATION;
 
-        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
+        sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
     }
 
     public void setTestMode4EndPointOnly() {
         String command = "cp -f " + TEST_REGISTRY_CONFIGURATION + " " + REGISTRY_CONFIGURATION + ";"
                 + "cp -f " + TEST_PROCESS_CONFIGURATION + " " + PROCESS_CONFIGURATION;
 
-        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
+        sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
     }
 
     public void setProdMode4EndPointOnly() {
         String command = "cp -f " + PROD_REGISTRY_CONFIGURATION + " " + REGISTRY_CONFIGURATION + ";"
                 + "cp -f " + PROD_PROCESS_CONFIGURATION + " " + PROCESS_CONFIGURATION;
 
-        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
+        sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
     }
 
     public void runUebaServerConfigScript(Instant startTime) {
@@ -228,7 +225,7 @@ public class AdapterTestManager {
                 + broker + " -o broker -t " + startTime.toString()
                 + " -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS'  -v " + alertsForwardingFlag;
 
-        SshResponse p = TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
+        SshResponse p = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
         assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
@@ -238,7 +235,7 @@ public class AdapterTestManager {
 
         File file = new File(Objects.requireNonNull(url).getFile());
         String command = "sh " + file.getAbsolutePath();
-        SshResponse p = TerminalCommandsSshUtils.runCommand(command, true, "");
+        SshResponse p = sshHelper.uebaHostExec().run(command);
         assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
@@ -248,7 +245,7 @@ public class AdapterTestManager {
 
         File file = new File(Objects.requireNonNull(url).getFile());
         String command = "sh " + file.getAbsolutePath();
-        SshResponse p = TerminalCommandsSshUtils.runCommand(command, true, "");
+        SshResponse p = sshHelper.uebaHostExec().run(command);
         assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
@@ -258,7 +255,7 @@ public class AdapterTestManager {
 
         File file = new File(Objects.requireNonNull(url).getFile());
         String command = "sh " + file.getAbsolutePath();
-        SshResponse p = TerminalCommandsSshUtils.runCommand(command, true, "");
+        SshResponse p = sshHelper.uebaHostExec().run(command);
         assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
@@ -304,7 +301,7 @@ public class AdapterTestManager {
                 "&& cp -n /var/netwitness/presidio/flume/conf/adapter/transformers/*.json " +
                 "/var/netwitness/presidio/flume/conf/adapter/transformers/backup/";
 
-        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
+        sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
     }
 
     public void restoreDefaultTransformerConfig() {
@@ -312,6 +309,6 @@ public class AdapterTestManager {
         String command = "cp -f  /var/netwitness/presidio/flume/conf/adapter/transformers/backup/*.json " +
                 "/var/netwitness/presidio/flume/conf/adapter/transformers/";
 
-        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
+        sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
     }
 }

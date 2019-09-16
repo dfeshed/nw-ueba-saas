@@ -1,16 +1,20 @@
 package com.rsa.netwitness.presidio.automation.ssh.client;
 
+import ch.qos.logback.classic.Logger;
+import com.google.common.collect.Lists;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.rsa.netwitness.presidio.automation.ssh.helper.ServerDetails;
+import org.elasticsearch.common.collect.EvictingQueue;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.*;
 import java.util.Objects;
+import java.util.Queue;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 
 /**
@@ -24,72 +28,98 @@ import java.util.Objects;
  * </ol>
  **
  */
-class SshCommandExecutor {
-    static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(SshCommandExecutor.class.getName());
-    private ServerDetails serverDetails;
-    private static final String defaultUserDir= "/var/netwitness/presidio/batch/";
+public class SshCommandExecutor {
+    static Logger LOGGER = (Logger) LoggerFactory.getLogger(SshCommandExecutor.class);
 
-    SshCommandExecutor(ServerDetails serverDetails) {
+
+    private static final int MAX_LINES_TO_COLLECT = 400;
+    private final ServerDetails serverDetails;
+    private final String command;
+    private final String userDir;
+    private final boolean verbose;
+
+    SshCommandExecutor(ServerDetails serverDetails, String command, String userDir, boolean verbose) {
         this.serverDetails = serverDetails;
+        this.command = command;
+        this.userDir = userDir;
+        this.verbose = verbose;
     }
 
-    SshResponse execute(String command, boolean verbose, String userDir) {
-        Objects.requireNonNull(serverDetails, "serverDetails is not set.");
-        final String finalUserDir = userDir.isEmpty() ? defaultUserDir : userDir;
-        final String CMD = "cd ".concat(finalUserDir).concat(" ; ") + command;
+    SshResponse execute() {
+
+        Objects.requireNonNull(serverDetails, "serverDetails not set.");
+        final String CMD = "cd ".concat(userDir).concat(" ; ") + command;
 
         Session session = null;
         ChannelExec channel = null;
+        PipedOutputStream outputStream = null;
+        PipedInputStream inputStream = null;
+        BufferedReader bufferedReader = null;
+
         try {
+            LOGGER.info(serverDetails.user + "@" + serverDetails.host + ": [" + CMD + "]");
 
             session = StackSessionPool.getInstance().getPool().borrowObject(serverDetails);
             channel = (ChannelExec) session.openChannel("exec");
-            System.out.println("\n>>> Run SSH command: [" + CMD + "]");
             channel.setCommand(CMD);
+            channel.setPtyType("dumb");
 
-            BufferedReader input = new BufferedReader(new InputStreamReader(channel.getInputStream()));
-            BufferedReader error = new BufferedReader(new InputStreamReader(channel.getErrStream()));
+            outputStream = new PipedOutputStream();
+            channel.setOutputStream(outputStream);
+            channel.setErrStream(outputStream);
+
+            inputStream = new PipedInputStream(outputStream);
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream, US_ASCII));
             channel.connect();
 
-            String line = null;
-            List<String> inputResponse = new LinkedList<>();
-            while ((line = input.readLine()) != null) {
-                if (verbose) { LOGGER.info(line); }
-                inputResponse.add(line);
+            waitReady(bufferedReader);
+
+            String line;
+            Queue<String> sshOutput = new EvictingQueue<>(MAX_LINES_TO_COLLECT);
+            while ((line = bufferedReader.readLine()) != null) {
+                if (verbose) LOGGER.info(line);
+                sshOutput.add(line);
             }
 
-            line = null;
-            List<String> errorResponse = new LinkedList<>();
-            while ((line = error.readLine()) != null) {
-                if (verbose) { LOGGER.error(line); }
-                errorResponse.add(line);
-            }
-
-            input.close();
-            error.close();
-            return new SshResponse(channel.getExitStatus(), inputResponse, errorResponse);
+            return new SshResponse(channel.getExitStatus(), Lists.newLinkedList(sshOutput));
 
 
-        }  catch (IOException | JSchException ioX) {
-            LOGGER.error("Unable to start process.");
-            LOGGER.error(serverDetails.toString());
+        } catch (IOException | JSchException ioX) {
+            LOGGER.error("Run ssh cmd failed.\nDetails: " + serverDetails.toString());
             ioX.printStackTrace();
             return null;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         } finally {
+            try {
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (null != session) {
+                    StackSessionPool.getInstance().getPool().returnObject(serverDetails, session);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             if (null != channel && channel.isConnected()) {
                 channel.disconnect();
             }
-            if (null != session) {
-                try {
-                    StackSessionPool.getInstance().getPool()
-                            .returnObject(serverDetails, session);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        }
+    }
+
+    private void waitReady(BufferedReader br) throws IOException, InterruptedException {
+        int i=0;
+        while (!br.ready() && i < 40) {
+            MILLISECONDS.sleep(100);
+            i++;
         }
     }
 }

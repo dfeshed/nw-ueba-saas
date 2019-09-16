@@ -2,9 +2,8 @@ package com.rsa.netwitness.presidio.automation.test_managers;
 
 
 import com.rsa.netwitness.presidio.automation.common.helpers.DateTimeHelperUtils;
-import com.rsa.netwitness.presidio.automation.domain.config.Consts;
-import com.rsa.netwitness.presidio.automation.ssh.TerminalCommandsSshUtils;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
+import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import com.rsa.netwitness.presidio.automation.utils.ade.inserter.AdeInserter;
 import com.rsa.netwitness.presidio.automation.utils.ade.inserter.AdeInserterFactory;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
+import static com.rsa.netwitness.presidio.automation.domain.config.Consts.PRESIDIO_DIR;
+import static com.rsa.netwitness.presidio.automation.file.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -42,7 +42,7 @@ public class ADETestManager {
     public static final String JAVA_CMD = "java -jar -Duser.timezone=UTC ";
 
     public static final String PRESIDIO_ADE_APP_SCORE_AGGR = "presidio-ade-app-score-aggr";
-    public static final String PRESIDIO_ADE_APP_MODEL_FEATURE_BUCkETS = "presidio-ade-app-model-feature-buckets";
+    public static final String PRESIDIO_ADE_APP_MODEL_FEATURE_BUCKETS = "presidio-ade-app-model-feature-buckets";
     public static final String PRESIDIO_ADE_APP_MODELING = "presidio-ade-app-modeling";
     public static final String PRESIDIO_ADE_APP_ACCUMULATE_AGGR = "presidio-ade-app-accumulate-aggr";
     public static final String PRESIDIO_ADE_APP_FEATURE_AGGR = "presidio-ade-app-feature-aggr";
@@ -52,6 +52,7 @@ public class ADETestManager {
     private AdeManagerSdk adeManagerSDK;
     private AdeInserterFactory adeInserterFactory;
     private String dataSource;
+    private SshHelper sshHelper = new SshHelper();
 
     public ADETestManager(AdeManagerSdk adeManagerSDK, AdeInserterFactory adeInserterFactory) {
         this.adeManagerSDK = adeManagerSDK;
@@ -121,8 +122,8 @@ public class ADETestManager {
         // group_name :  [enriched-record-models or feature-aggregation-record-models(F) or smart-record-models ]
         String logPath = "/tmp/" + PRESIDIO_ADE_APP_MODELING + "_process_" + group_name + "_" + session_id + "_" + end.toString() + ".log";
 
-        SshResponse p3 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_MODELING + ".jar", true, Consts.PRESIDIO_DIR, "process",
-                "--group_name " + group_name, "--session_id " + session_id, "--end_date " + end.toString()
+        SshResponse p3 = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(JAVA_CMD + PRESIDIO_ADE_APP_MODELING + ".jar",
+                "process", "--group_name " + group_name, "--session_id " + session_id, "--end_date " + end.toString()
                         + " > " + logPath);
 
         printLogIfError(logPath);
@@ -135,9 +136,9 @@ public class ADETestManager {
         String logPath = "/tmp/" + PRESIDIO_ADE_APP_SCORE_AGGR + "_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
 
         // score raw events and builds P buckets
-
-        SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_SCORE_AGGR + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
-                "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
+        SshResponse p4 = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(JAVA_CMD + PRESIDIO_ADE_APP_SCORE_AGGR + ".jar",
+                "run", "--schema " + schema.toUpperCase(), "--start_date " + start.toString(), "--end_date " + end.toString(),
+                "--fixed_duration_strategy " + getFixedDuration(timeFrame)
                         + " > " + logPath);
 
         printLogIfError(logPath);
@@ -148,12 +149,14 @@ public class ADETestManager {
 
 
     public void processModelFeatureBuckets(Instant start, Instant end, String timeFrame, String schema) {
-        String logPath = "/tmp/" + PRESIDIO_ADE_APP_MODEL_FEATURE_BUCkETS + "_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
+        String logPath = "/tmp/" + PRESIDIO_ADE_APP_MODEL_FEATURE_BUCKETS + "_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
         // builds the histograms (aggr_<feature>Histogram<context+dataSource>Daily)
         //--fixed_duration_strategy should be hourly 3600
-        SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_MODEL_FEATURE_BUCkETS + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
+        SshResponse p4 = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(JAVA_CMD + PRESIDIO_ADE_APP_MODEL_FEATURE_BUCKETS + ".jar",
+                "run", "--schema " + schema.toUpperCase(),
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
                         + " > " + logPath);
+
 
         printLogIfError(logPath);
         assertThat(p4.exitCode)
@@ -165,7 +168,8 @@ public class ADETestManager {
         String logPath = "/tmp/" + PRESIDIO_ADE_APP_FEATURE_AGGR + "_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
 
         // builds F features
-        SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_FEATURE_AGGR + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
+        SshResponse p4 = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(JAVA_CMD + PRESIDIO_ADE_APP_FEATURE_AGGR + ".jar",
+                "run", "--schema " + schema.toUpperCase(),
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
                         + " > " + logPath);
 
@@ -178,7 +182,7 @@ public class ADETestManager {
     public void processAccumulateAggr(Instant start, Instant end, String schema) {
         String logPath= "/tmp/" + PRESIDIO_ADE_APP_ACCUMULATE_AGGR + "_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
         // builds F features
-        SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_AGGR + ".jar", true, Consts.PRESIDIO_DIR,
+        SshResponse p4 = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_AGGR + ".jar",
                 "run", "--schema " + schema.toUpperCase(),
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400  --feature_bucket_strategy 3600"
                         + " > " + logPath);
@@ -203,7 +207,8 @@ public class ADETestManager {
         // builds F features
         String logPath = "/tmp/" + PRESIDIO_ADE_APP_SMART + "_process_" + entity + "_" + start.toString() + "_" + end.toString() + ".log";
 
-        SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_SMART + ".jar", true, Consts.PRESIDIO_DIR, "process", "--smart_record_conf_name " + entity,
+        SshResponse p4 = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(JAVA_CMD + PRESIDIO_ADE_APP_SMART + ".jar",
+                "process", "--smart_record_conf_name " + entity,
                 "--start_date " + start.toString(), "--end_date " + end.toString()
                         + " > " + logPath);
 
@@ -216,7 +221,9 @@ public class ADETestManager {
     public void processAccumulateSmart(Instant start, Instant end, String entity) {
         // builds F features
         String logPath = "/tmp/" + PRESIDIO_ADE_APP_ACCUMULATE_SMART + "_run_" + entity + "_" + start.toString() + "_" + end.toString() + ".log";
-        SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_SMART + ".jar", true, Consts.PRESIDIO_DIR, "run", "--smart_record_conf_name " + entity,
+
+        SshResponse p4 = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_SMART + ".jar",
+                "run", "--smart_record_conf_name " + entity,
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400"
                         + " > " + logPath);
 
