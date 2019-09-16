@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.automation.log_player;
 
 import com.rsa.netwitness.presidio.automation.domain.repository.AdapterAbstractStoredDataRepository;
+import com.rsa.netwitness.presidio.automation.jdbc.AirflowDagsPostgres;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
@@ -60,7 +61,7 @@ public class MongoCollectionsMonitor {
     }
 
 
-    public boolean waitForResult() throws InterruptedException {
+    public boolean waitForResult(Instant hourlyEntityFlowsEndDate) throws InterruptedException {
         boolean dataProcessingStillInProgress = true;
 
         LOGGER.info("First check time: " + Instant.now().plus(DELAY_BEFORE_FIRST_TASK_STARTED + 1, TIME_UNITS_CHRONO.get()));
@@ -78,7 +79,9 @@ public class MongoCollectionsMonitor {
                 .overridingErrorMessage(errorMessage)
                 .isTrue();
 
-        while (dataProcessingStillInProgress) {
+        AirflowDagsPostgres airflowDagsPostgres = new AirflowDagsPostgres();
+
+        while (dataProcessingStillInProgress && !airflowDagsPostgres.allHourlyEntityFlowsExeeded(hourlyEntityFlowsEndDate)) {
             LOGGER.info("Next check: " + Instant.now().plus(TASK_STATUS_CHECK_FREQUENCY, TIME_UNITS_CHRONO.get()));
             TIME_UNITS.sleep(TASK_STATUS_CHECK_FREQUENCY);
 
@@ -93,6 +96,7 @@ public class MongoCollectionsMonitor {
                 .reduce(Boolean::logicalAnd).orElse(false);
 
         LOGGER.info("waitForResult has finished with " + allCollectionsHaveFinalDaySamples);
-        return allCollectionsHaveFinalDaySamples;
+        return allCollectionsHaveFinalDaySamples && airflowDagsPostgres.allHourlyEntityFlowsExeeded(hourlyEntityFlowsEndDate);
     }
+    
 }

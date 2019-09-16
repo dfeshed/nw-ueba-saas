@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 
 /**
@@ -73,7 +73,7 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
     public void setup(@Optional("30") int historicalDaysBack, @Optional("1") int anomalyDay) {
         logger.debug("historicalDaysBack =" + historicalDaysBack);
         /** Latest collection sample time must be after the 'endDate' to pass the below test.*/
-        endDate = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(3, HOURS);
+        endDate = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(10, MINUTES);
         startDate = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(historicalDaysBack, ChronoUnit.DAYS);
     }
 
@@ -95,7 +95,7 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
         LOGGER.debug(" startDate=" + startDate + " endDate=" + endDate);
         monitor.createTasks(startDate, endDate);
         monitor.execute();
-        boolean allCollectionsHaveSampleFromTheFinalDay = monitor.waitForResult();
+        boolean allCollectionsHaveSampleFromTheFinalDay = monitor.waitForResult(endDate);
         monitor.shutdown();
         Assert.assertTrue(allCollectionsHaveSampleFromTheFinalDay, "Data processing has not reached the last day.");
         LOGGER.info("Going to stop airflow-scheduler.");

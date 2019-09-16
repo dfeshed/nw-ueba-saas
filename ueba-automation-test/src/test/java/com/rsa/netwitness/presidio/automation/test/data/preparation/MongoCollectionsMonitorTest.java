@@ -62,7 +62,7 @@ public class MongoCollectionsMonitorTest extends AbstractTestNGSpringContextTest
 
         task.createTasks(Instant.now().minus(15, DAYS), Instant.now());
         task.execute();
-        boolean result = task.waitForResult();
+        boolean result = task.waitForResult(Instant.now());
         task.shutdown();
 
         System.out.println("BLA");
