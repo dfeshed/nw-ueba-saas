@@ -22,7 +22,6 @@ public class NetworkDataPreparation extends DataPreparationBase {
 
         UncommonValuesAlerts uncommonValuesAlerts = new UncommonValuesAlerts(historicalDaysBack, anomalyDay);
         UnusualTrafficVolumeAlerts unusualTrafficVolumeAlerts = new UnusualTrafficVolumeAlerts(historicalDaysBack, anomalyDay);
-        HighNumberOf highNumberOfGen = new HighNumberOf(historicalDaysBack, anomalyDay);
         SessionSplitEnrichmentData sessionSplitEnrichmentData = new SessionSplitEnrichmentData();
         FutureEventsForMetrics futureEventsGen = new FutureEventsForMetrics(10);
 
@@ -35,9 +34,7 @@ public class NetworkDataPreparation extends DataPreparationBase {
                 uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(),
 
                 unusualTrafficVolumeAlerts.fromSourceIpToSslSubjectDomainOrganisationDestPort(),
-                unusualTrafficVolumeAlerts.toSslSubjectDomainOrganisationDestPortJa3(),
-
-                highNumberOfGen.distinctSourceIpForJA3()
+                unusualTrafficVolumeAlerts.toSslSubjectDomainOrganisationDestPortJa3()
 
         ).flatMap(i -> i);
 
