@@ -87,12 +87,7 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
             String sslSubjectName = (String) jacksonUtils.getFieldValue(document, namePath(TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME), null);
             String ja3Name = (String) jacksonUtils.getFieldValue(document, namePath(TlsTransformedEvent.JA3_FIELD_NAME), null);
             String ja3s = (String) document.get(TlsTransformedEvent.JA3S_FIELD_NAME);
-
-            JSONArray jsonArray = (JSONArray) document.get(TlsTransformedEvent.SSL_CAS_FIELD_NAME);
-            List<String> sslCas = new ArrayList<>();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                sslCas.add(jsonArray.getString(i));
-            }
+            List<String> sslCas = JacksonUtils.jsonArrayToList((JSONArray) document.get(TlsTransformedEvent.SSL_CAS_FIELD_NAME));
 
             SessionSplitTransformerValue value = new SessionSplitTransformerValue(eventDateTime, zeroSessionSplit,
                     new SslSubject(sslSubjectName), sslCas, new Ja3(ja3Name), ja3s);
@@ -123,14 +118,12 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
     }
 
     private void setEntityAttribute(JSONObject jsonObject, String fieldName, EntityAttributes entityAttributes) {
-        JSONObject entityObject;
-        if (entityAttributes == null) {
-            entityObject = new JSONObject(JSONObject.NULL);
-        } else {
-            entityObject = new JSONObject(entityAttributes);
+        if (entityAttributes != null) {
+            JSONObject entityObject = new JSONObject(entityAttributes);
+            jsonObject.put(fieldName, entityObject);
         }
-        jsonObject.put(fieldName, entityObject);
     }
+
     private String namePath(String prefixPath) {
         return prefixPath + NAME_FIELD_SUFFIX;
     }
