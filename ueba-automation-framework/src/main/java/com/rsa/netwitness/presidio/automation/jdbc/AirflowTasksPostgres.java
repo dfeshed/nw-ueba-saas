@@ -8,16 +8,17 @@ import java.sql.*;
 import java.time.Instant;
 import java.util.List;
 
-import static com.rsa.netwitness.presidio.automation.jdbc.model.AirflowTaskFailTable.*;
 import static com.rsa.netwitness.presidio.automation.jdbc.model.AirflowTaskInstanceTable.TASK_INSTANCE_TABLE;
 import static org.assertj.core.api.Assertions.fail;
 
 
-public class AirflowDbHelper {
+public class AirflowTasksPostgres {
 
 
-    public List<AirflowTaskFailTable> fetchFailedTasks(Instant startTime) {
-        String SQL_QUERY = "select * from " + AirflowTaskFailTable.TASK_FAIL_TABLE + " where " + AirflowTaskFailTable.START_DATE + " > '" + Timestamp.from(startTime) + "'";
+    public List<AirflowTaskFailTable> fetchFailedTasks(Instant startTime, Instant endTime) {
+        String SQL_QUERY = "select * from " + AirflowTaskFailTable.TASK_FAIL_TABLE +
+                " where " + AirflowTaskFailTable.START_DATE + " > '" + Timestamp.from(startTime) + "'" +
+                " and " + AirflowTaskFailTable.END_DATE + " < '" + Timestamp.from(endTime) + "'";
         List<AirflowTaskFailTable> airflowTaskFailTables = Lists.newLinkedList();
 
         try (Connection con = PostgresAirflowConnection.getConnection();

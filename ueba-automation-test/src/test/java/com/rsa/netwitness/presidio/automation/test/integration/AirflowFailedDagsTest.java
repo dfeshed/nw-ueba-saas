@@ -2,7 +2,7 @@ package com.rsa.netwitness.presidio.automation.test.integration;
 
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
-import com.rsa.netwitness.presidio.automation.jdbc.AirflowDbHelper;
+import com.rsa.netwitness.presidio.automation.jdbc.AirflowTasksPostgres;
 import com.rsa.netwitness.presidio.automation.jdbc.model.AirflowTaskFailTable;
 import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,7 +34,7 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private AdapterTestManager adapterTestManager;
 
-    private Instant endTime = Instant.now();
+    private Instant endTime = Instant.now().minus(15, MINUTES);
     private Instant startTime = Instant.now().minus(1, DAYS);
 
 
@@ -47,9 +48,9 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
 
 
     @Test
-    public void airflow_failed_dags_test() {
-        AirflowDbHelper airflowDbHelper = new AirflowDbHelper();
-        List<AirflowTaskFailTable> airflowTaskFailTables = airflowDbHelper.fetchFailedTasks(startTime);
+    public void airflow_failed_dags_for_the_last_day_test() {
+        AirflowTasksPostgres airflowTasksPostgres = new AirflowTasksPostgres();
+        List<AirflowTaskFailTable> airflowTaskFailTables = airflowTasksPostgres.fetchFailedTasks(startTime, endTime);
         LOGGER.warn("Started on " + Instant.now());
         LOGGER.warn("");
 

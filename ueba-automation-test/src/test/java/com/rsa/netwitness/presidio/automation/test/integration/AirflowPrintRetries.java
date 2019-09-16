@@ -2,7 +2,7 @@ package com.rsa.netwitness.presidio.automation.test.integration;
 
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
-import com.rsa.netwitness.presidio.automation.jdbc.AirflowDbHelper;
+import com.rsa.netwitness.presidio.automation.jdbc.AirflowTasksPostgres;
 import com.rsa.netwitness.presidio.automation.jdbc.model.AirflowTaskInstanceTable;
 import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
@@ -50,9 +50,9 @@ public class AirflowPrintRetries extends AbstractTestNGSpringContextTests {
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack="
                 + historicalDaysBack + " anomalyDay=" + anomalyDay);
 
-        AirflowDbHelper airflowDbHelper = new AirflowDbHelper();
+        AirflowTasksPostgres airflowTasksPostgres = new AirflowTasksPostgres();
 
-        airflowTasksWithRetries = airflowDbHelper.fetchRetries(startTime)
+        airflowTasksWithRetries = airflowTasksPostgres.fetchRetries(startTime)
                 .parallelStream()
                 .filter(task -> task.tryNumber >= MIN_TRIES_TO_DISPLAY)
                 .collect(Collectors.toList());
