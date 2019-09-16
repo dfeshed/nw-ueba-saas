@@ -38,7 +38,7 @@ public class SessionSplitStoreRedisConfiguration {
     }
 
     @Bean
-    public SessionSplitStoreRedisImpl sessionSplitStoreRedis() {
-        return new SessionSplitStoreRedisImpl(redisTemplate(), timeout);
+    public SessionSplitStoreRedis sessionSplitStoreRedis() {
+        return new SessionSplitStoreRedis(redisTemplate(), timeout);
     }
 }

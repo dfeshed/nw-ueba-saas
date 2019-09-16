@@ -12,28 +12,36 @@ import java.util.Map;
 
 
 /**
- * A Redis based implementation of {@link ISessionSplitStore}.
+ * SessionSplit Redis based implementation
  */
-public class SessionSplitStoreRedisImpl implements ISessionSplitStore {
+public class SessionSplitStoreRedis {
     private static final String REDIS_KEY_PREFIX = "session-split";
 
     private final ValueOperations<String, Object> valueOperations;
     private RedisTemplate<String, Object> redisTemplate;
     private final Duration timeout;
 
-    public SessionSplitStoreRedisImpl(RedisTemplate<String, Object> redisTemplate, Duration timeout) {
+    public SessionSplitStoreRedis(RedisTemplate<String, Object> redisTemplate, Duration timeout) {
         valueOperations = Validate.notNull(redisTemplate, "redisTemplate cannot be null.").opsForValue();
         this.redisTemplate = redisTemplate;
         this.timeout = timeout;
     }
 
-    @Override
+    /**
+     * Write sessionSplitKey and sessionSplitValue to the store
+     * @param sessionSplitTransformerKey
+     * @param sessionSplitTransformerValue
+     */
     public void write(SessionSplitTransformerKey sessionSplitTransformerKey, SessionSplitTransformerValue sessionSplitTransformerValue) {
         String key = getRedisKey(sessionSplitTransformerKey.getSrcIp(), sessionSplitTransformerKey.getDstIp(), sessionSplitTransformerKey.getSrcPort(), sessionSplitTransformerKey.getDstPort());
         valueOperations.set(key, sessionSplitTransformerValue);
     }
 
 
+    /**
+     * Write sessionpSplitMap to the store
+     * @param splitTransformerMap
+     */
     public void writeAll(Map<SessionSplitTransformerKey, SessionSplitTransformerValue> splitTransformerMap) {
         redisTemplate.executePipelined(new SessionCallback<List<Object>>() {
             @Override
@@ -47,7 +55,11 @@ public class SessionSplitStoreRedisImpl implements ISessionSplitStore {
         });
     }
 
-    @Override
+    /**
+     * Read sessionSplitValue from the store
+     * @param sessionSplitTransformerKey
+     * @return sessionSplitValue
+     */
     public SessionSplitTransformerValue read(SessionSplitTransformerKey sessionSplitTransformerKey) {
         String key = getRedisKey(sessionSplitTransformerKey.getSrcIp(), sessionSplitTransformerKey.getDstIp(), sessionSplitTransformerKey.getSrcPort(), sessionSplitTransformerKey.getDstPort());
         return (SessionSplitTransformerValue) valueOperations.get(key);

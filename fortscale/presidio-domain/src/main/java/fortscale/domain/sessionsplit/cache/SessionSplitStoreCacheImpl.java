@@ -2,18 +2,16 @@ package fortscale.domain.sessionsplit.cache;
 
 import fortscale.domain.sessionsplit.records.SessionSplitTransformerKey;
 import fortscale.domain.sessionsplit.records.SessionSplitTransformerValue;
-import fortscale.domain.sessionsplit.store.ISessionSplitStore;
+import fortscale.domain.sessionsplit.store.SessionSplitStoreRedis;
 import fortscale.utils.flushable.AbstractFlushable;
 import org.apache.commons.lang3.Validate;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toMap;
 
 public class SessionSplitStoreCacheImpl extends AbstractFlushable implements ISessionSplitStoreCache {
-    private final ISessionSplitStore sessionSplitStore;
+    private final SessionSplitStoreRedis sessionSplitStore;
     private final int maximumSize;
     private Map<SessionSplitTransformerKey, SessionSplitTransformerValue> splitTransformerMap = new HashMap<>();
 
@@ -24,7 +22,7 @@ public class SessionSplitStoreCacheImpl extends AbstractFlushable implements ISe
      * @param maximumSize       The maximum number of entries of this cache.
      */
     public SessionSplitStoreCacheImpl(
-            ISessionSplitStore sessionSplitStore,
+            SessionSplitStoreRedis sessionSplitStore,
             int maximumSize) {
 
         Validate.notNull(sessionSplitStore, "sessionSplitStore cannot be null.");
