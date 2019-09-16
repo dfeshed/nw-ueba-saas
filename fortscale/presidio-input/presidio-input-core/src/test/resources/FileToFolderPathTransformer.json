@@ -1,6 +1,7 @@
 {
-  "type": "file-to-folder-path-transformer",
+  "type": "regex-transformer",
   "name": "BLUEE",
   "inputFieldName": "bla",
-  "outputFieldName": "blue"
+  "outputFieldName": "blue",
+  "regex": "Bla"
 }
