@@ -12,9 +12,12 @@ import {
   isSummaryColumnVisible
 } from 'investigate-events/reducers/investigate/data-selectors';
 import EventColumnGroups from '../../data/subscriptions/column-group/findAll/data';
+import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
 
 module('Unit | Selectors | data-selectors');
+
+const mappedColumnGroups = mapColumnGroupsForEventTable(EventColumnGroups);
 
 test('get the current preferences to save', function(assert) {
   const response = {
@@ -361,14 +364,14 @@ test('Should get default column group as Summary', function(assert) {
         selectedColumnGroup: 'SUMMARY'
       },
       columnGroup: {
-        columnGroups: EventColumnGroups
+        columnGroups: mappedColumnGroups
       }
     }
   };
   const selectedColumnGroup = getSelectedColumnGroup(state);
   assert.equal(selectedColumnGroup.name, 'Summary List');
   assert.equal(selectedColumnGroup.columns.length, 5);
-  assert.deepEqual(EventColumnGroups[2], selectedColumnGroup);
+  assert.deepEqual(mappedColumnGroups[2], selectedColumnGroup);
 });
 
 test('Should fall back to Summary for wrong column group', function(assert) {
@@ -381,7 +384,7 @@ test('Should fall back to Summary for wrong column group', function(assert) {
         selectedColumnGroup: 'XYZ'
       },
       columnGroup: {
-        columnGroups: EventColumnGroups
+        columnGroups: mappedColumnGroups
       }
     }
   };
@@ -389,7 +392,7 @@ test('Should fall back to Summary for wrong column group', function(assert) {
   assert.equal(selectedColumnGroup.name, 'Summary List');
   assert.equal(selectedColumnGroup.columns.length, 5);
 
-  assert.deepEqual(EventColumnGroups[2], selectedColumnGroup);
+  assert.deepEqual(mappedColumnGroups[2], selectedColumnGroup);
 });
 
 test('Should get selected column groups', function(assert) {
@@ -402,14 +405,14 @@ test('Should get selected column groups', function(assert) {
         selectedColumnGroup: 'WEB'
       },
       columnGroup: {
-        columnGroups: EventColumnGroups
+        columnGroups: mappedColumnGroups
       }
     }
   };
   const selectedColumnGroup = getSelectedColumnGroup(state);
   assert.equal(selectedColumnGroup.name, 'Web Analysis');
   assert.equal(selectedColumnGroup.columns.length, 53);
-  assert.deepEqual(EventColumnGroups[9], selectedColumnGroup);
+  assert.deepEqual(mappedColumnGroups[9], selectedColumnGroup);
 });
 
 test('Should get mutable columns for data table', function(assert) {
@@ -431,7 +434,7 @@ test('Should get mutable columns for data table', function(assert) {
         selectedColumnGroup: 'SUMMARY'
       },
       columnGroup: {
-        columnGroups: EventColumnGroups
+        columnGroups: mappedColumnGroups
       }
     }
   });
@@ -517,7 +520,7 @@ test('columns should not include meta-details column', function(assert) {
         selectedColumnGroup: 'SUMMARY2'
       },
       columnGroup: {
-        columnGroups: EventColumnGroups
+        columnGroups: mappedColumnGroups
       }
     }
   });
@@ -549,7 +552,7 @@ test('flattened list should include fields inside meta-summary and fields always
         selectedColumnGroup: 'SUMMARY'
       },
       columnGroup: {
-        columnGroups: EventColumnGroups
+        columnGroups: mappedColumnGroups
       }
     }
   });
@@ -572,7 +575,7 @@ test('flattened list of columns do not include summary fields if no meta-summary
         selectedColumnGroup: 'SUMMARY2'
       },
       columnGroup: {
-        columnGroups: EventColumnGroups
+        columnGroups: mappedColumnGroups
       }
     }
   });
@@ -595,7 +598,7 @@ test('flattened list of columns do not include dupe columns if exist in list and
         selectedColumnGroup: 'SUMMARY3'
       },
       columnGroup: {
-        columnGroups: EventColumnGroups
+        columnGroups: mappedColumnGroups
       }
     }
   });
@@ -619,7 +622,7 @@ test('flattened list should include fields inside metasummary and fields always 
         selectedColumnGroup: 'SUMMARY4'
       },
       columnGroup: {
-        columnGroups: EventColumnGroups
+        columnGroups: mappedColumnGroups
       }
     }
   });

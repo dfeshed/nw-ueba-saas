@@ -27,7 +27,7 @@ export default Component.extend({
 
   @computed('item')
   iconName(item) {
-    if (item.ootb) {
+    if (!item.isEditable) {
       return 'lock-close-1';
     }
     return 'settings-1';

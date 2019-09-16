@@ -8,9 +8,9 @@ import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
  *
  * @param {{ string, object[] }} Object
  */
-export const createColumnGroup = ({ name, fields }) => ({
+export const createColumnGroup = ({ name, columns }) => ({
   type: ACTION_TYPES.COLUMNS_CREATE,
-  promise: apiCreateColumnGroup(name, fields),
+  promise: apiCreateColumnGroup(name, columns),
   meta: {
     onFailure(response) {
       handleInvestigateErrorCode(response, 'POST_COLUMN_GROUP');
@@ -22,9 +22,9 @@ export const createColumnGroup = ({ name, fields }) => ({
  *
  * @param {string, object[], string} Object
  */
-export const updateColumnGroup = ({ name, fields, id }) => ({
+export const updateColumnGroup = ({ name, columns, id }) => ({
   type: ACTION_TYPES.COLUMNS_UPDATE,
-  promise: apiUpdateColumnGroup(name, fields, id),
+  promise: apiUpdateColumnGroup(name, columns, id),
   meta: {
     onFailure(response) {
       handleInvestigateErrorCode(response, 'PUT_COLUMN_GROUP');

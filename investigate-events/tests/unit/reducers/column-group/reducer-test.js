@@ -5,9 +5,12 @@ import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../helpers/make-pack-action';
 import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
+import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 import _ from 'lodash';
 
 module('Unit | Reducers | column-group | Investigate');
+
+const mappedColumnGroups = mapColumnGroupsForEventTable(EventColumnGroups);
 
 test('Should get column list from server', function(assert) {
   const previous = Immutable.from({
@@ -22,7 +25,8 @@ test('Should get column list from server', function(assert) {
     payload: { data: EventColumnGroups }
   });
   const newEndState = reducer(previous, successAction);
-  assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
+
+  assert.deepEqual(newEndState.columnGroups, mappedColumnGroups, 'EventColumnGroups from server are mapped to UI columnGroups correctly');
 });
 
 test('Should update the column widths if the right columns are present', function(assert) {
@@ -36,7 +40,7 @@ test('Should update the column widths if the right columns are present', functio
     payload: { data: EventColumnGroups }
   });
   const newEndState = reducer(previous, successAction);
-  assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
+  assert.deepEqual(newEndState.columnGroups, mappedColumnGroups);
   assert.equal(newEndState.columnGroups[0].columns[0].width, 175, 'time set to right value');
   assert.equal(newEndState.columnGroups[0].columns[4].width, 2000, 'summary set to right value');
 });
@@ -52,7 +56,7 @@ test('Should show default column list in case of failure', function(assert) {
     payload: { data: EventColumnGroups }
   });
   const newEndState = reducer(previous, successAction);
-  assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
+  assert.deepEqual(newEndState.columnGroups, mappedColumnGroups);
 });
 
 test('Should sort column groups alphabetically irrespective of case', function(assert) {

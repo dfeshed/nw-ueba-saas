@@ -6,23 +6,23 @@ import { setupRenderingTest } from 'ember-qunit';
 module('Integration | Component | item ', function(hooks) {
   setupRenderingTest(hooks);
 
-  const nonOOTB = 'rsa-icon-settings-1-lined';
+  const editable = 'rsa-icon-settings-1-lined';
 
   const item = { id: '1', name: 'foo' };
 
-  test('Component for item renders when no selectedItem is passed, no OOTB indicators', async function(assert) {
+  test('Component for item renders when no selectedItem is passed, no is-editable indicators', async function(assert) {
     assert.expect(6);
 
     this.set('item', item);
     this.set('itemSelection', (itemClicked) => {
       assert.deepEqual(itemClicked, item, 'Clicking an Item causes triggers itemSelection');
     });
-    this.set('hasOOTBIndicators', false);
+    this.set('hasIsEditableIndicators', false);
 
-    await render(hbs`{{list-manager/list-manager-container/item-list/item item=item itemSelection=itemSelection hasOOTBIndicators=hasOOTBIndicators}}`);
+    await render(hbs`{{list-manager/list-manager-container/item-list/item item=item itemSelection=itemSelection hasIsEditableIndicators=hasIsEditableIndicators}}`);
 
     assert.ok(find('li.rsa-list-item'), 'list found');
-    assert.notOk(find('li .ootb-indicator'), 'ootb indicator found');
+    assert.notOk(find('li .is-editable-indicator'), 'is-editable indicator found');
     assert.notOk(find('li.is-selected'));
     assert.equal(find('li a').getAttribute('title'), 'foo', 'tooltip for item on hover shows item name');
     assert.equal(find('li').getAttribute('tabindex'), -1, 'tabindex attribute exists');
@@ -33,17 +33,18 @@ module('Integration | Component | item ', function(hooks) {
   test('Component for item renders when selectedItem is clicked', async function(assert) {
     assert.expect(3);
 
-    this.set('item', item);
-    this.set('selectedItem', item);
+    const item1 = { id: '1', name: 'foo', isEditable: true };
+    this.set('item', item1);
+    this.set('selectedItem', item1);
     this.set('itemSelection', (itemClicked) => {
-      assert.deepEqual(itemClicked, item, 'Clicking an Item causes triggers itemSelection');
+      assert.deepEqual(itemClicked, item1, 'Clicking an Item causes triggers itemSelection');
     });
-    this.set('hasOOTBIndicators', true);
+    this.set('hasIsEditableIndicators', true);
 
-    await render(hbs`{{list-manager/list-manager-container/item-list/item item=item selectedItem=selectedItem itemSelection=itemSelection hasOOTBIndicators=hasOOTBIndicators}}`);
+    await render(hbs`{{list-manager/list-manager-container/item-list/item item=item selectedItem=selectedItem itemSelection=itemSelection hasIsEditableIndicators=hasIsEditableIndicators}}`);
 
     assert.ok(find('li.is-selected'), 'the item rendered is a selected item');
-    assert.ok(find('li .ootb-indicator').classList.contains(nonOOTB), 'icon is non-ootb');
+    assert.ok(find('li .is-editable-indicator').classList.contains(editable), 'icon is editable');
 
     await click('li.is-selected a');
   });
@@ -54,11 +55,11 @@ module('Integration | Component | item ', function(hooks) {
     this.set('item', item);
     this.set('itemSelection', () => {
     });
-    this.set('hasOOTBIndicators', true);
+    this.set('hasIsEditableIndicators', true);
     this.set('highlightedId', 'someid');
 
     await render(hbs`{{list-manager/list-manager-container/item-list/item item=item selectedItem=selectedItem
-      highlightedId=highlightedId itemSelection=itemSelection hasOOTBIndicators=hasOOTBIndicators}}`);
+      highlightedId=highlightedId itemSelection=itemSelection hasIsEditableIndicators=hasIsEditableIndicators}}`);
 
     assert.ok(find('li.is-highlighted'), 'the item shall have is-highlighted class');
   });
@@ -69,11 +70,11 @@ module('Integration | Component | item ', function(hooks) {
     this.set('item', item);
     this.set('itemSelection', () => {
     });
-    this.set('hasOOTBIndicators', true);
+    this.set('hasIsEditableIndicators', true);
     this.set('highlightedId', 'not-someid');
 
     await render(hbs`{{list-manager/list-manager-container/item-list/item item=item selectedItem=selectedItem
-      highlightedId=highlightedId itemSelection=itemSelection hasOOTBIndicators=hasOOTBIndicators}}`);
+      highlightedId=highlightedId itemSelection=itemSelection hasIsEditableIndicators=hasIsEditableIndicators}}`);
 
     assert.notOk(find('li.is-highlighted'), 'the item shall not have is-highlighted class');
   });

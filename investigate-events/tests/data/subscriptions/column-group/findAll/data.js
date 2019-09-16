@@ -1,6 +1,6 @@
 export const BASE_COLUMNS = [
-  { field: 'time', title: 'Collection Time', width: 175 },
-  { field: 'medium', title: 'Type' }
+  { metaName: 'time', displayName: 'Collection Time', width: 175 },
+  { metaName: 'medium', displayName: 'Type' }
 ];
 
 export default [
@@ -9,111 +9,111 @@ export default [
     name: 'Custom 1',
     columns: [
       {
-        field: 'service',
-        title: 'Service Type'
+        metaName: 'service',
+        displayName: 'Service Type'
       }, {
-        field: 'custom.logdata',
-        title: 'Log Data'
+        metaName: 'custom.logdata',
+        displayName: 'Log Data'
       }, {
-        field: 'custom.source',
-        title: 'Source'
+        metaName: 'custom.source',
+        displayName: 'Source'
       }, {
-        field: 'custom.destination',
-        title: 'Destination'
+        metaName: 'custom.destination',
+        displayName: 'Destination'
       }, {
-        field: 'orig_ip',
-        title: 'Originating IP Address'
+        metaName: 'orig_ip',
+        displayName: 'Originating IP Address'
       }, {
-        field: 'ip.src',
-        title: 'Source IP Address'
+        metaName: 'ip.src',
+        displayName: 'Source IP Address'
       }, {
-        field: 'ip.dst',
-        title: 'Destination IP Address'
+        metaName: 'ip.dst',
+        displayName: 'Destination IP Address'
       }, {
-        field: 'tcp.dstport',
-        title: 'TCP Destination Port'
+        metaName: 'tcp.dstport',
+        displayName: 'TCP Destination Port'
       }, {
-        field: 'ip.dstport',
-        title: 'Destination Port'
+        metaName: 'ip.dstport',
+        displayName: 'Destination Port'
       }, {
-        field: 'alias.host',
-        title: 'Hostname Alias Record'
+        metaName: 'alias.host',
+        displayName: 'Hostname Alias Record'
       }, {
-        field: 'country.src',
-        title: 'Source Country'
+        metaName: 'country.src',
+        displayName: 'Source Country'
       }],
-    ootb: false
+    contentType: 'USER'
   }, {
     id: 'MALWARE1',
     name: 'Custom 2',
     columns: [
       {
-        field: 'service',
-        title: 'Service Type'
+        metaName: 'service',
+        displayName: 'Service Type'
       }, {
-        field: 'ip.src',
-        title: 'Source IP Address'
+        metaName: 'ip.src',
+        displayName: 'Source IP Address'
       }, {
-        field: 'ip.dst',
-        title: 'Destination IP Address'
+        metaName: 'ip.dst',
+        displayName: 'Destination IP Address'
       }, {
-        field: 'alias.host',
-        title: 'Hostname Alias Record'
+        metaName: 'alias.host',
+        displayName: 'Hostname Alias Record'
       }, {
-        field: 'referer',
-        title: 'Referer'
+        metaName: 'referer',
+        displayName: 'Referer'
       }, {
-        field: 'country.src',
-        title: 'Source Country'
+        metaName: 'country.src',
+        displayName: 'Source Country'
       }, {
-        field: 'country.dst',
-        title: 'Destination Country'
+        metaName: 'country.dst',
+        displayName: 'Destination Country'
       }, {
-        field: 'domain.dst',
-        title: 'Destination Domain'
+        metaName: 'domain.dst',
+        displayName: 'Destination Domain'
       }],
-    ootb: false
+    contentType: 'USER'
   },
   {
     id: 'SUMMARY',
     name: 'Summary List',
-    ootb: true,
+    contentType: 'OOTB',
     columns: BASE_COLUMNS.concat([
-      { field: 'custom.theme', title: 'Theme' },
-      { field: 'size', title: 'Size' },
-      { field: 'custom.meta-summary', title: 'Summary', width: null }
+      { metaName: 'custom.theme', displayName: 'Theme' },
+      { metaName: 'size', displayName: 'Size' },
+      { metaName: 'custom.meta-summary', displayName: 'Summary', width: null }
     ])
   },
   {
     id: 'SUMMARY2',
     name: 'Summary List',
-    ootb: true,
+    contentType: 'OOTB',
     columns: BASE_COLUMNS.concat([
-      { field: 'custom.theme', title: 'Theme' },
-      { field: 'size', title: 'Size' },
-      { field: 'custom.meta-details', title: 'Details', width: null }
+      { metaName: 'custom.theme', displayName: 'Theme' },
+      { metaName: 'size', displayName: 'Size' },
+      { metaName: 'custom.meta-details', displayName: 'Details', width: null }
     ])
   },
   {
     id: 'SUMMARY3',
     name: 'Summary List',
-    ootb: true,
+    contentType: 'OOTB',
     columns: BASE_COLUMNS.concat([
-      { field: 'custom.theme', title: 'Theme' },
-      { field: 'size', title: 'Size' },
-      { field: 'ip.dst', title: 'Destination IP Address' },
-      { field: 'custom.meta-summary', title: 'Summary', width: null }
+      { metaName: 'custom.theme', displayName: 'Theme' },
+      { metaName: 'size', displayName: 'Size' },
+      { metaName: 'ip.dst', displayName: 'Destination IP Address' },
+      { metaName: 'custom.meta-summary', displayName: 'Summary', width: null }
     ])
   },
   {
     id: 'SUMMARY4',
     name: 'Summary List',
-    ootb: true,
+    contentType: 'OOTB',
     columns: BASE_COLUMNS.concat([
-      { field: 'custom.theme', title: 'Theme' },
-      { field: 'size', title: 'Size' },
-      { field: 'ip.dst', title: 'Destination IP Address' },
-      { field: 'custom.metasummary', title: 'Summary', width: null }
+      { metaName: 'custom.theme', displayName: 'Theme' },
+      { metaName: 'size', displayName: 'Size' },
+      { metaName: 'ip.dst', displayName: 'Destination IP Address' },
+      { metaName: 'custom.metasummary', displayName: 'Summary', width: null }
     ])
   },
   {
@@ -121,770 +121,770 @@ export default [
     name: 'Email Analysis',
     columns: BASE_COLUMNS.concat([
       {
-        field: 'service',
-        title: 'Service Type'
+        metaName: 'service',
+        displayName: 'Service Type'
       }, {
-        field: 'orig_ip',
-        title: 'Originating IP Address'
+        metaName: 'orig_ip',
+        displayName: 'Originating IP Address'
       }, {
-        field: 'ip.src',
-        title: 'Source IP Address'
+        metaName: 'ip.src',
+        displayName: 'Source IP Address'
       }, {
-        field: 'ip.dst',
-        title: 'Destination IP Address'
+        metaName: 'ip.dst',
+        displayName: 'Destination IP Address'
       }, {
-        field: 'tcp.dstport',
-        title: 'TCP Destination Port'
+        metaName: 'tcp.dstport',
+        displayName: 'TCP Destination Port'
       }, {
-        field: 'ip.dstport',
-        title: 'Destination Port'
+        metaName: 'ip.dstport',
+        displayName: 'Destination Port'
       }, {
-        field: 'alias.host',
-        title: 'Hostname Alias Record'
+        metaName: 'alias.host',
+        displayName: 'Hostname Alias Record'
       }, {
-        field: 'country.src',
-        title: 'Source Country'
+        metaName: 'country.src',
+        displayName: 'Source Country'
       }, {
-        field: 'country.dst',
-        title: 'Destination Country'
+        metaName: 'country.dst',
+        displayName: 'Destination Country'
       }, {
-        field: 'org.src',
-        title: 'Source Organization'
+        metaName: 'org.src',
+        displayName: 'Source Organization'
       }, {
-        field: 'org.dst',
-        title: 'Destination Organization'
+        metaName: 'org.dst',
+        displayName: 'Destination Organization'
       }, {
-        field: 'subject',
-        title: 'Subject'
+        metaName: 'subject',
+        displayName: 'Subject'
       }, {
-        field: 'email.src',
-        title: 'Source E-mail Address'
+        metaName: 'email.src',
+        displayName: 'Source E-mail Address'
       }, {
-        field: 'email.dst',
+        metaName: 'email.dst',
         visible: false,
-        title: 'Destination E-mail Address'
+        displayName: 'Destination E-mail Address'
       }, {
-        field: 'domain.dst',
+        metaName: 'domain.dst',
         visible: false,
-        title: 'Destination Domain'
+        displayName: 'Destination Domain'
       }, {
-        field: 'client',
+        metaName: 'client',
         visible: false,
-        title: 'Client Application'
+        displayName: 'Client Application'
       }, {
-        field: 'server',
+        metaName: 'server',
         visible: false,
-        title: 'Server Application'
+        displayName: 'Server Application'
       }, {
-        field: 'content',
+        metaName: 'content',
         visible: false,
-        title: 'Content Type'
+        displayName: 'Content Type'
       }, {
-        field: 'action',
+        metaName: 'action',
         visible: false,
-        title: 'Action Event'
+        displayName: 'Action Event'
       }, {
-        field: 'attachment',
+        metaName: 'attachment',
         visible: false,
-        title: 'Attachment'
+        displayName: 'Attachment'
       }, {
-        field: 'extension',
+        metaName: 'extension',
         visible: false,
-        title: 'Extension'
+        displayName: 'Extension'
       }, {
-        field: 'filetype',
+        metaName: 'filetype',
         visible: false,
-        title: 'Forensic Fingerprint'
+        displayName: 'Forensic Fingerprint'
       }, {
-        field: 'filetitle',
+        metaName: 'filetitle',
         visible: false,
-        title: 'Filename'
+        displayName: 'Filename'
       }, {
-        field: 'usertitle',
+        metaName: 'usertitle',
         visible: false,
-        title: 'User Account'
+        displayName: 'User Account'
       }, {
-        field: 'user.src',
+        metaName: 'user.src',
         visible: false,
-        title: 'Source User Account'
+        displayName: 'Source User Account'
       }, {
-        field: 'user.dst',
+        metaName: 'user.dst',
         visible: false,
-        title: 'Destination User Account'
+        displayName: 'Destination User Account'
       }, {
-        field: 'error',
+        metaName: 'error',
         visible: false,
-        title: 'Error'
+        displayName: 'Error'
       }, {
-        field: 'crypto',
+        metaName: 'crypto',
         visible: false,
-        title: 'Crypto Key'
+        displayName: 'Crypto Key'
       }, {
-        field: 'ssl.subject',
+        metaName: 'ssl.subject',
         visible: false,
-        title: 'SSL Subject'
+        displayName: 'SSL Subject'
       }, {
-        field: 'ssl.ca',
+        metaName: 'ssl.ca',
         visible: false,
-        title: 'SSL CA'
+        displayName: 'SSL CA'
       }, {
-        field: 'risk.info',
+        metaName: 'risk.info',
         visible: false,
-        title: 'Risk: Informational'
+        displayName: 'Risk: Informational'
       }, {
-        field: 'risk.suspicious',
+        metaName: 'risk.suspicious',
         visible: false,
-        title: 'Risk: Suspicious'
+        displayName: 'Risk: Suspicious'
       }, {
-        field: 'risk.warning',
+        metaName: 'risk.warning',
         visible: false,
-        title: 'Risk: Warning'
+        displayName: 'Risk: Warning'
       }, {
-        field: 'threat.category',
+        metaName: 'threat.category',
         visible: false,
-        title: 'Threat Category'
+        displayName: 'Threat Category'
       }, {
-        field: 'threat.desc',
+        metaName: 'threat.desc',
         visible: false,
-        title: 'Threat Description'
+        displayName: 'Threat Description'
       }, {
-        field: 'threat.source',
+        metaName: 'threat.source',
         visible: false,
-        title: 'Threat Source'
+        displayName: 'Threat Source'
       }, {
-        field: 'alert',
+        metaName: 'alert',
         visible: false,
-        title: 'Alerts'
+        displayName: 'Alerts'
       }, {
-        field: 'sourcefile',
+        metaName: 'sourcefile',
         visible: false,
-        title: 'Source File'
+        displayName: 'Source File'
       }, {
-        field: 'did',
+        metaName: 'did',
         visible: false,
-        title: 'Decoder Source'
+        displayName: 'Decoder Source'
       }
     ]),
-    ootb: true
+    contentType: 'OOTB'
   }, {
     id: 'MALWARE',
     name: 'Malware Analysis',
     columns: BASE_COLUMNS.concat([
       {
-        field: 'service',
-        title: 'Service Type'
+        metaName: 'service',
+        displayName: 'Service Type'
       }, {
-        field: 'ip.src',
-        title: 'Source IP Address'
+        metaName: 'ip.src',
+        displayName: 'Source IP Address'
       }, {
-        field: 'ip.dst',
-        title: 'Destination IP Address'
+        metaName: 'ip.dst',
+        displayName: 'Destination IP Address'
       }, {
-        field: 'alias.host',
-        title: 'Hostname Alias Record'
+        metaName: 'alias.host',
+        displayName: 'Hostname Alias Record'
       }, {
-        field: 'referer',
-        title: 'Referer'
+        metaName: 'referer',
+        displayName: 'Referer'
       }, {
-        field: 'country.src',
-        title: 'Source Country'
+        metaName: 'country.src',
+        displayName: 'Source Country'
       }, {
-        field: 'country.dst',
-        title: 'Destination Country'
+        metaName: 'country.dst',
+        displayName: 'Destination Country'
       }, {
-        field: 'domain.dst',
-        title: 'Destination Domain'
+        metaName: 'domain.dst',
+        displayName: 'Destination Domain'
       }, {
-        field: 'client',
-        title: 'Client Application'
+        metaName: 'client',
+        displayName: 'Client Application'
       }, {
-        field: 'server',
-        title: 'Server Application'
+        metaName: 'server',
+        displayName: 'Server Application'
       }, {
-        field: 'content',
-        title: 'Content Type'
+        metaName: 'content',
+        displayName: 'Content Type'
       }, {
-        field: 'action',
-        title: 'Action Event'
+        metaName: 'action',
+        displayName: 'Action Event'
       }, {
-        field: 'attachment',
-        title: 'Attachment'
+        metaName: 'attachment',
+        displayName: 'Attachment'
       }, {
-        field: 'extension',
+        metaName: 'extension',
         visible: false,
-        title: 'Extension'
+        displayName: 'Extension'
       }, {
-        field: 'filetype',
+        metaName: 'filetype',
         visible: false,
-        title: 'Forensic Fingerprint'
+        displayName: 'Forensic Fingerprint'
       }, {
-        field: 'filetitle',
+        metaName: 'filetitle',
         visible: false,
-        title: 'Filename'
+        displayName: 'Filename'
       }, {
-        field: 'directory',
+        metaName: 'directory',
         visible: false,
-        title: 'Directory'
+        displayName: 'Directory'
       }, {
-        field: 'sql',
+        metaName: 'sql',
         visible: false,
-        title: 'Sql Query'
+        displayName: 'Sql Query'
       }, {
-        field: 'usertitle',
+        metaName: 'usertitle',
         visible: false,
-        title: 'User Account'
+        displayName: 'User Account'
       }, {
-        field: 'risk.info',
+        metaName: 'risk.info',
         visible: false,
-        title: 'Risk: Informational'
+        displayName: 'Risk: Informational'
       }, {
-        field: 'risk.suspicious',
+        metaName: 'risk.suspicious',
         visible: false,
-        title: 'Risk: Suspicious'
+        displayName: 'Risk: Suspicious'
       }, {
-        field: 'risk.warning',
+        metaName: 'risk.warning',
         visible: false,
-        title: 'Risk: Warning'
+        displayName: 'Risk: Warning'
       }, {
-        field: 'alert',
+        metaName: 'alert',
         visible: false,
-        title: 'Alerts'
+        displayName: 'Alerts'
       }, {
-        field: 'sourcefile',
+        metaName: 'sourcefile',
         visible: false,
-        title: 'Source File'
+        displayName: 'Source File'
       }, {
-        field: 'did',
+        metaName: 'did',
         visible: false,
-        title: 'Decoder Source'
+        displayName: 'Decoder Source'
       }
     ]),
-    ootb: true
+    contentType: 'OOTB'
   }, {
     id: 'THREAT',
     name: 'Threat Analysis',
     columns: BASE_COLUMNS.concat([
       {
-        field: 'threat.category',
-        title: 'Threat Category'
+        metaName: 'threat.category',
+        displayName: 'Threat Category'
       }, {
-        field: 'threat.desc',
-        title: 'Threat Description'
+        metaName: 'threat.desc',
+        displayName: 'Threat Description'
       }, {
-        field: 'threat.source',
-        title: 'Threat Source'
+        metaName: 'threat.source',
+        displayName: 'Threat Source'
       }, {
-        field: 'risk.info',
-        title: 'Risk: Informational'
+        metaName: 'risk.info',
+        displayName: 'Risk: Informational'
       }, {
-        field: 'risk.suspicious',
-        title: 'Risk: Suspicious'
+        metaName: 'risk.suspicious',
+        displayName: 'Risk: Suspicious'
       }, {
-        field: 'risk.warning',
-        title: 'Risk: Warning'
+        metaName: 'risk.warning',
+        displayName: 'Risk: Warning'
       }, {
-        field: 'alert',
-        title: 'Alerts'
+        metaName: 'alert',
+        displayName: 'Alerts'
       }, {
-        field: 'service',
-        title: 'Service Type'
+        metaName: 'service',
+        displayName: 'Service Type'
       }, {
-        field: 'orig_ip',
-        title: 'Originating IP Address'
+        metaName: 'orig_ip',
+        displayName: 'Originating IP Address'
       }, {
-        field: 'alias.ip',
-        title: 'IP Address Alias Record'
+        metaName: 'alias.ip',
+        displayName: 'IP Address Alias Record'
       }, {
-        field: 'ip.src',
-        title: 'Source IP Address'
+        metaName: 'ip.src',
+        displayName: 'Source IP Address'
       }, {
-        field: 'ip.dst',
-        title: 'Destination IP Address'
+        metaName: 'ip.dst',
+        displayName: 'Destination IP Address'
       }, {
-        field: 'ip.dstport',
-        title: 'Destination Port'
+        metaName: 'ip.dstport',
+        displayName: 'Destination Port'
       }, {
-        field: 'tcp.dstport',
+        metaName: 'tcp.dstport',
         visible: false,
-        title: 'TCP Destination Port'
+        displayName: 'TCP Destination Port'
       }, {
-        field: 'udp.srcport',
+        metaName: 'udp.srcport',
         visible: false,
-        title: 'UDP Source Port'
+        displayName: 'UDP Source Port'
       }, {
-        field: 'udp.dstport',
+        metaName: 'udp.dstport',
         visible: false,
-        title: 'UDP Target Port'
+        displayName: 'UDP Target Port'
       }, {
-        field: 'ip.proto',
+        metaName: 'ip.proto',
         visible: false,
-        title: 'IP Protocol'
+        displayName: 'IP Protocol'
       }, {
-        field: 'eth.type',
+        metaName: 'eth.type',
         visible: false,
-        title: 'Ethernet Protocol'
+        displayName: 'Ethernet Protocol'
       }, {
-        field: 'eth.src',
+        metaName: 'eth.src',
         visible: false,
-        title: 'Ethernet Source Address'
+        displayName: 'Ethernet Source Address'
       }, {
-        field: 'eth.dst',
+        metaName: 'eth.dst',
         visible: false,
-        title: 'Ethernet Destination Address'
+        displayName: 'Ethernet Destination Address'
       }, {
-        field: 'alias.host',
+        metaName: 'alias.host',
         visible: false,
-        title: 'Hostname Alias Record'
+        displayName: 'Hostname Alias Record'
       }, {
-        field: 'country.src',
+        metaName: 'country.src',
         visible: false,
-        title: 'Source Country'
+        displayName: 'Source Country'
       }, {
-        field: 'country.dst',
+        metaName: 'country.dst',
         visible: false,
-        title: 'Destination Country'
+        displayName: 'Destination Country'
       }, {
-        field: 'domain.dst',
+        metaName: 'domain.dst',
         visible: false,
-        title: 'Destination Domain'
+        displayName: 'Destination Domain'
       }, {
-        field: 'org.src',
+        metaName: 'org.src',
         visible: false,
-        title: 'Source Organization'
+        displayName: 'Source Organization'
       }, {
-        field: 'org.dst',
+        metaName: 'org.dst',
         visible: false,
-        title: 'Destination Organization'
+        displayName: 'Destination Organization'
       }, {
-        field: 'action',
+        metaName: 'action',
         visible: false,
-        title: 'Action Event'
+        displayName: 'Action Event'
       }, {
-        field: 'usertitle',
+        metaName: 'usertitle',
         visible: false,
-        title: 'User Account'
+        displayName: 'User Account'
       }, {
-        field: 'password',
+        metaName: 'password',
         visible: false,
-        title: 'Password'
+        displayName: 'Password'
       }, {
-        field: 'device.type',
+        metaName: 'device.type',
         visible: false,
-        title: 'Device Type'
+        displayName: 'Device Type'
       }, {
-        field: 'device.ip',
+        metaName: 'device.ip',
         visible: false,
-        title: 'Device IP'
+        displayName: 'Device IP'
       }, {
-        field: 'device.ipv6',
+        metaName: 'device.ipv6',
         visible: false,
-        title: 'Device IPv6'
+        displayName: 'Device IPv6'
       }, {
-        field: 'device.host',
+        metaName: 'device.host',
         visible: false,
-        title: 'Device Host'
+        displayName: 'Device Host'
       }, {
-        field: 'device.class',
+        metaName: 'device.class',
         visible: false,
-        title: 'Device Class'
+        displayName: 'Device Class'
       }, {
-        field: 'paddr',
+        metaName: 'paddr',
         visible: false,
-        title: 'Device Address'
+        displayName: 'Device Address'
       }, {
-        field: 'device.title',
+        metaName: 'device.title',
         visible: false,
-        title: 'Device Name'
+        displayName: 'Device Name'
       }, {
-        field: 'event.source',
+        metaName: 'event.source',
         visible: false,
-        title: 'Event Source'
+        displayName: 'Event Source'
       }, {
-        field: 'event.desc',
+        metaName: 'event.desc',
         visible: false,
-        title: 'Event Description'
+        displayName: 'Event Description'
       }, {
-        field: 'ec.subject',
+        metaName: 'ec.subject',
         visible: false,
-        title: 'Event Subject'
+        displayName: 'Event Subject'
       }, {
-        field: 'ec.activity',
+        metaName: 'ec.activity',
         visible: false,
-        title: 'Event Activity'
+        displayName: 'Event Activity'
       }, {
-        field: 'ec.theme',
+        metaName: 'ec.theme',
         visible: false,
-        title: 'Event Theme'
+        displayName: 'Event Theme'
       }, {
-        field: 'ec.outcome',
+        metaName: 'ec.outcome',
         visible: false,
-        title: 'Event Outcome'
+        displayName: 'Event Outcome'
       }, {
-        field: 'event.cat.title',
+        metaName: 'event.cat.title',
         visible: false,
-        title: 'Event Category Name'
+        displayName: 'Event Category Name'
       }, {
-        field: 'device.group',
+        metaName: 'device.group',
         visible: false,
-        title: 'Event Source Group'
+        displayName: 'Event Source Group'
       }, {
-        field: 'event.class',
+        metaName: 'event.class',
         visible: false,
-        title: 'Event Classification'
+        displayName: 'Event Classification'
       }, {
-        field: 'sql',
+        metaName: 'sql',
         visible: false,
-        title: 'Sql Query'
+        displayName: 'Sql Query'
       }, {
-        field: 'category',
+        metaName: 'category',
         visible: false,
-        title: 'Category'
+        displayName: 'Category'
       }, {
-        field: 'query',
+        metaName: 'query',
         visible: false,
-        title: 'Query'
+        displayName: 'Query'
       }, {
-        field: 'OS',
+        metaName: 'OS',
         visible: false,
-        title: 'Operating System'
+        displayName: 'Operating System'
       }, {
-        field: 'browser',
+        metaName: 'browser',
         visible: false,
-        title: 'Browsers'
+        displayName: 'Browsers'
       }, {
-        field: 'version',
+        metaName: 'version',
         visible: false,
-        title: 'Versions'
+        displayName: 'Versions'
       }, {
-        field: 'policy.title',
+        metaName: 'policy.title',
         visible: false,
-        title: 'Policyname'
+        displayName: 'Policyname'
       }, {
-        field: 'sourcefile',
+        metaName: 'sourcefile',
         visible: false,
-        title: 'Source File'
+        displayName: 'Source File'
       }, {
-        field: 'lc.cid',
+        metaName: 'lc.cid',
         visible: false,
-        title: 'Collector ID'
+        displayName: 'Collector ID'
       }, {
-        field: 'did',
+        metaName: 'did',
         visible: false,
-        title: 'Decoder Source'
+        displayName: 'Decoder Source'
       }
     ]),
-    ootb: true
+    contentType: 'OOTB'
   }, {
     id: 'WEB',
     name: 'Web Analysis',
     columns: BASE_COLUMNS.concat([
       {
-        field: 'service',
-        title: 'Service Type'
+        metaName: 'service',
+        displayName: 'Service Type'
       }, {
-        field: 'orig_ip',
-        title: 'Originating IP Address'
+        metaName: 'orig_ip',
+        displayName: 'Originating IP Address'
       }, {
-        field: 'alias.ip',
-        title: 'IP Address Alias Record'
+        metaName: 'alias.ip',
+        displayName: 'IP Address Alias Record'
       }, {
-        field: 'ip.src',
-        title: 'Source IP Address'
+        metaName: 'ip.src',
+        displayName: 'Source IP Address'
       }, {
-        field: 'ip.dst',
-        title: 'Destination IP Address'
+        metaName: 'ip.dst',
+        displayName: 'Destination IP Address'
       }, {
-        field: 'tcp.dstport',
-        title: 'TCP Destination Port'
+        metaName: 'tcp.dstport',
+        displayName: 'TCP Destination Port'
       }, {
-        field: 'alias.host',
-        title: 'Hostname Alias Record'
+        metaName: 'alias.host',
+        displayName: 'Hostname Alias Record'
       }, {
-        field: 'referer',
-        title: 'Referer'
+        metaName: 'referer',
+        displayName: 'Referer'
       }, {
-        field: 'country.src',
-        title: 'Source Country'
+        metaName: 'country.src',
+        displayName: 'Source Country'
       }, {
-        field: 'country.dst',
-        title: 'Destination Country'
+        metaName: 'country.dst',
+        displayName: 'Destination Country'
       }, {
-        field: 'org.src',
-        title: 'Source Organization'
+        metaName: 'org.src',
+        displayName: 'Source Organization'
       }, {
-        field: 'org.dst',
-        title: 'Destination Organization'
+        metaName: 'org.dst',
+        displayName: 'Destination Organization'
       }, {
-        field: 'domain.dst',
-        title: 'Destination Domain'
+        metaName: 'domain.dst',
+        displayName: 'Destination Domain'
       }, {
-        field: 'client',
+        metaName: 'client',
         visible: false,
-        title: 'Client Application'
+        displayName: 'Client Application'
       }, {
-        field: 'server',
+        metaName: 'server',
         visible: false,
-        title: 'Server Application'
+        displayName: 'Server Application'
       }, {
-        field: 'content',
+        metaName: 'content',
         visible: false,
-        title: 'Content Type'
+        displayName: 'Content Type'
       }, {
-        field: 'action',
+        metaName: 'action',
         visible: false,
-        title: 'Action Event'
+        displayName: 'Action Event'
       }, {
-        field: 'filetitle',
+        metaName: 'filetitle',
         visible: false,
-        title: 'Filename'
+        displayName: 'Filename'
       }, {
-        field: 'usertitle',
+        metaName: 'usertitle',
         visible: false,
-        title: 'User Account'
+        displayName: 'User Account'
       }, {
-        field: 'password',
+        metaName: 'password',
         visible: false,
-        title: 'Password'
+        displayName: 'Password'
       }, {
-        field: 'ssl.ca',
+        metaName: 'ssl.ca',
         visible: false,
-        title: 'SSL CA'
+        displayName: 'SSL CA'
       }, {
-        field: 'ssl.subject',
+        metaName: 'ssl.subject',
         visible: false,
-        title: 'SSL Subject'
+        displayName: 'SSL Subject'
       }, {
-        field: 'error',
+        metaName: 'error',
         visible: false,
-        title: 'Error'
+        displayName: 'Error'
       }, {
-        field: 'query',
+        metaName: 'query',
         visible: false,
-        title: 'Query'
+        displayName: 'Query'
       }, {
-        field: 'directory',
+        metaName: 'directory',
         visible: false,
-        title: 'Directory'
+        displayName: 'Directory'
       }, {
-        field: 'browser',
+        metaName: 'browser',
         visible: false,
-        title: 'Browsers'
+        displayName: 'Browsers'
       }, {
-        field: 'category',
+        metaName: 'category',
         visible: false,
-        title: 'Category'
+        displayName: 'Category'
       }, {
-        field: 'policy.title',
+        metaName: 'policy.title',
         visible: false,
-        title: 'Policyname'
+        displayName: 'Policyname'
       }, {
-        field: 'device.type',
+        metaName: 'device.type',
         visible: false,
-        title: 'Device Type'
+        displayName: 'Device Type'
       }, {
-        field: 'device.ip',
+        metaName: 'device.ip',
         visible: false,
-        title: 'Device IP'
+        displayName: 'Device IP'
       }, {
-        field: 'device.ipv6',
+        metaName: 'device.ipv6',
         visible: false,
-        title: 'Device IPv6'
+        displayName: 'Device IPv6'
       }, {
-        field: 'device.host',
+        metaName: 'device.host',
         visible: false,
-        title: 'Device Host'
+        displayName: 'Device Host'
       }, {
-        field: 'device.class',
+        metaName: 'device.class',
         visible: false,
-        title: 'Device Class'
+        displayName: 'Device Class'
       }, {
-        field: 'paddr',
+        metaName: 'paddr',
         visible: false,
-        title: 'Device Address'
+        displayName: 'Device Address'
       }, {
-        field: 'device.title',
+        metaName: 'device.title',
         visible: false,
-        title: 'Device Name'
+        displayName: 'Device Name'
       }, {
-        field: 'event.source',
+        metaName: 'event.source',
         visible: false,
-        title: 'Event Source'
+        displayName: 'Event Source'
       }, {
-        field: 'event.desc',
+        metaName: 'event.desc',
         visible: false,
-        title: 'Event Description'
+        displayName: 'Event Description'
       }, {
-        field: 'ec.subject',
+        metaName: 'ec.subject',
         visible: false,
-        title: 'Event Subject'
+        displayName: 'Event Subject'
       }, {
-        field: 'ec.activity',
+        metaName: 'ec.activity',
         visible: false,
-        title: 'Event Activity'
+        displayName: 'Event Activity'
       }, {
-        field: 'ec.theme',
+        metaName: 'ec.theme',
         visible: false,
-        title: 'Event Theme'
+        displayName: 'Event Theme'
       }, {
-        field: 'ec.outcome',
+        metaName: 'ec.outcome',
         visible: false,
-        title: 'Event Outcome'
+        displayName: 'Event Outcome'
       }, {
-        field: 'event.cat.title',
+        metaName: 'event.cat.title',
         visible: false,
-        title: 'Event Category Name'
+        displayName: 'Event Category Name'
       }, {
-        field: 'device.group',
+        metaName: 'device.group',
         visible: false,
-        title: 'Event Source Group'
+        displayName: 'Event Source Group'
       }, {
-        field: 'event.class',
+        metaName: 'event.class',
         visible: false,
-        title: 'Event Classification'
+        displayName: 'Event Classification'
       }, {
-        field: 'risk.info',
+        metaName: 'risk.info',
         visible: false,
-        title: 'Risk: Informational'
+        displayName: 'Risk: Informational'
       }, {
-        field: 'risk.suspicious',
+        metaName: 'risk.suspicious',
         visible: false,
-        title: 'Risk: Suspicious'
+        displayName: 'Risk: Suspicious'
       }, {
-        field: 'risk.warning',
+        metaName: 'risk.warning',
         visible: false,
-        title: 'Risk: Warning'
+        displayName: 'Risk: Warning'
       }, {
-        field: 'alert',
+        metaName: 'alert',
         visible: false,
-        title: 'Alert'
+        displayName: 'Alert'
       }, {
-        field: 'sourcefile',
+        metaName: 'sourcefile',
         visible: false,
-        title: 'Source File'
+        displayName: 'Source File'
       }, {
-        field: 'lc.cid',
+        metaName: 'lc.cid',
         visible: false,
-        title: 'Collector ID'
+        displayName: 'Collector ID'
       }, {
-        field: 'did',
+        metaName: 'did',
         visible: false,
-        title: 'Decoder Source'
+        displayName: 'Decoder Source'
       }
     ]),
-    ootb: true
+    contentType: 'OOTB'
   }, {
     name: 'Endpoint Analysis',
     id: 'ENDPOINT',
     columns: BASE_COLUMNS.concat([
       {
-        field: 'device.type',
-        title: 'Device Type'
+        metaName: 'device.type',
+        displayName: 'Device Type'
       }, {
-        field: 'timezone',
-        title: 'Time Zone'
+        metaName: 'timezone',
+        displayName: 'Time Zone'
       }, {
-        field: 'category',
-        title: 'Category'
+        metaName: 'category',
+        displayName: 'Category'
       }, {
-        field: 'alias.host',
-        title: 'Hostname Aliases'
+        metaName: 'alias.host',
+        displayName: 'Hostname Aliases'
       }, {
-        field: 'ip.dst',
-        title: 'Destination IP address'
+        metaName: 'ip.dst',
+        displayName: 'Destination IP address'
       }, {
-        field: 'action',
-        title: 'Action Event'
+        metaName: 'action',
+        displayName: 'Action Event'
       }, {
-        field: 'filename',
-        title: 'Filename'
+        metaName: 'filename',
+        displayName: 'Filename'
       }, {
-        field: 'filename.size',
-        title: 'File Size'
+        metaName: 'filename.size',
+        displayName: 'File Size'
       }, {
-        field: 'filename.src',
-        title: 'Filename Source'
+        metaName: 'filename.src',
+        displayName: 'Filename Source'
       }, {
-        field: 'filename.dst',
-        title: 'Filename Destination'
+        metaName: 'filename.dst',
+        displayName: 'Filename Destination'
       }, {
-        field: 'file.vendor',
-        title: 'File Vendor'
+        metaName: 'file.vendor',
+        displayName: 'File Vendor'
       }, {
-        field: 'file.entropy',
-        title: 'File Entropy'
+        metaName: 'file.entropy',
+        displayName: 'File Entropy'
       }, {
-        field: 'extension',
-        title: 'Extension'
+        metaName: 'extension',
+        displayName: 'Extension'
       }, {
-        field: 'checksum',
+        metaName: 'checksum',
         visible: false,
-        title: 'Checksum'
+        displayName: 'Checksum'
       }, {
-        field: 'directory',
+        metaName: 'directory',
         visible: false,
-        title: 'Directory'
+        displayName: 'Directory'
       }, {
-        field: 'username',
+        metaName: 'username',
         visible: false,
-        title: 'User Account'
+        displayName: 'User Account'
       }, {
-        field: 'task.name',
+        metaName: 'task.name',
         visible: false,
-        title: 'Task Name'
+        displayName: 'Task Name'
       }, {
-        field: 'owner',
+        metaName: 'owner',
         visible: false,
-        title: 'Owner'
+        displayName: 'Owner'
       }, {
-        field: 'domain',
+        metaName: 'domain',
         visible: false,
-        title: 'Domain'
+        displayName: 'Domain'
       }, {
-        field: 'dn',
+        metaName: 'dn',
         visible: false,
-        title: 'Domain OU'
+        displayName: 'Domain OU'
       }, {
-        field: 'OS',
+        metaName: 'OS',
         visible: false,
-        title: 'Operating System'
+        displayName: 'Operating System'
       }, {
-        field: 'host.role',
+        metaName: 'host.role',
         visible: false,
-        title: 'Host Role'
+        displayName: 'Host Role'
       }, {
-        field: 'version',
+        metaName: 'version',
         visible: false,
-        title: 'Versions'
+        displayName: 'Versions'
       }, {
-        field: 'client',
+        metaName: 'client',
         visible: false,
-        title: 'Client Application'
+        displayName: 'Client Application'
       }, {
-        field: 'cert.subject',
+        metaName: 'cert.subject',
         visible: false,
-        title: 'Certificate Subject'
+        displayName: 'Certificate Subject'
       }, {
-        field: 'cert.common',
+        metaName: 'cert.common',
         visible: false,
-        title: 'Certificate Common Name'
+        displayName: 'Certificate Common Name'
       }, {
-        field: 'cert.checksum',
+        metaName: 'cert.checksum',
         visible: false,
-        title: 'Certificate Checksum'
+        displayName: 'Certificate Checksum'
       }, {
-        field: 'cert.ca',
+        metaName: 'cert.ca',
         visible: false,
-        title: 'Certificate Authority'
+        displayName: 'Certificate Authority'
       }, {
-        field: 'bytes.src',
+        metaName: 'bytes.src',
         visible: false,
-        title: 'Bytes Sent'
+        displayName: 'Bytes Sent'
       }, {
-        field: 'rbytes',
+        metaName: 'rbytes',
         visible: false,
-        title: 'Bytes Received'
+        displayName: 'Bytes Received'
       }
     ]),
-    ootb: true
+    contentType: 'OOTB'
   }
 ];

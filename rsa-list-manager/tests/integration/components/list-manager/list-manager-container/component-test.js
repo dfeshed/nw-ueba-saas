@@ -114,7 +114,7 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
     // reopen dropdown menu
     await click(`${buttonGroupSelector} button`);
-    assert.notOk(find('.ootb-indicator'), 'column for ootb indicators not rendered');
+    assert.notOk(find('.is-editable-indicator'), 'column for is-editable indicators not rendered');
   });
 
   test('list-manager-container component renders caption without selected item, renders icons indicating if ootb or not',
@@ -122,7 +122,7 @@ module('Integration | Component | list-manager-container', function(hooks) {
       assert.expect(12);
       new ReduxDataHelper(setState).listName(listName1).build();
       this.set('listLocation', listLocation1);
-      this.set('list', [{ id: 1, name: 'a', ootb: true }, { id: 2, name: 'b', ootb: false }]);
+      this.set('list', [{ id: 1, name: 'a', isEditable: false }, { id: 2, name: 'b', isEditable: true }]);
       this.set('handleSelection', () => {
         assert.ok(true, 'Action will be called on click of any item if there is no such thing as selected item');
       });
@@ -144,11 +144,11 @@ module('Integration | Component | list-manager-container', function(hooks) {
 
       // reopen dropdown
       await click(`${buttonGroupSelector} button`);
-      assert.ok(find('.ootb-indicator'), 'column for ootb indicators rendered');
+      assert.ok(find('.is-editable-indicator'), 'column for is-editable indicators rendered');
 
-      const options = findAll(`${listItems} a .ootb-icon-wrapper i`);
-      assert.ok(options[0].classList.contains('rsa-icon-lock-close-1-lined'), 'ootb icon rendered');
-      assert.ok(options[1].classList.contains('rsa-icon-settings-1-lined'), 'non-ootb icon rendered');
+      const options = findAll(`${listItems} a .is-editable-icon-wrapper i`);
+      assert.ok(options[0].classList.contains('rsa-icon-lock-close-1-lined'), 'non-editable icon rendered');
+      assert.ok(options[1].classList.contains('rsa-icon-settings-1-lined'), 'editable icon rendered');
     });
 
   test('Use Up Arrow Key to traverse through items', async function(assert) {

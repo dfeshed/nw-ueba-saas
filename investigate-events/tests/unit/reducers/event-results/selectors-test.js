@@ -29,11 +29,20 @@ import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import CONFIG from 'investigate-events/reducers/investigate/config';
 import EventColumnGroups from '../../../data/subscriptions/column-group/findAll/data';
+import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 
 module('Unit | Selectors | event-results', function(hooks) {
+
+  let mappedColumnGroups;
+
   setupTest(hooks);
+
   hooks.beforeEach(function() {
     initialize(this.owner);
+  });
+
+  hooks.before(function() {
+    mappedColumnGroups = mapColumnGroupsForEventTable(EventColumnGroups);
   });
 
   const preferenceData = {
@@ -176,7 +185,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           selectedColumnGroup: 'EMAIL'
         },
         columnGroup: {
-          columnGroups: EventColumnGroups,
+          columnGroups: mappedColumnGroups,
           globalPreferences: {
             dateFormat: 'dateFormat',
             timeFormat: 'timeFormat',
@@ -257,7 +266,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           }
         },
         columnGroup: {
-          columnGroups: EventColumnGroups
+          columnGroups: mappedColumnGroups
         }
       }
     };
@@ -293,7 +302,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           }
         },
         columnGroup: {
-          columnGroups: EventColumnGroups
+          columnGroups: mappedColumnGroups
         }
       }
     };
@@ -328,7 +337,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           }
         },
         columnGroup: {
-          columnGroups: EventColumnGroups
+          columnGroups: mappedColumnGroups
         }
       }
     };
@@ -364,7 +373,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           }
         },
         columnGroup: {
-          columnGroups: EventColumnGroups
+          columnGroups: mappedColumnGroups
         }
       }
     };
@@ -400,7 +409,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           }
         },
         columnGroup: {
-          columnGroups: EventColumnGroups
+          columnGroups: mappedColumnGroups
         }
       }
     };
@@ -435,7 +444,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           }
         },
         columnGroup: {
-          columnGroups: EventColumnGroups
+          columnGroups: mappedColumnGroups
         }
       }
     };

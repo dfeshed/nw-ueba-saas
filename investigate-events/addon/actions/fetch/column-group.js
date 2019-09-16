@@ -32,36 +32,35 @@ export const apiDeleteColumnGroup = (id) => {
 /**
  *
  * @param {string} name
- * @param {object[]} fields
+ * @param {object[]} columns
  */
-export const apiCreateColumnGroup = (name, fields) => {
-  return _createOrUpdateColumnGroup(name, fields);
+export const apiCreateColumnGroup = (name, columns) => {
+  return _createOrUpdateColumnGroup(name, columns);
 };
 
 /**
  *
  * @param {string} id id of col group to update
  * @param {string} name
- * @param {object[]} fields
+ * @param {object[]} columns
  */
-export const apiUpdateColumnGroup = (name, fields, id) => {
-  return _createOrUpdateColumnGroup(name, fields, id);
+export const apiUpdateColumnGroup = (name, columns, id) => {
+  return _createOrUpdateColumnGroup(name, columns, id);
 };
 
 /**
  *
  * @param {null|*} id id of col group to update, or null to create a new col group
  * @param {*} name
- * @param {*} fields
+ * @param {*} columns
  */
-const _createOrUpdateColumnGroup = (name, fields, id = null) => {
+const _createOrUpdateColumnGroup = (name, columns, id = null) => {
   const request = lookup('service:request');
   const query = {
     'columnGroup': {
       id,
       name,
-      'ootb': false,
-      fields
+      columns
     }
   };
 

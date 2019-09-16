@@ -5,11 +5,17 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { find, findAll, render } from '@ember/test-helpers';
 import EventColumnGroups from '../../../../../../data/subscriptions/column-group/findAll/data';
+import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 
 module('Integration | Component | Column Group Details', function(hooks) {
+  let mappedColumnGroups;
 
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
+  });
+
+  hooks.before(function() {
+    mappedColumnGroups = mapColumnGroupsForEventTable(EventColumnGroups);
   });
 
   hooks.beforeEach(function() {
@@ -22,9 +28,10 @@ module('Integration | Component | Column Group Details', function(hooks) {
     return arr.reduce((a, c) => a + c.textContent.trim().replace(/\s+/g, ''), '');
   };
 
+
   test('columnGroup details should render column details', async function(assert) {
 
-    this.set('item', EventColumnGroups[3]);
+    this.set('item', mappedColumnGroups[3]);
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details columnGroup=item}}`);
 
     assert.ok(find('.column-group-details'), 'Column Group Details rendered correctly');

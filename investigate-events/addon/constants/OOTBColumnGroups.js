@@ -1,17 +1,17 @@
 export const BASE_COLUMNS = [
-  { field: 'time', title: 'Collection Time', width: 175 },
-  { field: 'medium', title: 'Type' }
+  { metaName: 'time', displayName: 'Collection Time', width: 175 },
+  { metaName: 'medium', displayName: 'Type' }
 ];
 
 export default [
   {
     id: 'SUMMARY',
     name: 'Summary List',
-    ootb: true,
+    isEditable: false,
     columns: BASE_COLUMNS.concat([
-      { field: 'custom.theme', title: 'Theme' },
-      { field: 'size', title: 'Size' },
-      { field: 'custom.meta-summary', title: 'Summary', width: 2000 }
+      { metaName: 'custom.theme', displayName: 'Theme' },
+      { metaName: 'size', displayName: 'Size' },
+      { metaName: 'custom.meta-summary', displayName: 'Summary', width: 2000 }
     ])
   }
 ];

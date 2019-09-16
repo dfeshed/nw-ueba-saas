@@ -16,6 +16,7 @@ const eventResultsData = [
 ];
 
 module('Integration | Component | search-controls', function(hooks) {
+
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });

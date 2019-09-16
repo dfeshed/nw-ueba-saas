@@ -34,9 +34,9 @@ const ItemList = Component.extend({
   },
 
   @computed('list')
-  hasOOTBIndicators(list) {
-    const ootbIndicatedItems = list.filter((item) => typeof item.ootb !== 'undefined');
-    return ootbIndicatedItems.length > 0;
+  hasIsEditableIndicators(list) {
+    const editableIndicatedItems = list.filter((item) => typeof item.isEditable !== 'undefined');
+    return editableIndicatedItems.length > 0;
   },
 
   @computed('listName')

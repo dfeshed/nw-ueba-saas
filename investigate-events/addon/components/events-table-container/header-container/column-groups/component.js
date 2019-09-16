@@ -50,19 +50,19 @@ const ColumnGroups = Component.extend({
         Nehal to replace with values set by user
       */
       const name = `TEST-${Date.now().toString().substring(5)}`;
-      const fields = [{
-        field: 'time',
-        title: 'Collection Time',
+      const columns = [{
+        metaName: 'time',
+        displayName: 'Collection Time',
         position: 0,
         width: 175
       },
       {
-        'field': 'service',
-        'title': 'Service Name',
-        'position': 1,
-        'width': 100
+        metaName: 'service',
+        displayName: 'Service Name',
+        position: 1,
+        width: 100
       }];
-      this.send('createColumnGroup', { name, fields });
+      this.send('createColumnGroup', { name, columns });
     },
     deleteOneColumnGroup(columnGroup) {
       if (!columnGroup.ootb) {
@@ -75,20 +75,20 @@ const ColumnGroups = Component.extend({
         Nehal to replace with values set by user
       */
       const name = `UPDATED-${Date.now().toString().substring(5)}`;
-      const fields = [{
-        field: 'time',
-        title: 'Collection Time',
+      const columns = [{
+        metaName: 'time',
+        displayName: 'Collection Time',
         position: 0,
         width: 175
       },
       {
-        'field': 'service',
-        'title': 'Service Name',
-        'position': 1,
-        'width': 100
+        metaName: 'service',
+        displayName: 'Service Name',
+        position: 1,
+        width: 100
       }];
 
-      this.send('updateColumnGroup', { name, fields, id: columnGroup.id });
+      this.send('updateColumnGroup', { name, columns, id: columnGroup.id });
     }
   }
 });

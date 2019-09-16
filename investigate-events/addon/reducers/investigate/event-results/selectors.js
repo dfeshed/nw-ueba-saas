@@ -448,7 +448,7 @@ export const searchMatches = createSelector(
 
     for (let dataLoopIndex = 0; dataLoopIndex < data.length; dataLoopIndex++) {
       let prunedFields;
-      if (columnGroup.includes('SUMMARY') && columnGroupObj.ootb) {
+      if (columnGroup.includes('SUMMARY') && !columnGroupObj.isEditable) {
         // SUMMARY groups include composite fields
         // search all content
         prunedFields = Object.entries(data[dataLoopIndex]);

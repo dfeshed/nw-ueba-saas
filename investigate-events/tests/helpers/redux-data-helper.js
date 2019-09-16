@@ -1,6 +1,7 @@
 import Immutable from 'seamless-immutable';
 import CONFIG from 'investigate-events/reducers/investigate/config';
 import EventColumnGroups from '../data/subscriptions/column-group/findAll/data';
+import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 
 export const DEFAULT_LANGUAGES = [
   { count: 0, format: 'Text', metaName: 'a', flags: 2, displayName: 'A', formattedName: 'a (A)' },
@@ -377,7 +378,8 @@ export default class DataHelper {
   }
 
   columnGroups(columnGroups = EventColumnGroups) {
-    _set(this.state, 'columnGroup.columnGroups', columnGroups);
+    const mappedColumnGroups = mapColumnGroupsForEventTable(columnGroups);
+    _set(this.state, 'columnGroup.columnGroups', mappedColumnGroups);
     return this;
   }
 

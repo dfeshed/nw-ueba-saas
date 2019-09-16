@@ -6,6 +6,7 @@ import sort from 'fast-sort';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
+import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 
 const _initialState = Immutable.from({
   columnGroups: null,
@@ -34,15 +35,21 @@ const _fixColumnWidth = (columnGroup, fieldsAndWidths) => {
 
 export default handleActions({
   [ACTION_TYPES.COLUMNS_RETRIEVE]: (state, action) => {
+    const mappedColumnGroups = mapColumnGroupsForEventTable(EventColumnGroups);
+
     sort(EventColumnGroups).by([{ asc: (group) => group.name.toUpperCase() }]);
     return handle(state, action, {
-      failure: (s) => s.merge({ columnGroups: EventColumnGroups }),
+      failure: (s) => s.merge({ columnGroups: mappedColumnGroups }),
       success: (s) => {
-        const columnGroups = action.payload.data;
+
+        const columnGroups = mapColumnGroupsForEventTable(action.payload.data);
+
         if (columnGroups) {
           // Want to fix certain sizes to certain columns
           // if those columns exist
+
           columnGroups.forEach((cg) => {
+
             if (cg.columns) {
               // meta-summary goes by a few names
               _fixColumnWidth(cg.columns, [
@@ -58,7 +65,7 @@ export default handleActions({
         }
 
         // if none returned, return the default set of column groups
-        return s.set({ columnGroups: EventColumnGroups });
+        return s.set({ columnGroups: mappedColumnGroups });
       }
     });
   },
@@ -79,6 +86,7 @@ export default handleActions({
       }),
       success: (s) => {
         const createdColumnGroup = action.payload.data;
+        // TODO REFACTOR mapForEventsTable, calculate ootb
         // Want to fix certain sizes to certain columns
         // if those columns exist
         // meta-summary goes by a few names
@@ -143,6 +151,7 @@ export default handleActions({
       }),
       success: (s) => {
         const updatedColumnGroup = action.payload.data;
+        // TODO REFACTOR mapForEventsTable, calculate ootb
         // Want to fix certain sizes to certain columns
         // if those columns exist
         // meta-summary goes by a few names

@@ -1,13 +1,13 @@
 <a {{action itemSelection item}} title="{{item.name}}">
-  {{#if hasOOTBIndicators}}
-    {{#rsa-form-button class='ootb-icon-wrapper' isIconOnly=true}}
-      {{rsa-icon style='lined' class='ootb-indicator' name=iconName}}
+  {{#if hasIsEditableIndicators}}
+    {{#rsa-form-button class='is-editable-icon-wrapper' isIconOnly=true}}
+      {{rsa-icon style='lined' class='is-editable-indicator' name=iconName}}
     {{/rsa-form-button}}
   {{/if}}
   {{yield item}}
 </a>
 {{#rsa-form-button class='edit-icon' defaultAction=(action 'editDetails')}}
-  {{! pencil-write-2 for non-ootb TODO edit}}
+  {{! pencil-write-2 for editable TODO edit}}
   {{rsa-icon style='lined' name='information-circle'}}
 {{/rsa-form-button}}
 

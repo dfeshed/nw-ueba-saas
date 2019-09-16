@@ -30,7 +30,7 @@ The list manager can be used in your template as follows:
 
 ## Inputs
 * `listName`, *String ending with s(plural)*, __required__, Caption for List.
-* `list`, *Array of objects with name(required), id(required), ootb(boolean, optional) parameters*, __required__, The list to be rendered.
+* `list`, *Array of objects with name(required), id(required), isEditable(boolean, optional) parameters*, __required__, The list to be rendered.
 * `selectedItem`, *Object*,__optional__, The option that needs to be displayed with listName for the caption and highlighed as selected in the list
 * `helpId`, *Object*,__optional__, Object with moduleId & topicId
 
