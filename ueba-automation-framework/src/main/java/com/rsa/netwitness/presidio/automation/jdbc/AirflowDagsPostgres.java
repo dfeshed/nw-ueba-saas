@@ -37,8 +37,8 @@ public class AirflowDagsPostgres {
 
     private Optional<Instant> getMaxExecutionDate(String dagId) {
         String SQL_QUERY = "SELECT MAX(execution_date) AS max_execution_date" +
-                "FROM " + DAG_RUN_TABLE +
-                "WHERE dag_id = '" + dagId + "';";
+                " FROM " + DAG_RUN_TABLE +
+                " WHERE dag_id = '" + dagId + "';";
 
         try (Connection con = PostgresAirflowConnection.getConnection();
              PreparedStatement pst = con.prepareStatement(SQL_QUERY);
