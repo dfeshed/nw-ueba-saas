@@ -151,4 +151,52 @@ module('Integration | Component | host detail host-status', function(hooks) {
     assert.equal(findAll('.pivot-to-investigate').length, 1, 'Analyze events present');
     assert.equal(findAll('.host_more_actions').length, 1, 'more actions present');
   });
+
+  test('If Machine is isolated', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hostOverview({
+        machineIdentity: { machineOsType: 'mac', machineName: 'XYZ' },
+        agentStatus: {
+          agentId: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+          lastSeenTime: '2019-05-09T09:22:09.713+0000',
+          scanStatus: 'scanPending',
+          isolationStatus: {
+            isolated: true
+          }
+        }
+      }).build();
+    await render(hbs`{{host-detail/header/host-status}}`);
+    assert.equal(findAll('.isolation-pill').length, 1, 'Isolation pill present');
+  });
+
+  test('If Machine is not isolated', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hostOverview({
+        machineIdentity: { machineOsType: 'mac', machineName: 'XYZ' },
+        agentStatus: {
+          agentId: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+          lastSeenTime: '2019-05-09T09:22:09.713+0000',
+          scanStatus: 'scanPending',
+          isolationStatus: {
+            isolated: false
+          }
+        }
+      }).build();
+    await render(hbs`{{host-detail/header/host-status}}`);
+    assert.equal(findAll('.isolation-pill').length, 0, 'Isolation pill not present');
+  });
+
+  test('If isolation information is not present', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hostOverview({
+        machineIdentity: { machineOsType: 'mac', machineName: 'XYZ' },
+        agentStatus: {
+          agentId: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+          lastSeenTime: '2019-05-09T09:22:09.713+0000',
+          scanStatus: 'scanPending'
+        }
+      }).build();
+    await render(hbs`{{host-detail/header/host-status}}`);
+    assert.equal(findAll('.isolation-pill').length, 0, 'Isolation pill not present');
+  });
 });

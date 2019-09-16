@@ -3095,8 +3095,9 @@ export default {
         releaseHost: 'Release Host',
         save: 'Save'
       },
+      isolationPill: 'ISOLATED',
       isolate: {
-        descriptionText: 'Network Isolation blocks the host from connecting to the network. All attempted network connections are monitored and reported to the endpoint server.',
+        descriptionText: 'Network Isolation blocks the host from connecting to the network. All attempted network connections are monitored and reported to the Endpoint Server.',
         checkboxLabel: 'Add your IPs to the Exclusion List',
         checkboxDescription: 'Default IPs excluded from isolation include Endpoint Server, Relay Server, DNS, DHCP, Gateways, 0.0.0.0, 255.255.255.255.',
         exclusionListPlaceholder: 'Enter one or more valid IPv4/IPv6 addresses. Use commas to separate multiple values.',
@@ -3950,7 +3951,7 @@ export default {
     flash: {
       fileDownloadRequestSent: 'Files are set for download. Check the "Downloaded" column for status.',
       genericFileDownloadRequestSent: 'Files are set for download. Check the "Downloads" tab for status.',
-      hostUnavailable: 'File cannot be downloaded as there is no host associated with this file.'
+      hostUnavailable: 'File cannot be downloaded as the host associated with this file cannot be found.'
     },
     detailsColumns: {
       fileName: 'Filename',

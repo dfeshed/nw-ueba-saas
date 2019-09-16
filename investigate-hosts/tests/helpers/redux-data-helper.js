@@ -231,6 +231,10 @@ export default class DataHelper {
     _set(this.state, 'overview.hostOverview.machineIdentity.machineOsType', value);
     return this;
   }
+  isolationStatus(value) {
+    _set(this.state, 'overview.hostOverview.agentStatus.isolationStatus', value);
+    return this;
+  }
   registryDiscrepancies(value) {
     _set(this.state, 'overview.hostDetails.machine', value);
     return this;

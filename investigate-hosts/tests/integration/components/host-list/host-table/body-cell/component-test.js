@@ -116,4 +116,67 @@ module('Integration | Component | host list/host table/body cell', function(hook
     await render(hbs`{{host-list/host-table/body-cell column=column item=item}}`);
     assert.equal(findAll('.rar-icon').length, 0, 'RAR icon not present');
   });
+
+  test('should render isolation pill', async function(assert) {
+    const column = EmberObject.create({ field: 'machineIdentity.machineName' });
+
+    this.set('column', column);
+    this.set('item', { agentStatus: {
+      agentId: '93B4DD24',
+      lastSeenTime: '2019-04-04T08:51:14.734+0000',
+      scanStatus: 'Idle',
+      lastSeen: 'EndpointServer',
+      isolationStatus: {
+        isolated: true
+      }
+    },
+    isAgentRoaming: false,
+    id: '93B4DD24',
+    machine: { agentVersion: '11.1.0.0' },
+    groupPolicy: { managed: true }
+    });
+    await render(hbs`{{host-list/host-table/body-cell column=column item=item}}`);
+    assert.equal(findAll('.isolation-pill').length, 1, 'Isolation pill present');
+  });
+
+  test('should not render isolation pill', async function(assert) {
+    const column = EmberObject.create({ field: 'machineIdentity.machineName' });
+
+    this.set('column', column);
+    this.set('item', { agentStatus: {
+      agentId: '93B4DD24',
+      lastSeenTime: '2019-04-04T08:51:14.734+0000',
+      scanStatus: 'Idle',
+      lastSeen: 'EndpointServer',
+      isolationStatus: {
+        isolated: false
+      }
+    },
+    isAgentRoaming: false,
+    id: '93B4DD24',
+    machine: { agentVersion: '11.1.0.0' },
+    groupPolicy: { managed: true }
+    });
+    await render(hbs`{{host-list/host-table/body-cell column=column item=item}}`);
+    assert.equal(findAll('.isolation-pill').length, 0, 'Isolation pill not present');
+  });
+
+  test('should not render isolation pill when isolation info is not present', async function(assert) {
+    const column = EmberObject.create({ field: 'machineIdentity.machineName' });
+
+    this.set('column', column);
+    this.set('item', { agentStatus: {
+      agentId: '93B4DD24',
+      lastSeenTime: '2019-04-04T08:51:14.734+0000',
+      scanStatus: 'Idle',
+      lastSeen: 'EndpointServer'
+    },
+    isAgentRoaming: false,
+    id: '93B4DD24',
+    machine: { agentVersion: '11.1.0.0' },
+    groupPolicy: { managed: true }
+    });
+    await render(hbs`{{host-list/host-table/body-cell column=column item=item}}`);
+    assert.equal(findAll('.isolation-pill').length, 0, 'Isolation pill not present');
+  });
 });

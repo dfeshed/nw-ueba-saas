@@ -44,7 +44,7 @@ const HostDetailsMoreActions = Component.extend({
       let subNavItem = {};
       const isMFTEnabled = this.get('isMFTEnabled');
 
-      if (isMFTEnabled.editExclusionList) {
+      if (isMFTEnabled.isIsolated) {
         subNavItem = {
           modalName: 'release',
           name: 'investigateHosts.networkIsolation.menu.releaseFromIsolation',
@@ -59,6 +59,22 @@ const HostDetailsMoreActions = Component.extend({
           isDisabled: false
         };
       }
+      // Separating network isolation as an additional check will be added for this in future.
+      const networkIsolation = {
+        panelId: 'panel3',
+        divider: true,
+        name: 'investigateHosts.networkIsolation.menu.networkIsolation',
+        buttonId: 'isolation-button',
+        subItems: [
+          subNavItem,
+          {
+            modalName: 'edit',
+            name: 'investigateHosts.networkIsolation.menu.edit',
+            buttonId: 'isolation-button',
+            isDisabled: !isMFTEnabled.isIsolated
+          }
+        ]
+      };
 
       const moreActionOptions = [
         {
@@ -72,31 +88,16 @@ const HostDetailsMoreActions = Component.extend({
           buttonId: 'export-button'
         }
       ];
-      const mftAndIsolation = [
-        {
-          panelId: 'panel3',
-          divider: true,
-          name: 'investigateHosts.networkIsolation.menu.networkIsolation',
-          buttonId: 'isolation-button',
-          subItems: [
-            subNavItem,
-            {
-              modalName: 'edit',
-              name: 'investigateHosts.networkIsolation.menu.edit',
-              buttonId: 'isolation-button',
-              isDisabled: !isMFTEnabled.editExclusionList
-            }
-          ]
-        },
+
+      // Windows specific actions, MFT, Isolation and System Dump
+      const windowsOsActions = [
+        networkIsolation,
         {
           panelId: 'panel4',
           divider: true,
           name: 'investigateShared.endpoint.fileActions.downloadMFT',
           buttonId: 'downloadMFT-button'
-        }
-      ];
-
-      const systemMemoryDump = [
+        },
         {
           panelId: 'panel5',
           name: 'investigateShared.endpoint.fileActions.downloadSystemDump',
@@ -105,7 +106,7 @@ const HostDetailsMoreActions = Component.extend({
       ];
 
       if (isMFTEnabled.isDisplayed && this.get('accessControl.endpointCanManageFiles')) {
-        moreActionOptions.push(...mftAndIsolation, ...systemMemoryDump);
+        moreActionOptions.push(...windowsOsActions);
       }
       return moreActionOptions;
     },

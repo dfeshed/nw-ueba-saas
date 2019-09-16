@@ -11,6 +11,10 @@
   <div class='host-title-os-wrapper'>
     <div class='host-name' title={{hostName}}>{{hostName}}</div>
     <div class='osType'>{{hostDetails.machineIdentity.machineOsType}}</div>
+    {{#if isIsolated}}
+      {{utils/isolation-pill}}
+    {{/if}}
+
   </div>
   <div class='host-title_action-wrapper'>
     {{#pivot-to-investigate

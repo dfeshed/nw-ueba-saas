@@ -437,16 +437,17 @@ export const isAgentMigrated = createSelector(
 );
 
 export const mftDownloadButtonStatusDetails = createSelector(
-  [_hostDetails, isAgentMigrated],
-  ({ machineIdentity = {}, groupPolicy = {} }, isAgentMigrated) => {
-    // Temp key editExclusionList, needs to check if machine has been isolated and exclusion list can be edited.
-    const { editExclusionList = false } = groupPolicy ? groupPolicy : { editExclusionList: false };
+  [_hostOverview, isAgentMigrated],
+  (hostOverview, isAgentMigrated) => {
+    const { machineIdentity = {}, agentStatus: { isolationStatus } } = hostOverview.agentStatus ? hostOverview : { agentStatus: {} };
+    // Isolated Key is needed to check if machine has been isolated and exclusion list can be edited.
+    const isIsolated = isolationStatus?.isolated;
     const { machineOsType, agentMode, agentVersion } = machineIdentity;
     let isMFTEnabled = false;
     if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion)) {
       isMFTEnabled = true;
     }
-    return { isDisplayed: isMFTEnabled, isAgentMigrated, editExclusionList };
+    return { isDisplayed: isMFTEnabled, isAgentMigrated, isIsolated };
   }
 );
 

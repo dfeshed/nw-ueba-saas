@@ -15,7 +15,8 @@ const stateToComputed = (state) => ({
   hostName: hostName(state),
   scanTime: state.endpoint.detailsInput.scanTime,
   agentId: state.endpoint.detailsInput.agentId,
-  isAgentRoaming: getRARStatus(state)
+  isAgentRoaming: getRARStatus(state),
+  isIsolated: state.endpoint.overview.hostOverview?.agentStatus?.isolationStatus?.isolated
 });
 
 const dispatchToActions = {

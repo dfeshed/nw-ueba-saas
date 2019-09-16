@@ -13,6 +13,7 @@
     .osType {
       @include rsa-font(default);
       font-weight: 300;
+      display: inline-block;
     }
   }
   .host-title_action-wrapper {

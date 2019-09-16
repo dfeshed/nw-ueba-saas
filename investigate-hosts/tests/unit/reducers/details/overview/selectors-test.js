@@ -756,7 +756,12 @@ module('Unit | Selectors | overview', function(hooks) {
     const result = mftDownloadButtonStatusDetails(Immutable.from({
       endpoint: {
         overview: {
-          hostDetails: {
+          hostOverview: {
+            agentStatus: {
+              isolationStatus: {
+                isolated: true
+              }
+            },
             machineIdentity: {
               machineOsType: 'windows',
               agentMode: 'advanced',
@@ -766,14 +771,19 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: true, editExclusionList: false, isAgentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: true, isAgentMigrated: true, isIsolated: true });
   });
 
   test('mftDownloadButtonStatusDetails when agentVersion is wrong', function(assert) {
     const result = mftDownloadButtonStatusDetails(Immutable.from({
       endpoint: {
         overview: {
-          hostDetails: {
+          hostOverview: {
+            agentStatus: {
+              isolationStatus: {
+                isolated: false
+              }
+            },
             machineIdentity: {
               machineOsType: 'windows',
               agentMode: 'advanced',
@@ -783,14 +793,19 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false, editExclusionList: false, isAgentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: false, isIsolated: false, isAgentMigrated: true });
   });
 
   test('mftDownloadButtonStatusDetails when machineOsType is wrong', function(assert) {
     const result = mftDownloadButtonStatusDetails(Immutable.from({
       endpoint: {
         overview: {
-          hostDetails: {
+          hostOverview: {
+            agentStatus: {
+              isolationStatus: {
+                isolated: false
+              }
+            },
             machineIdentity: {
               machineOsType: 'mac',
               agentMode: 'advanced',
@@ -800,14 +815,19 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false, editExclusionList: false, isAgentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: false, isIsolated: false, isAgentMigrated: true });
   });
 
   test('mftDownloadButtonStatusDetails when agentMode is wrong', function(assert) {
     const result = mftDownloadButtonStatusDetails(Immutable.from({
       endpoint: {
         overview: {
-          hostDetails: {
+          hostOverview: {
+            agentStatus: {
+              isolationStatus: {
+                isolated: false
+              }
+            },
             machineIdentity: {
               machineOsType: 'windows',
               agentMode: 'insights',
@@ -817,7 +837,29 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false, editExclusionList: false, isAgentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: false, isIsolated: false, isAgentMigrated: true });
+  });
+
+  test('mftDownloadButtonStatusDetails when isolation is true', function(assert) {
+    const result = mftDownloadButtonStatusDetails(Immutable.from({
+      endpoint: {
+        overview: {
+          hostOverview: {
+            agentStatus: {
+              isolationStatus: {
+                isolated: true
+              }
+            },
+            machineIdentity: {
+              machineOsType: 'windows',
+              agentMode: 'insights',
+              agentVersion: '11.4.0.0'
+            }
+          }
+        }
+      }
+    }));
+    assert.deepEqual(result, { isDisplayed: false, isIsolated: true, isAgentMigrated: true });
   });
 
   test('getRARStatus', function(assert) {

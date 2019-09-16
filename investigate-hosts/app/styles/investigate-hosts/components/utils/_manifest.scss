@@ -29,3 +29,21 @@
     }
   }
 }
+
+.isolation-pill {
+  display: inline-block;
+  border: 1px solid red;
+  border-radius: 3px;
+  padding: 0px 3px;
+  @include rsa-font(default, small);
+  color: red;
+  margin-left: rsa-whitespace(less);
+  line-height: 1rem;
+  font-size: 0.65rem;
+}
+.machine-name-holder{
+  .isolation-pill{
+    float: right;
+    margin-top: 4px;
+  }
+}

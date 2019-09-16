@@ -14,7 +14,10 @@ const data = {
   agentStatus: {
     agentId: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
     lastSeenTime: '2019-05-09T09:22:09.713+0000',
-    scanStatus: 'completed'
+    scanStatus: 'completed',
+    isolationStatus: {
+      isolated: false
+    }
   },
   machineIdentity: {
     id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
@@ -43,7 +46,7 @@ module('Integration | Component | host detail more-actions', function(hooks) {
 
   test('test for More Actions', async function(assert) {
     new ReduxDataHelper(setState)
-      .host(data)
+      .hostOverview(data)
       .isJsonExportCompleted(true)
       .build();
     await render(hbs `{{host-detail/header/more-actions}}`);
@@ -135,7 +138,7 @@ module('Integration | Component | host detail more-actions', function(hooks) {
     };
 
     new ReduxDataHelper(setState)
-      .host(state)
+      .hostOverview(state)
       .build();
 
     await render(hbs `{{host-detail/header/more-actions}}`);
@@ -175,7 +178,7 @@ module('Integration | Component | host detail more-actions', function(hooks) {
     };
 
     new ReduxDataHelper(setState)
-      .host(state)
+      .hostOverview(state)
       .build();
 
     await render(hbs `{{host-detail/header/more-actions}}`);
@@ -290,10 +293,14 @@ module('Integration | Component | host detail more-actions', function(hooks) {
   });
 
   test('test for machine isolation modal', async function(assert) {
+    const isolationStatus = {
+      isolated: false
+    };
     assert.expect(2);
     new ReduxDataHelper(setState)
       .host(data)
       .hostOverview(data)
+      .isolationStatus(isolationStatus)
       .isJsonExportCompleted(true)
       .isSnapshotsAvailable(true)
       .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
@@ -310,8 +317,72 @@ module('Integration | Component | host detail more-actions', function(hooks) {
     await click(find('.machine-isolation-selector li button'));
 
     return settled().then(() => {
-      assert.equal(findAll('#modalDestination .machine-isolation').length, 1, 'isolation modal loaded');
+      assert.equal(findAll('#modalDestination .machine-isolation .isolation-modal-content').length, 1, 'isolation modal loaded');
     });
 
   });
+
+  test('test for Release isolation modal', async function(assert) {
+    const isolationStatus = {
+      isolated: true
+    };
+    assert.expect(3);
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .isolationStatus(isolationStatus)
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+
+    await render(hbs `
+      <div id='modalDestination'></div>
+      {{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+
+    await triggerEvent(find('.host-details_dropdown-action-list li.isolate-button button'), 'mouseover');
+
+    assert.equal(findAll('.machine-isolation').length, 0, 'isolation modal not loaded');
+    await click(find('.machine-isolation-selector li button'));
+
+    return settled().then(() => {
+      assert.equal(findAll('#modalDestination .machine-isolation .isolation-modal-content').length, 0, 'isolation modal loaded');
+      assert.equal(findAll('#modalDestination .machine-isolation .release-modal-content').length, 1, 'isolation modal loaded');
+    });
+
+  });
+
+  test('test for Edit isolation modal', async function(assert) {
+    const isolationStatus = {
+      isolated: true
+    };
+    assert.expect(4);
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .isolationStatus(isolationStatus)
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+
+    await render(hbs `
+      <div id='modalDestination'></div>
+      {{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+
+    await triggerEvent(find('.host-details_dropdown-action-list li.isolate-button button'), 'mouseover');
+
+    assert.equal(findAll('.machine-isolation').length, 0, 'isolation modal not loaded');
+    await click(find('.machine-isolation-selector li:last-child button'));
+
+    return settled().then(() => {
+      assert.equal(findAll('#modalDestination .machine-isolation .isolation-modal-content').length, 0, 'isolation modal not loaded');
+      assert.equal(findAll('#modalDestination .machine-isolation .release-modal-content').length, 0, 'Release from isolation modal not loaded');
+      assert.equal(findAll('#modalDestination .machine-isolation .edit-modal-content').length, 1, 'edit exclusion list modal loaded');
+    });
+
+  });
+
 });
