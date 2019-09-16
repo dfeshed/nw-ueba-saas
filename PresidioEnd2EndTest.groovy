@@ -76,7 +76,7 @@ pipeline {
             }
             steps {
                 runSuiteXmlFile('e2e/E2E_Tests.xml')
-                if (params.LIVE_STATE_ON) { sh "sudo systemctl start airflow-scheduler" }
+                startAirflowScheduler()
             }
         }
     }
@@ -179,7 +179,12 @@ def runSuiteXmlFile(String suiteXmlFile) {
         sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
     }
 }
+def startAirflowScheduler(){
+    if (params.LIVE_STATE_ON) {
+        sh "sudo systemctl start airflow-scheduler"
+    }
 
+}
 def copyScripts() {
     sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/env_properties_manager.sh /home/presidio/"
     sh "sudo bash /home/presidio/env_properties_manager.sh --create"
