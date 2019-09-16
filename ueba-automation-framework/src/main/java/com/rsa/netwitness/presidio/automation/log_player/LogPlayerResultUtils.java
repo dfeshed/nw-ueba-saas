@@ -1,7 +1,7 @@
 package com.rsa.netwitness.presidio.automation.log_player;
 
 import com.rsa.netwitness.presidio.automation.config.EnvironmentProperties;
-import com.rsa.netwitness.presidio.automation.ssh.client.SshExecutor;
+import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -28,5 +28,5 @@ public class LogPlayerResultUtils {
     };
 
     public static Function<String,Long> runLogPlayerAndGetRecordsCountResult = folderPath ->
-            getLogPlayerSentRecords.apply(SshExecutor.executeOnUebaHost(logPlayerSendDirCmd.apply(folderPath)).output.get(0));
+            getLogPlayerSentRecords.apply( new SshHelper().uebaHostExec().run(logPlayerSendDirCmd.apply(folderPath)).output.get(0));
 }

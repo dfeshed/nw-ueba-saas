@@ -4,12 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.rsa.netwitness.presidio.automation.config.AutomationConf;
-import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.domain.output.*;
 import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
-import com.rsa.netwitness.presidio.automation.ssh.TerminalCommandsSshUtils;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
+import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import com.rsa.netwitness.presidio.automation.utils.output.ExportDataFromMongoToJson;
 import com.rsa.netwitness.presidio.automation.utils.output.ScoredEntityNormalizedUsernameConverter;
 import org.apache.http.client.HttpClient;
@@ -33,6 +32,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.rsa.netwitness.presidio.automation.domain.config.Consts.PRESIDIO_DIR;
+import static com.rsa.netwitness.presidio.automation.domain.config.Consts.PRESIDIO_OUTPUT;
 import static com.rsa.netwitness.presidio.automation.file.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,6 +46,7 @@ public class OutputTestManager {
 
     private ExportDataFromMongoToJson exportToJSON;
     private ScoredEntityNormalizedUsernameConverter converter = new ScoredEntityNormalizedUsernameConverter();
+    private SshHelper sshHelper = new SshHelper();
 
     public List<ScoredEntityEventNormalizedUsernameStoredRecored> convertToStoredRecordsDaily(List<ScoredEntityEventNormalizedUsernameDailyStoredData> entities){
         return converter.convertDaily(entities);
@@ -60,8 +62,8 @@ public class OutputTestManager {
 
     }
 
-    private boolean sendProcessCommand(String command, String execPath, String... args){
-        SshResponse proc = TerminalCommandsSshUtils.runCommand(command,true, execPath, args);
+    private boolean sendProcessCommand(String command, String execPath, String... args) {
+        SshResponse proc = sshHelper.uebaHostExec().setUserDir(execPath).run(command, args);
         return proc.exitCode == 0;
     }
 
@@ -78,9 +80,9 @@ public class OutputTestManager {
         // store the data in the collections for data source
         String logPath = "/tmp/presidio-output-processor_run_" + smart_record_conf_name + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
-        SshResponse p = TerminalCommandsSshUtils.runCommand(
-                Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR, "run" , "--start_date " + startDate,
-                "--end_date " + endDate , "--smart_record_conf_name " + smart_record_conf_name + " " + " > " + logPath);
+        SshResponse p = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(PRESIDIO_OUTPUT,
+                "run", "--start_date " + startDate, "--end_date " + endDate, "--smart_record_conf_name " + smart_record_conf_name
+                        + " " + " > " + logPath);
 
         printLogIfError(logPath);
         assertThat(p.exitCode)
@@ -93,10 +95,10 @@ public class OutputTestManager {
         // store the data in the collections for data source
         String logPath = "/tmp/presidio-output_recalc_user_score_" + entity + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
-        SshResponse p = TerminalCommandsSshUtils.runCommand(Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR,
-                "recalculate-entity-score", "--start_date " + startDate, "--end_date " + endDate ,
-                " --fixed_duration_strategy 86400.0 " , " --smart_record_conf_name " + entity + "_hourly ",
-                " --entity_type " + entity + " > " + logPath);
+        SshResponse p = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(PRESIDIO_OUTPUT,
+                "recalculate-entity-score", "--start_date " + startDate, "--end_date " + endDate,
+                " --fixed_duration_strategy 86400.0 ", " --smart_record_conf_name " + entity + "_hourly ", " --entity_type " + entity
+                        + " > " + logPath);
 
         printLogIfError(logPath);
         assertThat(p.exitCode)

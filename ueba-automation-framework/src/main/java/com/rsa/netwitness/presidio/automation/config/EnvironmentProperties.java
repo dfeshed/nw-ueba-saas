@@ -1,7 +1,7 @@
 package com.rsa.netwitness.presidio.automation.config;
 
-import com.rsa.netwitness.presidio.automation.ssh.client.SshExecutor;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
+import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import com.rsa.netwitness.presidio.automation.utils.common.Lazy;
 import org.slf4j.LoggerFactory;
 
@@ -85,9 +85,7 @@ public enum EnvironmentProperties {
     }
 
     private void resolve() throws IOException {
-        SshResponse sshResponse = SshExecutor.executeOnUebaHostRoot("sh env_properties_manager.sh --create",
-                true, REMOTE_SCRIPT_PATH);
-
+        SshResponse sshResponse =  new SshHelper().uebaHostRootExec().setUserDir(REMOTE_SCRIPT_PATH).run("sh env_properties_manager.sh --create");
         assertThat(sshResponse.exitCode).isEqualTo(0);
         List<String> output = sshResponse.output.stream().filter(e -> e.contains("=")).sorted().collect(Collectors.toList());
         Files.write(ENV_PROPERTIES_PATH, output, StandardOpenOption.CREATE);

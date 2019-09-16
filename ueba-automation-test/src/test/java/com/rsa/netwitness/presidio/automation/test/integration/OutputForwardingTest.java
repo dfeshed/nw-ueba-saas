@@ -6,8 +6,8 @@ import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEven
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
-import com.rsa.netwitness.presidio.automation.ssh.client.SshExecutor;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
+import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.assertj.core.util.Lists;
@@ -47,8 +47,7 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
     private Instant endTime = Instant.now();
     private Instant startTime = Instant.now().minus(20, DAYS);
     private List<String> alertsToForward = Lists.newArrayList();
-
-
+    private SshHelper sshHelper = new SshHelper();
 
 
     @Parameters({"historical_days_back", "anomaly_day"})
@@ -72,7 +71,7 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
     @Ignore("Authentication issue")
     public void ja3_forwarded_indicators_count_equals_to_rest_result() {
         String cmd = getForwarderCmd("ja3");
-        SshResponse response = SshExecutor.executeOnUebaHost(cmd);
+        SshResponse response = sshHelper.uebaHostExec().run(cmd);
         String errorMessage = "Script execution failure.\n[" + cmd + "]\n"
                 + String.join("\n", response.output);
 
@@ -85,12 +84,10 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
     }
 
 
-
-
     @Ignore
     public void user_id_forwarded_indicators_count_equals_to_rest_result() {
         String cmd = getForwarderCmd("userId");
-        SshResponse response = SshExecutor.executeOnUebaHost(cmd);
+        SshResponse response = sshHelper.uebaHostExec().run(cmd);
         boolean scriptSucceeded = isScriptSucceeded(cmd, response);
         assertThat(scriptSucceeded).isTrue();
 
@@ -100,14 +97,10 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
     @Ignore
     public void ssl_subject_forwarded_indicators_count_equals_to_rest_result() {
         String cmd = getForwarderCmd("sslSubject");
-        SshResponse response = SshExecutor.executeOnUebaHost(cmd);
+        SshResponse response = sshHelper.uebaHostExec().run(cmd);
         boolean scriptSucceeded = isScriptSucceeded(cmd, response);
         assertThat(scriptSucceeded).isTrue();
     }
-
-
-
-
 
 
     private int actualIndicatorsCount(SshResponse response) {
@@ -154,8 +147,7 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
 
     private boolean isScriptSucceeded(String cmd, SshResponse response) {
         Predicate<SshResponse> logContainsError = res ->
-                res.output.stream().anyMatch(e -> e.contains(" ERROR "))
-                        || !res.error.isEmpty();
+                res.output.stream().anyMatch(e -> e.contains(" ERROR "));
 
         if (response.exitCode != 0 || logContainsError.test(response)) {
             LOGGER.error("[presidio-output-forwarder.jar]: error exit code return.");

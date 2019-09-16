@@ -3,8 +3,8 @@ package com.rsa.netwitness.presidio.automation.test_managers;
 //TODO: resolve? TESTS SHOULD NOT DEPEND ON product packages, except SDKs!
 
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
-import com.rsa.netwitness.presidio.automation.ssh.TerminalCommandsSshUtils;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
+import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import com.rsa.netwitness.presidio.automation.utils.input.inserter.InputInserter;
 import com.rsa.netwitness.presidio.automation.utils.input.inserter.InputInserterFactory;
 import fortscale.common.general.Schema;
@@ -68,7 +68,7 @@ public class InputTestManager {
         String logPath = "/tmp/presidio-input_run_" + dataSourceType + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
         // process the data in the input_XXXXXX_raw_events collection
-        SshResponse p = TerminalCommandsSshUtils.runCommand(PRESIDIO_INPUT_APP, true, Consts.PRESIDIO_DIR,
+        SshResponse p = new SshHelper().uebaHostExec().setUserDir(Consts.PRESIDIO_DIR).run(PRESIDIO_INPUT_APP,
                 "run", "--schema " + dataSourceType, "--start_date " + startDate, "--end_date " + endDate,
                 "> " + logPath);
 
