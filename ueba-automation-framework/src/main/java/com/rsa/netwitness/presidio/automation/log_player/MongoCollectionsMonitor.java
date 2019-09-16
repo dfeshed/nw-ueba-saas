@@ -81,7 +81,7 @@ public class MongoCollectionsMonitor {
 
         AirflowDagsPostgres airflowDagsPostgres = new AirflowDagsPostgres();
 
-        while (dataProcessingStillInProgress && !airflowDagsPostgres.allHourlyEntityFlowsExeeded(hourlyEntityFlowsEndDate)) {
+        while (dataProcessingStillInProgress && !airflowDagsPostgres.allHourlyEntityFlowsExceeded(hourlyEntityFlowsEndDate)) {
             LOGGER.info("Next check: " + Instant.now().plus(TASK_STATUS_CHECK_FREQUENCY, TIME_UNITS_CHRONO.get()));
             TIME_UNITS.sleep(TASK_STATUS_CHECK_FREQUENCY);
 
@@ -96,7 +96,7 @@ public class MongoCollectionsMonitor {
                 .reduce(Boolean::logicalAnd).orElse(false);
 
         LOGGER.info("waitForResult has finished with " + allCollectionsHaveFinalDaySamples);
-        return allCollectionsHaveFinalDaySamples && airflowDagsPostgres.allHourlyEntityFlowsExeeded(hourlyEntityFlowsEndDate);
+        return allCollectionsHaveFinalDaySamples && airflowDagsPostgres.allHourlyEntityFlowsExceeded(hourlyEntityFlowsEndDate);
     }
     
 }

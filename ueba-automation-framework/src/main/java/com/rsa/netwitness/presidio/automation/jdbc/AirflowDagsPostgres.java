@@ -13,7 +13,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.rsa.netwitness.presidio.automation.jdbc.model.DagRunTable.DAG_RUN_TABLE;
-import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.util.Lists.list;
 
@@ -22,13 +21,15 @@ public class AirflowDagsPostgres {
 
     private List<String> hourlyEntityFlowNames = list("ja3_hourly_ueba_flow", "sslSubject_hourly_ueba_flow", "userId_hourly_ueba_flow");
 
-    public boolean allHourlyEntityFlowsExeeded(Instant endDate) {
+    public boolean allHourlyEntityFlowsExceeded(Instant endDate) {
         List<Optional<Instant>> maxDates = hourlyEntityFlowNames.stream().sequential()
                 .map(this::getMaxExecutionDate)
                 .collect(Collectors.toList());
 
-        LOGGER.info("Dag ids: [" + String.join(", ", hourlyEntityFlowNames) + "]"
-                +  "\nMax execution_dates: [" + maxDates.stream().map(Optional::toString).collect(joining(", ")) + "]");
+        for (int i = 0; i < hourlyEntityFlowNames.size() ; i++) {
+            LOGGER.info("{dagId: MAX(execution_date)} = {" + hourlyEntityFlowNames.get(i) + ": " + maxDates.get(i), "}");
+        }
+
         LOGGER.info("All execution_dates should be after endDate=" + endDate);
 
         return maxDates.stream().map(e -> e.isPresent() && e.get().isAfter(endDate)).reduce(Boolean::logicalAnd).orElse(false);
