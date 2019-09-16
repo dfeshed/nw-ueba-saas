@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.rsa.netwitness.presidio.automation.ssh.helper.ServerDetails;
 import org.elasticsearch.common.collect.EvictingQueue;
 import org.slf4j.LoggerFactory;
 

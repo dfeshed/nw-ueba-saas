@@ -1,4 +1,6 @@
-package com.rsa.netwitness.presidio.automation.ssh;
+package com.rsa.netwitness.presidio.automation.file;
+
+import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 
 import java.util.regex.Matcher;
 
@@ -14,7 +16,6 @@ public class SedSshUtil {
     public static void replaceTextInFile(String filePath, String executePath, String pattern, String replacement ){
         replacement = replacement.replaceAll("/", Matcher.quoteReplacement("\\/"));
         String hostCommand = "sed -i 's/" + pattern + "/" + replacement + "/g' " + filePath;
-        TerminalCommandsSshUtils.runCommand(hostCommand, true, executePath);
+        new SshHelper().uebaHostExec().setUserDir(executePath).run(hostCommand);
     }
-
 }

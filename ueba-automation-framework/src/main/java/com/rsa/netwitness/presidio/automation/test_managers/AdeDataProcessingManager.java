@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
-import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
+import static com.rsa.netwitness.presidio.automation.file.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
 

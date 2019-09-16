@@ -33,7 +33,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
+import static com.rsa.netwitness.presidio.automation.file.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OutputTestManager {

@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.automation.ssh.client;
 
-import java.nio.file.Path;
+import com.rsa.netwitness.presidio.automation.ssh.helper.ServerDetails;
+
 import java.util.Objects;
 
 class SshCommandExecutorBuilder {
@@ -8,7 +9,6 @@ class SshCommandExecutorBuilder {
     private String command;
     private String userDir = "/var/netwitness/presidio/batch/";
     private boolean verbose = false;
-    private Path logPath = null;
 
     SshCommandExecutorBuilder setServerDetails(ServerDetails serverDetails) {
         this.serverDetails = serverDetails;

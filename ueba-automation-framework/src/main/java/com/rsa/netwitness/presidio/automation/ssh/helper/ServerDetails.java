@@ -1,8 +1,8 @@
-package com.rsa.netwitness.presidio.automation.ssh.client;
+package com.rsa.netwitness.presidio.automation.ssh.helper;
 
 import static com.rsa.netwitness.presidio.automation.config.AutomationConf.*;
 
-class ServerDetails {
+public class ServerDetails {
     public String host;
     public String user;
     public String password;

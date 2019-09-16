@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.rsa.netwitness.presidio.automation.config.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
-import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
+import static com.rsa.netwitness.presidio.automation.file.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdapterTestManager {

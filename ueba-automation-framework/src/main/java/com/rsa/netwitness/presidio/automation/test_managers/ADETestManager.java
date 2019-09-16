@@ -25,7 +25,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
+import static com.rsa.netwitness.presidio.automation.file.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

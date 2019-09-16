@@ -1,16 +1,15 @@
 package com.rsa.netwitness.presidio.automation.ssh.client;
 
+import com.rsa.netwitness.presidio.automation.ssh.helper.ServerDetails;
 import org.assertj.core.util.Lists;
 
 import java.util.List;
 
 public abstract class SshExecHelper extends SshCommandExecutorBuilder {
 
-    private final ServerDetails serverDetails;
     private SshCommandExecutorBuilder sshBuilder;
 
     protected SshExecHelper(ServerDetails serverDetails) {
-        this.serverDetails = serverDetails;
         sshBuilder = new SshCommandExecutorBuilder().setServerDetails(serverDetails);
     }
 
@@ -31,15 +30,15 @@ public abstract class SshExecHelper extends SshCommandExecutorBuilder {
     }
 
 
-    public SshResponse exec(String command) {
+    public SshResponse run(String command) {
          return sshBuilder.setCommand(command).build().execute();
     }
 
-    public SshResponse exec() {
+    public SshResponse run() {
         return sshBuilder.build().execute();
     }
 
-    public SshResponse exec(String command, String... args) {
+    public SshResponse run(String command, String... args) {
         final String CMD = arrangeArgs(Lists.list(args), command);
         return sshBuilder.setCommand(CMD).build().execute();
     }

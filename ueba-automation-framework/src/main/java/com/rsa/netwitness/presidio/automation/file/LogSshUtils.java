@@ -1,7 +1,7 @@
-package com.rsa.netwitness.presidio.automation.ssh;
+package com.rsa.netwitness.presidio.automation.file;
 
-import com.rsa.netwitness.presidio.automation.ssh.client.SshExecutor;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
+import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
@@ -15,7 +15,7 @@ public class LogSshUtils {
     }
 
     public static void printLogIfError(String logPath, int limitLines) {
-        SshResponse response = SshExecutor.executeOnUebaHost("tail -n " + limitLines + " " + logPath);
+        SshResponse response = new SshHelper().uebaHostExec().run("tail -n " + limitLines + " " + logPath);
 
         boolean errorFlag = Objects.requireNonNull(response.output)
                 .stream()
