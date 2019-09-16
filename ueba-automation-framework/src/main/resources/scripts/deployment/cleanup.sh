@@ -10,6 +10,7 @@ NEW_RPM_VERSION=`echo $NEW_RPM_VERSION | sed 's/[\.]//g'`
 cleanningAirflowState(){
 #echo "%%%%%%%%%%%% Cleanning Airflow State %%%%%%%%%%%%"
 rm -f /etc/netwitness/presidio/configserver/configurations/airflow/workflows-default.json
+rm -f /etc/netwitness/presidio/configserver/configurations/application-presidio.json
 source /etc/sysconfig/airflow
 export AIRFLOW_VENV
 export OWB_ALLOW_NON_FIPS
