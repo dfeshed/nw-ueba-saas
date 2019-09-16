@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import presidio.sdk.api.domain.transformedevents.TlsTransformedEvent;
-import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -54,12 +53,7 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
 
     @JsonIgnore
     @Autowired
-    private PresidioInputPersistencyService inputPersistencyService;
-
-    @JsonIgnore
-    @Autowired
     private ISessionSplitStoreCache sessionSplitStoreCache;
-
 
     @JsonCreator
     public SessionSplitTransformer(@JsonProperty("name") String name,

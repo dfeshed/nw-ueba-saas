@@ -31,9 +31,6 @@ public class SessionSplitTransformerTest extends TransformerJsonTest implements 
     private ApplicationContext applicationContext;
 
     @MockBean
-    private PresidioInputPersistencyService inputPersistencyService;
-
-    @MockBean
     private ISessionSplitStoreCache sessionSplitStoreCache;
 
     @Test
@@ -44,8 +41,6 @@ public class SessionSplitTransformerTest extends TransformerJsonTest implements 
         JSONObject jsonObject = new JSONObject(objectMapper.writeValueAsString(tlsTransformedEvent));
         jsonObject.put("id", "12345");
         TlsTransformedEvent tlsTransformedEventWithId = objectMapper.readValue(jsonObject.toString(), TlsTransformedEvent.class);
-        Mockito.when(inputPersistencyService.count(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-                .thenReturn(0L);
         applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(sessionSplitTransformer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
         transformEvent(tlsTransformedEventWithId, sessionSplitTransformer, TlsTransformedEvent.class);
     }
