@@ -17,6 +17,7 @@ export const mapColumnGroupsForEventTable = (eventColumnGroups) => {
           return {
             field: col.metaName,
             title: col.displayName,
+            position: col.position,
             visible: col.visible,
             width: col.width
           };
