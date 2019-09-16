@@ -3347,8 +3347,9 @@ export default {
         agentStatus: {
           lastSeenTime: 'Agent Not Seen Since'
         },
-        showOnlyManageAgents: 'Show Only Managed Agents',
-        showOnlyRARAgents: 'Show Only Roaming Agents',
+        showOnlyManageAgents: 'Managed Agents',
+        showOnlyRARAgents: 'Roaming Agents',
+        showOnlyIsolatedHosts: 'Isolated Hosts',
         securityConfig: {
           allowAccessDataSourceDomain: 'Allow Access DataSource Domain',
           allowDisplayMixedContent: 'Allow Display Mixed Content',

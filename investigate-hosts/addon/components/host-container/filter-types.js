@@ -17,6 +17,12 @@ const FILTER_TYPES = [
     type: 'list'
   },
   {
+    'name': 'agentStatus.isolationStatus.isolated',
+    'hideLabel': true,
+    'listOptions': [ { name: true, label: 'investigateHosts.hosts.filters.showOnlyIsolatedHosts' }],
+    type: 'list'
+  },
+  {
     'name': 'score',
     'label': 'investigateHosts.hosts.column.score',
     'step': 1,

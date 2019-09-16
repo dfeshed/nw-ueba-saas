@@ -143,7 +143,7 @@ module('Integration | Component | host-container', function(hooks) {
 
   test('RAR filter is rendered', async function(assert) {
     await render(hbs`{{host-container}}`);
-    assert.equal(find('.filter-controls:nth-child(2) .list-filter-content').textContent.trim(), 'Show Only Roaming Agents', 'Roaming agent filter is present');
+    assert.equal(find('.filter-controls:nth-child(2) .list-filter-content').textContent.trim(), 'Roaming Agents', 'Roaming agent filter is present');
   });
 
   test('on selecting the row right panel is open/close', async function(assert) {
