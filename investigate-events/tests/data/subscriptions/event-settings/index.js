@@ -11,7 +11,7 @@ export default {
 
     return {
       code: 0,
-      data: { calculatedEventLimit: getRandomIntInclusive(100, 100000) }
+      data: { calculatedEventLimit: getRandomIntInclusive(100, 100000), legacyEventsEnabled: true }
     };
   }
 };

@@ -195,8 +195,8 @@ export default {
     },
     defaultInvestigatePage: {
       label: 'Default Investigate View',
-      events: 'Events',
-      eventAnalysis: 'Event Analysis',
+      events: 'Legacy Events',
+      eventAnalysis: 'Events',
       malware: 'Malware Analysis',
       navigate: 'Navigate',
       hosts: 'Hosts',
@@ -279,11 +279,11 @@ export default {
       },
       views: {
         textView: 'Text View',
-        text: 'Text Analysis',
-        packet: 'Packet Analysis',
-        file: 'File Analysis',
+        text: 'Text',
+        packet: 'Packet',
+        file: 'File',
         web: 'Web',
-        mail: 'Email Analysis'
+        mail: 'Email'
       }
     },
     meta: {
@@ -368,7 +368,7 @@ export default {
       headerSignature: 'Interesting Bytes',
       isDownloading: 'Downloading...',
       noHexData: 'No HEX data was generated during content reconstruction.',
-      noPayload: 'The event has no payload and the Display Payloads Only option is selected. To view the Packet Analysis for the event, disable the Display Payloads Only option.',
+      noPayload: 'The event has no payload and the Display Payloads Only option is selected. To view the Packet analysis for the event, disable the Display Payloads Only option.',
       payloadToggleLabel: 'Display Payloads Only',
       payloadToggleTitle: 'Removes packet headers & footers from display',
       renderingMore: 'Showing more...',
@@ -731,7 +731,7 @@ export default {
     services: {
       loading: 'Loading Services',
       noData: 'The selected service does not have any data',
-      coreServiceNotUpdated: 'Event Analysis requires all core services to be NetWitness {{minVersion}} or greater. Connecting versions prior to {{minVersion}} with an {{version}} NetWitness server results in limited functionality (see "Investigate in Mixed Mode" in the Physical Host Upgrade Guide).',
+      coreServiceNotUpdated: 'Events requires all core services to be NetWitness {{minVersion}} or greater. Connecting versions prior to {{minVersion}} with an {{version}} NetWitness server results in limited functionality (see "Investigate in Mixed Mode" in the Physical Host Upgrade Guide).',
       empty: {
         title: 'Unable to find services.',
         description: 'No Brokers, Concentrators, or other services were detected. This may be due to a configuration or connectivity issue.'
@@ -1096,7 +1096,7 @@ export default {
       error: 'User Entity Behavior Analytics is unavailable at this time. Please try again later.'
     },
     investigation: {
-      eventAnalysis: 'Event Analysis',
+      eventAnalysis: 'Events',
       selectedEventsThresoldTooltip: 'A maximum of 1000 events will be added to incident at once'
     },
     errorPage: {
@@ -1754,7 +1754,7 @@ export default {
     assignee: {
       none: '(Unassigned)'
     },
-    mixedModeMessage: 'Event Analysis is not available from the Respond view because it requires all event sources to be on RSA NetWitness Platform version {{minVersion}} or greater.'
+    mixedModeMessage: 'Events is not available from the Respond view because it requires all event sources to be on RSA NetWitness Platform version {{minVersion}} or greater.'
   },
   context: {
     noData: 'No matching context is available',
@@ -2168,7 +2168,7 @@ export default {
     'investigate-events': {
       panelTitle: 'Event Preferences',
       triggerTip: 'Open/Hide Event Preferences',
-      defaultEventView: 'Default Event Analysis View',
+      defaultEventView: 'Default Events View',
       defaultLogFormat: 'Default Log Format',
       defaultPacketFormat: 'Default Network Format',
       defaultMetaFormat: 'Default Meta Format',
@@ -2183,10 +2183,10 @@ export default {
       PAYLOAD1: 'Download Request Payload',
       PAYLOAD2: 'Download Response Payload',
       reconView: {
-        FILE: 'File Analysis',
-        TEXT: 'Text Analysis',
-        PACKET: 'Packet Analysis',
-        MAIL: 'Email Analysis'
+        FILE: 'File',
+        TEXT: 'Text',
+        PACKET: 'Packet',
+        MAIL: 'Email'
       },
       queryTimeFormat: 'Time format for query',
       DB: 'Database Time',
@@ -3946,7 +3946,7 @@ export default {
     pivotToInvestigate: {
       title: 'Select Service',
       buttonText: 'Navigate',
-      buttonText2: 'Event Analysis',
+      buttonText2: 'Events',
       iconTitle: 'Analyze Events'
     },
     flash: {
@@ -4365,7 +4365,7 @@ export default {
       viewInSuspiciousDNSActivityReport: 'Suspicious DNS Activity Report',
       getAddToListLabel: 'Add/Remove from List(s)',
       getCopy: 'Copy',
-      viewDetailsNewRecon: 'Event Analysis',
+      viewDetailsNewRecon: 'Events',
       applyContainsDrillLabel: 'Apply Contains Drill',
       applyContainsInNewTabLabel: 'Apply Contains Drill in New Tab',
       applyRefocusLabel: 'Apply EQUALS',

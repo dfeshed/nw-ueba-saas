@@ -141,7 +141,8 @@ const App = Application.extend({
           'eventBus',
           'router',
           'app-version',
-          'global-preferences'
+          'global-preferences',
+          'investigatePage'
         ],
         externalRoutes: {
           'investigate.investigate-files': 'protected.investigate.investigate-files',
@@ -163,7 +164,8 @@ const App = Application.extend({
           'flashMessages',
           'eventBus',
           'router',
-          'app-version'
+          'app-version',
+          'investigatePage'
         ],
         externalRoutes: {
           'investigate.investigate-files': 'protected.investigate.investigate-files',
@@ -207,7 +209,8 @@ const App = Application.extend({
           'i18n',
           'flashMessages',
           'eventBus',
-          'global-preferences'
+          'global-preferences',
+          'investigatePage'
         ],
         externalRoutes: {
           'investigate.investigate-events': 'protected.investigate.investigate-events',
@@ -228,7 +231,8 @@ const App = Application.extend({
           'i18n',
           'flashMessages',
           'eventBus',
-          'global-preferences'
+          'global-preferences',
+          'investigatePage'
         ],
         externalRoutes: {
           'investigate.investigate-files': 'protected.investigate.investigate-files',

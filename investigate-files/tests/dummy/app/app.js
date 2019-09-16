@@ -19,7 +19,8 @@ const App = Application.extend({
           'timezone',
           'i18n',
           'eventBus',
-          'flashMessages'
+          'flashMessages',
+          'investigatePage'
         ],
         externalRoutes: {
           'investigate.investigate-events': 'events',

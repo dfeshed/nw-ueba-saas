@@ -9,7 +9,7 @@ import * as ACTION_TYPES from 'recon/actions/types';
 import { handleSetTo, handlePreference } from 'recon/reducers/util';
 
 const visualsInitialState = Immutable.from({
-  defaultReconView: RECON_VIEW_TYPES_BY_NAME.TEXT, // view defaults to Text Analysis,
+  defaultReconView: RECON_VIEW_TYPES_BY_NAME.TEXT, // view defaults to Text,
   currentReconView: RECON_VIEW_TYPES_BY_NAME.TEXT,
   isHeaderOpen: true,
   isMetaShown: true,

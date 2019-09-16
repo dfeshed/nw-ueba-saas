@@ -232,6 +232,9 @@ export default Route.extend(AuthenticatedRouteMixin, {
     const timezonesPromise = this.getTimezones();
     const preferencesPromise = this.getPreferences();
 
+    // Promise to check legacy events tab in investigate page is enabled or not
+    const legacyEventsPromise = this.get('investigatePage').checkLegacyEventsEnabled();
+
     // Resolve the user's name, roles & authorities from the JWT token and update accessControl
     // These are used only for UEBA permission handling, since for the iframed UEBA app
     // no real permissions exist, only user roles.
@@ -240,7 +243,8 @@ export default Route.extend(AuthenticatedRouteMixin, {
     return RSVP.all([
       preferencesPromise,
       timezonesPromise,
-      permissionsPromise
+      permissionsPromise,
+      legacyEventsPromise
     ]).then((responses) => {
       // set the user preference timezone after timezones have been loaded, since the timezone service depends
       // on having the full list of timezone options for values to be properly set.

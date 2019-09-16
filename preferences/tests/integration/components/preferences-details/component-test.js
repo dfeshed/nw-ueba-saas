@@ -64,7 +64,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await waitUntil(() => findAll('.ember-power-select-selected-item').length === 4, { timeout: 3000 });
     const selectedItems = findAll('.ember-power-select-selected-item');
     let str = selectedItems[0].textContent.trim();
-    assert.equal(str, 'Packet Analysis');
+    assert.equal(str, 'Packet');
     str = selectedItems[1].textContent.trim();
     assert.equal(str, 'Download Text');
     str = selectedItems[2].textContent.trim();
@@ -100,7 +100,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await clickTrigger('.rsa-preferences-field-content:nth-child(1)');
     const options = findAll('.ember-power-select-option');
     assert.equal(options.length, 4);
-    assert.equal(getTextFromDOMArray(options), 'FileAnalysisPacketAnalysisTextAnalysisEmailAnalysis');
+    assert.equal(getTextFromDOMArray(options), 'FilePacketTextEmail');
   });
 
   test('Preferences panel comes with valid options for log format', async function(assert) {
@@ -129,13 +129,13 @@ module('Integration | Component | Preferences Details', function(hooks) {
 
   test('Preferences panel saves new Analysis on change', async function(assert) {
     await renderApplicationContent(this, assert);
-    await selectChoose('.rsa-preferences-field-content:nth-child(1)', 'Text Analysis');
-    await waitUntil(() => findAll('.ember-power-select-selected-item')[0].textContent.trim() === 'Text Analysis', { timeout: 3000 });
+    await selectChoose('.rsa-preferences-field-content:nth-child(1)', 'Text');
+    await waitUntil(() => findAll('.ember-power-select-selected-item')[0].textContent.trim() === 'Text', { timeout: 3000 });
   });
 
   test('Preferences panel defaults the Analysis View to the user selected value', async function(assert) {
     await renderApplicationContent(this, assert);
-    await assertForPreferencesPanelSelectedOptions(assert, 1, 0, 'Packet Analysis');
+    await assertForPreferencesPanelSelectedOptions(assert, 1, 0, 'Packet');
   });
 
   test('Preferences panel defaults the dowloadLogFormat to the user selected value', async function(assert) {
@@ -181,7 +181,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
   test('Preferences should pick the defaultData in case of no response', async function(assert) {
     throwSocket();
     await renderApplicationContent(this, assert);
-    assert.equal(findAll('.ember-power-select-selected-item')[0].textContent.trim(), 'Text Analysis');
+    assert.equal(findAll('.ember-power-select-selected-item')[0].textContent.trim(), 'Text');
     assert.equal(findAll('.x-toggle-container-checked').length, 0, 'Found the Relative Time Window toggle disabled by default');
   });
 

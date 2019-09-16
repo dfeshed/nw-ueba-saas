@@ -15,13 +15,13 @@ const TABS = [
     isClassic: true,
     url: '/investigation/events',
     localeKey: 'userPreferences.defaultInvestigatePage.events',
-    label: 'Events'
+    label: 'Legacy Events'
   },
   {
     name: 'investigate.investigate-events',
     url: '/investigate/events',
     localeKey: 'userPreferences.defaultInvestigatePage.eventAnalysis',
-    label: 'Event Analysis'
+    label: 'Events'
   },
   {
     name: 'investigate.investigate-hosts',
@@ -53,13 +53,14 @@ export default Component.extend({
   tagName: 'article',
   layout,
   accessControl: service(),
+  investigatePage: service(),
 
   activeTab: 'investigate.investigate-events',
   iconBar: { isIconBar: true },
   main: { isMain: true },
 
-  @computed('activeTab', 'accessControl.hasUEBAAccess')
-  tabs(activeTab, hasUEBAAccess) {
+  @computed('activeTab', 'accessControl.hasUEBAAccess', 'investigatePage.legacyEventsEnabled')
+  tabs(activeTab, hasUEBAAccess, legacyEventsEnabled) {
     let tabs = TABS.map((t) => ({
       ...t,
       isActive: t.name === activeTab
@@ -68,6 +69,12 @@ export default Component.extend({
       // remove the Users tab is the user does not have UEBA access
       tabs = tabs.filter((tab) => tab.name !== 'investigate.investigate-users');
     }
+
+    if (!legacyEventsEnabled) {
+      // remove the Legacy events
+      tabs = tabs.filter((tab) => tab.label !== 'Legacy Events');
+    }
+
     return tabs;
   }
 });

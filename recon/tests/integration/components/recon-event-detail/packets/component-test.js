@@ -110,7 +110,7 @@ module('Integration | Component | recon event detail packets', function(hooks) {
 
     return wait().then(() => {
       const str = find('.message').textContent.trim().replace(/\s/g, '');
-      assert.equal(str, 'TheeventhasnopayloadandtheDisplayPayloadsOnlyoptionisselected.ToviewthePacketAnalysisfortheevent,disabletheDisplayPayloadsOnlyoption.');
+      assert.equal(str, 'TheeventhasnopayloadandtheDisplayPayloadsOnlyoptionisselected.ToviewthePacketanalysisfortheevent,disabletheDisplayPayloadsOnlyoption.');
     });
   });
 

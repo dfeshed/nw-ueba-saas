@@ -78,7 +78,7 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isEndpointEvent().build();
     await render(hbs`{{recon-event-titlebar}}`);
     assert.equal(find('.event-title').textContent.trim(), 'Endpoint Event Details', 'Title is correct text');
-    assert.equal(find('.tview-heading').textContent.trim(), 'Text Analysis', 'Text Analysis available for Endpoint Events');
+    assert.equal(find('.tview-heading').textContent.trim(), 'Text', 'Text Analysis available for Endpoint Events');
     assert.notOk(find('.ember-power-select-trigger'), 'there is not a power select rendered');
   });
 
@@ -86,13 +86,13 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isPacketView().isNetworkEvent().build();
     await render(hbs`{{recon-event-titlebar}}`);
     assert.equal(find('.event-title').textContent.trim(), 'Network Event Details', 'Title is correct text');
-    assert.equal(find('.ember-power-select-trigger').textContent.trim(), 'Packet Analysis', 'power select is populated with correct default');
+    assert.equal(find('.ember-power-select-trigger').textContent.trim(), 'Packet', 'power select is populated with correct default');
   });
 
   test('when reconstruction view is action is called', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.equal(find('.ember-power-select-trigger').textContent.trim(), 'Text Analysis', 'power select is populated with correct default');
+    assert.equal(find('.ember-power-select-trigger').textContent.trim(), 'Text', 'power select is populated with correct default');
     await selectChoose('.heading-select', 'File');
     assert.equal(setNewReconViewStub.calledOnce, true, 'action is called');
     assert.equal(setNewReconViewStub.args[0][0].name, 'FILE', 'right recon view is provided');
@@ -117,30 +117,30 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isPacketView().isNetworkEvent().build();
     await render(hbs`{{recon-event-titlebar}}`);
     assert.equal(findAll('.rsa-nav-tab').length, 5, 'show 5 analysis tabs');
-    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Packet Analysis');
+    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Packet');
   });
 
   test('Show only text analysis label for log event', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().isLogEvent().build();
     await render(hbs`{{recon-event-titlebar}}`);
     assert.notOk(find('.rsa-nav-tab'));
-    assert.equal(find('.tview-label').textContent.trim(), 'Text Analysis');
+    assert.equal(find('.tview-label').textContent.trim(), 'Text');
   });
 
   test('Click on Email tab does not change the tab', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Text Analysis');
+    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Text');
     await selectChoose('.heading-select', 'Email');
-    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Text Analysis');
+    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Text');
   });
 
   test('Click on Web tab opens the web meta in a new tab and does not change the current tab', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isPacketView().build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Packet Analysis');
+    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Packet');
     await selectChoose('.heading-select', 'Web');
-    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Packet Analysis');
+    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Packet');
   });
 
 
