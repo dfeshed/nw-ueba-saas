@@ -111,6 +111,12 @@
     width: 98%;
   }
 
+  .rsa-wizard-warning-box {
+    position: fixed;
+    bottom: 4.3rem;
+    padding-right: 1rem;
+  }
+
   .rsa-wizard-loading-overlay {
     @include rsa-fill-abs();
     z-index: 2;

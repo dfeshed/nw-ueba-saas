@@ -29,6 +29,12 @@
   <vbox fit class="rsa-wizard-step-container">
     {{component currentStep.stepComponent step=currentStep}}
   </vbox>
+  {{!-- wizard warning message box --}}
+  {{#if warningMessages}}
+    <vbox class="rsa-wizard-warning-box">
+      {{#rsa-content-warn-text-box value=warningMessages.[0]}}{{/rsa-content-warn-text-box}}
+    </vbox>
+  {{/if}}
   {{!-- wizard current step toolbar container --}}
   <vbox class="rsa-wizard-toolbar-container">
     {{component currentStep.toolbarComponent step=currentStep transitionToStep=(action 'transitionToStep') transitionToClose=(action transitionToClose)}}

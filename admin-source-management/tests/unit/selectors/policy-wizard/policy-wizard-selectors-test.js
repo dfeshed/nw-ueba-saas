@@ -25,7 +25,8 @@ import {
   isPolicyLoading,
   isPolicyFetchError,
   hasPolicyChanged,
-  isPolicySettingsEmpty
+  isPolicySettingsEmpty,
+  policyWarningMessages
 } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
 module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hooks) {
@@ -329,6 +330,39 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     };
     descValidatorSelected = descriptionValidator(Immutable.from(fullState));
     assert.deepEqual(descValidatorSelected, descriptionValidatorExpected, 'The (descriptionExceedsMaxLength & visited) returned value from the descriptionValidator selector is as expected');
+  });
+
+  test('policyWarningMessages selector', function(assert) {
+    // invalid when there are two sources with same type or name in the file policy settings
+    let sources = [
+      { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: '', exclusionFilters: ['abc'], paths: ['path1', 'path2'] },
+      { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: '', exclusionFilters: ['abc', 'def'], paths: ['path2'] }
+    ];
+    const translation = this.owner.lookup('service:i18n');
+    const expectedWarningMessage = translation.t('adminUsm.policyWizard.filePolicy.invalidLogFileTypesWarning');
+    const visited = ['policy.sources'];
+    let fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(sources)
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = [expectedWarningMessage];
+    let validActual = policyWarningMessages(fullState);
+    assert.deepEqual(validActual, validExpected, `${sources} value validated as expected`);
+
+    // valid sources
+    sources = [
+      { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: 'Apache 1', exclusionFilters: ['abc'], paths: ['path1', 'path2'] },
+      { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: 'Apache 2', exclusionFilters: ['abc', 'def'], paths: ['path2'] }
+    ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(sources)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = [];
+    validActual = policyWarningMessages(fullState);
+    assert.deepEqual(validActual, validExpected, `${sources} value validated as expected`);
   });
 
   test('steps selector', function(assert) {

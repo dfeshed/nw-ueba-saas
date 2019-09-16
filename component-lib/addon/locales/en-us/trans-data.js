@@ -5029,6 +5029,7 @@ effects the previewed source.',
         exclusionFiltersSyntaxError: 'Syntax error in the Regular Expression on line ',
         exclusionFiltersLengthError: 'Please limit the filters to 16',
         exclusionFiltersEmptyLines: 'Exclusion Filters cannot contain empty lines',
+        invalidLogFileTypesWarning: 'One or more Log File Types have multiple instances defined in this policy. Consider providing a unique Source Name under Advanced Settings for each instance. The Source Name will show up as meta in Investigate allowing the logs to be differentiated.',
         fileSourceType: {
           add: 'Add Selected File Type',
           placeholder: 'Pick a Log File Type'

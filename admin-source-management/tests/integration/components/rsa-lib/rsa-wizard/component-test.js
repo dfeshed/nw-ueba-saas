@@ -147,6 +147,21 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
     assert.equal(findAll('.rsa-wizard-container .test-titlebar').length, 1, 'Test Titlebar is rendered');
   });
 
+  test('The warning message should be rendered', async function(assert) {
+    this.set('steps', steps);
+    this.set('initialStepId', 'testStep1');
+    this.set('transitionToClose', () => {});
+    this.set('policyWarningMessages', ['test warning message']);
+    await render(hbs`{{rsa-lib/rsa-wizard
+      steps=steps
+      initialStepId=initialStepId
+      transitionToClose=(action transitionToClose)
+      warningMessages = policyWarningMessages}}`
+    );
+    assert.equal(findAll('.rsa-content-warn-text-box .message').length, 1, 'Test Warning message box is rendered');
+    assert.equal(findAll('.rsa-content-warn-text-box .message')[0].innerText, 'test warning message', 'Warning message is same as expected.');
+  });
+
   test('The bottom button toolbar should be rendered', async function(assert) {
     this.set('steps', steps);
     this.set('initialStepId', 'testStep1');

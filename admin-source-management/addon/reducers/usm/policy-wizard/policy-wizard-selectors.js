@@ -329,6 +329,32 @@ export const areFilePolicyStepsValid = createSelector(
   }
 );
 
+/**
+ * For a file policy, it checks if there are two sources with same type or name
+ * returns array of warning messages
+ * @public
+ */
+export const policyWarningMessages = createSelector(
+  policy,
+  (policy) => {
+    const { policyType, sources } = policy;
+    const warnings = [];
+    const i18n = lookup('service:i18n');
+    // warning only for filePolicy settings and when there are multiple sources
+    if (policyType === 'filePolicy' && sources.length > 1) {
+      // search for duplicate properties(name and fileType) in sources array
+      for (let s = 0; s < sources.length; s++) {
+        for (let i = s + 1; i < sources.length; i++) {
+          if (sources[s].sourceName === sources[i].sourceName && sources[s].fileType === sources[i].fileType) {
+            warnings.push(i18n.t('adminUsm.policyWizard.filePolicy.invalidLogFileTypesWarning'));
+            break;
+          }
+        }
+      }
+    }
+    return warnings;
+  }
+);
 
 export const isWizardValid = createSelector(
   isIdentifyPolicyStepValid, isDefinePolicyStepValid, isDefinePolicySourcesStepValid, areFilePolicyStepsValid,

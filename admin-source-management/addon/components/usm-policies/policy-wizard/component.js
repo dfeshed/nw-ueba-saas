@@ -5,7 +5,8 @@ import {
   policy,
   steps,
   isPolicyLoading,
-  isPolicyFetchError
+  isPolicyFetchError,
+  policyWarningMessages
 } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
 // import {
@@ -16,7 +17,8 @@ const stateToComputed = (state) => ({
   policy: policy(state),
   steps: steps(state),
   isPolicyLoading: isPolicyLoading(state),
-  isPolicyFetchError: isPolicyFetchError(state)
+  isPolicyFetchError: isPolicyFetchError(state),
+  policyWarningMessages: policyWarningMessages(state)
 });
 
 const dispatchToActions = (/* dispatch */) => ({
