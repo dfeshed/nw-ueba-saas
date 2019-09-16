@@ -58,7 +58,7 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     assert.ok(find('.email-show-more'), 'display show more button');
     await click('.email-show-more .rsa-form-button');
     return wait().then(() => {
-      assert.equal(find('iframe').contentDocument.body.innerText.length, 13258, 'remaining characters of email content has rendered on show more');
+      assert.equal(find('iframe').srcdoc.length, 13258, 'remaining characters of email content has rendered on show more');
       assert.notOk(find('.email-show-more'), 'do not display show more button');
     });
   });
@@ -79,7 +79,7 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     assert.ok(find('.email-show-more'), 'display show more button');
     await click('.email-show-more .rsa-form-button');
     return wait().then(() => {
-      assert.equal(find('iframe').contentDocument.body.innerText.length, 20000, '20000 remaining characters of email content has rendered on show more');
+      assert.equal(find('iframe').srcdoc.length, 20000, '20000 remaining characters of email content has rendered on show more');
       assert.ok(find('.email-show-more'), 'display show more button');
     });
   });
@@ -88,7 +88,7 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     this.set('email', EmberObject.create(emailData[2]));
     await render(hbs`{{recon-event-detail/single-email/email-body-content email=email renderedAll=true}}`);
     assert.ok(find('.email-body-text'), 'show single email message content');
-    assert.equal(_first200(find('iframe').contentDocument.body.innerText), 'emailmessagetextcontent');
+    assert.equal(_first200(find('iframe').contentDocument.body.innerText), 'googleemailmessagetextcontent');
   });
 });
 

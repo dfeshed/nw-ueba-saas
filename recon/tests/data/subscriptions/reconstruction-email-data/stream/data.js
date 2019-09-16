@@ -142,7 +142,7 @@ export default [
     ],
 
     "bodyContentType": "PlainText",
-    "bodyContent": "&lt;BODY&gt;&lt;P&gt;email message text content&lt;/P&gt;&lt;/BODY&gt;",
+    "bodyContent": "&lt;BODY&gt;&lt;a href=http://www.google.com>google&lt;/a&gt;&lt;P&gt;email message text content&lt;/P&gt;&lt;/BODY&gt;",
   },
   {
     "messageId": "6eea4274b865446289640926191099e9",

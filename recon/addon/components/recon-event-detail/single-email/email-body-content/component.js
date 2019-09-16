@@ -19,8 +19,15 @@ export default Component.extend({
     this.set('frame', document.getElementById(this.emailRenderId));
     this.get('frame').addEventListener('load', this.resizeIframe = () => {
       run.next(() => {
-        const iframeHeight = this.get('frame').contentWindow.document.body.scrollHeight + 70;
+        const iframeDoc = this.get('frame').contentWindow.document;
+        const iframeHeight = iframeDoc.body.scrollHeight + 70;
         this.get('frame').style.height = iframeHeight.toString().concat('px');
+        const hyperlinks = iframeDoc.getElementsByTagName('a');
+        for (const link of hyperlinks) {
+          link.addEventListener('click', function(event) {
+            event.preventDefault();
+          });
+        }
       });
     });
   },
