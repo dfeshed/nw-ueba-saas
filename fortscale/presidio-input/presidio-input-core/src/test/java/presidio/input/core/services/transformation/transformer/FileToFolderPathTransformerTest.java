@@ -1,7 +1,7 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.domain.core.EventResult;
-import fortscale.utils.transform.FileToFolderPathTransformer;
+import fortscale.utils.transform.RegexTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,13 +9,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.domain.transformedevents.FileTransformedEvent;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 
 @RunWith(SpringRunner.class)
 public class FileToFolderPathTransformerTest extends TransformerJsonTest {
 
+    private static final String FOLDER_PATH_REGEX = ".*\\\\(?!.*\\\\)|.*/(?!.*/)";
     @Test
     public void testFolderPathTransformation_windows() throws IOException {
         String filePath = "C:\\Users\\alexp\\Desktop\\file.txt";
@@ -24,9 +24,9 @@ public class FileToFolderPathTransformerTest extends TransformerJsonTest {
                 "displayName", null, filePath, false,
                 filePath, false, 0L, "resultCode");
 
-        FileToFolderPathTransformer fileToFolderPathTransformer = new FileToFolderPathTransformer("name", "srcFilePath", "srcFolderPath");
+        RegexTransformer fileToFolderPathTransformer = new RegexTransformer("name", "srcFilePath", "srcFolderPath", FOLDER_PATH_REGEX);
         FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, fileToFolderPathTransformer, FileTransformedEvent.class);
-        Assert.assertEquals(String.format("C:\\Users\\alexp\\Desktop\\", File.separator), fileTransformedEvent.getSrcFolderPath());
+        Assert.assertEquals("C:\\Users\\alexp\\Desktop\\", fileTransformedEvent.getSrcFolderPath());
         Assert.assertEquals(filePath, fileTransformedEvent.getSrcFilePath());
     }
 
@@ -38,9 +38,9 @@ public class FileToFolderPathTransformerTest extends TransformerJsonTest {
                 "displayName", null, filePath, false,
                 filePath, false, 0L, "resultCode");
 
-        FileToFolderPathTransformer fileToFolderPathTransformer = new FileToFolderPathTransformer("name", "srcFilePath", "srcFolderPath");
+        RegexTransformer fileToFolderPathTransformer = new RegexTransformer("name", "srcFilePath", "srcFolderPath", FOLDER_PATH_REGEX);
         FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, fileToFolderPathTransformer, FileTransformedEvent.class);
-        Assert.assertEquals(String.format("/folder/", File.separator), fileTransformedEvent.getSrcFolderPath());
+        Assert.assertEquals("/folder/", fileTransformedEvent.getSrcFolderPath());
         Assert.assertEquals(filePath, fileTransformedEvent.getSrcFilePath());
     }
 
@@ -51,7 +51,7 @@ public class FileToFolderPathTransformerTest extends TransformerJsonTest {
                 "displayName", null, null, false,
                 null, false, 0L, "resultCode");
 
-        FileToFolderPathTransformer fileToFolderPathTransformer = new FileToFolderPathTransformer("name", "srcFilePath", "srcFolderPath");
+        RegexTransformer fileToFolderPathTransformer = new RegexTransformer("name", "srcFilePath", "srcFolderPath", FOLDER_PATH_REGEX);
         FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, fileToFolderPathTransformer, FileTransformedEvent.class);
         Assert.assertNull(fileTransformedEvent.getSrcFolderPath());
     }
@@ -64,7 +64,7 @@ public class FileToFolderPathTransformerTest extends TransformerJsonTest {
                 "displayName", null, filePath, false,
                 filePath, false, 0L, "resultCode");
 
-        FileToFolderPathTransformer fileToFolderPathTransformer = new FileToFolderPathTransformer("name", "srcFilePath", "srcFolderPath");
+        RegexTransformer fileToFolderPathTransformer = new RegexTransformer("name", "srcFilePath", "srcFolderPath", FOLDER_PATH_REGEX);
         FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, fileToFolderPathTransformer, FileTransformedEvent.class);
         Assert.assertNull(fileTransformedEvent.getSrcFolderPath());
     }
@@ -76,6 +76,6 @@ public class FileToFolderPathTransformerTest extends TransformerJsonTest {
 
     @Override
     Class getTransformerClass() {
-        return FileToFolderPathTransformer.class;
+        return RegexTransformer.class;
     }
 }

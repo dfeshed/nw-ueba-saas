@@ -23,16 +23,18 @@
       "postReplacementCondition": "(.*[a-zA-Z]){5}.*"
     },
     {
-      "type": "file-to-folder-path-transformer",
+      "type": "regex-transformer",
       "name": "file to folder path",
       "inputFieldName": "srcFilePath",
-      "outputFieldName": "srcFolderPath"
+      "outputFieldName": "srcFolderPath",
+      "regex": ".*\\\\(?!.*\\\\)|.*/(?!.*/)"
     },
     {
-      "type": "file-extension-transformer",
+      "type": "regex-transformer",
       "name": "file to file extension",
       "inputFieldName": "srcFilePath",
-      "outputFieldName": "srcFileExtension"
+      "outputFieldName": "srcFileExtension",
+      "regex": "\\.[0-9a-z]+$"
     },
     {
       "type": "pattern-replacement-transformer",

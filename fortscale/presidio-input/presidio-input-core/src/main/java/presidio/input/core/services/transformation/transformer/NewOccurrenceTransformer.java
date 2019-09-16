@@ -53,7 +53,7 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
         super(name);
         this.schema = Schema.valueOf(schema.toUpperCase());
         Validate.notNull(this.schema, "schema cannot be null.");
-        Validate.notBlank(inputFieldName, "entityType cannot be blank.");
+        Validate.notBlank(inputFieldName, "inputFieldName cannot be blank.");
         Validate.notBlank(booleanFieldName, "booleanFieldName cannot be blank.");
 
         this.inputFieldName = inputFieldName;

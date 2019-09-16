@@ -21,7 +21,8 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 public class FolderPathByOperationTypeTransformer extends AbstractJsonObjectTransformer {
 
     private static final Logger logger = Logger.getLogger(FolderPathByOperationTypeTransformer.class);
-    private final FileToFolderPathTransformer folderPathTransformer;
+    private static final String FOLDER_PATH_REGEX = ".*\\\\(?!.*\\\\)|.*/(?!.*/)";
+    private final RegexTransformer regexTransformer;
     private final String filePathFieldName;
     private final String inputPathFieldName;
     private final String operationTypeFieldName;
@@ -37,7 +38,7 @@ public class FolderPathByOperationTypeTransformer extends AbstractJsonObjectTran
                                                 @JsonProperty("folderPathFieldName") String folderPathFieldName,
                                                 @JsonProperty("operationTypeFieldName") String operationTypeFieldName) {
         super(name);
-        this.folderPathTransformer = new FileToFolderPathTransformer(name, inputPathFieldName, folderPathFieldName);
+        this.regexTransformer = new RegexTransformer(name, inputPathFieldName, folderPathFieldName, FOLDER_PATH_REGEX);
         this.inputPathFieldName = inputPathFieldName;
         this.filePathFieldName = filePathFieldName;
         this.folderPathFieldName = folderPathFieldName;
@@ -59,7 +60,7 @@ public class FolderPathByOperationTypeTransformer extends AbstractJsonObjectTran
                         document.put(folderPathFieldName, filePathValue);
                         document.put(filePathFieldName, JSONObject.NULL);
                     } else {
-                        this.folderPathTransformer.transform(document);
+                        this.regexTransformer.transform(document);
                     }
                 }
             }
