@@ -22,7 +22,7 @@ import java.time.Instant;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 
-@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
+@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class PreProcessingConfiguration extends AbstractTestNGSpringContextTests {
 
