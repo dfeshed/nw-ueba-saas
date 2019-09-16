@@ -12,7 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.transformation.DeserializerTransformationService;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.spring.InputConfigTest;
-import presidio.input.core.spring.InputCoreConfigurationTest;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.PrintRawEvent;
 import presidio.sdk.api.domain.transformedevents.PrintTransformedEvent;
@@ -23,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {InputConfigTest.class, InputCoreConfigurationTest.class})
+@ContextConfiguration(classes = {InputConfigTest.class})
 public class PrintTransformationServiceTest {
     @Autowired
     private TransformationService transformationService;
