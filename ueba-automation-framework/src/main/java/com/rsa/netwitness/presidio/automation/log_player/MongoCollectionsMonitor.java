@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MongoCollectionsMonitor {
@@ -92,7 +92,7 @@ public class MongoCollectionsMonitor {
         }
 
         boolean allCollectionsHaveFinalDaySamples = tasks.stream()
-                .map(mongoProgressTask -> mongoProgressTask.isFinalDaySampleExist(0, DAYS))
+                .map(mongoProgressTask -> mongoProgressTask.isFinalDaySampleExist(3, HOURS))
                 .reduce(Boolean::logicalAnd).orElse(false);
 
         LOGGER.info("waitForResult has finished with " + allCollectionsHaveFinalDaySamples);
