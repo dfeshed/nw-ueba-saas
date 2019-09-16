@@ -9,6 +9,7 @@ pipeline {
         booleanParam(name: 'DATA_INJECTION', defaultValue: true, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
+        booleanParam(name: 'LIVE_STATE_ON', defaultValue: true, description: ' Leave the scheduler run at the end of the test.\\rThe UEBA will continue to collect data at the end of the test (on Live State)')
     }
     //tools { jdk env.JDK }
     agent { label env.NODE }
@@ -80,6 +81,9 @@ pipeline {
     }
 
     post {
+        if (params.LIVE_STATE_ON) {
+            sh "sudo systemctl start airflow-scheduler"
+        }
         always {
             junit '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
             archiveArtifacts allowEmptyArchive: true, artifacts: '**/ueba-automation-test/target/log/*.log, **/ueba-automation-test/target/environment.properties'
