@@ -3,12 +3,11 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { click, find, findAll, render, fillIn, triggerEvent } from '@ember/test-helpers';
-import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import waitForReduxStateChange, { waitForReduxStateToEqual } from '../../../../../../helpers/redux-async-helpers';
-import { encodingOptions } from 'admin-source-management/components/usm-policies/policy-wizard/define-policy-sources-step/body-cell/settings';
+import { encodingOptions } from 'admin-source-management/components/usm-policies/policy-wizard/define-policy-sources-step/cell-settings';
 import {
   fileSources,
   fileSourceById,
@@ -28,12 +27,6 @@ const sources = [{
   sourceName: 'apache-server-1',
   exclusionFilters: ['filter-1', 'filter-2']
 }];
-const column = {
-  field: 'fileEncoding',
-  title: 'adminUsm.policyWizard.filePolicy.fileEncoding',
-  width: '15vw',
-  displayType: 'fileEncoding'
-};
 
 module('Integration | Component | usm-policies/policy-wizard/define-policy-sources-step/body-cell', function(hooks) {
   setupRenderingTest(hooks, {
@@ -54,131 +47,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .policyWizFileSources(sources)
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step/body-cell}}`);
-    assert.equal(findAll('.child-source-container .body-cell').length, 1, 'Expected to define-policy-sources-step/body-cell element in DOM.');
-  });
-
-  test('there should be 16 dropdown options available for file encoding', async function(assert) {
-    new ReduxDataHelper(setState)
-      .policyWiz('filePolicy')
-      .policyWizFileSourceTypes()
-      .policyWizFileSources(sources)
-      .build();
-
-    this.setProperties({
-      column,
-      encodingOptions,
-      itemId
-    });
-
-    await render(hbs`
-      {{usm-policies/policy-wizard/define-policy-sources-step/body-cell
-        column=column
-        encodingOptions=encodingOptions
-        itemId=itemId
-      }}
-    `);
-    await clickTrigger('.file-encoding');
-    assert.equal(findAll('.ember-power-select-option').length, 16, 'Dropdown is rendered with correct number of items');
-  });
-
-  test('UTF-8 / ASCII should be selected in the file encoding dropdown', async function(assert) {
-    new ReduxDataHelper(setState)
-      .policyWiz('filePolicy')
-      .policyWizFileSourceTypes()
-      .policyWizFileSources(sources)
-      .build();
-
-    this.setProperties({
-      column,
-      encodingOptions,
-      itemId
-    });
-
-    await render(hbs`
-      {{usm-policies/policy-wizard/define-policy-sources-step/body-cell
-        column=column
-        encodingOptions=encodingOptions
-        itemId=itemId
-      }}
-    `);
-    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'UTF-8 / ASCII');
-  });
-
-  test('changing the file encoding triggers updatePolicyFileSourceProperty action creator', async function(assert) {
-    const initialState = new ReduxDataHelper(setState)
-      .policyWiz('filePolicy')
-      .policyWizFileSourceTypes()
-      .policyWizFileSources(sources)
-      .build();
-
-    this.setProperties({
-      column,
-      encodingOptions,
-      itemId
-    });
-
-    await render(hbs`
-      {{usm-policies/policy-wizard/define-policy-sources-step/body-cell
-        column=column
-        encodingOptions=encodingOptions
-        itemId=itemId
-      }}
-    `);
-
-    const field = 'fileEncoding';
-    const initialValue = fileSourceById(initialState, itemId)[field];
-    const expectedValue = 'Local Encoding';
-    const onChange = waitForReduxStateChange(redux, `usm.policyWizard.policy.sources.${itemId}.${field}`);
-    await selectChoose('.file-encoding', expectedValue);
-    await onChange;
-    const actualValue = fileSourceById(redux.getState(), itemId)[field];
-    assert.equal(actualValue, expectedValue, `${field} updated from ${initialValue} to ${actualValue}`);
-    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), expectedValue, `selected item matches ${expectedValue}`);
-  });
-
-  test('source name is displayed in the container, and triggers updatePolicyFileSourceProperty action creator when changed', async function(assert) {
-    const initialState = new ReduxDataHelper(setState)
-      .policyWiz('filePolicy')
-      .policyWizFileSourceTypes()
-      .policyWizFileSources(sources)
-      .build();
-
-    const column = {
-      field: 'sourceName',
-      title: 'adminUsm.policyWizard.filePolicy.sourceName',
-      width: '15vw',
-      displayType: 'sourceNameInput'
-    };
-
-    this.setProperties({
-      column,
-      encodingOptions,
-      itemId
-    });
-
-    await render(hbs`
-      {{usm-policies/policy-wizard/define-policy-sources-step/body-cell
-        column=column
-        encodingOptions=encodingOptions
-        itemId=itemId
-      }}
-    `);
-
-    const field = 'sourceName';
-    const initialValue = fileSourceById(initialState, itemId)[field];
-    // initial
-    assert.equal(findAll('.source-name').length, 1);
-    assert.equal(findAll('.source-name input')[0].value, initialValue, `initial sourceName is ${initialValue}`);
-    // updated
-    const expectedValue = `${initialValue}-Updated`;
-    const [inputEl] = findAll('.source-name input');
-    const onChange = waitForReduxStateChange(redux, `usm.policyWizard.policy.sources.${itemId}.${field}`);
-    await fillIn(inputEl, expectedValue);
-    await triggerEvent(inputEl, 'blur');
-    await onChange;
-    const actualValue = fileSourceById(redux.getState(), itemId)[field];
-    assert.equal(actualValue, expectedValue, `${field} updated from ${initialValue} to ${actualValue}`);
-    assert.equal(findAll('.source-name input')[0].value, expectedValue, `updated sourceName is ${expectedValue}`);
+    assert.equal(findAll('.child-source-container').length, 1, 'Expected to define-policy-sources-step/body-cell element in DOM.');
   });
 
   test('enabled (enableOnAgent) is true, and triggers updatePolicyFileSourceProperty action creator when changed', async function(assert) {
@@ -191,8 +60,9 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     const column = {
       field: 'enabled',
       title: 'adminUsm.policyWizard.filePolicy.enableOnAgent',
-      width: '15vw',
-      displayType: 'enabledRadio'
+      width: '30vw',
+      displayType: 'enabledRadio',
+      component: 'usm-policies/policy-wizard/define-policy-sources-step/body-cell'
     };
 
     this.setProperties({
@@ -242,7 +112,8 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       field: 'startOfEvents',
       title: 'adminUsm.policyWizard.filePolicy.dataCollection',
       width: '30vw',
-      displayType: 'eventsRadio'
+      displayType: 'eventsRadio',
+      component: 'usm-policies/policy-wizard/define-policy-sources-step/body-cell'
     };
 
     this.setProperties({
@@ -290,7 +161,8 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       field: 'paths',
       title: 'adminUsm.policyWizard.filePolicy.logFilePath',
       width: '100%',
-      displayType: 'paths'
+      displayType: 'paths',
+      component: 'usm-policies/policy-wizard/define-policy-sources-step/body-cell'
     };
 
     this.setProperties({
@@ -358,7 +230,8 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       field: 'exclusionFilters',
       title: 'adminUsm.policyWizard.filePolicy.exclusionFilters',
       width: '30vw',
-      displayType: 'exclusionFilters'
+      displayType: 'exclusionFilters',
+      component: 'usm-policies/policy-wizard/define-policy-sources-step/body-cell'
     };
 
     this.setProperties({
@@ -402,7 +275,8 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       field: 'fileType',
       title: 'adminUsm.policyWizard.filePolicy.logFileType',
       width: '30vw',
-      displayType: 'fileTypeInput'
+      displayType: 'fileTypeInput',
+      component: 'usm-policies/policy-wizard/define-policy-sources-step/body-cell'
     };
 
     this.setProperties({
@@ -429,11 +303,13 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .policyWizFileSources(sources)
       .build();
 
+    // using fileType because the remove button is rendered with it
     const column = {
       field: 'fileType',
       title: 'adminUsm.policyWizard.filePolicy.logFileType',
       width: '30vw',
-      displayType: 'fileTypeInput'
+      displayType: 'fileTypeInput',
+      component: 'usm-policies/policy-wizard/define-policy-sources-step/body-cell'
     };
 
     this.setProperties({

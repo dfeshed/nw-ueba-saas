@@ -1,8 +1,6 @@
 import Component from '@ember/component';
-import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-// import DataTableBody from '../component';
 import {
   removePolicyFileSource,
   updatePolicyFileSourceProperty
@@ -13,12 +11,11 @@ import {
   sourceNameValidator,
   exFilterValidator
 } from 'admin-source-management/reducers/usm/policy-wizard/filePolicy/file-selectors';
-import { enableOnAgentConfig, dataCollectionConfig, encodingOptions } from './settings';
+import { enableOnAgentConfig, dataCollectionConfig } from '../cell-settings';
 
 const stateToComputed = (state, attrs) => ({
   item: fileSourceById(state, attrs.itemId),
   exclusionFilters: fileSourceExclusionFilters(state, attrs.itemId),
-  invalidTableItem: sourceNameValidator(state).invalidTableItem,
   invalidPath: sourceNameValidator(state).invalidPath,
   dirPathEmptyMsg: sourceNameValidator(state).dirPathEmptyMsg,
   dirPathLength: sourceNameValidator(state).dirPathLength,
@@ -34,11 +31,9 @@ const dispatchToActions = {
   updatePolicyFileSourceProperty
 };
 
-// const SourceBodyCell = DataTableBody.extend({
 const SourceBodyCell = Component.extend({
-  layout,
   classNames: 'child-source-container',
-  encodingOptions,
+  classNameBindings: ['column.field'],
   enableOnAgentConfig: enableOnAgentConfig(),
   dataCollectionConfig: dataCollectionConfig(),
 
@@ -63,12 +58,12 @@ const SourceBodyCell = Component.extend({
 
   actions: {
     handleRemoveSource(/* index */) {
-
       this.send('removePolicyFileSource', this.get('itemIdAsInt'));
     },
 
     // power-selects & radio-buttons
     handleSelectionChange(column, value) {
+      // field/path built like 'policy.sources.0.someProp' (the 0 is the source index/id)
       this.send('updatePolicyFileSourceProperty', this.get('itemIdAsInt'), column, value);
     },
 
@@ -83,11 +78,6 @@ const SourceBodyCell = Component.extend({
       // it's ok to send the whole array here
       // field/path built like 'policy.sources.0.exclusionFilters' (the 0 is the source index/id)
       this.send('updatePolicyFileSourceProperty', this.get('itemIdAsInt'), column, arr);
-    },
-
-    handleSourceNameChange(column, event) {
-      // field/path built like 'policy.sources.0.sourceName' (the 0 is the source index/id)
-      this.send('updatePolicyFileSourceProperty', this.get('itemIdAsInt'), column, event.target.value);
     },
 
     handlePathChange(column, index, event) {

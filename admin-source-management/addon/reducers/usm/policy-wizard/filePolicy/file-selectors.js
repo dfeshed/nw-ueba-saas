@@ -10,6 +10,9 @@ import {
   SOURCE_CONFIG
 } from './file-settings';
 import {
+  DEFAULT_ENCODING
+} from 'admin-source-management/components/usm-policies/policy-wizard/define-policy-sources-step/cell-settings';
+import {
   windowsLogDestinationValidator
 } from 'admin-source-management/reducers/usm/policy-wizard/windowsLogPolicy/windowsLog-selectors';
 
@@ -46,6 +49,15 @@ export const fileSourceExclusionFilters = (state, id) => {
   if (source && source.exclusionFilters) {
     return source.exclusionFilters.join('\n');
   }
+};
+
+export const isAdvancedSettingsCollapsed = (state, id) => {
+  const source = fileSourceById(state, id);
+  let isCollapsed = true;
+  if (source?.sourceName || source?.fileEncoding !== DEFAULT_ENCODING) {
+    isCollapsed = false;
+  }
+  return isCollapsed;
 };
 
 export const fileSourcesList = createSelector(
@@ -88,7 +100,7 @@ export const selectedFileSource = createSelector(
 /**
  * Returns the default settings for a selected file source
  * @public
- * @return  {obj} {fileType: "apache", fileEncoding: "UTF-8", ..., paths: ["/c/apache", "/c/apache/logs"]}
+ * @return  {obj} {fileType: "apache", fileEncoding: "UTF-8 / ASCII", ..., paths: ["/c/apache", "/c/apache/logs"]}
  */
 export const selectedFileSourceDefaults = createSelector(
   selectedFileSource,
@@ -96,7 +108,7 @@ export const selectedFileSourceDefaults = createSelector(
     if (selectedFileSource) {
       const defaults = {
         fileType: selectedFileSource.name,
-        fileEncoding: 'UTF-8 / ASCII',
+        fileEncoding: DEFAULT_ENCODING, // 'UTF-8 / ASCII',
         enabled: true,
         startOfEvents: false,
         sourceName: '',
@@ -113,8 +125,8 @@ export const sourceConfig = () => SOURCE_CONFIG;
 /**
  * validates the array elments in the sources array.
  * Sources is an array of objects
- * [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'name', exclusionFilters:
- * ['filter-1', 'filter-2'] },  { fileType: 'exchange', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName:
+ * [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'name', exclusionFilters:
+ * ['filter-1', 'filter-2'] },  { fileType: 'exchange', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName:
  * 'name', exclusionFilters: ['filter-1', 'filter-2'] }];
  * @public
  */

@@ -30,6 +30,7 @@ const DATA_COLLECTION = {
   ]
 };
 
+export const DEFAULT_ENCODING = 'UTF-8 / ASCII';
 export const encodingOptions = _.sortBy([
   'BIG5',
   'EUC-JP',

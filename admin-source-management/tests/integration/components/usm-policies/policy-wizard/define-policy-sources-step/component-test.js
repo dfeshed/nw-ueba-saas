@@ -83,7 +83,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .policyWizFileSources(sources)
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    assert.equal(findAll('.child-source-container').length, 7, 'body cell child-source-containers are rendered correctly');
+    assert.equal(findAll('.child-source-container').length, 6, '6 (5 body cell & 1 advanced cell) child-source-containers are rendered correctly');
     assert.equal(findAll('.file-source-type').length, 1, 'file-source-type dropdown is rendered correctly');
     assert.equal(findAll('.add-row').length, 1, 'add-row button is rendered correctly');
   });
@@ -95,10 +95,10 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .policyWizFileSources(emptyExF)
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    assert.equal(findAll('.child-source-container').length, 7, 'body cell child-source-containers are rendered correctly');
+    assert.equal(findAll('.child-source-container').length, 6, '6 (5 body cell & 1 advanced cell) child-source-containers are rendered correctly');
     assert.equal(findAll('.file-source-type').length, 1, 'file-source-type dropdown is rendered correctly');
     assert.equal(findAll('.add-row').length, 1, 'add-row button is rendered correctly');
-    assert.equal(findAll('.child-source-container .exclusionFilters').length, 1, 'Exclusion filters rendered correctly when null');
+    assert.equal(findAll('.child-source-container.exclusionFilters').length, 1, 'Exclusion filters rendered correctly when null');
   });
 
   test('should render the all the components within body-cell child-source-container component', async function(assert) {
@@ -107,15 +107,16 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .policyWizFileSources(sources)
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    assert.equal(findAll('.child-source-container').length, 7, 'body cell child-source-containers are rendered correctly');
+    assert.equal(findAll('.child-source-container').length, 6, 'body cell 6 (5 body cell & 1 advanced cell) child-source-containers are rendered correctly');
     assert.equal(findAll('.subheading').length, 6, 'All the subheadings rendered correctly');
     assert.equal(findAll('.rsa-form-radio-group-label').length, 2, 'All the radio labels rendered correctly');
     assert.equal(findAll('.file-type').length, 1, 'file type dropdown rendered correctly');
-    assert.equal(findAll('.child-source-container .enabled').length, 1, 'Enable on Agent radio rendered correctly');
-    assert.equal(findAll('.child-source-container .startOfEvents').length, 1, 'Data Collection radio rendered correctly');
+    assert.equal(findAll('.child-source-container.enabled').length, 1, 'Enable on Agent radio rendered correctly');
+    assert.equal(findAll('.child-source-container.startOfEvents').length, 1, 'Data Collection radio rendered correctly');
+    assert.equal(findAll('.child-source-container.exclusionFilters').length, 1, 'Source Name input rendered correctly');
+    assert.equal(findAll('.child-source-container.paths').length, 1, 'Directory paths rendered correctly');
     assert.equal(findAll('.child-source-container .sourceName').length, 1, 'Source Name input rendered correctly');
-    assert.equal(findAll('.child-source-container .exclusionFilters').length, 1, 'Source Name input rendered correctly');
-    assert.equal(findAll('.child-source-container .paths').length, 1, 'Directory paths rendered correctly');
+    assert.equal(findAll('.child-source-container .fileEncoding').length, 1, 'Source Name input rendered correctly');
   });
 
   test('It triggers the update policy action creator when the main fileType is changed', async function(assert) {

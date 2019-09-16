@@ -12,6 +12,7 @@ import {
   fileSourcesIds,
   fileSourceById,
   fileSourceExclusionFilters,
+  isAdvancedSettingsCollapsed,
   fileSourcesList,
   selectedFileSource,
   selectedFileSourceDefaults,
@@ -22,6 +23,9 @@ import {
   ENABLED_CONFIG,
   SEND_TEST_LOG_CONFIG
 } from 'admin-source-management/reducers/usm/policy-wizard/filePolicy/file-settings';
+import {
+  DEFAULT_ENCODING
+} from 'admin-source-management/components/usm-policies/policy-wizard/define-policy-sources-step/cell-settings';
 
 module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(hooks) {
   setupTest(hooks);
@@ -125,6 +129,35 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
       .build();
     const result = fileSourceExclusionFilters(Immutable.from(fullState), 2);
     assert.deepEqual(result, expectedValue, `should return fileSourceExclusionFilters with value ${expectedValue}`);
+  });
+
+  test('isAdvancedSettingsCollapsed', function(assert) {
+    const sources = [
+      // default fileEncoding & default/empty sourceName
+      { fileType: 'accurev', fileTypePrettyName: 'AccuRev', fileEncoding: DEFAULT_ENCODING, enabled: true, startOfEvents: false, sourceName: '', exclusionFilters: ['accurev-filter-1', 'accurev-filter-2'], paths: ['path1', 'path2'] },
+      // default fileEncoding & NON-default sourceName
+      { fileType: 'apache', fileTypePrettyName: 'Apache Web Server', fileEncoding: DEFAULT_ENCODING, enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['apache-filter-1', 'apache-filter-2'], paths: ['path1', 'path2'] },
+      // NON-default fileEncoding & default/empty sourceName
+      { fileType: 'exchange', fileTypePrettyName: 'Microsoft Exchange', fileEncoding: 'Any-Encoding', enabled: true, startOfEvents: false, sourceName: '', exclusionFilters: ['exchange-filter-1', 'exchange-filter-2'], paths: ['path1', 'path2'] },
+      // NON-default fileEncoding & NON-default sourceName
+      { fileType: 'exchange', fileTypePrettyName: 'Microsoft Exchange', fileEncoding: 'Any-Encoding', enabled: true, startOfEvents: false, sourceName: 'exchange-server-2', exclusionFilters: ['exchange-filter-1', 'exchange-filter-2'], paths: ['path1', 'path2'] }
+    ];
+    const expectedValues = [true, false, false, false];
+    const fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(sources)
+      .policyWizFileSourceTypes()
+      .build();
+    const results = [
+      isAdvancedSettingsCollapsed(Immutable.from(fullState), 0),
+      isAdvancedSettingsCollapsed(Immutable.from(fullState), 1),
+      isAdvancedSettingsCollapsed(Immutable.from(fullState), 2),
+      isAdvancedSettingsCollapsed(Immutable.from(fullState), 3)
+    ];
+    assert.deepEqual(results[0], expectedValues[0], `isAdvancedSettingsCollapsed with all defaults is ${expectedValues[0]}`);
+    assert.deepEqual(results[1], expectedValues[1], `isAdvancedSettingsCollapsed with NON-default sourceName is ${expectedValues[1]}`);
+    assert.deepEqual(results[2], expectedValues[2], `isAdvancedSettingsCollapsed with NON-default fileEncoding is ${expectedValues[2]}`);
+    assert.deepEqual(results[3], expectedValues[3], `isAdvancedSettingsCollapsed with all NON-defaults ${expectedValues[3]}`);
   });
 
   test('fileSourcesList selector', function(assert) {

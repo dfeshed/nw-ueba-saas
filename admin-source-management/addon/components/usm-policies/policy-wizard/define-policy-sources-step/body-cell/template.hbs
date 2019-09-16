@@ -1,32 +1,32 @@
-{{#rsa-data-table/body-cell item=item index=index column=column delete=delete class='body-cell'}}
-  {{#if (eq column.displayType 'fileTypeInput')}}
-    <h4 class='subheading'>
-      {{#rsa-text-with-tooltip
-        value=(t (concat column.title 'Tooltip'))
-        style="standard"
-        alwaysShow=true
-      }}
-        <span class="text">{{t column.title}}</span>
-      {{/rsa-text-with-tooltip}}
-      <span class="remove-setting"
-        {{action 'handleRemoveSource' index bubble=false}}>
-        {{rsa-icon name="remove-circle-1" style="lined"}}
-      </span>
-    </h4>
-    <div class="file-type">
-      {{#power-select
-        placeholder=(t 'adminUsm.policyWizard.dropdownPlaceholder')
-        selected=item.fileTypePrettyName
-        searchPlaceholder=(t 'packager.searchPlaceholder')
-        disabled=true
-        onchange=(action 'handleSelectionChange' column.field bubbles=false) as |option|
-      }}
-        <span title={{option}}>{{option}}</span>
-      {{/power-select}}
-    </div>
+{{#if (eq column.displayType 'fileTypeInput')}}
+  <h4 class='subheading'>
+    {{#rsa-text-with-tooltip
+      value=(t (concat column.title 'Tooltip'))
+      style="standard"
+      alwaysShow=true
+    }}
+      <span class="text">{{t column.title}}</span>
+    {{/rsa-text-with-tooltip}}
+    <span class="remove-setting"
+      {{action 'handleRemoveSource' index bubble=false}}>
+      {{rsa-icon name="remove-circle-1" style="lined"}}
+    </span>
+  </h4>
+  <div class="file-type">
+    {{#power-select
+      placeholder=(t 'adminUsm.policyWizard.dropdownPlaceholder')
+      selected=item.fileTypePrettyName
+      searchPlaceholder=(t 'packager.searchPlaceholder')
+      disabled=true
+      onchange=(action 'handleSelectionChange' column.field bubbles=false) as |option|
+    }}
+      <span title={{option}}>{{option}}</span>
+    {{/power-select}}
+  </div>
 
-  {{else if (eq column.displayType 'fileEncoding')}}
-    <h4 class='subheading'>
+{{else if (eq column.displayType 'enabledRadio')}}
+  <vbox class='rsa-form-radio-group'>
+    <h4 class='rsa-form-radio-group-label'>
       {{#rsa-text-with-tooltip
         value=(t (concat column.title 'Tooltip'))
         style="standard"
@@ -35,158 +35,115 @@
         {{t column.title}}
       {{/rsa-text-with-tooltip}}
     </h4>
-    <div class="file-encoding">
-      {{#power-select
-        placeholder=(t 'packager.placeholder')
-        options=encodingOptions
-        selected=item.fileEncoding
-        searchPlaceholder=(t 'packager.searchPlaceholder')
-        searchEnabled=false
-        onchange=(action 'handleSelectionChange' column.field bubbles=false) as |option|}}
-        {{option}}
-      {{/power-select}}
-    </div>
-
-  {{else if (eq column.displayType 'enabledRadio')}}
-    <vbox class='rsa-form-radio-group'>
-      <h4 class='rsa-form-radio-group-label'>
-        {{#rsa-text-with-tooltip
-          value=(t (concat column.title 'Tooltip'))
-          style="standard"
-          alwaysShow=true
+    <vbox class="radio-buttons">
+      {{#each enableOnAgentConfig.items as |option|}}
+        {{#radio-button
+          classNames='rsa-form-radio-wrapper'
+          value=option.name
+          groupValue=(readonly item.enabled)
+          changed=(action 'handleSelectionChange' column.field bubbles=false)
         }}
-          {{t column.title}}
-        {{/rsa-text-with-tooltip}}
-      </h4>
-      <vbox class="radio-buttons">
-        {{#each enableOnAgentConfig.items as |option|}}
-          {{#radio-button
-            classNames='rsa-form-radio-wrapper'
-            value=option.name
-            groupValue=(readonly item.enabled)
-            changed=(action 'handleSelectionChange' column.field bubbles=false)
-          }}
-            <span>{{t option.label}}</span>
-          {{/radio-button}}
-        {{/each}}
-      </vbox>
+          <span>{{t option.label}}</span>
+        {{/radio-button}}
+      {{/each}}
     </vbox>
+  </vbox>
 
-  {{else if (eq column.displayType 'eventsRadio')}}
-    <vbox class='rsa-form-radio-group'>
-      <h4 class='rsa-form-radio-group-label'>
-        {{#rsa-text-with-tooltip
-          value=(t (concat column.title 'Tooltip'))
-          style="standard"
-          alwaysShow=true
+{{else if (eq column.displayType 'eventsRadio')}}
+  <vbox class='rsa-form-radio-group'>
+    <h4 class='rsa-form-radio-group-label'>
+      {{#rsa-text-with-tooltip
+        value=(t (concat column.title 'Tooltip'))
+        style="standard"
+        alwaysShow=true
+      }}
+        {{t column.title}}
+      {{/rsa-text-with-tooltip}}
+    </h4>
+    <vbox class="radio-buttons">
+      {{#each dataCollectionConfig.items as |option|}}
+        {{#radio-button
+          classNames='rsa-form-radio-wrapper'
+          value=option.name
+          groupValue=(readonly item.startOfEvents)
+          changed=(action 'handleSelectionChange' column.field bubbles=false)
         }}
-          {{t column.title}}
-        {{/rsa-text-with-tooltip}}
-      </h4>
-      <vbox class="radio-buttons">
-        {{#each dataCollectionConfig.items as |option|}}
-          {{#radio-button
-            classNames='rsa-form-radio-wrapper'
-            value=option.name
-            groupValue=(readonly item.startOfEvents)
-            changed=(action 'handleSelectionChange' column.field bubbles=false)
-          }}
-            <span>{{t option.label}}</span>
-          {{/radio-button}}
-        {{/each}}
+          <span>{{t option.label}}</span>
+        {{/radio-button}}
+      {{/each}}
+    </vbox>
+  </vbox>
+
+{{else if (eq column.displayType 'paths') }}
+  <h4 class='subheading'>
+    {{#rsa-text-with-tooltip
+      value=(t (concat column.title 'Tooltip'))
+      style="standard"
+      alwaysShow=true
+    }}
+      {{t column.title}}
+    {{/rsa-text-with-tooltip}}
+  </h4>
+  {{#each item.paths key="@index" as |path index|}}
+    <hbox>
+      <vbox class="directory-path">
+        {{rsa-form-input-oneway
+          value=path
+          isError=(eq (get item.paths (concat index)) invalidPath)
+          errorMessage=(t errorMessage)
+          onFocusOut=(action 'handlePathChange' column.field index)
+        }}
       </vbox>
-    </vbox>
+      <vbox class="delete-path">
+        {{#rsa-form-button isIconOnly=true defaultAction=(action 'handleDeletePath' index) }}
+          {{rsa-icon name='bin-1' size='small' class='delete-button'}}
+        {{/rsa-form-button}}
+      </vbox>
+    </hbox>
+  {{/each}}
+  <vbox class="no-path">
+    {{#if (eq item.paths.length dirPathLength)}}
+      {{t dirPathEmptyMsg}}
+    {{/if}}
+  </vbox>
 
-  {{else if (eq column.displayType 'sourceNameInput') }}
-    <h4 class='subheading'>
-      {{#rsa-text-with-tooltip
-        value=(t (concat column.title 'Tooltip'))
-        style="standard"
-        alwaysShow=true
-      }}
-        {{t column.title}}
-      {{/rsa-text-with-tooltip}}
-    </h4>
-    <div class="source-name">
-      {{rsa-form-input-oneway
-        value=item.sourceName
-        isError=(eq (get item column.field) invalidTableItem)
-        errorMessage=(t errorMessage)
-        onFocusOut=(action 'handleSourceNameChange' column.field)
-      }}
-    </div>
-
-  {{else if (eq column.displayType 'paths') }}
-    <h4 class='subheading'>
-      {{#rsa-text-with-tooltip
-        value=(t (concat column.title 'Tooltip'))
-        style="standard"
-        alwaysShow=true
-      }}
-        {{t column.title}}
-      {{/rsa-text-with-tooltip}}
-    </h4>
-    {{#each item.paths key="@index" as |path index|}}
-      <hbox>
-        <vbox class="directory-path">
-          {{rsa-form-input-oneway
-            value=path
-            isError=(eq (get item.paths (concat index)) invalidPath)
-            errorMessage=(t errorMessage)
-            onFocusOut=(action 'handlePathChange' column.field index)
-          }}
-        </vbox>
-        <vbox class="delete-path">
-          {{#rsa-form-button isIconOnly=true defaultAction=(action 'handleDeletePath' index) }}
-            {{rsa-icon name='bin-1' size='small' class='delete-button'}}
-          {{/rsa-form-button}}
-        </vbox>
-      </hbox>
-    {{/each}}
-    <vbox class="no-path">
-      {{#if (eq item.paths.length dirPathLength)}}
-        {{t dirPathEmptyMsg}}
-      {{/if}}
-    </vbox>
-
-    <div class="add-path">
-      {{#rsa-form-button
-        class='add-directory-path'
-        isDisabled=(eq item.paths.length 16)
-        click=(action 'handleAddPath')
-      }}
-        {{t 'adminUsm.policyWizard.filePolicy.addPath'}}
-      {{/rsa-form-button}}
-    </div>
+  <div class="add-path">
+    {{#rsa-form-button
+      class='add-directory-path'
+      isDisabled=(eq item.paths.length 16)
+      click=(action 'handleAddPath')
+    }}
+      {{t 'adminUsm.policyWizard.filePolicy.addPath'}}
+    {{/rsa-form-button}}
+  </div>
 
 
-  {{else if (eq column.displayType 'exclusionFilters') }}
-    <h4 class='subheading'>
-      {{#rsa-text-with-tooltip
-        value=(t (concat column.title 'Tooltip'))
-        style="standard"
-        alwaysShow=true
-      }}
-        {{t column.title}}
-      {{/rsa-text-with-tooltip}}
-    </h4>
-    <div class="exclusion-filters">
-      {{rsa-form-textarea
-        tabIndex='3'
-        placeholder=(t 'adminUsm.policyWizard.descPlaceholder')
-        value=(readonly exclusionFilters)
-        maxLength=8000
-        isError=(or (eq (get item.exclusionFilters exFilterInvalidIndex) exFilterInvalid) exFilterErr)
-        focusOut=(action 'handleExclusionFiltersChange' column.field bubbles=false)
-      }}
-    </div>
-    <div class="exclusion-filter-error">
-      {{#if (eq (get item.exclusionFilters exFilterInvalidIndex) exFilterInvalid)}}
-        {{t exFilterErrorMsg}}{{exFiltersErrLineIndex}}
-      {{/if}}
-      {{#if exFilterErr}}
-        {{t exFilterErrorMsg}}
-      {{/if}}
-    </div>
-  {{/if}}
-{{/rsa-data-table/body-cell}}
+{{else if (eq column.displayType 'exclusionFilters') }}
+  <h4 class='subheading'>
+    {{#rsa-text-with-tooltip
+      value=(t (concat column.title 'Tooltip'))
+      style="standard"
+      alwaysShow=true
+    }}
+      {{t column.title}}
+    {{/rsa-text-with-tooltip}}
+  </h4>
+  <div class="exclusion-filters">
+    {{rsa-form-textarea
+      tabIndex='3'
+      placeholder=(t 'adminUsm.policyWizard.descPlaceholder')
+      value=(readonly exclusionFilters)
+      maxLength=8000
+      isError=(or (eq (get item.exclusionFilters exFilterInvalidIndex) exFilterInvalid) exFilterErr)
+      focusOut=(action 'handleExclusionFiltersChange' column.field bubbles=false)
+    }}
+  </div>
+  <div class="exclusion-filter-error">
+    {{#if (eq (get item.exclusionFilters exFilterInvalidIndex) exFilterInvalid)}}
+      {{t exFilterErrorMsg}}{{exFiltersErrLineIndex}}
+    {{/if}}
+    {{#if exFilterErr}}
+      {{t exFilterErrorMsg}}
+    {{/if}}
+  </div>
+{{/if}}

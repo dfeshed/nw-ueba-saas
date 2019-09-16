@@ -158,5 +158,8 @@
       padding-left: rsa-whitespace(less);
       padding-bottom: rsa-whitespace(more);
     }
+    .blue.rsa-content-accordion h3 {
+      color: text-color(secondary);
+    }
   }
 }
