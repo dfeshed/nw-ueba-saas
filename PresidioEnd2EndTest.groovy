@@ -76,14 +76,12 @@ pipeline {
             }
             steps {
                 runSuiteXmlFile('e2e/E2E_Tests.xml')
+                if (params.LIVE_STATE_ON) { sh "sudo systemctl start airflow-scheduler" }
             }
         }
     }
 
     post {
-        if (params.LIVE_STATE_ON) {
-            sh "sudo systemctl start airflow-scheduler"
-        }
         always {
             junit '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
             archiveArtifacts allowEmptyArchive: true, artifacts: '**/ueba-automation-test/target/log/*.log, **/ueba-automation-test/target/environment.properties'
