@@ -66,7 +66,6 @@ module('Integration | Component | Free Form', function(hooks) {
         type: 'query'
       },
       position: 0,
-      shouldAddFocusToNewPill: false,
       fromFreeFormMode: true
     }, 'The action creator was called with the right arguments');
   });

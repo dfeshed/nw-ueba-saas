@@ -61,7 +61,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/new-pill-trigger
-        startTriggeredPosition=56
+        cursorPosition=56
         newPillPosition=56
         metaOptions=metaOptions
       }}
@@ -73,7 +73,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/new-pill-trigger
-        startTriggeredPosition=57
+        cursorPosition=57
         newPillPosition=56
         metaOptions=metaOptions
       }}

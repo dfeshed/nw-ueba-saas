@@ -6,19 +6,24 @@ import { click, fillIn, findAll, find, triggerEvent, render, settled, triggerKey
 import { clickTrigger, typeInSearch, selectChoose } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import guidedCreators from 'investigate-events/actions/guided-creators';
-import { createBasicPill, doubleClick, elementIsVisible, leaveNewPillTemplate, toggleTab } from '../pill-util';
+import {
+  createBasicPill,
+  doubleClick,
+  elementIsVisible,
+  leaveNewPillTemplate,
+  toggleTab
+} from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
 import { throwSocket } from '../../../../helpers/patch-socket';
 import { invalidServerResponseText } from '../../../../unit/actions/data';
-import {
-  AFTER_OPTION_TEXT_LABEL
-} from 'investigate-events/constants/pill';
+import { AFTER_OPTION_FREE_FORM_LABEL, AFTER_OPTION_TEXT_LABEL } from 'investigate-events/constants/pill';
 import initializationCreators from 'investigate-events/actions/initialization-creators';
+
+const { log } = console;//eslint-disable-line
 
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.key;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.key;
@@ -118,7 +123,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await createBasicPill();
     assert.ok(newActionSpy.calledOnce, 'The addGuidedPill creator was not called once');
     assert.propEqual(newActionSpy.args[0][0],
-      { pillData: { meta: 'a', operator: '=', value: '\'x\'', type: 'query' }, position: 0, shouldAddFocusToNewPill: false },
+      { pillData: { meta: 'a', operator: '=', value: '\'x\'', type: 'query' }, position: 0 },
       'The addGuidedPill creator was returned the wrong arguments');
   });
 
@@ -131,15 +136,10 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     await createBasicPill();
-
-    return settled().then(async() => {
-      // action to store in state called
-      assert.deepEqual(
-        newActionSpy.args[0][0].position,
-        2,
-        'the position is correct'
-      );
-    });
+    assert.ok(newActionSpy.calledWithMatch({
+      pillData: { meta: 'a', operator: '=', value: '\'x\'', type: 'query' },
+      position: 2
+    }), 'the position is correct');
   });
 
   test('new pill triggers render appropriately', async function(assert) {
@@ -162,8 +162,14 @@ module('Integration | Component | Query Pills', function(hooks) {
       .canQueryGuided()
       .pillsDataPopulated()
       .build();
+    this.set('cursorPosition', undefined);
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      {{query-container/query-pills
+        isActive=true
+        cursorPosition=cursorPosition
+      }}
+    `);
     await leaveNewPillTemplate();
     await click(PILL_SELECTORS.newPillTrigger);
     await createBasicPill(true, undefined, '!=');
@@ -173,31 +179,37 @@ module('Integration | Component | Query Pills', function(hooks) {
     const [[spyArgs]] = newActionSpy.args;
     assert.propEqual(spyArgs, {
       pillData: { meta: 'a', operator: '!=', value: '\'x\'', type: 'query' },
-      position: 0,
-      shouldAddFocusToNewPill: false
+      position: 0
     }, 'The action creator was called with the right arguments including the proper position');
-    assert.equal(findAll(PILL_SELECTORS.pillTriggerOpenForAdd).length, 1, 'should have a trigger open for add');
+    assert.ok(find(PILL_SELECTORS.pillOpen), 'should have a trigger open for add');
+    assert.equal(this.get('cursorPosition'), 1, 'cursor position correct');
   });
 
-  test('Creating a FF pill in the middle of pills creates a focused pill', async function(assert) {
-    assert.expect(1);
+  test('Creating a FF pill in the middle of pills forwards focus to new pill creation to the right', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
       .pillsDataPopulated()
       .build();
+    this.set('cursorPosition', undefined);
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      {{query-container/query-pills
+        isActive=true
+        cursorPosition=cursorPosition
+      }}
+    `);
+    await leaveNewPillTemplate();
     await click(PILL_SELECTORS.newPillTrigger);
     await selectChoose(PILL_SELECTORS.meta, 'alert');
     await selectChoose(PILL_SELECTORS.operator, '=');
     await typeIn(PILL_SELECTORS.valueSelectInput, 's');
 
     const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
-    const freeFormFilter = afterOptions.find((d) => d.textContent.includes('Free-Form Filter'));
+    const freeFormFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_FREE_FORM_LABEL));
     await click(freeFormFilter);
-    await settled();
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+    assert.ok(find(PILL_SELECTORS.pillOpen), 'should have a trigger open for add');
+    assert.equal(this.get('cursorPosition'), 1, 'cursor position correct');
   });
 
   test('Creating a focused pill and clicking outside the query-pills component should remove focus', async function(assert) {
@@ -271,8 +283,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     const [[spyArgs]] = newActionSpy.args;
     assert.propEqual(spyArgs, {
       pillData: { meta: 'a', operator: '=', value: '\'x\'', type: 'query' },
-      position: 0,
-      shouldAddFocusToNewPill: false
+      position: 0
     }, 'The action creator was called with the right arguments including the proper position');
   });
 
@@ -352,7 +363,6 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 1, 'Class for pill open should be present.');
     assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 0, 'No classes for pills open for edit');
-    assert.equal(findAll(PILL_SELECTORS.pillTriggerOpenForAdd).length, 0, 'Class for trigger open should be present.');
   });
 
   test('Beginning creation of a pill from trigger adds appropriate classes', async function(assert) {
@@ -372,7 +382,6 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 1, 'Class for pill open should be present.');
     assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 0, 'No classes for pills open for edit');
-    assert.equal(findAll(PILL_SELECTORS.pillTriggerOpenForAdd).length, 1, 'Class for trigger open should be present.');
   });
 
   test('Creating a pill validates the pill(clientSide) and updates if necessary', async function(assert) {
@@ -2821,8 +2830,12 @@ module('Integration | Component | Query Pills', function(hooks) {
       .canQueryGuided()
       .pillsDataEmpty()
       .build();
+    this.set('cursorPosition', undefined);
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      {{query-container/query-pills
+        isActive=true
+        cursorPosition=cursorPosition
+      }}
     `);
     await clickTrigger(PILL_SELECTORS.meta);
     await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', '(');
@@ -2839,11 +2852,13 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(trim(items[1].textContent), '(', 'Should be an open paren');
     assert.equal(trim(items[3].textContent), 'a=\'b\'', 'Should be correct pill text');
     assert.equal(trim(items[5].textContent), ')', 'Should be a close paren');
+    assert.equal(this.get('cursorPosition'), 2, 'cursor position correct');
     // need to give the new-pill-trigger a second to open
-    await waitUntil(() => find(PILL_SELECTORS.pillTriggerOpenForAdd)).then(async function() {
-      assert.ok(true, 'Should be a pill open for creation');
-      done();
-    });
+    await waitUntil(() => find(PILL_SELECTORS.pillOpen), { timeout: 1000 })
+      .then(async function() {
+        assert.ok(true, 'Should be a pill open for creation');
+        done();
+      });
   });
 
   test('new pill triggers render appropriately when including parens', async function(assert) {

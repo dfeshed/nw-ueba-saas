@@ -165,7 +165,7 @@ const createPillOnMetaDrill = ({ meta, value }) => {
 
     // Need a check here to see if that filter is already applied.
     // Rip out logic from the component.
-    dispatch(addGuidedPill({ pillData, position, shouldAddFocusToNewPill: false }));
+    dispatch(addGuidedPill({ pillData, position }));
   };
 };
 

@@ -73,7 +73,7 @@ export default Component.extend({
 
   didReceiveAttrs() {
     this._super(...arguments);
-    if (this.get('startTriggeredPosition') === this.get('newPillPosition')) {
+    if (this.get('cursorPosition') === this.get('newPillPosition')) {
       this.set('isAddNewPill', true);
     }
   },

@@ -59,7 +59,6 @@ const freeForm = Component.extend({
           this.send('addFreeFormFilter', {
             pillData,
             position: i,
-            shouldAddFocusToNewPill: false,
             // Only the first pill should have `fromFreeFormMode` set because it
             // causes all other pills to be deleted. Setting it on all of them
             // means only the last pill actually gets added.

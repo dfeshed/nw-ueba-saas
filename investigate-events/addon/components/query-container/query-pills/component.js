@@ -2,7 +2,7 @@ import { warn } from '@ember/debug';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { next, run } from '@ember/runloop';
+import { next } from '@ember/runloop';
 
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 import * as MESSAGE_TYPES from '../message-types';
@@ -202,8 +202,7 @@ const QueryPills = RsaContextMenu.extend({
 
   classNameBindings: [
     'isPillOpen:pill-open',
-    'isPillOpenForEdit:pill-open-for-edit',
-    'isPillTriggerOpenForAdd:pill-trigger-open-for-add'
+    'isPillOpenForEdit:pill-open-for-edit'
   ],
 
   i18n: service(),
@@ -218,7 +217,7 @@ const QueryPills = RsaContextMenu.extend({
   // Used to hold onto new pill triggers that should be open
   // but have been re-rendered because id of closest pill has
   // been updated
-  startTriggeredPosition: undefined,
+  cursorPosition: undefined,
 
   // Is a complex pill that was being edited, cancelled? This helps us to handle
   // the logic for cancelling the editing of a complex pill versus a pill that
@@ -230,9 +229,6 @@ const QueryPills = RsaContextMenu.extend({
 
   // Is a pill rendered by this component open for edit?
   isPillOpenForEdit: false,
-
-  // Is a pill trigger open for add?
-  isPillTriggerOpenForAdd: false,
 
   /**
    * List of all possible right click options for pills and parens
@@ -284,7 +280,7 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL]: (pillData) => this._enterPressedOnFocusedPill(pillData),
       [MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS]: (data) => this._fetchValueSuggestions(data),
       [MESSAGE_TYPES.PILL_ADD_CANCELLED]: (data, position) => this._pillAddCancelled(position),
-      [MESSAGE_TYPES.PILL_CREATED]: (data, position) => this._pillCreated(data, position),
+      [MESSAGE_TYPES.PILL_CREATED]: (data, position) => this._createPill(QUERY_FILTER, data, position),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._pillDeleted(data),
       [MESSAGE_TYPES.PILL_DESELECTED]: (data) => this._pillsDeselected([data]),
       [MESSAGE_TYPES.PILL_EDIT_CANCELLED]: (data) => this._pillEditCancelled(data),
@@ -301,8 +297,8 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT]: (position) => this._addFocusToRightPill(position),
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT]: (position) => this._pillsSelectAllToRight(position),
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT]: (position) => this._pillsSelectAllToLeft(position),
-      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: (data, position) => this._createFreeFormPill(data, position),
-      [MESSAGE_TYPES.CREATE_TEXT_PILL]: (data, position) => this._createTextPill(data, position),
+      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: (data, position) => this._createPill(COMPLEX_FILTER, data, position),
+      [MESSAGE_TYPES.CREATE_TEXT_PILL]: (data, position) => this._createPill(TEXT_FILTER, data, position),
       [MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT]: (data) => this._fetchRecentQueries(data),
       [MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED]: (data, position) => this._recentQueryPillCreated(data, position),
       [MESSAGE_TYPES.PILL_OPEN_PAREN]: (data, position) => this._insertParens(position),
@@ -378,8 +374,7 @@ const QueryPills = RsaContextMenu.extend({
   _pillEnteredForAppend() {
     this.setProperties({
       isPillOpen: true,
-      isPillOpenForEdit: false,
-      isPillTriggerOpenForAdd: false
+      isPillOpenForEdit: false
     });
     this._pillEntered();
   },
@@ -387,18 +382,16 @@ const QueryPills = RsaContextMenu.extend({
   _pillEnteredForEdit() {
     this.setProperties({
       isPillOpen: true,
-      isPillOpenForEdit: true,
-      isPillTriggerOpenForAdd: false
+      isPillOpenForEdit: true
     });
     this._pillEntered();
   },
 
   _pillEnteredForInsert(position) {
-    this.set('startTriggeredPosition', position);
+    this.set('cursorPosition', position);
     this.setProperties({
       isPillOpen: true,
-      isPillOpenForEdit: false,
-      isPillTriggerOpenForAdd: true
+      isPillOpenForEdit: false
     });
     this._pillEntered();
     next(this, () => this._cleanupTrailingText(true));
@@ -413,23 +406,17 @@ const QueryPills = RsaContextMenu.extend({
    * Adjusts flags to indicate that no pills are currently open/focused
    * for edit/add
    * @param {boolean} shouldResetStartTrigger - You want to prevent the default
-   * behavior of setting `startTriggeredPosition` to `undefined` if it was set
+   * behavior of setting `cursorPosition` to `undefined` if it was set
    * to a desired value before calling this function.
    * @private
    */
   _pillsExited(shouldResetStartTrigger = true) {
     if (shouldResetStartTrigger) {
-      this.set('startTriggeredPosition', undefined);
+      this.set('cursorPosition', undefined);
     }
-    this.set('isPillOpen', false);
-    this.set('isPillOpenForEdit', false);
-
-    // Need possible ramifications of state updates
-    // to hit first before processing this update
-    // which hides pill triggers
-    // Fixed https://bedfordjira.na.rsa.net/browse/ASOC-77261
-    run.next(() => {
-      this.set('isPillTriggerOpenForAdd', false);
+    this.setProperties({
+      isPillOpen: false,
+      isPillOpenForEdit: false
     });
   },
 
@@ -445,23 +432,30 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   /**
-   * Adds pill to state
+   * Adds a filter pill to state.
+   * @param {string} type Type of filter to create
    * @param {*} pillData The data for the pill
    * @param {*} position The position of the pill in the array
    * @private
    */
-  _pillCreated(pillData, position) {
-    const shouldAddFocusToNewPill = false;
-    // if true, it means a pill is being created in the middle of pills
-    if (this.get('isPillTriggerOpenForAdd')) {
-      // adjust the startTriggeredPosition to point to the new-pill-trigger
-      // that's after the position where this pill will be inserted
-      this.set('startTriggeredPosition', position + 1);
+  _createPill(type, pillData, position) {
+    let messageName;
+    if (type === QUERY_FILTER) {
+      messageName = 'addGuidedPill';
+    } else if (type === COMPLEX_FILTER) {
+      messageName = 'addFreeFormFilter';
+    } else if (type === TEXT_FILTER) {
+      messageName = 'addTextFilter';
+    } else {
+      warn(`Unable to create filter, unknown type of "${type}"`, 'pillCreation.unknownType');
     }
-    // Don't reset startTriggeredPosition because it's pointing to where we want
+    // adjust the cursorPosition to point to the new-pill-trigger
+    // that's after the position where this pill will be inserted
+    this.set('cursorPosition', position + 1);
+    // Don't reset cursorPosition because it's pointing to where we want
     // to be after this pill is added
     this._pillsExited(false);
-    this.send('addGuidedPill', { pillData, position, shouldAddFocusToNewPill });
+    this.send(messageName, { pillData, position });
   },
 
   /**
@@ -504,7 +498,7 @@ const QueryPills = RsaContextMenu.extend({
    * being passed in. This event is triggered when you press ARROW_RIGHT
    * from a focused pill.
    * In the case of the pill trigger on the left side, it gets re-rendered
-   * because of focus changes in state, so setting 'startTriggeredPosition'
+   * because of focus changes in state, so setting 'cursorPosition'
    * for it should just work without any click().
    * @private
    */
@@ -518,7 +512,7 @@ const QueryPills = RsaContextMenu.extend({
    * from a focused pill.
    * In the case of the pill trigger on the right side, it doesn't get
    * re-rendered (because the triggers are rendered on the left side within the loop).
-   * In that case the click() will work and startTriggeredPosition wouldn't do anything
+   * In that case the click() will work and cursorPosition wouldn't do anything
    * because it only effects on init and that component should not get re-rendered.
    * @private
    */
@@ -682,29 +676,6 @@ const QueryPills = RsaContextMenu.extend({
     if (!isEventFiredFromQueryPill(e)) {
       this.send('removePillFocus');
     }
-  },
-
-  _createFreeFormPill(pillData, position) {
-    // if true, it means a pill is being created in the middle of pills
-    const shouldAddFocusToNewPill = this.get('isPillTriggerOpenForAdd');
-    this._pillsExited();
-    this.send('addFreeFormFilter', {
-      pillData,
-      position,
-      shouldAddFocusToNewPill,
-      fromFreeFormMode: false
-    });
-  },
-
-  _createTextPill(pillData, position) {
-    // if true, it means a pill is being created in the middle of pills
-    const shouldAddFocusToNewPill = this.get('isPillTriggerOpenForAdd');
-    this._pillsExited();
-    this.send('addTextFilter', {
-      pillData,
-      position,
-      shouldAddFocusToNewPill
-    });
   },
 
   _cleanupTrailingText(fromPillTrigger = false) {
