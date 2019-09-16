@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
-@Import({PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class, OutputDataServiceConfig.class, SessionSplitStoreCacheConfiguration.class})
+@Import({PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class, OutputDataServiceConfig.class})
 public class InputCoreConfigurationTest {
 
     @Value("${transformers.file.path}")
@@ -68,14 +68,9 @@ public class InputCoreConfigurationTest {
     @Autowired
     private DeserializerTransformationService deserializerTransformationService;
 
-    @Autowired
-    List<AbstractFlushable> flushableList;
-
-
     @Bean
     public FlushableService flushableService() {
         FlushableService flushableService = new FlushableService();
-        flushableList.forEach(flushable -> flushable.registerFlushableService(flushableService));
         return flushableService;
     }
 
