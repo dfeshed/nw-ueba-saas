@@ -4310,7 +4310,7 @@ export default {
     },
     tabs: {
       properties: 'Properties',
-      events: 'Events ({{count}})',
+      events: 'Events List ({{count}})',
       all: 'All',
       alerts: 'Alerts ({{count}})',
       hosts: 'Hosts ({{count}})'

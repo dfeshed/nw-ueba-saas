@@ -14,6 +14,9 @@
         opacity: 0.5;
         pointer-events: none;
       }
+      .rsa-nav-tab.is-left-aligned-secondary {
+        margin: 10px;
+      }
     }
     &__label {
       padding: 0 rsa-whitespace(less);

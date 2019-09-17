@@ -138,7 +138,7 @@ const TreeComponent = Component.extend({
   selectedProcess: null,
 
   _processDetailsVisible: observer('isProcessDetailsVisible', function() {
-    if (this.get('isProcessDetailsVisible')) {
+    if (this.get('isProcessDetailsVisible') && this.get('hasEvents')) {
       this._reCenterOnSideTabOpen(getSelectedProcess());
     }
   }),
