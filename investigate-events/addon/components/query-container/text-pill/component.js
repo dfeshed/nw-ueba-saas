@@ -12,7 +12,7 @@ export default Component.extend({
   classNames: ['pill', 'text-pill'],
   classNameBindings: ['isActive', 'isEditing', 'isFocused', 'isSelected'],
   tagName: 'div',
-  attributeBindings: ['title'],
+  attributeBindings: ['title', 'position'],
   i18n: service(),
 
   pillData: undefined,

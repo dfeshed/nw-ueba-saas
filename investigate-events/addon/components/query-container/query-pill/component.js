@@ -35,7 +35,7 @@ const RESET_PROPS = {
 export default Component.extend({
   classNames: ['pill', 'query-pill'],
   classNameBindings: ['isActive', 'isEditing', 'isInvalid', 'isSelected', 'isExpensive', 'isFocused', 'activeTab'],
-  attributeBindings: ['title'],
+  attributeBindings: ['title', 'position'],
   i18n: service(),
 
   queryCounter: service(),

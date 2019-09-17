@@ -6,6 +6,7 @@ import * as MESSAGE_TYPES from '../message-types';
 export default Component.extend({
   classNames: ['close-paren'],
   classNameBindings: ['isFocused', 'isSelected', 'isTwinFocused'],
+  attributeBindings: ['position'],
 
   /**
    * The position of this pill relative to other pills.

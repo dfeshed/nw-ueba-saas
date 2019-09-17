@@ -10,7 +10,7 @@ export default Component.extend({
   classNames: ['pill', 'complex-pill'],
   classNameBindings: ['isActive', 'isEditing', 'isFocused', 'isInvalid', 'isSelected'],
   tagName: 'div',
-  attributeBindings: ['title'],
+  attributeBindings: ['title', 'position'],
   i18n: service(),
 
   pillData: undefined,

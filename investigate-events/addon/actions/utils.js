@@ -224,6 +224,23 @@ export const isEmptyParenSetAt = (arr, i) => {
   return op && op.type === OPEN_PAREN && cp && cp.type === CLOSE_PAREN;
 };
 
+/**
+ * For the paren postion passed in, find the open and close paren set. Return everything
+ * from pillsData apart from the content enclosed between that set.
+ */
+const pillsSetDifference = (position, pillsData) => {
+  const pillSet = new Set(pillsData);
+
+  // Slice out the contents of the selected parens
+  const pill = pillsData[position];
+  const st = pillsData.findIndex((p) => pill.twinId === p.twinId && p.type === OPEN_PAREN);
+  const en = pillsData.findIndex((p) => pill.twinId === p.twinId && p.type === CLOSE_PAREN);
+  const pillsToBeQueried = pillsData.slice(st, en + 1);
+
+  // negate rest of the pills
+  return [...pillSet.difference(new Set(pillsToBeQueried))];
+};
+
 // Get all the stuff between sets of parens
 const contentBetweenParens = (openParensSelected, pillsData) => {
   const result = openParensSelected.reduce((acc, openParen) => {
@@ -244,5 +261,6 @@ export {
   findEmptyParensAtPosition,
   hasEmptyParensAt,
   parseBasicQueryParams,
+  pillsSetDifference,
   selectPillsFromPosition
 };

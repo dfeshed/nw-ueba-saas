@@ -1541,7 +1541,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      await click(`#${items[1].id}`); // delete option
+      const actionSelector = items.find((op) => op.textContent.includes('Delete selection'));
+      await click(`#${actionSelector.id}`); // delete option
       return settled().then(() => {
         assert.equal(deleteSelectedGuidedPillsSpy.callCount, 1, 'The delete selected pill action creator was called once');
         assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Number of pills present');
@@ -1590,7 +1591,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      await click(`#${items[1].id}`); // delete option
+      const actionSelector = items.find((op) => op.textContent.includes('Delete selection'));
+      await click(`#${actionSelector.id}`); // delete option
       return settled().then(() => {
         assert.equal(deleteSelectedGuidedPillsSpy.callCount, 1, 'The delete selected pill action creator was called once');
         assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Number of pills present');
@@ -1636,14 +1638,68 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 2, 'Incorrect number of options for parens');
-      await click(`#${items[0].id}`); // delete parens and contents option
+      assert.equal(items.length, 3, 'Incorrect number of options for parens');
+      const actionSelector = items.find((op) => op.textContent.includes('and contents'));
+      await click(`#${actionSelector.id}`); // delete parens and contents option
       return settled().then(() => {
         assert.equal(deleteSelectedParenContentsSpy.callCount, 1, 'The delete selected pill action creator was called once');
         assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Number of pills present'); // NPT + medium=32
         assert.notOk(find(PILL_SELECTORS.openParenSelected), 'Should not have found paren');
         assert.notOk(find(PILL_SELECTORS.closeParenSelected), 'Should not have found paren');
         done();
+      });
+    });
+  });
+
+  test('Right clicking a paren and choosing query with contents will delete everything except their contents and query', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    const done = assert.async();
+
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+
+    this.set('executeQuery', () => {
+      done();
+    });
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true executeQuery=executeQuery}}
+        {{context-menu}}
+      </div>
+    `);
+
+    // create one more pill
+    await selectChoose(PILL_SELECTORS.meta, 'medium');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, '32');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+
+    await leaveNewPillTemplate();
+
+    await click(PILL_SELECTORS.openParen);
+
+    await triggerEvent(find(PILL_SELECTORS.openParenSelected), 'contextmenu', { clientX: 100, clientY: 100 });
+
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      const actionSelector = items.find((op) => op.textContent.includes('paren contents'));
+      assert.equal(items.length, 3, 'Incorrect number of options for parens');
+      await click(`#${actionSelector.id}`); // query with contents
+      return settled().then(() => {
+        assert.equal(deleteActionSpy.callCount, 1, 'The delete selected pill action creator was called once');
+        // NPT + ( pill ) -> 2 pills and 2 parens
+        assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Number of pills present'); // NPT + ( pill )
+        assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'Did not find open paren');
+        assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'Did not find close paren');
+        assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'zero selected pills');
       });
     });
   });

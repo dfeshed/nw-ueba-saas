@@ -10,6 +10,7 @@ import { isEscape } from 'investigate-events/util/keys';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { stripOuterSingleQuotes } from 'investigate-events/util/quote';
 import { isSubmitClicked } from '../query-pill/query-pill-util';
+import { pillsSetDifference } from 'investigate-events/actions/utils';
 
 import {
   canQueryGuided,
@@ -178,6 +179,19 @@ const rightClickParenDeleteContents = (context, i18n) => {
   };
 };
 
+const rightClickParensQueryContents = (context, i18n) => {
+  return {
+    label: i18n.t('queryBuilder.queryParenContents'),
+    action() {
+      const pillsData = context.get('pillsData');
+      const position = context.get('rightClickTarget').getAttribute('position');
+      const pillsToDelete = pillsSetDifference(position, pillsData);
+      context.send('deleteGuidedPill', { pillData: pillsToDelete });
+      context._submitQuery();
+    }
+  };
+};
+
 // Prepare an object that contains all possible list of options
 function getContextItems(context, i18n) {
   const _this = context;
@@ -188,6 +202,7 @@ function getContextItems(context, i18n) {
       rightClickDeleteSelection(_this, i18n)
     ],
     parens: [
+      rightClickParensQueryContents(_this, i18n),
       rightClickParenDeleteContents(_this, i18n),
       rightClickDeleteSelection(_this, i18n)
     ]
@@ -240,6 +255,8 @@ const QueryPills = RsaContextMenu.extend({
    */
   contextItems: undefined,
 
+  rightClickTarget: undefined,
+
   /**
    * Clean up input trailing text current pill's meta, operator and value.
    * @type {Object}
@@ -259,6 +276,7 @@ const QueryPills = RsaContextMenu.extend({
       } else {
         this.set('contextItems', this.get('contextOptions').pills);
       }
+      this.set('rightClickTarget', currentClass ? target : target.parentElement);
       this._super(...arguments);
     } else {
       if (this.get('contextMenuService').deactivate) {

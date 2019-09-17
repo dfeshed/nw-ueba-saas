@@ -1,7 +1,7 @@
 import reselect from 'reselect';
 
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { TEXT_FILTER } from 'investigate-events/constants/pill';
+import { TEXT_FILTER, OPEN_PAREN } from 'investigate-events/constants/pill';
 import { selectedService, hasSummaryData } from 'investigate-events/reducers/investigate/services/selectors';
 import { createQueryHash } from 'investigate-events/util/query-hash';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
@@ -191,7 +191,7 @@ export const canQueryGuided = createSelector(
 
 export const selectedOpenParens = createSelector(
   [pillsData],
-  (_pillsData) => _pillsData.filter((pD) => pD.isSelected === true && pD.type === 'open-paren')
+  (_pillsData) => _pillsData.filter((pD) => pD.isSelected === true && pD.type === OPEN_PAREN)
 );
 
 export const selectedPills = createSelector(
