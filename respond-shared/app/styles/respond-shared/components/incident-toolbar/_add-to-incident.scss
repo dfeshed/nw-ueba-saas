@@ -88,6 +88,23 @@ $alertSectionHeight: 100px;
     overflow-y: auto;
     margin: 0.5rem 1rem 1.5rem 0;
     width: 66%;
+
+    .alert-severity-invalid {
+      input {
+        background-color: background-color(accentOne, base, nearly-transparent);
+      }
+    }
+
+    .severity-error {
+      @include rsa-font(paragraph, small);
+      padding-left: rsa-whitespace(less);
+      color: text-color(primary, lightest);
+
+      i {
+        vertical-align: middle;
+        margin-right: rsa-whitespace(least);
+      }
+    }
   }
 
   .rsa-form-label {

@@ -4,14 +4,30 @@
     <span class="rsa-form-label">
       <label>{{t 'respond.alerts.severity'}}</label>
     </span>
-    {{input type='number' min=1 max=100 name='alertSeverity' value=alertSeverity}}
+
+    <span class="{{if isAlertSeverityInvalid 'alert-severity-invalid'}}">
+      {{input
+        type='number'
+        min=1
+        max=100
+        name='alertSeverity'
+        value=alertSeverity
+        key-up=(action "alertSeverityChanged")}}
+
+      {{#if isAlertSeverityInvalid}}
+        <span class="severity-error">
+          {{t 'respond.alerts.alertSeverityError'}}
+        </span>
+      {{/if}}
+    </span>
   </div>
 {{/if}}
 
 <div>
   <label class="rsa-form-input">
     <span class="rsa-form-label">{{t 'respond.alerts.incidentSearch.searchInputLabel'}}</span>
-    {{input type="text" placeholder=(t 'respond.alerts.incidentSearch.searchInputPlaceholder') key-up=(action 'handleSearchKeyup')}}
+    {{input type="text" placeholder=(t 'respond.alerts.incidentSearch.searchInputPlaceholder')
+            key-up=(action 'handleSearchKeyup')}}
   </label>
 </div>
 <div class={{if selectedEventIds 'from-investigate' 'from-respond'}}>
@@ -24,7 +40,8 @@
     columnsConfig=(readonly columns)}}
 
     {{#rsa-data-table/header translateTitles=true as |column|}}
-      <div {{action 'sortIncident' column isSortDescending}} class="header-title {{if (not column.disableSort) 'sortable'}}" title="{{t column.title}}">
+      <div {{action 'sortIncident' column isSortDescending}}
+        class="header-title {{if (not column.disableSort) 'sortable'}}" title="{{t column.title}}">
         {{t column.title}}
         {{#unless column.disableSort}}
           <span class="sort-indicator {{if (eq column.field sortBy) 'sorted'}}">
@@ -43,7 +60,7 @@
     {{else}}
 
       {{#rsa-data-table/body
-          noResultsMessage=(t (if hasSearchQuery 'respond.alerts.incidentSearch.noResults' 'respond.alerts.incidentSearch.noQuery')) as |item index column|}}
+        noResultsMessage=(t (if hasSearchQuery 'respond.alerts.incidentSearch.noResults' 'respond.alerts.incidentSearch.noQuery')) as |item index column|}}
         {{#rsa-data-table/body-cell item=item column=column}}
           {{#if (and (eq column.id 'select') (eq item selectedIncident))}}
 
@@ -75,7 +92,7 @@
     {{/rsa-form-button}}
     {{#rsa-form-button
       class="apply"
-      isDisabled=isIncidentNotSelected
+      isDisabled=isInvalid
       style='primary'
       defaultAction=(action 'handleSubmit')
     }}

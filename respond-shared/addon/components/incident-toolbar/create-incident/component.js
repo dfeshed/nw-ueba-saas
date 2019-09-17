@@ -8,7 +8,10 @@ import {
   getGroupedCategories,
   getPriorityTypes
 } from '../../../selectors/create-incident/selectors';
-import { createIncidentFromEvents, createIncidentFromAlerts } from 'respond-shared/actions/creators/create-incident-creators';
+import {
+  createIncidentFromEvents,
+  createIncidentFromAlerts
+} from 'respond-shared/actions/creators/create-incident-creators';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 
@@ -135,15 +138,22 @@ const createIncidentButton = Component.extend(Notifications, {
   selectedAlerts: null,
 
   /**
-   * Indicates whether the form is invalid. Since the form only has one field (for incident name) and that field is
-   * required for incident creation, the form is only invalid if the field is empty
+   * Represents whether alert severity entered by user is valid or not
+   * @property isAlertSeverityInvalid
+   * @type {boolean}
+   * @public
+   */
+  isAlertSeverityInvalid: false,
+
+  /**
+   * Indicates whether the form is invalid. the form is invalid if incident name is empty or alert severity which user entered is incorrect
    * @property isInvalid
    * @type {boolean}
    * @public
    */
-  @computed('name')
-  isInvalid(name) {
-    return isEmpty(name) || typeOf(name) === 'string' && isEmpty(name.trim());
+  @computed('name', 'isAlertSeverityInvalid')
+  isInvalid(name, isAlertSeverityInvalid) {
+    return isEmpty(name) || typeOf(name) === 'string' && isEmpty(name.trim()) || isAlertSeverityInvalid;
   },
 
   didInsertElement() {
@@ -152,6 +162,15 @@ const createIncidentButton = Component.extend(Notifications, {
   },
 
   actions: {
+    alertSeverityChanged(alertSeverity) {
+      // Regex to match number between 1 and 100
+      const validSeverityRegex = /^[1-9][0-9]?$|^100$/;
+
+      const isAlertSeverityInvalid = !validSeverityRegex.test(alertSeverity);
+
+      this.set('isAlertSeverityInvalid', isAlertSeverityInvalid);
+    },
+
     handleCancel() {
       this.close();
     },
@@ -169,7 +188,8 @@ const createIncidentButton = Component.extend(Notifications, {
         if (assignee) {
           incidentDetails.assignee = assignee.id;
         }
-        incidentDetails = { ...incidentDetails,
+        incidentDetails = {
+          ...incidentDetails,
           eventIds: selectedEventIds,
           endpointId,
           range: {

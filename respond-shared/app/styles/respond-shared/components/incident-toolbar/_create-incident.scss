@@ -38,11 +38,29 @@
 
   .create-incident-alert-summary {
     border: 1px solid border-color(primary);
+
+    .alert-severity-invalid {
+      input {
+        background-color: background-color(accentOne, base, nearly-transparent);
+      }
+    }
+
+    .severity-error {
+      @include rsa-font(paragraph, small);
+      padding-left: rsa-whitespace(less);
+      color: text-color(primary, lightest);
+
+      i {
+        vertical-align: middle;
+        margin-right: rsa-whitespace(least);
+      }
+    }
   }
 
   .severity-input {
     margin-left: 1rem;
     margin-bottom: 0.5rem;
+    height: 30px;
   }
 
   .rsa-label {

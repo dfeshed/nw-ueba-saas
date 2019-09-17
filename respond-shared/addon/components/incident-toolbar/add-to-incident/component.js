@@ -5,6 +5,7 @@ import Notifications from 'component-lib/mixins/notifications';
 import columns from './columns';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
+import computed from 'ember-computed-decorators';
 import {
   clearSearchIncidentsResults,
   updateSearchIncidentsText,
@@ -151,12 +152,31 @@ const addToIncidentButton = Component.extend(Notifications, {
   selectedAlerts: null,
 
   /**
+   * Represents whether alert severity entered by user is valid or not
+   * @property isAlertSeverityInvalid
+   * @type {boolean}
+   * @public
+   */
+  isAlertSeverityInvalid: false,
+
+  /**
    * Debounceable search function that delegates to the `search` action
    * @param value
    * @private
    */
   _search(value) {
     this.send('searchIncident', value);
+  },
+
+  /**
+   * Indicates whether the form is invalid. the form is invalid if incident is not selected or alert severity which user entered is incorrect
+   * @property isInvalid
+   * @type {boolean}
+   * @public
+   */
+  @computed('isIncidentNotSelected', 'isAlertSeverityInvalid')
+  isInvalid(isIncidentNotSelected, isAlertSeverityInvalid) {
+    return isIncidentNotSelected || isAlertSeverityInvalid;
   },
 
   didInsertElement() {
@@ -225,6 +245,15 @@ const addToIncidentButton = Component.extend(Notifications, {
           this.set('isAddToIncidentInProgress', false);
         }
       });
+    },
+
+    alertSeverityChanged(alertSeverity) {
+      // Regex to match number between 1 and 100
+      const validSeverityRegex = /^[1-9][0-9]?$|^100$/;
+
+      const isAlertSeverityInvalid = !validSeverityRegex.test(alertSeverity);
+
+      this.set('isAlertSeverityInvalid', isAlertSeverityInvalid);
     }
   }
 });

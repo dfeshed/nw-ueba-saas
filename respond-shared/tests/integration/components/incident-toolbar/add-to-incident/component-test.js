@@ -1,4 +1,4 @@
-import { click, find, findAll, render, settled, triggerKeyEvent, fillIn } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -85,6 +85,19 @@ module('Integration | Component | incident-toolbar/add-to-incident', function(ho
     await render(hbs`{{incident-toolbar/add-to-incident}}`);
     assert.equal(findAll('.apply.is-disabled').length, 1,
       'The APPLY button is disabled when there is selected incident but isAddToIncidentInProgress is true');
+  });
+
+  test('Apply button is disabled when user enters incorrect alert severity', async function(assert) {
+    setState({ ...initialState, selectedIncident: { id: 'INC-123' } });
+    this.set('selectedEventIds', [ 12 ]);
+    await render(hbs`{{incident-toolbar/add-to-incident selectedEventIds=selectedEventIds}}`);
+
+    const [ , $input] = findAll('.add-to-incident-alert-summary input');
+    await fillIn($input, 200);
+    await triggerKeyEvent($input, 'keyup', 13);
+
+    assert.equal(find('.severity-error').textContent.trim(), 'The alert severity value must range from 1 to 100', 'alert severity value is incorrect');
+    assert.equal(findAll('.apply.is-disabled').length, 1, 'The APPLY button is disabled when user has entered incorrect alert severity');
   });
 
   test('An error is displayed if the incidentSearchStatus property is "error"', async function(assert) {

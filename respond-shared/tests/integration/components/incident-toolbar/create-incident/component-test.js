@@ -1,7 +1,7 @@
 import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { click, findAll, render } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import {
@@ -58,6 +58,20 @@ module('Integration | Component | incident-toolbar/create-incident', function(ho
     await init;
     await render(hbs`{{incident-toolbar/create-incident name="Suspected C&C"}}`);
     assert.equal(findAll('.apply:not(.is-disabled)').length, 1, 'The APPLY button is not disabled when there is an incidentName');
+  });
+
+  test('Apply button is disabled when user enters incorrect alert severity', async function(assert) {
+    setState();
+    await init;
+    this.set('selectedEventIds', [ 12 ]);
+    await render(hbs`{{incident-toolbar/create-incident name="Suspected C&C" selectedEventIds=selectedEventIds}}`);
+
+    const $input = find('.severity-input');
+    await fillIn($input, 200);
+    await triggerKeyEvent($input, 'keyup', 13);
+
+    assert.equal(find('.severity-error').textContent.trim(), 'The alert severity value must range from 1 to 100', 'alert severity value is incorrect');
+    assert.equal(findAll('.apply.is-disabled').length, 1, 'The APPLY button is disabled when user has entered incorrect alert severity');
   });
 
   test('Clicking Apply will execute the create incident and show a success flash message', async function(assert) {

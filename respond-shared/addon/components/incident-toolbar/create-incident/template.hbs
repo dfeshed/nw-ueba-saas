@@ -13,7 +13,23 @@
       <span class="rsa-label">
         <label>{{t 'respond.alerts.severity'}}</label>
       </span>
-      {{input type='number' min=1 max=100 name='alertSeverity' class='severity-input' value=alertSeverity}}
+
+      <span class="{{if isAlertSeverityInvalid 'alert-severity-invalid'}}">
+        {{input
+          type='number'
+          min=1
+          max=100
+          name='alertSeverity'
+          class='severity-input'
+          value=alertSeverity
+          key-up=(action "alertSeverityChanged")}}
+
+        {{#if isAlertSeverityInvalid}}
+          <span class="severity-error">
+            {{t 'respond.alerts.alertSeverityError'}}
+          </span>
+        {{/if}}
+      </span>
     </div>
   {{/if}}
 

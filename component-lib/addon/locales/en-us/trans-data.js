@@ -1265,6 +1265,7 @@ export default {
       addToIncident: 'Add to Incident',
       alertSummary: 'Alert Summary',
       defaultAlertSummaryText: 'Manual alert for All Data',
+      alertSeverityError: 'The alert severity value must range from 1 to 100',
       severity: 'Severity',
       incidentSearch: {
         searchInputLabel: 'Search Open Incidents',
