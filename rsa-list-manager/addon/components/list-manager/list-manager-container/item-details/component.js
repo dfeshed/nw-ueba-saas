@@ -1,12 +1,20 @@
 import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
+import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
+import { itemType } from 'rsa-list-manager/selectors/list-manager/selectors';
 
-export default Component.extend({
+const stateToComputed = (state, attrs) => ({
+  itemType: itemType(state, attrs.listLocation)
+});
+
+const ItemDetails = Component.extend({
   layout,
 
   classNames: ['item-details'],
+
+  listLocation: undefined,
 
   editItem: null,
 
@@ -34,5 +42,6 @@ export default Component.extend({
       this.get('contextualHelp').goToHelp(moduleId, topicId);
     }
   }
-
 });
+
+export default connect(stateToComputed)(ItemDetails);

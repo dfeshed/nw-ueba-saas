@@ -43,9 +43,55 @@ export const listName = createSelector(
   }
 );
 
+export const list = createSelector(
+  _rootState,
+  (rootState) => {
+    return rootState.list;
+  }
+);
+
+export const filteredList = createSelector(
+  [_rootState],
+  (rootState) => {
+    if (rootState.list && rootState.filterText) {
+      return rootState.list.filter((item) => item.name.toLowerCase().includes(rootState.filterText.toLowerCase()));
+    } else if (rootState.list) {
+      return rootState.list;
+    }
+  }
+);
+
+export const filterText = createSelector(
+  _rootState,
+  (rootState) => {
+    return rootState.filterText;
+  }
+);
+
 export const isListManagerReady = createSelector(
   [_rootState],
   (rootState) => {
     return !!rootState.listLocation;
+  }
+);
+
+export const itemType = createSelector(
+  [_rootState],
+  (rootState) => {
+    return rootState.listName ? rootState.listName.slice(0, -1) : undefined;
+  }
+);
+
+export const newItemButtonTitle = createSelector(
+  [_rootState],
+  (rootState) => {
+    return rootState.listName ? `New ${rootState.listName.slice(0, -1)}` : undefined;
+  }
+);
+
+export const isExpanded = createSelector(
+  [_rootState],
+  (rootState) => {
+    return rootState.isExpanded;
   }
 );

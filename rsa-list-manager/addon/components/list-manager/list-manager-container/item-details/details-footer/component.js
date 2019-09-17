@@ -1,17 +1,19 @@
 import Component from '@ember/component';
 import layout from './template';
+import { connect } from 'ember-redux';
+import { itemType } from 'rsa-list-manager/selectors/list-manager/selectors';
 
-export default Component.extend({
+const stateToComputed = (state, attrs) => ({
+  itemType: itemType(state, attrs.listLocation)
+});
+
+const DetailsFooter = Component.extend({
 
   tagName: 'footer',
-
   layout,
-
   classNames: ['details-footer'],
-
-  item: null,
-
-  // item type that is being handled eg. Column Group
-  itemType: null
-
+  listLocation: undefined,
+  item: null
 });
+
+export default connect(stateToComputed)(DetailsFooter);

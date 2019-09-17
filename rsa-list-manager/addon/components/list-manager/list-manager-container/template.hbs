@@ -27,8 +27,6 @@
             {{yield (hash
                 filter=(component listFilterComponent
                   listLocation=listLocation
-                  originalList=list
-                  updateFilteredList=(action 'updateFilteredList')
                 )
               )
             }}
@@ -36,10 +34,8 @@
             {{yield (hash
                 itemList=(component itemListComponent
                   listLocation=listLocation
-                  list=filteredList
                   selectedItem=selectedItem
                   itemSelection=(action 'handleItemSelection')
-                  isExpanded=isExpanded
                   editItem=(action 'editItem')
                 )
               )
@@ -47,7 +43,7 @@
           </div>
 
           {{list-manager/list-manager-container/list-footer
-            itemType=itemType
+            listLocation=listLocation
             createItem=(action 'editItem')
             helpId=helpId
           }}
@@ -57,7 +53,6 @@
           {{yield (hash
               details=(component itemDetailsComponent
                 listLocation=listLocation
-                itemType=itemType
                 detailsDone=(action 'detailsDone')
                 item=itemForEdit
                 itemSelection=(action 'handleItemSelection')

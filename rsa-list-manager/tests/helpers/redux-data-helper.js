@@ -53,4 +53,19 @@ export default class DataHelper {
     _set(this.state, 'listName', name);
     return this;
   }
+
+  list(list) {
+    _set(this.state, 'list', list);
+    return this;
+  }
+
+  filterText(text) {
+    _set(this.state, 'filterText', text);
+    return this;
+  }
+
+  isExpanded(value) {
+    _set(this.state, 'isExpanded', value);
+    return this;
+  }
 }

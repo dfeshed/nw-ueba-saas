@@ -8,27 +8,33 @@ module('Unit | Reducers | list-manager');
 
 const listLocation1 = 'listManager';
 const listName1 = 'Some List';
+const list1 = [
+  { id: 3, name: 'eba', subItems: [ 'a', 'b', 'c' ] },
+  { id: 1, name: 'foo', subItems: [ 'a', 'b' ] },
+  { id: 2, name: 'bar', subItems: [ 'e', 'b', 'c' ] },
+  { id: 4, name: 'Baz', subItems: [ 'c' ] }
+];
 
 test('ACTION_TYPES.INITIALIZE_LIST_MANAGER updates values', function(assert) {
   const prevState = Immutable.from({
     listLocation: undefined,
     listName: undefined,
-    highlightedIndex: -1
+    list: undefined,
+    filterText: undefined
   });
 
   const action = {
     type: ACTION_TYPES.INITIALIZE_LIST_MANAGER,
-    payload: { listLocation: listLocation1, listName: listName1 }
+    payload: { listLocation: listLocation1, listName: listName1, list: list1 }
   };
   const result = reducer(prevState, action);
   assert.equal(result.listLocation, listLocation1, 'listLocation shall be set');
   assert.equal(result.listName, listName1, 'listName shall be set');
-
+  assert.deepEqual(result.list, list1, 'list shall be set');
 });
 
 test('ACTION_TYPES.SET_HIGHLIGHTED_INDEX sets highlightedIndex', function(assert) {
   const prevState = Immutable.from({
-    listLocation: undefined,
     highlightedIndex: -1
   });
 
@@ -40,4 +46,41 @@ test('ACTION_TYPES.SET_HIGHLIGHTED_INDEX sets highlightedIndex', function(assert
 
   const result = reducer(prevState, action);
   assert.equal(result.highlightedIndex, randomIndex, 'highlightedIndex shall be set correctly');
+});
+
+test('ACTION_TYPES.TOGGLE_LIST_VISIBILITY toggles isExpanded and resets highlightedIndex and filterText',
+  function(assert) {
+    const initialValue = false;
+    const prevState = Immutable.from({
+      isExpanded: initialValue,
+      highlightedIndex: 3,
+      filterText: ''
+    });
+
+    const action = {
+      type: ACTION_TYPES.TOGGLE_LIST_VISIBILITY
+    };
+
+    const result = reducer(prevState, action);
+    assert.equal(result.isExpanded, !initialValue, 'isExpanded shall be set correctly');
+    assert.equal(result.highlightedIndex, -1, 'highlightedIndex shall be reset');
+    assert.equal(result.filterText, '', 'filterText shall be reset');
+    const result2 = reducer(Immutable.from(result), action);
+    assert.equal(result2.isExpanded, initialValue, 'isExpanded shall be set correctly');
+    assert.equal(result2.highlightedIndex, -1, 'highlightedIndex shall be reset');
+    assert.equal(result2.filterText, '', 'filterText shall be reset');
+  });
+
+test('ACTION_TYPES.SET_FILTER_TEXT sets filterText', function(assert) {
+  const prevState = Immutable.from({
+    filterText: undefined
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_FILTER_TEXT,
+    payload: 'some text'
+  };
+
+  const result = reducer(prevState, action);
+  assert.equal(result.filterText, 'some text', 'filterText shall be set correctly');
 });

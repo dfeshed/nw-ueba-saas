@@ -2,22 +2,23 @@ import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
+import { connect } from 'ember-redux';
+import { newItemButtonTitle } from 'rsa-list-manager/selectors/list-manager/selectors';
 
-export default Component.extend({
+const stateToComputed = (state, attrs) => ({
+  newItemButtonTitle: newItemButtonTitle(state, attrs.listLocation)
+});
+
+const ListFooter = Component.extend({
   tagName: 'footer',
   layout,
   classNames: ['list-footer'],
-  itemType: null,
+  listLocation: undefined,
   createItem: null,
   contextualHelp: service(),
 
   // object with parameters topicId & moduleId for contextual help
   helpId: null,
-
-  @computed('itemType')
-  newItemButtonTitle(itemType) {
-    return `New ${itemType}`;
-  },
 
   @computed('helpId')
   hasContextualHelp(helpId) {
@@ -39,3 +40,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed)(ListFooter);

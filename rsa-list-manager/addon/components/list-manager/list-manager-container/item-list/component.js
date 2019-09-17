@@ -3,10 +3,12 @@ import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { setHighlightedIndex } from 'rsa-list-manager/actions/creators/creators';
-import { highlightedIndex, listName } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { highlightedIndex, listName, isExpanded, filteredList } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
   listName: listName(state, attrs.listLocation),
+  filteredList: filteredList(state, attrs.listLocation),
+  isExpanded: isExpanded(state, attrs.listLocation),
   highlightedIndex: highlightedIndex(state, attrs.listLocation)
 });
 
@@ -19,23 +21,22 @@ const ItemList = Component.extend({
   tagName: 'ul',
   classNames: ['rsa-item-list'],
   listLocation: undefined,
-  list: null,
   selectedItem: null,
   onMouse: null, // true if user is using the mouse to navigate
 
-  @computed('list', 'highlightedIndex')
-  highlightedId(list, highlightedIndex) {
-    return list && highlightedIndex > -1 ? list[highlightedIndex].id : null;
+  @computed('filteredList', 'highlightedIndex')
+  highlightedId(filteredList, highlightedIndex) {
+    return filteredList && highlightedIndex > -1 ? filteredList[highlightedIndex].id : null;
   },
 
-  @computed('list', 'selectedItem')
-  selectedIndex(list, selectedItem) {
-    return list && selectedItem ? list.findIndex((item) => item.id === selectedItem.id) : -1;
+  @computed('filteredList', 'selectedItem')
+  selectedIndex(filteredList, selectedItem) {
+    return filteredList && selectedItem ? filteredList.findIndex((item) => item.id === selectedItem.id) : -1;
   },
 
-  @computed('list')
-  hasIsEditableIndicators(list) {
-    const editableIndicatedItems = list.filter((item) => typeof item.isEditable !== 'undefined');
+  @computed('filteredList')
+  hasIsEditableIndicators(filteredList) {
+    const editableIndicatedItems = filteredList.filter((item) => typeof item.isEditable !== 'undefined');
     return editableIndicatedItems.length > 0;
   },
 
@@ -120,9 +121,9 @@ const ItemList = Component.extend({
         }
         // ENTER key - select the item at highlightedIndex
         // if not already selected
-        const { selectedIndex, list, highlightedIndex } = this.getProperties('selectedIndex', 'list', 'highlightedIndex');
+        const { selectedIndex, filteredList, highlightedIndex } = this.getProperties('selectedIndex', 'filteredList', 'highlightedIndex');
         if (highlightedIndex !== selectedIndex) {
-          this.get('itemSelection')(list[highlightedIndex]);
+          this.get('itemSelection')(filteredList[highlightedIndex]);
         }
       }
     }
@@ -133,9 +134,9 @@ const ItemList = Component.extend({
     * if last option is selected, select first option
     */
   selectNext() {
-    const { selectedIndex, list, highlightedIndex } = this.getProperties('selectedIndex', 'list', 'highlightedIndex');
+    const { selectedIndex, filteredList, highlightedIndex } = this.getProperties('selectedIndex', 'filteredList', 'highlightedIndex');
     let nextIndex;
-    const currentIndexIsLast = highlightedIndex === (list.get('length') - 1);
+    const currentIndexIsLast = highlightedIndex === (filteredList.get('length') - 1);
 
     // if there is no highlightedIndex, start at the first item
     if (highlightedIndex < 0) {
@@ -162,16 +163,16 @@ const ItemList = Component.extend({
    * if first option is selected, select last option
    */
   selectPrevious() {
-    const { selectedIndex, list, highlightedIndex } = this.getProperties('selectedIndex', 'list', 'highlightedIndex');
+    const { selectedIndex, filteredList, highlightedIndex } = this.getProperties('selectedIndex', 'filteredList', 'highlightedIndex');
     let nextIndex;
 
     // if there is no highlightedIndex, start at the last item
     if (highlightedIndex < 0) {
-      nextIndex = list.length - 1;
+      nextIndex = filteredList.length - 1;
     } else {
       // if at the first item, go to the last item
       // else, go to the previous item
-      nextIndex = this.get('highlightedIndex') === 0 ? list.length - 1 : this.get('highlightedIndex') - 1;
+      nextIndex = this.get('highlightedIndex') === 0 ? filteredList.length - 1 : this.get('highlightedIndex') - 1;
     }
     this.send('setHighlightedIndex', nextIndex, this.get('listLocation'));
 

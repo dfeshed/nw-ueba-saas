@@ -2,23 +2,37 @@ import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { render, find, findAll } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { patchReducer } from '../../../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
+
+let setState;
 
 module('Integration | Component | item details', function(hooks) {
   setupRenderingTest(hooks);
 
+  hooks.beforeEach(function() {
+    setState = (state) => {
+      patchReducer(this, state);
+    };
+    initialize(this.owner);
+  });
+
   const item = { id: '1', name: 'foo' };
+  const list1 = [{ id: '1', name: 'foo' }];
+  const listLocation1 = 'listManager';
 
   test('renders list details with correct components', async function(assert) {
-
+    new ReduxDataHelper(setState).list(list1).listName('Foos').build();
+    this.set('listLocation', listLocation1);
     this.set('detailsDone', () => {});
     this.set('itemSelection', () => {});
-    this.set('itemType', 'Foo');
     this.set('item', item);
     this.set('helpId', { topicId: 'foo', moduleId: 'bar' });
 
     await render(hbs`{{list-manager/list-manager-container/item-details
+      listLocation=listLocation
       item=item
-      itemType=itemType
       detailsDone=detailsDone
       itemSelection=itemSelection
       helpId=helpId

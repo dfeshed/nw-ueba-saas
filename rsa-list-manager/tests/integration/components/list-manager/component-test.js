@@ -18,6 +18,7 @@ module('Integration | Component | list-manager', function(hooks) {
 
   const listManagerSelector = '.list-manager';
   const listLocation1 = 'listManager';
+  const listName1 = 'Some Things';
 
   const items = [
     { id: 3, name: 'eba', subItems: [ 'a', 'b', 'c' ] },
@@ -30,10 +31,12 @@ module('Integration | Component | list-manager', function(hooks) {
     new ReduxDataHelper(setState).build();
     this.set('listLocation', listLocation1);
     this.set('list', items);
+    this.set('listName', listName1);
 
     await render(hbs`{{#list-manager
       listLocation=listLocation
       list=list
+      listName=listName
     }}
     {{/list-manager}}`);
 
@@ -44,9 +47,11 @@ module('Integration | Component | list-manager', function(hooks) {
     new ReduxDataHelper(setState).build();
     this.set('listLocation', listLocation1);
     this.set('list', items);
+    this.set('listName', listName1);
 
     await render(hbs`{{#list-manager
       listLocation=listLocation
+      listName=listName
       list=list
     }}
     {{/list-manager}}`);

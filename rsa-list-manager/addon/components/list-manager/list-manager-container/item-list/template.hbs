@@ -1,5 +1,5 @@
-{{#if list}}
-  {{#each list as |item|}}
+{{#if filteredList}}
+  {{#each filteredList as |item|}}
     {{yield (hash
         item=(component 'list-manager/list-manager-container/item-list/item'
           item=item
