@@ -53,6 +53,34 @@ module('Unit | Route | application', function(hooks) {
     return PatchedRoute.create();
   };
 
+  test('model hook resolves when the filePolicyFeature is enabled', async function(assert) {
+    assert.expect(1);
+
+    const features = this.owner.lookup('service:features');
+    const route = this.owner.lookup('route:application');
+    // enable the feature
+    features.setFeatureFlags({ 'rsa.usm.filePolicyFeature': true });
+    await route.model().then(() => {
+      // resolve
+      assert.ok(true);
+    }, () => {
+      // reject
+      assert.notOk(true);
+    });
+  });
+
+  test('model hook rejects when the filePolicyFeature is not enabled', async function(assert) {
+    assert.expect(1);
+    const route = this.owner.lookup('route:application');
+    await route.model().then(() => {
+      // resolve
+      assert.ok(false);
+    }, () => {
+      // reject
+      assert.notOk(false);
+    });
+  });
+
   test('it resolves the proper title token for the route', async function(assert) {
     assert.expect(1);
     const i18n = this.owner.lookup('service:i18n');

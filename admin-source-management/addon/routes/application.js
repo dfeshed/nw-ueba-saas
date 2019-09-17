@@ -1,5 +1,6 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
+import RSVP from 'rsvp';
 import { getOwner } from '@ember/application';
 import { hasPolicyChanged } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 import { hasGroupChanged } from 'admin-source-management/reducers/usm/group-wizard-selectors';
@@ -9,6 +10,26 @@ export default Route.extend({
   contextualHelp: service(),
   eventBus: service(),
   session: service(),
+  features: service(),
+
+  model() {
+    return this.waitForSourceManagementFeatures();
+  },
+
+  waitForSourceManagementFeatures(numRetries = 19) {
+    return new RSVP.Promise((resolve, reject) => {
+      const areFeaturesLoaded = (maxTrys) => {
+        if (this.get('features').hasFeatureFlag('rsa.usm.filePolicyFeature')) {
+          resolve();
+        } else if (maxTrys > 0) {
+          setTimeout(areFeaturesLoaded, 500, maxTrys - 1);
+        } else {
+          reject();
+        }
+      };
+      areFeaturesLoaded(numRetries);
+    });
+  },
 
   beforeModel() {
     const hasUsmAccess = this.get('accessControl.hasAdminViewUnifiedSourcesAccess');
