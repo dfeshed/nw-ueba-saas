@@ -302,7 +302,8 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT]: (data) => this._fetchRecentQueries(data),
       [MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED]: (data, position) => this._recentQueryPillCreated(data, position),
       [MESSAGE_TYPES.PILL_OPEN_PAREN]: (data, position) => this._insertParens(position),
-      [MESSAGE_TYPES.PILL_CLOSE_PAREN]: (data, position) => this._moveCursorOrInsertParens(position)
+      [MESSAGE_TYPES.PILL_CLOSE_PAREN]: (data, position) => this._moveCursorOrInsertParens(position),
+      [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR]: (data, position) => this._insertLogicalOperator(data, position)
     });
     this.setProperties({
       CLOSE_PAREN,
@@ -681,7 +682,11 @@ const QueryPills = RsaContextMenu.extend({
   _cleanupTrailingText(fromPillTrigger = false) {
     this.set('cleanupInputFields', { fromPillTrigger });
     // reset the field
-    next(this, () => this.set('cleanupInputFields', undefined));
+    next(this, () => {
+      if (!this.isDestroyed || !this.isDestroying) {
+        this.set('cleanupInputFields', undefined);
+      }
+    });
   },
 
   _recentQueryPillCreated(data, position) {
@@ -740,6 +745,10 @@ const QueryPills = RsaContextMenu.extend({
    */
   _fetchValueSuggestions({ metaName, filter }) {
     this.send('valueSuggestions', metaName, filter);
+  },
+
+  _insertLogicalOperator(data, position) {
+    log('Insert logical operator "', data, '" at position', position);
   }
 });
 

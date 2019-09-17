@@ -2990,4 +2990,30 @@ module('Integration | Component | Query Pill', function(hooks) {
     await fillIn(PILL_SELECTORS.recentQuerySelectInput, 'alert = bar');
     await toggleTab(PILL_SELECTORS.recentQuerySelectInput);
   });
+
+  test('it dispatched the correct event when a logical operator is typed', async function(assert) {
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (messageType, data, position) => {
+      if (messageType === MESSAGE_TYPES.PILL_LOGICAL_OPERATOR) {
+        assert.equal(data, 'AND', 'correct data sent');
+        assert.equal(position, 0, 'correct position sent');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'AND');
+  });
 });

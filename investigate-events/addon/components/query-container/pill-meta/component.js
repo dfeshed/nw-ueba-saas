@@ -7,6 +7,7 @@ import {
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
   AFTER_OPTION_TEXT_UNAVAILABLE_LABEL,
+  LOGICAL_OPERATORS,
   POWER_SELECT_INPUT,
   POWER_SELECT_TRIGGER_INPUT
 } from 'investigate-events/constants/pill';
@@ -29,7 +30,7 @@ import { assert } from '@ember/debug';
 import { matcher } from '../query-pill/query-pill-util';
 import { filterValidMeta, lastValidMeta } from 'investigate-events/util/meta';
 
-const { log } = console;// eslint-disable-line no-unused-vars
+const { log } = console;// eslint-disable-line
 
 const DISABLED_TEXT_SEARCH = {
   label: AFTER_OPTION_TEXT_DISABLED_LABEL,
@@ -61,7 +62,9 @@ const _dropFocus = () => {
   }
 };
 
-const _isFirstChar = (event) => event && event.target && event.target.value === '';
+const _isFirstChar = (event) => event?.target?.value === '';
+
+const _isLogicalOperator = (string) => LOGICAL_OPERATORS.includes(string);
 
 const AFTER_OPTIONS_COMPONENT = 'query-container/power-select-after-options';
 
@@ -393,6 +396,14 @@ export default Component.extend({
         this.set('selection', null);
         this._broadcast(MESSAGE_TYPES.META_SELECTED, null);
         powerSelectAPI.actions.highlight(null);
+      } else if (_isLogicalOperator(input)) {
+        // We handle logical operators here instead of in the keydown section
+        // because we need to look at a string of characters, not an individual
+        // key like the onKeyDown section
+        powerSelectAPI.actions.search('');
+        powerSelectAPI.actions.close();
+        this._broadcast(MESSAGE_TYPES.PILL_LOGICAL_OPERATOR, input);
+        return false;
       } else {
         const searchTerm = input;
         if (input && input.trim().length > 0) {

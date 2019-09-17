@@ -474,4 +474,26 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
       await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
     });
   });
+
+  test('it dispatched the correct event when a logical operator is typed', async function(assert) {
+    const done = assert.async();
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (messageType, data, position) => {
+      if (messageType === MESSAGE_TYPES.PILL_LOGICAL_OPERATOR) {
+        assert.equal(data, 'OR', 'correct data sent');
+        assert.equal(position, 1, 'correct position sent');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        newPillPosition=1
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await focus(PILL_SELECTORS.metaTrigger);
+    await typeIn(PILL_SELECTORS.metaInput, 'OR');
+  });
 });

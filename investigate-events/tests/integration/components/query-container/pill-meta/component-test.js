@@ -1098,4 +1098,49 @@ module('Integration | Component | Pill Meta', function(hooks) {
     assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'Input should have cleared');
 
   });
+
+  test('it broadcasts a message that a logical operator was entered', async function(assert) {
+    assert.expect(12);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.PILL_LOGICAL_OPERATOR) {
+        assert.ok(true, `received proper message for logical operator "${data}"`);
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    // Test &&/AND
+    await typeIn(PILL_SELECTORS.metaInput, '&&');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, '', '&& was cleared');
+    await typeIn(PILL_SELECTORS.metaInput, 'AND');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'AND was cleared');
+    // Test ||/OR
+    await typeIn(PILL_SELECTORS.metaInput, '||');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, '', '|| was cleared');
+    await typeIn(PILL_SELECTORS.metaInput, 'OR');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'OR was cleared');
+    // Test falsy conditions
+    await typeIn(PILL_SELECTORS.metaInput, 'x&&');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, 'x&&', 'text containing operator-like value was not cleared');
+    await blur(PILL_SELECTORS.metaInput);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'and');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, 'and', 'lowercase AND operator was not cleared');
+    await blur(PILL_SELECTORS.metaInput);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'or');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, 'or', 'lowercase OR operator was not cleared');
+    await blur(PILL_SELECTORS.metaInput);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'and&&');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, 'and&&', 'operator-like value preceeded by lowercase text was not cleared');
+    await blur(PILL_SELECTORS.metaInput);
+    await clickTrigger(PILL_SELECTORS.meta);
+  });
 });

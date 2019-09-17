@@ -331,7 +331,8 @@ export default Component.extend({
       [MESSAGE_TYPES.RECENT_QUERIES_ESCAPE_KEY]: () => this._cancelPill(),
       [MESSAGE_TYPES.RECENT_QUERY_SELECTED]: (data) => this._recentQuerySelected(data),
       [MESSAGE_TYPES.PILL_OPEN_PAREN]: () => this._openParen(),
-      [MESSAGE_TYPES.PILL_CLOSE_PAREN]: () => this._closeParen()
+      [MESSAGE_TYPES.PILL_CLOSE_PAREN]: () => this._closeParen(),
+      [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR]: (data) => this._logicalOperator(data)
     });
 
     if (this.get('isExistingPill')) {
@@ -1185,6 +1186,10 @@ export default Component.extend({
    */
   _requestValueSuggestions(metaName, filter) {
     this._broadcast(MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS, { metaName, filter });
+  },
+
+  _logicalOperator(data) {
+    this._broadcast(MESSAGE_TYPES.PILL_LOGICAL_OPERATOR, data);
   },
 
   // ************************ EPS TAB FUNCTIONALITY *************************  //
