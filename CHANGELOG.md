@@ -1,3 +1,18 @@
+# [14.2.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.2.0)
+## Features
+* [ASOC-72711](https://bedfordjira.na.rsa.net/browse/ASOC-72711):&emsp;Meta-Value Suggestion UX
+* [ASOC-74230](https://bedfordjira.na.rsa.net/browse/ASOC-74230):&emsp;Automatic Removal of Orphaned Parens
+* [ASOC-74235](https://bedfordjira.na.rsa.net/browse/ASOC-74235):&emsp;Handle Paste of Query
+* [ASOC-78797](https://bedfordjira.na.rsa.net/browse/ASOC-78797):&emsp;Support Numerical Range
+* [ASOC-79268](https://bedfordjira.na.rsa.net/browse/ASOC-79268):&emsp;Data Config Tool - Dashlet for Investigate
+* [ASOC-82100](https://bedfordjira.na.rsa.net/browse/ASOC-82100):&emsp;Focus moves to a new pill template to the right
+* [ASOC-78726](https://bedfordjira.na.rsa.net/browse/ASOC-78726):&emsp;Read-Only group view
+* [ASOC-82720](https://bedfordjira.na.rsa.net/browse/ASOC-82720):&emsp;Build a shared Ember component to warn/notify users with text message
+* [ASOC-81783](https://bedfordjira.na.rsa.net/browse/ASOC-81783):&emsp;Implement switch to hide events tab & rename all references in Classic SA
+* [ASOC-81784](https://bedfordjira.na.rsa.net/browse/ASOC-81784):&emsp;Implement events tab switch behavior & rename all references in Ember SA
+* [ASOC-81960](https://bedfordjira.na.rsa.net/browse/ASOC-81960):&emsp;Render email body in iframe and disable links
+
+
 # [14.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.1.0)
 ## Features
 * [ASOC-72705](https://bedfordjira.na.rsa.net/browse/ASOC-72705):&emsp;Meta-Value Suggestion Keyboard Navigation/Highlighting
