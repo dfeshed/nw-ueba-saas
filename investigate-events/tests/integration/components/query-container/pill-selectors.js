@@ -64,6 +64,7 @@ export default {
   powerSelectOptionValue: '.js-test-power-select-option .value',
   queryPill: '.query-pill',
   queryPillNotTemplate: '.query-pill:not(.new-pill-template)',
+  quoteHighlight: '.quote-highlight',
   selectedPill: '.is-selected',
   textPill: '.text-pill',
   textPillActive: '.text-pill.is-active',

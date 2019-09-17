@@ -6,8 +6,7 @@ import computed, { alias, and, equal } from 'ember-computed-decorators';
 import _ from 'lodash';
 
 import * as MESSAGE_TYPES from '../message-types';
-import quote from 'investigate-events/util/quote';
-import { createFilter, convertTextToPillData } from 'investigate-events/util/query-parsing';
+import { createFilter, convertTextToPillData, valueList } from 'investigate-events/util/query-parsing';
 import { determineNewComponentPropsFromPillData, resultsCount, isSubmitClicked } from './query-pill-util';
 import {
   COMPLEX_FILTER,
@@ -1000,17 +999,23 @@ export default Component.extend({
   /**
    * Creates a pillData object
    *
-   * @param {*} value The pill value. Does not have to be specified if
+   * @param {*} values The pill value. Does not have to be specified if
    * operator is a type that does not have a value.
    * @return {Object} The pill data
    * @private
    */
-  _createPillData(value = null) {
+  _createPillData(values) {
+    if (!values) {
+      values = [];
+    } else if (typeof values === 'string') {
+      values = valueList(values);
+    }
+    values = values.map((v) => v.value);
     const { selectedMeta, selectedOperator } = this.getProperties('selectedMeta', 'selectedOperator');
     const meta = selectedMeta ? selectedMeta.metaName : null;
     const operator = this.get('selectedOperator.displayName');
 
-    const pillData = createFilter(QUERY_FILTER, meta, operator, value);
+    const pillData = createFilter(QUERY_FILTER, meta, operator, values);
 
     // If is an existing pill, add id to object
     if (this.get('isExistingPill')) {
@@ -1023,15 +1028,16 @@ export default Component.extend({
     // if the type is not text but if an alias was entered.
     const languageAndAliasesForParser = this.get('languageAndAliasesForParser');
     const aliases = languageAndAliasesForParser ? languageAndAliasesForParser.aliases : {};
-    const isValueValidAlias = value && aliases[meta] && Object.values(aliases[meta]).some((alias) => alias.toLowerCase() === value.toLowerCase());
-    if ((selectedMeta && selectedMeta.format === 'Text' &&
-      selectedOperator && selectedOperator.displayName !== 'length' &&
-      value) ||
-      isValueValidAlias) {
-      pillData.value = quote(value);
-    } else {
-      pillData.value = value;
-    }
+    const stringOfValues = values.map((value) => {
+      const isValueValidAlias = value && aliases[meta] && Object.values(aliases[meta]).some((alias) => alias.toLowerCase() === value.toLowerCase());
+      if ((selectedMeta && selectedMeta.format === 'Text' &&
+        selectedOperator && selectedOperator.displayName !== 'length') ||
+        isValueValidAlias) {
+        return `'${value}'`;
+      }
+      return value;
+    }).join(',');
+    pillData.value = stringOfValues || null;
 
     return pillData;
   },

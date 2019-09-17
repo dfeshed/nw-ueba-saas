@@ -14,7 +14,7 @@ import KEY_MAP, {
   isTab,
   isShiftTab
 } from 'investigate-events/util/keys';
-import { escapeBackslash, escapeSingleQuotes, properlyQuoted, stripOuterSingleQuotes } from 'investigate-events/util/quote';
+import { stripOuterSingleQuotes } from 'investigate-events/util/quote';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
@@ -26,7 +26,7 @@ import {
 import * as MESSAGE_TYPES from '../message-types';
 import Ember from 'ember';
 import BoundedList from 'investigate-events/util/bounded-list';
-import { hasComplexText } from 'investigate-events/util/query-parsing';
+import { hasComplexText, valueList } from 'investigate-events/util/query-parsing';
 import {
   addAndRemoveElements,
   addNoResultsMessage,
@@ -218,18 +218,23 @@ export default Component.extend({
   valueDisplay(valueString) {
     let ret = valueString;
     if (typeof(valueString) === 'string') {
-      const match = valueString.match(properlyQuoted);
-      if (match) {
-        // For text values with html tags, we will need to encode the string,
-        // before passing it through htmlSafe so that the original value is retained.
-        // This is an internal Ember API function
-        const transformedString = Utils.escapeExpression(match[1]);
-        ret = htmlSafe(`
-          <span class="quote-highlight">'</span>
-          ${transformedString}
-          <span class="quote-highlight">'</span>
-        `);
-      }
+      const values = valueList(valueString);
+      ret = values.map((value) => {
+        if (value.quoted) {
+          // For text values with html tags, we will need to encode the string,
+          // before passing it through htmlSafe so that the original value is retained.
+          // This is an internal Ember API function
+          const transformedString = Utils.escapeExpression(value.value);
+          return `
+            <span class="quote-highlight">'</span>
+            ${transformedString}
+            <span class="quote-highlight">'</span>
+          `;
+        } else {
+          return Utils.escapeExpression(value.value);
+        }
+      }).join(',');
+      ret = htmlSafe(ret);
     }
     return ret;
   },
@@ -427,8 +432,7 @@ export default Component.extend({
         if (isComplex) {
           value = searchText.trim();
         } else {
-          const trimmedInput = stripOuterSingleQuotes(searchText).trim();
-          value = escapeSingleQuotes(escapeBackslash(trimmedInput));
+          value = valueList(searchText);
         }
         // cleanup
         this.set('_searchString', undefined);
@@ -630,10 +634,7 @@ export default Component.extend({
   },
 
   _isInputEmpty: (input) => {
-    const trimmedInput = input.trim();
-    const isEmpty = trimmedInput.length === 0;
-    const hasEmptyQuotes = trimmedInput.match(/^['"]\s*['"]$/);
-    return isEmpty || (hasEmptyQuotes && hasEmptyQuotes.length > 0);
+    return input.length === 0;
   },
 
   /**

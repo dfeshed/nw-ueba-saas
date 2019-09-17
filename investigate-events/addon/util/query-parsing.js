@@ -470,3 +470,81 @@ export const convertTextToPillData = ({ queryText, availableMeta }) => {
 
   return pillData;
 };
+
+/**
+ * Returns an array of values separated by commas.
+ * @public
+ */
+export const valueList = (string) => {
+  const whitespaceRegex = /\s+/;
+  const result = [];
+  let tempString = '';
+  let activeQuote = null;
+  let goodQuoted = false;
+  let startingQuotePos = NaN;
+  let inbetweenStrings = true;
+  let pos = 0;
+  // Iterate over the entire string
+  while (pos < string.length) {
+    const char = string[pos];
+    // While we're not capturing text, we're searching for text to start capturing
+    // or quotes to pay attention to
+    if (inbetweenStrings) {
+      // If we see a quote, store the quote type and location, and start normal
+      // character scanning
+      if (char === '\'' || char === '"') {
+        activeQuote = char;
+        startingQuotePos = pos;
+        inbetweenStrings = false;
+      // If we see a non-whitespace character, capture it and start normal scanning
+      } else if (!whitespaceRegex.test(char)) {
+        tempString += char;
+        inbetweenStrings = false;
+      }
+      // If we see whitespace, do nothing here, which trims whitespace off the front
+      // of a value
+    } else {
+      if (pos === string.length - 1 && activeQuote && char !== activeQuote) {
+        // Unterminated string, jump back in time and treat the opening quote as part of the value.
+        pos = startingQuotePos;
+        activeQuote = null;
+        tempString = '';
+        // inbetweenStrings remains false
+        // Skip position increment
+        continue;
+      // If a quote is encountered, set activeQuote to null only if there's not
+      // a non-whitespace character before the next comma or the end of the string
+      } else if (char === activeQuote) {
+        let commaIdx = string.indexOf(',', pos);
+        if (commaIdx === -1) {
+          commaIdx = string.length;
+        }
+        const betweenPosAndComma = string.substring(pos + 1, commaIdx);
+        if (betweenPosAndComma.length === 0 || whitespaceRegex.test(betweenPosAndComma)) {
+          // If all that exists between the end quote and the comma is whitespace,
+          // skip ahead to the comma.
+          pos = commaIdx - 1;
+          activeQuote = null;
+          goodQuoted = true;
+        } else {
+          // If there are non-whitespace characters (besides the quote) between
+          // the quote and the next comma, treat this quote as part of this value.
+          tempString += char;
+        }
+      } else if (char === ',' && !activeQuote) {
+        result.push({ value: tempString.trim(), quoted: goodQuoted });
+        tempString = '';
+        inbetweenStrings = true;
+        goodQuoted = false;
+      } else {
+        tempString += char;
+      }
+    }
+    pos++;
+  }
+  if (tempString.length > 0) {
+    result.push({ value: tempString.trim(), quoted: goodQuoted });
+  }
+  // Only return non-empty strings
+  return result.filter((a) => a.value !== '');
+};

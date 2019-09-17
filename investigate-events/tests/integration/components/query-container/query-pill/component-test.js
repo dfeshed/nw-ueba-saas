@@ -468,6 +468,48 @@ module('Integration | Component | Query Pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
   });
 
+  test('A pill will handle quotes and aliases gracefully and correctly', async function(assert) {
+    const done = assert.async();
+    this.set('metaOptions', metaOptions);
+    this.set('languageAndAliasesForParser', languageAndAliases);
+
+    this.set('handleMessage', (messageType, data, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Message sent for pill create is not correct');
+      // Should unquote numbers and quote aliases
+      assert.propEqual(data, { meta: 'ip.proto', operator: '=', value: '1,6,\'UDP\',\'RDP\'', type: 'query' }, 'Message sent for pill create contains correct pill data');
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        position=0
+        isActive=true
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+        languageAndAliasesForParser=languageAndAliasesForParser
+      }}
+    `);
+
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 14); // ip.proto
+
+    await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
+
+    await selectChoose(PILL_SELECTORS.operatorTrigger, '=');
+
+    await waitUntil(() => find(PILL_SELECTORS.valueTrigger));
+
+    await fillIn(PILL_SELECTORS.valueSelectInput, '1,\'6\',UDP,\'RDP\'');
+
+    // Create pill
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+  });
+
   test('selecting meta sends out correct messages', async function(assert) {
     assert.expect(2);
     this.set('metaOptions', metaOptions);

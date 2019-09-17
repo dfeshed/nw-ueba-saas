@@ -10,7 +10,8 @@ import {
   parsePillDataFromUri,
   reassignTwinIds,
   transformTextToPillData,
-  metaFiltersAsString
+  metaFiltersAsString,
+  valueList
 } from 'investigate-events/util/query-parsing';
 import { DEFAULT_LANGUAGES, DEFAULT_ALIASES } from '../../helpers/redux-data-helper';
 import {
@@ -1152,5 +1153,47 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[6].twinId, 'twinPill_3', 'item at index 6 incorrect');
     assert.equal(result[8].twinId, 'twinPill_3', 'item at index 8 incorrect');
     assert.equal(result[9].twinId, 'twinPill_4', 'item at index 9 incorrect');
+  });
+
+  test('valueList separates values into an array intelligently', function(assert) {
+    // Splits up things into an array, strips quotes from individual items
+    assert.deepEqual(valueList("1,'2',http,'smtp'"), [
+      { value: '1', quoted: false },
+      { value: '2', quoted: true },
+      { value: 'http', quoted: false },
+      { value: 'smtp', quoted: true }
+    ]);
+    assert.deepEqual(valueList('1,"2","http",smtp'), [
+      { value: '1', quoted: false },
+      { value: '2', quoted: true },
+      { value: 'http', quoted: true },
+      { value: 'smtp', quoted: false }
+    ]);
+    // Does not split on commas within quotes
+    assert.deepEqual(valueList('7,\'8,9\',10'), [
+      { value: '7', quoted: false },
+      { value: '8,9', quoted: true },
+      { value: '10', quoted: false }
+    ]);
+    // Does not end on escaped quotes
+    assert.deepEqual(valueList('foo,bar,\'bazn\\\'t\''), [
+      { value: 'foo', quoted: false },
+      { value: 'bar', quoted: false },
+      { value: 'bazn\\\'t', quoted: true }
+    ]);
+    // Empty string is empty array
+    assert.deepEqual(valueList(''), []);
+    // Empty quotes is empty array
+    assert.deepEqual(valueList('\'\''), []);
+    assert.deepEqual(valueList('""'), []);
+    // Spaces should be empty
+    assert.deepEqual(valueList('   '), []);
+    assert.deepEqual(valueList('\'   \''), []);
+    assert.deepEqual(valueList('"   "'), []);
+    // Quotes with padding should be empty
+    assert.deepEqual(valueList('  \'\'  '), []);
+    assert.deepEqual(valueList('  ""  '), []);
+    assert.deepEqual(valueList('  \'   \'  '), []);
+    assert.deepEqual(valueList('  "   "  '), []);
   });
 });

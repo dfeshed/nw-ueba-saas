@@ -183,7 +183,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     assert.expect(1);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.VALUE_ENTER_KEY) {
-        assert.equal(data, 'x', 'Wrong input string');
+        assert.deepEqual(data, [{ quoted: false, value: 'x' }], 'Wrong input string');
         done();
       }
     });
@@ -203,7 +203,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     assert.expect(1);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.VALUE_ENTER_KEY) {
-        assert.equal(data, 'x', 'Wrong input string');
+        assert.deepEqual(data, [{ quoted: false, value: 'x' }], 'Wrong input string');
         done();
       }
     });
@@ -262,7 +262,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     assert.expect(1);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.VALUE_ENTER_KEY) {
-        assert.equal(data, 'x', 'Wrong input string');
+        assert.deepEqual(data, [{ quoted: false, value: 'x' }], 'Wrong input string');
         done();
       }
     });
@@ -283,7 +283,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.VALUE_ENTER_KEY) {
-        assert.equal(data, 'x', 'Wrong input string');
+        assert.deepEqual(data, [{ quoted: false, value: 'x' }], 'Wrong input string');
         done();
       }
     });
@@ -846,5 +846,14 @@ module('Integration | Component | Pill Value', function(hooks) {
     assert.ok(find(PILL_SELECTORS.noResultsMessageSelector).textContent.includes('suggestions'), 'Message not found');
   });
 
+  test('it renders the correct quotes as styled, and ignores others', async function(assert) {
+    await render(hbs`
+      {{query-container/pill-value
+        valueString="22,80,'http','can't','smtp'"
+      }}
+    `);
 
+    const quotes = findAll(PILL_SELECTORS.quoteHighlight);
+    assert.strictEqual(quotes.length, 6, 'Should only highlight 6 quotes');
+  });
 });
