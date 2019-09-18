@@ -3,7 +3,7 @@ import * as ACTION_TYPES from 'rsa-list-manager/actions/types';
 // TODO add more properties later
 /**
  *
- * @param {object} inputs { listLocation, listName, list, ... }
+ * @param {object} inputs { listLocation, listName, list, selectedItem, ... }
  */
 export const initializeListManager = (inputs) => ({
   type: ACTION_TYPES.INITIALIZE_LIST_MANAGER,
@@ -29,5 +29,17 @@ export const toggleListVisibility = (listLocation) => ({
 export const setFilterText = (text, listLocation) => ({
   type: ACTION_TYPES.SET_FILTER_TEXT,
   payload: text,
+  meta: { belongsTo: listLocation }
+});
+
+export const viewChanged = (viewname, listLocation) => ({
+  type: ACTION_TYPES.SET_VIEW_NAME,
+  payload: viewname,
+  meta: { belongsTo: listLocation }
+});
+
+export const setSelectedItem = (item, listLocation) => ({
+  type: ACTION_TYPES.SET_SELECTED_ITEM,
+  payload: item,
   meta: { belongsTo: listLocation }
 });

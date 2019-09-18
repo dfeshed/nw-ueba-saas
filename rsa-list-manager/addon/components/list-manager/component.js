@@ -31,7 +31,7 @@ const ListManager = Component.extend({
   list: null,
 
   didInsertElement() {
-    const initialProperties = this.getProperties('listLocation', 'listName', 'list');
+    const initialProperties = this.getProperties('listLocation', 'listName', 'list', 'selectedItem');
     this.send('initializeListManager', initialProperties);
   }
 });

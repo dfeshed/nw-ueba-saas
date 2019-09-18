@@ -4,24 +4,39 @@ import { htmlSafe } from '@ember/string';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import {
+  LIST_MANAGER_CONTAINER_COMPONENT_PATH as COMPONENT_PATH,
+  LIST_VIEW,
+  EDIT_VIEW
+} from 'rsa-list-manager/constants/list-manager';
+import {
   setHighlightedIndex,
-  toggleListVisibility
+  toggleListVisibility,
+  setSelectedItem,
+  viewChanged
 } from 'rsa-list-manager/actions/creators/creators';
 import {
   listName,
   itemType,
-  isExpanded
+  isExpanded,
+  selectedItem,
+  viewName,
+  isListView
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
   listName: listName(state, attrs.listLocation),
   isExpanded: isExpanded(state, attrs.listLocation),
-  itemType: itemType(state, attrs.listLocation)
+  itemType: itemType(state, attrs.listLocation),
+  selectedItem: selectedItem(state, attrs.listLocation),
+  viewName: viewName(state, attrs.listLocation),
+  isListView: isListView(state, attrs.listLocation)
 });
 
 const dispatchToActions = {
   setHighlightedIndex,
-  toggleListVisibility
+  toggleListVisibility,
+  setSelectedItem,
+  viewChanged
 };
 
 const menuOffsetsStyle = (el) => {
@@ -33,8 +48,6 @@ const menuOffsetsStyle = (el) => {
   }
 };
 
-const COMPONENT_PATH = 'list-manager/list-manager-container';
-
 const ListManagerContainer = Component.extend({
   layout,
   classNames: ['list-manager-container'],
@@ -43,21 +56,11 @@ const ListManagerContainer = Component.extend({
   itemDetailsComponent: `${COMPONENT_PATH}/item-details`,
   listLocation: undefined,
 
-  // Object to identify an item as selected in the manager's button caption
-  selectedItem: null,
-
-  // View to be rendered through button actions (list-view, detail-view, etc)
-  viewName: null,
-
   // item rendered for details
   itemForEdit: null,
 
   // style for the recon-button-menu derived from the buttonGroup style
   offsetsStyle: null,
-
-  didInsertElement() {
-    this.set('viewName', 'list-view');
-  },
 
   @computed('listName', 'selectedItem')
   caption(listName, selectedItem) {
@@ -69,11 +72,6 @@ const ListManagerContainer = Component.extend({
     return listName;
   },
 
-  @computed('viewName')
-  isListView(viewName) {
-    return viewName === 'list-view';
-  },
-
   @computed('selectedItem')
   titleTooltip(selectedItem) {
     if (selectedItem) {
@@ -83,7 +81,7 @@ const ListManagerContainer = Component.extend({
   },
 
   _updateView(viewName) {
-    this.set('viewName', viewName);
+    this.send('viewChanged', viewName, this.get('listLocation'));
   },
 
   actions: {
@@ -95,7 +93,6 @@ const ListManagerContainer = Component.extend({
 
     toggleExpandManagerList() {
       this.set('offsetsStyle', menuOffsetsStyle(this.get('element')));
-      this.set('viewName', 'list-view');
       this.send('toggleListVisibility', this.get('listLocation'));
     },
 
@@ -105,17 +102,18 @@ const ListManagerContainer = Component.extend({
       // the selection is processed the list-manager returns to an unselected state
       if (!selectedItem || (selectedItem && selectedItem.id !== item.id)) {
         this.get('itemSelection')(item);
+        this.send('setSelectedItem', item, this.get('listLocation'));
       }
       this.send('toggleListVisibility', this.get('listLocation'));
     },
 
     editItem(item) {
       this.set('itemForEdit', item);
-      this._updateView('edit-view');
+      this._updateView(EDIT_VIEW);
     },
 
     detailsDone() {
-      this._updateView('list-view');
+      this._updateView(LIST_VIEW);
     }
   }
 });

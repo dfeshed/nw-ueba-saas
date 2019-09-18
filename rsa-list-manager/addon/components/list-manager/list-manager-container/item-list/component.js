@@ -3,13 +3,20 @@ import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { setHighlightedIndex } from 'rsa-list-manager/actions/creators/creators';
-import { highlightedIndex, listName, isExpanded, filteredList } from 'rsa-list-manager/selectors/list-manager/selectors';
+import {
+  highlightedIndex,
+  listName,
+  isExpanded,
+  filteredList,
+  selectedItem
+} from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
   listName: listName(state, attrs.listLocation),
   filteredList: filteredList(state, attrs.listLocation),
   isExpanded: isExpanded(state, attrs.listLocation),
-  highlightedIndex: highlightedIndex(state, attrs.listLocation)
+  highlightedIndex: highlightedIndex(state, attrs.listLocation),
+  selectedItem: selectedItem(state, attrs.listLocation)
 });
 
 const dispatchToActions = {
@@ -21,13 +28,7 @@ const ItemList = Component.extend({
   tagName: 'ul',
   classNames: ['rsa-item-list'],
   listLocation: undefined,
-  selectedItem: null,
   onMouse: null, // true if user is using the mouse to navigate
-
-  @computed('filteredList', 'highlightedIndex')
-  highlightedId(filteredList, highlightedIndex) {
-    return filteredList && highlightedIndex > -1 ? filteredList[highlightedIndex].id : null;
-  },
 
   @computed('filteredList', 'selectedItem')
   selectedIndex(filteredList, selectedItem) {

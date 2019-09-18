@@ -44,6 +44,11 @@ export default class DataHelper {
     return this;
   }
 
+  highlightedId(id) {
+    _set(this.state, 'highlightedId', id);
+    return this;
+  }
+
   listLocation(location) {
     _set(this.state, 'listLocation', location);
     return this;
@@ -66,6 +71,16 @@ export default class DataHelper {
 
   isExpanded(value) {
     _set(this.state, 'isExpanded', value);
+    return this;
+  }
+
+  selectedItem(item) {
+    _set(this.state, 'selectedItem', item);
+    return this;
+  }
+
+  viewName(viewname) {
+    _set(this.state, 'viewName', viewname);
     return this;
   }
 }

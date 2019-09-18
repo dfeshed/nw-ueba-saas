@@ -1,4 +1,8 @@
 import reselect from 'reselect';
+import {
+  LIST_VIEW
+} from 'rsa-list-manager/constants/list-manager';
+
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
@@ -93,5 +97,33 @@ export const isExpanded = createSelector(
   [_rootState],
   (rootState) => {
     return rootState.isExpanded;
+  }
+);
+
+export const selectedItem = createSelector(
+  [_rootState],
+  (rootState) => {
+    return rootState.selectedItem;
+  }
+);
+
+export const viewName = createSelector(
+  [_rootState],
+  (rootState) => {
+    return rootState.viewName;
+  }
+);
+
+export const highlightedId = createSelector(
+  [filteredList, highlightedIndex],
+  (filteredList, highlightedIndex) => {
+    return filteredList && highlightedIndex > -1 ? filteredList[highlightedIndex].id : undefined;
+  }
+);
+
+export const isListView = createSelector(
+  [_rootState],
+  (rootState) => {
+    return rootState.viewName === LIST_VIEW;
   }
 );

@@ -1,17 +1,26 @@
 import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
+import { connect } from 'ember-redux';
+import {
+  selectedItem,
+  highlightedId
+} from 'rsa-list-manager/selectors/list-manager/selectors';
 
-export default Component.extend({
+const stateToComputed = (state, attrs) => ({
+  selectedItem: selectedItem(state, attrs.listLocation),
+  highlightedId: highlightedId(state, attrs.listLocation)
+});
+
+const Item = Component.extend({
   layout,
   tagName: 'li',
   classNames: ['rsa-list-item'],
   classNameBindings: ['isSelected', 'isHighlighted'],
   attributeBindings: ['tabindex'],
   tabindex: -1,
+  listLocation: undefined,
   item: null,
-  selectedItem: null,
-  highlightedId: null,
   editItem: null,
 
   // Item that may be currently applied
@@ -39,3 +48,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed)(Item);

@@ -8,8 +8,13 @@ import {
   itemType,
   newItemButtonTitle,
   isExpanded,
-  filterText
+  filterText,
+  selectedItem,
+  viewName,
+  highlightedId,
+  isListView
 } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
 module('Unit | Selectors | list-manager');
@@ -22,6 +27,8 @@ const list1 = [
   { id: 2, name: 'bar', subItems: [ 'e', 'b', 'c' ] },
   { id: 4, name: 'Baz', subItems: [ 'c' ] }
 ];
+const item1 = { id: 2, name: 'bar', subItems: [ 'e', 'b', 'c' ] };
+const viewName1 = 'list-view';
 
 test('highlightedIndex returns highlightedIndex for listLocation', function(assert) {
   const randomIndex = Math.floor(Math.random() * 20) + 1;
@@ -92,4 +99,42 @@ test('filterText returns filterText for listLocation', function(assert) {
   const state = new ReduxDataHelper().listLocation(listLocation1).filterText('someText').build();
   const text = filterText(state, listLocation1);
   assert.equal(text, 'someText', 'Shall select filterText based on listLocation');
+});
+
+test('selectedItem returns selectedItem for listLocation', function(assert) {
+  const state = new ReduxDataHelper().listLocation(listLocation1).selectedItem(item1).build();
+  const item = selectedItem(state, listLocation1);
+  assert.deepEqual(item, item1, 'Shall select selectedItem based on listLocation');
+});
+
+test('viewName returns viewName for listLocation', function(assert) {
+  const state = new ReduxDataHelper().listLocation(listLocation1).viewName(viewName1).build();
+  const view = viewName(state, listLocation1);
+  assert.equal(view, viewName1, 'Shall select viewName based on listLocation');
+});
+
+test('highlightedId returns highlightedId for listLocation', function(assert) {
+  const list2 = [
+    { id: 'a', name: 'eba', subItems: [ 'a', 'b', 'c' ] },
+    { id: 'b', name: 'foo', subItems: [ 'a', 'b' ] },
+    { id: 'c', name: 'bar', subItems: [ 'e', 'b', 'c' ] },
+    { id: 'd', name: 'Baz', subItems: [ 'c' ] }
+  ];
+
+  const index = Math.floor(Math.random() * Math.floor(4));
+  const state = new ReduxDataHelper().listLocation(listLocation1).list(list2).highlightedIndex(index).build();
+  const id = highlightedId(state, listLocation1);
+  assert.equal(id, list2[index].id, 'Shall select viewName based on listLocation');
+});
+
+test('isListView returns true if viewName is list-view', function(assert) {
+  const state = new ReduxDataHelper().viewName(LIST_VIEW).build();
+  const result = isListView(state, listLocation1);
+  assert.ok(result, 'isListView shall return true if viewName is list-view');
+});
+
+test('isListView returns false if viewName is not list-view', function(assert) {
+  const state = new ReduxDataHelper().viewName('some-view').build();
+  const result = isListView(state, listLocation1);
+  assert.notOk(result, 'isListView shall return false if viewName is not list-view');
 });

@@ -84,3 +84,33 @@ test('ACTION_TYPES.SET_FILTER_TEXT sets filterText', function(assert) {
   const result = reducer(prevState, action);
   assert.equal(result.filterText, 'some text', 'filterText shall be set correctly');
 });
+
+test('ACTION_TYPES.SET_SELECTED_ITEM sets selectedItem', function(assert) {
+  const prevState = Immutable.from({
+    selectedItem: undefined
+  });
+
+  const item1 = { id: 123, name: 'some item' };
+
+  const action = {
+    type: ACTION_TYPES.SET_SELECTED_ITEM,
+    payload: item1
+  };
+
+  const result = reducer(prevState, action);
+  assert.deepEqual(result.selectedItem, item1, 'selectedItem shall be set correctly');
+});
+
+test('ACTION_TYPES.SET_VIEW_NAME sets viewName', function(assert) {
+  const prevState = Immutable.from({
+    viewName: undefined
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_VIEW_NAME,
+    payload: 'some-view'
+  };
+
+  const result = reducer(prevState, action);
+  assert.equal(result.viewName, 'some-view', 'viewName shall be set correctly');
+});
