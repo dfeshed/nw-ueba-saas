@@ -1,40 +1,51 @@
 package com.rsa.netwitness.presidio.automation.jdbc;
 
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.rsa.netwitness.presidio.automation.jdbc.model.DagRunTable.DAG_RUN_TABLE;
+import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.util.Lists.list;
 
 public class AirflowDagsPostgres {
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(AirflowDagsPostgres.class.getName());
 
-    private Instant getMaxExecutionDateJa3HourlyUebaFlow() {
-        return getMaxExecutionDate("ja3_hourly_ueba_flow");
+    private List<String> hourlyEntityFlowNames = list("ja3_hourly_ueba_flow", "sslSubject_hourly_ueba_flow", "userId_hourly_ueba_flow");
+
+    public boolean allHourlyEntityFlowsExeeded(Instant endDate) {
+        List<Optional<Instant>> maxDates = hourlyEntityFlowNames.stream().sequential()
+                .map(this::getMaxExecutionDate)
+                .collect(Collectors.toList());
+
+        LOGGER.info("Dag ids: [" + String.join(", ", hourlyEntityFlowNames) + "]"
+                +  "\nMax execution_dates: [" + maxDates.stream().map(Optional::toString).collect(joining(", ")) + "]");
+        LOGGER.info("All execution_dates should be after endDate=" + endDate);
+
+        return maxDates.stream().map(e -> e.isPresent() && e.get().isAfter(endDate)).reduce(Boolean::logicalAnd).orElse(false);
     }
 
-    private Instant getMaxExecutionDateUserIdHourlyUebaFlow() {
-        return getMaxExecutionDate("userId_hourly_ueba_flow");
-    }
 
-    private Instant getMaxExecutionDateSslSubjectHourlyUebaFlow() {
-        return getMaxExecutionDate("sslSubject_hourly_ueba_flow");
-    }
-
-
-    private Instant getMaxExecutionDate(String dagId) {
+    private Optional<Instant> getMaxExecutionDate(String dagId) {
         String SQL_QUERY = "SELECT MAX(execution_date) AS max_execution_date" +
-                "FROM " + DAG_RUN_TABLE +
-                "WHERE dag_id = '" + dagId + "';";
+                " FROM " + DAG_RUN_TABLE +
+                " WHERE dag_id = '" + dagId + "';";
 
         try (Connection con = PostgresAirflowConnection.getConnection();
              PreparedStatement pst = con.prepareStatement(SQL_QUERY);
              ResultSet rs = pst.executeQuery()) {
 
             if (rs.next()) {
-                return rs.getTimestamp("max_execution_date").toInstant();
+                return Optional.ofNullable(rs.getTimestamp(1).toInstant());
             }
 
         } catch (SQLException e) {
@@ -42,6 +53,6 @@ public class AirflowDagsPostgres {
             fail("SQLException");
         }
 
-        return null;
+        return Optional.empty();
     }
 }
