@@ -92,7 +92,7 @@ public class MongoCollectionsMonitor {
         }
 
         boolean allCollectionsHaveFinalDaySamples = tasks.stream()
-                .map(mongoProgressTask -> mongoProgressTask.isFinalDaySampleExist(3, HOURS))
+                .map(mongoProgressTask -> mongoProgressTask.isFinalDaySampleExist(13, HOURS))
                 .reduce(Boolean::logicalAnd).orElse(false);
 
         LOGGER.info("waitForResult has finished with " + allCollectionsHaveFinalDaySamples);
