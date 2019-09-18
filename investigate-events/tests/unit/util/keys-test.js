@@ -11,7 +11,9 @@ import {
   isShift,
   isShiftTab,
   isSpace,
-  isTab
+  isTab,
+  isHome,
+  isEnd
 } from 'investigate-events/util/keys';
 
 module('Unit | Util | keys');
@@ -75,4 +77,14 @@ test('properly identify Shift+Tab key combo', function(assert) {
 test('properly identify Tab key', function(assert) {
   assert.ok(isTab({ key: 'Tab' }));
   assert.notOk(isTab({ key: 'x' }));
+});
+
+test('properly identify Home key', function(assert) {
+  assert.ok(isHome({ key: 'Home' }));
+  assert.notOk(isArrowUp({ key: 'x' }));
+});
+
+test('properly identify End key', function(assert) {
+  assert.ok(isEnd({ key: 'End' }));
+  assert.notOk(isArrowUp({ key: 'x' }));
 });

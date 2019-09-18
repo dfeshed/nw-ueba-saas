@@ -17,7 +17,9 @@ const keyMap = {
   openParen: { code: 57, key: '(' },
   shift: { code: 16, key: 'Shift' },
   space: { code: 32, key: ' ' },
-  tab: { code: 9, key: 'Tab' }
+  tab: { code: 9, key: 'Tab' },
+  home: { code: 36, key: 'Home' },
+  end: { code: 35, key: 'End' }
 };
 
 /**
@@ -48,6 +50,8 @@ const matchesOpenParen = _.partial(matches, keyMap.openParen);
 const matchesShift = _.partial(matches, keyMap.shift);
 const matchesSpace = _.partial(matches, keyMap.space);
 const matchesTab = _.partial(matches, keyMap.tab);
+const matchesHome = _.partial(matches, keyMap.home);
+const matchesEnd = _.partial(matches, keyMap.end);
 
 /**
  * Is the event from a down arrow keyboard event?
@@ -147,5 +151,21 @@ export const isSpace = (event) => matchesSpace(event.key);
  * @public
  */
 export const isTab = (event) => matchesTab(event.key);
+
+/**
+ * Is the event from a home keyboard event?
+ * @param {Object} event A KeyboardEvent.
+ * @return A Boolean value.
+ * @public
+ */
+export const isHome = (event) => matchesHome(event.key) || (event.metaKey && matchesArrowLeft(event.key));
+
+/**
+ * Is the event from a end keyboard event?
+ * @param {Object} event A KeyboardEvent.
+ * @return A Boolean value.
+ * @public
+ */
+export const isEnd = (event) => matchesEnd(event.key) || (event.metaKey && matchesArrowRight(event.metaKey));
 
 export default keyMap;

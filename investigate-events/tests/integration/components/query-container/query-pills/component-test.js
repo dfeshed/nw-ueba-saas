@@ -34,6 +34,8 @@ const DELETE_KEY = KEY_MAP.delete.key;
 const ENTER_KEY = KEY_MAP.enter.key;
 const ESCAPE_KEY = KEY_MAP.escape.key;
 const SPACE_KEY = KEY_MAP.space.key;
+const HOME_KEY = KEY_MAP.home.key;
+const END_KEY = KEY_MAP.end.key;
 const modifiers = { shiftKey: true };
 
 const newActionSpy = sinon.spy(guidedCreators, 'addGuidedPill');
@@ -3331,5 +3333,177 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.notOk(find(PILL_SELECTORS.queryPillNotTemplate), 'query pill should be removed');
     assert.notOk(find(PILL_SELECTORS.openParen), 'open paren should be removed');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'close paren should be removed');
+  });
+
+  test('Pressing home when you have a focused pill should remove focus and open leftmost empty pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataComplex()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    await click(PILL_SELECTORS.complexPill);
+    // One pill is selected and focused
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be just 1 pill focused');
+    // Deselect all pills.
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', HOME_KEY);
+    await waitUntil(() => findAll(PILL_SELECTORS.focusedPill).length == 0, { timeout: 5000 }).then(async() => {
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Should be no pill focused');
+      assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+    });
+  });
+
+  test('Pressing end when you have a focused pill should remove focus and open rightmost empty pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataComplex()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    await click(PILL_SELECTORS.complexPill);
+    // One pill is selected and focused
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be just 1 pill focused');
+    // Deselect all pills.
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', END_KEY);
+    await waitUntil(() => findAll(PILL_SELECTORS.focusedPill).length == 0, { timeout: 5000 }).then(async() => {
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Should be no pill focused');
+      assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+    });
+  });
+
+  test('Pressing home when editing a pill and the text is removed should remove focus and open leftmost empty pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    await leaveNewPillTemplate();
+
+    const pills = findAll(PILL_SELECTORS.meta);
+    doubleClick(`#${pills[0].id}`, true); // open pill for edit
+    await settled();
+
+    await waitUntil(() => findAll(PILL_SELECTORS.powerSelectOption).length > 1, { timeout: 5000 }).then(async() => {
+      assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 1, 'Pill should be open for Edit');
+      const pills = findAll(PILL_SELECTORS.queryPill);
+      const inputId = `#${pills[0].id} input`;
+      const newValue = '';
+      await fillIn(inputId, newValue);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_LEFT_KEY);
+      await fillIn(inputId, newValue);
+      await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_LEFT_KEY);
+      await fillIn(inputId, newValue);
+      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', HOME_KEY);
+      assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 0, 'Pill should not be open for Edit');
+      assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+    });
+  });
+  test('Pressing end when editing a pill and the text is removed should remove focus and open rightmost empty pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    await leaveNewPillTemplate();
+
+    const pills = findAll(PILL_SELECTORS.meta);
+    doubleClick(`#${pills[0].id}`, true); // open pill for edit
+    await settled();
+
+    await waitUntil(() => findAll(PILL_SELECTORS.powerSelectOption).length > 1, { timeout: 5000 }).then(async() => {
+      assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 1, 'Pill should be open for Edit');
+      const pills = findAll(PILL_SELECTORS.queryPill);
+      const inputId = `#${pills[0].id} input`;
+      const newValue = '';
+      await fillIn(inputId, newValue);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_LEFT_KEY);
+      await fillIn(inputId, newValue);
+      await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_LEFT_KEY);
+      await fillIn(inputId, newValue);
+      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', END_KEY);
+      assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 0, 'Pill should not be open for Edit');
+      assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+    });
+  });
+
+  test('Pressing home when editing a pill and the text is removed should remove focus and open leftmost empty pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    await leaveNewPillTemplate();
+
+    const pills = findAll(PILL_SELECTORS.meta);
+    doubleClick(`#${pills[0].id}`, true); // open pill for edit
+    await settled();
+
+    await waitUntil(() => findAll(PILL_SELECTORS.powerSelectOption).length > 1, { timeout: 5000 }).then(async() => {
+      assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 1, 'Pill should be open for Edit');
+      const pills = findAll(PILL_SELECTORS.queryPill);
+      const inputId = `#${pills[0].id} input`;
+      const newValue = '';
+      await fillIn(inputId, newValue);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_LEFT_KEY);
+      await fillIn(inputId, newValue);
+      await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_LEFT_KEY);
+      await fillIn(inputId, newValue);
+      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', HOME_KEY);
+      assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 0, 'Pill should not be open for Edit');
+      assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+    });
+  });
+  test('Pressing home and end when editing a pill and when the text is not removed should continue in the edit mode', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    await leaveNewPillTemplate();
+
+    const pills = findAll(PILL_SELECTORS.meta);
+    doubleClick(`#${pills[0].id}`, true); // open pill for edit
+    await settled();
+
+    await waitUntil(() => findAll(PILL_SELECTORS.powerSelectOption).length > 1, { timeout: 5000 }).then(async() => {
+      assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 1, 'Pill should be open for Edit');
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', HOME_KEY);
+      assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 1, 'Pill should be open for Edit');
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', END_KEY);
+      assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 1, 'Pill should be open for Edit');
+
+    });
   });
 });

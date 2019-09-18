@@ -332,7 +332,9 @@ export default Component.extend({
       [MESSAGE_TYPES.RECENT_QUERY_SELECTED]: (data) => this._recentQuerySelected(data),
       [MESSAGE_TYPES.PILL_OPEN_PAREN]: () => this._openParen(),
       [MESSAGE_TYPES.PILL_CLOSE_PAREN]: () => this._closeParen(),
-      [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR]: (data) => this._logicalOperator(data)
+      [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR]: (data) => this._logicalOperator(data),
+      [MESSAGE_TYPES.PILL_HOME_PRESSED]: () => this._homeButtonPressed(),
+      [MESSAGE_TYPES.PILL_END_PRESSED]: () => this._endButtonPressed()
     });
 
     if (this.get('isExistingPill')) {
@@ -1121,6 +1123,31 @@ export default Component.extend({
       this.get('sendMessage')(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, this.get('position'));
     }
   },
+
+  /**
+   * Handles events propagating from focus-holder and pill-meta
+   * when the user clicks on Home button and relays the message.
+   * When editing the pill, the event is not relayed unless the
+   * pill data is empty.
+   */
+  _homeButtonPressed() {
+    if (!this.get('isEditing') || this._isPillDataEmpty()) {
+      this._broadcast(MESSAGE_TYPES.PILL_HOME_PRESSED, this.get('pillData'));
+    }
+  },
+
+  /**
+   * Handles events propagating from focus-holder and pill-meta
+   * when the user clicks on End button and relays the message.
+   * When editing the pill, the event is not relayed unless the
+   * pill data is empty.
+   */
+  _endButtonPressed() {
+    if (!this.get('isEditing') || this._isPillDataEmpty()) {
+      this._broadcast(MESSAGE_TYPES.PILL_END_PRESSED, this.get('pillData'));
+    }
+  },
+
 
   _createFreeFormPill(data, dataSource) {
     const textString = this._getStringifiedPill(data, dataSource);

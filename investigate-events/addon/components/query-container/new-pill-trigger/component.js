@@ -132,6 +132,13 @@ export default Component.extend({
           break;
         case MESSAGE_TYPES.PILL_LOGICAL_OPERATOR:
           this._broadcast(type, data);
+          break;
+        case MESSAGE_TYPES.PILL_HOME_PRESSED:
+          this._broadcast(type, data);
+          break;
+        case MESSAGE_TYPES.PILL_END_PRESSED:
+          this._broadcast(type, data);
+          break;
       }
     }
   },

@@ -22,7 +22,9 @@ import KEY_MAP, {
   isOpenParen,
   isShiftTab,
   isSpace,
-  isTab
+  isTab,
+  isHome,
+  isEnd
 } from 'investigate-events/util/keys';
 import BoundedList from 'investigate-events/util/bounded-list';
 import { inject as service } from '@ember/service';
@@ -233,7 +235,9 @@ export default Component.extend({
       [KEY_MAP.escape.key]: this._commandHandler.bind(this),
       [KEY_MAP.openParen.key]: this._groupingHandler.bind(this),
       [KEY_MAP.space.key]: this._keyHandler.bind(this),
-      [KEY_MAP.tab.key]: this._navigationHandler.bind(this)
+      [KEY_MAP.tab.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.home.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.end.key]: this._navigationHandler.bind(this)
     });
     // _debugContainerKey is a private Ember property that returns the full
     // component name (component:query-container/pill-meta).
@@ -650,7 +654,18 @@ export default Component.extend({
         this._afterOptionsTabToggle();
         return false;
       }
+    } else if (isHome(event)) {
+      // Close dropdown
+      if (!this.get('isFirstPill')) {
+        this._clearMetaDropDown(powerSelectAPI);
+      }
+      this._broadcast(MESSAGE_TYPES.PILL_HOME_PRESSED);
+    } else if (isEnd(event)) {
+      // Need a isLastPill Flag check to avoid powerselect close when it is the last pill
+      this._clearMetaDropDown(powerSelectAPI);
+      this._broadcast(MESSAGE_TYPES.PILL_END_PRESSED);
     }
+
     return true;
   },
 
@@ -731,6 +746,15 @@ export default Component.extend({
     if (trigger) {
       trigger.focus();
     }
+  },
+
+  _clearMetaDropDown(powerSelectAPI) {
+    if (!this.get('selection')) {
+      this._cleanupInputField();
+    }
+    powerSelectAPI.actions.close();
+    // If we have focus, drop it.
+    _dropFocus();
   },
 
   /**

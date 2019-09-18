@@ -321,7 +321,9 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED]: (data, position) => this._recentQueryPillCreated(data, position),
       [MESSAGE_TYPES.PILL_OPEN_PAREN]: (data, position) => this._insertParens(position),
       [MESSAGE_TYPES.PILL_CLOSE_PAREN]: (data, position) => this._moveCursorOrInsertParens(position),
-      [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR]: (data, position) => this._insertLogicalOperator(data, position)
+      [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR]: (data, position) => this._insertLogicalOperator(data, position),
+      [MESSAGE_TYPES.PILL_HOME_PRESSED]: (data) => this._openNewPillAtBeginning(data),
+      [MESSAGE_TYPES.PILL_END_PRESSED]: (data) => this._openNewPillAtEnd(data)
     });
     this.setProperties({
       CLOSE_PAREN,
@@ -548,6 +550,32 @@ const QueryPills = RsaContextMenu.extend({
       triggerToOpen.click();
     }
   },
+
+  /**
+   * When hit home from an empty pill meta or focused pill data or editing a pill, it
+   * focus is shifted tp the leftmost New Pill Template. If in the middle of editing a pill
+   * the pill edit is cancelled before focusing the leftmost new pill template.
+   */
+  _openNewPillAtBeginning(data) {
+    if (this.get('isPillOpenForEdit')) {
+      this._pillEditCancelled(data);
+    }
+    this._openNewPillTriggerLeft(0);
+  },
+
+  /**
+  * When hit end from an empty pill meta or focused pill or editing a pill, it
+  * focus is shifted tp the rightmost New Pill Template. If in the middle of editing a pill
+  * the pill edit is cancelled before focusing the rightmost new pill template.
+  */
+  _openNewPillAtEnd(data) {
+    if (this.get('isPillOpenForEdit')) {
+      this._pillEditCancelled(data);
+    }
+    const pillsData = this.get('pillsData');
+    this._openNewPillTriggerRight(pillsData.lastIndex);
+  },
+
 
   /**
    * Sends out delete action through a focused pill

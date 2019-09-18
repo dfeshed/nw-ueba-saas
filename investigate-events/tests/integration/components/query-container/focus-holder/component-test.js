@@ -14,6 +14,8 @@ const Backspace = KEY_MAP.backspace.key;
 const DeleteKey = KEY_MAP.delete.key;
 const Enter = KEY_MAP.enter.key;
 const XKey = 'KeyX';
+const HomeKey = KEY_MAP.home.key;
+const EndKey = KEY_MAP.end.key;
 
 module('Integration | Component | focus-holder', function(hooks) {
   setupRenderingTest(hooks, {
@@ -113,5 +115,27 @@ module('Integration | Component | focus-holder', function(hooks) {
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', RightArrowKey);
+  });
+
+  test('it sends a message when home is pressed', async function(assert) {
+    assert.expect(1);
+
+    this.set('sendMessage', (messageType) => {
+      assert.equal(messageType, MESSAGE_TYPES.PILL_HOME_PRESSED, 'the correct message type is sent when right arrow is pressed');
+    });
+
+    await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', HomeKey);
+  });
+
+  test('it sends a message when end is pressed', async function(assert) {
+    assert.expect(1);
+
+    this.set('sendMessage', (messageType) => {
+      assert.equal(messageType, MESSAGE_TYPES.PILL_END_PRESSED, 'the correct message type is sent when right arrow is pressed');
+    });
+
+    await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', EndKey);
   });
 });
