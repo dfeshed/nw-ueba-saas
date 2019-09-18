@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.List;
 
 public class LastOccurrenceInstantPreProcessor extends PreProcessor<LastOccurrenceInstantPreProcessorArguments> {
-    private static PresidioReflectionUtils reflection = new PresidioReflectionUtils();;
+    private static PresidioReflectionUtils reflection = new PresidioReflectionUtils();
     private final PresidioInputPersistencyService presidioInputPersistencyService;
     private final int rawEventsPageSize;
     private final LastOccurrenceInstantWriter lastOccurrenceInstantWriter;
