@@ -504,6 +504,11 @@
                 <artifactId>tomcat-embed-core</artifactId>
                 <version>${apache-tomcat.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-annotations-api</artifactId>
+                <version>${apache-tomcat.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
