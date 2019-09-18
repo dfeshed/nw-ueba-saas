@@ -22,7 +22,7 @@ public abstract class EntityAttributes {
         return name;
     }
 
-    public boolean getIsNewOccurrence() {
+    public Boolean getIsNewOccurrence() {
         return isNewOccurrence;
     }
 

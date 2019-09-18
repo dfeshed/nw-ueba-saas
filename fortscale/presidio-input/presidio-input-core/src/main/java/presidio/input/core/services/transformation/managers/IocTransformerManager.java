@@ -1,22 +1,17 @@
 package presidio.input.core.services.transformation.managers;
 
-import presidio.input.core.services.transformation.transformer.Transformer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import presidio.sdk.api.domain.AbstractInputDocument;
+import presidio.sdk.api.domain.transformedevents.IocTransformedEvent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 public class IocTransformerManager implements TransformationManager {
 
-    private List<Transformer> transformers = new ArrayList<>();;
-
     @Override
-    public List<Transformer> getTransformers() {
-        return transformers;
-    }
-
-    @Override
-    public <U extends AbstractInputDocument> U getTransformedDocument(AbstractInputDocument rawEvent) {
-        return (U) rawEvent;
+    @SuppressWarnings("unchecked")
+    public <U extends AbstractInputDocument> U getTransformedDocument(ObjectMapper objectMapper, JSONObject jsonObject) throws IOException {
+        return (U) objectMapper.readValue(jsonObject.toString(), IocTransformedEvent.class);
     }
 }

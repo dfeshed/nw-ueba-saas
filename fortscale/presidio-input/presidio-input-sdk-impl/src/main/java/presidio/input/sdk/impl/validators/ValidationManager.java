@@ -18,6 +18,7 @@ import static presidio.sdk.api.domain.AbstractInputDocument.EVENT_ID_FIELD_NAME;
 public class ValidationManager {
 
     private static final Logger logger = Logger.getLogger(ValidationManager.class);
+    private static final PresidioReflectionUtils reflection = new PresidioReflectionUtils();
     private Validator validator;
 
     public ValidationManager(Validator validator) {
@@ -41,7 +42,7 @@ public class ValidationManager {
                 validResults.add(document);
             } else {
                 try {
-                    final String eventIdValue = (String) PresidioReflectionUtils.getFieldValue(document, EVENT_ID_FIELD_NAME);
+                    final String eventIdValue = (String) reflection.getFieldValue(document, EVENT_ID_FIELD_NAME);
                     logger.warn("Validation for event with id {} and eventId {} failed. There were {} violations.", document.getId(), eventIdValue, violations.size());
                 } catch (Exception e) {
                     logger.warn("Validation for event with id {} failed. There were {} violations.", document.getId(), violations.size());

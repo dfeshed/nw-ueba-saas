@@ -13,6 +13,7 @@ import javax.validation.ConstraintValidatorContext;
 public class NotEmptyIfAnotherFieldHasValueValidator implements ConstraintValidator<NotEmptyIfAnotherFieldHasValue, Object> {
 
     private static final Logger logger = Logger.getLogger(NotEmptyIfAnotherFieldHasValueValidator.class);
+    private static final PresidioReflectionUtils reflection = new PresidioReflectionUtils();
 
     private String fieldName;
     private String[] fieldValues;
@@ -32,8 +33,8 @@ public class NotEmptyIfAnotherFieldHasValueValidator implements ConstraintValida
             return false;
         }
 
-        Object fieldValue = PresidioReflectionUtils.getFieldValue(value, fieldName);
-        Object dependFieldValue = PresidioReflectionUtils.getFieldValue(value, dependFieldName);
+        Object fieldValue = reflection.getFieldValue(value, fieldName);
+        Object dependFieldValue = reflection.getFieldValue(value, dependFieldName);
 
         if (ArrayUtils.contains(fieldValues, fieldValue) && (dependFieldValue == null || StringUtils.isEmpty(dependFieldValue.toString()))) {
             constraintValidatorContext.disableDefaultConstraintViolation();

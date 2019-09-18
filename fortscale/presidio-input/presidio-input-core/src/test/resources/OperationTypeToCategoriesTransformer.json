@@ -1,0 +1,10 @@
+{
+  "type": "operation-type-categories-transformer",
+  "name": "name",
+  "inputOperationTypeFieldName": "bla",
+  "inputOperationTypeCategoriesFieldName": "blu",
+  "outputOperationTypeCategoriesFieldName": "glue",
+  "operationTypeCategoriesMapping": {
+    "Howdy": ["1", "2", "3"]
+  }
+}

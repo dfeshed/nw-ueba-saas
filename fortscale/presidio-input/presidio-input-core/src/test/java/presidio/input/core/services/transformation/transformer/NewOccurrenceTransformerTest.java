@@ -1,73 +1,79 @@
 package presidio.input.core.services.transformation.transformer;
 
-import fortscale.common.general.Schema;
 import fortscale.domain.core.entityattributes.*;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReader;
+import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import presidio.sdk.api.domain.AbstractInputDocument;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit4.SpringRunner;
+import presidio.input.core.spring.TransformerConfigTest;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
 
-import java.time.Duration;
+import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class NewOccurrenceTransformerTest {
+@RunWith(SpringRunner.class)
+@Import({TransformerConfigTest.class})
+public class NewOccurrenceTransformerTest extends TransformerJsonTest implements ApplicationContextAware {
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @MockBean(name = "lastOccurrenceInstantReaderCache")
+    private LastOccurrenceInstantReader lastOccurrenceInstantReader;
 
     @Test
-    public void testHierarchyDomainTransformation() {
+    @Ignore
+    public void testHierarchyEntityAttributesTransformations() throws IOException {
         TlsRawEvent tlsRawEvent = generateTlsRawEvent();
-        assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getDomain(), "domain.isNewOccurrence");
+        for (NewOccurrenceTransformer transformer: generateNewOccurrenceTransformers()) {
+            tlsRawEvent = transformTlsEvent(tlsRawEvent, transformer);
+        }
+        Assert.assertTrue(tlsRawEvent.getDomain().getIsNewOccurrence());
+        Assert.assertTrue(tlsRawEvent.getSslSubject().getIsNewOccurrence());
+        Assert.assertTrue(tlsRawEvent.getDstAsn().getIsNewOccurrence());
+        Assert.assertTrue(tlsRawEvent.getDstPort().getIsNewOccurrence());
+        Assert.assertTrue(tlsRawEvent.getDstCountry().getIsNewOccurrence());
+        Assert.assertTrue(tlsRawEvent.getDstOrg().getIsNewOccurrence());
+        Assert.assertTrue(tlsRawEvent.getJa3().getIsNewOccurrence());
     }
 
     @Test
-    public void testHierarchySslSubjectTransformation() {
-        TlsRawEvent tlsRawEvent = generateTlsRawEvent();
-        assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getSslSubject(), "sslSubject.isNewOccurrence");
+    public void testBrokenFirstLevelHierarchy() throws IOException {
+        TlsRawEvent tlsRawEvent = new TlsRawEvent(Instant.now(), "TLS", "dataSource", null, "", "", "", "",
+                null,
+                null, new Domain("google.com"),
+                new DestinationOrganization("dstOrg"),
+                new DestinationAsn("dstAsn"), 0L, 0L, "", "",
+                new Ja3("ja3"), "", "",
+                new DestinationPort("dstPort"), null, null, null);
+        TlsRawEvent transformed = transformTlsEvent(tlsRawEvent, generateNewOccurrenceTransformers().get(0));
+        Assert.assertNull(transformed.getSslSubject());
     }
 
-    @Test
-    public void testHierarchyJa3Transformation() {
-        TlsRawEvent tlsRawEvent = generateTlsRawEvent();
-        assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getJa3(), "ja3.isNewOccurrence");
-    }
-
-    @Test
-    public void testHierarchyDestinationOrganizationTransformation() {
-        TlsRawEvent tlsRawEvent = generateTlsRawEvent();
-        assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getDstOrg(), "dstOrg.isNewOccurrence");
-    }
-
-    @Test
-    public void testHierarchyDestinationCountryTransformation() {
-        TlsRawEvent tlsRawEvent = generateTlsRawEvent();
-        assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getDstCountry(), "dstCountry.isNewOccurrence");
-    }
-
-    @Test
-    public void testHierarchyDestinationPortTransformation() {
-        TlsRawEvent tlsRawEvent = generateTlsRawEvent();
-        assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getDstPort(), "dstPort.isNewOccurrence");
-    }
-
-    @Test
-    public void testHierarchyDestinationAsnTransformation() {
-        TlsRawEvent tlsRawEvent = generateTlsRawEvent();
-        assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getDstAsn(), "dstAsn.isNewOccurrence");
-    }
-
-    private void assertNewOccurrenceTransformation(TlsRawEvent tlsRawEvent,
-                                                   EntityAttributes entityAttributes,
-                                                   String transformFieldName) {
-        NewOccurrenceTransformer occurrenceTransformer = generateNewOccurrenceTransformer(transformFieldName);
-        occurrenceTransformer.transform(createSingletonList(tlsRawEvent));
-        Assert.assertTrue(entityAttributes.getIsNewOccurrence());
+    private TlsRawEvent transformTlsEvent(TlsRawEvent tlsRawEvent,
+                                          NewOccurrenceTransformer transformer) {
+        try {
+            return (TlsRawEvent) transformEvent(tlsRawEvent, transformer, TlsRawEvent.class);
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 
     private TlsRawEvent generateTlsRawEvent() {
-        Instant firstInstant = Instant.now();
-        Instant laterInstant = firstInstant.plusSeconds(10000L);
+        Instant laterInstant = Instant.now().plusSeconds(10000L * 182 * 60 * 60);
         return new TlsRawEvent(laterInstant, "TLS", "dataSource", null, "", "", "", "",
                 new DestinationCountry("dstCountry"),
                 new SslSubject("ssl"), new Domain("google.com"),
@@ -77,21 +83,28 @@ public class NewOccurrenceTransformerTest {
                 new DestinationPort("dstPort"), null, null, null);
     }
 
-    private NewOccurrenceTransformer generateNewOccurrenceTransformer(String booleanFieldName) {
-        LastOccurrenceInstantReader occurrenceInstantReader = Mockito.mock(LastOccurrenceInstantReader.class);
-        Mockito.when(occurrenceInstantReader.read(Mockito.any(), Mockito.any(String.class), Mockito.any(String.class)))
+    private List<NewOccurrenceTransformer> generateNewOccurrenceTransformers() throws IOException {
+        Mockito.when(lastOccurrenceInstantReader.read(Mockito.any(), Mockito.any(String.class), Mockito.any(String.class)))
                 .thenReturn(Instant.now());
-        return new NewOccurrenceTransformer(
-                occurrenceInstantReader,
-                Schema.TLS,
-                "eventId",
-                Duration.ZERO.plusSeconds(10L),
-                booleanFieldName);
+        List<AbstractJsonObjectTransformer> abstractJsonObjectTransformers = loadTransformers("NewOccurrenceTransformers.json");
+        return abstractJsonObjectTransformers.stream().map(t -> {
+            applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(t, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
+            return (NewOccurrenceTransformer)t;
+        }).collect(Collectors.toList());
     }
 
-    private ArrayList<AbstractInputDocument> createSingletonList(TlsRawEvent tlsRawEvent) {
-        ArrayList<AbstractInputDocument> documents = new ArrayList<>();
-        documents.add(tlsRawEvent);
-        return documents;
+    @Override
+    String getResourceFilePath() {
+        return "NewOccurrenceTransformer.json";
+    }
+
+    @Override
+    Class getTransformerClass() {
+        return NewOccurrenceTransformer.class;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

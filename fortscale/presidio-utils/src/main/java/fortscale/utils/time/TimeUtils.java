@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -87,6 +88,14 @@ public class TimeUtils {
      */
     public static int epochSecondsToHourOfDay(long eventStartTimeEpochSeconds) {
         return Instant.ofEpochSecond(eventStartTimeEpochSeconds).atZone(ZoneId.of("UTC")).toLocalDateTime().getHour();
+    }
+
+    /**
+     * Parses the instant from the given string. If a timezone is not found in the string, uses UTC time.
+     * Example string with timezone 2007-12-03T10:15:30+01:00[Europe/Paris]
+     */
+    public static Instant parseInstant(String instantStr) {
+        return Instant.from(ZonedDateTime.parse(instantStr));
     }
 
     private enum DayOfWeek { // TODO exists in JDK 1.8..

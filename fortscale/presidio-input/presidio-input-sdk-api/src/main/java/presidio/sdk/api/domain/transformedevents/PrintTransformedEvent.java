@@ -17,6 +17,7 @@ public class PrintTransformedEvent extends PrintRawEvent {
     public PrintTransformedEvent(PrintRawEvent other) {
         super(other);
     }
+    public PrintTransformedEvent() {}
 
     public String getSrcMachineCluster() {
         return srcMachineCluster;

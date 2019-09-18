@@ -23,8 +23,7 @@ import org.json.JSONObject;
         @JsonSubTypes.Type(value = FirstArrayValueRegexCaptorAndFormatter.class, name = FirstArrayValueRegexCaptorAndFormatter.TYPE),
         @JsonSubTypes.Type(value = StringFormatTransformer.class, name = StringFormatTransformer.TYPE)
 })
-public interface IJsonObjectTransformer {
+public interface IJsonObjectTransformer extends GenericTransformer<JSONObject> {
     JSONObject transform(JSONObject jsonObject);
-
     String getName();
 }

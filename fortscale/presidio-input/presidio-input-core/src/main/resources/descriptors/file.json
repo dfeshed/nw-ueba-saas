@@ -1,0 +1,168 @@
+{
+  "type": "chain",
+  "name": "file-transformer",
+  "transformerList": [
+    {
+      "type": "folder-path-by-operation-type-transformer",
+      "name": "folder-path-by-operation-type",
+      "inputPathFieldName": "srcFilePath",
+      "filePathFieldName": "srcFilePath",
+      "folderPathFieldName": "srcFolderPath",
+      "operationTypeFieldName": "operationType"
+    },
+    {
+      "type": "folder-path-by-operation-type-transformer",
+      "name": "folder-path-by-operation-type",
+      "inputPathFieldName": "dstFilePath",
+      "filePathFieldName": "dstFilePath",
+      "folderPathFieldName": "dstFolderPath",
+      "operationTypeFieldName": "operationType"
+    },
+    {
+      "type": "operation-type-categories-transformer",
+      "name": "operation-type-categories",
+      "inputOperationTypeFieldName": "operationType",
+      "inputOperationTypeCategoriesFieldName": "operationTypeCategories",
+      "outputOperationTypeCategoriesFieldName": "operationTypeCategories",
+      "operationTypeCategoriesMapping": {
+        "LOCAL_SHARE_REMOVED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "LOCAL_SHARE_PERMISSIONS_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FOLDER_RENAMED": [
+          "FILE_ACTION"
+        ],
+        "FOLDER_OWNERSHIP_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FOLDER_OPENED": [
+          "FILE_ACTION",
+          "TRIVIAL_FILE_OPERATION"
+        ],
+        "FOLDER_MOVED": [
+          "FILE_ACTION"
+        ],
+        "FOLDER_DELETED": [
+          "FILE_ACTION"
+        ],
+        "FOLDER_CREATED": [
+          "FILE_ACTION",
+          "TRIVIAL_FILE_OPERATION"
+        ],
+        "FOLDER_CLASSIFICATION_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FOLDER_CENTRAL_ACCESS_POLICY_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FOLDER_ACCESS_RIGHTS_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FILE_RENAMED": [
+          "FILE_ACTION"
+        ],
+        "FILE_OWNERSHIP_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FILE_OPENED": [
+          "FILE_ACTION",
+          "TRIVIAL_FILE_OPERATION"
+        ],
+        "FILE_MOVED": [
+          "FILE_ACTION"
+        ],
+        "FILE_DELETED": [
+          "FILE_ACTION"
+        ],
+        "FILE_CREATED": [
+          "FILE_ACTION",
+          "TRIVIAL_FILE_OPERATION"
+        ],
+        "FILE_CLASSIFICATION_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FILE_CENTRAL_ACCESS_POLICY_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FILE_ACCESS_RIGHTS_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FAILED_SHARE_ACCESS": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FAILED_FOLDER_ACCESS": [
+          "FILE_ACTION"
+        ],
+        "FAILED_FILE_ACCESS": [
+          "FILE_ACTION"
+        ],
+        "FILE_CONTENTS_WRITTEN": [
+          "FILE_ACTION"
+        ],
+        "FILE_COPIED": [
+          "FILE_ACTION"
+        ],
+        "FILE_CHECKED": [
+          "FILE_ACTION"
+        ],
+        "FILE_PREVIEWED": [
+          "FILE_ACTION"
+        ],
+        "FILE_MODIFIED": [
+          "FILE_ACTION"
+        ],
+        "FILE_RESTORED": [
+          "FILE_ACTION"
+        ],
+        "FILE_UPLOADED": [
+          "FILE_ACTION"
+        ],
+        "FILE_DOWNLOADED": [
+          "FILE_ACTION"
+        ],
+        "FILE_ACCESSED": [
+          "FILE_ACTION"
+        ],
+        "FILE_CHECKED_IN": [
+          "FILE_ACTION"
+        ],
+        "FILE_CHECKED_OUT_DISCARDED": [
+          "FILE_ACTION"
+        ],
+        "FILE_CHECKED_OUT": [
+          "FILE_ACTION"
+        ],
+        "FOLDER_ACCESSED": [
+          "FILE_ACTION"
+        ],
+        "FOLDER_MODIFIED": [
+          "FILE_ACTION"
+        ],
+        "FOLDER_AUDITING_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FILE_AUDITING_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FILE_PERMISSION_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FILE_WRITE_DAC_PERMISSION_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ],
+        "FILE_WRITE_OWNER_PERMISSION_CHANGED": [
+          "FILE_PERMISSION_CHANGE"
+        ]
+      }
+    },
+    {
+      "type": "operation-type-categories-hierarchy-transformer",
+      "name": "operation-type-hierarchy",
+      "inputFieldName": "operationTypeCategories",
+      "outputFieldName": "operationTypeCategories",
+      "operationTypeCategoriesHierarchyMapping": {}
+    }
+  ]
+}

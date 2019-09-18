@@ -1,0 +1,26 @@
+{
+  "type": "chain",
+  "name": "process-transformer",
+  "transformerList": [
+    {
+      "type": "join",
+      "name": "join src process directory and file name",
+      "values": [
+        "${srcProcessDirectory}",
+        "${srcProcessFileName}"
+      ],
+      "destinationKey": "srcProcessFilePath",
+      "separator": "\\"
+    },
+    {
+      "type": "join",
+      "name": "join dst process directory and file name",
+      "values": [
+        "${dstProcessDirectory}",
+        "${dstProcessFileName}"
+      ],
+      "destinationKey": "dstProcessFilePath",
+      "separator": "\\"
+    }
+  ]
+}

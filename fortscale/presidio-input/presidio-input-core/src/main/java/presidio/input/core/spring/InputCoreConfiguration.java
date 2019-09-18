@@ -1,20 +1,18 @@
 package presidio.input.core.spring;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
+import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReaderCacheConfiguration;
 import fortscale.utils.elasticsearch.config.ElasticsearchConfig;
-import fortscale.utils.factory.AbstractServiceAutowiringFactory;
-import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.*;
-import org.springframework.core.io.Resource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Lazy;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.converters.ConverterServiceImpl;
 import presidio.input.core.services.converters.ade.*;
@@ -23,32 +21,31 @@ import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputCoreManager;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
+import presidio.input.core.services.transformation.DeserializerTransformationService;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
 import presidio.input.core.services.transformation.managers.*;
-import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 @Configuration
-@ComponentScan(value = {"presidio.input.core.services.transformation.factory"})
 @Import({
         PresidioInputPersistencyServiceConfig.class,
         AdeDataServiceConfig.class,
         OutputDataServiceConfig.class,
         PresidioMonitoringConfiguration.class,
-        ElasticsearchConfig.class
+        ElasticsearchConfig.class,
+        LastOccurrenceInstantReaderCacheConfiguration.class
 })
 public class InputCoreConfiguration {
     private static final Logger logger = Logger.getLogger(InputCoreConfiguration.class);
+
+    @Value("${transformers.file.path}")
+    private String configurationFilePath;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -63,36 +60,11 @@ public class InputCoreConfiguration {
     private OutputDataServiceSDK outputDataServiceSDK;
 
     @Autowired
-    private List<AbstractServiceAutowiringFactory<Transformer>> transformersFactories;
-
-    @Autowired
-    private FactoryService<Transformer> transformerFactoryService;
-
-    @Value("${operation.type.category.mapping.file.path}")
-    private String operationTypeCategoryMappingFilePath;
-
-    @Value("${operation.type.category.hierarchy.mapping.file.path}")
-    private String operationTypeCategoryHierarchyMappingFilePath;
-
-    public Map<Schema, Map<String, List<String>>> getMapping(String filePath) {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Map<Schema, Map<String, List<String>>>> mapping;
-
-        try {
-            Resource resource = applicationContext.getResources(filePath)[0];
-            mapping = mapper.readValue(resource.getFile(), new TypeReference<Map<String, Map<Schema, Map<String, List<String>>>>>() {});
-            return mapping.get("mapping");
-        } catch (IOException e) {
-            logger.error("error loading the {} mapping file", filePath, e);
-            return Collections.emptyMap();
-        }
-    }
+    private DeserializerTransformationService deserializerTransformationService;
 
     @Bean
-    public FactoryService<Transformer> transformerFactoryService() {
-        FactoryService<Transformer> transformerFactoryService = new FactoryService<>();
-        transformersFactories.forEach(x -> x.registerFactoryService(transformerFactoryService));
-        return transformerFactoryService;
+    public DeserializerTransformationService deserializerTransformationService(){
+        return new DeserializerTransformationService(configurationFilePath);
     }
 
     @Bean
@@ -112,7 +84,7 @@ public class InputCoreConfiguration {
 
     @Bean
     public InputCoreManager inputCoreManager() {
-        return new InputCoreManager(presidioInputPersistencyService, adeDataService, outputDataServiceSDK, transformationService(), converterService());
+        return new InputCoreManager(presidioInputPersistencyService, adeDataService, outputDataServiceSDK, transformationService(), converterService(), deserializerTransformationService);
     }
 
     @Bean
@@ -125,19 +97,19 @@ public class InputCoreConfiguration {
     @Bean(name = "ACTIVE_DIRECTORY.transformer")
     @Lazy
     public ActiveDirectoryTransformationManager activeDirectoryTransformationManager() {
-        return new ActiveDirectoryTransformationManager(getMapping(operationTypeCategoryMappingFilePath), getMapping(operationTypeCategoryHierarchyMappingFilePath));
+        return new ActiveDirectoryTransformationManager();
     }
 
     @Bean(name = "AUTHENTICATION.transformer")
     @Lazy
     public AuthenticationTransformerManager authenticationTransformerManager() {
-        return new AuthenticationTransformerManager(getMapping(operationTypeCategoryMappingFilePath), getMapping(operationTypeCategoryHierarchyMappingFilePath));
+        return new AuthenticationTransformerManager();
     }
 
     @Bean(name = "FILE.transformer")
     @Lazy
     public FileTransformerManager fileTransformerManager() {
-        return new FileTransformerManager(getMapping(operationTypeCategoryMappingFilePath), getMapping(operationTypeCategoryHierarchyMappingFilePath));
+        return new FileTransformerManager();
     }
 
     @Bean(name = "REGISTRY.transformer")
@@ -167,7 +139,7 @@ public class InputCoreConfiguration {
     @Bean(name = "TLS.transformer")
     @Lazy
     public TlsTransformerManager tlsTransformerManager() {
-        return new TlsTransformerManager(transformerFactoryService);
+        return new TlsTransformerManager();
     }
 
     @Bean(name = "FILE.input-output-converter")

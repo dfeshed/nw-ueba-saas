@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class FieldsMustHaveDifferentValuesValidator implements ConstraintValidator<FieldsMustHaveDifferentValues, Object> {
 
     private static final Logger logger = Logger.getLogger(FieldsMustHaveDifferentValuesValidator.class);
+    private static final PresidioReflectionUtils reflection = new PresidioReflectionUtils();
 
     private String[] fieldNames;
     private Boolean canBeEmpty;
@@ -39,7 +40,7 @@ public class FieldsMustHaveDifferentValuesValidator implements ConstraintValidat
         List<Object> fieldsValue = new ArrayList<>();
 
         for (String fieldName : fieldNames) {
-            fieldsValue.add(PresidioReflectionUtils.getFieldValue(value, fieldName));
+            fieldsValue.add(reflection.getFieldValue(value, fieldName));
         }
 
         List<Object> uniqueValues = fieldsValue.stream().distinct().collect(Collectors.toList());
