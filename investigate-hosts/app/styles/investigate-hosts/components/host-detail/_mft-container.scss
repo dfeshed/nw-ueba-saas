@@ -81,12 +81,12 @@
         }
         &.mft-list {
           width: 50vw;
-          height: 78vh
+          height: calc(100vh - 217px);
         }
 
       }
       .filter-wrapper {
-        height: calc(100vh - 315px);
+        height: calc(100vh - 331px);
         [test-id$="Si"] {
           margin-bottom: rsa-whitespace(more);
         }
