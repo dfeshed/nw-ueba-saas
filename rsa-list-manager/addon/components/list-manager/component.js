@@ -30,8 +30,12 @@ const ListManager = Component.extend({
   // the original list
   list: null,
 
+  // object for contextual help
+  // e.g. { moduleId: "investigation", topicId: "eaColumnGroups" }
+  helpId: null,
+
   didInsertElement() {
-    const initialProperties = this.getProperties('listLocation', 'listName', 'list', 'selectedItem');
+    const initialProperties = this.getProperties('listLocation', 'listName', 'list', 'selectedItem', 'helpId');
     this.send('initializeListManager', initialProperties);
   }
 });

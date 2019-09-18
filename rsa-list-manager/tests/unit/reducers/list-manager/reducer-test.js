@@ -14,23 +14,34 @@ const list1 = [
   { id: 2, name: 'bar', subItems: [ 'e', 'b', 'c' ] },
   { id: 4, name: 'Baz', subItems: [ 'c' ] }
 ];
+const helpId1 = { moduleId: 'investigation', topicId: 'eaColumnGroups' };
 
 test('ACTION_TYPES.INITIALIZE_LIST_MANAGER updates values', function(assert) {
   const prevState = Immutable.from({
     listLocation: undefined,
     listName: undefined,
     list: undefined,
-    filterText: undefined
+    filterText: undefined,
+    selectedItem: undefined,
+    helpId: undefined
   });
 
   const action = {
     type: ACTION_TYPES.INITIALIZE_LIST_MANAGER,
-    payload: { listLocation: listLocation1, listName: listName1, list: list1 }
+    payload: {
+      listLocation: listLocation1,
+      listName: listName1,
+      list: list1,
+      selectedItem: list1[0],
+      helpId: helpId1
+    }
   };
   const result = reducer(prevState, action);
   assert.equal(result.listLocation, listLocation1, 'listLocation shall be set');
   assert.equal(result.listName, listName1, 'listName shall be set');
   assert.deepEqual(result.list, list1, 'list shall be set');
+  assert.deepEqual(result.selectedItem, list1[0], 'selectedItem shall be set');
+  assert.deepEqual(result.helpId, helpId1, 'helpId shall be set');
 });
 
 test('ACTION_TYPES.SET_HIGHLIGHTED_INDEX sets highlightedIndex', function(assert) {

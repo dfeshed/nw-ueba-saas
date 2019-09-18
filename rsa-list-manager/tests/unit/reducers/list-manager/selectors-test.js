@@ -14,7 +14,9 @@ import {
   highlightedId,
   isListView,
   noResultsMessage,
-  selectedIndex
+  selectedIndex,
+  helpId,
+  hasContextualHelp
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 import { LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -216,4 +218,60 @@ test('selectedIndex returns -1 if there is no selectedItem', function(assert) {
     .build();
   const index = selectedIndex(state, listLocation1);
   assert.equal(index, -1, 'selectedIndex shall return -1 if there is no selectedItem');
+});
+
+test('helpId returns helpId for listLocation', function(assert) {
+  const helpId1 = { moduleId: 'investigation', topicId: 'eaColumnGroups' };
+  const state = new ReduxDataHelper()
+    .listLocation(listLocation1)
+    .list(list1)
+    .listName(listName1)
+    .helpId(helpId1)
+    .build();
+  const result = helpId(state, listLocation1);
+  assert.deepEqual(result, helpId1, 'Shall select filterText based on listLocation');
+});
+
+test('hasContextualHelp returns true for listLocation if helpId has moduleId and topicId', function(assert) {
+  const helpId1 = { moduleId: 'investigation', topicId: 'eaColumnGroups' };
+  const state = new ReduxDataHelper()
+    .listLocation(listLocation1)
+    .list(list1)
+    .listName(listName1)
+    .helpId(helpId1)
+    .build();
+  const result = hasContextualHelp(state, listLocation1);
+  assert.ok(result, 'hasContextualHelp shall return true if moduleId and topicId both exist in helpId');
+});
+
+test('hasContextualHelp returns false for listLocation if helpId is missing moduleId or topicId', function(assert) {
+  const helpId1 = { moduleId: null, topicId: 'eaColumnGroups' };
+  const state = new ReduxDataHelper()
+    .listLocation(listLocation1)
+    .list(list1)
+    .listName(listName1)
+    .helpId(helpId1)
+    .build();
+  const result = hasContextualHelp(state, listLocation1);
+  assert.notOk(result, 'hasContextualHelp shall return false if moduleId does not exist in helpId');
+
+  const helpId2 = { moduleId: 'investigation', topicId: null };
+  const state2 = new ReduxDataHelper()
+    .listLocation(listLocation1)
+    .list(list1)
+    .listName(listName1)
+    .helpId(helpId2)
+    .build();
+  const result2 = hasContextualHelp(state2, listLocation1);
+  assert.notOk(result2, 'hasContextualHelp shall return false if topicId does not exist in helpId');
+
+  const helpId3 = { moduleId: null, topicId: null };
+  const state3 = new ReduxDataHelper()
+    .listLocation(listLocation1)
+    .list(list1)
+    .listName(listName1)
+    .helpId(helpId3)
+    .build();
+  const result3 = hasContextualHelp(state3, listLocation1);
+  assert.notOk(result3, 'hasContextualHelp shall return false if topicId and moduleId do not exist in helpId');
 });

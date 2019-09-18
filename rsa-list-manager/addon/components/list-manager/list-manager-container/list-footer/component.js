@@ -1,12 +1,13 @@
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
-import { newItemButtonTitle } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { newItemButtonTitle, helpId, hasContextualHelp } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
-  newItemButtonTitle: newItemButtonTitle(state, attrs.listLocation)
+  newItemButtonTitle: newItemButtonTitle(state, attrs.listLocation),
+  helpId: helpId(state, attrs.listLocation),
+  hasContextualHelp: hasContextualHelp(state, attrs.listLocation)
 });
 
 const ListFooter = Component.extend({
@@ -16,18 +17,6 @@ const ListFooter = Component.extend({
   listLocation: undefined,
   createItem: null,
   contextualHelp: service(),
-
-  // object with parameters topicId & moduleId for contextual help
-  helpId: null,
-
-  @computed('helpId')
-  hasContextualHelp(helpId) {
-    if (helpId) {
-      const { moduleId, topicId } = helpId;
-      return !!(moduleId && topicId);
-    }
-    return false;
-  },
 
   actions: {
     handleCreateItem() {

@@ -141,3 +141,21 @@ export const noResultsMessage = createSelector(
     return `All ${listName.toLowerCase()} have been excluded by the current filter`;
   }
 );
+
+export const helpId = createSelector(
+  [_rootState],
+  (rootState) => {
+    return rootState.helpId;
+  }
+);
+
+export const hasContextualHelp = createSelector(
+  [helpId],
+  (helpId) => {
+    if (helpId) {
+      const { moduleId, topicId } = helpId;
+      return !!(moduleId && topicId);
+    }
+    return false;
+  }
+);

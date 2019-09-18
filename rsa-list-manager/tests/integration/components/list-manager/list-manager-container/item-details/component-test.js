@@ -23,19 +23,22 @@ module('Integration | Component | item details', function(hooks) {
   const listLocation1 = 'listManager';
 
   test('renders list details with correct components', async function(assert) {
-    new ReduxDataHelper(setState).list(list1).listName('Foos').build();
+    const helpId1 = { topicId: 'foo', moduleId: 'bar' };
+    new ReduxDataHelper(setState)
+      .list(list1)
+      .listName('Foos')
+      .helpId(helpId1)
+      .build();
     this.set('listLocation', listLocation1);
     this.set('detailsDone', () => {});
     this.set('itemSelection', () => {});
     this.set('item', item);
-    this.set('helpId', { topicId: 'foo', moduleId: 'bar' });
 
     await render(hbs`{{list-manager/list-manager-container/item-details
       listLocation=listLocation
       item=item
       detailsDone=detailsDone
       itemSelection=itemSelection
-      helpId=helpId
     }}`);
 
     assert.equal(find('.item-details .title').textContent.trim().toUpperCase(), 'FOO DETAILS');

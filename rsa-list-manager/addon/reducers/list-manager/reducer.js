@@ -13,7 +13,8 @@ const listManagerInitialState = Immutable.from({
   filterText: undefined,
   highlightedIndex: -1,
   viewName: undefined, // View to be rendered through button actions (list-view, detail-view, etc)
-  selectedItem: undefined // Object to identify an item as selected in the manager's button caption
+  selectedItem: undefined, // Object to identify an item as selected in the manager's button caption,
+  helpId: undefined // object for contextual help { moduleId: "investigation", topicId: "eaColumnGroups" }
 });
 
 const listManagerReducer = handleActions({

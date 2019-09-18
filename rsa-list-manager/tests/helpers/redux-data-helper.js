@@ -83,4 +83,9 @@ export default class DataHelper {
     _set(this.state, 'viewName', viewname);
     return this;
   }
+
+  helpId(object) {
+    _set(this.state, 'helpId', object);
+    return this;
+  }
 }

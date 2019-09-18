@@ -25,8 +25,11 @@ module('Integration | Component | list footer', function(hooks) {
 
   test('renders footer for list with correct components', async function(assert) {
     assert.expect(4);
-    new ReduxDataHelper(setState).listLocation(listLocation1).list(originalList).listName(listName1).build();
-
+    new ReduxDataHelper(setState)
+      .listLocation(listLocation1)
+      .list(originalList)
+      .listName(listName1)
+      .build();
     this.set('listLocation', listLocation1);
     this.set('editItem', () => {
       assert.ok(true, 'clicking button executes editItem');
@@ -34,7 +37,6 @@ module('Integration | Component | list footer', function(hooks) {
 
     await render(hbs`{{list-manager/list-manager-container/list-footer
       listLocation=listLocation
-      helpId=helpId
       createItem=editItem }}`);
 
     assert.ok(find('footer.list-footer'));
@@ -47,16 +49,20 @@ module('Integration | Component | list footer', function(hooks) {
 
   test('renders help icon if provided', async function(assert) {
     assert.expect(4);
-    new ReduxDataHelper(setState).listLocation(listLocation1).list(originalList).listName(listName1).build();
+    const helpId1 = { topicId: 'foo', moduleId: 'bar' };
+    new ReduxDataHelper(setState)
+      .listLocation(listLocation1)
+      .list(originalList)
+      .helpId(helpId1)
+      .listName(listName1)
+      .build();
     this.set('listLocation', listLocation1);
-    this.set('helpId', { topicId: 'foo', moduleId: 'bar' });
     this.set('editItem', () => {
       assert.ok(true, 'clicking New Meta Group button executes editItem');
     });
 
     await render(hbs`{{list-manager/list-manager-container/list-footer
       listLocation=listLocation
-      helpId=helpId
       createItem=editItem }}`);
 
     assert.ok(find('footer.list-footer'));
