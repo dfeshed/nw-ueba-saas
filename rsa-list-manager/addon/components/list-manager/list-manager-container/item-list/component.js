@@ -2,21 +2,25 @@ import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { setHighlightedIndex } from 'rsa-list-manager/actions/creators/creators';
+import {
+  setHighlightedIndex
+} from 'rsa-list-manager/actions/creators/creators';
 import {
   highlightedIndex,
-  listName,
   isExpanded,
   filteredList,
-  selectedItem
+  selectedItem,
+  selectedIndex,
+  noResultsMessage
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
-  listName: listName(state, attrs.listLocation),
   filteredList: filteredList(state, attrs.listLocation),
   isExpanded: isExpanded(state, attrs.listLocation),
   highlightedIndex: highlightedIndex(state, attrs.listLocation),
-  selectedItem: selectedItem(state, attrs.listLocation)
+  selectedItem: selectedItem(state, attrs.listLocation),
+  selectedIndex: selectedIndex(state, attrs.listLocation),
+  noResultsMessage: noResultsMessage(state, attrs.listLocation)
 });
 
 const dispatchToActions = {
@@ -30,20 +34,10 @@ const ItemList = Component.extend({
   listLocation: undefined,
   onMouse: null, // true if user is using the mouse to navigate
 
-  @computed('filteredList', 'selectedItem')
-  selectedIndex(filteredList, selectedItem) {
-    return filteredList && selectedItem ? filteredList.findIndex((item) => item.id === selectedItem.id) : -1;
-  },
-
   @computed('filteredList')
   hasIsEditableIndicators(filteredList) {
     const editableIndicatedItems = filteredList.filter((item) => typeof item.isEditable !== 'undefined');
     return editableIndicatedItems.length > 0;
-  },
-
-  @computed('listName')
-  noResultsMessage(listName) {
-    return `All ${listName.toLowerCase()} have been excluded by the current filter`;
   },
 
   didInsertElement() {
@@ -99,7 +93,7 @@ const ItemList = Component.extend({
    */
   _onKeyUp(e) {
     if (this.get('isExpanded')) {
-    // set onMouse to false to prevent mouse navigation triggered by mouseover
+      // prevent mouse navigation triggered by mouseover while navigating with keyboard
       this.set('onMouse', false);
       const filterInFocus = document.activeElement === document.querySelector('.list-filter input');
 

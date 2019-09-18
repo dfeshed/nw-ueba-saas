@@ -107,6 +107,13 @@ export const selectedItem = createSelector(
   }
 );
 
+export const selectedIndex = createSelector(
+  [filteredList, selectedItem],
+  (filteredList, selectedItem) => {
+    return filteredList && selectedItem ? filteredList.findIndex((item) => item.id === selectedItem.id) : -1;
+  }
+);
+
 export const viewName = createSelector(
   [_rootState],
   (rootState) => {
@@ -125,5 +132,12 @@ export const isListView = createSelector(
   [_rootState],
   (rootState) => {
     return rootState.viewName === LIST_VIEW;
+  }
+);
+
+export const noResultsMessage = createSelector(
+  [listName],
+  (listName) => {
+    return `All ${listName.toLowerCase()} have been excluded by the current filter`;
   }
 );
