@@ -3,22 +3,26 @@ package com.rsa.netwitness.presidio.automation.test.rest;
 import ch.qos.logback.classic.Logger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import com.rsa.netwitness.presidio.automation.test_managers.OutputTestManager;
+import org.assertj.core.api.Fail;
 import org.assertj.core.api.SoftAssertions;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -47,6 +51,7 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
     public void prepareData() throws JSONException {
         allEntitiesUrl = restHelper.entities().url().withMaxSizeAndSortedParameters("ASC", "SCORE");
         allActualEntitiesSortedByScore = ImmutableList.copyOf(restHelper.entities().request().getEntities(allEntitiesUrl));
+        assertThat(allActualEntitiesSortedByScore).isNotNull().isNotEmpty();
         assertThat(allActualEntitiesSortedByScore.stream().map(e -> Integer.valueOf(e.getScore()))).isSorted();
     }
 
@@ -150,39 +155,77 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void total_entity_score_equal_to_sum_of_related_alerts_severity_scores() {
-        RestHelper restHelper = new RestHelper();
-        PresidioUrl url = restHelper.entities().url().withMaxSizeAndSortedAndExpendedParameters("DESC", "SCORE");
-        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
+        ImmutableMap<String, Integer> severityScoreMap = new ImmutableMap.Builder<String, Integer>()
+                .put("CRITICAL", 20).put("HIGH",15).put("MEDIUM", 10).put("LOW", 1).build();
 
-        assertThat(entities)
-                .withFailMessage(url + "\nEntities list is empty.")
-                .isNotNull()
-                .isNotEmpty();
+        PresidioUrl url = restHelper.entities().url().withMaxSizeAndSortedAndExpendedParameters("DESC", "SCORE");
+        ImmutableList<EntitiesStoredRecord> actualEntities = ImmutableList.copyOf(restHelper.entities().request().getEntities(url));
 
         int sumScoreSeverity = 0;
 
-        for (EntitiesStoredRecord entity : entities) {
+        for (EntitiesStoredRecord entity : actualEntities) {
             List<AlertsStoredRecord> alerts = entity.getAlerts();
             if (alerts.size() > 0) {
                 for (AlertsStoredRecord alert : alerts) {
-                    sumScoreSeverity += getSeverityScore(alert.getSeverity());
+                    sumScoreSeverity += severityScoreMap.get(alert.getSeverity());
                 }
             }
 
-            Assert.assertEquals(Integer.parseInt(entity.getScore()), sumScoreSeverity, url + "\n");
+            softly.assertThat(Integer.parseInt(entity.getScore()))
+                    .as(url + "\nEntity score not equal to sum of alert scores.\nEntity: " + entity)
+                    .isEqualTo(sumScoreSeverity);
             sumScoreSeverity = 0;
+        }
+
+        softly.assertAll();
+    }
+
+    @Test
+    public void aggregation_data_severity_counters_match_entities_array() {
+        PresidioUrl url = restHelper.entities().url().withAggregatedFieldParameter("SEVERITY");
+
+        try {
+            JSONObject json =  restHelper.alerts().request().getRestApiResponseAsJsonObj(url)
+                    .getJSONObject("aggregationData")
+                    .getJSONObject("SEVERITY");
+
+            assertThat(json).isNotNull();
+
+            Type type = new TypeToken<Map<String, Long>>(){}.getType();
+            Map<String, Long> aggregationDataSeveriries = new Gson().fromJson(json.toString(), type);
+
+            Map<String, Long> entitiesCountBySeverity = allActualEntitiesSortedByScore.parallelStream()
+                    .collect(Collectors.groupingBy(EntitiesStoredRecord::getSeverity, counting()));
+
+            assertThat(aggregationDataSeveriries).as(url + "\n'aggregationData' severity counters mismatch").isEqualTo(entitiesCountBySeverity);
+
+        } catch (Exception e) {
+            LOGGER.error(url.toString());
+            LOGGER.error("Unable to parse severity");
+            Fail.fail(e.getMessage());
         }
     }
 
 
-    private int getSeverityScore(String name) {
-        HashMap<String, Integer> severityScoreMap = new HashMap<>();
-        severityScoreMap.put("CRITICAL", 20);
-        severityScoreMap.put("HIGH", 15);
-        severityScoreMap.put("MEDIUM", 10);
-        severityScoreMap.put("LOW", 1);
+    @Test
+    public void total_counter_matches_entities_array() {
+        PresidioUrl url = restHelper.entities().url().withSortedParameters("DESC", "SCORE");
 
-        return severityScoreMap.get(name);
+        try {
+            JSONObject response = restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
+            assertThat(response.has("total")).as(url + "'total' key is missing from\n" + response).isTrue();
+
+            int total = response.getInt("total");
+            assertThat(total)
+                    .as(url + "\n'total' counter result mismatch")
+                    .isEqualTo(allActualEntitiesSortedByScore.size());
+
+        } catch (Exception e) {
+            LOGGER.error(url.toString());
+            LOGGER.error("Unable to parse");
+            Fail.fail(e.getMessage());
+        }
     }
+
 
 }
