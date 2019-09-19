@@ -40,7 +40,7 @@ public class PresidioReflectionUtils extends HierarchyLeafFinder<Object> {
         return fields;
     }
 
-    public static <T> Collection<Class<? extends T>> getSubTypes(String[] packagePaths, Class<T> parentClass) {
+    public static <T> Collection<Class<? extends T>> getSubTypes(List<String> packagePaths, Class<T> parentClass) {
         Set<Class<? extends T>> allSubTypes = new HashSet<>();
         for (String packagePath: packagePaths) {
             allSubTypes.addAll(new Reflections(packagePath).getSubTypesOf(parentClass));
