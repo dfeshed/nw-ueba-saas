@@ -190,6 +190,8 @@ export default Component.extend({
    */
   isFirstPill: false,
 
+  isLastPill: false,
+
   i18n: service(),
 
   @computed('hasTextPill', 'canPerformTextSearch')
@@ -654,15 +656,19 @@ export default Component.extend({
         this._afterOptionsTabToggle();
         return false;
       }
-    } else if (isHome(event)) {
-      // Close dropdown
+    } else if (isHome(event) && (!this.get('isEditing') || event.target.value == '')) {
+      // PILL_HOME_PRESSED message is broadcasted when home button is pressed and the pill is not in edit mode OR
+      // home button is pressed and the pill is in edit mode and the pill meta value is empty
       if (!this.get('isFirstPill')) {
         this._clearMetaDropDown(powerSelectAPI);
       }
       this._broadcast(MESSAGE_TYPES.PILL_HOME_PRESSED);
-    } else if (isEnd(event)) {
-      // Need a isLastPill Flag check to avoid powerselect close when it is the last pill
-      this._clearMetaDropDown(powerSelectAPI);
+    } else if (isEnd(event) && (!this.get('isEditing') || event.target.value == '')) {
+      // PILL_END_PRESSED message is broadcasted when home button is pressed and the pill is not in edit mode OR
+      // home button is pressed and the pill is in edit mode and the pill meta value is empty
+      if (!this.get('isLastPill')) {
+        this._clearMetaDropDown(powerSelectAPI);
+      }
       this._broadcast(MESSAGE_TYPES.PILL_END_PRESSED);
     }
 

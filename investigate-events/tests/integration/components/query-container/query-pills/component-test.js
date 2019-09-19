@@ -3548,11 +3548,71 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await waitUntil(() => findAll(PILL_SELECTORS.powerSelectOption).length > 1, { timeout: 5000 }).then(async() => {
       assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 1, 'Pill should be open for Edit');
-      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', HOME_KEY);
+      const pills = findAll(PILL_SELECTORS.queryPill);
+      const inputId = `#${pills[0].id} input`;
+      const newValue = '';
+      await fillIn(inputId, newValue);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_LEFT_KEY);
+      await fillIn(inputId, newValue);
+      await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_LEFT_KEY);
+      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', HOME_KEY);
+      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', END_KEY);
       assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 1, 'Pill should be open for Edit');
-      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', END_KEY);
-      assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 1, 'Pill should be open for Edit');
-
     });
+  });
+  test('Pressing end twice should keep rightmost empty pill open', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataComplex()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    await click(PILL_SELECTORS.complexPill);
+    // One pill is selected and focused
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be just 1 pill focused');
+    // Deselect all pills.
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', END_KEY);
+    await waitUntil(() => findAll(PILL_SELECTORS.focusedPill).length == 0, { timeout: 5000 }).then(async() => {
+      assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', END_KEY);
+      await waitUntil(() => findAll(PILL_SELECTORS.focusedPill).length == 0, { timeout: 5000 }).then(async() => {
+        assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+      });
+    });
+
+  });
+
+  test('Pressing home twice should keep the leftmost empty pill open', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataComplex()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    await click(PILL_SELECTORS.complexPill);
+    // One pill is selected and focused
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be just 1 pill focused');
+    // Deselect all pills.
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', HOME_KEY);
+    await waitUntil(() => findAll(PILL_SELECTORS.focusedPill).length == 0, { timeout: 5000 }).then(async() => {
+      assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', HOME_KEY);
+      await waitUntil(() => findAll(PILL_SELECTORS.focusedPill).length == 0, { timeout: 5000 }).then(async() => {
+        assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+      });
+    });
+
   });
 });

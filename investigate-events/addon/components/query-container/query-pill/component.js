@@ -141,6 +141,7 @@ export default Component.extend({
   selectedMeta: null,
   selectedOperator: null,
   valueString: null,
+  isLastPill: false,
 
   // Whether or not a focusOut event should be processed
   shouldFocusOut: false,
@@ -1131,9 +1132,7 @@ export default Component.extend({
    * pill data is empty.
    */
   _homeButtonPressed() {
-    if (!this.get('isEditing') || this._isPillDataEmpty()) {
-      this._broadcast(MESSAGE_TYPES.PILL_HOME_PRESSED, this.get('pillData'));
-    }
+    this._broadcast(MESSAGE_TYPES.PILL_HOME_PRESSED, this.get('pillData'));
   },
 
   /**
@@ -1143,9 +1142,7 @@ export default Component.extend({
    * pill data is empty.
    */
   _endButtonPressed() {
-    if (!this.get('isEditing') || this._isPillDataEmpty()) {
-      this._broadcast(MESSAGE_TYPES.PILL_END_PRESSED, this.get('pillData'));
-    }
+    this._broadcast(MESSAGE_TYPES.PILL_END_PRESSED, this.get('pillData'));
   },
 
 
