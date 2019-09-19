@@ -1,9 +1,6 @@
 package fortscale.utils.transform;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import fortscale.utils.json.IJsonValueExtractor;
 import fortscale.utils.json.JsonPointerValueExtractor;
 import org.json.JSONObject;
@@ -21,8 +18,8 @@ import static org.apache.commons.lang3.Validate.notEmpty;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
+@JsonTypeName("copy_value")
 public class CopyValueTransformer extends AbstractJsonObjectTransformer {
-    public static final String TYPE = "copy_value";
     private static final boolean IS_REMOVE_SOURCE_KEY_DEFAULT = false;
 
     private String sourceKey;
