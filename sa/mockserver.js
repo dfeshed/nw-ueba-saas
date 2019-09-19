@@ -22,5 +22,14 @@ require('mock-server').startServer({
     ...adminEngineMocks,
     administrationMocks,
     licenseMocks
+  ],
+  routes: [
+    {
+      path: '/eula/rsa',
+      method: 'get',
+      response: (req, res) => {
+        res.status(200).send('End user license agreement details.');
+      }
+    }
   ]
 }, null, { urlPattern: '/presidio/*', customData });
