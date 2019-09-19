@@ -23,7 +23,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -156,7 +159,7 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
     @Test
     public void total_entity_score_equal_to_sum_of_related_alerts_severity_scores() {
         ImmutableMap<String, Integer> severityScoreMap = new ImmutableMap.Builder<String, Integer>()
-                .put("CRITICAL", 20).put("HIGH",15).put("MEDIUM", 10).put("LOW", 1).build();
+                .put("CRITICAL", 20).put("HIGH", 15).put("MEDIUM", 10).put("LOW", 1).build();
 
         PresidioUrl url = restHelper.entities().url().withMaxSizeAndSortedAndExpendedParameters("DESC", "SCORE");
         ImmutableList<EntitiesStoredRecord> actualEntities = ImmutableList.copyOf(restHelper.entities().request().getEntities(url));
@@ -185,19 +188,19 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
         PresidioUrl url = restHelper.entities().url().withAggregatedFieldParameter("SEVERITY");
 
         try {
-            JSONObject json =  restHelper.alerts().request().getRestApiResponseAsJsonObj(url)
+            JSONObject json = restHelper.alerts().request().getRestApiResponseAsJsonObj(url)
                     .getJSONObject("aggregationData")
                     .getJSONObject("SEVERITY");
 
             assertThat(json).isNotNull();
 
-            Type type = new TypeToken<Map<String, Long>>(){}.getType();
-            Map<String, Long> aggregationDataSeveriries = new Gson().fromJson(json.toString(), type);
+            Type type = new TypeToken<Map<String, Long>>() {}.getType();
+            Map<String, Long> aggregationDataSeverities = new Gson().fromJson(json.toString(), type);
 
             Map<String, Long> entitiesCountBySeverity = allActualEntitiesSortedByScore.parallelStream()
                     .collect(Collectors.groupingBy(EntitiesStoredRecord::getSeverity, counting()));
 
-            assertThat(aggregationDataSeveriries).as(url + "\n'aggregationData' severity counters mismatch").isEqualTo(entitiesCountBySeverity);
+            assertThat(aggregationDataSeverities).as(url + "\n'aggregationData' severity counters mismatch").isEqualTo(entitiesCountBySeverity);
 
         } catch (Exception e) {
             LOGGER.error(url.toString());
