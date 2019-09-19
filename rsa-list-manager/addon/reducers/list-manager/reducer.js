@@ -18,7 +18,6 @@ const listManagerInitialState = Immutable.from({
 });
 
 const listManagerReducer = handleActions({
-  // TODO add more properties later
   [ACTION_TYPES.INITIALIZE_LIST_MANAGER]: (state, { payload }) => {
     return state.merge({ ...payload });
   },

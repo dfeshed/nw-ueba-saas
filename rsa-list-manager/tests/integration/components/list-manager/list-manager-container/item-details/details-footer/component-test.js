@@ -22,19 +22,15 @@ module('Integration | Component | list details - details footer', function(hooks
   const listLocation1 = 'listManager';
 
   test('renders footer for list details with correct components', async function(assert) {
-    assert.expect(4);
-    new ReduxDataHelper(setState).listName('Foos').build();
+    assert.expect(3);
+    new ReduxDataHelper(setState).listLocation(listLocation1).listName('Foos').build();
     this.set('listLocation', listLocation1);
-    this.set('detailsDone', () => {
-      assert.ok(true, 'clicking button executes detailsDone');
-    });
     this.set('itemSelection', () => {});
     this.set('item', item);
 
     await render(hbs`{{list-manager/list-manager-container/item-details/details-footer
       listLocation=listLocation
       item=item
-      detailsDone=detailsDone
       itemSelection=itemSelection
     }}`);
 
@@ -48,17 +44,13 @@ module('Integration | Component | list details - details footer', function(hooks
   });
 
   test('renders footer for list details with correct components', async function(assert) {
-    assert.expect(4);
-    new ReduxDataHelper(setState).listName('Foos').build();
+    assert.expect(3);
+    new ReduxDataHelper(setState).listLocation(listLocation1).listName('Foos').build();
     this.set('listLocation', listLocation1);
-    this.set('detailsDone', () => {
-      assert.ok(true, 'clicking button executes detailsDone');
-    });
 
     await render(hbs`{{list-manager/list-manager-container/item-details/details-footer
       listLocation=listLocation
       item=item
-      detailsDone=detailsDone
     }}`);
 
     assert.ok(find('footer.details-footer'));
@@ -72,9 +64,8 @@ module('Integration | Component | list details - details footer', function(hooks
 
   test('clicking select from footer executes selection', async function(assert) {
     assert.expect(3);
-    new ReduxDataHelper(setState).listName('Foos').build();
+    new ReduxDataHelper(setState).listLocation(listLocation1).listName('Foos').build();
     this.set('listLocation', listLocation1);
-    this.set('detailsDone', () => {});
     this.set('itemSelection', () => {
       assert.ok(true, 'clicking button executes item selection');
     });
@@ -83,7 +74,6 @@ module('Integration | Component | list details - details footer', function(hooks
     await render(hbs`{{list-manager/list-manager-container/item-details/details-footer
       listLocation=listLocation
       item=item
-      detailsDone=detailsDone
       itemSelection=itemSelection
     }}`);
 

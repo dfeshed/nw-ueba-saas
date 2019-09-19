@@ -4,7 +4,6 @@ import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
 import {
   LIST_MANAGER_CONTAINER_COMPONENT_PATH as COMPONENT_PATH,
-  LIST_VIEW,
   EDIT_VIEW
 } from 'rsa-list-manager/constants/list-manager';
 import {
@@ -95,10 +94,6 @@ const ListManagerContainer = Component.extend({
     editItem(item) {
       this.set('itemForEdit', item);
       this._updateView(EDIT_VIEW);
-    },
-
-    detailsDone() {
-      this._updateView(LIST_VIEW);
     }
   }
 });
