@@ -56,8 +56,6 @@ export default Component.extend({
 
   layout,
 
-  ajax: service(),
-
   appVersion: service(),
 
   request: service(),
@@ -210,7 +208,7 @@ export default Component.extend({
   fetchPasswordPolicy() {
     this.updateLoginProperties(_STATUS.INIT, null, true);
     if (config.adminServerAvailable) {
-      this.get('ajax').request('/api/administration/security/password/policyMessages').then((response) => {
+      fetch('/api/administration/security/password/policyMessages').then((response) => {
         this.setProperties({
           displayPolicies: true,
           passwordPolicyMinChars: response.passwordPolicyMinChars,

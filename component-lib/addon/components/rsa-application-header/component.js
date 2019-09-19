@@ -11,8 +11,6 @@ export default Component.extend(ContextualHelp, {
 
   eventBus: service(),
 
-  ajax: service(),
-
   layoutService: service('layout'),
 
   layout,
