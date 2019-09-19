@@ -158,6 +158,12 @@ module('Integration | Component | property-panel-policy/edr-policy', function(ho
     assert.equal(findAll('.edr-policy').length, 1, 'should rend the component');
   });
 
+  test('it renders with undefined data', async function(assert) {
+    new ReduxDataHelper(setState).policy(undefined).build();
+    await render(hbs`{{property-panel-policy/edr-policy}}`);
+    assert.equal(findAll('.edr-policy').length, 1, 'should rend the component with no errors');
+  });
+
   test('Content data', async function(assert) {
     new ReduxDataHelper(setState).policy(policyData).build();
     await render(hbs`{{property-panel-policy/edr-policy}}`);

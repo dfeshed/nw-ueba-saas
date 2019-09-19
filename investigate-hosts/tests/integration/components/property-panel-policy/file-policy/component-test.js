@@ -112,6 +112,12 @@ module('Integration | Component | property-panel-policy/file-policy', function(h
     assert.equal(findAll('.file-policies').length, 1, 'should rend the component');
   });
 
+  test('it renders with undefined data', async function(assert) {
+    new ReduxDataHelper(setState).policy(undefined).build();
+    await render(hbs`{{property-panel-policy/file-policy}}`);
+    assert.equal(findAll('.file-policies').length, 1, 'should rend the component with no errors');
+  });
+
   test('Content data with no filePolicy sources', async function(assert) {
     new ReduxDataHelper(setState).policy(policyData).build();
     await render(hbs`{{property-panel-policy/file-policy}}`);

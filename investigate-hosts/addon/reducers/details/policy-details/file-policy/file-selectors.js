@@ -25,7 +25,7 @@ const _listOfFileSourceTypes = () => [];
 export const selectedFilePolicy = createSelector(
   policyAdminUsm, _listOfLogServers, _listOfFileSourceTypes,
   (policyAdminUsm, _listOfLogServers, _listOfFileSourceTypes) => {
-    const focusedPolicy = policyAdminUsm.filePolicy;
+    const focusedPolicy = policyAdminUsm?.filePolicy;
     const policyDetails = [];
     const sourceSections = [];
     const basicSettings = [];

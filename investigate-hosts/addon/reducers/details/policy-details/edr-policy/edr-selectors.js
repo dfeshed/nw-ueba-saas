@@ -39,7 +39,7 @@ export const selectedEdrPolicy = createSelector(
   policyAdminUsm,
   (policyAdminUsm) => {
     const _i18n = lookup('service:i18n');
-    const focusedPolicy = policyAdminUsm.edrPolicy;
+    const focusedPolicy = policyAdminUsm?.edrPolicy;
     const policyDetails = [];
     const scanScheduleSettings = [];
     const advancedScanSettings = [];
@@ -48,7 +48,7 @@ export const selectedEdrPolicy = createSelector(
     const agentSettings = [];
     const advancedConfigSettings = [];
     const rarConfigSettings = [];
-    const scheduledScan = focusedPolicy.scanType === 'Scheduled';
+    const scheduledScan = focusedPolicy?.scanType === 'Scheduled';
 
     if (focusedPolicy && focusedPolicy.defaultPolicy &&
       focusedPolicy.policyType === 'edrPolicy' && _.isEmpty(focusedPolicy.primaryAddress)) {

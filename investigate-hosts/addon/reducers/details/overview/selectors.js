@@ -386,6 +386,8 @@ export const policyAdminUsm = createSelector(
           sources: data.filePolicy.sources ? data.filePolicy.sources : []
         } : {}
       };
+    } else {
+      return {};
     }
   }
 );

@@ -23,7 +23,7 @@ const _listOfLogServers = () => []; // to do
 export const selectedWindowsLogPolicy = createSelector(
   policyAdminUsm, _listOfLogServers,
   (policyAdminUsm, _listOfLogServers) => {
-    const focusedPolicy = policyAdminUsm.windowsLogPolicy;
+    const focusedPolicy = policyAdminUsm?.windowsLogPolicy;
     const policyDetails = [];
     const channelFilters = [];
     const basicSettings = [];
