@@ -124,6 +124,12 @@ public class EntitiesStoredRecord {
         this.alertClassifications = alertClassifications;
     }
 
+    public int compareScore(EntitiesStoredRecord anotherEntity) {
+        int current = Integer.valueOf(score);
+        int another = Integer.valueOf(anotherEntity.score);
+        return Integer.compare(current, another);
+    }
+
     @Override
     public String toString() {
         return "EntitiesStoredRecord{" +
