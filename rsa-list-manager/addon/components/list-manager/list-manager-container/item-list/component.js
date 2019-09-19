@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import {
   setHighlightedIndex
@@ -33,12 +32,6 @@ const ItemList = Component.extend({
   classNames: ['rsa-item-list'],
   listLocation: undefined,
   onMouse: null, // true if user is using the mouse to navigate
-
-  @computed('filteredList')
-  hasIsEditableIndicators(filteredList) {
-    const editableIndicatedItems = filteredList.filter((item) => typeof item.isEditable !== 'undefined');
-    return editableIndicatedItems.length > 0;
-  },
 
   didInsertElement() {
     this._super(...arguments);

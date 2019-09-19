@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import layout from './template';
 import { htmlSafe } from '@ember/string';
-import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import {
   LIST_MANAGER_CONTAINER_COMPONENT_PATH as COMPONENT_PATH,
@@ -20,13 +19,17 @@ import {
   isExpanded,
   selectedItem,
   viewName,
-  isListView
+  isListView,
+  caption,
+  titleTooltip
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
   listName: listName(state, attrs.listLocation),
   isExpanded: isExpanded(state, attrs.listLocation),
   itemType: itemType(state, attrs.listLocation),
+  caption: caption(state, attrs.listLocation),
+  titleTooltip: titleTooltip(state, attrs.listLocation),
   selectedItem: selectedItem(state, attrs.listLocation),
   viewName: viewName(state, attrs.listLocation),
   isListView: isListView(state, attrs.listLocation)
@@ -61,24 +64,6 @@ const ListManagerContainer = Component.extend({
 
   // style for the recon-button-menu derived from the buttonGroup style
   offsetsStyle: null,
-
-  @computed('listName', 'selectedItem')
-  caption(listName, selectedItem) {
-    // If there is a selected item for a listName e.g My Items (string ending with s(plural)),
-    // the caption dispalyed will be My Item: selectedItemName
-    if (selectedItem) {
-      return `${this.get('itemType')}: ${selectedItem.name}`;
-    }
-    return listName;
-  },
-
-  @computed('selectedItem')
-  titleTooltip(selectedItem) {
-    if (selectedItem) {
-      return selectedItem.name;
-    }
-    return null;
-  },
 
   _updateView(viewName) {
     this.send('viewChanged', viewName, this.get('listLocation'));

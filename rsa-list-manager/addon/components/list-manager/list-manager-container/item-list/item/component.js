@@ -4,12 +4,14 @@ import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import {
   selectedItem,
-  highlightedId
+  highlightedId,
+  hasIsEditableIndicators
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
   selectedItem: selectedItem(state, attrs.listLocation),
-  highlightedId: highlightedId(state, attrs.listLocation)
+  highlightedId: highlightedId(state, attrs.listLocation),
+  hasIsEditableIndicators: hasIsEditableIndicators(state, attrs.listLocation)
 });
 
 const Item = Component.extend({

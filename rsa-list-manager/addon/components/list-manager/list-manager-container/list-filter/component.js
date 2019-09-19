@@ -1,13 +1,13 @@
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { setFilterText, setHighlightedIndex } from 'rsa-list-manager/actions/creators/creators';
-import { listName, filterText } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { listName, filterText, filterPlaceholder } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
   listName: listName(state, attrs.listLocation),
-  filterText: filterText(state, attrs.listLocation)
+  filterText: filterText(state, attrs.listLocation),
+  filterPlaceholder: filterPlaceholder(state, attrs.listLocation)
 });
 
 const dispatchToActions = {
@@ -30,11 +30,6 @@ const ListFilter = Component.extend({
 
   filterList(value) {
     this.send('setFilterText', value, this.get('listLocation'));
-  },
-
-  @computed('listName')
-  filterPlaceholder(listName) {
-    return `Filter ${listName.toLowerCase()}`;
   },
 
   actions: {

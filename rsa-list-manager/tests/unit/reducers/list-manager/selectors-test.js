@@ -16,7 +16,11 @@ import {
   noResultsMessage,
   selectedIndex,
   helpId,
-  hasContextualHelp
+  hasContextualHelp,
+  caption,
+  titleTooltip,
+  filterPlaceholder,
+  hasIsEditableIndicators
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 import { LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -31,6 +35,18 @@ const list1 = [
   { id: 2, name: 'bar', subItems: [ 'e', 'b', 'c' ] },
   { id: 4, name: 'Baz', subItems: [ 'c' ] }
 ];
+const listHasIsEditable = [
+  { id: 1, name: 'eba', isEditable: true },
+  { id: 2, name: 'foo', isEditable: true },
+  { id: 3, name: 'bar', isEditable: false },
+  { id: 4, name: 'Baz', isEditable: false }
+];
+const listNotHasIsEditable = [
+  { id: 1, name: 'eba' },
+  { id: 2, name: 'foo' },
+  { id: 3, name: 'bar' }
+];
+
 const item1 = { id: 2, name: 'bar', subItems: [ 'e', 'b', 'c' ] };
 const viewName1 = 'list-view';
 
@@ -275,3 +291,85 @@ test('hasContextualHelp returns false for listLocation if helpId is missing modu
   const result3 = hasContextualHelp(state3, listLocation1);
   assert.notOk(result3, 'hasContextualHelp shall return false if topicId and moduleId do not exist in helpId');
 });
+
+test('caption returns caption for listLocation, listName, selectedItem if selectedItem exists', function(assert) {
+  const state = new ReduxDataHelper()
+    .listLocation(listLocation1)
+    .list(list1)
+    .listName(listName1)
+    .selectedItem(list1[0])
+    .build();
+  const result = caption(state, listLocation1);
+  const expected = `${state.listManager.listName.slice(0, -1)}: ${list1[0].name}`;
+  assert.equal(result, expected, 'Shall select caption based on listLocation, listName, selectedItem');
+});
+
+test('caption returns listName for listLocation if selectedItem does not exist', function(assert) {
+  const state = new ReduxDataHelper()
+    .listLocation(listLocation1)
+    .list(list1)
+    .listName(listName1)
+    .selectedItem(null)
+    .build();
+  const result = caption(state, listLocation1);
+  assert.equal(result, listName1, 'Shall select caption based on listLocation, listName, selectedItem');
+});
+
+test('titleTooltip returns titleTooltip for listLocation and selectedItem if selectedItem exists', function(assert) {
+  const randomIndex = Math.floor(Math.random() * Math.floor(list1.length));
+  const state = new ReduxDataHelper()
+    .listLocation(listLocation1)
+    .list(list1)
+    .listName(listName1)
+    .selectedItem(list1[randomIndex])
+    .build();
+  const result = titleTooltip(state, listLocation1);
+  assert.equal(result, list1[randomIndex].name, 'Shall select titleTooltip based on listLocation and selectedItem');
+});
+
+test('titleTooltip returns null for listLocation if selectedItem does not exist', function(assert) {
+  const state = new ReduxDataHelper()
+    .listLocation(listLocation1)
+    .list(list1)
+    .listName(listName1)
+    .selectedItem(null)
+    .build();
+  const result = titleTooltip(state, listLocation1);
+  assert.notOk(result, 'Shall select titleTooltip based on listLocation and selectedItem');
+});
+
+test('filterPlaceholder returns filterPlaceholder for listLocation and listName', function(assert) {
+  const state = new ReduxDataHelper()
+    .listLocation(listLocation1)
+    .list(list1)
+    .listName(listName1)
+    .build();
+  const result = filterPlaceholder(state, listLocation1);
+  const expected = `Filter ${listName1.toLowerCase()}`;
+  assert.equal(result, expected, 'Shall select filterPlaceholder based on listLocation and listName');
+});
+
+test('hasIsEditableIndicators returns true for listLocation if filteredList contains items where isEditable is not undefined',
+  function(assert) {
+    const state = new ReduxDataHelper()
+      .listLocation(listLocation1)
+      .list(listHasIsEditable)
+      .filterText('a')
+      .listName(listName1)
+      .build();
+    const result = hasIsEditableIndicators(state, listLocation1);
+    assert.ok(result, 'hasIsEditableIndicators shall return true if filteredList contains items with isEditable property');
+  });
+
+test('hasIsEditableIndicators returns false for listLocation if filteredList only contains items where isEditable is undefined',
+  function(assert) {
+    const state = new ReduxDataHelper()
+      .listLocation(listLocation1)
+      .list(listNotHasIsEditable)
+      .filterText('a')
+      .listName(listName1)
+      .build();
+    const result = hasIsEditableIndicators(state, listLocation1);
+    assert.notOk(result,
+      'hasIsEditableIndicators shall return false if filteredList does not contain any items with isEditable property');
+  });

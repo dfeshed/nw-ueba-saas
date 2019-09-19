@@ -159,3 +159,34 @@ export const hasContextualHelp = createSelector(
     return false;
   }
 );
+
+export const caption = createSelector(
+  [listName, selectedItem],
+  (listName, selectedItem) => {
+    // If there is selectedItem for listName e.g "My Items" (string ending with s(plural))
+    // caption will be "My Item: name of selectedItem"
+    return selectedItem ? `${listName.slice(0, -1)}: ${selectedItem.name}` : listName;
+  }
+);
+
+export const titleTooltip = createSelector(
+  [selectedItem],
+  (selectedItem) => {
+    return selectedItem ? selectedItem.name : null;
+  }
+);
+
+export const filterPlaceholder = createSelector(
+  [listName],
+  (listName) => {
+    return `Filter ${listName.toLowerCase()}`;
+  }
+);
+
+export const hasIsEditableIndicators = createSelector(
+  [filteredList],
+  (filteredList) => {
+    const editableIndicatedItems = filteredList.filter((item) => typeof item.isEditable !== 'undefined');
+    return editableIndicatedItems.length > 0;
+  }
+);
