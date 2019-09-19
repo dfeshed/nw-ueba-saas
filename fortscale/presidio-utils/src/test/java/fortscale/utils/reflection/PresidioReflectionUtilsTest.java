@@ -4,6 +4,7 @@ import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +15,6 @@ public class PresidioReflectionUtilsTest {
         Set<Class> expectedSubTypes = new HashSet<>();
         expectedSubTypes.add(TestObject.class);
         Assert.assertEquals(expectedSubTypes, PresidioReflectionUtils.getSubTypes(
-                new String[] {"fortscale.utils.reflection"}, AbstractJsonObjectTransformer.class));
+                Collections.singletonList("fortscale.utils.reflection"), AbstractJsonObjectTransformer.class));
     }
 }

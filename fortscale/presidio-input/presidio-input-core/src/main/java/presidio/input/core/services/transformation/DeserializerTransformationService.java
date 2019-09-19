@@ -4,9 +4,8 @@ import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import fortscale.common.general.Schema;
-import fortscale.utils.reflection.PresidioReflectionUtils;
-import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import fortscale.utils.transform.IJsonObjectTransformer;
+import fortscale.utils.transform.TransformerSubtypeRegisterer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -21,14 +20,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
-public class DeserializerTransformationService implements ApplicationContextAware {
+public class DeserializerTransformationService extends TransformerSubtypeRegisterer implements ApplicationContextAware {
 
     private static final String START_DATE = "startDate";
     private static final String END_DATE = "endDate";
-    private static final String TRANSFORMERS_UTIL_PACKAGE_LOCATION = "fortscale.utils.transform";
     private static final String TRANSFORMERS_INPUT_PACKAGE_LOCATION = "presidio.input.core.services.transformation.transformer";
     private static final String CLASSPATH_PREFIX = "classpath:";
     private String configurationFilePath;
@@ -50,7 +47,7 @@ public class DeserializerTransformationService implements ApplicationContextAwar
             objectMapper.setInjectableValues(injectableValues);
 
             // Register all transformer subtypes so that the object mapper can deserialize them by their 'type'
-            registerTransformerSubTypes(objectMapper);
+            registerSubtypes(objectMapper);
 
             IJsonObjectTransformer transformer = objectMapper.readValue(getFile(String.format("%s%s.json", configurationFilePath, schema.getName())), IJsonObjectTransformer.class);
             autowireProcessor(transformer);
@@ -74,15 +71,6 @@ public class DeserializerTransformationService implements ApplicationContextAwar
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-    }
-
-
-    private void registerTransformerSubTypes(ObjectMapper objectMapper) {
-        Collection<Class<? extends AbstractJsonObjectTransformer>> subTypes =
-                PresidioReflectionUtils.getSubTypes(new String[]{TRANSFORMERS_INPUT_PACKAGE_LOCATION, TRANSFORMERS_UTIL_PACKAGE_LOCATION},
-                AbstractJsonObjectTransformer.class);
-        List<Class<?>> subTypesAsGenericClasses = subTypes.stream().map(x -> (Class<?>) x).collect(Collectors.toList());
-        objectMapper.registerSubtypes(subTypesAsGenericClasses);
     }
 
     private File getFile(String filePath) throws IOException {
@@ -176,5 +164,10 @@ public class DeserializerTransformationService implements ApplicationContextAwar
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Optional<String> additionalPackageLocation() {
+        return Optional.of(TRANSFORMERS_INPUT_PACKAGE_LOCATION);
     }
 }
