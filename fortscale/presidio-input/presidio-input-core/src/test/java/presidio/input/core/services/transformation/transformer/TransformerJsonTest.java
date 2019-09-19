@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import fortscale.utils.reflection.PresidioReflectionUtils;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
+import fortscale.utils.transform.TransformerSubtypeRegisterer;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -17,14 +17,12 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-public abstract class TransformerJsonTest {
+public abstract class TransformerJsonTest extends TransformerSubtypeRegisterer {
 
-    private static final String TRANSFORMERS_UTIL_PACKAGE_LOCATION = "fortscale.utils.transform";
     private static final String TRANSFORMERS_INPUT_PACKAGE_LOCATION = "presidio.input.core.services.transformation.transformer";
     private static final String END_DATE = "endDate";
 
@@ -33,6 +31,11 @@ public abstract class TransformerJsonTest {
 
     abstract String getResourceFilePath();
     abstract Class getTransformerClass();
+
+    @Override
+    public Optional<String> additionalPackageLocation() {
+        return Optional.of(TRANSFORMERS_INPUT_PACKAGE_LOCATION);
+    }
 
     @Test
     public void testDeserializingTransformer() throws IOException {
@@ -54,11 +57,7 @@ public abstract class TransformerJsonTest {
         InjectableValues.Std injectableValues = new InjectableValues.Std();
         injectableValues.addValue(END_DATE, Instant.now());
         objectMapper.setInjectableValues(injectableValues);
-        Collection<Class<? extends AbstractJsonObjectTransformer>> subTypes = PresidioReflectionUtils.getSubTypes(
-                new String[]{TRANSFORMERS_UTIL_PACKAGE_LOCATION, TRANSFORMERS_INPUT_PACKAGE_LOCATION},
-                AbstractJsonObjectTransformer.class);
-        Collection<Class<?>> collect = subTypes.stream().map(x -> (Class<?>) x).collect(Collectors.toList());
-        objectMapper.registerSubtypes(collect);
+        registerSubtypes(objectMapper);
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         return objectMapper;
