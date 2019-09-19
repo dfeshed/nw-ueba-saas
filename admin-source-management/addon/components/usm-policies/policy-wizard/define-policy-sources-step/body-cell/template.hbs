@@ -39,8 +39,10 @@
       {{#each enableOnAgentConfig.items as |option|}}
         {{#radio-button
           classNames='rsa-form-radio-wrapper'
+          radioClass='radio-option'
           value=option.name
           groupValue=(readonly item.enabled)
+          name='radio-enabled'
           changed=(action 'handleSelectionChange' column.field bubbles=false)
         }}
           <span>{{t option.label}}</span>
@@ -64,8 +66,10 @@
       {{#each dataCollectionConfig.items as |option|}}
         {{#radio-button
           classNames='rsa-form-radio-wrapper'
+          radioClass='radio-option'
           value=option.name
           groupValue=(readonly item.startOfEvents)
+          name='radio-startOfEvents'
           changed=(action 'handleSelectionChange' column.field bubbles=false)
         }}
           <span>{{t option.label}}</span>

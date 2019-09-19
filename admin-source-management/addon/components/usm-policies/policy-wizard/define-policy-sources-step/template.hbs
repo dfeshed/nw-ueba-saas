@@ -11,7 +11,7 @@
     {{#rsa-data-table lazy=true items=sourcesIds columnsConfig=columns}}
       {{!-- note that 'item' below will currently be the source index --}}
       {{#rsa-data-table/body as |item index column|}}
-        {{#rsa-data-table/body-cell item=item index=index column=column class='body-cell'}}
+        {{#rsa-data-table/body-cell item=item index=index column=column}}
           {{component column.component
             itemId=item
             index=index

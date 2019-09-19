@@ -11,9 +11,6 @@
       padding: rsa-whitespace() rsa-whitespace() 0 0;
       text-align: right;
     }
-    .rsa-form-radio-label {
-      line-height: 1.75rem;
-    }
     .rsa-wizard-step {
       padding-bottom: 0;
     }
@@ -75,16 +72,6 @@
             }
           }
         }
-
-        .radio-buttons {
-          padding-top: 0px;
-          .rsa-form-radio-wrapper {
-            input[type=radio]+span::before {
-              padding-bottom: 0.25rem;
-              height: 1.25rem;
-            }
-          }
-        }
       }
     }
 
@@ -118,26 +105,32 @@
   }
 
   .source-container {
-    .rsa-data-table-body {
-      overflow: hidden;
-    }
+    padding-right: 0;
+
     .rsa-wizard-step {
       padding-top: 0;
     }
-    padding-right: 0;
+
+    /* the next few override some styles from the data table that cause weirdness with non-text components */
+    .rsa-data-table-body, .rsa-data-table-body-cell * {
+      overflow: hidden; /* removes scrollbars from body & cells that aren't really scrolling */
+    }
     .rsa-data-table-body-row {
       flex-direction: column;
       margin: 0;
       padding: 0;
+      line-height: unset; /* fixes odd radio-button focus indicator */
+      font-size: unset; /* fixes odd radio-button focus indicator */
       top: 0 !important;
       position: relative;
       width: 55%;
       margin-bottom: rsa-whitespace(most);
       background-color: background-color(primary, darker);
       &:hover {
-          width: 55%;
+        width: 55%;
       }
     }
+
     .paths {
       .add-path {
         margin-top: rsa-whitespace(less);
