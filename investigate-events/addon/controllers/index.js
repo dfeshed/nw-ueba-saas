@@ -16,8 +16,8 @@ export default Controller.extend({
   ],
 
   actions: {
-    controllerExecuteQuery(externalLink, sortField, sortDir) {
-      this.send('executeQuery', externalLink, sortField, sortDir);
+    controllerExecuteQuery(externalLinkProps) {
+      this.send('executeQuery', externalLinkProps);
     },
     controllerMetaPanelSize(size) {
       this.send('metaPanelSize', size);

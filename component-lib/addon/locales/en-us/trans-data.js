@@ -224,6 +224,7 @@ export default {
     query: 'Query with filters',
     queryEvents: 'Query Events',
     queryParenContents: 'Query with paren contents',
+    queryParenContentsNewTab: 'Query with paren contents in a new tab',
     querySelected: 'Query with selected filters',
     querySelectedNewTab: 'Query with selected filters in a new tab',
     metaNoMatch: 'All meta keys filtered out',

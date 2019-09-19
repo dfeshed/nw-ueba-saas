@@ -20,6 +20,7 @@ import { hasInvalidPill, isPillValidationInProgress } from '../reducers/investig
 import { teardownNotifications, initializeNotifications } from '../actions/notification-creators';
 import { replaceAllGuidedPills } from 'investigate-events/actions/guided-creators';
 import { removeEmptyParens } from 'investigate-shared/actions/api/events/utils';
+import { contentBetweenParens } from 'investigate-events/actions/utils';
 
 const SUMMARY_CALL_INTERVAL = 60000;
 let timerId;
@@ -163,7 +164,8 @@ export default Route.extend({
   },
 
   actions: {
-    executeQuery(externalLink) {
+    executeQuery(externalLinkProps) {
+      const isExternalLink = (externalLinkProps && externalLinkProps.externalLink) || false;
       const redux = this.get('redux');
       const state = redux.getState();
       const {
@@ -174,7 +176,7 @@ export default Route.extend({
 
       // If we're not opening this query in a new window, start the query
       // process by notifying the UI so that it can show the cancel option.
-      if (!externalLink) {
+      if (!isExternalLink) {
         redux.dispatch(queryIsRunning(true));
       }
 
@@ -182,7 +184,7 @@ export default Route.extend({
       // the request to execute the query. If validation has completed, check to
       // see if there are any invalid pills. Don't transition if this is true.
       if (isPillValidationInProgress(state)) {
-        later(this, this.send, 'executeQuery', externalLink, 50);
+        later(this, this.send, 'executeQuery', externalLinkProps, 50);
         return;
       } else if (queryView === 'guided' && hasInvalidPill(state)) {
         // Only exit if we're in guided mode and we have invalid pills
@@ -216,10 +218,16 @@ export default Route.extend({
         qp.sortDir = sortDirection;
       }
 
-      if (externalLink) {
-        const selectedPills = pillsDataWithoutEmptyParens.filter((pill) => pill.isSelected);
-        if (selectedPills.length > 0) { // if no selected pills in state, exit
-          const pillString = metaFiltersAsString(selectedPills);
+      if (isExternalLink) {
+        let pills;
+        if (!externalLinkProps.paren) {
+          pills = pillsDataWithoutEmptyParens.filter((pill) => pill.isSelected);
+        } else {
+          const paren = pillsDataWithoutEmptyParens[externalLinkProps.position];
+          pills = contentBetweenParens([paren], pillsDataWithoutEmptyParens);
+        }
+        if (pills.length > 0) { // if no selected pills in state, exit
+          const pillString = metaFiltersAsString(pills);
           qp.mf = encodeURIComponent(pillString);
           delete qp.eid; // delete unnecessary param, do not want recon to open
           const query = serializeQueryParams(qp);

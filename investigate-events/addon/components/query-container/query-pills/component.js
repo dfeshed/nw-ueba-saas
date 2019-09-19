@@ -10,7 +10,7 @@ import { isEscape } from 'investigate-events/util/keys';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { stripOuterSingleQuotes } from 'investigate-events/util/quote';
 import { isSubmitClicked } from '../query-pill/query-pill-util';
-import { pillsSetDifference } from 'investigate-events/actions/utils';
+import { getContextItems } from './right-click-util';
 
 import {
   canQueryGuided,
@@ -126,89 +126,6 @@ const _hasMoreOpenThanCloseParens = (pd, position) => {
   }
   return count > 0;
 };
-
-const rightClickQueryWithSelected = (context, i18n) => {
-  return {
-    label: i18n.t('queryBuilder.querySelected'),
-    disabled() {
-      return context.get('hasInvalidSelectedPill');
-    },
-    action() {
-      // Delete all deselected pills first
-      // submit query with remaining selected pills
-      context.send('deleteGuidedPill', { pillData: context.get('deselectedPills') });
-      context._submitQuery();
-    }
-  };
-};
-
-const rightClickQueryWithSelectedNewTab = (context, i18n) => {
-  return {
-    label: i18n.t('queryBuilder.querySelectedNewTab'),
-    disabled() {
-      return context.get('hasInvalidSelectedPill');
-    },
-    action() {
-      // Do not want to check canQueryGuided because user might
-      // want to execute the same query in new tab
-      context.get('executeQuery')(true);
-      // deselect all the pills and remove focus. Can't trigger this first, as
-      // route action picks up selected pills from state to executeQ
-      context.send('removePillFocus');
-      context.send('deselectAllGuidedPills');
-    }
-  };
-};
-
-const rightClickDeleteSelection = (context, i18n) => {
-  return {
-    label: i18n.t('queryBuilder.delete'),
-    action() {
-      context.send('deleteSelectedGuidedPills');
-    }
-  };
-};
-
-const rightClickParenDeleteContents = (context, i18n) => {
-  return {
-    label: i18n.t('queryBuilder.deleteParenContents'),
-    action() {
-      context.send('deleteSelectedParenContents');
-      context.send('deselectAllGuidedPills');
-    }
-  };
-};
-
-const rightClickParensQueryContents = (context, i18n) => {
-  return {
-    label: i18n.t('queryBuilder.queryParenContents'),
-    action() {
-      const pillsData = context.get('pillsData');
-      const position = context.get('rightClickTarget').getAttribute('position');
-      const pillsToDelete = pillsSetDifference(position, pillsData);
-      context.send('deleteGuidedPill', { pillData: pillsToDelete });
-      context._submitQuery();
-    }
-  };
-};
-
-// Prepare an object that contains all possible list of options
-function getContextItems(context, i18n) {
-  const _this = context;
-  return {
-    pills: [
-      rightClickQueryWithSelected(_this, i18n),
-      rightClickQueryWithSelectedNewTab(_this, i18n),
-      rightClickDeleteSelection(_this, i18n)
-    ],
-    parens: [
-      rightClickParensQueryContents(_this, i18n),
-      rightClickParenDeleteContents(_this, i18n),
-      rightClickDeleteSelection(_this, i18n)
-    ]
-  };
-}
-
 
 const QueryPills = RsaContextMenu.extend({
   tagName: null,

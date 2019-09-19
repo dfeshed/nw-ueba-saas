@@ -225,6 +225,15 @@ export const isEmptyParenSetAt = (arr, i) => {
 };
 
 /**
+ * Given a paren pill, returns startIndex and endIndex of their paren set.
+ */
+const _findParensIndexes = (pill, pillsData) => {
+  const st = pillsData.findIndex((p) => p.twinId === pill.twinId && p.type === OPEN_PAREN);
+  const en = pillsData.findIndex((p) => p.twinId === pill.twinId && p.type === CLOSE_PAREN);
+  return { st, en };
+};
+
+/**
  * For the paren postion passed in, find the open and close paren set. Return everything
  * from pillsData apart from the content enclosed between that set.
  */
@@ -233,8 +242,7 @@ const pillsSetDifference = (position, pillsData) => {
 
   // Slice out the contents of the selected parens
   const pill = pillsData[position];
-  const st = pillsData.findIndex((p) => pill.twinId === p.twinId && p.type === OPEN_PAREN);
-  const en = pillsData.findIndex((p) => pill.twinId === p.twinId && p.type === CLOSE_PAREN);
+  const { st, en } = _findParensIndexes(pill, pillsData);
   const pillsToBeQueried = pillsData.slice(st, en + 1);
 
   // negate rest of the pills
@@ -244,9 +252,8 @@ const pillsSetDifference = (position, pillsData) => {
 // Get all the stuff between sets of parens
 const contentBetweenParens = (openParensSelected, pillsData) => {
   const result = openParensSelected.reduce((acc, openParen) => {
-    const stIndex = pillsData.indexOf(openParen);
-    const enIndex = pillsData.findIndex((pill) => pill.id !== openParen.id && pill.twinId === openParen.twinId);
-    return acc.concat(pillsData.slice(stIndex, enIndex + 1));
+    const { st, en } = _findParensIndexes(openParen, pillsData);
+    return acc.concat(pillsData.slice(st, en + 1));
   }, []);
   // remove duplicates
   return [...new Set(result)];
