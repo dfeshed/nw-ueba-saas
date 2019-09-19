@@ -482,6 +482,6 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
   test('filter controls are displayed', async function(assert) {
     this.set('propertyConfig', config);
     await render(hbs`{{investigate-files-container propertyConfig=propertyConfig}}`);
-    assert.equal(findAll('.files-content .rsa-data-filters .filter-controls').length, 13, 'all filter controls are rendered');
+    assert.equal(findAll('.files-content .rsa-data-filters .filter-controls').length, 14, 'all filter controls are rendered');
   });
 });

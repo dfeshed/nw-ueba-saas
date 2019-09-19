@@ -88,9 +88,14 @@ export const filters = createSelector(
             filterValue = propertyValues.mapBy('value');
             break;
           case 'number': {
-            const values = convertFromBytes(propertyValues.mapBy('value'));
-            const value = values.mapBy('value');
-            const [unit] = values.mapBy('unit');
+            let unit, value;
+            if (expression.propertyName === 'size') {
+              const values = convertFromBytes(propertyValues.mapBy('value'));
+              value = values.mapBy('value');
+              [unit] = values.mapBy('unit');
+            } else {
+              value = propertyValues.mapBy('value');
+            }
             filterValue = { value, unit, operator: restrictionType };
             break;
           }

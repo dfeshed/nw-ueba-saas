@@ -1,5 +1,5 @@
 <hbox>
-  {{rsa-content-definition label=(t 'investigateFiles.fields.machineCount') value=hostList.length}}
+  {{rsa-content-definition label=(t 'investigateFiles.fields.hostCount') value=hostList.length}}
   {{rsa-content-definition label=(t 'investigateFiles.fields.signature.features') value=(if summary.signature summary.signature 'unsigned')}}
   {{#rsa-content-definition label=(t 'investigateFiles.fields.size')}}
     {{rsa-content-memsize size=summary.size}}

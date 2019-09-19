@@ -2544,6 +2544,7 @@ export default {
       reputationStatus: 'Reputation',
       score: 'Risk Score',
       hostCount: 'Active On',
+      onHost: 'On Host',
       remediationAction: 'Remediation',
       elf: {
         classType: 'ELF.Class Type',

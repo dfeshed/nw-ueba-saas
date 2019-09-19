@@ -103,6 +103,11 @@ module('Unit | Selectors | endpoint filters', function(hooks) {
                 propertyValues: [{ value: 204800 }],
                 restrictionType: 'IN',
                 propertyName: 'size'
+              },
+              {
+                propertyValues: [{ value: 1 }],
+                restrictionType: 'IN',
+                propertyName: 'hostCount'
               }
             ]
           }
@@ -128,11 +133,16 @@ module('Unit | Selectors | endpoint filters', function(hooks) {
           type: 'number',
           label: 'Test',
           name: 'size'
+        },
+        {
+          type: 'number',
+          label: 'Test',
+          name: 'hostCount'
         }
       ]
     });
     const data = filters(state);
-    assert.equal(data.length, 4);
+    assert.equal(data.length, 5);
     const [size] = data.filterBy('name', 'size');
     const [date] = data.filterBy('name', 'scanTime');
     assert.equal(size.filterValue.unit, 'KB');

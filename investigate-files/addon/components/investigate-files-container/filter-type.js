@@ -66,6 +66,17 @@ const FILTER_TYPES = [
     'type': 'range'
   },
   {
+    'name': 'hostCount',
+    'label': 'investigateFiles.fields.onHost',
+    'type': 'number',
+    'useI18N': true,
+    'operators': [
+      { label: 'investigateFiles.filter.label.greaterThan', type: 'GREATER_THAN' },
+      { label: 'investigateFiles.filter.label.lessThan', type: 'LESS_THAN' },
+      { label: 'investigateFiles.filter.label.between', type: 'BETWEEN' }
+    ]
+  },
+  {
     'name': 'machineOsType',
     'label': 'investigateFiles.filter.osType',
     'listOptions': [
