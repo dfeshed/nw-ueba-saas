@@ -99,14 +99,16 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
     const policyForDetails = focusedPolicy(Immutable.from(state));
     const policyDetails = selectedFilePolicy(Immutable.from(state), policyForDetails);
 
-    assert.expect(11);
+    assert.expect(15);
     // should be 1 file settings section + 2 source settings sections
     assert.equal(policyDetails.length, 3, '1 file settings section + 2 source settings sections as expected');
 
     // apache source section
     assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.sourceSettings', 'apache source section header is as expected');
     assert.deepEqual(policyDetails[1].headerVars, { fileType: 'Apache Web Server' }, 'apache source section headerVars is as expected');
-    assert.equal(policyDetails[1].props.length, 6, 'apache source section has 6 properties');
+    assert.equal(policyDetails[1].props.length, 4, 'apache source section has 4 basic properties');
+    assert.equal(policyDetails[1].advancedHeader, 'adminUsm.policies.detail.sourceAdvancedSettings', 'apache source section advanced header is as expected');
+    assert.equal(policyDetails[1].advancedProps.length, 2, 'apache source section has 2 advanced properties');
     // test the specific values for props that get translated
     assert.equal(policyDetails[1].props[0].value, 'Disabled', 'enabled property has expected value');
     assert.equal(policyDetails[1].props[1].value, 'Collect new data only', 'startOfEvents has expected value');
@@ -114,7 +116,9 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
     // exchange source section
     assert.equal(policyDetails[2].header, 'adminUsm.policies.detail.sourceSettings', 'exchange source section header is as expected');
     assert.deepEqual(policyDetails[2].headerVars, { fileType: 'Microsoft Exchange' }, 'exchange source section headerVars is as expected');
-    assert.equal(policyDetails[2].props.length, 6, 'exchange source section has 6 properties');
+    assert.equal(policyDetails[2].props.length, 4, 'exchange source section has 4 basic properties');
+    assert.equal(policyDetails[2].advancedHeader, 'adminUsm.policies.detail.sourceAdvancedSettings', 'exchange source section advanced header is as expected');
+    assert.equal(policyDetails[2].advancedProps.length, 2, 'exchange source section has 2 advanced properties');
     // test the specific values for props that get translated
     assert.equal(policyDetails[2].props[0].value, 'Enabled', 'enabled property has expected value');
     assert.equal(policyDetails[2].props[1].value, 'Collect historical and new data', 'startOfEvents has expected value');
@@ -162,7 +166,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
           fileType: 'apache',
           enabled: false,
           startOfEvents: false,
-          fileEncoding: '',
+          fileEncoding: 'UTF-8 / ASCII', // there is always a value
           paths: [],
           sourceName: '',
           exclusionFilters: []
@@ -172,7 +176,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
     const policyForDetails = focusedPolicy(Immutable.from(state));
     const policyDetails = selectedFilePolicy(Immutable.from(state), policyForDetails);
 
-    assert.expect(8);
+    assert.expect(9);
     // should be 1 file settings section + 1 source settings sections
     assert.equal(policyDetails.length, 2, '1 file settings section + 1 source settings sections as expected');
 
@@ -180,22 +184,20 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
     assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.sourceSettings', 'apache source section header is as expected');
     assert.deepEqual(policyDetails[1].headerVars, { fileType: 'Apache Web Server' }, 'apache source section headerVars is as expected');
     assert.equal(policyDetails[1].props.length, 2, 'apache source section has 2 properties');
+    assert.equal(policyDetails[1].advancedHeader, 'adminUsm.policies.detail.sourceAdvancedSettings', 'apache source section advanced header is as expected');
+    assert.equal(policyDetails[1].advancedProps.length, 1, 'apache source section has 1 advanced properties');
     // test the specific props that should NOT be present
-    assert.equal(
-      _.find(policyDetails[1].props, ['name', 'adminUsm.policyWizard.filePolicy.fileEncoding']),
-      undefined, 'fileEncoding is ignored since it does not have a value'
-    );
     assert.equal(
       _.find(policyDetails[1].props, ['name', 'adminUsm.policyWizard.filePolicy.paths']),
       undefined, 'paths is ignored since it does not have a value'
     );
     assert.equal(
-      _.find(policyDetails[1].props, ['name', 'adminUsm.policyWizard.filePolicy.sourceName']),
-      undefined, 'sourceName is ignored since it does not have a value'
-    );
-    assert.equal(
       _.find(policyDetails[1].props, ['name', 'adminUsm.policyWizard.filePolicy.exclusionFilters']),
       undefined, 'exclusionFilters is ignored since it does not have a value'
+    );
+    assert.equal(
+      _.find(policyDetails[1].advancedProps, ['name', 'adminUsm.policyWizard.filePolicy.sourceName']),
+      undefined, 'sourceName is ignored since it does not have a value'
     );
   });
 
@@ -234,7 +236,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
       .policyWizWinLogLogServers()
       .focusedPolicy({ ...filePolicyWithSourcesAndOrigins })
       .build();
-    assert.expect(53);
+    assert.expect(57);
     const policyForDetails = focusedPolicy(Immutable.from(state));
     const policyDetails = selectedFilePolicy(Immutable.from(state), policyForDetails.policy);
     assert.equal(policyDetails.length, 3, '1 fileSettings section & 2 sourceSettings sections returned as expected');
@@ -242,10 +244,14 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
     assert.equal(policyDetails[0].props.length, 5, '5 file connection settings');
     assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.sourceSettings', '1st sourceSettings section header is as expected');
     assert.equal(policyDetails[1].headerVars.fileType, 'apache', '1st sourceSettings header fileType is apache');
-    assert.equal(policyDetails[1].props.length, 6, '6 file connection settings for apache');
+    assert.equal(policyDetails[1].props.length, 4, '4 basic file source settings for apache');
+    assert.equal(policyDetails[1].advancedHeader, 'adminUsm.policies.detail.sourceAdvancedSettings', '1st sourceSettings section advanced header is as expected');
+    assert.equal(policyDetails[1].advancedProps.length, 2, '2 advanced file source settings for apache');
     assert.equal(policyDetails[2].header, 'adminUsm.policies.detail.sourceSettings', '2nd sourceSettings section header is as expected');
     assert.equal(policyDetails[2].headerVars.fileType, 'exchange', '2nd sourceSettings header fileType is exchange');
-    assert.equal(policyDetails[2].props.length, 5, '5 file connection settings for exchange');
+    assert.equal(policyDetails[2].props.length, 3, '3 basic file source settings for exchange');
+    assert.equal(policyDetails[2].advancedHeader, 'adminUsm.policies.detail.sourceAdvancedSettings', '2nd sourceSettings section advanced header is as expected');
+    assert.equal(policyDetails[2].advancedProps.length, 2, '2 advanced file source settings for exchange');
     // enabled prop
     assert.equal(policyDetails[0].props[0].name, 'adminUsm.policies.detail.filePolicyEnabled', 'enabled prop i18n key name is as expected');
     assert.equal(policyDetails[0].props[0].value, 'Enabled', 'enabled prop value is Enabled as expected');
@@ -282,26 +288,26 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
     assert.equal(policyDetails[1].props[1].value, 'Collect new data only', 'apache startOfEvents prop value is Collect new data only as expected');
     assert.equal(policyDetails[1].props[1].origin.groupName, 'apache groupName', 'apache startOfEvents prop groupName returned as expected');
     assert.equal(policyDetails[1].props[1].origin.policyName, 'apache policyName', 'apache startOfEvents policyName returned as expected');
-    // apache source fileEncoding prop
-    assert.equal(policyDetails[1].props[2].name, 'adminUsm.policyWizard.filePolicy.fileEncoding', 'apache fileEncoding prop i18n key name is as expected');
-    assert.equal(policyDetails[1].props[2].value, 'UTF-8 / ASCII', 'apache fileEncoding prop value is UTF-8 / ASCII as expected');
-    assert.equal(policyDetails[1].props[2].origin.groupName, 'apache groupName', 'apache fileEncoding prop groupName returned as expected');
-    assert.equal(policyDetails[1].props[2].origin.policyName, 'apache policyName', 'apache fileEncoding policyName returned as expected');
     // apache source paths prop
-    assert.equal(policyDetails[1].props[3].name, 'adminUsm.policyWizard.filePolicy.paths', 'apache paths prop i18n key name is as expected');
-    assert.equal(policyDetails[1].props[3].value, '/c/apache_path-hint-1/*.log, /c/Program Files/Apache Group/Apache[2-9]/*.log, apache_path-hint-2', 'apache paths prop value is /c/apache_path-hint-1/*.log, /c/Program Files/Apache Group/Apache[2-9]/*.log, apache_path-hint-2 as expected');
-    assert.equal(policyDetails[1].props[3].origin.groupName, 'apache groupName', 'apache paths prop groupName returned as expected');
-    assert.equal(policyDetails[1].props[3].origin.policyName, 'apache policyName', 'apache paths policyName returned as expected');
-    // apache source sourceName prop
-    assert.equal(policyDetails[1].props[4].name, 'adminUsm.policyWizard.filePolicy.sourceName', 'apache sourceName prop i18n key name is as expected');
-    assert.equal(policyDetails[1].props[4].value, 'Meta-Source-Name', 'apache sourceName prop value is Meta-Source-Name as expected');
-    assert.equal(policyDetails[1].props[4].origin.groupName, 'apache groupName', 'apache sourceName prop groupName returned as expected');
-    assert.equal(policyDetails[1].props[4].origin.policyName, 'apache policyName', 'apache sourceName policyName returned as expected');
+    assert.equal(policyDetails[1].props[2].name, 'adminUsm.policyWizard.filePolicy.paths', 'apache paths prop i18n key name is as expected');
+    assert.equal(policyDetails[1].props[2].value, '/c/apache_path-hint-1/*.log, /c/Program Files/Apache Group/Apache[2-9]/*.log, apache_path-hint-2', 'apache paths prop value is /c/apache_path-hint-1/*.log, /c/Program Files/Apache Group/Apache[2-9]/*.log, apache_path-hint-2 as expected');
+    assert.equal(policyDetails[1].props[2].origin.groupName, 'apache groupName', 'apache paths prop groupName returned as expected');
+    assert.equal(policyDetails[1].props[2].origin.policyName, 'apache policyName', 'apache paths policyName returned as expected');
     // apache source exclusionFilters prop
-    assert.equal(policyDetails[1].props[5].name, 'adminUsm.policyWizard.filePolicy.exclusionFilters', 'apache exclusionFilters prop i18n key name is as expected');
-    assert.equal(policyDetails[1].props[5].value, 'exclude-string-1, exclude-string-2, exclude-string-3', 'apache exclusionFilters prop value is exclude-string-1, exclude-string-2, exclude-string-3 as expected');
-    assert.equal(policyDetails[1].props[5].origin.groupName, 'apache groupName', 'apache exclusionFilters prop groupName returned as expected');
-    assert.equal(policyDetails[1].props[5].origin.policyName, 'apache policyName', 'apache exclusionFilters policyName returned as expected');
+    assert.equal(policyDetails[1].props[3].name, 'adminUsm.policyWizard.filePolicy.exclusionFilters', 'apache exclusionFilters prop i18n key name is as expected');
+    assert.equal(policyDetails[1].props[3].value, 'exclude-string-1, exclude-string-2, exclude-string-3', 'apache exclusionFilters prop value is exclude-string-1, exclude-string-2, exclude-string-3 as expected');
+    assert.equal(policyDetails[1].props[3].origin.groupName, 'apache groupName', 'apache exclusionFilters prop groupName returned as expected');
+    assert.equal(policyDetails[1].props[3].origin.policyName, 'apache policyName', 'apache exclusionFilters policyName returned as expected');
+    // apache source sourceName prop
+    assert.equal(policyDetails[1].advancedProps[0].name, 'adminUsm.policyWizard.filePolicy.sourceName', 'apache sourceName prop i18n key name is as expected');
+    assert.equal(policyDetails[1].advancedProps[0].value, 'Meta-Source-Name', 'apache sourceName prop value is Meta-Source-Name as expected');
+    assert.equal(policyDetails[1].advancedProps[0].origin.groupName, 'apache groupName', 'apache sourceName prop groupName returned as expected');
+    assert.equal(policyDetails[1].advancedProps[0].origin.policyName, 'apache policyName', 'apache sourceName policyName returned as expected');
+    // apache source fileEncoding prop
+    assert.equal(policyDetails[1].advancedProps[1].name, 'adminUsm.policyWizard.filePolicy.fileEncoding', 'apache fileEncoding prop i18n key name is as expected');
+    assert.equal(policyDetails[1].advancedProps[1].value, 'UTF-8 / ASCII', 'apache fileEncoding prop value is UTF-8 / ASCII as expected');
+    assert.equal(policyDetails[1].advancedProps[1].origin.groupName, 'apache groupName', 'apache fileEncoding prop groupName returned as expected');
+    assert.equal(policyDetails[1].advancedProps[1].origin.policyName, 'apache policyName', 'apache fileEncoding policyName returned as expected');
   });
 
   const defaultFilePolicyNoOrigins = {
@@ -348,7 +354,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
       .policyWizWinLogLogServers()
       .focusedPolicy({ ...filePolicyWithSourcesNoOrigins })
       .build();
-    assert.expect(53);
+    assert.expect(57);
     const policyForDetails = focusedPolicy(Immutable.from(state));
     const policyDetails = selectedFilePolicy(Immutable.from(state), policyForDetails.policy);
     assert.equal(policyDetails.length, 3, '1 fileSettings section & 2 sourceSettings sections returned as expected');
@@ -356,10 +362,14 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
     assert.equal(policyDetails[0].props.length, 5, '5 file connection settings');
     assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.sourceSettings', '1st sourceSettings section header is as expected');
     assert.equal(policyDetails[1].headerVars.fileType, 'apache', '1st sourceSettings header fileType is apache');
-    assert.equal(policyDetails[1].props.length, 6, '6 file connection settings for apache');
+    assert.equal(policyDetails[1].props.length, 4, '4 basic file source settings for apache');
+    assert.equal(policyDetails[1].advancedHeader, 'adminUsm.policies.detail.sourceAdvancedSettings', '1st sourceSettings section advanced header is as expected');
+    assert.equal(policyDetails[1].advancedProps.length, 2, '2 advanced file source settings for apache');
     assert.equal(policyDetails[2].header, 'adminUsm.policies.detail.sourceSettings', '2nd sourceSettings section header is as expected');
     assert.equal(policyDetails[2].headerVars.fileType, 'exchange', '2nd sourceSettings header fileType is exchange');
-    assert.equal(policyDetails[2].props.length, 5, '5 file connection settings for exchange');
+    assert.equal(policyDetails[2].props.length, 3, '3 basic file source settings for exchange');
+    assert.equal(policyDetails[2].advancedHeader, 'adminUsm.policies.detail.sourceAdvancedSettings', '2nd sourceSettings section advanced header is as expected');
+    assert.equal(policyDetails[2].advancedProps.length, 2, '2 advanced file source settings for exchange');
     // enabled prop
     assert.equal(policyDetails[0].props[0].name, 'adminUsm.policies.detail.filePolicyEnabled', 'enabled prop i18n key name is as expected');
     assert.equal(policyDetails[0].props[0].value, 'Enabled', 'enabled prop value is Enabled as expected');
@@ -396,26 +406,26 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
     assert.equal(policyDetails[1].props[1].value, 'Collect new data only', 'apache startOfEvents prop value is Collect new data only as expected');
     assert.equal(policyDetails[1].props[1].origin.groupName, '', 'apache startOfEvents prop groupName empty as expected');
     assert.equal(policyDetails[1].props[1].origin.policyName, '', 'apache startOfEvents policyName empty as expected');
-    // apache source fileEncoding prop
-    assert.equal(policyDetails[1].props[2].name, 'adminUsm.policyWizard.filePolicy.fileEncoding', 'apache fileEncoding prop i18n key name is as expected');
-    assert.equal(policyDetails[1].props[2].value, 'UTF-8 / ASCII', 'apache fileEncoding prop value is UTF-8 / ASCII as expected');
-    assert.equal(policyDetails[1].props[2].origin.groupName, '', 'apache fileEncoding prop groupName empty as expected');
-    assert.equal(policyDetails[1].props[2].origin.policyName, '', 'apache fileEncoding policyName empty as expected');
     // apache source paths prop
-    assert.equal(policyDetails[1].props[3].name, 'adminUsm.policyWizard.filePolicy.paths', 'apache paths prop i18n key name is as expected');
-    assert.equal(policyDetails[1].props[3].value, '/c/apache_path-hint-1/*.log, /c/Program Files/Apache Group/Apache[2-9]/*.log, apache_path-hint-2', 'apache paths prop value is /c/apache_path-hint-1/*.log, /c/Program Files/Apache Group/Apache[2-9]/*.log, apache_path-hint-2 as expected');
-    assert.equal(policyDetails[1].props[3].origin.groupName, '', 'apache paths prop groupName empty as expected');
-    assert.equal(policyDetails[1].props[3].origin.policyName, '', 'apache paths policyName empty as expected');
-    // apache source sourceName prop
-    assert.equal(policyDetails[1].props[4].name, 'adminUsm.policyWizard.filePolicy.sourceName', 'apache sourceName prop i18n key name is as expected');
-    assert.equal(policyDetails[1].props[4].value, 'Meta-Source-Name', 'apache sourceName prop value is Meta-Source-Name as expected');
-    assert.equal(policyDetails[1].props[4].origin.groupName, '', 'apache sourceName prop groupName empty as expected');
-    assert.equal(policyDetails[1].props[4].origin.policyName, '', 'apache sourceName policyName empty as expected');
+    assert.equal(policyDetails[1].props[2].name, 'adminUsm.policyWizard.filePolicy.paths', 'apache paths prop i18n key name is as expected');
+    assert.equal(policyDetails[1].props[2].value, '/c/apache_path-hint-1/*.log, /c/Program Files/Apache Group/Apache[2-9]/*.log, apache_path-hint-2', 'apache paths prop value is /c/apache_path-hint-1/*.log, /c/Program Files/Apache Group/Apache[2-9]/*.log, apache_path-hint-2 as expected');
+    assert.equal(policyDetails[1].props[2].origin.groupName, '', 'apache paths prop groupName empty as expected');
+    assert.equal(policyDetails[1].props[2].origin.policyName, '', 'apache paths policyName empty as expected');
     // apache source exclusionFilters prop
-    assert.equal(policyDetails[1].props[5].name, 'adminUsm.policyWizard.filePolicy.exclusionFilters', 'apache exclusionFilters prop i18n key name is as expected');
-    assert.equal(policyDetails[1].props[5].value, 'exclude-string-1, exclude-string-2, exclude-string-3', 'apache exclusionFilters prop value is exclude-string-1, exclude-string-2, exclude-string-3 as expected');
-    assert.equal(policyDetails[1].props[5].origin.groupName, '', 'apache exclusionFilters prop groupName empty as expected');
-    assert.equal(policyDetails[1].props[5].origin.policyName, '', 'apache exclusionFilters policyName empty as expected');
+    assert.equal(policyDetails[1].props[3].name, 'adminUsm.policyWizard.filePolicy.exclusionFilters', 'apache exclusionFilters prop i18n key name is as expected');
+    assert.equal(policyDetails[1].props[3].value, 'exclude-string-1, exclude-string-2, exclude-string-3', 'apache exclusionFilters prop value is exclude-string-1, exclude-string-2, exclude-string-3 as expected');
+    assert.equal(policyDetails[1].props[3].origin.groupName, '', 'apache exclusionFilters prop groupName empty as expected');
+    assert.equal(policyDetails[1].props[3].origin.policyName, '', 'apache exclusionFilters policyName empty as expected');
+    // apache source sourceName prop
+    assert.equal(policyDetails[1].advancedProps[0].name, 'adminUsm.policyWizard.filePolicy.sourceName', 'apache sourceName prop i18n key name is as expected');
+    assert.equal(policyDetails[1].advancedProps[0].value, 'Meta-Source-Name', 'apache sourceName prop value is Meta-Source-Name as expected');
+    assert.equal(policyDetails[1].advancedProps[0].origin.groupName, '', 'apache sourceName prop groupName empty as expected');
+    assert.equal(policyDetails[1].advancedProps[0].origin.policyName, '', 'apache sourceName policyName empty as expected');
+    // apache source fileEncoding prop
+    assert.equal(policyDetails[1].advancedProps[1].name, 'adminUsm.policyWizard.filePolicy.fileEncoding', 'apache fileEncoding prop i18n key name is as expected');
+    assert.equal(policyDetails[1].advancedProps[1].value, 'UTF-8 / ASCII', 'apache fileEncoding prop value is UTF-8 / ASCII as expected');
+    assert.equal(policyDetails[1].advancedProps[1].origin.groupName, '', 'apache fileEncoding prop groupName empty as expected');
+    assert.equal(policyDetails[1].advancedProps[1].origin.policyName, '', 'apache fileEncoding policyName empty as expected');
   });
 
   test('focusedPolicy result with no origins', function(assert) {

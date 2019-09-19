@@ -78,10 +78,13 @@ module('Integration | Component | Policy Inspector | File Policy', function(hook
       .build();
 
     await render(hbs`{{usm-policies/policies/inspector/file-policy}}`);
-    assert.equal(findAll('.heading').length, 3, '1 file settings heading + 2 source settings headings');
+    // should be 1 Connection Settings heading + 2 Source Settings headings for apache & exchange + 2 source advanced headings for apache & exchange
+    assert.equal(findAll('.heading').length, 5, '1 file settings heading + 2 source settings headings + 2 Source Advanced headings are shown');
     assert.equal(findAll('.heading')[0].innerText, 'Connection Settings', 'Connection Settings heading is as expected');
     assert.equal(findAll('.heading')[1].innerText, 'Source Settings (Apache Web Server)', 'apache source heading is as expected');
-    assert.equal(findAll('.heading')[2].innerText, 'Source Settings (Microsoft Exchange)', 'exchange source heading is as expected');
+    assert.equal(findAll('.heading')[2].innerText, 'Advanced Settings', 'apache source advanced heading is as expected');
+    assert.equal(findAll('.heading')[3].innerText, 'Source Settings (Microsoft Exchange)', 'exchange source heading is as expected');
+    assert.equal(findAll('.heading')[4].innerText, 'Advanced Settings', 'exchange source advanced heading is as expected');
     assert.equal(findAll('.title').length, 17, '17 property names are shown');
     assert.equal(findAll('.value').length, 17, '17 value elements are shown');
     // test the specific values for props that get translated
@@ -91,7 +94,7 @@ module('Integration | Component | Policy Inspector | File Policy', function(hook
     assert.equal(findAll('.value')[12].innerText, 'Collect historical and new data', 'exchange source startOfEvents: Collect historical and new data');
   });
 
-  test('It does NOT show blank properties and NO error souce is present', async function(assert) {
+  test('It does NOT show blank properties and NO error source is present', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizWinLogLogServers()
@@ -102,7 +105,7 @@ module('Integration | Component | Policy Inspector | File Policy', function(hook
           fileType: 'apache',
           enabled: false,
           startOfEvents: false,
-          fileEncoding: '',
+          fileEncoding: 'UTF-8 / ASCII',
           paths: [],
           sourceName: '',
           exclusionFilters: []
@@ -112,12 +115,13 @@ module('Integration | Component | Policy Inspector | File Policy', function(hook
 
     await render(hbs`{{usm-policies/policies/inspector/file-policy}}`);
     assert.equal(findAll('.has-errorx').length, 0, 'has-error in sources is NOT showing');
-    assert.equal(findAll('.heading').length, 2, '1 file settings heading + 1 source settings heading');
+    assert.equal(findAll('.heading').length, 3, '1 file settings heading + 1 source settings heading + 1 source setting advanced heading');
     assert.equal(findAll('.heading')[0].innerText, 'Connection Settings', 'Connection Settings heading is as expected');
     assert.equal(findAll('.heading')[1].innerText, 'Source Settings (Apache Web Server)', 'apache source heading is as expected');
+    assert.equal(findAll('.heading')[2].innerText, 'Advanced Settings', 'apache source advanced heading is as expected');
     // there would be 11 .title's/.value's if the blank properties were rendered
-    assert.equal(findAll('.title').length, 7, '7 property names are shown');
-    assert.equal(findAll('.value').length, 7, '7 value elements are shown');
+    assert.equal(findAll('.title').length, 8, '8 property names are shown');
+    assert.equal(findAll('.value').length, 8, '8 value elements are shown');
   });
 
   test('It only shows one section when there are not sources', async function(assert) {

@@ -546,5 +546,66 @@ export default [
         name: 'Group 02'
       }
     ]
+  },
+  {
+    id: 'policy_F002',
+    policyType: 'filePolicy',
+    name: 'F002',
+    description: 'File Policy # F002',
+    dirty: true,
+    defaultPolicy: false,
+    createdBy: 'admin',
+    createdOn: 1540318426092,
+    lastModifiedBy: 'admin',
+    lastModifiedOn: 1540318426092,
+    lastPublishedOn: 0,
+    lastPublishedCopy: null,
+    enabled: true,
+    // errorState: {
+    //   state: 1,
+    //   errors: ['MISSING_TYPE_SPECIFICATION']
+    // },
+    protocol: 'TCP',
+    sendTestLog: false,
+    primaryDestination: '10.10.10.10',
+    secondaryDestination: '10.10.10.12',
+    sources: [
+      {
+        fileType: 'apache',
+        enabled: false,
+        startOfEvents: false,
+        fileEncoding: 'UTF-8 / ASCII',
+        paths: ['/c/apache_path-hint-1/*.log', '/c/Program Files/Apache Group/Apache[2-9]/*.log', 'apache_path-hint-2'],
+        sourceName: 'Meta-Source-Name',
+        exclusionFilters: ['exclude-string-1', 'exclude-string-2', 'exclude-string-3']
+        // errorState: {
+        //   state: 1,
+        //   errors: ['MISSING_TYPE_SPECIFICATION']
+        // }
+      },
+      {
+        fileType: 'exchange',
+        enabled: true,
+        startOfEvents: true,
+        fileEncoding: 'UTF-8 / ASCII',
+        paths: ['/[cd]/exchange/logs/*.log'],
+        sourceName: 'Exchange aye!',
+        exclusionFilters: []
+        // errorState: {
+        //   state: 1,
+        //   errors: ['MISSING_TYPE_SPECIFICATION']
+        // }
+      }
+    ],
+    associatedGroups: [
+      {
+        referenceId: '5x6d886500319b5520f4b67d',
+        name: 'Group 01'
+      },
+      {
+        referenceId: '58vd886500319b5520f4b672',
+        name: 'Group 02'
+      }
+    ]
   }
 ];

@@ -1,10 +1,13 @@
 .admin-usm-engine {
 
-  .usm-groups-inspector, .usm-policies-inspector, .usm-sources-inspector, .usm-policies-inspector-edr, .usm-policies-inspector-windows-log {
+  .usm-groups-inspector, .usm-policies-inspector, .usm-sources-inspector,
+  .usm-policies-inspector-edr, .usm-policies-inspector-windows-log, .usm-policies-inspector-file {
     height: 100%;
+
     .rsa-content-warn-text-box {
       width: fit-content;
     }
+
     div.has-error {
       flex-wrap: wrap;
       position: relative;
@@ -30,6 +33,7 @@
         margin-left: rsa-whitespace();
       }
     }
+
     .heading {
       font-size: 14px;
       line-height: 20px;
@@ -42,6 +46,21 @@
         width: 100%;
         margin: rsa-whitespace() 0 rsa-whitespace() 0;
         background: background-color(primary);
+      }
+    }
+
+    .advanced-props {
+      margin-top: rsa-whitespace(less);
+      padding: rsa-whitespace(less);
+      background-color: background-color(primary, darker);
+      .heading {
+        padding-top: 0;
+        &::before {
+          display: none;
+        }
+        .title, .value {
+          padding-top: 0;
+        }
       }
     }
 

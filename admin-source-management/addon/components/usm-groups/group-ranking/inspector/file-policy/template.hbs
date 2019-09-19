@@ -13,5 +13,22 @@
         <hbox class="value col-xs-6 col-md-5 propValue">{{prop.origin.policyName}} - {{prop.origin.groupName}}</hbox>
       </hbox>
     {{/each}}
+    {{#if section.advancedProps}}
+      <div class="advanced-props">
+        <div class="heading">
+          <hbox fit class="col-xs-12">
+            <hbox class="value col-xs-6 col-md-7">{{t section.advancedHeader}}</hbox>
+            <hbox class="value col-xs-6 col-md-5"></hbox>
+          </hbox>
+        </div>
+        {{#each section.advancedProps as |advancedProp|}}
+          <hbox fit class="col-xs-12">
+            <hbox class="title col-xs-6 col-md-4">{{t advancedProp.name}}</hbox>          
+            <hbox class="value col-xs-6 col-md-3">{{advancedProp.value}}</hbox>
+            <hbox class="value col-xs-6 col-md-5 propValue">{{advancedProp.origin.policyName}} - {{advancedProp.origin.groupName}}</hbox>
+          </hbox>
+        {{/each}}
+      </div>
+    {{/if}}
   {{/each}}
 </vbox>

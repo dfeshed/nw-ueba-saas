@@ -81,7 +81,7 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
     await render(hbs`{{usm-policies/policies}}`);
     await getItems;
     assert.equal(findAll('.rsa-data-table-header-cell').length, 6, 'Returned expected header rows of the datatable');
-    assert.equal(findAll('.rsa-data-table-body-row').length, 10, 'Returned expected number of rows of the datatable');
+    assert.equal(findAll('.rsa-data-table-body-row').length, 11, 'Returned expected number of rows of the datatable');
   });
 
   test('Only Edr Default policy has the checkbox and not windows log and file default policies', async function(assert) {
@@ -100,7 +100,7 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
     await render(hbs`{{usm-policies/policies}}`);
     await getItems;
     assert.equal(findAll('.rsa-data-table-header-cell').length, 6, 'Returned expected header rows of the datatable');
-    assert.equal(findAll('.rsa-data-table-body-row').length, 10, 'Returned expected number of rows of the datatable');
+    assert.equal(findAll('.rsa-data-table-body-row').length, 11, 'Returned expected number of rows of the datatable');
 
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(2)')[0].innerText.trim(),
       'Default EDR Policy', 'row1 name value is as expected');
@@ -121,18 +121,19 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
     await render(hbs`{{usm-policies/policies}}`);
     await getItems;
     assert.equal(findAll('.rsa-data-table-header-cell').length, 6, 'Returned expected header rows of the datatable');
-    assert.equal(findAll('.rsa-data-table-body-row').length, 10, 'Returned expected number of rows of the datatable');
+    assert.equal(findAll('.rsa-data-table-body-row').length, 11, 'Returned expected number of rows of the datatable');
 
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(2)')[0].innerText.trim(),
       'WL002', 'row1 name value is as expected');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(2) .rsa-data-table-body-cell:nth-of-type(2)')[0].innerText.trim(),
       'WL001', 'row2 name value is as expected');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(4) .rsa-data-table-body-cell:nth-of-type(2)')[0].innerText.trim(),
-      'EMC Reston! 014', 'row4 name value is as expected');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(7) .rsa-data-table-body-cell:nth-of-type(2)')[0].innerText.trim(),
-      'EMC 001LongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAME', 'row7 name value is as expected');
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(5) .rsa-data-table-body-cell:nth-of-type(2)')[0].innerText.trim(),
+      'EMC Reston! 014', 'row5 name value is as expected');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(8) .rsa-data-table-body-cell:nth-of-type(2)')[0].innerText.trim(),
-      'Default Windows Log Policy', 'row8 name value is as expected');
+      'EMC 001LongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAME',
+      'row8 name value is as expected');
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(9) .rsa-data-table-body-cell:nth-of-type(2)')[0].innerText.trim(),
+      'Default Windows Log Policy', 'row9 name value is as expected');
   });
 
   test('Show policy list with sort=description ascending', async function(assert) {
@@ -142,7 +143,7 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
     await render(hbs`{{usm-policies/policies}}`);
     await getItems;
     assert.equal(findAll('.rsa-data-table-header-cell').length, 6, 'Returned expected header rows of the datatable');
-    assert.equal(findAll('.rsa-data-table-body-row').length, 10, 'Returned expected number of rows of the datatable');
+    assert.equal(findAll('.rsa-data-table-body-row').length, 11, 'Returned expected number of rows of the datatable');
 
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(4)')[0].innerText.trim(),
       'Default EDR Policy __default_edr_policy', 'row1 description value is as expected');
@@ -150,10 +151,10 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
       'EMC Bangalore 013 of policy policy_013', 'row3 description value is as expected');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(4) .rsa-data-table-body-cell:nth-of-type(4)')[0].innerText.trim(),
       'EMC Reston 012 of policy policy_012', 'row4 description value is as expected');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(7) .rsa-data-table-body-cell:nth-of-type(4)')[0].innerText.trim(),
-      'These are the settings that are applied when not defined in another policy applied to an agent.', 'row7 description value is as expected');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(8) .rsa-data-table-body-cell:nth-of-type(4)')[0].innerText.trim(),
       'These are the settings that are applied when not defined in another policy applied to an agent.', 'row8 description value is as expected');
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(9) .rsa-data-table-body-cell:nth-of-type(4)')[0].innerText.trim(),
+      'These are the settings that are applied when not defined in another policy applied to an agent.', 'row9 description value is as expected');
   });
 
   test('Show applied to group with sort=name descending', async function(assert) {
@@ -166,9 +167,9 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
       'None', 'row1 applied to group value is as expected');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(2) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),
       'Group 01 , Group 02', 'row2 applied to group value is as expected');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(7) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),
-      'Group 01 , Group 02', 'row7 applied to group value is as expected');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(8) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),
-      'Base Policy', 'row8 applied to group value is as expected');
+      'Group 01 , Group 02', 'row8 applied to group value is as expected');
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(9) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),
+      'Base Policy', 'row9 applied to group value is as expected');
   });
 });

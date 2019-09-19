@@ -4517,6 +4517,7 @@ export default {
         fileSettings: 'Connection Settings',
         filePolicyEnabled: 'Collect File Logs',
         sourceSettings: 'Source Settings ({{fileType}})',
+        sourceAdvancedSettings: 'Advanced Settings',
         noChannels: 'No channels set for collection',
         noSources: 'No sources set for collection'
       },
