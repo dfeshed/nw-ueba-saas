@@ -2,10 +2,9 @@ import Component from '@ember/component';
 import layout from './template';
 import { connect } from 'ember-redux';
 import { setFilterText, setHighlightedIndex } from 'rsa-list-manager/actions/creators/creators';
-import { listName, filterText, filterPlaceholder } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { filterText, filterPlaceholder } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
-  listName: listName(state, attrs.listLocation),
   filterText: filterText(state, attrs.listLocation),
   filterPlaceholder: filterPlaceholder(state, attrs.listLocation)
 });

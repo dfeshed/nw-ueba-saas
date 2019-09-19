@@ -10,16 +10,20 @@ import {
   filteredList,
   selectedItem,
   selectedIndex,
-  noResultsMessage
+  noResultsMessage,
+  hasIsEditableIndicators,
+  highlightedId
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
   filteredList: filteredList(state, attrs.listLocation),
   isExpanded: isExpanded(state, attrs.listLocation),
   highlightedIndex: highlightedIndex(state, attrs.listLocation),
+  highlightedId: highlightedId(state, attrs.listLocation),
   selectedItem: selectedItem(state, attrs.listLocation),
   selectedIndex: selectedIndex(state, attrs.listLocation),
-  noResultsMessage: noResultsMessage(state, attrs.listLocation)
+  noResultsMessage: noResultsMessage(state, attrs.listLocation),
+  hasIsEditableIndicators: hasIsEditableIndicators(state, attrs.listLocation)
 });
 
 const dispatchToActions = {

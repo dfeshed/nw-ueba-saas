@@ -13,24 +13,18 @@ import {
   viewChanged
 } from 'rsa-list-manager/actions/creators/creators';
 import {
-  listName,
-  itemType,
   isExpanded,
   selectedItem,
-  viewName,
   isListView,
   caption,
   titleTooltip
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
-  listName: listName(state, attrs.listLocation),
   isExpanded: isExpanded(state, attrs.listLocation),
-  itemType: itemType(state, attrs.listLocation),
   caption: caption(state, attrs.listLocation),
   titleTooltip: titleTooltip(state, attrs.listLocation),
   selectedItem: selectedItem(state, attrs.listLocation),
-  viewName: viewName(state, attrs.listLocation),
   isListView: isListView(state, attrs.listLocation)
 });
 
