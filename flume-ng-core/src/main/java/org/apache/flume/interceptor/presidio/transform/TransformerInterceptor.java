@@ -3,6 +3,7 @@ package org.apache.flume.interceptor.presidio.transform;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.transform.IJsonObjectTransformer;
+import fortscale.utils.transform.TransformerSubtypeRegisterer;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.interceptor.presidio.AbstractPresidioInterceptorBuilder;
@@ -10,6 +11,7 @@ import org.apache.flume.interceptor.presidio.AbstractPresidioJsonInterceptor;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Optional;
 
 public class TransformerInterceptor extends AbstractPresidioJsonInterceptor {
 
@@ -36,7 +38,7 @@ public class TransformerInterceptor extends AbstractPresidioJsonInterceptor {
         public static final String CONFIGURATION_KEY = "configuration";
         public static final String CONFIGURATION_FILE_PATH = "configuration_path";
         private static final Logger logger = Logger.getLogger(Builder.class);
-        private static final ObjectMapper objectMapper = new ObjectMapper();
+        private static final ObjectMapper objectMapper = createObjectMapper();
 
         private IJsonObjectTransformer transformer;
 
@@ -66,6 +68,17 @@ public class TransformerInterceptor extends AbstractPresidioJsonInterceptor {
                     throw new IllegalArgumentException(msg, e);
                 }
             }
+        }
+
+        private static ObjectMapper createObjectMapper() {
+            ObjectMapper objectMapper = new ObjectMapper();
+            new TransformerSubtypeRegisterer() {
+                @Override
+                public Optional<String> additionalPackageLocation() {
+                    return Optional.empty();
+                }
+            }.registerSubtypes(objectMapper);
+            return objectMapper;
         }
     }
 }
