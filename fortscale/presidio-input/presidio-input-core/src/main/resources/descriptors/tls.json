@@ -4,20 +4,7 @@
   "transformerList": [
     {
       "type": "session-split-transformer",
-      "name": "Session Split Transformer",
-      "schema": "tls",
-      "projectionFields": [
-        "srcIp",
-        "dstIp",
-        "srcPort",
-        "dstPort",
-        "ja3",
-        "ja3s",
-        "dateTime",
-        "sessionSplit",
-        "sslSubject",
-        "sslCas"
-      ]
+      "name": "Session Split Transformer"
     },
     {
       "type": "new-occurrence-transformer",

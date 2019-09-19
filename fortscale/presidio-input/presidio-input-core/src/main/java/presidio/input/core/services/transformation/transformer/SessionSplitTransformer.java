@@ -1,9 +1,6 @@
 package presidio.input.core.services.transformation.transformer;
 
 import com.fasterxml.jackson.annotation.*;
-import fortscale.common.general.Schema;
-import fortscale.domain.core.AbstractAuditableDocument;
-import fortscale.domain.core.entityattributes.EntityAttributes;
 import fortscale.domain.core.entityattributes.Ja3;
 import fortscale.domain.core.entityattributes.SslSubject;
 import fortscale.domain.sessionsplit.records.SessionSplitTransformerKey;
@@ -11,19 +8,28 @@ import fortscale.domain.sessionsplit.records.SessionSplitTransformerValue;
 import fortscale.domain.sessionsplit.cache.ISessionSplitStoreCache;
 import fortscale.utils.json.JacksonUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimeUtils;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import presidio.sdk.api.domain.transformedevents.TlsTransformedEvent;
 
-import java.time.Duration;
-import java.time.Instant;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-
+/**
+ * SessionSplitTransformer enriched session events with sessionSplit > 0.
+ *
+ * Assumptions:
+ * transform method get sorted events by date time.
+ *
+ * transform method:
+ *  if the event has no SESSION_SPLIT field => return the event
+ *  if the event has SESSION_SPLIT == 0  => save the enriched data in sessionSplitStoreCache.
+ *  if the event has SESSION_SPLIT > 0  => get the data of sessionSplitStoreCache and enrich the event.
+ *
+ */
 @JsonAutoDetect(
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
         fieldVisibility = JsonAutoDetect.Visibility.ANY,
@@ -39,65 +45,57 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
     private static final String NAME_FIELD_SUFFIX = ".name";
     private static final int zeroSessionSplit = 0;
     private static final JacksonUtils jacksonUtils = new JacksonUtils();
-    private List<String> projectionFields;
-    private Schema schema;
-
-    @Value("#{T(java.time.Duration).parse('${split.transformer.intervel:PT12H}')}")
-    private Duration interval;
-
-    @Value("${split.transformer.page.size:100000}")
-    private Integer pageSize;
-
-    @JacksonInject("endDate")
-    private Instant endDate;
 
     @JsonIgnore
     @Autowired
     private ISessionSplitStoreCache sessionSplitStoreCache;
 
     @JsonCreator
-    public SessionSplitTransformer(@JsonProperty("name") String name,
-                                   @JsonProperty("schema") String schema,
-                                   @JsonProperty("projectionFields") List<String> projectionFields) {
+    public SessionSplitTransformer(@JsonProperty("name") String name) {
         super(name);
-        this.schema = Schema.valueOf(schema.toUpperCase());
-        this.projectionFields = projectionFields;
     }
 
 
     @Override
     public JSONObject transform(JSONObject document) {
-        int eventSessionSplit = (int) document.get(TlsTransformedEvent.SESSION_SPLIT_FIELD_NAME);
+        if(document.isNull(TlsTransformedEvent.SESSION_SPLIT_FIELD_NAME)) {
+            return document;
+        }
 
+        int eventSessionSplit = (int) document.get(TlsTransformedEvent.SESSION_SPLIT_FIELD_NAME);
         String eventSrcIp = (String) document.get(TlsTransformedEvent.SOURCE_IP_FIELD_NAME);
         String eventDstIp = (String) document.get(TlsTransformedEvent.DESTINATION_IP_FIELD_NAME);
         String eventSrcPort = (String) document.get(TlsTransformedEvent.SOURCE_PORT_FIELD_NAME);
         String eventDstPort = (String) jacksonUtils.getFieldValue(document, namePath(TlsTransformedEvent.DESTINATION_PORT_FIELD_NAME), null);
-        Instant eventDateTime = TimeUtils.parseInstant((String) document.get(AbstractAuditableDocument.DATE_TIME_FIELD_NAME));
-
         SessionSplitTransformerKey key = new SessionSplitTransformerKey(eventSrcIp, eventDstIp, eventDstPort, eventSrcPort);
 
         if (eventSessionSplit == zeroSessionSplit) {
             String sslSubjectName = (String) jacksonUtils.getFieldValue(document, namePath(TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME), null);
             String ja3Name = (String) jacksonUtils.getFieldValue(document, namePath(TlsTransformedEvent.JA3_FIELD_NAME), null);
-            String ja3s = (String) document.get(TlsTransformedEvent.JA3S_FIELD_NAME);
-            List<String> sslCas = JacksonUtils.jsonArrayToList((JSONArray) document.get(TlsTransformedEvent.SSL_CAS_FIELD_NAME));
 
-            SessionSplitTransformerValue value = new SessionSplitTransformerValue(eventDateTime, zeroSessionSplit,
-                    new SslSubject(sslSubjectName), sslCas, new Ja3(ja3Name), ja3s);
+            String ja3s = null;
+            if(!document.isNull(TlsTransformedEvent.JA3S_FIELD_NAME)){
+                ja3s = (String) document.get(TlsTransformedEvent.JA3S_FIELD_NAME);
+            }
+
+            List<String> sslCas = null;
+            if(!document.isNull(TlsTransformedEvent.SSL_CAS_FIELD_NAME)){
+                sslCas = JacksonUtils.jsonArrayToList((JSONArray) document.get(TlsTransformedEvent.SSL_CAS_FIELD_NAME));
+            }
+
+            SessionSplitTransformerValue value = new SessionSplitTransformerValue(zeroSessionSplit, sslSubjectName, sslCas, ja3Name, ja3s);
             sessionSplitStoreCache.write(key, value);
         }
         // enrich events with sessionSplit > 0
         else if (eventSessionSplit > zeroSessionSplit) {
             SessionSplitTransformerValue value = sessionSplitStoreCache.read(key);
 
-            if (value != null && value.getDateTime().compareTo(eventDateTime) <= 0) {
+            if (value != null) {
                 if (value.getSessionSplit() == eventSessionSplit - 1) {
-                    setEntityAttribute(document, TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME, value.getSslSubject());
-                    setEntityAttribute(document, TlsTransformedEvent.JA3_FIELD_NAME, value.getJa3());
-                    document.put(TlsTransformedEvent.SSL_CAS_FIELD_NAME, value.getSslCas());
-                    document.put(TlsTransformedEvent.JA3S_FIELD_NAME, value.getJa3s());
-
+                    setEntityAttribute(document, TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME,  value.getSslSubject(), SslSubject.class);
+                    setEntityAttribute(document, TlsTransformedEvent.JA3_FIELD_NAME, value.getJa3(), Ja3.class);
+                    put(document, TlsTransformedEvent.SSL_CAS_FIELD_NAME, value.getSslCas());
+                    put(document, TlsTransformedEvent.JA3S_FIELD_NAME, value.getJa3s());
                     value.setSessionSplit(eventSessionSplit);
                     sessionSplitStoreCache.write(key, value);
                     logger.debug("Enrich {} tls event with missed fields.", document.get(DOCUMENT_ID_FIELD));
@@ -111,10 +109,22 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
         return document;
     }
 
-    private void setEntityAttribute(JSONObject jsonObject, String fieldName, EntityAttributes entityAttributes) {
-        if (entityAttributes != null) {
-            JSONObject entityObject = new JSONObject(entityAttributes);
-            jsonObject.put(fieldName, entityObject);
+    private void put(JSONObject jsonObject, String fieldName, Object value){
+        if( value != null){
+            jsonObject.put(fieldName, value);
+        }
+    }
+
+    private void setEntityAttribute(JSONObject jsonObject, String fieldName, String entityAttributeName, Class clzz) {
+        if (entityAttributeName != null) {
+            try {
+                Constructor constructor = clzz.getDeclaredConstructor(String.class);
+                Object entityAttributes = constructor.newInstance(entityAttributeName);
+                JSONObject entityObject = new JSONObject(entityAttributes);
+                jsonObject.put(fieldName, entityObject);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
         }
     }
 

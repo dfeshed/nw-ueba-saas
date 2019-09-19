@@ -3,7 +3,12 @@ package presidio.input.core.services.transformation.transformer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.entityattributes.*;
 import fortscale.domain.sessionsplit.cache.ISessionSplitStoreCache;
+import fortscale.domain.sessionsplit.cache.SessionSplitStoreCacheConfiguration;
+import fortscale.domain.sessionsplit.cache.SessionSplitStoreCacheImpl;
+import fortscale.domain.sessionsplit.records.SessionSplitTransformerKey;
+import fortscale.domain.sessionsplit.records.SessionSplitTransformerValue;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -22,6 +27,9 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @Import({TransformerConfigTest.class})
@@ -33,27 +41,153 @@ public class SessionSplitTransformerTest extends TransformerJsonTest implements 
     @MockBean
     private ISessionSplitStoreCache sessionSplitStoreCache;
 
+
+    /**
+     * Test there are no failures, where no SessionSplit field exist
+     * @throws IOException
+     */
     @Test
-    public void testSessionSplitNull() throws IOException {
+    public void testSessionSplitFieldNull() throws IOException {
         SessionSplitTransformer sessionSplitTransformer = (SessionSplitTransformer) loadTransformer(getResourceFilePath());
-        TlsTransformedEvent tlsTransformedEvent = new TlsTransformedEvent(generateTlsRawEvent());
+        TlsTransformedEvent tlsTransformedEvent = new TlsTransformedEvent(generateTlsRawEvent(null, null, null, null, null,
+                null, null, null, "123", "123", "123", new DestinationPort("dstPort")));
         ObjectMapper objectMapper = createObjectMapper();
         JSONObject jsonObject = new JSONObject(objectMapper.writeValueAsString(tlsTransformedEvent));
-        jsonObject.put("id", "12345");
         TlsTransformedEvent tlsTransformedEventWithId = objectMapper.readValue(jsonObject.toString(), TlsTransformedEvent.class);
         applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(sessionSplitTransformer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
         transformEvent(tlsTransformedEventWithId, sessionSplitTransformer, TlsTransformedEvent.class);
     }
 
-    private TlsRawEvent generateTlsRawEvent() {
+    /**
+     * Test there are no failures, where SessionSplitValues don't exist (sslSubject, ja3, ja3s, sslCas)
+     * @throws IOException
+     */
+    @Test
+    public void testSessionSplitZeroAndNullSessionSplitValues() throws IOException {
+        SessionSplitTransformer sessionSplitTransformer = (SessionSplitTransformer) loadTransformer(getResourceFilePath());
+        TlsTransformedEvent tlsTransformedEvent = new TlsTransformedEvent(generateTlsRawEvent(0, null, null, null, null,
+                null, null, null, "123", "123", "123", new DestinationPort("dstPort")));
+        ObjectMapper objectMapper = createObjectMapper();
+        JSONObject jsonObject = new JSONObject(objectMapper.writeValueAsString(tlsTransformedEvent));
+        TlsTransformedEvent tlsTransformedEventWithId = objectMapper.readValue(jsonObject.toString(), TlsTransformedEvent.class);
+        applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(sessionSplitTransformer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
+        transformEvent(tlsTransformedEventWithId, sessionSplitTransformer, TlsTransformedEvent.class);
+    }
+
+    /***
+     * Test enrichment, where SessionSplit > 0
+     * @throws IOException
+     */
+    @Test
+    public void testSessionSplitGreaterThanZero() throws IOException {
+        SessionSplitTransformer sessionSplitTransformer = (SessionSplitTransformer) loadTransformer(getResourceFilePath());
+        TlsTransformedEvent tlsTransformedEvent = new TlsTransformedEvent(generateTlsRawEvent(1, null, null,
+                null, null, null, null, null, "123", "124", "125", new DestinationPort("126")));
+        ObjectMapper objectMapper = createObjectMapper();
+        JSONObject jsonObject = new JSONObject(objectMapper.writeValueAsString(tlsTransformedEvent));
+        TlsTransformedEvent tlsTransformedEventWithId = objectMapper.readValue(jsonObject.toString(), TlsTransformedEvent.class);
+        applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(sessionSplitTransformer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
+
+        SessionSplitTransformerKey key = new SessionSplitTransformerKey("123", "124", "126", "125");
+        List<String> sslCas = Collections.singletonList("sslCas");
+        SessionSplitTransformerValue value = new SessionSplitTransformerValue(0, "sslSbject", sslCas, "ja3", "ja3s");
+        Mockito.when(sessionSplitStoreCache.read(key)).thenReturn(value);
+
+        TlsTransformedEvent result = (TlsTransformedEvent) transformEvent(tlsTransformedEventWithId, sessionSplitTransformer, TlsTransformedEvent.class);
+        Assert.assertEquals("sslSbject", result.getSslSubject().getName());
+        Assert.assertEquals(sslCas, result.getSslCas());
+        Assert.assertEquals("ja3", result.getJa3().getName());
+        Assert.assertEquals("ja3s", result.getJa3s());
+    }
+
+
+    /**
+     * Test there is no enrichment, where SessionSplit > 0 and SessionSplitValues don't exist (sslSubject, ja3, ja3s, sslCas)
+     * @throws IOException
+     */
+    @Test
+    public void testSessionSplitGreaterThanZeroAndNullSessionSplitValues() throws IOException {
+        SessionSplitTransformer sessionSplitTransformer = (SessionSplitTransformer) loadTransformer(getResourceFilePath());
+        TlsTransformedEvent tlsTransformedEvent = new TlsTransformedEvent(generateTlsRawEvent(1, null, null,
+                null, null, null, null, null, "123", "124", "125", new DestinationPort("126")));
+        ObjectMapper objectMapper = createObjectMapper();
+        JSONObject jsonObject = new JSONObject(objectMapper.writeValueAsString(tlsTransformedEvent));
+        TlsTransformedEvent tlsTransformedEventWithId = objectMapper.readValue(jsonObject.toString(), TlsTransformedEvent.class);
+        applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(sessionSplitTransformer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
+
+        SessionSplitTransformerKey key = new SessionSplitTransformerKey("123", "124", "126", "125");
+        SessionSplitTransformerValue value = new SessionSplitTransformerValue(0, null, null, null, null);
+        Mockito.when(sessionSplitStoreCache.read(key)).thenReturn(value);
+
+        TlsTransformedEvent result = (TlsTransformedEvent) transformEvent(tlsTransformedEventWithId, sessionSplitTransformer, TlsTransformedEvent.class);
+        Assert.assertNull(result.getSslSubject());
+        Assert.assertNull(result.getSslCas());
+        Assert.assertNull(result.getJa3());
+        Assert.assertNull(result.getJa3s());
+    }
+
+    /**
+     * Test there is no enrichment, where SessionSplit > 0 and there are no appropriate SessionSplitValue saved in sessionSplitStoreCache
+     * @throws IOException
+     */
+    @Test
+    public void testSessionSplitGreaterThanZeroAndNoSessionSplitValue() throws IOException {
+        SessionSplitTransformer sessionSplitTransformer = (SessionSplitTransformer) loadTransformer(getResourceFilePath());
+        TlsTransformedEvent tlsTransformedEvent = new TlsTransformedEvent(generateTlsRawEvent(1, null, null,
+                null, null, null, null, null, "123", "124", "125", new DestinationPort("126")));
+        ObjectMapper objectMapper = createObjectMapper();
+        JSONObject jsonObject = new JSONObject(objectMapper.writeValueAsString(tlsTransformedEvent));
+        TlsTransformedEvent tlsTransformedEventWithId = objectMapper.readValue(jsonObject.toString(), TlsTransformedEvent.class);
+        applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(sessionSplitTransformer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
+
+        SessionSplitTransformerKey key = new SessionSplitTransformerKey("123", "124", "126", "125");
+        Mockito.when(sessionSplitStoreCache.read(key)).thenReturn(null);
+
+        TlsTransformedEvent result = (TlsTransformedEvent) transformEvent(tlsTransformedEventWithId, sessionSplitTransformer, TlsTransformedEvent.class);
+        Assert.assertNull(result.getSslSubject());
+        Assert.assertNull(result.getSslCas());
+        Assert.assertNull(result.getJa3());
+        Assert.assertNull(result.getJa3s());
+    }
+
+    /**
+     * Test there is no enrichment with missed zero event.
+     * sessionSplitStoreCache get SessionSplitTransformerValue of closed session - checked by (value.getSessionSplit() == eventSessionSplit - 1).
+     * @throws IOException
+     */
+    @Test
+    public void testSessionSplitMissedEvent() throws IOException {
+        SessionSplitTransformer sessionSplitTransformer = (SessionSplitTransformer) loadTransformer(getResourceFilePath());
+        TlsTransformedEvent tlsTransformedEvent = new TlsTransformedEvent(generateTlsRawEvent(1, null, null,
+                null, null, null, null, null, "123", "124", "125", new DestinationPort("126")));
+        ObjectMapper objectMapper = createObjectMapper();
+        JSONObject jsonObject = new JSONObject(objectMapper.writeValueAsString(tlsTransformedEvent));
+        TlsTransformedEvent tlsTransformedEventWithId = objectMapper.readValue(jsonObject.toString(), TlsTransformedEvent.class);
+        applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(sessionSplitTransformer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
+
+        SessionSplitTransformerKey key = new SessionSplitTransformerKey("123", "124", "126", "125");
+        List<String> sslCas = Collections.singletonList("sslCas");
+        SessionSplitTransformerValue value = new SessionSplitTransformerValue(1, "sslSbject", sslCas, "ja3", "ja3s");
+        Mockito.when(sessionSplitStoreCache.read(key)).thenReturn(value);
+
+        TlsTransformedEvent result = (TlsTransformedEvent) transformEvent(tlsTransformedEventWithId, sessionSplitTransformer, TlsTransformedEvent.class);
+        Assert.assertNull(result.getSslSubject());
+        Assert.assertNull(result.getSslCas());
+        Assert.assertNull(result.getJa3());
+        Assert.assertNull(result.getJa3s());
+    }
+
+
+
+    private TlsRawEvent generateTlsRawEvent(Integer sessionSplit, SslSubject sslSubject, Ja3 ja3,
+                                            DestinationOrganization destinationOrganization,
+                                            DestinationCountry destinationCountry, DestinationAsn destinationAsn, Domain domain, String ja3s,
+                                            String srcIp, String dstIp, String srcPort, DestinationPort destinationPort) {
         Instant laterInstant = Instant.now().plusSeconds(10000L * 182 * 60 * 60);
-        return new TlsRawEvent(laterInstant, "TLS", "dataSource", null, "", "", "123", "",
-                new DestinationCountry("dstCountry"),
-                new SslSubject("ssl"), new Domain("google.com"),
-                new DestinationOrganization("dstOrg"),
-                new DestinationAsn("dstAsn"), 0L, 0L, "", "",
-                new Ja3("ja3"), "", "",
-                new DestinationPort("12345"), null, null, 2);
+        return new TlsRawEvent(laterInstant, "TLS", "dataSource", null, srcIp, dstIp, srcPort, "",
+                destinationCountry,  sslSubject, domain, destinationOrganization,
+                destinationAsn, 0L, 0L, "", "",
+                ja3, ja3s, "", destinationPort, null, null, sessionSplit);
     }
 
     @Override

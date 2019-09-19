@@ -1,6 +1,4 @@
 {
   "type": "session-split-transformer",
-  "name": "name",
-  "schema": "tls",
-  "projectionFields": ["bla", "bli"]
+  "name": "name"
 }
