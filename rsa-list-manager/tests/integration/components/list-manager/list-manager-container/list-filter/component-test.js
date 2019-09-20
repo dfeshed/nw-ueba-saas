@@ -22,11 +22,11 @@ module('Integration | Component | list filter', function(hooks) {
   const listName1 = 'List of Things';
 
   test('Filters list with default filtering', async function(assert) {
-    new ReduxDataHelper(setState).listLocation(listLocation1).list(originalList).listName(listName1).build();
-    this.set('listLocation', listLocation1);
+    new ReduxDataHelper(setState).stateLocation(listLocation1).list(originalList).listName(listName1).build();
+    this.set('stateLocation', listLocation1);
 
     await render(hbs`{{list-manager/list-manager-container/list-filter
-      listLocation=listLocation
+      stateLocation=stateLocation
     }}`);
 
     assert.ok(find('.list-filter'), 'list filter component found');

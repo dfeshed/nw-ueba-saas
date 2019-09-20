@@ -6,7 +6,7 @@ import { viewChanged } from 'rsa-list-manager/actions/creators/creators';
 import { LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
 
 const stateToComputed = (state, attrs) => ({
-  itemType: itemType(state, attrs.listLocation)
+  itemType: itemType(state, attrs.stateLocation)
 });
 
 const dispatchToActions = {
@@ -18,12 +18,12 @@ const DetailsFooter = Component.extend({
   tagName: 'footer',
   layout,
   classNames: ['details-footer'],
-  listLocation: undefined,
+  stateLocation: undefined,
   item: null,
 
   actions: {
     detailsDone() {
-      this.send('viewChanged', LIST_VIEW, this.get('listLocation'));
+      this.send('viewChanged', LIST_VIEW, this.get('stateLocation'));
     }
   }
 });

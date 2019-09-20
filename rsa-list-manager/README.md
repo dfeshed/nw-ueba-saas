@@ -3,10 +3,10 @@
 The list manager can be used in your template as follows:
 ```
 {{#list-manager
-  listLocation=listLocation
+  stateLocation=stateLocation
   listName=name
   list=list
-  selectedItem=selectedItem
+  selectedItemId=selectedItemId
   itemSelection=handleSelection
   helpId=helpId
   as |manager|}}
@@ -30,10 +30,10 @@ The list manager can be used in your template as follows:
 ```
 
 ## Inputs
-* `listLocation`, *String*, __required__, Location of list-manager within state e.g. 'listManagers.columnGroups'
+* `stateLocation`, *String*, __required__, Location of list-manager within state e.g. 'listManagers.columnGroups'
 * `listName`, *String ending with s(plural)*, __required__, Caption for List
 * `list`, *Array of objects with name(required), id(required), isEditable(boolean, optional) parameters*, __required__, The list to be rendered
-* `selectedItem`, *Object*,__optional__, The option that needs to be displayed with listName for the caption and highlighed as selected in the list
+* `selectedItemId`, *String*,__optional__, The id of the option that needs to be displayed with listName for the caption and highlighted as selected in the list
 * `helpId`, *Object*,__optional__, Object with moduleId & topicId
 
 ## Actions

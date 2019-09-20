@@ -1,8 +1,8 @@
 {{#if isListManagerReady}}
   {{#list-manager/list-manager-container 
-      listLocation=listLocation
-      itemSelection=itemSelection
-      as |manager|
+    stateLocation=stateLocation
+    itemSelection=itemSelection
+    as |manager|
   }}
     {{yield manager}}
   {{/list-manager/list-manager-container}}

@@ -6,12 +6,12 @@ import {
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
-const _rootState = (state, listLocation) => {
+const _rootState = (state, stateLocation) => {
   let location;
-  if (listLocation) {
-    location = listLocation;
-  } else if (state.listLocation) {
-    location = state.listLocation;
+  if (stateLocation) {
+    location = stateLocation;
+  } else if (state.stateLocation) {
+    location = state.stateLocation;
   } else {
     location = undefined;
   }
@@ -33,6 +33,24 @@ const _rootState = (state, listLocation) => {
 };
 
 // SELECTORS
+const _selectedItemName = createSelector(
+  _rootState,
+  (rootState) => {
+    if (rootState.list && rootState.selectedItemId) {
+      const selectedItem = rootState.list.find((item) => item.id === rootState.selectedItemId);
+      return selectedItem ? selectedItem.name : undefined;
+    }
+    return undefined;
+  }
+);
+
+const _editItemId = createSelector(
+  _rootState,
+  (rootState) => {
+    return rootState.editItemId;
+  }
+);
+
 export const highlightedIndex = createSelector(
   _rootState,
   (rootState) => {
@@ -75,7 +93,7 @@ export const filterText = createSelector(
 export const isListManagerReady = createSelector(
   [_rootState],
   (rootState) => {
-    return !!rootState.listLocation;
+    return !!rootState.stateLocation;
   }
 );
 
@@ -100,17 +118,17 @@ export const isExpanded = createSelector(
   }
 );
 
-export const selectedItem = createSelector(
+export const selectedItemId = createSelector(
   [_rootState],
   (rootState) => {
-    return rootState.selectedItem;
+    return rootState.selectedItemId;
   }
 );
 
 export const selectedIndex = createSelector(
-  [filteredList, selectedItem],
-  (filteredList, selectedItem) => {
-    return filteredList && selectedItem ? filteredList.findIndex((item) => item.id === selectedItem.id) : -1;
+  [filteredList, selectedItemId],
+  (filteredList, selectedItemId) => {
+    return filteredList && selectedItemId ? filteredList.findIndex((item) => item.id === selectedItemId) : -1;
   }
 );
 
@@ -161,18 +179,18 @@ export const hasContextualHelp = createSelector(
 );
 
 export const caption = createSelector(
-  [listName, selectedItem],
-  (listName, selectedItem) => {
-    // If there is selectedItem for listName e.g "My Items" (string ending with s(plural))
+  [listName, _selectedItemName],
+  (listName, selectedItemName) => {
+    // If there is selectedItemId for listName e.g "My Items" (string ending with s(plural))
     // caption will be "My Item: name of selectedItem"
-    return selectedItem ? `${listName.slice(0, -1)}: ${selectedItem.name}` : listName;
+    return selectedItemName ? `${listName.slice(0, -1)}: ${selectedItemName}` : listName;
   }
 );
 
 export const titleTooltip = createSelector(
-  [selectedItem],
-  (selectedItem) => {
-    return selectedItem ? selectedItem.name : null;
+  [_selectedItemName],
+  (selectedItemName) => {
+    return selectedItemName;
   }
 );
 
@@ -188,5 +206,12 @@ export const hasIsEditableIndicators = createSelector(
   (filteredList) => {
     const editableIndicatedItems = filteredList.filter((item) => typeof item.isEditable !== 'undefined');
     return editableIndicatedItems.length > 0;
+  }
+);
+
+export const editItem = createSelector(
+  [list, _editItemId],
+  (list, editItemId) => {
+    return list && editItemId ? list.find((item) => item.id === editItemId) : undefined;
   }
 );

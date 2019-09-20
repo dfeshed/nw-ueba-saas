@@ -23,12 +23,12 @@ module('Integration | Component | item list', function(hooks) {
   const list1 = [ { id: '1', name: 'foo' }, { id: '2', name: 'bar' }];
 
   test('The list renders without ootb indicators when property absent in list items', async function(assert) {
-    new ReduxDataHelper(setState).list(list1).listLocation(listLocation1).listName(listName1).build();
-    this.set('listLocation', listLocation1);
+    new ReduxDataHelper(setState).list(list1).stateLocation(listLocation1).listName(listName1).build();
+    this.set('stateLocation', listLocation1);
     this.set('itemSelection', () => {});
 
     await render(hbs`{{#list-manager/list-manager-container/item-list 
-      listLocation=listLocation
+      stateLocation=stateLocation
       itemSelection=itemSelection 
       as |itemList|}}
         {{itemList.item}}
@@ -41,12 +41,12 @@ module('Integration | Component | item list', function(hooks) {
 
   test('The list renders with ootb indicators when property present in at least one list item', async function(assert) {
     const list2 = [ { id: '1', name: 'foo', isEditable: false }, { id: '2', name: 'bar' }];
-    new ReduxDataHelper(setState).list(list2).listLocation(listLocation1).listName(listName1).build();
-    this.set('listLocation', listLocation1);
+    new ReduxDataHelper(setState).list(list2).stateLocation(listLocation1).listName(listName1).build();
+    this.set('stateLocation', listLocation1);
     this.set('itemSelection', () => {});
 
     await render(hbs`{{#list-manager/list-manager-container/item-list
-      listLocation=listLocation
+      stateLocation=stateLocation
       itemSelection=itemSelection
       as |itemList|}}
         {{itemList.item}}

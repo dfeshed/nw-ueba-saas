@@ -17,19 +17,24 @@ const columnGroupSelector = '.rsa-investigate-events-table__header__columnGroups
 const columnGroupDropDownButton = `${columnGroupSelector} .rsa-button-group button`;
 const columnGroupItemList = `${columnGroupSelector} ul.rsa-item-list > li`;
 
-const assertForInvestigateColumnAndColumnSelector = async function(assert, headerCount, count, selectedOption) {
-  assert.ok(find(columnGroupDropDownButton));
+const assertForInvestigateColumnAndColumnSelector = async function(assert, headerCount, count, selectedOptionName) {
+  assert.ok(find(columnGroupDropDownButton), 'dropdown button shall be found');
   await click(columnGroupDropDownButton);
-  const optionToChoose = findAll(`${columnGroupItemList} a`).find((d) => d.textContent.trim() == selectedOption);
+  const optionToChoose = findAll(`${columnGroupItemList} a`).find((d) => d.textContent.trim() === selectedOptionName);
   await click(optionToChoose);
 
-  assert.equal(findAll('.rsa-data-table-header-cell').length, headerCount, `Should show visible columns in table for ${selectedOption}.`);
-  assert.ok(findAll('.rsa-data-table-header-cell').length, headerCount, `Should show visible columns in table for ${selectedOption}.`);
+  assert.equal(findAll('.rsa-data-table-header-cell').length, headerCount,
+    `Should show visible columns in table for ${selectedOptionName}.`);
+  assert.ok(findAll('.rsa-data-table-header-cell').length, headerCount,
+    `Should show visible columns in table for ${selectedOptionName}.`);
 
   await click(columnGroupDropDownButton);
-  assert.equal(find(`${columnGroupItemList}.is-selected`).textContent.trim(), selectedOption, `Selected column group should be ${selectedOption}.`);
+  assert.equal(find(`${columnGroupItemList}.is-selected`).textContent.trim(), selectedOptionName,
+    `Selected column group should be ${selectedOptionName}.`);
+
   await click('.rsa-icon-cog-filled');
-  assert.equal(findAll('li .rsa-form-checkbox-label').length, count, `Should show all columns for column selector for ${selectedOption}.`);
+  assert.equal(findAll('li .rsa-form-checkbox-label').length, count,
+    `Should show all columns for column selector for ${selectedOptionName}.`);
 };
 
 const renderDefaultEventTable = async function() {

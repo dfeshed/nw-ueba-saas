@@ -5,15 +5,15 @@ import { inject as service } from '@ember/service';
 import { itemType, helpId, hasContextualHelp } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
-  itemType: itemType(state, attrs.listLocation),
-  helpId: helpId(state, attrs.listLocation),
-  hasContextualHelp: hasContextualHelp(state, attrs.listLocation)
+  itemType: itemType(state, attrs.stateLocation),
+  helpId: helpId(state, attrs.stateLocation),
+  hasContextualHelp: hasContextualHelp(state, attrs.stateLocation)
 });
 
 const ItemDetails = Component.extend({
   layout,
   classNames: ['item-details'],
-  listLocation: undefined,
+  stateLocation: undefined,
   editItem: null,
   item: null,
   contextualHelp: service(),

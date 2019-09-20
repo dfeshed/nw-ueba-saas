@@ -2,12 +2,12 @@
   {{#each filteredList as |item|}}
     {{yield (hash
         item=(component 'list-manager/list-manager-container/item-list/item'
+          stateLocation=stateLocation
           item=item
-          selectedItem=selectedItem
+          selectedItemId=selectedItemId
           itemSelection=(action itemSelection)
           hasIsEditableIndicators=hasIsEditableIndicators
           highlightedId=highlightedId
-          editItem=editItem
         )
        )
     }}

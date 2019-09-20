@@ -53,7 +53,7 @@ const _isReconOpen = (state) => state.investigate.data.isReconOpen;
 const _metaPanelSize = (state) => state.investigate.meta.metaPanelSize;
 const _data = (state) => state.investigate.eventTimeline.data;
 const _status = (state) => state.investigate.eventTimeline.status;
-const _selectedColumnGroup = (state) => state.investigate.data.selectedColumnGroup;
+export const selectedColumnGroup = (state) => state.investigate.data.selectedColumnGroup;
 export const getDefaultPreferences = (state) => state.investigate.data.eventsPreferencesConfig.defaultPreferences.asMutable();
 
 // SELECTOR FUNCTIONS
@@ -144,7 +144,7 @@ export const shouldShowStatus = createSelector(
 );
 
 export const getCurrentPreferences = createSelector(
-  [_selectedColumnGroup],
+  [selectedColumnGroup],
   (columnGroup) => {
     return {
       eventPreferences: { columnGroup }
@@ -153,7 +153,7 @@ export const getCurrentPreferences = createSelector(
 );
 
 export const getSelectedColumnGroup = createSelector(
-  [_selectedColumnGroup, columnGroups],
+  [selectedColumnGroup, columnGroups],
   (columnGroupId, allColumnGroups) => {
     if (allColumnGroups) {
       return allColumnGroups.find(({ id }) => id === columnGroupId) || allColumnGroups.find(({ id }) => id === 'SUMMARY');

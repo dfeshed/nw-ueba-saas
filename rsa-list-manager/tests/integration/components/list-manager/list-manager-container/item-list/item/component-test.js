@@ -7,7 +7,6 @@ module('Integration | Component | item ', function(hooks) {
   setupRenderingTest(hooks);
 
   const editable = 'rsa-icon-settings-1-lined';
-
   const item = { id: '1', name: 'foo' };
 
   test('Component for item renders when no selectedItem is passed, no is-editable indicators', async function(assert) {
@@ -15,11 +14,15 @@ module('Integration | Component | item ', function(hooks) {
 
     this.set('item', item);
     this.set('itemSelection', (itemClicked) => {
-      assert.deepEqual(itemClicked, item, 'Clicking an Item causes triggers itemSelection');
+      assert.deepEqual(itemClicked, item, 'Clicking an Item triggers itemSelection');
     });
     this.set('hasIsEditableIndicators', false);
 
-    await render(hbs`{{list-manager/list-manager-container/item-list/item item=item itemSelection=itemSelection hasIsEditableIndicators=hasIsEditableIndicators}}`);
+    await render(hbs`{{list-manager/list-manager-container/item-list/item
+      item=item
+      itemSelection=itemSelection
+      hasIsEditableIndicators=hasIsEditableIndicators
+    }}`);
 
     assert.ok(find('li.rsa-list-item'), 'list found');
     assert.notOk(find('li .is-editable-indicator'), 'is-editable indicator found');
@@ -35,13 +38,18 @@ module('Integration | Component | item ', function(hooks) {
 
     const item1 = { id: '1', name: 'foo', isEditable: true };
     this.set('item', item1);
-    this.set('selectedItem', item1);
+    this.set('selectedItemId', item1.id);
     this.set('itemSelection', (itemClicked) => {
-      assert.deepEqual(itemClicked, item1, 'Clicking an Item causes triggers itemSelection');
+      assert.deepEqual(itemClicked, item1, 'Clicking an Item triggers itemSelection');
     });
     this.set('hasIsEditableIndicators', true);
 
-    await render(hbs`{{list-manager/list-manager-container/item-list/item item=item selectedItem=selectedItem itemSelection=itemSelection hasIsEditableIndicators=hasIsEditableIndicators}}`);
+    await render(hbs`{{list-manager/list-manager-container/item-list/item
+      item=item
+      selectedItemId=selectedItemId
+      itemSelection=itemSelection
+      hasIsEditableIndicators=hasIsEditableIndicators
+    }}`);
 
     assert.ok(find('li.is-selected'), 'the item rendered is a selected item');
     assert.ok(find('li .is-editable-indicator').classList.contains(editable), 'icon is editable');
@@ -58,8 +66,12 @@ module('Integration | Component | item ', function(hooks) {
     this.set('hasIsEditableIndicators', true);
     this.set('highlightedId', 'someid');
 
-    await render(hbs`{{list-manager/list-manager-container/item-list/item item=item selectedItem=selectedItem
-      highlightedId=highlightedId itemSelection=itemSelection hasIsEditableIndicators=hasIsEditableIndicators}}`);
+    await render(hbs`{{list-manager/list-manager-container/item-list/item
+      item=item
+      highlightedId=highlightedId
+      itemSelection=itemSelection
+      hasIsEditableIndicators=hasIsEditableIndicators
+    }}`);
 
     assert.ok(find('li.is-highlighted'), 'the item shall have is-highlighted class');
   });
@@ -73,8 +85,11 @@ module('Integration | Component | item ', function(hooks) {
     this.set('hasIsEditableIndicators', true);
     this.set('highlightedId', 'not-someid');
 
-    await render(hbs`{{list-manager/list-manager-container/item-list/item item=item selectedItem=selectedItem
-      highlightedId=highlightedId itemSelection=itemSelection hasIsEditableIndicators=hasIsEditableIndicators}}`);
+    await render(hbs`{{list-manager/list-manager-container/item-list/item
+      item=item
+      highlightedId=highlightedId
+      itemSelection=itemSelection
+      hasIsEditableIndicators=hasIsEditableIndicators}}`);
 
     assert.notOk(find('li.is-highlighted'), 'the item shall not have is-highlighted class');
   });

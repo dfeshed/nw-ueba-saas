@@ -9,7 +9,7 @@ import {
   newItemButtonTitle,
   isExpanded,
   filterText,
-  selectedItem,
+  selectedItemId,
   viewName,
   highlightedId,
   isListView,
@@ -20,7 +20,8 @@ import {
   caption,
   titleTooltip,
   filterPlaceholder,
-  hasIsEditableIndicators
+  hasIsEditableIndicators,
+  editItem
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 import { LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -50,127 +51,127 @@ const listNotHasIsEditable = [
 const item1 = { id: 2, name: 'bar', subItems: [ 'e', 'b', 'c' ] };
 const viewName1 = 'list-view';
 
-test('highlightedIndex returns highlightedIndex for listLocation', function(assert) {
+test('highlightedIndex returns highlightedIndex for stateLocation', function(assert) {
   const randomIndex = Math.floor(Math.random() * 20) + 1;
   const state = new ReduxDataHelper()
     .highlightedIndex(randomIndex)
     .build();
-  const indexSelected = highlightedIndex(state, listLocation1);
-  assert.equal(indexSelected, randomIndex, 'Shall select highlightedIndex based on listLocation');
+  const result = highlightedIndex(state, listLocation1);
+  assert.equal(result, randomIndex, 'Shall select highlightedIndex based on stateLocation');
 });
 
-test('listName returns listName for listLocation', function(assert) {
+test('listName returns listName for stateLocation', function(assert) {
   const state = new ReduxDataHelper()
     .listName(listName1)
     .build();
-  const listNameSelected = listName(state, listLocation1);
-  assert.equal(listNameSelected, listName1, 'Shall select listName based on listLocation');
+  const result = listName(state, listLocation1);
+  assert.equal(result, listName1, 'Shall select listName based on stateLocation');
 });
 
-test('isListManagerReady returns true if listLocation exists', function(assert) {
+test('isListManagerReady returns true if stateLocation exists', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .build();
-  const isReady = isListManagerReady(state, listLocation1);
-  assert.ok(isReady, 'isListManagerReady shall be true if listLocation exists');
+  const result = isListManagerReady(state, listLocation1);
+  assert.ok(result, 'isListManagerReady shall be true if stateLocation exists');
 });
 
-test('isListManagerReady returns false if listLocation does not exist', function(assert) {
+test('isListManagerReady returns false if stateLocation does not exist', function(assert) {
   const state = new ReduxDataHelper().build();
-  const isReady = isListManagerReady(state, listLocation1);
-  assert.notOk(isReady, 'isListManagerReady shall be false if listLocation does not exist');
+  const result = isListManagerReady(state, listLocation1);
+  assert.notOk(result, 'isListManagerReady shall be false if stateLocation does not exist');
 });
 
-test('list returns list for listLocation', function(assert) {
+test('list returns list for stateLocation', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .build();
-  const listSelected = list(state, listLocation1);
-  assert.deepEqual(listSelected, list1, 'Shall select list based on listLocation');
+  const result = list(state, listLocation1);
+  assert.deepEqual(result, list1, 'Shall select list based on stateLocation');
 });
 
-test('filteredList returns filteredList for listLocation and filterText', function(assert) {
+test('filteredList returns filteredList for stateLocation', function(assert) {
   const filterText1 = 'fo';
   const filteredList1 = list1.filter((item) => item.name.toLowerCase().includes(filterText1));
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .filterText(filterText1)
     .build();
-  const filtered = filteredList(state, listLocation1);
-  assert.deepEqual(filtered, filteredList1, 'Shall select filteredList based on listLocation and filterText');
+  const result = filteredList(state, listLocation1);
+  assert.deepEqual(result, filteredList1, 'Shall select filteredList based on stateLocation and filterText');
 });
 
-test('filteredList returns unfiltered list for listLocation if no filterText', function(assert) {
+test('filteredList returns unfiltered list for stateLocation if no filterText', function(assert) {
   const filterText1 = '';
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .filterText(filterText1)
     .build();
-  const filtered = filteredList(state, listLocation1);
-  assert.deepEqual(filtered, state.listManager.list, 'filteredList shall return list based on listLocation if no filterText');
+  const result = filteredList(state, listLocation1);
+  assert.deepEqual(result, state.listManager.list, 'filteredList shall return list based on stateLocation if no filterText');
 });
 
-test('itemType returns itemType for listLocation and listName', function(assert) {
+test('itemType returns itemType for stateLocation', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
     .build();
-  const itemTypeSelected = itemType(state, listLocation1);
-  assert.deepEqual(itemTypeSelected, listName1.slice(0, -1), 'Shall select itemType based on listLocation and listName');
+  const result = itemType(state, listLocation1);
+  assert.deepEqual(result, listName1.slice(0, -1), 'Shall select itemType based on stateLocation and listName');
 });
 
-test('newItemButtonTitle returns newItemButtonTitle for listLocation and listName', function(assert) {
+test('newItemButtonTitle returns newItemButtonTitle for stateLocation', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
     .build();
-  const buttonTitle = newItemButtonTitle(state, listLocation1);
-  const itemType1 = listName1.slice(0, -1);
-  assert.equal(buttonTitle, `New ${itemType1}`, 'Shall select newItemButtonTitle based on listLocation and listName');
+  const result = newItemButtonTitle(state, listLocation1);
+  const expected = listName1.slice(0, -1);
+  assert.equal(result, `New ${expected}`, 'Shall select newItemButtonTitle based on stateLocation and listName');
 });
 
-test('isExpanded returns isExpanded for listLocation', function(assert) {
+test('isExpanded returns isExpanded for stateLocation', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .isExpanded(false)
     .build();
-  const expanded = isExpanded(state, listLocation1);
-  assert.notOk(expanded, 'Shall select isExpanded based on listLocation');
+  const result = isExpanded(state, listLocation1);
+  assert.notOk(result, 'Shall select isExpanded based on stateLocation');
 });
 
-test('filterText returns filterText for listLocation', function(assert) {
+test('filterText returns filterText for stateLocation', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .filterText('someText')
     .build();
-  const text = filterText(state, listLocation1);
-  assert.equal(text, 'someText', 'Shall select filterText based on listLocation');
+  const result = filterText(state, listLocation1);
+  assert.equal(result, 'someText', 'Shall select filterText based on stateLocation');
 });
 
-test('selectedItem returns selectedItem for listLocation', function(assert) {
+test('selectedItemId returns selectedItemId for stateLocation', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
-    .selectedItem(item1)
+    .stateLocation(listLocation1)
+    .selectedItemId(item1.id)
     .build();
-  const item = selectedItem(state, listLocation1);
-  assert.deepEqual(item, item1, 'Shall select selectedItem based on listLocation');
+  const result = selectedItemId(state, listLocation1);
+  assert.equal(result, item1.id, 'Shall select selectedItemId based on stateLocation');
 });
 
-test('viewName returns viewName for listLocation', function(assert) {
+test('viewName returns viewName for stateLocation', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .viewName(viewName1)
     .build();
-  const view = viewName(state, listLocation1);
-  assert.equal(view, viewName1, 'Shall select viewName based on listLocation');
+  const result = viewName(state, listLocation1);
+  assert.equal(result, viewName1, 'Shall select viewName based on stateLocation');
 });
 
-test('highlightedId returns highlightedId for listLocation', function(assert) {
+test('highlightedId returns highlightedId for stateLocation', function(assert) {
   const list2 = [
     { id: 'a', name: 'eba', subItems: [ 'a', 'b', 'c' ] },
     { id: 'b', name: 'foo', subItems: [ 'a', 'b' ] },
@@ -180,15 +181,15 @@ test('highlightedId returns highlightedId for listLocation', function(assert) {
 
   const index = Math.floor(Math.random() * Math.floor(4));
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list2)
     .highlightedIndex(index)
     .build();
-  const id = highlightedId(state, listLocation1);
-  assert.equal(id, list2[index].id, 'Shall select viewName based on listLocation');
+  const result = highlightedId(state, listLocation1);
+  assert.equal(result, list2[index].id, 'Shall select viewName based on stateLocation');
 });
 
-test('isListView returns true if viewName is list-view', function(assert) {
+test('isListView returns true for stateLocation if viewName is list-view', function(assert) {
   const state = new ReduxDataHelper()
     .viewName(LIST_VIEW)
     .build();
@@ -196,7 +197,7 @@ test('isListView returns true if viewName is list-view', function(assert) {
   assert.ok(result, 'isListView shall return true if viewName is list-view');
 });
 
-test('isListView returns false if viewName is not list-view', function(assert) {
+test('isListView returns false for stateLocation if viewName is not list-view', function(assert) {
   const state = new ReduxDataHelper()
     .viewName('some-view')
     .build();
@@ -204,54 +205,54 @@ test('isListView returns false if viewName is not list-view', function(assert) {
   assert.notOk(result, 'isListView shall return false if viewName is not list-view');
 });
 
-test('noResultsMessage returns noResultsMessage for listLocation and listName', function(assert) {
+test('noResultsMessage returns noResultsMessage for stateLocation', function(assert) {
   const state = new ReduxDataHelper()
     .listName('apples')
     .build();
   const result = noResultsMessage(state, listLocation1);
   const expected = 'All apples have been excluded by the current filter';
-  assert.equal(result, expected, 'Shall select noResultsMessage based on listLocation and listName');
+  assert.equal(result, expected, 'Shall select noResultsMessage based on stateLocation and listName');
 });
 
-test('selectedIndex returns selectedIndex for listLocation and selectedItem', function(assert) {
+test('selectedIndex returns selectedIndex for stateLocation', function(assert) {
   const randomIndex = Math.floor(Math.random() * Math.floor(list1.length));
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
-    .selectedItem(list1[randomIndex])
+    .selectedItemId(list1[randomIndex].id)
     .build();
-  const index = selectedIndex(state, listLocation1);
-  assert.equal(index, randomIndex, 'Shall select selectedIndex based on listLocation and selectedItem');
+  const result = selectedIndex(state, listLocation1);
+  assert.equal(result, randomIndex, 'Shall select selectedIndex based on stateLocation and selectedItemId');
 });
 
-test('selectedIndex returns -1 if there is no selectedItem', function(assert) {
+test('selectedIndex returns -1 for stateLocation if there is no selectedItemId', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
-    .selectedItem(null)
+    .selectedItemId(null)
     .build();
-  const index = selectedIndex(state, listLocation1);
-  assert.equal(index, -1, 'selectedIndex shall return -1 if there is no selectedItem');
+  const result = selectedIndex(state, listLocation1);
+  assert.equal(result, -1, 'selectedIndex shall return -1 if there is no selectedItemId');
 });
 
-test('helpId returns helpId for listLocation', function(assert) {
+test('helpId returns helpId for stateLocation', function(assert) {
   const helpId1 = { moduleId: 'investigation', topicId: 'eaColumnGroups' };
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
     .helpId(helpId1)
     .build();
   const result = helpId(state, listLocation1);
-  assert.deepEqual(result, helpId1, 'Shall select filterText based on listLocation');
+  assert.deepEqual(result, helpId1, 'Shall select filterText based on stateLocation');
 });
 
-test('hasContextualHelp returns true for listLocation if helpId has moduleId and topicId', function(assert) {
+test('hasContextualHelp returns true for stateLocation if helpId has moduleId and topicId', function(assert) {
   const helpId1 = { moduleId: 'investigation', topicId: 'eaColumnGroups' };
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
     .helpId(helpId1)
@@ -260,10 +261,10 @@ test('hasContextualHelp returns true for listLocation if helpId has moduleId and
   assert.ok(result, 'hasContextualHelp shall return true if moduleId and topicId both exist in helpId');
 });
 
-test('hasContextualHelp returns false for listLocation if helpId is missing moduleId or topicId', function(assert) {
+test('hasContextualHelp returns false for stateLocation if helpId is missing moduleId or topicId', function(assert) {
   const helpId1 = { moduleId: null, topicId: 'eaColumnGroups' };
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
     .helpId(helpId1)
@@ -273,7 +274,7 @@ test('hasContextualHelp returns false for listLocation if helpId is missing modu
 
   const helpId2 = { moduleId: 'investigation', topicId: null };
   const state2 = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
     .helpId(helpId2)
@@ -283,7 +284,7 @@ test('hasContextualHelp returns false for listLocation if helpId is missing modu
 
   const helpId3 = { moduleId: null, topicId: null };
   const state3 = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
     .helpId(helpId3)
@@ -292,67 +293,67 @@ test('hasContextualHelp returns false for listLocation if helpId is missing modu
   assert.notOk(result3, 'hasContextualHelp shall return false if topicId and moduleId do not exist in helpId');
 });
 
-test('caption returns caption for listLocation, listName, selectedItem if selectedItem exists', function(assert) {
+test('caption returns caption for stateLocation if selectedItemId exists', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
-    .selectedItem(list1[0])
+    .selectedItemId(list1[0].id)
     .build();
   const result = caption(state, listLocation1);
   const expected = `${state.listManager.listName.slice(0, -1)}: ${list1[0].name}`;
-  assert.equal(result, expected, 'Shall select caption based on listLocation, listName, selectedItem');
+  assert.equal(result, expected, 'Shall select caption based on stateLocation, listName, selectedItemId');
 });
 
-test('caption returns listName for listLocation if selectedItem does not exist', function(assert) {
+test('caption returns listName for stateLocation if selectedItemId does not exist', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
-    .selectedItem(null)
+    .selectedItemId(null)
     .build();
   const result = caption(state, listLocation1);
-  assert.equal(result, listName1, 'Shall select caption based on listLocation, listName, selectedItem');
+  assert.equal(result, listName1, 'Shall select caption based on stateLocation, listName, selectedItemId');
 });
 
-test('titleTooltip returns titleTooltip for listLocation and selectedItem if selectedItem exists', function(assert) {
+test('titleTooltip returns titleTooltip for stateLocation if selectedItemId exists', function(assert) {
   const randomIndex = Math.floor(Math.random() * Math.floor(list1.length));
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
-    .selectedItem(list1[randomIndex])
+    .selectedItemId(list1[randomIndex].id)
     .build();
   const result = titleTooltip(state, listLocation1);
-  assert.equal(result, list1[randomIndex].name, 'Shall select titleTooltip based on listLocation and selectedItem');
+  assert.equal(result, list1[randomIndex].name, 'Shall select titleTooltip based on stateLocation and selectedItemId');
 });
 
-test('titleTooltip returns null for listLocation if selectedItem does not exist', function(assert) {
+test('titleTooltip returns null for stateLocation if selectedItemId does not exist', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
-    .selectedItem(null)
+    .selectedItemId(null)
     .build();
   const result = titleTooltip(state, listLocation1);
-  assert.notOk(result, 'Shall select titleTooltip based on listLocation and selectedItem');
+  assert.notOk(result, 'Shall select titleTooltip based on stateLocation and selectedItemId');
 });
 
-test('filterPlaceholder returns filterPlaceholder for listLocation and listName', function(assert) {
+test('filterPlaceholder returns filterPlaceholder for stateLocation', function(assert) {
   const state = new ReduxDataHelper()
-    .listLocation(listLocation1)
+    .stateLocation(listLocation1)
     .list(list1)
     .listName(listName1)
     .build();
   const result = filterPlaceholder(state, listLocation1);
   const expected = `Filter ${listName1.toLowerCase()}`;
-  assert.equal(result, expected, 'Shall select filterPlaceholder based on listLocation and listName');
+  assert.equal(result, expected, 'Shall select filterPlaceholder based on stateLocation and listName');
 });
 
-test('hasIsEditableIndicators returns true for listLocation if filteredList contains items where isEditable is not undefined',
+test('hasIsEditableIndicators returns true for stateLocation if filteredList contains items with isEditable property',
   function(assert) {
     const state = new ReduxDataHelper()
-      .listLocation(listLocation1)
+      .stateLocation(listLocation1)
       .list(listHasIsEditable)
       .filterText('a')
       .listName(listName1)
@@ -361,10 +362,10 @@ test('hasIsEditableIndicators returns true for listLocation if filteredList cont
     assert.ok(result, 'hasIsEditableIndicators shall return true if filteredList contains items with isEditable property');
   });
 
-test('hasIsEditableIndicators returns false for listLocation if filteredList only contains items where isEditable is undefined',
+test('hasIsEditableIndicators returns false for stateLocation if no item in filteredList has isEditable property',
   function(assert) {
     const state = new ReduxDataHelper()
-      .listLocation(listLocation1)
+      .stateLocation(listLocation1)
       .list(listNotHasIsEditable)
       .filterText('a')
       .listName(listName1)
@@ -373,3 +374,16 @@ test('hasIsEditableIndicators returns false for listLocation if filteredList onl
     assert.notOk(result,
       'hasIsEditableIndicators shall return false if filteredList does not contain any items with isEditable property');
   });
+
+test('editItem returns editItem for stateLocation', function(assert) {
+  const randomIndex = Math.floor(Math.random() * Math.floor(list1.length));
+  const state = new ReduxDataHelper()
+    .stateLocation(listLocation1)
+    .list(list1)
+    .listName(listName1)
+    .editItemId(list1[randomIndex].id)
+    .build();
+  const result = editItem(state, listLocation1);
+  const expected = list1[randomIndex];
+  assert.deepEqual(result, expected, 'Shall select editItem based on stateLocation, list, and editItemId');
+});

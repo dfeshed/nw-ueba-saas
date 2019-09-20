@@ -3,36 +3,39 @@ import layout from './template';
 import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
 import {
-  LIST_MANAGER_CONTAINER_COMPONENT_PATH as COMPONENT_PATH,
   EDIT_VIEW
 } from 'rsa-list-manager/constants/list-manager';
 import {
   setHighlightedIndex,
   toggleListVisibility,
   setSelectedItem,
-  viewChanged
+  viewChanged,
+  closeListManager
 } from 'rsa-list-manager/actions/creators/creators';
 import {
   isExpanded,
-  selectedItem,
+  selectedItemId,
   isListView,
   caption,
-  titleTooltip
+  titleTooltip,
+  editItem
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
-  isExpanded: isExpanded(state, attrs.listLocation),
-  caption: caption(state, attrs.listLocation),
-  titleTooltip: titleTooltip(state, attrs.listLocation),
-  selectedItem: selectedItem(state, attrs.listLocation),
-  isListView: isListView(state, attrs.listLocation)
+  isExpanded: isExpanded(state, attrs.stateLocation),
+  caption: caption(state, attrs.stateLocation),
+  titleTooltip: titleTooltip(state, attrs.stateLocation),
+  selectedItemId: selectedItemId(state, attrs.stateLocation),
+  isListView: isListView(state, attrs.stateLocation),
+  editItem: editItem(state, attrs.stateLocation) // item rendered for details
 });
 
 const dispatchToActions = {
   setHighlightedIndex,
   toggleListVisibility,
   setSelectedItem,
-  viewChanged
+  viewChanged,
+  closeListManager
 };
 
 const menuOffsetsStyle = (el) => {
@@ -47,42 +50,33 @@ const menuOffsetsStyle = (el) => {
 const ListManagerContainer = Component.extend({
   layout,
   classNames: ['list-manager-container'],
-  listFilterComponent: `${COMPONENT_PATH}/list-filter`,
-  itemListComponent: `${COMPONENT_PATH}/item-list`,
-  itemDetailsComponent: `${COMPONENT_PATH}/item-details`,
-  listLocation: undefined,
-
-  // item rendered for details
-  itemForEdit: null,
+  stateLocation: undefined,
 
   // style for the recon-button-menu derived from the buttonGroup style
   offsetsStyle: null,
 
   _updateView(viewName) {
-    this.send('viewChanged', viewName, this.get('listLocation'));
+    this.send('viewChanged', viewName, this.get('stateLocation'));
   },
 
   actions: {
     collapseManagerList() {
-      if (this.get('isExpanded')) {
-        this.send('toggleListVisibility', this.get('listLocation'));
-      }
+      this.send('closeListManager', this.get('stateLocation'));
     },
 
-    toggleExpandManagerList() {
+    listOpened() {
       this.set('offsetsStyle', menuOffsetsStyle(this.get('element')));
-      this.send('toggleListVisibility', this.get('listLocation'));
     },
 
     handleItemSelection(item) {
-      const selectedItem = this.get('selectedItem');
+      const selectedItemId = this.get('selectedItemId');
       // Some types of lists don't have an active/selected item, in those cases once
       // the selection is processed the list-manager returns to an unselected state
-      if (!selectedItem || (selectedItem && selectedItem.id !== item.id)) {
+      if (selectedItemId !== item.id) {
         this.get('itemSelection')(item);
-        this.send('setSelectedItem', item, this.get('listLocation'));
+        this.send('setSelectedItem', item, this.get('stateLocation'));
       }
-      this.send('toggleListVisibility', this.get('listLocation'));
+      this.send('toggleListVisibility', this.get('stateLocation'));
     },
 
     editItem(item) {

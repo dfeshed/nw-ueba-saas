@@ -26,17 +26,17 @@ module('Integration | Component | list footer', function(hooks) {
   test('renders footer for list with correct components', async function(assert) {
     assert.expect(4);
     new ReduxDataHelper(setState)
-      .listLocation(listLocation1)
+      .stateLocation(listLocation1)
       .list(originalList)
       .listName(listName1)
       .build();
-    this.set('listLocation', listLocation1);
+    this.set('stateLocation', listLocation1);
     this.set('editItem', () => {
       assert.ok(true, 'clicking button executes editItem');
     });
 
     await render(hbs`{{list-manager/list-manager-container/list-footer
-      listLocation=listLocation
+      stateLocation=stateLocation
       createItem=editItem }}`);
 
     assert.ok(find('footer.list-footer'));
@@ -51,18 +51,18 @@ module('Integration | Component | list footer', function(hooks) {
     assert.expect(4);
     const helpId1 = { topicId: 'foo', moduleId: 'bar' };
     new ReduxDataHelper(setState)
-      .listLocation(listLocation1)
+      .stateLocation(listLocation1)
       .list(originalList)
       .helpId(helpId1)
       .listName(listName1)
       .build();
-    this.set('listLocation', listLocation1);
+    this.set('stateLocation', listLocation1);
     this.set('editItem', () => {
       assert.ok(true, 'clicking New Meta Group button executes editItem');
     });
 
     await render(hbs`{{list-manager/list-manager-container/list-footer
-      listLocation=listLocation
+      stateLocation=stateLocation
       createItem=editItem }}`);
 
     assert.ok(find('footer.list-footer'));

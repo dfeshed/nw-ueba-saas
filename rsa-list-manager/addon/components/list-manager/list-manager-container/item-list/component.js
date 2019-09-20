@@ -8,7 +8,7 @@ import {
   highlightedIndex,
   isExpanded,
   filteredList,
-  selectedItem,
+  selectedItemId,
   selectedIndex,
   noResultsMessage,
   hasIsEditableIndicators,
@@ -16,14 +16,14 @@ import {
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
-  filteredList: filteredList(state, attrs.listLocation),
-  isExpanded: isExpanded(state, attrs.listLocation),
-  highlightedIndex: highlightedIndex(state, attrs.listLocation),
-  highlightedId: highlightedId(state, attrs.listLocation),
-  selectedItem: selectedItem(state, attrs.listLocation),
-  selectedIndex: selectedIndex(state, attrs.listLocation),
-  noResultsMessage: noResultsMessage(state, attrs.listLocation),
-  hasIsEditableIndicators: hasIsEditableIndicators(state, attrs.listLocation)
+  filteredList: filteredList(state, attrs.stateLocation),
+  isExpanded: isExpanded(state, attrs.stateLocation),
+  highlightedIndex: highlightedIndex(state, attrs.stateLocation),
+  highlightedId: highlightedId(state, attrs.stateLocation),
+  selectedItemId: selectedItemId(state, attrs.stateLocation),
+  selectedIndex: selectedIndex(state, attrs.stateLocation),
+  noResultsMessage: noResultsMessage(state, attrs.stateLocation),
+  hasIsEditableIndicators: hasIsEditableIndicators(state, attrs.stateLocation)
 });
 
 const dispatchToActions = {
@@ -34,7 +34,7 @@ const ItemList = Component.extend({
   layout,
   tagName: 'ul',
   classNames: ['rsa-item-list'],
-  listLocation: undefined,
+  stateLocation: undefined,
   onMouse: null, // true if user is using the mouse to navigate
 
   didInsertElement() {
@@ -79,7 +79,7 @@ const ItemList = Component.extend({
       if (el) {
         const selectorAll = this.element.querySelectorAll('.rsa-item-list li');
         const newCurrentIndex = Array.from(selectorAll).indexOf(el);
-        this.send('setHighlightedIndex', newCurrentIndex, this.get('listLocation'));
+        this.send('setHighlightedIndex', newCurrentIndex, this.get('stateLocation'));
         el.focus();
       }
     }
@@ -139,7 +139,7 @@ const ItemList = Component.extend({
       nextIndex = currentIndexIsLast ? 0 : this.get('highlightedIndex') + 1;
     }
 
-    this.send('setHighlightedIndex', nextIndex, this.get('listLocation'));
+    this.send('setHighlightedIndex', nextIndex, this.get('stateLocation'));
 
     // if item is already selected, go to the next item
     if (nextIndex === selectedIndex) {
@@ -166,7 +166,7 @@ const ItemList = Component.extend({
       // else, go to the previous item
       nextIndex = this.get('highlightedIndex') === 0 ? filteredList.length - 1 : this.get('highlightedIndex') - 1;
     }
-    this.send('setHighlightedIndex', nextIndex, this.get('listLocation'));
+    this.send('setHighlightedIndex', nextIndex, this.get('stateLocation'));
 
     // if item is already selected, go to the previous item
     if (nextIndex === selectedIndex) {

@@ -1,66 +1,45 @@
 <hbox>
   {{#click-outside action=(action 'collapseManagerList')}}
 
-    <div class='rsa-button-group'>
-      {{#rsa-form-button
-        class='list-caption'
-        defaultAction=(action 'toggleExpandManagerList')
-        title=titleTooltip
-      }}
-        {{caption}}
-      {{/rsa-form-button}}
-      {{#rsa-form-button
-        class='rsa-split-dropdown'
-        defaultAction=(action 'toggleExpandManagerList')
-      }}
-        {{rsa-icon name='arrow-down-12'}}
-      {{/rsa-form-button}}
-    </div>
+    {{list-manager/list-manager-container/list-menu-trigger
+      stateLocation=stateLocation
+      listOpened=(action 'listOpened')
+    }}
 
     {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
-
       {{#if isExpanded}}
-
         {{#if isListView}}
           <div class='list-body'>
-
             {{yield (hash
-                filter=(component listFilterComponent
-                  listLocation=listLocation
+                filter=(component 'list-manager/list-manager-container/list-filter'
+                  stateLocation=stateLocation
                 )
               )
             }}
-            
             {{yield (hash
-                itemList=(component itemListComponent
-                  listLocation=listLocation
+                itemList=(component 'list-manager/list-manager-container/item-list'
+                  stateLocation=stateLocation
                   itemSelection=(action 'handleItemSelection')
-                  editItem=(action 'editItem')
                 )
               )
             }}
           </div>
 
           {{list-manager/list-manager-container/list-footer
-            listLocation=listLocation
+            stateLocation=stateLocation
             createItem=(action 'editItem')
           }}
-
         {{else}}
-
           {{yield (hash
-              details=(component itemDetailsComponent
-                listLocation=listLocation
-                item=itemForEdit
+              details=(component 'list-manager/list-manager-container/item-details'
+                stateLocation=stateLocation
+                item=editItem
                 itemSelection=(action 'handleItemSelection')
               )
             )
           }}
-
         {{/if}}
-
       {{/if}}
-
     {{/rsa-button-menu}}
   {{/click-outside}}
 </hbox>

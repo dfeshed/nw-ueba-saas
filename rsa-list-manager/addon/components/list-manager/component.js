@@ -5,7 +5,7 @@ import { initializeListManager } from 'rsa-list-manager/actions/creators/creator
 import { isListManagerReady } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
-  isListManagerReady: isListManagerReady(state, attrs.listLocation)
+  isListManagerReady: isListManagerReady(state, attrs.stateLocation)
 });
 
 const dispatchToActions = {
@@ -14,7 +14,8 @@ const dispatchToActions = {
 
 const ListManager = Component.extend({
   layout,
-  listLocation: undefined,
+  classNames: ['list-manager'],
+  stateLocation: undefined,
 
   /*
    * Name identifying the list used to label buttons in the manager.
@@ -22,10 +23,8 @@ const ListManager = Component.extend({
    */
   listName: null,
 
-  classNames: ['list-manager'],
-
   // Object to identify an item as selected in the manager's button caption
-  selectedItem: null,
+  selectedItemId: null,
 
   // the original list
   list: null,
@@ -35,8 +34,9 @@ const ListManager = Component.extend({
   helpId: null,
 
   didInsertElement() {
-    const initialProperties = this.getProperties('listLocation', 'listName', 'list', 'selectedItem', 'helpId');
-    this.send('initializeListManager', initialProperties);
+    const initialProperties =
+      this.getProperties('stateLocation', 'listName', 'list', 'selectedItemId', 'helpId');
+    this.send('initializeListManager', { ...initialProperties, filterText: '' });
   }
 });
 

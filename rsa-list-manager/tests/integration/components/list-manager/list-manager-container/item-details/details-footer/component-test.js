@@ -23,13 +23,13 @@ module('Integration | Component | list details - details footer', function(hooks
 
   test('renders footer for list details with correct components', async function(assert) {
     assert.expect(3);
-    new ReduxDataHelper(setState).listLocation(listLocation1).listName('Foos').build();
-    this.set('listLocation', listLocation1);
+    new ReduxDataHelper(setState).stateLocation(listLocation1).listName('Foos').build();
+    this.set('stateLocation', listLocation1);
     this.set('itemSelection', () => {});
     this.set('item', item);
 
     await render(hbs`{{list-manager/list-manager-container/item-details/details-footer
-      listLocation=listLocation
+      stateLocation=stateLocation
       item=item
       itemSelection=itemSelection
     }}`);
@@ -45,11 +45,11 @@ module('Integration | Component | list details - details footer', function(hooks
 
   test('renders footer for list details with correct components', async function(assert) {
     assert.expect(3);
-    new ReduxDataHelper(setState).listLocation(listLocation1).listName('Foos').build();
-    this.set('listLocation', listLocation1);
+    new ReduxDataHelper(setState).stateLocation(listLocation1).listName('Foos').build();
+    this.set('stateLocation', listLocation1);
 
     await render(hbs`{{list-manager/list-manager-container/item-details/details-footer
-      listLocation=listLocation
+      stateLocation=stateLocation
       item=item
     }}`);
 
@@ -64,15 +64,15 @@ module('Integration | Component | list details - details footer', function(hooks
 
   test('clicking select from footer executes selection', async function(assert) {
     assert.expect(3);
-    new ReduxDataHelper(setState).listLocation(listLocation1).listName('Foos').build();
-    this.set('listLocation', listLocation1);
+    new ReduxDataHelper(setState).stateLocation(listLocation1).listName('Foos').build();
+    this.set('stateLocation', listLocation1);
     this.set('itemSelection', () => {
       assert.ok(true, 'clicking button executes item selection');
     });
     this.set('item', item);
 
     await render(hbs`{{list-manager/list-manager-container/item-details/details-footer
-      listLocation=listLocation
+      stateLocation=stateLocation
       item=item
       itemSelection=itemSelection
     }}`);

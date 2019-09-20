@@ -49,8 +49,8 @@ export default class DataHelper {
     return this;
   }
 
-  listLocation(location) {
-    _set(this.state, 'listLocation', location);
+  stateLocation(location) {
+    _set(this.state, 'stateLocation', location);
     return this;
   }
 
@@ -74,8 +74,8 @@ export default class DataHelper {
     return this;
   }
 
-  selectedItem(item) {
-    _set(this.state, 'selectedItem', item);
+  selectedItemId(item) {
+    _set(this.state, 'selectedItemId', item);
     return this;
   }
 
@@ -86,6 +86,11 @@ export default class DataHelper {
 
   helpId(object) {
     _set(this.state, 'helpId', object);
+    return this;
+  }
+
+  editItemId(id) {
+    _set(this.state, 'editItemId', id);
     return this;
   }
 }

@@ -143,7 +143,6 @@ const HeaderContainer = Component.extend({
   },
 
   actions: {
-
     debouncedSearchForTerm(term, event) {
       if (event.key === 'Enter') {
         const { searchScrollIndex, searchMatchesCount } = this.getProperties('searchScrollIndex', 'searchMatchesCount');
@@ -153,7 +152,6 @@ const HeaderContainer = Component.extend({
         debounce(this, 'searchForTerm', 500);
       }
     }
-
   }
 });
 

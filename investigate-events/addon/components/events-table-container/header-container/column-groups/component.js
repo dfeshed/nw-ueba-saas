@@ -1,15 +1,15 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
 import { createColumnGroup,
   updateColumnGroup,
   deleteColumnGroup
 } from 'investigate-events/actions/column-group';
+import { selectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { inject as service } from '@ember/service';
 import {
-  COLUMN_GROUPS_LIST_LOCATION as listLocation,
+  COLUMN_GROUPS_STATE_LOCATION as stateLocation,
   COLUMN_GROUPS_LIST_NAME as listName
 } from 'investigate-events/constants/columnGroups';
 
@@ -21,7 +21,7 @@ const dispatchToActions = {
 };
 
 const stateToComputed = (state) => ({
-  selectedColumnGroup: getSelectedColumnGroup(state),
+  selectedColumnGroupId: selectedColumnGroup(state),
   columnGroups: state.investigate.columnGroup.columnGroups
 });
 
@@ -29,7 +29,7 @@ const ColumnGroups = Component.extend({
   classNames: ['rsa-investigate-events-table__header__columnGroups'],
   eventBus: service(),
   listName,
-  listLocation,
+  stateLocation,
 
   @computed()
   helpId() {

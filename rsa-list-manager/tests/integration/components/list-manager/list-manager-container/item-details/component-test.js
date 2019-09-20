@@ -29,12 +29,12 @@ module('Integration | Component | item details', function(hooks) {
       .listName('Foos')
       .helpId(helpId1)
       .build();
-    this.set('listLocation', listLocation1);
+    this.set('stateLocation', listLocation1);
     this.set('itemSelection', () => {});
     this.set('item', item);
 
     await render(hbs`{{list-manager/list-manager-container/item-details
-      listLocation=listLocation
+      stateLocation=stateLocation
       item=item
       itemSelection=itemSelection
     }}`);
