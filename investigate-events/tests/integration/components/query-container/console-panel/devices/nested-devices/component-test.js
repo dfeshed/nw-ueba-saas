@@ -73,30 +73,45 @@ module('Integration | Component | nested-devices', function(hooks) {
   });
 
   test('renders the correct dom when isSlowest', async function(assert) {
-    this.set('isSlowest', true);
+    this.set('slowestInQuery', 'foo');
     await render(hbs`
       <ul class="device-hierarchy">
-        {{query-container/console-panel/devices/nested-devices device=device isExpanded=isExpanded height=height isSlowest=isSlowest}}
+        {{query-container/console-panel/devices/nested-devices
+          device=device
+          isExpanded=isExpanded
+          height=height
+          slowestInQuery=slowestInQuery
+        }}
       </ul>
     `);
     assert.ok(find('.nested-devices .one-line-summary .slowest'));
   });
 
   test('renders the correct dom when warning', async function(assert) {
-    this.set('warning', true);
+    this.set('warnings', [{ serviceId: 'foo' }]);
     await render(hbs`
       <ul class="device-hierarchy">
-        {{query-container/console-panel/devices/nested-devices device=device isExpanded=isExpanded height=height warning=warning}}
+        {{query-container/console-panel/devices/nested-devices
+          device=device
+          isExpanded=isExpanded
+          height=height
+          warnings=warnings
+        }}
       </ul>
     `);
     assert.ok(find('.nested-devices .one-line-summary .warning'));
   });
 
   test('renders the correct dom when inOfflinePath', async function(assert) {
-    this.set('inOfflinePath', true);
+    this.set('offlineServicesPath', 'bar');
     await render(hbs`
       <ul class="device-hierarchy">
-        {{query-container/console-panel/devices/nested-devices device=device isExpanded=isExpanded height=height inOfflinePath=inOfflinePath}}
+        {{query-container/console-panel/devices/nested-devices
+          device=device
+          isExpanded=isExpanded
+          height=height
+          offlineServicesPath=offlineServicesPath
+        }}
       </ul>
     `);
     assert.ok(find('.nested-devices .one-line-summary .offline'));
@@ -124,30 +139,43 @@ module('Integration | Component | nested-devices', function(hooks) {
   });
 
   test('renders the correct dom when no children and inOfflinePath', async function(assert) {
-    this.set('inOfflinePath', true);
+    this.set('offlineServicesPath', 'foo');
     await render(hbs`
       <ul class="device-hierarchy">
-        {{query-container/console-panel/devices/nested-devices device=noChildren height=height inOfflinePath=inOfflinePath}}
+        {{query-container/console-panel/devices/nested-devices
+          device=noChildren
+          height=height
+          offlineServicesPath=offlineServicesPath
+        }}
       </ul>
     `);
     assert.ok(find('.nested-devices .one-line-summary .circle.empty.offline'));
   });
 
   test('renders the correct dom when no children and inWarningPath', async function(assert) {
-    this.set('inWarningPath', true);
+    this.set('warningsPath', 'foobar');
     await render(hbs`
       <ul class="device-hierarchy">
-        {{query-container/console-panel/devices/nested-devices device=noChildren height=height inWarningPath=inWarningPath}}
+        {{query-container/console-panel/devices/nested-devices
+          device=noChildren
+          height=height
+          warningsPath=warningsPath
+        }}
       </ul>
     `);
     assert.ok(find('.nested-devices .one-line-summary .circle.empty.warning'));
   });
 
   test('renders the correct dom when with children and inWarningPath', async function(assert) {
-    this.set('inWarningPath', true);
+    this.set('warningsPath', 'foobar');
     await render(hbs`
       <ul class="device-hierarchy">
-        {{query-container/console-panel/devices/nested-devices device=device isExpanded=isExpanded height=height inWarningPath=inWarningPath}}
+        {{query-container/console-panel/devices/nested-devices
+          device=device
+          isExpanded=isExpanded
+          height=height
+          warningsPath=warningsPath
+        }}
       </ul>
     `);
     assert.ok(find('.nested-devices .one-line-summary .circle.populated.open.warning'));
@@ -164,10 +192,15 @@ module('Integration | Component | nested-devices', function(hooks) {
   });
 
   test('renders the correct dom when isExpanded, with children and inOfflinePath', async function(assert) {
-    this.set('inOfflinePath', true);
+    this.set('offlineServicesPath', 'foobar');
     await render(hbs`
       <ul class="device-hierarchy">
-        {{query-container/console-panel/devices/nested-devices device=device isExpanded=isExpanded height=height inOfflinePath=inOfflinePath}}
+        {{query-container/console-panel/devices/nested-devices
+          device=device
+          isExpanded=isExpanded
+          height=height
+          offlineServicesPath=offlineServicesPath
+        }}
       </ul>
     `);
     assert.ok(find('.nested-devices .one-line-summary .circle.populated.open.offline'));
@@ -183,20 +216,30 @@ module('Integration | Component | nested-devices', function(hooks) {
   });
 
   test('renders the correct dom when closed with children and inWarningPath', async function(assert) {
-    this.set('inWarningPath', true);
+    this.set('warningsPath', 'foobar');
     await render(hbs`
       <ul class="device-hierarchy">
-        {{query-container/console-panel/devices/nested-devices device=device isExpanded=false height=height inWarningPath=inWarningPath}}
+        {{query-container/console-panel/devices/nested-devices
+          device=device
+          isExpanded=false
+          height=height
+          warningsPath=warningsPath
+        }}
       </ul>
     `);
     assert.ok(find('.nested-devices .one-line-summary .circle.populated.closed.warning'));
   });
 
   test('renders the correct dom when closed with children and inOfflinePath', async function(assert) {
-    this.set('inOfflinePath', true);
+    this.set('offlineServicesPath', 'foobar');
     await render(hbs`
       <ul class="device-hierarchy">
-        {{query-container/console-panel/devices/nested-devices device=device isExpanded=false height=height inOfflinePath=inOfflinePath}}
+        {{query-container/console-panel/devices/nested-devices
+          device=device
+          isExpanded=false
+          height=height
+          offlineServicesPath=offlineServicesPath
+        }}
       </ul>
     `);
     assert.ok(find('.nested-devices .one-line-summary .circle.populated.closed.offline'));
