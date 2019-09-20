@@ -341,7 +341,7 @@ export const policyWarningMessages = createSelector(
     const warnings = [];
     const i18n = lookup('service:i18n');
     // warning only for filePolicy settings and when there are multiple sources
-    if (policyType === 'filePolicy' && sources.length > 1) {
+    if (policyType === 'filePolicy' && sources?.length > 1) {
       // search for duplicate properties(name and fileType) in sources array
       for (let s = 0; s < sources.length; s++) {
         for (let i = s + 1; i < sources.length; i++) {
