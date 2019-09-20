@@ -59,6 +59,7 @@
     "ember-dependency-lookup": "2.0.0",
     "ember-engines": "0.8.2",
     "ember-exam": "1.0.0",
+    "ember-load": "0.0.17",
     "ember-load-initializers": "2.0.0",
     "ember-moment": "7.8.1",
     "ember-redux": "4.0.3",

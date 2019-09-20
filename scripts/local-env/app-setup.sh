@@ -13,11 +13,6 @@ function prepareApp {
     # https://blogs.windows.com/buildingapps/2016/12/02/symlinks-windows-10/
     info "Ensure you are running on elevated privileges, else the next command will fail!"
     cmd //c 'mklink /D node_modules ..\node_modules'
-    # To improve build time on windows, this optimizes windows defender and search index
-
-    # See issue for reason for commenting out
-    # https://github.rsa.lab.emc.com/asoc/sa-ui/pull/5109#issuecomment-71004
-    # ember-cli-windows
   fi
 
   success "$1 is ready to go!"

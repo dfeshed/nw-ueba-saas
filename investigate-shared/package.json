@@ -40,6 +40,7 @@
     "ember-cli-babel": "7.9.0",
     "ember-cli-htmlbars": "^2.0.1",
     "ember-cli-seamless-immutable-shim": "1.0.0",
+    "ember-click-outside": "1.0.4",
     "ember-dependency-lookup": "2.0.0",
     "ember-lodash-shim": "4.0.0",
     "ember-math-helpers": "2.7.1",

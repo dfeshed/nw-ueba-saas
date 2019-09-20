@@ -39,6 +39,7 @@
     "ember-cli-babel": "7.9.0",
     "ember-cli-htmlbars": "^2.0.1",
     "ember-cli-seamless-immutable-shim": "1.0.0",
+    "ember-click-outside": "1.0.4",
     "ember-moment": "7.8.1",
     "ember-redux": "4.0.3",
     "flexi": "2.0.1",
