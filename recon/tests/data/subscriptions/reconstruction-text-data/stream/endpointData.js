@@ -8,7 +8,7 @@ export default [
     "firstPacketId": 1,
     "firstPacketTime": 1485792552870,
     "packetCount": 1,
-    "side": 1,
+    "side": 'Client',
     "text": "param.dst=SearchProtocolHost.exe GlobalUsGthrFltPipeMssGthrPipe376_ GlobalUsGthrCtrlFltPipeMssGthrPipe376 1 -2147483646 SoftwareMicrosoftWindows Search Mozilla/4.0 (compatible; MSIE 6.0; Windows NT; MS Search 4.0 Robot) C:ProgramDataMicrosoftSearchDataTempusgthrsvc DownLevelDaemon"
   },
   {
@@ -19,7 +19,7 @@ export default [
     "firstPacketId": 1,
     "firstPacketTime": 1485792552870,
     "packetCount": 1,
-    "side": 1,
+    "side": 'Client',
     "text": "param.src=SearchProtocolHost.exe GlobalUsGthrFltPipeMssGthrPipe376_ GlobalUsGthrCtrlFltPipeMssGthrPipe376 1 -2147483646 SoftwareMicrosoftWindows Search Mozilla/4.0 (compatible; MSIE 6.0; Windows NT; MS Search 4.0 Robot) C:ProgramDataMicrosoftSearchDataTempusgthrsvc DownLevelDaemon"
   }
 ]
