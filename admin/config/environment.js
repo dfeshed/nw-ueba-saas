@@ -22,14 +22,8 @@ module.exports = function(environment/* , appConfig */) {
       // when it is created
       readyDelay: 0 // 1500,
     },
-    moment: {
-      includeLocales: ['en', 'ja'],
-      includeTimezone: 'subset'
-    },
     i18n: {
       defaultLocale: 'en'
-    },
-    APP: {
     }
   };
 

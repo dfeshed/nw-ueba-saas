@@ -52,10 +52,6 @@ module.exports = function(environment) {
       // Here you can pass flags/options to your application instance
       // when it is created
     },
-    moment: {
-      includeLocales: ['en', 'ja'],
-      includeTimezone: 'subset'
-    },
     i18n: {
       defaultLocale: 'en'
     },
