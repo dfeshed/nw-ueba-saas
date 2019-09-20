@@ -68,6 +68,17 @@ const hostDetails = reduxActions.handleActions({
     return handle(state, action, {
       success: (s) => s.set('hostOverview', action.payload.data.items[0])
     });
+  },
+
+  [ACTION_TYPES.UPDATE_EXCLUSION_LIST]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        const { data } = action.payload.request;
+        const { exclusionList = [] } = data;
+        const excludedIps = exclusionList.map((item) => item.ip);
+        return s.setIn(['hostOverview', 'agentStatus', 'isolationStatus'], { isolated: true, ...data, excludedIps });
+      }
+    });
   }
 
 }, initialState);

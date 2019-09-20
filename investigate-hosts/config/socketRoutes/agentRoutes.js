@@ -44,6 +44,14 @@ module.exports = function(environment) {
       isolateHost: {
         subscriptionDestination: '/user/queue/endpoint/command/start-isolation',
         requestDestination: '/ws/endpoint/command/start-isolation'
+      },
+      stopIsolation: {
+        subscriptionDestination: '/user/queue/endpoint/command/stop-isolation',
+        requestDestination: '/ws/endpoint/command/stop-isolation'
+      },
+      editExclusionList: {
+        subscriptionDestination: '/user/queue/endpoint/command/update-isolation-exclusionList',
+        requestDestination: '/ws/endpoint/command/update-isolation-exclusionList'
       }
     }
   };

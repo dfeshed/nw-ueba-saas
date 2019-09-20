@@ -115,3 +115,28 @@ test('FETCH_HOST_OVERVIEW', function(assert) {
   const endState = reducer(previous, newAction);
   assert.deepEqual(endState.hostOverview, { id: '123' });
 });
+
+test('The UPDATE_EXCLUSION_LIST sets the updated isolation information', function(assert) {
+  const previous = Immutable.from({
+    endpoint: {
+      overview: {
+        hostOverview: {
+          agentStatus: {
+            isolationStatus: {
+              isolated: true,
+              comment: 'Test comment',
+              excludedIps: ['1.2.3.4', '3ffe:1900:4545:3:200:f8ff:fe21:67cf']
+            }
+          }
+        }
+      }
+    }
+  });
+  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.UPDATE_EXCLUSION_LIST,
+    payload: { request: { data: { comment: 'updated comment', exclusionList: [{ ip: '1.2.3.8', ipv4: true }] } } }
+  });
+  const newEndState = reducer(previous, newAction);
+  assert.deepEqual(newEndState.hostOverview.agentStatus.isolationStatus.excludedIps, ['1.2.3.8']);
+  assert.equal(newEndState.hostOverview.agentStatus.isolationStatus.comment, 'updated comment', 'comment has been updated');
+});

@@ -324,7 +324,9 @@ module('Integration | Component | host detail more-actions', function(hooks) {
 
   test('test for Release isolation modal', async function(assert) {
     const isolationStatus = {
-      isolated: true
+      isolated: true,
+      comment: 'Test comment',
+      excludedIps: []
     };
     assert.expect(3);
     new ReduxDataHelper(setState)
@@ -355,7 +357,9 @@ module('Integration | Component | host detail more-actions', function(hooks) {
 
   test('test for Edit isolation modal', async function(assert) {
     const isolationStatus = {
-      isolated: true
+      isolated: true,
+      comment: 'Test comment',
+      excludedIps: []
     };
     assert.expect(4);
     new ReduxDataHelper(setState)

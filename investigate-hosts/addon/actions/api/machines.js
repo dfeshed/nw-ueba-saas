@@ -334,6 +334,47 @@ const isolateHostRequest = (data, serverId) => {
   });
 };
 
+/**
+ * Executes a websocket call to edit exclusion list added for isolate host
+ *
+ * @method editExclusionListRequest
+ * @param data {Object} of agentId, exclusion list and comment
+ * @param serverId {String} post to a specific server
+ * @public
+ * @returns {Promise}
+ */
+
+const editExclusionListRequest = (data, serverId) => {
+  const request = lookup('service:request');
+  const streamOptions = serverId ? { socketUrlPostfix: serverId, requiredSocketUrl: 'endpoint/socket' } : null;
+  return request.promiseRequest({
+    method: 'editExclusionList',
+    modelName: 'agent',
+    query: { data },
+    streamOptions
+  });
+};
+
+/**
+ * Executes a websocket call to cancel the request scan for selected hosts
+ *
+ * @method stopIsolationRequest
+ * @param agentId and comment added
+ * @param serverId {String} post to a specific server
+ * @public
+ * @returns {Promise}
+ */
+const stopIsolationRequest = (data, serverId) => {
+  const request = lookup('service:request');
+  const streamOptions = serverId ? { socketUrlPostfix: serverId, requiredSocketUrl: 'endpoint/socket' } : null;
+  return request.promiseRequest({
+    method: 'stopIsolation',
+    modelName: 'agent',
+    query: { data },
+    streamOptions
+  });
+};
+
 export default {
   getAllServices,
   getAllFilters,
@@ -350,5 +391,7 @@ export default {
   downloadMFT,
   getMFTSubfolders,
   isolateHostRequest,
-  downloadSystemDump
+  downloadSystemDump,
+  editExclusionListRequest,
+  stopIsolationRequest
 };

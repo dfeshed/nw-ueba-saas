@@ -391,6 +391,34 @@ const isolateHostRequest = (data, serverId, callbacks = callbacksDefault) => {
       }
     });
 };
+
+const editExclusionListRequest = (data, serverId, callbacks = callbacksDefault) => {
+  const { exclusionList = [] } = data;
+  if (exclusionList.length) {
+
+    const formattedExclusionList = _processExclusionListIps(exclusionList);
+    data.exclusionList = [...formattedExclusionList];
+
+  }
+
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.UPDATE_EXCLUSION_LIST,
+      promise: Machines.editExclusionListRequest(data, serverId),
+      meta: {
+        onSuccess: () => {
+          callbacks.onSuccess();
+        },
+        onFailure: ({ meta: message }) => {
+          if (message) {
+            callbacks.onFailure(message.message);
+          }
+        }
+      }
+    });
+  };
+};
+
 const downloadSystemDump = (agentId, serverId, callbacks = callbacksDefault) => {
   Machines.downloadSystemDump(agentId, serverId)
     .then(() => {
@@ -423,5 +451,6 @@ export {
   downloadMFT,
   saveColumnConfig,
   isolateHostRequest,
+  editExclusionListRequest,
   downloadSystemDump
 };

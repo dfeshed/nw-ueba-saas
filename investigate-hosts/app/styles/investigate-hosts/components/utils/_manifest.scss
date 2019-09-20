@@ -5,7 +5,7 @@
   .comment-box-label {
     margin: rsa-whitespace() 0;
   }
-  .isolation-modal-content{
+  .edit-modal-content, .isolation-modal-content{
     padding: rsa-whitespace(more) rsa-whitespace();
     overflow: auto;
     max-height: 500px;
@@ -28,6 +28,13 @@
       }
     }
   }
+  .edit-modal-content {
+    .exclusion-list-wrapper {
+      .comment-box-label {
+        margin: 0 0 rsa-whitespace() 0;
+      }
+    }
+  }
 }
 
 .isolation-pill {
@@ -41,9 +48,22 @@
   line-height: 1rem;
   font-size: 0.65rem;
 }
-.machine-name-holder{
-  .isolation-pill{
-    float: right;
-    margin-top: 4px;
+
+.machine-name-holder {
+  overflow: unset;
+  .host-name {
+    display: inline-block;
+    max-width: 64%;
+    line-height: 13px;
+    vertical-align: bottom;
+    a {
+      display: inline-block;
+      height: 17px;
+      line-height: 17px;
+    }
+  }
+  .isolation-pill {
+    height: 1rem;
+    vertical-align: text-bottom;
   }
 }
