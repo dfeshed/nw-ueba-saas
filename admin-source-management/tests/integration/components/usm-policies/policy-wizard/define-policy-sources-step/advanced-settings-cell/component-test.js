@@ -180,6 +180,49 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(findAll('.source-name input')[0].value, expectedValue, `updated sourceName is ${expectedValue}`);
   });
 
+  test('source name is restricted to 256 characters', async function(assert) {
+    const invalidSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: 'new-source', exclusionFilters: ['abc', 'def'], paths: ['path1', 'path2'] } ];
+    const initialState = new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(invalidSource)
+      .build();
+
+    this.setProperties({
+      column,
+      encodingOptions,
+      itemId
+    });
+
+    await render(hbs`
+      {{usm-policies/policy-wizard/define-policy-sources-step/advanced-settings-cell
+        column=column
+        encodingOptions=encodingOptions
+        itemId=itemId
+      }}
+    `);
+
+    const field = 'sourceName';
+    const initialValue = fileSourceById(initialState, itemId)[field];
+    // initial
+    assert.equal(findAll('.source-name').length, 1);
+    assert.equal(findAll('.source-name input')[0].value, initialValue, `initial sourceName is ${initialValue}`);
+
+    let longSourceName = '';
+    for (let index = 0; index < 10; index++) {
+      longSourceName += 'the-name-is-greater-than-256-';
+    }
+    // updated
+    const expectedValue = longSourceName;
+    const [inputEl] = findAll('.source-name input');
+    const onChange = waitForReduxStateChange(redux, `usm.policyWizard.policy.sources.${itemId}.${field}`);
+    await fillIn(inputEl, expectedValue);
+    await triggerEvent(inputEl, 'blur');
+    await onChange;
+    const isErrorClass = findAll('.source-name .is-error');
+    assert.equal(isErrorClass.length, 1, 'source-name cannot be more than 256 characters');
+  });
+
   test('advanced accordion is collapsed when sourceName & fileEncoding have default settings', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz('filePolicy')
