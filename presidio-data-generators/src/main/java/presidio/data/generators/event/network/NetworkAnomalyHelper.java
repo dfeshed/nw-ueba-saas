@@ -57,8 +57,21 @@ public class NetworkAnomalyHelper {
         eventGen.setJa3Generator(new FixedValueGenerator<>(generatorKeyString.apply(key)));
         return this;
     }
+    public NetworkAnomalyHelper nextSslSubject(){
+        String key = valueKey.get();
+        stateHolder.putIfAbsent(key,0L);
+        stateHolder.computeIfPresent(key,(k,v) -> v+1);
+        eventGen.setSslSubjectGenerator(new FixedValueGenerator<>(generatorKeyString.apply(key)));
+        return this;
+    }
 
-
+    public NetworkAnomalyHelper nextJa3(){
+        String key = valueKey.get();
+        stateHolder.putIfAbsent(key,0L);
+        stateHolder.computeIfPresent(key,(k,v) -> v+1);
+        eventGen.setJa3Generator(new FixedValueGenerator<>(generatorKeyString.apply(key)));
+        return this;
+    }
 
 
     /** constant String values - extracted from calling method name */
