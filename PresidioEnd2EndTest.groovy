@@ -9,6 +9,7 @@ pipeline {
         booleanParam(name: 'DATA_INJECTION', defaultValue: true, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
+        booleanParam(name: 'LIVE_STATE_ON', defaultValue: true, description: ' Leave the scheduler run at the end of the test.\\rThe UEBA will continue to collect data at the end of the test (on Live State)')
     }
     //tools { jdk env.JDK }
     agent { label env.NODE }
@@ -75,6 +76,7 @@ pipeline {
             }
             steps {
                 runSuiteXmlFile('e2e/E2E_Tests.xml')
+                startAirflowScheduler()
             }
         }
     }
@@ -177,7 +179,12 @@ def runSuiteXmlFile(String suiteXmlFile) {
         sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
     }
 }
+def startAirflowScheduler(){
+    if (params.LIVE_STATE_ON) {
+        sh "sudo systemctl start airflow-scheduler"
+    }
 
+}
 def copyScripts() {
     sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/env_properties_manager.sh /home/presidio/"
     sh "sudo bash /home/presidio/env_properties_manager.sh --create"
