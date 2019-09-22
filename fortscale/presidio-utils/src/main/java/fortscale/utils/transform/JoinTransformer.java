@@ -1,10 +1,7 @@
 package fortscale.utils.transform;
 
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import fortscale.utils.json.IJsonValueExtractor;
 import fortscale.utils.json.JsonValueExtractorFactory;
 import fortscale.utils.json.JsonValueExtractorJoiner;
@@ -18,11 +15,8 @@ import java.util.List;
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonTypeName("join")
 public class JoinTransformer extends AbstractJsonObjectTransformer {
-
-    public static final String TYPE = "join";
-
-
 
     private String destinationKey;
     private List<Object> values;

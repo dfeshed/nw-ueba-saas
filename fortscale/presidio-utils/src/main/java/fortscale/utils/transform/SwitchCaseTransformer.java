@@ -1,10 +1,7 @@
 package fortscale.utils.transform;
 
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import fortscale.utils.json.IJsonValueExtractor;
 import fortscale.utils.json.JsonValueExtractorFactory;
 import org.apache.commons.lang3.Validate;
@@ -17,8 +14,8 @@ import java.util.regex.Pattern;
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonTypeName("switch_case")
 public class SwitchCaseTransformer extends AbstractJsonObjectTransformer{
-    public static final String TYPE = "switch_case";
     private static final boolean IS_REMOVE_SOURCE_KEY_DEFAULT = false;
 
 
