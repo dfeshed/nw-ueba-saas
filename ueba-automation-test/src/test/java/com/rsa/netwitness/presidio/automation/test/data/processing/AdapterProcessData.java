@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
@@ -20,6 +19,9 @@ import org.testng.annotations.Test;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+
+import static com.rsa.netwitness.presidio.automation.config.AutomationConf.CORE_SCHEMAS_TO_PROCESS;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
@@ -58,52 +60,60 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
         endDate = Instant.now().truncatedTo(ChronoUnit.DAYS);
         startDate = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
         LOGGER.info("startDate=" + startDate + " endDate=" + endDate);
+        LOGGER.info("CORE_SCHEMAS_TO_PROCESS = ".concat(String.join(", ", CORE_SCHEMAS_TO_PROCESS)));
     }
 
     @Test
     public void adapterFileTest() {
-        adapterTestManager.process(startDate, endDate, "hourly", "FILE");
-
-        long actualEventsCount = fileRepository.count();
-        Assert.assertTrue(actualEventsCount > 0, "No data in input_file_raw_events");
+        if (CORE_SCHEMAS_TO_PROCESS.contains("FILE")) {
+            adapterTestManager.process(startDate, endDate, "hourly", "FILE");
+            long actualEventsCount = fileRepository.count();
+            assertThat(actualEventsCount).as("input_file_raw_events count").isGreaterThan(0);
+        }
     }
 
     @Test
     public void adapterAuthenticationTest() {
-        adapterTestManager.process(startDate, endDate, "hourly", "AUTHENTICATION");
-
-        long actualEventsCount = authenticationRepository.count();
-        Assert.assertTrue(actualEventsCount > 0, "No data in input_authentication_raw_events");
+        if (CORE_SCHEMAS_TO_PROCESS.contains("AUTHENTICATION")) {
+            adapterTestManager.process(startDate, endDate, "hourly", "AUTHENTICATION");
+            long actualEventsCount = authenticationRepository.count();
+            assertThat(actualEventsCount).as("input_authentication_raw_events count").isGreaterThan(0);
+        }
     }
 
     @Test
     public void adapterActiveDirectoryTest() {
-        adapterTestManager.process(startDate, endDate, "hourly", "ACTIVE_DIRECTORY");
-
-        long actualEventsCount = activeDirectoryRepository.count();
-        Assert.assertTrue(actualEventsCount > 0, "No data in input_active_directory_raw_events");
+        if (CORE_SCHEMAS_TO_PROCESS.contains("ACTIVE_DIRECTORY")) {
+            adapterTestManager.process(startDate, endDate, "hourly", "ACTIVE_DIRECTORY");
+            long actualEventsCount = activeDirectoryRepository.count();
+            assertThat(actualEventsCount).as("input_active_directory_raw_events count").isGreaterThan(0);
+        }
     }
 
     @Test
     public void adapterProcessTest() {
-        adapterTestManager.process(startDate, endDate, "hourly", "PROCESS");
-
-        long actualEventsCount = processRepository.count();
-        Assert.assertTrue(actualEventsCount > 0, "No data in input_process_raw_events");
+        if (CORE_SCHEMAS_TO_PROCESS.contains("PROCESS")) {
+            adapterTestManager.process(startDate, endDate, "hourly", "PROCESS");
+            long actualEventsCount = processRepository.count();
+            assertThat(actualEventsCount).as("input_process_raw_events count").isGreaterThan(0);
+        }
     }
 
     @Test
     public void adapterRegistryTest() {
-        adapterTestManager.process(startDate, endDate, "hourly", "REGISTRY");
-
-        long actualEventsCount = registryRepository.count();
-        Assert.assertTrue(actualEventsCount > 0, "No data in input_registry_raw_events");
+        if (CORE_SCHEMAS_TO_PROCESS.contains("REGISTRY")) {
+            adapterTestManager.process(startDate, endDate, "hourly", "REGISTRY");
+            long actualEventsCount = registryRepository.count();
+            assertThat(actualEventsCount).as("input_registry_raw_events count").isGreaterThan(0);
+        }
     }
 
     @Test
     public void adapterTlsTest() {
-        adapterTestManager.process(startDate, endDate, "hourly", "TLS");
-        long actualEventsCount = tlsRepository.count();
-        Assert.assertTrue(actualEventsCount > 0, "No data in input_tls_raw_events");
+        if (CORE_SCHEMAS_TO_PROCESS.contains("TLS")) {
+            adapterTestManager.process(startDate, endDate, "hourly", "TLS");
+            long actualEventsCount = tlsRepository.count();
+            assertThat(actualEventsCount).as("input_tls_raw_events count").isGreaterThan(0);
+        }
     }
 }

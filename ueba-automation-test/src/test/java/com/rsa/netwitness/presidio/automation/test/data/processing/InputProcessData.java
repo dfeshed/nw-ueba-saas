@@ -2,8 +2,8 @@ package com.rsa.netwitness.presidio.automation.test.data.processing;
 
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
-import com.rsa.netwitness.presidio.automation.utils.common.TitlesPrinter;
 import com.rsa.netwitness.presidio.automation.test_managers.InputTestManager;
+import com.rsa.netwitness.presidio.automation.utils.common.TitlesPrinter;
 import com.rsa.netwitness.presidio.automation.utils.input.config.InputTestManagerConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
@@ -19,6 +18,9 @@ import org.testng.annotations.Test;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+
+import static com.rsa.netwitness.presidio.automation.config.AutomationConf.CORE_SCHEMAS_TO_PROCESS;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /***
  * This class runs as intermediate step in core components test. Adapter_Process_Data suite should run before.
@@ -78,58 +80,85 @@ public class InputProcessData extends AbstractTestNGSpringContextTests {
         endDate     = Instant.now().truncatedTo(ChronoUnit.DAYS);
         startDate   = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
         LOGGER.info("startDate=" + startDate + " endDate=" + endDate);
+        LOGGER.info("CORE_SCHEMAS_TO_PROCESS = ".concat(String.join(", ", CORE_SCHEMAS_TO_PROCESS)));
     }
 
     @Test
     public void inputFileTest(){
-        clearCollections("FILE");
-        inputTestManager.process(startDate, endDate, "FILE");
-        long rawFileEventsCount = fileInputRawRepository.count();
-        long enrichedFileEventsCount = fileEnrichStoredDataRepository.count();
-        Assert.assertEquals(enrichedFileEventsCount, rawFileEventsCount,  "Events count is wrong in enriched_file");
+        if (CORE_SCHEMAS_TO_PROCESS.contains("FILE")) {
+            clearCollections("FILE");
+            inputTestManager.process(startDate, endDate, "FILE");
+            long rawFileEventsCount = fileInputRawRepository.count();
+            long enrichedFileEventsCount = fileEnrichStoredDataRepository.count();
+            assertThat(enrichedFileEventsCount)
+                    .as("Events count mismatch between input_file and enriched_file")
+                    .isEqualTo(rawFileEventsCount);
+        }
     }
 
     @Test
     public void inputAuthenticationTest(){
-        clearCollections("AUTHENTICATION");
-        inputTestManager.process(startDate, endDate, "AUTHENTICATION");
-        long rawAuthenticationEventsCount = authenticationInputRawRepository.count();
-        long enrichedAuthenticationEventsCount = authenticationEnrichStoredDataRepository.count();
-        Assert.assertEquals(enrichedAuthenticationEventsCount, rawAuthenticationEventsCount, "Events count is wrong in enriched_authentication");
+        if (CORE_SCHEMAS_TO_PROCESS.contains("AUTHENTICATION")) {
+            clearCollections("AUTHENTICATION");
+            inputTestManager.process(startDate, endDate, "AUTHENTICATION");
+            long rawAuthenticationEventsCount = authenticationInputRawRepository.count();
+            long enrichedAuthenticationEventsCount = authenticationEnrichStoredDataRepository.count();
+            assertThat(enrichedAuthenticationEventsCount)
+                    .as("Events count mismatch between input_authentication and enriched_authentication")
+                    .isEqualTo(rawAuthenticationEventsCount);
+        }
     }
 
     @Test
     public void inputActiveDirectoryTest(){
-        clearCollections("ACTIVE_DIRECTORY");
-        inputTestManager.process(startDate, endDate, "ACTIVE_DIRECTORY");
-        long rawActiveDirectoryEventsCount = activeDirectoryInputRawRepository.count();
-        long enrichedActiveDirectoryEventsCount = activeDirectoryEnrichStoredDataRepository.count();
-        Assert.assertEquals(enrichedActiveDirectoryEventsCount, rawActiveDirectoryEventsCount, "Events count is wrong in enriched_active_directory");
-    }
-    @Test
-    public void inputProcessTest(){
-        clearCollections("PROCESS");
-        inputTestManager.process(startDate, endDate, "PROCESS");
-        long rawProcessEventsCount = processInputRawRepository.count();
-        long enrichedProcessEventsCount = processEnrichStoredDataRepository.count();
-        Assert.assertEquals(enrichedProcessEventsCount, rawProcessEventsCount, "Events count is wrong in enriched_process");
-    }
-    @Test
-    public void inputRegistryTest(){
-        clearCollections("REGISTRY");
-        inputTestManager.process(startDate, endDate, "REGISTRY");
-        long rawRegistryEventsCount = registryInputRawRepository.count();
-        long enrichedRegistryEventsCount = registryEnrichStoredDataRepository.count();
-        Assert.assertEquals(enrichedRegistryEventsCount, rawRegistryEventsCount, "Events count is wrong in enriched_registry");
+        if (CORE_SCHEMAS_TO_PROCESS.contains("ACTIVE_DIRECTORY")) {
+            clearCollections("ACTIVE_DIRECTORY");
+            inputTestManager.process(startDate, endDate, "ACTIVE_DIRECTORY");
+            long rawActiveDirectoryEventsCount = activeDirectoryInputRawRepository.count();
+            long enrichedActiveDirectoryEventsCount = activeDirectoryEnrichStoredDataRepository.count();
+            assertThat(enrichedActiveDirectoryEventsCount)
+                    .as("Events count mismatch between input_active_directory and enriched_active_directory")
+                    .isEqualTo(rawActiveDirectoryEventsCount);
+        }
     }
 
     @Test
-    public void inputTlsTest(){
-        // clearCollections("TLS");
-        inputTestManager.process(startDate, endDate, "TLS");
-        long rawRegistryEventsCount = tlsInputRawRepository.count();
-        long enrichedRegistryEventsCount = tlsEnrichStoredDataRepository.count();
-        Assert.assertEquals(enrichedRegistryEventsCount, rawRegistryEventsCount, "Events count is wrong in enriched_tls");
+    public void inputProcessTest() {
+        if (CORE_SCHEMAS_TO_PROCESS.contains("PROCESS")) {
+            clearCollections("PROCESS");
+            inputTestManager.process(startDate, endDate, "PROCESS");
+            long rawProcessEventsCount = processInputRawRepository.count();
+            long enrichedProcessEventsCount = processEnrichStoredDataRepository.count();
+            assertThat(enrichedProcessEventsCount)
+                    .as("Events count mismatch between input_process and enriched_process")
+                    .isEqualTo(rawProcessEventsCount);
+        }
+    }
+
+    @Test
+    public void inputRegistryTest(){
+        if (CORE_SCHEMAS_TO_PROCESS.contains("REGISTRY")) {
+            clearCollections("REGISTRY");
+            inputTestManager.process(startDate, endDate, "REGISTRY");
+            long rawRegistryEventsCount = registryInputRawRepository.count();
+            long enrichedRegistryEventsCount = registryEnrichStoredDataRepository.count();
+            assertThat(enrichedRegistryEventsCount)
+                    .as("Events count mismatch between input_registry and enriched_registry")
+                    .isEqualTo(rawRegistryEventsCount);
+        }
+    }
+
+    @Test
+    public void inputTlsTest() {
+        if (CORE_SCHEMAS_TO_PROCESS.contains("TLS")) {
+            clearCollections("TLS");
+            inputTestManager.process(startDate, endDate, "TLS");
+            long rawTlsEventsCount = tlsInputRawRepository.count();
+            long enrichedTlsEventsCount = tlsEnrichStoredDataRepository.count();
+            assertThat(enrichedTlsEventsCount)
+                    .as("Events count mismatch between input_tls and enriched_tls")
+                    .isEqualTo(rawTlsEventsCount);
+        }
     }
 //    @Test
 //    public void inputIocTest(){

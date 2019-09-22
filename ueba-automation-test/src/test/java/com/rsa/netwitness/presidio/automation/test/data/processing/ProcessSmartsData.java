@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.data.processing;
 
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import com.rsa.netwitness.presidio.automation.test_managers.AdeDataProcessingManager;
 import com.rsa.netwitness.presidio.automation.utils.common.TitlesPrinter;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,6 @@ import java.util.stream.Stream;
 import static com.rsa.netwitness.presidio.automation.common.helpers.DateTimeHelperUtils.truncateAndMinusDays;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.collections.Lists.newArrayList;
 
 
 public class ProcessSmartsData extends AbstractTestNGSpringContextTests {
@@ -28,15 +28,16 @@ public class ProcessSmartsData extends AbstractTestNGSpringContextTests {
     private static TitlesPrinter ART_GEN = new TitlesPrinter();
 
     private AdeDataProcessingManager adeTestManagerPar = new AdeDataProcessingManager();
-    private List<String> SCHEMAS_TO_PROCESS = newArrayList("file", "active_directory", "authentication", "process", "registry", "tls");
-    private List<String> ENTITIES_TO_PROCESS = newArrayList("userId_hourly", "sslSubject_hourly", "ja3_hourly");
-
+    private List<String> SCHEMAS_TO_PROCESS = AutomationConf.CORE_SCHEMAS_TO_PROCESS.stream().map(String::toLowerCase).collect(toList());
+    private List<String> ENTITIES_TO_PROCESS = AutomationConf.CORE_ENTITIES_TO_PROCESS.stream().map(e -> e.concat("_hourly")).collect(toList());
 
     @Parameters({"historical_days_back", "anomaly_day_back"})
     @BeforeClass
     public void prepare(@Optional("10") int historicalDaysBack, @Optional("1") int anomalyDay) throws InterruptedException {
         TitlesPrinter.printTitle(getClass().getSimpleName());
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay);
+        LOGGER.info("SCHEMAS_TO_PROCESS = ".concat(String.join(", ", SCHEMAS_TO_PROCESS)));
+        LOGGER.info("ENTITIES_TO_PROCESS = ".concat(String.join(", ", ENTITIES_TO_PROCESS)));
 
         List<List<? extends Callable<Integer>>> parallelTasksToExecute = Stream.of(
 

@@ -1,10 +1,11 @@
 package com.rsa.netwitness.presidio.automation.test.data.processing;
 
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
-import com.rsa.netwitness.presidio.automation.utils.common.TitlesPrinter;
 import com.rsa.netwitness.presidio.automation.test_managers.OutputDataProcessingManager;
+import com.rsa.netwitness.presidio.automation.utils.common.TitlesPrinter;
 import org.json.JSONException;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -20,7 +21,6 @@ import java.util.stream.Stream;
 import static java.time.Instant.parse;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.collections.Lists.newArrayList;
 import static presidio.data.generators.utils.TimeUtils.calcDaysBack;
 
 
@@ -29,15 +29,16 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
     private static TitlesPrinter ART_GEN = new TitlesPrinter();
 
     private OutputDataProcessingManager dataProcessingHelper = new OutputDataProcessingManager();
-
-    private List<String> SMART_RECORD_CONF_NAMES = newArrayList("userId_hourly", "sslSubject_hourly", "ja3_hourly");
-    private List<String> ENTITIES_TO_PROCESS = newArrayList("userId", "ja3", "sslSubject");
+    private List<String> SMART_RECORD_CONF_NAMES = AutomationConf.CORE_ENTITIES_TO_PROCESS.stream().map(e -> e.concat("_hourly")).collect(toList());
+    private List<String> ENTITIES_TO_PROCESS = AutomationConf.CORE_ENTITIES_TO_PROCESS;
 
     @Parameters("historical_days_back")
     @BeforeClass
     public void beforeClass(@Optional("10") int historicalDaysBack) throws JSONException, InterruptedException {
         TitlesPrinter.printTitle(getClass().getSimpleName());
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack);
+        LOGGER.info("SMART_RECORD_CONF_NAMES = ".concat(String.join(", ", SMART_RECORD_CONF_NAMES)));
+        LOGGER.info("ENTITIES_TO_PROCESS = ".concat(String.join(", ", ENTITIES_TO_PROCESS)));
 
         List<List<? extends Callable<Integer>>> parallelTasksToExecute = Stream.of(
 

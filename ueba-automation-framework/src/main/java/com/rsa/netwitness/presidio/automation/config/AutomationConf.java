@@ -1,5 +1,7 @@
 package com.rsa.netwitness.presidio.automation.config;
 
+import com.google.common.collect.ImmutableList;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
@@ -22,6 +24,13 @@ public class AutomationConf {
     public static final String OUTPUT_REST_PORT = "8882";
 
     public static final String OUTPUT_REST_URL = "http://".concat(UEBA_IP).concat(":").concat(OUTPUT_REST_PORT);
+
+    public static final boolean IF_JENKINS_RUN = System.getenv().containsKey("JENKINS_HOME");
+    public static final ImmutableList<String> CORE_SCHEMAS_TO_PROCESS = ImmutableList.copyOf(
+            System.getProperty("SCHEMAS_TO_PROCESS", "ACTIVE_DIRECTORY,AUTHENTICATION,FILE,PROCESS,REGISTRY,TLS").split("\\\\s*,\\\\s*"));
+
+    public static final ImmutableList<String> CORE_ENTITIES_TO_PROCESS = ImmutableList.copyOf(
+            System.getProperty("ENTITIES_TO_PROCESS", "userId,ja3,sslSubject").split("\\\\s*,\\\\s*"));
 
 
     // Use OUTPUT_REST_URL
