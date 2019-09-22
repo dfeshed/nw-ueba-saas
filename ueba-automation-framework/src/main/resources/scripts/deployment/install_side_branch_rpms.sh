@@ -5,7 +5,7 @@ BUILD_ID=$1
 
 RPMS_DIR=/tmp/presidio_rpms/
 if [ "$( ls -a /tmp/presidio_rpms)" ]; then
-		rm -f $RPMS_DIR*
+		rm -rf $RPMS_DIR*
 else 
 		mkdir $RPMS_DIR
 fi
