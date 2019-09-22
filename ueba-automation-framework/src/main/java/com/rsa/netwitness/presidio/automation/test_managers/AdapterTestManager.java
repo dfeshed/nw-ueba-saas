@@ -106,7 +106,7 @@ public class AdapterTestManager {
 
         printLogIfError(logPath);
         assertThat(adapterProcess.exitCode)
-                .withFailMessage("Error exit code. Log: " + logPath)
+                .as("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
     }
 
