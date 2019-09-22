@@ -1,6 +1,7 @@
 package presidio.data.generators.event.network;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.collect.Lists;
 import presidio.data.domain.Location;
 import presidio.data.domain.event.network.NetworkEvent;
 import presidio.data.generators.FixedValueGenerator;
@@ -17,6 +18,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.testng.Assert.fail;
 import static presidio.data.generators.event.network.NetworkEventsGenerator.*;
 
 public class NetworkAnomalyHelper {
@@ -217,12 +219,23 @@ public class NetworkAnomalyHelper {
 
 
     /** accessory methods */
-    public List<NetworkEvent> generate() throws GeneratorException {
-        return eventGen.generate();
+    public List<NetworkEvent> generate() {
+        try {
+            return eventGen.generate();
+        } catch (GeneratorException e) {
+            e.printStackTrace();
+            fail("Failed to generate events.");
+        }
+        return Lists.newLinkedList();
     }
 
-    public List<NetworkEvent> generateAndAppendTo(List<NetworkEvent> eventsList) throws GeneratorException {
-        eventsList.addAll(eventGen.generate());
+    public List<NetworkEvent> generateAndAppendTo(List<NetworkEvent> eventsList) {
+        try {
+            eventsList.addAll(eventGen.generate());
+        } catch (GeneratorException e) {
+            e.printStackTrace();
+            fail("Failed to generate events.");
+        }
         return eventsList;
     }
 
