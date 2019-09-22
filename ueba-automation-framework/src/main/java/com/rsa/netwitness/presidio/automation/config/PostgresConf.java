@@ -64,6 +64,7 @@ public enum PostgresConf {
         SshResponse result = new SshHelper().uebaHostExec().run(getPasswordCmd);
         assertThat(result.exitCode).as("Exit code").isEqualTo(0);
         assertThat(result.output).hasSize(1);
+        assertThat(result.output.get(0)).hasSize(32);
         return result.output;
     }
 }
