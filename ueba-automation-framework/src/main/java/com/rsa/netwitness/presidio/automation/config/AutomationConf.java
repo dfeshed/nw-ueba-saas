@@ -27,10 +27,10 @@ public class AutomationConf {
 
     public static final boolean IF_JENKINS_RUN = System.getenv().containsKey("JENKINS_HOME");
     public static final ImmutableList<String> CORE_SCHEMAS_TO_PROCESS = ImmutableList.copyOf(
-            System.getProperty("SCHEMAS_TO_PROCESS", "ACTIVE_DIRECTORY,AUTHENTICATION,FILE,PROCESS,REGISTRY,TLS").split("\\s*,\\s*"));
+            System.getenv().getOrDefault("SCHEMAS_TO_PROCESS", "ACTIVE_DIRECTORY,AUTHENTICATION,FILE,PROCESS,REGISTRY,TLS").split("\\s*,\\s*"));
 
     public static final ImmutableList<String> CORE_ENTITIES_TO_PROCESS = ImmutableList.copyOf(
-            System.getProperty("ENTITIES_TO_PROCESS", "userId,ja3,sslSubject").split("\\s*,\\s*"));
+            System.getenv().getOrDefault("ENTITIES_TO_PROCESS", "userId,ja3,sslSubject").split("\\s*,\\s*"));
 
 
     // Use OUTPUT_REST_URL
