@@ -11,10 +11,10 @@ FROM   ((SELECT Min(start_date)                   AS start_time,
         FROM   dag_run
         WHERE  dag_id LIKE ''%ueba_flow''
         GROUP  BY 2,3) AS t1
-        inner join (SELECT Max(start_date)
+        inner join (SELECT Min(start_date)
                            AS end_time,
                            ( Date_trunc(''day'', execution_date -
-                                               interval ''1'' second) )
+                                               interval ''86400'' second) )
                                                AS
                                                           execution_day_2,
                                                           dag_id AS dag_id2
