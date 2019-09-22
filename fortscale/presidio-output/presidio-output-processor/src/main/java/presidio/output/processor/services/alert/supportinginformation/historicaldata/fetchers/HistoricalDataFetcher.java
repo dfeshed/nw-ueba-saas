@@ -59,7 +59,7 @@ public interface HistoricalDataFetcher {
      *         e.g:   Aggregated Feature: numberOfFailedAuthentications, Date: 01/01/2017, histogram {0:1, 2:0, 3:0 ...}
      *                Aggregated Feature: numberOfFailedAuthentications, Date: 01/02/2017, histogram {0:0, 2:1, 3:0 ...}
      */
-    List<DailyHistogram<Integer, Double>> getNewOccurrenceDailyHistogramsForAggregatedFeature(
+    List<DailyHistogram<Integer, Double>> getLastDayHistogramsForAggregatedFeature(
             TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName);
 
     /**

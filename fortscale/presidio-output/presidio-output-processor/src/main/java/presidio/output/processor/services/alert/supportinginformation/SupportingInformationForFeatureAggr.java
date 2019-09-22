@@ -126,7 +126,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     private Map<String, String> getHistoricalDataContexts(List<String> contexts, Indicator indicator){
         return contexts.stream().collect(Collectors.toMap(
                 Function.identity(),
-                field -> indicator.getContexts().get(field),
+                contextFieldName -> indicator.getContexts().get(contextFieldName),
                 (oldValue, newValue) -> oldValue,
                 LinkedHashMap::new));
 

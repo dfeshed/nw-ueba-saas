@@ -155,7 +155,7 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
     }
 
     @Override
-    public List<DailyHistogram<Integer, Double>> getNewOccurrenceDailyHistogramsForAggregatedFeature(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName) {
+    public List<DailyHistogram<Integer, Double>> getLastDayHistogramsForAggregatedFeature(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName) {
         // complete historical data in memory
         List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeaturesInMemory = calculateAccumulatedAggregationFeatures(timeRange, contexts, schema, featureName, Collections.emptyList());
 
@@ -178,18 +178,25 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
     private TreeMap<LocalDate, HashMap<Integer, Double>> calculateMaxAggregationFeatureValues(List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecords) {
 
         TreeMap<LocalDate, HashMap<Integer, Double>> dayToHistogram = new TreeMap<>();
+        TreeMap<Instant, Double> startInstantToValue = new TreeMap<>();
 
         accumulatedAggregationFeatureRecords.forEach(accumulatedRecord -> {
             accumulatedRecord.getAggregatedFeatureValues().entrySet().stream().
                     forEach(entry ->
-                            dayToHistogram.compute(
-                                    accumulatedRecord.getStartInstant().atZone(ZoneOffset.UTC).toLocalDate(),
-                                    (k, v) -> v == null ? new HashMap<Integer, Double>() {{
-                                        put(entry.getKey(), entry.getValue());
-                                    }} : !v.containsKey(entry.getKey()) ? addToMap(v, entry.getKey(), entry.getValue())
-                                            : v.get(entry.getKey()) > entry.getValue() ? v : addToMap(v, entry.getKey(), entry.getValue())
-                            ));
+                            startInstantToValue.compute(
+                                    accumulatedRecord.getStartInstant().plus(Duration.ofHours(entry.getKey())),
+                                    (k, v) -> v == null ? entry.getValue() : Math.max(entry.getValue(), v)));
         });
+
+        startInstantToValue.entrySet().stream().forEach(entry ->
+                dayToHistogram.compute(
+                        TimeService.floorTime(entry.getKey(), FixedDurationStrategy.DAILY.toDuration()).atZone(ZoneOffset.UTC).toLocalDate(),
+                        (k, v) -> v == null ?
+                                new HashMap<Integer, Double>() {{
+                                    put(LocalDateTime.ofInstant(entry.getKey(), ZoneOffset.UTC).getHour(), entry.getValue());
+                                }} : addToMap(v, LocalDateTime.ofInstant(entry.getKey(), ZoneOffset.UTC).getHour(), entry.getValue())
+                )
+        );
 
         return dayToHistogram;
     }

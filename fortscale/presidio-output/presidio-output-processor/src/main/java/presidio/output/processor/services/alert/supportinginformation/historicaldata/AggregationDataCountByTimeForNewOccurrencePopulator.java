@@ -28,7 +28,7 @@ public class AggregationDataCountByTimeForNewOccurrencePopulator implements Aggr
         List<Bucket<String, Double>> buckets = new ArrayList<>();
 
         // fetch daily histograms from memory
-        List<DailyHistogram<Integer, Double>> dailyHistogramsByContext = historicalDataFetcher.getNewOccurrenceDailyHistogramsForAggregatedFeature(timeRange, contexts, schema, featureName);
+        List<DailyHistogram<Integer, Double>> dailyHistogramsByContext = historicalDataFetcher.getLastDayHistogramsForAggregatedFeature(timeRange, contexts, schema, featureName);
 
         // iterate over days
         for (DailyHistogram<Integer, Double> dailyHistogram : dailyHistogramsByContext) {
