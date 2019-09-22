@@ -122,7 +122,7 @@ public class MockDemoAlertsServiceImpl implements AlertsService {
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 									  String feedbackArrayFilter, DateRange dateRangeFilter, String entityName, String entityTags, String entityId,
-									  Set<String> indicatorTypes,boolean expand, boolean loadComments) {
+									  Set<String> indicatorTypes, String entityType, boolean expand, boolean loadComments) {
 		Set<String> ids = getUserIds(entityTags, entityId);
 		if (ids == null && entityId != null) {
 			ids = new HashSet<>();
@@ -212,7 +212,7 @@ public class MockDemoAlertsServiceImpl implements AlertsService {
 	@Override
 	public Long countAlertsByFilters(String severityArray, String statusArrayFilter,
 									 String feedbackArrayFilter, DateRange dateRangeFilter, String entityName, String entityTags, String entityId,
-									 Set<String> indicatorTypes) {
+									 Set<String> indicatorTypes, String entityType) {
 //		Set<String> ids = getUserIds(entityTags, entityId);
 //		if (ids == null && entityId != null) {
 //			ids = new HashSet<>();
@@ -220,7 +220,7 @@ public class MockDemoAlertsServiceImpl implements AlertsService {
 //		}
 
 		//return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, ids, indicatorTypes);
-		List<Alert> alerts=findAlertsByFilters(null, severityArray, statusArrayFilter,feedbackArrayFilter, dateRangeFilter, entityName, entityTags, entityId,indicatorTypes,true,false).getAlerts();
+		List<Alert> alerts=findAlertsByFilters(null, severityArray, statusArrayFilter,feedbackArrayFilter, dateRangeFilter, entityName, entityTags, entityId,indicatorTypes,null, true,false).getAlerts();
 
 		return new Long(alerts.size());
 
@@ -236,7 +236,7 @@ public class MockDemoAlertsServiceImpl implements AlertsService {
 	@Override
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
 										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
-										   String entityTags, String entityId, Set<String> indicatorTypes){
+										   String entityTags, String entityId, Set<String> indicatorTypes, String entityType){
 
 		Set<String> ids = getUserIds(entityTags, entityId);
 		if (ids == null && entityId != null) {

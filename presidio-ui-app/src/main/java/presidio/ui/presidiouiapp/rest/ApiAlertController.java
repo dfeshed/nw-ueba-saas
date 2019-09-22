@@ -209,8 +209,9 @@ public class ApiAlertController extends BaseController {
 		} else {
 
 			//Todo: pass the filter itself and not list of values for both findAlertsByFilters  countAlertsByFilters
-			alerts = alertsService.findAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), filter.getAlertStartRange(), filter.getEntityName(),
-					filter.getEntityTags(), filter.getEntityId(), filter.getIndicatorTypes(),true,filter.isLoadComments());
+			alerts = alertsService.findAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(),
+					filter.getAlertStartRange(), filter.getEntityName(),
+					filter.getEntityTags(), filter.getEntityId(), filter.getIndicatorTypes(), filter.getEntityType(), true,filter.isLoadComments());
 			count = alerts.getTotalCount();
 		}
 
@@ -243,7 +244,7 @@ public class ApiAlertController extends BaseController {
 
 		Map<String, Integer> severitiesCountResult = alertsService.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),
 				filter.getSeverity(), filter.getStatus(), filter.getFeedback(), filter.getAlertStartRange(), filter.getEntityName(),
-				filter.getEntityTags(), filter.getEntityId(), filter.getIndicatorTypes());
+				filter.getEntityTags(), filter.getEntityId(), filter.getIndicatorTypes(), filter.getEntityType());
 		for (Severity iSeverity : Severity.values()) {
 			Integer statusCount = severitiesCountResult.get(iSeverity.name().toUpperCase());
 			if (statusCount == null){
@@ -276,7 +277,7 @@ public class ApiAlertController extends BaseController {
 		//this temporary map is designed to map the 3 values (Approved, Rejected and None) into 2 values (Open, Closed)
 		//since we changed the status/feedback only on the UI
 		Map<String,Integer> tempCounts = alertsService.groupCount(FEEDBACK_COLUMN_NAME.toLowerCase(), null, null,
-				null, startRange, null, null, null, null);
+				null, startRange, null, null, null, null, null);
 		for (Map.Entry<String, Integer> entry: tempCounts.entrySet()) {
 			if (!entry.getKey().equalsIgnoreCase(AlertFeedback.None.name())) {
 				statusCounts.put(AlertStatus.Closed.name(), entry.getValue() +
@@ -288,7 +289,8 @@ public class ApiAlertController extends BaseController {
 		results.setAlertStatus(statusCounts);
 
 		//Add severities
-		Map<String,Integer> severityCounts = alertsService.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null, startRange,null, null, null, null);
+		Map<String,Integer> severityCounts = alertsService.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null,
+				startRange,null, null, null, null, null);
 
 		results.setAlertOpenSeverity(severityCounts);
 

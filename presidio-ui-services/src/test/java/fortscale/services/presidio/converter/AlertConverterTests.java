@@ -112,7 +112,7 @@ public class AlertConverterTests {
     public void testAlertQueryPagination(){
 
         PageRequest pageRequest = new PageRequest(0,100);
-        AlertQuery alertQuery = alertConverterHelper.convertUiFilterToQueryDto(pageRequest,null,null,null,null,null,null,null,null,true);
+        AlertQuery alertQuery = alertConverterHelper.convertUiFilterToQueryDto(pageRequest,null,null,null,null,null,null,null,null, null, true);
         Assert.assertEquals(100,alertQuery.getPageSize().intValue());
         Assert.assertEquals(0,alertQuery.getPageNumber().intValue());
 
@@ -130,7 +130,7 @@ public class AlertConverterTests {
         dateRange.setFromTime(1499817600000L);
         dateRange.setToTime(1505087999000L);
         AlertQuery alertQuery = alertConverterHelper.convertUiFilterToQueryDto(null,null,null,null,dateRange
-                ,null,null,null,null,true);
+                ,null,null,null,null, null, true);
         Assert.assertEquals(1499817600000L,alertQuery.getStartTimeFrom().longValue());
         Assert.assertEquals(1505087999000L,alertQuery.getStartTimeTo().longValue());
 
@@ -142,7 +142,7 @@ public class AlertConverterTests {
         String status="Open";
 
         AlertQuery alertQuery = alertConverterHelper.convertUiFilterToQueryDto(null,severity,status,null,null
-                ,null,null,null,null,false);
+                ,null,null,null,null, null, false);
         Assert.assertEquals(3,alertQuery.getSeverity().size());
         Assert.assertTrue(alertQuery.getSeverity().contains(AlertQuery.SeverityEnum.LOW));
         Assert.assertTrue(alertQuery.getSeverity().contains(AlertQuery.SeverityEnum.HIGH));
@@ -159,7 +159,7 @@ public class AlertConverterTests {
 
 
         AlertQuery alertQuery = alertConverterHelper.convertUiFilterToQueryDto(null,null,null,feedback,null
-                ,null,null,null,null,false);
+                ,null,null,null,null, null, false);
 
 
         Assert.assertEquals(2,alertQuery.getFeedback().size());
@@ -173,7 +173,7 @@ public class AlertConverterTests {
     public void testAlertQueryFilterByUserDetails(){
 
         AlertQuery alertQuery = alertConverterHelper.convertUiFilterToQueryDto(null,null,null,null,null
-                ,"user1,user2","any","id1,id2",null,false);
+                ,"user1,user2","any","id1,id2",null, null, false);
 
         Assert.assertEquals("admin",alertQuery.getTags().get(0));
 
@@ -192,7 +192,7 @@ public class AlertConverterTests {
         Set<String> indicatorTypes = new HashSet<>();
         indicatorTypes.add("type");
         AlertQuery alertQuery = alertConverterHelper.convertUiFilterToQueryDto(null,null,null,null,null
-                ,null,null,null,indicatorTypes,false);
+                ,null,null,null,indicatorTypes, null, false);
 
 
         Assert.assertEquals(1,alertQuery.getIndicatorsName().size());

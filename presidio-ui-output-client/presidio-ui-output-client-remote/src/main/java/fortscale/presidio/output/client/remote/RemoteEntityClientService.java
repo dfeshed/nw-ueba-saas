@@ -8,6 +8,7 @@ public class RemoteEntityClientService extends RemoteClientServiceAbs<EntitiesAp
 
     @Override
     protected EntitiesApi getControllerInstance(ApiClient delegatorApiClient) {
+        System.out.print("Test");
         return new EntitiesApi( delegatorApiClient);
     }
 }
