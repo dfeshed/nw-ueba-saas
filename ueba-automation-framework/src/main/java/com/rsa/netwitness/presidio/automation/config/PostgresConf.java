@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.rsa.netwitness.presidio.automation.config.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public enum PostgresConf {
     POSTGRES_PROPERTIES;
@@ -43,9 +44,9 @@ public enum PostgresConf {
 
     private final Lazy<List<String>> passwordHolder = new Lazy<>();
 
-    private Supplier<List<String>> passwordSupplier = this::retrieve;
+    private Supplier<List<String>> passwordSupplier = this::retrieveFromCfgFile;
 
-    private List<String> retrieve() {
+    private List<String> retrieveByCurl() {
         LOGGER.info("Going to retrieve Postgres password");
 
         String getPasswordCmd = "curl -s -u admin:netwitness --insecure https://localhost"
@@ -53,5 +54,16 @@ public enum PostgresConf {
 
         SshResponse result = new SshHelper().uebaHostExec().run(getPasswordCmd);
         return result.exitCode == 0 ? result.output : Lists.emptyList();
+    }
+
+    private List<String> retrieveFromCfgFile() {
+        LOGGER.info("Going to retrieve Postgres password");
+
+        String getPasswordCmd = "cat /var/netwitness/presidio/airflow/airflow.cfg  | grep @127.0.0.1/airflow | grep -oP 'airflow\\:\\K([\\da-z]+)' | head -n 1";
+
+        SshResponse result = new SshHelper().uebaHostExec().run(getPasswordCmd);
+        assertThat(result.exitCode).as("Exit code").isEqualTo(0);
+        assertThat(result.output).hasSize(1);
+        return result.output;
     }
 }
