@@ -3,6 +3,9 @@ package presidio.input.core.spring;
 
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
+import fortscale.domain.sessionsplit.cache.SessionSplitStoreCacheConfiguration;
+import fortscale.utils.flushable.AbstractFlushable;
+import fortscale.utils.flushable.FlushableService;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,6 +67,12 @@ public class InputCoreConfigurationTest {
 
     @Autowired
     private DeserializerTransformationService deserializerTransformationService;
+
+    @Bean
+    public FlushableService flushableService() {
+        FlushableService flushableService = new FlushableService();
+        return flushableService;
+    }
 
     @Bean
     public Map<Schema, Map<String, List<String>>> getMapping() {

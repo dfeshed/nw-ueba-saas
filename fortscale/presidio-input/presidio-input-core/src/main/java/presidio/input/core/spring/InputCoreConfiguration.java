@@ -2,7 +2,10 @@ package presidio.input.core.spring;
 
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReaderCacheConfiguration;
+import fortscale.domain.sessionsplit.cache.SessionSplitStoreCacheConfiguration;
 import fortscale.utils.elasticsearch.config.ElasticsearchConfig;
+import fortscale.utils.flushable.AbstractFlushable;
+import fortscale.utils.flushable.FlushableService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +34,11 @@ import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
+import java.util.List;
 
 @Configuration
 @Import({
+        SessionSplitStoreCacheConfiguration.class,
         PresidioInputPersistencyServiceConfig.class,
         AdeDataServiceConfig.class,
         OutputDataServiceConfig.class,
@@ -61,6 +66,18 @@ public class InputCoreConfiguration {
 
     @Autowired
     private DeserializerTransformationService deserializerTransformationService;
+
+
+    @Autowired
+    List<AbstractFlushable> flushableList;
+
+
+    @Bean
+    public FlushableService flushableService() {
+        FlushableService flushableService = new FlushableService();
+        flushableList.forEach(flushable -> flushable.registerFlushableService(flushableService));
+        return flushableService;
+    }
 
     @Bean
     public DeserializerTransformationService deserializerTransformationService(){
