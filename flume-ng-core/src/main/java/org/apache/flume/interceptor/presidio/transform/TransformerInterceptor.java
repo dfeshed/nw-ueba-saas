@@ -38,7 +38,7 @@ public class TransformerInterceptor extends AbstractPresidioJsonInterceptor {
         public static final String CONFIGURATION_KEY = "configuration";
         public static final String CONFIGURATION_FILE_PATH = "configuration_path";
         private static final Logger logger = Logger.getLogger(Builder.class);
-        private static final ObjectMapper objectMapper = createObjectMapper();
+        private final ObjectMapper objectMapper = createObjectMapper();
 
         private IJsonObjectTransformer transformer;
 
@@ -70,7 +70,7 @@ public class TransformerInterceptor extends AbstractPresidioJsonInterceptor {
             }
         }
 
-        private static ObjectMapper createObjectMapper() {
+        private ObjectMapper createObjectMapper() {
             ObjectMapper objectMapper = new ObjectMapper();
             new TransformerSubtypeRegisterer() {
                 @Override
