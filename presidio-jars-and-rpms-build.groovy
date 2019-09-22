@@ -169,7 +169,7 @@ pipeline {
                                 [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
                                 [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
                         ], wait: false
-                        build job: 'presidio-integration-test-core', parameters: [
+                        build job: 'master-presidio-integration-test-core', parameters: [
                                 [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
                                 [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
                         ], wait: false
