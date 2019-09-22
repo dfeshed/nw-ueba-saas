@@ -70,7 +70,7 @@
         <maven-download-plugin.version>1.1.0</maven-download-plugin.version>
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
-        <aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
+        <aspectj-maven-plugin.version>11</aspectj-maven-plugin.version>
         <nickwongdev-aspectj-maven-plugin.version>1.12.1</nickwongdev-aspectj-maven-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <mavanagaiata.version>0.9.4</mavanagaiata.version>
