@@ -54,7 +54,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
 
     public NetworkEventsGenerator() { }
 
-    public NetworkEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+    public NetworkEventsGenerator(ITimeGenerator timeGenerator) {
         super(timeGenerator);
 
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -62,7 +62,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
         testMarker = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, methodName);
     }
 
-    public NetworkEventsGenerator(ITimeGenerator timeGenerator, String testMarker) throws GeneratorException {
+    public NetworkEventsGenerator(ITimeGenerator timeGenerator, String testMarker) {
         super(timeGenerator);
         this.testMarker = testMarker;
     }
