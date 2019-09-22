@@ -3,15 +3,17 @@ package presidio.input.core.services.impl;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.transform.IJsonObjectTransformer;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.data.AdeDataService;
+import presidio.input.core.services.transformation.DeserializerTransformationService;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.monitoring.aspect.annotations.RunTime;
-import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -20,7 +22,6 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ public class InputCoreManager {
     private final OutputDataServiceSDK outputDataServiceSDK;
     private final TransformationService transformationService;
     private final ConverterService converterService;
+    private DeserializerTransformationService deserializerTransformationService;
 
     @Autowired
     MetricCollectingService metricCollectingService;
@@ -49,12 +51,14 @@ public class InputCoreManager {
     private Integer retentionInDays;
 
     public InputCoreManager(PresidioInputPersistencyService inputPersistencyService, AdeDataService adeDataService,
-                            OutputDataServiceSDK outputDataServiceSDK, TransformationService transformationService, ConverterService converterService) {
+                            OutputDataServiceSDK outputDataServiceSDK, TransformationService transformationService,
+                            ConverterService converterService, DeserializerTransformationService deserializerTransformationService) {
         this.inputPersistencyService = inputPersistencyService;
         this.adeDataService = adeDataService;
         this.outputDataServiceSDK = outputDataServiceSDK;
         this.transformationService = transformationService;
         this.converterService = converterService;
+        this.deserializerTransformationService = deserializerTransformationService;
     }
 
     @RunTime
@@ -62,6 +66,7 @@ public class InputCoreManager {
         if (pageSize == null) {
             pageSize = DEFAULT_PAGE_SIZE;
         }
+        List<IJsonObjectTransformer> transformers = deserializerTransformationService.getTransformers(schema, startDate, endDate);
         RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, inputPersistencyService, schema, pageSize);
         List transformedEvents = null;
         List nextEvents = null;
@@ -73,7 +78,7 @@ public class InputCoreManager {
 
                 logger.debug("Processing {} events", nextEvents.size());
 
-                transformedEvents = transformationService.run(nextEvents, schema, endDate);
+                transformedEvents = transformationService.run(nextEvents, schema, endDate, transformers);
 
                 try {
                     storeToAde(schema, startDate, endDate, transformedEvents);

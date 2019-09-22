@@ -1,108 +1,93 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.domain.core.EventResult;
+import fortscale.utils.transform.FolderPathByOperationTypeTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.input.core.services.transformation.transformer.FolderPathByOperationTypeTransformer;
-import presidio.sdk.api.domain.AbstractInputDocument;
+import presidio.input.core.spring.TransformerConfigTest;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.domain.transformedevents.FileTransformedEvent;
 
-import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
-public class FolderPathByOperationTypeTransformerTest {
+@Import({TransformerConfigTest.class})
+public class FolderPathByOperationTypeTransformerTest extends TransformerJsonTest {
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Test
-    public void testFolderPathTransformation_windows_FileOperation() {
+    public void testFolderPathTransformation_windows_FileOperation() throws IOException {
         String filePath = "C:\\Users\\alexp\\Desktop\\file.txt";
         FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
                 "operationType", null, EventResult.SUCCESS, "userName",
                 "displayName", null, filePath, false,
-                filePath, false, 0l, "resultCode");
+                filePath, false, 0L, "resultCode");
 
-        List<String> folderOperations = new ArrayList<>();
-        FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("srcFilePath",
-                "srcFilePath", "srcFolderPath", "operationType", folderOperations);
-
-        List<AbstractInputDocument> transformed = folderPathByOperationTypeTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
-
-        Assert.assertEquals(String.format("C:\\Users\\alexp\\Desktop\\", File.separator), ((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
-        Assert.assertEquals(filePath, ((FileTransformedEvent) transformed.get(0)).getSrcFilePath());
+        FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("name","srcFilePath",
+                "srcFilePath", "srcFolderPath", "operationType");
+        applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(folderPathByOperationTypeTransformer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
+        FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, folderPathByOperationTypeTransformer, FileTransformedEvent.class);
+        Assert.assertEquals("C:\\Users\\alexp\\Desktop\\", fileTransformedEvent.getSrcFolderPath());
+        Assert.assertEquals(filePath, fileTransformedEvent.getSrcFilePath());
     }
 
     @Test
-    public void testFolderPathTransformation_linux_FileOperation() {
+    public void testFolderPathTransformation_linux_FileOperation() throws IOException {
         String filePath = String.format("%sfolder%sfile.txt", "/", "/");
         FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
                 "operationType", null, EventResult.SUCCESS, "userName",
                 "displayName", null, filePath, false,
-                filePath, false, 0l, "resultCode");
-
-        List<String> folderOperations = new ArrayList<>();
-        FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("srcFilePath",
-                "srcFilePath", "srcFolderPath", "operationType", folderOperations);
-
-        List<AbstractInputDocument> transformed = folderPathByOperationTypeTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
-
-        Assert.assertEquals(String.format("/folder/", File.separator), ((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
-        Assert.assertEquals(filePath, ((FileTransformedEvent) transformed.get(0)).getSrcFilePath());
+                filePath, false, 0L, "resultCode");
+        FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("name", "srcFilePath",
+                "srcFilePath", "srcFolderPath", "operationType");
+        applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(folderPathByOperationTypeTransformer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
+        FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, folderPathByOperationTypeTransformer, FileTransformedEvent.class);
+        Assert.assertEquals("/folder/", fileTransformedEvent.getSrcFolderPath());
+        Assert.assertEquals(filePath, fileTransformedEvent.getSrcFilePath());
     }
 
     @Test
-    public void testFolderPathTransformation_FolderOperation() {
-        FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
-                "Folder", null, EventResult.SUCCESS, "userName",
-                "displayName", null, "C://file", false,
-                "C://dst/file.txt", false, 0l, "resultCode");
-
-        List<String> folderOperations = new ArrayList<>();
-        folderOperations.add("Folder");
-        FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("srcFilePath",
-                "srcFilePath", "srcFolderPath", "operationType", folderOperations);
-
-        List<AbstractInputDocument> transformed = folderPathByOperationTypeTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
-
-        Assert.assertNull(((FileTransformedEvent) transformed.get(0)).getSrcFilePath());
-        Assert.assertEquals("C://file", ((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
-    }
-
-    @Test
-    public void testFolderPathTransformation_noField_FileOperation() {
+    public void testFolderPathTransformation_noField_FileOperation() throws IOException {
         FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
                 "operationType", null, EventResult.SUCCESS, "userName",
                 "displayName", null, null, false,
-                null, false, 0l, "resultCode");
+                null, false, 0L, "resultCode");
 
-        List<String> folderOperations = new ArrayList<>();
-        FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("srcFilePath",
-                "srcFilePath", "srcFolderPath", "operationType", folderOperations);
-
-        List<AbstractInputDocument> transformed = folderPathByOperationTypeTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
-
-        Assert.assertNull(((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
+        FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("name","srcFilePath",
+                "srcFilePath", "srcFolderPath", "operationType");
+        FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, folderPathByOperationTypeTransformer, FileTransformedEvent.class);
+        Assert.assertNull(fileTransformedEvent.getSrcFolderPath());
     }
 
     @Test
-    public void testFolderPathTransformation_fieldEmpty_FileOperation() {
+    public void testFolderPathTransformation_fieldEmpty_FileOperation() throws IOException {
         String filePath = "";
         FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
                 "operationType", null, EventResult.SUCCESS, "userName",
                 "displayName", null, filePath, false,
-                filePath, false, 0l, "resultCode");
+                filePath, false, 0L, "resultCode");
+        FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("name","srcFilePath",
+                "srcFilePath", "srcFolderPath", "operationType");
+        FileTransformedEvent fileTransformedEvent = (FileTransformedEvent) transformEvent(fileRawEvent, folderPathByOperationTypeTransformer, FileTransformedEvent.class);
+        Assert.assertNull(fileTransformedEvent.getSrcFolderPath());
+    }
 
-        List<String> folderOperations = new ArrayList<>();
-        FolderPathByOperationTypeTransformer folderPathByOperationTypeTransformer = new FolderPathByOperationTypeTransformer("srcFilePath",
-                "srcFilePath", "srcFolderPath", "operationType", folderOperations);
+    @Override
+    String getResourceFilePath() {
+        return "FolderPathByOperationTypeTransformer.json";
+    }
 
-        List<AbstractInputDocument> transformed = folderPathByOperationTypeTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
-
-        Assert.assertNull(((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
+    @Override
+    Class getTransformerClass() {
+        return FolderPathByOperationTypeTransformer.class;
     }
 }

@@ -1,0 +1,46 @@
+{
+  "type": "chain",
+  "name": "authentication-transformer",
+  "transformerList": [
+    {
+      "type": "machine-name-transformer",
+      "name": "Source machine name to cluster name",
+      "inputFieldName": "srcMachineName",
+      "outputFieldName": "srcMachineCluster",
+      "pattern": "[0-9]",
+      "replacement": "",
+      "preReplacementCondition": null,
+      "postReplacementCondition": "(.*[a-zA-Z]){5}.*"
+    },
+    {
+      "type": "machine-name-transformer",
+      "name": "Destination machine name to cluster name",
+      "inputFieldName": "dstMachineName",
+      "outputFieldName": "dstMachineCluster",
+      "pattern": "[0-9]",
+      "replacement": "",
+      "preReplacementCondition": null,
+      "postReplacementCondition": "(.*[a-zA-Z]){5}.*"
+    },
+    {
+      "type": "pattern-replacement-transformer",
+      "name": "machine id containing ip address will be transformed to empty string and value of resolved machine id will kept as is",
+      "inputFieldName": "srcMachineId",
+      "outputFieldName": "srcMachineId",
+      "pattern": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
+      "replacement": "",
+      "preReplacementCondition": null,
+      "postReplacementCondition": null
+    },
+    {
+      "type": "pattern-replacement-transformer",
+      "name": "machine id containing ip address will be transformed to empty string and value of resolved machine id will kept as is",
+      "inputFieldName": "dstMachineId",
+      "outputFieldName": "dstMachineId",
+      "pattern": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
+      "replacement": "",
+      "preReplacementCondition": null,
+      "postReplacementCondition": null
+    }
+  ]
+}
