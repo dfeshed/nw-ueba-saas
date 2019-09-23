@@ -1,0 +1,51 @@
+[
+  {
+  "type": "new-occurrence-transformer",
+  "name": "ba",
+  "schema": "tls",
+  "inputFieldName": "sslSubject.name",
+  "booleanFieldName": "sslSubject.isNewOccurrence"
+  },
+  {
+    "type": "new-occurrence-transformer",
+    "name": "ba",
+    "schema": "tls",
+    "inputFieldName": "domain.name",
+    "booleanFieldName": "domain.isNewOccurrence"
+  },
+  {
+    "type": "new-occurrence-transformer",
+    "name": "ba",
+    "schema": "tls",
+    "inputFieldName": "ja3.name",
+    "booleanFieldName": "ja3.isNewOccurrence"
+  },
+  {
+    "type": "new-occurrence-transformer",
+    "name": "ba",
+    "schema": "tls",
+    "inputFieldName": "dstOrg.name",
+    "booleanFieldName": "dstOrg.isNewOccurrence"
+  },
+  {
+    "type": "new-occurrence-transformer",
+    "name": "ba",
+    "schema": "tls",
+    "inputFieldName": "dstCountry.name",
+    "booleanFieldName": "dstCountry.isNewOccurrence"
+  },
+  {
+    "type": "new-occurrence-transformer",
+    "name": "ba",
+    "schema": "tls",
+    "inputFieldName": "dstPort.name",
+    "booleanFieldName": "dstPort.isNewOccurrence"
+  },
+  {
+    "type": "new-occurrence-transformer",
+    "name": "ba",
+    "schema": "tls",
+    "inputFieldName": "dstAsn.name",
+    "booleanFieldName": "dstAsn.isNewOccurrence"
+  }
+]

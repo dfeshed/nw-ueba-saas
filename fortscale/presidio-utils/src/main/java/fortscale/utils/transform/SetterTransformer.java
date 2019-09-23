@@ -1,9 +1,6 @@
 package fortscale.utils.transform;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import fortscale.utils.json.JsonPointer;
 import org.apache.commons.lang3.Validate;
 import org.json.JSONObject;
@@ -15,8 +12,8 @@ import org.json.JSONObject;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
+@JsonTypeName("set_value")
 public class SetterTransformer extends AbstractJsonObjectTransformer {
-    public static final String TYPE = "set_value";
 
     private String key;
     private Object value;

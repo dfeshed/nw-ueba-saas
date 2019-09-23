@@ -2,13 +2,16 @@ package fortscale.utils.transform.stringformat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.transform.IJsonObjectTransformer;
+import fortscale.utils.transform.TransformerSubtypeRegisterer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Optional;
+
 public class StringFormatTransformerTest {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = createObjectMapper();
     private static final Scenario[] scenarios = new Scenario[]{
             // From lower underscore
             new Scenario("LOWER_UNDERSCORE", "LOWER_UNDERSCORE", "hello_world", "hello_world"),
@@ -148,6 +151,17 @@ public class StringFormatTransformerTest {
         } catch (Exception e) {
             throw new IllegalArgumentException("Could not deserialize configuration.", e);
         }
+    }
+
+    private static ObjectMapper createObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        new TransformerSubtypeRegisterer() {
+            @Override
+            public Optional<String> additionalPackageLocation() {
+                return Optional.empty();
+            }
+        }.registerSubtypes(objectMapper);
+        return objectMapper;
     }
 
     private static final class Scenario {

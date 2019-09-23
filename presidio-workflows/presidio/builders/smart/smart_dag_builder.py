@@ -156,7 +156,21 @@ class SmartDagBuilder(PresidioDagBuilder):
                 run_clean_command_before_retry=False,
                 dag=dag)
 
-            hourly_output_operator >> push_forwarding_operator >> daily_short_circuit_operator
+            output_forward_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
+                task_id='output_forward_short_circuit',
+                dag=dag,
+                python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
+                                                                         FIX_DURATION_STRATEGY_HOURLY,
+                                                                         dag.schedule_interval) &
+                                                 PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                     dag,
+                                                     EntityScoreOperatorBuilder.get_min_gap_from_dag_start_date_to_start_modeling(
+                                                         PresidioDagBuilder.conf_reader),
+                                                     kwargs['execution_date'],
+                                                     dag.schedule_interval)
+            )
+
+            hourly_output_operator >> output_forward_short_circuit_operator >> push_forwarding_operator >> daily_short_circuit_operator
         else:
             hourly_output_operator >> daily_short_circuit_operator
 

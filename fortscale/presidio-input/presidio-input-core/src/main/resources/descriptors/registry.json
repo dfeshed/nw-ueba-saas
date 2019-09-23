@@ -1,0 +1,16 @@
+{
+  "type": "chain",
+  "name": "registry-transformer",
+  "transformerList": [
+    {
+      "type": "join",
+      "name": "join process directory and file name",
+      "values": [
+        "${processDirectory}",
+        "${processFileName}"
+      ],
+      "destinationKey": "processFilePath",
+      "separator": "\\"
+    }
+  ]
+}

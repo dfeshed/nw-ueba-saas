@@ -1,5 +1,7 @@
 import logging
-import sys
+import os
+
+import psutil
 from copy import copy
 
 from airflow import configuration
@@ -101,20 +103,20 @@ def load_dags(dag_ids, session=None):
         raise ValueError(e)
 
 
-def pause_dag(dag_id):
+def pause_dag(dag):
     """
 
-    :param dag_id: single dag id
-    :type dag_id: str
+    :param dag: single dag
+    :type dag: DAG
     """
-    cli.set_is_paused(is_paused=True, dag=dag_id, args=None)
+    cli.set_is_paused(is_paused=True, dag=dag, args=None)
 
 
 def pause_dags(dags):
     """
 
-    :param dags: list of dag_ids to be paused
-    :type dags: list[str]
+    :param dags: list of dags to be paused
+    :type dags: list[DAG]
     """
     for dag in dags:
         pause_dag(dag)
@@ -142,7 +144,13 @@ def stop_kill_dag_run_task_instances(dag_run):
                                                                                 task_instance.execution_date,
                                                                                 task_instance.dag_id))
         try:
-            helpers.reap_process_group(pid=pid, log=logging.getLogger(), timeout=TASK_KILL_TIMEOUT)
+            if pid == os.getpid():
+                raise RuntimeError("I refuse to kill myself")
+            parent = psutil.Process(pid)
+            for child in parent.children(recursive=True):
+                child.terminate()
+            parent.terminate()
+
         except Exception as e:
             logging.exception("failed to kill pid: {} ".format(pid))
 

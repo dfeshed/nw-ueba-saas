@@ -7,4 +7,5 @@ public class TlsTransformedEvent extends TlsRawEvent {
     public TlsTransformedEvent(TlsRawEvent tlsRawEvent){
         super(tlsRawEvent);
     }
+    public TlsTransformedEvent(){}
 }

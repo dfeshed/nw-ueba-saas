@@ -11,6 +11,7 @@ public abstract class AbstractJsonObjectTransformer implements IJsonObjectTransf
         this.name = Validate.notBlank(name, "name cannot be blank, empty or null.");
     }
 
+
     @Override
     public String getName(){
         return name;

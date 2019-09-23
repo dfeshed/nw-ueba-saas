@@ -1,0 +1,7 @@
+{
+  "type": "new-occurrence-transformer",
+  "name": "ba",
+  "schema": "tls",
+  "inputFieldName": "sslSubject.name",
+  "booleanFieldName": "sslSubject.isNewOccurrence"
+}

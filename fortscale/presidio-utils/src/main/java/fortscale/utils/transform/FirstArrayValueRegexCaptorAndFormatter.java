@@ -1,10 +1,7 @@
 package fortscale.utils.transform;
 
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import fortscale.utils.json.IJsonValueExtractor;
 import fortscale.utils.json.JsonPointerValueExtractor;
 import fortscale.utils.transform.regexcaptureandformat.CaptureAndFormatConfiguration;
@@ -22,9 +19,8 @@ import static org.apache.commons.lang3.Validate.notNull;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
+@JsonTypeName("first_array_value_regex_captor_and_formatter")
 public class FirstArrayValueRegexCaptorAndFormatter extends AbstractJsonObjectTransformer{
-
-    public static final String TYPE = "first_array_value_regex_captor_and_formatter";
 
     private String sourceArrayKey;
     private String targetKey;

@@ -1,10 +1,7 @@
 package fortscale.utils.transform;
 
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import org.apache.commons.lang3.Validate;
 import org.json.JSONObject;
 
@@ -14,10 +11,8 @@ import java.util.regex.Pattern;
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonTypeName("find_and_replace")
 public class FindAndReplaceTransformer extends AbstractJsonObjectTransformer{
-
-    public static final String TYPE = "find_and_replace";
-
 
     private String key;
     private String regex;

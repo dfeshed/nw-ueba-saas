@@ -346,9 +346,15 @@ class SpringBootJarOperator(BashOperator):
         self.get_args(self.java_args, bash_command, command)
 
     def get_retry_args(self, bash_command, command):
-        if not is_blank(self.java_retry_args):
+        """
+        Append java_retry_args if not empty, otherwise append java_args
+        """
+        logger = LoggingMixin().log
+        if self.java_retry_args:
+            logger.debug("java_retry_args: {0}".format(self.java_retry_args))
             self.get_args(self.java_retry_args, bash_command, command)
         else:
+            logger.debug("java_args: {0}".format(self.java_args))
             self.get_args(self.java_args, bash_command, command)
 
     def get_args(self, args, bash_command, command):

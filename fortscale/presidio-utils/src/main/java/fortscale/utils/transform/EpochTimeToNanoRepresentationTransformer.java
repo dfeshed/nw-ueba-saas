@@ -4,6 +4,7 @@ package fortscale.utils.transform;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.Validate;
 import org.json.JSONObject;
@@ -14,9 +15,9 @@ import org.slf4j.LoggerFactory;
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonTypeName("epoch")
 public class EpochTimeToNanoRepresentationTransformer extends AbstractJsonObjectTransformer{
     private static final Logger logger = LoggerFactory.getLogger(EpochTimeToNanoRepresentationTransformer.class);
-    public static final String TYPE = "epoch";
 
     private String sourceKey;
     private String destinationKey;
