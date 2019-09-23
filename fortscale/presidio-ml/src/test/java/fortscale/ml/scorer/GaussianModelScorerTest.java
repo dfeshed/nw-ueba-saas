@@ -34,11 +34,6 @@ public class GaussianModelScorerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailToCreateIfNotGivenAdditionalModelName() {
-        createScorer(Collections.emptyList(), 0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void shouldFailToCreateIfGivenTwoAdditionalModelNames() {
         createScorer(Arrays.asList("model 1", "model 2"), 0);
     }
@@ -47,12 +42,6 @@ public class GaussianModelScorerTest {
     public void shouldFailToScoreIfGivenWrongModelType() {
         GaussianModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0);
         scorer.calculateScore(new CategoryRarityModel(), Collections.singletonList(new ContinuousDataModel()), new Feature("name", 1));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldFailToScoreIfNotGivenAdditionalModel() {
-        GaussianModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0);
-        scorer.calculateScore(new ContinuousDataModel(), Collections.emptyList(), new Feature("name", 1));
     }
 
     @Test(expected = IllegalArgumentException.class)
