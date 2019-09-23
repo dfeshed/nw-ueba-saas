@@ -464,6 +464,21 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_distinct_multi_key_values_counter_func"
       }
+    },
+    {
+      "name": "numberOfDistinctNewDstOrgForSrcIpOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "newDstOrgHistogramSrcIpOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "newDstOrgHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
     }
   ]
 }
