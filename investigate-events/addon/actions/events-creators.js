@@ -169,6 +169,13 @@ const _done = (errorCode, serverMessage) => {
 
     if (errorCode) {
       dispatch({
+        type: ACTION_TYPES.QUERY_STATS,
+        payload: serverMessage,
+        code: errorCode,
+        time: Date.now()
+      });
+
+      dispatch({
         type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
         payload: {
           status: 'error',
