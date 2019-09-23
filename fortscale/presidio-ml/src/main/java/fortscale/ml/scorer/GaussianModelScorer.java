@@ -29,8 +29,8 @@ public class GaussianModelScorer extends AbstractModelTerminalScorer {
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName,
                 minNumOfPartitionsToInfluence, enoughNumOfPartitionsToInfluence, isUseCertaintyToCalculateScore, eventModelsCacheService);
 
-        if (additionalModelNames.size() != 1) {
-            throw new IllegalArgumentException(this.getClass().getSimpleName() + " expects to get one additional model name");
+        if (additionalModelNames.size() <= 1) {
+            throw new IllegalArgumentException(this.getClass().getSimpleName() + " expects to get at most one additional model name");
         }
 
         algorithm = new GaussianModelScorerAlgorithm(globalInfluence);
