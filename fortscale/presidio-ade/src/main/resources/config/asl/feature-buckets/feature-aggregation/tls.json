@@ -1327,6 +1327,36 @@
           }
         }
       ]
+    },
+    {
+      "name": "numOfBytesSentSummationDstCountryOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstCountry.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
     }
   ]
 }
