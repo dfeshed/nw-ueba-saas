@@ -569,6 +569,21 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
       }
+    },
+    {
+      "name": "sumOfBytesSentToDstAsnOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationDstAsnOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
     }
   ]
 }

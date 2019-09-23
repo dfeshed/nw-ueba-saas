@@ -1169,6 +1169,46 @@
           ]
         }
       ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToDstAsnOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.dstAsnOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.dstAsnOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.dstAsnOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.dstAsnOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "sumOfBytesSent.dstAsnOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
     }
   ]
 }
