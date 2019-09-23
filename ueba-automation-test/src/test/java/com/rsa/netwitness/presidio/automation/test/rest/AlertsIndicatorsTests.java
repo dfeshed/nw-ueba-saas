@@ -85,14 +85,24 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     @Test
     public void all_mandatory_indicators_from_static_list_are_present() {
         PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
-        List<String> allMandatoryIndicators = Lists.newArrayList(ALL_MANDATORY_INDICATORS);
-        allMandatoryIndicators.removeAll(allActualIndicatorNames);
+        List<String> expectedMinusActual = Lists.newArrayList(ALL_MANDATORY_INDICATORS);
+        expectedMinusActual.removeAll(allActualIndicatorNames);
+
+        List<String> actualMinusExpected = Lists.newArrayList(allActualIndicatorNames);
+        actualMinusExpected.removeAll(ALL_MANDATORY_INDICATORS);
 
         assertThat(allActualIndicatorNames)
                 .withFailMessage(url + "\nFollowing expected indicators are missing from alerts:\n"
-                        + String.join("\n", allMandatoryIndicators))
+                        + String.join("\n", expectedMinusActual))
                 .doesNotHaveDuplicates()
-                .containsExactlyInAnyOrderElementsOf(ALL_MANDATORY_INDICATORS);
+                .containsAll(ALL_MANDATORY_INDICATORS);
+
+
+        assertThat(ALL_MANDATORY_INDICATORS)
+                .withFailMessage(url + "\nFollowing indicators present in alerts, but missing from expected:\n"
+                        + String.join("\n", actualMinusExpected))
+                .doesNotHaveDuplicates()
+                .containsAll(allActualIndicatorNames);
     }
 
     @Test
