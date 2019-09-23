@@ -629,6 +629,36 @@
           }
         }
       ]
+    },
+    {
+      "name": "dstAsnHistogramSrcNetnameOutboundTlsDaily",
+      "contextFieldNames": [
+        "srcNetname"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstAsnHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstAsn.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
     }
   ]
 }
