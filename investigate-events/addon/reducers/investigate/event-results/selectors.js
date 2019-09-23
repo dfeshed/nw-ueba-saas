@@ -222,47 +222,6 @@ export const groupForSortAscending = (e) => {
   }
 };
 
-// not a selector, export for testing
-export const _nestChildEvents = (events) => {
-  if (isEmpty(events)) {
-    return events;
-  } else {
-    const eventsCopy = [...events];
-    const onlyNested = eventsCopy.filter((e) => {
-      return !isEmpty(e['session.split']);
-    });
-
-    if (isEmpty(onlyNested)) {
-      // no child events so exit early
-      return events;
-    } else {
-      // create copy so not to manipulate the array being iterated over
-      // reverse helps with preserving sort order as events are repositioned immediately under the parent
-      onlyNested.reverse().forEach((event) => {
-        const parent = event['session.split'];
-        // get the index of the parent
-        // add one to relocate after the parent
-        const insertAtIndex = eventsCopy.findIndex((e) => {
-          return e.sessionId === parent;
-        }) + 1;
-
-        // if event was moved ahead it will change the index of the event to remove
-        // otherwise the move will have no affect on the position of the event to remove
-        let removeAtIndex = eventsCopy.findIndex((e) => {
-          return e.sessionId === event.sessionId;
-        });
-        removeAtIndex = insertAtIndex < removeAtIndex ? removeAtIndex + 1 : removeAtIndex;
-
-        // insert child event
-        eventsCopy.splice(insertAtIndex, 0, event);
-        // remove from original position
-        eventsCopy.splice(removeAtIndex, 1);
-      });
-      return eventsCopy;
-    }
-  }
-};
-
 export const clientSortedData = createSelector(
   [
     _resultsData,
@@ -281,11 +240,10 @@ export const clientSortedData = createSelector(
     opts,
     requireServiceSorting
   ) => {
-
     if (!languages || requireServiceSorting || !data) {
       // client not responsible for sorting
       // return data as is
-      return _nestChildEvents(data);
+      return data;
     } else {
       const metaObj = languages.findBy('metaName', sortField);
       const { Address6 } = window;
@@ -362,15 +320,83 @@ export const clientSortedData = createSelector(
           });
         }
       } else {
-        const sortedEvents = sort(cachedData)[(sortDirection === 'Ascending' ? 'asc' : 'desc')]((e) => e.toSort);
-        return _nestChildEvents(sortedEvents);
+        return sort(cachedData)[(sortDirection === 'Ascending' ? 'asc' : 'desc')]((e) => e.toSort);
       }
     }
   }
 );
 
+// exported for testing
+export const updateStreamKeyTree = (streamKeyTree, e, keyA, keyB, keyC, keyD) => {
+  if (streamKeyTree[e[keyA]]?.[e[keyB]]?.[e[keyC]]?.[e[keyD]]) {
+    if (isEmpty(e['session.split']) || (!isEmpty(e['session.split']) && e['session.split'] < streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]['session.split'])) {
+      streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]] = e;
+    }
+  } else {
+    if (!streamKeyTree[e[keyA]]) {
+      streamKeyTree[e[keyA]] = {};
+    }
+    if (!streamKeyTree[e[keyA]][e[keyB]]) {
+      streamKeyTree[e[keyA]][e[keyB]] = {};
+    }
+    if (!streamKeyTree[e[keyA]][e[keyB]][e[keyC]]) {
+      streamKeyTree[e[keyA]][e[keyB]][e[keyC]] = {};
+    }
+    if (!streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]) {
+      streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]] = e;
+    }
+  }
+
+  return streamKeyTree;
+};
+
+export const nestChildEvents = createSelector(
+  [clientSortedData],
+  (events) => {
+    if (isEmpty(events)) {
+      return events;
+    } else {
+      events = Immutable.asMutable(events, { deep: true });
+      let streamKeyTree = {};
+
+      for (let eventIndex = 0; eventIndex < events.length; eventIndex++) {
+        const event = events[eventIndex];
+        event.eventIndex = eventIndex;
+
+        if (event['ip.dst'] && event['ip.src'] && event['tcp.dstport'] && event['tcp.srcport']) {
+          streamKeyTree = updateStreamKeyTree(streamKeyTree, event, 'ip.dst', 'ip.src', 'tcp.dstport', 'tcp.srcport');
+        } else if (event['ip.dst'] && event['ip.src'] && event['udp.dstport'] && event['udp.srcport']) {
+          streamKeyTree = updateStreamKeyTree(streamKeyTree, event, 'ip.dst', 'ip.src', 'udp.dstport', 'udp.srcport');
+        } else if (event['ipv6.dst'] && event['ipv6.src'] && event['tcp.dstport'] && event['tcp.srcport']) {
+          streamKeyTree = updateStreamKeyTree(streamKeyTree, event, 'ipv6.dst', 'ipv6.src', 'tcp.dstport', 'tcp.srcport');
+        } else if (event['ipv6.dst'] && event['ipv6.src'] && event['udp.dstport'] && event['udp.srcport']) {
+          streamKeyTree = updateStreamKeyTree(streamKeyTree, event, 'ipv6.dst', 'ipv6.src', 'udp.dstport', 'udp.srcport');
+        }
+      }
+
+      for (let eventIndex = 0; eventIndex < events.length; eventIndex++) {
+        const event = events[eventIndex];
+        let insertAtIndex = event.eventIndex;
+        if (event['ip.dst'] && event['ip.src'] && event['tcp.dstport'] && event['tcp.srcport']) {
+          insertAtIndex = streamKeyTree[event['ip.dst']][event['ip.src']][event['tcp.dstport']][event['tcp.srcport']].eventIndex;
+        } else if (event['ip.dst'] && event['ip.src'] && event['udp.dstport'] && event['udp.srcport']) {
+          insertAtIndex = streamKeyTree[event['ip.dst']][event['ip.src']][event['udp.dstport']][event['udp.srcport']].eventIndex;
+        } else if (event['ipv6.dst'] && event['ipv6.src'] && event['tcp.dstport'] && event['tcp.srcport']) {
+          insertAtIndex = streamKeyTree[event['ipv6.dst']][event['ipv6.src']][event['tcp.dstport']][event['tcp.srcport']].eventIndex;
+        } else if (event['ipv6.dst'] && event['ipv6.src'] && event['udp.dstport'] && event['udp.srcport']) {
+          insertAtIndex = streamKeyTree[event['ipv6.dst']][event['ipv6.src']][event['udp.dstport']][event['udp.srcport']].eventIndex;
+        }
+
+        event.eventIndex = isEmpty(event['session.split']) ? insertAtIndex : insertAtIndex + event['session.split'];
+      }
+
+      return sort(events).asc((e) => e.eventIndex);
+    }
+  }
+);
+
 export const selectedIndex = createSelector(
-  [_sessionId, clientSortedData], // sessionId not set on refresh
+  [_sessionId, nestChildEvents], // sessionId not set on refresh
   (sessionId, data) => {
     let idx = -1;
     if (sessionId && data && data.length) {
@@ -381,7 +407,7 @@ export const selectedIndex = createSelector(
 );
 
 export const eventType = createSelector(
-  selectedIndex, clientSortedData,
+  selectedIndex, nestChildEvents,
   (index, data) => {
     const event = data ? data[index] : null;
     let type = null;
@@ -505,7 +531,7 @@ export const actualEventCount = createSelector(
 );
 
 export const getDownloadOptions = createSelector(
-  [_eventAnalysisPreferences, _items, _selectedEventIds, clientSortedData],
+  [_eventAnalysisPreferences, _items, _selectedEventIds, nestChildEvents],
   (eventAnalysisPreferences, items, selectedEventIds, data) => {
 
     let selectedEventIdsArray;

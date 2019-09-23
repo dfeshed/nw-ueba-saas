@@ -580,7 +580,11 @@ test('flattened list of columns do not include summary fields if no meta-summary
     }
   });
   const columns = getFlattenedColumnList(state);
-  assert.notOk(columns.includes('ip.dst'), 'fields from inside meta-summary should not be present');
+  assert.notOk(columns.includes('service'), 'fields from inside meta-summary should not be present');
+  assert.notOk(columns.includes('device.type'), 'fields from inside meta-summary should not be present');
+  assert.notOk(columns.includes('event.cat.name'), 'fields from inside meta-summary should not be present');
+  assert.notOk(columns.includes('ec.theme'), 'fields from inside meta-summary should not be present');
+  assert.notOk(columns.includes('category'), 'fields from inside meta-summary should not be present');
 });
 
 test('flattened list of columns do not include dupe columns if exist in list and in', function(assert) {

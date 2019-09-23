@@ -22,8 +22,9 @@ import {
   requireServiceSorting,
   groupForSortAscending,
   groupForSortDescending,
-  _nestChildEvents,
-  hideEventsForReQuery
+  hideEventsForReQuery,
+  nestChildEvents,
+  updateStreamKeyTree
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -171,9 +172,7 @@ module('Unit | Selectors | event-results', function(hooks) {
         }
       }
     }), true);
-
   });
-
 
   test('searchMatches returns empty array with no searchTerm', async function(assert) {
     const state = {
@@ -1088,28 +1087,6 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(groupForSortDescending({ toSort: 'a' }), 1);
   });
 
-  test('_nestChildEvents without data', async function(assert) {
-    assert.equal(_nestChildEvents(null), null);
-    assert.equal(_nestChildEvents(undefined), undefined);
-    assert.equal(_nestChildEvents([]).length, 0);
-  });
-
-  test('_nestChildEvents with data', async function(assert) {
-    const nested = _nestChildEvents([
-      { sessionId: 1 },
-      { sessionId: 2, 'session.split': 3 },
-      { sessionId: 3 },
-      { sessionId: 4, 'session.split': 3 },
-      { sessionId: 5, 'session.split': 3 }
-    ]);
-
-    assert.equal(nested[0].sessionId, 1);
-    assert.equal(nested[1].sessionId, 3);
-    assert.equal(nested[2].sessionId, 2);
-    assert.equal(nested[3].sessionId, 4);
-    assert.equal(nested[4].sessionId, 5);
-  });
-
   test('clientSortedData when no data', async function(assert) {
     const state = {
       investigate: {
@@ -1669,8 +1646,412 @@ module('Unit | Selectors | event-results', function(hooks) {
     };
 
     const result = clientSortedData(state);
-    assert.equal(result[0].foo, state.investigate.eventResults.data[2].foo);
-    assert.equal(result[1].foo, state.investigate.eventResults.data[0].foo);
-    assert.equal(result[2].foo, state.investigate.eventResults.data[1].foo);
+    assert.equal(result[0].foo, state.investigate.eventResults.data[2].foo, '1');
+    assert.equal(result[1].foo, state.investigate.eventResults.data[0].foo, '2');
+    assert.equal(result[2].foo, state.investigate.eventResults.data[1].foo, '3');
   });
+
+  test('nestChildEvents for tuple: ip.dst|ip.src|tcp.srcport|tcp.dstport', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 1,
+              sessionId: 1
+            },
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 2
+            },
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 0,
+              sessionId: 3
+            }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [
+            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
+            { metaName: 'ipv6.dst' },
+            { metaName: 'ipv6.src' },
+            { metaName: 'tcp.dstport' },
+            { metaName: 'tcp.srcport' },
+            { metaName: 'udp.dstport' },
+            { metaName: 'udp.srcport' }
+          ]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = nestChildEvents(state);
+    assert.equal(result[0].sessionId, 2);
+    assert.equal(result[1].sessionId, 3);
+    assert.equal(result[2].sessionId, 1);
+  });
+
+  test('nestChildEvents for tuple: ipv6.dst|ipv6.src|tcp.srcport|tcp.dstport', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            {
+              'ipv6.dst': '127.0.0.1',
+              'ipv6.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 1,
+              sessionId: 1
+            },
+            {
+              'ipv6.dst': '127.0.0.1',
+              'ipv6.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 2
+            },
+            {
+              'ipv6.dst': '127.0.0.1',
+              'ipv6.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 0,
+              sessionId: 3
+            }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [
+            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
+            { metaName: 'ipv6.dst' },
+            { metaName: 'ipv6.src' },
+            { metaName: 'tcp.dstport' },
+            { metaName: 'tcp.srcport' },
+            { metaName: 'udp.dstport' },
+            { metaName: 'udp.srcport' }
+          ]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = nestChildEvents(state);
+    assert.equal(result[0].sessionId, 2);
+    assert.equal(result[1].sessionId, 3);
+    assert.equal(result[2].sessionId, 1);
+  });
+
+  test('nestChildEvents for tuple: ipv6.dst|ipv6.src|udp.srcport|udp.dstport', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            {
+              'ipv6.dst': '127.0.0.1',
+              'ipv6.src': '127.0.0.1',
+              'udp.srcport': 25,
+              'udp.dstport': 25,
+              'session.split': 1,
+              sessionId: 1
+            },
+            {
+              'ipv6.dst': '127.0.0.1',
+              'ipv6.src': '127.0.0.1',
+              'udp.srcport': 25,
+              'udp.dstport': 25,
+              sessionId: 2
+            },
+            {
+              'ipv6.dst': '127.0.0.1',
+              'ipv6.src': '127.0.0.1',
+              'udp.srcport': 25,
+              'udp.dstport': 25,
+              'session.split': 0,
+              sessionId: 3
+            }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [
+            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
+            { metaName: 'ipv6.dst' },
+            { metaName: 'ipv6.src' },
+            { metaName: 'tcp.dstport' },
+            { metaName: 'tcp.srcport' },
+            { metaName: 'udp.dstport' },
+            { metaName: 'udp.srcport' }
+          ]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = nestChildEvents(state);
+    assert.equal(result[0].sessionId, 2);
+    assert.equal(result[1].sessionId, 3);
+    assert.equal(result[2].sessionId, 1);
+  });
+
+  test('nestChildEvents for tuple: ip.dst|ip.src|udp.srcport|udp.dstport', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'udp.srcport': 25,
+              'udp.dstport': 25,
+              'session.split': 1,
+              sessionId: 1
+            },
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'udp.srcport': 25,
+              'udp.dstport': 25,
+              sessionId: 2
+            },
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'udp.srcport': 25,
+              'udp.dstport': 25,
+              'session.split': 0,
+              sessionId: 3
+            }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [
+            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
+            { metaName: 'ipv6.dst' },
+            { metaName: 'ipv6.src' },
+            { metaName: 'tcp.dstport' },
+            { metaName: 'tcp.srcport' },
+            { metaName: 'udp.dstport' },
+            { metaName: 'udp.srcport' }
+          ]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = nestChildEvents(state);
+    assert.equal(result[0].sessionId, 2);
+    assert.equal(result[1].sessionId, 3);
+    assert.equal(result[2].sessionId, 1);
+  });
+
+  test('updateStreamKeyTree on initial pass', async function(assert) {
+    const result = updateStreamKeyTree(
+      {},
+      {
+        'ip.src': '127.0.0.1',
+        'ip.dst': '127.0.0.1',
+        'tcp.srcport': 25,
+        'tcp.dstport': 25
+      },
+      'ip.src',
+      'ip.dst',
+      'tcp.srcport',
+      'tcp.dstport'
+    );
+
+    assert.deepEqual(result, {
+      '127.0.0.1': {
+        '127.0.0.1': {
+          25: {
+            25: {
+              'ip.src': '127.0.0.1',
+              'ip.dst': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25
+            }
+          }
+        }
+      }
+    });
+  });
+
+  test('updateStreamKeyTree on overwriting previously saved parent event with definite parent', async function(assert) {
+    const result = updateStreamKeyTree(
+      {
+        '127.0.0.1': {
+          '127.0.0.1': {
+            25: {
+              25: {
+                'ip.src': '127.0.0.2',
+                'ip.dst': '127.0.0.2',
+                'tcp.srcport': 25,
+                'tcp.dstport': 25,
+                'session.split': 0
+              }
+            }
+          }
+        }
+      },
+      {
+        'ip.src': '127.0.0.1',
+        'ip.dst': '127.0.0.1',
+        'tcp.srcport': 25,
+        'tcp.dstport': 25
+      },
+      'ip.src',
+      'ip.dst',
+      'tcp.srcport',
+      'tcp.dstport'
+    );
+
+    assert.deepEqual(result, {
+      '127.0.0.1': {
+        '127.0.0.1': {
+          25: {
+            25: {
+              'ip.src': '127.0.0.1',
+              'ip.dst': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25
+            }
+          }
+        }
+      }
+    });
+  });
+
+  test('updateStreamKeyTree on overwriting previously saved parent event with earlier sibling', async function(assert) {
+    const result = updateStreamKeyTree(
+      {
+        '127.0.0.1': {
+          '127.0.0.1': {
+            25: {
+              25: {
+                'ip.src': '127.0.0.2',
+                'ip.dst': '127.0.0.2',
+                'tcp.srcport': 25,
+                'tcp.dstport': 25,
+                'session.split': 1
+              }
+            }
+          }
+        }
+      },
+      {
+        'ip.src': '127.0.0.1',
+        'ip.dst': '127.0.0.1',
+        'tcp.srcport': 25,
+        'tcp.dstport': 25,
+        'session.split': 0
+      },
+      'ip.src',
+      'ip.dst',
+      'tcp.srcport',
+      'tcp.dstport'
+    );
+
+    assert.deepEqual(result, {
+      '127.0.0.1': {
+        '127.0.0.1': {
+          25: {
+            25: {
+              'ip.src': '127.0.0.1',
+              'ip.dst': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 0
+            }
+          }
+        }
+      }
+    });
+  });
+
 });

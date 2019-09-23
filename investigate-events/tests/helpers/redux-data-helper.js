@@ -774,7 +774,7 @@ export default class DataHelper {
 
   queryStatsIsPartiallyComplete() {
     _set(this.state, 'eventResults.status', 'streaming');
-    _set(this.state, 'eventResults.data', ['foo']);
+    _set(this.state, 'eventResults.data', [{}]);
     _set(this.state, 'eventResults.streamLimit', 100);
     _set(this.state, 'eventCount.data', 100);
     return this;
@@ -789,7 +789,7 @@ export default class DataHelper {
 
   queryCanceledWithResults() {
     _set(this.state, 'eventResults.status', 'canceled');
-    _set(this.state, 'eventResults.data', ['fooo']);
+    _set(this.state, 'eventResults.data', [{}]);
     _set(this.state, 'eventCount.data', 100);
     return this;
   }
@@ -802,7 +802,7 @@ export default class DataHelper {
 
   queryStatsIsRetrieving() {
     _set(this.state, 'eventResults.status', 'streaming');
-    _set(this.state, 'eventResults.data', ['foo']);
+    _set(this.state, 'eventResults.data', [{}]);
     _set(this.state, 'eventResults.streamLimit', 100);
     _set(this.state, 'eventCount.data', 100);
     _set(this.state.queryStats, 'percent', 100);
@@ -813,7 +813,7 @@ export default class DataHelper {
 
   queryStatsIsComplete() {
     _set(this.state, 'eventResults.status', 'streaming');
-    _set(this.state, 'eventResults.data', ['foo']);
+    _set(this.state, 'eventResults.data', [{}]);
     _set(this.state, 'eventResults.streamLimit', 100);
     _set(this.state, 'eventCount.data', 100);
     _set(this.state, 'queryStats.percent', 100);

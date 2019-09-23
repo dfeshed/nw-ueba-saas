@@ -212,10 +212,22 @@ export const getFlattenedColumnList = createSelector(
   (columns, hasMetaSummaryColumn) => {
     if (columns) {
       columns = columns.map(({ field }) => field);
-      // always need sessionid, also always need nwe.callback_id
-      // because it determines if a row is for endpoint. Medium
-      // tells us if it is log/network
-      columns = [...columns, 'sessionid', 'nwe.callback_id', 'medium', 'session.split'];
+
+
+      columns = [
+        ...columns,
+        'sessionid', // always need sessionid
+        'nwe.callback_id', // determines if a row is for endpoint.
+        'medium', // tells us if it is log/network
+        'session.split', // used to determine sibling order of split sessions
+        'ip.dst', // used to find parent event when session is split
+        'ip.src', // used to find parent event when session is split
+        'ip.proto', // used to find parent event when session is split
+        'tcp.dstport', // used to find parent event when session is split
+        'tcp.srcport', // used to find parent event when session is split
+        'udp.dstport', // used to find parent event when session is split
+        'udp.srcport' // used to find parent event when session is split
+      ];
 
       // If we don't have a meta-summary column we are done
       if (!hasMetaSummaryColumn) {
@@ -234,7 +246,7 @@ export const getFlattenedColumnList = createSelector(
         }
       });
 
-      return columns;
+      return [...new Set(columns)];
     }
   }
 );

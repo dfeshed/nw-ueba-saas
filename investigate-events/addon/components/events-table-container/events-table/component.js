@@ -15,7 +15,7 @@ import {
   selectedIndex,
   dataCount,
   areAllEventsSelected,
-  clientSortedData,
+  nestChildEvents,
   SORT_ORDER
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
@@ -40,7 +40,7 @@ const stateToComputed = (state) => {
     areAllEventsSelected: areAllEventsSelected(state),
     selectedEventIds: state.investigate.eventResults.selectedEventIds,
     selectedIndex: selectedIndex(state),
-    items: clientSortedData(state),
+    items: nestChildEvents(state),
     itemsCount: dataCount(state),
     aliases: state.investigate.dictionaries.aliases,
     language: state.investigate.dictionaries.language,

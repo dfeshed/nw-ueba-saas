@@ -15,7 +15,7 @@ import {
   getDefaultPreferences
 } from 'investigate-events/reducers/investigate/data-selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { SORT_ORDER, areAllEventsSelected, clientSortedData } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { SORT_ORDER, areAllEventsSelected, nestChildEvents } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { isConsoleEmpty } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 /**
@@ -356,7 +356,7 @@ export const toggleSelectAllEvents = () => {
 
     const newIds = {};
     if (!areAllEventsSelected(getState())) {
-      const items = clientSortedData(getState());
+      const items = nestChildEvents(getState());
       for (let i = 0; i < items.length; i++) {
         newIds[i] = items[i].sessionId;
       }
