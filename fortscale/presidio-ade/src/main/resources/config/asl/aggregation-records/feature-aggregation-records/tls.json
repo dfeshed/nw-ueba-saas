@@ -434,6 +434,21 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
       }
+    },
+    {
+      "name": "numberOfDistinctNewSslSubjectForSrcIpOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "newSslSubjectHistogramSrcIpOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "newSslSubjectHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
     }
   ]
 }

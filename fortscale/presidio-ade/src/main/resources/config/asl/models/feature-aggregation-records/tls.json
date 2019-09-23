@@ -536,6 +536,22 @@
         "minNumOfMaxValuesSamples": 5,
         "minResolution": 24
       }
+    },
+    {
+      "name": "numberOfDistinctNewSslSubject.srcIpOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctNewSslSubjectForSrcIpOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
     }
   ]
 }
