@@ -1,20 +1,15 @@
 package fortscale.utils.transform.regexcaptureandformat;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import fortscale.utils.json.IJsonValueExtractor;
 import fortscale.utils.json.JsonPointerValueExtractor;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.regex.Matcher;
 
 import static org.apache.commons.lang3.Validate.notBlank;
 import static org.apache.commons.lang3.Validate.notEmpty;
-import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * Takes from a given {@link JSONObject} the string associated with {@link #sourceKey} and looks for the first
@@ -33,8 +28,8 @@ import static org.springframework.util.CollectionUtils.isEmpty;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
+@JsonTypeName("regex_captor_and_formatter")
 public class RegexCaptorAndFormatter extends AbstractJsonObjectTransformer {
-    public static final String TYPE = "regex_captor_and_formatter";
 
     private String sourceKey;
     private String destinationKey;

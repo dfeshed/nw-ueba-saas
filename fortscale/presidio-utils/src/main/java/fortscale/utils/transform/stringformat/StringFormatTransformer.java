@@ -3,6 +3,7 @@ package fortscale.utils.transform.stringformat;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.utils.json.JsonPointerValueExtractor;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import fortscale.utils.transform.SetterTransformer;
@@ -18,8 +19,8 @@ import static org.apache.commons.lang3.Validate.*;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
+@JsonTypeName("string_format")
 public class StringFormatTransformer extends AbstractJsonObjectTransformer {
-    public static final String TYPE = "string_format";
 
     private final JsonPointerValueExtractor sourceValueGetter;
     private final SetterTransformer targetValueSetter;

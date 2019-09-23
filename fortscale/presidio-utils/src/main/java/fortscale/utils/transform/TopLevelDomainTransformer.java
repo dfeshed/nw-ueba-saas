@@ -1,10 +1,7 @@
 package fortscale.utils.transform;
 
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.google.common.net.InternetDomainName;
 import fortscale.utils.json.IJsonValueExtractor;
 import fortscale.utils.json.JsonPointerValueExtractor;
@@ -20,11 +17,10 @@ import static org.apache.commons.lang3.Validate.notBlank;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
+@JsonTypeName("top_level_domain")
 public class TopLevelDomainTransformer extends AbstractJsonObjectTransformer{
     private static final Logger logger = Logger.getLogger(TopLevelDomainTransformer.class);
 
-    
-    public static final String TYPE = "top_level_domain";
     private static final boolean IS_REMOVE_SOURCE_KEY_DEFAULT = false;
 
     private String sourceKey;
