@@ -73,8 +73,8 @@ const ItemList = Component.extend({
    * highlight the item, unless it is the selected item
    */
   _onMouseOver(e) {
-    const { isExpanded, onMouse } = this.getProperties('isExpanded', 'onMouse');
-    if (isExpanded && onMouse) {
+    const onMouse = this.get('onMouse');
+    if (onMouse) {
       const el = e.target.closest('.rsa-item-list li');
       if (el) {
         const selectorAll = this.element.querySelectorAll('.rsa-item-list li');
@@ -89,34 +89,32 @@ const ItemList = Component.extend({
    * respond to Up Arrow, Down Arrow, Enter keys
    */
   _onKeyUp(e) {
-    if (this.get('isExpanded')) {
-      // prevent mouse navigation triggered by mouseover while navigating with keyboard
-      this.set('onMouse', false);
-      const filterInFocus = document.activeElement === document.querySelector('.list-filter input');
+    // prevent mouse navigation triggered by mouseover while navigating with keyboard
+    this.set('onMouse', false);
+    const filterInFocus = document.activeElement === document.querySelector('.list-filter input');
 
-      if (e.keyCode === 38) {
-      // Up Arrow - select previous item
+    if (e.keyCode === 38) {
+    // Up Arrow - select previous item
+    // do nothing if user is at filter
+      if (filterInFocus) {
+        return;
+      }
+      this.selectPrevious();
+
+    } else if (e.keyCode === 40) {
+      // Down Arrow - select next item
+      this.selectNext();
+
+    } else if (e.keyCode === 13) {
       // do nothing if user is at filter
-        if (filterInFocus) {
-          return;
-        }
-        this.selectPrevious();
-
-      } else if (e.keyCode === 40) {
-        // Down Arrow - select next item
-        this.selectNext();
-
-      } else if (e.keyCode === 13) {
-        // do nothing if user is at filter
-        if (filterInFocus) {
-          return;
-        }
-        // ENTER key - select the item at highlightedIndex
-        // if not already selected
-        const { selectedIndex, filteredList, highlightedIndex } = this.getProperties('selectedIndex', 'filteredList', 'highlightedIndex');
-        if (highlightedIndex !== selectedIndex) {
-          this.get('itemSelection')(filteredList[highlightedIndex]);
-        }
+      if (filterInFocus) {
+        return;
+      }
+      // ENTER key - select the item at highlightedIndex
+      // if not already selected
+      const { selectedIndex, filteredList, highlightedIndex } = this.getProperties('selectedIndex', 'filteredList', 'highlightedIndex');
+      if (highlightedIndex !== selectedIndex) {
+        this.get('itemSelection')(filteredList[highlightedIndex]);
       }
     }
   },

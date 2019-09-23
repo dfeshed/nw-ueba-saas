@@ -28,14 +28,13 @@ module('Integration | Component | item details', function(hooks) {
       .list(list1)
       .listName('Foos')
       .helpId(helpId1)
+      .editItemId(item.id)
       .build();
     this.set('stateLocation', listLocation1);
     this.set('itemSelection', () => {});
-    this.set('item', item);
 
     await render(hbs`{{list-manager/list-manager-container/item-details
       stateLocation=stateLocation
-      item=item
       itemSelection=itemSelection
     }}`);
 

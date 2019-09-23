@@ -21,7 +21,10 @@ const listManagerInitialState = Immutable.from({
 
 const listManagerReducer = handleActions({
   [ACTION_TYPES.INITIALIZE_LIST_MANAGER]: (state, { payload }) => {
-    return state.merge({ ...payload });
+    return state.merge({
+      ...payload,
+      filterText: ''
+    });
   },
   [ACTION_TYPES.TOGGLE_LIST_VISIBILITY]: (state) => {
     return state.merge({
@@ -34,7 +37,8 @@ const listManagerReducer = handleActions({
   [ACTION_TYPES.SET_VIEW_NAME]: (state, action) => {
     return state.merge({
       viewName: action.payload,
-      filterText: ''
+      filterText: '',
+      editItemId: undefined
     });
   },
   [ACTION_TYPES.SET_HIGHLIGHTED_INDEX]: (state, action) => {

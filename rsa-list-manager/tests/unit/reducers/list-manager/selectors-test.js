@@ -387,3 +387,14 @@ test('editItem returns editItem for stateLocation', function(assert) {
   const expected = list1[randomIndex];
   assert.deepEqual(result, expected, 'Shall select editItem based on stateLocation, list, and editItemId');
 });
+
+test('editItem returns undefined for stateLocation if no editItemId', function(assert) {
+  const state = new ReduxDataHelper()
+    .stateLocation(listLocation1)
+    .list(list1)
+    .listName(listName1)
+    .editItemId(null)
+    .build();
+  const result = editItem(state, listLocation1);
+  assert.equal(result, undefined, 'Shall return undefined for editItem if editItemId does not exist');
+});

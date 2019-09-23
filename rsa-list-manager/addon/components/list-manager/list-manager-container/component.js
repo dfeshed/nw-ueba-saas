@@ -3,9 +3,6 @@ import layout from './template';
 import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
 import {
-  EDIT_VIEW
-} from 'rsa-list-manager/constants/list-manager';
-import {
   setHighlightedIndex,
   toggleListVisibility,
   setSelectedItem,
@@ -15,19 +12,13 @@ import {
 import {
   isExpanded,
   selectedItemId,
-  isListView,
-  caption,
-  titleTooltip,
-  editItem
+  isListView
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
   isExpanded: isExpanded(state, attrs.stateLocation),
-  caption: caption(state, attrs.stateLocation),
-  titleTooltip: titleTooltip(state, attrs.stateLocation),
   selectedItemId: selectedItemId(state, attrs.stateLocation),
-  isListView: isListView(state, attrs.stateLocation),
-  editItem: editItem(state, attrs.stateLocation) // item rendered for details
+  isListView: isListView(state, attrs.stateLocation)
 });
 
 const dispatchToActions = {
@@ -77,11 +68,6 @@ const ListManagerContainer = Component.extend({
         this.send('setSelectedItem', item, this.get('stateLocation'));
       }
       this.send('toggleListVisibility', this.get('stateLocation'));
-    },
-
-    editItem(item) {
-      this.set('itemForEdit', item);
-      this._updateView(EDIT_VIEW);
     }
   }
 });

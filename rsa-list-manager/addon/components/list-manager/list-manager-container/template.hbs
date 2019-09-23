@@ -27,13 +27,11 @@
 
           {{list-manager/list-manager-container/list-footer
             stateLocation=stateLocation
-            createItem=(action 'editItem')
           }}
         {{else}}
           {{yield (hash
               details=(component 'list-manager/list-manager-container/item-details'
                 stateLocation=stateLocation
-                item=editItem
                 itemSelection=(action 'handleItemSelection')
               )
             )

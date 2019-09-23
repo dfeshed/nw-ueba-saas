@@ -40,6 +40,7 @@ test('ACTION_TYPES.INITIALIZE_LIST_MANAGER updates values', function(assert) {
   const result = reducer(prevState, action);
   assert.equal(result.stateLocation, listLocation1, 'stateLocation shall be set');
   assert.equal(result.listName, listName1, 'listName shall be set');
+  assert.equal(result.filterText, '', 'filterText shall be set');
   assert.deepEqual(result.list, list1, 'list shall be set');
   assert.deepEqual(result.selectedItemId, list1[0].id, 'selectedItemId shall be set');
   assert.deepEqual(result.helpId, helpId1, 'helpId shall be set');
@@ -113,9 +114,10 @@ test('ACTION_TYPES.SET_SELECTED_ITEM_ID sets selectedItemId', function(assert) {
   assert.deepEqual(result.selectedItemId, item1.id, 'selectedItemId shall be set correctly');
 });
 
-test('ACTION_TYPES.SET_VIEW_NAME sets viewName', function(assert) {
+test('ACTION_TYPES.SET_VIEW_NAME sets viewName and resets editItemId', function(assert) {
   const prevState = Immutable.from({
-    viewName: undefined
+    viewName: undefined,
+    editItemId: 1111
   });
 
   const action = {
@@ -125,6 +127,7 @@ test('ACTION_TYPES.SET_VIEW_NAME sets viewName', function(assert) {
 
   const result = reducer(prevState, action);
   assert.equal(result.viewName, 'some-view', 'viewName shall be set correctly');
+  assert.notOk(result.editItemId, 'editItemId shall be reset');
 });
 
 test('ACTION_TYPES.EDIT_ITEM sets editItemId and viewName', function(assert) {

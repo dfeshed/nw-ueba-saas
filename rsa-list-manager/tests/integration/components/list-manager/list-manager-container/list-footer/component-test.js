@@ -24,20 +24,17 @@ module('Integration | Component | list footer', function(hooks) {
   const listName1 = 'Meta Groups';
 
   test('renders footer for list with correct components', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
     new ReduxDataHelper(setState)
       .stateLocation(listLocation1)
       .list(originalList)
       .listName(listName1)
       .build();
     this.set('stateLocation', listLocation1);
-    this.set('editItem', () => {
-      assert.ok(true, 'clicking button executes editItem');
-    });
 
     await render(hbs`{{list-manager/list-manager-container/list-footer
       stateLocation=stateLocation
-      createItem=editItem }}`);
+      }}`);
 
     assert.ok(find('footer.list-footer'));
     assert.notOk(find('.list-help-icon'), 'Help Icon not available');
@@ -48,7 +45,7 @@ module('Integration | Component | list footer', function(hooks) {
   });
 
   test('renders help icon if provided', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
     const helpId1 = { topicId: 'foo', moduleId: 'bar' };
     new ReduxDataHelper(setState)
       .stateLocation(listLocation1)
@@ -57,13 +54,10 @@ module('Integration | Component | list footer', function(hooks) {
       .listName(listName1)
       .build();
     this.set('stateLocation', listLocation1);
-    this.set('editItem', () => {
-      assert.ok(true, 'clicking New Meta Group button executes editItem');
-    });
 
     await render(hbs`{{list-manager/list-manager-container/list-footer
       stateLocation=stateLocation
-      createItem=editItem }}`);
+      }}`);
 
     assert.ok(find('footer.list-footer'));
     assert.ok(find('.list-help-icon button'), 'Help Icon available');

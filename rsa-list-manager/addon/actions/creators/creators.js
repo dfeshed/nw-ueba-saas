@@ -1,5 +1,6 @@
 import * as ACTION_TYPES from 'rsa-list-manager/actions/types';
 import { isExpanded } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { EDIT_VIEW } from 'rsa-list-manager/constants/list-manager';
 
 /**
  *
@@ -32,6 +33,8 @@ export const setFilterText = (text, stateLocation) => ({
   meta: { belongsTo: stateLocation }
 });
 
+export const resetFilterText = (stateLocation) => setFilterText('', stateLocation);
+
 export const viewChanged = (viewname, stateLocation) => ({
   type: ACTION_TYPES.SET_VIEW_NAME,
   payload: viewname,
@@ -49,6 +52,8 @@ export const editItem = (editItemId, stateLocation) => ({
   payload: editItemId,
   meta: { belongsTo: stateLocation }
 });
+
+export const beginCreateItem = (stateLocation) => viewChanged(EDIT_VIEW, stateLocation);
 
 export const closeListManager = (stateLocation) => {
   return (dispatch, getState) => {
