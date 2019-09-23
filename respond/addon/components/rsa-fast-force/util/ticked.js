@@ -10,18 +10,37 @@ import linkCoords from 'respond/utils/force-layout/link-coords';
  */
 export default function() {
 
+  const {
+    isDragging,
+    arrowWidth,
+    shouldShowNodes,
+    shouldShowLinks,
+    alphaStop,
+    autoCenter,
+    dataHasBeenDragged,
+    userHasZoomed
+  } = this.getProperties(
+    'isDragging',
+    'arrowWidth',
+    'shouldShowNodes',
+    'shouldShowLinks',
+    'alphaStop',
+    'autoCenter',
+    'dataHasBeenDragged',
+    'userHasZoomed'
+  );
+
   const alphaCurrent = this.simulation.alpha();
   this.set('alphaCurrent', alphaCurrent);
 
-  const isDragging = this.get('isDragging');
-  const arrowWidth = this.get('arrowWidth');
-
-  if (!this.get('shouldHideNodes')) {
+  if (shouldShowNodes) {
     this.joined.nodes
       .attr('transform', (d) => `translate(${d.x},${d.y})`);
   }
 
-  if (!this.get('shouldHideLinks')) {
+  const shouldStop = !isDragging && (alphaCurrent <= alphaStop);
+  this.set('shouldShowLinkText', !isDragging && shouldStop);
+  if (shouldShowLinks) {
     this.joined.links
       .each((d) => {
         const { source, target } = d;
@@ -51,8 +70,6 @@ export default function() {
       .attr('transform', (d) => d.coords.arrowTransform);
   }
 
-  const shouldStop = !isDragging && (alphaCurrent <= this.get('alphaStop'));
-
   // Determine if we should auto-center the nodes visually. Don't want to disrupt the user's workflow.
   const alphaMagnitudeWas = this._lastAlphaMagnitude;
   const alphaMagnitudeIs = (Math.log(alphaCurrent) / Math.log(10)).toFixed(0);
@@ -61,10 +78,10 @@ export default function() {
     this._lastAlphaMagnitude = alphaMagnitudeIs;
   }
 
-  const shouldAutoCenter = this.get('autoCenter') &&
+  const shouldAutoCenter = autoCenter &&
     (shouldStop || alphaChangedSignificantly) && // simulation is done or has cooled substantially
-    !this.get('dataHasBeenDragged') && // user has not dragged
-    !this.get('userHasZoomed'); // user has not manually zoomed
+    !dataHasBeenDragged && // user has not dragged
+    !userHasZoomed; // user has not manually zoomed
 
   if (shouldAutoCenter) {
     // For auto center, use a slower duration than the default so we don't startle the user.

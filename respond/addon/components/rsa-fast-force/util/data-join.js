@@ -25,7 +25,7 @@ function truncateText(text, type) {
 function dragstarted(d) {
   this.set('isDragging', true);
   if (!event.active) {
-    this.simulation.alphaTarget(0.0075).restart();
+    this.simulation.alphaTarget(0.1).restart();
   }
   d.fx = d.x;
   d.fy = d.y;
@@ -42,6 +42,12 @@ function dragended() {
     isDragging: false,
     dataHasBeenDragged: true
   });
+}
+
+function unpin(d) {
+  d.fx = null;
+  d.fy = null;
+  event.stopPropagation();
 }
 
 /**
@@ -88,6 +94,7 @@ export default function() {
       .on('drag', run.bind(this, dragged))
       .on('end', run.bind(this, dragended))
   );
+  nodesEnterGroup.on('dblclick', run.bind(this, unpin));
 
   // Now update the radii of all the nodes.
   const nodesUpdate = nodesEnterGroup.merge(nodesAll);

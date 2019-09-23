@@ -52,6 +52,8 @@ function makeNode(type, value) {
     type,
     value,
     text: value,
+    incomingLinks: [],
+    outgoingLinks: [],
     events: []
   };
 }

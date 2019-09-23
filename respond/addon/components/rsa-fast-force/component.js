@@ -6,8 +6,7 @@ import {
   forceSimulation,
   forceLink,
   forceManyBody,
-  forceCollide,
-  forceCenter
+  forceCollide
 } from 'd3-force';
 import { select } from 'd3-selection';
 import { zoom } from 'd3-zoom';
@@ -16,12 +15,16 @@ import filterJoin from './util/filter-join';
 import ticked from './util/ticked';
 import zoomed from './util/zoomed';
 import center from './util/center';
+import connectedComponents from 'respond/utils/force-layout/connected-components';
+import initializePositions from 'respond/utils/force-layout/initialize-positions';
+import normalizeLinks from 'respond/utils/force-layout/normalize-links';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 import { run } from '@ember/runloop';
 import { isNumeric } from 'component-lib/utils/jquery-replacement';
 import { max } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
 import { isEmpty } from '@ember/utils';
+import NodeTypes from 'respond/utils/entity/node-types';
 
 /**
  * @class d3 Fast Force Layout component
@@ -40,18 +43,16 @@ export default Component.extend({
   tagName: 'div',
   layout,
   classNames: 'rsa-force-layout',
-  classNameBindings: ['shouldShowNodes:show-nodes:hide-nodes', 'shouldShowLinks:show-links:hide-links', 'isDragging'],
+  classNameBindings: ['shouldShowNodes:show-nodes:hide-nodes', 'shouldShowLinks:show-links:hide-links', 'shouldShowLinkText:show-link-text:hide-link-text', 'isDragging'],
   attributeBindings: ['zoom:data-zoom'],
 
   // d3 force layout configuration properties.
   // For details, see d3 API docs: https://github.com/mbostock/d3/wiki/Force-Layout
-  charge: -1000,
-  chargeDistance: 250,
-  collideStrength: 0.4, // strength of force that prevents node collisions (d3's default = 0.7)
-  linkStrength: 0.01, // weak link strength works better with variable node radii
-  linkDistance: 150,
-  centerX: null, // centering forces produce confusing physics for users; disable by default
-  centerY: null,
+  cluster: 50,
+  clusterDistanceMax: 1000,
+  collideStrength: 0.7, // strength of force that prevents node collisions (d3's default = 0.7)
+  repelStrength: -400,
+  repelDistanceMax: -400,
   alphaInitial: 0.5,
 
   /**
@@ -105,41 +106,11 @@ export default Component.extend({
    */
   alphaResumeMin: 0.05,
 
-  /**
-   * Determines whether nor not nodes should be shown. Nodes are initially shown only after the simulation's alpha has
-   * sufficiently cooled down to `alphaShowNodes` or less.  However, once nodes are shown, they continue to always be
-   * shown, even if the simulation gets hot again later (e.g., new data records stream in).
-   * @public
-   */
-  @computed('alphaCurrent', 'alphaShowNodes')
-  shouldShowNodes(current, limit) {
-    if (this._nodesWereShown) {
-      return true;
-    } else if (!limit || (current <= limit)) {
-      this._nodesWereShown = true;
-      return true;
-    } else {
-      return false;
-    }
-  },
+  shouldShowNodes: true,
 
-  /**
-   * Determines whether nor not links should be shown. Links are initially shown only after the simulation's alpha has
-   * sufficiently cooled down to `alphaShowLinks` or less.  However, once links are shown, they continue to always be
-   * shown, even if the simulation gets hot again later (e.g., new data records stream in).
-   * @public
-   */
-  @computed('alphaCurrent', 'alphaHideLinks')
-  shouldShowLinks(current, limit) {
-    if (this._linksWereShown) {
-      return true;
-    } else if (!limit || (current <= limit)) {
-      this._linksWereShown = true;
-      return true;
-    } else {
-      return false;
-    }
-  },
+  shouldShowLinks: true,
+
+  shouldShowLinkText: false,
 
   /**
    * Configurable maximum radius of the node circles.
@@ -547,6 +518,12 @@ export default Component.extend({
     nodes.forEach(function(d) {
       d.r = radialScale(radialAccessor(d));
     });
+    const numGroups = connectedComponents(nodes);
+    initializePositions(nodes);
+    normalizeLinks(links);
+
+    // Define a cluster force that can attract nodes of the same type.
+    this.reapplyClusterForces(numGroups);
 
     // Compute the link stroke widths and store in the data for future reference (e.g., DOM rendering).
     const { linkWidthAccessor, linkWidthScale } = this.getProperties('linkWidthAccessor', 'linkWidthScale');
@@ -646,6 +623,60 @@ export default Component.extend({
     }
   },
 
+  /*
+  * NOTE: The cluster force is unique in the sense that it may depend not only on just the
+  * simulation ( like collide and link ),but also on the nodes themselves.
+  *
+  * This is because the number of cluster forces to create depends on the number on cluster we want to
+  * apply the force to. One variant is to cluster only by node-type, in which case the the number
+  * of forces is nodes-independent. However this causes clusters in disjoint graphs to attract to each other, as
+  * experienced by Sean in one of the test environments. We can potentially cluster by a combination of
+  * node-type & disjoint group, with the caveat that this will create a large num. of cluster forces, and that we will
+  * have to appropriately clean up the 'old' forces, and reapply the new ones.
+  * */
+  reapplyClusterForces(numGroups) {
+    const {
+      simulation,
+      cluster,
+      clusterDistanceMax
+    } = this.getProperties(
+      'simulation',
+      'cluster',
+      'clusterDistanceMax'
+    );
+
+    // iteratively search for existing cluster forces since we don't have numGroups for the previous nodes. When
+    // the force() methods returns null, it means we have hit all cluster forces.
+    let clusterForcesRemaining = true;
+    for (let i = 1; clusterForcesRemaining; i++) {
+      if (simulation.force(`cluster-host-group-${i}`)) {
+        simulation.force(`cluster-host-group-${i}`, null);
+        simulation.force(`cluster-ip-group-${i}`, null);
+      } else {
+        clusterForcesRemaining = false;
+      }
+    }
+
+    // for each (disjoint-group, node-type) pair, create a new cluster force. For eg. if there are 3 disjoint groups,
+    // there will be 6 cluster forces, 3 for IP and 3 for HOST.
+    const typesToCluster = ['host', 'ip'];
+    const entityTypes = Object.values(NodeTypes);
+    for (let i = 0; i < entityTypes.length; i++) {
+      for (let j = 1; j <= numGroups; j++) {
+        if (typesToCluster.includes(entityTypes[i])) {
+          const clusterForce = forceManyBody()
+            .strength(cluster)
+            .distanceMax(clusterDistanceMax);
+          const origInitFunc = clusterForce.initialize;
+          clusterForce.initialize = function(nodes) {
+            origInitFunc.call(clusterForce, nodes.filter((node) => node.type === entityTypes[i] && node.ccGroup === j));
+          };
+          simulation.force(`cluster-${entityTypes[i]}-group-${j}`, clusterForce);
+        }
+      }
+    }
+  },
+
   // Creates a d3 force simulation with configurable forces.
   // Caches some frequently used DOM in component, for performance.
   _initSimulation() {
@@ -654,59 +685,37 @@ export default Component.extend({
     }
 
     const simulation = this.simulation = forceSimulation();
+    simulation.stop();
 
     const {
-      linkDistance,
-      linkStrength,
+      repelStrength,
+      repelDistanceMax,
       collideStrength,
-      charge,
-      chargeDistance,
-      centerX,
-      centerY,
-      nodeMaxRadius,
       nodeMaxStrokeWidth
     } = this.getProperties(
-      'linkDistance',
-      'linkStrength',
+      'repelStrength',
+      'repelDistanceMax',
       'collideStrength',
-      'charge',
-      'chargeDistance',
-      'centerX',
-      'centerY',
-      'nodeMaxRadius',
       'nodeMaxStrokeWidth'
     );
 
     // Define a link force that pulls nodes together.
-    if (linkDistance && linkStrength) {
-      const linkForce = forceLink()
-        .id((d) => d.id)
-        .distance(linkDistance)
-        .strength(linkStrength);
-      simulation.force('link', linkForce);
-    }
-
-    // Define a charge force that can repel or attract nodes.
-    if (charge && chargeDistance) {
-      const chargeForce = forceManyBody()
-        .strength(charge)
-        .distanceMax(chargeDistance);
-      simulation.force('charge', chargeForce);
-    }
-
-    // Define a force the centers the nodes around a given coordinate.
-    if (isNumeric(centerX) && isNumeric(centerY)) {
-      const centerForce = forceCenter(centerX, centerY);
-      simulation.force('center', centerForce);
-    }
+    const linkForce = forceLink()
+      .id((d) => d.id)
+      .distance((l) => l.linkDistance)
+      .strength((l) => l.linkStrength);
+    simulation.force('link', linkForce);
 
     // Define a force that prevents node collisions (overlap).
     if (collideStrength) {
       const collideForce = forceCollide()
-        .radius(nodeMaxRadius + nodeMaxStrokeWidth * 2)
+        .radius((d) => d.r + nodeMaxStrokeWidth)
         .strength(collideStrength);
       simulation.force('collide', collideForce);
     }
+
+    const repelForce = forceManyBody().distanceMax(repelDistanceMax).strength(repelStrength);
+    simulation.force('repel', repelForce);
 
     // Wire up tick handler that applies simulation coordinates to DOM.
     simulation.on('tick', run.bind(this, 'ticked'));

@@ -90,7 +90,12 @@ function checkLink(linkType, sourceNode, targetNode, linkHash, evt) {
 
     // No link exists yet for this. Create a new link for it.
     link = linkHash[linkKey] = makeLink(linkType, sourceNode, targetNode);
+    sourceNode.outgoingLinks.push(link);
+    targetNode.incomingLinks.push(link);
   }
+
+  // add the link to outgoingLinks for srcNode and incomingLinks for targetNode
+
 
   // Now that we have a link, add this event to that link's event list.
   link.events.pushObject(evt);
@@ -100,26 +105,26 @@ function checkLink(linkType, sourceNode, targetNode, linkHash, evt) {
 // not already found in the given node hash.
 // Returns the collection of found/made nodes, keyed by node type.
 function checkDeviceNodes(device, nodeHash, evt) {
-  const nodes = {};
+  const deviceNode = {};
   if (device) {
     Object.keys(DEVICE_PROPS_TO_NODE_TYPES).forEach((prop) => {
       const type = DEVICE_PROPS_TO_NODE_TYPES[prop];
       const node = checkNode(type, device[prop], nodeHash, evt);
       if (node) {
-        nodes[type] = node;
+        deviceNode[type] = node;
       }
     });
   }
-  return nodes;
+  return deviceNode;
 }
 
 // Makes links among a given set of nodes for a device & user, if they are not already found in the given link hash.
 // Additionally, the given event POJO is added to the events array of each found/created link.
-function checkDeviceAndUserLinks(deviceNodes, userNode, linkHash, evt) {
-  checkLink(LinkTypes.AS, deviceNodes[NodeTypes.HOST], deviceNodes[NodeTypes.IP], linkHash, evt);
-  checkLink(LinkTypes.BELONGS_TO, deviceNodes[NodeTypes.MAC], deviceNodes[NodeTypes.HOST] || deviceNodes[NodeTypes.IP] || deviceNodes[NodeTypes.DOMAIN], linkHash, evt);
-  checkLink(LinkTypes.BELONGS_TO, deviceNodes[NodeTypes.HOST] || deviceNodes[NodeTypes.IP], deviceNodes[NodeTypes.DOMAIN], linkHash, evt);
-  checkLink(LinkTypes.USES, userNode, deviceNodes[NodeTypes.HOST] || deviceNodes[NodeTypes.IP] || deviceNodes[NodeTypes.MAC] || deviceNodes[NodeTypes.DOMAIN], linkHash, evt);
+function checkDeviceAndUserLinks(deviceNode, userNode, linkHash, evt) {
+  checkLink(LinkTypes.AS, deviceNode[NodeTypes.HOST], deviceNode[NodeTypes.IP], linkHash, evt);
+  checkLink(LinkTypes.BELONGS_TO, deviceNode[NodeTypes.MAC], deviceNode[NodeTypes.HOST] || deviceNode[NodeTypes.IP] || deviceNode[NodeTypes.DOMAIN], linkHash, evt);
+  checkLink(LinkTypes.BELONGS_TO, deviceNode[NodeTypes.HOST] || deviceNode[NodeTypes.IP], deviceNode[NodeTypes.DOMAIN], linkHash, evt);
+  checkLink(LinkTypes.USES, userNode, deviceNode[NodeTypes.HOST] || deviceNode[NodeTypes.IP] || deviceNode[NodeTypes.MAC] || deviceNode[NodeTypes.DOMAIN], linkHash, evt);
 }
 
 // Searches the given node & link hashes for nodes & links that represent the entities mentioned in the given event.
@@ -138,18 +143,18 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
 
   // Generate nodes for the source & dest devices, if any.
   // For the source device, first try parsing nodes from 'source.device'.
-  let sourceDeviceNodes = checkDeviceNodes(sourceDevice, nodeHash, evt);
-  if (!Object.keys(sourceDeviceNodes).length) {
+  let sourceDeviceNode = checkDeviceNodes(sourceDevice, nodeHash, evt);
+  if (!Object.keys(sourceDeviceNode).length) {
     // No nodes parsed from 'source.device', so try parsing from 'detector'.
-    sourceDeviceNodes = checkDeviceNodes(detector, nodeHash, evt);
+    sourceDeviceNode = checkDeviceNodes(detector, nodeHash, evt);
   }
   // For the destination device, first try parsing nodes from 'destination.device'.
-  const destDeviceNodes = checkDeviceNodes(destinationDevice, nodeHash, evt);
-  if (!destDeviceNodes[NodeTypes.HOST]) {
+  const destDeviceNode = checkDeviceNodes(destinationDevice, nodeHash, evt);
+  if (!destDeviceNode[NodeTypes.HOST]) {
     // No host parsed from 'destination.device', so try parsing host name from 'event.domain'.
     // Ironically, the 'event.domain' field is actually a misnomer. Normalization scripts populate it from the
     // 'alias.host' meta key, which is actually read from the HTTP HOST header in Network events.
-    destDeviceNodes[NodeTypes.HOST] = checkNode(NodeTypes.HOST, evt.domain, nodeHash, evt);
+    destDeviceNode[NodeTypes.HOST] = checkNode(NodeTypes.HOST, evt.domain, nodeHash, evt);
   }
 
   // Generate nodes for the source & dest users, if any.
@@ -157,21 +162,21 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
   const destUserNode = checkNode(NodeTypes.USER, destinationUsername, nodeHash, evt);
 
   // Generate links among the nodes for source device & source user.
-  checkDeviceAndUserLinks(sourceDeviceNodes, sourceUserNode, linkHash, evt);
+  checkDeviceAndUserLinks(sourceDeviceNode, sourceUserNode, linkHash, evt);
 
   // Generate links among the nodes for destination device & destination user.
-  checkDeviceAndUserLinks(destDeviceNodes, destUserNode, linkHash, evt);
+  checkDeviceAndUserLinks(destDeviceNode, destUserNode, linkHash, evt);
 
   // Generate a link between the source & dest "anchor" nodes.
-  const sourceAnchorNode = sourceDeviceNodes[NodeTypes.IP] ||
-    sourceDeviceNodes[NodeTypes.MAC] ||
-    sourceDeviceNodes[NodeTypes.HOST] ||
-    sourceDeviceNodes[NodeTypes.DOMAIN] ||
+  const sourceAnchorNode = sourceDeviceNode[NodeTypes.IP] ||
+    sourceDeviceNode[NodeTypes.MAC] ||
+    sourceDeviceNode[NodeTypes.HOST] ||
+    sourceDeviceNode[NodeTypes.DOMAIN] ||
     sourceUserNode;
-  const destAnchorNode = destDeviceNodes[NodeTypes.IP] ||
-    destDeviceNodes[NodeTypes.MAC] ||
-    destDeviceNodes[NodeTypes.HOST] ||
-    destDeviceNodes[NodeTypes.DOMAIN] ||
+  const destAnchorNode = destDeviceNode[NodeTypes.IP] ||
+    destDeviceNode[NodeTypes.MAC] ||
+    destDeviceNode[NodeTypes.HOST] ||
+    destDeviceNode[NodeTypes.DOMAIN] ||
     destUserNode;
   checkLink(LinkTypes.COMMUNICATES_WITH, sourceAnchorNode, destAnchorNode, linkHash, evt);
 

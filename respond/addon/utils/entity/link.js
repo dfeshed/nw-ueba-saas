@@ -1,5 +1,50 @@
+import LinkTypes from './link-types';
+
 // Delimiter used in link ids between link type, link source & link target.
 const LINK_ID_DELIM = '||';
+
+function getLinkDistance(type) {
+  if (!type) {
+    return 350;
+  }
+  switch (type) {
+    case LinkTypes.BELONGS_TO:
+      return 125;
+    case LinkTypes.IS_NAMED:
+      return 125;
+    case LinkTypes.AS:
+      return 125;
+    case LinkTypes.HAS_FILE:
+      return 235;
+    case LinkTypes.COMMUNICATES_WITH:
+      return 350;
+    case LinkTypes.LAUNCHES:
+      return 350;
+    case LinkTypes.USES:
+      return 350;
+  }
+}
+
+function getLinkStrength(type) {
+  switch (type) {
+    case LinkTypes.BELONGS_TO:
+      return 1;
+    case LinkTypes.IS_NAMED:
+      return 1;
+    case LinkTypes.AS:
+      return 1;
+    case LinkTypes.HAS_FILE:
+      return 1;
+    case LinkTypes.COMMUNICATES_WITH:
+      return 0.2;
+    case LinkTypes.LAUNCHES:
+      return 0.1;
+    case LinkTypes.USES:
+      return 0.5;
+    default:
+      return 1;
+  }
+}
 
 /**
  * Generates a unique identifier for a given link type + source node + target node.
@@ -54,6 +99,8 @@ function makeLink(type, source, target) {
     text: type,
     source,
     target,
+    linkDistance: getLinkDistance(type),
+    linkStrength: getLinkStrength(type),
     events: []
   };
 }
