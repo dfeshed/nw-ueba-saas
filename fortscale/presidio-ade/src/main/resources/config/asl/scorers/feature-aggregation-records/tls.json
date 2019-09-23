@@ -994,6 +994,41 @@
           ]
         }
       ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctNewDstCountryForSrcIpOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctNewDstCountry.srcIpOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctNewDstCountry.srcIpOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctNewDstCountry.srcIpOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctNewDstCountry.srcIpOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
     }
   ]
 }
