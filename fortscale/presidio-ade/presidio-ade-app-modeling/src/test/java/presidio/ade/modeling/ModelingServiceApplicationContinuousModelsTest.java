@@ -6,6 +6,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.ml.model.*;
 import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderConf;
+import fortscale.ml.model.retriever.AbstractAggregatedFeatureValueRetrieverConf;
 import fortscale.ml.model.selector.AggregatedEventContextSelectorConf;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
@@ -155,7 +156,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
         List<ModelConf> continuousMaxModelConfs = modelConfs.stream().filter(x -> x.getModelBuilderConf() instanceof ContinuousMaxHistogramModelBuilderConf).collect(Collectors.toList());
 
         continuousMaxModelConfs.forEach(modelConf -> {
-           String aggregatedFeatureName = ((AggregatedEventContextSelectorConf)modelConf.getContextSelectorConf()).getAggregatedFeatureEventConfName();
+           String aggregatedFeatureName = ((AbstractAggregatedFeatureValueRetrieverConf)modelConf.getDataRetrieverConf()).getAggregatedFeatureEventConfName();
 
             AggregatedFeatureEventConf aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
                     .getAggregatedFeatureEventConf(aggregatedFeatureName);
