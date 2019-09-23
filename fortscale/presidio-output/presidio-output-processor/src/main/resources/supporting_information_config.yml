@@ -1926,6 +1926,23 @@ indicators:
     featureName: sumOfBytesSentToNewDstPortSslSubjectOutboundTlsHourly
   classification: data_exfiltration
 
+- id: sumOfBytesSentToNewJa3OutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_to_new_ja3_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - ja3.name
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+    - fieldName: ja3.isNewOccurrence
+      fieldValue: true
+  historicalData:
+    type: hourly_aggregations
+  classification: data_exfiltration
+
 #***************************************
 #*                ja3                  *
 #***************************************

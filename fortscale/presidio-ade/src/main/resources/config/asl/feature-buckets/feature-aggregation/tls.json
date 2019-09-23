@@ -947,6 +947,41 @@
           }
         }
       ]
+    },
+    {
+      "name": "numOfBytesSentSummationToNewJa3OutboundTlsHourly",
+      "contextFieldNames": [
+        "ja3.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "ja3.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
     }
   ]
 }

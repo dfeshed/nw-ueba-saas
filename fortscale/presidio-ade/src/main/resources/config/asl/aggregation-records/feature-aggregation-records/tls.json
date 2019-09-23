@@ -419,6 +419,21 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
       }
+    },
+    {
+      "name": "sumOfBytesSentToNewJa3OutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationToNewJa3OutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
     }
   ]
 }
