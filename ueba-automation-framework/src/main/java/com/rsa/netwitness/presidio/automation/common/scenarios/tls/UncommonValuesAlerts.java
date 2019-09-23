@@ -23,7 +23,7 @@ public class UncommonValuesAlerts extends NetworkScenarioBase{
     // uncommon destPort for ja3, sslsubj, SrcNetname, DestOrg, Domain
     public Stream<NetworkEvent> uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(int index) {
 
-        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
+        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen(), String.valueOf(index));
         List<NetworkEvent> events = regularGen.modify()
                 .fixDstPort()
                 .setJa3EntityValue(Ja3Entity(index))
@@ -33,7 +33,7 @@ public class UncommonValuesAlerts extends NetworkScenarioBase{
                 .fixFqdn()
                 .generate();
 
-        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUncommonTimeGen());
+        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUncommonTimeGen(), String.valueOf(index));
         uncommonGen.modify()
                 .nextDstPort()
                 .setJa3EntityValue(Ja3Entity(index))
@@ -50,7 +50,7 @@ public class UncommonValuesAlerts extends NetworkScenarioBase{
     // uncommon domain sslSubj DestOrganisation, startInstant for ja3, srcNetname,
     public Stream<NetworkEvent> uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(int index) {
 
-        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
+        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen(), String.valueOf(index));
         List<NetworkEvent> events = regularGen.modify()
                 .fixFqdn()
                 .setSSLSubjectEntityValue(SSLSubjEntity(index * 100))
@@ -60,12 +60,12 @@ public class UncommonValuesAlerts extends NetworkScenarioBase{
                 .setDistinctSrcIps(5,7)
                 .generate();
 
-        NetworkEventsGenerator sslSubjGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
+        NetworkEventsGenerator sslSubjGen = new NetworkEventsGenerator(getDefaultRegularTimeGen(), String.valueOf(index));
         sslSubjGen.modify()
                 .setSSLSubjectEntityValue(SSLSubjEntity(index))
                 .generateAndAppendTo(events);
 
-        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUnregularHoursTimeGen());
+        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUnregularHoursTimeGen(), String.valueOf(index));
         uncommonGen.modify()
                 .nextFqdn()
                 .setSSLSubjectEntityValue(SSLSubjEntity(index))
@@ -82,7 +82,7 @@ public class UncommonValuesAlerts extends NetworkScenarioBase{
     // uncommon ja3 startInstant country for srcNetname sslSubj
     public Stream<NetworkEvent>  uncommonJa3StartInstantCountryForSrcNetnameSslSubj(int index) {
 
-        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
+        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen(), String.valueOf(index));
         List<NetworkEvent> events = regularGen.modify()
                 .setJa3EntityValue(Ja3Entity(index * 100))
                 .fixLocation()
@@ -90,12 +90,12 @@ public class UncommonValuesAlerts extends NetworkScenarioBase{
                 .fixSourceNetname()
                 .generate();
 
-        NetworkEventsGenerator ja3Gen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
+        NetworkEventsGenerator ja3Gen = new NetworkEventsGenerator(getDefaultRegularTimeGen(), String.valueOf(index));
         ja3Gen.modify()
                 .setJa3EntityValue(Ja3Entity(index))
                 .generateAndAppendTo(events);
 
-        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUnregularHoursTimeGen());
+        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUnregularHoursTimeGen(), String.valueOf(index));
         uncommonGen.modify()
                 .setJa3EntityValue(Ja3Entity(index))
                 .nextLocation()
