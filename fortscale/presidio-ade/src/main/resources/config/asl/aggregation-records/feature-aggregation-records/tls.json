@@ -524,6 +524,21 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_distinct_multi_key_values_counter_func"
       }
+    },
+    {
+      "name": "numberOfDistinctSrcIpForNewDstCountryOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "srcIpHistogramNewDstCountryOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "srcIpHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
     }
   ]
 }
