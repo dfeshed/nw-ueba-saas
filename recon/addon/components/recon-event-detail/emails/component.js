@@ -11,7 +11,6 @@ import {
 const stateToComputed = ({ recon, recon: { data, emails } }) => ({
   emails: emails.emails,
   renderIds: data,
-  renderedAll: recon.emails.renderedAll,
   hasRenderIds: hasRenderIds(recon),
   renderedEmails: renderedEmails(recon),
   hasNoEmailContent: hasNoEmailContent(recon),

@@ -15,10 +15,11 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
 
   test('renders single email body content, if response is not splitted and body content is less then 10K characters', async function(assert) {
     this.set('email', EmberObject.create(emailData[1]));
-    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email renderedAll=true}}`);
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
     return wait().then(() => {
       assert.ok(find('.email-body-text'), 'show single email message content');
-      assert.notOk(find('.email-show-more'), 'do not display show more button');
+      assert.notOk(find('.email-show-remaining'), 'do not display show remaining button percentage');
+      assert.notOk(find('.rendered-email-percent'), 'do not display rendered content percentage');
       assert.equal(_first200(find('iframe').contentDocument.body.innerText), 'emailmessagetext2...');
     });
   });
@@ -34,10 +35,11 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     };
     patchReducer(this, Immutable.from(state));
     this.set('email', EmberObject.create(emailData[0]));
-    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email renderedAll=false}}`);
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
     return wait().then(() => {
       assert.ok(find('.email-body-text'), 'show single email message content');
-      assert.ok(find('.email-show-more'), 'display show more button');
+      assert.equal(find('.rendered-email-percent').textContent.trim(), 'Showing 75%', 'display rendered content with percentage');
+      assert.equal(find('.email-show-remaining').textContent.trim(), 'Show Remaining 25%', 'display show remaining button with percentage');
       assert.equal(find('iframe').contentDocument.body.innerText.length, 10000, '10000 characters of email content has rendered');
     });
   });
@@ -53,13 +55,15 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     };
     patchReducer(this, Immutable.from(state));
     this.set('email', EmberObject.create(emailData[0]));
-    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email renderedAll=false}}`);
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
     assert.ok(find('.email-body-text'), 'show single email message content');
-    assert.ok(find('.email-show-more'), 'display show more button');
-    await click('.email-show-more .rsa-form-button');
+    assert.equal(find('.rendered-email-percent').textContent.trim(), 'Showing 75%', 'display rendered content with percentage');
+    assert.equal(find('.email-show-remaining').textContent.trim(), 'Show Remaining 25%', 'display show remaining button with percentage');
+    await click('.email-show-remaining .rsa-form-button');
     return wait().then(() => {
       assert.equal(find('iframe').srcdoc.length, 13258, 'remaining characters of email content has rendered on show more');
-      assert.notOk(find('.email-show-more'), 'do not display show more button');
+      assert.notOk(find('.email-show-remaining'), 'do not display show remaining button percentage');
+      assert.notOk(find('.rendered-email-percent'), 'do not display rendered content percentage');
     });
   });
 
@@ -74,19 +78,21 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     };
     patchReducer(this, Immutable.from(state));
     this.set('email', EmberObject.create(emailData[3]));
-    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email renderedAll=false}}`);
-    assert.ok(find('.email-body-text'), 'show single email message content');
-    assert.ok(find('.email-show-more'), 'display show more button');
-    await click('.email-show-more .rsa-form-button');
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
+    assert.equal(find('.rendered-email-percent').textContent.trim(), 'Showing 31%', 'display rendered content with percentage');
+    assert.equal(find('.email-show-remaining').textContent.trim(), 'Show Remaining 69%', 'display show remaining button with percentage');
+    await click('.email-show-remaining .rsa-form-button');
     return wait().then(() => {
       assert.equal(find('iframe').srcdoc.length, 20000, '20000 remaining characters of email content has rendered on show more');
-      assert.ok(find('.email-show-more'), 'display show more button');
+      assert.equal(find('.rendered-email-percent').textContent.trim(), 'Showing 64%', 'display rendered content percentage changed after click');
+      assert.equal(find('.email-show-remaining').textContent.trim(), 'Show Remaining 36%', 'display show remaining button percentage changed after click');
+
     });
   });
 
   test('renders single email html body content, if data present', async function(assert) {
     this.set('email', EmberObject.create(emailData[2]));
-    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email renderedAll=true}}`);
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
     assert.ok(find('.email-body-text'), 'show single email message content');
     assert.equal(_first200(find('iframe').contentDocument.body.innerText), 'googleemailmessagetextcontent');
   });

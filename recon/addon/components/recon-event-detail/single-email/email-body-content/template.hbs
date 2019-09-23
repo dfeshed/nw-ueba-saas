@@ -1,3 +1,8 @@
+{{#if showPercentMessage}}
+  <div class="rendered-email-percent">
+    {{t 'recon.emailView.renderedEmailPercent'}} {{percentText}}%
+  </div>
+{{/if}}
 <div class="email-body-text">
   <div class="emailContent">
     <iframe id="{{emailRenderId}}"
@@ -7,10 +12,10 @@
       sandbox="allow-same-origin">
     </iframe>
   </div>
-  {{#if displayShowMoreButton}}
-    <div class="email-show-more">
+  {{#if displayShowRemainingButton}}
+    <div class="email-show-remaining">
       {{#rsa-form-button defaultAction= (action 'showRemainingEmailContent')}}
-        {{t 'recon.emailView.showMore' }}
+        {{ remainingEmailContentLabel }}
       {{/rsa-form-button}}
     </div>
   {{/if}}

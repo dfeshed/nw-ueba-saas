@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import layout from './template';
-import { inject } from '@ember/service';
 import computed from 'ember-computed-decorators';
 import { run } from '@ember/runloop';
 import _ from 'lodash';
@@ -11,7 +10,7 @@ export default Component.extend({
   layout,
   portionsToRender: [],
   chunkToRender: 0,
-  redux: inject(),
+  percentRendered: null,
   frame: null,
   resizeIframe: null,
 
@@ -42,19 +41,10 @@ export default Component.extend({
     return 'emailId-'.concat(email.messageId);
   },
 
-  @computed('portionsToRender', 'renderedAll', 'email')
-  displayShowMoreButton(portionsToRender, renderedAll, email) {
-    let renderedContentLength = 0;
-    const portionLength = portionsToRender.length;
-    const allEmails = this.get('redux').getState().recon.emails.emails;
-    if (portionLength >= 1) {
-      renderedContentLength = (portionLength - 1) * CHUNK_SIZE + portionsToRender[portionLength - 1].length;
-    }
-    if ((renderedAll && renderedContentLength) || (!renderedAll && allEmails[allEmails.length - 1].messageId !== email.messageId)) {
-      return !(email.bodyContent.length <= renderedContentLength);
-    } else if (allEmails[allEmails.length - 1].messageId === email.messageId) {
-      return !(email.bodyContent.length <= renderedContentLength) && !renderedAll;
-    }
+  @computed('portionsToRender', 'email')
+  displayShowRemainingButton(portionsToRender, email) {
+    const renderedContentLength = portionsToRender.join('').length;
+    return !(email.realBodyContentLength <= renderedContentLength);
   },
 
   @computed('email.bodyContent')
@@ -88,6 +78,36 @@ export default Component.extend({
     }
   },
 
+  @computed('displayedPercent')
+  showPercentMessage(displayedPercent) {
+    return displayedPercent !== 100;
+  },
+
+  @computed('displayedPercent')
+  percentText(displayedPercent) {
+    return (displayedPercent === 0) ? '< 1' : displayedPercent;
+  },
+
+  @computed('email', 'percentRendered')
+  displayedPercent(email, percentRendered) {
+    if (percentRendered) {
+      return percentRendered;
+    }
+    if (!(email.realBodyContentLength >= CHUNK_SIZE)) {
+      return 100;
+    }
+    return Math.floor((CHUNK_SIZE / email.realBodyContentLength) * 100);
+  },
+
+  @computed('displayedPercent', 'percentRendered')
+  remainingEmailContentLabel(displayedPercent, percentRendered) {
+    const percentToUse = percentRendered || displayedPercent;
+    const percentLabel = {
+      remainingPercent: (percentToUse === 0) ? '99+' : 100 - percentToUse
+    };
+    return this.get('i18n').t('recon.emailView.showRemainingPercent', percentLabel);
+  },
+
   actions: {
     showRemainingEmailContent() {
       const emailPortions = this.get('emailPortions');
@@ -95,6 +115,10 @@ export default Component.extend({
       if (emailChunk <= emailPortions.length && emailPortions[emailChunk]) {
         this.set('chunkToRender', emailChunk);
         this.set('portionsToRender', this.get('portionsToRender').concat(emailPortions[emailChunk]));
+        const emailContentLength = this.get('email.realBodyContentLength');
+        let percentRendered = Math.ceil((this.get('portionsToRender').join('').length / emailContentLength) * 100);
+        percentRendered = (percentRendered > 99) ? 100 : percentRendered;
+        this.set('percentRendered', percentRendered);
       }
     }
   }

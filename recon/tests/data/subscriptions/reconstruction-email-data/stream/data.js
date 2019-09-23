@@ -45,6 +45,7 @@ export default [
     ],
 
     "bodyContentType": "PlainText",
+    "realBodyContentLength": 13258,
     "bodyContent": 'This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. ' +
       'This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. ' +
       'This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. ' +
@@ -102,7 +103,7 @@ export default [
         "url": "http://..."
       },
     ],
-
+    "realBodyContentLength":23,
     "bodyContentType": "PlainText",
     "bodyContent": "email message text2 ...",
   },
@@ -141,7 +142,8 @@ export default [
       },
     ],
 
-    "bodyContentType": "PlainText",
+    "bodyContentType": "HTML",
+    "realBodyContentLength": 119,
     "bodyContent": "&lt;BODY&gt;&lt;a href=http://www.google.com>google&lt;/a&gt;&lt;P&gt;email message text content&lt;/P&gt;&lt;/BODY&gt;",
   },
   {
@@ -186,7 +188,8 @@ export default [
         "url":""
       }
     ],
-    "bodyContentType": "PlainText",
+    "bodyContentType": "HTML",
+    "realBodyContentLength": 31337,
     "bodyContent": 'Email Body Content: This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. ' +
       'This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. ' +
       'This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. ' +

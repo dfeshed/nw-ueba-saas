@@ -14,7 +14,7 @@ module('Integration | Component | recon-event-detail/single-email', function(hoo
   test('renders single email content if data present', async function(assert) {
     this.set('email', EmberObject.create(emailData[1]));
     this.set('emailCount', 1);
-    await render(hbs`{{recon-event-detail/single-email emailCount= emailCount email=email renderedAll=true}}`);
+    await render(hbs`{{recon-event-detail/single-email emailCount= emailCount email=email}}`);
     return wait().then(() => {
       assert.ok(find('.recon-email-view'), 'single email view is rendered');
       assert.equal(findAll('.recon-email-collapse-header .rsa-icon-arrow-down-12-filled').length, 1, 'email is expanded by default');
