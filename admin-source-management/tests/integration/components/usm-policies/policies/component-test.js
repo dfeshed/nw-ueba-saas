@@ -75,13 +75,15 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
   });
 
   test('Show policy list', async function(assert) {
-    assert.expect(2);
+    assert.expect(4);
     setState('name', false);
     const getItems = waitForReduxStateChange(redux, 'usm.policies.items');
     await render(hbs`{{usm-policies/policies}}`);
     await getItems;
     assert.equal(findAll('.rsa-data-table-header-cell').length, 6, 'Returned expected header rows of the datatable');
     assert.equal(findAll('.rsa-data-table-body-row').length, 11, 'Returned expected number of rows of the datatable');
+    assert.equal(findAll('.rsa-data-table-body-row .missing-typespec').length, 11, 'All missing-typespec elements');
+    assert.equal(findAll('.rsa-data-table-body-row .missing-typespec i').length, 1, 'One missing-typespec element with error');
   });
 
   test('Only Edr Default policy has the checkbox and not windows log and file default policies', async function(assert) {

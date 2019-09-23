@@ -33,13 +33,16 @@
             <div class="table-cell-text">{{get item column.field}}</div>
           {{/rsa-text-with-tooltip}}
         {{else if (eq column.field "publishStatus")}}
+          {{#usm-policies/policies/missing-typespec
+            sources=item.sources}}
+          {{/usm-policies/policies/missing-typespec}}
           {{#if (eq item.lastPublishedOn 0)}}
-            <p class="status-unpublished">{{t 'adminUsm.publishStatus.unpublished'}}</p>
+            <span class="pub-status status-unpublished">{{t 'adminUsm.publishStatus.unpublished'}}</span>
           {{else}}
             {{#if item.dirty}}
-              <p class="status-unpublished-edits">{{t 'adminUsm.publishStatus.unpublishedEdits'}}</p>
+              <span class="pub-status status-unpublished-edits">{{t 'adminUsm.publishStatus.unpublishedEdits'}}</span>
             {{else}}
-              {{t 'adminUsm.publishStatus.published'}}
+              <span class="pub-status">{{t 'adminUsm.publishStatus.published'}}</span>
             {{/if}}
           {{/if}}
         {{else if (eq column.field "associatedGroups")}}

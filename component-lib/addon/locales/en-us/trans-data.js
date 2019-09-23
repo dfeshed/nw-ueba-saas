@@ -4818,6 +4818,7 @@ effects the previewed source.',
       cancel: 'Cancel',
       missingTypespec: 'One or more typespec files are missing from the NetWitness Server and logs are not collected from that file type.',
       MISSING_TYPE_SPECIFICATION: 'Missing typespec',
+      missingTypespecInGrid: 'This policy contains one or more file types that are invalid because their typespec files are removed from the NetWitness Server.',
       modals: {
         discardChanges: {
           title: 'Discard Changes',

@@ -18,4 +18,20 @@
     }
 
   }
+  .usm-policy-column-publishStatus {
+    padding-right: 0px;
+    position: relative;
+    white-space: nowrap;
+    .missing-typespec {
+      margin-left: rsa-whitespace();
+      float: right;
+      .tooltip-text {
+        display: inline;
+        i {
+          vertical-align: middle;
+          color: text-color(accentOne)
+        }
+      }
+    }
+  }
 }
