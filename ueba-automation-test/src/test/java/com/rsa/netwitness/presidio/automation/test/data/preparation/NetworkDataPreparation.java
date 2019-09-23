@@ -29,9 +29,18 @@ public class NetworkDataPreparation extends DataPreparationBase {
                 sessionSplitEnrichmentData.generateAll(),
                 futureEventsGen.get(),
 
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(),
-                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(11),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(12),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(13),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(14),
+                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(21),
+                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(22),
+                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(23),
+                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(24),
+                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(31),
+                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(32),
+                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(33),
+                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(34),
 
                 unusualTrafficVolumeAlerts.fromSourceIpToSslSubjectDomainOrganisationDestPort(),
                 unusualTrafficVolumeAlerts.toSslSubjectDomainOrganisationDestPortJa3()

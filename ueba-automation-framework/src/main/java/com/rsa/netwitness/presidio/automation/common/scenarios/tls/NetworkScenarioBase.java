@@ -16,7 +16,7 @@ abstract class NetworkScenarioBase {
     protected int endHourOfDayAnomaly = 17;
     protected int daysBackFromAnomaly = 1;
     protected int daysBackToAnomaly = 0;
-    protected int intervalMinutes = 10;
+    protected int intervalMinutes = 30;
     protected int intervalMinutesAnomaly = 15;
 
 
