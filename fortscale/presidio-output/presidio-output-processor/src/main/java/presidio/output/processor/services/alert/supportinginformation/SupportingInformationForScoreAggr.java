@@ -95,6 +95,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
                 event.setIndicatorId(indicator.getId());
                 event.setEventTime(Date.from(rawEvent.getEnrichedEvent().getEventDate()));
                 event.setSchema(indicatorConfig.getSchema());
+                event.setEntityType(indicator.getEntityType());
                 if (rawEvent.getScore() > 0) {
                     Map<String, Double> scores = new HashMap<>();
                     scores.put(indicatorConfig.getAnomalyDescriptior().getAnomalyField(), rawEvent.getScore());
