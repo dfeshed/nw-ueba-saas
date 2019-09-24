@@ -141,7 +141,7 @@ public class AlertServiceTest {
         AdeAggregationRecord staticAggregationRecord = new AdeAggregationRecord(startDate, endDate,
                 "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", +10d,
                 "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", "userId"),
-                AggregatiedFeatureType.SCORE_AGGREGATION);
+                AggregatedFeatureType.SCORE_AGGREGATION);
         // event
         generateActiveDirectoryEvents(2, eventTime, "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score", "USER_ACCOUNT_TYPE_CHANGED", Arrays.asList("USER_MANAGEMENT", "SECURITY_SENSITIVE_OPERATION"));
         generateActiveDirectoryEvents(1, eventTime, "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score", "USER_ACCOUNT_LOCKED", Arrays.asList("USER_MANAGEMENT", "SECURITY_SENSITIVE_OPERATION"));
