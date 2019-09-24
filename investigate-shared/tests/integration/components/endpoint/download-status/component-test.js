@@ -27,8 +27,7 @@ module('Integration | Component | endpoint/download-status', function(hooks) {
     this.set('checksum', '3c3ec5cffb9ec28c2e7810cc536e8b560b6ad7b1245ad963d79a4dca1e0a7c76');
 
     await render(hbs`{{endpoint/download-status downloadInfo=downloadInfo checksum=checksum}}`);
-
-    assert.equal(findAll('.download-status .downloadToServerError3c3ec').length, 1, 'Tethered panel present in error state');
+    assert.equal(findAll('.download-status span.rsa-content-tethered-panel-trigger').length, 1, 'Tethered panel present in error state');
     assert.equal(findAll('.rsa-red-color.rsa-icon-report-problem-triangle-filled').length, 1, 'Error Download status has rendered.');
   });
 
@@ -37,8 +36,7 @@ module('Integration | Component | endpoint/download-status', function(hooks) {
     this.set('checksum', '3c3ec5cffb9ec28c2e7810cc536e8b560b6ad7b1245ad963d79a4dca1e0a7c76');
 
     await render(hbs`{{endpoint/download-status downloadInfo=downloadInfo checksum=checksum}}`);
-
-    assert.equal(findAll('.download-status .downloadToServerError3c3ec').length, 0, 'Tethered panel not present in not downloaded state');
+    assert.equal(findAll('.download-status span.rsa-content-tethered-panel-trigger').length, 0, 'Tethered panel not present in not downloaded state');
     assert.equal(findAll('.download-status  .not-downloaded').length, 1, 'Not downloaded status has rendered.');
     assert.equal(find('.download-status  .not-downloaded').textContent.trim(), '--', 'Not downloaded status has rendered.');
   });
@@ -57,7 +55,7 @@ module('Integration | Component | endpoint/download-status', function(hooks) {
 
     await render(hbs`{{endpoint/download-status downloadInfo=downloadInfo checksum=checksum}}`);
 
-    assert.equal(findAll('.download-status .downloadToServerError3c3ec').length, 0, 'Tethered panel not present in not downloaded state');
+    assert.equal(findAll('.download-status span.rsa-content-tethered-panel-trigger').length, 0, 'Tethered panel not present in not downloaded state');
     assert.equal(findAll('.download-status  .not-downloaded').length, 1, 'Not downloaded status has rendered when downloadInfo is not present.');
     assert.equal(find('.download-status  .not-downloaded').textContent.trim(), '--', 'Not downloaded status has rendered when downloadInfo is not present.');
   });
