@@ -67,7 +67,7 @@ public class IndicatorsGeneratorForScoreAggr implements IndicatorsGenerator {
     }
 
     private Indicator buildFeatureAggrIndicator(SmartAggregationRecord smartAggregationRecord, Alert alert, IndicatorConfig indicatorConfig, ScoreAggregationRecordContributors.Contributor scoreAggregationRecordContributor) {
-        Indicator indicator = new Indicator(alert.getId());
+        Indicator indicator = new Indicator(alert.getId(), alert.getEntityType());
         indicator.setName(indicatorConfig.getName());
 
         ScoredFeatureAggregationRecord scoredFeatureAggregationRecord = (ScoredFeatureAggregationRecord)scoreAggregationRecordContributor.getFirstScoredRecord();
@@ -102,7 +102,7 @@ public class IndicatorsGeneratorForScoreAggr implements IndicatorsGenerator {
     }
 
     private Indicator buildScoreAggrIndicator(SmartAggregationRecord smartAggregationRecord, Alert alert, IndicatorConfig indicatorConfig, ScoreAggregationRecordContributors.Contributor scoreAggregationRecordContributor) {
-        Indicator indicator = new Indicator(alert.getId());
+        Indicator indicator = new Indicator(alert.getId(), alert.getEntityType());
 
         indicator.setName(indicatorConfig.getName());
         AdeScoredEnrichedRecordReader firstRecordReader = (AdeScoredEnrichedRecordReader)recordReaderFactoryService.getRecordReader(scoreAggregationRecordContributor.getFirstScoredRecord());

@@ -888,13 +888,13 @@ public class AlertPersistencyServiceTest {
         String firstEntityName = "Z_normalized_entityname_ipusr1@somebigcompany.com";
         Alert alert1 = new Alert("entityId1", "smartId", null, "Z", firstEntityName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D, "entityType");
         List<Indicator> indicators = new ArrayList<>();
-        Indicator indicator1 = new Indicator(alert1.getId());
+        Indicator indicator1 = new Indicator(alert1.getId(), alert1.getEntityType());
         indicator1.setScoreContribution(0.5);
-        Indicator indicator3 = new Indicator(alert1.getId());
+        Indicator indicator3 = new Indicator(alert1.getId(), alert1.getEntityType());
         indicator3.setScoreContribution(0.2);
-        Indicator indicator4 = new Indicator(alert1.getId());
+        Indicator indicator4 = new Indicator(alert1.getId(), alert1.getEntityType());
         indicator4.setScoreContribution(0.3);
-        Indicator indicator2 = new Indicator(alert1.getId());
+        Indicator indicator2 = new Indicator(alert1.getId(), alert1.getEntityType());
         indicator2.setScoreContribution(0.3);
         indicators.add(indicator1);
         indicators.add(indicator2);

@@ -31,7 +31,7 @@ public class IndicatorsGeneratorForFeatureAggr implements IndicatorsGenerator {
         List<Indicator> indicators = new ArrayList<>();
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
 
-        Indicator indicator = new Indicator(alert.getId());
+        Indicator indicator = new Indicator(alert.getId(), alert.getEntityType());
         indicator.setName(indicatorConfig.getName());
         indicator.setStartDate(Date.from(adeAggregationRecord.getStartInstant()));
         indicator.setEndDate(Date.from(adeAggregationRecord.getEndInstant()));
