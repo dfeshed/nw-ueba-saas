@@ -1,7 +1,6 @@
 package com.rsa.netwitness.presidio.automation.common.scenarios.tls;
 
 import presidio.data.domain.event.network.NetworkEvent;
-import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.event.network.NetworkEventsGenerator;
 
 import java.util.List;
@@ -22,23 +21,23 @@ public class UncommonValuesAlerts extends NetworkScenarioBase{
 
 
     // uncommon destPort for ja3, sslsubj, SrcNetname, DestOrg, Domain
-    public Stream<NetworkEvent> uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain() throws GeneratorException {
+    public Stream<NetworkEvent> uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(int index) {
 
-        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
+        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen(), String.valueOf(index));
         List<NetworkEvent> events = regularGen.modify()
                 .fixDstPort()
-                .setJa3EntityValue(Ja3Entity(0))
-                .setSSLSubjectEntityValue(SSLSubjEntity(0))
+                .setJa3EntityValue(Ja3Entity(index))
+                .setSSLSubjectEntityValue(SSLSubjEntity(index))
                 .fixSourceNetname()
                 .fixDestinationOrganization()
                 .fixFqdn()
                 .generate();
 
-        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUncommonTimeGen());
+        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUncommonTimeGen(), String.valueOf(index));
         uncommonGen.modify()
                 .nextDstPort()
-                .setJa3EntityValue(Ja3Entity(0))
-                .setSSLSubjectEntityValue(SSLSubjEntity(0))
+                .setJa3EntityValue(Ja3Entity(index))
+                .setSSLSubjectEntityValue(SSLSubjEntity(index))
                 .fixSourceNetname()
                 .fixDestinationOrganization()
                 .fixFqdn()
@@ -49,29 +48,29 @@ public class UncommonValuesAlerts extends NetworkScenarioBase{
 
 
     // uncommon domain sslSubj DestOrganisation, startInstant for ja3, srcNetname,
-    public Stream<NetworkEvent> uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname() throws GeneratorException {
+    public Stream<NetworkEvent> uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(int index) {
 
-        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
+        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen(), String.valueOf(index));
         List<NetworkEvent> events = regularGen.modify()
                 .fixFqdn()
-                .setSSLSubjectEntityValue(SSLSubjEntity(111))
+                .setSSLSubjectEntityValue(SSLSubjEntity(index * 100))
                 .fixDestinationOrganization()
-                .setJa3EntityValue(Ja3Entity(1))
+                .setJa3EntityValue(Ja3Entity(index))
                 .fixSourceNetname()
                 .setDistinctSrcIps(5,7)
                 .generate();
 
-        NetworkEventsGenerator sslSubjGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
+        NetworkEventsGenerator sslSubjGen = new NetworkEventsGenerator(getDefaultRegularTimeGen(), String.valueOf(index));
         sslSubjGen.modify()
-                .setSSLSubjectEntityValue(SSLSubjEntity(1))
+                .setSSLSubjectEntityValue(SSLSubjEntity(index))
                 .generateAndAppendTo(events);
 
-        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUnregularHoursTimeGen());
+        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUnregularHoursTimeGen(), String.valueOf(index));
         uncommonGen.modify()
                 .nextFqdn()
-                .setSSLSubjectEntityValue(SSLSubjEntity(1))
+                .setSSLSubjectEntityValue(SSLSubjEntity(index))
                 .nextDestinationOrganization()
-                .setJa3EntityValue(Ja3Entity(1))
+                .setJa3EntityValue(Ja3Entity(index))
                 .fixSourceNetname()
                 .setDistinctSrcIps(10,50)
                 .generateAndAppendTo(events);
@@ -81,26 +80,26 @@ public class UncommonValuesAlerts extends NetworkScenarioBase{
 
 
     // uncommon ja3 startInstant country for srcNetname sslSubj
-    public Stream<NetworkEvent>  uncommonJa3StartInstantCountryForSrcNetnameSslSubj() throws GeneratorException {
+    public Stream<NetworkEvent>  uncommonJa3StartInstantCountryForSrcNetnameSslSubj(int index) {
 
-        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
+        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen(), String.valueOf(index));
         List<NetworkEvent> events = regularGen.modify()
-                .setJa3EntityValue(Ja3Entity(333))
+                .setJa3EntityValue(Ja3Entity(index * 100))
                 .fixLocation()
-                .setSSLSubjectEntityValue(SSLSubjEntity(3))
+                .setSSLSubjectEntityValue(SSLSubjEntity(index))
                 .fixSourceNetname()
                 .generate();
 
-        NetworkEventsGenerator ja3Gen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
+        NetworkEventsGenerator ja3Gen = new NetworkEventsGenerator(getDefaultRegularTimeGen(), String.valueOf(index));
         ja3Gen.modify()
-                .setJa3EntityValue(Ja3Entity(3))
+                .setJa3EntityValue(Ja3Entity(index))
                 .generateAndAppendTo(events);
 
-        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUnregularHoursTimeGen());
+        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUnregularHoursTimeGen(), String.valueOf(index));
         uncommonGen.modify()
-                .setJa3EntityValue(Ja3Entity(3))
+                .setJa3EntityValue(Ja3Entity(index))
                 .nextLocation()
-                .setSSLSubjectEntityValue(SSLSubjEntity(3))
+                .setSSLSubjectEntityValue(SSLSubjEntity(index))
                 .fixSourceNetname()
                 .generateAndAppendTo(events);
         return events.stream();
