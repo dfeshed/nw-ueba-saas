@@ -21,6 +21,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
+        <bsafe.version>6.2.2.1</bsafe.version>
     </properties>
 
     <dependencies>
@@ -117,6 +118,20 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <requiresUnpack>
+                        <dependency>
+                            <groupId>com.rsa.bsafe</groupId>
+                            <artifactId>jcmFIPS</artifactId>
+                            <version>${bsafe.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.rsa.bsafe</groupId>
+                            <artifactId>cryptojcommon</artifactId>
+                            <version>${bsafe.version}</version>
+                        </dependency>
+                    </requiresUnpack>
+                </configuration>
             </plugin>
             <!-- Delete resources folder -->
             <plugin>
