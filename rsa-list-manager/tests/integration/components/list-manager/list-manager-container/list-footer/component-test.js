@@ -20,17 +20,17 @@ module('Integration | Component | list footer', function(hooks) {
   });
 
   const originalList = [ { id: '1', name: 'foo' }, { id: '2', name: 'bar' }];
-  const listLocation1 = 'listManager';
+  const stateLocation1 = 'listManager';
   const listName1 = 'Meta Groups';
 
   test('renders footer for list with correct components', async function(assert) {
     assert.expect(3);
     new ReduxDataHelper(setState)
-      .stateLocation(listLocation1)
+      .stateLocation(stateLocation1)
       .list(originalList)
       .listName(listName1)
       .build();
-    this.set('stateLocation', listLocation1);
+    this.set('stateLocation', stateLocation1);
 
     await render(hbs`{{list-manager/list-manager-container/list-footer
       stateLocation=stateLocation
@@ -48,12 +48,12 @@ module('Integration | Component | list footer', function(hooks) {
     assert.expect(3);
     const helpId1 = { topicId: 'foo', moduleId: 'bar' };
     new ReduxDataHelper(setState)
-      .stateLocation(listLocation1)
+      .stateLocation(stateLocation1)
       .list(originalList)
       .helpId(helpId1)
       .listName(listName1)
       .build();
-    this.set('stateLocation', listLocation1);
+    this.set('stateLocation', stateLocation1);
 
     await render(hbs`{{list-manager/list-manager-container/list-footer
       stateLocation=stateLocation

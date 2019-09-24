@@ -20,7 +20,7 @@ module('Integration | Component | item details', function(hooks) {
 
   const item = { id: '1', name: 'foo' };
   const list1 = [{ id: '1', name: 'foo' }];
-  const listLocation1 = 'listManager';
+  const stateLocation1 = 'listManager';
 
   test('renders list details with correct components', async function(assert) {
     const helpId1 = { topicId: 'foo', moduleId: 'bar' };
@@ -30,7 +30,7 @@ module('Integration | Component | item details', function(hooks) {
       .helpId(helpId1)
       .editItemId(item.id)
       .build();
-    this.set('stateLocation', listLocation1);
+    this.set('stateLocation', stateLocation1);
     this.set('itemSelection', () => {});
 
     await render(hbs`{{list-manager/list-manager-container/item-details

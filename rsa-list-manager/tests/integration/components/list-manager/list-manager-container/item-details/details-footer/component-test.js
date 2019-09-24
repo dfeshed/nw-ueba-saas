@@ -19,12 +19,12 @@ module('Integration | Component | list details - details footer', function(hooks
   });
 
   const item = { id: '1', name: 'foo' };
-  const listLocation1 = 'listManager';
+  const stateLocation1 = 'listManager';
 
   test('renders footer for list details with correct components', async function(assert) {
     assert.expect(3);
-    new ReduxDataHelper(setState).stateLocation(listLocation1).listName('Foos').build();
-    this.set('stateLocation', listLocation1);
+    new ReduxDataHelper(setState).stateLocation(stateLocation1).listName('Foos').build();
+    this.set('stateLocation', stateLocation1);
     this.set('itemSelection', () => {});
     this.set('item', item);
 
@@ -45,8 +45,8 @@ module('Integration | Component | list details - details footer', function(hooks
 
   test('renders footer for list details with correct components', async function(assert) {
     assert.expect(3);
-    new ReduxDataHelper(setState).stateLocation(listLocation1).listName('Foos').build();
-    this.set('stateLocation', listLocation1);
+    new ReduxDataHelper(setState).stateLocation(stateLocation1).listName('Foos').build();
+    this.set('stateLocation', stateLocation1);
 
     await render(hbs`{{list-manager/list-manager-container/item-details/details-footer
       stateLocation=stateLocation
@@ -64,8 +64,8 @@ module('Integration | Component | list details - details footer', function(hooks
 
   test('clicking select from footer executes selection', async function(assert) {
     assert.expect(3);
-    new ReduxDataHelper(setState).stateLocation(listLocation1).listName('Foos').build();
-    this.set('stateLocation', listLocation1);
+    new ReduxDataHelper(setState).stateLocation(stateLocation1).listName('Foos').build();
+    this.set('stateLocation', stateLocation1);
     this.set('itemSelection', () => {
       assert.ok(true, 'clicking button executes item selection');
     });

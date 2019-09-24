@@ -17,7 +17,7 @@ module('Integration | Component | list-manager', function(hooks) {
   });
 
   const listManagerSelector = '.list-manager';
-  const listLocation1 = 'listManager';
+  const stateLocation1 = 'listManager';
   const listName1 = 'Some Things';
 
   const items = [
@@ -29,7 +29,7 @@ module('Integration | Component | list-manager', function(hooks) {
 
   test('list manager is rendered', async function(assert) {
     new ReduxDataHelper(setState).build();
-    this.set('stateLocation', listLocation1);
+    this.set('stateLocation', stateLocation1);
     this.set('list', items);
     this.set('listName', listName1);
 
@@ -45,7 +45,7 @@ module('Integration | Component | list-manager', function(hooks) {
 
   test('stateLocation exists', async function(assert) {
     new ReduxDataHelper(setState).build();
-    this.set('stateLocation', listLocation1);
+    this.set('stateLocation', stateLocation1);
     this.set('list', items);
     this.set('listName', listName1);
 
@@ -56,6 +56,6 @@ module('Integration | Component | list-manager', function(hooks) {
     }}
     {{/list-manager}}`);
 
-    assert.equal(this.get('stateLocation'), listLocation1, 'stateLocation exists and has correct value in list-manager component');
+    assert.equal(this.get('stateLocation'), stateLocation1, 'stateLocation exists and has correct value in list-manager component');
   });
 });

@@ -4,22 +4,26 @@
       <div class='title'>
         {{itemType}} details
       </div>
+
+      {{!-- delete component here --}}
+
       {{#if hasContextualHelp}}
         {{#rsa-form-button class='list-help-icon' defaultAction=(action 'goToHelp')}}
           {{rsa-icon name='help-circle' style='lined'}}
         {{/rsa-form-button}}
       {{/if}}
-      {{!-- delete component here --}}
+
     </div>
     <div class='details-body'>
       {{yield item}}
     </div>
-    {{! other details of list to follow --}}
+
   {{else}}
     <div class='new-item'>
     </div>
   {{/if}}
 </div>
+
 {{list-manager/list-manager-container/item-details/details-footer
   stateLocation=stateLocation
   item=item

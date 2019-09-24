@@ -22,7 +22,7 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
   const buttonGroupSelector = '.rsa-button-group';
   const splitDropdown = '.rsa-split-dropdown';
   const listCaption = '.list-caption';
-  const listLocation1 = 'listManager';
+  const stateLocation1 = 'listManager';
   const listName1 = 'My Items';
 
   const items = [
@@ -34,7 +34,7 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
 
   test('The list-menu-trigger component renders to the DOM', async function(assert) {
     new ReduxDataHelper(setState).list(items).listName(listName1).build();
-    this.set('stateLocation', listLocation1);
+    this.set('stateLocation', stateLocation1);
 
     await render(hbs`{{#list-manager/list-manager-container/list-menu-trigger
       stateLocation=stateLocation
@@ -65,7 +65,7 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
       }
     });
     this.owner.register('component:test-list-menu-trigger', FakeComponent);
-    this.set('stateLocation', listLocation1);
+    this.set('stateLocation', stateLocation1);
     await render(hbs`{{test-list-menu-trigger stateLocation=stateLocation}}`);
 
     assert.ok(find(listCaption), 'Shall have list caption with list-caption class');
@@ -96,7 +96,7 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
       }
     });
     this.owner.register('component:test-list-menu-trigger', FakeComponent);
-    this.set('stateLocation', listLocation1);
+    this.set('stateLocation', stateLocation1);
     await render(hbs`{{test-list-menu-trigger stateLocation=stateLocation}}`);
 
     const state1 = this.owner.lookup('service:redux').getState();

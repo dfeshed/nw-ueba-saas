@@ -41,6 +41,7 @@
     "ember-cli-seamless-immutable-shim": "1.0.0",
     "ember-click-outside": "1.0.4",
     "ember-redux": "4.0.3",
+    "fast-sort": "1.5.4",
     "seamless-immutable": "7.1.2"
   },
   "devDependencies": {

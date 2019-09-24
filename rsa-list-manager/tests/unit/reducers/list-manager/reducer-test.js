@@ -1,13 +1,14 @@
 import { test, module } from 'qunit';
 import Immutable from 'seamless-immutable';
-
+import makePackAction from '../../../helpers/make-pack-action';
+import { LIFECYCLE } from 'redux-pack';
 import * as ACTION_TYPES from 'rsa-list-manager/actions/types';
 import reducer from 'rsa-list-manager/reducers/list-manager/reducer';
 import { EDIT_VIEW } from 'rsa-list-manager/constants/list-manager';
 
 module('Unit | Reducers | list-manager');
 
-const listLocation1 = 'listManager';
+const stateLocation1 = 'listManager';
 const listName1 = 'Some List';
 const list1 = [
   { id: 3, name: 'eba', subItems: [ 'a', 'b', 'c' ] },
@@ -30,7 +31,7 @@ test('ACTION_TYPES.INITIALIZE_LIST_MANAGER updates values', function(assert) {
   const action = {
     type: ACTION_TYPES.INITIALIZE_LIST_MANAGER,
     payload: {
-      stateLocation: listLocation1,
+      stateLocation: stateLocation1,
       listName: listName1,
       list: list1,
       selectedItemId: list1[0].id,
@@ -38,7 +39,7 @@ test('ACTION_TYPES.INITIALIZE_LIST_MANAGER updates values', function(assert) {
     }
   };
   const result = reducer(prevState, action);
-  assert.equal(result.stateLocation, listLocation1, 'stateLocation shall be set');
+  assert.equal(result.stateLocation, stateLocation1, 'stateLocation shall be set');
   assert.equal(result.listName, listName1, 'listName shall be set');
   assert.equal(result.filterText, '', 'filterText shall be set');
   assert.deepEqual(result.list, list1, 'list shall be set');
@@ -146,4 +147,306 @@ test('ACTION_TYPES.EDIT_ITEM sets editItemId and viewName', function(assert) {
   const result = reducer(prevState, action);
   assert.equal(result.editItemId, randomId, 'editItemId shall be set correctly');
   assert.equal(result.viewName, EDIT_VIEW, 'viewName shall be set to edit-view');
+});
+
+test('Should set relevant properties correctly at start of creating new item', function(assert) {
+  const previous = Immutable.from({});
+  const startAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.ITEM_CREATE,
+    payload: {
+      data: {}
+    }
+  });
+
+  const newEndState = reducer(previous, startAction);
+  assert.equal(newEndState.isItemsLoading, true, 'isItemsLoading shall be set true');
+  assert.equal(newEndState.createItemErrorCode, null, 'createItemErrorCode shall be null');
+  assert.equal(newEndState.createItemErrorMessage, null, 'createItemErrorMessage shall be null');
+});
+
+test('Should set relevant properties correctly after successfully creating new item', function(assert) {
+  const previous = Immutable.from({});
+  const newItemName = `TEST-${Date.now().toString().substring(6)}`;
+  const someItemAttribute = [ 'a', 'b', 'c' ];
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.ITEM_CREATE,
+    payload: {
+      data: {
+        name: newItemName,
+        someItemAttribute
+      }
+    }
+  });
+
+  const newEndState = reducer(previous, successAction);
+  assert.equal(newEndState.list[0].name, newItemName);
+  assert.deepEqual(newEndState.list[0].someItemAttribute, someItemAttribute);
+  assert.equal(newEndState.isItemsLoading, false, 'isItemsLoading shall be set false');
+  assert.notOk(newEndState.createItemErrorCode, 'createItemErrorCode shall not be set');
+  assert.notOk(newEndState.createItemErrorMessage, 'createItemErrorMessage shall not be set');
+});
+
+test('Should set relevant properties correctly after failure to create new item', function(assert) {
+  const previous = Immutable.from({
+    list: []
+  });
+
+  const failureAction = makePackAction(LIFECYCLE.FAILURE, {
+    type: ACTION_TYPES.ITEM_CREATE,
+    payload: {
+      meta: {
+        message: 'TEST'
+      },
+      code: 999
+    }
+  });
+
+  const newEndState = reducer(previous, failureAction);
+  assert.equal(newEndState.isItemsLoading, false, 'isItemsLoading shall be set false');
+  assert.equal(newEndState.createItemErrorCode, 999, 'createItemErrorCode shall be set');
+  assert.equal(newEndState.createItemErrorMessage, 'TEST', 'createItemErrorMessage shall be set');
+});
+
+test('Should set relevant properties correctly at start of deleting item', function(assert) {
+
+  const previous = Immutable.from({});
+
+  const startAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.ITEM_DELETE,
+    payload: {
+      data: {}
+    }
+  });
+
+  const newEndState = reducer(previous, startAction);
+  assert.equal(newEndState.isItemsLoading, true, 'isItemsLoading shall be set true');
+  assert.equal(newEndState.deleteItemErrorCode, null, 'deleteItemErrorCode shall be null');
+  assert.equal(newEndState.deleteItemErrorMessage, null, 'deleteItemErrorMessage shall be null');
+});
+
+test('Should set relevant properties correctly after successfully deleting item', function(assert) {
+  const id = `TEST-${Date.now().toString().substring(6)}`;
+  const previous = Immutable.from({
+    list: [
+      {
+        id,
+        name: 'TEST',
+        contentType: 'USER',
+        columns: [{
+          field: 'time',
+          title: 'Collection Time',
+          position: 0,
+          width: 175
+        },
+        {
+          field: 'service',
+          title: 'Service Name',
+          position: 1,
+          width: 100
+        }]
+      },
+      {
+        id: '12345',
+        name: 'TEST2',
+        contentType: 'USER',
+        columns: [{
+          field: 'time',
+          title: 'Collection Time',
+          position: 0,
+          width: 175
+        }]
+      }
+    ]
+  });
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.ITEM_DELETE,
+    payload: {
+      data: true,
+      request: {
+        id
+      }
+    }
+  });
+
+  const newEndState = reducer(previous, successAction);
+  const found = newEndState.list.find((cg) => cg.id === id);
+  assert.notOk(found, 'Successfully removed item from state');
+  assert.equal(newEndState.isItemsLoading, false, 'isItemsLoading shall be set false');
+  assert.notOk(newEndState.deleteItemErrorCode, 'deleteItemErrorCode shall not be set');
+  assert.notOk(newEndState.deleteItemErrorMessage, 'deleteItemErrorMessage shall not be set');
+});
+
+test('Should set relevant properties correctly after failure to delete item', function(assert) {
+  const previous = Immutable.from({
+    list: [
+      {
+        id: '12345',
+        name: 'TEST',
+        contentType: 'USER',
+        columns: [{
+          field: 'time',
+          title: 'Collection Time',
+          position: 0,
+          width: 175
+        },
+        {
+          field: 'service',
+          title: 'Service Name',
+          position: 1,
+          width: 100
+        }]
+      },
+      {
+        id: '23456',
+        name: 'TEST2',
+        contentType: 'USER',
+        columns: [{
+          field: 'time',
+          title: 'Collection Time',
+          position: 0,
+          width: 175
+        }]
+      }
+    ]
+  });
+
+  const failureAction = makePackAction(LIFECYCLE.FAILURE, {
+    type: ACTION_TYPES.ITEM_DELETE,
+    payload: {
+      meta: {
+        message: 'TEST'
+      },
+      code: 999
+    }
+  });
+
+  const newEndState = reducer(previous, failureAction);
+  assert.equal(newEndState.isItemsLoading, false, 'isItemsLoading shall be set false');
+  assert.deepEqual(previous.list, newEndState.list, 'columnGroups shall not change');
+  assert.ok(newEndState.deleteItemErrorCode, 'deleteItemErrorCode shall be set');
+  assert.ok(newEndState.deleteItemErrorMessage, 'deleteItemErrorMessage shall be set');
+});
+
+test('Should set relevant properties correctly at start of updating item', function(assert) {
+
+  const previous = Immutable.from({
+    list: null
+  });
+
+  const startAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.ITEM_UPDATE,
+    payload: {
+      data: {}
+    }
+  });
+
+  const newEndState = reducer(previous, startAction);
+  assert.equal(newEndState.isItemsLoading, true, 'isItemsLoading shall be set true');
+  assert.equal(newEndState.updateItemErrorCode, null, 'updateItemErrorCode shall be null');
+  assert.equal(newEndState.updateItemErrorMessage, null, 'updateItemErrorMessage shall be null');
+});
+
+test('Should set relevant properties correctly after successfully updating item', function(assert) {
+  const id = `TEST-${Date.now().toString().substring(6)}`;
+  const previous = Immutable.from({
+    list: [
+      {
+        id,
+        name: 'TEST',
+        contentType: 'USER',
+        columns: [{
+          field: 'time',
+          title: 'Collection Time',
+          position: 0,
+          width: 175
+        },
+        {
+          field: 'service',
+          title: 'Service Name',
+          position: 1,
+          width: 100
+        }]
+      },
+      {
+        id: '12345',
+        name: 'TEST2',
+        contentType: 'USER',
+        columns: [{
+          field: 'time',
+          title: 'Collection Time',
+          position: 0,
+          width: 175
+        }]
+      }
+    ]
+  });
+  const itemName = `UPDATED-${Date.now().toString().substring(6)}`;
+  const itemAttribute = [{
+    field: 'time1',
+    title: 'Collection Time',
+    position: 0,
+    width: 175
+  },
+  {
+    field: 'service1',
+    title: 'Service Name',
+    position: 1,
+    width: 100
+  }];
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.ITEM_UPDATE,
+    payload: {
+      data: {
+        id,
+        name: itemName,
+        columns: itemAttribute,
+        contentType: 'USER'
+      }
+    }
+  });
+
+  const newEndState = reducer(previous, successAction);
+  const found = newEndState.list.find((cg) => cg.id === id && cg.name === itemName);
+  assert.ok(found, 'Updated item found');
+  assert.ok(found.columns[0].field, 'time1', 'Item has other attributes updated');
+  assert.equal(newEndState.isItemsLoading, false, 'isItemsLoading shall be set false');
+  assert.notOk(newEndState.updateItemErrorCode, 'updateItemErrorCode shall not be set');
+  assert.notOk(newEndState.updateItemErrorMessage, 'updateItemErrorMessage shall not be set');
+});
+
+test('Should set relevant properties correctly after failure to update item', function(assert) {
+  const previous = Immutable.from({
+    list: [
+      {
+        id: '12345',
+        name: 'TEST',
+        contentType: 'USER',
+        columns: [{
+          field: 'time',
+          title: 'Collection Time',
+          position: 0,
+          width: 175
+        }]
+      }
+    ]
+  });
+
+  const failureAction = makePackAction(LIFECYCLE.FAILURE, {
+    type: ACTION_TYPES.ITEM_UPDATE,
+    payload: {
+      meta: {
+        message: 'TEST'
+      },
+      code: 999
+    }
+  });
+
+  const newEndState = reducer(previous, failureAction);
+  assert.equal(newEndState.isItemsLoading, false, 'isItemsLoading shall be set false');
+  assert.deepEqual(previous.list, newEndState.list, 'columnGroups shall not change');
+  assert.ok(newEndState.updateItemErrorCode, 'updateItemErrorCode shall be set');
+  assert.ok(newEndState.updateItemErrorMessage, 'updateItemErrorMessage shall be set');
 });

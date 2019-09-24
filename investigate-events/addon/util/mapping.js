@@ -14,12 +14,21 @@ export const mapColumnGroupsForEventTable = (eventColumnGroups) => {
     if (cg.columns) {
       cg.columns = cg.columns.map((col) => {
         if (col.hasOwnProperty('metaName') && col.hasOwnProperty('displayName')) {
+
+          // fix certain column widths if they exist
+          let { width } = col;
+          if (col.metaName == 'custom.meta-summary' || col.metaName == 'custom-metasummary') {
+            width = 2000;
+          } else if (col.metaName == 'time') {
+            width = 175;
+          }
+
           return {
             field: col.metaName,
             title: col.displayName,
             position: col.position,
             visible: col.visible,
-            width: col.width
+            width
           };
         }
         return col;

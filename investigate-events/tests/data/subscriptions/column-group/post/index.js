@@ -10,8 +10,8 @@ export default {
       data: {
         'id': body.columnGroup.id ? body.columnGroup.id : `abc${num}`,
         'name': body.columnGroup.name,
-        'ootb': false,
-        'columns': body.columnGroup.fields
+        'contentType': 'USER',
+        'columns': body.columnGroup.columns
       }
     };
   }

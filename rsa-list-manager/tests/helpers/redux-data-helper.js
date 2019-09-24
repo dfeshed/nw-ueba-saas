@@ -59,6 +59,11 @@ export default class DataHelper {
     return this;
   }
 
+  modelName(name) {
+    _set(this.state, 'modelName', name);
+    return this;
+  }
+
   list(list) {
     _set(this.state, 'list', list);
     return this;

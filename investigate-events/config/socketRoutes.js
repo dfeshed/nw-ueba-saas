@@ -109,7 +109,7 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/meta/values/suggestions'
       }
     },
-    'investigate-columns': {
+    'column-groups': {
       socketUrl,
       findAll: {
         subscriptionDestination: '/user/queue/investigate/column/groups/get',

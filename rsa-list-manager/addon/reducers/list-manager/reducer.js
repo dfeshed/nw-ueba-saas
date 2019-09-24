@@ -1,6 +1,8 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import * as ACTION_TYPES from 'rsa-list-manager/actions/types';
+import { handle } from 'redux-pack';
+import sort from 'fast-sort';
 import {
   LIST_VIEW,
   EDIT_VIEW
@@ -57,6 +59,87 @@ const listManagerReducer = handleActions({
     return state.merge({
       editItemId: action.payload,
       viewName: EDIT_VIEW
+    });
+  },
+  [ACTION_TYPES.ITEM_CREATE]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => {
+        return s.merge({
+          isItemsLoading: true,
+          createItemErrorCode: null,
+          createItemErrorMessage: null
+        });
+      },
+      failure: (s) => s.merge({
+        isItemsLoading: false,
+        createItemErrorCode: action.payload.code,
+        createItemErrorMessage: action.payload.meta.message
+      }),
+      success: (s) => {
+        const createdItem = action.payload.data;
+        // add the newly created item to state
+        const list = s.list ?
+          sort([...s.list, createdItem]).by([{ asc: (item) => item.name.toUpperCase() }]) :
+          [createdItem];
+        return s.merge({
+          list,
+          isItemsLoading: false
+        });
+      }
+    });
+  },
+
+  [ACTION_TYPES.ITEM_DELETE]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => {
+        return s.merge({
+          isItemsLoading: true,
+          deleteItemCode: null,
+          deleteItemErrorMessage: null
+        });
+      },
+      failure: (s) => s.merge({
+        isItemsLoading: false,
+        deleteItemErrorCode: action.payload.code,
+        deleteItemErrorMessage: action.payload.meta ? action.payload.meta.message : undefined
+      }),
+      success: (s) => {
+        const deletedId = action.payload.request.id;
+        // remove the deleted item from state
+        const list = s.list.filter((item) => item.id !== deletedId);
+        return s.merge({
+          list,
+          isItemsLoading: false
+        });
+      }
+    });
+  },
+
+  [ACTION_TYPES.ITEM_UPDATE]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => {
+        return s.merge({
+          isItemsLoading: true,
+          updateItemErrorCode: null,
+          updateItemErrorMessage: null
+        });
+      },
+      failure: (s) => s.merge({
+        isItemsLoading: false,
+        updateItemErrorCode: action.payload.code,
+        updateItemErrorMessage: action.payload.meta ? action.payload.meta.message : undefined
+      }),
+      success: (s) => {
+        const updatedItem = action.payload.data;
+        // TODO bhanun mapping function
+        // replace the updated item by id
+        const updatedIdRemoved = [...s.list].filter((item) => item.id !== updatedItem.id);
+        const list = sort([...updatedIdRemoved, updatedItem]).by([{ asc: (item) => item.name.toUpperCase() }]);
+        return s.merge({
+          list,
+          isItemsLoading: false
+        });
+      }
     });
   }
 }, listManagerInitialState);

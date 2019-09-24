@@ -18,12 +18,12 @@ module('Integration | Component | list filter', function(hooks) {
   });
 
   const originalList = [ { id: '1', name: 'foo' }, { id: '2', name: 'bar' }];
-  const listLocation1 = 'listManager';
+  const stateLocation1 = 'listManager';
   const listName1 = 'List of Things';
 
   test('Filters list with default filtering', async function(assert) {
-    new ReduxDataHelper(setState).stateLocation(listLocation1).list(originalList).listName(listName1).build();
-    this.set('stateLocation', listLocation1);
+    new ReduxDataHelper(setState).stateLocation(stateLocation1).list(originalList).listName(listName1).build();
+    this.set('stateLocation', stateLocation1);
 
     await render(hbs`{{list-manager/list-manager-container/list-filter
       stateLocation=stateLocation

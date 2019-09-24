@@ -65,6 +65,13 @@ export const listName = createSelector(
   }
 );
 
+export const modelName = createSelector(
+  _rootState,
+  (rootState) => {
+    return rootState.modelName;
+  }
+);
+
 export const list = createSelector(
   _rootState,
   (rootState) => {
