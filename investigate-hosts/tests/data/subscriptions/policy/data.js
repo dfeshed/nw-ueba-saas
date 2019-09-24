@@ -72,6 +72,7 @@ export default {
       primaryDestination: '',
       secondaryDestination: '',
       protocol: 'TLS',
+      customConfig: '"enabled" : true,"sendTestLog" : false,"protocol" : "UDP","policyType" : "filePolicy","name" : "Test File Policy","description" : "Test File Policy Description."',
       sources: [
         {
           fileType: 'apache',

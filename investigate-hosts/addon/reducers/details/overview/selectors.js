@@ -383,6 +383,7 @@ export const policyAdminUsm = createSelector(
           secondaryDestination: data.filePolicy.secondaryDestination,
           protocol: data.filePolicy.protocol,
           sendTestLog: data.filePolicy.sendTestLog,
+          customConfig: data.filePolicy.customConfig,
           sources: data.filePolicy.sources ? data.filePolicy.sources : []
         } : {}
       };

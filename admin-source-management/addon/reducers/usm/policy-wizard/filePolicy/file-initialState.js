@@ -20,7 +20,8 @@ export default {
     secondaryDestination: null,
     protocol: null, // 'UDP' | 'TCP' | 'TLS'
     sources: [],
-    selectedFileSource: 'apache' // Defaulting to apache
+    selectedFileSource: 'apache', // Defaulting to apache
+    customConfig: null // free text
   },
 
   steps: [
@@ -77,7 +78,10 @@ export default {
     // re-using these components from windows-log
     { index: 3, id: 'primaryDestination', label: 'adminUsm.policyWizard.filePolicy.primaryDestination', isEnabled: true, isGreyedOut: false, headerId: 'fileSettingsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', defaults: [{ field: 'primaryDestination', value: '' }] },
     { index: 4, id: 'secondaryDestination', label: 'adminUsm.policyWizard.filePolicy.secondaryDestination', isEnabled: true, isGreyedOut: false, headerId: 'fileSettingsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', defaults: [{ field: 'secondaryDestination', value: '' }] },
-    { index: 5, id: 'protocol', label: 'adminUsm.policyWizard.filePolicy.protocol', isEnabled: true, isGreyedOut: false, headerId: 'fileSettingsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-protocol', defaults: [{ field: 'protocol', value: 'TCP' }] }
+    { index: 5, id: 'protocol', label: 'adminUsm.policyWizard.filePolicy.protocol', isEnabled: true, isGreyedOut: false, headerId: 'fileSettingsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-protocol', defaults: [{ field: 'protocol', value: 'TCP' }] },
+    // Advanced Configuration settings
+    { index: 6, id: 'advancedConfigHeader', label: 'adminUsm.policyWizard.filePolicy.advancedConfig', isHeader: true, isEnabled: true },
+    { index: 7, id: 'customConfig', label: 'adminUsm.policyWizard.filePolicy.customConfig', isEnabled: true, isGreyedOut: false, headerId: 'advancedConfigHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/custom-config', defaults: [{ field: 'customConfig', value: '' }] }
   ]
 
 };

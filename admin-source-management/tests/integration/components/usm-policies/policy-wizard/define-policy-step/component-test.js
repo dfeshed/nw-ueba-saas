@@ -76,7 +76,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('When policy is File Policy, All the components in the available settings is rendered on the UI', async function(assert) {
     new ReduxDataHelper(setState).policyWiz('filePolicy').build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .available-setting').length, 5, 'All file policy available settings rendered on the UI');
+    assert.equal(findAll('.available-settings .available-setting').length, 6, 'All file policy available settings rendered on the UI');
   });
 
   test('When policy is File Policy, All the components in the selected settings is rendered on the UI ', async function(assert) {
@@ -94,6 +94,12 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     assert.equal(findAll('.available-settings .enabled').length, 1, 'File Collection component is shown in the available settings');
     assert.equal(findAll('.available-settings .sendTestLog').length, 1, 'Send Test Log component is shown in the available settings');
+  });
+
+  test('For the File Policy, Advanced setting is rendered on the UI', async function(assert) {
+    new ReduxDataHelper(setState).policyWiz('filePolicy').build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.available-settings .customConfig').length, 1, 'Custom Config is shown in the available settings');
   });
 
   test('Labels, sub-headers and components rendered correctly in available settings', async function(assert) {

@@ -29,6 +29,7 @@ export const selectedFilePolicy = createSelector(
     const policyDetails = [];
     const sourceSections = [];
     const basicSettings = [];
+    const advancedConfigSettings = [];
     const filePolicyEnabled = focusedPolicy ? focusedPolicy.enabled : '';
     let noSources = false;
     const _i18n = lookup('service:i18n');
@@ -47,8 +48,11 @@ export const selectedFilePolicy = createSelector(
       } else {
         if (!isBlank(focusedPolicy[prop])) {
           const basicSetting = _getBasicSetting(prop, focusedPolicy, _listOfLogServers, filePolicyEnabled);
+          const advancedConfigSetting = _getAdvancedConfigSetting(prop, focusedPolicy, filePolicyEnabled);
           if (basicSetting) {
             basicSettings.push(basicSetting);
+          } else if (advancedConfigSetting) {
+            advancedConfigSettings.push(advancedConfigSetting);
           }
         }
       }
@@ -57,6 +61,12 @@ export const selectedFilePolicy = createSelector(
       policyDetails.push({
         header: 'adminUsm.policies.detail.fileSettings',
         props: basicSettings
+      });
+    }
+    if (advancedConfigSettings.length > 0) {
+      policyDetails.push({
+        header: 'adminUsm.policyWizard.filePolicy.advancedConfig',
+        props: advancedConfigSettings
       });
     }
     // each source is rendered as separate section
@@ -102,6 +112,19 @@ const _getBasicSetting = (prop, focusedPolicy, _listOfLogServers, filePolicyEnab
     };
   }
   return basicSettings[prop];
+};
+
+const _getAdvancedConfigSetting = (prop, focusedPolicy, filePolicyEnabled) => {
+  let advancedConfigSettings = {};
+  if (filePolicyEnabled) {
+    advancedConfigSettings = {
+      customConfig: {
+        name: 'adminUsm.policyWizard.edrPolicy.customConfig',
+        value: focusedPolicy[prop]
+      }
+    };
+  }
+  return advancedConfigSettings[prop];
 };
 
 const _getDisplayName = (prop, destAddress, listOfLogServers) => {

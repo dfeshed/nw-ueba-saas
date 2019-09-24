@@ -351,6 +351,7 @@ module('Unit | Selectors | overview', function(hooks) {
           primaryDestination: '111',
           secondaryDestination: '222',
           protocol: 'TLS',
+          customConfig: '',
           sources: []
         }
       },
@@ -406,7 +407,8 @@ module('Unit | Selectors | overview', function(hooks) {
       'primaryDestination': '111',
       'protocol': 'TLS',
       'secondaryDestination': '222',
-      'sendTestLog': true
+      'sendTestLog': true,
+      'customConfig': ''
     });
     assert.deepEqual(resultPolicyAdminUsm.sources, {
       'hasWindowsLogPolicy': true,

@@ -61,8 +61,8 @@ module('Integration | Component | group-ranking/inspector | Policy Inspector', f
       .focusedPolicy(fileTestPolicy)
       .build();
     await render(hbs`{{usm-groups/group-ranking/inspector}}`);
-    assert.equal(findAll('.usm-ranking-inspector .heading').length, 1, 'expected headings are shown');
-    assert.equal(findAll('.usm-ranking-inspector .title').length, 4, 'expected property names are shown');
-    assert.equal(findAll('.usm-ranking-inspector .value').length, 10, 'expected value elements are shown');
+    assert.equal(findAll('.usm-ranking-inspector .heading').length, 2, 'expected headings are shown');
+    assert.equal(findAll('.usm-ranking-inspector .title').length, 5, 'expected property names are shown');
+    assert.equal(findAll('.usm-ranking-inspector .value').length, 14, 'expected value elements are shown');
   });
 });

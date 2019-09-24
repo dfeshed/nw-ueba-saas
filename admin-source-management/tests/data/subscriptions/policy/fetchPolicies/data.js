@@ -508,6 +508,7 @@ export default [
     sendTestLog: false,
     primaryDestination: '10.10.10.10',
     secondaryDestination: '10.10.10.12',
+    customConfig: '"enabled" : false,"sendTestLog" : true,"protocol" : "UDP","policyType" : "filePolicy","name" : "Test File Policy1","description" : "Test File Policy1 Description."',
     sources: [
       {
         fileType: 'apache',
@@ -569,6 +570,7 @@ export default [
     sendTestLog: false,
     primaryDestination: '10.10.10.10',
     secondaryDestination: '10.10.10.12',
+    customConfig: '"enabled" : true,"sendTestLog" : false,"protocol" : "TLS","policyType" : "filePolicy","name" : "Test File Policy2","description" : "Test File Policy2 Description."',
     sources: [
       {
         fileType: 'apache',

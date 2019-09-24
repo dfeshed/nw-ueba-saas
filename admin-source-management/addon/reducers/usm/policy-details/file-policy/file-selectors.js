@@ -38,6 +38,7 @@ export const selectedFilePolicy = createSelector(
     const policyDetails = [];
     const sourceSections = [];
     const basicSettings = [];
+    const advancedConfigSettings = [];
     const emptyOrigin = { groupName: '', policyName: '', conflict: false };
     for (const prop in focusedPolicy) {
       if (prop === 'sources') {
@@ -48,8 +49,11 @@ export const selectedFilePolicy = createSelector(
       } else {
         if (!isBlank(focusedPolicy[prop])) {
           const basicSetting = _getBasicSetting(prop, focusedPolicy, _listOfLogServers, _focusedPolicyOrigin, emptyOrigin);
+          const advancedConfigSetting = _getAdvancedConfigSetting(prop, focusedPolicy, _focusedPolicyOrigin, emptyOrigin);
           if (basicSetting) {
             basicSettings.push(basicSetting);
+          } else if (advancedConfigSetting) {
+            advancedConfigSettings.push(advancedConfigSetting);
           }
         }
       }
@@ -58,6 +62,12 @@ export const selectedFilePolicy = createSelector(
       policyDetails.push({
         header: 'adminUsm.policies.detail.fileSettings',
         props: basicSettings
+      });
+    }
+    if (advancedConfigSettings.length > 0) {
+      policyDetails.push({
+        header: 'adminUsm.policyWizard.filePolicy.advancedConfig',
+        props: advancedConfigSettings
       });
     }
     // each source is rendered as separate section
@@ -103,6 +113,17 @@ const _getBasicSetting = (prop, focusedPolicy, _listOfLogServers, _focusedPolicy
     }
   };
   return basicSettings[prop];
+};
+
+const _getAdvancedConfigSetting = (prop, focusedPolicy, _focusedPolicyOrigin, emptyOrigin) => {
+  const advancedConfigSettings = {
+    customConfig: {
+      name: 'adminUsm.policyWizard.filePolicy.customConfig',
+      value: focusedPolicy[prop],
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin
+    }
+  };
+  return advancedConfigSettings[prop];
 };
 
 const _getDisplayName = (prop, destAddress, listOfLogServers) => {

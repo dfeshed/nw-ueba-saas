@@ -15,7 +15,8 @@ export default [
       'lastPublishedOn': 1514744800000,
       'enabled': false,
       'sendTestLog': false,
-      'protocol': 'TLS'
+      'protocol': 'TLS',
+      'customConfig': '{a:"test"}'
       // 'sources': []
     },
     'origins': {
@@ -98,6 +99,11 @@ export default [
         'groupName': 'test',
         'policyName': 'test',
         'conflict': false
+      },
+      'customConfig': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
       }
       // 'sources': {
       //   'groupName': 'test',
@@ -125,6 +131,7 @@ export default [
       'primaryDestination': '10.10.10.10',
       'secondaryDestination': '10.10.10.12',
       'protocol': 'TLS',
+      'customConfig': '{xyz:"test"}',
       'sources': [
         {
           fileType: 'apache',
@@ -223,6 +230,11 @@ export default [
         'conflict': false
       },
       'protocol': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'customConfig': {
         'groupName': 'test',
         'policyName': 'test',
         'conflict': false

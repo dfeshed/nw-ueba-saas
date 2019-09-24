@@ -32,7 +32,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
   test('should return the correct initial state when type is filePolicy', function(assert) {
     assert.equal(initialStateFile.policy.policyType, 'filePolicy', 'correct policyType is loaded in initialState when type is filePolicy');
-    assert.equal(initialStateFile.availableSettings.length, 6, 'correct availableSettings are loaded in initialState when type is filePolicy');
+    assert.equal(initialStateFile.availableSettings.length, 8, 'correct availableSettings are loaded in initialState when type is filePolicy');
   });
 
   test('on NEW_POLICY, state should be reset to the initial state', function(assert) {

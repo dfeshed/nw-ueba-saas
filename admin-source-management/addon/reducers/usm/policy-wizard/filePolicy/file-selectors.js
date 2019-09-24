@@ -15,6 +15,9 @@ import {
 import {
   windowsLogDestinationValidator
 } from 'admin-source-management/reducers/usm/policy-wizard/windowsLogPolicy/windowsLog-selectors';
+import {
+  customConfigValidator
+} from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-selectors';
 
 const { createSelector } = reselect;
 
@@ -251,5 +254,6 @@ export const exFilterValidator = (state) => {
  */
 export const filePolicyValidatorFnMap = {
   'primaryDestination': windowsLogDestinationValidator,
-  'secondaryDestination': windowsLogDestinationValidator
+  'secondaryDestination': windowsLogDestinationValidator,
+  'customConfig': customConfigValidator
 };
