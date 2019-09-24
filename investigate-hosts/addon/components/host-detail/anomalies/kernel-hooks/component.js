@@ -7,11 +7,13 @@ import { machineOsType } from 'investigate-hosts/reducers/details/overview/selec
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import columnsConfig from './kernel-hooks-columns';
 import computed from 'ember-computed-decorators';
+import { getAnomaliesTabs } from 'investigate-hosts/reducers/visuals/selectors';
 
 
 const stateToComputed = (state) => ({
   machineOsType: machineOsType(state),
-  columnsConfig: getColumnsConfig(state, columnsConfig, 'KERNELHOOK')
+  columnsConfig: getColumnsConfig(state, columnsConfig, 'KERNELHOOK'),
+  anomaliesTabs: getAnomaliesTabs(state)
 });
 
 const KernelHooks = Component.extend({

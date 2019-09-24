@@ -33,8 +33,9 @@ import { getFileAnalysisData, saveLocalFileCopy } from 'investigate-shared/actio
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success } from 'investigate-shared/utils/flash-messages';
 import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
-import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
+import { riskState, getAutorunTabs, selectedAutorunTab } from 'investigate-hosts/reducers/visuals/selectors';
 import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
+import { toggleHostDetailsFilter } from 'investigate-hosts/actions/ui-state-creators';
 
 const callBackOptions = (context) => ({
   onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
@@ -67,7 +68,10 @@ const stateToComputed = (state, { storeName }) => ({
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, storeName),
   hostName: hostName(state),
   isInsightsAgent: isInsightsAgent(state),
-  isAgentMigrated: isAgentMigrated(state)
+  isAgentMigrated: isAgentMigrated(state),
+  autorunTabs: getAutorunTabs(state),
+  selectedAutorunTab: selectedAutorunTab(state),
+  isShowOpenFilterButton: !state.endpoint.visuals.showHostDetailsFilter
 });
 
 const dispatchToActions = {
@@ -80,7 +84,8 @@ const dispatchToActions = {
   setHostDetailPropertyTab,
   getUpdatedRiskScoreContext,
   saveLocalFileCopy,
-  setRowSelection
+  setRowSelection,
+  toggleHostDetailsFilter
 };
 
 
@@ -127,6 +132,9 @@ const ContextWrapper = Component.extend({
       if (side === 'right') {
         this.send('setRowSelection', this.get('tabName'), null, null);
       }
+      if (side === 'left') {
+        this.send('toggleHostDetailsFilter', false);
+      }
     },
 
     onDownloadProcessDump() {
@@ -155,6 +163,10 @@ const ContextWrapper = Component.extend({
       const fileFormat = componentSelectionForFileType(format).format;
 
       this.analyzeFile(checksumSha256, fileFormat, serviceId, callBackOptions);
+    },
+    openFilterPanel(openFilterPanel) {
+      openFilterPanel();
+      this.send('toggleHostDetailsFilter', true);
     }
   }
 

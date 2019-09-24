@@ -7,10 +7,12 @@ import servicesPropertyConfig from './services-property-config';
 import defaultPropertyConfig from 'investigate-hosts/components/host-detail/base-property-config';
 import computed from 'ember-computed-decorators';
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
+import { getAutorunTabs } from 'investigate-hosts/reducers/visuals/selectors';
 
 const stateToComputed = (state) => ({
   machineOsType: machineOsType(state),
-  columnsConfig: getColumnsConfig(state, columnsConfig, 'SERVICE')
+  columnsConfig: getColumnsConfig(state, columnsConfig, 'SERVICE'),
+  autorunTabs: getAutorunTabs(state)
 });
 
 const Services = Component.extend({

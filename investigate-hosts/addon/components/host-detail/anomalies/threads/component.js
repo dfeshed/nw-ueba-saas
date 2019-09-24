@@ -8,10 +8,12 @@ import { machineOsType } from 'investigate-hosts/reducers/details/overview/selec
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import columnsConfig from './threads-columns';
 import computed from 'ember-computed-decorators';
+import { getAnomaliesTabs } from 'investigate-hosts/reducers/visuals/selectors';
 
 const stateToComputed = (state) => ({
   machineOsType: machineOsType(state),
-  columnsConfig: getColumnsConfig(state, columnsConfig, 'THREAD')
+  columnsConfig: getColumnsConfig(state, columnsConfig, 'THREAD'),
+  anomaliesTabs: getAnomaliesTabs(state)
 });
 
 const dispatchToActions = {

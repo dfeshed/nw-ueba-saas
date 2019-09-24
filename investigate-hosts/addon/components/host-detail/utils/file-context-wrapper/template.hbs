@@ -1,6 +1,29 @@
-{{#rsa-page-layout showLeftZone=false showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
+{{#rsa-page-layout showLeftZone=(not isShowOpenFilterButton) showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
+  {{#layout.left as |leftPanel|}}
+    {{leftPanel.header iconName='filter-2' title=(t 'investigateHosts.downloads.filters.title')}}
+
+  {{/layout.left}}
   {{#layout.center}}
     <box class="process-list-box scroll-box">
+
+      {{#if subTabs}}
+        <hbox class="sub-tabs">
+          {{#if isShowOpenFilterButton}}
+            {{#rsa-form-button
+              class='close-filter'
+              defaultAction=(action 'openFilterPanel' (action layout.open 'left'))
+            }}
+              {{rsa-icon name='filter-2' size='small'}}
+              <span>{{t 'investigateFiles.filter.filter'}}</span>
+            {{/rsa-form-button}}
+          {{/if}}
+          {{#host-detail/utils/host-title-bar tabs=subTabs as |tab|}}
+            {{#link-to (query-params subTabName=tab.name)}}{{t tab.label}}{{/link-to}}
+          {{/host-detail/utils/host-title-bar}}
+        </hbox>
+      {{/if}}
+
+
       {{endpoint/file-actionbar
         onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums fileContextSelections)
         getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
@@ -23,7 +46,11 @@
         isDisplayTabLabel=isDisplayTabLabel
         tabLabel=(t (concat 'investigateHosts.tabs.' tabName))
         isAgentMigrated=isAgentMigrated
-        downloadDisabledTooltip=(t 'investigateShared.endpoint.fileActions.tooltips.files.downloadToServer')}}
+        downloadDisabledTooltip=(t 'investigateShared.endpoint.fileActions.tooltips.files.downloadToServer')
+        openFilterPanel=(action 'openFilterPanel' (action layout.open 'left'))
+        showOpenFilterButton=isShowOpenFilterButton
+        isSubtabs=subTabs
+      }}
       {{host-detail/utils/file-context-table
         isPaginated=isPaginated
         storeName=storeName

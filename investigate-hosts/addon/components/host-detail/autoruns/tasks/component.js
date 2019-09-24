@@ -6,10 +6,12 @@ import defaultPropertyConfig from 'investigate-hosts/components/host-detail/base
 import { machineOsType } from 'investigate-hosts/reducers/details/overview/selectors';
 import computed from 'ember-computed-decorators';
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
+import { getAutorunTabs } from 'investigate-hosts/reducers/visuals/selectors';
 
 const stateToComputed = (state) => ({
   machineOsType: machineOsType(state),
-  columnsConfig: getColumnsConfig(state, columnsConfig, 'TASK')
+  columnsConfig: getColumnsConfig(state, columnsConfig, 'TASK'),
+  autorunTabs: getAutorunTabs(state)
 });
 
 const Tasks = Component.extend({

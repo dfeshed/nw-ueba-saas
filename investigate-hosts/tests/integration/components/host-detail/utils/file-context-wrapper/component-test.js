@@ -663,4 +663,180 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
 
     assert.equal(findAll('.rsa-dropdown-action-list .panel3.disabled').length, 1, 'download to server is disabled');
   });
+  test('Subtabs test file-context-wrapper', async function(assert) {
+
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
+    const fileContextSelections = [
+      {
+        id: 'drivers_73',
+        fileName: 'afd.sys',
+        checksumSha1: '96c00157276e982c7d883bec5478eb1fb242cf1f',
+        checksumSha256: '673c2b498744c7eb846f6bd4fdc852b0a9722377d75fd694f7f78e727adf4563',
+        checksumMd5: '1151fd4fb0216cfed887bfde29ebd516',
+        signature: {
+          timeStamp: '2010-11-20T15:32:51.000+0000',
+          thumbprint: '02eceea9d5e0a9f3e39b6f4ec3f7131ed4e352c4',
+          features: [
+            'microsoft',
+            'signed',
+            'valid',
+            'catalog'
+          ],
+          signer: 'Microsoft Windows'
+        },
+        size: 338944,
+        machineOsType: 'windows',
+        downloadInfo: { 'status': 'Downloaded' },
+        features: [
+          'file.arch64',
+          'file.subsystemNative',
+          'file.versionInfoPresent',
+          'file.resourceDirectoryPresent',
+          'file.relocationDirectoryPresent',
+          'file.debugDirectoryPresent',
+          'file.richSignaturePresent',
+          'file.codeSectionWritable',
+          'file.companyNameContainsText',
+          'file.descriptionContainsText',
+          'file.versionContainsText',
+          'file.internalNameContainsText',
+          'file.legalCopyrightContainsText',
+          'file.originalFilenameContainsText',
+          'file.productNameContainsText',
+          'file.productVersionContainsText',
+          'file.standardVersionMetaPresent'
+        ],
+        format: 'pe'
+      }
+    ];
+    this.set('subTabs', [{ name: 'test', label: 'test' }]);
+    new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
+    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig subTabs=subTabs}}`);
+    assert.equal(findAll('.heading-tabs').length, 1, 'Subtabs are displayed');
+  });
+  test('Filter panel test file-context-wrapper with isShowOpenFilterButton', async function(assert) {
+
+    assert.expect(3);
+
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
+    const fileContextSelections = [
+      {
+        id: 'drivers_73',
+        fileName: 'afd.sys',
+        checksumSha1: '96c00157276e982c7d883bec5478eb1fb242cf1f',
+        checksumSha256: '673c2b498744c7eb846f6bd4fdc852b0a9722377d75fd694f7f78e727adf4563',
+        checksumMd5: '1151fd4fb0216cfed887bfde29ebd516',
+        signature: {
+          timeStamp: '2010-11-20T15:32:51.000+0000',
+          thumbprint: '02eceea9d5e0a9f3e39b6f4ec3f7131ed4e352c4',
+          features: [
+            'microsoft',
+            'signed',
+            'valid',
+            'catalog'
+          ],
+          signer: 'Microsoft Windows'
+        },
+        size: 338944,
+        machineOsType: 'windows',
+        downloadInfo: { 'status': 'Downloaded' },
+        features: [
+          'file.arch64',
+          'file.subsystemNative',
+          'file.versionInfoPresent',
+          'file.resourceDirectoryPresent',
+          'file.relocationDirectoryPresent',
+          'file.debugDirectoryPresent',
+          'file.richSignaturePresent',
+          'file.codeSectionWritable',
+          'file.companyNameContainsText',
+          'file.descriptionContainsText',
+          'file.versionContainsText',
+          'file.internalNameContainsText',
+          'file.legalCopyrightContainsText',
+          'file.originalFilenameContainsText',
+          'file.productNameContainsText',
+          'file.productVersionContainsText',
+          'file.standardVersionMetaPresent'
+        ],
+        format: 'pe'
+      }
+    ];
+    this.set('subTabs', [{ name: 'test', label: 'test' }]);
+    new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
+    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig subTabs=subTabs isShowOpenFilterButton=true}}`);
+    assert.equal(findAll('.rsa-icon-filter-2-filled').length, 2, 'on clicking Fiters button filter panel opens up');
+    assert.equal(findAll('.close-filter').length, 1, 'Filters button will hide on opening of Filter panel');
+    await click('.close-zone .rsa-form-button');
+    assert.equal(findAll('.close-filter').length, 1, 'on click of close Filters button Filters button showed');
+  });
+  test('Filter panel test file-context-wrapper', async function(assert) {
+
+    assert.expect(4);
+
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
+    const fileContextSelections = [
+      {
+        id: 'drivers_73',
+        fileName: 'afd.sys',
+        checksumSha1: '96c00157276e982c7d883bec5478eb1fb242cf1f',
+        checksumSha256: '673c2b498744c7eb846f6bd4fdc852b0a9722377d75fd694f7f78e727adf4563',
+        checksumMd5: '1151fd4fb0216cfed887bfde29ebd516',
+        signature: {
+          timeStamp: '2010-11-20T15:32:51.000+0000',
+          thumbprint: '02eceea9d5e0a9f3e39b6f4ec3f7131ed4e352c4',
+          features: [
+            'microsoft',
+            'signed',
+            'valid',
+            'catalog'
+          ],
+          signer: 'Microsoft Windows'
+        },
+        size: 338944,
+        machineOsType: 'windows',
+        downloadInfo: { 'status': 'Downloaded' },
+        features: [
+          'file.arch64',
+          'file.subsystemNative',
+          'file.versionInfoPresent',
+          'file.resourceDirectoryPresent',
+          'file.relocationDirectoryPresent',
+          'file.debugDirectoryPresent',
+          'file.richSignaturePresent',
+          'file.codeSectionWritable',
+          'file.companyNameContainsText',
+          'file.descriptionContainsText',
+          'file.versionContainsText',
+          'file.internalNameContainsText',
+          'file.legalCopyrightContainsText',
+          'file.originalFilenameContainsText',
+          'file.productNameContainsText',
+          'file.productVersionContainsText',
+          'file.standardVersionMetaPresent'
+        ],
+        format: 'pe'
+      }
+    ];
+    new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
+    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
+    await click('.close-filter .rsa-form-button');
+    assert.equal(findAll('.rsa-icon-filter-2-filled').length, 1, 'on clicking Fiters button filter panel opens up');
+    assert.equal(findAll('.close-filter').length, 0, 'Filters button will hide on opening of Filter panel');
+    await click('.close-zone .rsa-form-button');
+    assert.equal(findAll('.close-filter').length, 1, 'on click of close Filters button Filters button showed');
+  });
 });
