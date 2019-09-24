@@ -856,4 +856,42 @@ module('Integration | Component | Pill Value', function(hooks) {
     const quotes = findAll(PILL_SELECTORS.quoteHighlight);
     assert.strictEqual(quotes.length, 6, 'Should only highlight 6 quotes');
   });
+
+  test('It renders no options message when selected operator is length or regex', async function(assert) {
+    assert.expect(5);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    const suggestions = [
+      {
+        displayName: 'fooboom',
+        types: 'Suggestions'
+      },
+      {
+        displayName: 'barboom',
+        type: 'Suggestions'
+      }
+    ];
+    this.set('valueSuggestions', suggestions);
+    this.set('operator', { displayName: 'length' });
+    await render(hbs`
+      {{query-container/pill-value
+        activePillTab=activePillTab
+        isValueSuggestionsCallInProgress=false
+        valueSuggestions=valueSuggestions
+        isActive=true
+        operator=operator
+      }}
+    `);
+
+    assert.ok(find(PILL_SELECTORS.noResultsMessageSelector), 'Did not find no results message');
+    assert.ok(find(PILL_SELECTORS.noResultsMessageSelector).textContent.includes('suggestions'), 'Message not found');
+
+    this.set('operator', { displayName: 'regex' });
+    assert.ok(find(PILL_SELECTORS.noResultsMessageSelector), 'Did not find no results message');
+    assert.ok(find(PILL_SELECTORS.noResultsMessageSelector).textContent.includes('suggestions'), 'Message not found');
+
+    // but for any other operator, we'll see the values
+    this.set('operator', { displayName: '=' });
+    const values = findAll('.value').map((v) => v.textContent.trim()).filter((t) => !!t);
+    assert.deepEqual(values, ['fooboom', 'barboom'], 'Incorrect options being displayed');
+  });
 });

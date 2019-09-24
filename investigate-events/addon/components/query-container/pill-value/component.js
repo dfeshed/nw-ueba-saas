@@ -131,6 +131,11 @@ export default Component.extend({
   activePillTab: undefined,
 
   /**
+   * Selected operator in pill-operator
+   */
+  operator: undefined,
+
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
@@ -165,8 +170,17 @@ export default Component.extend({
   * list is suggested values if available.
   * If no suggestions are available, display default `Query Filter` option
   */
-  @computed('_searchString', 'valueSuggestions', 'i18n')
-  _options(searchString, valueSuggestions, i18n) {
+  @computed('_searchString', 'valueSuggestions', 'i18n', 'operator')
+  _options(searchString, valueSuggestions, i18n, operator) {
+    const name = operator?.displayName;
+    // const { displayName } = operator;
+    const noDisplaySuggestions = name === 'length' || name === 'regex';
+    // If operator are length and regex, make a quick exit with no suggestions found.
+    if (noDisplaySuggestions) {
+      addNoResultsMessage(i18n.t('queryBuilder.valueSuggestionsNoMatch'), this);
+      return [defaultOption(searchString)];
+    }
+
     if (valueSuggestions.length > 0) {
       removeNoResultsMessage(this);
     } else {

@@ -6,6 +6,9 @@ module('Unit | Component | Pill Value', function(hooks) {
   setupTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
+  hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
+  });
 
   test('Properly determine if input is considered "empty"', function(assert) {
     const comp = this.owner.lookup('component:query-container/pill-value');
@@ -43,5 +46,32 @@ module('Unit | Component | Pill Value', function(hooks) {
       results: ['foo']
     };
     assert.equal(comp._highlighter(powerSelectAPI), powerSelectAPI.results[0], 'Should have highlighted the first option');
+  });
+
+  test('_options will not return any value suggestions when length or regex operator is selected', function(assert) {
+    const comp = this.owner.lookup('component:query-container/pill-value');
+
+    comp.setProperties({
+      _searchString: 'nothing really',
+      valueSuggestions: ['a', 'b'],
+      i18n: this.owner.lookup('service:i18n'),
+      operator: { displayName: 'length' }
+    });
+    const options = comp.get('_options');
+    assert.equal(options.length, 1, 'Found value suggestions when it should not have');
+    assert.equal(options[0].type, 'default', 'Should have found just default option');
+  });
+
+  test('_options will return value suggestions when length and regex operators are not present', function(assert) {
+    const comp = this.owner.lookup('component:query-container/pill-value');
+
+    comp.setProperties({
+      _searchString: 'nothing really',
+      valueSuggestions: ['a', 'b'],
+      i18n: this.owner.lookup('service:i18n'),
+      operator: { displayName: '=' }
+    });
+    const options = comp.get('_options');
+    assert.equal(options.length, 3, 'Did not find the expected options');
   });
 });
