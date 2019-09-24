@@ -170,7 +170,9 @@ const _done = (errorCode, serverMessage) => {
     if (errorCode) {
       dispatch({
         type: ACTION_TYPES.QUERY_STATS,
-        payload: serverMessage,
+        payload: {
+          message: serverMessage
+        },
         code: errorCode,
         time: Date.now()
       });
