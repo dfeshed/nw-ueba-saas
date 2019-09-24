@@ -537,4 +537,19 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when no files are selected');
   });
 
+  test('Filter button showing if no subTabs and showOpenFilterButton test', async function(assert) {
+    this.set('itemList', undefined);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList selectedFileCount=0 isSubtabs=false showOpenFilterButton=true }}`);
+    assert.equal(findAll('.close-filter').length, 1, 'Filter button added');
+  });
+  test('Filter button hide if subTabs and showOpenFilterButton test', async function(assert) {
+    this.set('itemList', undefined);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList selectedFileCount=0 isSubtabs=true showOpenFilterButton=true }}`);
+    assert.equal(findAll('.close-filter').length, 0, 'Filter button hidden');
+  });
+  test('Filter button hide if no subTabs and showOpenFilterButton false', async function(assert) {
+    this.set('itemList', undefined);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList selectedFileCount=0 isSubtabs=false showOpenFilterButton=false }}`);
+    assert.equal(findAll('.close-filter').length, 0, 'Filter button hidden');
+  });
 });

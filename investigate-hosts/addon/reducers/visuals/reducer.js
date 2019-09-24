@@ -10,7 +10,8 @@ const visualsInitialState = Immutable.from({
   isTreeView: false,
   showDeleteHostsModal: false,
   activeSystemInformationTab: 'HOST_ENTRIES',
-  isProcessDetailsView: false
+  isProcessDetailsView: false,
+  showHostDetailsFilter: false
 });
 
 const getStateKey = (tabName, subTabName) => {
@@ -52,7 +53,9 @@ const visuals = handleActions({
     return state.set('activePropertyPanelTab', tabName);
   },
 
-  [ACTION_TYPES.CHANGE_PROPERTY_PANEL_TAB]: (state, { payload: { tabName } }) => state.set('activePropertyPanelTab', tabName)
+  [ACTION_TYPES.CHANGE_PROPERTY_PANEL_TAB]: (state, { payload: { tabName } }) => state.set('activePropertyPanelTab', tabName),
+
+  [ACTION_TYPES.TOGGLE_HOST_DETAILS_FILTER]: (state, { payload: { flag } }) => state.set('showHostDetailsFilter', flag)
 
 }, visualsInitialState);
 

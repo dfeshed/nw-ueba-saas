@@ -36,6 +36,8 @@ import { success } from 'investigate-shared/utils/flash-messages';
 import { saveLocalFileCopy } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
 
+import { toggleHostDetailsFilter } from 'investigate-hosts/actions/ui-state-creators';
+
 const callBackOptions = (context) => ({
   onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
   onFailure: (message) => context.get('flashMessage').showErrorMessage(message)
@@ -72,7 +74,8 @@ const stateToComputed = (state) => ({
   fileDownloadButtonStatus: fileDownloadButtonStatus(state, 'process'),
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, 'process'),
   isInsightsAgent: isInsightsAgent(state),
-  isAgentMigrated: isAgentMigrated(state)
+  isAgentMigrated: isAgentMigrated(state),
+  isShowOpenFilterButton: !state.endpoint.visuals.showHostDetailsFilter
 });
 
 const dispatchToActions = {
@@ -85,7 +88,8 @@ const dispatchToActions = {
   downloadFilesToServer,
   setHostDetailPropertyTab,
   getUpdatedRiskScoreContext,
-  saveLocalFileCopy
+  saveLocalFileCopy,
+  toggleHostDetailsFilter
 };
 
 const Container = Component.extend({
@@ -143,6 +147,9 @@ const Container = Component.extend({
       if (side === 'right') {
         this.send('setRowIndex', null);
       }
+      if (side === 'left') {
+        this.send('toggleHostDetailsFilter', false);
+      }
     },
 
     onDownloadProcessDump() {
@@ -173,6 +180,10 @@ const Container = Component.extend({
       const fileFormat = componentSelectionForFileType(format).format;
 
       this.analyzeFile(checksumSha256, fileFormat, serviceId, callBackOptions);
+    },
+    openFilterPanel(closeFilerPanel) {
+      closeFilerPanel();
+      this.send('toggleHostDetailsFilter', true);
     }
   }
 

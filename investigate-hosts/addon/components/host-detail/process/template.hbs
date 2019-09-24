@@ -1,4 +1,8 @@
-{{#rsa-page-layout showLeftZone=false showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
+{{#rsa-page-layout showLeftZone=(not isShowOpenFilterButton) showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
+  {{#layout.left as |leftPanel|}}
+    {{leftPanel.header iconName='filter-2' title=(t 'investigateHosts.downloads.filters.title')}}
+
+  {{/layout.left}}
   {{#layout.center}}
     <box class="process-list-box scroll-box">
       <div class="process-list-header">
@@ -21,6 +25,15 @@
           </span>
         {{/if}}
         <div class="process-list-actions analyze-process-button">
+          {{#if isShowOpenFilterButton}}
+            {{#rsa-form-button
+               class='close-filter'
+               defaultAction=(action 'openFilterPanel' (action layout.open 'left'))
+            }}
+              {{rsa-icon name='filter-2' size='small'}}
+              <span>{{t 'investigateFiles.filter.filter'}}</span>
+            {{/rsa-form-button}}
+          {{/if}}
           <span class="process-tab-label">
             <label>{{t (concat 'investigateHosts.tabs.' tabName)}}</label>
           </span>

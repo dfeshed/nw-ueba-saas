@@ -77,6 +77,8 @@ const arrangeSecurityConfigs = (arrangeBy) => ({ type: ACTION_TYPES.ARRANGE_SECU
 
 const setSystemInformationTab = (tabName) => ({ type: ACTION_TYPES.SET_SYSTEM_INFORMATION_TAB, payload: { tabName } });
 
+const toggleHostDetailsFilter = (flag) => ({ type: ACTION_TYPES.TOGGLE_HOST_DETAILS_FILTER, payload: { flag } });
+
 export {
   toggleCustomFilter,
   toggleMachineSelected,
@@ -92,5 +94,6 @@ export {
   resetHostDownloadLink,
   arrangeSecurityConfigs,
   setSystemInformationTab,
-  toggleDetailRightPanel
+  toggleDetailRightPanel,
+  toggleHostDetailsFilter
 };

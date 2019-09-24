@@ -15,7 +15,8 @@ test('should return the initial state', function(assert) {
     showDeleteHostsModal: false,
     activeSystemInformationTab: 'HOST_ENTRIES',
     activePropertyPanelTab: 'HOST_DETAILS',
-    isProcessDetailsView: false
+    isProcessDetailsView: false,
+    showHostDetailsFilter: false
   });
 });
 
@@ -39,7 +40,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     showDeleteHostsModal: false,
     activeSystemInformationTab: 'HOST_ENTRIES',
     activePropertyPanelTab: 'HOST_DETAILS',
-    isProcessDetailsView: false
+    isProcessDetailsView: false,
+    showHostDetailsFilter: false
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.RESET_INPUT_DATA });
@@ -113,6 +115,20 @@ test('The SET_PROPERTY_PANEL_TAB action sets the property panel tab', function(a
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.SET_PROPERTY_PANEL_TAB, payload: { tabName: 'POLICIES' } });
+
+  assert.deepEqual(result, expectedEndState);
+});
+test('The TOGGLE_HOST_DETAILS_FILTER sets the showHostDetailsFilter true', function(assert) {
+  const previous = Immutable.from({
+    activePropertyPanelTab: 'HOST_DETAILS'
+  });
+
+  const expectedEndState = {
+    activePropertyPanelTab: 'HOST_DETAILS',
+    showHostDetailsFilter: true
+  };
+
+  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_HOST_DETAILS_FILTER, payload: { flag: true } });
 
   assert.deepEqual(result, expectedEndState);
 });

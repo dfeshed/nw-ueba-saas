@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, render } from '@ember/test-helpers';
+import { find, render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -45,6 +45,17 @@ module('Integration | Component | Anomalies/Registry Discrepancies', function(ho
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Raw Data', 'Column 5 is Raw Data');
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Api Type', 'Column 6 is Api Type');
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(7)').textContent.trim(), 'Api Data', 'Column 7 is Api Data');
+
+  });
+  test('Filter button present', async function(assert) {
+    new ReduxDataHelper(initState)
+      .machineIdentity(machineIdentity)
+      .registryDiscrepancies(anomaliesRegistryDiscrepancies)
+      .selectedAnomaliesTab('REGISTRYDISCREPANCY').build();
+
+    await render(hbs`{{host-detail/anomalies}}`);
+    assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
+    assert.equal(findAll('.close-filter')[0].classList.contains('is-disabled'), 1, 'Fiters button is disabled');
 
   });
 });

@@ -6,10 +6,12 @@ import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import { registryDiscrepancies } from 'investigate-hosts/reducers/details/anomalies/selectors';
 import columnsConfig from './registry-discrepancies-columns';
 import computed from 'ember-computed-decorators';
+import { getAnomaliesTabs } from 'investigate-hosts/reducers/visuals/selectors';
 
 const stateToComputed = (state) => ({
   registryDiscrepancies: registryDiscrepancies(state),
-  columnsConfig: getColumnsConfig(state, columnsConfig, 'registry')
+  columnsConfig: getColumnsConfig(state, columnsConfig, 'registry'),
+  anomaliesTabs: getAnomaliesTabs(state)
 });
 
 const dispatchToActions = {

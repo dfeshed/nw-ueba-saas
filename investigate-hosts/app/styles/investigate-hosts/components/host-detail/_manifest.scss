@@ -127,6 +127,15 @@
 .file-context-wrapper {
   .center-zone {
     height: 100%;
+    .process-list-box {
+      .sub-tabs {
+        max-height: 2rem;
+        .close-filter {
+          padding-top: 1rem;
+          padding-left: 1rem;
+        }
+      }
+    }
   }
   .host-properties-box {
     height: 100%;
@@ -139,12 +148,15 @@
     padding-bottom: 1rem;
     padding-right: 1rem;
     padding-left: 0;
-    padding-top: 1.5rem;
+    padding-top: 1.9rem;
     .pivot-to-event-analysis {
       .button-menu.expanded {
         display: block;
         min-width: 176px;
       }
+    }
+    .close-filter {
+      padding-left: 1rem;
     }
   }
 }

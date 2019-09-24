@@ -1,7 +1,16 @@
-
+{{#if (and (not isSubtabs) showOpenFilterButton)}}
+  {{#rsa-form-button
+     class='close-filter'
+     defaultAction=openFilterPanel
+  }}
+    {{rsa-icon name='filter-2' size='small'}}
+    <span>{{t 'investigateFiles.filter.filter'}}</span>
+  {{/rsa-form-button}}
+{{/if}}
 {{#if isDisplayTabLabel}}
   <label class="tab-label">{{tabLabel}}</label>
 {{/if}}
+
 {{endpoint/edit-file-status
   isDisabled=isEditStatusButtonDisabled
   itemList=itemList

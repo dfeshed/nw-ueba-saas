@@ -456,5 +456,33 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     await render(hbs`{{host-detail/process}}`);
     assert.equal(findAll('.process-list-actions .pivot-to-process-analysis .rsa-form-button').length, 0);
   });
+  test('Filter panel in process view', async function(assert) {
+    assert.expect(4);
+    new ReduxDataHelper(setState)
+      .serviceId('123456')
+      .timeRange({ value: 7, unit: 'days' })
+      .processList(processList)
+      .processTree(processTree)
+      .selectedProcessList([{
+        ...selectedProcessItemInfo,
+        vpid: 123123
+      }])
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('linux')
+      .machineIdentity(machineIdentity)
+      .sortField('name')
+      .isDescOrder(true)
+      .searchResultProcessList([])
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
+    await click('.close-filter .rsa-form-button');
+    assert.equal(findAll('.rsa-icon-filter-2-filled').length, 1, 'on clicking Fiters button filter panel opens up');
+    assert.equal(findAll('.close-filter').length, 0, 'Filters button will hide on opening of Filter panel');
+    await click('.close-zone .rsa-form-button');
+    assert.equal(findAll('.close-filter').length, 1, 'on click of close Filters button Filters button showed');
+
+  });
 
 });
