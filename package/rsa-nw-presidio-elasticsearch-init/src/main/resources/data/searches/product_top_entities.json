@@ -1,9 +1,9 @@
 [
   {
-    "_id": "d6856410-00ef-11e8-b7dc-63e69023fe2a",
+    "_id": "d79e0ee0-a29b-11e7-bf94-db45269a46a7",
     "_type": "search",
     "_source": {
-      "title": "Scored Entities",
+      "title": "Top Entities",
       "description": "",
       "hits": 0,
       "columns": [
@@ -22,7 +22,7 @@
       ],
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"presidio-output-entity\",\"query\":{\"match_all\":{}},\"filter\":[]}"
+        "searchSourceJSON": "{\"index\":\"presidio-output-entity\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[]}"
       }
     }
   }

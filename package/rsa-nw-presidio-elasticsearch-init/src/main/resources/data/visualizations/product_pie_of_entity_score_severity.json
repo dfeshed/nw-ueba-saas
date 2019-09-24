@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "AW1jO90sjqYVbK2idSMy",
+    "_type": "visualization",
+    "_source": {
+      "title": "Pie of entity score severity",
+      "visState": "{\"title\":\"Pie of entity score severity\",\"type\":\"pie\",\"params\":{\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":false,\"type\":\"pie\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"severity\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-output-entity\",\"query\":{\"match_all\":{}},\"filter\":[]}"
+      }
+    }
+  }
+]
