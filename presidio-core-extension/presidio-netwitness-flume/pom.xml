@@ -19,7 +19,7 @@
         <tomcat.version>8.5.16</tomcat.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <junit.version>RELEASE</junit.version>
-        <copyDependencies.version>3.0.1</copyDependencies.version>
+        <copyDependencies.version>3.1.1</copyDependencies.version>
         <cba-aws-api.version>0.3.0-SNAPSHOT</cba-aws-api.version>
     </properties>
 
@@ -28,9 +28,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -55,7 +56,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.0.2</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
