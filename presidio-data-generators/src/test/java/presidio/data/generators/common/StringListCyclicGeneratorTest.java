@@ -20,8 +20,7 @@ public class StringListCyclicGeneratorTest {
                 asList("my string2", "other's string2", "additional string2" ),
                 asList("my string3", "other's string3" ) );
 
-        StringListCyclicGenerator generator = new StringListCyclicGenerator((List<String>[]) list.toArray());
-
+        StringListCyclicGenerator generator = new StringListCyclicGenerator(list.toArray(new List[0]));
         Assert.assertEquals("other's string1", generator.getNext().get(1));
         Assert.assertEquals("additional string2", generator.getNext().get(2));
         Assert.assertEquals("my string3", generator.getNext().get(0));
