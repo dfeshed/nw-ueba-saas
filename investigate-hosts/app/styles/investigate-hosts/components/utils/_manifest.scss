@@ -5,7 +5,7 @@
   .comment-box-label {
     margin: rsa-whitespace() 0;
   }
-  .edit-modal-content, .isolation-modal-content{
+  .release-modal-content, .edit-modal-content, .isolation-modal-content{
     padding: rsa-whitespace(more) rsa-whitespace();
     overflow: auto;
     max-height: 500px;
@@ -22,7 +22,7 @@
       max-width: 470px;
     }
 
-    .comment-wrapper {
+    &.comment-wrapper, .comment-wrapper {
       textarea {
         resize: none;
       }

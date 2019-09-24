@@ -419,6 +419,15 @@ const editExclusionListRequest = (data, serverId, callbacks = callbacksDefault) 
   };
 };
 
+const stopIsolationRequest = (data, serverId, callbacks = callbacksDefault) => {
+  Machines.stopIsolationRequest(data, serverId)
+    .then(() => {
+      callbacks.onSuccess();
+    }).catch(({ meta: message }) => {
+      callbacks.onFailure(message);
+    });
+};
+
 const downloadSystemDump = (agentId, serverId, callbacks = callbacksDefault) => {
   Machines.downloadSystemDump(agentId, serverId)
     .then(() => {
@@ -452,5 +461,6 @@ export {
   saveColumnConfig,
   isolateHostRequest,
   editExclusionListRequest,
-  downloadSystemDump
+  downloadSystemDump,
+  stopIsolationRequest
 };

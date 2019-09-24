@@ -6,7 +6,7 @@ import { editExclusionListRequest } from 'investigate-hosts/actions/data-creator
 import { isolateMachineValidation } from 'investigate-hosts/util/util';
 
 const callBackOptions = {
-  onSuccess: () => success('investigateHosts.networkIsolation.isolate.success'),
+  onSuccess: () => success('investigateHosts.networkIsolation.editExclusionList.success'),
 
   onFailure: (message) => failure(message, null, false)
 };

@@ -3111,6 +3111,13 @@ export default {
         comments: 'COMMENTS<sup>*</sup>',
         placeholder: 'Enter comments',
         success: 'Host Isolation initiated successfully'
+      },
+      releaseHost: {
+        success: 'Host Release from Isolation initiated successfully.',
+        descriptionText: 'Releasing isolated host restores network connection and removes IP addresses added to the Exclusion list.'
+      },
+      editExclusionList: {
+        success: 'Host Exclusion list update initiated successfully.'
       }
     },
     tabs: {
