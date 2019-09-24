@@ -5,10 +5,12 @@ import { inject as service } from '@ember/service';
 import { CATEGORIES, TAB_MAPPING, CATEGORY_NAME } from './categories-map';
 import { setSelectedTabData } from 'investigate-hosts/actions/data-creators/explore';
 import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
+import { setScanTime } from 'investigate-hosts/actions/data-creators/details';
 
 const dispatchToActions = {
   setSelectedTabData,
-  toggleExploreSearchResults
+  toggleExploreSearchResults,
+  setScanTime
 };
 
 const stateToComputed = (state) => ({
@@ -46,6 +48,7 @@ const FileFound = Component.extend({
       if (['AUTORUNS', 'ANOMALIES'].includes(tabName)) {
         subTabName = CATEGORY_NAME[category];
       }
+      this.send('setScanTime', scanTime);
       this.send('toggleExploreSearchResults', false);
       this.navigateToTab({ tabName, subTabName, scanTime, checksum, searchKey }, true);
     }
