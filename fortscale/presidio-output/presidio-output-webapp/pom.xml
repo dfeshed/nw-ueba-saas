@@ -17,7 +17,6 @@
         <start-class>presidio.webapp.FortscaleOutputWebApplication</start-class>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
         <swagger-annotations-version>1.5.8</swagger-annotations-version>
         <tomcat.web.scope>compile</tomcat.web.scope>
         <migbase64-version>2.2</migbase64-version>
@@ -162,6 +161,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -182,6 +185,11 @@
                         <artifactId>jackson-databind</artifactId>
                         <version>2.9.8</version>
                         <scope>compile</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                        <version>2.9.8</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -245,6 +253,7 @@
                             <inputSpec>${basedir}/target/extra-resources/swagger/presidio-output-swagger.yaml</inputSpec>
                             <language>java</language>
                             <library>jersey2</library>
+                            <templateDirectory>${project.basedir}/src/main/java/codegen-templates</templateDirectory>
                             <modelPackage>presidio.output.client.model</modelPackage>
                             <apiPackage>presidio.output.client.api</apiPackage>
                             <invokerPackage>presidio.output.client.client</invokerPackage>
@@ -259,8 +268,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.groovy.maven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.7.1</version>
                 <executions>
                     <execution>
                         <id>compile-client</id>
@@ -269,13 +279,16 @@
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <source>
-                                pathname = String.format("%s/../../resources/groovy/utils/Maven.groovy", project.basedir)
-                                command = String.format("%s clean install -f %s/target/generated-sources/swagger", project.properties.get('maven.command'), project.basedir)
-                                new GroovyShell().parse(new File(pathname)).with {
-                                    executeMavenCommand(command, project.properties.get('java.home'), project.properties.get('maven.home'))
-                                }
-                            </source>
+                            <scripts>
+                                <script>
+                                    pathname = String.format("%s/../../resources/groovy/utils/Maven.groovy", project.basedir)
+                                    command = String.format("%s clean install -f %s/target/generated-sources/swagger",
+                                    project.properties.get('maven.command'), project.basedir)
+                                    new GroovyShell().parse(new File(pathname)).with {
+                                        executeMavenCommand(command, java.lang.System.getProperty("java.home"),java.lang.System.getProperty("maven.home"))
+                                    }
+                                </script>
+                            </scripts>
                         </configuration>
                     </execution>
                     <execution>
@@ -285,21 +298,33 @@
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <source>
+                            <scripts>
+                            <script>
                                 pathname = String.format("%s/../../resources/groovy/utils/Maven.groovy", project.basedir)
                                 repositoryId = project.version.endsWith("SNAPSHOT") ? "asoc-snapshots" : "asoc-releases"
                                 command = String.format("%s deploy:deploy-file -f %s/target/generated-sources/swagger -DpomFile=pom.xml -Dfile=target/presidio-output-generated-client-%s.jar -DrepositoryId=%s -Durl=https://repo1.rsa.lab.emc.com:8443/artifactory/%s", project.properties.get('maven.command'), project.basedir, project.version, repositoryId, repositoryId)
                                 new GroovyShell().parse(new File(pathname)).with {
-                                    executeMavenCommand(command, project.properties.get('java.home'), project.properties.get('maven.home'))
+                                    executeMavenCommand(command, java.lang.System.getProperty('java.home'), java.lang.System.getProperty('maven.home'))
                                 }
-                            </source>
+                            </script>
+                            </scripts>
                         </configuration>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <!-- any version of Groovy \>= 1.5.0 should work here -->
+                        <version>2.5.7</version>
+                        <type>pom</type>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.0.2</version>
+                <version>${maven-resources-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
