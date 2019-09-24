@@ -20,7 +20,7 @@ import { hasInvalidPill, isPillValidationInProgress } from '../reducers/investig
 import { teardownNotifications, initializeNotifications } from '../actions/notification-creators';
 import { replaceAllGuidedPills } from 'investigate-events/actions/guided-creators';
 import { removeEmptyParens } from 'investigate-shared/actions/api/events/utils';
-import { contentBetweenParens } from 'investigate-events/actions/utils';
+import { findSelectedPills } from 'investigate-events/actions/utils';
 
 const SUMMARY_CALL_INTERVAL = 60000;
 let timerId;
@@ -219,13 +219,7 @@ export default Route.extend({
       }
 
       if (isExternalLink) {
-        let pills;
-        if (!externalLinkProps.paren) {
-          pills = pillsDataWithoutEmptyParens.filter((pill) => pill.isSelected);
-        } else {
-          const paren = pillsDataWithoutEmptyParens[externalLinkProps.position];
-          pills = contentBetweenParens([paren], pillsDataWithoutEmptyParens);
-        }
+        const pills = findSelectedPills(pillsDataWithoutEmptyParens);
         if (pills.length > 0) { // if no selected pills in state, exit
           const pillString = metaFiltersAsString(pills);
           qp.mf = encodeURIComponent(pillString);

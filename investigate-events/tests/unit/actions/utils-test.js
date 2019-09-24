@@ -304,37 +304,30 @@ module('Unit | Helper | Actions Utils', function(hooks) {
       'Did not find the correct pills');
   });
 
-  // (pill (text) pill) -> (pill pill)
-  test('pillsSetDifference returns everything from pillsData except the enclosed parens contents', function(assert) {
+  test('findSelectedPills will fetch selected parens and their contents with any selected pill outside those parens', function(assert) {
     const pillsData = [
       { type: OPEN_PAREN, twinId: 1, id: 1 },
       { type: QUERY_FILTER, id: 2 },
-      { type: OPEN_PAREN, twinId: 2, id: 3 },
-      { type: TEXT_FILTER, id: 4 },
-      { type: CLOSE_PAREN, twinId: 2, id: 5 },
-      { type: QUERY_FILTER, id: 6 },
-      { type: CLOSE_PAREN, twinId: 1, id: 7 }
+      { type: QUERY_FILTER, id: 3, isSelected: true },
+      { type: OPEN_PAREN, twinId: 2, id: 4, isSelected: true },
+      { type: QUERY_FILTER, id: 5 },
+      { type: CLOSE_PAREN, twinId: 2, id: 6 },
+      { type: OPEN_PAREN, twinId: 3, id: 7 },
+      { type: QUERY_FILTER, id: 8, isSelected: true },
+      { type: CLOSE_PAREN, twinId: 3, id: 9 },
+      { type: CLOSE_PAREN, twinId: 1, id: 10 },
+      { type: QUERY_FILTER, id: 11, isSelected: true }
     ];
 
-    // send open paren's position
-    let result = queryUtils.pillsSetDifference(2, pillsData);
+    const result = queryUtils.findSelectedPills(pillsData);
     assert.deepEqual(result,
       [
-        { type: OPEN_PAREN, twinId: 1, id: 1 },
-        { type: QUERY_FILTER, id: 2 },
-        { type: QUERY_FILTER, id: 6 },
-        { type: CLOSE_PAREN, twinId: 1, id: 7 }
-      ],
-      'Did not find the correct pills');
-
-    // send close paren's position, result should be the same
-    result = queryUtils.pillsSetDifference(4, pillsData);
-    assert.deepEqual(result,
-      [
-        { type: OPEN_PAREN, twinId: 1, id: 1 },
-        { type: QUERY_FILTER, id: 2 },
-        { type: QUERY_FILTER, id: 6 },
-        { type: CLOSE_PAREN, twinId: 1, id: 7 }
+        { type: QUERY_FILTER, id: 3, isSelected: true },
+        { type: OPEN_PAREN, twinId: 2, id: 4, isSelected: true },
+        { type: QUERY_FILTER, id: 5 },
+        { type: CLOSE_PAREN, twinId: 2, id: 6 },
+        { type: QUERY_FILTER, id: 8, isSelected: true },
+        { type: QUERY_FILTER, id: 11, isSelected: true }
       ],
       'Did not find the correct pills');
   });

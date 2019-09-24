@@ -1415,16 +1415,31 @@ module('Integration | Component | Query Pills', function(hooks) {
           deleteActionSpy.args[0][0],
           {
             pillData: [{
-              id: '2',
-              meta: 'b',
-              operator: '=',
-              value: '\'y\'',
-              isSelected: false,
               complexFilterText: undefined,
+              id: '2',
               isEditing: false,
-              isInvalid: false,
               isFocused: false,
-              type: 'query'
+              isInvalid: false,
+              isSelected: false,
+              meta: {
+                count: 0,
+                displayName: 'B',
+                flags: 2,
+                format: 'Text',
+                formattedName: 'b (B)',
+                isIndexedByKey: true,
+                isIndexedByNone: false,
+                isIndexedByValue: false,
+                metaName: 'b'
+              },
+              operator: {
+                description: 'Equals',
+                displayName: '=',
+                hasValue: true,
+                isExpensive: true
+              },
+              type: 'query',
+              value: "'y'"
             }]
           },
           'The action creator was called with the right arguments'
@@ -1653,7 +1668,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  test('Right clicking a paren and choosing query with contents will delete everything except their contents and query', async function(assert) {
+  test('Right clicking a paren and choosing query with selected filters will delete everything except their contents and query', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1692,7 +1707,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      const actionSelector = items.find((op) => op.textContent.includes('paren contents'));
+      const actionSelector = items.find((op) => op.textContent.includes('selected filters'));
       assert.equal(items.length, 4, 'Incorrect number of options for parens');
       await click(`#${actionSelector.id}`); // query with contents
       return settled().then(() => {
@@ -1706,7 +1721,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  test('Right clicking on a selected paren and choosing query with contents in a new tab will remove focus and selection + trigger action', async function(assert) {
+  test('Right clicking on a selected paren and choosing query in a new tab will remove focus and selection + trigger action', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1750,6 +1765,67 @@ module('Integration | Component | Query Pills', function(hooks) {
       await click(`#${actionSelector.id}`); // query with contents
       return settled().then(() => {
         assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'zero focused pills');
+        assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'zero selected pills');
+      });
+    });
+  });
+
+  test('Right clicking a paren/pill when both are selected will include parens and contents and any selected pills outside', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    const done = assert.async();
+
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+
+    this.set('executeQuery', () => {
+      done();
+    });
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true executeQuery=executeQuery}}
+        {{context-menu}}
+      </div>
+    `);
+
+    // create one more pill
+    await selectChoose(PILL_SELECTORS.meta, 'medium');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, '32');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+
+    // create one more pill
+    await selectChoose(PILL_SELECTORS.meta, 'medium');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, '1');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+
+    await leaveNewPillTemplate();
+
+    await click(PILL_SELECTORS.openParen);
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[1].id}`); // make it selected
+
+    await triggerEvent(find(PILL_SELECTORS.openParenSelected), 'contextmenu', { clientX: 100, clientY: 100 });
+
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      const actionSelector = items.find((op) => op.textContent.includes('selected filters'));
+      assert.equal(items.length, 4, 'Incorrect number of options for parens');
+      await click(`#${actionSelector.id}`);
+      return settled().then(() => {
+        assert.equal(deleteActionSpy.callCount, 1, 'The delete selected pill action creator was called once');
+        // selected( pill ) selectedPill pill -> ( pill ) pill
+        assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present'); // NPT + pill + ( pill )
+        assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'Did not find open paren');
+        assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'Did not find close paren');
         assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'zero selected pills');
       });
     });

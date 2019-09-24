@@ -14,12 +14,12 @@ import { getContextItems } from './right-click-util';
 
 import {
   canQueryGuided,
+  deselectedPills,
   enrichedPillsData,
   hasInvalidSelectedPill,
   hasTextPill,
   isPillValidationInProgress,
-  selectedPills,
-  deselectedPills
+  selectedPills
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import {
   addFreeFormFilter,

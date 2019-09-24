@@ -233,22 +233,6 @@ const _findParensIndexes = (pill, pillsData) => {
   return { st, en };
 };
 
-/**
- * For the paren postion passed in, find the open and close paren set. Return everything
- * from pillsData apart from the content enclosed between that set.
- */
-const pillsSetDifference = (position, pillsData) => {
-  const pillSet = new Set(pillsData);
-
-  // Slice out the contents of the selected parens
-  const pill = pillsData[position];
-  const { st, en } = _findParensIndexes(pill, pillsData);
-  const pillsToBeQueried = pillsData.slice(st, en + 1);
-
-  // negate rest of the pills
-  return [...pillSet.difference(new Set(pillsToBeQueried))];
-};
-
 // Get all the stuff between sets of parens
 const contentBetweenParens = (openParensSelected, pillsData) => {
   const result = openParensSelected.reduce((acc, openParen) => {
@@ -259,15 +243,38 @@ const contentBetweenParens = (openParensSelected, pillsData) => {
   return [...new Set(result)];
 };
 
+/**
+ * Given an array of selected pills and parens, it will return all
+ * contents within selected parens + any selected pills outside selected parens
+ */
+const findSelectedPills = (pillsData) => {
+  let count = 0;
+  const selectedFilters = [];
+  while (count !== pillsData.length) {
+    const pill = pillsData[count];
+    if (pill.type === OPEN_PAREN && pill.isSelected) {
+      const { st, en } = _findParensIndexes(pill, pillsData);
+      selectedFilters.push(...pillsData.slice(st, en + 1));
+      // start next iteration after it's matching close paren
+      count = en + 1;
+      continue;
+    } else if (pill.isSelected) {
+      selectedFilters.push(pill);
+    }
+    count++;
+  }
+  return selectedFilters;
+};
+
 export {
   buildMetaValueStreamInputs,
   contentBetweenParens,
   executeMetaValuesRequest,
   filterIsPresent,
   findAllEmptyParens,
+  findSelectedPills,
   findEmptyParensAtPosition,
   hasEmptyParensAt,
   parseBasicQueryParams,
-  pillsSetDifference,
   selectPillsFromPosition
 };

@@ -1,4 +1,4 @@
-import { pillsSetDifference } from 'investigate-events/actions/utils';
+import { findSelectedPills } from 'investigate-events/actions/utils';
 
 const rightClickQueryWithSelected = (context, i18n) => {
   return {
@@ -7,9 +7,13 @@ const rightClickQueryWithSelected = (context, i18n) => {
       return context.get('hasInvalidSelectedPill');
     },
     action() {
-      // Delete all deselected pills first
+      const pillsData = context.get('pillsData');
+      const pillSet = new Set(pillsData);
+      const selectedPills = findSelectedPills(context.get('pillsData'));
+      const pillsToDelete = [...pillSet.difference(new Set(selectedPills))];
+      // This action will delete pills and deselect + remove focus
+      context.send('deleteGuidedPill', { pillData: pillsToDelete });
       // submit query with remaining selected pills
-      context.send('deleteGuidedPill', { pillData: context.get('deselectedPills') });
       context._submitQuery();
     }
   };
@@ -55,35 +59,6 @@ const rightClickParenDeleteContents = (context, i18n) => {
   };
 };
 
-const rightClickParensQueryContents = (context, i18n) => {
-  return {
-    label: i18n.t('queryBuilder.queryParenContents'),
-    action() {
-      const pillsData = context.get('pillsData');
-      const position = context.get('rightClickTarget').getAttribute('position');
-      const pillsToDelete = pillsSetDifference(position, pillsData);
-      context.send('deleteGuidedPill', { pillData: pillsToDelete });
-      context._submitQuery();
-    }
-  };
-};
-
-const rightClickParensQueryContentsNewTab = (context, i18n) => {
-  return {
-    label: i18n.t('queryBuilder.queryParenContentsNewTab'),
-    action() {
-      const position = context.get('rightClickTarget').getAttribute('position');
-      context.get('executeQuery')({
-        externalLink: true,
-        paren: true,
-        position
-      });
-      context.send('removePillFocus');
-      context.send('deselectAllGuidedPills');
-    }
-  };
-};
-
 // Prepare an object that contains all possible list of options
 function getContextItems(context, i18n) {
   const _this = context;
@@ -94,8 +69,8 @@ function getContextItems(context, i18n) {
       rightClickDeleteSelection(_this, i18n)
     ],
     parens: [
-      rightClickParensQueryContents(_this, i18n),
-      rightClickParensQueryContentsNewTab(_this, i18n),
+      rightClickQueryWithSelected(_this, i18n),
+      rightClickQueryWithSelectedNewTab(_this, i18n),
       rightClickParenDeleteContents(_this, i18n),
       rightClickDeleteSelection(_this, i18n)
     ]
