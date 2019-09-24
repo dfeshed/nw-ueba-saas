@@ -26,11 +26,13 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
     public static final int DEFAULT_IP_3D_BYTE = 0;
     public static final double DEFAULT_MEAN_NUM_OF_BYTES = 500e3; // 5000K
     public static final double DEFAULT_STD_NUM_OF_BYTES = 100e3;   // 100K
+    public static final int DEFAULT_COMPANY_NAME_END_INDEX = 300;
+
 
 
     // default generators:
-    private IBaseGenerator<String> sslSubjectGenerator = new CompanyNameCyclicGenerator(0);
-    private IBaseGenerator<String> destinationOrganizationGenerator = new CompanyNameCyclicGenerator(100);
+    private IBaseGenerator<String> sslSubjectGenerator = new CompanyNameCyclicGenerator(0, DEFAULT_COMPANY_NAME_END_INDEX);
+    private IBaseGenerator<String> destinationOrganizationGenerator = new CompanyNameCyclicGenerator(0, DEFAULT_COMPANY_NAME_END_INDEX);
     private IBaseGenerator<String> destinationAsnGenerator = new RandomStringGenerator(5,8);
     private IBaseGenerator<String> sslCaGenerator = new RandomStringGenerator(3,5);
     private IBaseGenerator<String>  ja3Generator = new Md5RandomGenerator();
