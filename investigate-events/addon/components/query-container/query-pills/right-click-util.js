@@ -49,16 +49,6 @@ const rightClickDeleteSelection = (context, i18n) => {
   };
 };
 
-const rightClickParenDeleteContents = (context, i18n) => {
-  return {
-    label: i18n.t('queryBuilder.deleteParenContents'),
-    action() {
-      context.send('deleteSelectedParenContents');
-      context.send('deselectAllGuidedPills');
-    }
-  };
-};
-
 // Prepare an object that contains all possible list of options
 function getContextItems(context, i18n) {
   const _this = context;
@@ -71,7 +61,6 @@ function getContextItems(context, i18n) {
     parens: [
       rightClickQueryWithSelected(_this, i18n),
       rightClickQueryWithSelectedNewTab(_this, i18n),
-      rightClickParenDeleteContents(_this, i18n),
       rightClickDeleteSelection(_this, i18n)
     ]
   };

@@ -208,7 +208,6 @@ export default {
   queryBuilder: {
     cancelQuery: 'Cancel Query',
     delete: 'Delete selection',
-    deleteParenContents: 'Delete parens and contents',
     deleteFilter: 'Delete this filter',
     edit: 'Edit this filter',
     enterValue: 'Enter a single value',
@@ -223,8 +222,6 @@ export default {
     placeholder: 'Enter individual statements consisting of a Meta Key, Operator, and Value (optional)',
     query: 'Query with filters',
     queryEvents: 'Query Events',
-    queryParenContents: 'Query with paren contents',
-    queryParenContentsNewTab: 'Query with paren contents in a new tab',
     querySelected: 'Query with selected filters',
     querySelectedNewTab: 'Query with selected filters in a new tab',
     metaNoMatch: 'All meta keys filtered out',

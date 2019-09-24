@@ -280,26 +280,6 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk1(firstDispatch, getState);
   });
 
-  test('deleteSelectedParenContents action creator deletes parens and its contents', function(assert) {
-    const done = assert.async();
-    const state = new ReduxDataHelper()
-      .pillsDataWithParens()
-      .markSelected(['1', '3']) // mark open and close selected
-      .build();
-    const expectedPillsToBeDeleted = state.investigate.queryNode.pillsData;
-
-    const dispatch = (action) => {
-      if (typeof action !== 'function') {
-        assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
-        assert.deepEqual(action.payload.pillData, expectedPillsToBeDeleted, 'Pills to be deleted are incorrect');
-        done();
-      }
-    };
-
-    const thunk = guidedCreators.deleteSelectedParenContents();
-    thunk(dispatch, () => state);
-  });
-
   test('deleteGuidedPill action creator removes empty paren sets resulting from deleting pill', function(assert) {
     const done = assert.async(2);
     let state = new ReduxDataHelper()

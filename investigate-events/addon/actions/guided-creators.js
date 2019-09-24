@@ -1,11 +1,11 @@
 import * as ACTION_TYPES from './types';
-import { selectedPills, focusedPill, pillsData, selectedOpenParens } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { selectedPills, focusedPill, pillsData } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import validateQueryFragment from './fetch/query-validation';
 import {
-  contentBetweenParens,
   findAllEmptyParens,
   findEmptyParensAtPosition,
+  findSelectedPills,
   selectPillsFromPosition
 } from 'investigate-events/actions/utils';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
@@ -257,27 +257,6 @@ export const deleteAllGuidedPills = () => {
   };
 };
 
-export const deleteSelectedParenContents = () => {
-  return (dispatch, getState) => {
-
-    const openParensSelected = selectedOpenParens(getState());
-    const { investigate: { queryNode: { pillsData } } } = getState();
-    const pillsToDelete = contentBetweenParens(openParensSelected, pillsData);
-    if (pillsToDelete.length > 0) {
-      dispatch({
-        type: ACTION_TYPES.DELETE_GUIDED_PILLS,
-        payload: {
-          pillData: pillsToDelete
-        }
-      });
-      // look for empty parens that may have resulted from the deletion of pills
-      dispatch(_removeAnyEmptyParens());
-    }
-  };
-
-
-};
-
 export const deleteSelectedGuidedPills = (pillData) => {
   // can come from right-click action
   // can come from delete pressed on a selected, focused pill
@@ -285,7 +264,8 @@ export const deleteSelectedGuidedPills = (pillData) => {
     // if no pill is sent, it's a right click action - delete all selected
     // or if a pill is passed that is selected - delete all selected
     if (!pillData || pillData.isSelected) {
-      const selectedPD = selectedPills(getState());
+      const { investigate: { queryNode: { pillsData } } } = getState();
+      const selectedPD = findSelectedPills(pillsData);
       if (selectedPD.length > 0) {
         dispatch({
           type: ACTION_TYPES.DELETE_GUIDED_PILLS,

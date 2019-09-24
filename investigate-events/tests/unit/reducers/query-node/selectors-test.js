@@ -14,7 +14,6 @@ import {
   isPillValidationInProgress,
   pillBeingEdited,
   selectedPills,
-  selectedOpenParens,
   selectedTimeRange,
   selectedTimeRangeId,
   selectedTimeRangeName,
@@ -410,28 +409,6 @@ test('deselectedPills returns only those pills that are not selected', function(
   assert.equal(pD[0].value, '\'y\'', 'transforms value correctly');
   assert.equal(pD[0].id, 2, 'transforms id correctly');
 });
-
-test('selectedOpenParens returns only open parens that are selected', function(assert) {
-  const state = new ReduxDataHelper()
-    .language()
-    .pillsDataWithParens()
-    .markSelected(['1', '3'])
-    .build();
-  const pD = selectedOpenParens(state);
-  assert.equal(pD.length, 1, 'returns correct number of pill data');
-  assert.equal(pD[0].type, 'open-paren', 'Found an incorrect type of pill');
-});
-
-test('selectedOpenParens will not return anything if pills are selected', function(assert) {
-  const state = new ReduxDataHelper()
-    .language()
-    .pillsDataWithParens()
-    .markSelected(['2'])
-    .build();
-  const pD = selectedOpenParens(state);
-  assert.equal(pD.length, 0, 'returns correct number of pill data');
-});
-
 
 test('canQueryGuided is true when a query is ready to execute and NO invalid pill is present', function(assert) {
   const state = new ReduxDataHelper()
