@@ -3101,8 +3101,8 @@ export default {
       },
       isolationPill: 'ISOLATED',
       isolate: {
-        descriptionText: 'Network Isolation blocks the host from connecting to the network. All attempted network connections are monitored and reported to the Endpoint Server.',
-        checkboxLabel: 'Add your IPs to the Exclusion List',
+        descriptionText: 'Network Isolation blocks the host from connecting to the network.<br>All attempted network connections are monitored and reported to the Endpoint Server.',
+        checkboxLabel: 'Add IPs to the Exclusion List',
         checkboxDescription: 'Default IPs excluded from isolation include Endpoint Server, Relay Server, DNS, DHCP, Gateways, 0.0.0.0, 255.255.255.255.',
         exclusionListPlaceholder: 'Enter one or more valid IPv4/IPv6 addresses. Use commas to separate multiple values.',
         invalidIp: 'One or more of the IPv4/IPv6 addresses are invalid',
@@ -3358,9 +3358,10 @@ export default {
         agentStatus: {
           lastSeenTime: 'Agent Not Seen Since'
         },
-        showOnlyManageAgents: 'Managed Agents',
-        showOnlyRARAgents: 'Roaming Agents',
-        showOnlyIsolatedHosts: 'Isolated Hosts',
+        hostStatus: 'Host Status',
+        showOnlyManageAgents: 'Managed',
+        showOnlyRARAgents: 'Roaming',
+        showOnlyIsolatedHosts: 'Isolated',
         securityConfig: {
           allowAccessDataSourceDomain: 'Allow Access DataSource Domain',
           allowDisplayMixedContent: 'Allow Display Mixed Content',

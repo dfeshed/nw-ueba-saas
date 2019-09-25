@@ -6,7 +6,7 @@
 const FILTER_TYPES = [
   {
     'name': 'groupPolicy.managed',
-    'hideLabel': true,
+    'label': 'investigateHosts.hosts.filters.hostStatus',
     'listOptions': [ { name: false, label: 'investigateHosts.hosts.filters.showOnlyManageAgents' }],
     type: 'list'
   },

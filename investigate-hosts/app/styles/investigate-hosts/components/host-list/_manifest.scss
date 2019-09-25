@@ -38,6 +38,12 @@ $filter-panel-width: 250px;
   .rsa-data-filters {
     .content-body {
       height: calc(100vh - 260px);
+      .filter-controls {
+        &.groupPolicy-managed,
+        &.agentStatus-lastSeen {
+          padding-bottom: 0.25rem;
+        }
+      }
     }
   }
 

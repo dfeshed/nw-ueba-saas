@@ -193,18 +193,33 @@
     &:hover {
       background-color: background-color(secondary, darker);
     }
+    button.rsa-form-button {
+      display: block;
+      min-width: 178px;
+      text-align: left;
+    }
   }
   .divider {
     margin: 0;
   }
   .downloadMFT-button button, .isolate-button button{
     padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
+    .network-isolation {
+      display: inline-block;
+      width: 87%
+    }
+    i {
+      font-size: 1rem;
+    }
   }
   .export-button{
     padding-bottom: 0.75rem;
   }
   .host-start-scan-button .scan-modal {
     height: 0px;
+  }
+  .download-sys-dump-button {
+    padding-bottom: 0.5rem;
   }
 }
 

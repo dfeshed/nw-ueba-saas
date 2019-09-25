@@ -5,48 +5,87 @@
   .comment-box-label {
     margin: rsa-whitespace() 0;
   }
+  .comment-wrapper {
+    .comment-box-label {
+      color: text-color(primary, light);
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+  }
   .release-modal-content, .edit-modal-content, .isolation-modal-content{
     padding: rsa-whitespace(more) rsa-whitespace();
     overflow: auto;
     max-height: 500px;
     .isolate-description-text {
       margin-bottom: rsa-whitespace();
+      line-height: 1.5rem;
     }
     .exclusion-list-wrapper {
+      margin: rsa-whitespace(more) 0;
       .comment-box-label {
-        margin: rsa-whitespace() rsa-whitespace() rsa-whitespace(more) 1.5rem;
+        color: text-color(primary, light);
+        margin: rsa-whitespace(less) rsa-whitespace() rsa-whitespace() 0;
+        @include rsa-font(body, small);
+        line-height: 1.2rem;
+      }
+      .comment-box {
+        margin-left: 1.5rem;
+      }
+      .exclusion-list-error {
+        margin-top: rsa-whitespace(less);
       }
     }
 
     textarea {
-      max-width: 470px;
-    }
-
-    &.comment-wrapper, .comment-wrapper {
-      textarea {
-        resize: none;
-      }
+      resize: none;
+      min-height: 6rem;
     }
   }
   .edit-modal-content {
     .exclusion-list-wrapper {
-      .comment-box-label {
-        margin: 0 0 rsa-whitespace() 0;
+      margin-top: 0px;
+      .comment-box {
+        margin-left: 0px;
+        .comment-box-label {
+          margin: 0 0 rsa-whitespace() 0;
+          @include rsa-font(body);
+          color: inherit;
+          line-height: 1.5rem;
+        }
       }
+    }
+  }
+  .release-modal-content {
+    >.comment-box-label {
+      margin: 0 0 rsa-whitespace() 0;
+      @include rsa-font(body);
+      color: inherit;
+      line-height: 1.5rem;
+      text-transform: unset;
+      letter-spacing: normal;
+    }
+    .comment-box {
+      margin-top: 1rem;
     }
   }
 }
 
 .isolation-pill {
   display: inline-block;
-  border: 1px solid red;
+  border: 1px solid text-color(accentOne);
   border-radius: 3px;
   padding: 0px 3px;
   @include rsa-font(default, small);
-  color: red;
+  color: text-color(accentOne);
   margin-left: rsa-whitespace(less);
   line-height: 1rem;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
+  background-color: text-color(primary, darker);
+  letter-spacing: 1px;
 }
 
 .machine-name-holder {
