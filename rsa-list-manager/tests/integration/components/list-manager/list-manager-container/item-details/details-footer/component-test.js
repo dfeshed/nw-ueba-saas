@@ -8,7 +8,7 @@ import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
 
 let setState;
 
-module('Integration | Component | list details - details footer', function(hooks) {
+module('Integration | Component | item details - details footer', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {

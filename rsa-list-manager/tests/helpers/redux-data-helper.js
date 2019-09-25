@@ -98,4 +98,9 @@ export default class DataHelper {
     _set(this.state, 'editItemId', id);
     return this;
   }
+
+  isItemsLoading(value) {
+    _set(this.state, 'isItemsLoading', value);
+    return this;
+  }
 }

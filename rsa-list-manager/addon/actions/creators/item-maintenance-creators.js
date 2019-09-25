@@ -1,7 +1,7 @@
 import { apiCreateOrUpdateItem, apiDeleteItem } from '../api/api-interactions';
 import * as ACTION_TYPES from '../types';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
-import { modelName } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { modelName, editItemId } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 /**
  * @param {*}
@@ -47,11 +47,11 @@ export const updateItem = (payload, stateLocation) => {
 
 /**
  * @param {*}
- * 1. id of item to delete,
- * 2. list's stateLocation
+ * list's stateLocation
  */
-export const deleteItem = (id, stateLocation) => {
+export const deleteItem = (stateLocation) => {
   return (dispatch, getState) => {
+    const id = editItemId(getState(), stateLocation);
     const apiModelName = modelName(getState(), stateLocation);
     dispatch({
       type: ACTION_TYPES.ITEM_DELETE,

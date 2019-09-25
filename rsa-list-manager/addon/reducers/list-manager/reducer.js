@@ -18,7 +18,8 @@ const listManagerInitialState = Immutable.from({
   editItemId: undefined,
   viewName: undefined, // View to be rendered through button actions (list-view, detail-view, etc)
   selectedItemId: undefined, // id of object to identify an item as selected in the manager's button caption,
-  helpId: undefined // object for contextual help { moduleId: "investigation", topicId: "eaColumnGroups" }
+  helpId: undefined, // object for contextual help { moduleId: "investigation", topicId: "eaColumnGroups" }
+  isItemsLoading: false
 });
 
 const listManagerReducer = handleActions({
@@ -109,7 +110,9 @@ const listManagerReducer = handleActions({
         const list = s.list.filter((item) => item.id !== deletedId);
         return s.merge({
           list,
-          isItemsLoading: false
+          isItemsLoading: false,
+          viewName: LIST_VIEW,
+          editItemId: undefined
         });
       }
     });

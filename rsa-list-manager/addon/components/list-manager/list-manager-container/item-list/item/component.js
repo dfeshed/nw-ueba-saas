@@ -2,9 +2,7 @@ import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import {
-  editItem
-} from 'rsa-list-manager/actions/creators/creators';
+import { editItem } from 'rsa-list-manager/actions/creators/creators';
 
 const dispatchToActions = {
   editItem

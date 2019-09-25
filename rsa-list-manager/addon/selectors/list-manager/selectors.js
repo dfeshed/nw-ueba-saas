@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 import {
-  LIST_VIEW
+  LIST_VIEW,
+  EDIT_VIEW
 } from 'rsa-list-manager/constants/list-manager';
 
 const { createSelector } = reselect;
@@ -44,7 +45,7 @@ const _selectedItemName = createSelector(
   }
 );
 
-const _editItemId = createSelector(
+export const editItemId = createSelector(
   _rootState,
   (rootState) => {
     return rootState.editItemId;
@@ -217,8 +218,36 @@ export const hasIsEditableIndicators = createSelector(
 );
 
 export const editItem = createSelector(
-  [list, _editItemId],
+  [list, editItemId],
   (list, editItemId) => {
     return list && editItemId ? list.find((item) => item.id === editItemId) : undefined;
+  }
+);
+
+export const isEditable = createSelector(
+  [editItem],
+  (editItem) => {
+    return list && editItem ? editItem.isEditable : undefined;
+  }
+);
+
+export const isNewItem = createSelector(
+  [viewName, editItemId],
+  (viewName, editItemId) => {
+    return viewName === EDIT_VIEW && editItemId ? !editItemId : false;
+  }
+);
+
+export const editItemIsSelected = createSelector(
+  [list, selectedItemId, editItemId],
+  (list, selectedItemId, editItemId) => {
+    return list && selectedItemId && editItemId ? selectedItemId === editItemId : false;
+  }
+);
+
+export const isItemsLoading = createSelector(
+  [_rootState],
+  (rootState) => {
+    return rootState.isItemsLoading;
   }
 );

@@ -5,13 +5,9 @@
         {{itemType}} details
       </div>
 
-      {{!-- delete component here --}}
-
-      {{#if hasContextualHelp}}
-        {{#rsa-form-button class='list-help-icon' defaultAction=(action 'goToHelp')}}
-          {{rsa-icon name='help-circle' style='lined'}}
-        {{/rsa-form-button}}
-      {{/if}}
+      {{list-manager/list-manager-container/item-details/details-header-icons
+        stateLocation=stateLocation
+      }}
 
     </div>
     <div class='details-body'>
@@ -20,6 +16,15 @@
 
   {{else}}
     <div class='new-item'>
+    </div>
+  {{/if}}
+
+  {{!-- Overlay with spinner during delete to prevent interactions --}}
+  {{#if isItemsLoading}}
+    <div class="item-details-loading-overlay">
+      <centered>
+        {{rsa-loader size="largest"}}
+      </centered>
     </div>
   {{/if}}
 </div>

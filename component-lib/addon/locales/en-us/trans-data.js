@@ -6171,5 +6171,12 @@ effects the previewed source.',
       equals: 'Equals',
       contains: 'Contains'
     }
+  },
+  rsaListManager: {
+    iconMessage: {
+      disabled: {
+        delete: 'This column group cannot be deleted because it is currently active'
+      }
+    }
   }
 };

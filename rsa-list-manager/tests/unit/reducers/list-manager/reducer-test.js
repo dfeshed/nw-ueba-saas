@@ -4,7 +4,7 @@ import makePackAction from '../../../helpers/make-pack-action';
 import { LIFECYCLE } from 'redux-pack';
 import * as ACTION_TYPES from 'rsa-list-manager/actions/types';
 import reducer from 'rsa-list-manager/reducers/list-manager/reducer';
-import { EDIT_VIEW } from 'rsa-list-manager/constants/list-manager';
+import { EDIT_VIEW, LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
 
 module('Unit | Reducers | list-manager');
 
@@ -276,6 +276,8 @@ test('Should set relevant properties correctly after successfully deleting item'
   assert.equal(newEndState.isItemsLoading, false, 'isItemsLoading shall be set false');
   assert.notOk(newEndState.deleteItemErrorCode, 'deleteItemErrorCode shall not be set');
   assert.notOk(newEndState.deleteItemErrorMessage, 'deleteItemErrorMessage shall not be set');
+  assert.notOk(newEndState.editItemId, 'editItemId shall be reset');
+  assert.equal(newEndState.viewName, LIST_VIEW, 'viewName shall be set to list-view');
 });
 
 test('Should set relevant properties correctly after failure to delete item', function(assert) {

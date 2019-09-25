@@ -43,7 +43,8 @@ export default [
         displayName: 'Source Country'
       }],
     contentType: 'USER'
-  }, {
+  },
+  {
     id: 'MALWARE1',
     name: 'Custom 2',
     columns: [

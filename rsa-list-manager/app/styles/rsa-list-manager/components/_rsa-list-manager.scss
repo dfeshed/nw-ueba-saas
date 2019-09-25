@@ -130,6 +130,15 @@
     .item-details {
       min-width: 400px;
 
+      .item-details-loading-overlay {
+        @include rsa-fill-abs();
+        z-index: 2;
+        background-color: background-color(neutral,dark,translucent);
+        centered {
+          height: 100%;
+        }
+      }
+
       // TODO list-body to something else
       .list-body {
         padding:0.4rem;
@@ -147,8 +156,16 @@
             color: text-color(primary, lighter);
             letter-spacing: 1px;
           }
-          i {
-            margin-right: 0;
+          .details-header-icons {
+            .is-disabled:hover {
+              button, i {
+                color: text-color(primary, light);
+              }
+            }
+            i {
+              margin: 0 .25rem;
+              padding: 0 .25rem;
+            }
           }
         }
 
