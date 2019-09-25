@@ -117,6 +117,10 @@
       padding-left: rsa-whitespace();
     }
   }
+  vbox.host-properties-box {
+    max-height: $host-properties-box-bottom-gap;
+    min-height: $host-properties-box-bottom-gap;
+  }
 }
 .machine-zone, .host-container-detail {
   .rsa-data-table-header-cell:last-child {
