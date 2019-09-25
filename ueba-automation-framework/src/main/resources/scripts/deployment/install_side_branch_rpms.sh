@@ -9,9 +9,9 @@ ARTIFACTORY_LINK=http://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-
 PRESIDIO_RPMS=()
 
 if [ "$( ls -a /tmp/presidio_rpms)" ]; then
-		rm -f $RPMS_DIR/*
+	rm -f $RPMS_DIR/*
 else 
-		mkdir $RPMS_DIR
+	mkdir $RPMS_DIR
 fi
 
 ########  Installing rsa-nw-logplayer
@@ -21,8 +21,8 @@ if [[ NW_LOG_PLAYER -eq 0 ]]; then
 fi
 ########  Stoping Airflow Services
 if [[ $(systemctl is-active airflow-scheduler) == 'active' ]]||[[ $(systemctl is-active airflow-webserver) == 'active' ]]; then
-    sudo systemctl stop airflow-webserver
-    sudo systemctl stop airflow-scheduler
+	sudo systemctl stop airflow-webserver
+	sudo systemctl stop airflow-scheduler
 fi
 
 ########  Download Branch RPMS from Jenkins Artifacts
@@ -38,13 +38,12 @@ while IFS= read -r line
 		PRESIDIO_RPMS+=($(echo "$line" | awk -v FS="(relativePath\": \"|rpm\")" '{print $2}'))
 done < build_rpms.txt
 
-
 cd $RPMS_DIR
 for i in "${PRESIDIO_RPMS[@]}"
-        do
+    do
         url=$ARTIFACTORY_LINK$i"rpm"
         echo $(wget -q $url)
-        done
+done
 
 ######## Removing and installing side branch RPMS
 echo "Removing Old Presidio RPMs"
