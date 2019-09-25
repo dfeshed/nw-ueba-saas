@@ -55,7 +55,7 @@ OWB_ALLOW_NON_FIPS=on && sudo -E yum -y install --nogpgcheck rsa-nw-presidio*.rp
 for i in "${PRESIDIO_EXPECTED_RPMS[@]}"
     do
 	if [[ ! $( find ${RPMS_DIR} -name "$i*") ]]; then
-		echo "OWB_ALLOW_NON_FIPS=on && sudo -E yum install -y $i"
+		echo "$(OWB_ALLOW_NON_FIPS=on && sudo -E yum install -y $i)"
 	fi
 done
 sudo  systemctl daemon-reload
