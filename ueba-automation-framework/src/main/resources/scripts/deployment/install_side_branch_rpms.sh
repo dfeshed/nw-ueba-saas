@@ -44,11 +44,6 @@ if [ "${#PRESIDIO_RPMS[@]}" -lt 9 ]; then
         exit 1
 fi
 
-if [ -d "$RPMS_DIR" ]; then
-        rm -f $RPMS_DIR/*
-else
-        mkdir -p $RPMS_DIR
-fi
 cd $RPMS_DIR
 for i in "${PRESIDIO_RPMS[@]}"
         do
