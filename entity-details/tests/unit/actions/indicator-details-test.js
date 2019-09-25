@@ -21,6 +21,7 @@ const state = {
     selectedIndicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
     events: indicatorEvents.data,
     historicalData: indicatorCount.data,
+    globalBaselineData: indicatorCount.globalData,
     eventFilter: {
       page: 1,
       size: 100,
@@ -96,13 +97,14 @@ module('Unit | Actions | indicator-details Actions', (hooks) => {
   });
 
   test('it can getHistoricalData', (assert) => {
-    assert.expect(2);
+    assert.expect(3);
     const types = ['ENTITY_DETAILS::INITIATE_INDICATOR', 'ENTITY_DETAILS::GET_INDICATOR_EVENTS', 'ENTITY_DETAILS::GET_INDICATOR_HISTORICAL_DATA'];
     const dispatch = ({ type, payload }) => {
       if (type) {
         assert.ok(types.includes(type));
         if (payload) {
-          assert.equal(payload.length, 4);
+          assert.equal(payload.data.length, 4);
+          assert.equal(payload.globalData.length, 1);
         }
       }
     };

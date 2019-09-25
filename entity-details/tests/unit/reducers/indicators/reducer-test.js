@@ -5,6 +5,7 @@ import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'entity-details/actions/types';
 import indicatorEvents from '../../../data/presidio/indicator-events';
 import indicatorCount from '../../../data/presidio/indicator-count';
+import indicatorDistinctEventsByTime from '../../../data/presidio/indicator-distinctEventsByTime';
 
 module('Unit | Reducers | Indicators Reducer', (hooks) => {
   setupTest(hooks);
@@ -66,7 +67,16 @@ module('Unit | Reducers | Indicators Reducer', (hooks) => {
       payload: indicatorCount
     });
 
-    assert.deepEqual(result.historicalData, indicatorCount);
+    assert.deepEqual(result.historicalData, indicatorCount.data);
+  });
+
+  test('test indicator baseline data', (assert) => {
+
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.GET_INDICATOR_HISTORICAL_DATA,
+      payload: indicatorDistinctEventsByTime
+    });
+    assert.deepEqual(result.globalBaselineData, indicatorDistinctEventsByTime.globalData);
   });
 
   test('test indicator for select alert', (assert) => {

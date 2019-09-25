@@ -8,6 +8,7 @@ import {
   indicatorMapSettings,
   getIncidentData,
   historicalData,
+  globalBaselineData,
   brokerId,
   indicatorGraphError
 } from 'entity-details/reducers/indicators/selectors';
@@ -23,6 +24,7 @@ const stateToComputed = (state) => ({
   incidentDetails: getIncidentData(state),
   brokerId: brokerId(state),
   historicalData: historicalData(state),
+  globalBaselineData: globalBaselineData(state),
   indicatorGraphError: indicatorGraphError(state)
 });
 
@@ -36,8 +38,8 @@ const EventsGraphComponent = Component.extend({
     this.chart = null;
   },
 
-  @computed('indicatorMapSettings', 'historicalData')
-  historicalDataForGraph(indicatorMapSettings, historicalData) {
+  @computed('indicatorMapSettings', 'historicalData', 'globalBaselineData')
+  historicalDataForGraph(indicatorMapSettings, historicalData, globalBaselineData) {
     // Init will not be called when user jumps between indicators. So need to clear container div before drawing chart.
     this.chart = null;
     const timeZoneId = this.get('timezone.selected.zoneId') || 'UTC';
@@ -47,7 +49,7 @@ const EventsGraphComponent = Component.extend({
       return;
     }
     const chartType = indicatorMapSettings.chartSettings.type;
-    const settings = chartDataAdapter(indicatorMapSettings, historicalData, timeZoneId, locale);
+    const settings = chartDataAdapter(indicatorMapSettings, historicalData, timeZoneId, locale, globalBaselineData);
     switch (chartType) {
       case 'pie':
         this.chart = pieChartCreator(settings, this.get('incidentDetails'), this.get('brokerId'));

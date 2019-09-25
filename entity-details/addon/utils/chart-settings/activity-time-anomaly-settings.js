@@ -16,16 +16,17 @@ export default (anomalyTypeFieldName) => {
     sortData: (data) => {
       return _.orderBy(data, ['originalCategory'], ['asc']);
     },
-    dataAdapter: (dataItem, zoneId, localeId) => {
+    dataAdapter: (dataItem, zoneId, localeId, keyPrefix = '') => {
       const timezoneDate = moment(parseInt(dataItem.keys[0], 10)).locale(localeId).tz(zoneId).format('DD MMM HH:mm');
-      const chartItem = {
-        category: timezoneDate,
-        originalCategory: dataItem.keys[0],
-        value: dataItem.value
-      };
+      const chartItem = {};
+      chartItem[`${keyPrefix}category`] = timezoneDate;
+      chartItem[`${keyPrefix}originalCategory`] = dataItem.keys[0];
+      chartItem[`${keyPrefix}value`] = dataItem.value;
+      chartItem[`${keyPrefix}radius`] = 1;
 
       if (dataItem.anomaly) {
-        chartItem.color = '#CC3300';
+        chartItem[`${keyPrefix}color`] = '#CC3300';
+        chartItem[`${keyPrefix}radius`] = 5;
       }
       return chartItem;
     },

@@ -5,6 +5,7 @@ import {
   indicatorMapSettings,
   indicatorEvents,
   historicalData,
+  globalBaselineData,
   areAllEventsReceived,
   getIncidentData,
   getIncidentKey,
@@ -32,6 +33,7 @@ const state = {
     selectedIndicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
     events: indicatorEventsData.data,
     historicalData: indicatorCount.data,
+    globalBaselineData: indicatorCount.globalData,
     indicatorGraphError: false,
     indicatorEventError: false,
     totalEvents: 100,
@@ -85,6 +87,9 @@ test('test indicatorEvents for selected incident', function(assert) {
 });
 test('test historicalData for selected incident', function(assert) {
   assert.deepEqual(historicalData(state), indicatorCount.data);
+});
+test('test globalBaselineData for selected incident', function(assert) {
+  assert.deepEqual(globalBaselineData(state), indicatorCount.globalData);
 });
 test('test allEventsReceived for selected incident to stop scrollbar', function(assert) {
   assert.equal(areAllEventsReceived(state), false);

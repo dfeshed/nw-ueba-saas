@@ -14,6 +14,8 @@ export const indicatorEvents = (state) => state.indicators.events;
 
 export const historicalData = (state) => state.indicators.historicalData;
 
+export const globalBaselineData = (state) => state.indicators.globalBaselineData;
+
 export const indicatorGraphError = (state) => state.indicators.indicatorGraphError;
 
 export const indicatorEventError = (state) => state.indicators.indicatorEventError;

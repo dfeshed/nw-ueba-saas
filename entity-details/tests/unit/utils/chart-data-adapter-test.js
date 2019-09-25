@@ -80,6 +80,33 @@ module('Unit | Utils | chart-data-adapter', (hooks) => {
     });
   });
 
+  test('it update data based on settings fun and with baselineData', (assert) => {
+    const settings = {
+      chartSettings: {},
+      dataAdapter: (dataItem) => {
+        const chartItem = {
+          category: dataItem.keys[0],
+          originalCategory: dataItem.keys[0],
+          value: dataItem.value
+        };
+
+        if (dataItem.anomaly) {
+          chartItem.color = '#CC3300';
+        }
+        return chartItem;
+      }
+    };
+    const data = chartDataAdapter(settings, chartData, null, null, [{
+      'keys': [
+        '1541066300000'
+      ],
+      'additionalInformation': null,
+      'value': 0,
+      'anomaly': false
+    }]);
+    assert.equal(data.hasBaselineData, true);
+  });
+
   test('it sort and update data based on settings', (assert) => {
     const settings = {
       chartSettings: {},

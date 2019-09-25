@@ -48,7 +48,7 @@ export const getHistoricalData = (indicatorId) => {
       } else {
         dispatch({
           type: GET_INDICATOR_HISTORICAL_DATA,
-          payload: result.data
+          payload: result
         });
       }
     });

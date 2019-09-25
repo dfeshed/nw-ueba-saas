@@ -25,7 +25,22 @@ module('Unit | Utils | activity-time-anomaly-settings', (hooks) => {
       category: '12 Nov 15:00',
       color: '#CC3300',
       originalCategory: '1542034800000',
-      value: 2
+      value: 2,
+      radius: 5
+    });
+  });
+
+  test('it dataAggregator function aggregates data', (assert) => {
+    const settings = activityTimeAnomalySettings('high_number_of_successful_object_change_operations');
+    const changedData = _.map(indicatorEvents.data, (data) => settings.dataAdapter(data, 'UTC', 'en', 'globalData-'));
+    assert.equal(changedData.length, 262);
+
+    assert.deepEqual(changedData[0], {
+      'globalData-category': '12 Nov 15:00',
+      'globalData-color': '#CC3300',
+      'globalData-originalCategory': '1542034800000',
+      'globalData-value': 2,
+      'globalData-radius': 5
     });
   });
 });

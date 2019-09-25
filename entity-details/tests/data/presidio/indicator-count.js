@@ -28,6 +28,14 @@ export default {
     'value': 52,
     'anomaly': false
   }],
+  globalData: [{
+    'keys': [
+      'C:\\Windows\\System32\\winlogon.exe'
+    ],
+    'additionalInformation': null,
+    'value': 52,
+    'anomaly': false
+  }],
   total: 4,
   offset: 0,
   warning: null,

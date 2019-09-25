@@ -2095,6 +2095,22 @@ export default {
     'value': 2,
     'anomaly': false
   }],
+  globalData: [{
+    'keys': [
+      '1541066300000'
+    ],
+    'additionalInformation': null,
+    'value': 0,
+    'anomaly': false
+  },
+  {
+    'keys': [
+      '1541066400000'
+    ],
+    'additionalInformation': null,
+    'value': 20,
+    'anomaly': false
+  }],
   'total': 262,
   'offset': 0,
   'warning': null,
