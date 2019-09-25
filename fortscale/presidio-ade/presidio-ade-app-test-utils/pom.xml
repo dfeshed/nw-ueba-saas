@@ -18,6 +18,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>default-jar</id>
                         <goals>
                             <goal>test-jar</goal>
                         </goals>
