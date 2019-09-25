@@ -108,7 +108,6 @@ public class ActiveDirectoryOperationTypeAndEventCodeTest extends AbstractTestNG
                 .collect(groupingBy(ActiveDirectoryEnrichStoredData::getOperationType,
                         mapping(ActiveDirectoryEnrichStoredData::getOperationTypeCategories, toSet())));
 
-
         for (Map.Entry<String, Set<List<String>>> actual : actualOpTypesToOpTypeCategories.entrySet()) {
 
             List<String> actualDistinctCategories = actual.getValue().stream()

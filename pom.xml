@@ -31,7 +31,7 @@
         <guava.version>11.0.2</guava.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <presidio.quest.ca.version>2.0.0-SNAPSHOT</presidio.quest.ca.version>
         <presidio.core.version>11.4.0-0-SNAPSHOT</presidio.core.version>
         <flume.version>11.4.0-0-SNAPSHOT</flume.version>
@@ -165,14 +165,15 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.5</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
-
-
 </project>
