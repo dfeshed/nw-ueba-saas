@@ -6,7 +6,9 @@ const FILTER_TYPES = [
     listOptions: [
       { name: 'Mft', label: 'investigateHosts.downloads.filters.mft' },
       { name: 'File', label: 'investigateHosts.downloads.filters.files' },
-      { name: 'memory dump', label: 'investigateHosts.downloads.filters.memoryDump' }
+      { name: 'memory dump', label: 'investigateHosts.downloads.filters.memoryDump' },
+      { name: 'ProcessDump', label: 'investigateHosts.downloads.filters.processDump' },
+      { name: 'SystemDump', label: 'investigateHosts.downloads.filters.systemDump' }
     ]
   },
   {

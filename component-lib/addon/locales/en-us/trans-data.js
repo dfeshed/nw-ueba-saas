@@ -2986,6 +2986,8 @@ export default {
         mft: 'MFT',
         files: 'File',
         memoryDump: 'Memory Dump',
+        systemDump: 'System Dump',
+        processDump: 'Process Dump',
         fileName: 'File Name',
         checksum: 'Sha256',
         downloadedTime: 'Downloaded Time',
