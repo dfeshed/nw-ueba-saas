@@ -14,6 +14,7 @@ pipeline {
     //tools { jdk env.JDK }
     agent { label env.NODE }
     environment {
+        JAVA_HOME = '/usr/bin/java'
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
         SCRIPTS_DIR = '/ueba-automation-projects/ueba-automation-framework/src/main/resources/scripts/'
         // The credentials (name + password) associated with the RSA build user.
