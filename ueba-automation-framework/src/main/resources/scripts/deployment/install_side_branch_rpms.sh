@@ -55,9 +55,9 @@ OWB_ALLOW_NON_FIPS=on && sudo -E yum -y install --nogpgcheck rsa-nw-presidio*.rp
 ######## Completing RPMs Instllation (installing missing RPMs from the master branch)
 for i in "${PRESIDIO_EXPECTED_RPMS[@]}"
     do
-		if [[ ! $( find . -name "$i*") ]]; then
-			echo "OWB_ALLOW_NON_FIPS=on && sudo -E yum install -y $i"
-		fi
+	if [[ ! $( find ${RPMS_DIR} -name "$i*") ]]; then
+		echo "OWB_ALLOW_NON_FIPS=on && sudo -E yum install -y $i"
+	fi
 done
 sudo  systemctl daemon-reload
 echo "######################################## install_upgrade_rpms.sh Script Started #######################################"
