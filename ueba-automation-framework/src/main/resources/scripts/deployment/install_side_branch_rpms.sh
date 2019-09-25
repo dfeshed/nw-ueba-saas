@@ -5,7 +5,7 @@ BUILD_ID=$1
 
 RPMS_DIR=/tmp/presidio_rpms/
 if [ "$( ls -a /tmp/presidio_rpms)" ]; then
-		rm -rf $RPMS_DIR*
+		rm -f $RPMS_DIR/*
 else 
 		mkdir $RPMS_DIR
 fi
@@ -27,6 +27,11 @@ ARTIFACTORY_LINK=http://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-
 PRESIDIO_RPMS=()
 wget -q -O- "http://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-build-jars-and-packages/${BUILD_ID}/api/json?tree=artifacts[relativePath]" | python -m json.tool > build_artifacts.json
 grep 'noarch.rpm' build_artifacts.json > build_rpms.txt
+if [ ! -s build_rpms.txt ]; then
+	echo "There is no RPM files in the requsted build id"
+	exit 1
+fi
+
 while IFS= read -r line
 	do
 		PRESIDIO_RPMS+=($(echo "$line" | awk -v FS="(relativePath\": \"|rpm\")" '{print $2}'))
