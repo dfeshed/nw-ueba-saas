@@ -3016,4 +3016,26 @@ module('Integration | Component | Query Pill', function(hooks) {
     await clickTrigger(PILL_SELECTORS.meta);
     await typeIn(PILL_SELECTORS.metaInput, 'AND');
   });
+
+  test('Delete on pill meta template broadcasts a message', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+    this.set('handleMessage', (type, position) => {
+      if (type === MESSAGE_TYPES.META_DELETE_PRESSED) {
+        assert.ok(position === 0);
+        done();
+      }
+    });
+    this.set('metaOptions', metaOptions);
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', DELETE_KEY);
+  });
 });

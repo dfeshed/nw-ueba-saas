@@ -22,6 +22,7 @@ const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.key;
 const ENTER_KEY = KEY_MAP.enter.key;
 const ESCAPE_KEY = KEY_MAP.escape.key;
 const SPACE_KEY = KEY_MAP.space.key;
+const DELETE_KEY = KEY_MAP.delete.key;
 
 module('Integration | Component | New Pill Trigger', function(hooks) {
   setupRenderingTest(hooks, {
@@ -495,5 +496,28 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     await click(PILL_SELECTORS.newPillTrigger);
     await focus(PILL_SELECTORS.metaTrigger);
     await typeIn(PILL_SELECTORS.metaInput, 'OR');
+  });
+
+
+  test('DELETE broadcasts a mete delete message', async function(assert) {
+    const done = assert.async();
+    assert.expect(2);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.META_DELETE_PRESSED) {
+        assert.equal(type, MESSAGE_TYPES.META_DELETE_PRESSED, 'Incorrect message being sent up');
+        assert.ok(data !== null);
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        newPillPosition=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', DELETE_KEY);
   });
 });

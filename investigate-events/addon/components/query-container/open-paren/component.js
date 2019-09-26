@@ -85,7 +85,7 @@ export default Component.extend({
   },
 
   _focusedDeletePressed() {
-    this.get('sendMessage')(MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, this.get('pillData'));
+    this.get('sendMessage')(MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, this.get('pillData'), this.get('position'));
   },
 
   actions: {

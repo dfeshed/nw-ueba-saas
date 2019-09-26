@@ -335,7 +335,8 @@ export default Component.extend({
       [MESSAGE_TYPES.PILL_CLOSE_PAREN]: () => this._closeParen(),
       [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR]: (data) => this._logicalOperator(data),
       [MESSAGE_TYPES.PILL_HOME_PRESSED]: () => this._homeButtonPressed(),
-      [MESSAGE_TYPES.PILL_END_PRESSED]: () => this._endButtonPressed()
+      [MESSAGE_TYPES.PILL_END_PRESSED]: () => this._endButtonPressed(),
+      [MESSAGE_TYPES.META_DELETE_PRESSED]: () => this._metaDeletePressed()
     });
 
     if (this.get('isExistingPill')) {
@@ -1085,7 +1086,7 @@ export default Component.extend({
    * @private
    */
   _focusedDeletePressed() {
-    this._broadcast(MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, this._createPillData(this.get('valueString')));
+    this._broadcast(MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, this._createPillData(this.get('valueString'), this.get('position')));
   },
 
   /**
@@ -1143,6 +1144,15 @@ export default Component.extend({
    */
   _endButtonPressed() {
     this._broadcast(MESSAGE_TYPES.PILL_END_PRESSED, this.get('pillData'));
+  },
+
+  /**
+   * Handles events propagating from focus-holder and pill-meta
+   * when the user clicks on delete button and relays the message.
+   * When editing the pill, the event is not relayed.
+   */
+  _metaDeletePressed() {
+    this._broadcast(MESSAGE_TYPES.META_DELETE_PRESSED, this.get('position'));
   },
 
 

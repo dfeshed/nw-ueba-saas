@@ -139,6 +139,9 @@ export default Component.extend({
         case MESSAGE_TYPES.PILL_END_PRESSED:
           this._broadcast(type, data);
           break;
+        case MESSAGE_TYPES.META_DELETE_PRESSED:
+          this._broadcast(type, data);
+          break;
       }
     }
   },

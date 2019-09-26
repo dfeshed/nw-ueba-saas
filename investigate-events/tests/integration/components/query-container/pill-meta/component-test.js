@@ -32,6 +32,7 @@ const ENTER_KEY = KEY_MAP.enter.key;
 const ESCAPE_KEY = KEY_MAP.escape.key;
 const OPEN_PAREN = KEY_MAP.openParen.key;
 const TAB_KEY = KEY_MAP.tab.key;
+const DELETE_KEY = KEY_MAP.delete.key;
 const modifiers = { shiftKey: true };
 
 // This trim also removes extra spaces inbetween words
@@ -1142,5 +1143,24 @@ module('Integration | Component | Pill Meta', function(hooks) {
     assert.equal(find(PILL_SELECTORS.metaInput).value, 'and&&', 'operator-like value preceeded by lowercase text was not cleared');
     await blur(PILL_SELECTORS.metaInput);
     await clickTrigger(PILL_SELECTORS.meta);
+  });
+  test('it broadcasts a message to query-pill when delete is pressed via pill meta', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.META_DELETE_PRESSED) {
+        assert.ok('Correct message dispatched');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', DELETE_KEY);
   });
 });

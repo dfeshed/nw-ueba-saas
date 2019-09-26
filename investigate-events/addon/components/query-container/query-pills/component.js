@@ -211,7 +211,7 @@ const QueryPills = RsaContextMenu.extend({
   init() {
     this._super(...arguments);
     this.set('_messageHandlerMap', {
-      [MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL]: (data) => this._deletePressedOnFocusedPill(data),
+      [MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL]: (data, position) => this._deletePressedOnFocusedPill(data, position),
       [MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL]: (pillData) => this._enterPressedOnFocusedPill(pillData),
       [MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS]: (data) => this._fetchValueSuggestions(data),
       [MESSAGE_TYPES.PILL_ADD_CANCELLED]: (data, position) => this._pillAddCancelled(position),
@@ -240,7 +240,8 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_CLOSE_PAREN]: (data, position) => this._moveCursorOrInsertParens(position),
       [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR]: (data, position) => this._insertLogicalOperator(data, position),
       [MESSAGE_TYPES.PILL_HOME_PRESSED]: (data) => this._openNewPillAtBeginning(data),
-      [MESSAGE_TYPES.PILL_END_PRESSED]: (data) => this._openNewPillAtEnd(data)
+      [MESSAGE_TYPES.PILL_END_PRESSED]: (data) => this._openNewPillAtEnd(data),
+      [MESSAGE_TYPES.META_DELETE_PRESSED]: (position) => this._metaDeletePressed(position)
     });
     this.setProperties({
       CLOSE_PAREN,
@@ -456,7 +457,7 @@ const QueryPills = RsaContextMenu.extend({
    */
   _openNewPillTriggerRight(position) {
     const pillsData = this.get('pillsData');
-    if (pillsData.length === position + 1) {
+    if (pillsData.length === position + 1 || pillsData.length === 0) {
       // if this is the last pill in the list, no need for click().
       // Can just set takeFocus which opens the meta dropdown for new-pill-template
       this.set('takeFocus', true);
@@ -498,8 +499,24 @@ const QueryPills = RsaContextMenu.extend({
    * Sends out delete action through a focused pill
    * @private
    */
-  _deletePressedOnFocusedPill(pillData) {
+  _deletePressedOnFocusedPill(pillData, position) {
+    // delete the pill
     this.send('deleteSelectedGuidedPills', pillData);
+    const { type } = pillData;
+    // if pill or open-paren is deleted, the position is assigned to the next pill.
+    // if the close-paren is deleted, open-paren is deleted too so the position has
+    // to be re-caliberated.
+    if (type === CLOSE_PAREN) {
+      position = position - 1;
+    }
+    const pillsData = this.get('pillsData');
+    if (position === pillsData.length || pillsData.length === 0) {
+      // if last pill open new pill trigger to the end
+      this._openNewPillTriggerRight(pillsData.lastIndex);
+    } else {
+      // if not the last pill, then shift focus to the next pill on right
+      this._addFocusToRightPill(position);
+    }
   },
 
   _pillsSelectAllToRight(position) {
@@ -533,6 +550,13 @@ const QueryPills = RsaContextMenu.extend({
       this._pillsExited();
       this.send('addPillFocus', position);
     }
+  },
+  /**
+   * When hit delete from an empty pill meta, the focus is shifted to
+   * the next right pill.
+   */
+  _metaDeletePressed(position) {
+    this._addFocusToRightPill(position);
   },
 
   /**

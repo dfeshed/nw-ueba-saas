@@ -824,7 +824,7 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    assert.expect(5);
+    assert.expect(6);
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
@@ -835,7 +835,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await leaveNewPillTemplate();
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
-
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make the 1st pill focused and selected
 
@@ -845,8 +845,65 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     return settled().then(() => {
       assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Should be one pill plus template.');
-      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Focused pill should be deleted.');
-      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Focus shifts to the next pill');
+      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'One focus holder should be present');
+    });
+  });
+
+  test('Pressing Delete key on a new pill trigger will move the focus to the next pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(3);
+
+    await render(hbs` 
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await click(PILL_SELECTORS.newPillTrigger);
+    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', DELETE_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'One focus holder should be present');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Focus shifts to the next pill');
+
+  });
+
+  test('Pressing Delete on all keys should move the focus to the last empty pill template', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(3);
+
+    await render(hbs` 
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await click(PILL_SELECTORS.newPillTrigger);
+    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', DELETE_KEY);
+
+    await waitUntil(() => findAll(PILL_SELECTORS.focusHolderInput).length > 0, { timeout: 5000 });
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+
+    await waitUntil(() => findAll(PILL_SELECTORS.focusHolderInput).length > 0, { timeout: 5000 });
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'Should be the empty template.');
+      assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1, 'The meta dropdown is open');
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'No Pill left to focus');
     });
   });
 
@@ -857,7 +914,7 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    assert.expect(5);
+    assert.expect(6);
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
@@ -868,7 +925,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await leaveNewPillTemplate();
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
-
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make the 1st pill focused and selected
 
@@ -878,8 +935,8 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     return settled().then(() => {
       assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Should be one pill plus template.');
-      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Focused pill should be deleted.');
-      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Focus shifts to the other pill');
+      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'One focus holder should be present');
     });
   });
 
@@ -954,7 +1011,7 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    assert.expect(6);
+    assert.expect(7);
     const done = assert.async();
 
     await render(hbs`
@@ -966,7 +1023,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await leaveNewPillTemplate();
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
-
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pill plus template.');
     let metas = findAll(PILL_SELECTORS.meta);
     // select and add focus on the first pill, which is a = x
     await click(`#${metas[0].id}`);
@@ -985,10 +1042,10 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     return settled().then(() => {
       assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Should be one pill plus template.');
-      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Focused pill should be deleted.');
-      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Focus shifts to the next pill');
+      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'One focus holder should be present');
       const pillText = find(PILL_SELECTORS.queryPill).title;
-      assert.equal(pillText, 'b = \'y\'', 'Pill that was selected, but not focused, is still there');
+      assert.equal(pillText, 'b = \'y\'', 'Pill that was selected, and focused, is still there');
       done();
     });
   });
@@ -3260,6 +3317,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
     assert.notOk(find(PILL_SELECTORS.openParen), 'Missing open paren');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'Missing close paren');
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus shits to the next pill');
   });
 
   test('Typing DELETE when an close paren is focused will delete both the open and closed paren', async function(assert) {
@@ -3280,6 +3338,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
     assert.notOk(find(PILL_SELECTORS.openParen), 'open paren is present');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'close paren is present');
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1, 'Focus shits to the next empty pill');
   });
 
   test('Typing DELETE when an close paren is focused will delete both the open and closed paren and any other selected pills', async function(assert) {
@@ -3457,6 +3516,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.notOk(find(PILL_SELECTORS.queryPillNotTemplate), 'query pill should be removed');
     assert.notOk(find(PILL_SELECTORS.openParen), 'open paren should be removed');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'close paren should be removed');
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1, 'Focus shits to the next empty pill');
   });
 
   test('Pressing home when you have a focused pill should remove focus and open leftmost empty pill', async function(assert) {

@@ -24,7 +24,8 @@ import KEY_MAP, {
   isSpace,
   isTab,
   isHome,
-  isEnd
+  isEnd,
+  isDelete
 } from 'investigate-events/util/keys';
 import BoundedList from 'investigate-events/util/bounded-list';
 import { inject as service } from '@ember/service';
@@ -239,7 +240,8 @@ export default Component.extend({
       [KEY_MAP.space.key]: this._keyHandler.bind(this),
       [KEY_MAP.tab.key]: this._navigationHandler.bind(this),
       [KEY_MAP.home.key]: this._navigationHandler.bind(this),
-      [KEY_MAP.end.key]: this._navigationHandler.bind(this)
+      [KEY_MAP.end.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.delete.key]: this._navigationHandler.bind(this)
     });
     // _debugContainerKey is a private Ember property that returns the full
     // component name (component:query-container/pill-meta).
@@ -670,6 +672,9 @@ export default Component.extend({
         this._clearMetaDropDown(powerSelectAPI);
       }
       this._broadcast(MESSAGE_TYPES.PILL_END_PRESSED);
+    } else if (isDelete(event) && !this.get('isEditing') && !this.get('isLastPill')) {
+      this._clearMetaDropDown(powerSelectAPI);
+      this._broadcast(MESSAGE_TYPES.META_DELETE_PRESSED);
     }
 
     return true;
