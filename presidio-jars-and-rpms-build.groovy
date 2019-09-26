@@ -273,7 +273,7 @@ def checkoutBranch(String branchName) {
  * Maven Utilities *
  *******************/
 def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boolean debug) {
-    sh "mvn clean install ${deploy ? "deploy" : ""} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""} ${params.MVN_PARAMS}"
+    sh "mvn clean ${deploy ? "" : "install"} ${deploy ? "deploy" : ""} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""} ${params.MVN_PARAMS}"
 }
 
 def mvnCleanPackage(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug, boolean preStep) {
