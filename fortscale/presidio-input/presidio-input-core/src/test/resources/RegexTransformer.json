@@ -1,0 +1,7 @@
+{
+  "type": "regex-transformer",
+  "name": "name",
+  "inputFieldName": "bla",
+  "outputFieldName": "blue",
+  "regex": "blu"
+}

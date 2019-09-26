@@ -3,6 +3,7 @@ from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBoot
 from presidio.utils.airflow.context_wrapper import ContextWrapper
 from presidio.utils.airflow.schedule_interval_utils import get_schedule_interval
 from presidio.utils.services.time_service import convert_to_utc
+from datetime import timedelta
 
 
 class ModelOperator(SpringBootJarOperator):
@@ -55,7 +56,7 @@ class ModelOperator(SpringBootJarOperator):
         context_wrapper = ContextWrapper(context)
         execution_date = context_wrapper.get_execution_date()
 
-        end_date = execution_date + self.interval
+        end_date = execution_date + timedelta(hours=1)
         java_args = {
             'end_date': convert_to_utc(end_date)
         }

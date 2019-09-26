@@ -1,12 +1,17 @@
 package presidio.input.core.spring;
 
+
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
+import fortscale.domain.sessionsplit.cache.SessionSplitStoreCacheConfiguration;
+import fortscale.utils.flushable.AbstractFlushable;
+import fortscale.utils.flushable.FlushableService;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -25,6 +30,7 @@ import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputCoreManager;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
+import presidio.input.core.services.transformation.DeserializerTransformationService;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
 import presidio.input.core.services.transformation.managers.ActiveDirectoryTransformationManager;
@@ -43,6 +49,10 @@ import java.util.Map;
 @Configuration
 @Import({PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class, OutputDataServiceConfig.class})
 public class InputCoreConfigurationTest {
+
+    @Value("${transformers.file.path}")
+    private String configurationFilePath;
+
     @Autowired
     private PresidioInputPersistencyService presidioInputPersistencyService;
 
@@ -50,14 +60,28 @@ public class InputCoreConfigurationTest {
     private AdeDataService adeDataService;
 
     @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired
     private OutputDataServiceSDK outputDataServiceSDK;
 
-    @Value("${operation.type.category.mapping.file.path}")
-    private String operationTypeCategoryMappingFilePath;
+    @Autowired
+    private DeserializerTransformationService deserializerTransformationService;
+
+    @Bean
+    public FlushableService flushableService() {
+        FlushableService flushableService = new FlushableService();
+        return flushableService;
+    }
 
     @Bean
     public Map<Schema, Map<String, List<String>>> getMapping() {
         return new HashMap<>();
+    }
+
+    @Bean
+    public DeserializerTransformationService deserializerTransformationService(){
+        return new DeserializerTransformationService(configurationFilePath);
     }
 
     @Bean
@@ -77,7 +101,7 @@ public class InputCoreConfigurationTest {
 
     @Bean
     public InputCoreManager inputCoreManager() {
-        return new InputCoreManager(presidioInputPersistencyService, adeDataService, outputDataServiceSDK, transformationService(), converterService());
+        return new InputCoreManager(presidioInputPersistencyService, adeDataService, outputDataServiceSDK, transformationService(), converterService(), deserializerTransformationService);
     }
 
     @Bean
@@ -90,19 +114,19 @@ public class InputCoreConfigurationTest {
     @Bean(name = "ACTIVE_DIRECTORY.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ActiveDirectoryTransformationManager activeDirectoryTransformationManager() {
-        return new ActiveDirectoryTransformationManager(getMapping(), getMapping());
+        return new ActiveDirectoryTransformationManager();
     }
 
     @Bean(name = "AUTHENTICATION.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public AuthenticationTransformerManager authenticationTransformerManager() {
-        return new AuthenticationTransformerManager(getMapping(), getMapping());
+        return new AuthenticationTransformerManager();
     }
 
     @Bean(name = "FILE.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public FileTransformerManager fileTransformerManager() {
-        return new FileTransformerManager(getMapping(), getMapping());
+        return new FileTransformerManager();
     }
 
     @Bean(name = "PRINT.transformer")
@@ -158,4 +182,5 @@ public class InputCoreConfigurationTest {
     public PrintInputToAdeConverter printInputToAdeConverter() {
         return new PrintInputToAdeConverter();
     }
+
 }

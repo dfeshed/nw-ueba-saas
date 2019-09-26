@@ -1,0 +1,59 @@
+{
+  "type": "chain",
+  "name": "tls-transformer",
+  "transformerList": [
+    {
+      "type": "session-split-transformer",
+      "name": "Session Split Transformer"
+    },
+    {
+      "type": "new-occurrence-transformer",
+      "name": "Ssl Subject New Occurrence",
+      "schema": "tls",
+      "inputFieldName": "sslSubject.name",
+      "booleanFieldName": "sslSubject.isNewOccurrence"
+    },
+    {
+      "type": "new-occurrence-transformer",
+      "name": "Domain New Occurrence",
+      "schema": "tls",
+      "inputFieldName": "domain.name",
+      "booleanFieldName": "domain.isNewOccurrence"
+    },
+    {
+      "type": "new-occurrence-transformer",
+      "name": "Ja3 New Occurrence",
+      "schema": "tls",
+      "inputFieldName": "ja3.name",
+      "booleanFieldName": "ja3.isNewOccurrence"
+    },
+    {
+      "type": "new-occurrence-transformer",
+      "name": "DstOrg New Occurrence",
+      "schema": "tls",
+      "inputFieldName": "dstOrg.name",
+      "booleanFieldName": "dstOrg.isNewOccurrence"
+    },
+    {
+      "type": "new-occurrence-transformer",
+      "name": "DstCountry New Occurrence",
+      "schema": "tls",
+      "inputFieldName": "dstCountry.name",
+      "booleanFieldName": "dstCountry.isNewOccurrence"
+    },
+    {
+      "type": "new-occurrence-transformer",
+      "name": "DstPort New Occurrence",
+      "schema": "tls",
+      "inputFieldName": "dstPort.name",
+      "booleanFieldName": "dstPort.isNewOccurrence"
+    },
+    {
+      "type": "new-occurrence-transformer",
+      "name": "DstAsn New Occurrence",
+      "schema": "tls",
+      "inputFieldName": "dstAsn.name",
+      "booleanFieldName": "dstAsn.isNewOccurrence"
+    }
+  ]
+}

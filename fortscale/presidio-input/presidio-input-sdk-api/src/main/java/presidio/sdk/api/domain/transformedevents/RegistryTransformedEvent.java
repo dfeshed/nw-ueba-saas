@@ -11,6 +11,7 @@ public class RegistryTransformedEvent extends RegistryRawEvent {
     public RegistryTransformedEvent(RegistryRawEvent rawEvent) {
         super(rawEvent);
     }
+    public RegistryTransformedEvent(){}
 
     public String getProcessFilePath() {
         return processFilePath;

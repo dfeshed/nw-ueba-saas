@@ -93,8 +93,7 @@ class IndicatorDagBuilder(PresidioDagBuilder):
         scoring_task_sensor_service.add_task_short_circuit(score_aggregations_operator, hourly_short_circuit_operator)
 
         model_trigger = self._build_model_trigger_operator(dag, schema)
-        feature_aggregations_operator >> model_trigger
-        score_aggregations_operator >> model_trigger
+        input_operator >> model_trigger
 
         return dag
 

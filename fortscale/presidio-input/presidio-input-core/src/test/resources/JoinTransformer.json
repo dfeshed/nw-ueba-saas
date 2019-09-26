@@ -1,0 +1,7 @@
+{
+  "type": "join",
+  "name": "bla",
+  "values": ["${bla}", "blu", "bli"],
+  "destinationKey": "glue",
+  "separator": "."
+}

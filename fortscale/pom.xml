@@ -49,26 +49,17 @@
     </pluginRepositories>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!-- RPM version -->
-        <rpm.version.major>1</rpm.version.major>
-        <rpm.version.minor>0</rpm.version.minor>
-        <rpm.version.build>0</rpm.version.build>
-        <rpm.version>${rpm.version.major}.${rpm.version.minor}</rpm.version>
         <!-- All the dependency versions should be here -->
         <cglib.version>3.2.1</cglib.version>
         <argparse4j.version>0.7.0</argparse4j.version>
         <spring-shell.version>1.2.0.RELEASE</spring-shell.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>4.12</junit.version>
         <junitparams.version>1.0.2</junitparams.version>
         <jsonassert.version>1.2.3</jsonassert.version>
         <spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
         <commons.math3.version>3.1.1</commons.math3.version>
         <quartz.version>2.2.1</quartz.version>
-        <perf4j.version>0.9.16</perf4j.version>
         <jackson-dataformat.version>2.8.9</jackson-dataformat.version>
         <test.exclude>nothingToExclude</test.exclude>
         <test.include>**/*Test.java</test.include>
@@ -76,25 +67,18 @@
         <test.int.include>**/*TestInt.java</test.int.include>
         <guava.version>27.0-jre</guava.version>
         <!-- Maven plugin versions -->
-        <maven-download-plugin.version>1.1.0</maven-download-plugin.version>
-        <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
-        <maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
-        <aspectj-maven-plugin.complianceLevel>1.8</aspectj-maven-plugin.complianceLevel>
-        <aspectj-maven-plugin.version>1.10</aspectj-maven-plugin.version>
-        <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
-        <mavanagaiata.version>0.7.0</mavanagaiata.version>
-        <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+        <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+        <aspectj-maven-plugin.complianceLevel>11</aspectj-maven-plugin.complianceLevel>
+        <nickwongdev-aspectj-maven-plugin.version>1.12.1</nickwongdev-aspectj-maven-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <mavanagaiata.version>0.9.4</mavanagaiata.version>
+        <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
         <maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
-        <maven-source-plugin.version>2.1.1</maven-source-plugin.version>
-        <maven-failsafe-plugin.version>2.16</maven-failsafe-plugin.version>
+        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
         <servlet-api.version>3.1.0</servlet-api.version>
-        <java-lang-config.version>1.8</java-lang-config.version>
+        <java-lang-config.version>11</java-lang-config.version>
         <springretry.version>1.2.2.RELEASE</springretry.version>
-        <hive.version>1.1.0-cdh5.4.8</hive.version>
-        <pigunit.version>0.12.0-cdh5.4.8</pigunit.version>
-        <json-smart.version>2.2.1</json-smart.version>
-        <esper-version>5.2.0</esper-version>
-        <cxf.version>3.1.0</cxf.version>
         <swager.version>2.2.2</swager.version>
         <asm-commons.version>5.0.3</asm-commons.version>
         <janino.version>2.5.15</janino.version>
@@ -106,39 +90,36 @@
         <org-json.version>20140107</org-json.version>
         <commons-lang3.version>3.5</commons-lang3.version>
         <commons-pool.version>1.4</commons-pool.version>
-        <commons-codec.version>1.9</commons-codec.version>
         <commons-collections.version>3.2.2</commons-collections.version>
         <h2.version>1.4.193</h2.version>
         <joda-time.version>2.3</joda-time.version>
         <syslog-java-client.version>1.0.6</syslog-java-client.version>
         <commons-validator.version>1.4.1</commons-validator.version>
-        <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
-        <podam.version>7.0.5.RELEASE</podam.version>
+        <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
+        <podam.version>7.2.3.RELEASE</podam.version>
         <spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
-        <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
-        <org.aspectj-version>1.8.7</org.aspectj-version>
+        <org.aspectj-version>1.9.4</org.aspectj-version>
         <spring-cloud-task-starter.version>1.1.0.M1</spring-cloud-task-starter.version>
         <elasticsearch.version>5.5.0</elasticsearch.version>
         <spring-data-elasticsearch.version>3.0.14.RELEASE</spring-data-elasticsearch.version>
         <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
-        <license-maven-plugin.version>1.14</license-maven-plugin.version>
         <spring-data-rest-core.version>3.0.10.RELEASE</spring-data-rest-core.version>
         <jackson-datatype-json-org.version>2.9.0.pr4</jackson-datatype-json-org.version>
         <swagger-annotations.version>1.5.16</swagger-annotations.version>
         <json-patch.version>1.9</json-patch.version>
         <javax.el-version>3.0.0</javax.el-version>
         <mongodb-driver-async.version>3.10.2</mongodb-driver-async.version>
-        <swagger-maven-plugin.version>3.1.5</swagger-maven-plugin.version>
+        <swagger-maven-plugin.version>3.1.8</swagger-maven-plugin.version>
         <jackson-coreutils.version>1.8</jackson-coreutils.version>
         <commons-io.version>2.4</commons-io.version>
         <presidio-data-generators.version>2.0.0-SNAPSHOT</presidio-data-generators.version>
-        <auto-service.version>1.0-rc3</auto-service.version>
-        <spring-context-support.version>${spring.version}</spring-context-support.version>
+        <auto-service.version>1.0-rc5</auto-service.version>
         <spring-test.version>4.3.20.RELEASE</spring-test.version>
         <jackson-core.version>2.9.9</jackson-core.version>
         <jackson-databind.version>2.9.9.3</jackson-databind.version>
         <jackson-bom.version>2.9.9.20190807</jackson-bom.version>
         <log4j.version>2.11.2</log4j.version>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
         <jedis.version>2.9.0</jedis.version>
         <spring-data-redis.version>2.1.0.RELEASE</spring-data-redis.version>
         <apache-tomcat.version>9.0.24</apache-tomcat.version>
@@ -170,13 +151,6 @@
                 <artifactId>jsonassert</artifactId>
                 <version>${jsonassert.version}</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>jdk.tools</groupId>
-                <artifactId>jdk.tools</artifactId>
-                <version>${jav-lang-config.version}</version>
-                <scope>system</scope>
-                <systemPath>${java.home}/../lib/tools.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -243,6 +217,11 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>0.9.11</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
@@ -495,8 +474,28 @@
                 <version>3.10.2</version>
             </dependency>
             <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
+                <version>${apache-tomcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-annotations-api</artifactId>
+                <version>${apache-tomcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-el</artifactId>
+                <version>${apache-tomcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-websocket</artifactId>
                 <version>${apache-tomcat.version}</version>
             </dependency>
         </dependencies>

@@ -223,6 +223,10 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -238,9 +242,9 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>com.nickwongdev</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <version>${aspectj-maven-plugin.version}</version>
+                <version>${nickwongdev-aspectj-maven-plugin.version}</version>
                 <configuration>
                     <source>${java-lang-config.version}</source>
                     <target>${java-lang-config.version}</target>

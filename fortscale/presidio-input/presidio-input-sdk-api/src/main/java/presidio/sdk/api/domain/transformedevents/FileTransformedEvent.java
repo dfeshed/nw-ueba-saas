@@ -14,6 +14,9 @@ public class FileTransformedEvent extends FileRawEvent {
         super(other);
     }
 
+    public FileTransformedEvent() {
+    }
+
     public String getDstFolderPath() {
         return dstFolderPath;
     }

@@ -5,13 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.Before;
 
-public class TransformerTest {
+import java.util.Optional;
+
+public class TransformerTest extends TransformerSubtypeRegisterer {
 
     protected ObjectMapper mapper;
 
     @Before
     public void init(){
         mapper = new ObjectMapper();
+        registerSubtypes(mapper);
     }
 
     protected JSONObject transform(IJsonObjectTransformer transformer, JSONObject jsonObject) throws JsonProcessingException {
@@ -24,5 +27,10 @@ public class TransformerTest {
 
     protected JSONObject transform(String transformerJsonAsString, JSONObject jsonObject) {
         return TransformerUtil.transform(mapper, transformerJsonAsString, jsonObject);
+    }
+
+    @Override
+    public Optional<String> additionalPackageLocation() {
+        return Optional.empty();
     }
 }

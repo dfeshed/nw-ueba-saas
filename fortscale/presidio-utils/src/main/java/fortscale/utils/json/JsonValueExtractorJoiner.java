@@ -20,7 +20,7 @@ public class JsonValueExtractorJoiner {
     public JsonValueExtractorJoiner add(IJsonValueExtractor extractor){
         if(values != null) {
             Object value = extractor.getValue(jsonObject);
-            if (value == null) {
+            if (value == null || value.equals(JSONObject.NULL)) {
                 values = null;
             } else {
                 values.add(value);

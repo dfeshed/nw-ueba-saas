@@ -1,0 +1,9 @@
+{
+  "type": "operation-type-categories-hierarchy-transformer",
+  "name": "blaa",
+  "inputFieldName": "bla",
+  "outputFieldName": "blu",
+  "operationTypeCategoriesHierarchyMapping": {
+    "Howdy": ["1", "2", "3"]
+  }
+}

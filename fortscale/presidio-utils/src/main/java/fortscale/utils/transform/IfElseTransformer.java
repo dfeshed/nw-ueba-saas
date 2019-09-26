@@ -4,6 +4,7 @@ package fortscale.utils.transform;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.utils.transform.predicate.IJsonObjectPredicate;
 import org.apache.commons.lang3.Validate;
 import org.json.JSONObject;
@@ -12,9 +13,8 @@ import org.json.JSONObject;
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonTypeName("if_else")
 public class IfElseTransformer extends AbstractJsonObjectTransformer{
-    public static final String TYPE = "if_else";
-
 
     private IJsonObjectPredicate predicate;
     private IJsonObjectTransformer ifTransformer;

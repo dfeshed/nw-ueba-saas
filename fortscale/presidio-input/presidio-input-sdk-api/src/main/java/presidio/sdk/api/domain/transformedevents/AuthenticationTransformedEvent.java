@@ -13,6 +13,7 @@ public class AuthenticationTransformedEvent extends AuthenticationRawEvent {
     public AuthenticationTransformedEvent(AuthenticationRawEvent rawEvent) {
         super(rawEvent);
     }
+    public AuthenticationTransformedEvent() {}
 
     public String getSrcMachineCluster() {
         return srcMachineCluster;

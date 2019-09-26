@@ -141,8 +141,8 @@ public class ConfigurationApiController implements ConfigurationApi {
         updateStartTimeConfiguration(configuration);
         JsonNode jsonNode = objectMapper.valueToTree(configuration);
         configurationServerClientService.storeConfigurationFile(CONFIGURATION_FILE_NAME, jsonNode);
-        updateWorkflowsConfiguration();
         updateApplicationProperties(configuration);
+        updateWorkflowsConfiguration();
     }
 
     private void updateStartTimeConfiguration(Configuration configuration) {

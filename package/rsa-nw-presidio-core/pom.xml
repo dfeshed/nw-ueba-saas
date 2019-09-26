@@ -192,18 +192,12 @@
                         </mapping>
                         <mapping>
                             <directoryIncluded>true</directoryIncluded>
-                            <directory>${presidio-app.directory}/input-mapping</directory>
+                            <directory>${presidio-app.directory}/input-transformers/</directory>
                             <username>${presidio.username}</username>
                             <groupname>${presidio.groupname}</groupname>
                             <sources>
                                 <source>
-                                    <includes>
-                                        <include>operation-type-category-hierarchy-mapping.json</include>
-                                        <include>operation-type-category-mapping.json</include>
-                                    </includes>
-                                    <location>
-                                        ../../fortscale/presidio-configuration/presidio-configuration-server/src/main/resources/configurations/
-                                    </location>
+                                    <location>../../fortscale/presidio-input/presidio-input-core/src/main/resources/descriptors</location>
                                 </source>
                             </sources>
                         </mapping>
@@ -257,8 +251,8 @@
                         </mapping>
                     </mappings>
                     <requires>
-                        <require>java &gt; 1.8</require>
-                        <require>java-1.8.0-openjdk-devel &gt; 1.8</require>
+                        <require>java &gt; 11</require>
+                        <require>java-11-openjdk &gt; 11</require>
                     </requires>
                     <description>
                         Presidio(UEBA) batch applications and the matching workflow python packages

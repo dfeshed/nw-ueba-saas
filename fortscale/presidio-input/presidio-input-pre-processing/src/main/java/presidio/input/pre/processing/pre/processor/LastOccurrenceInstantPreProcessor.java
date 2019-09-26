@@ -12,9 +12,11 @@ import java.time.Instant;
 import java.util.List;
 
 public class LastOccurrenceInstantPreProcessor extends PreProcessor<LastOccurrenceInstantPreProcessorArguments> {
+    private static PresidioReflectionUtils reflection = new PresidioReflectionUtils();
     private final PresidioInputPersistencyService presidioInputPersistencyService;
     private final int rawEventsPageSize;
     private final LastOccurrenceInstantWriter lastOccurrenceInstantWriter;
+
 
     public LastOccurrenceInstantPreProcessor(
             String name,
@@ -47,7 +49,7 @@ public class LastOccurrenceInstantPreProcessor extends PreProcessor<LastOccurren
                 Instant instant = rawEvent.getDateTime();
 
                 for (String entityType : entityTypes) {
-                    String entityId = (String) PresidioReflectionUtils.getFieldValue(rawEvent, entityType);
+                    String entityId = (String) reflection.getFieldValue(rawEvent, entityType);
                     lastOccurrenceInstantWriter.write(schema, entityType, entityId, instant);
                 }
             }

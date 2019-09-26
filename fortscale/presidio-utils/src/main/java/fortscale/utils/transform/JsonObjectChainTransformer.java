@@ -3,6 +3,7 @@ package fortscale.utils.transform;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.apache.commons.lang3.Validate;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -14,11 +15,11 @@ import java.util.List;
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonTypeName("chain")
 public class JsonObjectChainTransformer extends AbstractJsonObjectTransformer {
+
     private static final Logger logger = LoggerFactory
             .getLogger(JsonObjectChainTransformer.class);
-
-    public static final String TYPE = "chain";
 
     private List<IJsonObjectTransformer> transformerList;
 
