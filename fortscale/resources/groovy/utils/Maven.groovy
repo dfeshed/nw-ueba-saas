@@ -1,5 +1,5 @@
 def executeMavenCommand(String command, String javaHome, String mavenHome) {
-    process = command.execute(["JAVA_HOME=${javaHome}/.."], new File("${mavenHome}/bin"))
+    process = command.execute(["JAVA_HOME=${javaHome}"], new File("${mavenHome}/bin"))
     output = new StringBuffer()
     error = new StringBuffer()
     process.consumeProcessOutput(output, error)
