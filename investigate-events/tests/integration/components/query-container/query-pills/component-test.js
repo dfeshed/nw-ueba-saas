@@ -3311,13 +3311,18 @@ module('Integration | Component | Query Pills', function(hooks) {
     `);
     await leaveNewPillTemplate();
 
+    // the open paren is selected and focused. Pressing delete would not only delete open
+    // and closed parens but also all pills between them.
+    await click(PILL_SELECTORS.openParen);
+    // the open paren is just focused and not selected after the second click. Pressing delete
+    // would only delete open and closed parens allowing the focus to shift to the pill left.
     await click(PILL_SELECTORS.openParen);
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
 
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
     assert.notOk(find(PILL_SELECTORS.openParen), 'Missing open paren');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'Missing close paren');
-    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus shits to the next pill');
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus shifts to the next pill');
   });
 
   test('Typing DELETE when an close paren is focused will delete both the open and closed paren', async function(assert) {
