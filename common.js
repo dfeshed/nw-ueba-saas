@@ -254,6 +254,9 @@ const babelPlugins = [
 const basicOptions = {
   'ember-cli-babel': {
     includePolyfill: false,
+
+    // Cannot set this to true until this is fixed
+    // https://github.com/kategengler/ember-cli-code-coverage/issues/217
     throwUnlessParallelizable: false
   },
   babel: {
