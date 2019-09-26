@@ -71,9 +71,9 @@ const INITIAL_STATES = {
 
     // identify-policy-step - the policy sourceType objects to fill the select/dropdown
     sourceTypes: [
-      { id: 'edrPolicy', policyType: 'edrPolicy', disabled: false, name: 'EndpointScan', label: 'adminUsm.policyWizard.edrSourceType' },
-      { id: 'windowsLogPolicy', policyType: 'windowsLogPolicy', disabled: false, name: 'EndpointWL', label: 'adminUsm.policyWizard.windowsLogSourceType' },
-      { id: 'filePolicy', policyType: 'filePolicy', disabled: false, name: 'EndpointFile', label: 'adminUsm.policyWizard.fileLogSourceType' }
+      { id: 'edrPolicy', policyType: 'edrPolicy', disabled: false, name: 'EndpointScan', label: 'adminUsm.policyTypes.edrPolicy', disabledTooltip: 'adminUsm.policyTypes.edrPolicyDisabledTooltip' },
+      { id: 'windowsLogPolicy', policyType: 'windowsLogPolicy', disabled: false, name: 'EndpointWL', label: 'adminUsm.policyTypes.windowsLogPolicy', disabledTooltip: 'adminUsm.policyTypes.windowsLogPolicyDisabledTooltip' },
+      { id: 'filePolicy', policyType: 'filePolicy', disabled: false, name: 'EndpointFile', label: 'adminUsm.policyTypes.filePolicy', disabledTooltip: 'adminUsm.policyTypes.filePolicyDisabledTooltip' }
     ],
 
     // define-policy-step - available settings to render the left col

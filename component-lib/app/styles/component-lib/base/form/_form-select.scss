@@ -53,8 +53,9 @@ $ember-power-select-line-height: 2rem;
         color: text-color(primary, lightest);
       }
     }
-    &[aria-disabled="true"] {
+    &[aria-disabled="true"], .disabled-option-in-tootlip {
       color: text-color(primary);
+      cursor: auto;
     }
   }
 
@@ -196,6 +197,7 @@ input[type=search] {
 
 #ember-basic-dropdown-wormhole {
   .ember-power-select-option {
+    position: relative; /* lets us absolutely position elements within the option */
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;

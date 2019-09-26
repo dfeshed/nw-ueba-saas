@@ -1,12 +1,13 @@
 import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { findAll, render, click, triggerKeyEvent } from '@ember/test-helpers';
+import { click, findAll, render, triggerEvent, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
+import fetchPolicyList from '../../../../../../data/subscriptions/policy/fetchPolicyList/index';
 
 let setState;
 
@@ -20,7 +21,7 @@ module('Integration | Component | usm-groups/group-wizard/apply-policy-step/sour
       patchReducer(this, state);
     };
     initialize(this.owner);
-    this.owner.inject('component', 'i18n', 'service:i18n');
+    this.owner.inject('component', 'i18n', 'service:i18n', 'service:features');
   });
 
   const policyListPayload = [
@@ -215,6 +216,39 @@ module('Integration | Component | usm-groups/group-wizard/apply-policy-step/sour
     await selectChoose('.source-type-selector', '.ember-power-select-option', 0);
     const state = this.owner.lookup('service:redux').getState();
     assert.deepEqual(state.usm.groupWizard.group.assignedPolicies, expectedAssignmentsAfterSelection, 'source-type assignments are correct value for first selection');
+  });
+
+  test('The source type select control should have the correct options', async function(assert) {
+    const features = this.owner.lookup('service:features');
+    const policyListPayload = fetchPolicyList.message().data;
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizPolicyList(policyListPayload)
+      .groupWizPolicyListStatus('complete')
+      .build();
+
+    // allowFilePolicies enabled so filePolicy type should be enabled
+    features.setFeatureFlags({ 'rsa.usm.allowFilePolicies': true });
+    await render(hbs`{{usm-groups/group-wizard/apply-policy-step/source-type selectedSourceType=null selectedPolicy=null}}`);
+    await click('.source-type-selector .ember-power-select-trigger');
+    let sourceTypesAll = findAll('.ember-power-select-option');
+    let sourceTypesDisabled = findAll('.ember-power-select-option[aria-disabled=true]');
+    assert.equal(sourceTypesAll.length, 3, 'All source types rendered');
+    assert.equal(sourceTypesDisabled.length, 0, 'All source types enabled');
+
+    // allowFilePolicies disabled so filePolicy type should be disabled
+    features.setFeatureFlags({ 'rsa.usm.allowFilePolicies': false });
+    await render(hbs`{{usm-groups/group-wizard/apply-policy-step/source-type selectedSourceType=null selectedPolicy=null}}`);
+    await click('.source-type-selector .ember-power-select-trigger');
+    sourceTypesAll = findAll('.ember-power-select-option');
+    sourceTypesDisabled = findAll('.ember-power-select-option[aria-disabled=true]');
+    assert.equal(sourceTypesAll.length, 3, 'All source types rendered');
+    assert.equal(sourceTypesDisabled.length, 1, '2 source types enabled, and 1 source type disabled');
+    // the filePolicy option should have a tooltip to show why it is disabled
+    const expectedFilePolicyDisabledTooltip = 'Endpoint servers need to be on version 11.4 and above to configure log file collection.';
+    await triggerEvent('.ember-power-select-option[aria-disabled=true] .tooltip-text', 'mouseover');
+    const actualFilePolicyDisabledTooltip = findAll('.tool-tip-value')[0].innerText.trim();
+    assert.equal(actualFilePolicyDisabledTooltip, expectedFilePolicyDisabledTooltip, 'disabled filePolicy option tooltip is as expected');
   });
 
   test('Remove assigned Policy', async function(assert) {

@@ -530,9 +530,9 @@ module('Unit | Selectors | Group Wizard Selectors', function(hooks) {
     // allowFilePolicies enabled so filePolicy type should be enabled
     features.setFeatureFlags({ 'rsa.usm.allowFilePolicies': true });
     let expectedSourceTypesAsObjs = [
-      { policyType: 'edrPolicy', disabled: false },
-      { policyType: 'windowsLogPolicy', disabled: false },
-      { policyType: 'filePolicy', disabled: false }
+      { policyType: 'edrPolicy', disabled: false, label: 'adminUsm.policyTypes.edrPolicy', disabledTooltip: 'adminUsm.policyTypes.edrPolicyDisabledTooltip' },
+      { policyType: 'windowsLogPolicy', disabled: false, label: 'adminUsm.policyTypes.windowsLogPolicy', disabledTooltip: 'adminUsm.policyTypes.windowsLogPolicyDisabledTooltip' },
+      { policyType: 'filePolicy', disabled: false, label: 'adminUsm.policyTypes.filePolicy', disabledTooltip: 'adminUsm.policyTypes.filePolicyDisabledTooltip' }
     ];
     let actualSourceTypesAsObjs = enabledPolicySourceTypesAsObjs(availableSourceTypes);
     assert.deepEqual(actualSourceTypesAsObjs, expectedSourceTypesAsObjs, 'The returned value from the enabledPolicySourceTypesAsObjs is as expected');
@@ -540,9 +540,9 @@ module('Unit | Selectors | Group Wizard Selectors', function(hooks) {
     // allowFilePolicies disabled so filePolicy type should be disabled
     features.setFeatureFlags({ 'rsa.usm.allowFilePolicies': false });
     expectedSourceTypesAsObjs = [
-      { policyType: 'edrPolicy', disabled: false },
-      { policyType: 'windowsLogPolicy', disabled: false },
-      { policyType: 'filePolicy', disabled: true }
+      { policyType: 'edrPolicy', disabled: false, label: 'adminUsm.policyTypes.edrPolicy', disabledTooltip: 'adminUsm.policyTypes.edrPolicyDisabledTooltip' },
+      { policyType: 'windowsLogPolicy', disabled: false, label: 'adminUsm.policyTypes.windowsLogPolicy', disabledTooltip: 'adminUsm.policyTypes.windowsLogPolicyDisabledTooltip' },
+      { policyType: 'filePolicy', disabled: true, label: 'adminUsm.policyTypes.filePolicy', disabledTooltip: 'adminUsm.policyTypes.filePolicyDisabledTooltip' }
     ];
     actualSourceTypesAsObjs = enabledPolicySourceTypesAsObjs(availableSourceTypes);
     assert.deepEqual(actualSourceTypesAsObjs, expectedSourceTypesAsObjs, 'The returned value from the enabledPolicySourceTypesAsObjs is as expected');
@@ -550,9 +550,9 @@ module('Unit | Selectors | Group Wizard Selectors', function(hooks) {
 
   test('selectedSourceTypeAsObj selector', function(assert) {
     const availableSourceTypesAsObjs = [
-      { policyType: 'edrPolicy', disabled: false },
-      { policyType: 'windowsLogPolicy', disabled: false },
-      { policyType: 'filePolicy', disabled: false }
+      { policyType: 'edrPolicy', disabled: false, label: 'adminUsm.policyTypes.edrPolicy', disabledTooltip: 'adminUsm.policyTypes.edrPolicyDisabledTooltip' },
+      { policyType: 'windowsLogPolicy', disabled: false, label: 'adminUsm.policyTypes.windowsLogPolicy', disabledTooltip: 'adminUsm.policyTypes.windowsLogPolicyDisabledTooltip' },
+      { policyType: 'filePolicy', disabled: false, label: 'adminUsm.policyTypes.filePolicy', disabledTooltip: 'adminUsm.policyTypes.filePolicyDisabledTooltip' }
     ];
     const [expectedSelectedSourceTypeAsObj] = availableSourceTypesAsObjs;
     const actualSelectedSourceTypeAsObj = selectedSourceTypeAsObj(availableSourceTypesAsObjs, 'edrPolicy');

@@ -5056,8 +5056,11 @@ effects the previewed source.',
     },
     policyTypes: {
       edrPolicy: 'Agent Endpoint',
+      edrPolicyDisabledTooltip: '',
       filePolicy: 'Agent Log Files',
-      windowsLogPolicy: 'Agent Windows Logs'
+      filePolicyDisabledTooltip: 'Endpoint servers need to be on version 11.4 and above to configure log file collection.',
+      windowsLogPolicy: 'Agent Windows Logs',
+      windowsLogPolicyDisabledTooltip: ''
     },
     publishStatus: {
       unpublished: 'Unpublished',

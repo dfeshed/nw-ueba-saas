@@ -1,0 +1,14 @@
+{{#if (and (eq disabled true) (eq hasDisabledTooltip true))}}
+  {{#rsa-text-with-tooltip value=disabledTooltip
+    style="standard"
+    alwaysShow=true
+  }}
+    <span class="disabled-option-in-tootlip">
+      {{optionLabel}}
+    </span>
+  {{/rsa-text-with-tooltip}}
+
+{{else}}
+  {{optionLabel}}
+
+{{/if}}

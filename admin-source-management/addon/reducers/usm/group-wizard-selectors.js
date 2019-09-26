@@ -166,7 +166,12 @@ export const enabledPolicySourceTypesAsObjs = (sourceTypes) => {
   const features = lookup('service:features');
   const isAllowFilePoliciesEnabled = features.isEnabled('rsa.usm.allowFilePolicies');
   const sourceTypesObjs = sourceTypes.map((sourceType) => {
-    const sourceTypesObj = { policyType: sourceType, disabled: false };
+    const sourceTypesObj = {
+      policyType: sourceType,
+      disabled: false,
+      label: `adminUsm.policyTypes.${sourceType}`,
+      disabledTooltip: `adminUsm.policyTypes.${sourceType}DisabledTooltip`
+    };
     if (sourceTypesObj.policyType === 'filePolicy') {
       sourceTypesObj.disabled = !isAllowFilePoliciesEnabled;
     }

@@ -75,9 +75,9 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     let fullState = new ReduxDataHelper().policyWiz().build();
     // copy/paste from the reducer's initial state, add a typeTranslation prop, and keep ordered by typeTranslation
     const sourceTypesExpected = [ // _.cloneDeep(fullState.usm.policyWizard.sourceTypes);
-      { id: 'edrPolicy', policyType: 'edrPolicy', disabled: false, name: 'EndpointScan', label: 'adminUsm.policyWizard.edrSourceType', typeTranslation: i18n.t('adminUsm.policyWizard.edrSourceType') },
-      { id: 'filePolicy', policyType: 'filePolicy', disabled: false, name: 'EndpointFile', label: 'adminUsm.policyWizard.fileLogSourceType', typeTranslation: i18n.t('adminUsm.policyWizard.fileLogSourceType') },
-      { id: 'windowsLogPolicy', policyType: 'windowsLogPolicy', disabled: false, name: 'EndpointWL', label: 'adminUsm.policyWizard.windowsLogSourceType', typeTranslation: i18n.t('adminUsm.policyWizard.windowsLogSourceType') }
+      { id: 'edrPolicy', policyType: 'edrPolicy', disabled: false, name: 'EndpointScan', label: 'adminUsm.policyTypes.edrPolicy', disabledTooltip: 'adminUsm.policyTypes.edrPolicyDisabledTooltip', typeTranslation: i18n.t('adminUsm.policyTypes.edrPolicy') },
+      { id: 'filePolicy', policyType: 'filePolicy', disabled: false, name: 'EndpointFile', label: 'adminUsm.policyTypes.filePolicy', disabledTooltip: 'adminUsm.policyTypes.filePolicyDisabledTooltip', typeTranslation: i18n.t('adminUsm.policyTypes.filePolicy') },
+      { id: 'windowsLogPolicy', policyType: 'windowsLogPolicy', disabled: false, name: 'EndpointWL', label: 'adminUsm.policyTypes.windowsLogPolicy', disabledTooltip: 'adminUsm.policyTypes.windowsLogPolicyDisabledTooltip', typeTranslation: i18n.t('adminUsm.policyTypes.windowsLogPolicy') }
     ];
     let sourceTypesSelected = sourceTypes(Immutable.from(fullState));
     assert.deepEqual(sourceTypesSelected.length, 3, 'All sourceTypes returned as expected');
@@ -128,9 +128,9 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
       .build();
     // copy/paste from the reducer's initial state, add a typeTranslation prop, and keep ordered by typeTranslation
     const sourceTypesExpected = [ // _.cloneDeep(fullState.usm.policyWizard.sourceTypes);
-      { id: 'edrPolicy', policyType: 'edrPolicy', disabled: false, name: 'EndpointScan', label: 'adminUsm.policyWizard.edrSourceType', typeTranslation: i18n.t('adminUsm.policyWizard.edrSourceType') },
-      { id: 'filePolicy', policyType: 'filePolicy', disabled: false, name: 'EndpointFile', label: 'adminUsm.policyWizard.fileLogSourceType', typeTranslation: i18n.t('adminUsm.policyWizard.fileLogSourceType') },
-      { id: 'windowsLogPolicy', policyType: 'windowsLogPolicy', disabled: false, name: 'EndpointWL', label: 'adminUsm.policyWizard.windowsLogSourceType', typeTranslation: i18n.t('adminUsm.policyWizard.windowsLogSourceType') }
+      { id: 'edrPolicy', policyType: 'edrPolicy', disabled: false, name: 'EndpointScan', label: 'adminUsm.policyTypes.edrPolicy', disabledTooltip: 'adminUsm.policyTypes.edrPolicyDisabledTooltip', typeTranslation: i18n.t('adminUsm.policyTypes.edrPolicy') },
+      { id: 'filePolicy', policyType: 'filePolicy', disabled: false, name: 'EndpointFile', label: 'adminUsm.policyTypes.filePolicy', disabledTooltip: 'adminUsm.policyTypes.filePolicyDisabledTooltip', typeTranslation: i18n.t('adminUsm.policyTypes.filePolicy') },
+      { id: 'windowsLogPolicy', policyType: 'windowsLogPolicy', disabled: false, name: 'EndpointWL', label: 'adminUsm.policyTypes.windowsLogPolicy', disabledTooltip: 'adminUsm.policyTypes.windowsLogPolicyDisabledTooltip', typeTranslation: i18n.t('adminUsm.policyTypes.windowsLogPolicy') }
     ];
     // the selector looks up sourceType object by type, so use the expected edrPolicy type (which is currently the first object)
     const [sourceTypeExpected] = sourceTypesExpected;

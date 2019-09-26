@@ -14,7 +14,11 @@
         options=availablePolicySourceTypes
         onchange=(action 'handleSourceTypeChange') as |option|
       }}
-        {{t (concat 'adminUsm.policyTypes.' option.policyType)}}
+        {{rsa-form-select/default-option
+          disabled=option.disabled
+          disabledTooltip=(t option.disabledTooltip)
+          optionLabel=(t option.label)
+        }}
       {{/power-select}}
     </label>
   </hbox>

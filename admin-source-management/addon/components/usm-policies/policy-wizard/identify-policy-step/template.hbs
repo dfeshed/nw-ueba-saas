@@ -20,7 +20,11 @@
         disabled=cannotEditSourceType
         onchange=(action 'handleSourceTypeChange') as |option|
       }}
-        {{t option.label}}
+        {{rsa-form-select/default-option
+          disabled=option.disabled
+          disabledTooltip=(t option.disabledTooltip)
+          optionLabel=(t option.label)
+        }}
       {{/power-select}}
     </label>
   </hbox>

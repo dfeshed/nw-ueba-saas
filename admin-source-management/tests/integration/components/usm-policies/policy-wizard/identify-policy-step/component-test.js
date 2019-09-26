@@ -1,7 +1,7 @@
 import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { blur, click, find, findAll, focus, render, settled } from '@ember/test-helpers';
+import { blur, click, find, findAll, focus, render, settled, triggerEvent } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 import hbs from 'htmlbars-inline-precompile';
@@ -141,6 +141,11 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     sourceTypesDisabled = findAll('.ember-power-select-option[aria-disabled=true]');
     assert.equal(sourceTypesAll.length, 3, 'All source types rendered');
     assert.equal(sourceTypesDisabled.length, 1, '2 source types enabled, and 1 source type disabled');
+    // the filePolicy option should have a tooltip to show why it is disabled
+    const expectedFilePolicyDisabledTooltip = 'Endpoint servers need to be on version 11.4 and above to configure log file collection.';
+    await triggerEvent('.ember-power-select-option[aria-disabled=true] .tooltip-text', 'mouseover');
+    const actualFilePolicyDisabledTooltip = findAll('.tool-tip-value')[0].innerText.trim();
+    assert.equal(actualFilePolicyDisabledTooltip, expectedFilePolicyDisabledTooltip, 'disabled filePolicy option tooltip is as expected');
 
     // filePolicyFeature disabled so filePolicy type should not be rendered
     features.setFeatureFlags({ 'rsa.usm.filePolicyFeature': false });

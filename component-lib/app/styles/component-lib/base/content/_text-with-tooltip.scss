@@ -54,3 +54,12 @@ $panel-max-height: 450px;
   font: inherit;
   color: inherit;
 }
+
+.ember-power-select-trigger .tooltip-text, .ember-power-select-options .tooltip-text {
+  /* fixes spacing of #rsa-text-with-tooltip components inside #power-select components */
+  position: relative;
+  display: inline;
+
+  /* allows tooltips to work inside disabled #power-select options */
+  pointer-events: auto;
+}
