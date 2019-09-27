@@ -4,7 +4,7 @@ import computed, { alias, and } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 
 import * as MESSAGE_TYPES from '../message-types';
-import { isEscape, isEnter } from 'investigate-events/util/keys';
+import { isEscape, isEnter, isHome, isEnd } from 'investigate-events/util/keys';
 
 export default Component.extend({
   classNames: ['pill', 'complex-pill'],
@@ -87,7 +87,9 @@ export default Component.extend({
       [MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED]: () => this._focusedLeftArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED]: () => this._focusedRightArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_RIGHT_ARROW_PRESSED]: () => this._focusedShiftRightArrowPressed(),
-      [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_LEFT_ARROW_PRESSED]: () => this._focusedShiftLeftArrowPressed()
+      [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_LEFT_ARROW_PRESSED]: () => this._focusedShiftLeftArrowPressed(),
+      [MESSAGE_TYPES.PILL_HOME_PRESSED]: () => this._homeButtonPressed(),
+      [MESSAGE_TYPES.PILL_END_PRESSED]: () => this._endButtonPressed()
     });
   },
 
@@ -176,6 +178,10 @@ export default Component.extend({
         this._editPill(event.target.value);
       } else if (isEscape(event)) {
         this._cancelPillEdit();
+      } else if (isHome(event) && event.target.value.trim().length === 0) {
+        this._homeButtonPressed();
+      } else if (isEnd(event) && event.target.value.trim().length === 0) {
+        this._endButtonPressed();
       }
     }
   },
@@ -236,6 +242,26 @@ export default Component.extend({
     if (!this.get('isActive')) {
       this.get('sendMessage')(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, this.get('position'));
     }
+  },
+
+  /**
+   * Handles events propagating from focus-holder
+   * when the user clicks on Home button and relays the message.
+   * When editing the pill, the event is not relayed unless the
+   * pill data is empty.
+   */
+  _homeButtonPressed() {
+    this._broadcast(MESSAGE_TYPES.PILL_HOME_PRESSED, this.get('pillData'));
+  },
+
+  /**
+   * Handles events propagating from focus-holder
+   * when the user clicks on End button and relays the message.
+   * When editing the pill, the event is not relayed unless the
+   * pill data is empty.
+   */
+  _endButtonPressed() {
+    this._broadcast(MESSAGE_TYPES.PILL_END_PRESSED, this.get('pillData'));
   },
 
   /**

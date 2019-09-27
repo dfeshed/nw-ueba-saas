@@ -15,6 +15,8 @@ const BACKSPACE_KEY = KEY_MAP.backspace.key;
 const DELETE_KEY = KEY_MAP.delete.key;
 const ENTER_KEY = KEY_MAP.enter.key;
 const ESCAPE_KEY = KEY_MAP.escape.key;
+const HOME_KEY = KEY_MAP.home.key;
+const END_KEY = KEY_MAP.end.key;
 const modifiers = { shiftKey: true };
 
 
@@ -511,4 +513,124 @@ module('Integration | Component | complex-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY);
   });
 
+  test('it sends a message when home is pressed', async function(assert) {
+    const done = assert.async();
+    const pillData = { complexFilterText: 'FOOOOOOOO', isFocused: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', (messageType, data) => {
+      assert.equal(messageType, MESSAGE_TYPES.PILL_HOME_PRESSED, 'Message sent for pill home is not correct');
+      assert.ok(data.complexFilterText == pillData.complexFilterText, 'should send out pill data');
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=false
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'proper class present');
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', HOME_KEY);
+  });
+
+  test('it sends a message when end is pressed', async function(assert) {
+    const done = assert.async();
+    const pillData = { complexFilterText: 'FOOOOOOOO', isFocused: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', (messageType, data) => {
+      assert.equal(messageType, MESSAGE_TYPES.PILL_END_PRESSED, 'Message sent for pill end is not correct');
+      assert.ok(data.complexFilterText == pillData.complexFilterText, 'should send out pill data');
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=false
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'proper class present');
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', END_KEY);
+  });
+
+  test('In Edit mode and no text, sends a message when home is pressed', async function(assert) {
+    const done = assert.async();
+    assert.expect(2);
+    const pillData = { complexFilterText: 'F', isEditing: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', (messageType, data) => {
+      assert.equal(messageType, MESSAGE_TYPES.PILL_HOME_PRESSED, 'Message sent for pill home is not correct');
+      assert.ok(data.complexFilterText == pillData.complexFilterText, 'should send out pill data');
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=true
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    // remove the 1 character
+    await fillIn(PILL_SELECTORS.complexPillInput, '');
+    await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', HOME_KEY);
+  });
+
+  test('In Edit mode and no text, sends a message when end is pressed', async function(assert) {
+    const done = assert.async();
+    assert.expect(2);
+    const pillData = { complexFilterText: 'F', isEditing: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', (messageType, data) => {
+      assert.equal(messageType, MESSAGE_TYPES.PILL_END_PRESSED, 'Message sent for pill end is not correct');
+      assert.ok(data.complexFilterText == pillData.complexFilterText, 'should send out pill data');
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=true
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    // remove the 1 character
+    await fillIn(PILL_SELECTORS.complexPillInput, '');
+    await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', END_KEY);
+  });
+
+  test('does not send message up when home or end is pressed with text', async function(assert) {
+    assert.expect(0);
+
+    const pillData = { complexFilterText: 'F', isEditing: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', () => {
+      assert.notOk(true, 'should not get here');
+    });
+
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=true
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', HOME_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', END_KEY);
+  });
 });

@@ -14,6 +14,8 @@ const BACKSPACE_KEY = KEY_MAP.backspace.key;
 const DELETE_KEY = KEY_MAP.delete.key;
 const ENTER_KEY = KEY_MAP.enter.key;
 const ESCAPE_KEY = KEY_MAP.escape.key;
+const HOME_KEY = KEY_MAP.home.key;
+const END_KEY = KEY_MAP.end.key;
 const modifiers = { shiftKey: true };
 
 module('Integration | Component | query-container/text-pill', function(hooks) {
@@ -345,5 +347,131 @@ module('Integration | Component | query-container/text-pill', function(hooks) {
 
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'proper class present');
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY);
+  });
+
+  test('If on a focused pill and HOME is pressed, a message is sent up', async function(assert) {
+    assert.expect(3);
+
+    const pillData = { searchTerm: 'foo bar', isFocused: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', (messageType, data) => {
+      assert.ok(messageType === MESSAGE_TYPES.PILL_HOME_PRESSED, 'should send out correct message');
+      assert.deepEqual(
+        data,
+        { searchTerm: 'foo bar', isFocused: true },
+        'Message sent for pill contains correct pill data'
+      );
+    });
+
+    await render(hbs`
+      {{query-container/text-pill
+        position=0
+        isActive=false
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'proper class present');
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', HOME_KEY);
+  });
+
+  test('If on a focused pill and END is pressed, a message is sent up', async function(assert) {
+    assert.expect(3);
+
+    const pillData = { searchTerm: 'foo bar', isFocused: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', (messageType, data) => {
+      assert.ok(messageType === MESSAGE_TYPES.PILL_END_PRESSED, 'should send out correct message');
+      assert.deepEqual(
+        data,
+        { searchTerm: 'foo bar', isFocused: true },
+        'Message sent for pill contains correct pill data'
+      );
+    });
+
+    await render(hbs`
+      {{query-container/text-pill
+        position=0
+        isActive=false
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'proper class present');
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', END_KEY);
+  });
+
+  test('In Edit mode and no text sends  message up when home is pressed', async function(assert) {
+    assert.expect(2);
+
+    const pillData = { searchTerm: 'foo bar', isEditing: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', (messageType, data) => {
+      assert.ok(messageType === MESSAGE_TYPES.PILL_HOME_PRESSED, 'should send out correct action');
+      assert.ok(data.searchTerm == pillData.searchTerm, 'should send out pill data');
+    });
+
+    await render(hbs`
+      {{query-container/text-pill
+        position=0
+        isActive=true
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    // remove the 1 character
+    await fillIn(PILL_SELECTORS.textPillInput, '');
+    await triggerKeyEvent(PILL_SELECTORS.textPillInput, 'keydown', HOME_KEY);
+  });
+
+  test('In Edit mode and no text sends  message up when end is pressed', async function(assert) {
+    assert.expect(2);
+
+    const pillData = { searchTerm: 'foo bar', isEditing: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', (messageType, data) => {
+      assert.ok(messageType === MESSAGE_TYPES.PILL_END_PRESSED, 'should send out correct action');
+      assert.ok(data.searchTerm == pillData.searchTerm, 'should send out pill data');
+    });
+
+    await render(hbs`
+      {{query-container/text-pill
+        position=0
+        isActive=true
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    // remove the 1 character
+    await fillIn(PILL_SELECTORS.textPillInput, '');
+    await triggerKeyEvent(PILL_SELECTORS.textPillInput, 'keydown', END_KEY);
+  });
+
+  test('In Edit mode and with text does not send message up when home or end  is pressed', async function(assert) {
+    assert.expect(0);
+
+    const pillData = { searchTerm: 'F', isEditing: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', () => {
+      assert.notOk(true, 'should not get here');
+    });
+
+    await render(hbs`
+      {{query-container/text-pill
+        position=0
+        isActive=true
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.textPillInput, 'keydown', HOME_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.textPillInput, 'keydown', END_KEY);
   });
 });
