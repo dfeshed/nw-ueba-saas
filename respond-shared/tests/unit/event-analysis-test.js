@@ -1,4 +1,4 @@
-import { lookupCoreDevice, createProcessAnalysisLink } from 'respond-shared/utils/event-analysis';
+import { lookupCoreDevice, createProcessAnalysisLink, createEventAnalysisLink, getEventType } from 'respond-shared/utils/event-analysis';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | Event Analysis');
@@ -74,4 +74,47 @@ test('Calling createProcessAnalysisLink() when os type is linux returns undefine
   const result = createProcessAnalysisLink(eventItem, services);
 
   assert.notOk(result, 'Expected valid process analysis link');
+});
+
+test('Calling createEventAnalysisLink() with all necessary event metas returned process analysis link', function(assert) {
+
+  const eventItem = {
+    'event_source': '10.40.15.182:50002',
+    'event_source_id': '150'
+  };
+
+  const result = createEventAnalysisLink(eventItem, services);
+
+  assert.ok(result, 'Expected valid event analysis link');
+});
+
+test('Calling createEventAnalysisLink() when event source id missing returns undefined', function(assert) {
+
+  const eventItem = {
+    'event_source': '10.40.15.182:50002'
+  };
+
+  const result = createEventAnalysisLink(eventItem, services);
+
+  assert.notOk(result, 'Expected valid event analysis link');
+});
+
+test('Calling getEventType() when device type is nwendpoint returns event type of endpoint', function(assert) {
+  const result = getEventType('', 'nwendpoint');
+
+  assert.equal(result, 'ENDPOINT', 'Expected event type of ENDPOINT');
+});
+
+test('Calling getEventType() when type of event is network returns event type of network', function(assert) {
+
+  const result = getEventType('Network', '');
+
+  assert.equal(result, 'NETWORK', 'Expected event type of NETWORK');
+});
+
+test('Calling getEventType() when event type is other than network and device type is other than nwendpoint returns event type of log', function(assert) {
+
+  const result = getEventType('', '');
+
+  assert.equal(result, 'LOG', 'Expected event type of LOG');
 });

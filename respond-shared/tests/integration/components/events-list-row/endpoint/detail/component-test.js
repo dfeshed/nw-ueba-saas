@@ -10,6 +10,8 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
+    const investigatePageService = this.owner.lookup('service:investigatePage');
+    investigatePageService.set('legacyEventsEnabled', true);
     this.set('expandedId', null);
     this.set('expand', () => {
     });

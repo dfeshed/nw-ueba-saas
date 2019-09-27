@@ -3,6 +3,9 @@ import { initializeAlert } from 'respond/actions/creators/alert-creators';
 import { inject as service } from '@ember/service';
 import { next } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
+import { get } from '@ember/object';
+import { bindActionCreators } from 'redux';
+import { recon } from 'respond/actions/api';
 
 // Converts a long alert ID string into the format 'abcd...wxyz'.
 function abbrevAlertId(alertId) {
@@ -29,6 +32,18 @@ export default Route.extend({
     // TODO: we should use more complex redirects here, but we're just going to send back to / for now
     if (!this.get('accessControl.hasRespondAlertsAccess')) {
       this.transitionTo('index');
+    }
+    const redux = get(this, 'redux');
+    this.getServices(redux);
+  },
+
+  getServices(redux) {
+    const getServices = bindActionCreators(recon.getServices, redux.dispatch.bind(redux));
+    try {
+      getServices();
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log('Error fetching core services: ', e);
     }
   },
 

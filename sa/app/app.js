@@ -73,7 +73,8 @@ const App = Application.extend({
           'i18n',
           'flashMessages',
           'eventBus',
-          'global-preferences'
+          'global-preferences',
+          'investigatePage'
         ],
         externalRoutes: {
           protected: 'protected'

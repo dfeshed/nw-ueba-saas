@@ -54,6 +54,11 @@ const start = function({ subscriptionLocations, routes }, cb, { urlPattern, cust
     res.send('off');
   });
 
+  app.use('/eula/rsa', function(req, res) {
+    res.setHeader('Content-Type', 'text/html');
+    res.send('off');
+  });
+
   app.use('/saml/sso/is-enabled', function(req, res) {
     res.send('false');
   });

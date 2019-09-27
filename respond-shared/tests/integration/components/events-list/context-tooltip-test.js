@@ -5,11 +5,18 @@ import { click, find, findAll, render, triggerEvent, waitUntil } from '@ember/te
 import { getEndpointAlertSelection, getEndpointEventSelection, filterEndpointEventsBySelection } from './data';
 import { selectors } from './context-selectors';
 import { waitForEntityHighlight } from './wait-for-highlight';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const timeout = 10000;
 
 module('Integration | Component | events-list | context tooltip', function(hooks) {
   setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+    const investigatePageService = this.owner.lookup('service:investigatePage');
+    investigatePageService.set('legacyEventsEnabled', true);
+  });
 
   test('when views are recycled context tooltip will highlight properly', async function(assert) {
     const alertSelection = getEndpointAlertSelection();

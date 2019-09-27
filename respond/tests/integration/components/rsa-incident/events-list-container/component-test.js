@@ -16,6 +16,8 @@ module('Integration | Component | events-list', function(hooks) {
 
   hooks.beforeEach(function() {
     initialize(this.owner);
+    const investigatePageService = this.owner.lookup('service:investigatePage');
+    investigatePageService.set('legacyEventsEnabled', true);
   });
 
   test('renders both generic and endpoint row templates', async function(assert) {

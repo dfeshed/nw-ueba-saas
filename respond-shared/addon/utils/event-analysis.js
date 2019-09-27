@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import moment from 'moment';
+import { EVENT_TYPES } from 'component-lib/constants/event-types';
 
-export const lookupCoreDevice = (services, eventSource) => {
+const lookupCoreDevice = (services, eventSource) => {
   if (!eventSource) {
     return null;
   }
@@ -21,17 +22,14 @@ export const lookupCoreDevice = (services, eventSource) => {
   return lookup && lookup.length === 1 && lookup[0].id;
 };
 
-export const createProcessAnalysisLink = (item, services) => {
+const createProcessAnalysisLink = (item, services) => {
 
   // fetch service id of core device based on event source
   const sid = lookupCoreDevice(services, item.event_source);
 
   let processAnalysisLink;
 
-  // time range is of past 7 days
-  const now = moment();
-  const endTime = now.unix();
-  const startTime = now.subtract(7, 'days').unix();
+  const { startTime, endTime } = defaultQueryTimeRange();
 
   if (item.device_type === 'nwendpoint' && item.agent_id && item.source.hash && item.source.filename && item.process_vid && item.operating_system && item.operating_system !== 'linux' && sid) {
     const processAnalysisQueryString = [
@@ -49,4 +47,67 @@ export const createProcessAnalysisLink = (item, services) => {
   }
 
   return processAnalysisLink;
+};
+
+/**
+  * Creates event analysis link from event item and list of services
+  *
+  * @param item event
+  * @param services list of services
+  * @returns {string}
+  * @public
+  */
+const createEventAnalysisLink = (item, services) => {
+  // fetch service id of core device based on event source
+  const sid = lookupCoreDevice(services, item.event_source);
+
+  const eid = item.event_source_id;
+
+  let eventAnalysisLink;
+
+  const { startTime, endTime } = defaultQueryTimeRange();
+
+  const eventType = getEventType(item.type, item.device_type);
+
+  if (eid) {
+    const eventAnalysisQueryString = [
+      `eid=${eid}`,
+      `sid=${sid}`,
+      `st=${startTime}`,
+      `et=${endTime}`,
+      `eventType=${eventType}`
+    ].join('&');
+
+    eventAnalysisLink = `/investigate/events?${eventAnalysisQueryString}`;
+  }
+
+  return eventAnalysisLink;
+};
+
+const getEventType = (type, deviceType) => {
+  if (deviceType === 'nwendpoint') {
+    return EVENT_TYPES.ENDPOINT;
+  } else if (type === 'Network') {
+    return EVENT_TYPES.NETWORK;
+  } else {
+    return EVENT_TYPES.LOG;
+  }
+};
+
+const defaultQueryTimeRange = () => {
+  // default time range is of past 7 days
+  const now = moment();
+  const endTime = now.unix();
+  const startTime = now.subtract(7, 'days').unix();
+  return {
+    startTime,
+    endTime
+  };
+};
+
+export {
+  lookupCoreDevice,
+  createProcessAnalysisLink,
+  createEventAnalysisLink,
+  getEventType
 };

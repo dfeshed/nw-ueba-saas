@@ -4,7 +4,9 @@ import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { guidFor } from '@ember/object/internals';
 import HighlightsEntities from 'context/mixins/highlights-entities';
-import { createProcessAnalysisLink } from 'respond-shared/utils/event-analysis';
+import { createProcessAnalysisLink, createEventAnalysisLink } from 'respond-shared/utils/event-analysis';
+import { inject as service } from '@ember/service';
+import _ from 'lodash';
 
 const GENERIC = 'events-list-row/generic';
 const ENDPOINT = 'events-list-row/endpoint';
@@ -20,6 +22,8 @@ export default Component.extend(HighlightsEntities, {
   classNameBindings: ['expanded'],
   classNames: ['events-list-table-row'],
   attributeBindings: ['testId:test-id'],
+
+  investigatePage: service(),
 
   didUpdateAttrs() {
     this._super(...arguments);
@@ -39,20 +43,25 @@ export default Component.extend(HighlightsEntities, {
     return index && parseInt(index, 10) + 1 || 1;
   },
 
-  @computed('item', 'services')
-  customizedItem(item, services) {
+  @computed('item', 'services', 'investigatePage.legacyEventsEnabled')
+  customizedItem(item, services, legacyEventsEnabled) {
+    const modifiedItem = _.cloneDeep(item);
+
+    // Create event analysis url and replaced it with legacy events url if legacy events flag is disable
+    if (!legacyEventsEnabled) {
+      const eventAnalysisLink = createEventAnalysisLink(item, services);
+      modifiedItem.related_links[0].url = eventAnalysisLink;
+    }
+
     const processAnalysisLink = createProcessAnalysisLink(item, services);
 
     if (processAnalysisLink) {
-      const modifiedItem = { ...item };
-
       modifiedItem.related_links = modifiedItem.related_links.concat({
         type: 'analyze_process',
         url: processAnalysisLink
       });
-      return modifiedItem;
     }
-    return item;
+    return modifiedItem;
   },
 
   @computed('alerts', 'item.indicatorId')

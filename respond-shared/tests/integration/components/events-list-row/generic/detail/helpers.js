@@ -53,6 +53,15 @@ export const assertProcessAnalysisLink = (assert, { value }) => {
   assert.ok(find(selector).getAttribute('href'));
 };
 
+export const assertEventAnalysisLink = (assert, { value }) => {
+
+  const selector = `${selectors.column} ${selectors.row}:nth-of-type(1) ${selectors.relatedLink}`;
+
+  assert.equal(find(selector).textContent.trim(), value);
+  assert.ok(find(selector).getAttribute('href'));
+  assert.ok(find(selector).getAttribute('href').startsWith('/investigate/events'));
+};
+
 export const assertDetailRowParent = (assert, { column, row, label, value }) => {
   const element = getContextElement(column, row);
   assert.equal(element.querySelector(selectors.key).textContent.trim(), label);

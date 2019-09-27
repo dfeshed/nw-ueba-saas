@@ -100,6 +100,8 @@ module('Integration | Component | host-detail/overview', function(hooks) {
       const state = Immutable.from({ endpoint: { overview, visuals, risk } });
       patchReducer(this, state);
       this.owner.inject('component', 'i18n', 'service:i18n');
+      const investigatePageService = this.owner.lookup('service:investigatePage');
+      investigatePageService.set('legacyEventsEnabled', true);
     };
   });
 

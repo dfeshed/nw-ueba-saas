@@ -4,11 +4,17 @@ import { setupRenderingTest } from 'ember-qunit';
 import { waitUntil, settled, click, find, findAll, render } from '@ember/test-helpers';
 import { selectors } from './selectors';
 import { getAllEvents, getAllAlerts, getSelection, getEventSelection, getAlertSelection, filterEventsBySelection } from './data';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+
+let investigatePageService;
 
 module('Integration | Component | events-list', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
+    initialize(this.owner);
+    investigatePageService = this.owner.lookup('service:investigatePage');
+    investigatePageService.set('legacyEventsEnabled', true);
     this.set('expandedId', null);
     this.set('selectionExists', []);
     this.set('alerts', getAllAlerts());

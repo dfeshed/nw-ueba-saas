@@ -5,13 +5,17 @@ import { set } from '@ember/object';
 import { settled, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { emptyNetworkEvent } from '../../empty-data';
-import { reRelatedLinkOne, networkRelatedLinkOne, reEventId, ecatEventId, networkEventId, getAllEvents } from '../../../events-list/data';
+import { reRelatedLinkOne, networkRelatedLinkOne, reEventId, ecatEventId, networkEventId, getAllEvents, getServices } from '../../../events-list/data';
 import * as generic from './helpers';
+
+let investigatePageService;
 
 module('Integration | Component | events-list-row/generic/detail', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
+    investigatePageService = this.owner.lookup('service:investigatePage');
+    investigatePageService.set('legacyEventsEnabled', true);
     this.set('expandedId', null);
     this.set('expand', () => {
     });
@@ -828,6 +832,22 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
 
     generic.assertNoRelatedLinks(assert, {
       column: 2
+    });
+  });
+
+  test('show event analysis link if legacy events flag is disabled', async function(assert) {
+    const events = getAllEvents();
+    const [ item ] = events.filter((e) => e.id === networkEventId);
+
+    this.set('expandedId', networkEventId);
+    this.set('item', item);
+    this.set('services', getServices());
+    investigatePageService.set('legacyEventsEnabled', false);
+
+    await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand) services=services}}`);
+
+    generic.assertEventAnalysisLink(assert, {
+      value: 'Investigate Original Event'
     });
   });
 });
