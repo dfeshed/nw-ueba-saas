@@ -78,6 +78,17 @@ const filesReducer = handleActions({
     return state.set('files', filteredPayload);
   },
 
+  [ACTION_TYPES.FILES_FILE_SELECTED]: (state, { payload: fileIds }) => {
+    const toAdd = fileIds.filter((id) => !state.selectedFileIds.includes(id));
+    const selectedFileIds = [...state.selectedFileIds, ...toAdd];
+    return state.set('selectedFileIds', selectedFileIds);
+  },
+
+  [ACTION_TYPES.FILES_FILE_DESELECTED]: (state, { payload: fileIds }) => {
+    const selectedFileIds = state.selectedFileIds.filter((id) => !fileIds.includes(id));
+    return state.set('selectedFileIds', selectedFileIds);
+  },
+
   [ACTION_TYPES.FILES_FILE_TOGGLED]: (state, { payload: fileId }) => {
     let selectedFileIds = [];
     if (state.selectedFileIds.includes(fileId)) {

@@ -5,21 +5,11 @@ import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { click, find, findAll, render } from '@ember/test-helpers';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
-import sinon from 'sinon';
-import * as VisualCreators from 'recon/actions/visual-creators';
-import * as DataCreators from 'recon/actions/data-creators';
 
-let setState, visualCreatorsStub, storeDefaultReconViewStub, setNewReconViewStub;
-const stubs = [];
+let setState;
 
 module('Integration | Component | recon event titlebar', function(hooks) {
   setupRenderingTest(hooks);
-
-  hooks.before(function() {
-    stubs.push(visualCreatorsStub = sinon.stub(VisualCreators, 'closeRecon'));
-    stubs.push(storeDefaultReconViewStub = sinon.stub(DataCreators, 'storeDefaultReconView'));
-    stubs.push(setNewReconViewStub = sinon.stub(DataCreators, 'setNewReconView'));
-  });
 
   hooks.beforeEach(function() {
     setState = (state) => {
@@ -27,13 +17,6 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     };
   });
 
-  hooks.afterEach(function() {
-    stubs.forEach((s) => s.resetHistory());
-  });
-
-  hooks.after(function() {
-    stubs.forEach((s) => s.restore());
-  });
   // recon view
 
   test('Display correct title and buttons in the titlebar if eventType is set to "LOG"', async function(assert) {
@@ -90,20 +73,17 @@ module('Integration | Component | recon event titlebar', function(hooks) {
   });
 
   test('when reconstruction view is action is called', async function(assert) {
-    new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().build();
+    new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().isNetworkEvent().build();
     await render(hbs`{{recon-event-titlebar}}`);
     assert.equal(find('.ember-power-select-trigger').textContent.trim(), 'Text', 'power select is populated with correct default');
-    await selectChoose('.heading-select', 'File');
-    assert.equal(setNewReconViewStub.calledOnce, true, 'action is called');
-    assert.equal(setNewReconViewStub.args[0][0].name, 'FILE', 'right recon view is provided');
-    assert.equal(storeDefaultReconViewStub.calledOnce, true, 'store default action is called');
-    setNewReconViewStub.resetHistory();
-    storeDefaultReconViewStub.resetHistory();
+    await selectChoose('.heading-select .ember-power-select-trigger', 'File');
 
-    await selectChoose('.heading-select', 'Packet');
-    assert.equal(setNewReconViewStub.calledOnce, true, 'action is called');
-    assert.equal(setNewReconViewStub.args[0][0].name, 'PACKET', 'right recon view is provided');
-    assert.equal(storeDefaultReconViewStub.calledOnce, true, 'store default action is called');
+    let redux = this.owner.lookup('service:redux');
+    assert.equal(redux.getState().recon.visuals.currentReconView.name, 'FILE', 'Current recon view is File');
+
+    await selectChoose('.heading-select .ember-power-select-trigger', 'Packet');
+    redux = this.owner.lookup('service:redux');
+    assert.equal(redux.getState().recon.visuals.currentReconView.name, 'PACKET', 'Current recon view is Packet');
   });
 
   test('all views enabled for network sessions', async function(assert) {
@@ -127,12 +107,12 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     assert.equal(find('.tview-label').textContent.trim(), 'Text');
   });
 
-  test('Click on Email tab does not change the tab', async function(assert) {
+  test('Click on Email tab changes the tab', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().build();
     await render(hbs`{{recon-event-titlebar}}`);
     assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Text');
     await selectChoose('.heading-select', 'Email');
-    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Text');
+    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Email');
   });
 
   test('Click on Web tab opens the web meta in a new tab and does not change the current tab', async function(assert) {
@@ -330,6 +310,7 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().isReconOpen(true).build();
     await render(hbs`{{recon-event-titlebar}}`);
     await click('.rsa-icon-close-filled');
-    assert.equal(visualCreatorsStub.callCount, 1, 'close recon action creator called one time');
+    const redux = this.owner.lookup('service:redux');
+    assert.notOk(redux.getState().recon.visuals.isReconOpen, 'recon close action called');
   });
 });

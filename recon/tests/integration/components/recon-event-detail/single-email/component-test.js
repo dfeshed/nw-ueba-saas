@@ -19,7 +19,7 @@ module('Integration | Component | recon-event-detail/single-email', function(hoo
       assert.ok(find('.recon-email-view'), 'single email view is rendered');
       assert.equal(findAll('.recon-email-collapse-header .rsa-icon-arrow-down-12-filled').length, 1, 'email is expanded by default');
       const str = find('.recon-email-header').textContent.concat(find('iframe').contentDocument.body.innerText);
-      assert.equal(_first200(str), 'fromeddard.stark@verizon.nettosansa.stark@verizon.net,arya.stark@verizon.net,robb.stark@verizon.netbccjon.snow@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?AdditionalHeaderDetailsemailmessa');
+      assert.equal(_first200(str), 'fromeddard.stark@verizon.nettosansa.stark@verizon.net,arya.stark@verizon.net,robb.stark@verizon.netbccjon.snow@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?attachmentsAdditionalHeaderDetail');
     });
   });
 });

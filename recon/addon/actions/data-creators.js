@@ -171,6 +171,16 @@ const _handleFetchingNewData = (newViewCode) => {
           (payload) => dispatch({ type: ACTION_TYPES.EMAIL_RENDER_NEXT, payload }),
           (response) => dispatch(_handleContentError(response, 'email'))
         );
+        fetchReconFiles(state.recon.data)
+          .then(({ data }) => {
+            dispatch({
+              type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,
+              payload: data
+            });
+          })
+          .catch((response) => {
+            dispatch(_handleContentError(response, 'file'));
+          });
         break;
     }
   };

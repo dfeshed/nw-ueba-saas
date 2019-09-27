@@ -40,9 +40,22 @@ module('Integration | Component | recon-event-detail/emails', function(hooks) {
   });
 
 
-  test('renders warning if attachment present', async function(assert) {
+  test('renders attachment warning if attachment is selected', async function(assert) {
     const state = {
       recon: {
+        files: {
+          selectedFileIds: ['1'],
+          files: [
+            {
+              id: '1',
+              fileName: 'attachment1.png'
+            },
+            {
+              id: '2',
+              fileName: 'attachment2.png'
+            }
+          ]
+        },
         emails: {
           emails: emailData,
           renderIds: ['6eea4274b865446289540926194068e9', '6eea4274b865446289540926194068e8']
@@ -74,7 +87,7 @@ module('Integration | Component | recon-event-detail/emails', function(hooks) {
     assert.equal(findAll('.recon-email-collapse-header .rsa-icon-arrow-right-12-filled').length, 3, '3 emails are collapsed now after 1 email is expanded');
 
     const str = find('.recon-email-header').textContent.trim().replace(/\s/g, '').substring(0, 200);
-    assert.equal(str, 'fromeddard.stark@verizon.nettosansa.stark@verizon.net,arya.stark@verizon.net,robb.stark@verizon.netbccjon.snow@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?attachmentsthewindsofwinter.docx,');
+    assert.equal(str, 'fromeddard.stark@verizon.nettosansa.stark@verizon.net,arya.stark@verizon.net,robb.stark@verizon.netbccjon.snow@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?attachmentsAdditionalHeaderDetail');
 
     await click(findAll('.rsa-icon-arrow-down-12-filled')[0]);
     assert.equal(findAll('.rsa-icon-arrow-right-12-filled').length, 4, '4 emails are collapse again');

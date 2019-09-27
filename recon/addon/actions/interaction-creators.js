@@ -19,6 +19,13 @@ const fileSelected = (fileId) => {
   };
 };
 
+const fileSelectionChanged = (fileIds, isSelected) => {
+  return {
+    type: isSelected ? ACTION_TYPES.FILES_FILE_SELECTED : ACTION_TYPES.FILES_FILE_DESELECTED,
+    payload: fileIds
+  };
+};
+
 const deselectAllFiles = () => ({ type: ACTION_TYPES.FILES_SELECT_ALL });
 
 const selectAllFiles = () => ({ type: ACTION_TYPES.FILES_DESELECT_ALL });
@@ -106,6 +113,7 @@ const highlightMeta = (metaToHighlight) => ({
 export {
   deselectAllFiles,
   selectAllFiles,
+  fileSelectionChanged,
   extractFiles,
   didDownloadFiles,
   fileSelected,

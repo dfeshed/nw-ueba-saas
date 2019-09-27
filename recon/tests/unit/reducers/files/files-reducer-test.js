@@ -131,3 +131,37 @@ test('test FILES_RETRIEVE_SUCCESS removes backslash before operators for a given
   const result = reducer(initialState, action);
   assert.equal(result.files[0].query, 'ip.src=10.20.57.214&&tcp.dstport=57337', 'Should only remove backslash if there is one before operator');
 });
+
+test('test FILES_FILE_SELECTED adds the new fileIds to the selectedFileIds', function(assert) {
+  const action = {
+    type: ACTION_TYPES.FILES_FILE_SELECTED,
+    payload: ['1', '2']
+  };
+
+  let result = reducer(initialState, action);
+  assert.equal(result.selectedFileIds.join(','), '1,2');
+
+  action.payload = ['3'];
+  result = reducer(result, action);
+  assert.equal(result.selectedFileIds.join(','), '1,2,3');
+
+  action.payload = ['1', '2'];
+  result = reducer(result, action);
+  assert.equal(result.selectedFileIds.join(','), '1,2,3');
+});
+
+test('test FILES_FILE_DESELECTED removes the fileIds in the payload from the selectedFileIds', function(assert) {
+  const state = initialState.set('selectedFileIds', ['1', '2', '3']);
+
+  const action = {
+    type: ACTION_TYPES.FILES_FILE_DESELECTED,
+    payload: ['1']
+  };
+
+  let result = reducer(state, action);
+  assert.equal(result.selectedFileIds.join(','), '2,3');
+
+  action.payload = ['2', '3'];
+  result = reducer(result, action);
+  assert.equal(result.selectedFileIds.join(','), '');
+});

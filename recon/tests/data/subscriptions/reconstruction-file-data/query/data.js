@@ -75,6 +75,48 @@ export default [{
     value: '5a39b799a8f6399999999d4ee024715ed25e252a'
   }]
 }, {
+  type: 'session',
+  extension: 'docx',
+  fileName: '376486-107-0_attach.1.thewindsofwinter.docx',
+  mimeType: 'application/pdf',
+  id: '990021',
+  fileSize: 12341,
+  hashes: [{
+    type: 'md5',
+    value: 'f71f80acccccccb06419a895cadd1a47'
+  }, {
+    type: 'sha1',
+    value: '5a39b799a8f6399999999d4ee024715ed25e252a'
+  }]
+}, {
+  type: 'session',
+  extension: 'docx',
+  fileName: '376486-107-1_attach.1.windsofwinter.docx',
+  mimeType: 'application/pdf',
+  id: '930021',
+  fileSize: 12341,
+  hashes: [{
+    type: 'md5',
+    value: 'f71f80acccccccb06419a895cadd1a47'
+  }, {
+    type: 'sha1',
+    value: '5a39b799a8f6399999999d4ee024715ed25e252a'
+  }]
+}, {
+  type: 'session',
+  extension: 'docx',
+  fileName: '376186-107-1_attach.1.Resume for S. Lindsay.pdf',
+  mimeType: 'application/pdf',
+  id: '930111',
+  fileSize: 12341,
+  hashes: [{
+    type: 'md5',
+    value: 'f71f80acccccccb06419a895cadd1a47'
+  }, {
+    type: 'sha1',
+    value: '5a39b799a8f6399999999d4ee024715ed25e252a'
+  }]
+}, {
   type: 'link',
   extension: 'zip',
   fileName: '/151104-Case_Management.mp4.zip',

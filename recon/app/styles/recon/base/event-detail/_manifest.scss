@@ -54,6 +54,15 @@
     bottom: rsa-whitespace(more);
   }
 
+  .attachment-download-warning {
+    background-color: background-color(accentOne, base, nearly-transparent);
+    border: solid 1px border-color(accentOne, base, opaque);
+    color: text-color(neutral);
+    padding: rsa-whitespace();
+    margin: 0.7rem;
+    margin-right: 1rem;
+  }
+
   .email-scroll-box {
     position: absolute;
     top: 0;
@@ -64,6 +73,11 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
+  }
+
+  // when attachment warning is shown, push the emails down to make space
+  .attachment-download-warning + .email-scroll-box {
+    top: 70px;
   }
 
   .rendering-more {

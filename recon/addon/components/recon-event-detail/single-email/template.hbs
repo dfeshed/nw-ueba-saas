@@ -20,10 +20,7 @@
   </hbox>
 
   {{#if isEmailExpanded}}
-    {{recon-event-detail/single-email/email-header
-      email=email
-      hasEmailAttachments=hasEmailAttachments
-    }}
+    {{recon-event-detail/single-email/email-header email=email}}
     {{recon-event-detail/single-email/email-body-content
       email=email
     }}

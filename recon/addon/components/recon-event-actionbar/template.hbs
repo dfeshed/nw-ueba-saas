@@ -9,7 +9,7 @@
       </hbox>
     {{/if}}
 
-    {{#if isFileView}}
+    {{#if (or isFileView isEmailView)}}
       {{recon-event-actionbar/export-files}}
     {{/if}}
 

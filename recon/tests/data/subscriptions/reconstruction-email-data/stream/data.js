@@ -165,29 +165,7 @@ export default [
       {"name":"Delivered-To","value":"sansa.stark@verizon.net"}
 
     ],
-    "attachments": [
-      {
-        "attachmentId": "15337f91add74662a7ae1fbf7e9c2083",
-        "filename": "thewindsofwinter.docx",
-        "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "hash": "fe0489f04e2f34164f07af8a3fcc7ec297508d81526c204755b84aac105b1559",
-        "url": "http://..."
-      },
-      {
-        "attachmentId": "15337f91add74662a7ae1fbf7e9c2084",
-        "filename": "windsofwinter.docx",
-        "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "hash": "fe0489f04e2f34164f07af8a3fcc7ec297508d81526c204755b84aac105b1560",
-        "url": "http://..."
-      },
-      {
-        "attachmentId":"1",
-        "filename":"Resume for S. Lindsay.pdf",
-        "contentType":"application/pdf",
-        "hash":"",
-        "url":""
-      }
-    ],
+    "attachments": [],
     "bodyContentType": "HTML",
     "realBodyContentLength": 31337,
     "bodyContent": 'Email Body Content: This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. This is what 10,000 characters looks like. ' +

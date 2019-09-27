@@ -25,9 +25,3 @@ export const renderedEmails = createSelector(
   }
 );
 
-export const hasEmailAttachments = createSelector(
-  [emails],
-  (emails) => {
-    return !!emails.find((e) => e.attachments && e.attachments.length);
-  }
-);

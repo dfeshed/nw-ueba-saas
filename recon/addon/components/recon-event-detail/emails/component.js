@@ -4,9 +4,12 @@ import layout from './template';
 import {
   hasRenderIds,
   renderedEmails,
-  hasNoEmailContent,
-  hasEmailAttachments
+  hasNoEmailContent
 } from 'recon/reducers/emails/selectors';
+
+import {
+  hasSelectedFiles
+} from 'recon/reducers/files/selectors';
 
 const stateToComputed = ({ recon, recon: { data, emails } }) => ({
   emails: emails.emails,
@@ -14,7 +17,7 @@ const stateToComputed = ({ recon, recon: { data, emails } }) => ({
   hasRenderIds: hasRenderIds(recon),
   renderedEmails: renderedEmails(recon),
   hasNoEmailContent: hasNoEmailContent(recon),
-  hasEmailAttachments: hasEmailAttachments(recon)
+  hasSelectedFiles: hasSelectedFiles(recon)
 });
 
 const dispatchToActions = {

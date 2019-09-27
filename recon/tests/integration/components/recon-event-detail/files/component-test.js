@@ -35,11 +35,11 @@ test('it renders an empty message when no files', function(assert) {
   });
 });
 
-test('with 4 non-linked files + 1 linked file, 5 checkboxes total, has one in header', function(assert) {
+test('with 7 non-linked files + 1 linked file, 8 checkboxes total, has one in header', function(assert) {
   new DataHelper(this.get('redux')).populateFiles();
   this.render(hbs`{{recon-event-detail/files}}`);
   return wait().then(() => {
-    assert.equal(document.querySelectorAll('.recon-event-detail-files input').length, 5);
+    assert.equal(document.querySelectorAll('.recon-event-detail-files input').length, 8);
   });
 });
 
@@ -50,7 +50,7 @@ test('clicking top checkbox clicks them all', function(assert) {
   return wait().then(() => {
     document.querySelectorAll('.recon-event-detail-files input')[0].click();
     return wait().then(() => {
-      assert.equal(document.querySelectorAll('.recon-event-detail-files input.checked').length, 5);
+      assert.equal(document.querySelectorAll('.recon-event-detail-files input.checked').length, 8);
     });
   });
 });

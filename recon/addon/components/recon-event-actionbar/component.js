@@ -3,7 +3,8 @@ import { connect } from 'ember-redux';
 import {
   isFileView,
   isPacketView,
-  isTextView
+  isTextView,
+  isEmailView
 } from 'recon/reducers/visuals/selectors';
 import {
   isEndpointEvent,
@@ -19,7 +20,8 @@ const stateToComputed = ({ recon, recon: { packets } }) => ({
   isLogEvent: isLogEvent(recon),
   isPacketView: isPacketView(recon),
   isPayloadOnly: packets.isPayloadOnly,
-  isTextView: isTextView(recon)
+  isTextView: isTextView(recon),
+  isEmailView: isEmailView(recon)
 });
 
 const reconEventActionbar = Component.extend({
