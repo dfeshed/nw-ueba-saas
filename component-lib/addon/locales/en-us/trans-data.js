@@ -5048,6 +5048,7 @@ effects the previewed source.',
         exclusionFiltersLengthError: 'Please limit the filters to 16',
         exclusionFiltersEmptyLines: 'Exclusion Filters cannot contain empty lines',
         invalidLogFileTypesWarning: 'One or more Log File Types have multiple instances defined in this policy. Consider providing a unique Source Name under Advanced Settings for each instance. The Source Name will show up as meta in Investigate allowing the logs to be differentiated.',
+        eventSourceConfigGuide: 'Need help integrating the available File Types with NetWitness Platform? Check out <a href="https://community.rsa.com/community/products/netwitness/parser-network/event-sources">Event Source Integration Guide</a>',
         fileSourceType: {
           add: 'Add Selected File Type',
           placeholder: 'Pick a Log File Type'

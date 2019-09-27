@@ -1,6 +1,8 @@
 <div class="icon">
   {{#if isAlert}}
     {{rsa-icon name='report-problem-diamond'}}
+  {{else if isInfo}}
+    {{rsa-icon name='report-problem-circle'}}
   {{else}}
     {{rsa-icon name='report-problem-triangle'}}
   {{/if}}

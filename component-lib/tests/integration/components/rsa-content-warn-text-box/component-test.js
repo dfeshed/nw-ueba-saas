@@ -36,6 +36,18 @@ module('Integration | Component | content-warn-text-box', function(hooks) {
     assert.equal(isAlert, 1);
   });
 
+  test('Is NOT info', async function(assert) {
+    await render(hbs `{{#rsa-content-warn-text-box}}foo{{/rsa-content-warn-text-box}}`);
+    const isInfo = findAll('.is-info').length;
+    assert.equal(isInfo, 0);
+  });
+
+  test('Set the isInfo param', async function(assert) {
+    await render(hbs `{{#rsa-content-warn-text-box isInfo=true}}foo{{/rsa-content-warn-text-box}}`);
+    const isInfo = findAll('.is-info').length;
+    assert.equal(isInfo, 1);
+  });
+
   test('it sets the message', async function(assert) {
     await render(hbs `{{#rsa-content-warn-text-box value="abc"}}foo{{/rsa-content-warn-text-box}}`);
     const message = find('.message').textContent;

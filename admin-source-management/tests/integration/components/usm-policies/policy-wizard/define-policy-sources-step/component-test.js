@@ -48,6 +48,16 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(findAll('.define-policy-sources-step').length, 1, 'The component appears in the DOM');
   });
 
+  test('should render the content-warn-text-box component to display the event source configuration guide link', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSources([])
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    assert.equal(findAll('.rsa-content-warn-text-box').length, 1, 'The component appears in the DOM');
+    assert.equal(findAll('.rsa-content-warn-text-box .message a').length, 1, 'The component message should have a link');
+  });
+
   test('should render the root file-source-parent-container component', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz('filePolicy')

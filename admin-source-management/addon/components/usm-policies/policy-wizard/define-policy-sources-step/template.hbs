@@ -6,6 +6,14 @@
 <div class="help-title">
   {{t 'adminUsm.policyWizard.filePolicy.helpTitle'}}
 </div>
+{{!-- event source configuration guide box --}}
+<vbox class="event-source-guide-box">
+  {{#rsa-content-warn-text-box
+    value=(t 'adminUsm.policyWizard.filePolicy.eventSourceConfigGuide')
+    isInfo=true
+  }}
+  {{/rsa-content-warn-text-box}}
+</vbox>
 <div class="file-source-parent-container">
   <div class="source-container">
     {{#rsa-data-table lazy=true items=sourcesIds columnsConfig=columns}}

@@ -5,5 +5,5 @@ export default Component.extend({
   layout,
 
   classNames: ['rsa-content-warn-text-box'],
-  classNameBindings: ['isAlert', 'isShowing']
+  classNameBindings: ['isAlert', 'isShowing', 'isInfo']
 });
