@@ -24,6 +24,11 @@ const state = Immutable.from({
     users: userList.data,
     usersError: null,
     favorites: favoriteFilter.data,
+    trendRange: {
+      key: 1,
+      name: 'lastDay'
+    },
+    sortOnTrending: false,
     allWatched: true,
     totalUsers: 100,
     filter: {
@@ -55,7 +60,32 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
   });
 
   test('test Top Risky Users', (assert) => {
-    assert.equal(Users.getTopRiskyUsers(state).length, 5);
+    const topUsers = Users.getTopRiskyUsers(state);
+    assert.equal(topUsers.length, 5);
+    assert.equal(topUsers[0].trendScore, 0);
+    assert.equal(topUsers[0].followed, true);
+    assert.equal(topUsers[0].score, 131);
+    assert.deepEqual(topUsers[0].alertGroup, {
+      Critical: 0,
+      High: 2,
+      Medium: 10,
+      Low: 1
+    });
+  });
+
+  test('test Top Risky Users for with trend', (assert) => {
+    const newState = state.setIn(['users', 'topUsers', 0, 'alerts', 0, 'startDate'], new Date().getTime());
+    const topUsers = Users.getTopRiskyUsers(newState);
+    assert.equal(topUsers.length, 5);
+    assert.equal(topUsers[0].trendScore, 10);
+    assert.equal(topUsers[0].followed, true);
+    assert.equal(topUsers[0].score, 131);
+    assert.deepEqual(topUsers[0].alertGroup, {
+      Critical: 0,
+      High: 2,
+      Medium: 10,
+      Low: 1
+    });
   });
 
   test('test Total Users', (assert) => {
@@ -156,7 +186,7 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
   });
 
   test('test entityFilter', (assert) => {
-    assert.deepEqual(Users.entityFilter, ['', 'userId', 'ja3', 'sslSubject']);
+    assert.deepEqual(Users.entityFilter, ['all', 'userId', 'ja3', 'sslSubject']);
   });
 
   test('test selectedEntityType', (assert) => {
@@ -186,5 +216,16 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
       low: 0,
       medium: 0
     });
+  });
+
+  test('test trendRange', (assert) => {
+    assert.deepEqual(Users.trendRange(state), {
+      key: 1,
+      name: 'lastDay'
+    });
+  });
+
+  test('test sortOnTrending', (assert) => {
+    assert.equal(Users.sortOnTrending(state), false);
   });
 });

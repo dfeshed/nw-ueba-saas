@@ -38,6 +38,11 @@ export default class DataHelper {
         riskyUserCount: 0,
         watchedUserCount: 0,
         users: userList.data,
+        trendRange: {
+          key: 1,
+          name: 'lastDay'
+        },
+        sortOnTrending: false,
         usersSeverity: [{
           High: {
             userCount: null
@@ -130,6 +135,16 @@ export default class DataHelper {
 
   alertTimeLine(obj) {
     _set(this.state, 'alerts.alertsForTimeline', obj);
+    return this;
+  }
+
+  sortOnTrending(obj) {
+    _set(this.state, 'users.sortOnTrending', obj);
+    return this;
+  }
+
+  trendRange(obj) {
+    _set(this.state, 'users.trendRange', obj);
     return this;
   }
 

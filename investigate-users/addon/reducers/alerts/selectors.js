@@ -2,7 +2,17 @@ import { createSelector } from 'reselect';
 import _ from 'lodash';
 import { lookup } from 'ember-dependency-lookup';
 
-const _timeframesForDateTimeFilter = [
+const _totalAlerts = (state) => state.alerts.totalAlerts;
+
+const _alertsSeverity = (state) => state.alerts.alertsSeverity;
+
+const _existAnomalyTypes = (state) => state.alerts.existAnomalyTypes;
+
+const _alertsForTimeline = (state) => state.alerts.alertsForTimeline;
+
+const _relativeDateFilter = (state) => state.alerts.relativeDateFilter;
+
+export const timeframesForDateTimeFilter = [
   {
     'name': 'LAST_SEVEN_DAYS',
     'unit': 'Days',
@@ -30,21 +40,15 @@ const _timeframesForDateTimeFilter = [
   }
 ];
 
-const _totalAlerts = (state) => state.alerts.totalAlerts;
-
-const _alertsSeverity = (state) => state.alerts.alertsSeverity;
-
-const _existAnomalyTypes = (state) => state.alerts.existAnomalyTypes;
-
-const _alertsForTimeline = (state) => state.alerts.alertsForTimeline;
-
-const _relativeDateFilter = (state) => state.alerts.relativeDateFilter;
-
 export const severityFilter = ['low', 'medium', 'high', 'critical'];
 
 export const feedbackFilter = ['none', 'rejected'];
 
 export const getTopAlerts = (state) => state.alerts.topAlerts;
+
+export const topAlertsEntity = (state) => state.alerts.topAlertsEntity;
+
+export const topAlertsTimeFrame = (state) => state.alerts.topAlertsTimeFrame;
 
 export const getFilter = (state) => state.alerts.filter;
 
@@ -124,7 +128,7 @@ export const dateTimeFilterOptionsForAlerts = createSelector(
   (filter, relativeDateFilter) => {
     const filterOptions = {
       name: 'alertTimeRange',
-      timeframes: _timeframesForDateTimeFilter,
+      timeframes: timeframesForDateTimeFilter,
       filterValue: relativeDateFilter
     };
     if (filter.showCustomDate === true) {

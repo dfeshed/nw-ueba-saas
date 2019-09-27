@@ -3,6 +3,7 @@ import { setupTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
 import { patchFetch } from '../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
+import alertsList from '../../data/presidio/alerts-list';
 import dataIndex from '../../data/presidio';
 import moment from 'moment';
 import { later } from '@ember/runloop';
@@ -41,11 +42,19 @@ module('Unit | Actions | Alert Details', (hooks) => {
     assert.expect(2);
     const done = assert.async();
     const dispatch = ({ type, payload }) => {
-      assert.equal(type, 'INVESTIGATE_USER::GET_TOP_ALERTS');
-      assert.equal(payload.length, 10);
-      done();
+      assert.ok(type === 'INVESTIGATE_USER::GET_TOP_ALERTS' || type === 'INVESTIGATE_USER::TOP_ALERT_FILTER');
+      if (payload.length === 10) {
+        done();
+      }
     };
-    getTopTenAlerts()(dispatch);
+    const getState = () => {
+      return { alerts: { topAlertsEntity: 'all', topAlertsTimeFrame: {
+        name: 'LAST_THREE_MONTH',
+        unit: 'Months',
+        value: 3
+      } } };
+    };
+    getTopTenAlerts()(dispatch, getState);
   });
 
   test('it should dispatch error if getTopTenAlerts is failing', (assert) => {
@@ -60,11 +69,19 @@ module('Unit | Actions | Alert Details', (hooks) => {
     assert.expect(2);
     const done = assert.async();
     const dispatch = ({ type, payload }) => {
-      assert.equal(type, 'INVESTIGATE_USER::TOP_ALERTS_ERROR');
-      assert.equal(payload, 'topAlertsError');
-      done();
+      assert.ok(type === 'INVESTIGATE_USER::TOP_ALERTS_ERROR' || type === 'INVESTIGATE_USER::TOP_ALERT_FILTER');
+      if (payload === 'topAlertsError') {
+        done();
+      }
     };
-    getTopTenAlerts()(dispatch);
+    const getState = () => {
+      return { alerts: { topAlertsEntity: 'all', topAlertsTimeFrame: {
+        name: 'LAST_THREE_MONTH',
+        unit: 'Months',
+        value: 3
+      } } };
+    };
+    getTopTenAlerts()(dispatch, getState);
   });
 
   test('it should dispatch error if no alert data is present for getTopTenAlerts', (assert) => {
@@ -79,13 +96,17 @@ module('Unit | Actions | Alert Details', (hooks) => {
       });
     });
     assert.expect(2);
-    const done = assert.async();
-    const dispatch = ({ type, payload }) => {
-      assert.equal(type, 'INVESTIGATE_USER::TOP_ALERTS_ERROR');
-      assert.equal(payload, 'noAlerts');
-      done();
+    const dispatch = ({ type }) => {
+      assert.ok(type === 'INVESTIGATE_USER::TOP_ALERTS_ERROR' || type === 'INVESTIGATE_USER::TOP_ALERT_FILTER');
     };
-    getTopTenAlerts()(dispatch);
+    const getState = () => {
+      return { alerts: { topAlertsEntity: 'all', topAlertsTimeFrame: {
+        name: 'LAST_THREE_MONTH',
+        unit: 'Months',
+        value: 3
+      } } };
+    };
+    getTopTenAlerts()(dispatch, getState);
   });
 
   test('it can resetAlerts', (assert) => {
@@ -212,13 +233,22 @@ module('Unit | Actions | Alert Details', (hooks) => {
 
   test('it can getAlertsForGivenTimeInterval', (assert) => {
     const done = assert.async();
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return alertsList;
+          }
+        });
+      });
+    });
     assert.expect(6);
     const dispatch = ({ type, payload }) => {
       if (type === 'INVESTIGATE_USER::GET_ALERTS') {
         assert.equal(type, 'INVESTIGATE_USER::GET_ALERTS');
         // Jenkins moment is giving one day older. This to take care of build failure in jenkins
         const dateValue = Object.keys(payload.data)[0] === 'Aug 13 2018' ? 'Aug 13 2018' : 'Aug 12 2018';
-
         assert.equal(payload.data[dateValue].length, 4);
         // Irrespective of data order first array will be array of all critical alerts for that day.
         assert.equal(payload.data[dateValue][0][0].severity, 'Critical');

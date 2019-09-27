@@ -5271,9 +5271,15 @@ effects the previewed source.',
       alertsCount: 'Alerts'
     },
     entityTypes: {
+      all: 'All Entities',
       userId: 'USERS',
-      ja3: 'JA3 Certificates',
-      sslSubject: 'SSL Subjects'
+      ja3: 'JA3',
+      sslSubject: 'SSL'
+    },
+    sortByTrendData: 'Sort by Trending data ',
+    trendRange: {
+      lastDay: 'Last Day',
+      lastWeek: 'Last Week'
     },
     resetFilters: 'Reset Filters',
     addToFavorites: 'Add To Favorites',

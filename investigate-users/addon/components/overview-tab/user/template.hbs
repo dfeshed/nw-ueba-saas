@@ -12,7 +12,8 @@
 <div class='user-overview-tab_title'>
   {{t 'investigateUsers.users.highRisk'}} {{t (concat 'investigateUsers.entityTypes.' entityType)}} 
 </div>
-{{overview-tab/watched applyUserFilter=applyUserFilter}} 
+{{overview-tab/watched applyUserFilter=applyUserFilter}}
+{{show-trend}}
 <div class='user-overview-tab_users_rows'>
   {{#if hasTopRiskyUsers}}
     {{#each topUsers as |user|}}
@@ -20,8 +21,17 @@
         <div class='user-overview-tab_users_row_score'>
           {{rsa-content-badge-score score=user.score size='small' style=(get severityMap user.scoreSeverity) invertColor=true}}
         </div>
+        <div class='user-overview-tab_users_row_trend'>
+          <span>+{{user.trend}}</span>
+          <span>{{t 'investigateUsers.alerts.score'}}</span>
+        </div>
         <div class='user-overview-tab_users_row_name'>
-          {{user.displayName}}
+          <span>{{user.displayName}}</span>
+          <span>
+            {{user.alertGroup.Critical}} {{t 'investigateUsers.severity.Critical'}} |
+            {{user.alertGroup.High}} {{t 'investigateUsers.severity.High'}} |
+            {{user.alertGroup.Medium}} {{t 'investigateUsers.severity.Medium'}} {{t 'investigateUsers.alerts.title'}}
+          </span>
         </div>
         <div class='user-overview-tab_users_row_icon' title='Watched Entity'>
           {{#if (eq user.followed true)}}

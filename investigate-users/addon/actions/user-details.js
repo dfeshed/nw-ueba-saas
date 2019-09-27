@@ -61,6 +61,10 @@ const updateEntityType = (entityType) => {
   };
 };
 
+const updateSortTrend = () => ({ type: ACTION_TYPES.SORT_ON_TREND });
+
+const updateTrendRange = (payload) => ({ type: ACTION_TYPES.UPDATE_TREND_RANGE, payload });
+
 const resetUser = () => ({ type: ACTION_TYPES.RESET_USER });
 
 const initiateUser = (payload) => ({ type: ACTION_TYPES.INITIATE_USER, payload });
@@ -71,5 +75,7 @@ export {
   getUserOverview,
   resetUser,
   updateEntityType,
-  initiateUser
+  initiateUser,
+  updateTrendRange,
+  updateSortTrend
 };

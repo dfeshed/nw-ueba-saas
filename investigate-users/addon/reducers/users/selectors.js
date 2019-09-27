@@ -10,6 +10,8 @@ const _existAlertTypes = (state) => state.users.existAlertTypes;
 
 const _sortField = (state) => state.users.filter.sortField;
 
+const _topUsers = (state) => state.users.topUsers;
+
 export const _favorites = (state) => state.users.favorites;
 
 export const riskyUserCount = (state) => state.users.riskyUserCount;
@@ -17,8 +19,6 @@ export const riskyUserCount = (state) => state.users.riskyUserCount;
 export const watchedUserCount = (state) => state.users.watchedUserCount;
 
 export const getTotalUsers = (state) => state.users.totalUsers;
-
-export const getTopRiskyUsers = (state) => state.users.topUsers;
 
 export const usersError = (state) => state.users.usersError;
 
@@ -28,11 +28,40 @@ export const allWatched = (state) => state.users.allWatched;
 
 export const getUsers = (state) => state.users.users;
 
+export const trendRange = (state) => state.users.trendRange;
+
+export const sortOnTrending = (state) => state.users.sortOnTrending;
+
 export const severityFilter = ['', 'Low', 'Medium', 'High', 'Critical'];
 
-export const entityFilter = ['', 'userId', 'ja3', 'sslSubject'];
+export const entityFilter = ['all', 'userId', 'ja3', 'sslSubject'];
 
 export const getUserFilter = (state) => state.users.filter;
+
+export const getTopRiskyUsers = createSelector(
+  [_topUsers, trendRange],
+  (users, range) => {
+    const topUser = _.map(users, (user) => {
+      const weekOldData = Date.now() - range.key * 24 * 3600 * 1000;
+      const trend = _.sumBy(_.filter(user.alerts, (alert) => parseInt(alert.startDate, 10) > weekOldData), 'userScoreContribution');
+      const alertGroup = _.groupBy(user.alerts, (alert) => alert.severity);
+      return {
+        id: user.id,
+        displayName: user.displayName,
+        followed: user.followed,
+        scoreSeverity: user.scoreSeverity,
+        score: user.score,
+        trendScore: trend,
+        alertGroup: {
+          Critical: alertGroup.Critical ? alertGroup.Critical.length : 0,
+          High: alertGroup.High ? alertGroup.High.length : 0,
+          Medium: alertGroup.Medium ? alertGroup.Medium.length : 0,
+          Low: alertGroup.Low ? alertGroup.Low.length : 0
+        }
+      };
+    });
+    return topUser;
+  });
 
 export const hasTopRiskyUsers = createSelector(
   [getTopRiskyUsers],

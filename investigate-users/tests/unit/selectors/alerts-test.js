@@ -17,6 +17,12 @@ const state = Immutable.from({
     alertsForTimelineError: null,
     currentAlertsCount: 10,
     totalAlerts: 50,
+    topAlertsEntity: 'all',
+    topAlertsTimeFrame: {
+      name: 'LAST_THREE_MONTH',
+      unit: 'Months',
+      value: 3
+    },
     alertsSeverity: { total_severity_count: { Critical: 50, High: 10, Medium: 30, Low: 12 } },
     relativeDateFilter: {
       name: 'alertTimeRange',
@@ -172,6 +178,18 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
     assert.deepEqual(Alerts.getSelectedAnomalyTypes(state)[0], {
       id: 'high_number_of_successful_file_permission_change',
       displayLabel: 'Multiple File Access Permission Changes (11 Users)'
+    });
+  });
+
+  test('test topAlertsEntity', function(assert) {
+    assert.equal(Alerts.topAlertsEntity(state), 'all');
+  });
+
+  test('test topAlertsTimeFrame', function(assert) {
+    assert.deepEqual(Alerts.topAlertsTimeFrame(state), {
+      name: 'LAST_THREE_MONTH',
+      unit: 'Months',
+      value: 3
     });
   });
 });

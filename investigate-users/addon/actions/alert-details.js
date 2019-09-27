@@ -1,7 +1,7 @@
 import * as ACTION_TYPES from './types';
 import { fetchData, exportData } from './fetch/data';
 import _ from 'lodash';
-import { getFilter, alertsGroupedDaily, currentAlertsCount } from 'investigate-users/reducers/alerts/selectors';
+import { getFilter, alertsGroupedDaily, currentAlertsCount, topAlertsEntity, topAlertsTimeFrame } from 'investigate-users/reducers/alerts/selectors';
 import moment from 'moment';
 import { flashErrorMessage } from 'investigate-users/utils/flash-message';
 
@@ -45,9 +45,23 @@ const _getAlertsGroupedDaily = (currentGroupedAlerts, alertsList) => {
   return currentGroupedAlerts;
 };
 
-const getTopTenAlerts = () => {
-  return (dispatch) => {
-    fetchData('alertOverview').then((result) => {
+const _buildTimeRange = (timeRange) => {
+  return `${moment().subtract(timeRange.unit.toLowerCase(), timeRange.value).unix() * 1000},${moment().unix() * 1000}`;
+};
+
+const getTopTenAlerts = (entityType, timeRange) => {
+  return (dispatch, getState) => {
+    entityType = entityType || topAlertsEntity(getState());
+    timeRange = timeRange || topAlertsTimeFrame(getState());
+    const filter = { alert_start_range: _buildTimeRange(timeRange) };
+    if (entityType !== 'all') {
+      filter.entityType = entityType;
+    }
+    dispatch({
+      type: ACTION_TYPES.TOP_ALERT_FILTER,
+      payload: { entityType, timeRange }
+    });
+    fetchData('alertOverview', filter).then((result) => {
       if (result === 'error' || result.data.length === 0) {
         dispatch({
           type: ACTION_TYPES.TOP_ALERTS_ERROR,

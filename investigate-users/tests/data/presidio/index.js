@@ -12,7 +12,6 @@ import existAnomalyTypesAlerts from './exist_anomaly_types_alerts';
 import existAlertTypes from './exist_alert_types';
 import favoriteFilter from './favorite_filter';
 import userList from './user-list';
-import alertsList from './alerts-list';
 import userSearch from './user_search';
 import alertsTimeline from './alert-by-day-and-severity';
 
@@ -38,7 +37,7 @@ const urlMap = [{
   url: 'presidio/api/entity/count?minScore=0',
   data: notRiskyCount
 }, {
-  url: 'presidio/api/alerts?alert_start_range=',
+  url: 'presidio/api/alerts?',
   data: alertOverview
 }, {
   url: 'presidio/api/entity?min_score=0&size=5&sort_direction=DESC&sort_field=score',
@@ -61,9 +60,6 @@ const urlMap = [{
 }, {
   url: 'presidio/api/alerts/exist-anomaly-types',
   data: existAnomalyTypesAlerts
-}, {
-  url: 'presidio/api/alerts?',
-  data: alertsList
 }, {
   url: 'presidio/api/alerts/alert-by-day-and-severity',
   data: alertsTimeline

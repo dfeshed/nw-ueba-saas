@@ -19,6 +19,12 @@ export const initialFilterState = Immutable.from({
 
 const initialState = Immutable.from({
   topAlerts: [],
+  topAlertsEntity: 'all',
+  topAlertsTimeFrame: {
+    name: 'LAST_THREE_MONTH',
+    unit: 'Months',
+    value: 3
+  },
   topAlertsError: null,
   alertList: {},
   alertListError: null,
@@ -84,6 +90,10 @@ const tabs = handleActions({
   [ACTION_TYPES.RESET_ALERTS]: (state) => {
     const newState = state.merge({ topAlerts: [], currentAlertsCount: 0, topAlertsError: null, alertsForTimelineError: null, alertListError: null, alertList: {}, currentPage: 0 });
     return newState.setIn(['filter', 'fromPage'], 1);
+  },
+  [ACTION_TYPES.TOP_ALERT_FILTER]: (state, { payload }) => {
+    const newState = state.set('topAlertsEntity', payload.entityType);
+    return newState.set('topAlertsTimeFrame', payload.timeRange);
   }
 }, initialState);
 

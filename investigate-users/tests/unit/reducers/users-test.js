@@ -48,6 +48,11 @@ const initialUsersSeverity = Immutable.from([{
 const resetState = Immutable.from({
   topUsers: [],
   topUsersError: null,
+  trendRange: {
+    key: 1,
+    name: 'lastDay'
+  },
+  sortOnTrending: false,
   riskyUserCount: 0,
   watchedUserCount: 0,
   usersSeverity: initialUsersSeverity,
@@ -203,6 +208,29 @@ module('Unit | Reducers | Users Reducer', (hooks) => {
       payload: null
     });
     assert.deepEqual(result.filter, initialFilterState);
+  });
+
+  test('test SORT_ON_TREND', (assert) => {
+
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.SORT_ON_TREND
+    });
+
+    assert.equal(result.sortOnTrending, true);
+  });
+
+  test('test UPDATE_TREND_RANGE', (assert) => {
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.UPDATE_TREND_RANGE,
+      payload: {
+        key: 1,
+        name: 'lastDay'
+      }
+    });
+    assert.deepEqual(result.trendRange, {
+      key: 1,
+      name: 'lastDay'
+    });
   });
 
 });

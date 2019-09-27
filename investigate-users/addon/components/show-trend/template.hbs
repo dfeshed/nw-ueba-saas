@@ -1,0 +1,15 @@
+<a href="#" onclick={{action 'updateSortTrend' option}} onkeypress={{action 'updateSortTrend' option}} class="rsa-form-checkbox-label {{if sortOnTrending 'checked'}} list-filter-option">
+  {{rsa-form-checkbox
+    checked=sortOnTrending
+    change=(action 'updateSortTrend' option)}}
+  {{t 'investigateUsers.sortByTrendData'}}
+</a>
+<div>
+  {{#power-select
+    options=trendOptions
+    selected=trendRange
+    searchEnabled=false
+    onchange=(action 'updateTrendRange') as |option|}}
+    {{t (concat 'investigateUsers.trendRange.' option.name)}}
+  {{/power-select}}
+</div>

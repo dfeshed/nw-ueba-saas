@@ -38,6 +38,11 @@ const initialUsersSeverity = Immutable.from([{
 const initialState = Immutable.from({
   topUsers: [],
   topUsersError: null,
+  trendRange: {
+    key: 1,
+    name: 'lastDay'
+  },
+  sortOnTrending: false,
   riskyUserCount: 0,
   watchedUserCount: 0,
   usersSeverity: initialUsersSeverity,
@@ -62,6 +67,8 @@ const tabs = handleActions({
   [ACTION_TYPES.GET_EXIST_ANOMALY_TYPES]: (state, { payload }) => state.set('existAnomalyTypes', payload),
   [ACTION_TYPES.GET_EXIST_ALERT_TYPES]: (state, { payload }) => state.set('existAlertTypes', payload),
   [ACTION_TYPES.GET_FAVORITES]: (state, { payload }) => state.set('favorites', payload),
+  [ACTION_TYPES.SORT_ON_TREND]: (state) => state.set('sortOnTrending', !state.getIn(['sortOnTrending'])),
+  [ACTION_TYPES.UPDATE_TREND_RANGE]: (state, { payload }) => state.set('trendRange', payload),
   [ACTION_TYPES.GET_USERS]: (state, { payload: { data, total, info } }) => {
     // Concat user list data to current users list.
     let newState = state.set('users', state.getIn(['users']).concat(data));

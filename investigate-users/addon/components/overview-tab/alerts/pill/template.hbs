@@ -9,16 +9,16 @@
       <div class='user-overview-tab_alerts_alerts_container_pill_details_name_text'>
         {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}}
       </div>
-      <div class='user-overview-tab_alerts_alerts_container_pill_details_name_time'>
-        | {{alert.timeframe}}
-      </div>
     </div>
     <div class='user-overview-tab_alerts_alerts_container_pill_details_time'>
       <div class='user-overview-tab_alerts_alerts_container_pill_details_time_name'>
-        {{alert.entityName}}
+        {{rsa-content-datetime timestamp=(get alert 'startDate') displayMilliseconds=false}}
       </div>
-      <div class='user-overview-tab_alerts_alerts_container_pill_details_time_time'>
-        | {{rsa-content-datetime timestamp=(get alert 'startDate') displayMilliseconds=false}}
+      <div class='user-overview-tab_alerts_alerts_container_pill_details_time_name'>
+        | {{alert.entityType}}
+      </div>
+      <div class='user-overview-tab_alerts_alerts_container_pill_details_time_name'>
+        | {{alert.entityName}}
       </div>
     </div>
   </div>

@@ -5,9 +5,9 @@
     display: flex;
     &_title {
       color: text-color(primary, light);
-      @include rsa-font(header);
       padding: rsa-whitespace() rsa-whitespace() + rsa-whitespace(less);
       border-bottom: 2px SOLID background-color(primary, darker);
+      display: flex;
     }
 
     &_users {
@@ -86,14 +86,42 @@
           }
         }
 
-        &_name {
-          align-items: center;
+        &_trend {
+          color: text-color(primary, light);
+          padding: rsa-whitespace(less);
+          width: 60px;
           display: flex;
-          color: text-color(secondary, light);
-          width: calc(100% - 120px);
+          align-items: center;
+          align-items: center;
+          flex-direction: column;
+          justify-content: space-evenly; 
+          > span {
+            @include rsa-font(bold, large);
+            color: text-color(primary, lightest);
+          }
+          > span:nth-child(2) {
+            @include rsa-font(default);
+            text-transform: uppercase;
+            color: text-color(primary, light);
+          }
+        }
+
+        &_name {
+          align-items: flex-start;
+          display: flex;
+          flex-direction: column;
+          width: calc(100% - 150px);
           @include rsa-font(bold);
           color: text-color(secondary, light);
           padding: rsa-whitespace(less) rsa-whitespace();
+          justify-content: space-evenly;
+          > span {
+            justify-content: flex-start;
+          }
+          > span:nth-child(2) {
+            @include rsa-font(default);
+            color: text-color(primary, light);
+          }
         }
 
         &_icon {
@@ -116,6 +144,21 @@
     &_alerts {
       width: 70%;
       padding: 0 rsa-whitespace() rsa-whitespace() 0;
+
+      &_entityType {
+        padding: 0 rsa-whitespace();
+        .ember-power-select-trigger{
+          border: 1px solid text-color(primary, light);
+          width: 100px;
+        }
+      }
+
+      &_entityTimeframe{
+        .ember-power-select-trigger{
+          border: 1px solid text-color(primary, light);
+          width: 180px;
+        }
+      }
 
       &_alerts {
         height: 70%;
@@ -299,5 +342,15 @@
   @include rsa-font(default, small);
   > ul > li {
     padding: rsa-whitespace(least);
+  }
+}
+
+.show-trend {
+  display: flex;
+  padding: 0 2*rsa-whitespace();
+  height: 30px;
+  align-items: center;
+  a:link {
+    text-decoration: none;
   }
 }

@@ -7,6 +7,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import alertOverview from '../../../../data/presidio/alert_overview';
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
 
 let setState;
 
@@ -25,7 +26,7 @@ module('Integration | Component | overview-tab/alerts', function(hooks) {
 
   test('it renders', async function(assert) {
     await render(hbs `{{overview-tab/alerts}}`);
-    assert.equal(find('.user-overview-tab_title').textContent.trim(), 'Top Alerts');
+    assert.ok(find('.user-overview-tab_title').textContent.trim().indexOf('Top Alerts') > -1);
   });
 
   test('it should show proper count for alerts', async function(assert) {
@@ -45,5 +46,14 @@ module('Integration | Component | overview-tab/alerts', function(hooks) {
     await render(hbs `{{overview-tab/alerts}}`);
     assert.equal(findAll('.rsa-loader').length, 0);
     assert.equal(findAll('.center').length, 1);
+  });
+
+  test('it should show quick filter', async function(assert) {
+    await render(hbs `{{overview-tab/alerts}}`);
+    assert.equal(findAll('.user-overview-tab_alerts_entityType').length, 1);
+    assert.equal(findAll('.user-overview-tab_alerts_entityTimeframe').length, 1);
+    assert.equal(findAll('.ember-power-select-trigger').length, 2);
+    await clickTrigger('.user-overview-tab_alerts_entityType');
+    assert.equal(findAll('.ember-power-select-option').length, 4);
   });
 });

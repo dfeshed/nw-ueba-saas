@@ -5,7 +5,7 @@ import { patchFetch } from '../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
 import dataIndex from '../../data/presidio';
 import { patchFlash } from '../../helpers/patch-flash';
-import { getRiskyUserCount, getWatchedUserCount, getUserOverview, resetUser, initiateUser, updateEntityType } from 'investigate-users/actions/user-details';
+import { getRiskyUserCount, getWatchedUserCount, getUserOverview, resetUser, initiateUser, updateEntityType, updateSortTrend, updateTrendRange } from 'investigate-users/actions/user-details';
 
 let patchUrl = null;
 
@@ -222,6 +222,25 @@ module('Unit | Actions | User Details Actions', (hooks) => {
       done();
     };
     dispatch(initiateUser({ userId: 123 }));
+  });
+
+  test('it can updateSortTrend', (assert) => {
+    assert.expect(1);
+    const dispatch = ({ type }) => {
+      assert.equal(type, 'INVESTIGATE_USER::SORT_ON_TREND');
+    };
+    dispatch(updateSortTrend());
+  });
+
+  test('it can updateTrendRange', (assert) => {
+    assert.expect(1);
+    const dispatch = ({ type }) => {
+      assert.equal(type, 'INVESTIGATE_USER::UPDATE_TREND_RANGE');
+    };
+    dispatch(updateTrendRange({
+      key: 1,
+      name: 'lastDay'
+    }));
   });
 
 });

@@ -17,6 +17,12 @@ const resetState = Immutable.from({
   alertsForTimeline: null,
   alertsForTimelineError: null,
   currentAlertsCount: 0,
+  topAlertsEntity: 'all',
+  topAlertsTimeFrame: {
+    name: 'LAST_THREE_MONTH',
+    unit: 'Months',
+    value: 3
+  },
   relativeDateFilter: {
     name: 'alertTimeRange',
     operator: 'LESS_THAN',
@@ -183,6 +189,25 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     assert.equal(result.topAlertsError, null);
     assert.equal(result.currentAlertsCount, 0);
     assert.equal(result.alertsForTimelineError, null);
+  });
+
+  test('test alerts For TOP_ALERT_FILTER', (assert) => {
+
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.TOP_ALERT_FILTER,
+      payload: { entityType: 'ja3', timeRange: {
+        name: 'LAST_THREE_MONTH',
+        unit: 'Months',
+        value: 3
+      } }
+    });
+
+    assert.equal(result.topAlertsEntity, 'ja3');
+    assert.deepEqual(result.topAlertsTimeFrame, {
+      name: 'LAST_THREE_MONTH',
+      unit: 'Months',
+      value: 3
+    });
   });
 
 });
