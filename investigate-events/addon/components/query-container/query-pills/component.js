@@ -477,6 +477,8 @@ const QueryPills = RsaContextMenu.extend({
   _openNewPillAtBeginning(data) {
     if (this.get('isPillOpenForEdit')) {
       this._pillEditCancelled(data);
+    } else {
+      this._pillsExited();
     }
     this._openNewPillTriggerLeft(0);
   },
@@ -489,6 +491,8 @@ const QueryPills = RsaContextMenu.extend({
   _openNewPillAtEnd(data) {
     if (this.get('isPillOpenForEdit')) {
       this._pillEditCancelled(data);
+    } else {
+      this._pillsExited();
     }
     const pillsData = this.get('pillsData');
     this._openNewPillTriggerRight(pillsData.lastIndex);

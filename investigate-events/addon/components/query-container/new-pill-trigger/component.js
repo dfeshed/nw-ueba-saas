@@ -138,6 +138,7 @@ export default Component.extend({
           break;
         case MESSAGE_TYPES.PILL_END_PRESSED:
           this._broadcast(type, data);
+          this.set('isAddNewPill', false);
           break;
         case MESSAGE_TYPES.META_DELETE_PRESSED:
           this._broadcast(type, data);

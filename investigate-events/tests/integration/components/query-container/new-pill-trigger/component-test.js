@@ -501,7 +501,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
 
   test('DELETE broadcasts a mete delete message', async function(assert) {
     const done = assert.async();
-    assert.expect(2);
+    assert.expect(4);
     this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_DELETE_PRESSED) {
@@ -518,6 +518,10 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
       }}
     `);
     await click(PILL_SELECTORS.newPillTrigger);
+    assert.equal(findAll(PILL_SELECTORS.newPillTrigger).length, 0, 'In the new pill state');
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', DELETE_KEY);
+    await waitUntil(() => findAll(PILL_SELECTORS.newPillTrigger).length > 0, { timeout: 5000 }).then(async() => {
+      assert.equal(findAll(PILL_SELECTORS.newPillTrigger).length, 1, 'It is not in the new pill state');
+    });
   });
 });
