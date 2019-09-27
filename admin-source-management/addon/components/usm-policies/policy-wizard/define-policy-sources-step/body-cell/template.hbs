@@ -42,7 +42,7 @@
           radioClass='radio-option'
           value=option.name
           groupValue=(readonly item.enabled)
-          name='radio-enabled'
+          name=(concat 'radio-enabled-' itemId)
           changed=(action 'handleSelectionChange' column.field bubbles=false)
         }}
           <span>{{t option.label}}</span>
@@ -69,7 +69,7 @@
           radioClass='radio-option'
           value=option.name
           groupValue=(readonly item.startOfEvents)
-          name='radio-startOfEvents'
+          name=(concat 'radio-startOfEvents-' itemId)
           changed=(action 'handleSelectionChange' column.field bubbles=false)
         }}
           <span>{{t option.label}}</span>

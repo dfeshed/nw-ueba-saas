@@ -83,7 +83,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     const initialValue = fileSourceById(initialState, itemId)[field];
     // initial
     assert.equal(findAll('.enabled').length, 1, 'enabled radios container rendered');
-    assert.equal(findAll('.enabled input').length, 2, 'enabled radio buttons rendered');
+    assert.equal(findAll(`.enabled input[name=radio-enabled-${itemId}]`).length, 2, 'enabled radio buttons rendered');
     assert.equal(initialValue, true, 'enabled is initially true');
     assert.equal(findAll('.enabled input')[0].checked, initialValue, `initial enabled radio is ${initialValue}`);
     assert.equal(findAll('.enabled input')[1].checked, !initialValue, `initial disabled radio is ${!initialValue}`);
@@ -134,7 +134,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     const initialValue = fileSourceById(initialState, itemId)[field];
     // initial
     assert.equal(findAll('.startOfEvents').length, 1, 'startOfEvents radios container rendered');
-    assert.equal(findAll('.startOfEvents input').length, 2, 'startOfEvents radio buttons rendered');
+    assert.equal(findAll(`.startOfEvents input[name=radio-startOfEvents-${itemId}]`).length, 2, 'startOfEvents radio buttons rendered');
     assert.equal(initialValue, false, 'startOfEvents is initially false');
     assert.equal(findAll('.startOfEvents input')[0].checked, !initialValue, `new only radio is ${!initialValue}`);
     assert.equal(findAll('.startOfEvents input')[1].checked, initialValue, `historical & new radio is ${initialValue}`);
