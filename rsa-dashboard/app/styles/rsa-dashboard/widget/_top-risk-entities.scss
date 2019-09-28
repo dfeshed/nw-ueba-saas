@@ -16,7 +16,7 @@ $background-color: background-color(primary, darker);
     padding: 20px 0 20px 0;
     .rsa-risk-score.is-large text {
       @include rsa-font(regular, larger);
-      font-weight: 700;
+      font-weight: 800;
     }
   }
   .entity-info {

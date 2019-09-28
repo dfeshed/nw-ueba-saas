@@ -1,12 +1,18 @@
 <page class="configure-engine {{routePath}}">
   <div class="rsa-nav-tab-group">
     {{#if accessControl.hasLiveSearchAccess}}
-      {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/live/search')}}
+      {{#rsa-nav-tab
+        compact=true
+        align='left'
+        isActive=false
+        click=(action 'redirect' '/live/search')
+      }}
         <div class="label">{{t 'configure.liveContent'}}</div>
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasLiveResourcesAccess}}
       {{#rsa-nav-tab
+        compact=true
         align='left'
         isActive=false
         click=(action 'redirect' '/live/manage')
@@ -16,6 +22,7 @@
     {{/if}}
     {{#if accessControl.hasRespondAlertRulesAccess}}
       {{#rsa-nav-tab
+        compact=true
         align='left'
         isActive=(is-active 'protected.configure.respond.incident-rules')
         click=(action 'controllerNavigateTo' 'respond.incident-rules')
@@ -25,6 +32,7 @@
     {{/if}}
     {{#if accessControl.hasRespondNotificationsAccess}}
       {{#rsa-nav-tab
+        compact=true
         align='left'
         isActive=(is-active 'protected.configure.respond.notifications')
         click=(action 'controllerNavigateTo' 'respond.notifications')
@@ -34,6 +42,7 @@
     {{/if}}
     {{#if accessControl.hasESARulesAccess}}
       {{#rsa-nav-tab
+        compact=true
         align='left'
         isActive=false
         click=(action 'redirect' '/alerting/configure')
@@ -43,6 +52,7 @@
     {{/if}}
     {{#if accessControl.hasLiveFeedsAccess}}
       {{#rsa-nav-tab
+        compact=true
         align='left'
         isActive=false
         click=(action 'redirect' '/live/feeds')
@@ -52,6 +62,7 @@
     {{/if}}
     {{#if accessControl.hasLogParsersAccess}}
       {{#rsa-nav-tab
+        compact=true
         align='left'
         isActive=(is-active 'protected.configure.content.log-parser-rules')
         click=(action 'controllerNavigateTo' 'content.log-parser-rules')

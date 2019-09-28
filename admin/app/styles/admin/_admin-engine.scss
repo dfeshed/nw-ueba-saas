@@ -11,13 +11,11 @@ page.admin-engine {
 .admin-engine {
   /* Common background for all sub-routes. */
   background-color: background-color(primary, darkest);
-  
+
   /* Tab strip for sub-routes: myRoute, someRoute, anotherRoute. Matches investigate color. */
   > .rsa-nav-tab-group {
-    height: $navbarHeight;
-    min-height: $navbarHeight;
     background-color: background-color(primary, darker);
-
+    @include border-bottom(1px, solid, secondary);
     .rsa-nav-tab {
       cursor: pointer;
     }

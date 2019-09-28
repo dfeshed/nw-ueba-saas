@@ -1,5 +1,5 @@
 $topNavHeight: 89px;
-$navbarHeight: 49px;
+$navbarHeight: 47px;
 $licenseBanner: 36px;
 
 page.admin-usm-engine {
@@ -16,15 +16,34 @@ page.admin-usm-engine {
 .admin-usm-engine {
   /* Common background for all sub-routes. */
   background-color: background-color(primary, darkest);
-  
+
+  &.sub-nav {
+    @include border-bottom(1px, solid, primary, dark);
+  }
+
   /* Tab strip for sub-routes: myRoute, someRoute, anotherRoute. Matches investigate color. */
   > .rsa-nav-tab-group {
-    height: $navbarHeight;
-    min-height: $navbarHeight;
-    background-color: background-color(primary, darker);
+    background-color: background-color(neutral, dark);
+    @include border-bottom(1px, solid, secondary);
+
+    &.sub-nav {
+      @include border-bottom(1px, solid, primary, dark);
+    }
 
     .rsa-nav-tab {
       cursor: pointer;
+      position: relative;
+      top: 1px;
+
+      .label {
+        font-weight: 800;
+        font-size: .7rem;
+        top: 1px;
+      }
+
+      &.is-active {
+        @include border-bottom(4px, solid, primary, lighter);
+      }
     }
   }
 

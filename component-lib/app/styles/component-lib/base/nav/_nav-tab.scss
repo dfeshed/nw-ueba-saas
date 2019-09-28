@@ -7,7 +7,7 @@
   margin: rsa-whitespace();
   flex-grow: 1;
   box-sizing: border-box;
-  border-bottom: 2px solid transparent;
+  border-bottom: 4px solid transparent;
 
   .imagery {
     font-size: 2rem;
@@ -16,13 +16,10 @@
     color: $navTabImageryTypeColor;
   }
 
-  a {
+  .label, a {
     position: relative;
     top: 2px;
     text-decoration: none;
-  }
-
-  .label, a {
     padding: rsa-whitespace(least) 0;
     @include rsa-font(navigation);
     text-align: center;
@@ -66,7 +63,7 @@
   }
 
   &.is-left-aligned-secondary {
-    margin: 0 rsa-whitespace();
+    margin: -1px rsa-whitespace() 0;
     flex-grow: 0;
     text-align: center;
     line-height: 2rem;

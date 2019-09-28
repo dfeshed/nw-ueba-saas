@@ -11,6 +11,8 @@ $navbarHeight: 49px;
 
   > .rsa-nav-tab-group {
     background-color: background-color(primary, darker);
+    @include border-bottom(1px, solid, secondary);
+
     > .rsa-nav-tab {
       cursor: pointer;
     }

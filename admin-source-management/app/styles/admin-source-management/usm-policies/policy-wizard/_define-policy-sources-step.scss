@@ -36,7 +36,7 @@
         @include rsa-font(default,small);
         font-style: normal;
         font-size: 0.75rem;
-        font-weight: 700;
+        font-weight: 800;
         letter-spacing: 1px;
         padding-top: rsa-whitespace();
         text-transform: uppercase;
@@ -65,7 +65,7 @@
           @include rsa-font(default,small);
           font-style: normal;
           font-size: 0.75rem;
-          font-weight: 700;
+          font-weight: 800;
           letter-spacing: 1px;
           text-transform: uppercase;
           color: text-color(primary);

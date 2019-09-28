@@ -1,18 +1,17 @@
 .rsa-application-header {
   height: 47px;
-  overflow: hidden;
   position: relative;
   z-index: 2;
-  @include border-bottom(1px, solid, primary, lighter);
+  @include border-bottom(1px, solid, primary, dark);
 
   > a {
     float: left;
     position: relative;
-    top: 3px;
+    top: 9px;
     margin: 0 rsa-whitespace();
     text-decoration: none;
     color: text-color(primary, lighter);
-    line-height: 42px;
+    line-height: 34px;
     font-size: 1.2rem;
     vertical-align: bottom;
 
@@ -22,7 +21,7 @@
 
     &.active {
       color: text-color(primary, lightest);
-      @include border-bottom(3px, solid, primary, lighter);
+      @include border-bottom(5px, solid, primary, lighter);
     }
   }
 
@@ -34,9 +33,9 @@
     color: text-color(primary, lighter);
 
     .rsa-form-button-wrapper {
-      border-bottom: 3px solid transparent;
+      border-bottom: 5px solid transparent;
       text-align: center;
-      height: 47px;
+      height: 43px;
 
       &.user-preferences-trigger {
         vertical-align: middle;
@@ -49,11 +48,16 @@
           color: text-color(primary, lighter);
         }
 
+        .username {
+          position: relative;
+          top: -2px;
+        }
+
         .rsa-icon {
           padding: rsa-whitespace(least) 0;
           vertical-align: text-bottom;
           position: relative;
-          top: 3px;
+          top: 2px;
         }
 
         &:hover {
@@ -98,12 +102,13 @@
 
     &__svg {
       position: relative;
+      top: 1px;
       width: 64px;
-      height: 48px;
+      height: 46px;
       padding: 0 rsa-whitespace();
 
       .rsa-logo__letter {
-        fill: rgba(255,255,255, 1);
+        fill: text-color(primary, lightest);
       }
 
     }
