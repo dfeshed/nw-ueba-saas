@@ -1404,6 +1404,51 @@ module('Integration | Component | Query Pills', function(hooks) {
     );
   });
 
+  test('Editing a guided pill with commas will quote as expected', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await leaveNewPillTemplate();
+
+    let pills = findAll(PILL_SELECTORS.queryPill);
+    doubleClick(`#${pills[0].id}`); // open pill for edit
+    await settled();
+
+    // new ID, get them again
+    pills = findAll(PILL_SELECTORS.queryPill);
+    let inputId = `#${pills[0].id} input`;
+    let newValue = 'abc,xyz';
+    await fillIn(inputId, newValue);
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+    await settled();
+
+    const value = find(PILL_SELECTORS.value);
+    // Trim whitespace
+    assert.equal(value.textContent.replace(/\s+/g, ''), "'abc','xyz'", 'pill text value should match');
+
+    pills = findAll(PILL_SELECTORS.queryPill);
+    doubleClick(`#${pills[0].id}`); // open pill for edit
+    await settled();
+
+    // new ID, get them again
+    pills = findAll(PILL_SELECTORS.queryPill);
+    inputId = `#${pills[0].id} input`;
+    const input = find(inputId);
+    assert.strictEqual(input.value, 'abc,xyz', 'input value should not contain quotes');
+    newValue = 'abc,xyz,yyy';
+    await fillIn(inputId, newValue);
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+    await settled();
+
+    const value2 = find(PILL_SELECTORS.value);
+    // Trim whitespace
+    assert.equal(value2.textContent.replace(/\s+/g, ''), "'abc','xyz','yyy'", 'pill text value should match');
+  });
+
   test('Pressing escape once you have selected a pill should de-select all pills', async function(assert) {
     new ReduxDataHelper(setState)
       .language()

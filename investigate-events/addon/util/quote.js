@@ -66,6 +66,26 @@ const stripOuterSingleQuotes = (value) => {
 };
 
 /**
+ * Takes an array of values, and returns an array with the same values, but
+ * those that would be interpreted differently without quotes are quoted.
+ * e.g. "hello,world" becomes "'hello,world'".
+ * @param {Array[string]} values The values to potentially quote. Values
+ *   are required to be non-empty.
+ */
+const quoteComplexValues = (values) => {
+  return values.map((value) => {
+    // Must quote values with commas inside them
+    if (value.includes(',')) {
+      return `'${value}'`;
+    // Must quote values with spaces at beginning or end. (They were previously quoted).
+    } else if (value[0] === ' ' || value[value.length - 1] === ' ') {
+      return `'${value}'`;
+    }
+    return value;
+  });
+};
+
+/**
  * Will add single quotes to a string if they do not already exist. Will
  * convert double quotes to single quotes. Will wrap mixed quotes in single
  * quotes.
@@ -103,6 +123,7 @@ export {
   escapeBackslash,
   escapeSingleQuotes,
   properlyQuoted,
-  stripOuterSingleQuotes
+  stripOuterSingleQuotes,
+  quoteComplexValues
 };
 export default quote;

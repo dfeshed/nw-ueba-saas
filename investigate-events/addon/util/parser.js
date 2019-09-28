@@ -138,8 +138,9 @@ class Parser {
    */
   _validateMetaAndOperator(meta, operator) {
     if (this.availableMeta && this.availableMeta.length > 0) {
+      const metaString = Parser.transformToString(meta);
       const metaConfig = this.availableMeta.find((m) => {
-        return m.metaName === Parser.transformToString(meta);
+        return m.metaName === metaString;
       });
       if (!metaConfig) {
         // Meta not recognized
@@ -388,10 +389,41 @@ class Parser {
       // Pull out the actual values and any possible validation error. If error,
       // it will get passed along when we return but set hasInvalidValue to make
       // sure we return with the validation error.
-      const { valueRanges } = metaValueRanges;
-      let { validationError } = metaValueRanges;
+      let { validationError, valueRanges } = metaValueRanges;
       if (validationError) {
         hasInvalidValue = true;
+      }
+      // Make sure all aliases have the correct capitalization
+      const { aliases } = this;
+      if (aliases?.[meta.text]) {
+        const list = aliases[meta.text];
+        valueRanges = valueRanges.map((range) => {
+          if (range === null) {
+            // Happens when multiple commas in a row are entered
+            return range;
+          }
+          if (range.value) {
+            const alias = Object.values(list).find((short) => {
+              return short.toLowerCase() === range.value.text.toLowerCase();
+            });
+            return {
+              ...range,
+              value: alias ? { ...range.value, text: alias } : range.value
+            };
+          } else {
+            const aliasTo = Object.values(list).find((short) => {
+              return short.toLowerCase() === range.to.text.toLowerCase();
+            });
+            const aliasFrom = Object.values(list).find((short) => {
+              return short.toLowerCase() === range.from.text.toLowerCase();
+            });
+            return {
+              ...range,
+              to: aliasTo ? { ...range.value, text: aliasTo } : range.to,
+              from: aliasFrom ? { ...range.value, text: aliasFrom } : range.from
+            };
+          }
+        });
       }
       // Map the type of the meta (e.g. UInt8) to the Scanner's types (e.g. LEXEMES.INTEGER)
       if (metaConfig) {
@@ -462,7 +494,7 @@ class Parser {
    * @private
    */
   _metaValueRanges() {
-    const valueRanges = [];
+    let valueRanges = [];
     const metaValueRange = this._metaValueRange();
     if (metaValueRange.type && metaValueRange.type === GRAMMAR.COMPLEX_FILTER) {
       // If this is a complex filter, something went wrong, pass it up.
@@ -501,6 +533,13 @@ class Parser {
       validationError = validationError || nextValidationError;
       valueRanges.push(nextRange);
     }
+    // Filter out empty strings
+    valueRanges = valueRanges.filter((range) => {
+      if (range?.value?.text === '') {
+        return false;
+      }
+      return true;
+    });
     return {
       valueRanges,
       validationError

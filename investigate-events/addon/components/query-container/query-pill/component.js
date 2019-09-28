@@ -880,12 +880,14 @@ export default Component.extend({
 
     if (shouldAutoQuote) {
       // When we add quotes, make sure to escape any existing quotes or backslashes
-      value = value
-      // Looks like it does nothing because the first string is also escaped
-      // for RegExp. Replaces backslashes with double backslashes.
-        .replace(new RegExp('\\\\', 'g'), '\\\\')
-        .replace(new RegExp('\'', 'g'), '\\\'');
-      value = `'${value}'`;
+      value = valueList(value).map((segment) => {
+        segment = segment.value
+          // Looks like it does nothing because the first string is also escaped
+          // for RegExp. Replaces backslashes with double backslashes.
+          .replace(new RegExp('\\\\', 'g'), '\\\\')
+          .replace(new RegExp('\'', 'g'), '\\\'');
+        return `'${segment}'`;
+      }).join(',');
     }
     value = `${this.get('selectedMeta').metaName} ${this.get('selectedOperator').displayName} ${value}`;
     // Reset the selected meta & selected operator and stop editing
@@ -1034,11 +1036,12 @@ export default Component.extend({
     const languageAndAliasesForParser = this.get('languageAndAliasesForParser');
     const aliases = languageAndAliasesForParser ? languageAndAliasesForParser.aliases : {};
     const stringOfValues = values.map((value) => {
-      const isValueValidAlias = value && aliases[meta] && Object.values(aliases[meta]).some((alias) => alias.toLowerCase() === value.toLowerCase());
-      if ((selectedMeta && selectedMeta.format === 'Text' &&
-        selectedOperator && selectedOperator.displayName !== 'length') ||
-        isValueValidAlias) {
+      const valueAlias = value && aliases[meta] && Object.values(aliases[meta]).find((alias) => alias.toLowerCase() === value.toLowerCase());
+      if (selectedMeta && selectedMeta.format === 'Text' &&
+        selectedOperator && selectedOperator.displayName !== 'length') {
         return `'${value}'`;
+      } else if (valueAlias) {
+        return `'${valueAlias}'`;
       }
       return value;
     }).join(',');

@@ -594,6 +594,20 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[3], { type: LEXEMES.INTEGER, text: '5' });
   });
 
+  test('handles empty strings', function(assert) {
+    const source = "b = 'a','','c'";
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 7);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'b' });
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[2], { type: LEXEMES.STRING, text: 'a' });
+    assert.deepEqual(result[3], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
+    assert.deepEqual(result[4], { type: LEXEMES.STRING, text: '' });
+    assert.deepEqual(result[5], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
+    assert.deepEqual(result[6], { type: LEXEMES.STRING, text: 'c' });
+  });
+
   test('handles ranges (`-`)', function(assert) {
     const source = 'medium = 3-7';
     const s = new Scanner(source);

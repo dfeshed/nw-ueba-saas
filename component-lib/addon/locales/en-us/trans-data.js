@@ -647,21 +647,17 @@ export default {
         head: {
           headerOne: 'GUIDED MODE QUERY FILTER EXAMPLES',
           textOne: {
-            one: 'Find outbound HTTP events with a user agent of some version of Mozilla',
+            one: 'Find outbound HTTP events with a user agent of some version of Mozilla or Opera',
             two: 'Find failed login Windows events',
             three: 'Find endpoint events with tasks having filenames ending with exe'
           },
           headerTwo: 'FREE-FORM MODE QUERY FILTER EXAMPLES',
           textTwo: {
             one: {
-              description: 'Find events with an 8 to 11 character username similar to atreeman-72',
-              example: 'user.all length 8-11 && (user.all regex \'^a[a-z]{2}ee[a-z]{3}-[0-9]{2}\')'
-            },
-            two: {
               description: 'Find events that are either HTTP network events or related to aix or ciscoasa logs',
               example: 'service=80 || (device.type = \'aix\',\'ciscoasa\')'
             },
-            three: {
+            two: {
               description: 'Find all outbound events not going to Canada or the United States',
               example: 'direction = \'outbound\' AND not(country.dst = \'united states\' || country.dst = \'canada\')'
             }

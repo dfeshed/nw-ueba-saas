@@ -815,6 +815,28 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[1].complexFilterText, 'medium = 3', 'complexFilterText should match');
   });
 
+  test('transformTextToPillData corrects bad alias capitalization', function(assert) {
+    const text = "medium = 'ethernet'";
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '\'Ethernet\'', 'operator should match');
+    assert.notOk(result[0].isInvalid, 'should not be invalid');
+  });
+
+  test('transformTextToPillData removes empty strings', function(assert) {
+    const text = "b = 'get','','post'";
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'b', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '\'get\',\'post\'', 'operator should match');
+    assert.notOk(result[0].isInvalid, 'should not be invalid');
+  });
+
   test('parsePillDataFromUri correctly parses forward slashes and operators into pills', function(assert) {
     const result = parsePillDataFromUri(params.mf, DEFAULT_LANGUAGES);
     assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');

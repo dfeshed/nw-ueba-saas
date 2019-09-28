@@ -68,7 +68,7 @@ class Scanner {
     } else {
       this.tokens.push({
         type,
-        text: value || this.source.substring(this.start, this.current)
+        text: value ?? this.source.substring(this.start, this.current)
       });
     }
   }

@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import quote, { escapeBackslash, escapeSingleQuotes, properlyQuoted, stripOuterSingleQuotes } from 'investigate-events/util/quote';
+import quote, { escapeBackslash, escapeSingleQuotes, properlyQuoted, stripOuterSingleQuotes, quoteComplexValues } from 'investigate-events/util/quote';
 
 module('Unit | Util | quote');
 
@@ -43,4 +43,9 @@ test('properly removes outer single quotes', function(assert) {
   assert.equal(stripOuterSingleQuotes("'foo'"), 'foo', 'removes quote');
   assert.equal(stripOuterSingleQuotes('"foo"'), '"foo"', 'double quotes');
   assert.equal(stripOuterSingleQuotes('\'foo"'), '\'foo"', 'mixed quotes');
+});
+
+test('detects values which need quoted', function(assert) {
+  assert.deepEqual(quoteComplexValues(
+    [ 'a', ' b', 'c ', ' d ', 'e,f']), [ 'a', '\' b\'', '\'c \'', '\' d \'', '\'e,f\'']);
 });

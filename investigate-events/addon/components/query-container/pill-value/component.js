@@ -14,7 +14,7 @@ import KEY_MAP, {
   isTab,
   isShiftTab
 } from 'investigate-events/util/keys';
-import { stripOuterSingleQuotes } from 'investigate-events/util/quote';
+import { quoteComplexValues } from 'investigate-events/util/quote';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
@@ -369,7 +369,7 @@ export default Component.extend({
     onFocus(powerSelectAPI) {
       const { actions } = powerSelectAPI;
       const valueString = this.get('valueString') || '';
-      const trimmedValueString = stripOuterSingleQuotes(valueString).trim();
+      const trimmedValueString = quoteComplexValues(valueList(valueString).map((v) => v.value)).join(',');
       if (trimmedValueString !== '') {
         // force text back into view
         const el = this.element.querySelector('input');

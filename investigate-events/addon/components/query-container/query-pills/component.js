@@ -7,8 +7,8 @@ import { next } from '@ember/runloop';
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 import * as MESSAGE_TYPES from '../message-types';
 import { isEscape } from 'investigate-events/util/keys';
-import { transformTextToPillData } from 'investigate-events/util/query-parsing';
-import { stripOuterSingleQuotes } from 'investigate-events/util/quote';
+import { transformTextToPillData, valueList } from 'investigate-events/util/query-parsing';
+import { quoteComplexValues } from 'investigate-events/util/quote';
 import { isSubmitClicked } from '../query-pill/query-pill-util';
 import { getContextItems } from './right-click-util';
 
@@ -577,7 +577,8 @@ const QueryPills = RsaContextMenu.extend({
     }
     // Fetch value suggestions to update array in state
     if (pillData.type === QUERY_FILTER) {
-      const filter = pillData.value ? stripOuterSingleQuotes(pillData.value) : '';
+      // Remove quotes from the string, except around values that require them to stay the way they are.
+      const filter = pillData.value ? quoteComplexValues(valueList(pillData.value).map((v) => v.value)).join(',') : '';
       this._fetchValueSuggestions({
         metaName: pillData.meta,
         filter
