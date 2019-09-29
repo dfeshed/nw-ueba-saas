@@ -153,7 +153,7 @@ def buildIntegrationTestProject(
 
 def mvnCleanInstall() {
     dir(env.REPOSITORY_NAME) {
-        sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=${env.REPOSITORY_NAME} -DskipTests -Duser.timezone=UTC -U clean install"
+        sh "/usr/local/src/apache-maven/bin/mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=${env.REPOSITORY_NAME} -DskipTests -Duser.timezone=UTC -U clean install"
     }
 }
 
@@ -161,7 +161,7 @@ def runSuiteXmlFile(String suiteXmlFile) {
     println(env.REPOSITORY_NAME)
     sh "echo JAVA_HOME=${env.JAVA_HOME}"
     dir(env.REPOSITORY_NAME) {
-        sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
+        sh "/usr/local/src/apache-maven/bin/mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
     }
 }
 
