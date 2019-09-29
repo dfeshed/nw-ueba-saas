@@ -16,6 +16,8 @@ pipeline {
     environment {
         JAVA_HOME = "${env.JAVA_HOME}"
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
+        M2_HOME = '/usr/local/src/apache-maven'
+        PATH = '${M2_HOME}/bin:${PATH}'
         SCRIPTS_DIR = '/ueba-automation-projects/ueba-automation-framework/src/main/resources/scripts/'
         // The credentials (name + password) associated with the RSA build user.
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
