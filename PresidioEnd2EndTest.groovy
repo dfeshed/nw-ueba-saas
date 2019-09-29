@@ -161,14 +161,14 @@ def buildIntegrationTestProject(
 
 def mvnCleanInstall() {
     dir(env.REPOSITORY_NAME) {
-        sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
+        sh "/usr/local/src/apache-maven/bin/mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
     }
 }
 
 def runEnd2EndTestAutomation() {
     dir(env.REPOSITORY_NAME) {
         println(env.REPOSITORY_NAME)
-        sh "mvn -B -f presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
+        sh "/usr/local/src/apache-maven/bin/mvn -B -f presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
     }
 }
 
@@ -177,7 +177,7 @@ def runSuiteXmlFile(String suiteXmlFile) {
     println(env.REPOSITORY_NAME)
     sh "echo JAVA_HOME=${env.JAVA_HOME}"
     dir(env.REPOSITORY_NAME) {
-        sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
+        sh "/usr/local/src/apache-maven/bin/mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
     }
 }
 def startAirflowScheduler(){
