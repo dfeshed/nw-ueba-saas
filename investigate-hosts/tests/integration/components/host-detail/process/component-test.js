@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click, findAll, find } from '@ember/test-helpers';
+import { render, settled, click, findAll, find, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
@@ -484,5 +484,31 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     assert.equal(findAll('.close-filter').length, 1, 'on click of close Filters button Filters button showed');
 
   });
+
+  test('filter the data on selecting the filter', async function(assert) {
+    assert.expect(3);
+    new ReduxDataHelper(setState)
+      .serviceId('123456')
+      .timeRange({ value: 7, unit: 'days' })
+      .processList(processList)
+      .processTree(processTree)
+      .selectedProcessList([])
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('linux')
+      .machineIdentity(machineIdentity)
+      .sortField('name')
+      .isDescOrder(true)
+      .searchResultProcessList([])
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
+    await click('.close-filter .rsa-form-button');
+    assert.equal(findAll('.rsa-icon-filter-2-filled').length, 1, 'on clicking Fiters button filter panel opens up');
+    await click('.fileProperties-signature-features .list-filter .list-filter-option');
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
+    assert.equal(findAll('.rsa-data-table-body-row').length, 36, 'one row is getting filtered');
+  });
+
 
 });

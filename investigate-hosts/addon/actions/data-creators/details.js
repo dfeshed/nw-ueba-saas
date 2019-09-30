@@ -1,4 +1,5 @@
 import * as ACTION_TYPES from '../types';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { HostDetails } from '../api';
 import { handleError } from '../creator-utils';
 import { getAllProcess } from './process';
@@ -103,6 +104,8 @@ const setPropertyPanelTabView = (tabName) => ({ type: ACTION_TYPES.CHANGE_PROPER
 
 const setHostDetailPropertyTab = (tabName) => ({ type: ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB, payload: { tabName } });
 
+const applyDetailsFilter = (expressionList, belongsTo) => ({ type: SHARED_ACTION_TYPES.APPLY_FILTER, payload: expressionList, meta: { belongsTo } });
+
 export {
   setScanTime,
   setHostPropertyTabView,
@@ -111,5 +114,6 @@ export {
   setHostDetailsDataTableSortConfig,
   setPropertyPanelTabView,
   setHostDetailPropertyTab,
-  fetchDataForSelectedTab
+  fetchDataForSelectedTab,
+  applyDetailsFilter
 };

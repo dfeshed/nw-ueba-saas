@@ -226,6 +226,54 @@ module('Unit | Selectors | File Context', function() {
     assert.equal(result.length, 1);
   });
 
+  test('filter drivers based on expression list', function(assert) {
+    const result = listOfFiles(Immutable.from({
+      endpoint: {
+        details: {
+          filter: {
+            expressionList: [
+              {
+                'propertyName': 'fileName',
+                'restrictionType': 'IN',
+                'propertyValues': [
+                  {
+                    'value': 'Test'
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        drivers: {
+          fileContext: {
+            1: {
+              id: 1,
+              checksumSha256: 1,
+              fileName: 'Test'
+            },
+            2: {
+              id: 2,
+              fileName: 'Test12'
+            },
+            3: {
+              id: 3,
+              fileName: 'Test22'
+            }
+          }
+        },
+        explore: {
+          selectedTab: {
+            tabName: 'DRIVERS',
+            checksum: 1
+          }
+        },
+        datatable: {
+        }
+      }
+    }), 'drivers');
+    assert.equal(result.length, 1);
+  });
+
   test('context sort by risk score', function(assert) {
     const result = listOfFiles(Immutable.from({
       endpoint: {

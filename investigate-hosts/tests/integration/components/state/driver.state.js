@@ -54,9 +54,7 @@ export default {
           timeStamp: '2010-11-20T12:30:07.000+0000',
           thumbprint: '02eceea9d5e0a9f3e39b6f4ec3f7131ed4e352c4',
           features: [
-            'microsoft',
-            'signed',
-            'valid'
+            'unsigned'
           ],
           signer: 'Microsoft Windows'
         },
@@ -138,9 +136,7 @@ export default {
       imageSize: 4268032,
       fileId: '5baa398268e8033a8d131222',
       signature: [
-        'microsoft',
-        'signed',
-        'valid'
+        'unsigned'
       ]
     },
     drivers_2: {

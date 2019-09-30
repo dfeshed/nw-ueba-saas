@@ -3,6 +3,7 @@ import { connect } from 'ember-redux';
 import { serviceList, isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
+import { next } from '@ember/runloop';
 
 import {
   fileContextFileProperty,
@@ -17,8 +18,7 @@ import {
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { hostDetailPropertyTabs, isProcessDumpDownloadSupported } from 'investigate-hosts/reducers/details/selectors';
 import { hostName, isAgentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
-import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
-
+import { setHostDetailPropertyTab, applyDetailsFilter } from 'investigate-hosts/actions/data-creators/details';
 import {
   setFileContextFileStatus,
   getFileContextFileStatus,
@@ -36,6 +36,7 @@ import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-crea
 import { riskState, getAutorunTabs, selectedAutorunTab } from 'investigate-hosts/reducers/visuals/selectors';
 import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
 import { toggleHostDetailsFilter } from 'investigate-hosts/actions/ui-state-creators';
+import { FILTER_TYPES } from './filter-types';
 
 const callBackOptions = (context) => ({
   onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
@@ -71,7 +72,8 @@ const stateToComputed = (state, { storeName }) => ({
   isAgentMigrated: isAgentMigrated(state),
   autorunTabs: getAutorunTabs(state),
   selectedAutorunTab: selectedAutorunTab(state),
-  isShowOpenFilterButton: !state.endpoint.visuals.showHostDetailsFilter
+  isShowOpenFilterButton: !state.endpoint.visuals.showHostDetailsFilter,
+  filter: state.endpoint.details.filter
 });
 
 const dispatchToActions = {
@@ -85,7 +87,8 @@ const dispatchToActions = {
   getUpdatedRiskScoreContext,
   saveLocalFileCopy,
   setRowSelection,
-  toggleHostDetailsFilter
+  toggleHostDetailsFilter,
+  applyDetailsFilter
 };
 
 
@@ -107,6 +110,8 @@ const ContextWrapper = Component.extend({
   accessControl: service(),
 
   flashMessage: service(),
+
+  filterTypes: FILTER_TYPES,
 
   callBackOptions,
 
@@ -167,6 +172,12 @@ const ContextWrapper = Component.extend({
     openFilterPanel(openFilterPanel) {
       openFilterPanel();
       this.send('toggleHostDetailsFilter', true);
+    },
+
+    applyFilters(expressionList, filterType) {
+      next(() => {
+        this.send('applyDetailsFilter', expressionList, filterType);
+      });
     }
   }
 

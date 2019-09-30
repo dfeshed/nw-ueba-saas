@@ -260,6 +260,86 @@ test('processList', function(assert) {
   assert.equal(result.length, 3);
 });
 
+test('processList filter', function(assert) {
+
+  const result = processList(Immutable.from({
+    endpoint: {
+      details: {
+        filter: {
+          expressionList: [
+            {
+              'propertyName': 'name',
+              'restrictionType': 'IN',
+              'propertyValues': [
+                {
+                  'value': 'test'
+                }
+              ]
+            }
+          ]
+        }
+      },
+      explore: {
+        selectedTab: 'process'
+      },
+      process: {
+        processTree: [
+          {
+            id: 1,
+            parentPid: 0,
+            pid: 1,
+            name: 'test',
+            checksumSha256: 1,
+            childProcesses: [
+              {
+                id: 3,
+                parentPid: 1,
+                pid: 3,
+                name: 'test',
+                checksumSha256: 111
+              },
+              {
+                id: 4,
+                parentPid: 1,
+                pid: 4,
+                name: 'test',
+                checksumSha256: 1
+              }
+            ]
+          }
+        ],
+        processList: [
+          {
+            id: 1,
+            parentPid: 0,
+            pid: 1,
+            name: 'test',
+            checksumSha256: 1
+          },
+          {
+            id: 3,
+            parentPid: 2,
+            pid: 3,
+            name: 'test3',
+            checksumSha256: 111
+          },
+          {
+            id: 4,
+            parentPid: 2,
+            pid: 4,
+            name: 'test4',
+            checksumSha256: 1
+          }
+        ],
+        sortField: 'name',
+        isDescOrder: true
+
+      }
+    }
+  }));
+  assert.equal(result.length, 1);
+});
+
 test('processList reversing data, when sorting is based on name and order is descending', function(assert) {
   const result = processList(Immutable.from({
     endpoint: {

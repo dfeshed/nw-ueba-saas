@@ -12,7 +12,12 @@ import { fetchHostContext, setFocusedHost } from './host';
 import { getSubDirectories } from './downloads';
 
 const changeDetailTab = (tabName, subTabName) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { endpoint: { details: { filter } } } = getState();
+    if (!filter.selectedFilter || filter.selectedFilter.id === 1) {
+      const savedFilter = { id: 1, criteria: { expressionList: filter.expressionList } };
+      dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'FILECONTEXT' } });
+    }
     dispatch({ type: SHARED_ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: null });
     dispatch({ type: ACTION_TYPES.CHANGE_DETAIL_TAB, payload: { tabName, subTabName } });
   };

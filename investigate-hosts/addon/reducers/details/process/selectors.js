@@ -3,6 +3,7 @@ import { convertTreeToList } from './util';
 import _ from 'lodash';
 import TREE_CONFIG from './process-config';
 import LIST_CONFIG from './process-list-config';
+import { filterData } from 'investigate-hosts/reducers/utils/filter-utils';
 
 const { createSelector } = reselect;
 const _processData = (state) => state.endpoint.process.processDetails;
@@ -18,6 +19,7 @@ const _selectedProcessList = (state) => state.endpoint.process.selectedProcessLi
 const _searchResultProcessList = (state) => state.endpoint.process.searchResultProcessList;
 const _sortField = (state) => state.endpoint.process.sortField;
 const _isDescOrder = (state) => state.endpoint.process.isDescOrder;
+const _expressionList = (state) => state.endpoint?.details?.filter?.expressionList;
 
 const PROCESS_DEFAULT_COLUMN = [
   {
@@ -172,14 +174,17 @@ export const processTree = createSelector(
 );
 
 export const processList = createSelector(
-  [_getProcessList, _sortField, _isDescOrder],
-  (processList, sortField, isDescOrder) => {
+  [_getProcessList, _sortField, _isDescOrder, _expressionList],
+  (processList, sortField, isDescOrder, expressionList) => {
     if (processList && processList.list.length) {
       let data = processList.list.asMutable();
       data = data.map((item) => {
         return { ...item, id: item.pid };
       });
       data = data.sortBy(sortField);
+      if (expressionList && expressionList.length) {
+        data = filterData(data, expressionList);
+      }
       if (isDescOrder) {
         data.reverse();
       }

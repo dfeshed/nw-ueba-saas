@@ -2,6 +2,7 @@ import reselect from 'reselect';
 const { createSelector } = reselect;
 import _ from 'lodash';
 import { allAreMigratedHosts } from 'investigate-hosts/reducers/hosts/selectors';
+import { filterData } from 'investigate-hosts/reducers/utils/filter-utils';
 
 const _fileContext = (state, name) => state.endpoint[name].fileContext;
 const _sortConfig = (state, name) => state.endpoint[name].sortConfig;
@@ -20,7 +21,7 @@ const _totalItems = (state, name) => state.endpoint[name].totalItems;
 const _contextLoadMoreStatus = (state, name) => state.endpoint[name].contextLoadMoreStatus;
 const _isRemediationAllowed = (state, name) => state.endpoint[name].isRemediationAllowed;
 const _hostDetails = (state) => state.endpoint.overview.hostDetails;
-
+const _expressionList = (state) => state.endpoint?.details?.filter?.expressionList;
 export const fileStatus = createSelector(
   _fileStatus,
   (fileStatus) => ({ ...fileStatus })
@@ -96,13 +97,15 @@ export const focusedRowChecksum = createSelector(
   }
 );
 
-
 export const listOfFiles = createSelector(
-  [ _fileContext, _sortConfig, _selectedTab],
-  (fileContext, sortConfig, selectedTab) => {
+  [ _fileContext, _sortConfig, _selectedTab, _expressionList],
+  (fileContext, sortConfig, selectedTab, expressionList) => {
     let data = _.values(fileContext);
     if (selectedTab) {
       data = data.filter((val) => (selectedTab.checksum === val.checksumSha256));
+    }
+    if (expressionList && expressionList.length) {
+      data = filterData(data, expressionList);
     }
 
     if (sortConfig) {

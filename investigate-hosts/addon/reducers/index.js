@@ -47,6 +47,9 @@ export default combineReducers({
     libraries: createFilteredReducer(fileContext, reducerPredicate('LIBRARY')),
     processes: createFilteredReducer(fileContext, reducerPredicate('PROCESS')),
     filter: createFilteredReducer(filter, reducerPredicate('MACHINE')),
+    details: combineReducers({
+      filter: createFilteredReducer(filter, reducerPredicate('FILECONTEXT'))
+    }),
     fileAnalysis,
     risk: createFilteredReducer(risk, reducerPredicate('HOST')),
     hostDownloads: combineReducers({

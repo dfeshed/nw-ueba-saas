@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import CONFIG from './process-property-config';
 import { inject as service } from '@ember/service';
+import { next } from '@ember/runloop';
 import {
   getProcessData,
   isNavigatedFromExplore,
@@ -10,7 +11,7 @@ import {
   selectedProcessName } from 'investigate-hosts/reducers/details/process/selectors';
 import computed from 'ember-computed-decorators';
 import { toggleProcessView, setRowIndex } from 'investigate-hosts/actions/data-creators/process';
-import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
+import { setHostDetailPropertyTab, applyDetailsFilter } from 'investigate-hosts/actions/data-creators/details';
 import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
 import { getColumnsConfig, hostDetailPropertyTabs, isProcessDumpDownloadSupported } from 'investigate-hosts/reducers/details/selectors';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
@@ -37,6 +38,7 @@ import { saveLocalFileCopy } from 'investigate-shared/actions/data-creators/file
 import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
 
 import { toggleHostDetailsFilter } from 'investigate-hosts/actions/ui-state-creators';
+import { FILTER_TYPES } from './filter-types';
 
 const callBackOptions = (context) => ({
   onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
@@ -75,7 +77,8 @@ const stateToComputed = (state) => ({
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, 'process'),
   isInsightsAgent: isInsightsAgent(state),
   isAgentMigrated: isAgentMigrated(state),
-  isShowOpenFilterButton: !state.endpoint.visuals.showHostDetailsFilter
+  isShowOpenFilterButton: !state.endpoint.visuals.showHostDetailsFilter,
+  filter: state.endpoint.details.filter
 });
 
 const dispatchToActions = {
@@ -89,7 +92,8 @@ const dispatchToActions = {
   setHostDetailPropertyTab,
   getUpdatedRiskScoreContext,
   saveLocalFileCopy,
-  toggleHostDetailsFilter
+  toggleHostDetailsFilter,
+  applyDetailsFilter
 };
 
 const Container = Component.extend({
@@ -109,6 +113,8 @@ const Container = Component.extend({
   callBackOptions,
 
   processDumpCallBackOptions,
+
+  filterTypes: FILTER_TYPES,
 
   @computed('isProcessDumpDownloadSupported')
   showDownloadProcessDump(isProcessDumpDownloadSupported) {
@@ -184,6 +190,11 @@ const Container = Component.extend({
     openFilterPanel(closeFilerPanel) {
       closeFilerPanel();
       this.send('toggleHostDetailsFilter', true);
+    },
+    applyFilters(expressionList, filterType) {
+      next(() => {
+        this.send('applyDetailsFilter', expressionList, filterType);
+      });
     }
   }
 
