@@ -22,6 +22,13 @@
 //   }
 // ]
 
+
+// Can be provided param that will not error out if deprecations are found
+let errorOutCode = 1;
+if (process.argv.length > 2) {
+  errorOutCode = 0;
+}
+
 const baselineReportApps = require('/mnt/libhq-SA/SAStyle/build-statistics/application-deprecation-report.json');
 const buildReportApps = require('./application-deprecation-report.json');
 
@@ -39,7 +46,7 @@ const _doneSuccess = () => {
 
 const _doneErrors = () => {
   errors.forEach((err) => console.log(err));
-  process.exit(1);
+  process.exit(errorOutCode);
 };
 
 if (buildReportApps.length === 0) {
