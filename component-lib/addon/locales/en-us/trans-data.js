@@ -3099,9 +3099,9 @@ export default {
       isolationPill: 'ISOLATED',
       isolate: {
         descriptionText: 'Network Isolation blocks the host from connecting to the network.<br>All attempted network connections are monitored and reported to the Endpoint Server.',
-        checkboxLabel: 'Add IPs to the Exclusion List',
-        checkboxDescription: 'Default IPs excluded from isolation include Endpoint Server, Relay Server, DNS, DHCP, Gateways, 0.0.0.0, 255.255.255.255.',
-        exclusionListPlaceholder: 'Enter one or more valid IPv4/IPv6 addresses. Use commas to separate multiple values.',
+        checkboxLabel: 'Add IP addresses to the Exclusion List',
+        checkboxDescription: 'Default IP addresses excluded from isolation include Endpoint Server, Relay Server, DNS, DHCP, Gateways, 0.0.0.0 and 255.255.255.255.',
+        exclusionListPlaceholder: 'Enter one or more valid IPv4 and IPv6 addresses. Use commas to separate multiple values.',
         invalidIp: 'One or more of the IPv4/IPv6 addresses are invalid',
         ipListLimit: 'A maximum of a 100 IPs can be excluded',
         comments: 'COMMENTS<sup>*</sup>',
