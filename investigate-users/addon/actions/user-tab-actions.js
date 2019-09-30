@@ -5,7 +5,7 @@ import { getWatchedUserCount, getRiskyUserCount } from './user-details';
 import { flashErrorMessage } from 'investigate-users/utils/flash-message';
 import _ from 'lodash';
 
-const _filterPropertiesToPickFromCurrentFilterForPosting = ['alertTypes', 'indicatorTypes', 'isWatched', 'minScore', 'severity', 'sortDirection', 'sortField'];
+const _filterPropertiesToPickFromCurrentFilterForPosting = ['alertTypes', 'indicatorTypes', 'isWatched', 'minScore', 'severity', 'sortDirection', 'sortField', 'entityType'];
 
 const _removeUnwantedPropertyFromObject = (obj = {}) => {
   return _.pick(obj, _filterPropertiesToPickFromCurrentFilterForPosting);
