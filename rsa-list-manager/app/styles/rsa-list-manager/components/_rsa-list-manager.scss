@@ -17,10 +17,12 @@
       padding: 0;
     }
 
-    input, li, button {
+    li.rsa-list-item, button {
       font-size: 12px;
       font-weight: lighter;
-      color: text-color(primary, lightest);
+      &:enabled {
+        color: text-color(primary, lightest);
+      }
     }
 
     i {
@@ -51,6 +53,11 @@
           padding-top: rsa-whitespace(less);
           .ember-power-select-search-input {
             border: none;
+            font-weight: 300;
+          }
+          .clear-filter i {
+            margin-right: 0;
+            font-size: 11px;
           }
         }
       }
@@ -59,14 +66,6 @@
       ul.rsa-item-list {
         height: 230px;
         overflow-y: auto;
-        li.no-results {
-          padding: rsa-whitespace(less);
-          font-size: 10px;
-          font-weight: lightest;
-          font-style: italic;
-          text-align: center;
-          color: text-color(primary, lighter);
-        }
         li.rsa-list-item {
           line-height: 2.1em;
           display:inline-flex;
@@ -127,6 +126,15 @@
       }
     }
 
+    li.no-results, p.message {
+      padding: rsa-whitespace(less);
+      font-size: 12px;
+      font-weight: lightest;
+      font-style: italic;
+      text-align: center;
+      color: text-color(primary, lighter);
+    }
+
     .item-details {
       min-width: 400px;
 
@@ -141,6 +149,7 @@
 
       // TODO list-body to something else
       .list-body {
+        height: 302px;
         padding:0.4rem;
         > div {
           padding: 0.4rem;
@@ -170,28 +179,48 @@
         }
 
         .details-body {
-          > div > div {
-            padding-bottom: 1.15rem;
+          .group-details {
+            max-height: 230px;
+            overflow-y: auto;
+            .name {
+              padding-top: 1.2rem;
+            }
           }
           .name {
             letter-spacing: 0.75px;
-            color: text-color(primary, lighter);
+            color: text-color(primary, light);
             text-transform: uppercase;
             font-size: 0.7rem;
             font-weight: 800;
             padding-bottom: 0.5rem;
           }
-          .value, li {
+          .value, input {
             color: text-color(primary, lightest);
             font-size: 0.85rem;
             font-weight: 400;
+            &.rsa-form-input > input {
+              margin-top: -0.8rem;
+            }
           }
           ul {
-            height: 160px;
             width: 100%;
-            overflow-y: auto;
+            &:not(.editable) {
+              overflow-y: auto;
+            }
             li {
               line-height: 1.5rem;
+              &.editable .rsa-form-button-wrapper:not(.is-icon-only) {
+                i {
+                  margin-left: 0;
+                  font-weight: lighter;
+                }
+                &:hover i {
+                  font-weight: 600;
+                }
+                .rsa-icon-subtract-circle-1-filled {
+                  color: text-color(accentOne, dark);
+                }
+              }
             }
           }
         }
@@ -233,9 +262,11 @@
               padding: 5px;
               width: 100%;
               &:not(:disabled) {
-                border: thin solid border-color(primary,light);
+                border-width: thin;
+                border-style: solid;
+                border-color: $formButtonBorderColor;
                 &:hover {
-                  border-color: $formButtonIconHoverColor;
+                  border-color: $formButtonHoverBorderColor;
                 }
               }
             }

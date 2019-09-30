@@ -32,7 +32,7 @@ const dispatchToActions = {
 const menuOffsetsStyle = (el) => {
   if (el) {
     const elRect = el.getBoundingClientRect();
-    return htmlSafe(`top: ${elRect.height - 1}px; min-width: ${elRect.width - 2}px`);
+    return htmlSafe(`top: ${elRect.height - 1}px; left: 2px;  min-width: ${elRect.width - 2}px`);
   } else {
     return null;
   }

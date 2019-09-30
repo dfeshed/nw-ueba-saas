@@ -3,6 +3,7 @@ import {
   metaKeySuggestionsForQueryBuilder,
   validMetaKeySuggestions,
   languageAndAliasesForParser,
+  metaMapForColumns,
   defaultMetaGroupEnriched
 } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -228,6 +229,18 @@ module('Unit | Selectors | dictionaries', function(hooks) {
       const { language, aliases } = languageAndAliasesForParser(state);
       assert.ok(language && language.length !== 0, 'regular meta are not filtered out');
       assert.ok(aliases && aliases.medium['1'] === 'Ethernet', 'aliases have been included');
+    }
+  );
+
+  test('metaMapForColumns selector returns array of field/title objects for columnGroup candidate columns',
+    function(assert) {
+
+      const state = new ReduxDataHelper().language().build();
+      const result = metaMapForColumns(state);
+      assert.ok(result[0].hasOwnProperty('field'));
+      assert.ok(result[0].hasOwnProperty('title'));
+      assert.notOk(result[0].hasOwnProperty('metaName'));
+      assert.notOk(result[0].hasOwnProperty('displayName'));
     }
   );
 });

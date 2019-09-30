@@ -135,3 +135,24 @@ export const languageAndAliasesForParser = createSelector(
     aliases
   })
 );
+
+/**
+ * Returns the language dictionary as an array of candidate meta
+ * for column groups
+ *
+ * @public
+ */
+export const metaMapForColumns = createSelector(
+  [ _language ],
+  (language = []) => {
+
+    return language.map((meta) => {
+      return {
+        field: meta.metaName,
+        title: meta.displayName
+      };
+    });
+
+  }
+);
+

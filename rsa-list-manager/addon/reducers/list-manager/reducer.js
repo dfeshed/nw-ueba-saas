@@ -77,14 +77,20 @@ const listManagerReducer = handleActions({
         createItemErrorMessage: action.payload.meta.message
       }),
       success: (s) => {
-        const createdItem = action.payload.data;
+        let { payload: { data: createdItem } } = action;
+        const { meta: { itemTransform } } = action;
+
+        if (typeof itemTransform === 'function') {
+          createdItem = itemTransform(createdItem);
+        }
         // add the newly created item to state
         const list = s.list ?
           sort([...s.list, createdItem]).by([{ asc: (item) => item.name.toUpperCase() }]) :
           [createdItem];
         return s.merge({
           list,
-          isItemsLoading: false
+          isItemsLoading: false,
+          editItemId: createdItem.id
         });
       }
     });

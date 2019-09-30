@@ -1,16 +1,10 @@
-<div class='group-name'>
-  <div class='name'> Group Name </div>
-  <div class='value'>{{columnGroup.name}}</div>
-</div>
-
-<div class='group-details'>
-  <div class='name'> Displayed Meta Keys </div>
-  <ul class='column-list value'>
-    {{#each sortedColumns as |column|}}
-      <li>
-        <span>{{column.field}}</span>
-        <span>{{column.title}}</span>
-      </li>
-    {{/each}}
-  </ul>
-</div>
+{{#if isEditing}}
+  {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+    columnGroup=sortedColumnGroup
+    editColumnGroup=editColumnGroup
+  }}
+{{else}}
+  {{events-table-container/header-container/column-groups/column-group-details/column-group-view
+    columnGroup=sortedColumnGroup
+  }}
+{{/if}}

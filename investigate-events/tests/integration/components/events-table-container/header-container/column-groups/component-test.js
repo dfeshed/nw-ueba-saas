@@ -148,7 +148,7 @@ module('Integration | Component | Column Groups', function(hooks) {
 
   test('clicking the edit icon shows details of the columnGroup', async function(assert) {
 
-    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().build();
+    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().language().build();
     await render(hbs`<div class = 'other-div'></div>{{events-table-container/header-container/column-groups}}`);
 
     await click(dropdownSelector);
@@ -167,4 +167,5 @@ module('Integration | Component | Column Groups', function(hooks) {
     assert.equal(findAll('.group-details ul.column-list li').length, 5, '5 columns for Summary List rendered');
 
   });
+
 });

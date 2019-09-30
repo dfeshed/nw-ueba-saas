@@ -9,9 +9,11 @@ import {
   COLUMN_GROUPS_MODEL_NAME as modelName,
   COLUMN_GROUPS_LIST_NAME as listName
 } from 'investigate-events/constants/columnGroups';
+import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 
 const dispatchToActions = {
-  setColumnGroup
+  setColumnGroup,
+  mapColumnGroupsForEventTable
 };
 
 const stateToComputed = (state) => ({
@@ -35,10 +37,16 @@ const ColumnGroups = Component.extend({
   },
 
   actions: {
+
     selectColumnGroup(columnGroup) {
       this.get('eventBus').trigger('rsa-content-tethered-panel-hide-tableSearchPanel');
       this.send('setColumnGroup', columnGroup);
+    },
+
+    columnGroupResponseMapping(columnGroup) {
+      return mapColumnGroupsForEventTable([columnGroup])[0];
     }
+
   }
 });
 

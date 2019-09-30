@@ -604,8 +604,8 @@ module('Integration | Component | list-manager-container', function(hooks) {
            {{item.name}}
           {{/list.item}}
         {{/manager.itemList}}
-        {{#manager.details as |item|}}
-          Item Name: {{item.name}}
+        {{#manager.details as |details|}}
+         DETAILS
         {{/manager.details}}
       {{/list-manager/list-manager-container}}`);
 
@@ -616,7 +616,7 @@ module('Integration | Component | list-manager-container', function(hooks) {
     // click on New My Item
     await click(findAll('footer button')[0]);
     await assertForViewToggle(assert, 'CloseSaveMyItem', false);
-    assert.ok(find('.list-body .new-item'));
+    assert.equal(find('.list-body .details-header .title').textContent.trim().toUpperCase(), 'CREATE MY ITEM');
 
     // click on close
     await click(findAll('footer button')[0]);
@@ -637,9 +637,9 @@ module('Integration | Component | list-manager-container', function(hooks) {
            {{item.name}}
           {{/list.item}}
         {{/manager.itemList}}
-        {{#manager.details as |item|}}
+        {{#manager.details as |details|}}
            <ul>
-             {{#each item.subItems as |subItem|}}
+             {{#each details.item.subItems as |subItem|}}
                <li>{{subItem}}</li>
              {{/each}}
            </ul>

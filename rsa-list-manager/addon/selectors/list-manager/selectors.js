@@ -234,7 +234,7 @@ export const isEditable = createSelector(
 export const isNewItem = createSelector(
   [viewName, editItemId],
   (viewName, editItemId) => {
-    return viewName === EDIT_VIEW && editItemId ? !editItemId : false;
+    return viewName === EDIT_VIEW && !editItemId;
   }
 );
 

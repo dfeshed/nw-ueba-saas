@@ -17,8 +17,14 @@
     {{/itemList.item}}
   {{/manager.itemList}}
 
-  {{#manager.details as |item|}}
-    {{events-table-container/header-container/column-groups/column-group-details columnGroup=item}}
+  {{#manager.details
+    itemTransform=(action 'columnGroupResponseMapping')
+    as |details|}}
+
+    {{events-table-container/header-container/column-groups/column-group-details
+      columnGroup=details.item
+      editColumnGroup=details.itemEdited}}
+
   {{/manager.details}}
 
 {{/list-manager}}

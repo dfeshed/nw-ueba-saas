@@ -1,16 +1,14 @@
 <div class='footer-buttons'>
-  {{#rsa-form-button defaultAction=(action 'detailsDone')}}
+  {{#rsa-form-button class='close' defaultAction=(action 'detailsDone')}}
     Close
   {{/rsa-form-button}}
   {{#if item}}
-    {{#rsa-form-button defaultAction=(action itemSelection item)}}
+    {{#rsa-form-button class='select' defaultAction=(action itemSelection item)}}
       Select {{itemType}}
     {{/rsa-form-button}}
   {{else}}
-    {{!-- temporarily disabling save from create new item TODO add/edit--}}
-    {{#rsa-form-button isDisabled=true defaultAction=(action 'detailsDone')}}
+    {{#rsa-form-button isDisabled=(not itemIsValid) class='save' defaultAction=(action 'saveItem')}}
       Save {{itemType}}
     {{/rsa-form-button}}
   {{/if}}
 </div>
-

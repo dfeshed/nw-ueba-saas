@@ -1,0 +1,51 @@
+<div class='group-name'>
+  {{!-- TODO bhanun add translate--}}
+  <div class='name'>Group Name</div>
+  {{rsa-form-input
+    class='value'
+    type='text'
+    onKeyUp=(action 'handleNameChange')
+    placeholder='My Custom Group'}}
+</div>
+
+<div class='group-details'>
+  {{!-- TODO bhanun add translate--}}
+  <div class='name'>Displayed Meta Keys</div>
+  {{#if displayedColumns}}
+    <ul class='column-list value editable'>
+      {{#each displayedColumns as |column|}}
+        <li class='editable'>
+          {{#rsa-form-button class='remove-meta-key' defaultAction=(action 'removeMetaFromColumns' column)}}
+            {{rsa-icon name='subtract-circle-1'}}
+          {{/rsa-form-button}}
+          <span>{{column.field}}</span>
+          <span title={{column.title}} class='title'>{{column.title}}</span>
+        </li>
+      {{/each}}
+    </ul>
+  {{else}}
+    {{!-- TODO bhanun add translate--}}
+    <p class='message'>Add a meta key from the list below</p>
+  {{/if}}
+
+  <div class='add-details'>
+    {{!-- TODO bhanun add translate--}}
+    <div class='name'>Available Meta Keys</div>
+    {{#if availableMeta}}
+      <ul class='column-list value editable'>
+        {{#each availableMeta  as |meta|}}
+          <li class='editable'>
+            {{#rsa-form-button class='add-meta-key' defaultAction=(action 'addMetaToColumns' meta)}}
+              {{rsa-icon name='add-circle-1'}}
+            {{/rsa-form-button}}
+            <span>{{meta.field}}</span>
+            <span title={{meta.title}} class='title'>{{meta.title}}</span>
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      {{!-- TODO bhanun add translate--}}
+      <p class='message'>All meta keys have been added</p>
+    {{/if}}
+  </div>
+</div>

@@ -22,7 +22,8 @@ import {
   titleTooltip,
   filterPlaceholder,
   hasIsEditableIndicators,
-  editItem
+  editItem,
+  isNewItem
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 import { LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -50,11 +51,13 @@ const listNotHasIsEditable = [
   { id: 3, name: 'bar' }
 ];
 
+const randomIndex = Math.floor(Math.random() * Math.floor(list1.length));
+
 const item1 = { id: 2, name: 'bar', subItems: [ 'e', 'b', 'c' ] };
 const viewName1 = 'list-view';
+const EDIT_VIEW = 'edit-view';
 
 test('highlightedIndex returns highlightedIndex for stateLocation', function(assert) {
-  const randomIndex = Math.floor(Math.random() * 20) + 1;
   const state = new ReduxDataHelper()
     .highlightedIndex(randomIndex)
     .build();
@@ -225,7 +228,6 @@ test('noResultsMessage returns noResultsMessage for stateLocation', function(ass
 });
 
 test('selectedIndex returns selectedIndex for stateLocation', function(assert) {
-  const randomIndex = Math.floor(Math.random() * Math.floor(list1.length));
   const state = new ReduxDataHelper()
     .stateLocation(stateLocation1)
     .list(list1)
@@ -327,7 +329,6 @@ test('caption returns listName for stateLocation if selectedItemId does not exis
 });
 
 test('titleTooltip returns titleTooltip for stateLocation if selectedItemId exists', function(assert) {
-  const randomIndex = Math.floor(Math.random() * Math.floor(list1.length));
   const state = new ReduxDataHelper()
     .stateLocation(stateLocation1)
     .list(list1)
@@ -386,7 +387,6 @@ test('hasIsEditableIndicators returns false for stateLocation if no item in filt
   });
 
 test('editItem returns editItem for stateLocation', function(assert) {
-  const randomIndex = Math.floor(Math.random() * Math.floor(list1.length));
   const state = new ReduxDataHelper()
     .stateLocation(stateLocation1)
     .list(list1)
@@ -407,4 +407,28 @@ test('editItem returns undefined for stateLocation if no editItemId', function(a
     .build();
   const result = editItem(state, stateLocation1);
   assert.equal(result, undefined, 'Shall return undefined for editItem if editItemId does not exist');
+});
+
+test('isNewItem returns true if newItem in edit view', function(assert) {
+  const state = new ReduxDataHelper()
+    .stateLocation(stateLocation1)
+    .list(list1)
+    .listName(listName1)
+    .viewName(EDIT_VIEW)
+    .editItemId(null)
+    .build();
+  const result = isNewItem(state, stateLocation1);
+  assert.equal(result, true, 'Shall return true if editItemId does not exist in edit view');
+});
+
+test('isNewItem returns false if editItem exists in edit view', function(assert) {
+  const state = new ReduxDataHelper()
+    .stateLocation(stateLocation1)
+    .list(list1)
+    .listName(listName1)
+    .viewName(EDIT_VIEW)
+    .editItemId(list1[randomIndex].id)
+    .build();
+  const result = isNewItem(state, stateLocation1);
+  assert.equal(result, false, 'Shall return false if editItemId exists in edit view');
 });

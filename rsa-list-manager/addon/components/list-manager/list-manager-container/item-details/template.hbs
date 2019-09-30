@@ -1,23 +1,21 @@
 <div class='list-body'>
-  {{#if item}}
-    <div class='details-header'>
-      <div class='title'>
-        {{itemType}} details
-      </div>
-
-      {{list-manager/list-manager-container/item-details/details-header-icons
-        stateLocation=stateLocation
-      }}
-
-    </div>
-    <div class='details-body'>
-      {{yield item}}
+  <div class='details-header'>
+    <div class='title'>
+      {{heading}}
     </div>
 
-  {{else}}
-    <div class='new-item'>
-    </div>
-  {{/if}}
+    {{list-manager/list-manager-container/item-details/details-header-icons
+      stateLocation=stateLocation
+    }}
+
+  </div>
+  <div class='details-body'>
+    {{yield (hash
+      item=item
+      itemEdited=(action 'itemEdited')
+     )
+    }}
+  </div>
 
   {{!-- Overlay with spinner during delete to prevent interactions --}}
   {{#if isItemsLoading}}
@@ -32,5 +30,7 @@
 {{list-manager/list-manager-container/item-details/details-footer
   stateLocation=stateLocation
   item=item
+  editedItem=editedItem
+  itemTransform=itemTransform
   itemSelection=itemSelection
 }}

@@ -174,6 +174,7 @@ test('Should set relevant properties correctly after successfully creating new i
     payload: {
       data: {
         name: newItemName,
+        id: '23',
         someItemAttribute
       }
     }
@@ -181,8 +182,43 @@ test('Should set relevant properties correctly after successfully creating new i
 
   const newEndState = reducer(previous, successAction);
   assert.equal(newEndState.list[0].name, newItemName);
-  assert.deepEqual(newEndState.list[0].someItemAttribute, someItemAttribute);
+  assert.deepEqual(newEndState.list[0].someItemAttribute, someItemAttribute, 'item not transformed');
   assert.equal(newEndState.isItemsLoading, false, 'isItemsLoading shall be set false');
+  assert.equal(newEndState.editItemId, '23', 'item created will be set for edit');
+  assert.notOk(newEndState.createItemErrorCode, 'createItemErrorCode shall not be set');
+  assert.notOk(newEndState.createItemErrorMessage, 'createItemErrorMessage shall not be set');
+});
+
+
+test('should transform created item if transform function present', function(assert) {
+  const previous = Immutable.from({});
+  const newItemName = `TEST-${Date.now().toString().substring(6)}`;
+  const someItemAttribute = [ { foo: 'a', bar: 'b' }];
+  const data = {
+    name: newItemName,
+    id: '23',
+    someItemAttribute
+  };
+
+  const itemTransform = () => {
+    return {
+      name: newItemName,
+      id: '23',
+      someItemAttribute: [ { baz: 'a', taz: 'b' }]
+    };
+  };
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.ITEM_CREATE,
+    payload: { data },
+    meta: { itemTransform }
+  });
+
+  const newEndState = reducer(previous, successAction);
+  assert.equal(newEndState.list[0].name, newItemName);
+  assert.deepEqual(newEndState.list[0].someItemAttribute, [ { baz: 'a', taz: 'b' }], 'item transformed correctly');
+  assert.equal(newEndState.isItemsLoading, false, 'isItemsLoading shall be set false');
+  assert.equal(newEndState.editItemId, '23', 'item created will be set for edit');
   assert.notOk(newEndState.createItemErrorCode, 'createItemErrorCode shall not be set');
   assert.notOk(newEndState.createItemErrorMessage, 'createItemErrorMessage shall not be set');
 });

@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
@@ -134,7 +134,7 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
     thunk(dispatchAdminEventSetting);
   });
 
-  test('getRecentQueries - Should dispatch action with a appropriate response when no text is sent', async function(assert) {
+  skip('getRecentQueries - Should dispatch action with a appropriate response when no text is sent', async function(assert) {
     assert.expect(2);
     const done = assert.async();
     const getState = () => {

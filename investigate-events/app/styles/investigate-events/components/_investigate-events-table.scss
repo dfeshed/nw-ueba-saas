@@ -131,7 +131,20 @@
               display: inline-table;
               width: 48%
             }
+            &.editable {
+              span {
+                width: 42%
+              }
+            }
+            span.title {
+              vertical-align: middle;
+              overflow-x: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              display: inline-block;
+            }
           }
+
         }
       }
     }
