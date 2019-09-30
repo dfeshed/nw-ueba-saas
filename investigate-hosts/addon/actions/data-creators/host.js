@@ -424,7 +424,7 @@ const stopIsolationRequest = (data, serverId, callbacks = callbacksDefault) => {
     .then(() => {
       callbacks.onSuccess();
     }).catch(({ meta: message }) => {
-      callbacks.onFailure(message);
+      callbacks.onFailure(message.message);
     });
 };
 

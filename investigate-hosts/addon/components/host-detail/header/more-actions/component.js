@@ -19,7 +19,6 @@ const stateToComputed = (state) => ({
   isExportDisabled: !isSnapshotsAvailable(state),
   scanTime: state.endpoint.detailsInput.scanTime,
   agentId: state.endpoint.detailsInput.agentId,
-  serverId: state.endpointQuery.selectedMachineServerId,
   isMFTEnabled: mftDownloadButtonStatusDetails(state),
   isAgentMigrated: isAgentMigrated(state)
 });
