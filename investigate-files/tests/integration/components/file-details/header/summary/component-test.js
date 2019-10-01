@@ -27,18 +27,13 @@ module('Integration | Component | file-details/header/summary', function(hooks) 
           machineCount: 10,
           firstFileName: 'dtf.exe'
         },
-        hostNameList: [{
-          value: 'Machine1'
-        },
-        {
-          value: 'Machine2'
-        },
-        {
-          value: 'Machine3'
-        },
-        {
-          value: 'Machine4'
-        }]
+        hostNameList: {
+          data: [
+            { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC', 'hostname': 'windows', 'score': 0 },
+            { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAB', 'hostname': 'mac', 'score': 0 },
+            { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAD', 'hostname': 'linux', 'score': 0 }
+          ]
+        }
       }
     }
   };
@@ -60,7 +55,7 @@ module('Integration | Component | file-details/header/summary', function(hooks) 
 
     await render(hbs`{{file-details/header/summary}}`);
     assert.equal(findAll(selectors.summary).length, 1, 'summary is present');
-    assert.equal(findAll('.rsa-content-definition .value')[0].textContent.trim(), '4');
+    assert.equal(findAll('.rsa-content-definition .value')[0].textContent.trim(), '3');
 
   });
 });

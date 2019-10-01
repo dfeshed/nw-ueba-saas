@@ -24,6 +24,20 @@ const getProcessDetails = (model, serverId) => {
   });
 };
 
+const getHostCount = (checksum) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'getHostCount',
+    modelName: 'host-count',
+    query: {
+      data: {
+        checksumSha256: checksum
+      }
+    }
+  });
+};
+
 export {
-  getProcessDetails
+  getProcessDetails,
+  getHostCount
 };

@@ -28,7 +28,7 @@ export default Component.extend({
   }),
 
   countLabelKey: computed('itemCount', function() {
-    return 1 < this.itemCount ? 'investigateShared.machineCount.plural' : 'investigateShared.machineCount.singular';
+    return 100 < this.itemCount ? 'investigateFiles.message.listOfHostMessage' : '';
   }),
 
 

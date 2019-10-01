@@ -29,7 +29,13 @@ module('Integration | Component | process-details/host-list-container', function
     setState({
       processAnalysis: {
         hostContext: {
-          hostList: [ 'windows', 'mac', 'linux']
+          hostList: {
+            data: [
+              { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC', 'hostname': 'windows', 'score': 0 },
+              { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAB', 'hostname': 'mac', 'score': 0 },
+              { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAD', 'hostname': 'linux', 'score': 0 }
+            ]
+          }
         }
       }
     });
@@ -37,6 +43,7 @@ module('Integration | Component | process-details/host-list-container', function
     assert.equal(findAll('.host-list-container').length, 1, 'it renders the component');
     assert.equal(findAll('[test-id=hostNameList]').length, 1, 'it renders host name component');
     assert.equal(findAll('.host-name').length, 3, 'Expected to render 3 host name');
+    assert.equal(findAll('.score-detail').length, 3, 'Expected to render 3 Risk score');
   });
 
   test('clicking on the host name navigates to host details page', async function(assert) {
@@ -44,7 +51,13 @@ module('Integration | Component | process-details/host-list-container', function
     setState({
       processAnalysis: {
         hostContext: {
-          hostList: [ 'windows', 'mac', 'linux']
+          hostList: {
+            data: [
+              { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC', 'hostname': 'windows', 'score': 0 },
+              { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAB', 'hostname': 'mac', 'score': 0 },
+              { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAD', 'hostname': 'linux', 'score': 0 }
+            ]
+          }
         }
       }
     });
@@ -68,7 +81,13 @@ module('Integration | Component | process-details/host-list-container', function
     setState({
       processAnalysis: {
         hostContext: {
-          hostList: [ 'windows', 'mac', 'linux']
+          hostList: {
+            data: [
+              { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC', 'hostname': 'windows', 'score': 0 },
+              { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAB', 'hostname': 'mac', 'score': 0 },
+              { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAD', 'hostname': 'linux', 'score': 0 }
+            ]
+          }
         }
       },
       investigate: {

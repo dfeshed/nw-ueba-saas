@@ -52,6 +52,13 @@ const processAnalysisConfigGen = function(env) {
         requestDestination: '/ws/respond/risk/local/score'
       }
     },
+    'host-count' : {
+      socketUrl: endpointSocketUrl,
+      getHostCount: {
+        subscriptionDestination: '/user/queue/endpoint/file/risky-hosts',
+        requestDestination: '/ws/endpoint/file/risky-hosts'
+      }
+    },
     'respond-server-ping': {
       socketUrl: respondSocketURL
     },

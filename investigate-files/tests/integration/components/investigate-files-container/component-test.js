@@ -16,6 +16,7 @@ import FileAnalysisCreators from 'investigate-shared/actions/data-creators/file-
 let initState, downloadFilesToServerSpy, saveLocalFileCopySpy;
 const spys = [];
 const wormhole = 'wormhole-context-menu';
+const hosts = { data: [{ 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC', 'hostname': 'windows', 'score': 0 }] };
 const callback = () => {};
 const e = {
   clientX: 20,
@@ -381,7 +382,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .setSelectedFileList([])
       .endpointServer(endpointServer)
       .endpointQuery(endpointQuery)
-      .hostNameList([{ value: 'Machine1' }])
+      .hostNameList(hosts)
       .activeDataSourceTab('HOSTS')
       .build();
     await render(hbs`{{investigate-files-container}}`);

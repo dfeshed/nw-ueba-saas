@@ -113,6 +113,10 @@ const filesConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/endpoint/filter/remove',
         requestDestination: '/ws/endpoint/filter/remove'
       },
+      getHostCount: {
+        subscriptionDestination: '/user/queue/endpoint/file/risky-hosts',
+        requestDestination: '/ws/endpoint/file/risky-hosts'
+      },
       getRemediation: {
         subscriptionDestination: '/user/queue/endpoint/certificate/remediation/allowed',
         requestDestination: '/ws/endpoint/certificate/remediation/allowed'

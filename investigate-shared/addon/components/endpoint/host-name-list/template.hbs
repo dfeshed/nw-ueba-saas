@@ -4,23 +4,31 @@
   </centered>
 {{else}}
   {{#if hasData}}
-    <div test-id="hostNameListTitle" class="host-name-list__title">
-      {{t 'investigateFiles.fields.hostCount'}} {{t countLabelKey count=itemCount}}
-    </div>
+    {{#if countLabelKey}}
+      <div test-id="hostNameListTitle" class="host-name-list__title">
+        <span class='info-icon'>
+          {{rsa-icon name='information-circle'}}
+        </span>
+        {{t countLabelKey count=itemCount}}
+      </div>
+    {{/if}}
     <ul class="host-name-list__items" test-id="hostNameListItems">
       {{#each items as |item|}}
         <li class="host-name">
-          <a class='host-name__link' title={{item}} href='#' target='_blank' rel='noopener' {{action 'handleHostNameClick' item}}>
-            {{item}}
+          <a class='host-name__link' title={{item.hostname}} href='#' target='_blank' rel='noopener' {{action 'handleHostNameClick' item.hostname}}>
+            {{item.hostname}}
           </a>
+          <span class='score-detail'>
+            {{rsa-risk-score score=item.score size='small' radius=12}}
+          </span>
           <span class='host-name__divider'></span>
-          {{#rsa-form-button isIconOnly=true class='pivot-to-investigate' defaultAction=(action 'onPivotClick' item)}}
+          {{#rsa-form-button isIconOnly=true class='pivot-to-investigate' defaultAction=(action 'onPivotClick' item.hostname)}}
             {{rsa-icon name='expand-6' size='small' title=(t 'investigateShared.endpoint.fileActions.pivotToInvestigate')}}
           {{/rsa-form-button}}
         </li>
       {{/each}}
     </ul>
   {{else}}
-    {{rsa-panel-message message=(t 'investigateFiles.message.noResultsFoundMessage') messageType='no-results-message'}}
+    {{rsa-panel-message message=(t 'investigateFiles.message.noHostResultMessage') messageType='no-results-message'}}
   {{/if}}
 {{/if}}

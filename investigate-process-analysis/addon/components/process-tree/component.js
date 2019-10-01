@@ -22,7 +22,7 @@ import {
 } from './helpers/content';
 import { inject as service } from '@ember/service';
 import { processDetails } from 'investigate-process-analysis/reducers/process-properties/selectors';
-import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
+import { fetchProcessDetails, fetchHostNames } from 'investigate-process-analysis/actions/creators/process-properties';
 import { resetFilterValue } from 'investigate-process-analysis/actions/creators/process-filter';
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 import zoomed from './helpers/zoomed';
@@ -63,6 +63,7 @@ const dispatchToActions = {
   getParentAndChildEvents,
   getChildEvents,
   fetchProcessDetails,
+  fetchHostNames,
   selectedProcessEvents,
   resetFilterValue,
   getFileProperty,
@@ -222,6 +223,7 @@ const TreeComponent = Component.extend({
         const defaultSelectedProcess = selectedProcess[0] ? selectedProcess[0] : { processId: vid };
 
         this.send('setSelectedProcess', defaultSelectedProcess);
+
         if (children && children.length) {
 
           const rootNode = prepareTreeData(children, selectedProcessId, path); // Only initial load
@@ -247,10 +249,9 @@ const TreeComponent = Component.extend({
         this.send('selectedProcessEvents', this.get('selectedProcessId'), {});
         this._initializeChart();
         const hashes = [checksum];
-        const filter = [{ value: `(checksum.all = '${checksum}')` }];
         this.send('getRespondServerStatus');
         this.send('fetchProcessDetails', { hashes }, this.get('selectedServerId'));
-        this.send('getHostContext', 'alias.host', filter, 300000);
+        this.send('fetchHostNames', checksum);
         this.send('getRiskScoreContext', checksum, 'FILE');
         this.send('isNodeSelected', true);
 

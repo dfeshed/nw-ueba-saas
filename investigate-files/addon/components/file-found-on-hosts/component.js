@@ -34,7 +34,7 @@ const fileHosts = Component.extend({
 
   @computed('hostListCount')
   countLabelKey(count) {
-    return 1 < count ? 'investigateShared.machineCount.plural' : 'investigateShared.machineCount.singular';
+    return 100 < count ? 'investigateFiles.message.listOfHostMessage' : '';
   },
 
   init() {
@@ -49,12 +49,8 @@ const fileHosts = Component.extend({
     },
 
     openHost(item) {
-      this.send('fetchAgentId', item, ([data]) => {
-        if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-          const serverId = this.get('serverId');
-          window.open(`${window.location.origin}/investigate/hosts/${data.value.toUpperCase()}/OVERVIEW?sid=${serverId}`);
-        }
-      });
+      const serverId = this.get('serverId');
+      window.open(`${window.location.origin}/investigate/hosts/${item.agentId.toUpperCase()}/OVERVIEW?sid=${serverId}`);
     }
   }
 

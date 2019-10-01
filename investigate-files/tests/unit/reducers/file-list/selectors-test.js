@@ -134,12 +134,13 @@ test('hostList test', function(assert) {
   const state = Immutable.from({
     files: {
       fileList: {
-        hostNameList: [{ value: 'Machine1', count: 5 }]
+        hostNameList: { data: [{ 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC', 'hostname': 'Machine1', 'score': 0 }] }
       }
     }
   });
   const result = hostList(state);
-  assert.equal(result, 'Machine1');
+  const name = result[0].hostname;
+  assert.equal(name, 'Machine1');
 });
 
 test('areFilesLoading returns true', function(assert) {
@@ -471,7 +472,7 @@ test('hostListCount test', function(assert) {
   const state = Immutable.from({
     files: {
       fileList: {
-        hostNameList: [{ value: 'Machine1', count: 5 }]
+        hostNameList: { data: [{ 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC', 'hostname': 'Machine1', 'score': 0 }] }
       }
     }
   });

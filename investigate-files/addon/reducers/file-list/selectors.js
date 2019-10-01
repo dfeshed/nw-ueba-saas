@@ -104,10 +104,8 @@ export const selectedFileStatusHistory = createSelector(
 
 export const hostList = createSelector(
   _hostList,
-  (hostList) => {
-    return hostList.map((host) => {
-      return host.value;
-    });
+  (hostList = {}) => {
+    return hostList.data;
   }
 );
 

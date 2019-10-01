@@ -21,7 +21,6 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        padding-left: rsa-whitespace(less);
         color: text-color(secondary);
       }
 
@@ -38,4 +37,11 @@
     height: 70vh;
   }
 
+  .info-icon{
+    vertical-align: middle;
+  }
+  .score-detail{
+    margin-right: rsa-whitespace(more);
+    vertical-align: middle;
+  }
 }

@@ -33,22 +33,19 @@ module('Integration | Component | endpoint/host-name-list', function(hooks) {
     assert.equal(findAll('[test-id=hostNameListItems] .host-name').length, 3, 'expected to render 3 host names');
   });
 
-  test('it displays the title with count (more than one host name)', async function(assert) {
-    this.set('items', [
-      'windows',
-      'linux',
-      'mac'
-    ]);
+  test('it displays the title with count (more than 100 host)', async function(assert) {
+    this.set('items', new Array(110));
     await render(hbs`{{endpoint/host-name-list items=items}}`);
-    assert.equal(find('[test-id=hostNameListTitle]').textContent.trim(), 'Active On 3 hosts');
+    assert.equal(find('[test-id=hostNameListTitle]').textContent.trim(), 'Top 100 hosts with high risk scores are listed');
+    assert.equal(findAll('.info-icon').length, 1, 'Info icon is loaded');
   });
 
-  test('it displays the title with count (only one host name)', async function(assert) {
+  test('it displays the title with count (less than 100 hosts)', async function(assert) {
     this.set('items', [
       'windows'
     ]);
     await render(hbs`{{endpoint/host-name-list items=items}}`);
-    assert.equal(find('[test-id=hostNameListTitle]').textContent.trim(), 'Active On 1 host');
+    assert.equal(findAll('[test-id=hostNameListTitle]').length, 0);
   });
 
 

@@ -5,7 +5,7 @@ import { getQueryNode, hasherizeEventMeta } from './util';
 import { constructFilterQueryString } from 'investigate-process-analysis/reducers/process-filter/selectors';
 import { getProcessDetails } from '../api/process-properties';
 import { setDetailsTab, toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
-import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
+import { fetchProcessDetails, fetchHostNames } from 'investigate-process-analysis/actions/creators/process-properties';
 import { resetFilterValue } from 'investigate-process-analysis/actions/creators/process-filter';
 import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
 import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
@@ -204,7 +204,7 @@ export const onEventNodeSelected = (payload) => {
       dispatch(getRespondServerStatus());
       dispatch(resetRiskContext('FILE'));
       dispatch(fetchProcessDetails({ hashes }, selectedServerId));
-      dispatch(getHostContext('alias.host', [{ value: `(checksum.all = '${checksumDst}')` }], 300000));
+      dispatch(fetchHostNames(checksumDst));
       dispatch(resetFilterValue(payload.processId));
       dispatch(getRiskScoreContext(checksumDst, 'FILE'));
     } else {

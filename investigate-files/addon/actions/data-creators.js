@@ -31,7 +31,6 @@ import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { parseQueryString } from 'investigate-shared/utils/query-util';
 import { extractFilesColumns } from 'investigate-files/reducers/schema/selectors';
 import { failure } from 'investigate-shared/utils/flash-messages';
-
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const _handleError = (response, type) => {
@@ -332,7 +331,7 @@ const onFileSelection = (item) => {
       dispatch(getRiskScoreContext(item.checksumSha256, 'FILE'));
       dispatch(_getSelectedFileProperties(item.checksumSha256));
     });
-    dispatch(_fetchHostNameList(item.checksumSha256));
+    dispatch(fetchHostNames(item.checksumSha256));
   };
 };
 
@@ -378,25 +377,6 @@ const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onCom
   fetchMetaValue(query, metaName, size, null, 1000, 10, handlers, 1);
 };
 
-const _fetchHostNameList = (checksum) => {
-  return (dispatch, getState) => {
-    const queryNode = getState().investigate;
-
-    // Get the size for mata value
-    const { fileList: { agentCountMapping } } = getState().files;
-    const size = agentCountMapping && agentCountMapping[checksum] ? agentCountMapping[checksum] : 300000;
-    const input = {
-      filter: { value: `(checksum.all = '${checksum}')` },
-      queryNode,
-      size,
-      metaName: 'alias.host',
-      onComplete: (data) => {
-        dispatch({ type: ACTION_TYPES.SET_HOST_NAME_LIST, payload: data });
-      }
-    };
-    _getMetaValues(dispatch, input);
-  };
-};
 
 const fetchAgentId = (hostName, callBack) => {
   return (dispatch, getState) => {
@@ -413,6 +393,16 @@ const fetchAgentId = (hostName, callBack) => {
       }
     };
     _getMetaValues(dispatch, input);
+  };
+};
+
+const fetchHostNames = (checksum) => {
+  return (dispatch, getState) => {
+    const serviceId = getState().endpointQuery.serverId;
+    dispatch({
+      type: ACTION_TYPES.SET_HOST_NAME_LIST,
+      promise: File.getHostCount(serviceId, checksum)
+    });
   };
 };
 
@@ -446,12 +436,11 @@ const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat
 
     request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
 
+    dispatch(fetchHostNames(checksum));
+
     dispatch(_getSelectedFileProperties(checksum));
 
     dispatch(getAllServices());
-    dispatch(getServiceId('FILE', () => {
-      dispatch(_fetchHostNameList(checksum));
-    }));
 
     if (tabName === 'ANALYSIS') {
       const updatedSid = sourceSid || sid;
@@ -615,6 +604,7 @@ export {
   getSavedFileStatus,
   fetchAgentId,
   getFirstPageOfFiles,
+  fetchHostNames,
   retrieveRemediationStatus,
   onFileSelection,
   userLeftFilesPage,

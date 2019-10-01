@@ -11,21 +11,14 @@ import sinon from 'sinon';
 
 let initState;
 
-const hosts = [
-  {
-    value: 'Machine1'
-  },
-  {
-    value: 'Machine2'
-  },
-  {
-    value: 'Machine3'
-  },
-  {
-    value: 'Machine4'
-  }
-];
-
+const hosts = {
+  data: [
+    { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC', 'hostname': 'windows', 'score': 0 },
+    { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAB', 'hostname': 'mac', 'score': 0 },
+    { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAD', 'hostname': 'linux', 'score': 0 },
+    { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAF', 'hostname': 'windows-1', 'score': 0 }
+  ]
+};
 module('Integration | Component | file found on machines', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-files')
@@ -68,7 +61,7 @@ module('Integration | Component | file found on machines', function(hooks) {
 
   test('when file, is not active on any host', async function(assert) {
     await render(hbs`{{file-found-on-hosts}}`);
-    assert.equal(findAll('.files-host-list .rsa-panel-message .message')[0].textContent.trim(), 'No results found', 'No result message, when file is not found on any host.');
+    assert.equal(findAll('.files-host-list .rsa-panel-message .message')[0].textContent.trim(), 'This file is not associated with any host', 'No Host result message, when file is not found on any host.');
   });
 
   test('loader icon when list is loading', async function(assert) {
@@ -87,14 +80,21 @@ module('Integration | Component | file found on machines', function(hooks) {
       .build();
     await render(hbs`{{file-found-on-hosts}}`);
     assert.equal(findAll('.host_details_link').length, 4, '4 Machines are listed.');
-    assert.equal(find('.count-info').textContent.trim(), 'Active On 4 hosts', 'Analyze Events button appears with each machine.');
+    assert.equal(findAll('.count-info').length, 0, 'No message displayed for host count less than 100.');
+  });
+
+  test('info icon when host list is more than 100', async function(assert) {
+    new ReduxDataHelper(initState)
+      .hostNameList({ data: new Array(110) })
+      .build();
+    await render(hbs`{{file-found-on-hosts}}`);
+    assert.equal(findAll('.info-icon').length, 1, 'info icon is present.');
   });
 
   test('host info label is displayed correctly', async function(assert) {
-    new ReduxDataHelper(initState)
-      .hostNameList([{ value: 'test' }])
+    new ReduxDataHelper(initState).hostNameList({ data: new Array(110) })
       .build();
     await render(hbs`{{file-found-on-hosts}}`);
-    assert.equal(find('.count-info').textContent.trim(), 'Active On 1 host', 'Analyze Events button appears with each machine.');
+    assert.equal(find('.count-info').textContent.trim(), 'Top 100 hosts with high risk scores are listed', 'Message displayed for host count More than 100.');
   });
 });

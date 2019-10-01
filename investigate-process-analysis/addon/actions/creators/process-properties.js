@@ -1,6 +1,7 @@
-import { getProcessDetails } from '../api/process-properties';
+import { getProcessDetails, getHostCount } from '../api/process-properties';
 import * as ACTION_TYPES from '../types';
 import { debug } from '@ember/debug';
+
 
 /**
  * Action creator for fetching process information.
@@ -34,6 +35,14 @@ const _handleError = (response) => {
   };
 };
 
+const fetchHostNames = (checksum) => {
+  return {
+    type: ACTION_TYPES.SET_HOST_CONTEXT,
+    promise: getHostCount(checksum)
+  };
+};
+
 export {
-  fetchProcessDetails
+  fetchProcessDetails,
+  fetchHostNames
 };

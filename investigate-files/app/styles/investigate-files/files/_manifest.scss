@@ -105,6 +105,13 @@ $risk-panel-width: 500px;
   .count-info {
     padding-bottom: rsa-whitespace()
   }
+  .info-icon{
+    vertical-align: middle;
+  }
+  .score-detail{
+    margin-right: rsa-whitespace(more);
+    vertical-align: middle;
+  }
   .files-host-list {
     color: text-color(primary, lightest);
     padding: rsa-whitespace();
@@ -127,7 +134,6 @@ $risk-panel-width: 500px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      padding-left: rsa-whitespace(less);
       a {
         color: text-color(secondary);
       }

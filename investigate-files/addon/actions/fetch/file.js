@@ -135,6 +135,23 @@ const getContext = (query, handlers) => {
   });
 };
 
+const getHostCount = (serviceId, checksum) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'getHostCount',
+    modelName: 'files',
+    query: {
+      data: {
+        checksumSha256: checksum
+      }
+    },
+    streamOptions: {
+      socketUrlPostfix: serviceId,
+      requiredSocketUrl: 'endpoint/socket'
+    }
+  });
+};
+
 const fetchRemediation = (thumbprints) => {
   const request = lookup('service:request');
   return request.promiseRequest({
@@ -183,6 +200,7 @@ export default {
   deleteFilter,
   getAllServices,
   getContext,
+  getHostCount,
   fetchRemediation,
   getSelectedFileProperties,
   sendFileDownloadToServerRequest

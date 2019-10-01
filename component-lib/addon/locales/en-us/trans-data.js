@@ -2413,7 +2413,9 @@ export default {
     },
     message: {
       noResultsMessage: 'No matching files were found',
-      noResultsFoundMessage: 'No results found'
+      noResultsFoundMessage: 'No results found',
+      listOfHostMessage: 'Top 100 hosts with high risk scores are listed',
+      noHostResultMessage: 'This file is not associated with any host'
     },
     errorPage: {
       serviceDown: 'Endpoint {{serviceType}}Server is offline',
