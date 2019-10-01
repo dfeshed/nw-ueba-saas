@@ -4,16 +4,13 @@ An ember addon to add any right-click-menu to your components.
 
 ## Installing
 
-Need to update your package json with add on and ember-fetch dependency:
+Need to update your package json with addon:
 ```bash
   "ember-addon": {
     "configPath": "tests/dummy/config",
     "paths": [
       "../rsa-context-menu"
     ]`
-  }
-  "dependencies": {
-    "ember-fetch": "^3.4.4"
   }
 ```
 
@@ -45,7 +42,7 @@ import rsaMenuMixin from 'rsa-context-menu';
 
 export default Ember.Component.extend(rsaMenuMixin, {
   // your component properties
-  
+
   _contextMenu(e) {
     // do anything before triggering the context-menu
   }
@@ -117,7 +114,7 @@ You should add it as the contextSelection. This could be one or multiple items.
       action(selection) { /* do something with the selection */ }
     }
   ],
-  
+
   contextSelection: { foo: 'bar' }
 ```
 
@@ -135,7 +132,7 @@ It will be passed to the action as the second argument.
       action(selection, details) { /* do something */ }
     }
   ],
-  
+
   contextDetails: { foo: 'bar' }
 ```
 
@@ -176,7 +173,7 @@ Need not to pass context menu item in that case. As items will be taken from SA 
   Mata Value
 {{/rsa-context-menu}}
 ```
-Need to add module name in Context Selection. 
+Need to add module name in Context Selection.
 
 ```js
 contextSelection: { moduleName: 'EventAnalysisPanel', metaName: 'ip.src', metaValue: '10.10.10.10' }
@@ -188,12 +185,12 @@ Right click menu items will appaer based on moduleName and meta name. For same m
 
 ### Non supported actions
 
-Some actions defined in classic SA cannot be supported for nw-ui. 
+Some actions defined in classic SA cannot be supported for nw-ui.
 
 Current non support action id list:
 
 
-```js 
+```js
 File name:: /sa-ui/rsa-context-menu/addon/utils/non-url-actions-handler.js
 
 export const nonSupportedActionList = [
