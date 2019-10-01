@@ -711,10 +711,11 @@ export const getRecentQueries = (query = '') => {
 
 export const valueSuggestions = (metaName, filter = '') => {
   return (dispatch, getState) => {
-    const { investigate: { queryNode: { serviceId }, dictionaries: { aliases } } } = getState();
+    const { investigate: { queryNode: { serviceId, startTime, endTime }, dictionaries: { aliases } } } = getState();
+
     dispatch({
       type: ACTION_TYPES.SET_VALUE_SUGGESTIONS,
-      promise: fetchValueSuggestions(serviceId, metaName, filter),
+      promise: fetchValueSuggestions(serviceId, metaName, filter, startTime, endTime),
       meta: {
         metaName,
         aliases,

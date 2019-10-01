@@ -15,7 +15,7 @@ const _createFilterObjects = (field, value) => {
 * @return {object} RSVP Promise
 * @public
 */
-export default function fetchValueSuggestions(serviceId, metaName, prefixText) {
+export default function fetchValueSuggestions(serviceId, metaName, prefixText, startTime, endTime) {
 
   const streamOptions = {
     cancelPreviouslyExecuting: true
@@ -24,7 +24,8 @@ export default function fetchValueSuggestions(serviceId, metaName, prefixText) {
     filter: [
       serviceIdFilter(serviceId),
       _createFilterObjects('prefix', prefixText),
-      _createFilterObjects('metaName', metaName)
+      _createFilterObjects('metaName', metaName),
+      { field: 'timeRange', range: { from: startTime, to: endTime } }
     ],
     stream: {
       limit: 100
