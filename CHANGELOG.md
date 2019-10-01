@@ -1,3 +1,37 @@
+# [14.3.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.3.0)
+## Features
+* [ASOC-74234](https://bedfordjira.na.rsa.net/browse/ASOC-74234):&emsp;Paren Right-Click Options
+* [ASOC-74237](https://bedfordjira.na.rsa.net/browse/ASOC-74237):&emsp;Automatically Remove Operators When Typed
+* [ASOC-77269](https://bedfordjira.na.rsa.net/browse/ASOC-77269):&emsp;Display default values for file policy settings
+* [ASOC-77827](https://bedfordjira.na.rsa.net/browse/ASOC-77827):&emsp;Update Data Config Tool with latest configuration changes - Preferences - 11.2, 11.3, 11.3.1
+* [ASOC-79249](https://bedfordjira.na.rsa.net/browse/ASOC-79249):&emsp;Create Profile CRUD APIs
+* [ASOC-79254](https://bedfordjira.na.rsa.net/browse/ASOC-79254):&emsp;Create Meta Group CRUD APIs
+* [ASOC-80930](https://bedfordjira.na.rsa.net/browse/ASOC-80930):&emsp;Hide Uncommon Settings
+* [ASOC-81782](https://bedfordjira.na.rsa.net/browse/ASOC-81782):&emsp;Toggle all links to point to Ember Events/classic Events based on switch in Classic SA code
+* [ASOC-81857](https://bedfordjira.na.rsa.net/browse/ASOC-81857):&emsp;Filter in UI for isolated machines
+* [ASOC-81869](https://bedfordjira.na.rsa.net/browse/ASOC-81869):&emsp;[Host Details] Remove from network isolation
+* [ASOC-81879](https://bedfordjira.na.rsa.net/browse/ASOC-81879):&emsp;[Host Details View] Edit network isolation exclusion list
+* [ASOC-81966](https://bedfordjira.na.rsa.net/browse/ASOC-81966):&emsp;Toggle all links to point to Ember Events/classic Events based on switch in Ember SA code
+* [ASOC-82015](https://bedfordjira.na.rsa.net/browse/ASOC-82015):&emsp;Show sources with missing typespecs in policy grid
+* [ASOC-82115](https://bedfordjira.na.rsa.net/browse/ASOC-82115):&emsp;cleanup jQuery deprecations for sa
+* [ASOC-82276](https://bedfordjira.na.rsa.net/browse/ASOC-82276):&emsp;Refreshing the Isolation list without enabling disabling Isolation for agent only
+* [ASOC-82532](https://bedfordjira.na.rsa.net/browse/ASOC-82532):&emsp;Improve row selection on USM UI conflict resolution page
+* [ASOC-82674](https://bedfordjira.na.rsa.net/browse/ASOC-82674):&emsp;UI fixes for Machine Isolation
+* [ASOC-83077](https://bedfordjira.na.rsa.net/browse/ASOC-83077):&emsp;Source Name length should be limited in the UI
+* [ASOC-83186](https://bedfordjira.na.rsa.net/browse/ASOC-83186):&emsp;Add event source configuration guide link to file policy source creation page
+* [ASOC-83194](https://bedfordjira.na.rsa.net/browse/ASOC-83194):&emsp;Warning notification banner placement
+* [ASOC-83205](https://bedfordjira.na.rsa.net/browse/ASOC-83205):&emsp;Leverage Redux in list-manager
+* [ASOC-83216](https://bedfordjira.na.rsa.net/browse/ASOC-83216):&emsp;Add filter panel and button host details tab
+* [ASOC-83217](https://bedfordjira.na.rsa.net/browse/ASOC-83217):&emsp;Add filter controls to the filter panel and filter the result
+* [ASOC-83218](https://bedfordjira.na.rsa.net/browse/ASOC-83218):&emsp;Save applied filter
+* [ASOC-83634](https://bedfordjira.na.rsa.net/browse/ASOC-83634):&emsp;Handle isolation failure scenarios via report REST API
+* [ASOC-83636](https://bedfordjira.na.rsa.net/browse/ASOC-83636):&emsp;Move DTF tool source code to nwe-agent git repo
+* [ASOC-83637](https://bedfordjira.na.rsa.net/browse/ASOC-83637):&emsp;Endpoint upgrade testing to 11.3.2 from 11.3.1
+* [ASOC-83638](https://bedfordjira.na.rsa.net/browse/ASOC-83638):&emsp;[Mac] Return the deleted files info - Agent changes
+* [ASOC-83669](https://bedfordjira.na.rsa.net/browse/ASOC-83669):&emsp;System and process dump filter in Downloads tab
+* [ASOC-83676](https://bedfordjira.na.rsa.net/browse/ASOC-83676):&emsp;11.3.1 to 11.3.2 up-gradation
+
+
 # [14.2.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.2.0)
 ## Features
 * [ASOC-72711](https://bedfordjira.na.rsa.net/browse/ASOC-72711):&emsp;Meta-Value Suggestion UX
