@@ -6,6 +6,7 @@ import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-c
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import moment from 'moment';
+import { setScanTime } from 'investigate-hosts/actions/data-creators/details';
 
 const stateToComputed = (state) => ({
   fileSearchResults: state.endpoint.explore.fileSearchResults,
@@ -16,7 +17,8 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   setSelectedTabData,
-  toggleExploreSearchResults
+  toggleExploreSearchResults,
+  setScanTime
 };
 
 const ExploreContent = Component.extend({
@@ -50,6 +52,7 @@ const ExploreContent = Component.extend({
     navigateToFile(checksum, scanTime, searchKey) {
       const tabName = 'FILES';
       this.send('toggleExploreSearchResults', false);
+      this.send('setScanTime', scanTime);
       this.navigateToTab({ tabName, scanTime, checksum, searchKey }, true);
     }
   }

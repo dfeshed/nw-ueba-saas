@@ -10,6 +10,7 @@ import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import drivers from '../../../state/driver.state';
 import Immutable from 'seamless-immutable';
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
 
 const config = [
   {
@@ -856,8 +857,43 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
     await click('.close-filter .rsa-form-button');
     assert.equal(findAll('.rsa-icon-filter-2-filled').length, 1, 'on clicking Fiters button filter panel opens up');
-    await click('.signature .list-filter .list-filter-option');
+    await click('.fileProperties-signature-features .list-filter .list-filter-option');
     await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(findAll('.rsa-data-table-body-row').length, 1, 'one row is getting filtered');
   });
+
+  test('On selecting saved filter data is getting filtered', async function(assert) {
+
+    assert.expect(3);
+
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
+    const fileContextSelections = [];
+    new ReduxDataHelper(setState)
+      .drivers(drivers)
+      .setSavedFilterList([
+        {
+          id: 1,
+          criteria: {
+            expressionList: [{
+              'propertyName': 'fileProperty.signature.features',
+              'restrictionType': 'IN',
+              'propertyValues': [{ 'value': 'unsigned' }]
+            }]
+          }
+        }
+      ])
+      .host(hostDetails)
+      .fileContextSelections(fileContextSelections).build();
+    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
+    await click('.close-filter .rsa-form-button');
+    assert.equal(findAll('.rsa-icon-filter-2-filled').length, 1, 'on clicking Fiters button filter panel opens up');
+    await clickTrigger();
+    assert.equal(findAll('.rsa-data-table-body-row').length, 1, 'one row is getting filtered');
+  });
+
 });

@@ -15,7 +15,7 @@ import { setHostDetailPropertyTab, applyDetailsFilter } from 'investigate-hosts/
 import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
 import { getColumnsConfig, hostDetailPropertyTabs, isProcessDumpDownloadSupported } from 'investigate-hosts/reducers/details/selectors';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
-
+import { setSavedFilter } from 'investigate-hosts/actions/data-creators/host-details';
 import summaryItems from './summary-item-config';
 import { machineOsType, hostName, isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
 import { serviceList, isInsightsAgent, isAgentMigrated } from 'investigate-hosts/reducers/hosts/selectors';
@@ -36,8 +36,14 @@ import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/s
 import { success } from 'investigate-shared/utils/flash-messages';
 import { saveLocalFileCopy } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
-
+import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import { toggleHostDetailsFilter } from 'investigate-hosts/actions/ui-state-creators';
+import {
+  createCustomSearch,
+  deleteFilter,
+  resetFilters
+} from 'investigate-shared/actions/data-creators/filter-creators';
+
 import { FILTER_TYPES } from './filter-types';
 
 const callBackOptions = (context) => ({
@@ -78,7 +84,10 @@ const stateToComputed = (state) => ({
   isInsightsAgent: isInsightsAgent(state),
   isAgentMigrated: isAgentMigrated(state),
   isShowOpenFilterButton: !state.endpoint.visuals.showHostDetailsFilter,
-  filter: state.endpoint.details.filter
+  filter: state.endpoint.details.filter,
+  selectedFilterId: selectedFilterId(state.endpoint.details),
+  savedFilter: savedFilter(state.endpoint.details),
+  hostDetailFilters: state.endpoint.details.filter.savedFilterList
 });
 
 const dispatchToActions = {
@@ -93,7 +102,11 @@ const dispatchToActions = {
   getUpdatedRiskScoreContext,
   saveLocalFileCopy,
   toggleHostDetailsFilter,
-  applyDetailsFilter
+  createCustomSearch,
+  deleteFilter,
+  resetFilters,
+  applyDetailsFilter,
+  setSavedFilter
 };
 
 const Container = Component.extend({
@@ -195,6 +208,11 @@ const Container = Component.extend({
       next(() => {
         this.send('applyDetailsFilter', expressionList, filterType);
       });
+    },
+
+    applySavedFilters(belongsTo, filter) {
+      this.send('setSavedFilter', filter, belongsTo);
+      this.send('applyFilters', filter.criteria.expressionList, belongsTo);
     }
   }
 

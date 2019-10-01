@@ -4,7 +4,7 @@ import { initializeHostDetailsPage } from 'investigate-hosts/actions/data-creato
 import { resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { getOwner } from '@ember/application';
-
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 
 export default Route.extend({
 
@@ -60,6 +60,7 @@ export default Route.extend({
   deactivate() {
     const redux = this.get('redux');
     this.set('isPageLoading', true); // Reset the flag
+    redux.dispatch({ type: SHARED_ACTION_TYPES.RESET_FILTER, meta: { belongsTo: 'FILECONTEXT' } });
     redux.dispatch(resetDetailsInputAndContent()); // Clear the details input
   },
 

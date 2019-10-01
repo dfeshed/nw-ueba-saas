@@ -4,6 +4,12 @@ import { serviceList, isInsightsAgent } from 'investigate-hosts/reducers/hosts/s
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 import { next } from '@ember/runloop';
+import {
+  createCustomSearch,
+  deleteFilter,
+  resetFilters
+} from 'investigate-shared/actions/data-creators/filter-creators';
+import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 
 import {
   fileContextFileProperty,
@@ -36,6 +42,7 @@ import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-crea
 import { riskState, getAutorunTabs, selectedAutorunTab } from 'investigate-hosts/reducers/visuals/selectors';
 import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
 import { toggleHostDetailsFilter } from 'investigate-hosts/actions/ui-state-creators';
+import { setSavedFilter } from 'investigate-hosts/actions/data-creators/host-details';
 import { FILTER_TYPES } from './filter-types';
 
 const callBackOptions = (context) => ({
@@ -73,7 +80,10 @@ const stateToComputed = (state, { storeName }) => ({
   autorunTabs: getAutorunTabs(state),
   selectedAutorunTab: selectedAutorunTab(state),
   isShowOpenFilterButton: !state.endpoint.visuals.showHostDetailsFilter,
-  filter: state.endpoint.details.filter
+  filter: state.endpoint.details.filter,
+  selectedFilterId: selectedFilterId(state.endpoint.details),
+  savedFilter: savedFilter(state.endpoint.details),
+  hostDetailFilters: state.endpoint.details.filter.savedFilterList
 });
 
 const dispatchToActions = {
@@ -88,7 +98,11 @@ const dispatchToActions = {
   saveLocalFileCopy,
   setRowSelection,
   toggleHostDetailsFilter,
-  applyDetailsFilter
+  createCustomSearch,
+  deleteFilter,
+  resetFilters,
+  applyDetailsFilter,
+  setSavedFilter
 };
 
 
@@ -178,6 +192,10 @@ const ContextWrapper = Component.extend({
       next(() => {
         this.send('applyDetailsFilter', expressionList, filterType);
       });
+    },
+    applySavedFilters(belongsTo, filter) {
+      this.send('setSavedFilter', filter, belongsTo);
+      this.send('applyFilters', filter.criteria.expressionList, belongsTo);
     }
   }
 

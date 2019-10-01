@@ -491,4 +491,8 @@ export default class DataHelper {
     _set(this.state, 'visuals.activeAnomaliesTab', tab);
     return this;
   }
+  setSavedFilterList(data) {
+    _set(this.state, 'details.filter.savedFilterList', data);
+    return this;
+  }
 }

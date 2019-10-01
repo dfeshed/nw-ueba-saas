@@ -2,6 +2,7 @@ import { initializeHostsPreferences } from 'investigate-hosts/actions/data-creat
 import { fetchDataForSelectedTab } from 'investigate-hosts/actions/data-creators/details';
 import { changeEndpointServer, setSelectedMachineServerId } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
+import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
 import { setSelectedHost, resetHostDownloadLink } from 'investigate-hosts/actions/ui-state-creators';
 import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from '../types';
@@ -138,9 +139,12 @@ const initializeHostDetailsPage = ({ sid, id: agentId }) => {
     // get the host details
     await dispatch(getRequiredHostInformation(agentId));
 
+    dispatch(getFilter(() => {}, 'FILECONTEXT'));
+
     dispatch(resetHostDownloadLink());
   };
 };
+const setSavedFilter = (filter, belongsTo) => ({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: filter, meta: { belongsTo } });
 
 const changeSnapshotTime = (option) => {
   return async(dispatch) => {
@@ -161,5 +165,6 @@ export {
   getHostDetails,
   setDataForHostTab,
   getMFTDetails,
-  changeSnapshotTime
+  changeSnapshotTime,
+  setSavedFilter
 };

@@ -1,6 +1,6 @@
 const FILTER_TYPES = [
   {
-    'name': 'name',
+    'name': 'fileProperties.firstFileName',
     'label': 'investigateHosts.process.processName',
     'type': 'text',
     useI18N: true,

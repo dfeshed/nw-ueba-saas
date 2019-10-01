@@ -45,7 +45,7 @@ const FILTER_TYPES = [
     ]
   },
   {
-    'name': 'signature',
+    'name': 'fileProperties.signature.features',
     'label': 'investigateFiles.fields.signature.features',
     'listOptions': [
       { name: 'unsigned', label: 'investigateFiles.filter.signature.unsigned' },
