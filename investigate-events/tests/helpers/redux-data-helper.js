@@ -70,6 +70,11 @@ const DEFAULT_PILLS_DATA = [{
   complexFilterText: undefined
 }, {
   id: '2',
+  type: 'operator-and',
+  isFocused: false,
+  isSelected: false
+}, {
+  id: '3',
   meta: 'b',
   operator: '=',
   value: '\'y\'',

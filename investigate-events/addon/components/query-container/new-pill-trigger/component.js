@@ -1,6 +1,7 @@
 import Component from '@ember/component';
-
 import * as MESSAGE_TYPES from '../message-types';
+
+const { log } = console;//eslint-disable-line
 
 export default Component.extend({
   classNames: ['new-pill-trigger-container'],

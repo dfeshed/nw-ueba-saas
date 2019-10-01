@@ -4,7 +4,9 @@
 import EmberObject from '@ember/object';
 import {
   CLOSE_PAREN,
-  OPEN_PAREN
+  OPEN_PAREN,
+  OPERATOR_AND,
+  OPERATOR_OR
 } from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line
@@ -37,6 +39,28 @@ const CloseParen = Filter.extend({
 });
 
 /**
+ * Logical operator class for AND.
+ */
+const OperatorAnd = Filter.extend({
+  componentName: 'query-container/logical-operator',
+
+  init() {
+    this.set('type', OPERATOR_AND);
+  }
+});
+
+/**
+ * Logical operator class for AND.
+ */
+const OperatorOr = Filter.extend({
+  componentName: 'query-container/logical-operator',
+
+  init() {
+    this.set('type', OPERATOR_OR);
+  }
+});
+
+/**
  * Open parentheses class.
  */
 const OpenParen = Filter.extend({
@@ -55,5 +79,7 @@ const OpenParen = Filter.extend({
 
 export {
   CloseParen,
-  OpenParen
+  OpenParen,
+  OperatorAnd,
+  OperatorOr
 };

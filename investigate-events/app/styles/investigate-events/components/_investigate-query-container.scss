@@ -733,6 +733,10 @@
     &.is-focused {
       border-color: border-color(accentTwo);
     }
+    &.logical-operator {
+      border: 1px solid transparent;
+      background-color: opacity-value(transparent);
+    }
   }
 
   .query-pill {

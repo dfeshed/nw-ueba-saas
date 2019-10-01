@@ -4,6 +4,8 @@ import {
   CLOSE_PAREN,
   COMPLEX_FILTER,
   OPEN_PAREN,
+  OPERATOR_AND,
+  OPERATOR_OR,
   QUERY_FILTER,
   TEXT_FILTER
 } from 'investigate-events/constants/pill';
@@ -48,4 +50,13 @@ test('creates proper query hash for filters and params', function(assert) {
     'service-sTime-eTime-(-abc-)',
     'hash is created properly'
   );
+});
+
+test('creates proper query hash for operators', function(assert) {
+  const pills = [
+    { type: OPERATOR_AND },
+    { type: OPERATOR_OR }
+  ];
+  const hash = createQueryHash('service', 'sTime', 'eTime', pills);
+  assert.equal(hash, 'service-sTime-eTime-&-|', 'hash is created properly');
 });

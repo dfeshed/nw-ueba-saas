@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { settled } from '@ember/test-helpers';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-
 import ReduxDataHelper from '../../helpers/redux-data-helper';
 import { throwSocket } from '../../helpers/patch-socket';
 import { patchReducer } from '../../helpers/vnext-patch';
@@ -11,6 +10,8 @@ import { invalidServerResponse } from './data';
 import guidedCreators from 'investigate-events/actions/guided-creators';
 import ACTION_TYPES from 'investigate-events/actions/types';
 import { QueryFilter, ComplexFilter } from 'investigate-events/util/filter-types';
+import { createOperator } from 'investigate-events/util/query-parsing';
+import { OPERATOR_AND, OPERATOR_OR } from 'investigate-events/constants/pill';
 
 module('Unit | Actions | Guided Creators', function(hooks) {
   setupTest(hooks);
@@ -243,13 +244,13 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     const state = new ReduxDataHelper()
       .language()
       .pillsDataPopulated()
-      .markSelected(['1', '2'])
+      .markSelected(['1', '2', '3'])
       .build();
     const getState = () => state;
 
     const fourthDispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
-      assert.deepEqual(action.payload.pillData, state.investigate.queryNode.pillsData, 'action pillData has the right value');
+      assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, '4th action has the correct type');
+      assert.deepEqual(action.payload.pillData, state.investigate.queryNode.pillsData, '4th action pillData has the right value');
       done();
     };
 
@@ -267,8 +268,8 @@ module('Unit | Actions | Guided Creators', function(hooks) {
         const thunk2 = action;
         thunk2(secondDispatch, getState);
       } else {
-        assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
-        assert.deepEqual(action.payload.pillData, ['foo'], 'action pillData has the right value');
+        assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, '1st action has the correct type');
+        assert.deepEqual(action.payload.pillData, ['foo'], '1st action pillData has the right value');
         done();
       }
     };
@@ -390,14 +391,14 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     const state = new ReduxDataHelper()
       .language()
       .pillsDataPopulated()
-      .markSelected(['1', '2'])
+      .markSelected(['1', '2', '3'])
       .markFocused(['1'])
       .build();
     const getState = () => state;
 
     const fifthDispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
-      assert.deepEqual(action.payload.pillData, state.investigate.queryNode.pillsData, 'action pillData has the right value');
+      assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, '5th action has the correct type');
+      assert.deepEqual(action.payload.pillData, state.investigate.queryNode.pillsData, '5th action pillData has the right value');
       done();
     };
 
@@ -417,8 +418,8 @@ module('Unit | Actions | Guided Creators', function(hooks) {
         const thunk3 = action;
         thunk3(thirdDispatch, getState);
       } else {
-        assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
-        assert.deepEqual(action.payload.pillData, [{ pillData: 'foo' } ], 'action pillData has the right value');
+        assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, '2nd action has the correct type');
+        assert.deepEqual(action.payload.pillData, [{ pillData: 'foo' } ], '2nd action pillData has the right value');
         done();
       }
     };
@@ -499,7 +500,7 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     const done = assert.async();
 
     const getState = () => {
-      return new ReduxDataHelper().pillsDataPopulated().markSelected(['1', '2']).build();
+      return new ReduxDataHelper().pillsDataPopulated().markSelected(['1', '2', '3']).build();
     };
     const { pillsData } = getState().investigate.queryNode;
 
@@ -766,14 +767,14 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     assert.expect(2);
     const done = assert.async();
 
-    const position = 1;
+    const position = 2;
     const direction = 'left';
 
     const getState = () => {
       return new ReduxDataHelper()
         .language()
         .pillsDataPopulated()
-        .markSelected(['2'])
+        .markSelected(['3'])
         .build();
     };
 
@@ -865,5 +866,23 @@ module('Unit | Actions | Guided Creators', function(hooks) {
 
     const thunk = guidedCreators.cancelPillCreation(2);
     thunk(dispatch, getState);
+  });
+
+  test('addLogicalOperator action creator returns proper type and payload', function(assert) {
+    const pillData = createOperator(OPERATOR_AND);
+    const position = 2;
+    const action = guidedCreators.addLogicalOperator({ pillData, position });
+    assert.equal(action.type, ACTION_TYPES.INSERT_LOGICAL_OPERATOR, 'action has the correct type');
+    assert.deepEqual(action.payload.pillData, pillData, 'action pillData has the right value');
+    assert.deepEqual(action.payload.position, 2, 'action position has the right value');
+  });
+
+  test('replaceLogicalOperator action creator returns proper type and payload', function(assert) {
+    const pillData = createOperator(OPERATOR_OR);
+    const position = 2;
+    const action = guidedCreators.replaceLogicalOperator({ pillData, position });
+    assert.equal(action.type, ACTION_TYPES.REPLACE_LOGICAL_OPERATOR, 'action has the correct type');
+    assert.deepEqual(action.payload.pillData, pillData, 'action pillData has the right value');
+    assert.deepEqual(action.payload.position, 2, 'action position has the right value');
   });
 });

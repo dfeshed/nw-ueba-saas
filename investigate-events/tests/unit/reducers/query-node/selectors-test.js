@@ -365,7 +365,7 @@ test('check isOnGuided', function(assert) {
 test('enrichedPillsData is false when status is not error', function(assert) {
   const state = new ReduxDataHelper().language().pillsDataPopulated().build();
   const pD = enrichedPillsData(state);
-  assert.equal(pD.length, 2, 'returns correct number of pill data');
+  assert.equal(pD.length, 3, 'returns correct number of pill data');
   assert.equal(pD[0].meta.metaName, 'a', 'transforms meta correctly');
   assert.equal(pD[0].operator.displayName, '=', 'transforms operator correctly');
   assert.equal(pD[0].value, '\'x\'', 'transforms value correctly');
@@ -399,15 +399,15 @@ test('selectedPills returns only those pills that are selected', function(assert
 test('deselectedPills returns only those pills that are not selected', function(assert) {
   const state = new ReduxDataHelper()
     .language()
-    .pillsDataPopulated()
+    .pillsDataPopulated()// P & P
     .markSelected(['1'])
     .build();
   const pD = deselectedPills(state);
-  assert.equal(pD.length, 1, 'returns correct number of pill data');
-  assert.equal(pD[0].meta, 'b', 'transforms meta correctly');
-  assert.equal(pD[0].operator, '=', 'transforms operator correctly');
-  assert.equal(pD[0].value, '\'y\'', 'transforms value correctly');
-  assert.equal(pD[0].id, 2, 'transforms id correctly');
+  assert.equal(pD.length, 2, 'returns correct number of pill data');
+  assert.equal(pD[1].meta, 'b', 'transforms meta correctly');
+  assert.equal(pD[1].operator, '=', 'transforms operator correctly');
+  assert.equal(pD[1].value, '\'y\'', 'transforms value correctly');
+  assert.equal(pD[1].id, 3, 'transforms id correctly');
 });
 
 test('canQueryGuided is true when a query is ready to execute and NO invalid pill is present', function(assert) {

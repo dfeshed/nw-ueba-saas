@@ -6,9 +6,10 @@ import { isEmpty } from '@ember/utils';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { createQueryHash } from 'investigate-events/util/query-hash';
-import { createParens, reassignTwinIds } from 'investigate-events/util/query-parsing';
+import { createOperator, createParens, reassignTwinIds } from 'investigate-events/util/query-parsing';
 import { pillBeingEdited, focusedPill } from './selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
+import { OPERATOR_AND } from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
 
@@ -274,6 +275,26 @@ const _updatePillProperties = (state, position, updatedProperties) => {
     ...updatedProperties
   };
   return _replacePill(state, updatedPill);
+};
+
+const _handleLogicalOperator = (state, pillData, position, isReplace = false) => {
+  const { pillsData } = state;
+  const newPillData = {
+    ...pillData,
+    id: _.uniqueId(ID_PREFIX)
+  };
+
+  if (pillsData.length === 0) {
+    // do nothing because we can't start a query with an operator
+    return state;
+  } else {
+    const _start = isReplace ? position - 1 : position;
+    return state.set('pillsData', Immutable.from([
+      ...pillsData.slice(0, _start),
+      newPillData,
+      ...pillsData.slice(position)
+    ]));
+  }
 };
 
 export default handleActions({
@@ -765,13 +786,14 @@ export default handleActions({
     const pillData = state.pillsData.asMutable({ deep: true });
     const { position } = payload;
     const [open, close] = createParens();
+    const andOperator = createOperator(OPERATOR_AND);
     // assign ids to the new parens
     open.id = _.uniqueId(ID_PREFIX);
     close.id = _.uniqueId(ID_PREFIX);
 
     if (pillData.length === 0) {
       // do nothing because we shouldn't be in this state
-      return;
+      return state;
     } else {
       if (pillData[position] && pillData[position].isEditing) {
         // we are editing a pill that we now want to convert to open/close
@@ -780,6 +802,7 @@ export default handleActions({
         pd = [
           ...pillData.slice(0, position),
           close,
+          andOperator,
           open,
           ...pillData.slice(position + 1)
         ];
@@ -788,6 +811,7 @@ export default handleActions({
           // insert open and close parens into pillsData at the desired position
           ...pillData.slice(0, position),
           close,
+          andOperator,
           open,
           ...pillData.slice(position)
         ];
@@ -797,5 +821,15 @@ export default handleActions({
     // to reassign the twinId property of the affected parens.
     pd = reassignTwinIds(pd, position);
     return state.set('pillsData', Immutable.from(pd));
+  },
+
+  [ACTION_TYPES.INSERT_LOGICAL_OPERATOR]: (state, { payload }) => {
+    const { pillData, position } = payload;
+    return _handleLogicalOperator(state, pillData, position);
+  },
+
+  [ACTION_TYPES.REPLACE_LOGICAL_OPERATOR]: (state, { payload }) => {
+    const { pillData, position } = payload;
+    return _handleLogicalOperator(state, pillData, position, true);
   }
 }, _initialState);

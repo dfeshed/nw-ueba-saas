@@ -1,13 +1,21 @@
 import { test, module } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { CLOSE_PAREN, OPEN_PAREN, QUERY_FILTER } from 'investigate-events/constants/pill';
+import {
+  CLOSE_PAREN,
+  OPEN_PAREN,
+  OPERATOR_AND,
+  OPERATOR_OR,
+  QUERY_FILTER
+} from 'investigate-events/constants/pill';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import reducer from 'investigate-events/reducers/investigate/query-node/reducer';
 import makePackAction from '../../../helpers/make-pack-action';
 import { LIFECYCLE } from 'redux-pack';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
+import { createOperator } from 'investigate-events/util/query-parsing';
 
+const { log } = console;//eslint-disable-line
 
 module('Unit | Reducers | QueryNode');
 
@@ -220,7 +228,7 @@ test('ADD_PILL adds pill to beginning of list', function(assert) {
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 4, 'pillsData is the correct length');
   assert.equal(result.pillsData[0].foo, 1234, 'pillsData item is in the right position');
 });
 
@@ -234,7 +242,7 @@ test('ADD_PILL adds pill to the middle of a list', function(assert) {
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 4, 'pillsData is the correct length');
   assert.equal(result.pillsData[1].foo, 1234, 'pillsData item is in the right position');
 });
 
@@ -248,7 +256,7 @@ test('ADD_PILL adds pill to end of list', function(assert) {
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 4, 'pillsData is the correct length');
   assert.equal(result.pillsData[2].foo, 1234, 'pillsData item is in the right position');
 });
 
@@ -307,7 +315,7 @@ test('BATCH_ADD_PILLS adds pill to beginning of list', function(assert) {
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 5, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 6, 'pillsData is the correct length');
   assert.equal(result.pillsData[0].foo, 1, 'pillsData item 1 is in the right position');
   assert.equal(result.pillsData[0].isFocused, false, 'pillsData item 1 is not focused');
   assert.equal(result.pillsData[1].bar, 2, 'pillsData item 2 is in the right position');
@@ -330,7 +338,7 @@ test('BATCH_ADD_PILLS adds pill to the middle of a list', function(assert) {
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 5, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 6, 'pillsData is the correct length');
   assert.equal(result.pillsData[1].foo, 1, 'pillsData item 1 is in the right position');
   assert.equal(result.pillsData[1].isFocused, false, 'pillsData item 1 is not focused');
   assert.equal(result.pillsData[2].bar, 2, 'pillsData item 2 is in the right position');
@@ -353,7 +361,7 @@ test('BATCH_ADD_PILLS adds pill to end of list', function(assert) {
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 5, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 6, 'pillsData is the correct length');
   assert.equal(result.pillsData[2].foo, 1, 'pillsData item 1 is in the right position');
   assert.equal(result.pillsData[2].isFocused, false, 'pillsData item 1 is not focused');
   assert.equal(result.pillsData[3].bar, 2, 'pillsData item 2 is in the right position');
@@ -430,7 +438,7 @@ test('DELETE_GUIDED_PILLS removes the pill provided', function(assert) {
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 1, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
   assert.equal(result.pillsData[0].id, 2, 'pillsData item is in the right position');
 });
 
@@ -449,7 +457,7 @@ test('DELETE_GUIDED_PILLS removes multiple pills', function(assert) {
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 0, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 1, 'pillsData is the correct length');
 });
 
 test('DELETE_GUIDED_PILLS removes the pill provided and removes focus from any other pill that has it', function(assert) {
@@ -471,7 +479,7 @@ test('DELETE_GUIDED_PILLS removes the pill provided and removes focus from any o
   };
   const result = reducer(stateWithFocusedPill, action);
 
-  assert.equal(result.pillsData.length, 1, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].id !== result.pillsData.id, 'pill would now have an updated id');
   assert.ok(result.pillsData[0].isFocused === false, 'The pill that had focus no longer has it');
 });
@@ -496,7 +504,7 @@ test('EDIT_GUIDED_PILL edits first pill provided', function(assert) {
 
   const result = reducer(stateWithEditingPill, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].id !== '1', 'updated pillsData item has updated ID');
   assert.ok(result.pillsData[0].isEditing === false, 'not editing');
   assert.equal(result.pillsData[0].foo, 1234, 'pillsData item had its data updated');
@@ -514,7 +522,7 @@ test('EDIT_GUIDED_PILL edits last pill provided', function(assert) {
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.ok(result.pillsData[1].id !== '2', 'pillsData id has changed');
   assert.equal(result.pillsData[1].foo, 8907, 'pillsData item had its data updated');
 });
@@ -531,7 +539,7 @@ test('EDIT_GUIDED_PILL adds focus to the edited pill', function(assert) {
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.ok(result.pillsData[1].id !== '2', 'pillsData id has changed');
   assert.ok(result.pillsData[1].isFocused == true, 'pill received focus');
 });
@@ -576,7 +584,7 @@ test('VALIDATE_GUIDED_PILL reducer updates state when validation fails', functio
   });
   const result = reducer(stateWithPills, failureAction);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.ok(result.pillsData[1].id !== '2', 'updated pillsData item has updated ID');
   assert.equal(result.pillsData[1].validationError, 'Error in validation', 'pillsData item had its data updated with error');
   assert.ok(result.pillsData[1].isInvalid, 'pill is invalid');
@@ -607,7 +615,7 @@ test('VALIDATE_GUIDED_PILL reducer updates state when server-side validation suc
   });
   const result = reducer(stateWithPills, startAction);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.ok(result.pillsData[1].id !== '2', 'updated pillsData item has updated ID');
   assert.equal(result.pillsData[1].validationError, undefined, 'pillsData item reset its validation error');
   assert.notOk(result.pillsData[1].isInvalid, 'pill is invalid');
@@ -630,7 +638,7 @@ test('SELECT_GUIDED_PILLS selects multiple pills', function(assert) {
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].isSelected === true, 'first pill is selected');
   assert.ok(result.pillsData[1].isSelected === true, 'second pill is selected');
 });
@@ -647,7 +655,7 @@ test('SELECT_GUIDED_PILLS selects pills and adds focus if needed', function(asse
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].isSelected === true, 'first pill is selected');
   assert.ok(result.pillsData[0].isFocused === true, 'first pill is also focused');
 });
@@ -671,7 +679,7 @@ test('SELECT_GUIDED_PILLS will switch focus from any other pill if needed', func
   };
   const result = reducer(stateWithPillsFocused, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   // Now, first pill will no longer have focus
   assert.ok(result.pillsData[0].isFocused === false, 'first pill does not have focus now');
   // Second pill should now have focus
@@ -701,7 +709,7 @@ test('DESELECT_GUIDED_PILLS deselects multiple pills', function(assert) {
   };
   const result = reducer(stateWithPillsSelected, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].isSelected === false, 'first pill is selected');
   assert.ok(result.pillsData[1].isSelected === false, 'second pill is selected');
 });
@@ -718,7 +726,7 @@ test('DESELECT_GUIDED_PILLS selects pills and adds focus if needed', function(as
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].isFocused === true, 'first pill is also focused');
 });
 
@@ -741,7 +749,7 @@ test('DESELECT_GUIDED_PILLS will switch focus from any other pill if needed', fu
   };
   const result = reducer(stateWithPillsFocused, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   // Now, first pill will no longer have focus
   assert.ok(result.pillsData[0].isFocused === false, 'first pill does not have focus now');
   // Second pill should now have focus
@@ -766,7 +774,7 @@ test('OPEN_GUIDED_PILL_FOR_EDIT marks pill for editing', function(assert) {
   };
   const result = reducer(state, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].isEditing === true, 'first pill is selected');
 });
 
@@ -789,7 +797,7 @@ test('OPEN_GUIDED_PILL_FOR_EDIT removes focus from that pill', function(assert) 
   };
   const result = reducer(state, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].isFocused === false, 'Removes focus from the pill');
 });
 
@@ -864,7 +872,7 @@ test('INITIALIZE_INVESTIGATE clears out existing pills if no pillData or hashes 
     }
   };
 
-  assert.equal(initialState.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(initialState.pillsData.length, 3, 'pillsData is the correct length');
 
   const result = reducer(initialState, action);
 
@@ -963,7 +971,7 @@ test('RESET_GUIDED_PILL resets the pill', function(assert) {
   };
   const result = reducer(state, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   const [ firstPill ] = result.pillsData;
 
   assert.ok(firstPill.id !== state.pillsData[0].id, 'id should have changed');
@@ -989,7 +997,7 @@ test('RESET_GUIDED_PILL resets the pill, and always adds focus to it', function(
   };
   const result = reducer(state, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   const [ firstPill ] = result.pillsData;
 
   assert.ok(firstPill.id !== state.pillsData[0].id, 'id should have changed');
@@ -1014,7 +1022,7 @@ test('INITIALIZE_QUERYING sets a proper query hash', function(assert) {
 
   assert.equal(
     result.currentQueryHash,
-    '1-early-late-a=\'x\'-b=\'y\'',
+    '1-early-late-a=\'x\'-&-b=\'y\'',
     'pillsData is the correct length'
   );
 });
@@ -1040,7 +1048,7 @@ test('ADD_PILL_FOCUS adds focus to a pill at the provided position', function(as
     }
   };
   const result = reducer(stateWithPills, action);
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.ok(result.pillsData[1].isFocused === true, 'Correct pill has been focused');
 });
 
@@ -1178,7 +1186,7 @@ test('INSERT_PARENS adds parens if there are no existing pills', function(assert
 
 test('INSERT_PARENS adds parens before existing pills', function(assert) {
   const state = new ReduxDataHelper()
-    .pillsDataPopulated()// 2 existing pills
+    .pillsDataPopulated()// 3 existing pills
     .build()
     .investigate
     .queryNode;
@@ -1190,16 +1198,17 @@ test('INSERT_PARENS adds parens before existing pills', function(assert) {
   };
   const result = reducer(state, action);
 
-  assert.equal(result.pillsData.length, 4, 'pillsData is the correct length');
-  assert.equal(result.pillsData[0].type, OPEN_PAREN, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[1].type, CLOSE_PAREN, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[2].type, QUERY_FILTER, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[3].type, QUERY_FILTER, 'pillsData item is in the right position');
+  assert.equal(result.pillsData.length, 5, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].type, OPEN_PAREN, 'pillsData item 0 is in the right type');
+  assert.equal(result.pillsData[1].type, CLOSE_PAREN, 'pillsData item 1 is in the right type');
+  assert.equal(result.pillsData[2].type, QUERY_FILTER, 'pillsData item 2 is in the right type');
+  assert.equal(result.pillsData[3].type, OPERATOR_AND, 'pillsData item 3 is in the right type');
+  assert.equal(result.pillsData[4].type, QUERY_FILTER, 'pillsData item 4 is in the right type');
 });
 
 test('INSERT_PARENS adds parens in between existing pills', function(assert) {
   const state = new ReduxDataHelper()
-    .pillsDataPopulated()// 2 existing pills
+    .pillsDataPopulated()// 3 existing pills
     .build()
     .investigate
     .queryNode;
@@ -1211,16 +1220,41 @@ test('INSERT_PARENS adds parens in between existing pills', function(assert) {
   };
   const result = reducer(state, action);
 
-  assert.equal(result.pillsData.length, 4, 'pillsData is the correct length');
-  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[1].type, OPEN_PAREN, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[2].type, CLOSE_PAREN, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[3].type, QUERY_FILTER, 'pillsData item is in the right position');
+  assert.equal(result.pillsData.length, 5, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item 0 is in the right type');
+  assert.equal(result.pillsData[1].type, OPEN_PAREN, 'pillsData item 1 is in the right type');
+  assert.equal(result.pillsData[2].type, CLOSE_PAREN, 'pillsData item 2 is in the right type');
+  assert.equal(result.pillsData[3].type, OPERATOR_AND, 'pillsData item 3 is in the right type');
+  assert.equal(result.pillsData[4].type, QUERY_FILTER, 'pillsData item 4 is in the right type');
 });
 
 test('INSERT_PARENS adds parens at the end of existing pills', function(assert) {
   const state = new ReduxDataHelper()
-    .pillsDataPopulated()// 2 existing pills
+    .pillsDataPopulated()// 3 existing pills
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.INSERT_PARENS,
+    payload: {
+      position: 3
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 5, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item 0 is in the right type');
+  assert.equal(result.pillsData[1].type, OPERATOR_AND, 'pillsData item 1 is in the right type');
+  assert.equal(result.pillsData[2].type, QUERY_FILTER, 'pillsData item 2 is in the right type');
+  // assert.equal(result.pillsData[3].type, OPERATOR_AND, 'pillsData item 3 is in the right type');
+  assert.equal(result.pillsData[3].type, OPEN_PAREN, 'pillsData item 3 is in the right type');
+  assert.equal(result.pillsData[4].type, CLOSE_PAREN, 'pillsData item 4 is in the right type');
+});
+
+test('INSERT_PARENS adds parens into an edited, existing pill', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()// 3 existing pills
+    .markEditing(['3'])// the last item is being edited
     .build()
     .investigate
     .queryNode;
@@ -1233,31 +1267,10 @@ test('INSERT_PARENS adds parens at the end of existing pills', function(assert) 
   const result = reducer(state, action);
 
   assert.equal(result.pillsData.length, 4, 'pillsData is the correct length');
-  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[1].type, QUERY_FILTER, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[2].type, OPEN_PAREN, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[3].type, CLOSE_PAREN, 'pillsData item is in the right position');
-});
-
-test('INSERT_PARENS adds parens into an edited, existing pill', function(assert) {
-  const state = new ReduxDataHelper()
-    .pillsDataPopulated()// 2 existing pills
-    .markEditing(['2'])// the last item is being edited
-    .build()
-    .investigate
-    .queryNode;
-  const action = {
-    type: ACTION_TYPES.INSERT_PARENS,
-    payload: {
-      position: 1
-    }
-  };
-  const result = reducer(state, action);
-
-  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
-  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[1].type, OPEN_PAREN, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[2].type, CLOSE_PAREN, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item 0 is in the right type');
+  assert.equal(result.pillsData[1].type, OPERATOR_AND, 'pillsData item 1 is in the right type');
+  assert.equal(result.pillsData[2].type, OPEN_PAREN, 'pillsData item 2 is in the right type');
+  assert.equal(result.pillsData[3].type, CLOSE_PAREN, 'pillsData item 3 is in the right type');
 });
 
 test('INSERT_INTRA_PARENS adds parens within a paren group', function(assert) {
@@ -1272,22 +1285,23 @@ test('INSERT_INTRA_PARENS adds parens within a paren group', function(assert) {
       position: 1
     }
   };
-  const result = reducer(state, action);// ( ) ( pill )
+  const result = reducer(state, action);// ( ) AND ( pill )
   const pd = result.pillsData;
-  assert.equal(pd.length, 5, 'pillsData is the correct length');
+  assert.equal(pd.length, 6, 'pillsData is the correct length');
   assert.equal(pd[0].type, OPEN_PAREN, 'open paren, first group');
   assert.equal(pd[1].type, CLOSE_PAREN, 'close paren, first group');
-  assert.equal(pd[2].type, OPEN_PAREN, 'open paren, second group');
-  assert.equal(pd[3].type, QUERY_FILTER, 'query filter');
-  assert.equal(pd[4].type, CLOSE_PAREN, 'close paren, second group');
+  assert.equal(pd[2].type, OPERATOR_AND, 'AND logical operator');
+  assert.equal(pd[3].type, OPEN_PAREN, 'open paren, second group');
+  assert.equal(pd[4].type, QUERY_FILTER, 'query filter');
+  assert.equal(pd[5].type, CLOSE_PAREN, 'close paren, second group');
   assert.equal(pd[0].twinId, pd[1].twinId, 'first group twinIds match');
-  assert.equal(pd[2].twinId, pd[4].twinId, 'second group twinIds match');
+  assert.equal(pd[3].twinId, pd[5].twinId, 'second group twinIds match');
 });
 
 test('INSERT_INTRA_PARENS adds parens when editing a pill that is within a paren group', function(assert) {
   const state = new ReduxDataHelper()
     .pillsDataWithParens()// ( pill )
-    .markEditing(['2'])// the pill is being edited
+    .markEditing(['2'])// the pill id which is being edited
     .build()
     .investigate
     .queryNode;
@@ -1297,15 +1311,16 @@ test('INSERT_INTRA_PARENS adds parens when editing a pill that is within a paren
       position: 1
     }
   };
-  const result = reducer(state, action);// ( ) ( )
+  const result = reducer(state, action);// ( ) and ( )
   const pd = result.pillsData;
-  assert.equal(pd.length, 4, 'pillsData is the correct length');
+  assert.equal(pd.length, 5, 'pillsData is the correct length');
   assert.equal(pd[0].type, OPEN_PAREN, 'open paren, first group');
   assert.equal(pd[1].type, CLOSE_PAREN, 'close paren, first group');
-  assert.equal(pd[2].type, OPEN_PAREN, 'open paren, second group');
-  assert.equal(pd[3].type, CLOSE_PAREN, 'close paren, second group');
+  assert.equal(pd[2].type, OPERATOR_AND, 'AND logical operator');
+  assert.equal(pd[3].type, OPEN_PAREN, 'open paren, second group');
+  assert.equal(pd[4].type, CLOSE_PAREN, 'close paren, second group');
   assert.equal(pd[0].twinId, pd[1].twinId, 'first group twinIds match');
-  assert.equal(pd[2].twinId, pd[3].twinId, 'second group twinIds match');
+  assert.equal(pd[3].twinId, pd[4].twinId, 'second group twinIds match');
 });
 
 test('SET_VALUE_SUGGESTIONS init marks callInProgress as true', function(assert) {
@@ -1349,7 +1364,6 @@ test('SET_VALUE_SUGGESTIONS success saves value suggestions and marks callInProg
   assert.deepEqual(suggestions, expectedData, 'expected value suggestions were not found');
   assert.notOk(result.valueSuggestionCallInProgress, 'Call should not be in progess');
 });
-
 
 test('SET_VALUE_SUGGESTIONS success enriches values with aliases if available', function(assert) {
 
@@ -1443,4 +1457,65 @@ test('SET_VALUE_SUGGESTIONS failure marks callInProgress as false', function(ass
 
   const result = reducer(initialState, successAction);
   assert.notOk(result.valueSuggestionCallInProgress, 'Call should not be in progress');
+});
+
+test('INSERT_LOGICAL_OPERATOR DOES NOT add operator if there are no pills', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataEmpty()
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.INSERT_LOGICAL_OPERATOR,
+    payload: {
+      pillData: createOperator(OPERATOR_AND),
+      position: 0
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 0, 'pillsData is the correct length');
+});
+
+test('INSERT_LOGICAL_OPERATOR adds AND in between existing pills', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()// 3 existing pills
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.INSERT_LOGICAL_OPERATOR,
+    payload: {
+      pillData: createOperator(OPERATOR_OR),
+      position: 1
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 4, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item 0 is the right type');
+  assert.equal(result.pillsData[1].type, OPERATOR_OR, 'pillsData item 1 is the right type');
+  assert.equal(result.pillsData[2].type, OPERATOR_AND, 'pillsData item 2 is the right type');
+  assert.equal(result.pillsData[3].type, QUERY_FILTER, 'pillsData item 3 is the right type');
+});
+
+test('REPLACE_LOGICAL_OPERATOR replaces already existing operator', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()// 3 existing pills
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.REPLACE_LOGICAL_OPERATOR,
+    payload: {
+      pillData: createOperator(OPERATOR_OR),
+      position: 2
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item 0 is the right type');
+  assert.equal(result.pillsData[1].type, OPERATOR_OR, 'pillsData item 1 is the right type');
+  assert.equal(result.pillsData[2].type, QUERY_FILTER, 'pillsData item 2 is the right type');
 });

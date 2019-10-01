@@ -409,3 +409,19 @@ export const replaceAllGuidedPills = (pillData) => ({
     pillData
   }
 });
+
+export const addLogicalOperator = ({ pillData, position }) => ({
+  type: ACTION_TYPES.INSERT_LOGICAL_OPERATOR,
+  payload: {
+    pillData,
+    position
+  }
+});
+
+export const replaceLogicalOperator = ({ pillData, position }) => ({
+  type: ACTION_TYPES.REPLACE_LOGICAL_OPERATOR,
+  payload: {
+    pillData,
+    position
+  }
+});

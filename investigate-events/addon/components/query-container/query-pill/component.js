@@ -4,10 +4,18 @@ import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import computed, { alias, and, equal } from 'ember-computed-decorators';
 import _ from 'lodash';
-
 import * as MESSAGE_TYPES from '../message-types';
-import { createFilter, convertTextToPillData, valueList } from 'investigate-events/util/query-parsing';
-import { determineNewComponentPropsFromPillData, resultsCount, isSubmitClicked } from './query-pill-util';
+import {
+  convertTextToPillData,
+  createFilter,
+  createOperator,
+  valueList
+} from 'investigate-events/util/query-parsing';
+import {
+  determineNewComponentPropsFromPillData,
+  isSubmitClicked,
+  resultsCount
+} from './query-pill-util';
 import {
   COMPLEX_FILTER,
   QUERY_FILTER,
@@ -282,7 +290,6 @@ export default Component.extend({
    */
   @computed('valueString', 'isOperatorActive', 'isMetaTabActive')
   shouldOperatorExpand: (valueString, isOperatorActive, isMetaTabActive) => {
-    // log('shouldOperatorExpand called', valueString, isOperatorActive);
     return isEmpty(valueString) && isOperatorActive && isMetaTabActive;
   },
 
@@ -1225,8 +1232,14 @@ export default Component.extend({
     this._broadcast(MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS, { metaName, filter });
   },
 
-  _logicalOperator(data) {
-    this._broadcast(MESSAGE_TYPES.PILL_LOGICAL_OPERATOR, data);
+  /**
+   * Broadcast message to create a logical operator
+   * @param {string} type - Type of operator to create (AND/OR).
+   */
+  _logicalOperator(type) {
+    const operator = createOperator(type);
+    const pillData = this.get('pillData');
+    this._broadcast(MESSAGE_TYPES.PILL_LOGICAL_OPERATOR, { operator, pillData });
   },
 
   // ************************ EPS TAB FUNCTIONALITY *************************  //

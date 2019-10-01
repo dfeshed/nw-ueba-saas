@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
@@ -134,8 +134,7 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
     thunk(dispatchAdminEventSetting);
   });
 
-  skip('getRecentQueries - Should dispatch action with a appropriate response when no text is sent', async function(assert) {
-    assert.expect(2);
+  test('getRecentQueries - Should dispatch action with a appropriate response when no text is sent', async function(assert) {
     const done = assert.async();
     const getState = () => {
       return new ReduxDataHelper().hasRequiredValuesToQuery().build();
@@ -144,7 +143,13 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
       assert.equal(action.type, ACTION_TYPES.SET_RECENT_QUERIES, 'action has the correct type');
       action.promise.then((resolve) => {
         const responseQueryArray = resolve.data.map((ob) => ob.query);
-        assert.equal(responseQueryArray.length, 7, 'Correct number of queries returned');
+        // Due to the fact that we store executed queries in the recentQueries
+        // array, the expected number of results will vary depending upon test
+        // order. Therefore, we'll compare the response received with that of
+        // the known initial order of the data store for recent queries to make
+        // sure we are getting what we expect.
+        assert.equal(responseQueryArray[0], 'medium = 32', 'Element 0 correct');
+        assert.equal(responseQueryArray[6], 'foo = bar && bar = foo', 'Element 6 correct');
         done();
       });
     };

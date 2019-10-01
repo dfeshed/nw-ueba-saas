@@ -14,7 +14,9 @@ import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
-  AFTER_OPTION_TAB_META
+  AFTER_OPTION_TAB_META,
+  OPERATOR_AND,
+  OPERATOR_OR
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -1100,12 +1102,41 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   });
 
+  test('it broadcasts a message to query-pill when delete is pressed via pill meta', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.META_DELETE_PRESSED) {
+        assert.ok('Correct message dispatched');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', DELETE_KEY);
+  });
+
   test('it broadcasts a message that a logical operator was entered', async function(assert) {
-    assert.expect(12);
+    assert.expect(16);
+    let i = 0;
+    const types = [
+      OPERATOR_AND,
+      OPERATOR_AND,
+      OPERATOR_OR,
+      OPERATOR_OR
+    ];
     this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.PILL_LOGICAL_OPERATOR) {
         assert.ok(true, `received proper message for logical operator "${data}"`);
+        assert.equal(data, types[i], `correct data for iteration ${i}`);
+        i++;
       }
     });
     await render(hbs`
@@ -1143,24 +1174,5 @@ module('Integration | Component | Pill Meta', function(hooks) {
     assert.equal(find(PILL_SELECTORS.metaInput).value, 'and&&', 'operator-like value preceeded by lowercase text was not cleared');
     await blur(PILL_SELECTORS.metaInput);
     await clickTrigger(PILL_SELECTORS.meta);
-  });
-  test('it broadcasts a message to query-pill when delete is pressed via pill meta', async function(assert) {
-    const done = assert.async();
-    assert.expect(1);
-    this.set('metaOptions', metaOptions);
-    this.set('handleMessage', (type) => {
-      if (type === MESSAGE_TYPES.META_DELETE_PRESSED) {
-        assert.ok('Correct message dispatched');
-        done();
-      }
-    });
-    await render(hbs`
-      {{query-container/pill-meta
-        isActive=true
-        sendMessage=(action handleMessage)
-        metaOptions=metaOptions
-      }}
-    `);
-    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', DELETE_KEY);
   });
 });

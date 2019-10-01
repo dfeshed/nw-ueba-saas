@@ -12,7 +12,13 @@
     isValueSuggestionsCallInProgress=isValueSuggestionsCallInProgress
   }}
 
-  {{#if (eq pillData.type COMPLEX_FILTER)}}
+  {{#if (is-logical-operator pillData)}}
+    {{query-container/logical-operator
+      pillData=(readonly pillData)
+      position=index
+      sendMessage=(action 'handleMessage')
+    }}
+  {{else if (eq pillData.type COMPLEX_FILTER)}}
     {{query-container/complex-pill
       pillData=(readonly pillData)
       sendMessage=(action 'handleMessage')

@@ -12,6 +12,8 @@ export const LOGICAL_OPERATORS = ['&&', 'AND', '||', 'OR'];
 export const COMPLEX_OPERATORS = [...LOGICAL_OPERATORS, '(', ')', 'NOT'];
 export const COMPLEX_FILTER = 'complex';
 export const OPEN_PAREN = 'open-paren';
+export const OPERATOR_AND = 'operator-and';
+export const OPERATOR_OR = 'operator-or';
 export const OPERATORS = ['!exists', 'exists', 'contains', 'begins', 'ends', '!=', '='];
 export const PILL_META_DATA_SOURCE = 'pill-meta';
 export const PILL_OPERATOR_DATA_SOURCE = 'pill-operator';

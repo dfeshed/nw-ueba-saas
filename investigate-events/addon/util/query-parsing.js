@@ -15,6 +15,8 @@ import {
   COMPLEX_FILTER,
   COMPLEX_OPERATORS,
   OPEN_PAREN,
+  OPERATOR_AND,
+  OPERATOR_OR,
   QUERY_FILTER,
   SEARCH_TERM_MARKER,
   TEXT_FILTER
@@ -27,7 +29,9 @@ import {
 import { filterValidMeta } from 'investigate-events/util/meta';
 import {
   CloseParen,
-  OpenParen
+  OpenParen,
+  OperatorAnd,
+  OperatorOr
 } from './grammar-types';
 
 const { log } = console; // eslint-disable-line
@@ -90,6 +94,16 @@ const _createOpenParen = () => OpenParen.create();
 const _createCloseParen = () => CloseParen.create();
 
 /**
+ * Creates an AND logical operator grammar structure.
+ */
+const _createOperatorAND = () => OperatorAnd.create();
+
+/**
+ * Creates an OR logical operator grammar structure.
+ */
+const _createOperatorOR = () => OperatorOr.create();
+
+/**
  * Creates a filter for a given type.
  * @param {string} type The type of filter to create
  * @param  {...any} args Arguments for filter creation
@@ -110,6 +124,25 @@ export const createFilter = (type, ...args) => {
     throw new Error(`Unknown filter type: "${type}"`);
   }
   return filter;
+};
+
+/**
+ * Creates a logical operator for a given type.
+ * @param {string} type The type of operator to create
+ * @see _createOperatorAND()
+ * @see _createOperatorOR
+ * @return An operator
+ */
+export const createOperator = (type) => {
+  let operator;
+  if (type === OPERATOR_AND) {
+    operator = _createOperatorAND();
+  } else if (type === OPERATOR_OR) {
+    operator = _createOperatorOR();
+  } else {
+    throw new Error(`Unknown operator type: "${type}"`);
+  }
+  return operator;
 };
 
 /**
@@ -140,9 +173,9 @@ export const createParens = () => {
 export const reassignTwinIds = (filters, insertionIndex) => {
   const cache = [];
   const insertedCloseParen = filters[insertionIndex];
-  const insertedOpenParen = filters[insertionIndex + 1];
+  const insertedOpenParen = filters[insertionIndex + 2];
   let leftIndex = insertionIndex - 1;
-  let rightIndex = insertionIndex + 2;
+  let rightIndex = insertionIndex + 3;
   // look left from insertion index to find matching open paren
   while (leftIndex >= 0) {
     const item = filters[leftIndex];

@@ -458,7 +458,6 @@ module('Integration | Component | Pill Operator', function(hooks) {
     this.set('meta', meta);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
-        log('should not be here');
         assert.notOk('should not get here');
       }
     });

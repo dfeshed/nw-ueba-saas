@@ -4,6 +4,7 @@ import { setupTest } from 'ember-qunit';
 import {
   convertTextToPillData,
   createFilter,
+  createOperator,
   createParens,
   hasComplexText,
   isSearchTerm,
@@ -18,6 +19,8 @@ import {
   CLOSE_PAREN,
   COMPLEX_FILTER,
   OPEN_PAREN,
+  OPERATOR_AND,
+  OPERATOR_OR,
   QUERY_FILTER,
   SEARCH_TERM_MARKER,
   TEXT_FILTER
@@ -1146,15 +1149,16 @@ module('Unit | Util | Query Parsing', function(hooks) {
   });
 
   test('reassignTwinIds can reassign paren twinIds properly', function(assert) {
-    // ┌─┬────┬────┬────┬─┬── original parens
-    // ( ( QP ) )( ( QP ) )
-    //          └┴─────────── inserted parens
+    // ┌─┬────┬─────────┬────┬─┬── original parens
+    // ( ( QP ) ) AND ( ( QP ) )
+    //          └──┴──┴─────────── inserted parens
     const filters = [
       { type: OPEN_PAREN, twinId: 'twinPill_1' },
       { type: OPEN_PAREN, twinId: 'twinPill_2' },
       { type: QUERY_FILTER },
       { type: CLOSE_PAREN, twinId: 'twinPill_2' },
       { type: CLOSE_PAREN, twinId: 'twinPill_4' }, // insertion point
+      { type: OPERATOR_AND },
       { type: OPEN_PAREN, twinId: 'twinPill_4' },
       { type: OPEN_PAREN, twinId: 'twinPill_3' },
       { type: QUERY_FILTER },
@@ -1163,18 +1167,18 @@ module('Unit | Util | Query Parsing', function(hooks) {
     ];
     const insertionIndex = 4;
     const result = reassignTwinIds(filters, insertionIndex);
-    // 1 2    2 44 3    3 1  original twinIds
-    // ( ( QP ) )( ( QP ) )
-    // 1 2    2 14 3    3 4  reassigned twinIds
+    // 1 2    2 4     4 3    3 1  original twinIds
+    // ( ( QP ) ) AND ( ( QP ) )
+    // 1 2    2 1     4 3    3 4  reassigned twinIds
     assert.ok(Array.isArray(result), 'should be an array');
     assert.equal(result[0].twinId, 'twinPill_1', 'item at index 0 incorrect');
     assert.equal(result[1].twinId, 'twinPill_2', 'item at index 1 incorrect');
     assert.equal(result[3].twinId, 'twinPill_2', 'item at index 3 incorrect');
     assert.equal(result[4].twinId, 'twinPill_1', 'item at index 4 incorrect');
-    assert.equal(result[5].twinId, 'twinPill_4', 'item at index 5 incorrect');
-    assert.equal(result[6].twinId, 'twinPill_3', 'item at index 6 incorrect');
-    assert.equal(result[8].twinId, 'twinPill_3', 'item at index 8 incorrect');
-    assert.equal(result[9].twinId, 'twinPill_4', 'item at index 9 incorrect');
+    assert.equal(result[6].twinId, 'twinPill_4', 'item at index 6 incorrect');
+    assert.equal(result[7].twinId, 'twinPill_3', 'item at index 7 incorrect');
+    assert.equal(result[9].twinId, 'twinPill_3', 'item at index 9 incorrect');
+    assert.equal(result[10].twinId, 'twinPill_4', 'item at index 10 incorrect');
   });
 
   test('valueList separates values into an array intelligently', function(assert) {
@@ -1217,5 +1221,15 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.deepEqual(valueList('  ""  '), []);
     assert.deepEqual(valueList('  \'   \'  '), []);
     assert.deepEqual(valueList('  "   "  '), []);
+  });
+
+  test('createOperator can create an AND operator', function(assert) {
+    const result = createOperator(OPERATOR_AND);
+    assert.equal(result.type, OPERATOR_AND, 'type should match');
+  });
+
+  test('createOperator can create an OR operator', function(assert) {
+    const result = createOperator(OPERATOR_OR);
+    assert.equal(result.type, OPERATOR_OR, 'type should match');
   });
 });

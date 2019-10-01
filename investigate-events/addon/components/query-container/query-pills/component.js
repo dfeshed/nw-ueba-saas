@@ -3,15 +3,17 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { next } from '@ember/runloop';
-
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 import * as MESSAGE_TYPES from '../message-types';
 import { isEscape } from 'investigate-events/util/keys';
-import { transformTextToPillData, valueList } from 'investigate-events/util/query-parsing';
+import {
+  createOperator,
+  transformTextToPillData,
+  valueList
+} from 'investigate-events/util/query-parsing';
 import { quoteComplexValues } from 'investigate-events/util/quote';
 import { isSubmitClicked } from '../query-pill/query-pill-util';
 import { getContextItems } from './right-click-util';
-
 import {
   canQueryGuided,
   deselectedPills,
@@ -25,6 +27,7 @@ import {
   addFreeFormFilter,
   addGuidedPill,
   addIntraParens,
+  addLogicalOperator,
   addPillFocus,
   addParens,
   addTextFilter,
@@ -38,6 +41,7 @@ import {
   editGuidedPill,
   openGuidedPillForEdit,
   removePillFocus,
+  replaceLogicalOperator,
   resetGuidedPill,
   selectGuidedPills,
   selectAllPillsTowardsDirection
@@ -49,6 +53,8 @@ import {
   CLOSE_PAREN,
   COMPLEX_FILTER,
   OPEN_PAREN,
+  OPERATOR_AND,
+  OPERATOR_OR,
   TEXT_FILTER,
   QUERY_FILTER
 } from 'investigate-events/constants/pill';
@@ -74,6 +80,7 @@ const dispatchToActions = {
   addFreeFormFilter,
   addGuidedPill,
   addIntraParens,
+  addLogicalOperator,
   addPillFocus,
   addParens,
   addTextFilter,
@@ -88,6 +95,7 @@ const dispatchToActions = {
   getRecentQueries,
   openGuidedPillForEdit,
   removePillFocus,
+  replaceLogicalOperator,
   resetGuidedPill,
   selectAllPillsTowardsDirection,
   selectGuidedPills,
@@ -126,6 +134,10 @@ const _hasMoreOpenThanCloseParens = (pd, position) => {
   }
   return count > 0;
 };
+
+const _isLogicalOperator = (filter = {}) => [OPERATOR_AND, OPERATOR_OR].includes(filter.type);
+
+const _shouldAddLogicalOperator = (filter = {}) => !_isLogicalOperator(filter) && filter.type !== OPEN_PAREN;
 
 const QueryPills = RsaContextMenu.extend({
   tagName: null,
@@ -207,6 +219,16 @@ const QueryPills = RsaContextMenu.extend({
 
   @computed('pillsData')
   lastIndex: (pillsData) => pillsData.length,
+
+  @computed('pillsData', 'cursorPosition')
+  _canInsertLogicalOperator: (pillsData, cursorPosition) => {
+    let ret = true;
+    if (pillsData.length > 0 && cursorPosition) {
+      // Return false if the preceding pill is an open paren
+      ret = !(pillsData[cursorPosition - 1].type === OPEN_PAREN);
+    }
+    return ret;
+  },
 
   init() {
     this._super(...arguments);
@@ -327,8 +349,8 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   _pillEnteredForInsert(position) {
-    this.set('cursorPosition', position);
     this.setProperties({
+      cursorPosition: position,
       isPillOpen: true,
       isPillOpenForEdit: false
     });
@@ -388,13 +410,32 @@ const QueryPills = RsaContextMenu.extend({
     } else {
       warn(`Unable to create filter, unknown type of "${type}"`, 'pillCreation.unknownType');
     }
-    // adjust the cursorPosition to point to the new-pill-trigger
-    // that's after the position where this pill will be inserted
-    this.set('cursorPosition', position + 1);
-    // Don't reset cursorPosition because it's pointing to where we want
-    // to be after this pill is added
-    this._pillsExited(false);
-    this.send(messageName, { pillData, position });
+    if (position === 0) {
+      // adjust the cursorPosition to point to the new-pill-trigger
+      // that's after the position where this pill will be inserted
+      this.set('cursorPosition', position + 1);
+      // Don't reset cursorPosition because it's pointing to where we want
+      // to be after this pill is added
+      this._pillsExited(false);
+      this.send(messageName, { pillData, position });
+    } else {
+      const pillsData = this.get('pillsData');
+      const previousPill = pillsData[position - 1];
+      let cursorPosition = position + 1;
+      let positionModifier = 0;
+      // Add logical AND operator if previous pill is not some type of operator
+      // AND is not an open paren
+      if (_shouldAddLogicalOperator(previousPill)) {
+        cursorPosition = position + 2;
+        // Since we're adding the operator, we need to bump-right the pill
+        positionModifier++;
+        const op = createOperator(OPERATOR_AND);
+        this.send('addLogicalOperator', { pillData: op, position });
+      }
+      this.set('cursorPosition', cursorPosition);
+      this._pillsExited(false);
+      this.send(messageName, { pillData, position: position + positionModifier });
+    }
   },
 
   /**
@@ -463,9 +504,7 @@ const QueryPills = RsaContextMenu.extend({
       this.set('takeFocus', true);
     } else {
       // otherwise, open the trigger on it's right
-      const newPillTriggers = document.querySelectorAll('.new-pill-trigger');
-      const triggerToOpen = newPillTriggers[position + 1];
-      triggerToOpen.click();
+      this._pillEnteredForInsert(position + 1);
     }
   },
 
@@ -543,8 +582,8 @@ const QueryPills = RsaContextMenu.extend({
 
   _addFocusToLeftPill(position) {
     if (position !== 0) {
-      this.send('addPillFocus', position - 1);
       this._pillsExited();
+      this.send('addPillFocus', position - 1);
     }
   },
 
@@ -689,15 +728,29 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   _insertParens(position) {
-    // inserting parens will move the current pill one position to the right
-    this._pillsExited();
-    this.send('addParens', { position });
-    next(this, this._openNewPillTriggerRight, position);
+    let cursorPosition = position + 1;
+    let positionModifier = 0;
+    if (position > 0) {
+      const pillsData = this.get('pillsData');
+      const previousPill = pillsData[position - 1];
+      // Add logical AND operator if one's missing to the left
+      if (_shouldAddLogicalOperator(previousPill)) {
+        cursorPosition = position + 2;
+        // Since we're adding the operator, we need to bump-right the parens
+        positionModifier++;
+        const op = createOperator(OPERATOR_AND);
+        this.send('addLogicalOperator', { pillData: op, position });
+      }
+    }
+    this.set('cursorPosition', cursorPosition);
+    this._pillsExited(false);
+    this.send('addParens', { position: position + positionModifier });
   },
 
   /**
-   * Do we have more open parens than close parens? Yes, insert )(. No, move
-   * to the right.
+   * Do we have more open parens than close parens?
+   * Yes, insert ") AND (".
+   * No, move to the right.
    * @paren {number} position The position to move from.
    * @private
    */
@@ -706,15 +759,9 @@ const QueryPills = RsaContextMenu.extend({
     if (_hasCloseParenToRight(pillsData, position)) {
       this._moveToRightFrom(pillsData, position);
     } else if (_hasMoreOpenThanCloseParens(pillsData, position)) {
-      const { isEditing } = pillsData[position];
       this._pillsExited();
-      if (isEditing) {
-        this.send('addIntraParens', { position });
-        next(this, this._openNewPillTriggerRight, position + 1);
-      } else {
-        this.send('addIntraParens', { position });
-        next(this, this._addFocusToRightPill, position + 1);
-      }
+      this.send('addIntraParens', { position });
+      next(this, this._addFocusToRightPill, position + 2);
     }
   },
 
@@ -739,8 +786,30 @@ const QueryPills = RsaContextMenu.extend({
     this.send('valueSuggestions', metaName, filter);
   },
 
+  /**
+   * Handles requests for logical operators. This will either insert a new
+   * logical operator or replace an existing operator.
+   * @paren {Object} data
+   * @paren {Object} data.operator - The new logical operator
+   * @paren {Object} data.pillData - The pill data this message was spawned
+   * from. Used for determining if an existing pill was edited with the intent
+   * to insert a logical operator before it.
+   * @paren {number} position - Position within pillsData to insert the operator
+   */
   _insertLogicalOperator(data, position) {
-    log('Insert logical operator "', data, '" at position', position);
+    const { operator, pillData } = data;
+    const isEditing = pillData ? pillData.isEditing : false;
+    const { _canInsertLogicalOperator, pillsData } =
+      this.getProperties('_canInsertLogicalOperator', 'pillsData');
+    const previousPill = pillsData[position - 1];
+    if (_isLogicalOperator(previousPill)) {
+      this.send('replaceLogicalOperator', { pillData: operator, position });
+    } else if (_canInsertLogicalOperator || isEditing) {
+      this.set('cursorPosition', position + 1);
+      this._pillsExited(false);
+      this.send('addLogicalOperator', { pillData: operator, position });
+      this._openNewPillTriggerRight(position);
+    }
   }
 });
 

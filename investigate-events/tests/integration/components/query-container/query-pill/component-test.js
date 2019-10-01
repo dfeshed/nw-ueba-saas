@@ -15,7 +15,9 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import { metaKeySuggestionsForQueryBuilder, languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
-  AFTER_OPTION_TEXT_LABEL
+  AFTER_OPTION_TEXT_LABEL,
+  OPERATOR_AND,
+  OPERATOR_OR
 } from 'investigate-events/constants/pill';
 import PILL_SELECTORS from '../pill-selectors';
 
@@ -2991,7 +2993,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await toggleTab(PILL_SELECTORS.recentQuerySelectInput);
   });
 
-  test('it dispatched the correct event when a logical operator is typed', async function(assert) {
+  test('it dispatched the correct event when a logical AND operator is typed', async function(assert) {
     const done = assert.async();
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -3000,7 +3002,9 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('metaOptions', metaOptions);
     this.set('handleMessage', (messageType, data, position) => {
       if (messageType === MESSAGE_TYPES.PILL_LOGICAL_OPERATOR) {
-        assert.equal(data, 'AND', 'correct data sent');
+        const { operator, pillData } = data;
+        assert.equal(operator.type, OPERATOR_AND, 'correct type of operator sent');
+        assert.notOk(pillData, 'pillData should be undefined');
         assert.equal(position, 0, 'correct position sent');
         done();
       }
@@ -3037,5 +3041,33 @@ module('Integration | Component | Query Pill', function(hooks) {
       }}
     `);
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', DELETE_KEY);
+  });
+
+  test('it dispatched the correct event when a logical OR operator is typed', async function(assert) {
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (messageType, data, position) => {
+      if (messageType === MESSAGE_TYPES.PILL_LOGICAL_OPERATOR) {
+        const { operator, pillData } = data;
+        assert.equal(operator.type, OPERATOR_OR, 'correct type of operator sent');
+        assert.notOk(pillData, 'pillData should be undefined');
+        assert.equal(position, 0, 'correct position sent');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'OR');
   });
 });

@@ -13,6 +13,7 @@ import PILL_SELECTORS from '../pill-selectors';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import KEY_MAP from 'investigate-events/util/keys';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { OPERATOR_OR } from 'investigate-events/constants/pill';
 
 let setState;
 let metaOptions = [];
@@ -481,7 +482,9 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     this.set('metaOptions', metaOptions);
     this.set('handleMessage', (messageType, data, position) => {
       if (messageType === MESSAGE_TYPES.PILL_LOGICAL_OPERATOR) {
-        assert.equal(data, 'OR', 'correct data sent');
+        const { operator, pillData } = data;
+        assert.equal(operator.type, OPERATOR_OR, 'correct type of operator sent');
+        assert.notOk(pillData, 'pillData should be undefined');
         assert.equal(position, 1, 'correct position sent');
         done();
       }
