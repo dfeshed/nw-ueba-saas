@@ -113,6 +113,23 @@ export const BLOCKING_ENABLED_CONFIG = {
   ]
 };
 
+export const ISOLATION_ENABLED_CONFIG = {
+  name: 'isolation-enabled',
+  label: 'adminUsm.policyWizard.edrPolicy.isolationEnabled',
+  type: 'radioGroup',
+  items: [
+    {
+      name: false,
+      label: 'adminUsm.policyWizard.edrPolicy.radioOptionDisabled',
+      warningMessage: 'adminUsm.policyWizard.edrPolicy.isolationEnabledNote'
+    },
+    {
+      name: true,
+      label: 'adminUsm.policyWizard.edrPolicy.radioOptionEnabled'
+    }
+  ]
+};
+
 export const AGENT_MODE_CONFIG = {
   name: 'agent-mode',
   label: 'adminUsm.policyWizard.edrPolicy.agentMode',
@@ -136,6 +153,7 @@ export const ALL_RADIO_OPTIONS = [
   // { id: 'filterSignedHooks', options: FILTER_SIGNED_CONFIG },
   { id: 'requestScanOnRegistration', options: REQUEST_SCAN_CONFIG },
   { id: 'blockingEnabled', options: BLOCKING_ENABLED_CONFIG },
+  { id: 'isolationEnabled', options: ISOLATION_ENABLED_CONFIG },
   { id: 'agentMode', options: AGENT_MODE_CONFIG }
 ];
 

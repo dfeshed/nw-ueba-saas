@@ -1,0 +1,22 @@
+<vbox class='rsa-form-radio-group'>
+  <vbox class="radio-buttons">
+    {{#each radioButtonOption.items as |item|}}
+
+      {{#radio-button
+        classNames='rsa-form-radio-wrapper'
+        radioClass='radio-option'
+        value=item.name
+        groupValue=(readonly radioButtonValue)
+        name=(concat 'radio-' selectedSettingId)
+        changed=(action 'updatePolicyProperty' selectedSettingId item.name)
+      }}
+        <span>{{t item.label}}</span>
+      {{/radio-button}}
+
+      {{#if (and isWarningMessage item.warningMessage)}}
+        {{rsa-content-warn-text-box value=(t item.warningMessage)}}
+      {{/if}}
+
+    {{/each}}
+  </vbox>
+</vbox>

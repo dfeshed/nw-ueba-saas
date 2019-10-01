@@ -32,6 +32,7 @@ export default {
     // filterSignedHooks: null, // true or false
     requestScanOnRegistration: null, // true or false
     blockingEnabled: null, // true or false
+    isolationEnabled: null,
     primaryAddress: null,
     primaryNwServiceId: null,
     primaryAlias: null,
@@ -75,18 +76,19 @@ export default {
     // Response Action settings
     { index: 14, id: 'invActionsHeader', label: 'adminUsm.policyWizard.edrPolicy.invasiveActions', isHeader: true, isEnabled: true },
     { index: 15, id: 'blockingEnabled', label: 'adminUsm.policyWizard.edrPolicy.blockingEnabled', isEnabled: true, isGreyedOut: false, headerId: 'invActionsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
+    { index: 16, id: 'isolationEnabled', label: 'adminUsm.policyWizard.edrPolicy.isolationEnabled', isEnabled: true, isGreyedOut: false, headerId: 'invActionsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios-with-warning', defaults: [{ field: 'isolationEnabled', value: false }] },
     //
     // Endpoint server settings
-    { index: 16, id: 'endpointServerHeader', label: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', isHeader: true, isEnabled: true },
-    { index: 17, id: 'primaryAddress', label: 'adminUsm.policyWizard.edrPolicy.primaryAddress', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }, { field: 'primaryAlias', value: '' }] },
-    { index: 18, id: 'primaryHttpsPort', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryHttpsPort', value: 443 }] },
-    { index: 19, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
-    { index: 20, id: 'primaryUdpPort', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpPort', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
-    { index: 21, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] },
+    { index: 17, id: 'endpointServerHeader', label: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', isHeader: true, isEnabled: true },
+    { index: 18, id: 'primaryAddress', label: 'adminUsm.policyWizard.edrPolicy.primaryAddress', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }, { field: 'primaryAlias', value: '' }] },
+    { index: 19, id: 'primaryHttpsPort', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryHttpsPort', value: 443 }] },
+    { index: 20, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
+    { index: 21, id: 'primaryUdpPort', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpPort', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
+    { index: 22, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] },
     //
     // Advanced Configuration settings
-    { index: 22, id: 'advancedConfigHeader', label: 'adminUsm.policyWizard.edrPolicy.advancedConfig', isHeader: true, isEnabled: true },
-    { index: 23, id: 'customConfig', label: 'adminUsm.policyWizard.edrPolicy.customConfig', isEnabled: true, isGreyedOut: false, headerId: 'advancedConfigHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/custom-config', defaults: [{ field: 'customConfig', value: '' }] }
+    { index: 23, id: 'advancedConfigHeader', label: 'adminUsm.policyWizard.edrPolicy.advancedConfig', isHeader: true, isEnabled: true },
+    { index: 24, id: 'customConfig', label: 'adminUsm.policyWizard.edrPolicy.customConfig', isEnabled: true, isGreyedOut: false, headerId: 'advancedConfigHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/custom-config', defaults: [{ field: 'customConfig', value: '' }] }
   ]
 
 };
