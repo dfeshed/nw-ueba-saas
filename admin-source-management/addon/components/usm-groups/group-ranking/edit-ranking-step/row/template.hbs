@@ -16,12 +16,16 @@
       </p>
     </hbox>
     <hbox class="col-md-3 col-xs-3 col-sm-3 group-name-cell">
-      {{item.name}}
+      {{#rsa-text-with-tooltip value=item.name style="standard"}}
+        {{item.name}}
+      {{/rsa-text-with-tooltip}}
     </hbox>
     <hbox class="col-md-3 col-xs-3 col-sm-3 policy-cell">
       {{#each-in item.assignedPolicies as |policy details|}}
         {{#if (eq policy selectedSourceType)}}
-          {{ details.name }}
+          {{#rsa-text-with-tooltip value=details.name style="standard"}}
+            {{ details.name }}
+          {{/rsa-text-with-tooltip}}
         {{/if}}
       {{/each-in}}
     </hbox>

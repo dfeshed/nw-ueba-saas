@@ -101,7 +101,6 @@
       scroll-behavior: smooth;
       table {
         width: 100%;
-        min-width: 400px;
         tbody {
           tr {
             display: flex;
@@ -130,6 +129,15 @@
             width: 100%;
             .group-name-cell, .policy-cell {
               padding-left: rsa-whitespace();
+              .tooltip-text {
+                max-width: 300px;
+                @media (max-width: 1800px) {
+                  max-width: 150px;
+                }
+                @media (max-width: 1500px) {
+                  max-width: 100px;
+                }
+              }
             }
           }
           hbox.group-name-cell, hbox.policy-cell {

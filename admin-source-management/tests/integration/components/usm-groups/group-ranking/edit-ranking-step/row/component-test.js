@@ -220,7 +220,8 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
     const item = rankingData;
     this.set('item', item);
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step/row selectedSourceType=selectedSourceType item=item}}`);
-    assert.equal(document.querySelectorAll('.policy-cell')[0].innerText.trim(), 'policy_edr', 'edrPolicy shows as expected');
+    assert.equal(document.querySelectorAll('.policy-cell .tooltip-text')[0].innerText.trim(), 'policy_edr', 'edrPolicy shows as expected with tooltip');
+    assert.equal(document.querySelectorAll('.group-name-cell .tooltip-text')[0].innerText.trim(), 'Zebra 001', 'Group name shows as expected with tooltip');
   });
   test('Show windowsLogPolicy policy applied', async function(assert) {
     const rankingData =
@@ -245,6 +246,6 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
     const item = rankingData;
     this.set('item', item);
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step/row selectedSourceType=selectedSourceType item=item}}`);
-    assert.equal(document.querySelectorAll('.policy-cell')[0].innerText.trim(), 'policy_wind', 'windowsLogPolicy shows as expected');
+    assert.equal(document.querySelectorAll('.policy-cell .tooltip-text')[0].innerText.trim(), 'policy_wind', 'windowsLogPolicy shows as expected with tooltip');
   });
 });

@@ -1,7 +1,7 @@
 export default [
   {
-    'id': 'gggg_001',
-    'name': 'Zebra 001',
+    'id': 'group_002',
+    'name': 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
     'description': 'Zebra 001 of group group_001',
     'createdBy': 'local',
     'createdOn': 1523655354337,
