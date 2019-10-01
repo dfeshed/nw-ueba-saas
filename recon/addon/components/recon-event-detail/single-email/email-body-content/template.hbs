@@ -19,4 +19,24 @@
       {{/rsa-form-button}}
     </div>
   {{/if}}
+  {{#if actualLink}}
+    {{#rsa-application-modal
+      eventId= 'email-info-task'
+      autoOpen= true
+      onClose=(action 'closeLinkModal')
+      label= (t 'recon.emailView.linkAddressLabel')
+      style="standard email-recon-link-info-dialog"}}
+      <div class='modal-content'>
+        <p>{{t 'recon.emailView.actualLinkInfoMessage'}}</p>
+        <p class='original-link'>{{actualLink}}</p>
+      </div>
+      <footer>
+        <div class="modal-footer-buttons">
+          {{#rsa-form-button style='primary' defaultAction=(action 'closeLinkModal')}}
+            {{t 'forms.ok'}}
+          {{/rsa-form-button}}
+        </div>
+      </footer>
+    {{/rsa-application-modal}}
+  {{/if}}
 </div>

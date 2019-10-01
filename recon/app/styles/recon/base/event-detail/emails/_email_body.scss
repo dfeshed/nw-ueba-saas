@@ -1,3 +1,6 @@
+$modalHeaderHeight: 52px;
+$footerHeight: 40px;
+
 .email-body-text {
   line-height: 1.75rem;
   overflow-x: hidden;
@@ -17,6 +20,71 @@
 
 .emailContent {
   background-color: background-color(primary, lightest);
+}
+
+.rsa-application-modal.email-recon-link-info-dialog footer {
+  display: none;
+}
+
+.rsa-application-modal-content.email-recon-link-info-dialog {
+  width: 33%;
+  height: 20%;
+  max-height: 300px;
+  min-height: 100px;
+
+  .modal-content {
+    width: 100%;
+    height: calc(100% - (#{$modalHeaderHeight + $footerHeight}));
+    min-height: 100px;
+    top: 0;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    overflow-y: auto;
+
+    p {
+      padding: rsa-whitespace();
+      line-height: 1.5rem;
+    }
+
+    .original-link {
+      color: deepskyblue;
+    }
+  }
+
+  footer {
+    height: $footerHeight;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: rsa-whitespace(less);
+    background-color: background-color(primary, dark, nearly-transparent);
+
+
+    .modal-footer-buttons {
+      text-align-last: right;
+      .rsa-form-button-wrapper {
+        margin: 0 0 0 rsa-whitespace();
+      }
+    }
+  }
+}
+
+// Increase the dimensions of the confirmation modal on smaller screens
+@media screen and (max-width: 1536px){
+  .rsa-application-modal-content.email-recon-link-info-dialog {
+    height: 30%;
+    max-height: 300px;
+  }
+}
+
+@media screen and (min-width: 120em), (min-width: 160em) {
+  .rsa-application-modal-content.email-recon-link-info-dialog {
+    height: 20%;
+    width: 20%;
+    max-height: 300px;
+  }
 }
 
 .rendered-email-percent {

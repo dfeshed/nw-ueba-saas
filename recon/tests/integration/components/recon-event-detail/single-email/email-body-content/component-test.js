@@ -94,7 +94,7 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     this.set('email', EmberObject.create(emailData[2]));
     await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
     assert.ok(find('.email-body-text'), 'show single email message content');
-    assert.equal(_first200(find('iframe').contentDocument.body.innerText), 'googleemailmessagetextcontent');
+    assert.equal(_first200(find('iframe').contentDocument.body.innerText), 'googleemailmessagetextcontentgoogle2');
   });
 });
 

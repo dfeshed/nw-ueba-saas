@@ -307,7 +307,10 @@ export default {
       renderedEmailPercent: 'Showing',
       showRemainingPercent: 'Show Remaining {{remainingPercent}}%',
       allAttachments: 'All Attachments',
-      emailOfTotal: '{{emailIndex}} of {{emailCount}} messages'
+      emailOfTotal: '{{emailIndex}} of {{emailCount}} messages',
+      showMore: 'Show More',
+      actualLinkInfoMessage: 'Clicking this link in its original content would have navigated to or opened the following location:',
+      linkAddressLabel: 'Link Address'
     },
     textView: {
       compressToggleLabel: 'Display Compressed Payloads',

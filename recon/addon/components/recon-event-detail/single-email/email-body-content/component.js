@@ -3,16 +3,21 @@ import layout from './template';
 import computed from 'ember-computed-decorators';
 import { run } from '@ember/runloop';
 import _ from 'lodash';
+import { inject as service } from '@ember/service';
 
 const CHUNK_SIZE = 10000;
 
 export default Component.extend({
   layout,
+  eventBus: service(),
   portionsToRender: [],
   chunkToRender: 0,
   percentRendered: null,
   frame: null,
   resizeIframe: null,
+  actualLink: null,
+  disableContextMenu: null,
+  openLinkModal: null,
 
   didRender() {
     this.set('frame', document.getElementById(this.emailRenderId));
@@ -23,9 +28,14 @@ export default Component.extend({
         this.get('frame').style.height = iframeHeight.toString().concat('px');
         const hyperlinks = iframeDoc.getElementsByTagName('a');
         for (const link of hyperlinks) {
-          link.addEventListener('click', function(event) {
+          link.addEventListener('contextmenu', this.disableContextMenu = (event) => {
             event.preventDefault();
           });
+          this.set('openLinkModal', (event) => {
+            event.preventDefault();
+            this.set('actualLink', event.target.href);
+          });
+          link.addEventListener('click', this.openLinkModal);
         }
       });
     });
@@ -33,6 +43,12 @@ export default Component.extend({
 
   willDestroyElement() {
     this._super(...arguments);
+    const iframeDoc = this.get('frame').contentWindow.document;
+    const hyperlinks = iframeDoc.getElementsByTagName('a');
+    for (const link of hyperlinks) {
+      link.removeEventListener('contextmenu', this.disableContextMenu);
+      link.removeEventListener('click', this.openLinkModal);
+    }
     this.get('frame').removeEventListener('load', this.resizeIframe);
   },
 
@@ -120,6 +136,10 @@ export default Component.extend({
         percentRendered = (percentRendered > 99) ? 100 : percentRendered;
         this.set('percentRendered', percentRendered);
       }
+    },
+
+    closeLinkModal() {
+      this.set('actualLink', null);
     }
   }
 });
