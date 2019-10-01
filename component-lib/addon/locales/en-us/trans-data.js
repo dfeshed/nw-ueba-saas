@@ -610,11 +610,18 @@ export default {
       isAtThreshold: 'The event count reached the query threshold.',
       tableGroupLabel: 'Events {{startNextGroup}} - {{endNextGroup}}',
       columnGroups: {
+        groupName: 'Group Name',
         custom: 'Custom Column Groups',
         customTitle: 'Manage Custom Column Groups in Events List',
         default: 'Default Column Groups',
         searchPlaceholder: 'Type to filter column group',
-        columnsSearchPlaceholder: 'Filter meta keys'
+        columnsSearchPlaceholder: 'Filter meta keys',
+        allAvailableFilteredAway: 'All available meta keys have been filtered',
+        allDisplayedFilteredAway: 'All displayed meta keys have been filtered',
+        noMetaKeysChosen: 'Add a meta key from the list below',
+        displayedMetaKeys: 'Displayed Meta Keys',
+        availableMetaKeys: 'Available Meta Keys',
+        allMetaKeysAdded: 'All meta keys have been added'
       },
       download: {
         selected: 'Download',

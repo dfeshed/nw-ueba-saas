@@ -1,11 +1,11 @@
 <div class='group-name'>
-  {{!-- TODO bhanun add translate--}}
-  <div class='name'>Group Name</div>
+  <div class='name'>{{t 'investigate.events.columnGroups.groupName'}}</div>
   {{rsa-form-input
     class='value'
     type='text'
     onKeyUp=(action 'handleNameChange')
-    placeholder='My Custom Group'}}
+    placeholder='My Custom Group'
+  }}
 </div>
 
 {{events-table-container/header-container/column-groups/column-group-details/column-filter
@@ -14,11 +14,10 @@
 }}
 
 <div class='group-details'>
-  {{!-- TODO bhanun add translate--}}
-  <div class='name'>Displayed Meta Keys</div>
-  {{#if displayedColumns}}
+  <div class='name'>{{t 'investigate.events.columnGroups.displayedMetaKeys'}}</div>
+  {{#if filteredDisplayedColumns}}
     <ul class='column-list value editable'>
-      {{#each displayedColumns as |column|}}
+      {{#each filteredDisplayedColumns as |column|}}
         <li class='editable'>
           {{#rsa-form-button class='remove-meta-key' defaultAction=(action 'removeMetaFromColumns' column)}}
             {{rsa-icon name='subtract-circle-1'}}
@@ -29,16 +28,19 @@
       {{/each}}
     </ul>
   {{else}}
-    {{!-- TODO bhanun add translate--}}
-    <p class='message'>Add a meta key from the list below</p>
+    {{!-- why are there no columns? Because filtered or because there just aren't any --}}
+    {{#if areDisplayedColumnsFiltered}}
+      <p class='message columns-filtered'>{{t 'investigate.events.columnGroups.allDisplayedFilteredAway'}}</p>
+    {{else}}
+      <p class='message no-columns'>{{t 'investigate.events.columnGroups.noMetaKeysChosen'}}</p>
+    {{/if}}
   {{/if}}
 
   <div class='add-details'>
-    {{!-- TODO bhanun add translate--}}
-    <div class='name'>Available Meta Keys</div>
-    {{#if availableMeta}}
+    <div class='name'>{{t 'investigate.events.columnGroups.availableMetaKeys'}}</div>
+    {{#if filteredAvailableMeta}}
       <ul class='column-list value editable'>
-        {{#each availableMeta  as |meta|}}
+        {{#each filteredAvailableMeta  as |meta|}}
           <li class='editable'>
             {{#rsa-form-button class='add-meta-key' defaultAction=(action 'addMetaToColumns' meta)}}
               {{rsa-icon name='add-circle-1'}}
@@ -49,8 +51,11 @@
         {{/each}}
       </ul>
     {{else}}
-      {{!-- TODO bhanun add translate--}}
-      <p class='message'>All meta keys have been added</p>
+      {{#if areAvailableMetaFiltered}}
+        <p class='message meta-filtered'>{{t 'investigate.events.columnGroups.allDisplayedFilteredAway'}}</p>
+      {{else}}
+        <p class='message all-meta-added'>{{t 'investigate.events.columnGroups.allMetaKeysAdded'}}</p>
+      {{/if}}
     {{/if}}
   </div>
 </div>

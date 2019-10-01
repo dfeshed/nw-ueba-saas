@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -172,7 +172,137 @@ module('Integration | Component | Column Group form', function(hooks) {
     assert.equal(findAll(AVAILABLE_META).length, 19, '19 meta keys available');
   });
 
-  skip('it will filter text', async function(/* assert */) {
-    // Tests to come once filtering implemented
+  test('will filter available meta', async function(assert) {
+    assert.expect(2);
+
+    this.set('columnGroup', null);
+    this.set('editColumnGroup', () => {});
+
+    new ReduxDataHelper(setState).language().build();
+    await render(hbs`
+      {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+        columnGroup=columnGroup
+        editColumnGroup=editColumnGroup
+      }}
+    `);
+
+    let availableOptions = findAll(`${AVAILABLE_META} button`);
+    assert.ok(availableOptions.length > 0, 'have meta in available options list');
+
+    await fillIn('.filter-group input', 'blahhhh');
+
+    availableOptions = findAll(`${AVAILABLE_META} button`);
+    assert.ok(availableOptions.length === 0, 'meta filtered out');
+  });
+
+  test('will filter selected meta', async function(assert) {
+    assert.expect(3);
+
+    this.set('columnGroup', null);
+    this.set('editColumnGroup', () => {});
+
+    new ReduxDataHelper(setState).language().build();
+    await render(hbs`
+      {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+        columnGroup=columnGroup
+        editColumnGroup=editColumnGroup
+      }}
+    `);
+
+    let selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
+    assert.ok(selectedOptions.length === 0, 'no meta has been selected yet');
+
+    // add selected meta
+    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    await click(availableOptions[0]); // a (A), fake meta from test data
+
+    selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
+    assert.ok(selectedOptions.length === 1, 'one meta selected yet');
+
+    await fillIn('.filter-group input', 'blahhhh');
+
+    selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
+    assert.ok(selectedOptions.length === 0, 'one meta now filtered out');
+  });
+
+  test('will show proper message when all selected meta filtered away', async function(assert) {
+    assert.expect(1);
+
+    this.set('columnGroup', null);
+    this.set('editColumnGroup', () => {});
+
+    new ReduxDataHelper(setState).language().build();
+    await render(hbs`
+      {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+        columnGroup=columnGroup
+        editColumnGroup=editColumnGroup
+      }}
+    `);
+
+    // add selected meta and filter it out
+    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    await click(availableOptions[0]); // a (A), fake meta from test data
+    await fillIn('.filter-group input', 'blahhhh');
+
+    assert.ok(findAll('.columns-filtered').length === 1, 'proper message is displayed');
+  });
+
+  test('will show proper message when all available meta filtered away', async function(assert) {
+    assert.expect(1);
+
+    this.set('columnGroup', null);
+    this.set('editColumnGroup', () => {});
+
+    new ReduxDataHelper(setState).language().build();
+    await render(hbs`
+      {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+        columnGroup=columnGroup
+        editColumnGroup=editColumnGroup
+      }}
+    `);
+
+    // filter out all available meta
+    await fillIn('.filter-group input', 'blahhhh');
+    assert.ok(findAll('.meta-filtered').length === 1, 'proper message is displayed');
+  });
+
+  test('will show proper message filter applied but no meta selected', async function(assert) {
+    assert.expect(1);
+
+    this.set('columnGroup', null);
+    this.set('editColumnGroup', () => {});
+
+    new ReduxDataHelper(setState).language().build();
+    await render(hbs`
+      {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+        columnGroup=columnGroup
+        editColumnGroup=editColumnGroup
+      }}
+    `);
+
+    // add selected meta and filter it out
+    await fillIn('.filter-group input', 'blahhhh');
+    assert.ok(findAll('.no-columns').length === 1, 'proper message is displayed');
+  });
+
+  test('will show proper message when filter applied but all meta chosen', async function(assert) {
+    assert.expect(1);
+
+    this.set('columnGroup', null);
+    this.set('editColumnGroup', () => {});
+
+    new ReduxDataHelper(setState).language().build();
+    await render(hbs`
+      {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+        columnGroup=columnGroup
+        editColumnGroup=editColumnGroup
+      }}
+    `);
+
+    // filter out all available meta
+    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    availableOptions.forEach(click);
+    await fillIn('.filter-group input', 'blahhhh');
+    assert.ok(findAll('.all-meta-added').length === 1, 'proper message is displayed');
   });
 });

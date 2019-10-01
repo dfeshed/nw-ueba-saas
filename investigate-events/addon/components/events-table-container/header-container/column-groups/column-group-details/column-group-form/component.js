@@ -4,6 +4,14 @@ import computed from 'ember-computed-decorators';
 import { metaMapForColumns } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import _ from 'lodash';
 
+const _filterColumns = (columns, filterText) => {
+  const filterTextLower = filterText.toLowerCase();
+  return columns.filter((col) => {
+    const stringToSearch = `${col.field} ${col.title}`.toLowerCase();
+    return stringToSearch.includes(filterTextLower);
+  });
+};
+
 const stateToComputed = (state) => ({
   /* TODO Add Column Group
    * use meta from language call untill API provides all meta regardless of service selected
@@ -28,7 +36,7 @@ const ColumnGroupForm = Component.extend({
   editColumnGroup: () => {},
 
   // Text used to filter the visible columns in the form
-  columnFilterText: null,
+  columnFilterText: '',
 
   /**
    * initialize a working copy of columns and leave original column group alone
@@ -45,6 +53,30 @@ const ColumnGroupForm = Component.extend({
   @computed('allMeta', 'displayedColumns')
   availableMeta(allMeta, displayedColumns) {
     return _.differenceBy(allMeta, displayedColumns, 'field');
+  },
+
+  @computed('availableMeta', 'columnFilterText')
+  filteredAvailableMeta(allMeta, filterText) {
+    return _filterColumns(allMeta, filterText);
+  },
+
+  // Check if the filtered count doesn't equal the displayed count
+  // if they don't, then some columns have been filtered out
+  @computed('filteredAvailableMeta', 'availableMeta')
+  areAvailableMetaFiltered(filtered, available) {
+    return filtered.length !== available.length;
+  },
+
+  @computed('displayedColumns', 'columnFilterText')
+  filteredDisplayedColumns(chosenColumns, filterText) {
+    return _filterColumns(chosenColumns, filterText);
+  },
+
+  // Check if the filtered count doesn't equal the displayed count
+  // if they don't, then some columns have been filtered out
+  @computed('filteredDisplayedColumns', 'displayedColumns')
+  areDisplayedColumnsFiltered(filtered, displayed) {
+    return filtered.length !== displayed.length;
   },
 
   /**
