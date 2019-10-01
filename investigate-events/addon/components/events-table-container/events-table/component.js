@@ -165,6 +165,10 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   contextMenu({ target: { attributes } }) {
     const metaName = attributes.getNamedItem('metaname');
     const metaValue = attributes.getNamedItem('metavalue');
+    if (metaValue?.value) {
+      // Removes aliases from metaValues. Ex: `0 [OTHER]` -> 0
+      metaValue.value = metaValue.value.replace(/\[(.*?)\]/g, '').trim();
+    }
     const metaFormatMap = this.get('metaFormatMap');
     if (metaName && metaValue) {
       this.setProperties({

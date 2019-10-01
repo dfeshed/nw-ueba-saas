@@ -61,6 +61,28 @@ module('Integration | Component | events-table', function(hooks) {
 
   });
 
+  test('it removes aliases from metaValues if present', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventsPreferencesConfig()
+      .language()
+      .getColumns('SUMMARY', EventColumnGroups)
+      .build();
+
+    await render(hbs`
+      {{events-table-container/events-table
+        metaName=metaName
+        metaValue=metaValue
+      }}
+    `);
+    await find('.js-move-handle').setAttribute('metaname', 'ip.src');
+    await find('.js-move-handle').setAttribute('metavalue', '1.1.1.1 [FOOBAR]');
+    await triggerEvent(find('.js-move-handle'), 'contextmenu', { clientX: 100, clientY: 100 });
+
+    assert.equal(this.get('metaName'), 'ip.src', 'meta name extracted from event and set');
+    assert.equal(this.get('metaValue'), '1.1.1.1', 'meta value extracted from event and set');
+
+  });
+
   test('context menu is deactivated on right clicking outside the target', async function(assert) {
     assert.expect(0);
     const done = assert.async();
