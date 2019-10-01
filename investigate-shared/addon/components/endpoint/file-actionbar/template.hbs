@@ -25,21 +25,6 @@
 
 {{endpoint/pivot-to-event-analysis label='file' iconSize=pivotIconSize selections=itemList isIconOnly=showOnlyIcons pivotToInvestigate=(action 'pivotToInvestigate')}}
 
-{{#if showDownloadProcessDump}}
-  {{#rsa-form-button
-    class='download-process-dump'
-    isIconOnly=showOnlyIcons
-    title=(t 'investigateHosts.process.downloadProcessDump')
-    click=(action 'onDownloadProcessDump')
-    isDisabled=isProcessDumpDownloadDisabled}}
-    {{rsa-icon name='download-2'}}
-    {{#unless showOnlyIcons}}
-      {{t 'investigateHosts.process.downloadProcessDump'}}
-    {{/unless}}
-  {{/rsa-form-button}}
-{{/if}}
-
-
 {{#rsa-content-tethered-panel-trigger
   panel=(if isEditStatusButtonDisabled 'file-status-more-actions disabled' 'file-status-more-actions')
   triggerEvent='click'
@@ -99,7 +84,7 @@
         <hr class="divider actionSeperator">
         <li test-id="{{fileAction.name}}" class="{{if isEditStatusButtonDisabled 'disabled'}}" {{action 'onResetAction'}}>{{fileAction.title}}</li>
       {{else}}
-        {{#if (eq fileAction.name 'downloadToServer')}}
+        {{#if (or (eq fileAction.name 'downloadToServer') (eq fileAction.name 'downloadProcessDumpToServer'))}}
           <hr class="divider actionSeperator">
         {{/if}}
         <li title="{{if fileAction.disabled fileAction.disabledTooltip}}"

@@ -31,7 +31,7 @@ const data = {
   }
 };
 
-module('Integration | Component | host detail more-actions', function(hooks) {
+module('Integration | Component | host-detail/header/more-actions', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-hosts')
   });
@@ -57,8 +57,8 @@ module('Integration | Component | host detail more-actions', function(hooks) {
     assert.equal(findAll('.rsa-icon-check-shield-lined').length, 0, 'Start scan icon not present');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(2)').textContent.trim(), 'Export Host details', 'Export Host details button renders');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(3)').textContent.trim(), 'Network Isolation', 'Network Isolation button renders');
-    assert.equal(find('.host-details_dropdown-action-list li:nth-child(4)').textContent.trim(), 'Download MFT', 'Download MFT button renders');
-    assert.equal(find('.host-details_dropdown-action-list li:nth-child(5)').textContent.trim(), 'Download System Dump', 'Download system dump button renders');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(4)').textContent.trim(), 'Download MFT to Server', 'Download MFT button renders');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(5)').textContent.trim(), 'Download System Dump to Server', 'Download system dump button renders');
   });
   test('test for More Actions with no manage permission', async function(assert) {
     new ReduxDataHelper(setState)

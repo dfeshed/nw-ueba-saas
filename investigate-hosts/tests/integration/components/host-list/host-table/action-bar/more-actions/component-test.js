@@ -35,7 +35,7 @@ const selectedData = [
   }
 ];
 
-module('Integration | Component | host table action bar more actions', function(hooks) {
+module('Integration | Component | host-table/action-bar/more-actions', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-hosts')
   });
@@ -136,7 +136,7 @@ module('Integration | Component | host table action bar more actions', function(
 
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 4, '4 list options should render as MFT is enabled.');
-    assert.equal(findAll('.rsa-dropdown-action-list li')[2].textContent.trim(), 'Download MFT', 'Download MFT option is rendered.');
+    assert.equal(findAll('.rsa-dropdown-action-list li')[2].textContent.trim(), 'Download MFT to Server', 'Download MFT option is rendered.');
     await click(findAll('.rsa-dropdown-action-list li')[2]);
   });
 

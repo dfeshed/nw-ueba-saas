@@ -44,7 +44,7 @@ const FILTER_TYPES = [
     label: 'investigateHosts.downloads.filters.timeStomping',
     type: 'list',
     listOptions: [
-      { name: true, label: 'investigateHosts.downloads.filters.timeStomping' }
+      { name: true, label: 'investigateHosts.downloads.filters.timeStompingFiles' }
     ]
   },
   {

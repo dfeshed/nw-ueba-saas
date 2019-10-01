@@ -136,10 +136,19 @@
     height: 100%;
     .process-list-box {
       .sub-tabs {
-        max-height: 2rem;
+        max-height: 3.5rem;
+        padding-right: 29rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0;
         .close-filter {
           padding-top: 1rem;
           padding-left: 1rem;
+        }
+      }
+      .host-title-bar {
+        .is-active {
+          align-self: inherit;
+          padding-bottom: 1rem;
         }
       }
     }
@@ -155,7 +164,7 @@
     padding-bottom: 1rem;
     padding-right: 1rem;
     padding-left: 0;
-    padding-top: 1.9rem;
+    padding-top: 1.5rem;
     .pivot-to-event-analysis {
       .button-menu.expanded {
         display: block;

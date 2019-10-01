@@ -55,6 +55,8 @@ export default Component.extend({
 
   showResetRiskScore: false,
 
+  showDownloadProcessDump: false,
+
   @computed('itemList')
   isEditStatusButtonDisabled(itemList) {
     if (!itemList) {
@@ -68,8 +70,8 @@ export default Component.extend({
     return (itemList && itemList.length != 1) || isAgentMigrated;
   },
 
-  @computed('fileDownloadButtonStatus', 'showResetRiskScore', 'itemList')
-  fileActionOptions(fileDownloadButtonStatus, showResetRiskScore, itemList) {
+  @computed('fileDownloadButtonStatus', 'showResetRiskScore', 'itemList', 'showDownloadProcessDump')
+  fileActionOptions(fileDownloadButtonStatus, showResetRiskScore, itemList, showDownloadProcessDump) {
 
     const i18n = this.get('i18n');
     const canManageFiles = this.get('accessControl.endpointCanManageFiles');
@@ -78,7 +80,10 @@ export default Component.extend({
     if (fileDownloadButtonStatus && canManageFiles) {
       const { isDownloadToServerDisabled, isSaveLocalAndFileAnalysisDisabled } = fileDownloadButtonStatus;
       // Additional menu options enabled and disabled based on selected file's download status.
-
+      // Adding download process dump option
+      if (showDownloadProcessDump) {
+        fileActionConfClone.push({ panelId: 'panel7', name: 'downloadProcessDumpToServer', disabled: isDownloadToServerDisabled });
+      }
       fileActionConfClone = [
         ...fileActionConfClone,
         { panelId: 'panel3', name: 'downloadToServer', disabled: isDownloadToServerDisabled },
@@ -132,6 +137,9 @@ export default Component.extend({
             break;
           case 'analyzeFile' :
             this.get('analyzeFile')();
+            break;
+          case 'downloadProcessDumpToServer' :
+            this.get('downloadProcessDump')();
             break;
         }
       }

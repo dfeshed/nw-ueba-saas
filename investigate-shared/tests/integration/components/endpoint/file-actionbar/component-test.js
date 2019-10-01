@@ -25,7 +25,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('showDownloadProcessDump', true);
     await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump}}`);
     assert.equal(findAll('.file-actionbar').length, 1, 'file-actionbar component has rendered.');
-    assert.equal(findAll('.file-actionbar .rsa-form-button').length, 5, '5 buttons have been rendered.');
+    assert.equal(findAll('.file-actionbar .rsa-form-button').length, 4, '4 buttons have been rendered.');
   });
 
   test('presence of priority buttons', async function(assert) {
@@ -48,15 +48,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump isAgentMigrated=false}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), false, 'Edit file status Button is enabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
-    assert.equal(findAll('.file-actionbar .download-process-dump')[0].classList.contains('is-disabled'), true, 'Download process dump to server is disabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].title, 'Select a single file to analyze.', 'Pivot-to-investigate Button is disabled tooltip should be Select a single file to analyze.');
-  });
-
-  test('Download process dump, disabled for migrated agent', async function(assert) {
-    this.set('itemList', [{ machineOSType: 'windows' }, { machineOSType: 'windows' }]);
-    this.set('showDownloadProcessDump', true);
-    await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump isAgentMigrated=true}}`);
-    assert.equal(findAll('.file-actionbar .download-process-dump')[0].classList.contains('is-disabled'), true, 'Download process dump to server is disabled when agent is migrated.');
   });
 
   test('Buttons enabling/disabling for no files selection', async function(assert) {
@@ -65,12 +57,11 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump isAgentMigrated=false}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), true, 'Edit file status Button is disabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
-    assert.equal(findAll('.file-actionbar .download-process-dump')[0].classList.contains('is-disabled'), true, 'Download process dump to server is disabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].title, 'Select a single file to analyze.', 'Pivot-to-investigate Button is disabled tooltip should be Select a single file to analyze.');
   });
 
   test('Click on Download Process Dump to Server calls the passed action', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
@@ -96,7 +87,9 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
         fileDownloadButtonStatus=fileDownloadButtonStatus
       }}
     `);
-    await click('.file-actionbar .download-process-dump');
+    await click('.more-action-button');
+    assert.equal(findAll('.rsa-dropdown-action-list hr')[1].className, 'divider actionSeperator', 'Seperator is available for download process dump button');
+    await click(findAll('.rsa-dropdown-action-list li')[2]);
   });
 
   test('More action external lookup for google', async function(assert) {
@@ -295,6 +288,36 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     assert.equal(findAll('.rsa-dropdown-action-list .panel4')[0].title, 'Download the file to server to save a local copy.', 'Save a local copy tooltip should present');
     assert.equal(findAll('.rsa-dropdown-action-list .panel5')[0].title, 'Download the file to server to analyze.', 'Analyze file tooltip should present');
 
+  });
+  test('More action, Download to Process Dump option should not show if showDownloadProcessDump is false', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: true });
+    this.set('downloadDisabledTooltip', 'Download to server test tool tip');
+    this.set('showDownloadProcessDump', false);
+
+    this.set('downloadFiles', function() {
+      assert.ok('External function called on click of button');
+    });
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      downloadFiles=downloadFiles
+      accessControl=accessControl
+      showResetRiskScore=true
+      fileDownloadButtonStatus=fileDownloadButtonStatus
+      downloadDisabledTooltip=downloadDisabledTooltip
+      showDownloadProcessDump=showDownloadProcessDump
+    }}`);
+
+    await click('.more-action-button');
+    assert.notEqual(findAll('.rsa-dropdown-action-list li')[2].textContent.trim(), 'Download Process Dump to Server');
   });
   test('More action, Save local copy', async function(assert) {
     this.set('itemList', [

@@ -18,8 +18,8 @@ const BodyCellComponent = BodyCell.extend({
 
   @computed('item')
   downloadInfo(item) {
-    const { status, error } = item;
-    return { status, error };
+    const { status, error, fileType } = item;
+    return { status, error, fileType };
   }
 
 

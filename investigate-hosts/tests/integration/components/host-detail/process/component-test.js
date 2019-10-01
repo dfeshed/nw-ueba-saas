@@ -189,7 +189,6 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     assert.equal(findAll('.process-list-actions .pivot-to-process-analysis .rsa-form-button').length, 1, 'Analyze Process button is present');
     assert.equal(findAll('.file-status-button .rsa-form-button').length, 1, 'Edit File Status button is present.');
     assert.equal(findAll('.pivot-to-event-analysis').length, 1, 'Analyze Events button is present.');
-    assert.equal(findAll('.download-process-dump').length, 1, 'Download Process Dump to Server is present');
   });
 
   test('renders the process analysis item on click on Analyze process', async function(assert) {

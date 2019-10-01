@@ -2996,7 +2996,8 @@ export default {
         fileReadTimeSi: 'Access Time ($SI)',
         mftChangedTimeFn: 'Update Time ($FN)',
         mftChangedTimeSi: 'Update Time ($SI)',
-        timeStomping: 'Time Stomping'
+        timeStomping: 'Timestomping',
+        timeStompingFiles: 'Timestomping Files'
       },
       mftTable: {
         headers: {
@@ -3076,7 +3077,7 @@ export default {
         deletedFiles: 'Deleted Files',
         allFiles: 'All Files'
       },
-      processingMFT: 'Processing MFT',
+      processingFile: 'Processing {{type}}',
       mftViewer: {
         fileLocation: 'Directory path: ',
         filtersApplied: ' {{count}} filters applied',
@@ -4086,6 +4087,7 @@ export default {
         pivotToInvestigateDisableToolTip: 'Select a single {{label}} to analyze.',
         watch: 'Watch',
         downloadToServer: 'Download File to Server',
+        downloadProcessDumpToServer: 'Download Process Dump to Server',
         more: 'More',
         moreActions: 'More',
         saveLocalCopy: 'Save a Local Copy',
@@ -4104,14 +4106,15 @@ export default {
         consoleEvents: 'Console Events',
         viewCertificate: 'View Certificates',
         analyzeUser: 'Analyze User',
-        downloadMFT: 'Download MFT',
-        downloadSystemDump: 'Download System Dump',
+        downloadMFT: 'Download MFT to Server',
+        downloadSystemDump: 'Download System Dump to Server',
         tooltips: {
           downloadToServer: '',
           saveLocalCopy: 'Download the file to server to save a local copy.',
           analyzeFile: 'Download the file to server to analyze.',
           changeFileStatusDisabled: 'Select {{label}} to change the status',
           moreActionDisabled: 'Select {{label}} to enable More actions',
+          downloadProcessDumpToServer: 'One file can be downloaded at a time.',
           files: {
             downloadToServer: 'One file can be downloaded at a time.'
           }

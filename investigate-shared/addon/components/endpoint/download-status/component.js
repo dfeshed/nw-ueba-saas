@@ -18,8 +18,8 @@ export default Component.extend({
   @computed('downloadInfo')
   downloadState(downloadInfo) {
     if (downloadInfo) {
-      const { status, error } = downloadInfo;
-      return { status, error };
+      const { status, error, fileType } = downloadInfo;
+      return { status, error, fileType };
     }
     return { status: 'NotDownloaded' };
   }

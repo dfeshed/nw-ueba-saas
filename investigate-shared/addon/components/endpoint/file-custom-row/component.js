@@ -180,13 +180,14 @@ export default DataTableBodyRow.extend({
       contextConf.push({
         label: 'downloadProcessDump',
         prefix: 'investigateHosts.process.',
+        showDivider: true,
         disabled(selection, context) {
           return context.get('selections').length > 1 || context.get('isAgentMigrated');
         },
         action(selection, context) {
           context.downloadProcessDump();
         },
-        order: 4
+        order: 7
       });
     }
 

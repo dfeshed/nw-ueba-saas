@@ -1044,7 +1044,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
-      await click(`#${menuItems[3].id}`); // Download Process Dump
+      await click(`#${menuItems[5].id}`); // Download Process Dump
     });
 
   });
