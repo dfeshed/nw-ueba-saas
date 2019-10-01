@@ -3993,4 +3993,49 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(find(PILL_SELECTORS.logicalOperatorOR), 'Should be an OR operator');
     assert.notOk(find(PILL_SELECTORS.logicalOperatorAND), 'Should not be an AND operator');
   });
+
+  test('Pressing home and end from recent queries tab', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', END_KEY);
+    await settled();
+
+    await waitUntil(() => findAll(PILL_SELECTORS.newPillTemplateRecentQuery).length === 1, { timeout: 5000 }).then(async() => {
+      await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', HOME_KEY);
+      assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+    });
+  });
+
+  test('Pressing Delete key on a new pill trigger from recent queries tab will move the focus to the next pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(3);
+
+    await render(hbs` 
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'No pill focused');
+    await click(PILL_SELECTORS.newPillTrigger);
+    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await focus(PILL_SELECTORS.recentQuerySelectInput);
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', DELETE_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Focus shifts to the next pill');
+  });
 });

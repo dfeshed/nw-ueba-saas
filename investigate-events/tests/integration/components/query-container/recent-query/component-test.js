@@ -26,6 +26,9 @@ const ARROW_UP = KEY_MAP.arrowUp.key;
 const ENTER_KEY = KEY_MAP.enter.key;
 const ESCAPE_KEY = KEY_MAP.escape.key;
 const TAB_KEY = KEY_MAP.tab.key;
+const HOME_KEY = KEY_MAP.home.key;
+const END_KEY = KEY_MAP.end.key;
+const DELETE_KEY = KEY_MAP.delete.key;
 const modifiers = { shiftKey: true };
 
 // This trim also removes extra spaces inbetween words
@@ -456,6 +459,95 @@ module('Integration | Component | Recent Query', function(hooks) {
     this.set('shouldCleanInputFields', true);
 
     assert.equal(find(PILL_SELECTORS.recentQuerySelectInput).value, '', 'Input should have cleared');
+
+  });
+
+  test('it broadcasts a message when home is pressed', async function(assert) {
+    assert.expect(2);
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, MESSAGE_TYPES.PILL_HOME_PRESSED, 'Correct message sent up');
+      assert.ok(data.isFromRecentQuery, 'Correct flag sent up');
+    });
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', HOME_KEY);
+
+  });
+
+  test('it broadcasts a message when end is pressed', async function(assert) {
+    assert.expect(1);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.PILL_END_PRESSED, 'Correct message sent up');
+    });
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', END_KEY);
+
+  });
+
+  test('it broadcasts a message when delete is pressed', async function(assert) {
+    assert.expect(1);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.META_DELETE_PRESSED, 'Correct message sent up');
+    });
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', DELETE_KEY);
+
+  });
+
+  test('it does not broadcast a message when home is pressed on first new pill trigger ', async function(assert) {
+    assert.expect(0);
+    this.set('handleMessage', (type, data) => {
+      assert.notOk(type, 'Should not broadcast message');
+      assert.notOk(data.isFromRecentQuery, 'Should not send data');
+    });
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        isFirstPill=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', HOME_KEY);
+
+  });
+
+  test('it does not broadcast a message when end is pressed on last new pill template', async function(assert) {
+    assert.expect(0);
+    this.set('handleMessage', (type) => {
+      assert.notOk(type, 'Should not broadcast message');
+    });
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        isLastPill=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', END_KEY);
 
   });
 

@@ -206,6 +206,14 @@ export default Component.extend({
    */
   isFirstPill: false,
 
+  /**
+   * If this is the last empty pill?
+   * We will use this flag to close meta dropdown if END is pressed
+   * from an empty pill. If it's the right most empty pill, we do not
+   * need to close the dropdown, as there would be no pill on the right.
+   * @type {boolean}
+   * @public
+   */
   isLastPill: false,
 
   i18n: service(),
@@ -674,8 +682,8 @@ export default Component.extend({
       }
       this._broadcast(MESSAGE_TYPES.PILL_HOME_PRESSED);
     } else if (isEnd(event) && (!this.get('isEditing') || event.target.value == '')) {
-      // PILL_END_PRESSED message is broadcasted when home button is pressed and the pill is not in edit mode OR
-      // home button is pressed and the pill is in edit mode and the pill meta value is empty
+      // PILL_END_PRESSED message is broadcasted when end button is pressed and the pill is not in edit mode OR
+      // end button is pressed and the pill is in edit mode and the pill meta value is empty
       if (!this.get('isLastPill')) {
         this._clearMetaDropDown(powerSelectAPI);
       }

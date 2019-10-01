@@ -23,7 +23,10 @@ import {
   isEnter,
   isEscape,
   isShiftTab,
-  isTab
+  isTab,
+  isHome,
+  isEnd,
+  isDelete
 } from 'investigate-events/util/keys';
 import {
   addAndRemoveElements,
@@ -109,6 +112,26 @@ const RecentQueryComponent = Component.extend({
    * we use this flag as a trigger.
    */
   triggerRecentQueryMaintenance: false,
+
+  /**
+   * If this is the first empty pill?
+   * We will use this flag to close meta dropdown if HOME is pressed
+   * from an right most empty pill. If it's the first pill, we do not
+   * need to close the dropdown, as there would be no pill on the left.
+   * @type {boolean}
+   * @public
+   */
+  isFirstPill: false,
+
+  /**
+   * If this is the last empty pill?
+   * We will use this flag to close meta dropdown if END is pressed
+   * from an empty pill. If it's the right most empty pill, we do not
+   * need to close the dropdown, as there would be no pill on the right.
+   * @type {boolean}
+   * @public
+   */
+  isLastPill: false,
 
   /**
    * Does this component consume the full width of its parent, or is it sized to
@@ -351,6 +374,22 @@ const RecentQueryComponent = Component.extend({
         // are added.
         this._afterOptionsTabToggle();
         return false;
+      } else if (isHome(event) && event.target.value == '') {
+        // PILL_HOME_PRESSED message is broadcasted when home button is pressed and recent query value is empty
+        if (!this.get('isFirstPill')) {
+          this._clearDropDown(powerSelectAPI);
+          this._broadcast(MESSAGE_TYPES.PILL_HOME_PRESSED, { isFromRecentQuery: true });
+        }
+      } else if (isEnd(event) && event.target.value == '') {
+        // PILL_END_PRESSED message is broadcasted when end button is pressed and and recent query value is empty
+        if (!this.get('isLastPill')) {
+          this._clearDropDown(powerSelectAPI);
+          this._broadcast(MESSAGE_TYPES.PILL_END_PRESSED);
+        }
+      } else if (isDelete(event) && !this.get('isLastPill')) {
+        // Message is broadcasted when delete button is pressed.
+        this._clearDropDown(powerSelectAPI);
+        this._broadcast(MESSAGE_TYPES.META_DELETE_PRESSED);
       } else {
         // If recent queries tab is open and some text is typed in,
         // this is a possible search against recent queries API.
@@ -542,6 +581,13 @@ const RecentQueryComponent = Component.extend({
     const _input = input.toLowerCase().replace(LEADING_SPACES, '');
     const _query = option.query.toLowerCase();
     return _query.indexOf(_input);
+  },
+
+  _clearDropDown(powerSelectAPI) {
+    powerSelectAPI.actions.search('');
+    powerSelectAPI.actions.close();
+    this._cleanupInputField();
+    this._dropFocus();
   }
 });
 

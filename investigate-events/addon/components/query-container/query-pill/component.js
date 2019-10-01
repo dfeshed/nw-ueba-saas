@@ -341,7 +341,7 @@ export default Component.extend({
       [MESSAGE_TYPES.PILL_OPEN_PAREN]: () => this._openParen(),
       [MESSAGE_TYPES.PILL_CLOSE_PAREN]: () => this._closeParen(),
       [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR]: (data) => this._logicalOperator(data),
-      [MESSAGE_TYPES.PILL_HOME_PRESSED]: () => this._homeButtonPressed(),
+      [MESSAGE_TYPES.PILL_HOME_PRESSED]: (data) => this._homeButtonPressed(data),
       [MESSAGE_TYPES.PILL_END_PRESSED]: () => this._endButtonPressed(),
       [MESSAGE_TYPES.META_DELETE_PRESSED]: () => this._metaDeletePressed()
     });
@@ -1142,7 +1142,26 @@ export default Component.extend({
    * When editing the pill, the event is not relayed unless the
    * pill data is empty.
    */
-  _homeButtonPressed() {
+  _homeButtonPressed(data) {
+    const isFromRecentQuery = data?.isFromRecentQuery;
+    // if home is pressed from recent queries of new pill template then reset is needed.
+    // for NPT recent queries no such reset is required.
+    if (isFromRecentQuery) {
+      const RESET = {
+        isActive: false,
+        isMetaActive: false,
+        isOperatorActive: false,
+        isValueActive: false,
+        selectedMeta: null,
+        selectedOperator: null,
+        valueString: null
+      };
+      this.setProperties({
+        ...RESET,
+        activePillTab: AFTER_OPTION_TAB_META
+      });
+      this._resetTabCounts();
+    }
     this._broadcast(MESSAGE_TYPES.PILL_HOME_PRESSED, this.get('pillData'));
   },
 

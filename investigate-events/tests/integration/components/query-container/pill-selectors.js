@@ -45,6 +45,7 @@ export default {
   metaTrigger,
   newPillTemplate: '.new-pill-template',
   newPillTemplateActive: '.new-pill-template.is-active',
+  newPillTemplateRecentQuery: '.new-pill-template .recent-query .ember-power-select-trigger input',
   newPillTrigger: '.new-pill-trigger',
   newPillTriggerContainer,
   openParen: '.open-paren',
