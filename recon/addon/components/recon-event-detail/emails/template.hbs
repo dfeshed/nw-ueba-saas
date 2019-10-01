@@ -1,6 +1,8 @@
 {{#if hasRenderIds}}
   {{#if hasSelectedFiles}}
-    <div class="attachment-download-warning">{{t 'recon.emailView.attachmentWarningMessage'}}</div>
+    <div class="attachment-download-warning">
+      {{rsa-content-warn-text-box isAlert=true value=(t 'recon.fileView.downloadWarning')}}
+    </div>
   {{/if}}
   <div class="email-scroll-box">
     {{#each renderedEmails as |email|}}

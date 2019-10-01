@@ -55,12 +55,11 @@
   }
 
   .attachment-download-warning {
-    background-color: background-color(accentOne, base, nearly-transparent);
-    border: solid 1px border-color(accentOne, base, opaque);
-    color: text-color(neutral);
-    padding: rsa-whitespace();
-    margin: 0.7rem;
-    margin-right: 1rem;
+    margin: 0.7rem 2rem 0 0.7rem;
+
+    div {
+      float: none;
+    }
   }
 
   .email-scroll-box {

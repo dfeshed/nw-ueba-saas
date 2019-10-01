@@ -3,6 +3,13 @@
   {{#if hasNoFiles}}
     {{rsa-panel-message message=(t 'recon.files.noFiles')}}
   {{else}}
+
+    {{#if hasSelectedFiles}}
+      <div class="download-warning">
+        {{rsa-content-warn-text-box isAlert=true value=(t 'recon.fileView.downloadWarning')}}
+      </div>
+    {{/if}}
+
     {{#rsa-data-table
       items=files
       fitToWidth=false
@@ -61,10 +68,6 @@
 
       {{/rsa-data-table/body}}
     {{/rsa-data-table}}
-
-    {{#if hasSelectedFiles}}
-      <section class="download-warning">{{t 'recon.fileView.downloadWarning'}}</section>
-    {{/if}}
   {{/if}}
 {{/if}}
 

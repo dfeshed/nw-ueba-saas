@@ -1,10 +1,7 @@
 .recon-event-detail-files {
   &.warning {
     .rsa-data-table {
-      bottom: 6rem;
-    }
-    .download-warning {
-      display: block;
+      top: 5rem;
     }
   }
 
@@ -62,13 +59,11 @@
   }
 
   .download-warning {
-    background-color: background-color(accentThree, dark);
-    color: text-color(neutral);
-    padding: rsa-whitespace();
-    position: absolute;
-    right: 0;
-    left: 0;
-    bottom: 2rem;
-    display: none;
+    margin-top: 0.7rem;
+    margin-right: 16px;
+
+    div {
+      float: none;
+    }
   }
 }

@@ -1,7 +1,6 @@
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-
 import DataHelper from '../../../../helpers/data-helper';
 import sinon from 'sinon';
 import buildInvestigateEventsUrlUtils from 'component-lib/utils/build-url';
@@ -51,6 +50,18 @@ test('clicking top checkbox clicks them all', function(assert) {
     document.querySelectorAll('.recon-event-detail-files input')[0].click();
     return wait().then(() => {
       assert.equal(document.querySelectorAll('.recon-event-detail-files input.checked').length, 8);
+    });
+  });
+});
+
+test('download warning banner is shown on selecting files', function(assert) {
+  new DataHelper(this.get('redux')).populateFiles();
+  this.render(hbs`{{recon-event-detail/files}}`);
+  assert.notOk(document.querySelector('.download-warning'), 'Download warning not shown when no files are selected');
+  return wait().then(() => {
+    document.querySelectorAll('.recon-event-detail-files input')[0].click();
+    return wait().then(() => {
+      assert.ok(document.querySelector('.download-warning'), 'Download warning is shown when files are selected');
     });
   });
 });
