@@ -5,8 +5,8 @@
     </div>
   {{/if}}
   <div class="email-scroll-box">
-    {{#each renderedEmails as |email|}}
-      {{recon-event-detail/single-email emailCount=renderedEmails.length email=email}}
+    {{#each renderedEmails as |email index|}}
+      {{recon-event-detail/single-email emailIndex=(add index 1) emailCount=renderedEmails.length email=email}}
       <hr class="email-separator">
     {{/each}}
   </div>

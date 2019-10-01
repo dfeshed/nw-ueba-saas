@@ -306,7 +306,8 @@ export default {
       attachmentWarningMessage: 'Warning: Email attachments contain the original raw unsecured content. Use caution when opening or downloading files; they may contain malicious data.',
       renderedEmailPercent: 'Showing',
       showRemainingPercent: 'Show Remaining {{remainingPercent}}%',
-      allAttachments: 'All Attachments'
+      allAttachments: 'All Attachments',
+      emailOfTotal: '{{emailIndex}} of {{emailCount}} messages'
     },
     textView: {
       compressToggleLabel: 'Display Compressed Payloads',

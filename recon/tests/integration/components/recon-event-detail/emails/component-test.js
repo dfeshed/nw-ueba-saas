@@ -21,8 +21,7 @@ module('Integration | Component | recon-event-detail/emails', function(hooks) {
     patchReducer(this, Immutable.from(state));
     await render(hbs`{{recon-event-detail/emails}}`);
     assert.equal(findAll('.rsa-panel-message').length, 0, 'do not show error message when email data is present');
-    const str = find('.email-scroll-box').textContent.trim().replace(/\s/g, '').substring(0, 300);
-    assert.equal(str, 'fromeddard.stark@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?fromeddard.stark@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?fromeddard.stark@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?fromeddard.stark@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?');
+    assert.equal(findAll('.recon-email-view').length, 4, '4 emails are shown');
   });
 
   test('renders error when no email data present', async function(assert) {
@@ -80,19 +79,16 @@ module('Integration | Component | recon-event-detail/emails', function(hooks) {
 
     await render(hbs`{{recon-event-detail/emails}}`);
 
-    assert.equal(findAll('.rsa-icon-arrow-right-12-filled').length, 4, '4 emails are collapse by default');
+    assert.equal(findAll('.rsa-icon-add-circle-1-filled').length, 4, '4 emails are collapse by default');
 
-    await click(findAll('.rsa-icon-arrow-right-12-filled')[0]);
-    assert.equal(findAll('.recon-email-collapse-header .rsa-icon-arrow-down-12-filled').length, 1, 'First email is expanded');
-    assert.equal(findAll('.recon-email-collapse-header .rsa-icon-arrow-right-12-filled').length, 3, '3 emails are collapsed now after 1 email is expanded');
+    await click(findAll('.rsa-icon-add-circle-1-filled')[0]);
+    assert.equal(findAll('.recon-email-collapse-header .rsa-icon-subtract-circle-1-filled').length, 1, 'First email is expanded');
+    assert.equal(findAll('.recon-email-collapse-header .rsa-icon-add-circle-1-filled').length, 3, '3 emails are collapsed now after 1 email is expanded');
 
-    const str = find('.recon-email-header').textContent.trim().replace(/\s/g, '').substring(0, 200);
-    assert.equal(str, 'fromeddard.stark@verizon.nettosansa.stark@verizon.net,arya.stark@verizon.net,robb.stark@verizon.netbccjon.snow@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?attachmentsAdditionalHeaderDetail');
+    await click(findAll('.rsa-icon-subtract-circle-1-filled')[0]);
+    assert.equal(findAll('.rsa-icon-add-circle-1-filled').length, 4, '4 emails are collapse again');
 
-    await click(findAll('.rsa-icon-arrow-down-12-filled')[0]);
-    assert.equal(findAll('.rsa-icon-arrow-right-12-filled').length, 4, '4 emails are collapse again');
-
-    const strValue = find('.recon-email-collapse-header').textContent.trim().replace(/\s/g, '').substring(0, 200);
-    assert.equal(strValue, 'fromeddard.stark@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?');
+    const strValue = find('.recon-email-header').textContent.trim().replace(/\s/g, '').substring(0, 200);
+    assert.equal(strValue, 'fromeddard.stark@verizon.nettosansa.stark@verizon.net,arya.stark@verizon.net,robb.stark@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?');
   });
 });

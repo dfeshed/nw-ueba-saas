@@ -5,57 +5,58 @@
       <box class="meta-value header-value">{{headerValue}}</box>
     </hbox>
   {{/each-in}}
-  {{#if email.attachments}}
-    <div class="recon-meta-content-item horizontal">
-      <span class="toggle-icon additional-header attachments">
-        {{rsa-icon
-            name=(concat 'arrow-' attachmentsCollapseArrowDirection '-12')
-            click=(action 'toggleAttachmentsExpansion')
-        }}
-        {{t 'recon.emailView.attachment'}}
-      </span>
-    </div>
+  {{#if isEmailExpanded}}
+    {{#if email.attachments}}
+      <div class="recon-meta-content-item horizontal">
+        <span class="toggle-icon additional-header attachments">
+          {{rsa-icon
+              name=(concat 'arrow-' attachmentsCollapseArrowDirection '-12')
+              click=(action 'toggleAttachmentsExpansion')
+          }}
+          {{t 'recon.emailView.attachment'}}
+        </span>
+      </div>
 
-    {{#if isAttachmentsExpanded}}
-      <hbox class="recon-meta-content-item">
-        <box class="meta-name header-label">
-          <label class="rsa-form-checkbox-label {{if allAttachmentsSelected 'checked'}}">
-            {{rsa-form-checkbox
-                checked=allAttachmentsSelected
-                change=(action 'toggleSelectAll')}}
-          </label>
-        </box>
-        <box class="attachment-name meta-value header-value">
-          {{t 'recon.emailView.allAttachments'}}
-        </box>
-      </hbox>
-      {{#each email.attachments as |attachment|}}
+      {{#if isAttachmentsExpanded}}
         <hbox class="recon-meta-content-item">
           <box class="meta-name header-label">
-            <label class="rsa-form-checkbox-label {{if (contains attachment.attachmentId selectedAttachments) 'checked'}}">
+            <label class="rsa-form-checkbox-label {{if allAttachmentsSelected 'checked'}}">
               {{rsa-form-checkbox
-                  checked=(contains attachment.attachmentId selectedAttachments)
-                  change=(action 'toggleSelection' attachment)}}
+                  checked=allAttachmentsSelected
+                  change=(action 'toggleSelectAll')}}
             </label>
           </box>
           <box class="attachment-name meta-value header-value">
-            {{attachment.filename}}
+            {{t 'recon.emailView.allAttachments'}}
           </box>
         </hbox>
-      {{/each}}
+        {{#each email.attachments as |attachment|}}
+          <hbox class="recon-meta-content-item">
+            <box class="meta-name header-label">
+              <label class="rsa-form-checkbox-label {{if (contains attachment.attachmentId selectedAttachments) 'checked'}}">
+                {{rsa-form-checkbox
+                    checked=(contains attachment.attachmentId selectedAttachments)
+                    change=(action 'toggleSelection' attachment)}}
+              </label>
+            </box>
+            <box class="attachment-name meta-value header-value">
+              {{attachment.filename}}
+            </box>
+          </hbox>
+        {{/each}}
+      {{/if}}
     {{/if}}
+
+    <div class="recon-meta-content-item horizontal">
+      <span class="toggle-icon additional-header">
+        {{rsa-icon
+          name=(concat 'arrow-' headersCollapseArrowDirection '-12')
+          click=(action 'toggleEmailHeadersExpansion')
+        }}
+        {{t 'recon.emailView.additionalHeaderDetails'}}
+      </span>
+    </div>
   {{/if}}
-
-
-  <div class="recon-meta-content-item horizontal">
-    <span class="toggle-icon additional-header">
-      {{rsa-icon
-        name=(concat 'arrow-' headersCollapseArrowDirection '-12')
-        click=(action 'toggleEmailHeadersExpansion')
-      }}
-      {{t 'recon.emailView.additionalHeaderDetails'}}
-    </span>
-  </div>
 
   {{#if isEmailHeadersExpanded}}
     {{#each-in additionalHeaderFields as |headerField headerValue|}}

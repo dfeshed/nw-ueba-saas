@@ -3,27 +3,19 @@
   <hbox class="recon-email-collapse-header">
     <box justify="center" xs="1">
       {{rsa-icon
-        name=(concat 'arrow-' collapseArrowDirection '-12')
+        name=(concat collapseArrowDirection '-circle-1')
         click=(action 'toggleEmailExpansion')
       }}
     </box>
-    {{#unless isEmailExpanded}}
-      <box align="center" xs="3" horizontal>
-        <span class="meta-name header-label">{{t 'recon.emailView.from'}}</span>
-        <span class="meta-value header-value">{{email.from}}</span>
-      </box>
-      <box align="center" horizontal>
-        <span class="meta-name header-label">{{t 'recon.emailView.subject'}}</span>
-        <span class="meta-value header-value">{{email.subject}}</span>
-      </box>
-    {{/unless}}
+    <box class="header-text" justify="end" align="end">
+      {{t 'recon.emailView.emailOfTotal' emailIndex=emailIndex emailCount=emailCount}}
+    </box>
   </hbox>
 
+  {{recon-event-detail/single-email/email-header email=email isEmailExpanded=isEmailExpanded}}
+
   {{#if isEmailExpanded}}
-    {{recon-event-detail/single-email/email-header email=email}}
-    {{recon-event-detail/single-email/email-body-content
-      email=email
-    }}
+    {{recon-event-detail/single-email/email-body-content email=email}}
   {{/if}}
 
 </div>

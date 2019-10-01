@@ -11,9 +11,13 @@ import files from '../../../../../data/subscriptions/reconstruction-file-data/qu
 module('Integration | Component | recon-event-detail/single-email/email-header', function(hooks) {
   setupRenderingTest(hooks);
 
+  hooks.beforeEach(function() {
+    this.set('isEmailExpanded', true);
+  });
+
   test('renders single email header content, if data present', async function(assert) {
     this.set('email', EmberObject.create(emailData[1]));
-    await render(hbs`{{recon-event-detail/single-email/email-header email=email}}`);
+    await render(hbs`{{recon-event-detail/single-email/email-header email=email isEmailExpanded=isEmailExpanded}}`);
     assert.equal(findAll('.recon-email-header').length, 1);
     assert.equal(findAll('.rsa-icon-arrow-right-12-filled').length, 2, 'Attachments and Additional Header sections rendered as collapsed');
     const str = find('.recon-email-header').textContent.trim().replace(/\s/g, '').substring(0, 200);
@@ -22,7 +26,7 @@ module('Integration | Component | recon-event-detail/single-email/email-header',
 
   test('Expand/Collapse all additional headers on click of additional header details', async function(assert) {
     this.set('email', EmberObject.create(emailData[1]));
-    await render(hbs`{{recon-event-detail/single-email/email-header email=email}}`);
+    await render(hbs`{{recon-event-detail/single-email/email-header email=email isEmailExpanded=isEmailExpanded}}`);
     await click(findAll('.rsa-icon-arrow-right-12-filled')[1]);
     assert.equal(findAll('.rsa-icon-arrow-down-12-filled').length, 1, 'Additional Header is expanded');
     const str = find('.recon-email-header').textContent.trim().replace(/\s/g, '').substring(0, 200);
@@ -44,7 +48,7 @@ module('Integration | Component | recon-event-detail/single-email/email-header',
       }
     };
     patchReducer(this, Immutable.from(state));
-    await render(hbs`{{recon-event-detail/single-email/email-header email=email}}`);
+    await render(hbs`{{recon-event-detail/single-email/email-header email=email isEmailExpanded=isEmailExpanded}}`);
     assert.equal(findAll('.attachments .rsa-icon-arrow-right-12-filled').length, 1, 'Attachments section is collapsed by default');
     await click(findAll('.attachments .rsa-icon-arrow-right-12-filled')[0]);
     assert.equal(findAll('.attachments .rsa-icon-arrow-down-12-filled').length, 1, 'Attachments section is expanded');
@@ -66,7 +70,7 @@ module('Integration | Component | recon-event-detail/single-email/email-header',
       }
     };
     patchReducer(this, Immutable.from(state));
-    await render(hbs`{{recon-event-detail/single-email/email-header email=email}}`);
+    await render(hbs`{{recon-event-detail/single-email/email-header email=email isEmailExpanded=isEmailExpanded}}`);
     await click(findAll('.attachments .rsa-icon-arrow-right-12-filled')[0]);
     assert.equal(findAll('.rsa-form-checkbox-label .checked').length, 0, 'No attachments selected to start with');
     await click(find('.rsa-form-checkbox-label'));

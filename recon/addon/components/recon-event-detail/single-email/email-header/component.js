@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
-import { headers } from 'recon/reducers/emails/selectors';
+import { headers, collapsedHeaders } from 'recon/reducers/emails/selectors';
 import { connect } from 'ember-redux';
 import { warn } from '@ember/debug';
 import { isEmpty } from '@ember/utils';
@@ -42,9 +42,10 @@ const EmailReconComponent = Component.extend({
     }).map((a) => a.attachmentId);
   },
 
-  @computed('email')
-  headerFields(email) {
-    return _.pickBy(email, (emailValue, emailField) => !(_.isEmpty(emailValue)) & headers.includes(emailField));
+  @computed('email', 'isEmailExpanded')
+  headerFields(email, isEmailExpanded) {
+    const newHeaders = isEmailExpanded ? headers : collapsedHeaders;
+    return _.pickBy(email, (emailValue, emailField) => !(_.isEmpty(emailValue)) & newHeaders.includes(emailField));
   },
 
   @computed('email.headers')

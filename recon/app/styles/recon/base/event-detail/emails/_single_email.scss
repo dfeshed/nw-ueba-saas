@@ -4,33 +4,17 @@
   border-width: 2px;
   border-style: solid;
 
-  .email-scroll-box {
-    bottom: 4rem;
-
-    .email-separator {
-      border: 1px dashed #424242;
-      width: 97%;
-    }
-  }
-
   .recon-email-collapse-header {
     background-color: background-color(primary, dark);
-    padding: rsa-whitespace() 0 rsa-whitespace() 0;
+    padding: rsa-whitespace(least) rsa-whitespace(less) 0 rsa-whitespace(least);
+    color: text-color(primary, lighter);
 
     .rsa-icon:hover {
       cursor: pointer;
     }
 
-    .header-label {
-      @include rsa-font(header, small);
-      color: text-color(primary, lighter);
-      padding-right: rsa-whitespace();
-    }
-
-    .header-value {
+    .header-text {
       @include rsa-font(body, small);
-      @include rsa-word-wrap();
-      padding-right: 1.5rem;
     }
   }
 }

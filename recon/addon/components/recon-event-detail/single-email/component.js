@@ -16,7 +16,7 @@ export default Component.extend({
 
   @computed('isEmailExpanded')
   collapseArrowDirection(isEmailHeadersExpanded) {
-    return isEmailHeadersExpanded ? 'down' : 'right';
+    return isEmailHeadersExpanded ? 'subtract' : 'add';
   },
 
   actions: {

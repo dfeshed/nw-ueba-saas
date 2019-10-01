@@ -4,6 +4,7 @@ const { createSelector } = reselect;
 const emails = (recon) => recon.emails.emails || [];
 const renderIds = (recon) => recon.emails.renderIds;
 export const headers = ['to', 'from', 'subject', 'cc', 'bcc', 'replyTo', 'sent', 'received'];
+export const collapsedHeaders = ['to', 'from', 'subject'];
 
 export const hasRenderIds = createSelector(
   [renderIds],
