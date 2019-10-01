@@ -53,6 +53,12 @@ const IncidentFilters = Component.extend({
   sentToArcherTypes: [true, false],
   accessControl: service(),
 
+  @computed('idFilter')
+  idFilterNumber(idString) {
+    const capture = /INC-(\d+)/g.exec(idString);
+    return capture?.[1] ?? '';
+  },
+
   /**
    * The user objects that have been selected via the assignee picker
    * @property selectedAssignees

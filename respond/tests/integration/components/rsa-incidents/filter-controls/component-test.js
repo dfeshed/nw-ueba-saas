@@ -188,4 +188,12 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
     assert.equal(findAll(selector).length, 2, 'There should be 2 sent to archer filter options (Yes and No)');
     await click(`${selector} input.rsa-form-checkbox:first-of-type`);
   });
+
+  test('idFilterNumber correctly pulls out the incident id number from the filter', async function(assert) {
+    assert.expect(1);
+    setState({ itemsFilters: { id: 'INC-123' } });
+    await init;
+    const component = this.owner.factoryFor('component:rsa-incidents/filter-controls').create();
+    assert.equal('123', component.get('idFilterNumber'));
+  });
 });

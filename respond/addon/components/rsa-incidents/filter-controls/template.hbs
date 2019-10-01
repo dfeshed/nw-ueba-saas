@@ -5,7 +5,7 @@
     </span>
     <span class="id-prefix-wrapper">
       <span class="id-prefix">INC-</span>
-      {{input type="number" placeholder=(t 'respond.incidents.filters.idFilterPlaceholder') input=(action 'idFilterChanged'value='target.value') min="1" step="1"}}
+      {{input type="number" value=(readonly idFilterNumber) placeholder=(t 'respond.incidents.filters.idFilterPlaceholder') input=(action 'idFilterChanged'value='target.value') min="1" step="1"}}
     </span>
   </label>
 </section>
