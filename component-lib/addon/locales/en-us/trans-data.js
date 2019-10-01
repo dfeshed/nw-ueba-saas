@@ -613,7 +613,8 @@ export default {
         custom: 'Custom Column Groups',
         customTitle: 'Manage Custom Column Groups in Events List',
         default: 'Default Column Groups',
-        searchPlaceholder: 'Type to filter column group'
+        searchPlaceholder: 'Type to filter column group',
+        columnsSearchPlaceholder: 'Filter meta keys'
       },
       download: {
         selected: 'Download',

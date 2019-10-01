@@ -3,6 +3,10 @@
 /* Imports all styles from component-lib addon. */
 @import 'component-lib/manifest';
 
+@import 'rsa-data-filters/manifest';
+
+@import 'rsa-list-manager/manifest';
+
 /* Import context styles from addon */
 @import 'context/manifest';
 
@@ -62,7 +66,3 @@
 
 @import 'admin/manifest';
 @import 'admin-source-management/manifest';
-
-@import 'rsa-data-filters/manifest';
-
-@import 'rsa-list-manager/manifest';

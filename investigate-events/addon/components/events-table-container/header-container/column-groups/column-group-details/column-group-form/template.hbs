@@ -8,6 +8,11 @@
     placeholder='My Custom Group'}}
 </div>
 
+{{events-table-container/header-container/column-groups/column-group-details/column-filter
+  filterTextUpdated=(action 'updateColumnFilterText')
+  filterText=columnFilterText
+}}
+
 <div class='group-details'>
   {{!-- TODO bhanun add translate--}}
   <div class='name'>Displayed Meta Keys</div>

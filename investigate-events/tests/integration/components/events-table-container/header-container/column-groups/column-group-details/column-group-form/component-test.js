@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -170,5 +170,9 @@ module('Integration | Component | Column Group form', function(hooks) {
 
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
     assert.equal(findAll(AVAILABLE_META).length, 19, '19 meta keys available');
+  });
+
+  skip('it will filter text', async function(/* assert */) {
+    // Tests to come once filtering implemented
   });
 });

@@ -486,3 +486,15 @@
 .rsa-form-button-wrapper.is-standard:not(.is-disabled):not(.is-icon-only) .rsa-form-button {
   border-color: border-color(primary, light);
 }
+
+.list-manager {
+  .column-group-column-filter {
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 2px;
+  }
+
+  .group-details {
+    max-height: 200px;
+  }
+}

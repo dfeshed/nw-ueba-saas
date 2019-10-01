@@ -1,4 +1,4 @@
-.list-manager .list-manager-container {
+.list-manager {
   display: inline-flex;
 
   .list-caption {
@@ -41,26 +41,6 @@
     .list-body {
       height: 262px;
       background: background-color(primary, darker);
-      // Manager's filter component
-      .list-filter {
-        padding-left: rsa-whitespace(less);
-        padding-right: rsa-whitespace(less);
-        .filter-group {
-          display: inline-flex;
-          width: 100%;
-          border-bottom: 1px solid border-color(primary,light);
-          padding-bottom: rsa-whitespace(less);
-          padding-top: rsa-whitespace(less);
-          .ember-power-select-search-input {
-            border: none;
-            font-weight: 300;
-          }
-          .clear-filter i {
-            margin-right: 0;
-            font-size: 11px;
-          }
-        }
-      }
 
       // Manager's itemList component
       ul.rsa-item-list {
@@ -180,7 +160,6 @@
 
         .details-body {
           .group-details {
-            max-height: 230px;
             overflow-y: auto;
             .name {
               padding-top: 1.2rem;
@@ -275,4 +254,28 @@
       }
     }
   }
+
+
+  // Manager's filter component
+  .list-filter {
+    padding-left: rsa-whitespace(less);
+    padding-right: rsa-whitespace(less);
+    .filter-group {
+      display: inline-flex;
+      width: 100%;
+      border-bottom: 1px solid border-color(primary,light);
+      padding-bottom: rsa-whitespace(less);
+      padding-top: rsa-whitespace(less);
+      .ember-power-select-search-input {
+        border: none;
+        font-weight: 300;
+      }
+      .clear-filter i {
+        margin-right: 0;
+        font-size: 11px;
+      }
+    }
+  }
 }
+
+

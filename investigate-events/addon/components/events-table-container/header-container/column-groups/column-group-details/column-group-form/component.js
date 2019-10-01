@@ -27,6 +27,9 @@ const ColumnGroupForm = Component.extend({
   // list-manager function that accepts validated edited item
   editColumnGroup: () => {},
 
+  // Text used to filter the visible columns in the form
+  columnFilterText: null,
+
   /**
    * initialize a working copy of columns and leave original column group alone
    */
@@ -106,8 +109,11 @@ const ColumnGroupForm = Component.extend({
     removeMetaFromColumns(meta) {
       const displayedColumns = _.cloneDeep(this.get('displayedColumns'));
       this._updateColumns(_.filter(displayedColumns, (c) => c.field != meta.field));
-    }
+    },
 
+    updateColumnFilterText(filterText) {
+      this.set('columnFilterText', filterText);
+    }
   }
 
 });
