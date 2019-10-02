@@ -236,7 +236,7 @@ export default Component.extend(DomWatcher, {
     // Complete table need to re-render in case column config is changing.
     // Ensuring table starts from left (Scrollbar needs to start from begining).
 
-    const dataTableBody = document.querySelector('.rsa-data-table-body');
+    const dataTableBody = this.element.querySelector('.rsa-data-table-body');
     if (dataTableBody) {
       dataTableBody.scroll(0, null);
     }
@@ -382,7 +382,7 @@ export default Component.extend(DomWatcher, {
    * @public
    */
   _needToAdjust(adjust, column) {
-    const domElement = document.querySelector('.rsa-data-table-body-row');
+    const domElement = this.element.querySelector('.rsa-data-table-body-row');
     if (adjust >= 0 && domElement && domElement.scrollWidth <= domElement.clientWidth) {
       const width = adjust + get(column, 'width');
       set(column, 'width', width);
@@ -523,12 +523,12 @@ export default Component.extend(DomWatcher, {
         } else {
           selectedItemIndex = this.get('selectedIndex') + 1;
           selectedItem = items.objectAt(selectedItemIndex);
-          const dataTableBodyRow = document.querySelector('.rsa-data-table-body-row');
+          const dataTableBodyRow = this.element.querySelector('.rsa-data-table-body-row');
           const outerHeight = getOuterHeight(dataTableBodyRow);
           scrollTop = (selectedItemIndex * outerHeight) + this.get('prevGroupingLabelsHeight');
         }
 
-        const dataTableBody = document.querySelector('.rsa-data-table-body');
+        const dataTableBody = this.element.querySelector('.rsa-data-table-body');
 
         // do not 'smooth' if going from bottom of table to top
         if (this.get('selectedIndex') === (items.get('length') - 1)) {
@@ -563,17 +563,17 @@ export default Component.extend(DomWatcher, {
           selectedItem = this.get('items').objectAt(selectedItemIndex);
           // when vertical scroll is present, it will scroll to bottom,
           // which was not happening before.
-          scrollTop = document.querySelector('.rsa-data-table-body').scrollHeight;
+          scrollTop = this.element.querySelector('.rsa-data-table-body').scrollHeight;
 
         } else {
           selectedItemIndex = this.get('selectedIndex') - 1;
           selectedItem = this.get('items').objectAt(selectedItemIndex);
-          const dataTableBodyRow = document.querySelector('.rsa-data-table-body-row');
+          const dataTableBodyRow = this.element.querySelector('.rsa-data-table-body-row');
           const outerHeight = getOuterHeight(dataTableBodyRow);
           scrollTop = (selectedItemIndex * outerHeight) + this.get('prevGroupingLabelsHeight');
         }
 
-        const dataTableBody = document.querySelector('.rsa-data-table-body');
+        const dataTableBody = this.element.querySelector('.rsa-data-table-body');
 
         if (this.get('selectedIndex') < 1) {
           dataTableBody.scroll({ top: scrollTop });
@@ -654,12 +654,12 @@ export default Component.extend(DomWatcher, {
         }
 
         // First row needed to measure height of items to calculate how far to scroll
-        const firstRow = document.querySelectorAll('.rsa-data-table-body-row').item(0);
+        const firstRow = this.element.querySelectorAll('.rsa-data-table-body-row').item(0);
 
         // Check selected index is a valid number before attempting scrollTop.
         // This ensures we don't calculate howFarToScrollTable on a negative index.
         if (selectedIndex >= 0 && !!firstRow) {
-          const heightForAllTableRows = getHeight(document.querySelector('.rsa-data-table-body-rows'));
+          const heightForAllTableRows = getHeight(this.element.querySelector('.rsa-data-table-body-rows'));
           let howFarToScrollTable = getOuterHeight(firstRow) * selectedIndex;
           // Data could be flowing in over time, so the number of rows in the
           // table may not immediately be enough to scroll to the selected row.
@@ -671,7 +671,7 @@ export default Component.extend(DomWatcher, {
           }
 
           if (heightForAllTableRows >= howFarToScrollTable) {
-            document.querySelector('.rsa-data-table-body').scroll(null, howFarToScrollTable);
+            this.element.querySelector('.rsa-data-table-body').scroll(null, howFarToScrollTable);
             return;
           }
         }
