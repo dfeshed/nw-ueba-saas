@@ -11,6 +11,7 @@
 {{events-table-container/header-container/column-groups/column-group-details/column-filter
   filterTextUpdated=(action 'updateColumnFilterText')
   filterText=columnFilterText
+  shouldSelectTextForRemoval=shouldSelectFilterText
 }}
 
 <div class='group-details'>
@@ -52,7 +53,7 @@
       </ul>
     {{else}}
       {{#if areAvailableMetaFiltered}}
-        <p class='message meta-filtered'>{{t 'investigate.events.columnGroups.allDisplayedFilteredAway'}}</p>
+        <p class='message meta-filtered'>{{t 'investigate.events.columnGroups.allAvailableFilteredAway'}}</p>
       {{else}}
         <p class='message all-meta-added'>{{t 'investigate.events.columnGroups.allMetaKeysAdded'}}</p>
       {{/if}}

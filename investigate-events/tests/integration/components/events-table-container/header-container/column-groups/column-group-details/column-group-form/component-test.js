@@ -305,4 +305,37 @@ module('Integration | Component | Column Group form', function(hooks) {
     await fillIn('.filter-group input', 'blahhhh');
     assert.ok(findAll('.all-meta-added').length === 1, 'proper message is displayed');
   });
+
+  test('upon adding/removing meta the text will be selected', async function(assert) {
+    assert.expect(2);
+
+    this.set('columnGroup', null);
+    this.set('editColumnGroup', () => {});
+
+    new ReduxDataHelper(setState).language().build();
+    await render(hbs`
+      {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+        columnGroup=columnGroup
+        editColumnGroup=editColumnGroup
+      }}
+    `);
+
+    await fillIn('.filter-group input', 'a');
+
+    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    // add candidate meta
+    await click(availableOptions[0]);
+
+    let input = find('.filter-group input');
+    let lengthOfSelection = input.selectionEnd - input.selectionStart;
+    assert.ok(lengthOfSelection === 1, 'text in box is selected');
+
+    const selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
+    // remove column
+    await click(selectedOptions[0]);
+
+    input = find('.filter-group input');
+    lengthOfSelection = input.selectionEnd - input.selectionStart;
+    assert.ok(lengthOfSelection === 1, 'text in box is selected');
+  });
 });

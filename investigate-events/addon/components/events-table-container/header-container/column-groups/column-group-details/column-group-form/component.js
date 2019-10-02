@@ -1,8 +1,10 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import { run } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
-import { metaMapForColumns } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import _ from 'lodash';
+
+import { metaMapForColumns } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const _filterColumns = (columns, filterText) => {
   const filterTextLower = filterText.toLowerCase();
@@ -37,6 +39,9 @@ const ColumnGroupForm = Component.extend({
 
   // Text used to filter the visible columns in the form
   columnFilterText: '',
+
+  // Should filter text be selected?
+  shouldSelectFilterText: undefined,
 
   /**
    * initialize a working copy of columns and leave original column group alone
@@ -123,6 +128,15 @@ const ColumnGroupForm = Component.extend({
     this.get('editColumnGroup')(editedColumnGroup);
   },
 
+  _updateFilterSelection() {
+    this.set('shouldSelectFilterText', true);
+
+    // let rendering happen then set it back
+    run.next(() => {
+      this.set('shouldSelectFilterText', false);
+    });
+  },
+
   actions: {
 
     handleNameChange(value) {
@@ -133,12 +147,14 @@ const ColumnGroupForm = Component.extend({
 
     // adds candidate meta to sorted columns in display in correct sort order
     addMetaToColumns(meta) {
+      this._updateFilterSelection();
       const displayedColumns = _.cloneDeep(this.get('displayedColumns'));
       displayedColumns.splice(_.sortedIndexBy(displayedColumns, meta, (m) => m.field), 0, meta);
       this._updateColumns(displayedColumns);
     },
 
     removeMetaFromColumns(meta) {
+      this._updateFilterSelection();
       const displayedColumns = _.cloneDeep(this.get('displayedColumns'));
       this._updateColumns(_.filter(displayedColumns, (c) => c.field != meta.field));
     },

@@ -68,4 +68,21 @@ module('Integration | Component | Column Filtering', function(hooks) {
     assert.ok(find('button'), 'button should be present');
   });
 
+  test('text should be selected if property set', async function(assert) {
+    this.set('filterText', 'abc');
+    this.set('updateText', () => {});
+    this.set('shouldSelectTextForRemoval', false);
+    await render(hbs`
+      {{events-table-container/header-container/column-groups/column-group-details/column-filter
+        filterTextUpdated=updateText
+        filterText=filterText
+        shouldSelectTextForRemoval=shouldSelectTextForRemoval
+      }}
+    `);
+
+    this.set('shouldSelectTextForRemoval', true);
+    const input = find('input');
+    const lengthOfSelection = input.selectionEnd - input.selectionStart;
+    assert.ok(lengthOfSelection === 3, 'text in box is selected');
+  });
 });
