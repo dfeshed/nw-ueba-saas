@@ -73,8 +73,41 @@ public class EntityScoreServiceImpl implements EntityScoreService {
             entitiesPage = getNextEntityPage(entityQueryBuilder, entitiesPage);
         }
 
+
         log.info("Resetting " + clearedEntitiesList.size() + " entities scores and severity");
         entityPersistencyService.save(clearedEntitiesList);
+    }
+
+    /**
+     * Iterate on all alerts before alertEffectiveDurationInDays days,
+     * and reset the alert contribution to entity score.
+     */
+    public void clearAlertsContributionThatShouldNotHaveContributionToEntityScore(int alertEffectiveDurationInDays, Instant endDate, String entityType) {
+
+        LocalDate endDateLocal = endDate.atZone(ZoneOffset.UTC).toLocalDate();
+        LocalDateTime startTime = endDateLocal.minusDays(alertEffectiveDurationInDays).atStartOfDay();
+        Long startTimeLong = Date.from(startTime.atZone(ZoneOffset.UTC).toInstant()).getTime();
+
+        AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder()
+                .filterByEntityType(entityType)
+                .filterByEndDate(startTimeLong)
+                .sortField(Alert.START_DATE, true)
+                .setPageSize(this.defaultAlertsBatchSize)
+                .setPageNumber(0);
+
+        List<Alert> clearedAlertsList = new ArrayList<>();
+        AlertQuery alertQuery = alertQueryBuilder.build();
+        Page<Alert> alertsPage = alertPersistencyService.find(alertQuery);
+        while (alertsPage != null && alertsPage.hasContent()) {
+            alertsPage.getContent().forEach(alert -> {
+                alert.setContributionToEntityScore(0D);
+                clearedAlertsList.add(alert);
+            });
+            alertsPage = getNextAlertPage(alertQueryBuilder, alertsPage);
+        }
+
+        alertPersistencyService.save(clearedAlertsList);
+
     }
 
     /**
