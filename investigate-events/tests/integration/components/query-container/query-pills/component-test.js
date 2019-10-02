@@ -862,7 +862,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     assert.expect(3);
 
-    await render(hbs` 
+    await render(hbs`
       <div class='rsa-investigate-query-container'>
         {{query-container/query-pills isActive=true}}
       </div>
@@ -888,7 +888,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     assert.expect(3);
 
-    await render(hbs` 
+    await render(hbs`
       <div class='rsa-investigate-query-container'>
         {{query-container/query-pills isActive=true}}
       </div>
@@ -2281,8 +2281,34 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
   });
 
-  // TODO - Fix when handling operator focus
-  skip('Focus moves to left pill if ARROW-LEFT is pressed from a new pill(in between pills) with no meta/operator/value selected', async function(assert) {
+  test('Focus moves to right pill if ARROW-RIGHT is pressed from a new pill(in between pills) with no meta/operator/value selected', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+
+    // click on the second trigger to place cursor in between the 2 pills
+    await click(triggers[1]);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 0, 'Should not have a meta drop-down available');
+
+    // The second pill (AND operator) should now be focused
+    const pillText = find(PILL_SELECTORS.focusedPill).textContent.trim();
+    assert.equal(pillText, 'AND', 'The first pill is the focused pill');
+  });
+
+  test('Focus moves to left pill if ARROW-LEFT is pressed from a new pill(in between pills) with no meta/operator/value selected', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -2309,34 +2335,6 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(pillText, 'a = \'x\'', 'The first pill is the focused pill');
   });
 
-  // TODO - Fix when handling operator focus
-  skip('Focus moves to right pill if ARROW-RIGHT is pressed from a new pill(in between pills) with no meta/operator/value selected', async function(assert) {
-    new ReduxDataHelper(setState)
-      .language()
-      .canQueryGuided()
-      .pillsDataPopulated()
-      .build();
-
-    await render(hbs`
-      <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true}}
-      </div>
-    `);
-
-    await leaveNewPillTemplate();
-    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
-
-    // click on the second trigger to place cursor in between the 2 pills
-    await click(triggers[1]);
-    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
-    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 0, 'Should not have a meta drop-down available');
-
-    // The second pill (AND operator) should now be focused
-    const pillText = find(PILL_SELECTORS.focusedPill).title;
-    assert.equal(pillText, 'b = \'y\'', 'The second pill is the focused pill');// <-- FIX
-  });
-
   test('Nothing happens if ARROW-LEFT is pressed from a new pill(start of the list) with no meta/operator/value selected with no pill on the left', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -2359,9 +2357,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
   });
 
-  // TODO - Fix when handling operator focus
-  skip('Navigate from right most pill to the start of the list by pressing ARROW_LEFT', async function(assert) {
-    assert.expect(7);
+  test('Navigate from right most pill to the start of the list by pressing ARROW_LEFT', async function(assert) {
+    assert.expect(12);
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -2374,32 +2371,59 @@ module('Integration | Component | Query Pills', function(hooks) {
       </div>
     `);
 
-    await leaveNewPillTemplate();
-    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
-
+    // Go left
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'The second(last) pill should be focused');
-    const pillTextOne = find(PILL_SELECTORS.focusedPill).title;
-    assert.equal(pillTextOne, 'b = \'y\'', 'The second pill is the focused pill');
 
+    // 1) focused item should be pill
+    let focusedItems = findAll(PILL_SELECTORS.focusedPill);
+    assert.equal(focusedItems.length, 1, 'should have 1 focused pill');
+    let [ focusedItem ] = focusedItems;
+    assert.equal(focusedItem.getAttribute('position'), 2, 'right item should be focused');
+    let pillText = focusedItem.title;
+    assert.equal(pillText, 'b = \'y\'', 'The first pill is the focused pill');
+
+    // Go left
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY);
+
+    // 2) focused item should NPT
     assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
 
+    // Go left
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'The first pill should be focused');
-    const pillTextTwo = find(PILL_SELECTORS.focusedPill).title;
-    assert.equal(pillTextTwo, 'a = \'x\'', 'The first pill is the focused pill');
 
+    // 3) focused item should be operator
+    focusedItems = findAll(PILL_SELECTORS.focusedPill);
+    assert.equal(focusedItems.length, 1, 'should have 1 focused pill');
+    [ focusedItem ] = focusedItems;
+    assert.equal(focusedItem.getAttribute('position'), 1, 'right item should be focused');
+    pillText = focusedItem.textContent.trim();
+    assert.equal(pillText, 'AND', 'The first pill is the focused pill');
+
+    // Go left
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY);
+
+    // 4) focused item should NPT
     assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
 
+    // Go left
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
-    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Nothing should happen.Should still have a meta drop-down available');
+
+    // 5) focused item should be on pill
+    focusedItems = findAll(PILL_SELECTORS.focusedPill);
+    assert.equal(focusedItems.length, 1, 'should have 1 focused pill');
+    [ focusedItem ] = focusedItems;
+    assert.equal(focusedItem.getAttribute('position'), 0, 'right item should be focused');
+    pillText = focusedItem.title;
+    assert.equal(pillText, 'a = \'x\'', 'The first pill is the focused pill');
+
+    // Go left
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY);
+
+    // 6) focused item should NPT
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
   });
 
-  // TODO - Fix when handling operator focus
-  skip('Navigate from left most pill to the end of the list by pressing ARROW_RIGHT', async function(assert) {
-    assert.expect(8);
+  test('Navigate from left most pill to the end of the list by pressing ARROW_RIGHT', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -2413,31 +2437,61 @@ module('Integration | Component | Query Pills', function(hooks) {
     `);
 
     await leaveNewPillTemplate();
-    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
-
     const triggers = findAll(PILL_SELECTORS.newPillTrigger);
-    // click on the first trigger to place cursor at the very start of the list
+
+    // click on the first trigger to start at far left
     await click(triggers[0]);
+
+    // Go right
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
+
+    // 1) focused item should be pill
+    let focusedItems = findAll(PILL_SELECTORS.focusedPill);
+    assert.equal(focusedItems.length, 1, 'should have 1 focused pill');
+    let [ focusedItem ] = focusedItems;
+    assert.equal(focusedItem.getAttribute('position'), 0, 'right item should be focused');
+    let pillText = focusedItem.title;
+    assert.equal(pillText, 'a = \'x\'', 'The first pill is the focused pill');
+
+    // Go right
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY);
+
+    // 2) focused item should NPT
     assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
 
+    // Go right
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'The first pill should be focused');
-    const pillTextTwo = find(PILL_SELECTORS.focusedPill).title;
-    assert.equal(pillTextTwo, 'a = \'x\'', 'The first pill is the focused pill');
 
+    // 3) focused item should be operator
+    focusedItems = findAll(PILL_SELECTORS.focusedPill);
+    assert.equal(focusedItems.length, 1, 'should have 1 focused pill');
+    [ focusedItem ] = focusedItems;
+    assert.equal(focusedItem.getAttribute('position'), 1, 'right item should be focused');
+    pillText = focusedItem.textContent.trim();
+    assert.equal(pillText, 'AND', 'The first pill is the focused pill');
+
+    // Go right
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY);
+
+    // 4) focused item should NPT
     assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
 
+    // Go right
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'The second(last) pill should be focused');
-    const pillTextOne = find(PILL_SELECTORS.focusedPill).title;
-    assert.equal(pillTextOne, 'b = \'y\'', 'The second pill is the focused pill');
 
+    // 5) focused item should be on pill
+    focusedItems = findAll(PILL_SELECTORS.focusedPill);
+    assert.equal(focusedItems.length, 1, 'should have 1 focused pill');
+    [ focusedItem ] = focusedItems;
+    assert.equal(focusedItem.getAttribute('position'), 2, 'right item should be focused');
+    pillText = focusedItem.title;
+    assert.equal(pillText, 'b = \'y\'', 'The first pill is the focused pill');
+
+    // Go right
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY);
-    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have the new pill template meta open');
 
-    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
-    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Nothing should happen.Should still have the new pill template meta open');
+    // 6) focused item should NPT
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
   });
 
   test('Meta pill can create a free-form pill', async function(assert) {
@@ -4023,7 +4077,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     assert.expect(3);
 
-    await render(hbs` 
+    await render(hbs`
       <div class='rsa-investigate-query-container'>
         {{query-container/query-pills isActive=true}}
       </div>

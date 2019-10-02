@@ -730,12 +730,12 @@
       background-color: background-color(secondary);
       border-color: border-color(secondary);
     }
-    &.is-focused {
-      border-color: border-color(accentTwo);
-    }
     &.logical-operator {
       border: 1px solid transparent;
       background-color: opacity-value(transparent);
+    }
+    &.is-focused {
+      border-color: border-color(accentTwo);
     }
   }
 

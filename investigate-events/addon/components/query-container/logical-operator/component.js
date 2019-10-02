@@ -52,6 +52,16 @@ export default Component.extend({
    */
   sendMessage: () => {},
 
+  didReceiveAttrs() {
+    this._super(...arguments);
+    const type = this.get('pillData.type');
+    if (type === OPERATOR_AND) {
+      this.set('operator', AND_LABEL);
+    } else if (type === OPERATOR_OR) {
+      this.set('operator', OR_LABEL);
+    }
+  },
+
   init() {
     this._super(...arguments);
     this.set('_messageHandlerMap', {
@@ -63,28 +73,16 @@ export default Component.extend({
   click() {
     const pillData = this.get('pillData');
     const message = pillData.isSelected ? MESSAGE_TYPES.PILL_DESELECTED : MESSAGE_TYPES.PILL_SELECTED;
-    this._broadcast(message, pillData);
-  },
-
-  didReceiveAttrs() {
-    this._super(...arguments);
-    const type = this.get('pillData.type');
-    if (type === OPERATOR_AND) {
-      this.set('operator', AND_LABEL);
-    } else if (type === OPERATOR_OR) {
-      this.set('operator', OR_LABEL);
-    }
+    this._broadcast(message);
   },
 
   /**
    * Sends messages to the parent container.
    * @param {string} type The event type from `event-types`
-   * @param {Object} data Data for message
-   * @param {Object} data The event data
    * @private
    */
-  _broadcast(type, data) {
-    this.get('sendMessage')(type, data, this.get('position'));
+  _broadcast(type) {
+    this.get('sendMessage')(type, this.get('position'));
   },
 
   _focusedLeftArrowPressed() {
@@ -93,5 +91,25 @@ export default Component.extend({
 
   _focusedRightArrowPressed() {
     this._broadcast(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT);
+  },
+
+  actions: {
+    /**
+     * Handler for all messages coming from sub components.
+     * @param {string} type The event type from `message-types`
+     * @param {Object} data The event data
+     * @public
+     */
+    handleMessage(type) {
+      const messageHandlerFn = this.get('_messageHandlerMap')[type];
+      if (messageHandlerFn) {
+        messageHandlerFn();
+      } else {
+        // Any messages that do not match expected message types get send up
+        // to the query-pills component.
+        this._broadcast(type);
+      }
+    }
   }
+
 });
