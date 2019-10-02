@@ -4062,10 +4062,9 @@ module('Integration | Component | Query Pills', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', END_KEY);
     await settled();
 
-    await waitUntil(() => findAll(PILL_SELECTORS.newPillTemplateRecentQuery).length === 1, { timeout: 5000 }).then(async() => {
-      await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', HOME_KEY);
-      assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
-    });
+    assert.equal(findAll(PILL_SELECTORS.newPillTemplateRecentQuery).length, 1, 'Should open new pill template');
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', HOME_KEY);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
   });
 
   test('Pressing Delete key on a new pill trigger from recent queries tab will move the focus to the next pill', async function(assert) {

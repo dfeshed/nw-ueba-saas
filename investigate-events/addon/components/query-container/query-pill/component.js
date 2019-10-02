@@ -1141,13 +1141,17 @@ export default Component.extend({
    * when the user clicks on Home button and relays the message.
    * When editing the pill, the event is not relayed unless the
    * pill data is empty.
+   * @param data - data object passed from recent queries component.
+   *               Will be null in other cases.
    */
   _homeButtonPressed(data) {
     const isFromRecentQuery = data?.isFromRecentQuery;
-    // if home is pressed from recent queries of new pill template then reset is needed.
-    // for NPT recent queries no such reset is required.
+    // If home is pressed from recent query, close that component by resetting query pill.
+    // This is needed in order to prevent query pills from getting confused about which exact
+    // location to open a new component.
     if (isFromRecentQuery) {
-      const RESET = {
+      this.setProperties({
+        activePillTab: AFTER_OPTION_TAB_META,
         isActive: false,
         isMetaActive: false,
         isOperatorActive: false,
@@ -1155,10 +1159,6 @@ export default Component.extend({
         selectedMeta: null,
         selectedOperator: null,
         valueString: null
-      };
-      this.setProperties({
-        ...RESET,
-        activePillTab: AFTER_OPTION_TAB_META
       });
       this._resetTabCounts();
     }
