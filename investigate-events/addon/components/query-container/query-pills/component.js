@@ -544,7 +544,7 @@ const QueryPills = RsaContextMenu.extend({
    */
   _deletePressedOnFocusedPill(pillData, position) {
     // delete the pill
-    this.send('deleteSelectedGuidedPills', pillData);
+    this.send('deleteSelectedGuidedPills', pillData, true);
     const { type } = pillData;
     // if pill or open-paren is deleted, the position is assigned to the next pill.
     // if the close-paren is deleted, open-paren is deleted too so the position has

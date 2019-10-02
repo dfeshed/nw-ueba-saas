@@ -257,15 +257,15 @@ export const deleteAllGuidedPills = () => {
   };
 };
 
-export const deleteSelectedGuidedPills = (pillData) => {
-  // can come from right-click action
-  // can come from delete pressed on a selected, focused pill
+/**
+ * Can come from right-click action -> delete selected pills/parens + paren contents
+ * Can come from delete pressed on a selected, focused pill (isKeyPress = true) -> delete selected paren/pills (not their contents)
+ */
+export const deleteSelectedGuidedPills = (pillData, isKeyPress = false) => {
   return (dispatch, getState) => {
-    // if no pill is sent, it's a right click action - delete all selected
-    // or if a pill is passed that is selected - delete all selected
     if (!pillData || pillData.isSelected) {
       const { investigate: { queryNode: { pillsData } } } = getState();
-      const selectedPD = findSelectedPills(pillsData);
+      const selectedPD = isKeyPress ? selectedPills(getState()) : findSelectedPills(pillsData);
       if (selectedPD.length > 0) {
         dispatch({
           type: ACTION_TYPES.DELETE_GUIDED_PILLS,

@@ -14,7 +14,8 @@ import {
   doubleClick,
   elementIsVisible,
   leaveNewPillTemplate,
-  toggleTab
+  toggleTab,
+  waitForOperator
 } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
@@ -1685,7 +1686,7 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   // TODO - Fix Element not found when calling `focus('.new-pill-trigger-container .pill-meta .ember-power-select-trigger')`
-  skip('Right click option Delete selection will delete both selected parens(and its contents) and pills if present', async function(assert) {
+  test('Right click option Delete selection will delete both selected parens(and its contents) and pills if present', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1711,6 +1712,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     await typeIn(PILL_SELECTORS.valueSelectInput, '32');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
 
+    // Wait for implicit AND to magically appear
+    await waitForOperator(PILL_SELECTORS.logicalOperatorAND, 1);
     await leaveNewPillTemplate();
 
     await click(PILL_SELECTORS.openParen);
@@ -1736,7 +1739,7 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   // TODO - Fix Element not found when calling `focus('.new-pill-trigger-container .pill-meta .ember-power-select-trigger')`
-  skip('Right clicking parens and choosing Delete selection will remove anything between those parens', async function(assert) {
+  test('Right clicking parens and choosing Delete selection will remove anything between those parens', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1762,6 +1765,9 @@ module('Integration | Component | Query Pills', function(hooks) {
     await typeIn(PILL_SELECTORS.valueSelectInput, '32');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
 
+    // Wait for implicit AND to magically appear
+    await waitForOperator(PILL_SELECTORS.logicalOperatorAND, 1);
+
     await leaveNewPillTemplate();
 
     await click(PILL_SELECTORS.openParen);
@@ -1785,7 +1791,7 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   // TODO - Fix Element not found when calling `focus('.new-pill-trigger-container .pill-meta .ember-power-select-trigger')`
-  skip('Right clicking a paren and choosing query with selected filters will delete everything except their contents and query', async function(assert) {
+  test('Right clicking a paren and choosing query with selected filters will delete everything except their contents and query', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1815,6 +1821,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     await typeIn(PILL_SELECTORS.valueSelectInput, '32');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
 
+    // Wait for implicit AND to magically appear
+    await waitForOperator(PILL_SELECTORS.logicalOperatorAND, 1);
     await leaveNewPillTemplate();
 
     await click(PILL_SELECTORS.openParen);
@@ -1839,7 +1847,7 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   // TODO - Fix Element not found when calling `focus('.new-pill-trigger-container .pill-meta .ember-power-select-trigger')`
-  skip('Right clicking on a selected paren and choosing query in a new tab will remove focus and selection + trigger action', async function(assert) {
+  test('Right clicking on a selected paren and choosing query in a new tab will remove focus and selection + trigger action', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1869,6 +1877,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     await typeIn(PILL_SELECTORS.valueSelectInput, '32');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
 
+    // Wait for implicit AND to magically appear
+    await waitForOperator(PILL_SELECTORS.logicalOperatorAND, 1);
     await leaveNewPillTemplate();
 
     await click(PILL_SELECTORS.openParen);
@@ -1888,8 +1898,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  // TODO - Fix Element not found when calling `focus('.new-pill-trigger-container .pill-meta .ember-power-select-trigger')`
-  skip('Right clicking a paren/pill when both are selected will include parens and contents and any selected pills outside', async function(assert) {
+  test('Right clicking a paren/pill when both are selected will include parens and contents and any selected pills outside', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1919,12 +1928,17 @@ module('Integration | Component | Query Pills', function(hooks) {
     await typeIn(PILL_SELECTORS.valueSelectInput, '32');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
 
+    // Wait for implicit AND to magically appear
+    await waitForOperator(PILL_SELECTORS.logicalOperatorAND, 1);
+
     // create one more pill
     await selectChoose(PILL_SELECTORS.meta, 'medium');
     await selectChoose(PILL_SELECTORS.operator, '=');
     await typeIn(PILL_SELECTORS.valueSelectInput, '1');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
 
+    // Wait for implicit AND to magically appear
+    await waitForOperator(PILL_SELECTORS.logicalOperatorAND, 2);
     await leaveNewPillTemplate();
 
     await click(PILL_SELECTORS.openParen);
@@ -3452,6 +3466,28 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.notOk(find(PILL_SELECTORS.openParen), 'Missing open paren');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'Missing close paren');
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus shifts to the next pill');
+  });
+
+  test('Typing DELETE when an open paren is selected will delete both the open and closed paren, but not their contents', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await leaveNewPillTemplate();
+
+    // the open paren is selected and focused. Pressing delete would not only delete open
+    // and closed parens but also all pills between them.
+    await click(PILL_SELECTORS.openParen);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+    assert.notOk(find(PILL_SELECTORS.openParen), 'Missing open paren');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'Missing close paren');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Did not find the pill between those parens'); // pill + NPT
   });
 
   test('Typing DELETE when an close paren is focused will delete both the open and closed paren', async function(assert) {

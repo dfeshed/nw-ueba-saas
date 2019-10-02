@@ -1,4 +1,4 @@
-import { click, findAll, focus, settled, triggerKeyEvent, typeIn } from '@ember/test-helpers';
+import { click, findAll, focus, settled, triggerKeyEvent, typeIn, waitUntil } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
@@ -152,3 +152,7 @@ export function getRecentQueryObjects(array) {
   });
   return obArray;
 }
+
+export const waitForOperator = async(selectorOperator, count) => {
+  return await waitUntil(() => findAll(selectorOperator).length === count);
+};
