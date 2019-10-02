@@ -66,16 +66,21 @@ export default Component.extend({
     this._super(...arguments);
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED]: () => this._focusedLeftArrowPressed(),
-      [MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED]: () => this._focusedRightArrowPressed()
+      [MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED]: () => this._focusedRightArrowPressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED]: () => this._operatorToggled()
     });
   },
 
-  click() {
+  _operatorToggled() {
     this.get('sendMessage')(
-      MESSAGE_TYPES.PILL_LOGICAL_OPERATOR_CLICKED,
+      MESSAGE_TYPES.PILL_LOGICAL_OPERATOR_TOGGLED,
       this.get('pillData'),
       this.get('position')
     );
+  },
+
+  click() {
+    this._operatorToggled();
   },
 
   /**

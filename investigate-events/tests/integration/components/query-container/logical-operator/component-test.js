@@ -13,7 +13,7 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 
 const LeftArrowKey = KEY_MAP.arrowLeft.key;
 const RightArrowKey = KEY_MAP.arrowRight.key;
-// const DeleteKey = KEY_MAP.delete.key;
+const EnterKey = KEY_MAP.enter.key;
 
 module('Integration | Component | Logical Operator', function(hooks) {
   setupRenderingTest(hooks, {
@@ -156,7 +156,7 @@ module('Integration | Component | Logical Operator', function(hooks) {
     this.set('sendMessage', (messageType, _pillData, position) => {
       assert.equal(
         messageType,
-        MESSAGE_TYPES.PILL_LOGICAL_OPERATOR_CLICKED,
+        MESSAGE_TYPES.PILL_LOGICAL_OPERATOR_TOGGLED,
         'the correct message type is sent when right is pressed'
       );
       assert.deepEqual(pillData, _pillData, 'pill data object is passed');
@@ -173,6 +173,36 @@ module('Integration | Component | Logical Operator', function(hooks) {
     `);
 
     await click(PILL_SELECTORS.logicalOperatorAND);
+  });
+
+  test('it sends a message when focused and enter pressed', async function(assert) {
+    assert.expect(3);
+
+    const pillData = {
+      ...createOperator(OPERATOR_AND),
+      isFocused: true
+    };
+
+    this.set('sendMessage', (messageType, _pillData, position) => {
+      assert.equal(
+        messageType,
+        MESSAGE_TYPES.PILL_LOGICAL_OPERATOR_TOGGLED,
+        'the correct message type is sent when right is pressed'
+      );
+      assert.deepEqual(pillData, _pillData, 'pill data object is passed');
+      assert.equal(position, 2, 'position is passed');
+    });
+    this.set('pillData', pillData);
+
+    await render(hbs`
+      {{query-container/logical-operator
+        pillData=pillData
+        sendMessage=sendMessage
+        position=2
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', EnterKey);
   });
 
 });
