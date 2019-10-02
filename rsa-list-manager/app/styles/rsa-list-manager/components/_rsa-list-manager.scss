@@ -160,9 +160,20 @@
 
         .details-body {
           .group-details {
-            overflow-y: auto;
-            .name {
-              padding-top: 1.2rem;
+            margin-top: 1rem;
+            &.scroll-box {
+              overflow-y: auto;
+              position: relative;
+              .name {
+                background-color: background-color(primary, darker, opaque);
+                position: -webkit-sticky;
+                position: sticky;
+                top: 0;
+                z-index: 20001;
+              }
+              .value, .message {
+                margin-bottom: 0.8rem;
+              }
             }
           }
           .name {
@@ -171,7 +182,7 @@
             text-transform: uppercase;
             font-size: 0.7rem;
             font-weight: 800;
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.3rem;
           }
           .value, input {
             color: text-color(primary, lightest);

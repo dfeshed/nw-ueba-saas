@@ -22,7 +22,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     initialize(this.owner);
   });
 
-  const DISPLAYED_COLUMNS = '.group-details > ul.column-list li';
+  const DISPLAYED_COLUMNS = '.displayed-details > ul.column-list li';
   const AVAILABLE_META = '.add-details > ul.column-list li';
 
   test('it will render editable form for a new item', async function(assert) {

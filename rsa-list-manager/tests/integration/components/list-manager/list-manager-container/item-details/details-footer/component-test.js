@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { render, find, findAll, click } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
@@ -10,6 +10,8 @@ import sinon from 'sinon';
 
 let setState;
 
+const createItemStub = sinon.stub(maintenanceCreators, 'createItem');
+
 module('Integration | Component | item details - details footer', function(hooks) {
   setupRenderingTest(hooks);
 
@@ -18,6 +20,14 @@ module('Integration | Component | item details - details footer', function(hooks
       patchReducer(this, state);
     };
     initialize(this.owner);
+  });
+
+  hooks.afterEach(function() {
+    createItemStub.resetHistory();
+  });
+
+  hooks.after(function() {
+    createItemStub.restore();
   });
 
   const item = { id: '1', name: 'foo' };
@@ -115,10 +125,9 @@ module('Integration | Component | item details - details footer', function(hooks
     assert.equal(findAll('footer.details-footer button[disabled]').length, 0, 'Both close and save enabled');
   });
 
-  skip('clicking save with valid new item triggers createItem', async function(assert) {
+  test('clicking save with valid new item triggers createItem', async function(assert) {
     assert.expect(6);
     const editedItem = { name: 'bar' };
-    const createItemStub = sinon.stub(maintenanceCreators, 'createItem');
     new ReduxDataHelper(setState).stateLocation(stateLocation1).listName('Foos').list([item]).modelName('columnGroup').viewName(EDIT_VIEW).build();
     this.set('stateLocation', stateLocation1);
     this.set('item', null);
@@ -146,7 +155,6 @@ module('Integration | Component | item details - details footer', function(hooks
     assert.equal(createItemStub.args[0][1], stateLocation1, 'state location is the 2nd parameter');
     assert.equal(typeof createItemStub.args[0][2], 'function', 'itemTransform function is the 3rd parameter');
 
-    createItemStub.restore();
   });
 
   test('clicking select from footer executes selection', async function(assert) {
