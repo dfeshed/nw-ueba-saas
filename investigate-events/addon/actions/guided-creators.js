@@ -1,3 +1,6 @@
+import { lookup } from 'ember-dependency-lookup';
+import RSVP from 'rsvp';
+
 import * as ACTION_TYPES from './types';
 import { selectedPills, focusedPill, pillsData } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
@@ -10,9 +13,7 @@ import {
 } from 'investigate-events/actions/utils';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { ValidatableFilter } from 'investigate-events/util/filter-types';
-import { COMPLEX_FILTER, TEXT_FILTER } from 'investigate-events/constants/pill';
-import { lookup } from 'ember-dependency-lookup';
-import RSVP from 'rsvp';
+import { COMPLEX_FILTER, TEXT_FILTER, OPERATOR_AND, OPERATOR_OR } from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
 
@@ -425,3 +426,15 @@ export const replaceLogicalOperator = ({ pillData, position }) => ({
     position
   }
 });
+
+export const focusAndToggleLogicalOperator = ({ pillData, position }) => {
+  return (dispatch) => {
+    dispatch(removePillFocus());
+    const newPillData = {
+      ...pillData,
+      isFocused: true,
+      type: pillData.type === OPERATOR_AND ? OPERATOR_OR : OPERATOR_AND
+    };
+    dispatch(replaceLogicalOperator({ pillData: newPillData, position: position + 1 }));
+  };
+};

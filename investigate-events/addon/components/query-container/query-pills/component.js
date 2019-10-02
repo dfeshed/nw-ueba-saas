@@ -39,6 +39,7 @@ import {
   deselectAllGuidedPills,
   deselectGuidedPills,
   editGuidedPill,
+  focusAndToggleLogicalOperator,
   openGuidedPillForEdit,
   removePillFocus,
   replaceLogicalOperator,
@@ -92,6 +93,7 @@ const dispatchToActions = {
   deselectAllGuidedPills,
   deselectGuidedPills,
   editGuidedPill,
+  focusAndToggleLogicalOperator,
   getRecentQueries,
   openGuidedPillForEdit,
   removePillFocus,
@@ -261,6 +263,7 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_OPEN_PAREN]: (data, position) => this._insertParens(position),
       [MESSAGE_TYPES.PILL_CLOSE_PAREN]: (data, position) => this._moveCursorOrInsertParens(position),
       [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR]: (data, position) => this._insertLogicalOperator(data, position),
+      [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR_CLICKED]: (data, position) => this._logicalOperatorClicked(data, position),
       [MESSAGE_TYPES.PILL_HOME_PRESSED]: (data) => this._openNewPillAtBeginning(data),
       [MESSAGE_TYPES.PILL_END_PRESSED]: (data) => this._openNewPillAtEnd(data),
       [MESSAGE_TYPES.META_DELETE_PRESSED]: (position) => this._metaDeletePressed(position)
@@ -810,6 +813,13 @@ const QueryPills = RsaContextMenu.extend({
       this.send('addLogicalOperator', { pillData: operator, position });
       this._openNewPillTriggerRight(position);
     }
+  },
+
+  /**
+   * Handles dispatching to state when logical operators are clicked
+   */
+  _logicalOperatorClicked(pillData, position) {
+    this.send('focusAndToggleLogicalOperator', { pillData, position });
   }
 });
 

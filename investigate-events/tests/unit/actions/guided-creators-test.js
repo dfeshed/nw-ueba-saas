@@ -885,4 +885,40 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     assert.deepEqual(action.payload.pillData, pillData, 'action pillData has the right value');
     assert.deepEqual(action.payload.position, 2, 'action position has the right value');
   });
+
+  test('focusAndToggleLogicalOperator action creator returns proper type and payload', function(assert) {
+    assert.expect(5);
+
+    const pillData = createOperator(OPERATOR_OR);
+    pillData.isFocused = false;
+    const position = 2;
+    const thunk = guidedCreators.focusAndToggleLogicalOperator({ pillData, position });
+
+    const dispatch1 = (action) => {
+      if (typeof action === 'function') {
+        // is call to removePillFocus
+
+        const getState = () => {
+          return new ReduxDataHelper()
+            .language()
+            .pillsDataPopulated()
+            .markFocused(['1'])
+            .build();
+        };
+
+        const dispatch2 = (action) => {
+          assert.equal(action.type, ACTION_TYPES.REMOVE_FOCUS_GUIDED_PILL, 'focus action has the correct type');
+        };
+
+        action(dispatch2, getState);
+      } else {
+        assert.equal(action.type, ACTION_TYPES.REPLACE_LOGICAL_OPERATOR, 'replace action has the correct type');
+        assert.equal(action.payload.pillData.isFocused, true, 'action pillData has the right value');
+        assert.equal(action.payload.pillData.type, OPERATOR_AND, 'action pillData has the right value');
+        assert.equal(action.payload.position, 3, 'action position has the right value');
+      }
+    };
+
+    thunk(dispatch1);
+  });
 });

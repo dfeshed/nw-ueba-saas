@@ -4127,4 +4127,30 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Focus shifts to the next pill');
   });
+
+  test('it will toggle and focus a logical operator', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()// Pill AND Pill
+      .build();
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await leaveNewPillTemplate();
+
+    assert.ok(findAll(PILL_SELECTORS.focusedPill).length === 0, 'Nothing is focused');
+    assert.ok(findAll(PILL_SELECTORS.logicalOperatorOR).length === 0, 'No ORs');
+
+    await click(PILL_SELECTORS.logicalOperatorAND);
+
+    assert.ok(findAll(PILL_SELECTORS.focusedPill).length === 1, 'Now have a focused pill');
+    assert.ok(findAll(PILL_SELECTORS.logicalOperatorOR).length === 1, 'Now have an OR');
+
+    await click(PILL_SELECTORS.logicalOperatorOR);
+
+    assert.ok(findAll(PILL_SELECTORS.focusedPill).length === 1, 'still have a focused pill');
+    assert.ok(findAll(PILL_SELECTORS.logicalOperatorOR).length === 0, 'No OR now');
+    assert.ok(findAll(PILL_SELECTORS.logicalOperatorAND).length === 1, 'Now have an AND');
+  });
 });

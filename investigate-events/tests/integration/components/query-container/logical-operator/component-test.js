@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { find, render, triggerKeyEvent } from '@ember/test-helpers';
+import { click, find, render, triggerKeyEvent } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import PILL_SELECTORS from '../pill-selectors';
@@ -143,6 +143,36 @@ module('Integration | Component | Logical Operator', function(hooks) {
 
     assert.ok(find(PILL_SELECTORS.focusedPill), 'the pill is not focused');
     assert.ok(find(PILL_SELECTORS.focusHolderInput), 'should be no focus holder to accept keystrokes');
+  });
+
+  test('it sends a message when clicked', async function(assert) {
+    assert.expect(3);
+
+    const pillData = {
+      ...createOperator(OPERATOR_AND),
+      isFocused: false
+    };
+
+    this.set('sendMessage', (messageType, _pillData, position) => {
+      assert.equal(
+        messageType,
+        MESSAGE_TYPES.PILL_LOGICAL_OPERATOR_CLICKED,
+        'the correct message type is sent when right is pressed'
+      );
+      assert.deepEqual(pillData, _pillData, 'pill data object is passed');
+      assert.equal(position, 2, 'position is passed');
+    });
+    this.set('pillData', pillData);
+
+    await render(hbs`
+      {{query-container/logical-operator
+        pillData=pillData
+        sendMessage=sendMessage
+        position=2
+      }}
+    `);
+
+    await click(PILL_SELECTORS.logicalOperatorAND);
   });
 
 });

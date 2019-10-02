@@ -71,9 +71,11 @@ export default Component.extend({
   },
 
   click() {
-    const pillData = this.get('pillData');
-    const message = pillData.isSelected ? MESSAGE_TYPES.PILL_DESELECTED : MESSAGE_TYPES.PILL_SELECTED;
-    this._broadcast(message);
+    this.get('sendMessage')(
+      MESSAGE_TYPES.PILL_LOGICAL_OPERATOR_CLICKED,
+      this.get('pillData'),
+      this.get('position')
+    );
   },
 
   /**
