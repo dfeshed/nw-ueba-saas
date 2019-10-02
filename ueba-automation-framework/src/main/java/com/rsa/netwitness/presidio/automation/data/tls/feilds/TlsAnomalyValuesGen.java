@@ -39,7 +39,8 @@ class TlsAnomalyValuesGen {
 
 
     IBaseGenerator<Integer> currentDstPortGen() {
-        return Objects.requireNonNull(anomalyDstPortGen);
+        Objects.requireNonNull(anomalyDstPortGen);
+        return anomalyDstPortGen;
     }
     IBaseGenerator<Integer> nextDstPortGen(int allocateNext) {
         return getDstPortGen(allocateNext, this);
@@ -54,7 +55,8 @@ class TlsAnomalyValuesGen {
 
 
     IBaseGenerator<String> currentJa3Gen() {
-        return Objects.requireNonNull(anomalyJa3Gen);
+        Objects.requireNonNull(anomalyJa3Gen);
+        return anomalyJa3Gen;
     }
     IBaseGenerator<String> nextJa3Gen(int allocateNext) {
         return getJa3Gen(allocateNext, this);
@@ -70,7 +72,8 @@ class TlsAnomalyValuesGen {
 
 
     IBaseGenerator<String> currentSslSubjectGen() {
-        return Objects.requireNonNull(anomalySslSubjectGen);
+        Objects.requireNonNull(anomalySslSubjectGen);
+        return anomalySslSubjectGen;
     }
     IBaseGenerator<String> nextSslSubjectGen(int allocateNext) {
         return getSslSubjectGen(allocateNext, this);
@@ -83,7 +86,8 @@ class TlsAnomalyValuesGen {
 
 
     IBaseGenerator<Location> currentLocationGen() {
-        return Objects.requireNonNull(anomalyLocationGen);
+        Objects.requireNonNull(anomalyLocationGen);
+        return anomalyLocationGen;
     }
     IBaseGenerator<Location> nextLocationGen(int allocateNext) {
         return getLocationGen(allocateNext, this);
@@ -106,14 +110,15 @@ class TlsAnomalyValuesGen {
 
 
     IBaseGenerator<String> currentSrcNetnameGen() {
-        return Objects.requireNonNull(anomalySrcNetnameGen);
+        Objects.requireNonNull(anomalySrcNetnameGen);
+        return anomalySrcNetnameGen;
     }
     IBaseGenerator<String> nextSrcNetnameGen(int allocateNext) {
         return getSrcNetnameGen(allocateNext, this);
     }
     private static synchronized IBaseGenerator<String> getSrcNetnameGen(int offset, TlsAnomalyValuesGen obj) {
         String[] values = IntStream.range(anomalySrcNetnameGenIndex, anomalySrcNetnameGenIndex += offset).boxed()
-                .map(e -> "private#"+anomalySrcNetnameGenIndex).toArray(String[]::new);
+                .map(e -> "private#"+e).toArray(String[]::new);
         obj.anomalySrcNetnameGen = new CyclicValuesGenerator<>(values);
         return obj.anomalySrcNetnameGen;
     }
@@ -122,7 +127,8 @@ class TlsAnomalyValuesGen {
 
 
     IBaseGenerator<String> currentDstOrgGen() {
-        return Objects.requireNonNull(anomalyDstOrgGen);
+        Objects.requireNonNull(anomalyDstOrgGen);
+        return anomalyDstOrgGen;
     }
     IBaseGenerator<String> nextDstOrgGen(int allocateNext) {
         return getDstOrgGen(allocateNext, this);

@@ -1,6 +1,8 @@
 package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
 import com.rsa.netwitness.presidio.automation.common.scenarios.tls.*;
+import com.rsa.netwitness.presidio.automation.data.tls.TlsAlerts;
+import com.rsa.netwitness.presidio.automation.data.tls.model.TlsIndicator;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -24,6 +26,8 @@ public class NetworkDataPreparation extends DataPreparationBase {
         UnusualTrafficVolumeAlerts unusualTrafficVolumeAlerts = new UnusualTrafficVolumeAlerts(historicalDaysBack, anomalyDay);
         SessionSplitEnrichmentData sessionSplitEnrichmentData = new SessionSplitEnrichmentData();
         FutureEventsForMetrics futureEventsGen = new FutureEventsForMetrics(10);
+
+        TlsAlerts data = new TlsAlerts(historicalDaysBack,anomalyDay);
 
         Stream<NetworkEvent> resultingStream = Stream.of(
                 sessionSplitEnrichmentData.generateAll(),

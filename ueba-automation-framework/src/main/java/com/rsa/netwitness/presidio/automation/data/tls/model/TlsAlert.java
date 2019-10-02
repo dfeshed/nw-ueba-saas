@@ -22,6 +22,10 @@ public class TlsAlert {
         return new LinkedList<>(indicators);
     }
 
+    public TlsIndicator getIndicator(String name) {
+        return indicators.stream().filter(e -> e.name.equals(name)).findFirst().orElse(null);
+    }
+
     public Set<String> getIndicatorNames() {
         return new HashSet<>(indicatorNames);
     }

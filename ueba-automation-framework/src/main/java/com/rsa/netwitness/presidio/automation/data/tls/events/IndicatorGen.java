@@ -28,11 +28,15 @@ public abstract class IndicatorGen {
         return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom, 1, intervalMinutes);
     }
 
-    protected ITimeGenerator getHistoryOfUncommonValuesTimeGen() {
+    protected ITimeGenerator getUncommonValuesHistoryTimeGen() {
         return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes);
     }
 
-    protected ITimeGenerator getUncommonValuesTimeGen() {
+    protected ITimeGenerator getCommonValuesTimeGen() {
+        return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes);
+    }
+
+    protected ITimeGenerator getUncommonValuesAnomalyTimeGen() {
         return getTimeGen(startHourOfDayAnomaly, endHourOfDayAnomaly, daysBackFromAnomaly, daysBackToAnomaly, intervalMinutesAnomaly);
     }
 

@@ -28,13 +28,13 @@ public class TlsEventsGen extends NetworkEventsGenerator {
 
     public TlsEventsGen copy() {
         TlsEventsGen gen = new TlsEventsGen();
-        gen.setFqdnGenerator(anomalyValuesGen.currentFqdnGen());
-        gen.setDestinationPortGenerator(anomalyValuesGen.currentDstPortGen());
-        gen.setJa3Generator(anomalyValuesGen.currentJa3Gen());
-        gen.setSslSubjectGenerator(anomalyValuesGen.currentSslSubjectGen());
-        gen.setDestinationOrganizationGenerator(anomalyValuesGen.currentDstOrgGen());
-        gen.setSourceNetnameGen(anomalyValuesGen.currentSrcNetnameGen());
-        gen.setLocationGen(anomalyValuesGen.currentLocationGen());
+        gen.setFqdnGenerator(this.getFqdnGenerator());
+        gen.setDestinationPortGenerator(this.getDestinationPortGenerator());
+        gen.setJa3Generator(this.getJa3Generator());
+        gen.setSslSubjectGenerator(this.getSslSubjectGenerator());
+        gen.setDestinationOrganizationGenerator(this.getDestinationOrganizationGenerator());
+        gen.setSourceNetnameGen(this.getSourceNetnameGen());
+        gen.setLocationGen(this.getLocationGen());
         return gen;
     }
 
