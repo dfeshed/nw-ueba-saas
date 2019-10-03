@@ -91,6 +91,20 @@ const IncidentFilters = Component.extend({
     return userName.toLowerCase().indexOf(searchTerm.toLowerCase());
   },
 
+  didInsertElement() {
+    this._super(...arguments);
+    const numberInput = document.querySelector('.id-prefix-wrapper input');
+    ['input', 'keydown', 'keyup', 'mousedown', 'mouseup', 'select', 'contextmenu', 'drop'].forEach(function(event) {
+      numberInput.addEventListener(event, function() {
+        if (/^\d*$/.test(this.value)) {
+          this.oldValue = this.value;
+        } else if (this.hasOwnProperty('oldValue')) {
+          this.value = this.oldValue;
+        }
+      });
+    });
+  },
+
   actions: {
     idFilterChanged(value) {
       const id = value ? `INC-${value}` : '';
