@@ -1583,3 +1583,66 @@ test('REPLACE_LOGICAL_OPERATOR replaces already existing operator', function(ass
   assert.equal(result.pillsData[1].type, OPERATOR_OR, 'pillsData item 1 is the right type');
   assert.equal(result.pillsData[2].type, QUERY_FILTER, 'pillsData item 2 is the right type');
 });
+
+test('WRAP_WITH_PARENS wraps pills with parens at the provided indexes', function(assert) {
+
+  const initialState = Immutable.from({
+    pillsData: [
+      { id: 1, type: QUERY_FILTER },
+      { id: 2, type: QUERY_FILTER }, // start
+      { id: 3, type: QUERY_FILTER } // end
+    ]
+  });
+
+  let action = {
+    type: ACTION_TYPES.WRAP_WITH_PARENS,
+    payload: {
+      startIndex: 1,
+      endIndex: 2
+    }
+  };
+
+  let result = reducer(initialState, action);
+
+  assert.equal(result.pillsData.length, 5, 'pillsData should now have 3 pills + 2 parens');
+  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item 0 is the right type');
+  assert.equal(result.pillsData[1].type, OPEN_PAREN, 'pillsData item 1 is the right type');
+  assert.equal(result.pillsData[2].type, QUERY_FILTER, 'pillsData item 2 is the right type');
+  assert.equal(result.pillsData[3].type, QUERY_FILTER, 'pillsData item 3 is the right type');
+  assert.equal(result.pillsData[4].type, CLOSE_PAREN, 'pillsData item 4 is the right type');
+
+  action = {
+    type: ACTION_TYPES.WRAP_WITH_PARENS,
+    payload: {
+      startIndex: 1,
+      endIndex: 1
+    }
+  };
+
+  result = reducer(initialState, action);
+
+  assert.equal(result.pillsData.length, 5, 'pillsData should now have 3 pills + 2 parens');
+  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item 0 is the right type');
+  assert.equal(result.pillsData[1].type, OPEN_PAREN, 'pillsData item 1 is the right type');
+  assert.equal(result.pillsData[2].type, QUERY_FILTER, 'pillsData item 2 is the right type');
+  assert.equal(result.pillsData[3].type, CLOSE_PAREN, 'pillsData item 4 is the right type');
+  assert.equal(result.pillsData[4].type, QUERY_FILTER, 'pillsData item 3 is the right type');
+
+
+  action = {
+    type: ACTION_TYPES.WRAP_WITH_PARENS,
+    payload: {
+      startIndex: 0,
+      endIndex: 2
+    }
+  };
+
+  result = reducer(initialState, action);
+
+  assert.equal(result.pillsData.length, 5, 'pillsData should now have 3 pills + 2 parens');
+  assert.equal(result.pillsData[0].type, OPEN_PAREN, 'pillsData item 1 is the right type');
+  assert.equal(result.pillsData[1].type, QUERY_FILTER, 'pillsData item 0 is the right type');
+  assert.equal(result.pillsData[2].type, QUERY_FILTER, 'pillsData item 2 is the right type');
+  assert.equal(result.pillsData[3].type, QUERY_FILTER, 'pillsData item 3 is the right type');
+  assert.equal(result.pillsData[4].type, CLOSE_PAREN, 'pillsData item 4 is the right type');
+});

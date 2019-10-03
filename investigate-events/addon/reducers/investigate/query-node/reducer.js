@@ -838,6 +838,24 @@ export default handleActions({
     return state.set('pillsData', Immutable.from(pd));
   },
 
+  [ACTION_TYPES.WRAP_WITH_PARENS]: (state, { payload: { startIndex, endIndex } }) => {
+    const { pillsData } = state;
+    const [open, close] = createParens();
+    // assign ids to the new parens
+    open.id = _.uniqueId(ID_PREFIX);
+    close.id = _.uniqueId(ID_PREFIX);
+
+    const pD = [
+      ...pillsData.slice(0, startIndex),
+      open,
+      ...pillsData.slice(startIndex, endIndex + 1),
+      close,
+      ...pillsData.slice(endIndex + 1, pillsData.length)
+    ];
+
+    return state.set('pillsData', Immutable.from(pD));
+  },
+
   [ACTION_TYPES.INSERT_LOGICAL_OPERATOR]: (state, { payload }) => {
     const { pillData, position } = payload;
     return _handleLogicalOperator(state, pillData, position);

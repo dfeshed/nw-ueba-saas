@@ -331,4 +331,28 @@ module('Unit | Helper | Actions Utils', function(hooks) {
       ],
       'Did not find the correct pills');
   });
+
+  test('isValidToWrapWithParens return true if parens are balanced', function(assert) {
+    // ( pill pill ( pill ) ( pill )) pill
+    const pillsData = [
+      { type: OPEN_PAREN },
+      { type: QUERY_FILTER },
+      { type: QUERY_FILTER },
+      { type: OPEN_PAREN },
+      { type: QUERY_FILTER },
+      { type: CLOSE_PAREN },
+      { type: OPEN_PAREN },
+      { type: QUERY_FILTER, id: 8, isSelected: true },
+      { type: CLOSE_PAREN, twinId: 3, id: 9 },
+      { type: CLOSE_PAREN, twinId: 1, id: 10 },
+      { type: QUERY_FILTER, id: 11, isSelected: true }
+    ];
+
+    assert.ok(queryUtils.isValidToWrapWithParens(pillsData, 0, pillsData.length));
+    assert.notOk(queryUtils.isValidToWrapWithParens(pillsData, 2, 4)); // pill ( pill
+    assert.notOk(queryUtils.isValidToWrapWithParens(pillsData, 2, 7)); // pill ( pill ) ( pill
+    assert.notOk(queryUtils.isValidToWrapWithParens(pillsData, 2, 10)); // pill ( pill ) ( pill )) pill
+    assert.notOk(queryUtils.isValidToWrapWithParens(pillsData, 1, 10)); // pill pill ( pill ) ( pill )) pill
+    assert.ok(queryUtils.isValidToWrapWithParens(pillsData, 1, 2)); // pill pill
+  });
 });

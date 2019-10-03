@@ -266,10 +266,35 @@ const findSelectedPills = (pillsData) => {
   return selectedFilters;
 };
 
+/**
+ * Given an array of pills, checks if the array is paren balanced
+ */
+const isValidToWrapWithParens = (pillsData, startIn, endIn) => {
+  const pills = pillsData.slice(startIn, endIn + 1);
+  const stack = [];
+  let count = 0;
+  while (count !== pills.length) {
+    const currPill = pills[count];
+    if (currPill.type === OPEN_PAREN) {
+      stack.push(currPill);
+    } else if (currPill.type === CLOSE_PAREN) {
+      if (stack.length === 0) {
+        return false;
+      } else {
+        stack.pop();
+      }
+    }
+    count++;
+  }
+
+  return stack.length === 0;
+};
+
 export {
   buildMetaValueStreamInputs,
   contentBetweenParens,
   executeMetaValuesRequest,
+  isValidToWrapWithParens,
   filterIsPresent,
   findAllEmptyParens,
   findSelectedPills,
