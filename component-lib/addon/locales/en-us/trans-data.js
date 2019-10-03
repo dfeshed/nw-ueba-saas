@@ -3011,7 +3011,7 @@ export default {
         mftChangedTimeFn: 'Update Time ($FN)',
         mftChangedTimeSi: 'Update Time ($SI)',
         timeStomping: 'Timestomping',
-        timeStompingFiles: 'Timestomping Files'
+        timeStompingFiles: 'Timestomped Files'
       },
       mftTable: {
         headers: {

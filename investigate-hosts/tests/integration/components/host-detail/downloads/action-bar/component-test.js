@@ -27,7 +27,7 @@ module('Integration | Component | downloads/action-bar', function(hooks) {
   });
 
   test('Actions passed to the component called', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
     this.set('disableActions', { deleteFile: false, saveLocalCopy: false, hasManageAccess: true });
     this.set('openFilterPanel', function() {
       assert.ok(true);
@@ -47,6 +47,9 @@ module('Integration | Component | downloads/action-bar', function(hooks) {
     await click(findAll('.downloads-action-bar .rsa-form-button')[0]);
     await click(findAll('.downloads-action-bar .rsa-form-button')[1]);
     await click(findAll('.downloads-action-bar .rsa-form-button')[2]);
+    const state = this.owner.lookup('service:redux').getState();
+    const { endpoint: { visuals: { showHostDetailsFilter } } } = state;
+    assert.equal(showHostDetailsFilter, true, 'showHOstDetailsFilter is successfully set true');
   });
 
   test('Action bar save and delete buttons have been disabled', async function(assert) {

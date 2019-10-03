@@ -1,6 +1,6 @@
 {{#if (and (not isSubtabs) showOpenFilterButton)}}
   {{#rsa-form-button
-     class='close-filter'
+     class=(concat 'close-filter ' tabLabel)
      defaultAction=openFilterPanel
   }}
     {{rsa-icon name='filter-2' size='small'}}

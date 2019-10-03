@@ -506,7 +506,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     assert.equal(findAll('.rsa-icon-filter-2-filled').length, 1, 'on clicking Fiters button filter panel opens up');
     await click('.fileProperties-signature-features .list-filter .list-filter-option');
     await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
-    assert.equal(findAll('.rsa-data-table-body-row').length, 36, 'one row is getting filtered');
+    assert.equal(findAll('.rsa-data-table-body-row').length, 37, 'one row is getting filtered');
   });
 
 

@@ -11,8 +11,12 @@
   }
   .filter {
     cursor: pointer;
+    padding-left: 0.5rem;
     label {
       cursor: pointer;
+    }
+    i {
+      padding-left: 0.5rem;
     }
   }
 }

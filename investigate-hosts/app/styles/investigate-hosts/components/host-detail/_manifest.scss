@@ -77,7 +77,7 @@
   }
 
   .close-zone {
-    padding-top: 1rem;
+    padding-top: 1.4rem;
   }
   .left-zone {
     height: 100%;
@@ -132,6 +132,14 @@
 }
 
 .file-context-wrapper {
+  .left-zone {
+    .rsa-header {
+      height: 70px;
+      .title {
+        padding-top: 1.8rem;
+      }
+    }
+  }
   .center-zone {
     height: 100%;
     .process-list-box {

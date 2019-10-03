@@ -20,7 +20,8 @@ const stateToComputed = (state) => ({
   selectedFilterId: selectedFilterId(state.endpoint.hostDownloads),
   savedFilter: savedFilter(state.endpoint.hostDownloads),
   hostDownloadsFilters: state.endpoint.hostDownloads.filter.savedFilterList,
-  selectedFileList: state.endpoint.hostDownloads.downloads.selectedFileList
+  selectedFileList: state.endpoint.hostDownloads.downloads.selectedFileList,
+  isShowFilterPanel: state.endpoint.visuals.showHostDetailsFilter
 });
 
 const dispatchToActions = {

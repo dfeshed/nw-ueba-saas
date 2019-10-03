@@ -22,7 +22,7 @@
         <hbox class="sub-tabs">
           {{#if isShowOpenFilterButton}}
             {{#rsa-form-button
-              class='close-filter'
+              class=(concat 'close-filter ' tabName)
               defaultAction=(action 'openFilterPanel' (action layout.open 'left'))
             }}
               {{rsa-icon name='filter-2' size='small'}}
