@@ -109,7 +109,10 @@ public class FeedbackServiceImpl implements FeedbackService {
         else {
             entity = entityPersistencyService.findEntityByDocumentId(entityId);
         }
-        entity.setScore(entity.getScore() + scoreDelta);
+
+        if(entity.getScore() + scoreDelta >= 0){
+            entity.setScore(entity.getScore() + scoreDelta);
+        }
         return entity;
     }
 
