@@ -124,6 +124,13 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/column/groups/delete-by-id'
       }
     },
+    'profiles': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/investigate/profile/get-all',
+        requestDestination: '/ws/investigate/profile/get-all'
+      }
+    },
     'query-hashes': {
       socketUrl,
       find: {

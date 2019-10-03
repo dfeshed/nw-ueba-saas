@@ -17,16 +17,10 @@ module('Integration | Component | Column Group Item', function(hooks) {
   });
 
   test('columnGroup item should render correctly', async function(assert) {
-
     this.set('item', EventColumnGroups[8]);
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-item columnGroup=item}}`);
-
     const columnGroupItemSelector = '.option-name';
-
     assert.ok(find(columnGroupItemSelector), 'Column Group list item present');
-
     assert.equal(find(`${columnGroupItemSelector}`).textContent.trim(), EventColumnGroups[8].name);
-
   });
-
 });

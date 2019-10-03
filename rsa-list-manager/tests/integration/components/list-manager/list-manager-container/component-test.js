@@ -25,7 +25,9 @@ module('Integration | Component | list-manager-container', function(hooks) {
   const listManagerContainerSelector = '.list-manager-container';
   const buttonGroupSelector = `${listManagerContainerSelector} .rsa-button-group`;
   const buttonMenuSelector = `${listManagerContainerSelector} .rsa-button-menu`;
+  const listCaptionSelector = '.list-caption button';
   const listItems = `${buttonMenuSelector}.expanded .rsa-item-list > li.rsa-list-item`;
+  const listItemSelector = 'ul.rsa-item-list > li.rsa-list-item';
   const stateLocation1 = 'listManager';
   const listName1 = 'My Items';
 
@@ -700,7 +702,7 @@ module('Integration | Component | list-manager-container', function(hooks) {
     assert.ok(find('.rsa-button-menu.collapsed'), 'Item selection from details causes list to collapse');
   });
 
-  test('clicking on `Select Item` in an already  selected item\'s details just collapses the list', async function(assert) {
+  test('clicking on `Select Item` in an already selected item\'s details just collapses the list', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState).list(items).listName(listName1).selectedItemId(items[1].id).build();
     this.set('stateLocation', stateLocation1);
@@ -736,6 +738,44 @@ module('Integration | Component | list-manager-container', function(hooks) {
     // Select Item
     await click(findAll('footer button')[1]);
     assert.ok(find('.rsa-button-menu.collapsed'), 'Item selection from details causes list to collapse');
+  });
+
+  test('List caption is correct after selecting an item when shouldSelectedItemPersist is false', async function(assert) {
+    assert.expect();
+    const QUERY_PROFILES = 'Query Profiles';
+    new ReduxDataHelper(setState)
+      .list(items)
+      .listName(QUERY_PROFILES)
+      .shouldSelectedItemPersist(false)
+      .build();
+    this.set('stateLocation', stateLocation1);
+    this.set('handleSelection', () => {
+      assert.notOk(true, 'action shall not be triggered');
+    });
+
+    await render(hbs`{{#list-manager/list-manager-container
+      stateLocation=stateLocation
+      itemSelection=handleSelection
+      as |manager|}}
+        {{manager.filter}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+      {{/list-manager/list-manager-container}}`);
+
+    assert.notOk(find(`${buttonMenuSelector}.expanded`), 'Shall be collapsed');
+    assert.equal(findAll(listCaptionSelector).length, 1, 'Shall render list caption');
+    assert.equal(find(listCaptionSelector).textContent.trim(), QUERY_PROFILES, 'Shall render correct list caption');
+
+    // open dropdown
+    await click(`${buttonGroupSelector} button`);
+    assert.ok(find(`${buttonMenuSelector}.expanded`), 'The button menu should expand on click of the drop down button');
+
+    // click on an item - should not "select" it
+    await click(listItemSelector);
+    assert.equal(find(listCaptionSelector).textContent.trim(), QUERY_PROFILES, 'Shall render correct list caption');
   });
 
   test('highlightedIndex is reset when filter is in focus', async function(assert) {

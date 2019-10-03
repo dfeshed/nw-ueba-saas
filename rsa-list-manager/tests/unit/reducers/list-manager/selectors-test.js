@@ -23,7 +23,8 @@ import {
   filterPlaceholder,
   hasIsEditableIndicators,
   editItem,
-  isNewItem
+  isNewItem,
+  shouldSelectedItemPersist
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 import { LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -81,18 +82,25 @@ test('modelName returns modelName for stateLocation', function(assert) {
   assert.equal(result, modelName1, 'Shall select modelName based on stateLocation');
 });
 
-test('isListManagerReady returns true if stateLocation exists', function(assert) {
+test('isListManagerReady returns true if stateLocation and list exist', function(assert) {
   const state = new ReduxDataHelper()
     .stateLocation(stateLocation1)
+    .list([])
     .build();
   const result = isListManagerReady(state, stateLocation1);
-  assert.ok(result, 'isListManagerReady shall be true if stateLocation exists');
+  assert.ok(result, 'isListManagerReady shall be true if stateLocation and list exist');
 });
 
 test('isListManagerReady returns false if stateLocation does not exist', function(assert) {
-  const state = new ReduxDataHelper().build();
+  const state = new ReduxDataHelper().list([]).build();
   const result = isListManagerReady(state, stateLocation1);
   assert.notOk(result, 'isListManagerReady shall be false if stateLocation does not exist');
+});
+
+test('isListManagerReady returns false if list does not exist', function(assert) {
+  const state = new ReduxDataHelper().stateLocation(stateLocation1).build();
+  const result = isListManagerReady(state, stateLocation1);
+  assert.notOk(result, 'isListManagerReady shall be false if list does not exist');
 });
 
 test('list returns list for stateLocation', function(assert) {
@@ -431,4 +439,24 @@ test('isNewItem returns false if editItem exists in edit view', function(assert)
     .build();
   const result = isNewItem(state, stateLocation1);
   assert.equal(result, false, 'Shall return false if editItemId exists in edit view');
+});
+
+test('shouldSelectedItemPersist returns shouldSelectedItemPersist for stateLocation', function(assert) {
+  const state = new ReduxDataHelper()
+    .stateLocation(stateLocation1)
+    .list(list1)
+    .listName(listName1)
+    .shouldSelectedItemPersist(true)
+    .build();
+  const result = shouldSelectedItemPersist(state, stateLocation1);
+  assert.ok(result, 'Shall select shouldSelectedItemPersist based on stateLocation');
+
+  const state2 = new ReduxDataHelper()
+    .stateLocation(stateLocation1)
+    .list(list1)
+    .listName(listName1)
+    .shouldSelectedItemPersist(false)
+    .build();
+  const result2 = shouldSelectedItemPersist(state2, stateLocation1);
+  assert.notOk(result2, 'Shall select shouldSelectedItemPersist based on stateLocation');
 });

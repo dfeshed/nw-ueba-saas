@@ -14,16 +14,12 @@ const _initialState = Immutable.from({
 export default handleActions({
   [ACTION_TYPES.COLUMNS_RETRIEVE]: (state, action) => {
     const mappedColumnGroups = mapColumnGroupsForEventTable(EventColumnGroups);
-
     sort(EventColumnGroups).by([{ asc: (group) => group.name.toUpperCase() }]);
     return handle(state, action, {
       failure: (s) => s.merge({ columnGroups: mappedColumnGroups }),
       success: (s) => {
-
         const columnGroups = mapColumnGroupsForEventTable(action.payload.data);
-
         if (columnGroups) {
-
           sort(columnGroups).by([{ asc: (group) => group.name.toUpperCase() }]);
           return s.merge({ columnGroups });
         }

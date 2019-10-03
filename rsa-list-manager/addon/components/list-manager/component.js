@@ -16,6 +16,7 @@ const ListManager = Component.extend({
   layout,
   classNames: ['list-manager'],
   stateLocation: undefined,
+  modelName: undefined,
 
   /*
    * Name identifying the list used to label buttons in the manager.
@@ -26,6 +27,9 @@ const ListManager = Component.extend({
   // Object to identify an item as selected in the manager's button caption
   selectedItemId: null,
 
+  // true if an item can be selected and persist
+  shouldSelectedItemPersist: null,
+
   // the original list
   list: null,
 
@@ -35,8 +39,28 @@ const ListManager = Component.extend({
 
   didInsertElement() {
     const initialProperties =
-      this.getProperties('stateLocation', 'listName', 'list', 'selectedItemId', 'helpId', 'modelName');
+      this.getProperties(
+        'stateLocation',
+        'listName',
+        'list',
+        'selectedItemId',
+        'helpId',
+        'modelName',
+        'shouldSelectedItemPersist'
+      );
     this.send('initializeListManager', initialProperties);
+  },
+
+  didReceiveAttrs() {
+    // attrs received after didInsertElement - send them
+    // in order to set list and persist previous selection
+    const updatedProperties =
+      this.getProperties(
+        'stateLocation',
+        'list',
+        'selectedItemId',
+      );
+    this.send('initializeListManager', updatedProperties);
   }
 });
 

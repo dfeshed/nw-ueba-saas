@@ -10,6 +10,7 @@ import {
 
 const listManagerInitialState = Immutable.from({
   stateLocation: undefined,
+  modelName: undefined,
   listName: undefined,
   isExpanded: false,
   list: undefined,
@@ -17,6 +18,7 @@ const listManagerInitialState = Immutable.from({
   highlightedIndex: -1,
   editItemId: undefined,
   viewName: undefined, // View to be rendered through button actions (list-view, detail-view, etc)
+  shouldSelectedItemPersist: true, // true if an item can be selected and persist, true by default
   selectedItemId: undefined, // id of object to identify an item as selected in the manager's button caption,
   helpId: undefined, // object for contextual help { moduleId: "investigation", topicId: "eaColumnGroups" }
   isItemsLoading: false

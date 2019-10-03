@@ -79,6 +79,7 @@
       "../streaming-data",
       "../rsa-context-menu",
       "../rsa-data-filters",
+      "../rsa-list-manager",
       "../license",
       "../context",
       "../respond-shared"

@@ -1,7 +1,12 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 
-import { setService, setQueryTimeRange, setCustomTimeRange, setTimeRangeError } from 'investigate-events/actions/interaction-creators';
+import {
+  setService,
+  setQueryTimeRange,
+  setCustomTimeRange,
+  setTimeRangeError
+} from 'investigate-events/actions/interaction-creators';
 
 const stateToComputed = (state) => ({
   startTime: state.investigate.queryNode.startTime,

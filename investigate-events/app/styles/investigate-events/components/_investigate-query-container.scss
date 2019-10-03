@@ -60,7 +60,103 @@
         }
       }
     }
+  }
 
+  &__profile-selector {
+    margin-right: rsa-whitespace(less);
+    flex: 0 0 auto;
+    .rsa-form-button-wrapper {
+      &.is-standard:not(.is-disabled):not(.is-icon-only) {
+        .rsa-form-button {
+          &:focus {
+            border-color: border-color(neutral);
+          }
+        }
+        &:hover, &.is-active {
+          .rsa-form-button {
+            &:focus {
+              border-color: border-color(neutral);
+            }
+          }
+        }
+      }
+    }
+
+    .list-manager .list-manager-container {
+      .list-menu-trigger.rsa-button-group {
+        .list-caption {
+          top: 0;
+          .rsa-form-button {
+            border-right-width: 0px;
+          }
+        }
+        .list-help-icon {
+          i {
+            margin-right: 0px;
+          }
+        }
+        .rsa-split-dropdown {
+          .rsa-form-button {
+            border-left-width: 0px;
+            margin-left: -2px;
+          }
+        }
+      }
+      .rsa-button-menu {
+        .list-body {
+          .list-filter {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            line-height: 1rem;
+            .filter-group {
+              display: inline-flex;
+              width: 100%;
+              border-bottom: 1px solid border-color(primary,light);
+              padding-bottom: rsa-whitespace(less);
+              padding-top: rsa-whitespace(less);
+              .ember-power-select-search-input {
+                border: none;
+              }
+              .clear-filter {
+                margin-right: 0.5rem;
+                .rsa-form-button {
+                  height: inherit;
+                }
+              }
+            }
+          }
+          ul.rsa-item-list {
+            overflow-x: hidden;
+            span.option-name {
+              vertical-align: middle;
+              overflow-x: hidden;
+              white-space: nowrap;
+              display: inline-block;
+              text-overflow: ellipsis;
+            }
+            li.rsa-list-item {
+              .rsa-form-button {
+                height: inherit;
+              }
+              .edit-icon {
+                .rsa-form-button {
+                  padding: 0.5rem;
+                }
+              }
+            }
+          }
+        }
+        footer {
+          background-color: background-color(primary, darker);
+          .footer-buttons {
+            .rsa-form-button {
+              height: inherit;
+              font-size: 12px;
+            }
+          }
+        }
+      }
+    }
   }
 
   .time-range-invalid {

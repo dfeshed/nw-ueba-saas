@@ -51,9 +51,29 @@ module('Unit | Actions | Creators', function(hooks) {
     assert.equal(type, ACTION_TYPES.SET_VIEW_NAME, 'action has the correct type');
   });
 
-  test('setSelectedItem action creator returns proper type', function(assert) {
-    const { type } = creators.setSelectedItem({ id: 123, name: 'abc' }, stateLocation1);
-    assert.equal(type, ACTION_TYPES.SET_SELECTED_ITEM_ID, 'action has the correct type');
+  test('setSelectedItem action creator sets selected item if selection should persist', function(assert) {
+    assert.expect(1);
+    const getState = () => {
+      return new ReduxDataHelper().shouldSelectedItemPersist(true).build();
+    };
+    const dispatchSetSelectedItem = () => {
+      assert.ok(true, 'Shall dispatch if shouldSelectedItemPersist is true');
+    };
+    const thunk = creators.setSelectedItem({ id: 123, name: 'test' }, stateLocation1);
+    thunk(dispatchSetSelectedItem, getState);
+  });
+
+  test('setSelectedItem action creator does nothing if selection should not persist', function(assert) {
+    assert.expect(1);
+    const getState = () => {
+      return new ReduxDataHelper().shouldSelectedItemPersist(false).build();
+    };
+    const dispatchSetSelectedItem = () => {
+      assert.notOk(true, 'Shall not dispatch if shouldSelectedItemPersist is false');
+    };
+    const thunk = creators.setSelectedItem(stateLocation1);
+    thunk(dispatchSetSelectedItem, getState);
+    assert.ok(true, 'setSelectedItem shall not dispatch if shouldSelectedItemPersist is false');
   });
 
   test('editItem action creator returns proper type', function(assert) {

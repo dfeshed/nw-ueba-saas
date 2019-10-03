@@ -7,5 +7,3 @@ import { COLUMN_GROUPS_MODEL_NAME as MODEL_NAME } from 'investigate-events/const
  * @public
  */
 export const fetchColumnGroups = () => findAllPromiseRequest(MODEL_NAME);
-
-

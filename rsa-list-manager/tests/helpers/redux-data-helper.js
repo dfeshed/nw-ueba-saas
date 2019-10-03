@@ -103,4 +103,9 @@ export default class DataHelper {
     _set(this.state, 'isItemsLoading', value);
     return this;
   }
+
+  shouldSelectedItemPersist(value) {
+    _set(this.state, 'shouldSelectedItemPersist', value);
+    return this;
+  }
 }

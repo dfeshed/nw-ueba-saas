@@ -11,6 +11,7 @@ import { parseBasicQueryParams } from 'investigate-events/actions/utils';
 import { isSearchTerm, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { extractSearchTermFromFilters } from 'investigate-shared/actions/api/events/utils';
 import { fetchColumnGroups } from './fetch/column-group';
+import { fetchProfiles } from './fetch/profiles';
 import { fetchInvestigateData, getServiceSummary, updateGlobalPreferences, updateSort } from './data-creators';
 import { isQueryExecutedByColumnGroup } from './interaction-creators';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
@@ -118,7 +119,10 @@ const _initializePreferences = (dispatch, getState) => {
         } else {
           dispatch({
             type: ACTION_TYPES.SET_PREFERENCES,
-            payload: { queryTimeFormat: TIME_RANGES.DATABASE_TIME, eventAnalysisPreferences: CONFIG.defaultPreferences.eventAnalysisPreferences }
+            payload: {
+              queryTimeFormat: TIME_RANGES.DATABASE_TIME,
+              eventAnalysisPreferences: CONFIG.defaultPreferences.eventAnalysisPreferences
+            }
           });
           // Since there is no preference data for the current user, set the default column group.
           // This cannot be set as initial state in redux, since it results in the entire events table
@@ -151,6 +155,29 @@ const _getColumnGroups = () => {
         meta: {
           onFailure(response) {
             handleInvestigateErrorCode(response, 'GET_COLUMN_GROUPS');
+          }
+        }
+      });
+    }
+  };
+};
+
+/**
+ * Redux thunk to get all profiles.
+ *
+ * @return {function} A Redux thunk
+ * @public
+ */
+const _getProfiles = () => {
+  return (dispatch, getState) => {
+    const { profiles } = getState().investigate.profile;
+    if (!profiles) {
+      dispatch({
+        type: ACTION_TYPES.PROFILES_RETRIEVE,
+        promise: fetchProfiles(),
+        meta: {
+          onFailure(response) {
+            handleInvestigateErrorCode(response, 'GET_PROFILES');
           }
         }
       });
@@ -409,10 +436,11 @@ export const initializeInvestigate = function(
     // 2) Initialize global preferences state
     _initializeGlobalPreferences(dispatch);
 
-    // 3) Retrieve the column groups, it isn't important that
+    // 3) Retrieve the column groups and profiles, it isn't important that
     //    this be syncronized with anything else, so can just
     //    kick it off
     dispatch(_getColumnGroups());
+    dispatch(_getProfiles());
     dispatch(isQueryExecutedByColumnGroup(false));
 
     // 4) Get all the user's preferences

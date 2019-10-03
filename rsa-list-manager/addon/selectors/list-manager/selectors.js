@@ -101,7 +101,7 @@ export const filterText = createSelector(
 export const isListManagerReady = createSelector(
   [_rootState],
   (rootState) => {
-    return !!rootState.stateLocation;
+    return !!rootState.stateLocation && !!rootState.list;
   }
 );
 
@@ -123,6 +123,13 @@ export const isExpanded = createSelector(
   [_rootState],
   (rootState) => {
     return rootState.isExpanded;
+  }
+);
+
+export const shouldSelectedItemPersist = createSelector(
+  [_rootState],
+  (rootState) => {
+    return rootState.shouldSelectedItemPersist;
   }
 );
 
@@ -189,6 +196,9 @@ export const hasContextualHelp = createSelector(
 export const caption = createSelector(
   [listName, _selectedItemName],
   (listName, selectedItemName) => {
+    if (!listName) {
+      return '';
+    }
     // If there is selectedItemId for listName e.g "My Items" (string ending with s(plural))
     // caption will be "My Item: name of selectedItem"
     return selectedItemName ? `${listName.slice(0, -1)}: ${selectedItemName}` : listName;
@@ -212,7 +222,7 @@ export const filterPlaceholder = createSelector(
 export const hasIsEditableIndicators = createSelector(
   [filteredList],
   (filteredList) => {
-    const editableIndicatedItems = filteredList.filter((item) => typeof item.isEditable !== 'undefined');
+    const editableIndicatedItems = filteredList ? filteredList.filter((item) => typeof item.isEditable !== 'undefined') : [];
     return editableIndicatedItems.length > 0;
   }
 );

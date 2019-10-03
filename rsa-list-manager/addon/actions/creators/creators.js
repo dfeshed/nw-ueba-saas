@@ -1,6 +1,20 @@
 import * as ACTION_TYPES from 'rsa-list-manager/actions/types';
-import { isExpanded } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { isExpanded, shouldSelectedItemPersist } from 'rsa-list-manager/selectors/list-manager/selectors';
 import { EDIT_VIEW } from 'rsa-list-manager/constants/list-manager';
+
+const _setSelectedItemById = (id, stateLocation) => {
+  return (dispatch, getState) => {
+    const canHaveSelectedItem = shouldSelectedItemPersist(getState(), stateLocation);
+    // set selected item only if shouldSelectedItemPersist is true
+    if (canHaveSelectedItem) {
+      dispatch({
+        type: ACTION_TYPES.SET_SELECTED_ITEM_ID,
+        payload: id,
+        meta: { belongsTo: stateLocation }
+      });
+    }
+  };
+};
 
 /**
  *
@@ -41,11 +55,7 @@ export const viewChanged = (viewname, stateLocation) => ({
   meta: { belongsTo: stateLocation }
 });
 
-export const setSelectedItem = (item, stateLocation) => ({
-  type: ACTION_TYPES.SET_SELECTED_ITEM_ID,
-  payload: item.id,
-  meta: { belongsTo: stateLocation }
-});
+export const setSelectedItem = (item, stateLocation) => _setSelectedItemById(item.id, stateLocation);
 
 export const editItem = (editItemId, stateLocation) => ({
   type: ACTION_TYPES.EDIT_ITEM,

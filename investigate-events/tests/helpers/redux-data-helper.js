@@ -3,6 +3,81 @@ import CONFIG from 'investigate-events/reducers/investigate/config';
 import EventColumnGroups from '../data/subscriptions/column-group/findAll/data';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 
+export const DEFAULT_PROFILES = [
+  {
+    name: 'RSA Email Analysis',
+    metaGroup: {
+      name: 'RSA Email Analysis'
+    },
+    columnGroupView: 'CUSTOM',
+    columnGroup: {
+      name: 'RSA Email Analysis'
+    },
+    preQuery: 'service=24,25,109,110,995,143,220,993',
+    contentType: 'OOTB'
+  },
+  {
+    name: 'RSA File Analysis',
+    metaGroup: {
+      name: 'RSA Malware Analysis'
+    },
+    columnGroupView: 'CUSTOM',
+    columnGroup: {
+      name: 'RSA Malware Analysis'
+    },
+    preQuery: 'filename exists || extension exists || filetype exists || sourcefile exists  || content = \'application/octet-stream\'',
+    contentType: 'OOTB'
+  },
+  {
+    name: 'RSA Threat Analysis',
+    metaGroup: {
+      name: 'RSA Threat Analysis'
+    },
+    columnGroupView: 'CUSTOM',
+    columnGroup: {
+      name: 'RSA Threat Analysis'
+    },
+    preQuery: 'threat.desc exists || threat.source exists || threat.category exists || boc exists || ioc exists || eoc exists || alert exists',
+    contentType: 'OOTB'
+  },
+  {
+    name: 'RSA Web Analysis',
+    metaGroup: {
+      name: 'RSA Web Analysis'
+    },
+    columnGroupView: 'CUSTOM',
+    columnGroup: {
+      name: 'RSA Web Analysis'
+    },
+    preQuery: 'service=80,8080,443',
+    contentType: 'OOTB'
+  },
+  {
+    name: 'RSA Endpoint Analysis',
+    metaGroup: {
+      name: 'RSA Endpoint Analysis'
+    },
+    columnGroupView: 'CUSTOM',
+    columnGroup: {
+      name: 'RSA Endpoint Analysis'
+    },
+    preQuery: 'device.type=\'nwendpoint\'',
+    contentType: 'OOTB'
+  },
+  {
+    name: 'RSA User & Entity Behavior Analysis',
+    metaGroup: {
+      name: 'RSA User & Entity Behavior Analysis'
+    },
+    columnGroupView: 'CUSTOM',
+    columnGroup: {
+      name: 'RSA User & Entity Behavior Analysis'
+    },
+    preQuery: 'user.dst exists || username exists',
+    contentType: 'OOTB'
+  }
+];
+
 export const DEFAULT_LANGUAGES = [
   { count: 0, format: 'Text', metaName: 'a', flags: 2, displayName: 'A', formattedName: 'a (A)' },
   { count: 0, format: 'Text', metaName: 'b', flags: 2, displayName: 'B', formattedName: 'b (B)' },
@@ -391,6 +466,11 @@ export default class DataHelper {
   getColumns(columnGroup = EventColumnGroups[0].id, columnGroups = EventColumnGroups) {
     this.selectedColumnGroup(columnGroup);
     this.columnGroups(columnGroups);
+    return this;
+  }
+
+  profiles(profiles = DEFAULT_PROFILES) {
+    _set(this.state, 'profile.profiles', profiles);
     return this;
   }
 
