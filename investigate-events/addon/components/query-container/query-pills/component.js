@@ -118,6 +118,12 @@ const isEventFiredFromQueryPill = (event) => {
 
 const _hasCloseParenToRight = (pd, i) => pd[i] && pd[i].type === CLOSE_PAREN;
 
+const _hasOperatorToTheLeft = (pd, i) => {
+  // get pill to the left
+  const pill = pd[i - 1];
+  return pill?.type === OPERATOR_AND || pill?.type === OPERATOR_OR;
+};
+
 /**
  * Counts the number of open and close parentheses to the left of `position`.
  * @param {object[]} pd Array of filters
@@ -261,7 +267,7 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT]: (data) => this._fetchRecentQueries(data),
       [MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED]: (data, position) => this._recentQueryPillCreated(data, position),
       [MESSAGE_TYPES.PILL_OPEN_PAREN]: (data, position) => this._insertParens(position),
-      [MESSAGE_TYPES.PILL_CLOSE_PAREN]: (data, position) => this._moveCursorOrInsertParens(position),
+      [MESSAGE_TYPES.PILL_CLOSE_PAREN]: (data, position) => this._handleCloseParentheses(position),
       [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR]: (data, position) => this._insertLogicalOperator(data, position),
       [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR_TOGGLED]: (data, position) => this._logicalOperatorClicked(data, position),
       [MESSAGE_TYPES.PILL_HOME_PRESSED]: (data) => this._openNewPillAtBeginning(data),
@@ -751,16 +757,21 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   /**
-   * Do we have more open parens than close parens?
-   * Yes, insert ") AND (".
-   * No, move to the right.
-   * @paren {number} position The position to move from.
+   * Makes decisions on how to handle a close parentheses.
+   * 1) Is there a close paren immediately to the right? Move focus to the right of it.
+   * 2) Is there an operator immediately to the left? Do nothing.
+   * 3) Do we have more open parens than close parens? Insert ") AND (".
+   * @paren {number} position The cuttent position.
    * @private
    */
-  _moveCursorOrInsertParens(position) {
+  _handleCloseParentheses(position) {
     const pillsData = this.get('pillsData');
     if (_hasCloseParenToRight(pillsData, position)) {
       this._moveToRightFrom(pillsData, position);
+    } else if (_hasOperatorToTheLeft(pillsData, position)) {
+      // Do nothing as this is invalid syntax. Perform this check before the
+      // _hasMoreOpenThanCloseParens below as that could pass, causing us to
+      // insert intra-parens where we shouldn't.
     } else if (_hasMoreOpenThanCloseParens(pillsData, position)) {
       this._pillsExited();
       this.send('addIntraParens', { position });

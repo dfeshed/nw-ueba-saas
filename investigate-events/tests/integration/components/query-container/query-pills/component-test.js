@@ -3398,6 +3398,27 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(find(PILL_SELECTORS.openParenFocused), 'there should be an open paren with focus');
   });
 
+  test('Typing ")" when there is an operator to the left will do nothing', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated() // P && P
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await leaveNewPillTemplate();
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 3, 'should be three triggers');
+    // focus on NPT to the right of the operator
+    await click(triggers[2]);
+    await typeIn(PILL_SELECTORS.metaInput, ')');
+    // Nothing should have happened
+    assert.ok(find(PILL_SELECTORS.metaInput), 'new-pill-triggers input still open');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, ')', 'paren should still be in the input');
+  });
+
   test('pill-value will have options in the drop-down', async function(assert) {
     assert.expect(1);
     const done = assert.async();
