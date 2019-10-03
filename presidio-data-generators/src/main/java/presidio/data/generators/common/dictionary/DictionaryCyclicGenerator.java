@@ -2,12 +2,15 @@ package presidio.data.generators.common.dictionary;
 
 import presidio.data.generators.IBaseGenerator;
 
+import java.util.function.UnaryOperator;
+
 public abstract class DictionaryCyclicGenerator implements IBaseGenerator<String> {
 
     private int currentIndex;
     private int fromIndex;
     private int toIndex;
     private final String[] DICTIONARY;
+    public UnaryOperator<String> formatter = e -> e;
 
     protected DictionaryCyclicGenerator(int fromIndex, int toIndex, String[] dictionary) {
         if (fromIndex < 0 || this.toIndex > dictionary.length-1)
@@ -21,7 +24,7 @@ public abstract class DictionaryCyclicGenerator implements IBaseGenerator<String
     @Override
     public String getNext() {
         if (currentIndex >= toIndex)  currentIndex = fromIndex;
-        return DICTIONARY[currentIndex++];
+        return formatter.apply(DICTIONARY[currentIndex++]);
     }
 
 }
