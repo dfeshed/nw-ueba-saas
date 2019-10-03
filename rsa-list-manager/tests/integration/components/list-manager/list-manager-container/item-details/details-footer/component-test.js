@@ -77,32 +77,7 @@ module('Integration | Component | item details - details footer', function(hooks
     assert.ok(find('.rsa-form-button[disabled]'), 'Save button is disabled until valid editedItem provided');
   });
 
-  test('renders footer for list details with close/disabled-save when editedItem does not have unique name', async function(assert) {
-    assert.expect(4);
-    new ReduxDataHelper(setState).stateLocation(stateLocation1).listName('Foos').list([item]).build();
-    this.set('stateLocation', stateLocation1);
-    this.set('item', null);
-    this.set('editedItem', { name: item.name });
-    this.set('itemTransform', () => {});
-
-    await render(hbs`{{list-manager/list-manager-container/item-details/details-footer
-      stateLocation=stateLocation
-      item=item
-      editedItem=editedItem
-      itemTransform=itemTransform
-    }}`);
-
-    assert.ok(find('footer.details-footer'));
-
-    const buttons = findAll('footer.details-footer button');
-    assert.equal(buttons[0].textContent.trim(), 'Close');
-    assert.equal(buttons[1].textContent.trim(), 'Save Foo', 'Save option rendered when new item is being created');
-
-    assert.equal(findAll('footer.details-footer button[disabled]').length, 1,
-      'Only close button enabled, save disabled until item has unique name');
-  });
-
-  test('renders footer for list details with close/enabled-save when editedItem has unique name', async function(assert) {
+  test('renders footer for list details with close/enabled-save when editedItem is passed', async function(assert) {
     assert.expect(4);
     const editedItem = { name: 'bar' };
     new ReduxDataHelper(setState).stateLocation(stateLocation1).listName('Foos').list([item]).build();

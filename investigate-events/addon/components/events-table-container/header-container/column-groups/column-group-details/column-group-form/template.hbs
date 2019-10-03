@@ -3,8 +3,11 @@
   {{rsa-form-input
     class='value'
     type='text'
+    maxLength=64
+    isError=isNameError
+    errorMessage=nameInvalidMessage
     onKeyUp=(action 'handleNameChange')
-    placeholder='My Custom Group'
+    placeholder=(t 'investigate.events.columnGroups.groupNamePlaceholder')
   }}
 </div>
 

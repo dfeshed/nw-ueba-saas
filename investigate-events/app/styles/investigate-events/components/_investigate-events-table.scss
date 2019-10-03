@@ -493,7 +493,9 @@
     padding-right: 0;
     margin-bottom: 2px;
   }
-
+  .is-name-error .group-details {
+    max-height: 160px;
+  }
   .group-details {
     max-height: 180px;
     &.readonly {

@@ -20,10 +20,12 @@ module('Integration | Component | Column Group form', function(hooks) {
       patchReducer(this, state);
     };
     initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
   const DISPLAYED_COLUMNS = '.displayed-details > ul.column-list li';
   const AVAILABLE_META = '.add-details > ul.column-list li';
+  const groupNameInput = '.group-name .value input';
 
   test('it will render editable form for a new item', async function(assert) {
     assert.expect(4);
@@ -38,7 +40,6 @@ module('Integration | Component | Column Group form', function(hooks) {
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
 
-    const groupNameInput = '.group-name .value input';
     assert.ok(find(groupNameInput), 'input for group name');
 
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 0, 'No columns present in displayed keys');
@@ -62,7 +63,6 @@ module('Integration | Component | Column Group form', function(hooks) {
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
 
-    const groupNameInput = '.group-name .value input';
     assert.ok(find(groupNameInput), 'input for group name');
 
     // simulate typeIn
@@ -131,7 +131,6 @@ module('Integration | Component | Column Group form', function(hooks) {
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
 
-    const groupNameInput = '.group-name .value input';
     assert.ok(find(groupNameInput), 'input for group name');
 
     // simulate typeIn
@@ -337,5 +336,56 @@ module('Integration | Component | Column Group form', function(hooks) {
     input = find('.filter-group input');
     lengthOfSelection = input.selectionEnd - input.selectionStart;
     assert.ok(lengthOfSelection === 1, 'text in box is selected');
+  });
+
+  test('editColumnGroup action is called with null if the new columnGroup does not have a unique name', async function(assert) {
+    assert.expect(2);
+    this.set('columnGroup', null);
+    this.set('editColumnGroup', (newGroup) => {
+      assert.notOk(newGroup, 'newGroup is null if all details added but name is not unique');
+    });
+
+    new ReduxDataHelper(setState).language().columnGroups().build();
+    await render(hbs`
+      {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+        columnGroup=columnGroup
+        editColumnGroup=editColumnGroup
+      }}
+    `);
+
+    // simulate typeIn
+    await fillIn(groupNameInput, 'Custom 1');
+    await triggerEvent(groupNameInput, 'keyup');
+
+    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    // add candidate meta
+    await click(availableOptions[3]);
+  });
+
+  test('editColumnGroup action is called with valid object if new Group has unique name and columns', async function(assert) {
+
+    assert.expect(1);
+    this.set('columnGroup', null);
+    this.set('editColumnGroup', (newGroup) => {
+      if (newGroup) {
+        assert.ok(newGroup, 'newGroup is null if name is not unique');
+      }
+    });
+
+    new ReduxDataHelper(setState).language().columnGroups().build();
+    await render(hbs`
+      {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+        columnGroup=columnGroup
+        editColumnGroup=editColumnGroup
+      }}
+    `);
+
+    // simulate typeIn
+    await fillIn(groupNameInput, 'Some new name');
+    await triggerEvent(groupNameInput, 'keyup');
+
+    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    // add candidate meta
+    await click(availableOptions[3]);
   });
 });

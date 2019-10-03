@@ -621,7 +621,9 @@ export default {
         noMetaKeysChosen: 'Add a meta key from the list below',
         displayedMetaKeys: 'Displayed Meta Keys',
         availableMetaKeys: 'Available Meta Keys',
-        allMetaKeysAdded: 'All meta keys have been added'
+        allMetaKeysAdded: 'All meta keys have been added',
+        groupNamePlaceholder: 'My Custom Group',
+        nameNotUnique: 'New groups must have a unique name'
       },
       download: {
         selected: 'Download',

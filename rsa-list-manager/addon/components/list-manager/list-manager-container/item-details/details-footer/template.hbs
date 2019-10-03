@@ -7,7 +7,7 @@
       Select {{itemType}}
     {{/rsa-form-button}}
   {{else}}
-    {{#rsa-form-button isDisabled=(not itemIsValid) class='save' defaultAction=(action 'saveItem')}}
+    {{#rsa-form-button isDisabled=(not editedItem) class='save' defaultAction=(action 'saveItem')}}
       Save {{itemType}}
     {{/rsa-form-button}}
   {{/if}}

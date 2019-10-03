@@ -15,6 +15,7 @@ const _filterColumns = (columns, filterText) => {
 };
 
 const stateToComputed = (state) => ({
+  columnGroups: state.investigate.columnGroup.columnGroups,
   /* TODO Add Column Group
    * use meta from language call untill API provides all meta regardless of service selected
    */
@@ -24,6 +25,8 @@ const stateToComputed = (state) => ({
 const ColumnGroupForm = Component.extend({
 
   classNames: ['column-group-form'],
+
+  classNameBindings: ['isNameError'],
 
   // original columnGroup with sorted columns
   columnGroup: null,
@@ -42,6 +45,10 @@ const ColumnGroupForm = Component.extend({
 
   // Should filter text be selected?
   shouldSelectFilterText: undefined,
+
+  isNameError: false,
+
+  nameInvalidMessage: null,
 
   /**
    * initialize a working copy of columns and leave original column group alone
@@ -117,7 +124,7 @@ const ColumnGroupForm = Component.extend({
     const originalGroup = this.get('columnGroup');
     const newGroup = this.get('newColumnGroup');
 
-    if (newGroup?.name && newGroup?.columns?.length) {
+    if (!this.get('isNameError') && newGroup?.name && newGroup?.columns?.length) {
       const isNewGroupChanged = JSON.stringify(newGroup) !== JSON.stringify(originalGroup);
       editedColumnGroup = isNewGroupChanged ? newGroup : null;
       editedColumnGroup = this._prepareColumnGroup(editedColumnGroup);
@@ -126,6 +133,7 @@ const ColumnGroupForm = Component.extend({
     // Calling editColumnGroup with null is an indicator to the called function that
     // the data being edited is currently invalid
     this.get('editColumnGroup')(editedColumnGroup);
+
   },
 
   _updateFilterSelection() {
@@ -137,11 +145,26 @@ const ColumnGroupForm = Component.extend({
     });
   },
 
+  _validateForErrors(value) {
+    const columnGroups = this.get('columnGroups') || [];
+    // TODO edit unique name check for new items only
+    const hasUniqueName = !columnGroups.find((item) => item.name == value);
+
+    const isNameError = !hasUniqueName;
+    const nameInvalidMessage = isNameError ? this.get('i18n').t('investigate.events.columnGroups.nameNotUnique') : null;
+
+    this.set('isNameError', isNameError);
+    this.set('nameInvalidMessage', nameInvalidMessage);
+  },
+
   actions: {
 
     handleNameChange(value) {
       const newColumnGroup = this.get('newColumnGroup');
       newColumnGroup.name = value;
+
+      this._validateForErrors(value);
+
       this._checkDirtyChange();
     },
 
