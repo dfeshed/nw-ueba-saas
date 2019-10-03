@@ -237,11 +237,29 @@ const _addFocus = (state, needsFocusPill, isSelected) => {
   return state.set('pillsData', newPillsData);
 };
 
+const _isPillOrOperatorToBeDelete = (deleteIds, pill, idx, pillsData) => {
+  const nextPill = pillsData[idx + 1];
+  const prevPill = pillsData[idx - 1];
+  const beforePrevPill = pillsData[idx - 2];
+  const shouldDeletePill = deleteIds.includes(pill.id);
+  const shouldDeleteNextPill = nextPill && deleteIds.includes(nextPill.id);
+  const shouldDeletePrevPill = prevPill && deleteIds.includes(prevPill.id) && !_isLogicalOperator(beforePrevPill);
+  return (
+    shouldDeletePill ||
+    (_isLogicalOperator(pill) && (shouldDeleteNextPill || shouldDeletePrevPill))
+  );
+};
+
 const _deletePills = (state, pillsToBeDeleted) => {
   // get ids for pills that need to be deleted
   const deleteIds = pillsToBeDeleted.map((pD) => pD.id);
   // remove those pill ids from state
-  const newPills = state.pillsData.filter((pD) => !deleteIds.includes(pD.id));
+  const newPills = state.pillsData.reduce((acc, pill, idx, pillsData) => {
+    if (!_isPillOrOperatorToBeDelete(deleteIds, pill, idx, pillsData)) {
+      acc.push(pill);
+    }
+    return acc;
+  }, []);
   return state.set('pillsData', newPills);
 };
 
@@ -297,7 +315,7 @@ const _handleLogicalOperator = (state, pillData, position, isReplace = false) =>
   }
 };
 
-const _isLogicalOperator = (pill) => (pill.type === OPERATOR_AND || pill.type === OPERATOR_OR);
+const _isLogicalOperator = (pill) => pill && (pill.type === OPERATOR_AND || pill.type === OPERATOR_OR);
 
 export default handleActions({
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {

@@ -434,16 +434,13 @@ test('DELETE_GUIDED_PILLS removes the pill provided', function(assert) {
   const action = {
     type: ACTION_TYPES.DELETE_GUIDED_PILLS,
     payload: {
-      pillData: [{
-        id: '1',
-        foo: 1234
-      }]
+      pillData: [{ id: '1' }]
     }
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
-  assert.equal(result.pillsData[0].id, 2, 'pillsData item is in the right position');
+  assert.equal(result.pillsData.length, 1, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].id, '3', 'pillsData item is in the right position');
 });
 
 test('DELETE_GUIDED_PILLS removes multiple pills', function(assert) {
@@ -451,17 +448,15 @@ test('DELETE_GUIDED_PILLS removes multiple pills', function(assert) {
     type: ACTION_TYPES.DELETE_GUIDED_PILLS,
     payload: {
       pillData: [{
-        id: '1',
-        foo: 1234
+        id: '1'
       }, {
-        id: '2',
-        foo: 'baz'
+        id: '3'
       }]
     }
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 1, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 0, 'pillsData is the correct length');
 });
 
 test('DELETE_GUIDED_PILLS removes the pill provided and removes focus from any other pill that has it', function(assert) {
@@ -476,8 +471,7 @@ test('DELETE_GUIDED_PILLS removes the pill provided and removes focus from any o
     type: ACTION_TYPES.DELETE_GUIDED_PILLS,
     payload: {
       pillData: [{
-        id: '2',
-        foo: 1234
+        id: '2' // The opertor
       }]
     }
   };
@@ -486,6 +480,63 @@ test('DELETE_GUIDED_PILLS removes the pill provided and removes focus from any o
   assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].id !== result.pillsData.id, 'pill would now have an updated id');
   assert.ok(result.pillsData[0].isFocused === false, 'The pill that had focus no longer has it');
+});
+
+test('DELETE_GUIDED_PILLS removes pills provided and operators associated with them', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .build()
+    .investigate
+    .queryNode;
+  const deleteFirstPill = {
+    type: ACTION_TYPES.DELETE_GUIDED_PILLS,
+    payload: {
+      pillData: [{
+        id: '1'
+      }]
+    }
+  };
+  const deleteLastPill = {
+    type: ACTION_TYPES.DELETE_GUIDED_PILLS,
+    payload: {
+      pillData: [{
+        id: '3'
+      }]
+    }
+  };
+
+  const leadingPillDeleted = reducer(state, deleteFirstPill);
+  assert.equal(leadingPillDeleted.pillsData.length, 1, 'pillsData is the correct length after deleting the first pill');
+  assert.equal(leadingPillDeleted.pillsData[0].id, '3', 'remaining pill is the trailing pill');
+
+  const trailingPillDeleted = reducer(state, deleteLastPill);
+  assert.equal(trailingPillDeleted.pillsData.length, 1, 'pillsData is the correct length after deleting the last');
+  assert.equal(trailingPillDeleted.pillsData[0].id, '1', 'remaining pill is the leading pill');
+});
+
+test('DELETE_GUIDED_PILLS does not remove more pills than needed', function(assert) {
+  const OR = createOperator(OPERATOR_OR);
+  const QF = createFilter(QUERY_FILTER, 'medium', '=', 1);
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .insertPillAt(OR, 1) // will be deleted
+    .insertPillAt(QF, 2) // will be deleted
+    .build()
+    .investigate
+    .queryNode;
+  const deleteMiddlePill = {
+    type: ACTION_TYPES.DELETE_GUIDED_PILLS,
+    payload: {
+      pillData: [QF]
+    }
+  };
+  // Delete the query filter we just added
+  const middlePillDeleted = reducer(state, deleteMiddlePill);
+  // What's left over should look like what we get from pillsDataPopulated()
+  assert.equal(middlePillDeleted.pillsData.length, 3, 'pillsData is the correct length');
+  assert.equal(middlePillDeleted.pillsData[0].id, '1', 'pill[0] is correct pill');
+  assert.equal(middlePillDeleted.pillsData[1].id, '2', 'pill[1] is correct pill');
+  assert.equal(middlePillDeleted.pillsData[2].id, '3', 'pill[2] is correct pill');
 });
 
 test('EDIT_GUIDED_PILL edits first pill provided', function(assert) {
