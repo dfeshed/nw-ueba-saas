@@ -300,6 +300,7 @@ module('Unit | Selectors | overview', function(hooks) {
       policy: {
         edrPolicy: {
           name: 'Default EDR Policy',
+          customConfig: '',
           transportConfig: {
             primary: {
               address: '10.40.15.154',
@@ -366,6 +367,7 @@ module('Unit | Selectors | overview', function(hooks) {
       'blockingEnabled': 'Disabled',
       'cpuMax': '25 %',
       'cpuMaxVm': '10 %',
+      'customConfig': '',
       'name': 'Default EDR Policy',
       'offlineDiskStorageSizeInMb': 100,
       'primaryAddress': '10.40.15.154',

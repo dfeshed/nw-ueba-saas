@@ -310,7 +310,7 @@ const _getAdvancedConfigSetting = (prop, focusedPolicy) => {
   const advancedConfigSettings = {
     customConfig: {
       name: 'adminUsm.policyWizard.edrPolicy.customConfig',
-      value: focusedPolicy[prop]
+      value: JSON.stringify(focusedPolicy[prop])
     }
   };
   return advancedConfigSettings[prop];

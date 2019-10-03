@@ -52,7 +52,7 @@ const getPolicyDetails = () => {
   return async(dispatch, getState) => {
     const state = getState();
     const { agentId } = state.endpoint.detailsInput;
-    dispatch(_fetchPolicyDetails(agentId));
+    await dispatch(_fetchPolicyDetails(agentId));
   };
 };
 

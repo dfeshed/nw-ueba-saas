@@ -367,7 +367,8 @@ export const policyAdminUsm = createSelector(
           offlineDiskStorageSizeInMb: data.edrPolicy.storageConfig.diskCacheSizeInMb,
           rarPolicyServer: data.edrPolicy.transportConfig.primary.rar.config.address,
           rarPolicyPort: data.edrPolicy.transportConfig.primary.rar.config.httpsPort,
-          rarPolicyBeaconInterval: data.edrPolicy.transportConfig.primary.rar.config.httpsBeaconInterval
+          rarPolicyBeaconInterval: data.edrPolicy.transportConfig.primary.rar.config.httpsBeaconInterval,
+          customConfig: data.edrPolicy.customConfig
         },
         windowsLogPolicy: data.windowsLogPolicy ? { // windowsLogPolicy props must mantain same order as in USM model
           enabled: data.windowsLogPolicy.enabled,

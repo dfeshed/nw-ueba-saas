@@ -68,6 +68,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             cpuMaxVm: 10,
             scanMbr: false }
         },
+        customConfig: 'policyType : edrPolicy,name : Test EDR Policy,description : Test EDR Policy Description.',
         blockingConfig: {
           enabled: false
         },
@@ -111,7 +112,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
   test('selectedEdrPolicy selector', function(assert) {
     const state = new ReduxDataHelper(setState).policy(policyData).build();
     const policyDetails = selectedEdrPolicy(Immutable.from(state));
-    assert.equal(policyDetails.length, 6, '6 sections returned as expected');
+    assert.equal(policyDetails.length, 7, '7 sections returned as expected');
     assert.equal(policyDetails[0].header, 'adminUsm.policyWizard.edrPolicy.scanSchedule', 'first section is as expected');
     assert.equal(policyDetails[0].props.length, 6, 'first section has 6 properties');
     assert.equal(policyDetails[0].props[2].value, '09:00', 'Scan time correct');
@@ -126,6 +127,8 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     assert.equal(policyDetails[4].props.length, 5, 'fifth section has 5 properties');
     assert.equal(policyDetails[5].header, 'adminUsm.policyWizard.edrPolicy.relayServer', 'sixth section  is as expected');
     assert.equal(policyDetails[5].props.length, 3, 'sixth section has 3 properties');
+    assert.equal(policyDetails[6].header, 'adminUsm.policyWizard.edrPolicy.advancedConfig', 'seventh section  is as expected');
+    assert.equal(policyDetails[6].props.length, 1, 'seventh section has 1 property');
   });
 
   const { policy } = policyData;

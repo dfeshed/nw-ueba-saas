@@ -119,8 +119,8 @@ const _getAdvancedConfigSetting = (prop, focusedPolicy, filePolicyEnabled) => {
   if (filePolicyEnabled) {
     advancedConfigSettings = {
       customConfig: {
-        name: 'adminUsm.policyWizard.edrPolicy.customConfig',
-        value: focusedPolicy[prop]
+        name: 'adminUsm.policyWizard.filePolicy.customConfig',
+        value: JSON.stringify(focusedPolicy[prop])
       }
     };
   }
