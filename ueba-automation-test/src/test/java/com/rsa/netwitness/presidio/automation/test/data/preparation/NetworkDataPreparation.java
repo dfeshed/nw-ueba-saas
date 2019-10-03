@@ -1,8 +1,10 @@
 package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
-import com.rsa.netwitness.presidio.automation.common.scenarios.tls.*;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.FutureEventsForMetrics;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.SessionSplitEnrichmentData;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.UncommonValuesAlerts;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.UnusualTrafficVolumeAlerts;
 import com.rsa.netwitness.presidio.automation.data.tls.TlsAlerts;
-import com.rsa.netwitness.presidio.automation.data.tls.model.TlsIndicator;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -37,14 +39,31 @@ public class NetworkDataPreparation extends DataPreparationBase {
                 uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(12),
                 uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(13),
                 uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(14),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(15),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(16),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(17),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(18),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(19),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(70),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(71),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(72),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(73),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(74),
+                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(75),
                 uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(21),
                 uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(22),
                 uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(23),
                 uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(24),
-                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(31),
-                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(32),
-                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(33),
-                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(34),
+                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(25),
+                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(26),
+                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(27),
+                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(28),
+                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(28),
+
+                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(36),
+                uncommonValuesAlerts.criticalSeverity(41),
+
+
 
                 unusualTrafficVolumeAlerts.fromSourceIpToSslSubjectDomainOrganisationDestPort(),
                 unusualTrafficVolumeAlerts.toSslSubjectDomainOrganisationDestPortJa3()

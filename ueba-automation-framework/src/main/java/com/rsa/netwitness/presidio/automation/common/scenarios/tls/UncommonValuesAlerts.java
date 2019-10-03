@@ -95,12 +95,43 @@ public class UncommonValuesAlerts extends NetworkScenarioBase{
                 .setJa3EntityValue(Ja3Entity(index))
                 .generateAndAppendTo(events);
 
-        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUnregularHoursTimeGen(), String.valueOf(index));
+        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUncommonTimeGen(), String.valueOf(index));
         uncommonGen.modify()
                 .setJa3EntityValue(Ja3Entity(index))
                 .nextLocation()
                 .setSSLSubjectEntityValue(SSLSubjEntity(index))
                 .fixSourceNetname()
+                .generateAndAppendTo(events);
+        return events.stream();
+    }
+
+    public Stream<NetworkEvent>  criticalSeverity(int index) {
+
+        NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen(), String.valueOf(index));
+        List<NetworkEvent> events = regularGen.modify()
+                .setJa3EntityValue(Ja3Entity(index * 100))
+                .fixDstPort()
+                .fixLocation()
+                .setSSLSubjectEntityValue(SSLSubjEntity(index))
+                .fixSourceNetname()
+                .fixDestinationOrganization()
+                .fixFqdn()
+                .generate();
+
+        NetworkEventsGenerator ja3Gen = new NetworkEventsGenerator(getDefaultRegularTimeGen(), String.valueOf(index));
+        ja3Gen.modify()
+                .setJa3EntityValue(Ja3Entity(index))
+                .generateAndAppendTo(events);
+
+        NetworkEventsGenerator uncommonGen = new NetworkEventsGenerator(getDefaultUnregularHoursTimeGen(), String.valueOf(index));
+        uncommonGen.modify()
+                .setJa3EntityValue(Ja3Entity(index))
+                .nextDstPort()
+                .nextLocation()
+                .setSSLSubjectEntityValue(SSLSubjEntity(index))
+                .fixDestinationOrganization()
+                .fixSourceNetname()
+                .nextFqdn()
                 .generateAndAppendTo(events);
         return events.stream();
     }
