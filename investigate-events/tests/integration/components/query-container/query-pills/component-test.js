@@ -21,8 +21,17 @@ import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
 import { throwSocket } from '../../../../helpers/patch-socket';
 import { invalidServerResponseText } from '../../../../unit/actions/data';
-import { AFTER_OPTION_FREE_FORM_LABEL, AFTER_OPTION_TEXT_LABEL } from 'investigate-events/constants/pill';
+import {
+  AFTER_OPTION_FREE_FORM_LABEL,
+  AFTER_OPTION_TEXT_LABEL,
+  COMPLEX_FILTER,
+  OPERATOR_OR
+} from 'investigate-events/constants/pill';
 import initializationCreators from 'investigate-events/actions/initialization-creators';
+import {
+  createFilter,
+  createOperator
+} from 'investigate-events/util/query-parsing';
 
 const { log } = console;//eslint-disable-line
 
@@ -79,6 +88,8 @@ const e = {
 };
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
+
+const _hasClass = (pill, className) => pill.getAttribute('class').includes(className);
 
 const wormhole = 'wormhole-context-menu';
 
@@ -4082,6 +4093,68 @@ module('Integration | Component | Query Pills', function(hooks) {
     await settled();// Now, it's Pill OR Pill
     assert.ok(find(PILL_SELECTORS.logicalOperatorOR), 'Should be an OR operator');
     assert.notOk(find(PILL_SELECTORS.logicalOperatorAND), 'Should not be an AND operator');
+  });
+
+  test('it will use an existing logical operator to the right when inserting ")("', async function(assert) {
+    const OR = createOperator(OPERATOR_OR);
+    const CF = createFilter(COMPLEX_FILTER, 'complex');
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens() // ( P )
+      .insertPillAt(OR, 2) // ( P || )
+      .insertPillAt(CF, 3) // ( P || CF )
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    // Get NPTs
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 5, 'correct number of triggers');
+    // click in front of the OR operator
+    await click(triggers[2]);
+    await typeIn(PILL_SELECTORS.metaInput, ')');
+    await settled();
+    // at this point you should see ( P ) || ( CF )
+    const pills = findAll(`${PILL_SELECTORS.allPills} > div`);
+    assert.equal(pills.length, 15, 'should be 15 divs in .query-pills');
+    assert.ok(_hasClass(pills[5], 'close-paren'), 'should be )');
+    assert.ok(_hasClass(pills[7], 'logical-operator'), 'should be ||');
+    assert.ok(_hasClass(pills[9], 'open-paren'), 'should be (');
+  });
+
+  test('it will use an existing logical operator to the right replacing an existing pill if edited', async function(assert) {
+    const OR = createOperator(OPERATOR_OR);
+    const CF = createFilter(COMPLEX_FILTER, 'complex');
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens() // ( P )
+      .insertPillAt(OR, 2) // ( P || )
+      .insertPillAt(CF, 3) // ( P || CF )
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await leaveNewPillTemplate();
+    // Get Pills
+    const pills = findAll(PILL_SELECTORS.queryPill);
+    assert.equal(pills.length, 2, 'should be one pill (not complex) and the new-pill-template');
+    // open first pill for editing
+    await doubleClick(`#${pills[0].id}`, true);
+    await settled();
+    await click(PILL_SELECTORS.meta);
+    await fillIn(PILL_SELECTORS.metaInput, '');
+    await typeIn(PILL_SELECTORS.metaInput, ')');
+    await settled();
+    // at this point you should see ( ) || ( CF )
+    const allPills = findAll(`${PILL_SELECTORS.allPills} > div`);
+    assert.equal(allPills.length, 13, 'should be 13 divs in .query-pills');
+    assert.ok(_hasClass(allPills[3], 'close-paren'), 'should be )');
+    assert.ok(_hasClass(allPills[5], 'logical-operator'), 'should be ||');
+    assert.ok(_hasClass(allPills[7], 'open-paren'), 'should be (');
   });
 
   test('Pressing home and end from recent queries tab', async function(assert) {

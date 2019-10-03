@@ -9,9 +9,9 @@ import { createQueryHash } from 'investigate-events/util/query-hash';
 import { createOperator, createParens, reassignTwinIds } from 'investigate-events/util/query-parsing';
 import { pillBeingEdited, focusedPill } from './selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { OPERATOR_AND } from 'investigate-events/constants/pill';
+import { OPERATOR_AND, OPERATOR_OR } from 'investigate-events/constants/pill';
 
-const { log } = console; // eslint-disable-line no-unused-vars
+const { log } = console; // eslint-disable-line
 
 const ID_PREFIX = 'guidedPill_';
 
@@ -296,6 +296,8 @@ const _handleLogicalOperator = (state, pillData, position, isReplace = false) =>
     ]));
   }
 };
+
+const _isLogicalOperator = (pill) => (pill.type === OPERATOR_AND || pill.type === OPERATOR_OR);
 
 export default handleActions({
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {
@@ -783,37 +785,50 @@ export default handleActions({
 
   [ACTION_TYPES.INSERT_INTRA_PARENS]: (state, { payload }) => {
     let pd;
-    const pillData = state.pillsData.asMutable({ deep: true });
+    const pillsData = state.pillsData.asMutable({ deep: true });
     const { position } = payload;
     const [open, close] = createParens();
-    const andOperator = createOperator(OPERATOR_AND);
     // assign ids to the new parens
     open.id = _.uniqueId(ID_PREFIX);
     close.id = _.uniqueId(ID_PREFIX);
 
-    if (pillData.length === 0) {
+    if (pillsData.length === 0) {
       // do nothing because we shouldn't be in this state
       return state;
     } else {
-      if (pillData[position] && pillData[position].isEditing) {
+      // is there an operator to the right? If so, use that, otherwise use AND
+      const currentPill = pillsData[position];
+      const nextPill = pillsData[position + 1];
+      let shiftPositionRight = 0;
+      let logicalOp;
+      if (_isLogicalOperator(currentPill)) {
+        logicalOp = currentPill;
+        shiftPositionRight = 1;
+      } else if (currentPill.isEditing && _isLogicalOperator(nextPill)) {
+        logicalOp = nextPill;
+        shiftPositionRight = 1;
+      } else {
+        logicalOp = createOperator(OPERATOR_AND);
+      }
+      if (currentPill.isEditing) {
         // we are editing a pill that we now want to convert to open/close
         // parens. Insert open and close parens into pillsData, replacing the
         // pill that was being edited
         pd = [
-          ...pillData.slice(0, position),
+          ...pillsData.slice(0, position),
           close,
-          andOperator,
+          logicalOp,
           open,
-          ...pillData.slice(position + 1)
+          ...pillsData.slice(position + shiftPositionRight + 1)
         ];
       } else {
         pd = [
           // insert open and close parens into pillsData at the desired position
-          ...pillData.slice(0, position),
+          ...pillsData.slice(0, position),
           close,
-          andOperator,
+          logicalOp,
           open,
-          ...pillData.slice(position)
+          ...pillsData.slice(position + shiftPositionRight)
         ];
       }
     }

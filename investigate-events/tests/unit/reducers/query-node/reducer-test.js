@@ -2,6 +2,7 @@ import { test, module } from 'qunit';
 import Immutable from 'seamless-immutable';
 import {
   CLOSE_PAREN,
+  COMPLEX_FILTER,
   OPEN_PAREN,
   OPERATOR_AND,
   OPERATOR_OR,
@@ -13,7 +14,10 @@ import reducer from 'investigate-events/reducers/investigate/query-node/reducer'
 import makePackAction from '../../../helpers/make-pack-action';
 import { LIFECYCLE } from 'redux-pack';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { createOperator } from 'investigate-events/util/query-parsing';
+import {
+  createFilter,
+  createOperator
+} from 'investigate-events/util/query-parsing';
 
 const { log } = console;//eslint-disable-line
 
@@ -1321,6 +1325,66 @@ test('INSERT_INTRA_PARENS adds parens when editing a pill that is within a paren
   assert.equal(pd[4].type, CLOSE_PAREN, 'close paren, second group');
   assert.equal(pd[0].twinId, pd[1].twinId, 'first group twinIds match');
   assert.equal(pd[3].twinId, pd[4].twinId, 'second group twinIds match');
+});
+
+test('INSERT_INTRA_PARENS uses existing logical operator', function(assert) {
+  const OR = createOperator(OPERATOR_OR);
+  const CF = createFilter(COMPLEX_FILTER, 'complex');
+  const state = new ReduxDataHelper()
+    .pillsDataWithParens() // ( P )
+    .insertPillAt(OR, 2) // ( P || )
+    .insertPillAt(CF, 3) // ( P || CF )
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.INSERT_INTRA_PARENS,
+    payload: {
+      position: 2
+    }
+  };
+  const result = reducer(state, action);// ( P ) || ( CF )
+  const pd = result.pillsData;
+  assert.equal(pd.length, 7, 'pillsData is the correct length');
+  assert.equal(pd[0].type, OPEN_PAREN, 'open paren, first group');
+  assert.equal(pd[1].type, QUERY_FILTER, 'query filter');
+  assert.equal(pd[2].type, CLOSE_PAREN, 'close paren, first group');
+  assert.equal(pd[3].type, OPERATOR_OR, 'OR logical operator');
+  assert.equal(pd[4].type, OPEN_PAREN, 'open paren, second group');
+  assert.equal(pd[5].type, COMPLEX_FILTER, 'complex filter');
+  assert.equal(pd[6].type, CLOSE_PAREN, 'close paren, second group');
+  assert.equal(pd[0].twinId, pd[2].twinId, 'first group twinIds match');
+  assert.equal(pd[4].twinId, pd[6].twinId, 'second group twinIds match');
+});
+
+test('INSERT_INTRA_PARENS uses existing logical operator when editing', function(assert) {
+  const OR = createOperator(OPERATOR_OR);
+  const CF = createFilter(COMPLEX_FILTER, 'complex');
+  const state = new ReduxDataHelper()
+    .pillsDataWithParens() // ( P )
+    .markEditing('2')
+    .insertPillAt(OR, 2) // ( P || )
+    .insertPillAt(CF, 3) // ( P || CF )
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.INSERT_INTRA_PARENS,
+    payload: {
+      position: 1
+    }
+  };
+  const result = reducer(state, action);// ( ) || ( CF )
+  const pd = result.pillsData;
+  assert.equal(pd.length, 6, 'pillsData is the correct length');
+  assert.equal(pd[0].type, OPEN_PAREN, 'open paren, first group');
+  assert.equal(pd[1].type, CLOSE_PAREN, 'close paren, first group');
+  assert.equal(pd[2].type, OPERATOR_OR, 'OR logical operator');
+  assert.equal(pd[3].type, OPEN_PAREN, 'open paren, second group');
+  assert.equal(pd[4].type, COMPLEX_FILTER, 'complex filter');
+  assert.equal(pd[5].type, CLOSE_PAREN, 'close paren, second group');
+  assert.equal(pd[0].twinId, pd[1].twinId, 'first group twinIds match');
+  assert.equal(pd[3].twinId, pd[5].twinId, 'second group twinIds match');
 });
 
 test('SET_VALUE_SUGGESTIONS init marks callInProgress as true', function(assert) {

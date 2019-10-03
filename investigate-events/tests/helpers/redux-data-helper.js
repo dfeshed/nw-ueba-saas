@@ -652,6 +652,17 @@ export default class DataHelper {
     return this;
   }
 
+  insertPillAt(pD, index) {
+    const { pillsData } = this.state.queryNode;
+    const newPD = [
+      ...pillsData.slice(0, index),
+      pD,
+      ...pillsData.slice(index)
+    ];
+    _set(this.state, 'queryNode.pillsData', newPD);
+    return this;
+  }
+
   pillsDataVaried(pD) {
     if (!pD) {
       pD = [...DEFAULT_PILLS_DATA, ...COMPLEX_PILL_DATA, ...TEXT_PILL_DATA];
