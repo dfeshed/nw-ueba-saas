@@ -135,7 +135,7 @@
   <div class="exclusion-filters">
     {{rsa-form-textarea
       tabIndex='3'
-      placeholder=(t 'adminUsm.policyWizard.descPlaceholder')
+      placeholder=(t 'adminUsm.policyWizard.filePolicy.exclusionFiltersPlaceholder')
       value=(readonly exclusionFilters)
       maxLength=8000
       isError=(or (eq (get item.exclusionFilters exFilterInvalidIndex) exFilterInvalid) exFilterErr)
