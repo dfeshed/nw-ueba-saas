@@ -50,7 +50,7 @@ public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstan
             for (String entityId : entityIds) {
                 byte[] key = stringRedisSerializer.serialize(getRedisKey(schema, entityType, entityId));
                 byte[] value = key == null ? null : redisConnection.get(key);
-                Instant lastOccurrenceInstant = value == null ? null : instantRedisSerializer.deserialize(value);
+                Instant lastOccurrenceInstant = instantRedisSerializer.deserialize(value);
                 entityIdToLastOccurrenceInstantMap.put(entityId, lastOccurrenceInstant);
             }
         }));
