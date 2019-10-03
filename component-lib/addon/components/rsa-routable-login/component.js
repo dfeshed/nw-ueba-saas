@@ -246,7 +246,7 @@ export default Component.extend({
       // Make a REST Call
       fetch('/userpkistatus', {
         dataType: 'html' // Capture the Response body!
-      }).then((fetched) => fetched.json()).then((response) => {
+      }).then((fetched) => fetched.text()).then((response) => {
 
         // Get and Set the Pki Status. In case of error as well consider PKi as
         // False because this is likely to be a Misconfigured NginX

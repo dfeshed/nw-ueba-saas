@@ -40,7 +40,7 @@ module('Integration | Component | rsa-routable-login', function(hooks) {
       return new Promise(function(resolve) {
         resolve({
           ok: true,
-          json() {
+          text() {
             return 'on';
           }
         });
