@@ -794,7 +794,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  test('Right clicking on a selected pill will open a context menu with 3 options', async function(assert) {
+  test('Right clicking on a selected pill will open a context menu with 4 options', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -825,7 +825,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 3);
+      assert.equal(items.length, 4);
       assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present');
       assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'One selecteded pill.');
     });
@@ -1653,6 +1653,63 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
+  test('Right clicking and selecting wrap in parens will wrap the selected pill with parens', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+        {{context-menu}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make it selected
+    await triggerEvent(find(PILL_SELECTORS.selectedPill), 'contextmenu', { clientX: 100, clientY: 100 });
+
+    // No parens found
+    assert.notOk(find(PILL_SELECTORS.openParen), 'Found parens when it shouldnt');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'Found parens when it shouldnt');
+
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      const actionSelector = items.find((op) => op.textContent.includes('Wrap'));
+      await click(`#${actionSelector.id}`);
+      return settled().then(async() => {
+        // Parens have been added
+        assert.ok(find(PILL_SELECTORS.openParen), 'Did not find paren selected');
+        assert.ok(find(PILL_SELECTORS.closeParen), 'Did not find paren selected');
+
+        // Making sure parens were added around the correct pill
+        const openParenPosition = find(PILL_SELECTORS.openParen).getAttribute('position');
+        const wrappedPillPosition = find(PILL_SELECTORS.focusedPill).getAttribute('position');
+        assert.equal(openParenPosition, 0, 'Open paren was added somewhere else');
+        assert.equal(wrappedPillPosition, 1, 'Pill is not wrapped with parens as expected');
+        assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'The selected pill should remain focused');
+
+        // Now if we try to wrap parens for `pill) pill` that option should be disabled
+        const metas = findAll(PILL_SELECTORS.meta);
+        await click(`#${metas[0].id}`);
+        await click(`#${metas[1].id}`);
+        await triggerEvent(find(PILL_SELECTORS.selectedPill), 'contextmenu', { clientX: 100, clientY: 100 });
+        const items = findAll(`${selector} > .context-menu__item`);
+        const actionSelector = items.find((op) => op.textContent.includes('Wrap'));
+        assert.ok(actionSelector.className.includes('context-menu__item--disabled'), 'Wrap in parens should be disabled');
+      });
+    });
+  });
+
   test('Right click deleting parens will remove all the selected parens and their contents', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -1696,7 +1753,6 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  // TODO - Fix Element not found when calling `focus('.new-pill-trigger-container .pill-meta .ember-power-select-trigger')`
   test('Right click option Delete selection will delete both selected parens(and its contents) and pills if present', async function(assert) {
     new ReduxDataHelper(setState)
       .language()

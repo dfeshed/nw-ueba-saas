@@ -5,7 +5,13 @@ import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
 import { encodeMetaFilterConditions, addSessionIdFilter } from 'investigate-shared/actions/api/events/utils';
 import { getTimeRangeIdFromRange } from 'investigate-shared/utils/time-range-utils';
-import { OPEN_PAREN, CLOSE_PAREN } from 'investigate-events/constants/pill';
+import {
+  CLOSE_PAREN,
+  COMPLEX_FILTER,
+  OPEN_PAREN,
+  QUERY_FILTER,
+  TEXT_FILTER
+} from 'investigate-events/constants/pill';
 
 /**
  * Creates (but does not start) a stream to fetch a given number of events.
@@ -290,6 +296,34 @@ const isValidToWrapWithParens = (pillsData, startIn, endIn) => {
   return stack.length === 0;
 };
 
+/**
+ * The pill has to be QF or text or complex
+ * as well as selected
+ */
+const _isFilterApplicable = (pill) => {
+  return (
+    pill.type ===
+    QUERY_FILTER ||
+    pill.type === TEXT_FILTER ||
+    pill.type === COMPLEX_FILTER
+  ) && pill.isSelected;
+
+};
+
+/**
+ * Given an array of pills, pick the first and last selected applicable pill
+ * We do not need to include parens or operators, which are not applicable
+ */
+const selectedPillIndexes = (pillsData) => {
+  const pills = pillsData.asMutable({ deep: true });
+  const lastPillIndex = pills.length - 1;
+
+  const startIndex = pills.findIndex(_isFilterApplicable);
+  // Num of pills - index from start -> index from back
+  const endIndex = lastPillIndex - pills.reverse().findIndex(_isFilterApplicable);
+  return { startIndex, endIndex };
+};
+
 export {
   buildMetaValueStreamInputs,
   contentBetweenParens,
@@ -301,5 +335,6 @@ export {
   findEmptyParensAtPosition,
   hasEmptyParensAt,
   parseBasicQueryParams,
-  selectPillsFromPosition
+  selectPillsFromPosition,
+  selectedPillIndexes
 };

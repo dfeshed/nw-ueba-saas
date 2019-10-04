@@ -1,9 +1,11 @@
 import { module, test } from 'qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { setupTest } from 'ember-qunit';
+import Immutable from 'seamless-immutable';
+
 import queryUtils from 'investigate-events/actions/utils';
 import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
-import { CLOSE_PAREN, OPEN_PAREN, QUERY_FILTER, TEXT_FILTER } from 'investigate-events/constants/pill';
+import { CLOSE_PAREN, OPEN_PAREN, QUERY_FILTER, TEXT_FILTER, COMPLEX_FILTER } from 'investigate-events/constants/pill';
 
 const params = {
   et: 0,
@@ -354,5 +356,26 @@ module('Unit | Helper | Actions Utils', function(hooks) {
     assert.notOk(queryUtils.isValidToWrapWithParens(pillsData, 2, 10)); // pill ( pill ) ( pill )) pill
     assert.notOk(queryUtils.isValidToWrapWithParens(pillsData, 1, 10)); // pill pill ( pill ) ( pill )) pill
     assert.ok(queryUtils.isValidToWrapWithParens(pillsData, 1, 2)); // pill pill
+  });
+
+  test('selectedPillIndexes return start and end indexes for selected pills (only QF, Complex, Text )', function(assert) {
+
+    const pillsData = [
+      { type: OPEN_PAREN, isSelected: true },
+      { type: QUERY_FILTER },
+      { type: QUERY_FILTER, isSelected: true },
+      { type: OPEN_PAREN, isSelected: true },
+      { type: QUERY_FILTER },
+      { type: CLOSE_PAREN },
+      { type: OPEN_PAREN },
+      { type: QUERY_FILTER, isSelected: true },
+      { type: CLOSE_PAREN },
+      { type: COMPLEX_FILTER, isSelected: true },
+      { type: CLOSE_PAREN, isSelected: true }
+    ];
+
+    const result = queryUtils.selectedPillIndexes(Immutable.from(pillsData));
+    assert.equal(result.startIndex, 2, 'Index of first selected pill');
+    assert.equal(result.endIndex, 9, 'Index of last selected pill');
   });
 });

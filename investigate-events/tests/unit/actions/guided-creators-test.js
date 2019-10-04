@@ -922,3 +922,10 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk(dispatch1);
   });
 });
+
+test('wrapWithParens will figure out startIndex and endIndex for selected pills and return them as payload', function(assert) {
+  const action = guidedCreators.wrapWithParens({ startIndex: 0, endIndex: 2 });
+  assert.equal(action.type, ACTION_TYPES.WRAP_WITH_PARENS, 'action has the correct type');
+  assert.deepEqual(action.payload.startIndex, 0, 'action startIndex has the right value');
+  assert.deepEqual(action.payload.endIndex, 2, 'action endIndex has the right value');
+});

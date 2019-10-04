@@ -438,3 +438,11 @@ export const focusAndToggleLogicalOperator = ({ pillData, position }) => {
     dispatch(replaceLogicalOperator({ pillData: newPillData, position: position + 1 }));
   };
 };
+
+export const wrapWithParens = ({ startIndex, endIndex }) => ({
+  type: ACTION_TYPES.WRAP_WITH_PARENS,
+  payload: {
+    startIndex,
+    endIndex
+  }
+});

@@ -1,6 +1,10 @@
-import { findSelectedPills } from 'investigate-events/actions/utils';
+import {
+  isValidToWrapWithParens,
+  findSelectedPills,
+  selectedPillIndexes
+} from 'investigate-events/actions/utils';
 
-const rightClickQueryWithSelected = (context, i18n) => {
+const queryWithSelected = (context, i18n) => {
   return {
     label: i18n.t('queryBuilder.querySelected'),
     disabled() {
@@ -19,7 +23,7 @@ const rightClickQueryWithSelected = (context, i18n) => {
   };
 };
 
-const rightClickQueryWithSelectedNewTab = (context, i18n) => {
+const queryWithSelectedNewTab = (context, i18n) => {
   return {
     label: i18n.t('queryBuilder.querySelectedNewTab'),
     disabled() {
@@ -40,11 +44,28 @@ const rightClickQueryWithSelectedNewTab = (context, i18n) => {
   };
 };
 
-const rightClickDeleteSelection = (context, i18n) => {
+const deleteSelection = (context, i18n) => {
   return {
     label: i18n.t('queryBuilder.delete'),
     action() {
       context.send('deleteSelectedGuidedPills');
+    }
+  };
+};
+
+const wrapWithParens = (context, i18n) => {
+  return {
+    label: i18n.t('queryBuilder.wrapParens'),
+    disabled() {
+      const pills = context.get('pillsData');
+      const { startIndex, endIndex } = selectedPillIndexes(pills);
+      return !isValidToWrapWithParens(pills, startIndex, endIndex);
+    },
+    action() {
+      const pills = context.get('pillsData');
+      const { startIndex, endIndex } = selectedPillIndexes(pills);
+      context.send('wrapWithParens', { startIndex, endIndex });
+      context.send('deselectAllGuidedPills');
     }
   };
 };
@@ -54,14 +75,15 @@ function getContextItems(context, i18n) {
   const _this = context;
   return {
     pills: [
-      rightClickQueryWithSelected(_this, i18n),
-      rightClickQueryWithSelectedNewTab(_this, i18n),
-      rightClickDeleteSelection(_this, i18n)
+      queryWithSelected(_this, i18n),
+      queryWithSelectedNewTab(_this, i18n),
+      deleteSelection(_this, i18n),
+      wrapWithParens(_this, i18n)
     ],
     parens: [
-      rightClickQueryWithSelected(_this, i18n),
-      rightClickQueryWithSelectedNewTab(_this, i18n),
-      rightClickDeleteSelection(_this, i18n)
+      queryWithSelected(_this, i18n),
+      queryWithSelectedNewTab(_this, i18n),
+      deleteSelection(_this, i18n)
     ]
   };
 }

@@ -45,7 +45,8 @@ import {
   replaceLogicalOperator,
   resetGuidedPill,
   selectGuidedPills,
-  selectAllPillsTowardsDirection
+  selectAllPillsTowardsDirection,
+  wrapWithParens
 } from 'investigate-events/actions/guided-creators';
 import { hasMinimumCoreServicesVersionForTextSearch } from 'investigate-events/reducers/investigate/services/selectors';
 import { getRecentQueries, valueSuggestions } from 'investigate-events/actions/initialization-creators';
@@ -101,7 +102,8 @@ const dispatchToActions = {
   resetGuidedPill,
   selectAllPillsTowardsDirection,
   selectGuidedPills,
-  valueSuggestions
+  valueSuggestions,
+  wrapWithParens
 };
 
 const isEventFiredFromQueryPill = (event) => {
@@ -114,6 +116,11 @@ const isEventFiredFromQueryPill = (event) => {
     includesQueryPillClass = parentClickedClass && classNameIsString && parentClickedClass.includes('query-pill');
   }
   return includesQueryPillClass;
+};
+
+const isEventFromContextMenus = (event) => {
+  const { target: clickedElement } = event;
+  return clickedElement.className.includes('context-menu__item');
 };
 
 const _hasCloseParenToRight = (pd, i) => pd[i] && pd[i].type === CLOSE_PAREN;
@@ -703,7 +710,8 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   _clickListener(e) {
-    if (!isEventFiredFromQueryPill(e)) {
+    // Events coming from context menus are technically originating from query pill
+    if (!isEventFiredFromQueryPill(e) && !isEventFromContextMenus(e)) {
       this.send('removePillFocus');
     }
     if (isSubmitClicked(e.target)) {
