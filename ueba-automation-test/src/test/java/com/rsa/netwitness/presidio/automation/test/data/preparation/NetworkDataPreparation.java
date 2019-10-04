@@ -32,42 +32,7 @@ public class NetworkDataPreparation extends DataPreparationBase {
         TlsAlerts data = new TlsAlerts(historicalDaysBack,anomalyDay);
 
         Stream<NetworkEvent> resultingStream = Stream.of(
-                sessionSplitEnrichmentData.generateAll(),
-                futureEventsGen.get(),
-
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(11),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(12),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(13),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(14),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(15),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(16),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(17),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(18),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(19),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(70),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(71),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(72),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(73),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(74),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(75),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(21),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(22),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(23),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(24),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(25),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(26),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(27),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(28),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(28),
-
-                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(36),
-                uncommonValuesAlerts.criticalSeverity(41),
-
-
-
-                unusualTrafficVolumeAlerts.fromSourceIpToSslSubjectDomainOrganisationDestPort(),
-                unusualTrafficVolumeAlerts.toSslSubjectDomainOrganisationDestPortJa3()
-
+                data.alerts.get().get(0).getIndicators().stream().flatMap(e -> e.getEvents().stream())
         ).flatMap(i -> i);
 
         return resultingStream.collect(Collectors.toList());

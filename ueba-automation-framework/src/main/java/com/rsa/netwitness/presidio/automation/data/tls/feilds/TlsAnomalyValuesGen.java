@@ -31,7 +31,8 @@ class TlsAnomalyValuesGen {
     }
 
     private static synchronized IBaseGenerator<String> getFqdnGen(int offset, TlsAnomalyValuesGen obj) {
-        obj.anomalyFqdnIndexGen = new HostnameGenerator(anomalyFqdnGenIndex, anomalyFqdnGenIndex += offset);
+        // *3 due to fqdn array size
+        obj.anomalyFqdnIndexGen = new HostnameGenerator(anomalyFqdnGenIndex, anomalyFqdnGenIndex += offset*3);
         return obj.anomalyFqdnIndexGen;
     }
 
@@ -95,7 +96,8 @@ class TlsAnomalyValuesGen {
     private static synchronized IBaseGenerator<Location> getLocationGen(int offset, TlsAnomalyValuesGen obj) {
         AuthenticationLocationCyclicGenerator locationCyclicGenerator = new AuthenticationLocationCyclicGenerator();
 
-        Location[] values = IntStream.range(anomalyLocationGenIndex, anomalyLocationGenIndex += offset).boxed()
+        // *2 due to src and dst locations
+        Location[] values = IntStream.range(anomalyLocationGenIndex, anomalyLocationGenIndex += offset*2).boxed()
                 .map(e -> locationCyclicGenerator.getNext())
                 .map(e -> new Location(e.getState().concat("-") + anomalyLocationGenIndex,
                         e.getCountry().concat("-") + anomalyLocationGenIndex,

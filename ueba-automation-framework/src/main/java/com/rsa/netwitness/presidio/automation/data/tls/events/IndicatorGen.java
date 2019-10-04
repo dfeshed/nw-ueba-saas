@@ -1,6 +1,8 @@
 package com.rsa.netwitness.presidio.automation.data.tls.events;
 
 import com.google.common.collect.Lists;
+import com.rsa.netwitness.presidio.automation.data.tls.feilds.TlsEventsGen;
+import com.rsa.netwitness.presidio.automation.utils.common.Lazy;
 import presidio.data.domain.event.network.NetworkEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.ITimeGenerator;
@@ -10,13 +12,24 @@ import presidio.data.generators.event.network.NetworkEventsGenerator;
 import java.util.List;
 import java.util.function.Function;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.fail;
 
 public abstract class IndicatorGen {
+
+    private Lazy<List<NetworkEvent>> eventsHolder = new Lazy<>();
+
+    public  List<NetworkEvent> getEvents() {
+        return eventsHolder.getOrCompute(this::generateAll);
+    }
+
+
+    protected List<TlsEventsGen> eventGenerators = Lists.newLinkedList();
+
     protected int startHourOfDay = 8;
     protected int endHourOfDay = 17;
     protected int daysBackFrom = 30;
-    protected int daysBackTo = 0;   // -1 is current day
+    protected int daysBackTo = 1;   // -1 is current day
     protected int startHourOfDayAnomaly = 8;
     protected int endHourOfDayAnomaly = 17;
     protected int daysBackFromAnomaly = 1;
@@ -25,7 +38,7 @@ public abstract class IndicatorGen {
     protected int intervalMinutesAnomaly = 60;
 
     protected ITimeGenerator getEntityHistoricalDataTimeGen() {
-        return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom, 1, intervalMinutes);
+        return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes);
     }
 
     protected ITimeGenerator getUncommonValuesHistoryTimeGen() {
@@ -52,6 +65,13 @@ public abstract class IndicatorGen {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private List<NetworkEvent> generateAll() {
+        assertThat(eventGenerators).isNotEmpty();
+        List<NetworkEvent> events = Lists.newLinkedList();
+        eventGenerators.forEach(generator -> events.addAll(generate.apply(generator)));
+        return events;
     }
 
     protected Function<NetworkEventsGenerator, List<NetworkEvent>> generate = gen -> {
