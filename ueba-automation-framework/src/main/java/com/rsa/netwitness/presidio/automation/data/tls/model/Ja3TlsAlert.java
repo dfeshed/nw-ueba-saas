@@ -23,7 +23,7 @@ public class Ja3TlsAlert {
     private final String TYPE = "ja3";
 
     public Ja3TlsAlert(String entity, int dataPeriod, int uncommonStartDay) {
-        alert = new TlsAlert(entity, "ja3");
+        alert = new TlsAlert(entity, TYPE);
         this.dataPeriod = dataPeriod;
         this.uncommonStartDay = uncommonStartDay;
     }
@@ -43,7 +43,7 @@ public class Ja3TlsAlert {
     }
 
 
-    public Ja3TlsAlert abnormal_ja3_day_time() {
+    public Ja3TlsAlert ja3_abnormal_ja3_day_time() {
 
 
 
@@ -328,7 +328,7 @@ public class Ja3TlsAlert {
     }
 
 
-    public Ja3TlsAlert abnormal_ja3_for_source_netname_outbound() {
+    public Ja3TlsAlert ja3_abnormal_ja3_for_source_netname_outbound() {
 
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
@@ -396,7 +396,7 @@ public class Ja3TlsAlert {
         return this;
     }
 
-    public Ja3TlsAlert abnormal_domain_for_ja3_outbound() {
+    public Ja3TlsAlert ja3_abnormal_domain_for_ja3_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
@@ -429,7 +429,7 @@ public class Ja3TlsAlert {
         return this;
     }
 
-    public Ja3TlsAlert abnormal_dst_port_for_ja3_outbound() {
+    public Ja3TlsAlert ja3_abnormal_dst_port_for_ja3_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
