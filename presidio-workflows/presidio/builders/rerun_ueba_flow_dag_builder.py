@@ -52,6 +52,8 @@ class RerunUebaFlowDagBuilder(object):
 
         clean_mongo_operator = build_mongo_clean_bash_operator(config_reader, dag, is_remove_ca_tables)
 
+        clean_redis_operator = build_redis_clean_bash_operator(dag)
+
         clean_elasticsearch_data_operator = build_clean_elasticsearch_data_operator(dag)
 
         clean_adapter_operator = build_adapter_properties_cleanup_operator(dag, 0, 'clean_adapter')
@@ -64,10 +66,12 @@ class RerunUebaFlowDagBuilder(object):
 
         pause_dags_operator >> kill_dags_task_instances_operator
         kill_dags_task_instances_operator >> clean_mongo_operator
+        kill_dags_task_instances_operator >> clean_redis_operator
         kill_dags_task_instances_operator >> clean_elasticsearch_data_operator
         kill_dags_task_instances_operator >> clean_adapter_operator
         kill_dags_task_instances_operator >> clean_logs_operator
         clean_mongo_operator >> reset_presidio_configuration_operator
+        clean_redis_operator >> reset_presidio_configuration_operator
         clean_elasticsearch_data_operator >> reset_presidio_configuration_operator
         clean_adapter_operator >> reset_presidio_configuration_operator
         clean_logs_operator >> reset_presidio_configuration_operator
@@ -237,3 +241,9 @@ def build_mongo_clean_bash_operator(config_reader, cleanup_dag, is_remove_ca_tab
                                         bash_command=mongo_clean_bash_command,
                                         dag=cleanup_dag)
     return clean_mongo_operator
+
+
+def build_redis_clean_bash_operator(cleanup_dag):
+    redis_clean_bash_command = "redis-cli flushall"
+    clean_redis_operator = BashOperator(task_id='clean_redis', bash_command=redis_clean_bash_command, dag=cleanup_dag)
+    return clean_redis_operator
