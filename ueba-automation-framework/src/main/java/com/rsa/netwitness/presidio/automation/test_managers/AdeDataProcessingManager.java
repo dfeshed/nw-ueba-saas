@@ -169,7 +169,7 @@ public class AdeDataProcessingManager {
 
         @Override
         public Integer call() {
-            Instant start = Instant.now();
+            Instant callStart = Instant.now();
             LOGGER.info("ProcessAccumulateSmart started for " + entity.toUpperCase());
 
             // builds F features
@@ -182,8 +182,8 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath + "\nExecution time minutes: " +
-                            Duration.between(Instant.now(), start).toMinutes())
+                    .withFailMessage("Error exit code. Log: " + logPath + "\nExecution time: " +
+                            Duration.between(Instant.now(), callStart).toMinutes() + " minutes.")
                     .isEqualTo(0);
 
             LOGGER.info("ProcessAccumulateSmart[" + entity.toUpperCase() + "] completed successfully.");
