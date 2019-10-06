@@ -85,6 +85,12 @@ public class SshCommandExecutor {
                 sshOutput.add(line);
                 waitReady(bufferedReader);
             }
+
+            if (channel.getExitStatus()!=0) {
+                LOGGER.warn("Non zero exit code return [" + channel.getExitStatus() + "]");
+                printOut(sshOutput);
+            }
+
             LOGGER.info("Finished in " + Duration.between(Instant.now(), startTime).toMillis() + " ms");
             return new SshResponse(channel.getExitStatus(), Lists.newLinkedList(sshOutput));
 
@@ -126,5 +132,13 @@ public class SshCommandExecutor {
             MILLISECONDS.sleep(10);
             i++;
         }
+    }
+
+    private void printOut(Queue<String> sshOutput) {
+        LOGGER.warn("CMD output:");
+        LOGGER.warn("***********************************************");
+        sshOutput.forEach(System.out::println);
+        LOGGER.warn("***********************************************");
+
     }
 }
