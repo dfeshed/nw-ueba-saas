@@ -11,6 +11,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "sslSubject.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -40,6 +46,12 @@
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "ja3.name",
+          "expectedValue": null,
+          "negate": true
+        },
         {
           "type": "regex",
           "fieldName": "direction",
@@ -71,6 +83,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "srcNetname",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -100,6 +118,12 @@
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "srcNetname",
+          "expectedValue": null,
+          "negate": true
+        },
         {
           "type": "regex",
           "fieldName": "direction",
@@ -131,6 +155,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "srcNetname",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -160,6 +190,12 @@
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "srcNetname",
+          "expectedValue": null,
+          "negate": true
+        },
         {
           "type": "regex",
           "fieldName": "direction",
@@ -191,6 +227,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "sslSubject.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -220,6 +262,12 @@
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "dstCountry.name",
+          "expectedValue": null,
+          "negate": true
+        },
         {
           "type": "regex",
           "fieldName": "direction",
@@ -251,6 +299,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "sslSubject.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -280,6 +334,12 @@
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "dstPort.name",
+          "expectedValue": null,
+          "negate": true
+        },
         {
           "type": "regex",
           "fieldName": "direction",
@@ -311,6 +371,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "domain.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -340,6 +406,12 @@
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "dstPort.name",
+          "expectedValue": null,
+          "negate": true
+        },
         {
           "type": "regex",
           "fieldName": "direction",
@@ -371,6 +443,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "dstOrg.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -400,6 +478,12 @@
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "dstPort.name",
+          "expectedValue": null,
+          "negate": true
+        },
         {
           "type": "regex",
           "fieldName": "direction",
@@ -431,6 +515,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "srcNetname",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -460,6 +550,12 @@
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "ja3.name",
+          "expectedValue": null,
+          "negate": true
+        },
         {
           "type": "regex",
           "fieldName": "direction",
@@ -491,6 +587,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "sslSubject.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -520,6 +622,12 @@
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "ja3.name",
+          "expectedValue": null,
+          "negate": true
+        },
         {
           "type": "regex",
           "fieldName": "direction",
@@ -551,6 +659,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "domain.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -581,6 +695,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "ja3.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -610,6 +730,12 @@
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "dstPort.name",
+          "expectedValue": null,
+          "negate": true
+        },
         {
           "type": "regex",
           "fieldName": "direction",
