@@ -5,7 +5,6 @@ import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
 import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
@@ -84,7 +83,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .as("Error exit code.\nCheck the log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessScoreAggr[" + schema.toUpperCase() + "] completed successfully.");
@@ -117,7 +116,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath)
+                    .as("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessModelFeatureBuckets[" + schema.toUpperCase() + "] completed successfully.");
@@ -149,7 +148,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath)
+                    .as("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessSmart[" + entity.toUpperCase() + "] completed successfully.");
@@ -169,7 +168,6 @@ public class AdeDataProcessingManager {
 
         @Override
         public Integer call() {
-            Instant callStart = Instant.now();
             LOGGER.info("ProcessAccumulateSmart started for " + entity.toUpperCase());
 
             // builds F features
@@ -182,8 +180,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath + "\nProcess duration is " +
-                            Duration.between(Instant.now(), callStart).toMillis() + " ms")
+                    .as("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessAccumulateSmart[" + entity.toUpperCase() + "] completed successfully.");
@@ -216,7 +213,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath)
+                    .as("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessModeling[" + group_name.toUpperCase() + "] completed successfully.");
@@ -250,7 +247,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code.Log: " + logPath)
+                    .as("Error exit code.Log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessAccumulateAggr[" + schema.toUpperCase() + "] completed successfully.");
@@ -287,7 +284,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath)
+                    .as("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessFeatureAggr[" + schema.toUpperCase() + "] completed successfully.");
