@@ -9,11 +9,11 @@ public class TlsAlert {
     public final String entity;
     public final String entityType;
 
-    protected List<TlsIndicator> indicators = new LinkedList<>();
-    protected Set<String> indicatorNames = new HashSet<>();
+    List<TlsIndicator> indicators = new LinkedList<>();
+    Set<String> indicatorNames = new HashSet<>();
 
 
-    protected TlsAlert(String entity, String entityType) {
+    TlsAlert(String entity, String entityType) {
         this.entity = entity;
         this.entityType = entityType;
     }
@@ -29,7 +29,5 @@ public class TlsAlert {
     public Set<String> getIndicatorNames() {
         return new HashSet<>(indicatorNames);
     }
-
-
 
 }

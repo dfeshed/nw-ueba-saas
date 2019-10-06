@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.data.tls.feilds;
+package com.rsa.netwitness.presidio.automation.data.tls.feilds_gen;
 
 import presidio.data.domain.Location;
 import presidio.data.generators.FixedValueGenerator;
@@ -52,8 +52,8 @@ public class TlsEventsGen extends NetworkEventsGenerator {
     }
 
 
-    public void nextFqdnGenerator() {
-        nextFqdnGenerator(INITIAL_ALLOCATION);
+    public IBaseGenerator<String> nextFqdnGenerator() {
+        return nextFqdnGenerator(INITIAL_ALLOCATION);
     }
 
     public IBaseGenerator<String> nextFqdnGenerator(int allocate) {
@@ -67,8 +67,8 @@ public class TlsEventsGen extends NetworkEventsGenerator {
 
 
 
-    public void nextDstPortGenerator() {
-        nextDstPortGenerator(INITIAL_ALLOCATION);
+    public IBaseGenerator<Integer> nextDstPortGenerator() {
+        return nextDstPortGenerator(INITIAL_ALLOCATION);
     }
 
     public IBaseGenerator<Integer> nextDstPortGenerator(int allocate) {
@@ -82,12 +82,13 @@ public class TlsEventsGen extends NetworkEventsGenerator {
 
 
 
-    public void nextJa3Generator() {
-        nextJa3Generator(INITIAL_ALLOCATION);
+    public IBaseGenerator<String> nextJa3Generator() {
+        return nextJa3Generator(INITIAL_ALLOCATION);
     }
 
-    public void nextJa3Generator(int allocate) {
+    public IBaseGenerator<String> nextJa3Generator(int allocate) {
         setJa3Generator(anomalyValuesGen.nextJa3Gen(allocate));
+        return getJa3Generator();
     }
 
     public TlsEventsGen setConstantValueJa3(String value) {
@@ -97,8 +98,8 @@ public class TlsEventsGen extends NetworkEventsGenerator {
 
 
 
-    public void nextSslSubjectGenerator() {
-        nextSslSubjectGenerator(INITIAL_ALLOCATION);
+    public IBaseGenerator<String> nextSslSubjectGenerator() {
+        return nextSslSubjectGenerator(INITIAL_ALLOCATION);
     }
 
     public IBaseGenerator<String> nextSslSubjectGenerator(int allocate) {
@@ -113,8 +114,8 @@ public class TlsEventsGen extends NetworkEventsGenerator {
 
 
 
-    public void nextDstOrgGenerator() {
-        nextDstOrgGenerator(INITIAL_ALLOCATION);
+    public IBaseGenerator<String> nextDstOrgGenerator() {
+        return nextDstOrgGenerator(INITIAL_ALLOCATION);
     }
 
     public IBaseGenerator<String> nextDstOrgGenerator(int allocate) {
@@ -130,8 +131,8 @@ public class TlsEventsGen extends NetworkEventsGenerator {
 
 
 
-    public void nextSrcNetnameGenerator() {
-        nextSrcNetnameGenerator(INITIAL_ALLOCATION);
+    public IBaseGenerator<String> nextSrcNetnameGenerator() {
+        return nextSrcNetnameGenerator(INITIAL_ALLOCATION);
     }
 
     public IBaseGenerator<String> nextSrcNetnameGenerator(int allocate) {
@@ -147,8 +148,8 @@ public class TlsEventsGen extends NetworkEventsGenerator {
 
 
 
-    public void nextLocationGenerator() {
-        nextLocationGenerator(INITIAL_ALLOCATION);
+    public IBaseGenerator<Location> nextLocationGenerator() {
+        return nextLocationGenerator(INITIAL_ALLOCATION);
     }
 
     public IBaseGenerator<Location> nextLocationGenerator(int allocate) {

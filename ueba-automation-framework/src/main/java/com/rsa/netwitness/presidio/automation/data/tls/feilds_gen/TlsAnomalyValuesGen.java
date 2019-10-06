@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.data.tls.feilds;
+package com.rsa.netwitness.presidio.automation.data.tls.feilds_gen;
 
 import presidio.data.domain.Location;
 import presidio.data.generators.IBaseGenerator;
@@ -11,7 +11,7 @@ import presidio.data.generators.hostname.HostnameGenerator;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-import static com.rsa.netwitness.presidio.automation.data.tls.feilds.TlsEventsGenContext.*;
+import static com.rsa.netwitness.presidio.automation.data.tls.feilds_gen.TlsEventsGenContext.*;
 
 class TlsAnomalyValuesGen {
     private IBaseGenerator<String> anomalyFqdnIndexGen;

@@ -1,7 +1,7 @@
-package com.rsa.netwitness.presidio.automation.data.tls.events;
+package com.rsa.netwitness.presidio.automation.data.tls.events_gen;
 
 import com.google.common.collect.Lists;
-import com.rsa.netwitness.presidio.automation.data.tls.feilds.TlsEventsGen;
+import com.rsa.netwitness.presidio.automation.data.tls.feilds_gen.TlsEventsGen;
 import com.rsa.netwitness.presidio.automation.utils.common.Lazy;
 import presidio.data.domain.event.network.NetworkEvent;
 import presidio.data.generators.common.GeneratorException;
@@ -15,7 +15,7 @@ import java.util.function.Function;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.fail;
 
-public abstract class IndicatorGen {
+public abstract class EventsGen {
 
     private Lazy<List<NetworkEvent>> eventsHolder = new Lazy<>();
 

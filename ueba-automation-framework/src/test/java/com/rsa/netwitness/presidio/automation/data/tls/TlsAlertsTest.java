@@ -17,8 +17,8 @@ public class TlsAlertsTest {
 
     @BeforeTest
     public void before() {
-        TlsAlerts data = new TlsAlerts(3,1);
-        alert = data.alerts.get().get(0);
+        TlsAlerts tlsAlerts = new TlsAlerts(3,1);
+        alert = tlsAlerts.get().get(0);
     }
 
     @Test
@@ -26,11 +26,11 @@ public class TlsAlertsTest {
         Map<String, List<NetworkEvent>> eventsByIndicator = new LinkedHashMap<>();
 
         for (TlsIndicator indicator :  alert.getIndicators()) {
-            eventsByIndicator.put(indicator.name, indicator.getEvents());
+            eventsByIndicator.put(indicator.name, indicator.generateEvents());
         }
 
         for (TlsIndicator indicator :  alert.getIndicators()) {
-            eventsByIndicator.put(indicator.name, indicator.getEvents());
+            eventsByIndicator.put(indicator.name, indicator.generateEvents());
         }
 
 

@@ -1,29 +1,29 @@
-package com.rsa.netwitness.presidio.automation.data.tls.events;
+package com.rsa.netwitness.presidio.automation.data.tls.events_gen;
 
-import com.rsa.netwitness.presidio.automation.data.tls.feilds.TlsEventsGen;
+import com.rsa.netwitness.presidio.automation.data.tls.feilds_gen.TlsEventsGen;
 
-public class UncommonValuesEventsSupplier extends IndicatorGen {
+public class TlsIndicatorEventsGen extends EventsGen {
 
-    public UncommonValuesEventsSupplier(int dataPeriod, int uncommonStartDay) {
+    public TlsIndicatorEventsGen(int dataPeriod, int uncommonStartDay) {
         daysBackFrom = dataPeriod;
         daysBackFromAnomaly = uncommonStartDay;
     }
 
-    public UncommonValuesEventsSupplier setCommonValuesGen(final TlsEventsGen gen) {
+    public TlsIndicatorEventsGen setCommonValuesGen(final TlsEventsGen gen) {
         TlsEventsGen copyGen = gen.copy();
         copyGen.setTimeGenerator(getCommonValuesTimeGen());
         eventGenerators.add(copyGen);
         return this;
     }
 
-    public UncommonValuesEventsSupplier setUncommonValuesHistoryGen(final TlsEventsGen gen) {
+    public TlsIndicatorEventsGen setUncommonValuesHistoryGen(final TlsEventsGen gen) {
         TlsEventsGen copyGen = gen.copy();
         copyGen.setTimeGenerator(getUncommonValuesHistoryTimeGen());
         eventGenerators.add(copyGen);
         return this;
     }
 
-    public UncommonValuesEventsSupplier setUncommonValuesAnomalyGen(final TlsEventsGen gen) {
+    public TlsIndicatorEventsGen setUncommonValuesAnomalyGen(final TlsEventsGen gen) {
         TlsEventsGen copyGen = gen.copy();
         copyGen.setTimeGenerator(getUncommonValuesAnomalyTimeGen());
         eventGenerators.add(copyGen);

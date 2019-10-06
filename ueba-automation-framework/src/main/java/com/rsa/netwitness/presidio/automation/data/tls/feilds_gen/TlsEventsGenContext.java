@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.data.tls.feilds;
+package com.rsa.netwitness.presidio.automation.data.tls.feilds_gen;
 
 class TlsEventsGenContext {
 
