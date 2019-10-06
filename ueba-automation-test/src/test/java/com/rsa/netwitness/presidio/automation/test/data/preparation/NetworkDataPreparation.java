@@ -5,6 +5,7 @@ import com.rsa.netwitness.presidio.automation.common.scenarios.tls.SessionSplitE
 import com.rsa.netwitness.presidio.automation.common.scenarios.tls.UncommonValuesAlerts;
 import com.rsa.netwitness.presidio.automation.common.scenarios.tls.UnusualTrafficVolumeAlerts;
 import com.rsa.netwitness.presidio.automation.data.tls.TlsAlerts;
+import com.rsa.netwitness.presidio.automation.data.tls.model.TlsAlert;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -12,9 +13,9 @@ import presidio.data.domain.event.Event;
 import presidio.data.domain.event.network.NetworkEvent;
 import presidio.data.generators.common.GeneratorException;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 public class NetworkDataPreparation extends DataPreparationBase {
@@ -29,13 +30,15 @@ public class NetworkDataPreparation extends DataPreparationBase {
         SessionSplitEnrichmentData sessionSplitEnrichmentData = new SessionSplitEnrichmentData();
         FutureEventsForMetrics futureEventsGen = new FutureEventsForMetrics(10);
 
-        TlsAlerts data = new TlsAlerts(historicalDaysBack,anomalyDay);
+        TlsAlerts tlsAlerts = new TlsAlerts(historicalDaysBack,anomalyDay);
 
-        Stream<NetworkEvent> resultingStream = Stream.of(
-                data.alerts.get().get(0).getIndicators().stream().flatMap(e -> e.getEvents().stream())
-        ).flatMap(i -> i);
+        List<NetworkEvent> networkEvents = new LinkedList<>();
 
-        return resultingStream.collect(Collectors.toList());
+        for (TlsAlert alert : tlsAlerts.get()) {
+            networkEvents.addAll(alert.getIndicators().stream().flatMap(e -> e.generateEvents().stream()).collect(Collectors.toList()));
+        }
+
+        return networkEvents;
     }
 
     @Test

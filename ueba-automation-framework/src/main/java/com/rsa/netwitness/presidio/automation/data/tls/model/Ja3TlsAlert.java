@@ -335,7 +335,6 @@ public class Ja3TlsAlert {
         alert.indicatorNames.add(name);
 
         TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
-        commonEventsGen.setConstantValueJa3(name);
         IBaseGenerator<String> keyGen = commonEventsGen.getSourceNetnameGen();
         IBaseGenerator<String> commonValuesGen = commonEventsGen.getJa3Generator();
 

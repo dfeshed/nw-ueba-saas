@@ -26,7 +26,8 @@ public class TlsAlerts implements Supplier<List<TlsAlert>>  {
     private List<TlsAlert> create() {
         List<TlsAlert> list = Lists.newLinkedList();
 
-        TlsAlert ja3_1 = new Ja3TlsAlert("ja3_test1", dataPeriod, uncommonStartDay)
+
+        TlsAlert ja3_1 = new Ja3TlsAlert("cf9d0d62f54f43d3a0073ea42d94c88", dataPeriod, uncommonStartDay)
                 .abnormal_domain_for_ja3_outbound()
                 // .abnormal_ja3_day_time()   //
                 .ja3_abnormal_dst_port_for_dst_org_outbound()    //
@@ -37,7 +38,7 @@ public class TlsAlerts implements Supplier<List<TlsAlert>>  {
                 .ja3_abnormal_ssl_subject_for_ja3_outbound()
                 .create();
 
-        TlsAlert ja3_2 = new Ja3TlsAlert("ja3_test2", dataPeriod, uncommonStartDay)
+        TlsAlert ja3_2 = new Ja3TlsAlert("8c0caf5183294b18be514094d231139", dataPeriod, uncommonStartDay)
                 .ja3_abnormal_dst_port_for_domain_outbound()
                 .ja3_abnormal_ssl_subject_for_src_netname_outbound()
                 .ja3_abnormal_domain_for_src_netname_outbound()
