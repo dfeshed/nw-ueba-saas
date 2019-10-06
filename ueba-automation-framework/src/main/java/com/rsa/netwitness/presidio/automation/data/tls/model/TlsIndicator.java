@@ -1,6 +1,8 @@
 package com.rsa.netwitness.presidio.automation.data.tls.model;
 
+import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.data.tls.events_gen.EventsGen;
+import org.slf4j.LoggerFactory;
 import presidio.data.domain.event.network.NetworkEvent;
 
 import java.util.ArrayList;
@@ -10,6 +12,8 @@ import java.util.function.Function;
 import static java.util.stream.Collectors.toList;
 
 public class TlsIndicator {
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(TlsIndicator.class);
+
     public final String entity;
     public final String entityType;
     public final String name;
@@ -20,6 +24,7 @@ public class TlsIndicator {
     EventsGen eventsGenerator;
 
     TlsIndicator(String entity, String entityType, String name) {
+        LOGGER.info("    ---> Entity: " + entity);
         this.name = name;
         this.entity = entity;
         this.entityType = entityType;
@@ -46,23 +51,29 @@ public class TlsIndicator {
     }
 
     void addKeys(List<String> values) {
+        LOGGER.info("    ---> Keys: " + String.join( ", ", values));
         keys.addAll(values);
     }
     void addNormalValues(List<String> values) {
+        LOGGER.info("    ---> Normal values: " + String.join( ", ", values));
         normalValues.addAll(values);
     }
     void addAbnormalValues(List<String> values) {
+        LOGGER.info("    ---> Abnormal values: " + String.join( ", ", values));
         abnormalValues.addAll(values);
     }
 
     <T> void addKeys(List<T> values, Function<T, String> toString) {
-        keys.addAll(values.stream().map(toString).collect(toList()));
+        List<String> valuesConverted = values.stream().map(toString).collect(toList());
+        addKeys(valuesConverted);
     }
     <T> void addNormalValues(List<T> values, Function<T, String> toString) {
-        normalValues.addAll(values.stream().map(toString).collect(toList()));
+        List<String> valuesConverted = values.stream().map(toString).collect(toList());
+        addNormalValues(valuesConverted);
     }
     <T> void addAbnormalValues(List<T> values, Function<T, String> toString) {
-        normalValues.addAll(values.stream().map(toString).collect(toList()));
+        List<String> valuesConverted = values.stream().map(toString).collect(toList());
+        addAbnormalValues(valuesConverted);
     }
 
 }

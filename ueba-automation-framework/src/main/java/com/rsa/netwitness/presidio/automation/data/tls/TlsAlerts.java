@@ -37,7 +37,20 @@ public class TlsAlerts implements Supplier<List<TlsAlert>>  {
                 .ja3_abnormal_ssl_subject_for_ja3_outbound()
                 .create();
 
+        TlsAlert ja3_2 = new Ja3TlsAlert("ja3_test2", dataPeriod, uncommonStartDay)
+                .ja3_abnormal_dst_port_for_domain_outbound()
+                .ja3_abnormal_ssl_subject_for_src_netname_outbound()
+                .ja3_abnormal_domain_for_src_netname_outbound()
+                .ja3_abnormal_dst_port_for_src_netname_outbound()
+                // .abnormal_ja3_day_time()   //
+                //     .ja3_abnormal_ssl_subject_day_time()
+                .ja3_abnormal_dst_port_for_ssl_subject_outbound()
+                .abnormal_dst_port_for_ja3_outbound()
+                .create();
+
+
         list.add(ja3_1);
+        list.add(ja3_2);
         return list;
     }
 

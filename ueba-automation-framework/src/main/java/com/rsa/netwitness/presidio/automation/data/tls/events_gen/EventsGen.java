@@ -1,8 +1,10 @@
 package com.rsa.netwitness.presidio.automation.data.tls.events_gen;
 
+import ch.qos.logback.classic.Logger;
 import com.google.common.collect.Lists;
 import com.rsa.netwitness.presidio.automation.data.tls.feilds_gen.TlsEventsGen;
 import com.rsa.netwitness.presidio.automation.utils.common.Lazy;
+import org.slf4j.LoggerFactory;
 import presidio.data.domain.event.network.NetworkEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.ITimeGenerator;
@@ -16,8 +18,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.fail;
 
 public abstract class EventsGen {
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(EventsGen.class);
+    public final String title;
+    private final String entity;
+    private final String entityType;
 
     private Lazy<List<NetworkEvent>> eventsHolder = new Lazy<>();
+
+    public EventsGen(String title, String entity, String entityType) {
+        this.title = title;
+        this.entity = entity;
+        this.entityType = entityType;
+    }
 
     public  List<NetworkEvent> getEvents() {
         return eventsHolder.getOrCompute(this::generateAll);
@@ -67,20 +79,25 @@ public abstract class EventsGen {
         return null;
     }
 
-    private List<NetworkEvent> generateAll() {
-        assertThat(eventGenerators).isNotEmpty();
-        List<NetworkEvent> events = Lists.newLinkedList();
-        eventGenerators.forEach(generator -> events.addAll(generate.apply(generator)));
-        return events;
-    }
-
     protected Function<NetworkEventsGenerator, List<NetworkEvent>> generate = gen -> {
         try {
-            return gen.generate();
+            List<NetworkEvent> result = gen.generate();
+            LOGGER.info(gen.getTimeGenerator().getFirst().toString() + " - "
+                    + gen.getTimeGenerator().getLast().toString() + "; Count: " + result.size());
+            return result;
         } catch (GeneratorException e) {
             e.printStackTrace();
             fail("Failed to generate events.");
         }
         return Lists.newLinkedList();
     };
+
+    private List<NetworkEvent> generateAll() {
+        LOGGER.info("Generating events for: " + entityType + " # " + entity + " # " + title);
+        assertThat(eventGenerators).isNotEmpty();
+        List<NetworkEvent> events = Lists.newLinkedList();
+        eventGenerators.forEach(generator -> events.addAll(generate.apply(generator)));
+        LOGGER.debug("Indicator events count: " + events.size());
+        return events;
+    }
 }

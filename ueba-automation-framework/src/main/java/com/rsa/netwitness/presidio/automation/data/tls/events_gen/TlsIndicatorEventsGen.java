@@ -4,7 +4,8 @@ import com.rsa.netwitness.presidio.automation.data.tls.feilds_gen.TlsEventsGen;
 
 public class TlsIndicatorEventsGen extends EventsGen {
 
-    public TlsIndicatorEventsGen(int dataPeriod, int uncommonStartDay) {
+    public TlsIndicatorEventsGen(int dataPeriod, int uncommonStartDay, String name, String entity, String entityType) {
+        super(name, entity, entityType);
         daysBackFrom = dataPeriod;
         daysBackFromAnomaly = uncommonStartDay;
     }
