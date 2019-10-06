@@ -41,7 +41,7 @@ public class Ja3TlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen abnormalValueGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueJa3(alert.entity);
+        TlsEventsGen abnormalValueGen = new TlsEventsGen(1).setConstantValueJa3(alert.entity);
 
         TlsEventsGen historyGen = abnormalValueGen.copy();
         historyGen.nextSslSubjectGenerator(1);
@@ -53,8 +53,9 @@ public class Ja3TlsAlert {
                 .setAnomalyDayUnregularHoursGenSslSubject(abnormalValueGen);
 
         indicator.unregularHoursStartTime = eventsSupplier.getUnregularStartTimeSslSubject();
-
         indicator.setEventsGenerator(eventsSupplier);
+        indicator.addNormalValues(getValues(historyGen.getSslSubjectGenerator(), 1));
+        indicator.addAbnormalValues(getValues(abnormalValueGen.getSslSubjectGenerator(), 1));
         alert.indicators.add(indicator);
         return this;
     }
@@ -66,7 +67,7 @@ public class Ja3TlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen abnormalValueGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueJa3(alert.entity);
+        TlsEventsGen abnormalValueGen = new TlsEventsGen(1).setConstantValueJa3(alert.entity);
 
         TlsEventsGen historyGen = abnormalValueGen.copy();
         historyGen.nextJa3Generator(1);
@@ -80,6 +81,8 @@ public class Ja3TlsAlert {
         indicator.unregularHoursStartTime = eventsSupplier.getUnregularStartTimeJa3();
 
         indicator.setEventsGenerator(eventsSupplier);
+        indicator.addNormalValues(getValues(historyGen.getJa3Generator(), 1));
+        indicator.addAbnormalValues(getValues(abnormalValueGen.getJa3Generator(), 1));
         alert.indicators.add(indicator);
         return this;
     }

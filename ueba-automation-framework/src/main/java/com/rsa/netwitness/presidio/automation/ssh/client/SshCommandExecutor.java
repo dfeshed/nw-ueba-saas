@@ -91,7 +91,7 @@ public class SshCommandExecutor {
                 printOut(sshOutput);
             }
 
-            LOGGER.info("Finished in " + Duration.between(Instant.now(), startTime).toMillis() + " ms");
+            LOGGER.info("Finished in " + Duration.between(startTime, Instant.now()).toMillis() + " ms");
             return new SshResponse(channel.getExitStatus(), Lists.newLinkedList(sshOutput));
 
 
@@ -128,9 +128,15 @@ public class SshCommandExecutor {
 
     private void waitReady(BufferedReader br) throws IOException, InterruptedException {
         int i=0;
-        while (!br.ready() && i < 400) {
+        LOGGER.info("Waiting until the buffer is ready.");
+        while (!br.ready() && i < 10) {
             MILLISECONDS.sleep(10);
             i++;
+        }
+        if (br.ready()) {
+            LOGGER.info("Ready");
+        } else {
+            LOGGER.info("Timeout");
         }
     }
 

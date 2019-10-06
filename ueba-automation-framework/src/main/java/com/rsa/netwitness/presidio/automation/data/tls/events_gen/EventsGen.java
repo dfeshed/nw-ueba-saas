@@ -77,7 +77,7 @@ public abstract class EventsGen {
     protected ITimeGenerator getUnregularHoursHistoryTimeGen(int startHourOfDay, int endHourOfDay) {
         assertThat(startHourOfDay).isNotIn(commonHours);
         assertThat(endHourOfDay).isNotIn(commonHours);
-        return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes);
+        return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, 15);
     }
 
     protected ITimeGenerator getTimeGen(int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo, int intervalMinutes) {
