@@ -106,8 +106,9 @@ public class EntityScoreServiceImpl implements EntityScoreService {
             alertsPage = getNextAlertPage(alertQueryBuilder, alertsPage);
         }
 
-        alertPersistencyService.save(clearedAlertsList);
-
+        if(!clearedAlertsList.isEmpty()){
+            alertPersistencyService.save(clearedAlertsList);
+        }
     }
 
     /**

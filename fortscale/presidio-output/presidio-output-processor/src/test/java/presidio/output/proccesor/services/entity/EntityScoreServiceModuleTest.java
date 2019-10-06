@@ -191,11 +191,14 @@ public class EntityScoreServiceModuleTest {
         entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
         entitySeverityService.updateSeverities(entityType);
 
+        Page<Alert> alertsPageResult = alertPersistencyService.find(new AlertQuery.AlertQueryBuilder().filterByEndDate(getMinusDay(100).getTime()).setPageSize(10).setPageNumber(0).build());
+
         Entity updatedEntity = entityPersistencyService.findEntityByDocumentId(entityDocumentId);
         Assert.assertEquals("entityId1", updatedEntity.getEntityId());
         Assert.assertEquals("entityName1", updatedEntity.getEntityName());
         Assert.assertEquals(20, updatedEntity.getScore(), 0.00001);
         Assert.assertEquals(EntitySeverity.LOW, updatedEntity.getSeverity());
+        Assert.assertEquals(0, alertsPageResult.getContent().get(0).getContributionToEntityScore(), 0.00001);
 
         EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findById(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName(entityType)).get();
         Assert.assertEquals(new Double(0), entitySeveritiesRangeDocument.getSeverityToScoreRangeMap().get(EntitySeverity.LOW).getLowerBound());
@@ -237,11 +240,14 @@ public class EntityScoreServiceModuleTest {
         entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
         entitySeverityService.updateSeverities(entityType);
 
+        Page<Alert> alertsPageResult = alertPersistencyService.find(new AlertQuery.AlertQueryBuilder().setPageSize(10).setPageNumber(0).build());
+
         entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, entitiesPageResult.getContent().size());
         Assert.assertEquals("entityId1", entitiesPageResult.getContent().get(0).getEntityId());
         Assert.assertEquals("entityName1", entitiesPageResult.getContent().get(0).getEntityName());
         Assert.assertEquals(0, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertEquals(0, alertsPageResult.getContent().get(0).getContributionToEntityScore(), 0.00001);
 
     }
 
