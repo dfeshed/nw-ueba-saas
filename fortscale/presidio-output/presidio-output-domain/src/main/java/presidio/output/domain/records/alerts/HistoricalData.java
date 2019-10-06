@@ -2,6 +2,7 @@ package presidio.output.domain.records.alerts;
 
 import fortscale.common.general.Schema;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HistoricalData {
@@ -13,6 +14,7 @@ public class HistoricalData {
     private List<Aggregation> aggregation;
 
     public HistoricalData() {
+        aggregation = new ArrayList<>();
     }
 
     public HistoricalData(List<Aggregation> aggregation) {
