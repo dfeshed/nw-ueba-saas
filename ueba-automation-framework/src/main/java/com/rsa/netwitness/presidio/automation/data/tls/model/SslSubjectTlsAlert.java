@@ -322,7 +322,7 @@ public class SslSubjectTlsAlert {
 
         TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
         uncommonValuesHistoryGen.nextSrcNetnameGenerator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.getJa3Generator();
+        IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.nextJa3Generator(UNCOMMON_DATA_VALUES);
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
         uncommonGen.setConstantValueSslSubject(alert.entity);
