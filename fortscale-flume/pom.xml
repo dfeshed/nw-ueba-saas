@@ -20,6 +20,7 @@
         <mongo.java.driver.version>3.10.2</mongo.java.driver.version>
         <aws.s3.sdk.version>1.11.269</aws.s3.sdk.version>
         <open.csv.version>4.1</open.csv.version>
+        <commons-beanutils.version>1.9.4</commons-beanutils.version>
     </properties>
 
     <build>
@@ -78,6 +79,11 @@
                     <artifactId>mongo-java-driver</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
         </dependency>
     </dependencies>
 
