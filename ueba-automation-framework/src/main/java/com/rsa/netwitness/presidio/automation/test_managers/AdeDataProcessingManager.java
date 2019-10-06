@@ -5,6 +5,7 @@ import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
 import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
@@ -168,6 +169,7 @@ public class AdeDataProcessingManager {
 
         @Override
         public Integer call() {
+            Instant start = Instant.now();
             LOGGER.info("ProcessAccumulateSmart started for " + entity.toUpperCase());
 
             // builds F features
@@ -180,7 +182,8 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath)
+                    .withFailMessage("Error exit code. Log: " + logPath + "\nExecution time minutes: " +
+                            Duration.between(Instant.now(), start).toMinutes())
                     .isEqualTo(0);
 
             LOGGER.info("ProcessAccumulateSmart[" + entity.toUpperCase() + "] completed successfully.");

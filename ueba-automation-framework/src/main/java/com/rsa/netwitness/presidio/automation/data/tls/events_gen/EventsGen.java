@@ -13,6 +13,8 @@ import presidio.data.generators.event.network.NetworkEventsGenerator;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.fail;
@@ -48,6 +50,7 @@ public abstract class EventsGen {
     protected int daysBackToAnomaly = 0;
     protected int intervalMinutes = 60;
     protected int intervalMinutesAnomaly = 60;
+    private List<Integer> commonHours = IntStream.rangeClosed(startHourOfDay, endHourOfDay).boxed().collect(Collectors.toList());
 
     protected ITimeGenerator getEntityHistoricalDataTimeGen() {
         return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes);
@@ -65,8 +68,16 @@ public abstract class EventsGen {
         return getTimeGen(startHourOfDayAnomaly, endHourOfDayAnomaly, daysBackFromAnomaly, daysBackToAnomaly, intervalMinutesAnomaly);
     }
 
-    protected ITimeGenerator getDefaultUnregularHoursTimeGen() {
-        return getTimeGen(2, 5, daysBackFromAnomaly, daysBackToAnomaly, intervalMinutesAnomaly);
+    protected ITimeGenerator getAnomalyDayUnregularHoursTimeGen(int startHourOfDay, int endHourOfDay) {
+        assertThat(startHourOfDay).isNotIn(commonHours);
+        assertThat(endHourOfDay).isNotIn(commonHours);
+        return getTimeGen(startHourOfDay, endHourOfDay, daysBackFromAnomaly, daysBackToAnomaly, intervalMinutesAnomaly);
+    }
+
+    protected ITimeGenerator getUnregularHoursHistoryTimeGen(int startHourOfDay, int endHourOfDay) {
+        assertThat(startHourOfDay).isNotIn(commonHours);
+        assertThat(endHourOfDay).isNotIn(commonHours);
+        return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes);
     }
 
     protected ITimeGenerator getTimeGen(int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo, int intervalMinutes) {

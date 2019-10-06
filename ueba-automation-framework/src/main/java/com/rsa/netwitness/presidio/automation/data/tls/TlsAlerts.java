@@ -50,8 +50,23 @@ public class TlsAlerts implements Supplier<List<TlsAlert>>  {
                 .ja3_abnormal_dst_port_for_ja3_outbound()
                 .create();
 
+        TlsAlert ja3_3 = new Ja3TlsAlert("606ed7c3e0a54dbc8b6925750607f04", dataPeriod, uncommonStartDay)
+                .ja3_abnormal_ja3_day_time()
+                .ja3_abnormal_dst_port_for_domain_outbound()
+                .ja3_abnormal_ssl_subject_for_src_netname_outbound()
+                .create();
+
+        TlsAlert ja3_4 = new Ja3TlsAlert("7e2779d3d28747d488721a84aa15906", dataPeriod, uncommonStartDay)
+                .ja3_abnormal_ssl_subject_day_time()
+                .ja3_abnormal_dst_port_for_ssl_subject_outbound()
+                .ja3_abnormal_dst_port_for_ja3_outbound()
+                .create();
+
+
         list.add(ja3_1);
         list.add(ja3_2);
+        list.add(ja3_3);
+        list.add(ja3_4);
 
 
         TlsAlert ssl_subject_1 = new SslSubjectTlsAlert("4.sophosxl.net", dataPeriod, uncommonStartDay)

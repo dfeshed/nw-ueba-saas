@@ -5,6 +5,7 @@ import com.rsa.netwitness.presidio.automation.data.tls.events_gen.EventsGen;
 import org.slf4j.LoggerFactory;
 import presidio.data.domain.event.network.NetworkEvent;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -22,6 +23,7 @@ public class TlsIndicator {
     List<String> normalValues = new ArrayList<>();
     List<String> abnormalValues = new ArrayList<>();
     EventsGen eventsGenerator;
+    Instant unregularHoursStartTime;
 
     TlsIndicator(String entity, String entityType, String name) {
         LOGGER.info("    ---> Entity: " + entity);
