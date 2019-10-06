@@ -2,6 +2,7 @@ package com.rsa.netwitness.presidio.automation.data.tls.feilds;
 
 import presidio.data.domain.Location;
 import presidio.data.generators.FixedValueGenerator;
+import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.event.network.NetworkEventsGenerator;
 
 public class TlsEventsGen extends NetworkEventsGenerator {
@@ -55,8 +56,9 @@ public class TlsEventsGen extends NetworkEventsGenerator {
         nextFqdnGenerator(INITIAL_ALLOCATION);
     }
 
-    public void nextFqdnGenerator(int allocate) {
+    public IBaseGenerator<String> nextFqdnGenerator(int allocate) {
         setFqdnGenerator(anomalyValuesGen.nextFqdnGen(allocate));
+        return getFqdnGenerator();
     }
 
     public void setConstantValueFqdn(String value) {
@@ -69,8 +71,9 @@ public class TlsEventsGen extends NetworkEventsGenerator {
         nextDstPortGenerator(INITIAL_ALLOCATION);
     }
 
-    public void nextDstPortGenerator(int allocate) {
+    public IBaseGenerator<Integer> nextDstPortGenerator(int allocate) {
         setDestinationPortGenerator(anomalyValuesGen.nextDstPortGen(allocate));
+        return getDestinationPortGenerator();
     }
 
     public void setConstantValueDstPort(int value) {
@@ -87,8 +90,9 @@ public class TlsEventsGen extends NetworkEventsGenerator {
         setJa3Generator(anomalyValuesGen.nextJa3Gen(allocate));
     }
 
-    public void setConstantValueJa3(String value) {
+    public TlsEventsGen setConstantValueJa3(String value) {
         setJa3Generator(new FixedValueGenerator<>(value));
+        return this;
     }
 
 
@@ -97,8 +101,9 @@ public class TlsEventsGen extends NetworkEventsGenerator {
         nextSslSubjectGenerator(INITIAL_ALLOCATION);
     }
 
-    public void nextSslSubjectGenerator(int allocate) {
+    public IBaseGenerator<String> nextSslSubjectGenerator(int allocate) {
         setSslSubjectGenerator(anomalyValuesGen.nextSslSubjectGen(allocate));
+        return getSslSubjectGenerator();
     }
 
     public void setConstantValueSslSubject(String value) {
@@ -112,8 +117,9 @@ public class TlsEventsGen extends NetworkEventsGenerator {
         nextDstOrgGenerator(INITIAL_ALLOCATION);
     }
 
-    public void nextDstOrgGenerator(int allocate) {
+    public IBaseGenerator<String> nextDstOrgGenerator(int allocate) {
         setDestinationOrganizationGenerator(anomalyValuesGen.nextDstOrgGen(allocate));
+        return getDestinationOrganizationGenerator();
     }
 
     public void setConstantValueDstOrg(String value) {
@@ -128,8 +134,9 @@ public class TlsEventsGen extends NetworkEventsGenerator {
         nextSrcNetnameGenerator(INITIAL_ALLOCATION);
     }
 
-    public void nextSrcNetnameGenerator(int allocate) {
+    public IBaseGenerator<String> nextSrcNetnameGenerator(int allocate) {
         setSourceNetnameGen(anomalyValuesGen.nextSrcNetnameGen(allocate));
+        return getSourceNetnameGen();
     }
 
     public void setConstantValueSrcNetname(String value) {
@@ -144,8 +151,9 @@ public class TlsEventsGen extends NetworkEventsGenerator {
         nextLocationGenerator(INITIAL_ALLOCATION);
     }
 
-    public void nextLocationGenerator(int allocate) {
+    public IBaseGenerator<Location> nextLocationGenerator(int allocate) {
         setLocationGen(anomalyValuesGen.nextLocationGen(allocate));
+        return getLocationGen();
     }
 
     public void setConstantValueLocation(Location value) {
