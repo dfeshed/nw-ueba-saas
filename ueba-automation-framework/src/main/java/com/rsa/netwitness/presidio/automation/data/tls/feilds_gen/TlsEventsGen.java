@@ -107,8 +107,9 @@ public class TlsEventsGen extends NetworkEventsGenerator {
         return getSslSubjectGenerator();
     }
 
-    public void setConstantValueSslSubject(String value) {
+    public TlsEventsGen setConstantValueSslSubject(String value) {
         setSslSubjectGenerator(new FixedValueGenerator<>(value));
+        return this;
     }
 
 

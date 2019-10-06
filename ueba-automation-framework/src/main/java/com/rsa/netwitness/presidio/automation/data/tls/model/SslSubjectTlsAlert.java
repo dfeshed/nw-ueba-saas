@@ -8,57 +8,45 @@ import presidio.data.domain.Location;
 import presidio.data.generators.IBaseGenerator;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static java.util.stream.Collectors.toList;
-
-public class Ja3TlsAlert {
-    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(Ja3TlsAlert.class);
+public class SslSubjectTlsAlert {
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(SslSubjectTlsAlert.class);
 
     private final TlsAlert alert;
-    private final int HISTORICAL_DATA_VALUES = 5;
+
     private final int HISTORICAL_DATA_COMMON_VALUES = 2;
     private final int UNCOMMON_DATA_VALUES = 2;
     private final int dataPeriod;
     private final int uncommonStartDay;
-    private final String TYPE = "ja3";
+    private final String TYPE = "ssl_subject";
 
-    public Ja3TlsAlert(String entity, int dataPeriod, int uncommonStartDay) {
+    public SslSubjectTlsAlert(String entity, int dataPeriod, int uncommonStartDay) {
         alert = new TlsAlert(entity, TYPE);
         this.dataPeriod = dataPeriod;
         this.uncommonStartDay = uncommonStartDay;
     }
 
-
     public TlsAlert create() {
         return alert;
     }
 
+    public SslSubjectTlsAlert ssl_subject_abnormal_ja3_day_time() {
+        return this;
+    }
 
-    public Ja3TlsAlert ja3_abnormal_ssl_subject_day_time() {
-
-
-
-
+    public SslSubjectTlsAlert ssl_subject_abnormal_ssl_subject_day_time() {
         return this;
     }
 
 
-    public Ja3TlsAlert ja3_abnormal_ja3_day_time() {
-
-
-
-
-        return this;
-    }
-
-
-    public Ja3TlsAlert ja3_abnormal_dst_org_for_src_netname_outbound() {
+    public SslSubjectTlsAlert ssl_subject_abnormal_dst_org_for_src_netname_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueJa3(alert.entity);
+        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
         IBaseGenerator<String> keyGen = commonEventsGen.getSourceNetnameGen();
         IBaseGenerator<String> commonValuesGen = commonEventsGen.getDestinationOrganizationGenerator();
 
@@ -68,7 +56,7 @@ public class Ja3TlsAlert {
         uncommonValuesHistoryGen.setDestinationOrganizationGenerator(abnormalValuesGen);
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueJa3(alert.entity);
+        uncommonGen.setConstantValueSslSubject(alert.entity);
         uncommonGen.setSourceNetnameGen(keyGen);
         uncommonGen.setDestinationOrganizationGenerator(abnormalValuesGen);
 
@@ -88,23 +76,23 @@ public class Ja3TlsAlert {
     }
 
 
-    public Ja3TlsAlert ja3_abnormal_ssl_subject_for_src_netname_outbound() {
+    public SslSubjectTlsAlert ssl_subject_abnormal_ssl_subject_for_src_netname_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueJa3(alert.entity);
+        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
         IBaseGenerator<String> keyGen = commonEventsGen.getSourceNetnameGen();
         IBaseGenerator<String> commonValuesGen = commonEventsGen.getSslSubjectGenerator();
 
         TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
         uncommonValuesHistoryGen.nextSrcNetnameGenerator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.nextSslSubjectGenerator(UNCOMMON_DATA_VALUES);
+        uncommonValuesHistoryGen.setConstantValueSslSubject(alert.entity);
+        IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.getSslSubjectGenerator();
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueJa3(alert.entity);
+        uncommonGen.setConstantValueSslSubject(alert.entity);
         uncommonGen.setSourceNetnameGen(keyGen);
-        uncommonGen.setSslSubjectGenerator(abnormalValuesGen);
 
         TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
         indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
@@ -121,12 +109,12 @@ public class Ja3TlsAlert {
         return this;
     }
 
-    public Ja3TlsAlert ja3_abnormal_domain_for_src_netname_outbound() {
+    public SslSubjectTlsAlert ssl_subject_abnormal_domain_for_src_netname_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueJa3(alert.entity);
+        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
         IBaseGenerator<String> keyGen = commonEventsGen.getSourceNetnameGen();
         IBaseGenerator<String> commonValuesGen = commonEventsGen.getFqdnGenerator();
 
@@ -135,7 +123,7 @@ public class Ja3TlsAlert {
         IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.nextFqdnGenerator(UNCOMMON_DATA_VALUES);
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueJa3(alert.entity);
+        uncommonGen.setConstantValueSslSubject(alert.entity);
         uncommonGen.setSourceNetnameGen(keyGen);
         uncommonGen.setFqdnGenerator(abnormalValuesGen);
 
@@ -154,12 +142,12 @@ public class Ja3TlsAlert {
         return this;
     }
 
-    public Ja3TlsAlert ja3_abnormal_dst_port_for_src_netname_outbound() {
+    public SslSubjectTlsAlert ssl_subject_abnormal_dst_port_for_src_netname_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueJa3(alert.entity);
+        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
         IBaseGenerator<String> keyGen = commonEventsGen.getSourceNetnameGen();
         IBaseGenerator<Integer> commonValuesGen = commonEventsGen.getDestinationPortGenerator();
 
@@ -168,7 +156,7 @@ public class Ja3TlsAlert {
         IBaseGenerator<Integer> abnormalValuesGen = uncommonValuesHistoryGen.nextDstPortGenerator(UNCOMMON_DATA_VALUES);
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueJa3(alert.entity);
+        uncommonGen.setConstantValueSslSubject(alert.entity);
         uncommonGen.setSourceNetnameGen(keyGen);
         uncommonGen.setDestinationPortGenerator(abnormalValuesGen);
 
@@ -188,13 +176,12 @@ public class Ja3TlsAlert {
     }
 
 
-    public Ja3TlsAlert ja3_abnormal_dst_port_for_domain_outbound() {
+    public SslSubjectTlsAlert ssl_subject_abnormal_dst_port_for_domain_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
-        commonEventsGen.setConstantValueJa3(alert.entity);
+        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
         IBaseGenerator<String> keyGen = commonEventsGen.getFqdnGenerator();
         IBaseGenerator<Integer> commonValuesGen = commonEventsGen.getDestinationPortGenerator();
 
@@ -203,7 +190,7 @@ public class Ja3TlsAlert {
         IBaseGenerator<Integer> abnormalValuesGen = uncommonValuesHistoryGen.nextDstPortGenerator(UNCOMMON_DATA_VALUES);
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueJa3(alert.entity);
+        uncommonGen.setConstantValueSslSubject(alert.entity);
         uncommonGen.setFqdnGenerator(keyGen);
         uncommonGen.setDestinationPortGenerator(abnormalValuesGen);
 
@@ -223,13 +210,12 @@ public class Ja3TlsAlert {
     }
 
 
-    public Ja3TlsAlert ja3_abnormal_dst_port_for_ssl_subject_outbound() {
+    public SslSubjectTlsAlert ssl_subject_abnormal_dst_port_for_ssl_subject_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
-        commonEventsGen.setConstantValueJa3(alert.entity);
+        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
         IBaseGenerator<String> keyGen = commonEventsGen.getSslSubjectGenerator();
         IBaseGenerator<Integer> commonValuesGen = commonEventsGen.getDestinationPortGenerator();
 
@@ -238,8 +224,7 @@ public class Ja3TlsAlert {
         IBaseGenerator<Integer> abnormalValuesGen = uncommonValuesHistoryGen.nextDstPortGenerator(UNCOMMON_DATA_VALUES);
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueJa3(alert.entity);
-        uncommonGen.setSslSubjectGenerator(keyGen);
+        uncommonGen.setConstantValueSslSubject(alert.entity);
         uncommonGen.setDestinationPortGenerator(abnormalValuesGen);
 
         TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
@@ -258,24 +243,22 @@ public class Ja3TlsAlert {
     }
 
 
-    public Ja3TlsAlert ja3_abnormal_country_for_ssl_subject_outbound() {
+    public SslSubjectTlsAlert ssl_subject_abnormal_country_for_ssl_subject_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
         TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
-        commonEventsGen.setConstantValueJa3(alert.entity);
+        commonEventsGen.setConstantValueSslSubject(alert.entity);
         IBaseGenerator<String> keyGen = commonEventsGen.getSslSubjectGenerator();
         IBaseGenerator<Location> commonValuesGen = commonEventsGen.getLocationGen();
 
         TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
         uncommonValuesHistoryGen.nextSslSubjectGenerator(UNCOMMON_DATA_VALUES);
         IBaseGenerator<Location> abnormalValuesGen = uncommonValuesHistoryGen.nextLocationGenerator(UNCOMMON_DATA_VALUES);
-        uncommonValuesHistoryGen.setLocationGen(abnormalValuesGen);
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueJa3(alert.entity);
-        uncommonGen.setSslSubjectGenerator(keyGen);
+        uncommonGen.setConstantValueSslSubject(alert.entity);
         uncommonGen.setLocationGen(abnormalValuesGen);
 
         TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
@@ -293,13 +276,12 @@ public class Ja3TlsAlert {
         return this;
     }
 
-    public Ja3TlsAlert ja3_abnormal_dst_port_for_dst_org_outbound() {
+    public SslSubjectTlsAlert ssl_subject_abnormal_dst_port_for_dst_org_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
-        commonEventsGen.setConstantValueJa3(alert.entity);
+        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
         IBaseGenerator<String> keyGen = commonEventsGen.getDestinationOrganizationGenerator();
         IBaseGenerator<Integer> commonValuesGen = commonEventsGen.getDestinationPortGenerator();
 
@@ -308,7 +290,7 @@ public class Ja3TlsAlert {
         IBaseGenerator<Integer> abnormalValuesGen = uncommonValuesHistoryGen.nextDstPortGenerator(UNCOMMON_DATA_VALUES);
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueJa3(alert.entity);
+        uncommonGen.setConstantValueSslSubject(alert.entity);
         uncommonGen.setDestinationOrganizationGenerator(keyGen);
         uncommonGen.setDestinationPortGenerator(abnormalValuesGen);
 
@@ -328,24 +310,24 @@ public class Ja3TlsAlert {
     }
 
 
-    public Ja3TlsAlert ja3_abnormal_ja3_for_source_netname_outbound() {
+    public SslSubjectTlsAlert ssl_subject_abnormal_ja3_for_source_netname_outbound() {
 
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
         IBaseGenerator<String> keyGen = commonEventsGen.getSourceNetnameGen();
         IBaseGenerator<String> commonValuesGen = commonEventsGen.getJa3Generator();
 
         TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.setConstantValueJa3(alert.entity);
         uncommonValuesHistoryGen.nextSrcNetnameGenerator(UNCOMMON_DATA_VALUES);
         IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.getJa3Generator();
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueJa3(alert.entity);
+        uncommonGen.setConstantValueSslSubject(alert.entity);
         uncommonGen.setSourceNetnameGen(keyGen);
+        uncommonGen.setJa3Generator(abnormalValuesGen);
 
         TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
         indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
@@ -363,22 +345,22 @@ public class Ja3TlsAlert {
     }
 
 
-    public Ja3TlsAlert ja3_abnormal_ssl_subject_for_ja3_outbound() {
+    public SslSubjectTlsAlert ssl_subject_abnormal_ssl_subject_for_ja3_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
         TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
-        commonEventsGen.setConstantValueJa3(alert.entity);
         IBaseGenerator<String> keyGen = commonEventsGen.getJa3Generator();
         IBaseGenerator<String> commonValuesGen = commonEventsGen.getSslSubjectGenerator();
 
         TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
+        uncommonValuesHistoryGen.setConstantValueSslSubject(alert.entity);
         uncommonValuesHistoryGen.nextJa3Generator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.nextSslSubjectGenerator(UNCOMMON_DATA_VALUES);
+        IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.getSslSubjectGenerator();
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueJa3(alert.entity);
+        uncommonGen.setJa3Generator(keyGen);
         uncommonGen.setSslSubjectGenerator(abnormalValuesGen);
 
         TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
@@ -396,13 +378,13 @@ public class Ja3TlsAlert {
         return this;
     }
 
-    public Ja3TlsAlert ja3_abnormal_domain_for_ja3_outbound() {
+    public SslSubjectTlsAlert ssl_subject_abnormal_domain_for_ja3_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
         TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
-        commonEventsGen.setConstantValueJa3(alert.entity);
+        commonEventsGen.setConstantValueSslSubject(alert.entity);
         IBaseGenerator<String> keyGen = commonEventsGen.getJa3Generator();
         IBaseGenerator<String> commonValuesGen = commonEventsGen.getFqdnGenerator();
 
@@ -411,6 +393,7 @@ public class Ja3TlsAlert {
         IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.nextFqdnGenerator(UNCOMMON_DATA_VALUES);
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
+        uncommonGen.setConstantValueSslSubject(alert.entity);
         uncommonGen.setConstantValueJa3(alert.entity);
         uncommonGen.setFqdnGenerator(abnormalValuesGen);
 
@@ -429,13 +412,12 @@ public class Ja3TlsAlert {
         return this;
     }
 
-    public Ja3TlsAlert ja3_abnormal_dst_port_for_ja3_outbound() {
+    public SslSubjectTlsAlert ssl_subject_abnormal_dst_port_for_ja3_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
-        commonEventsGen.setConstantValueJa3(alert.entity);
+        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
         IBaseGenerator<String> keyGen = commonEventsGen.getJa3Generator();
         IBaseGenerator<Integer> commonValuesGen = commonEventsGen.getDestinationPortGenerator();
 
@@ -444,7 +426,8 @@ public class Ja3TlsAlert {
         IBaseGenerator<Integer> abnormalValuesGen = uncommonValuesHistoryGen.nextDstPortGenerator(UNCOMMON_DATA_VALUES);
 
         TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueJa3(alert.entity);
+        uncommonGen.setConstantValueSslSubject(alert.entity);
+        uncommonGen.setJa3Generator(keyGen);
         uncommonGen.setDestinationPortGenerator(abnormalValuesGen);
 
         TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
@@ -464,7 +447,7 @@ public class Ja3TlsAlert {
 
 
     private <T> List<T> getValues(IBaseGenerator<T> generator, int numOfValues) {
-        return IntStream.range(0, numOfValues).boxed().map(e -> generator.getNext()).collect(toList());
+        return IntStream.range(0, numOfValues).boxed().map(e -> generator.getNext()).collect(Collectors.toList());
     }
 
 }
