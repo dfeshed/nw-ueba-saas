@@ -182,8 +182,8 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath + "\nExecution time: " +
-                            Duration.between(Instant.now(), callStart).toMinutes() + " minutes.")
+                    .withFailMessage("Error exit code. Log: " + logPath + "\nProcess duration is " +
+                            Duration.between(Instant.now(), callStart).toMillis() + " ms")
                     .isEqualTo(0);
 
             LOGGER.info("ProcessAccumulateSmart[" + entity.toUpperCase() + "] completed successfully.");

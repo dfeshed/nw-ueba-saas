@@ -10,6 +10,8 @@ import org.elasticsearch.common.collect.EvictingQueue;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Objects;
 import java.util.Queue;
 
@@ -70,17 +72,20 @@ public class SshCommandExecutor {
 
             inputStream = new PipedInputStream(outputStream);
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream, US_ASCII));
+            Instant startTime = Instant.now();
             channel.connect();
+            LOGGER.debug("Connection time: " + Duration.between(Instant.now(), startTime).toMillis() + " ms");
 
             waitReady(bufferedReader);
 
             String line;
             Queue<String> sshOutput = new EvictingQueue<>(MAX_LINES_TO_COLLECT);
-            while ((line = bufferedReader.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null || channel.getExitStatus()==0) {
                 if (verbose) LOGGER.info(line);
                 sshOutput.add(line);
+                waitReady(bufferedReader);
             }
-
+            LOGGER.info("Finished in " + Duration.between(Instant.now(), startTime).toMillis() + " ms");
             return new SshResponse(channel.getExitStatus(), Lists.newLinkedList(sshOutput));
 
 
@@ -117,8 +122,8 @@ public class SshCommandExecutor {
 
     private void waitReady(BufferedReader br) throws IOException, InterruptedException {
         int i=0;
-        while (!br.ready() && i < 40) {
-            MILLISECONDS.sleep(100);
+        while (!br.ready() && i < 400) {
+            MILLISECONDS.sleep(10);
             i++;
         }
     }
