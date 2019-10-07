@@ -143,6 +143,11 @@ module('Integration | Component | Column Group form', function(hooks) {
 
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
     assert.equal(findAll(AVAILABLE_META).length, 19, '19 meta keys available');
+
+    // typing in spaces only will trigger editColumnGroup, but with null object
+    // thus running the editColumnGroup assertion only once
+    await fillIn(groupNameInput, ' ');
+    await triggerEvent(groupNameInput, 'keyup');
   });
 
   test('it will remove meta', async function(assert) {

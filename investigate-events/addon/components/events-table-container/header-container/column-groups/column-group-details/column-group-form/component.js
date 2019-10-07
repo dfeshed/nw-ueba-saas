@@ -160,6 +160,7 @@ const ColumnGroupForm = Component.extend({
   actions: {
 
     handleNameChange(value) {
+      value = value.trim();
       const newColumnGroup = this.get('newColumnGroup');
       newColumnGroup.name = value;
 
