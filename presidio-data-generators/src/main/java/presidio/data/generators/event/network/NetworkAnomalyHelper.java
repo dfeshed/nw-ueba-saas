@@ -3,7 +3,7 @@ package presidio.data.generators.event.network;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import presidio.data.domain.Location;
-import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.FixedValueGenerator;
 import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.common.CyclicValuesGenerator;
@@ -219,7 +219,7 @@ public class NetworkAnomalyHelper {
 
 
     /** accessory methods */
-    public List<NetworkEvent> generate() {
+    public List<TlsEvent> generate() {
         try {
             return eventGen.generate();
         } catch (GeneratorException e) {
@@ -229,7 +229,7 @@ public class NetworkAnomalyHelper {
         return Lists.newLinkedList();
     }
 
-    public List<NetworkEvent> generateAndAppendTo(List<NetworkEvent> eventsList) {
+    public List<TlsEvent> generateAndAppendTo(List<TlsEvent> eventsList) {
         try {
             eventsList.addAll(eventGen.generate());
         } catch (GeneratorException e) {

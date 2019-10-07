@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 
-public class NetworkEvent extends Event implements Serializable {
+public class TlsEvent extends Event implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String eventId;
@@ -38,15 +38,15 @@ public class NetworkEvent extends Event implements Serializable {
     private int sessionSplit;
     private boolean isSelfSigned;
 
-    public NetworkEvent(Instant dateTime) {
+    public TlsEvent(Instant dateTime) {
         this.dateTime = dateTime;
     }
 
-    public NetworkEvent(String eventId, Instant dateTime, List<String> fqdn, String sourceIp, String dstIp,
-                        String destinationOrganization, String destinationASN, long numOfBytesSent, long numOfBytesReceived,
-                        String sourceNetname, String destinationNetname, String ja3, String ja3s, NETWORK_DIRECTION_TYPE direction,
-                        int destinationPort, int sourcePort, String dataSource, Location srcLocation,
-                        Location dstLocation, String sslSubject, String sslCa, int sessionSplit, boolean isSelfSigned) {
+    public TlsEvent(String eventId, Instant dateTime, List<String> fqdn, String sourceIp, String dstIp,
+                    String destinationOrganization, String destinationASN, long numOfBytesSent, long numOfBytesReceived,
+                    String sourceNetname, String destinationNetname, String ja3, String ja3s, NETWORK_DIRECTION_TYPE direction,
+                    int destinationPort, int sourcePort, String dataSource, Location srcLocation,
+                    Location dstLocation, String sslSubject, String sslCa, int sessionSplit, boolean isSelfSigned) {
         this.eventId = eventId;
         this.dateTime = dateTime;
         this.fqdn = fqdn;

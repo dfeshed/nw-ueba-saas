@@ -4,7 +4,7 @@ import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import presidio.data.domain.Location;
 import presidio.data.domain.event.network.NETWORK_DIRECTION_TYPE;
-import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.FixedValueGenerator;
 import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.authenticationlocation.AuthenticationLocationCyclicGenerator;
@@ -19,7 +19,7 @@ import presidio.data.generators.hostname.HostnameGenerator;
 import java.time.Instant;
 import java.util.List;
 
-public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent> {
+public class NetworkEventsGenerator extends AbstractEventGenerator<TlsEvent> {
     public static final int DEFAULT_REGULAR_PORT_BELOW = 9999;
     public static final int DEFAULT_FQDN_START_INDEX = 0;
     public static final int DEFAULT_FQDN_END_INDEX = 1500;
@@ -75,7 +75,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
 
 
     @Override
-    public NetworkEvent generateNext() throws GeneratorException {
+    public TlsEvent generateNext() throws GeneratorException {
 
         Instant time = getTimeGenerator().getNext();
         String eventId = eventIdGenerator.getNext();
@@ -101,7 +101,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
         String sslCa = sslCaGenerator.getNext();
         boolean isSelfSigned = false;
 
-        NetworkEvent networkEvent = new NetworkEvent(time);
+        TlsEvent networkEvent = new TlsEvent(time);
         networkEvent.setEventId(eventId);
         networkEvent.setFqdn(fqdns);
         networkEvent.setDstIp(dstIp);
