@@ -1,3 +1,8 @@
-.ember-tether {
-  @include rsa-layer(modals)
+.investigate-engine .files-route {
+  .ember-tether {
+    /* still overridden by investigate-files/app/styles/investigate-files/_manifest.scss,
+       so you may want to re-scope one or both?
+    */
+    @include rsa-layer(modals)
+  }
 }

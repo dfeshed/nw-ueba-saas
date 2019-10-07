@@ -4,6 +4,11 @@
 @import "content-filter/manifest";
 @import "file-details/manifest";
 
-.ember-tether.ember-tether-element {
-  z-index: 400 !important;
+.investigate-engine .files-route {
+  .ember-tether.ember-tether-element {
+    /* still overriding investigate-files/app/styles/investigate-files/content-filter/_list-filter.scss,
+       so you may want to re-scope one or both?
+    */
+    z-index: 400 !important;
+  }
 }
