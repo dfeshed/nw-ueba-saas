@@ -13,7 +13,7 @@ DAG_ID = os.path.basename(__file__).replace(".pyc", "").replace(".py", "")  # ma
 
 START_DATE = datetime(year=2017, month=1, day=1)
 
-SCHEDULE_INTERVAL = "timedelta(hours=1)"            # How often to Run. @daily - Once a day at Midnight (UTC)
+SCHEDULE_INTERVAL = timedelta(hours=1)  # How often to Run. @daily - Once a day at Midnight (UTC)
 DAG_OWNER_NAME = "operations"           # Who is listed as the owner of this DAG in the Airflow Web Server
 ALERT_EMAIL_ADDRESSES = []              # List of email address to send email alerts to if this job fails
 
