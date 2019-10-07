@@ -2,6 +2,7 @@ package com.rsa.netwitness.presidio.automation.data.tls.model;
 
 import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.data.tls.events_gen.UncommonValueIndicatorEventsGen;
+import com.rsa.netwitness.presidio.automation.data.tls.events_gen.UnregularHoursIndicatorEventsGen;
 import com.rsa.netwitness.presidio.automation.data.tls.feilds_gen.TlsEventsGen;
 import org.slf4j.LoggerFactory;
 import presidio.data.domain.Location;
@@ -32,11 +33,55 @@ public class SslSubjectTlsAlert {
         return alert;
     }
 
+
+
     public SslSubjectTlsAlert ssl_subject_abnormal_ja3_day_time() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        TlsEventsGen abnormalValueGen = new TlsEventsGen(1).setConstantValueSslSubject(alert.entity);
+
+        TlsEventsGen historyGen = abnormalValueGen.copy();
+        historyGen.nextJa3Generator(1);
+
+        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
+        UnregularHoursIndicatorEventsGen eventsSupplier = new UnregularHoursIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
+                .setRegularHoursHistoryGen(abnormalValueGen)
+                .setUnregularHoursHistoryGenJa3(historyGen)
+                .setAnomalyDayUnregularHoursGenJa3(abnormalValueGen);
+
+        indicator.unregularHoursStartTime = eventsSupplier.getUnregularStartTimeSslSubject();
+        indicator.setEventsGenerator(eventsSupplier);
+        indicator.addNormalValues(getValues(historyGen.getSslSubjectGenerator(), 1));
+        indicator.addAbnormalValues(getValues(abnormalValueGen.getSslSubjectGenerator(), 1));
+        alert.indicators.add(indicator);
         return this;
     }
 
     public SslSubjectTlsAlert ssl_subject_abnormal_ssl_subject_day_time() {
+
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        TlsEventsGen abnormalValueGen = new TlsEventsGen(1).setConstantValueSslSubject(alert.entity);
+
+        TlsEventsGen historyGen = abnormalValueGen.copy();
+        historyGen.nextSslSubjectGenerator(1);
+
+        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
+        UnregularHoursIndicatorEventsGen eventsSupplier = new UnregularHoursIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
+                .setRegularHoursHistoryGen(abnormalValueGen)
+                .setUnregularHoursHistoryGenSslSubject(historyGen)
+                .setAnomalyDayUnregularHoursGenSslSubject(abnormalValueGen);
+
+        indicator.unregularHoursStartTime = eventsSupplier.getUnregularStartTimeJa3();
+
+        indicator.setEventsGenerator(eventsSupplier);
+        indicator.addNormalValues(getValues(historyGen.getJa3Generator(), 1));
+        indicator.addAbnormalValues(getValues(abnormalValueGen.getJa3Generator(), 1));
+        alert.indicators.add(indicator);
         return this;
     }
 

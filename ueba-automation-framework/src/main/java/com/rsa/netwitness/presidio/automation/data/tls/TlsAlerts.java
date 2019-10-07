@@ -86,39 +86,36 @@ public class TlsAlerts implements Supplier<List<TlsAlert>>  {
 
         TlsAlert ssl_subject_2 = new SslSubjectTlsAlert("trend micro inc.", dataPeriod, uncommonStartDay)
                 .ssl_subject_abnormal_country_for_ssl_subject_outbound()
-                //.ssl_subject_abnormal_domain_for_ja3_outbound()
                 .ssl_subject_abnormal_domain_for_src_netname_outbound()
-                //.ssl_subject_abnormal_dst_org_for_src_netname_outbound()
-                //.ssl_subject_abnormal_ja3_for_source_netname_outbound()
-                //.ssl_subject_abnormal_ssl_subject_for_ja3_outbound()
                 .ssl_subject_abnormal_ssl_subject_for_src_netname_outbound()
-                //.ssl_subject_abnormal_dst_port_for_ssl_subject_outbound()
                 .ssl_subject_abnormal_dst_port_for_src_netname_outbound()
-                //.ssl_subject_abnormal_dst_port_for_ja3_outbound()
-                //.ssl_subject_abnormal_dst_port_for_dst_org_outbound()
-                //.ssl_subject_abnormal_dst_port_for_domain_outbound()
                 .create();
 
 
         TlsAlert ssl_subject_3 = new SslSubjectTlsAlert("bitdefender srl", dataPeriod, uncommonStartDay)
-//                .ssl_subject_abnormal_country_for_ssl_subject_outbound()
-//                .ssl_subject_abnormal_domain_for_ja3_outbound()
-//                .ssl_subject_abnormal_domain_for_src_netname_outbound()
-//                .ssl_subject_abnormal_dst_org_for_src_netname_outbound()
-//                .ssl_subject_abnormal_ja3_for_source_netname_outbound()
-//                .ssl_subject_abnormal_ssl_subject_for_ja3_outbound()
-//                .ssl_subject_abnormal_ssl_subject_for_src_netname_outbound()
                 .ssl_subject_abnormal_dst_port_for_ssl_subject_outbound()
-                //.ssl_subject_abnormal_dst_port_for_src_netname_outbound()
                 .ssl_subject_abnormal_dst_port_for_ja3_outbound()
                 .ssl_subject_abnormal_dst_port_for_dst_org_outbound()
-                //.ssl_subject_abnormal_dst_port_for_domain_outbound()
                 .create();
 
+
+        TlsAlert ssl_subject_4 = new SslSubjectTlsAlert("industria de diseno textil sa", dataPeriod, uncommonStartDay)
+                .ssl_subject_abnormal_ssl_subject_day_time()
+                .ssl_subject_abnormal_ja3_day_time()
+                .ssl_subject_abnormal_domain_for_ja3_outbound()
+                .create();
+
+        TlsAlert ssl_subject_5 = new SslSubjectTlsAlert("industria de diseno textil sa", dataPeriod, uncommonStartDay)
+                .ssl_subject_abnormal_ja3_day_time()
+                .ssl_subject_abnormal_domain_for_ja3_outbound()
+                .ssl_subject_abnormal_dst_port_for_dst_org_outbound()
+                .create();
 
         list.add(ssl_subject_1);
         list.add(ssl_subject_2);
         list.add(ssl_subject_3);
+        list.add(ssl_subject_4);
+        list.add(ssl_subject_5);
 
         return list;
     }
