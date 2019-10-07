@@ -8,7 +8,7 @@ dags:
     data_schemas: ${dataPipeline.schemas}
     start_date: ${dataPipeline.startTime}
     root:
-      schedule_interval: timedelta(hours=1)
+      schedule_interval: @hourly
     indicator:
       schedule_interval: None
     model:
@@ -26,7 +26,7 @@ dags:
               schema: TLS
             dynamic_arguments: [startInstant, endInstant]
     smart:
-      schedule_interval: timedelta(hours=1)
+      schedule_interval: @hourly
       smart_confs:
         - smart_conf_name: userId_hourly
           entity_type: userId
