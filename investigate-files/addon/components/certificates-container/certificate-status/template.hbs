@@ -1,10 +1,10 @@
-{{#rsa-form-button 
+{{#rsa-form-button
   isDisabled=isDisabled
   title=(if isDisabled (t 'investigateShared.endpoint.fileActions.tooltips.changeFileStatusDisabled' label='certificate'))
   class='certificate-status-button padding-left'
   defaultAction=(action 'showStatusModel')
 }}
-  {{rsa-icon name='cursor-choose' style='filled' title=(t 'configure.endpoint.certificates.status.edit')}}
+  {{rsa-icon name='cursor-choose' title=(t 'configure.endpoint.certificates.status.edit')}}
   {{t 'configure.endpoint.certificates.status.edit'}}
 {{/rsa-form-button}}
 {{#if showModal}}

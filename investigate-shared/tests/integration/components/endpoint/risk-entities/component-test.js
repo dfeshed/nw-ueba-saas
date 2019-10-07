@@ -42,7 +42,7 @@ module('Integration | Component | endpoint/risk-entities', function(hooks) {
     this.set('entities', entitiesConfig);
     this.set('entitiesData', data);
     await render(hbs`{{endpoint/risk-entities entities=entities isCollapsed=isCollapsed entitiesData=entitiesData}}`);
-    assert.equal(findAll('.rsa-icon-arrow-down-12-filled').length, 1, 'down arrow icon is available');
+    assert.equal(findAll('.rsa-icon-arrow-down-12').length, 1, 'down arrow icon is available');
     assert.equal(findAll('.entity-data .rsa-risk-score').length, 2, '2 risk score are available');
     assert.equal(findAll('.entity-data .entity-name')[0].innerText.trim(), 'Sketchy.exe', 'Sketchy.exe is the first file name');
   });
@@ -51,6 +51,6 @@ module('Integration | Component | endpoint/risk-entities', function(hooks) {
     this.set('isCollapsed', true);
     this.set('entities', entitiesConfig);
     await render(hbs`{{endpoint/risk-entities entities=entities isCollapsed=isCollapsed}}`);
-    assert.equal(findAll('.rsa-icon-arrow-right-12-filled').length, 1, 'up arrow icon is available');
+    assert.equal(findAll('.rsa-icon-arrow-right-12').length, 1, 'up arrow icon is available');
   });
 });

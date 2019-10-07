@@ -158,10 +158,10 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     const redux = this.owner.lookup('service:redux');
     const { focusedHostIndex } = redux.getState().endpoint.machines;
     assert.equal(focusedHostIndex, 1, 'Focused host set as first row');
-    assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-up-7-filled'), true, 'Default arrow up icon before sorting');
+    assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-up-7'), true, 'Default arrow up icon before sorting');
     await click(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('.rsa-icon'));
     return settled().then(() => {
-      assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-down-7-filled'), true, 'Arrow down icon appears after sorting');
+      assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-down-7'), true, 'Arrow down icon appears after sorting');
     });
   });
   test('Select all and deselect all rows using header checkbox', async function(assert) {
@@ -459,7 +459,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       }
     </style>
     {{host-list/host-table closeProperties=closeProperties openProperties=openProperties}}`);
-    await click('.rsa-icon-cog-filled');
+    await click('.rsa-icon-cog');
 
     return settled().then(() => {
       assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 6, 'initial visible column count is 6');
@@ -489,7 +489,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       }
     </style>
     {{host-list/host-table closeProperties=closeProperties openProperties=openProperties}}`);
-    await click('.rsa-icon-cog-filled');
+    await click('.rsa-icon-cog');
 
     return settled().then(() => {
       assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[0].textContent.trim(), 'Hostname');

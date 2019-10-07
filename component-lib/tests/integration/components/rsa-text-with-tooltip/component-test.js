@@ -95,7 +95,7 @@ module('Integration | Component | rsa-text-with-tooltip', function(hooks) {
     this.set('alwaysShow', 'true');
     this.set('style', 'standard');
     this.set('tipPosition', 'top');
-    await render(hbs`{{rsa-text-with-tooltip style=style 
+    await render(hbs`{{rsa-text-with-tooltip style=style
       alwaysShow=alwaysShow value=value tipPosition=tipPosition}}`);
     await triggerEvent('.tooltip-text', 'mouseover');
     assert.equal(findAll('.ember-tether').length, 1, 'Tool tip is rendered');
@@ -108,13 +108,13 @@ module('Integration | Component | rsa-text-with-tooltip', function(hooks) {
     this.set('value', 'Test text');
     await render(hbs`{{rsa-text-with-tooltip alwaysShow=true style='standard' value=value}}`);
     await triggerEvent('.tooltip-text', 'mouseover');
-    assert.equal(findAll('i.rsa-icon-copy-1-filled').length, 1, 'Copy text icon rendered by default');
+    assert.equal(findAll('i.rsa-icon-copy-1').length, 1, 'Copy text icon rendered by default');
   });
   test('it does not render copy text icon when copyText is false', async function(assert) {
     assert.expect(1);
     this.set('value', 'Test text');
     await render(hbs`{{rsa-text-with-tooltip alwaysShow=true style='standard' value=value copyText=false}}`);
     await triggerEvent('.tooltip-text', 'mouseover');
-    assert.equal(findAll('i.rsa-icon-copy-1-filled').length, 0, 'Copy text icon not rendered when copyText is set to false');
+    assert.equal(findAll('i.rsa-icon-copy-1').length, 0, 'Copy text icon not rendered when copyText is set to false');
   });
 });

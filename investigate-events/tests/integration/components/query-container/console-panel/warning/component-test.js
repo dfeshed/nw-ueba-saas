@@ -20,7 +20,7 @@ module('Integration | Component | Console Panel/Warning', function(hooks) {
     await render(hbs`
       {{query-container/console-panel/warning service='concentrator' message="warning"}}
     `);
-    assert.equal(findAll('li.warning i.rsa-icon-report-problem-triangle-filled').length, 1);
+    assert.equal(findAll('li.warning i.rsa-icon-report-problem-triangle').length, 1);
     assert.equal(find('li.warning strong').textContent, 'concentrator:');
     assert.equal(find('li.warning .message').textContent, 'warning');
   });

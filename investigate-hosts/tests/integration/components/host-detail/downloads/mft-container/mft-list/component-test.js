@@ -208,8 +208,8 @@ module('Integration | Component | mft-list', function(hooks) {
       .mftFiles(mftData)
       .build();
     await render(hbs`{{host-detail/downloads/mft-container/mft-list }}`);
-    assert.equal(findAll('.rsa-icon-file-new-1-filled').length, 1, 'one file icon displayed for file');
-    assert.equal(findAll('.rsa-icon-folder-2-filled').length, 1, 'one folder icon displayed for folder');
+    assert.equal(findAll('.rsa-icon-file-new-1').length, 1, 'one file icon displayed for file');
+    assert.equal(findAll('.rsa-icon-folder-2').length, 1, 'one folder icon displayed for folder');
 
   });
 

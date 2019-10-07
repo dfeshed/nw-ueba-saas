@@ -86,7 +86,7 @@ module('Integration | Component | entity-details-container/header', function(hoo
 
   test('it should allow user test contextual help', async function(assert) {
     await render(hbs`{{entity-details-container/header}}`);
-    await click('.rsa-icon-help-circle-lined');
+    await click('.rsa-icon-help-circle');
     assert.deepEqual(helpIds, { moduleId: 'investigation', topicId: 'InvestigateEntityDetails' });
   });
 });

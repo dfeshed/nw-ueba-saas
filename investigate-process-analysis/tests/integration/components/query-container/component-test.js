@@ -101,7 +101,7 @@ module('Integration | Component | Query Container', function(hooks) {
         assert.equal(topic, 'invProcessAnalysis');
       }
     }));
-    await click('.query-container .rsa-icon-help-circle-lined');
+    await click('.query-container .rsa-icon-help-circle');
     return settled();
   });
 

@@ -194,7 +194,7 @@ module('Integration | Component | certificates-container/certificates-data-table
         }
       </style>
       {{certificates-container/certificates-data-table}}`);
-    await click('.rsa-icon-cog-filled');
+    await click('.rsa-icon-cog');
 
     return settled().then(() => {
       assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 10, 'initial visible column count is 1');
@@ -320,7 +320,7 @@ module('Integration | Component | certificates-container/certificates-data-table
         }
       </style>
       {{certificates-container/certificates-data-table}}`);
-    await click('.rsa-icon-cog-filled');
+    await click('.rsa-icon-cog');
 
     return settled().then(() => {
       assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 10, 'initial visible column count is 10');
@@ -398,7 +398,7 @@ module('Integration | Component | certificates-container/certificates-data-table
         }
       </style>
       {{certificates-container/certificates-data-table}}`);
-    await click('.rsa-icon-cog-filled');
+    await click('.rsa-icon-cog');
 
     await settled();
     assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[0].textContent.trim(), 'Friendly Name');

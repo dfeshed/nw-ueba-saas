@@ -171,14 +171,14 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
     await render(hbs`{{respond/risk-scoring}}`);
 
     assert.equal(find(selectors.formElement).classList.contains('hidden'), true);
-    assert.equal(find(selectors.iconSelector).classList.contains('rsa-icon-arrow-down-8-filled'), false);
-    assert.equal(find(selectors.iconSelector).classList.contains('rsa-icon-arrow-right-8-filled'), true);
+    assert.equal(find(selectors.iconSelector).classList.contains('rsa-icon-arrow-down-8'), false);
+    assert.equal(find(selectors.iconSelector).classList.contains('rsa-icon-arrow-right-8'), true);
 
     await click(selectors.iconSelector);
 
     assert.equal(find(selectors.formElement).classList.contains('hidden'), false);
-    assert.equal(find(selectors.iconSelector).classList.contains('rsa-icon-arrow-down-8-filled'), true);
-    assert.equal(find(selectors.iconSelector).classList.contains('rsa-icon-arrow-right-8-filled'), false);
+    assert.equal(find(selectors.iconSelector).classList.contains('rsa-icon-arrow-down-8'), true);
+    assert.equal(find(selectors.iconSelector).classList.contains('rsa-icon-arrow-right-8'), false);
   });
 
   test('onclick the file radio will toggle threshold & time window visibility', async function(assert) {

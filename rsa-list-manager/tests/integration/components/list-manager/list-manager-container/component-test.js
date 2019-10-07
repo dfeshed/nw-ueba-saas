@@ -140,8 +140,8 @@ module('Integration | Component | list-manager-container', function(hooks) {
       assert.ok(find('.is-editable-indicator'), 'column for is-editable indicators rendered');
 
       const options = findAll(`${listItems} a .is-editable-icon-wrapper i`);
-      assert.ok(options[1].classList.contains('rsa-icon-lock-close-1-lined'), 'non-editable icon rendered');
-      assert.ok(options[0].classList.contains('rsa-icon-settings-1-lined'), 'editable icon rendered');
+      assert.ok(options[1].classList.contains('rsa-icon-lock-close-1'), 'non-editable icon rendered');
+      assert.ok(options[0].classList.contains('rsa-icon-settings-1'), 'editable icon rendered');
     });
 
   test('Use Up Arrow Key to traverse through items', async function(assert) {
@@ -512,7 +512,7 @@ module('Integration | Component | list-manager-container', function(hooks) {
     await click(`${buttonGroupSelector} button`);
 
     assert.ok(find('.list-filter'), 'filter component rendered');
-    assert.ok(find('.list-filter .rsa-icon-filter-2-filled'));
+    assert.ok(find('.list-filter .rsa-icon-filter-2'));
     const filterInput = find('.list-filter input.ember-power-select-search-input');
     assert.ok(filterInput, 'filter input rendered');
 

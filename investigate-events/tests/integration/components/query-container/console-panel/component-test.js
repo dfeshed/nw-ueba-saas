@@ -113,7 +113,7 @@ module('Integration | Component | console-panel', function(hooks) {
       {{query-container/console-panel timezone=timezone}}
     `);
     assert.equal(findAll('.console-panel.has-error .console-content').length, 1);
-    assert.equal(findAll('.console-panel.has-error .console-content .fatal-errors i.rsa-icon-report-problem-triangle-filled').length, 1);
+    assert.equal(findAll('.console-panel.has-error .console-content .fatal-errors i.rsa-icon-report-problem-triangle').length, 1);
     assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'Error');
     assert.ok(find('.console-panel .console-content .fatal-errors').textContent.trim().includes('concentrator'));
     assert.equal(find('.console-panel .console-content .fatal-errors .error-text').textContent.trim(), 'error');

@@ -307,10 +307,10 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
         }
     </style>
     {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}`);
-    assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-up-7-filled'), true, 'Default arrow up icon before sorting');
+    assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-up-7'), true, 'Default arrow up icon before sorting');
     await click(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('.rsa-icon'));
     return settled().then(() => {
-      assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-down-7-filled'), true, 'Arrow down icon appears after sorting');
+      assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-down-7'), true, 'Arrow down icon appears after sorting');
     });
   });
 

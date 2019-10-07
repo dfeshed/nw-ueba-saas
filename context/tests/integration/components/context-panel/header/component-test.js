@@ -37,8 +37,8 @@ module('Integration | Component | context-panel/header', function(hooks) {
       {{/context-panel/header}}
     `);
 
-    assert.ok(findAll('.rsa-icon-help-circle-lined').length === 1, 'Need to display help icons.');
-    assert.ok(findAll('.rsa-icon-close-filled').length === 1, 'Need to display close icons.');
+    assert.ok(findAll('.rsa-icon-help-circle').length === 1, 'Need to display help icons.');
+    assert.ok(findAll('.rsa-icon-close').length === 1, 'Need to display close icons.');
     assert.ok(find('.rsa-context-panel__header').textContent.trim().indexOf('1.1.1.1') > 0, 'Need to display only Meta key.');
   });
 });

@@ -54,7 +54,7 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     assert.equal(findAll('.host-details_dropdown-action-list li').length, 5, 'Number of actions present is 5 as MFT and system dump permission added');
 
     assert.ok(find('.host-start-scan-button'), 'scan-command renders giving the start scan button');
-    assert.equal(findAll('.rsa-icon-check-shield-lined').length, 0, 'Start scan icon not present');
+    assert.equal(findAll('.rsa-icon-check-shield').length, 0, 'Start scan icon not present');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(2)').textContent.trim(), 'Export Host details', 'Export Host details button renders');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(3)').textContent.trim(), 'Network Isolation', 'Network Isolation button renders');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(4)').textContent.trim(), 'Download MFT to Server', 'Download MFT button renders');

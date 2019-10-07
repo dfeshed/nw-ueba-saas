@@ -64,7 +64,7 @@ export default Component.extend({
   init() {
     this._super(arguments);
     this.get('eventBus').on('rsa-application-click', (target = '') => {
-      if (target.classList && !(target.classList.contains('rsa-icon-arrow-down-12-filled') ||
+      if (target.classList && !(target.classList.contains('rsa-icon-arrow-down-12') ||
         target.classList.contains('rsa-form-button')) &&
         (!this.isDestroyed || !this.isDestroying)) {
         if (this.get('isExpanded')) {

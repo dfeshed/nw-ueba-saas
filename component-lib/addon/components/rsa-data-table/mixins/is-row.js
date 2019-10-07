@@ -187,7 +187,7 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
           const { element } = this;
           const toAppend = `<div class="group-label">
             <div class="group-label-copy">
-              <i class="rsa-icon rsa-icon-arrow-down-7-filled"></i>
+              <i class="rsa-icon rsa-icon-arrow-down-7"></i>
               ${label}
             </div>
           </div>`;

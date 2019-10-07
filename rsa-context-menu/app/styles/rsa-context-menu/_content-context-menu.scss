@@ -25,7 +25,7 @@
       padding-right: rsa-whitespace(more);
       &:after {
         font-family: 'nw-icon-library-all-1';
-        content: $rsa-icon-arrow-right-12-filled;
+        content: $rsa-icon-arrow-right-12;
         top: rsa-whitespace(less);
         right: rsa-whitespace(least);
         color: text-color(primary, lighter);
@@ -45,7 +45,7 @@
         }
         &:after {
           font-family: 'nw-icon-library-all-1';
-          content: $rsa-icon-arrow-left-12-filled;
+          content: $rsa-icon-arrow-left-12;
           left: rsa-whitespace(less);
           right: initial;
         }

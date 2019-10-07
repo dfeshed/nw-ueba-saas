@@ -56,8 +56,8 @@ module('Integration | Component | Column Groups', function(hooks) {
     const options = findAll(columnGroupItem).map((d) => d.textContent.trim());
     assert.equal(options.join('').replace(/\s+/g, ''), 'Custom1Custom2SummaryListSummaryListSummaryListSummaryListEmailAnalysisMalwareAnalysisThreatAnalysisWebAnalysisEndpointAnalysis');
 
-    const ootbIcon = 'rsa-icon-lock-close-1-lined';
-    const nonOotbIcon = 'rsa-icon-settings-1-lined';
+    const ootbIcon = 'rsa-icon-lock-close-1';
+    const nonOotbIcon = 'rsa-icon-settings-1';
 
     assert.ok(findAll(`${columnGroupItem} i`)[0].classList.contains(nonOotbIcon), 'Custom1 is a custom column group');
     assert.ok(findAll(`${columnGroupItem} i`)[6].classList.contains(ootbIcon), 'Email Analysis is an OOTB column group');
@@ -123,7 +123,7 @@ module('Integration | Component | Column Groups', function(hooks) {
 
     await click(dropdownSelector);
     assert.ok(find(`${columnGroupManagerSelector} .list-filter`), 'filter component present');
-    assert.ok(find(`${columnGroupManagerSelector} .list-filter .rsa-icon-filter-2-filled`), 'filter icon present');
+    assert.ok(find(`${columnGroupManagerSelector} .list-filter .rsa-icon-filter-2`), 'filter icon present');
     assert.equal(find(`${columnGroupManagerSelector} .list-filter input`).getAttribute('placeholder'), 'Filter column groups');
     assert.notOk(find('.clear-filter'), 'clear button not available');
     assert.equal(findAll(columnGroupItem).length, 11);

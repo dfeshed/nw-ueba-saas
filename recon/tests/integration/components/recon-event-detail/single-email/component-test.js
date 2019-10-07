@@ -17,7 +17,7 @@ module('Integration | Component | recon-event-detail/single-email', function(hoo
     await render(hbs`{{recon-event-detail/single-email emailIndex=emailIndex emailCount=emailCount email=email}}`);
 
     assert.ok(find('.recon-email-view'), 'single email view is rendered');
-    assert.equal(findAll('.recon-email-collapse-header .rsa-icon-subtract-circle-1-filled').length, 1, 'email is expanded by default');
+    assert.equal(findAll('.recon-email-collapse-header .rsa-icon-subtract-circle-1').length, 1, 'email is expanded by default');
     const str = find('.recon-email-header').textContent.concat(find('iframe').contentDocument.body.innerText);
     assert.equal(_first200(str), 'fromeddard.stark@verizon.nettosansa.stark@verizon.net,arya.stark@verizon.net,robb.stark@verizon.netbccjon.snow@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?attachmentsAdditionalHeaderDetail');
   });

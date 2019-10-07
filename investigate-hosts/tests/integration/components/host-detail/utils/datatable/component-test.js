@@ -168,10 +168,10 @@ module('Integration | Component | host-detail/utils/datatable', function(hooks) 
     this.set('data', dataItems);
     this.set('columnsConfig', config);
     await render(hbs`{{host-detail/utils/datatable items=data columnsConfig=columnsConfig}}`);
-    assert.equal(findAll('.rsa-data-table-header-cell:nth-child(1) i.rsa-icon-arrow-up-7-filled').length, 1, 'rsa arrow-up icon before sorting');
+    assert.equal(findAll('.rsa-data-table-header-cell:nth-child(1) i.rsa-icon-arrow-up-7').length, 1, 'rsa arrow-up icon before sorting');
 
     await click('.rsa-data-table-header-cell:nth-child(1) .rsa-icon');
-    assert.equal(findAll('.rsa-data-table-header-cell:nth-child(1) i.rsa-icon-arrow-down-7-filled').length, 1, 'rsa arrow-down icon after sorting');
+    assert.equal(findAll('.rsa-data-table-header-cell:nth-child(1) i.rsa-icon-arrow-down-7').length, 1, 'rsa arrow-down icon after sorting');
   });
 
   test('Load More is shown for paged items', async function(assert) {

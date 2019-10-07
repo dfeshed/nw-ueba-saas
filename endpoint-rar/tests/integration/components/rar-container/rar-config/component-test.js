@@ -179,8 +179,8 @@ module('Integration | Component | rar-container/rar-config', function(hooks) {
 
   test('info icon present', async function(assert) {
     await render(hbs`{{rar-container/rar-config}}`);
-    assert.equal(findAll('i.rsa-icon-information-circle-filled').length, 1, 'information icon present');
-    await triggerEvent('i.rsa-icon-information-circle-filled', 'mouseover');
+    assert.equal(findAll('i.rsa-icon-information-circle').length, 1, 'information icon present');
+    await triggerEvent('i.rsa-icon-information-circle', 'mouseover');
     assert.equal(find('.tool-tip-value').textContent.trim(), 'ESH is a hostname which can be resolved only within the corporate network.', 'information icon present');
   });
 

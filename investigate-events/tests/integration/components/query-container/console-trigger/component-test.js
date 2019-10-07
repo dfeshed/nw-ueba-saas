@@ -28,7 +28,7 @@ module('Integration | Component | console-trigger', function(hooks) {
     await render(hbs`
       {{query-container/console-trigger}}
     `);
-    assert.equal(findAll('.console-trigger .rsa-icon-information-circle-lined').length, 1);
+    assert.equal(findAll('.console-trigger .rsa-icon-information-circle').length, 1);
   });
 
   test('renders the correct dom hasWarning', async function(assert) {
@@ -36,7 +36,7 @@ module('Integration | Component | console-trigger', function(hooks) {
     await render(hbs`
       {{query-container/console-trigger}}
     `);
-    assert.equal(findAll('.console-trigger.has-warning .rsa-icon-report-problem-triangle-filled').length, 1);
+    assert.equal(findAll('.console-trigger.has-warning .rsa-icon-report-problem-triangle').length, 1);
   });
 
   test('renders the correct dom hasOfflineServices', async function(assert) {
@@ -44,7 +44,7 @@ module('Integration | Component | console-trigger', function(hooks) {
     await render(hbs`
       {{query-container/console-trigger}}
     `);
-    assert.equal(findAll('.console-trigger.has-offline-services .rsa-icon-report-problem-triangle-filled').length, 1);
+    assert.equal(findAll('.console-trigger.has-offline-services .rsa-icon-report-problem-triangle').length, 1);
     assert.equal(find('.console-trigger i').getAttribute('title'), 'This query includes offline services.');
   });
 
@@ -53,7 +53,7 @@ module('Integration | Component | console-trigger', function(hooks) {
     await render(hbs`
       {{query-container/console-trigger}}
     `);
-    assert.equal(findAll('.console-trigger.has-error .rsa-icon-report-problem-triangle-filled').length, 1);
+    assert.equal(findAll('.console-trigger.has-error .rsa-icon-report-problem-triangle').length, 1);
   });
 
   test('renders the correct dom isDisabled', async function(assert) {

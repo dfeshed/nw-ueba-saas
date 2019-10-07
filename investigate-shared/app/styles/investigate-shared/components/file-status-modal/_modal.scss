@@ -1,14 +1,14 @@
 $modalHeaderHeight: 52px;
 $footerHeight: 43px;
 $modalWidth: 500px;
-$whitelistAlertWidth: 362px; 
+$whitelistAlertWidth: 362px;
 
 .rsa-application-modal.file-status-modal {
   display: none;
 }
 
 .rsa-application-modal-content.file-status-modal {
-  .rsa-icon-help-circle-lined {
+  .rsa-icon-help-circle {
     padding-right: rsa-whitespace();
   }
   width: $modalWidth;
@@ -101,7 +101,7 @@ $whitelistAlertWidth: 362px;
         height: 14px;
         padding-bottom: rsa-whitespace(less);
       }
-      .remediation-action-radio .rsa-icon-information-circle-lined {
+      .remediation-action-radio .rsa-icon-information-circle {
         padding-left: rsa-whitespace(less);
       }
     }

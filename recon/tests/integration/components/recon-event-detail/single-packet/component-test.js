@@ -76,7 +76,7 @@ module('Integration | Component | recon event detail / single packet', function(
     }}`);
 
     return wait().then(() => {
-      assert.equal(findAll('.rsa-icon-arrow-circle-left-2-filled').length, 1, 'Response arrow shown');
+      assert.equal(findAll('.rsa-icon-arrow-circle-left-2').length, 1, 'Response arrow shown');
       assert.equal(findAll('.rsa-packet.is-continuation').length, 0, 'Response is not marked as a continuation of the previous');
       assert.equal(find('.rsa-packet').textContent.trim().replace(/\s/g, '').substring(0, 200),
         'responsepacket2InvaliddateID4804965123532SEQ102357698PAYLOAD0bytes000000000016000032000048000064f0f755ed59bfa44c11ef6201080045000034dc5c00003e06642136fbf8bb8945834a0050d7a90619dac26ff602e6801216d0f053');
@@ -117,7 +117,7 @@ module('Integration | Component | recon event detail / single packet', function(
     }}`);
 
     return wait().then(() => {
-      assert.equal(findAll('.rsa-icon-arrow-circle-right-2-filled').length, 1, 'Request arrow shown');
+      assert.equal(findAll('.rsa-icon-arrow-circle-right-2').length, 1, 'Request arrow shown');
       assert.equal(findAll('.rsa-packet.is-continuation').length, 0, 'Request is not marked as a continuation of the previous');
       assert.equal(findAll('.packet-details').length, 0, 'Packet details are not shown');
       assert.equal(find('.rsa-packet').textContent.trim().replace(/\s/g, '').substring(0, 200),
@@ -159,7 +159,7 @@ module('Integration | Component | recon event detail / single packet', function(
     }}`);
 
     return wait().then(() => {
-      assert.equal(findAll('.rsa-icon-arrow-circle-right-2-filled').length, 1, 'Request arrow shown');
+      assert.equal(findAll('.rsa-icon-arrow-circle-right-2').length, 1, 'Request arrow shown');
       assert.equal(findAll('.rsa-packet.is-continuation').length, 1, 'Request is marked as a continuation of the previous');
       assert.equal(findAll('.packet-details').length, 0, 'Packet details are not shown');
       assert.equal(find('.rsa-packet').textContent.trim().replace(/\s/g, '').substring(0, 200),

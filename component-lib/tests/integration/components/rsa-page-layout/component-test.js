@@ -29,10 +29,10 @@ module('Integration | Component | rsa-page-layout', function(hooks) {
     assert.equal(find('.right-zone .rsa-header .title').textContent.trim(), 'Title', 'Default Title is displayed');
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 1, 'right panel is visible by default');
 
-    await click('.right-zone .close-zone .rsa-icon-close-filled');
+    await click('.right-zone .close-zone .rsa-icon-close');
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 0, 'right panel is not visible after close');
 
-    await click('.center-zone .rsa-icon-filter-2-filled');
+    await click('.center-zone .rsa-icon-filter-2');
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 1, 'right panel is visible on external open action');
 
   });
@@ -56,10 +56,10 @@ module('Integration | Component | rsa-page-layout', function(hooks) {
     assert.equal(findAll('hbox.rsa-page-layout.show-left-zone .left-zone').length, 1, 'left panel is visible by default');
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 0, 'right panel is not set');
 
-    await click('.left-zone .close-zone .rsa-icon-close-filled');
+    await click('.left-zone .close-zone .rsa-icon-close');
     assert.equal(findAll('hbox.rsa-page-layout.show-left-zone .left-zone').length, 0, 'left panel is not visible after close');
 
-    await click('.center-zone .rsa-icon-filter-2-filled');
+    await click('.center-zone .rsa-icon-filter-2');
     assert.equal(findAll('hbox.rsa-page-layout.show-left-zone .left-zone').length, 1, 'left panel is visible on external open action');
 
   });
@@ -77,7 +77,7 @@ module('Integration | Component | rsa-page-layout', function(hooks) {
     `);
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 1, 'right panel is visible by default');
 
-    await click('.center-zone .rsa-icon-close-filled');
+    await click('.center-zone .rsa-icon-close');
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 0, 'left panel is close on external action');
   });
 
@@ -105,7 +105,7 @@ module('Integration | Component | rsa-page-layout', function(hooks) {
     `);
     assert.equal(findAll('hbox.rsa-page-layout.show-left-zone .left-zone').length, 0, 'right panel is visible by default');
 
-    await click('.center-zone .rsa-icon-close-filled');
+    await click('.center-zone .rsa-icon-close');
     assert.equal(findAll('hbox.rsa-page-layout.show-left-zone .left-zone').length, 0, 'right panel is close');
   });
 
@@ -122,7 +122,7 @@ module('Integration | Component | rsa-page-layout', function(hooks) {
     `);
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 1, 'right panel is visible by default');
 
-    await click('.center-zone .rsa-icon-close-filled');
+    await click('.center-zone .rsa-icon-close');
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 0, 'rigth panel is close');
   });
 

@@ -19,7 +19,7 @@ module('Integration | Component | endpoint/download-status', function(hooks) {
 
     assert.equal(findAll('.download-status').length, 1, 'Download status has rendered.');
     assert.equal(findAll('.download-status .downloadToServerError3c3ec').length, 0, 'Tethered panel not present in successful state');
-    assert.equal(findAll('.rsa-green-color.rsa-icon-check-2-filled').length, 1, 'Successful Download status has rendered.');
+    assert.equal(findAll('.rsa-green-color.rsa-icon-check-2').length, 1, 'Successful Download status has rendered.');
   });
 
   test('Download status renders with error', async function(assert) {
@@ -28,7 +28,7 @@ module('Integration | Component | endpoint/download-status', function(hooks) {
 
     await render(hbs`{{endpoint/download-status downloadInfo=downloadInfo checksum=checksum}}`);
     assert.equal(findAll('.download-status span.rsa-content-tethered-panel-trigger').length, 1, 'Tethered panel present in error state');
-    assert.equal(findAll('.rsa-red-color.rsa-icon-report-problem-triangle-filled').length, 1, 'Error Download status has rendered.');
+    assert.equal(findAll('.rsa-red-color.rsa-icon-report-problem-triangle').length, 1, 'Error Download status has rendered.');
   });
 
   test('Download status renders with not downloaded', async function(assert) {

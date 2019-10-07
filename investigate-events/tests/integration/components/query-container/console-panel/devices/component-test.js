@@ -34,8 +34,8 @@ module('Integration | Component | console-devices', function(hooks) {
     `);
     assert.equal(findAll('.devices-status').length, 1);
     assert.equal(findAll('.devices-status div.all-online').length, 1);
-    assert.equal(findAll('.devices-status div.some-offline i.rsa-icon-report-problem-triangle-filled').length, 0);
-    assert.equal(findAll('.devices-status .one-line-summary i.rsa-icon-arrow-down-12-filled').length, 0);
+    assert.equal(findAll('.devices-status div.some-offline i.rsa-icon-report-problem-triangle').length, 0);
+    assert.equal(findAll('.devices-status .one-line-summary i.rsa-icon-arrow-down-12').length, 0);
     assert.equal(findAll('.devices-status div.some-offline').length, 0);
   });
 
@@ -46,7 +46,7 @@ module('Integration | Component | console-devices', function(hooks) {
     `);
     assert.equal(findAll('.devices-status div.all-online').length, 0);
     assert.equal(findAll('.devices-status div.some-offline').length, 1);
-    assert.equal(findAll('.devices-status div.some-offline i.rsa-icon-report-problem-triangle-filled').length, 1);
+    assert.equal(findAll('.devices-status div.some-offline i.rsa-icon-report-problem-triangle').length, 1);
     assert.equal(find('.devices-status div.some-offline').textContent.trim(), '1 service is offline.');
   });
 
@@ -58,7 +58,7 @@ module('Integration | Component | console-devices', function(hooks) {
     assert.equal(findAll('.devices-status div.all-online').length, 0);
     assert.equal(findAll('.devices-status div.some-offline').length, 1);
     assert.equal(find('.devices-status div.some-offline').textContent.trim(), '2 services are offline.');
-    assert.equal(findAll('.devices-status div.some-offline i.rsa-icon-report-problem-triangle-filled').length, 1);
+    assert.equal(findAll('.devices-status div.some-offline i.rsa-icon-report-problem-triangle').length, 1);
   });
 
   test('renders the summary of the top level device when streaming', async function(assert) {
@@ -126,7 +126,7 @@ module('Integration | Component | console-devices', function(hooks) {
     `);
     assert.equal(findAll('.devices-status .one-line-summary .circle.populated.open').length, 1);
     assert.equal(findAll('.devices-status .device-hierarchy').length, 2);
-    assert.equal(findAll('.devices-status .one-line-summary i.rsa-icon-arrow-down-12-filled').length, 1);
+    assert.equal(findAll('.devices-status .one-line-summary i.rsa-icon-arrow-down-12').length, 1);
   });
 
   test('renders when with children and closed', async function(assert) {
@@ -135,7 +135,7 @@ module('Integration | Component | console-devices', function(hooks) {
       {{query-container/console-panel/devices isExpanded=false}}
     `);
     assert.equal(findAll('.devices-status .one-line-summary .circle.populated.closed').length, 1);
-    assert.equal(findAll('.devices-status .one-line-summary i.rsa-icon-arrow-down-12-filled').length, 1);
+    assert.equal(findAll('.devices-status .one-line-summary i.rsa-icon-arrow-down-12').length, 1);
   });
 
 });

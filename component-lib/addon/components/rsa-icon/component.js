@@ -13,7 +13,6 @@ export default Component.extend({
   classNameBindings: [
     'active',
     'disabled',
-    'isLined:is-lined:is-filled',
     'iconClass',
     'isSmaller',
     'isSmall',
@@ -25,19 +24,17 @@ export default Component.extend({
   active: false,
   name: null,
   size: null, // ['smaller', 'small', 'large', 'larger', 'largest']
-  style: 'filled', // ['filled', 'lined']
   displayOnTab: null,
 
-  @equal('style', 'lined') isLined: null,
   @equal('size', 'small') isSmall: null,
   @equal('size', 'smaller') isSmaller: null,
   @equal('size', 'large') isLarge: null,
   @equal('size', 'larger') isLarger: null,
   @equal('size', 'largest') isLargest: null,
 
-  @computed('name', 'style')
-  iconClass(name, style) {
-    return `rsa-icon-${name}-${style}`;
+  @computed('name')
+  iconClass(name) {
+    return `rsa-icon-${name}`;
   },
 
   init() {

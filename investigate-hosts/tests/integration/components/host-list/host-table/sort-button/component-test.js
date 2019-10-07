@@ -20,7 +20,7 @@ module('Integration | Component | host-list/host-table/sort-button', function(ho
     await render(hbs`{{host-list/host-table/sort-button sortField=sortField column=column isSortDescending=isSortDescending}}`);
 
     assert.equal(findAll('.hideSort').length, 0, 'Sort button is displayed');
-    assert.equal(findAll('.rsa-icon-arrow-down-7-filled').length, 1, 'Sort descending');
+    assert.equal(findAll('.rsa-icon-arrow-down-7').length, 1, 'Sort descending');
   });
 
   test('it hides sort button', async function(assert) {

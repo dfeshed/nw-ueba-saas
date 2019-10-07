@@ -15,14 +15,14 @@
   &::before {
     @include rsa-font(body);
     font-family: 'nw-icon-library-all-1';
-    content: $rsa-icon-check-box-unchecked-1-filled;
+    content: $rsa-icon-check-box-unchecked-1;
     margin-right: rsa-whitespace(least);
   }
 
   &.checked {
     &::before {
       color: $formCheckboxActiveColor;
-      content: $rsa-icon-check-box-1-filled;
+      content: $rsa-icon-check-box-1;
     }
   }
 
@@ -97,12 +97,12 @@ li > .rsa-form-checkbox-label {
     @include rsa-font(body);
     line-height: 1rem; /* fixes more weirdness in the data table */
     font-family: 'nw-icon-library-all-1';
-    content: $rsa-icon-check-box-unchecked-1-filled;
+    content: $rsa-icon-check-box-unchecked-1;
   }
 
   /* custom checked checkbox */
   input[type=checkbox]:checked+span::before {
-    content: $rsa-icon-check-box-1-filled;
+    content: $rsa-icon-check-box-1;
     color: text-color(secondary);
   }
 
@@ -133,7 +133,7 @@ li > .rsa-form-checkbox-label {
     &:hover {
       color: text-color(accentOne);;
     }
-        
+
     input[type=checkbox]+span::before {
       color: text-color(accentOne);
     }

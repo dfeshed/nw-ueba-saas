@@ -6,7 +6,7 @@ import { setupRenderingTest } from 'ember-qunit';
 module('Integration | Component | item ', function(hooks) {
   setupRenderingTest(hooks);
 
-  const editable = 'rsa-icon-settings-1-lined';
+  const editable = 'rsa-icon-settings-1';
   const item = { id: '1', name: 'foo' };
 
   test('Component for item renders when no selectedItem is passed, no is-editable indicators', async function(assert) {

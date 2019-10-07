@@ -32,7 +32,7 @@ const assertForInvestigateColumnAndColumnSelector = async function(assert, heade
   assert.equal(find(`${columnGroupItemList}.is-selected`).textContent.trim(), selectedOptionName,
     `Selected column group should be ${selectedOptionName}.`);
 
-  await click('.rsa-icon-cog-filled');
+  await click('.rsa-icon-cog');
   assert.equal(findAll('li .rsa-form-checkbox-label').length, count,
     `Should show all columns for column selector for ${selectedOptionName}.`);
 };
@@ -169,7 +169,7 @@ module('Integration | Component | events-table-container', function(hooks) {
   test('it renders default table', async function(assert) {
     await renderDefaultEventTable();
     assert.equal(findAll('.rsa-investigate-events-table').length, 1);
-    assert.equal(findAll('.rsa-icon-cog-filled').length, 1, 'There should be a column selector icon.');
+    assert.equal(findAll('.rsa-icon-cog').length, 1, 'There should be a column selector icon.');
   });
 
   // 16 columns including column for checkbox though checkbox itself might be hidden if no results are populated

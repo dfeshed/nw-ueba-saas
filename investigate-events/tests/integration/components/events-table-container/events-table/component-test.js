@@ -283,9 +283,9 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table}}`);
     assert.notOk(find('h2[title=\'Collection Time\'] .js-move-handle')); // Collection time is not draggable
-    assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator .rsa-icon-arrow-up-7-filled').length, 2);
-    assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-up-7-filled').length, 1);
-    assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator:not(.active) .rsa-icon-arrow-up-7-filled').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator .rsa-icon-arrow-up-7').length, 2);
+    assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-up-7').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator:not(.active) .rsa-icon-arrow-up-7').length, 1);
   });
 
   test('event table is displayed with expected ascending sort controls', async function(assert) {
@@ -303,7 +303,7 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table}}`);
     assert.ok(find('h2[title=\'Summary\'] .disabled-sort')); // Summary should always be disabled
-    assert.ok(find('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-up-7-filled'));
+    assert.ok(find('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-up-7'));
   });
 
   test('event table header has sort disabled while streaming', async function(assert) {
@@ -338,7 +338,7 @@ module('Integration | Component | events-table', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
-    assert.ok(find('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-down-7-filled'));
+    assert.ok(find('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-down-7'));
   });
 
   test('event table sort controls calls _toggleSort', async function(assert) {

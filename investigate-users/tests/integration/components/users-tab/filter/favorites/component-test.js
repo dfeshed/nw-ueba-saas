@@ -73,7 +73,7 @@ module('Integration | Component | users-tab/filter/favorites', function(hooks) {
     });
 
     // get first filled icon
-    await click(findAll('.rsa-icon-bin-1-filled').shift());
+    await click(findAll('.rsa-icon-bin-1').shift());
     later(() => {
       assert.equal(findAll('.users-tab_filter_favorites_filter_close').length, 0);
       done();

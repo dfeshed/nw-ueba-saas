@@ -51,7 +51,7 @@ module('Integration | Component | endpoint/string-view', function(hooks) {
 
     assert.equal(findAll('.string-view').length, 1, 'String view component has rendered.');
     assert.equal(findAll('.rsa-data-table-body-row').length, 6, 'String view component has rendered 6 rows.');
-    assert.equal(findAll('.rsa-icon-check-2-filled').length, 4, 'rsa-icon-check-2-filled present only for the rows where unicode is true');
+    assert.equal(findAll('.rsa-icon-check-2').length, 4, 'rsa-icon-check-2 present only for the rows where unicode is true');
     assert.equal(findAll('.unicode-false').length, 2, 'unicode-false present only for the rows where unicode is false');
   });
 
@@ -93,7 +93,7 @@ module('Integration | Component | endpoint/string-view', function(hooks) {
     await render(hbs`{{endpoint/string-view fileData=fileData searchText=searchText}}`);
 
     assert.equal(findAll('.rsa-data-table-body-row').length, 1, 'String view component has rendered 1 row as filtered set has one item.');
-    assert.equal(findAll('.rsa-icon-check-2-filled').length, 0, 'rsa-icon-check-2-filled not present for the filtered data set as unicode is false');
+    assert.equal(findAll('.rsa-icon-check-2').length, 0, 'rsa-icon-check-2 not present for the filtered data set as unicode is false');
     assert.equal(findAll('.unicode-false').length, 1, 'unicode-false present for the row as unicode is false');
   });
 

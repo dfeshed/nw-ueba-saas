@@ -59,8 +59,8 @@ module('Integration | Component | Editable Field', function(hooks) {
     await render(hbs`{{respond-common/editable-field value=value}}`);
     await click('.editable-field .editable-field__value');
     return settled().then(() => {
-      assert.equal(findAll('.editable-field button.rsa-form-button i.rsa-icon-check-2-filled').length, 1, 'The editable-field now contains a confirm button');
-      assert.equal(findAll('.editable-field button.rsa-form-button i.rsa-icon-close-filled').length, 1, 'The editable-field now contains a cancel button');
+      assert.equal(findAll('.editable-field button.rsa-form-button i.rsa-icon-check-2').length, 1, 'The editable-field now contains a confirm button');
+      assert.equal(findAll('.editable-field button.rsa-form-button i.rsa-icon-close').length, 1, 'The editable-field now contains a cancel button');
     });
   });
 

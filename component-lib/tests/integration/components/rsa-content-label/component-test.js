@@ -86,7 +86,7 @@ module('Integration | Component | rsa-content-label', function(hooks) {
 
   test('it includes the close icon when click is defined', async function(assert) {
     await render(hbs `{{rsa-content-label click=true label='Foo'}}`);
-    const iconCount = findAll('.rsa-content-label .rsa-icon-close-filled').length;
+    const iconCount = findAll('.rsa-content-label .rsa-icon-close').length;
     assert.equal(iconCount, 1);
   });
 });

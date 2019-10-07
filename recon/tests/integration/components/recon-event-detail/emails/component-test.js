@@ -79,14 +79,14 @@ module('Integration | Component | recon-event-detail/emails', function(hooks) {
 
     await render(hbs`{{recon-event-detail/emails}}`);
 
-    assert.equal(findAll('.rsa-icon-add-circle-1-filled').length, 4, '4 emails are collapse by default');
+    assert.equal(findAll('.rsa-icon-add-circle-1').length, 4, '4 emails are collapse by default');
 
-    await click(findAll('.rsa-icon-add-circle-1-filled')[0]);
-    assert.equal(findAll('.recon-email-collapse-header .rsa-icon-subtract-circle-1-filled').length, 1, 'First email is expanded');
-    assert.equal(findAll('.recon-email-collapse-header .rsa-icon-add-circle-1-filled').length, 3, '3 emails are collapsed now after 1 email is expanded');
+    await click(findAll('.rsa-icon-add-circle-1')[0]);
+    assert.equal(findAll('.recon-email-collapse-header .rsa-icon-subtract-circle-1').length, 1, 'First email is expanded');
+    assert.equal(findAll('.recon-email-collapse-header .rsa-icon-add-circle-1').length, 3, '3 emails are collapsed now after 1 email is expanded');
 
-    await click(findAll('.rsa-icon-subtract-circle-1-filled')[0]);
-    assert.equal(findAll('.rsa-icon-add-circle-1-filled').length, 4, '4 emails are collapse again');
+    await click(findAll('.rsa-icon-subtract-circle-1')[0]);
+    assert.equal(findAll('.rsa-icon-add-circle-1').length, 4, '4 emails are collapse again');
 
     const strValue = find('.recon-email-header').textContent.trim().replace(/\s/g, '').substring(0, 200);
     assert.equal(strValue, 'fromeddard.stark@verizon.nettosansa.stark@verizon.net,arya.stark@verizon.net,robb.stark@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?');

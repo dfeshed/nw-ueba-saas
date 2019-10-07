@@ -477,7 +477,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     await render(hbs`{{host-detail/process}}`);
     assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
     await click('.close-filter .rsa-form-button');
-    assert.equal(findAll('.rsa-icon-filter-2-filled').length, 1, 'on clicking Fiters button filter panel opens up');
+    assert.equal(findAll('.rsa-icon-filter-2').length, 1, 'on clicking Fiters button filter panel opens up');
     assert.equal(findAll('.close-filter').length, 0, 'Filters button will hide on opening of Filter panel');
     await click('.close-zone .rsa-form-button');
     assert.equal(findAll('.close-filter').length, 1, 'on click of close Filters button Filters button showed');
@@ -503,7 +503,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     await render(hbs`{{host-detail/process}}`);
     assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
     await click('.close-filter .rsa-form-button');
-    assert.equal(findAll('.rsa-icon-filter-2-filled').length, 1, 'on clicking Fiters button filter panel opens up');
+    assert.equal(findAll('.rsa-icon-filter-2').length, 1, 'on clicking Fiters button filter panel opens up');
     await click('.fileProperties-signature-features .list-filter .list-filter-option');
     await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(findAll('.rsa-data-table-body-row').length, 37, 'one row is getting filtered');

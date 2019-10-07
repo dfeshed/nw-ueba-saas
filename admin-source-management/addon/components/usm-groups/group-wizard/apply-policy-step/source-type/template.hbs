@@ -36,7 +36,7 @@
     </td>
     <td class="remove-cell">
       <span class="remove-source-type" onclick={{action 'handleSourceTypeRemove' selectedSourceType}} onkeyup={{action 'handleSourceTypeRemove' selectedSourceType}}>
-        {{rsa-icon size='large' displayOnTab=true name="remove-circle-1" style="lined"}}
+        {{rsa-icon size='large' displayOnTab=true name="remove-circle-1"}}
       </span>
     </td>
   </tr>
@@ -48,7 +48,7 @@
           {{#rsa-text-with-tooltip value=(t 'adminUsm.groupWizard.applyPolicy.availableTooltip')
             style="standard"
             alwaysShow=true}}
-            {{rsa-icon size='large' displayOnTab=true name="information-circle" style='lined'}}
+            {{rsa-icon size='large' displayOnTab=true name="information-circle"}}
           {{/rsa-text-with-tooltip}}
         </div>
       </div>
@@ -74,14 +74,14 @@
               </td>
               <td>
                 {{#rsa-form-button class="assign-policy"
-                  isIconOnly=true 
+                  isIconOnly=true
                   isDisabled=hasSelectedPolicy
                   defaultAction=(action 'handlePolicyAssignment' item)}}
-                  {{rsa-icon name="add-circle-1" displayOnTab=(not hasSelectedPolicy) style="lined"}}
+                  {{rsa-icon name="add-circle-1" displayOnTab=(not hasSelectedPolicy)}}
                 {{/rsa-form-button}}
               </td>
             </tr>
-          {{/if}}            
+          {{/if}}
         {{/each}}
       </table>
     </td>
@@ -92,7 +92,7 @@
           {{#rsa-text-with-tooltip value=(t 'adminUsm.groupWizard.applyPolicy.selectedTooltip')
             style="standard"
             alwaysShow=true}}
-            {{rsa-icon size='large' displayOnTab=true name="information-circle" style='lined'}}
+            {{rsa-icon size='large' displayOnTab=true name="information-circle"}}
           {{/rsa-text-with-tooltip}}
         </div>
       </div>
@@ -117,10 +117,10 @@
             </td>
             <td>
               {{#rsa-form-button class="remove-policy"
-                isIconOnly=true 
+                isIconOnly=true
                 isDisabled=false
                 defaultAction=(action 'handlePolicyRemove' selectedPolicy)}}
-                {{rsa-icon name="remove-circle-1" displayOnTab=true style="lined"}}
+                {{rsa-icon name="remove-circle-1" displayOnTab=true}}
               {{/rsa-form-button}}
             </td>
           </tr>

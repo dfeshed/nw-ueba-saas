@@ -38,13 +38,13 @@ module('Integration | Component | entity-details-container/body/alert-details/in
 
     await render(hbs`{{entity-details-container/body/alert-details/indicators}}`);
 
-    return waitUntil(() => document.querySelectorAll('.rsa-icon-arrow-right-12-filled').length === 1, { timeout }).then(() => {
+    return waitUntil(() => document.querySelectorAll('.rsa-icon-arrow-right-12').length === 1, { timeout }).then(() => {
 
       assert.equal(find('.entity-details-container-body-alert-details_indicators_flow_timeline').scrollLeft, 0);
-      click('.rsa-icon-arrow-right-12-filled');
+      click('.rsa-icon-arrow-right-12');
       return waitUntil(() => find('.entity-details-container-body-alert-details_indicators_flow_timeline').scrollLeft > 20, { timeout }).then(() => {
         assert.ok(find('.entity-details-container-body-alert-details_indicators_flow_timeline').scrollLeft > 20);
-        click('.rsa-icon-arrow-left-12-filled');
+        click('.rsa-icon-arrow-left-12');
         return waitUntil(() => find('.entity-details-container-body-alert-details_indicators_flow_timeline').scrollLeft === 0, { timeout }).then(() => {
           assert.equal(find('.entity-details-container-body-alert-details_indicators_flow_timeline').scrollLeft, 0);
         });

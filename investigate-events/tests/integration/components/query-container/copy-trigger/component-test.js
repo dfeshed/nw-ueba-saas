@@ -27,7 +27,7 @@ module('Integration | Component | copy-trigger', function(hooks) {
     await render(hbs`
       {{query-container/copy-trigger}}
     `);
-    assert.equal(findAll('.copy-trigger.is-disabled .rsa-icon-copy-1-lined').length, 1);
+    assert.equal(findAll('.copy-trigger.is-disabled .rsa-icon-copy-1').length, 1);
     assert.equal(find('.copy-trigger.is-disabled i').getAttribute('title').trim(), 'Click to copy will become available when filters are present.');
   });
 

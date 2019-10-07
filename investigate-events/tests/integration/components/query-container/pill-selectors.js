@@ -26,7 +26,7 @@ export default {
   complexPillInput: '.complex-pill input',
   complexPillInputFocus: '.complex-pill input:focus',
   deletePill: '.delete-pill',
-  expensiveIndicator: '.rsa-icon-stopwatch-lined.is-expensive',
+  expensiveIndicator: '.rsa-icon-stopwatch.is-expensive',
   expensivePill: '.query-pill.is-expensive',
   focusedPill: '.is-focused',
   focusedQueryPill: '.query-pill.is-focused',

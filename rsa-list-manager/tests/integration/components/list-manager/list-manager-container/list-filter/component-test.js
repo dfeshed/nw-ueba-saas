@@ -30,7 +30,7 @@ module('Integration | Component | list filter', function(hooks) {
     }}`);
 
     assert.ok(find('.list-filter'), 'list filter component found');
-    assert.ok(find('.list-filter .rsa-icon-filter-2-filled'), 'filter icon found');
+    assert.ok(find('.list-filter .rsa-icon-filter-2'), 'filter icon found');
     assert.equal(find('.list-filter input').getAttribute('placeholder'), 'Filter list of things');
 
     await click(find('.list-filter input'));

@@ -42,7 +42,7 @@ const renderApplicationContent = async function(ctx, assert) {
       </grid>
     {{/rsa-application-content}}
   `);
-  await click('.rsa-icon-settings-1-filled');
+  await click('.rsa-icon-settings-1');
   await waitUntil(() => findAll('.rsa-preferences-field-content').length === 7, { timeout: 3000 });
   assert.ok(find('.is-expanded'), 'Preference Panel opened.');
 };

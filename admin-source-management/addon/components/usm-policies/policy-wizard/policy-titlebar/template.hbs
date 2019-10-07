@@ -1,13 +1,13 @@
 <div>                 
   {{#if policy.name}}
     {{#rsa-text-with-tooltip value=policy.name style="standard"}}
-      {{rsa-icon name='settings-1' style='lined'}}
+      {{rsa-icon name='settings-1'}}
       <label class="policy-name-label">
         {{policy.name}}  
       </label>
     {{/rsa-text-with-tooltip}}        
   {{else}}    
-    {{rsa-icon name='settings-1' style='lined'}}
+    {{rsa-icon name='settings-1'}}
     <label class="policy-name-label">
       {{t 'adminUsm.policyWizard.newPolicy'}}      
     </label>

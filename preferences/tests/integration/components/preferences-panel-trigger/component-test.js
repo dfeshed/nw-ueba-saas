@@ -54,7 +54,7 @@ module('Integration | Component | Preferences Panel Trigger', function(hooks) {
     await render(contentToRender);
 
     await waitFor('.rsa-preferences-panel-trigger');
-    await click('.rsa-icon-settings-1-filled');
+    await click('.rsa-icon-settings-1');
     await waitFor('.ember-power-select-selected-item', { count: 4 });
     assert.equal(findAll('.is-expanded').length, 1, 'preference panel opened without publishing preferences');
   });
@@ -68,7 +68,7 @@ module('Integration | Component | Preferences Panel Trigger', function(hooks) {
 
     await render(contentToRender);
     await waitFor('.rsa-preferences-panel-trigger');
-    await click('.rsa-icon-settings-1-filled');
+    await click('.rsa-icon-settings-1');
     await waitFor('.rsa-form-radio-group-label');
     await click('.rsa-form-radio-label.WALL');
   });
@@ -85,7 +85,7 @@ module('Integration | Component | Preferences Panel Trigger', function(hooks) {
     await render(contentToRender);
 
     await waitFor('.rsa-preferences-panel-trigger');
-    await click('.rsa-icon-settings-1-filled');
+    await click('.rsa-icon-settings-1');
     await waitFor('.rsa-form-radio-group-label');
     await click('.rsa-form-radio-label.WALL');
   });
@@ -98,9 +98,9 @@ module('Integration | Component | Preferences Panel Trigger', function(hooks) {
     await render(contentToRender);
 
     await waitFor('.rsa-preferences-panel-trigger');
-    await click('.rsa-icon-settings-1-filled');
+    await click('.rsa-icon-settings-1');
     await waitFor('.rsa-form-radio-group-label');
-    await click('.rsa-icon-settings-1-filled');
+    await click('.rsa-icon-settings-1');
     assert.equal(findAll('.is-expanded').length, 0, 'preference panel closed without publishing preferences');
   });
 });

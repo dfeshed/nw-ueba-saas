@@ -5,12 +5,12 @@
     <div class='mft-folder parent' {{action 'fetchSubdirectoriesAndFiles' data}}>
       {{#if isMainDrive}}
         <span class='mft-folder-icon main-drive'>
-          {{rsa-icon style='filled' name='computer-disk-drive-1'}}
+          {{rsa-icon name='computer-disk-drive-1'}}
         </span>
         <span class='file main-drive'>{{value}}</span>
       {{else}}
         <span class='mft-folder-icon'>
-          {{rsa-icon style='filled' name='folder-2'}}
+          {{rsa-icon name='folder-2'}}
         </span>
         <span class='file'>{{value}}</span>
       {{/if}}
@@ -26,7 +26,7 @@
 
   <div class='mft-folder no-sub-folders' {{action 'fetchSubdirectoriesAndFiles' data}}>
     <span class='mft-folder-icon'>
-      {{rsa-icon style='filled' name='folder-2'}}
+      {{rsa-icon name='folder-2'}}
     </span>
     <span class='file'>{{value}}</span>
   </div>

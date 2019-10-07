@@ -471,7 +471,7 @@ module('Integration | Component | file list', function(hooks) {
         }
       </style>
       {{file-list}}`);
-    await click('.rsa-icon-cog-filled');
+    await click('.rsa-icon-cog');
 
     await settled();
 
@@ -1061,7 +1061,7 @@ module('Integration | Component | file list', function(hooks) {
         }
       </style>
       {{file-list}}`);
-    await click('.rsa-icon-cog-filled');
+    await click('.rsa-icon-cog');
 
     await settled();
     assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[0].textContent.trim(), 'File Name');

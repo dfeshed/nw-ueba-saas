@@ -30,6 +30,6 @@ module('Integration | Component | rsa-header-with-close', function(hooks) {
       assert.ok(true, 'closeAction is called');
     });
     await render(hbs`{{rsa-page-layout/rsa-header-with-close closeAction=closeAction}}`);
-    await click('.close-zone .rsa-icon-close-filled');
+    await click('.close-zone .rsa-icon-close');
   });
 });

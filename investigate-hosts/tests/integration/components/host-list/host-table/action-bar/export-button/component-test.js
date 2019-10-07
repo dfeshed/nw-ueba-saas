@@ -45,8 +45,8 @@ module('Integration | Component | host-list/host-table/action-bar/export-button'
       .build();
     await render(hbs`{{host-list/host-table/action-bar/export-button}}`);
     assert.equal(findAll('.rsa-form-button-wrapper button .rsa-loader').length, 0, 'loader is not present');
-    assert.equal(findAll('.rsa-form-button-wrapper button .rsa-icon-file-zipped-filled').length, 1, 'default export button is rendered');
-    assert.equal(find('.rsa-form-button-wrapper button .rsa-icon-file-zipped-filled').getAttribute('title').trim(), 'Export to CSV', 'Export to CSV button is rendered.');
+    assert.equal(findAll('.rsa-form-button-wrapper button .rsa-icon-file-zipped').length, 1, 'default export button is rendered');
+    assert.equal(find('.rsa-form-button-wrapper button .rsa-icon-file-zipped').getAttribute('title').trim(), 'Export to CSV', 'Export to CSV button is rendered.');
   });
 
   test('Export to CSV title when broker view', async function(assert) {
@@ -66,7 +66,7 @@ module('Integration | Component | host-list/host-table/action-bar/export-button'
       .services(services)
       .build();
     await render(hbs`{{host-list/host-table/action-bar/export-button}}`);
-    assert.equal(findAll('.export-button .rsa-icon-file-zipped-filled')[0].title, 'Export to CSV is not supported for Endpoint Broker', 'Title for broker view.');
+    assert.equal(findAll('.export-button .rsa-icon-file-zipped')[0].title, 'Export to CSV is not supported for Endpoint Broker', 'Title for broker view.');
   });
 
 });

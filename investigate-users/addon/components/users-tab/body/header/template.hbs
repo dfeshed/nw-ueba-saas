@@ -2,7 +2,7 @@
   {{severity-bar data=usersSeverity}}
   <div class='users-tab_body_header_bar'>
     <div class='users-tab_body_header_bar_count'>
-      <div  class='users-tab_body_header_bar_count_number'>
+      <div class='users-tab_body_header_bar_count_number'>
         {{totalUsers}} {{t 'investigateUsers.users.title'}}
       </div>
       <div>
@@ -22,16 +22,16 @@
     </div>
     <div class='users-tab_body_header_bar_control'>
       <div>
-        {{#rsa-form-button click=(action 'exportUsers')}} 
-          {{rsa-icon size='medium' style='filled' name='file-zipped'}} {{t 'investigateUsers.export'}}
+        {{#rsa-form-button click=(action 'exportUsers')}}
+          {{rsa-icon size='medium' name='file-zipped'}} {{t 'investigateUsers.export'}}
         {{/rsa-form-button}}
       </div>
       <div>
         {{#rsa-form-button click=(action 'followUsersAction')}}
           {{#if (eq allWatched true)}}
-            {{rsa-icon size='medium' style='filled' name='view-1'}} {{t 'investigateUsers.users.removeAllFromWatchedList'}}
+            {{rsa-icon size='medium' name='view-1'}} {{t 'investigateUsers.users.removeAllFromWatchedList'}}
           {{else}}
-            {{rsa-icon size='medium' style='lined' name='view-1'}} {{t 'investigateUsers.users.addAllToWatchedList'}}
+            {{rsa-icon size='medium' name='view-1'}} {{t 'investigateUsers.users.addAllToWatchedList'}}
           {{/if}}
         {{/rsa-form-button}}
       </div>

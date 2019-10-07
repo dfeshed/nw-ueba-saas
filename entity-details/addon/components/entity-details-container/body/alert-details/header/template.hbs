@@ -6,7 +6,7 @@
     | {{alertDetails.timeframe}}
   </div>
   <div class='entity-details-container-body-alert-details_header_details_severity {{alertDetails.severity}}'>
-    
+
   </div>
   <div class='entity-details-container-body-alert-details_header_details_severity-name'>
     {{alertDetails.severity}}
@@ -14,9 +14,9 @@
   <div class='entity-details-container-body-alert-details_header_details_risk'>
     {{#rsa-form-button click=(action 'updateRisk')}}
       {{#if (eq alertDetails.userScoreContribution 0)}}
-        {{rsa-icon size='medium' style='lined' name='binoculars'}} {{t 'investigateUsers.alerts.risk'}}
+        {{rsa-icon size='medium' name='binoculars'}} {{t 'investigateUsers.alerts.risk'}}
       {{else}}
-        {{rsa-icon size='medium' style='filled' name='binoculars'}} {{t 'investigateUsers.alerts.notARisk'}}
+        {{rsa-icon size='medium' name='binoculars'}} {{t 'investigateUsers.alerts.notARisk'}}
       {{/if}}
     {{/rsa-form-button}}
   </div>

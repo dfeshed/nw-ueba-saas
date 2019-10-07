@@ -43,7 +43,7 @@ module('Integration | Component | process-details', function(hooks) {
     // Handle any actions with this.set('myAction', function(val) { ... });
 
     await render(hbs`{{process-details}}`);
-    assert.equal(findAll('.rsa-icon-expand-diagonal-4-filled').length, 1, 'Expand diagonal by default');
+    assert.equal(findAll('.rsa-icon-expand-diagonal-4').length, 1, 'Expand diagonal by default');
 
   });
 
@@ -53,20 +53,20 @@ module('Integration | Component | process-details', function(hooks) {
       .queryInput(queryInput)
       .build();
     await render(hbs`{{process-details}}`);
-    assert.equal(findAll('.rsa-icon-expand-diagonal-4-filled').length, 1, 'Expand diagonal by default');
-    await click('.rsa-icon-expand-diagonal-4-filled');
+    assert.equal(findAll('.rsa-icon-expand-diagonal-4').length, 1, 'Expand diagonal by default');
+    await click('.rsa-icon-expand-diagonal-4');
     return settled().then(() => {
-      assert.equal(findAll('.rsa-icon-shrink-diagonal-2-filled').length, 1, 'Panel shrinks');
+      assert.equal(findAll('.rsa-icon-shrink-diagonal-2').length, 1, 'Panel shrinks');
     });
   });
 
   test('close details button will set the state correctly', async function(assert) {
     await render(hbs`{{process-details}}`);
-    assert.equal(findAll('.rsa-icon-expand-diagonal-4-filled').length, 1, 'Expand diagonal by default');
+    assert.equal(findAll('.rsa-icon-expand-diagonal-4').length, 1, 'Expand diagonal by default');
     const redux = this.owner.lookup('service:redux');
     const state = redux.getState();
     assert.equal(state.processAnalysis.processVisuals.isProcessDetailsVisible, false, 'not visible');
-    await click('.rsa-icon-close-filled');
+    await click('.rsa-icon-close');
     return settled().then(() => {
       const state = redux.getState();
       assert.equal(state.processAnalysis.processVisuals.isProcessDetailsVisible, false, 'not visible');

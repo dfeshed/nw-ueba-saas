@@ -185,7 +185,7 @@ module('Integration | Component | host-detail/downloads/mft-container/mft-list/b
     await render(hbs`{{host-detail/downloads/mft-container/mft-list/body-cell column=column item=item serverId=serverId}}`);
     const links = findAll('.downloaded-file-name span a');
     assert.equal(links.length, 0, 'downloaded-file-name file is not linked');
-    assert.equal(findAll('.rsa-icon-file-new-1-filled').length, 1, 'one file icon displayed for file');
+    assert.equal(findAll('.rsa-icon-file-new-1').length, 1, 'one file icon displayed for file');
   });
   test('item name directory is link test', async function(assert) {
     initState(endpointState);
@@ -197,7 +197,7 @@ module('Integration | Component | host-detail/downloads/mft-container/mft-list/b
     await render(hbs`{{host-detail/downloads/mft-container/mft-list/body-cell column=column item=item serverId=serverId}}`);
     const links = findAll('.downloaded-file-name span a');
     assert.equal(links.length, 1, 'downloaded-file-name file is not linked');
-    assert.equal(findAll('.rsa-icon-folder-2-filled').length, 1, 'one folder icon displayed for folder');
+    assert.equal(findAll('.rsa-icon-folder-2').length, 1, 'one folder icon displayed for folder');
   });
   test('file should not link if not file or mft test', async function(assert) {
     const column = EmberObject.create({ field: 'fileName' });

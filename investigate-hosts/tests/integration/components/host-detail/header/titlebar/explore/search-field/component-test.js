@@ -43,7 +43,7 @@ module('Integration | Component | endpoint host titlebar explore search field', 
     const redux = this.owner.lookup('service:redux');
     this.set('searchText', 'sys');
     await render(hbs`{{host-detail/header/titlebar/explore/search-field searchText=searchText navigateToTab=navigateToTab}}`);
-    assert.ok(find('.rsa-icon-search-filled'), 'search-field search icon validated');
+    assert.ok(find('.rsa-icon-search'), 'search-field search icon validated');
     await click('.rsa-form-button');
     const state = redux.getState();
     assert.equal(state.endpoint.explore.showSearchResults, true, 'Defalut action validated');

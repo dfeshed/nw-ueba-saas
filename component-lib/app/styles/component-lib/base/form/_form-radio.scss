@@ -20,14 +20,14 @@
 
   &::before {
     font-family: 'nw-icon-library-all-1';
-    content: $rsa-icon-radio-button-unselected-1-filled;
+    content: $rsa-icon-radio-button-unselected-1;
     position: relative;
     margin-right: rsa-whitespace(least);
   }
 
   &.checked {
     &::before {
-      content: $rsa-icon-radio-button-selected-1-filled;
+      content: $rsa-icon-radio-button-selected-1;
       color: text-color(secondary);
     }
   }
@@ -121,13 +121,13 @@
     height: 1rem; /*.97rem;*/
     margin: rsa-whitespace(least);
     font-family: 'nw-icon-library-all-1';
-    content: $rsa-icon-radio-button-unselected-1-filled;
+    content: $rsa-icon-radio-button-unselected-1;
     border-radius: 50%
   }
 
   /* custom checked radio */
   input[type=radio]:checked+span::before {
-    content: $rsa-icon-radio-button-selected-1-filled;
+    content: $rsa-icon-radio-button-selected-1;
     color: text-color(secondary);
   }
 
@@ -153,7 +153,7 @@
   /* error text & custom error radio */
   &.error {
     color: text-color(accentOne);
-    
+
     input[type=radio]+span::before {
       color: text-color(accentOne);
     }

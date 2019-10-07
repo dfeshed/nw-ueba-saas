@@ -129,23 +129,23 @@ module('Integration | Component | recon event titlebar', function(hooks) {
   test('header toggle renders properly when active', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().isHeaderOpen(true).build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.ok(find('.rsa-icon-layout-6-filled'), 'icon is displayed');
-    assert.ok(find('.rsa-icon-layout-6-filled.active'), 'icon is active');
+    assert.ok(find('.rsa-icon-layout-6'), 'icon is displayed');
+    assert.ok(find('.rsa-icon-layout-6.active'), 'icon is active');
   });
 
   test('header toggle renders properly when inactive', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().isHeaderOpen(false).build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.ok(find('.rsa-icon-layout-6-filled'), 'icon is displayed');
-    assert.notOk(find('.rsa-icon-layout-6-filled.active'), 'icon is not active');
+    assert.ok(find('.rsa-icon-layout-6'), 'icon is displayed');
+    assert.notOk(find('.rsa-icon-layout-6.active'), 'icon is not active');
   });
 
   test('clicking header toggles header icon being active', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().isHeaderOpen(true).build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.ok(find('.rsa-icon-layout-6-filled.active'), 'icon is active to stat');
-    await click('.rsa-icon-layout-6-filled');
-    assert.notOk(find('.rsa-icon-layout-6-filled.active'), 'icon toggles to inactive after toggle');
+    assert.ok(find('.rsa-icon-layout-6.active'), 'icon is active to stat');
+    await click('.rsa-icon-layout-6');
+    assert.notOk(find('.rsa-icon-layout-6.active'), 'icon toggles to inactive after toggle');
   });
 
   // TODO, move this to a integration/unit test on the action creator, just call the function with a new settting
@@ -154,11 +154,11 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     assert.expect(4);
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().isHeaderOpen(true).build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.ok(find('.rsa-icon-layout-6-filled'), 'icon is displayed');
-    assert.ok(find('.rsa-icon-layout-6-filled.active'), 'icon is active');
-    await click('.rsa-icon-layout-6-filled.active');
-    assert.ok(find('.rsa-icon-layout-6-filled'), 'icon is displayed');
-    assert.notOk(find('.rsa-icon-layout-6-filled.active'), 'icon is not active');
+    assert.ok(find('.rsa-icon-layout-6'), 'icon is displayed');
+    assert.ok(find('.rsa-icon-layout-6.active'), 'icon is active');
+    await click('.rsa-icon-layout-6.active');
+    assert.ok(find('.rsa-icon-layout-6'), 'icon is displayed');
+    assert.notOk(find('.rsa-icon-layout-6.active'), 'icon is not active');
   });
 
   // request/response toggle
@@ -261,9 +261,9 @@ module('Integration | Component | recon event titlebar', function(hooks) {
   test('shrink and close icons do not show in standalone mode', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isFileView().isStandalone(true).build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.notOk(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is not visible');
-    assert.notOk(find('.rsa-icon-expand-diagonal-4-filled'), 'icon is not visible');
-    assert.notOk(find('.rsa-icon-close-filled'), 'icon is not visible');
+    assert.notOk(find('.rsa-icon-shrink-diagonal-2'), 'icon is not visible');
+    assert.notOk(find('.rsa-icon-expand-diagonal-4'), 'icon is not visible');
+    assert.notOk(find('.rsa-icon-close'), 'icon is not visible');
   });
 
   test('shrink and close icons show when not in standalone mode', async function(assert) {
@@ -275,8 +275,8 @@ module('Integration | Component | recon event titlebar', function(hooks) {
       .isReconOpen(true)
       .build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
-    assert.ok(find('.rsa-icon-close-filled'), 'icon is visible');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2'), 'icon is visible');
+    assert.ok(find('.rsa-icon-close'), 'icon is visible');
   });
 
   // shrink/expand button
@@ -284,24 +284,24 @@ module('Integration | Component | recon event titlebar', function(hooks) {
   test('shrink toggle renders proper expanded state', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isFileView().isReconExpanded(true).build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
-    assert.notOk(find('.rsa-icon-expand-diagonal-4-filled'), 'icon is not visible');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2'), 'icon is visible');
+    assert.notOk(find('.rsa-icon-expand-diagonal-4'), 'icon is not visible');
   });
 
   test('shrink toggle renders proper shrunk state', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isFileView().isReconExpanded(false).build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.notOk(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is not visible');
-    assert.ok(find('.rsa-icon-expand-diagonal-4-filled'), 'icon is visible');
+    assert.notOk(find('.rsa-icon-shrink-diagonal-2'), 'icon is not visible');
+    assert.ok(find('.rsa-icon-expand-diagonal-4'), 'icon is visible');
   });
 
   test('clicking shrink executes action', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isFileView().isReconExpanded(true).build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
-    await click('.rsa-icon-shrink-diagonal-2-filled');
-    assert.notOk(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is not visible');
-    assert.ok(find('.rsa-icon-expand-diagonal-4-filled'), 'icon is visible');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2'), 'icon is visible');
+    await click('.rsa-icon-shrink-diagonal-2');
+    assert.notOk(find('.rsa-icon-shrink-diagonal-2'), 'icon is not visible');
+    assert.ok(find('.rsa-icon-expand-diagonal-4'), 'icon is visible');
   });
 
   // close button
@@ -309,7 +309,7 @@ module('Integration | Component | recon event titlebar', function(hooks) {
   test('clicking close executes action', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().isReconOpen(true).build();
     await render(hbs`{{recon-event-titlebar}}`);
-    await click('.rsa-icon-close-filled');
+    await click('.rsa-icon-close');
     const redux = this.owner.lookup('service:redux');
     assert.notOk(redux.getState().recon.visuals.isReconOpen, 'recon close action called');
   });

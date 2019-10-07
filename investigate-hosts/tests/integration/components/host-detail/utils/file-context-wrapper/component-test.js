@@ -774,7 +774,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     this.set('subTabs', [{ name: 'test', label: 'test' }]);
     new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig subTabs=subTabs isShowOpenFilterButton=true}}`);
-    assert.equal(findAll('.rsa-icon-filter-2-filled').length, 2, 'on clicking Fiters button filter panel opens up');
+    assert.equal(findAll('.rsa-icon-filter-2').length, 2, 'on clicking Fiters button filter panel opens up');
     assert.equal(findAll('.close-filter').length, 1, 'Filters button will hide on opening of Filter panel');
     await click('.close-zone .rsa-form-button');
     assert.equal(findAll('.close-filter').length, 1, 'on click of close Filters button Filters button showed');
@@ -836,7 +836,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
     assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
     await click('.close-filter .rsa-form-button');
-    assert.equal(findAll('.rsa-icon-filter-2-filled').length, 1, 'on clicking Fiters button filter panel opens up');
+    assert.equal(findAll('.rsa-icon-filter-2').length, 1, 'on clicking Fiters button filter panel opens up');
     assert.equal(findAll('.close-filter').length, 0, 'Filters button will hide on opening of Filter panel');
     await click('.close-zone .rsa-form-button');
     assert.equal(findAll('.close-filter').length, 1, 'on click of close Filters button Filters button showed');
@@ -856,7 +856,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
     assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
     await click('.close-filter .rsa-form-button');
-    assert.equal(findAll('.rsa-icon-filter-2-filled').length, 1, 'on clicking Fiters button filter panel opens up');
+    assert.equal(findAll('.rsa-icon-filter-2').length, 1, 'on clicking Fiters button filter panel opens up');
     await click('.fileProperties-signature-features .list-filter .list-filter-option');
     await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(findAll('.rsa-data-table-body-row').length, 1, 'one row is getting filtered');
@@ -891,7 +891,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
     assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
     await click('.close-filter .rsa-form-button');
-    assert.equal(findAll('.rsa-icon-filter-2-filled').length, 1, 'on clicking Fiters button filter panel opens up');
+    assert.equal(findAll('.rsa-icon-filter-2').length, 1, 'on clicking Fiters button filter panel opens up');
     await clickTrigger();
     assert.equal(findAll('.rsa-data-table-body-row').length, 1, 'one row is getting filtered');
   });

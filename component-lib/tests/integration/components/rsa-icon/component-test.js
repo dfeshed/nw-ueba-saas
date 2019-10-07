@@ -8,13 +8,7 @@ module('Integration | Component | rsa-icon', function(hooks) {
 
   test('it renders', async function(assert) {
     await render(hbs `{{rsa-icon name='account-circle-1'}}`);
-    const iconCount = findAll('.rsa-icon.is-filled.rsa-icon-account-circle-1-filled').length;
-    assert.equal(iconCount, 1);
-  });
-
-  test('it includes the proper classes when isLined is true', async function(assert) {
-    await render(hbs `{{rsa-icon style='lined' name='account-circle-1'}}`);
-    const iconCount = findAll('.rsa-icon.is-lined').length;
+    const iconCount = findAll('.rsa-icon.rsa-icon-account-circle-1').length;
     assert.equal(iconCount, 1);
   });
 
@@ -43,11 +37,11 @@ module('Integration | Component | rsa-icon', function(hooks) {
   });
 
   test('Help icon is accessible via tab key when displayOnTab is true', async function(assert) {
-    await render(hbs `{{rsa-icon style='lined' name='help-circle'}}`);
-    const helpIcon = find('.rsa-icon.is-lined.rsa-icon-help-circle-lined').getAttribute('tabindex');
+    await render(hbs `{{rsa-icon name='help-circle'}}`);
+    const helpIcon = find('.rsa-icon.rsa-icon-help-circle').getAttribute('tabindex');
     assert.equal(helpIcon, -1, 'Tabindex is -1 as default');
-    await render(hbs `{{rsa-icon style='lined' displayOnTab=true name='help-circle'}}`);
-    const helpIconwithTab = find('.rsa-icon.is-lined.rsa-icon-help-circle-lined').getAttribute('tabindex');
+    await render(hbs `{{rsa-icon displayOnTab=true name='help-circle'}}`);
+    const helpIconwithTab = find('.rsa-icon.rsa-icon-help-circle').getAttribute('tabindex');
     assert.equal(helpIconwithTab, 0, 'Display on true tabindex is set as 0');
   });
 });

@@ -1,16 +1,16 @@
 <div class='user-overview-tab_users_entities'>
-  {{#rsa-form-button isFullWidth=true style='primary' class=(if (eq entityType 'userId') 'selected') click=(action 'updateEntityType' 'userId')}} 
+  {{#rsa-form-button isFullWidth=true style='primary' class=(if (eq entityType 'userId') 'selected') click=(action 'updateEntityType' 'userId')}}
     {{t 'investigateUsers.entityTypes.userId'}}
   {{/rsa-form-button}}
-  {{#rsa-form-button isFullWidth=true style='primary' class=(if (eq entityType 'sslSubject') 'selected') click=(action 'updateEntityType' 'sslSubject')}} 
+  {{#rsa-form-button isFullWidth=true style='primary' class=(if (eq entityType 'sslSubject') 'selected') click=(action 'updateEntityType' 'sslSubject')}}
     {{t 'investigateUsers.entityTypes.sslSubject'}}
   {{/rsa-form-button}}
-  {{#rsa-form-button isFullWidth=true style='primary' class=(if (eq entityType 'ja3') 'selected') click=(action 'updateEntityType' 'ja3')}} 
+  {{#rsa-form-button isFullWidth=true style='primary' class=(if (eq entityType 'ja3') 'selected') click=(action 'updateEntityType' 'ja3')}}
     {{t 'investigateUsers.entityTypes.ja3'}}
   {{/rsa-form-button}}
 </div>
 <div class='user-overview-tab_title'>
-  {{t 'investigateUsers.users.highRisk'}} {{t (concat 'investigateUsers.entityTypes.' entityType)}} 
+  {{t 'investigateUsers.users.highRisk'}} {{t (concat 'investigateUsers.entityTypes.' entityType)}}
 </div>
 {{overview-tab/watched applyUserFilter=applyUserFilter}}
 {{show-trend}}
@@ -35,7 +35,7 @@
         </div>
         <div class='user-overview-tab_users_row_icon' title='Watched Entity'>
           {{#if (eq user.followed true)}}
-            {{rsa-icon size='large' style='filled' name='view-1'}}
+            {{rsa-icon size='large' name='view-1'}}
           {{/if}}
         </div>
       </div>

@@ -3,12 +3,12 @@
 </div>
 <div class='entity-details-container-body-alert-details_indicators_flow'>
   <div>
-    {{#rsa-form-button 
+    {{#rsa-form-button
       class='entity-details-container-body-alert-details_indicators_flow_button'
-      isFullWidth=true 
+      isFullWidth=true
       click=(action 'moveLeft')}}
       <div>
-        {{rsa-icon size='large' style='filled' name='arrow-left-12' }}
+        {{rsa-icon size='large' name='arrow-left-12'}}
       </div>
     {{/rsa-form-button}}
   </div>
@@ -17,7 +17,7 @@
       <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill'>
         <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill_icon-row'>
           <div {{action 'initializeIndicator' indicator.id}}>
-            {{rsa-icon size='larger' style='lined' name='add-circle-1' }}
+            {{rsa-icon size='larger' name='add-circle-1'}}
           </div>
           {{#if (not-eq (add index 1)  alertDetails.evidences.length)}}
             <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill_icon-row_line'>
@@ -35,12 +35,12 @@
     {{/each}}
   </div>
   <div>
-    {{#rsa-form-button 
-      class='entity-details-container-body-alert-details_indicators_flow_button' 
+    {{#rsa-form-button
+      class='entity-details-container-body-alert-details_indicators_flow_button'
       isFullWidth=true
       click=(action 'moveRight')}}
       <div>
-        {{rsa-icon size='large' style='filled' name='arrow-right-12' }}
+        {{rsa-icon size='large' name='arrow-right-12'}}
       </div>
     {{/rsa-form-button}}
   </div>

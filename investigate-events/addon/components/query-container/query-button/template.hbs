@@ -6,8 +6,8 @@
   {{#if showSpinner}}
     {{rsa-loader size="small" testId="queryButtonQueued"}}
   {{else if isQueryRunning}}
-    {{rsa-icon class='execute-query-spyglass' name='stop-button' style='filled' testId="queryButtonExecuting"}}
+    {{rsa-icon class='execute-query-spyglass' name='stop-button' testId="queryButtonExecuting"}}
   {{else}}
-    {{rsa-icon class='execute-query-spyglass' name='search' style='lined' testId="queryButtonInactive"}}
+    {{rsa-icon class='execute-query-spyglass' name='search' testId="queryButtonInactive"}}
   {{/if}}
 {{/rsa-form-button}}

@@ -138,7 +138,7 @@ module('Integration | Component | process-node-list', function(hooks) {
       direction: 'desc'
     });
     await render(hbs`{{process-node-list nodeList=nodeList currentSort=currentSort}}`);
-    assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell.is-sorted .rsa-icon-arrow-down-7-filled').length, 1, 'Default arrow up icon before sorting');
+    assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell.is-sorted .rsa-icon-arrow-down-7').length, 1, 'Default arrow up icon before sorting');
     assert.strictEqual(document.querySelector('.process-node-list .rsa-data-table-body-row:nth-child(1) .rsa-data-table-body-cell:nth-child(2)').textContent.trim(), 'virus.exe');
     await click(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('.rsa-icon'));
     assert.strictEqual(document.querySelector('.process-node-list .rsa-data-table-body-row:nth-child(1) .rsa-data-table-body-cell:nth-child(2)').textContent.trim(), 'chrome.exe');

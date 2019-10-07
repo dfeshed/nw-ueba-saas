@@ -12,11 +12,11 @@
   <hbox class="downloaded-file-name">
     {{#if (get item 'directory')}}
       <span>
-        {{rsa-icon style='filled' name='folder-2'}}
+        {{rsa-icon name='folder-2'}}
         <a href="#" {{action "onFetchSubdirectories" item}}>{{get item column.field}}</a>
       </span>
     {{else}}
-      <span>{{rsa-icon style='filled' name='file-new-1'}}{{get item column.field}}</span>
+      <span>{{rsa-icon name='file-new-1'}}{{get item column.field}}</span>
     {{/if}}
   </hbox>
 {{else if (or (eq column.field 'archive') (eq column.field 'compressed') (eq column.field 'encrypted') (eq column.field 'hidden') (eq column.field 'directory'))}}
@@ -31,7 +31,7 @@
       <span class="date-stomp">
         {{#rsa-content-tethered-panel-trigger panel='panel4'}}
           {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
-          {{rsa-icon class='rsa-icon-report-problem-triangle-filled'}}
+          {{rsa-icon class='rsa-icon-report-problem-triangle'}}
         {{/rsa-content-tethered-panel-trigger}}
         {{#rsa-content-tethered-panel displayCloseButton=false style='error' panelClass="date-stomp-content-teathredpanel" position='top' panelId='panel4' }}
           <section> {{t 'investigateHosts.downloads.mftTable.bodyCell.dateStomp'}}</section>

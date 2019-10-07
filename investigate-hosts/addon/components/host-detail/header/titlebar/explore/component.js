@@ -28,7 +28,7 @@ const Explore = Component.extend({
 
   onApplicationClick(target) {
     const result = this.get('fileSearchResults');
-    const showSearchResults = target ? !target.closest('.host-explore') && !target.classList.contains('rsa-icon-search-filled') : true;
+    const showSearchResults = target ? !target.closest('.host-explore') && !target.classList.contains('rsa-icon-search') : true;
     if (showSearchResults) {
       run.next(() => {
         if (!this.get('isDestroyed') && !this.get('isDestroying')) {

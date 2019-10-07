@@ -43,11 +43,11 @@
         }
         .is-greyed-out {
           color: text-color(primary);
-          .rsa-icon-add-circle-1-lined {
+          .rsa-icon-add-circle-1 {
             color: text-color(primary, dark);
             pointer-events: none;
           }
-          .rsa-icon-information-circle-lined {
+          .rsa-icon-information-circle {
             pointer-events: all;
           }
         }

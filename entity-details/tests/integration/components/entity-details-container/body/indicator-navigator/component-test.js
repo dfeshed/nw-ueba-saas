@@ -29,14 +29,14 @@ module('Integration | Component | entity-details-container/body/indicator-naviga
 
     await render(hbs`{{entity-details-container/body/indicator-navigator}}`);
 
-    assert.equal(findAll('.rsa-icon-arrow-left-12-filled').length, 1);
+    assert.equal(findAll('.rsa-icon-arrow-left-12').length, 1);
   });
 
   test('it should go to first overview if previous overview click', async function(assert) {
     new ReduxDataHelper(setState).build();
 
     await render(hbs`{{entity-details-container/body/indicator-navigator}}`);
-    assert.equal(findAll('.rsa-icon-arrow-left-12-filled').length, 1);
+    assert.equal(findAll('.rsa-icon-arrow-left-12').length, 1);
     await click('.entity-details-container-body-indicator-navigator_button');
     return waitUntil(() => findAll('.rsa-form-button-wrapper.is-disabled').length === 1, { timeout }).then(() => {
       assert.equal(findAll('.rsa-form-button-wrapper.is-disabled').length, 1);
@@ -48,7 +48,7 @@ module('Integration | Component | entity-details-container/body/indicator-naviga
 
     await render(hbs`{{entity-details-container/body/indicator-navigator}}`);
     assert.equal(this.element.textContent.trim(), 'Indicator 1 of 9');
-    await click('.rsa-icon-arrow-right-12-filled');
+    await click('.rsa-icon-arrow-right-12');
     assert.equal(this.element.textContent.trim(), 'Indicator 2 of 9');
   });
 });

@@ -9,7 +9,7 @@
 
   .rsa-form-button-wrapper.is-icon-only {
     padding-left: rsa-whitespace();
-    .rsa-icon-binoculars-filled {
+    .rsa-icon-binoculars {
       padding-right: rsa-whitespace(less);
     }
   }
@@ -80,7 +80,7 @@
   float: right;
   right: 0.5rem;
   display: none;
-  .rsa-icon-bin-1-filled {
+  .rsa-icon-bin-1 {
     font-size: 1rem !important;
   }
 }

@@ -11,7 +11,7 @@
     <box class='radio-controls rsa-form-radio-group' fit>
       {{#if isMaxFileEditStatusLimit}}
         <span class='whitelist-alert info max-limit-info'>
-          {{rsa-icon class='rsa-icon-information-circle-filled'}}
+          {{rsa-icon class='rsa-icon-information-circle'}}
           <p>
             {{t 'investigateFiles.editFileStatus.whiteListAlert.limitInfo'}}
           </p>
@@ -31,14 +31,14 @@
           {{#if showWhiteListWarning}}
             {{#if (eq formData.fileStatus 'Whitelist')}}
               <span class='whitelist-alert info'>
-                {{rsa-icon class='rsa-icon-information-circle-filled'}}
+                {{rsa-icon class='rsa-icon-information-circle'}}
                 <p>
                   {{t 'investigateFiles.editFileStatus.whiteListAlert.info'}}
                 </p>
               </span>
             {{else if disableRadio}}
               <span class='whitelist-alert'>
-                {{rsa-icon class='rsa-icon-report-problem-triangle-filled'}}
+                {{rsa-icon class='rsa-icon-report-problem-triangle'}}
                 <p>
                   {{t 'investigateFiles.editFileStatus.whiteListAlert.warningMessage'}}
                 </p>

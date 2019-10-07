@@ -31,7 +31,7 @@ module('Integration | Component | clear-search', function(hooks) {
     });
 
     await render(hbs`{{events-table-container/header-container/prev-search-match _toSend=_toSend searchScrollIndex=1 searchMatchesCount=5}}`);
-    click('.prev-search-trigger .rsa-icon-arrow-circle-up-1-filled');
+    click('.prev-search-trigger .rsa-icon-arrow-circle-up-1');
   });
 
   test('renders prev-search-match when looping', async function(assert) {
@@ -44,7 +44,7 @@ module('Integration | Component | clear-search', function(hooks) {
     });
 
     await render(hbs`{{events-table-container/header-container/prev-search-match _toSend=_toSend searchScrollIndex=0 searchMatchesCount=5}}`);
-    click('.prev-search-trigger .rsa-icon-arrow-circle-up-1-filled');
+    click('.prev-search-trigger .rsa-icon-arrow-circle-up-1');
   });
 
 });

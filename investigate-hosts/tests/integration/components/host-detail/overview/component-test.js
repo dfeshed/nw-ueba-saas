@@ -115,7 +115,7 @@ module('Integration | Component | host-detail/overview', function(hooks) {
     await render(hbs`{{host-detail/overview}}`);
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 1, 'Host properties is open');
 
-    await click('.right-zone .close-zone .rsa-icon-close-filled');
+    await click('.right-zone .close-zone .rsa-icon-close');
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 0, 'right panel is not visible after close');
   });
 

@@ -3,17 +3,17 @@
   {{!-- if item is currently selected, icon is disabled --}}
   {{#rsa-form-button
     class='list-delete-icon'
-    isDisabled=isSelected 
+    isDisabled=isSelected
     defaultAction=(action 'delete')
-    title=(if isSelected (t 'rsaListManager.iconMessage.disabled.delete')) 
+    title=(if isSelected (t 'rsaListManager.iconMessage.disabled.delete'))
   }}
-    {{rsa-icon name='bin-1' style='lined'}}
+    {{rsa-icon name='bin-1'}}
   {{/rsa-form-button}}
 {{/if}}
 
 {{!-- help icon --}}
 {{#if hasContextualHelp}}
   {{#rsa-form-button class='list-help-icon' defaultAction=(action 'goToHelp')}}
-    {{rsa-icon name='help-circle' style='lined'}}
+    {{rsa-icon name='help-circle'}}
   {{/rsa-form-button}}
 {{/if}}

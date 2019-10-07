@@ -1,7 +1,7 @@
 <div class='entity-details-container-header_leftArrow'>
 </div>
 <div class='entity-details-container-header_avtar'>
-  {{rsa-icon size='larger' style='filled' name=enityIcon}}
+  {{rsa-icon size='larger' name=enityIcon}}
 </div>
 <div class='entity-details-container-header_name'>
   {{entityDisplayName}}
@@ -12,9 +12,9 @@
 <div class='entity-details-container-header_watch'>
   {{#rsa-form-button click=(action (if (eq isFollowed true) 'unfollowUser' 'followUser'))}}
     {{#if (eq isFollowed true)}}
-      {{rsa-icon size='medium' style='lined' name='binoculars'}} {{t 'entityDetails.entity.removeWatch'}}
+      {{rsa-icon size='medium' name='binoculars'}} {{t 'entityDetails.entity.removeWatch'}}
     {{else}}
-      {{rsa-icon size='medium' style='filled' name='binoculars'}} {{t 'entityDetails.entity.addWatch'}}
+      {{rsa-icon size='medium' name='binoculars'}} {{t 'entityDetails.entity.addWatch'}}
     {{/if}}
   {{/rsa-form-button}}
 </div>
@@ -24,6 +24,6 @@
     title=(t 'context.header.help.title')
     click=(action 'goToHelp')
   }}
-    {{rsa-icon name="help-circle" style="lined" }}
+    {{rsa-icon name="help-circle"}}
   {{/rsa-form-button}}
 </div>

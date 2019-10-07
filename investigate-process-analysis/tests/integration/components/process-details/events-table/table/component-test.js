@@ -57,9 +57,9 @@ module('Integration | Component | process-details/events-table/table', function(
 
     await render(hbs`{{process-details/events-table/table}}`);
     assert.equal(findAll('.rsa-data-table-body-row').length, 2, 'Expected to render 2 rows');
-    assert.equal(findAll('.rsa-icon-arrow-down-7-filled').length, 1, 'Expected down arrow icon');
+    assert.equal(findAll('.rsa-icon-arrow-down-7').length, 1, 'Expected down arrow icon');
     await click('.sort');
-    assert.equal(findAll('.rsa-icon-arrow-up-7-filled').length, 1, 'Expected up arrow icon');
+    assert.equal(findAll('.rsa-icon-arrow-up-7').length, 1, 'Expected up arrow icon');
   });
 
   test('it renders the header', async function(assert) {

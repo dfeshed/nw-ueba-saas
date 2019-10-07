@@ -237,9 +237,9 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       </style>
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
     return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(async() => {
-      assert.equal(findAll('.rsa-data-table-header-cell:nth-child(2) i.rsa-icon-arrow-up-7-filled').length, 1, 'rsa arrow-up icon before sorting');
+      assert.equal(findAll('.rsa-data-table-header-cell:nth-child(2) i.rsa-icon-arrow-up-7').length, 1, 'rsa arrow-up icon before sorting');
       await click('.rsa-data-table-header-cell:nth-child(2) .rsa-icon');
-      assert.equal(findAll('.rsa-data-table-header-cell:nth-child(2) i.rsa-icon-arrow-down-7-filled').length, 1, 'rsa arrow-down icon after sorting');
+      assert.equal(findAll('.rsa-data-table-header-cell:nth-child(2) i.rsa-icon-arrow-down-7').length, 1, 'rsa arrow-down icon after sorting');
     });
 
   });
@@ -721,7 +721,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       </style>
       {{host-detail/utils/file-context-table showResetScoreModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}
     `);
-    await click('.rsa-icon-cog-filled');
+    await click('.rsa-icon-cog');
     return settled().then(() => {
       assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'initial visible column count is 5');
       findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[0].click(); // file name

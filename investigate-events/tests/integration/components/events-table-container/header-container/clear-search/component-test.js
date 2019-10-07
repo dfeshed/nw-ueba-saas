@@ -31,7 +31,7 @@ module('Integration | Component | clear-search', function(hooks) {
     });
 
     await render(hbs`{{events-table-container/header-container/clear-search _toSend=_toSend}}`);
-    click('.clear-search-trigger .rsa-icon-remove-circle-1-filled');
+    click('.clear-search-trigger .rsa-icon-remove-circle-1');
   });
 
 });

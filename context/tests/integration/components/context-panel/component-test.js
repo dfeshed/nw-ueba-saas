@@ -62,9 +62,9 @@ module('Integration | Component | context-panel', function(hooks) {
     }, { timeout });
 
     assert.equal(findAll('.rsa-nav-tab').length, 6, 'Should render all 6 data sources for meta ip');
-    await click('.rsa-icon-flag-square-2-filled');
+    await click('.rsa-icon-flag-square-2');
     assert.equal(findAll('.rsa-nav-tab').length, 6, 'Should not close panel onclicking another data source');
-    await click('.rsa-icon-alarm-sound-filled');
+    await click('.rsa-icon-alarm-sound');
     assert.equal(findAll('.rsa-nav-tab').length, 6, 'Should not close panel onclicking another data source');
   });
 

@@ -88,7 +88,7 @@ module('Integration | Component | recon container', function(hooks) {
 
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'Invalid session ID: 5', 'Appropriate error description for invaild session Id');
     assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
-    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2'), 'icon is visible');
 
     return settled().then(() => done());
   });
@@ -114,7 +114,7 @@ module('Integration | Component | recon container', function(hooks) {
 
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'The session id is too large to be handled: 5456544654654564654654', 'Appropriate error description for session Id too large');
     assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
-    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2'), 'icon is visible');
 
     return settled().then(() => done());
   });
@@ -140,7 +140,7 @@ module('Integration | Component | recon container', function(hooks) {
 
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'Session is unavailable for viewing.', 'Session is unavailable');
     assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
-    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2'), 'icon is visible');
 
     return settled().then(() => done());
   });
@@ -166,7 +166,7 @@ module('Integration | Component | recon container', function(hooks) {
 
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'Session is unavailable for viewing.', 'Session is unavailable');
     assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
-    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2'), 'icon is visible');
 
     return settled().then(() => done());
   });
@@ -192,7 +192,7 @@ module('Integration | Component | recon container', function(hooks) {
 
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'The service is unavailable', 'Service is unavailable');
     assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
-    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2'), 'icon is visible');
 
     return settled().then(() => done());
   });
@@ -256,13 +256,13 @@ module('Integration | Component | recon container', function(hooks) {
       }}
     `);
 
-    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2'), 'icon is visible');
 
-    await click('.rsa-icon-shrink-diagonal-2-filled');
-    assert.notOk(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is not visible');
-    assert.ok(find('.rsa-icon-expand-diagonal-4-filled'), 'icon is visible');
+    await click('.rsa-icon-shrink-diagonal-2');
+    assert.notOk(find('.rsa-icon-shrink-diagonal-2'), 'icon is not visible');
+    assert.ok(find('.rsa-icon-expand-diagonal-4'), 'icon is visible');
 
-    await click('.rsa-icon-expand-diagonal-4-filled');
+    await click('.rsa-icon-expand-diagonal-4');
   });
 
 });

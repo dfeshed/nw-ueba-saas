@@ -1,11 +1,11 @@
 <div>
-  {{#rsa-form-button 
-    class='entity-details-container-body-indicator-navigator_button' 
+  {{#rsa-form-button
+    class='entity-details-container-body-indicator-navigator_button'
     isDisabled=(eq incidentNavDetails.currentPosition 0)
     click=(action 'initializeIndicator' incidentNavDetails.previousIndicatorId)
     isFullWidth=true}}
     <div>
-      {{rsa-icon size='medium' style='filled' name='arrow-left-12' }}
+      {{rsa-icon size='medium' name='arrow-left-12'}}
     </div>
   {{/rsa-form-button}}
 </div>
@@ -17,13 +17,13 @@
   {{/if}}
 </div>
 <div>
-  {{#rsa-form-button 
-    class='entity-details-container-body-indicator-navigator_button' 
+  {{#rsa-form-button
+    class='entity-details-container-body-indicator-navigator_button'
     isDisabled=(eq incidentNavDetails.currentPosition incidentNavDetails.indicatorLength)
     click=(action 'initializeIndicator' incidentNavDetails.nextIndicatorId)
     isFullWidth=true}}
     <div>
-      {{rsa-icon size='medium' style='filled' name='arrow-right-12' }}
+      {{rsa-icon size='medium' name='arrow-right-12'}}
     </div>
   {{/rsa-form-button}}
 </div>

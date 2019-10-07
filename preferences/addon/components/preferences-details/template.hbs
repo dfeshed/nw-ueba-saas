@@ -27,7 +27,7 @@
           <div class ='flex-container'>
             <h4 class='rsa-form-radio-group-label'>{{t item.name}}</h4>
             {{#if item.info}}
-              {{rsa-icon style='lined' title=(t (concat item.name '-tooltip') default='empty') name='information-circle' size='small'}}
+              {{rsa-icon title=(t (concat item.name '-tooltip') default='empty') name='information-circle' size='small'}}
             {{/if}}
           </div>
           {{#each item.options as |option|}}
