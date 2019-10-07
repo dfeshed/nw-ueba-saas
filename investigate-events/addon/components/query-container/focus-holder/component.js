@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { throttle } from '@ember/runloop';
 
 import * as MESSAGE_TYPES from '../message-types';
-import { isBackspace, isDelete, isEnter, isArrowRight, isArrowLeft, isShift, isHome, isEnd } from 'investigate-events/util/keys';
+import KEY_MAP from 'investigate-events/util/keys';
 
 export default Component.extend({
   classNames: ['focus-holder'],
@@ -15,42 +15,78 @@ export default Component.extend({
    */
   sendMessage: () => {},
 
+  /**
+   * This function is called every time a key is pressed.
+   * @private
+   */
+  keyDownHandlerMap: undefined,
+
+  /**
+   * Sends messages to the parent container.
+   * @param {string} type The event type from `event-types`
+   * @param {Object} data The event data
+   * @private
+   */
+  _broadcast(type, data) {
+    this.get('sendMessage')(type, data);
+  },
+
+  init() {
+    this._super(...arguments);
+    this.set('keyDownHandlerMap', {
+      [KEY_MAP.delete.key]: this._backspaceDeleteHandler.bind(this),
+      [KEY_MAP.backspace.key]: this._backspaceDeleteHandler.bind(this),
+      [KEY_MAP.enter.key]: this._commandHandler.bind(this),
+      [KEY_MAP.arrowRight.key]: this._rightArrowHandler.bind(this),
+      [KEY_MAP.arrowLeft.key]: this._leftArrowHandler.bind(this),
+      [KEY_MAP.home.key]: this._homeHandler.bind(this),
+      [KEY_MAP.end.key]: this._endHandler.bind(this)
+    });
+  },
+
   didRender() {
     const { element } = this;
     element.querySelector('input').focus();
   },
 
-  throttleKeyDown({ e }) {
-    const evtobj = window.event ? event : e;
-    if (isBackspace(evtobj) || isDelete(evtobj)) {
-      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED);
-      // Firefox by default redirects to the previous page.
-      // This is to prevent from going back.
-      e.preventDefault();
-    } else if (isEnter(evtobj)) {
-      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED);
-    } else if (isArrowRight(evtobj) && evtobj.shiftKey) {
-      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_SHIFT_RIGHT_ARROW_PRESSED);
-    } else if (isArrowLeft(evtobj) && evtobj.shiftKey) {
-      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_SHIFT_LEFT_ARROW_PRESSED);
-    } else if (isArrowLeft(evtobj)) {
-      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED);
-    } else if (isArrowRight(evtobj)) {
-      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED);
-    } else if (isHome(evtobj)) {
-      this.get('sendMessage')(MESSAGE_TYPES.PILL_HOME_PRESSED);
-    } else if (isEnd(evtobj)) {
-      this.get('sendMessage')(MESSAGE_TYPES.PILL_END_PRESSED);
+  _backspaceDeleteHandler({ e }) {
+    this._broadcast(MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED);
+    // Firefox by default redirects to the previous page.
+    // This is to prevent from going back.
+    e.preventDefault();
+  },
+
+  _commandHandler() {
+    this._broadcast(MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED);
+  },
+
+  _rightArrowHandler({ e }) {
+    if (e.shiftKey) {
+      this._broadcast(MESSAGE_TYPES.FOCUSED_PILL_SHIFT_RIGHT_ARROW_PRESSED);
+    } else {
+      this._broadcast(MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED);
     }
-    return false;
+  },
+
+  _leftArrowHandler({ e }) {
+    if (e.shiftKey) {
+      this._broadcast(MESSAGE_TYPES.FOCUSED_PILL_SHIFT_LEFT_ARROW_PRESSED);
+    } else {
+      this._broadcast(MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED);
+    }
+  },
+
+  _homeHandler() {
+    this._broadcast(MESSAGE_TYPES.PILL_HOME_PRESSED);
+  },
+
+  _endHandler() {
+    this._broadcast(MESSAGE_TYPES.PILL_END_PRESSED);
   },
 
   keyDown(e) {
-    if (isShift(e)) {
-      return false;
-    } else {
-      throttle(this, this.throttleKeyDown, { e }, 1000);
-    }
+    const handler = this.keyDownHandlerMap[e.key];
+    return handler ? throttle(this, handler, { e }, 1000) : false;
   },
 
   // No need to bubble up these events
