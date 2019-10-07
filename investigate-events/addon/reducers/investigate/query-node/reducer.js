@@ -238,16 +238,17 @@ const _addFocus = (state, needsFocusPill, isSelected) => {
 };
 
 const _isPillOrOperatorToBeDelete = (deleteIds, pill, idx, pillsData) => {
+  const shouldDeletePill = deleteIds.includes(pill.id);
+  if (shouldDeletePill) {
+    // quick exit
+    return true;
+  }
   const nextPill = pillsData[idx + 1];
   const prevPill = pillsData[idx - 1];
   const beforePrevPill = pillsData[idx - 2];
-  const shouldDeletePill = deleteIds.includes(pill.id);
   const shouldDeleteNextPill = nextPill && deleteIds.includes(nextPill.id);
   const shouldDeletePrevPill = prevPill && deleteIds.includes(prevPill.id) && !_isLogicalOperator(beforePrevPill);
-  return (
-    shouldDeletePill ||
-    (_isLogicalOperator(pill) && (shouldDeleteNextPill || shouldDeletePrevPill))
-  );
+  return (_isLogicalOperator(pill) && (shouldDeleteNextPill || shouldDeletePrevPill));
 };
 
 const _deletePills = (state, pillsToBeDeleted) => {

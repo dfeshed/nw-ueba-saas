@@ -2443,7 +2443,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
-      .pillsDataPopulated()
+      .pillsDataPopulated()// npt, P, npt, &, npt, P, npTmp
       .build();
 
     await render(hbs`
@@ -2457,11 +2457,11 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     // 1) focused item should be pill
     let focusedItems = findAll(PILL_SELECTORS.focusedPill);
-    assert.equal(focusedItems.length, 1, 'should have 1 focused pill');
+    assert.equal(focusedItems.length, 1, 'should have 1 focused pill(2)');
     let [ focusedItem ] = focusedItems;
-    assert.equal(focusedItem.getAttribute('position'), 2, 'right item should be focused');
+    assert.equal(focusedItem.getAttribute('position'), 2, 'right item should be focused(2)');
     let pillText = focusedItem.title;
-    assert.equal(pillText, 'b = \'y\'', 'The first pill is the focused pill');
+    assert.equal(pillText, 'b = \'y\'', 'The first pill is the focused pill(2)');
 
     // Go left
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY);
@@ -2474,11 +2474,11 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     // 3) focused item should be operator
     focusedItems = findAll(PILL_SELECTORS.focusedPill);
-    assert.equal(focusedItems.length, 1, 'should have 1 focused pill');
+    assert.equal(focusedItems.length, 1, 'should have 1 focused operator(1)');
     [ focusedItem ] = focusedItems;
-    assert.equal(focusedItem.getAttribute('position'), 1, 'right item should be focused');
+    assert.equal(focusedItem.getAttribute('position'), 1, 'right item should be focused(1)');
     pillText = focusedItem.textContent.trim();
-    assert.equal(pillText, 'AND', 'The first pill is the focused pill');
+    assert.equal(pillText, 'AND', 'The first pill is the focused pill(1)');
 
     // Go left
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY);
@@ -2491,11 +2491,11 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     // 5) focused item should be on pill
     focusedItems = findAll(PILL_SELECTORS.focusedPill);
-    assert.equal(focusedItems.length, 1, 'should have 1 focused pill');
+    assert.equal(focusedItems.length, 1, 'should have 1 focused pill(0)');
     [ focusedItem ] = focusedItems;
-    assert.equal(focusedItem.getAttribute('position'), 0, 'right item should be focused');
+    assert.equal(focusedItem.getAttribute('position'), 0, 'right item should be focused(0)');
     pillText = focusedItem.title;
-    assert.equal(pillText, 'a = \'x\'', 'The first pill is the focused pill');
+    assert.equal(pillText, 'a = \'x\'', 'The first pill is the focused pill(0)');
 
     // Go left
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY);
@@ -3758,6 +3758,47 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(cancelPillCreationSpy.calledWith(1), 'called with position 1');
     assert.notOk(find(PILL_SELECTORS.openParen), 'all parens should be removed');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'all parens should be removed');
+  });
+
+  test('canceling pill creation cleans up orphaned logical operator', async function(assert) {
+    const OR = createOperator(OPERATOR_OR);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated() // P & P
+      .insertPillAt(OR, 3) // P & P ||
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true }}`);
+    assert.equal(findAll(PILL_SELECTORS.newPillTrigger).length, 4, 'correct number of triggers');
+    // ESC out of pill creation
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+    // Should only be P & P
+    assert.notOk(find(PILL_SELECTORS.logicalOperatorOR), 'operator OR should be removed');
+    assert.ok(find(PILL_SELECTORS.logicalOperatorAND), 'operator AND should remain');
+  });
+
+  test('canceling pill creation cleans up parens and orphaned logical operator', async function(assert) {
+    const OR = createOperator(OPERATOR_OR);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithEmptyParens() // ( )
+      .insertPillAt(OR, 0) // OR ( )
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true }}`);
+    await leaveNewPillTemplate();
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 3, 'correct number of triggers');
+    // click trigger that's in between the parens
+    await click(triggers[2]);
+    // ESC out of pill creation
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+    // Everything should be removed
+    assert.notOk(find(PILL_SELECTORS.logicalOperatorOR), 'operator OR should be removed');
+    assert.notOk(find(PILL_SELECTORS.openParen), '"(" should be removed');
+    assert.notOk(find(PILL_SELECTORS.closeParen), '")" should be removed');
   });
 
   test('deleting a pill wrapped in parens also deletes the parens', async function(assert) {

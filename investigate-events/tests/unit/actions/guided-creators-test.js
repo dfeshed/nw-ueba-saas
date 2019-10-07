@@ -868,6 +868,26 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk(dispatch, getState);
   });
 
+  test('cancelPillCreation dispatches action to delete orphaned logical operator', function(assert) {
+    const OR = createOperator(OPERATOR_OR);
+    const done = assert.async();
+    const getState = () => {
+      return new ReduxDataHelper()
+        .language()
+        .pillsDataWithParens() // ( P )
+        .insertPillAt(OR, 2) //   ( P || )
+        .build();
+    };
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
+      assert.ok(Array.isArray(action.payload.pillData), 'action payload is correct type');
+      assert.propEqual(action.payload.pillData[0], OR, 'action payload has the right value');
+      done();
+    };
+    const thunk = guidedCreators.cancelPillCreation(3);
+    thunk(dispatch, getState);
+  });
+
   test('addLogicalOperator action creator returns proper type and payload', function(assert) {
     const pillData = createOperator(OPERATOR_AND);
     const position = 2;

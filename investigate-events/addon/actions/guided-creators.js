@@ -13,7 +13,13 @@ import {
 } from 'investigate-events/actions/utils';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { ValidatableFilter } from 'investigate-events/util/filter-types';
-import { COMPLEX_FILTER, TEXT_FILTER, OPERATOR_AND, OPERATOR_OR } from 'investigate-events/constants/pill';
+import {
+  CLOSE_PAREN,
+  COMPLEX_FILTER,
+  TEXT_FILTER,
+  OPERATOR_AND,
+  OPERATOR_OR
+} from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
 
@@ -43,6 +49,26 @@ const _findMissingTwins = (pills, pillsFromState) => {
   });
 
   return twins;
+};
+
+const _isLogicalOperator = (pill) => pill?.type === OPERATOR_AND || pill?.type === OPERATOR_OR;
+
+const _isCloseParen = (pill) => pill?.type === CLOSE_PAREN;
+
+const _getAdjacentDeletableLogicalOperatorAt = (pills, idx) => {
+  // P & _ P      not deletable
+  // P & _ (      not deletable
+  // ( P & _ )    deletable
+  // P & _        deletable
+  const prevPill = pills[idx - 1];
+  const nextPill = pills[idx];
+  if (nextPill) {
+    // If there's a pill to the right, then we need it to be an close paren.
+    // Otherwise we're deleting operators that should exist.
+    return _isLogicalOperator(prevPill) && _isCloseParen(nextPill) ? prevPill : undefined;
+  } else {
+    return _isLogicalOperator(prevPill) ? prevPill : undefined;
+  }
 };
 
 /**
@@ -205,12 +231,17 @@ export const cancelPillCreation = (position) => {
   return (dispatch, getState) => {
     const { investigate: { queryNode: { pillsData } } } = getState();
     const emptyParens = findEmptyParensAtPosition(pillsData, position);
+    const adjacentOperator = _getAdjacentDeletableLogicalOperatorAt(pillsData, position);
+    let pillData;
     if (emptyParens.length > 0) {
+      pillData = emptyParens;
+    } else if (adjacentOperator) {
+      pillData = [adjacentOperator];
+    }
+    if (pillData) {
       dispatch({
         type: ACTION_TYPES.DELETE_GUIDED_PILLS,
-        payload: {
-          pillData: emptyParens
-        }
+        payload: { pillData }
       });
     }
   };
