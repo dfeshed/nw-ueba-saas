@@ -180,23 +180,21 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
         TreeMap<LocalDate, HashMap<Integer, Double>> dayToHistogram = new TreeMap<>();
         TreeMap<Instant, Double> startInstantToValue = new TreeMap<>();
 
+        // filling startInstantToValue
         accumulatedAggregationFeatureRecords.forEach(accumulatedRecord -> {
-            accumulatedRecord.getAggregatedFeatureValues().entrySet().stream().
-                    forEach(entry ->
-                            startInstantToValue.compute(
-                                    accumulatedRecord.getStartInstant().plus(Duration.ofHours(entry.getKey())),
-                                    (k, v) -> v == null ? entry.getValue() : Math.max(entry.getValue(), v)));
+            accumulatedRecord.getAggregatedFeatureValues().forEach((key, value) ->
+                    startInstantToValue.compute(accumulatedRecord.getStartInstant().plus(Duration.ofHours(key)),
+                            (k, v) -> v == null ? value : Math.max(v, value)));
         });
 
-        startInstantToValue.entrySet().stream().forEach(entry ->
-                dayToHistogram.compute(
-                        TimeService.floorTime(entry.getKey(), FixedDurationStrategy.DAILY.toDuration()).atZone(ZoneOffset.UTC).toLocalDate(),
-                        (k, v) -> v == null ?
-                                new HashMap<Integer, Double>() {{
-                                    put(LocalDateTime.ofInstant(entry.getKey(), ZoneOffset.UTC).getHour(), entry.getValue());
-                                }} : addToMap(v, LocalDateTime.ofInstant(entry.getKey(), ZoneOffset.UTC).getHour(), entry.getValue())
-                )
-        );
+        // converting startInstantToValue to dayToHistogram
+        startInstantToValue.forEach((key, value) -> dayToHistogram.compute(
+                TimeService.floorTime(key, FixedDurationStrategy.DAILY.toDuration()).atZone(ZoneOffset.UTC).toLocalDate(),
+                (k, v) -> v == null ?
+                        new HashMap<Integer, Double>() {{
+                            put(LocalDateTime.ofInstant(key, ZoneOffset.UTC).getHour(), value);
+                        }} : addToMap(v, LocalDateTime.ofInstant(key, ZoneOffset.UTC).getHour(), value)
+        ));
 
         return dayToHistogram;
     }

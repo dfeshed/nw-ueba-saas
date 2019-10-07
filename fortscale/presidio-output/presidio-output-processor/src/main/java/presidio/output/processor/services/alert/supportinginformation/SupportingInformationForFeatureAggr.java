@@ -1,5 +1,6 @@
 package presidio.output.processor.services.alert.supportinginformation;
 
+import fortscale.utils.logging.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
@@ -31,6 +32,8 @@ import java.util.stream.Collectors;
  * Supporting information (events and historical data) for FEATURE_AGGREGATION events (AKA 'F')
  */
 public class SupportingInformationForFeatureAggr implements SupportingInformationGenerator {
+
+    private static final Logger logger = Logger.getLogger(SupportingInformationForFeatureAggr.class);
 
     @Value("${output.feature.historical.period.days: #{30}}")
     private int historicalPeriodInDays;
@@ -105,7 +108,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
             try {
                 aggregationDataPopulator = aggregationDataPopulatorFactory.createAggregationDataPopulation(historicalDataConfig.getType());
             } catch (IllegalArgumentException ex) {
-                //TODO logger
+                logger.error("failed to create aggregation populator for {} historical data type", historicalDataConfig.getType());
                 return null;
             }
 

@@ -12,13 +12,13 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-public class AggregationDataCountByTimeForNewOccurrencePopulator implements AggregationDataPopulator {
+public class AggregationDataCountByTimeForLastDayPopulator implements AggregationDataPopulator {
 
-    private static final String HOURLY_AGGREGATIONS_NEW_OCCURRENCES = "hourly_aggregations_new_occurrence";
+    private static final String HOURLY_AGGREGATIONS_LAST_DAY = "hourly_aggregations_last_day";
 
     private HistoricalDataFetcher historicalDataFetcher;
 
-    public AggregationDataCountByTimeForNewOccurrencePopulator(HistoricalDataFetcher historicalDataFetcher) {
+    public AggregationDataCountByTimeForLastDayPopulator(HistoricalDataFetcher historicalDataFetcher) {
         this.historicalDataFetcher = historicalDataFetcher;
     }
 
@@ -52,6 +52,6 @@ public class AggregationDataCountByTimeForNewOccurrencePopulator implements Aggr
 
     @Override
     public String getType() {
-        return HOURLY_AGGREGATIONS_NEW_OCCURRENCES;
+        return HOURLY_AGGREGATIONS_LAST_DAY;
     }
 }

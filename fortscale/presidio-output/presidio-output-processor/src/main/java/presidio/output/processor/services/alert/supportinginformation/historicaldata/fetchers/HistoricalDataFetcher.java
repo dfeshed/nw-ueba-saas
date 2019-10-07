@@ -49,7 +49,7 @@ public interface HistoricalDataFetcher {
 
 
     /**
-     * Fetches the historical aggregated feature usage of new occurrence context (i.e. user) during the specified time period (last day) grouped by day
+     * Fetches the historical aggregated feature usage of the context (i.e. user) during the specified time period (last day) grouped by day
      *
      * @param timeRange   the time period
      * @param contexts    map of contexts (context id (i.e userId) to context value (i.e the user name))
