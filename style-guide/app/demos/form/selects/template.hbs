@@ -43,6 +43,53 @@
       {{code-snippet name="selects1.hbs"}}
     {{/spec-member}}
 
+    {{#spec-member
+      title="Default with a disabled option"
+      subtitle="using 'rsa-form-select/default-option' to render the disabled option with a tootlip."
+    }}
+      <label class="rsa-form-label power-select">
+        <div class="label-text">
+          Select Label
+        </div>
+
+        {{#power-select
+          placeholder="Make a selection"
+          options=defaultOptionsAsObjects
+          selected=defaultSelectedAsObject
+          searchPlaceholder="Type to filter options"
+          searchField="label"
+          onchange=(action 'setSelectObject') as |option|}}
+          {{rsa-form-select/default-option
+            disabled=option.disabled
+            disabledTooltip=option.disabledTooltip
+            optionLabel=option.label
+          }}
+        {{/power-select}}
+      </label>
+      {{!-- BEGIN-SNIPPET selects1a
+      <label class="rsa-form-label power-select">
+        <div class="label-text">
+          Select Label
+        </div>
+
+        {{#power-select
+          placeholder="Make a selection"
+          options=defaultOptionsAsObjects
+          selected=defaultSelectedAsObject
+          searchPlaceholder="Type to filter options"
+          searchField="label"
+          onchange=(action 'setSelectObject') as |option|}}
+          {{rsa-form-select/default-option
+            disabled=option.disabled
+            disabledTooltip=option.disabledTooltip
+            optionLabel=option.label
+          }}
+        {{/power-select}}
+      </label>
+      END-SNIPPET --}}
+      {{code-snippet name="selects1a.hbs"}}
+    {{/spec-member}}
+
     {{#spec-member title="Inline" subtitle="Use plain CSS to specify width as needed."}}
       <label class="rsa-form-label power-select">
         <span class="label-text">
