@@ -202,6 +202,17 @@
                             </sources>
                         </mapping>
                         <mapping>
+                            <directoryIncluded>true</directoryIncluded>
+                            <directory>${presidio-app.directory}/recover/</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>scripts/recover</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
                             <directoryIncluded>false</directoryIncluded>
                             <directory>${presidio-app.directory}/pypackages</directory>
                             <username>${presidio.username}</username>
