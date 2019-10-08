@@ -577,6 +577,8 @@ export default Component.extend({
   _groupingHandler(powerSelectAPI, event) {
     if (isOpenParen(event) && _isFirstChar(event)) {
       powerSelectAPI.actions.close();
+      // Force focus-losing logic to execute
+      _dropFocus();
       this._broadcast(MESSAGE_TYPES.PILL_OPEN_PAREN);
       return false;
     } else if (isCloseParen(event) && _isFirstChar(event)) {

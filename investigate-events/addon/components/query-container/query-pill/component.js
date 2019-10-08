@@ -1241,6 +1241,7 @@ export default Component.extend({
    * Broadcast that an open paren was pressed.
    */
   _openParen() {
+    this.set('shouldFocusOut', false);
     this._broadcast(MESSAGE_TYPES.PILL_OPEN_PAREN);
   },
 

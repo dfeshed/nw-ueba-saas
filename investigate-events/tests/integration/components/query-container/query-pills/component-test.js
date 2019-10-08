@@ -41,12 +41,12 @@ const ARROW_DOWN_KEY = KEY_MAP.arrowDown.key;
 const BACKSPACE_KEY = KEY_MAP.backspace.key;
 const CLOSE_PAREN_KEY = KEY_MAP.closeParen.key;
 const DELETE_KEY = KEY_MAP.delete.key;
+const END_KEY = KEY_MAP.end.key;
 const ENTER_KEY = KEY_MAP.enter.key;
 const ESCAPE_KEY = KEY_MAP.escape.key;
-const OPEN_PAREN = KEY_MAP.openParen.key;
-const SPACE_KEY = KEY_MAP.space.key;
 const HOME_KEY = KEY_MAP.home.key;
-const END_KEY = KEY_MAP.end.key;
+const OPEN_PAREN_KEY = KEY_MAP.openParen.key;
+const SPACE_KEY = KEY_MAP.space.key;
 const modifiers = { shiftKey: true };
 
 const newActionSpy = sinon.spy(guidedCreators, 'addGuidedPill');
@@ -175,7 +175,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
-      .pillsDataPopulated()
+      .pillsDataPopulated()// P & P
       .build();
     this.set('cursorPosition', undefined);
 
@@ -186,18 +186,20 @@ module('Integration | Component | Query Pills', function(hooks) {
       }}
     `);
     await leaveNewPillTemplate();
-    await click(PILL_SELECTORS.newPillTrigger);
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 3, 'correct number of triggers (3)');
+    await click(triggers[1]);
     await createBasicPill(true, undefined, '!=');
+    await settled();
 
-    // action to store in state called
+    // Looks like P & P _ & P
     assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
-    const [[spyArgs]] = newActionSpy.args;
-    assert.propEqual(spyArgs, {
+    assert.ok(newActionSpy.calledWithMatch({
       pillData: { meta: 'a', operator: '!=', value: '\'x\'', type: 'query' },
-      position: 0
-    }, 'The action creator was called with the right arguments including the proper position');
+      position: 2 // 2 because the first && was inserted for us, then our pill above
+    }), 'The action creator was called with the right arguments including the proper position');
     assert.ok(find(PILL_SELECTORS.pillOpen), 'should have a trigger open for add');
-    assert.equal(this.get('cursorPosition'), 1, 'cursor position correct');
+    assert.equal(this.get('cursorPosition'), 3, 'cursor position correct');
   });
 
   test('Creating a FF pill in the middle of pills forwards focus to new pill creation to the right', async function(assert) {
@@ -215,7 +217,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       }}
     `);
     await leaveNewPillTemplate();
-    await click(PILL_SELECTORS.newPillTrigger);
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 3, 'correct number of triggers (3)');
+    await click(triggers[1]);
     await selectChoose(PILL_SELECTORS.meta, 'alert');
     await selectChoose(PILL_SELECTORS.operator, '=');
     await typeIn(PILL_SELECTORS.valueSelectInput, 's');
@@ -224,7 +228,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     const freeFormFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_FREE_FORM_LABEL));
     await click(freeFormFilter);
     assert.ok(find(PILL_SELECTORS.pillOpen), 'should have a trigger open for add');
-    assert.equal(this.get('cursorPosition'), 1, 'cursor position correct');
+    assert.equal(this.get('cursorPosition'), 3, 'cursor position correct');
   });
 
   test('Creating a focused pill and clicking outside the query-pills component should remove focus', async function(assert) {
@@ -4152,6 +4156,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await click(triggers[1]);
     await typeIn(PILL_SELECTORS.metaInput, 'OR');
     assert.notOk(find(PILL_SELECTORS.logicalOperatorOR), 'Should not be an OR operator');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'OR was removed from input');
   });
 
   test('it will insert an AND logical operator if adding a pill that is not preceded by one', async function(assert) {
@@ -4276,6 +4281,82 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(_hasClass(allPills[7], 'open-paren'), 'should be (');
   });
 
+  test('it will add logical operator to the right if there is a pill to the right', async function(assert) {
+    let triggers, pills;
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated() // P & P
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    // Test adding in middle, after the operator
+    triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 3, 'correct number of triggers (3)');
+    await click(triggers[2]);
+    await createBasicPill(true, null, '!=');
+    await settled();
+    // At this point you should see P & P & P
+    pills = findAll(`${PILL_SELECTORS.allPills} > div`);
+    assert.equal(pills.length, 11, 'should be 11 divs in .query-pills');
+    assert.ok(_hasClass(pills[1], 'query-pill'), 'should be pill 1');
+    assert.ok(_hasClass(pills[3], 'logical-operator'), 'should && 1');
+    assert.ok(_hasClass(pills[5], 'query-pill'), 'should be pill 2');
+    assert.ok(_hasClass(pills[7], 'logical-operator'), 'should && 2');
+    assert.ok(_hasClass(pills[9], 'query-pill'), 'should be pill 3');
+
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+
+    // Test adding to the beginning of the pills
+    triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 5, 'correct number of triggers (5)');
+    await click(triggers[0]);
+    await createBasicPill(true, null, '!=');
+    await settled();
+    // At this point you should see P & P & P & P
+    pills = findAll(`${PILL_SELECTORS.allPills} > div`);
+    assert.equal(pills.length, 15, 'should be 15 divs in .query-pills');
+    assert.ok(_hasClass(pills[1], 'query-pill'), 'should be pill 1');
+    assert.ok(_hasClass(pills[3], 'logical-operator'), 'should && 1');
+    assert.ok(_hasClass(pills[5], 'query-pill'), 'should be pill 2');
+    assert.ok(_hasClass(pills[7], 'logical-operator'), 'should && 2');
+    assert.ok(_hasClass(pills[9], 'query-pill'), 'should be pill 3');
+    assert.ok(_hasClass(pills[11], 'logical-operator'), 'should && 3');
+    assert.ok(_hasClass(pills[13], 'query-pill'), 'should be pill 4');
+  });
+
+  test('it will NOT add logical operator to the right if there is a paren to the right', async function(assert) {
+    const OR = createOperator(OPERATOR_OR);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens() // ( P )
+      .insertPillAt(OR, 2) // ( P || )
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    // Test adding after the operator
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 4, 'correct number of triggers (4)');
+    await click(triggers[3]);
+    await createBasicPill(true, null, '!=');
+    await settled();
+    // At this point you should see ( P || P )
+    const pills = findAll(`${PILL_SELECTORS.allPills} > div`);
+    assert.equal(pills.length, 11, 'should be 11 divs in .query-pills');
+    assert.ok(_hasClass(pills[1], 'open-paren'), 'should be open paren');
+    assert.ok(_hasClass(pills[3], 'query-pill'), 'should be pill 1');
+    assert.ok(_hasClass(pills[5], 'logical-operator'), 'should OR 1');
+    assert.ok(_hasClass(pills[7], 'query-pill'), 'should be pill 2');
+    assert.ok(_hasClass(pills[9], 'close-paren'), 'should be close paren');
+  });
+
   test('Pressing home and end from recent queries tab', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -4365,7 +4446,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await click(`#${metas[0].id}`);
     await click(`#${metas[1].id}`);
 
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN_KEY);
     await settled();
 
     assert.ok(find(PILL_SELECTORS.openParen), 'Did not find paren selected');
@@ -4402,7 +4483,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[1].id}`); // Selected pill AND focused pill
 
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN_KEY);
     await settled();
 
     assert.notOk(find(PILL_SELECTORS.openParen), 'Should not find paren');
@@ -4433,7 +4514,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await click(`#${metas[1].id}`); // ( selected pill ) selectedFocused pill
     await settled();
 
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN_KEY);
     await settled();
 
     assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'Should not find 2 open parens');

@@ -428,32 +428,49 @@ const QueryPills = RsaContextMenu.extend({
     } else {
       warn(`Unable to create filter, unknown type of "${type}"`, 'pillCreation.unknownType');
     }
+    // Close dropdowns
+    this._pillsExited();
     if (position === 0) {
-      // adjust the cursorPosition to point to the new-pill-trigger
-      // that's after the position where this pill will be inserted
-      this.set('cursorPosition', position + 1);
-      // Don't reset cursorPosition because it's pointing to where we want
-      // to be after this pill is added
-      this._pillsExited(false);
-      this.send(messageName, { pillData, position });
-    } else {
-      const pillsData = this.get('pillsData');
-      const previousPill = pillsData[position - 1];
-      let cursorPosition = position + 1;
-      let positionModifier = 0;
-      // Add logical AND operator if previous pill is not some type of operator
-      // AND is not an open paren
-      if (_shouldAddLogicalOperator(previousPill)) {
-        cursorPosition = position + 2;
-        // Since we're adding the operator, we need to bump-right the pill
-        positionModifier++;
-        const op = createOperator(OPERATOR_AND);
-        this.send('addLogicalOperator', { pillData: op, position });
+      this.send(messageName, {
+        pillData,
+        position
+      });
+      position++;
+      // Are there any existing pills other than the one you just created above?
+      // If so, add an AND operator afterwards and forward the cursor to the NPT
+      // to the right of the new operator
+      if (this.pillsData.length > 1 && !_isLogicalOperator(this.pillsData[1])) {
+        this.send('addLogicalOperator', {
+          pillData: createOperator(OPERATOR_AND),
+          position
+        });
+        position++;
       }
-      this.set('cursorPosition', cursorPosition);
-      this._pillsExited(false);
-      this.send(messageName, { pillData, position: position + positionModifier });
+    } else {
+      const previousPill = this.pillsData[position - 1];
+      if (_shouldAddLogicalOperator(previousPill)) {
+        this.send('addLogicalOperator', {
+          pillData: createOperator(OPERATOR_AND),
+          position
+        });
+        position++;
+      }
+      this.send(messageName, {
+        pillData,
+        position
+      });
+      position++;
+      const nextPill = this.pillsData[position];
+      if (nextPill && !_isLogicalOperator(nextPill) && nextPill.type !== CLOSE_PAREN) {
+        this.send('addLogicalOperator', {
+          pillData: createOperator(OPERATOR_AND),
+          position
+        });
+        position++;
+      }
     }
+    // Set cursor to the right of the newly created pill
+    this.set('cursorPosition', position);
   },
 
   /**

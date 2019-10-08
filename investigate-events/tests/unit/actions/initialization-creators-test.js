@@ -177,7 +177,7 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
       action.promise.then((resolve) => {
 
         const responseQueryArray = resolve.data.map((ob) => ob.query);
-        assert.equal(responseQueryArray.length, 3, 'Correct number of queries returned');
+        assert.equal(responseQueryArray[0], 'medium = 32', 'Element 0 correct');
         action.meta.onSuccess(resolve);
         assert.equal(queryCounter.recentQueryTabCount, 3, 'Recent query not being set correctly in the service');
         done();
