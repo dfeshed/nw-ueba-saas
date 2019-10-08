@@ -60,6 +60,7 @@ import {
   TEXT_FILTER,
   QUERY_FILTER
 } from 'investigate-events/constants/pill';
+import { isValidToWrapWithParens, selectedPillIndexes } from 'investigate-events/actions/utils';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -279,7 +280,8 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR_TOGGLED]: (data, position) => this._logicalOperatorClicked(data, position),
       [MESSAGE_TYPES.PILL_HOME_PRESSED]: (data) => this._openNewPillAtBeginning(data),
       [MESSAGE_TYPES.PILL_END_PRESSED]: (data) => this._openNewPillAtEnd(data),
-      [MESSAGE_TYPES.META_DELETE_PRESSED]: (position) => this._metaDeletePressed(position)
+      [MESSAGE_TYPES.META_DELETE_PRESSED]: (position) => this._metaDeletePressed(position),
+      [MESSAGE_TYPES.WRAP_SELECTED_PILLS_WITH_PARENS]: () => this._wrapSelectedPillsWithParens()
     });
     this.setProperties({
       CLOSE_PAREN,
@@ -839,6 +841,15 @@ const QueryPills = RsaContextMenu.extend({
    */
   _logicalOperatorClicked(pillData, position) {
     this.send('focusAndToggleLogicalOperator', { pillData, position });
+  },
+
+  _wrapSelectedPillsWithParens() {
+    const pills = this.get('pillsData');
+    const { startIndex, endIndex } = selectedPillIndexes(pills);
+    if (isValidToWrapWithParens(pills, startIndex, endIndex)) {
+      this.send('wrapWithParens', { startIndex, endIndex });
+      this.send('deselectAllGuidedPills');
+    }
   }
 });
 

@@ -40,7 +40,8 @@ export default Component.extend({
       [KEY_MAP.arrowRight.key]: this._rightArrowHandler.bind(this),
       [KEY_MAP.arrowLeft.key]: this._leftArrowHandler.bind(this),
       [KEY_MAP.home.key]: this._homeHandler.bind(this),
-      [KEY_MAP.end.key]: this._endHandler.bind(this)
+      [KEY_MAP.end.key]: this._endHandler.bind(this),
+      [KEY_MAP.openParen.key]: this._parenHandler.bind(this)
     });
   },
 
@@ -82,6 +83,10 @@ export default Component.extend({
 
   _endHandler() {
     this._broadcast(MESSAGE_TYPES.PILL_END_PRESSED);
+  },
+
+  _parenHandler() {
+    this._broadcast(MESSAGE_TYPES.FOCUSED_PILL_OPEN_PAREN_PRESSED);
   },
 
   keyDown(e) {

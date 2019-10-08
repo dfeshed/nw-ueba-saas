@@ -8,14 +8,15 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
 
-const LeftArrowKey = KEY_MAP.arrowLeft.key;
-const RightArrowKey = KEY_MAP.arrowRight.key;
-const Backspace = KEY_MAP.backspace.key;
-const DeleteKey = KEY_MAP.delete.key;
-const Enter = KEY_MAP.enter.key;
+const ARROW_LEFT = KEY_MAP.arrowLeft.key;
+const ARROW_RIGHT = KEY_MAP.arrowRight.key;
+const BACKSPACE = KEY_MAP.backspace.key;
+const DELETE_KEY = KEY_MAP.delete.key;
+const ENTER = KEY_MAP.enter.key;
 const XKey = 'KeyX';
-const HomeKey = KEY_MAP.home.key;
-const EndKey = KEY_MAP.end.key;
+const HOME_KEY = KEY_MAP.home.key;
+const END_KEY = KEY_MAP.end.key;
+const OPEN_PAREN = KEY_MAP.openParen.key;
 
 module('Integration | Component | focus-holder', function(hooks) {
   setupRenderingTest(hooks, {
@@ -30,7 +31,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DeleteKey);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
   });
 
   test('it sends a message when Backspace is pressed', async function(assert) {
@@ -41,7 +42,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', Backspace);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE);
   });
 
   test('it does not send a message when any other key is pressed', async function(assert) {
@@ -64,7 +65,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', Enter);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ENTER);
   });
 
   test('it sends a message when shiftleft is pressed', async function(assert) {
@@ -78,7 +79,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', LeftArrowKey, modifiers);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT, modifiers);
   });
 
   test('it sends a message when shiftRight is pressed', async function(assert) {
@@ -92,7 +93,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', RightArrowKey, modifiers);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT, modifiers);
   });
 
   test('it sends a message when left is pressed', async function(assert) {
@@ -103,7 +104,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', LeftArrowKey);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT);
   });
 
   test('it sends a message when right is pressed', async function(assert) {
@@ -114,7 +115,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', RightArrowKey);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT);
   });
 
   test('it sends a message when home is pressed', async function(assert) {
@@ -125,7 +126,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', HomeKey);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', HOME_KEY);
   });
 
   test('it sends a message when end is pressed', async function(assert) {
@@ -136,6 +137,17 @@ module('Integration | Component | focus-holder', function(hooks) {
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', EndKey);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', END_KEY);
+  });
+
+  test('it broadcasts a message when ( is pressed', async function(assert) {
+    assert.expect(1);
+
+    this.set('sendMessage', (messageType) => {
+      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_OPEN_PAREN_PRESSED, 'the correct message type is sent when `(` is pressed');
+    });
+
+    await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN);
   });
 });

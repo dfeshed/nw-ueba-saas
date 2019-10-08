@@ -318,6 +318,7 @@ export default Component.extend({
       [MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED]: () => this._focusedRightArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_RIGHT_ARROW_PRESSED]: () => this._focusedShiftRightArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_LEFT_ARROW_PRESSED]: () => this._focusedShiftLeftArrowPressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_OPEN_PAREN_PRESSED]: () => this._focusedPillOpenParenPressed(),
       [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._valueArrowLeft(data),
       [MESSAGE_TYPES.VALUE_ARROW_RIGHT_KEY]: (data) => this._rightArrowKeyPressed(data),
       [MESSAGE_TYPES.VALUE_BACKSPACE_KEY]: () => this._valueBackspace(),
@@ -1133,6 +1134,12 @@ export default Component.extend({
   _focusedShiftLeftArrowPressed() {
     if (!this.get('isActive')) {
       this.get('sendMessage')(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, this.get('position'));
+    }
+  },
+
+  _focusedPillOpenParenPressed() {
+    if (!this.get('isActive') && this.get('isSelected')) {
+      this._broadcast(MESSAGE_TYPES.WRAP_SELECTED_PILLS_WITH_PARENS);
     }
   },
 

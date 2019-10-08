@@ -43,6 +43,7 @@ const CLOSE_PAREN_KEY = KEY_MAP.closeParen.key;
 const DELETE_KEY = KEY_MAP.delete.key;
 const ENTER_KEY = KEY_MAP.enter.key;
 const ESCAPE_KEY = KEY_MAP.escape.key;
+const OPEN_PAREN = KEY_MAP.openParen.key;
 const SPACE_KEY = KEY_MAP.space.key;
 const HOME_KEY = KEY_MAP.home.key;
 const END_KEY = KEY_MAP.end.key;
@@ -4343,5 +4344,98 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(findAll(PILL_SELECTORS.focusedPill).length === 1, 'still have a focused pill');
     assert.ok(findAll(PILL_SELECTORS.logicalOperatorOR).length === 0, 'No OR now');
     assert.ok(findAll(PILL_SELECTORS.logicalOperatorAND).length === 1, 'Now have an AND');
+  });
+
+  test('Selecting pills and pressing ( on a focused and selected pill will wrap those pills in parens', async function(assert) {
+    assert.expect(7);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`);
+    await click(`#${metas[1].id}`);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN);
+    await settled();
+
+    assert.ok(find(PILL_SELECTORS.openParen), 'Did not find paren selected');
+    assert.ok(find(PILL_SELECTORS.closeParen), 'Did not find paren selected');
+
+    // Making sure parens were added around the correct pill
+    const openParenPosition = find(PILL_SELECTORS.openParen).getAttribute('position');
+    const closeParenPosition = find(PILL_SELECTORS.closeParen).getAttribute('position');
+    const wrappedPillPosition = find(PILL_SELECTORS.focusedPill).getAttribute('position');
+    assert.equal(openParenPosition, 0, 'Open paren was added somewhere else');
+    assert.equal(closeParenPosition, 4, 'Open paren was added somewhere else');
+    assert.equal(wrappedPillPosition, 3, 'Pill is not wrapped with parens as expected');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'The selected pill should remain focused');
+    assert.notOk(find(PILL_SELECTORS.selectedPill), 'There should be no selected pills left');
+  });
+
+  test('It will wrap pills in parens only when they are selected and one of them is focused', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+
+    let metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`);
+    await click(`#${metas[1].id}`);
+    metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[1].id}`); // Selected pill AND focused pill
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN);
+    await settled();
+
+    assert.notOk(find(PILL_SELECTORS.openParen), 'Should not find paren');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'Should not find paren');
+  });
+
+  test('It will not wrap pills in parens if adding parens make query invalid', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    // create one more pill
+    await selectChoose(PILL_SELECTORS.meta, 'medium');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, '32');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+    await leaveNewPillTemplate();
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`);
+    await click(`#${metas[1].id}`); // ( selected pill ) selectedFocused pill
+    await settled();
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN);
+    await settled();
+
+    assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'Should not find 2 open parens');
   });
 });

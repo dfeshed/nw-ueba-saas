@@ -31,6 +31,7 @@ const BACKSPACE_KEY = KEY_MAP.backspace.key;
 const DELETE_KEY = KEY_MAP.delete.key;
 const ENTER_KEY = KEY_MAP.enter.key;
 const ESCAPE_KEY = KEY_MAP.escape.key;
+const OPEN_PAREN = KEY_MAP.openParen.key;
 const SPACE_KEY = KEY_MAP.space.key;
 const TAB_KEY = KEY_MAP.tab.key;
 const THREE_KEY = '3';
@@ -1331,6 +1332,67 @@ module('Integration | Component | Query Pill', function(hooks) {
     `);
 
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY, modifiers);
+  });
+
+  test('Focused pill sends up a message when ( is pressed', async function(assert) {
+    assert.expect(1);
+
+    const pillState = new ReduxDataHelper(setState)
+      .pillsDataPopulated()
+      .language()
+      .markFocused(['1'])
+      .markSelected(['1'])
+      .build();
+
+    const [ enrichedPill ] = enrichedPillsData(pillState);
+    this.set('pillData', enrichedPill);
+
+    this.set('handleMessage', (messageType) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.WRAP_SELECTED_PILLS_WITH_PARENS, 'Message is incorrect, should be one to wrap parens');
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN);
+  });
+
+  test('Focused pill will not send a message when ( is pressed if its not selected too', async function(assert) {
+    assert.expect(0);
+
+    const pillState = new ReduxDataHelper(setState)
+      .pillsDataPopulated()
+      .language()
+      .markFocused(['1'])
+      .build();
+
+    const [ enrichedPill ] = enrichedPillsData(pillState);
+    this.set('pillData', enrichedPill);
+
+    this.set('handleMessage', (messageType) => {
+      assert.ok(false, `Should not get here with ${messageType}`);
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN);
   });
 
   // skip tests that are failing due to Backtracking
