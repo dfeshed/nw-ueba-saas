@@ -190,9 +190,9 @@ module('Integration | Component | property-panel-policy/file-policy', function(h
     assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'Connection Settings', 'Connection Settings section shows');
     assert.equal(document.querySelectorAll('.content-section__section-name')[1].textContent.trim(), 'Source Settings (exchange)', 'exchange source shows');
     assert.equal(document.querySelectorAll('.content-section__section-name')[2].textContent.trim(), 'Source Settings (apache)', 'apache source shows');
-    assert.equal(document.querySelectorAll('.property-name')[4].textContent.trim(), 'Log File Collection on Agent', 'Log File Collection on Agent lable shows');
+    assert.equal(document.querySelectorAll('.property-name')[4].textContent.trim(), 'Collect Logs', 'Collect Logs label shows');
     assert.equal(document.querySelectorAll('.file-value .tooltip-text')[3].textContent.trim(), 'Disabled', 'Disabled value is showing');
-    assert.equal(document.querySelectorAll('.property-name')[5].textContent.trim(), 'Data Collection', 'Data Collection lable shows');
+    assert.equal(document.querySelectorAll('.property-name')[5].textContent.trim(), 'On First Connect', 'On First Connect label shows');
     assert.equal(document.querySelectorAll('.file-value .tooltip-text')[4].textContent.trim(), 'Enabled', 'Enabled value shows');
     assert.equal(document.querySelectorAll('.file-value .tooltip-text')[5].textContent.trim(), 'Collect historical and new data', 'Collect historical and new data value shows');
   });
