@@ -1,9 +1,15 @@
 .usm-policy-wizard {
-
   .define-policy-sources-step {
     max-height: calc(100vh - #{$wizardStepMaxHeight});
     color: text-color(primary, lighter);
     font-size: 1rem;
+    .rsa-content-label.is-danger {
+      float: right;
+      margin-right: rsa-whitespace(); 
+    }
+    .remove-setting .rsa-icon {
+      font-size: 20px;
+    }
     .rsa-icon {
       font-size: 16px;
     }
@@ -15,9 +21,12 @@
       padding-bottom: 0;
     }
 
+    .rsa-content-warn-text-box {
+      margin-bottom: rsa-whitespace(more);
+    }
+
     .event-source-guide-box {
-      width: 54%;
-      padding-top: rsa-whitespace();
+      width: $definePolicySourcesStepWidth;
     }
 
     .file-source-parent-container {
@@ -29,7 +38,6 @@
           height: 1px;
           width: 85%;
           margin: rsa-whitespace() 0 rsa-whitespace() 0;
-          background: background-color(primary);
         }
       }
       .subheading {
@@ -121,18 +129,33 @@
       overflow: hidden; /* removes scrollbars from body & cells that aren't really scrolling */
     }
     .rsa-data-table-body-row {
+      .ember-power-select-status-icon {
+        display: none;
+      }
+      left: 0;
+      right: 0;
+      .remove-setting {
+        float: right;
+      }
+      &.warning {
+        @include border(1px, solid, accentFour);
+        border-color: text-color(accentOne);
+      }
+      .inner-row {
+        padding: rsa-whitespace(less);
+      }
       flex-direction: column;
       margin: 0;
-      padding: 0;
+      padding: rsa-whitespace(less);
       line-height: unset; /* fixes odd radio-button focus indicator */
       font-size: unset; /* fixes odd radio-button focus indicator */
       top: 0 !important;
       position: relative;
-      width: 55%;
+      width: $definePolicySourcesStepWidth;
       margin-bottom: rsa-whitespace(most);
       background-color: background-color(primary, darker);
       &:hover {
-        width: 55%;
+        width: $definePolicySourcesStepWidth;
       }
     }
 

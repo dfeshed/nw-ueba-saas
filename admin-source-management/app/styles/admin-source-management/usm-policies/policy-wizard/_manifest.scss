@@ -4,6 +4,7 @@ what goes into wizard step max-height you ask...
 - plus the toolbar min-height: 138px + (49px + 28px) = 215px
 */
 $wizardStepMaxHeight: 215px;
+$definePolicySourcesStepWidth: 50%;
 
 @import "policy-wizard";
 @import "policy-titlebar";

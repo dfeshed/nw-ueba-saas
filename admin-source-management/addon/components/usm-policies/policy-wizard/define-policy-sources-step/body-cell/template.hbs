@@ -1,4 +1,11 @@
 {{#if (eq column.displayType 'fileTypeInput')}}
+  <span class="remove-setting"
+    {{action 'handleRemoveSource' index bubble=false}}>
+    {{rsa-icon name="remove-circle-1" style="lined"}}
+  </span>
+  {{#if item.errorState.state}}
+    {{rsa-content-label label=(t 'adminUsm.policyWizard.MISSING_TYPE_SPECIFICATION') style='danger'}}
+  {{/if}}
   <h4 class='subheading'>
     {{#rsa-text-with-tooltip
       value=(t (concat column.title 'Tooltip'))
@@ -7,10 +14,6 @@
     }}
       <span class="text">{{t column.title}}</span>
     {{/rsa-text-with-tooltip}}
-    <span class="remove-setting"
-      {{action 'handleRemoveSource' index bubble=false}}>
-      {{rsa-icon name="remove-circle-1"}}
-    </span>
   </h4>
   <div class="file-type">
     {{#power-select

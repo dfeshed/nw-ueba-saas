@@ -25,7 +25,26 @@ const sources = [{
   fileEncoding: 'UTF-8 / ASCII', // Local Encoding
   paths: ['path-1', 'path-2'],
   sourceName: 'apache-server-1',
-  exclusionFilters: ['filter-1', 'filter-2']
+  exclusionFilters: ['filter-1', 'filter-2'],
+  errorState: {
+    state: 0,
+    errors: []
+  }
+}];
+
+const sourcesWithError = [{
+  fileType: 'apache',
+  fileTypePrettyName: 'Apache Web Server',
+  enabled: true,
+  startOfEvents: false,
+  fileEncoding: 'UTF-8 / ASCII', // Local Encoding
+  paths: ['path-1', 'path-2'],
+  sourceName: 'apache-server-1',
+  exclusionFilters: ['filter-1', 'filter-2'],
+  errorState: {
+    state: 1,
+    errors: ['MISSING_TYPE_SPECIFICATION']
+  }
 }];
 
 module('Integration | Component | usm-policies/policy-wizard/define-policy-sources-step/body-cell', function(hooks) {
@@ -264,7 +283,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(findAll('.exclusion-filters textarea')[0].value, expectedValue, `updated exclusionFilters are ${expectedValue}`);
   });
 
-  test('file type is displayed in the container', async function(assert) {
+  test('file type is displayed in the container NO error', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz('filePolicy')
       .policyWizFileSourceTypes()
@@ -294,6 +313,39 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     `);
     assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'Apache Web Server', 'selected item matches apache');
     assert.equal(findAll('.file-type .ember-power-select-trigger[aria-disabled=true]').length, 1, 'File type power-select control appears in the DOM and is disabled');
+    assert.equal(findAll('.rsa-content-label.is-danger').length, 0, '.rsa-content-label.is-danger appears is NOT in the DOM');
+  });
+
+  test('file type is displayed in the container WITH lable error', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(sourcesWithError)
+      .build();
+
+    const column = {
+      field: 'fileType',
+      title: 'adminUsm.policyWizard.filePolicy.logFileType',
+      width: '30vw',
+      displayType: 'fileTypeInput',
+      component: 'usm-policies/policy-wizard/define-policy-sources-step/body-cell'
+    };
+
+    this.setProperties({
+      column,
+      encodingOptions,
+      itemId
+    });
+
+    await render(hbs`
+      {{usm-policies/policy-wizard/define-policy-sources-step/body-cell
+        column=column
+        encodingOptions=encodingOptions
+        itemId=itemId
+      }}
+    `);
+    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'Apache Web Server', 'selected item matches apache');
+    assert.equal(findAll('.rsa-content-label.is-danger').length, 1, '.rsa-content-label.is-danger appears in the DOM');
   });
 
   test('remove button triggers removePolicyFileSource action creator when clicked', async function(assert) {

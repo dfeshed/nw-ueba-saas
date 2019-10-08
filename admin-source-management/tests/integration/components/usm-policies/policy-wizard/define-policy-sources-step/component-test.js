@@ -12,7 +12,32 @@ import sinon from 'sinon';
 
 let setState, updatePolicyPropertySpy, addPolicyFileSourceSpy;
 const spys = [];
-const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: 'apache-server-1', exclusionFilters: ['abc', 'def'], paths: ['path1', 'path2'] } ];
+const sources = [{
+  fileType: 'apache',
+  fileEncoding: 'UTF-8 / ASCII',
+  enabled: true,
+  startOfEvents: true,
+  sourceName: 'apache-server-1',
+  exclusionFilters: ['abc', 'def'],
+  paths: ['path1', 'path2'],
+  errorState: {
+    state: 0,
+    errors: []
+  }
+}];
+const sourcesWithError = [{
+  fileType: 'apache',
+  fileEncoding: 'UTF-8 / ASCII',
+  enabled: true,
+  startOfEvents: true,
+  sourceName: 'apache-server-1',
+  exclusionFilters: ['abc', 'def'],
+  paths: ['path1', 'path2'],
+  errorState: {
+    state: 1,
+    errors: ['MISSING_TYPE_SPECIFICATION']
+  }
+}];
 
 module('Integration | Component | usm-policies/policy-wizard/define-policy-sources-step', function(hooks) {
   setupRenderingTest(hooks, {
@@ -87,7 +112,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(findAll('.file-source-type').length, 1, 'file-source-type dropdown is rendered when sources are empty');
   });
 
-  test('should render the body-cell child-source-container component when sources is populated', async function(assert) {
+  test('should render the body-cell child-source-container component when sources is populated with NO errors', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz('filePolicy')
       .policyWizFileSources(sources)
@@ -96,6 +121,21 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(findAll('.child-source-container').length, 6, '6 (5 body cell & 1 advanced cell) child-source-containers are rendered correctly');
     assert.equal(findAll('.file-source-type').length, 1, 'file-source-type dropdown is rendered correctly');
     assert.equal(findAll('.add-row').length, 1, 'add-row button is rendered correctly');
+    assert.equal(findAll('.event-source-error').length, 0, 'event-source-error is NOT showing as expected');
+    assert.equal(findAll('.rsa-data-table-body-row.warning').length, 0, 'red border is NOT showing as expected');
+  });
+
+  test('should render the body-cell child-source-container component when sources is populated with errors', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSources(sourcesWithError)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    assert.equal(findAll('.child-source-container').length, 6, '6 (5 body cell & 1 advanced cell) child-source-containers are rendered correctly');
+    assert.equal(findAll('.file-source-type').length, 1, 'file-source-type dropdown is rendered correctly');
+    assert.equal(findAll('.add-row').length, 1, 'add-row button is rendered correctly');
+    assert.equal(findAll('.event-source-error').length, 1, 'event-source-error is showing as expected');
+    assert.equal(findAll('.rsa-data-table-body-row.warning').length, 1, 'red border is showing as expected');
   });
 
   test('should render the body-cell child-source-container component when except exclusionFilters is empty and other sources are populated', async function(assert) {

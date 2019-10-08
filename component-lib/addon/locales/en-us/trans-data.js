@@ -5068,6 +5068,7 @@ effects the simulated source.',
         exclusionFiltersEmptyLines: 'Exclusion Filters cannot contain empty lines',
         invalidLogFileTypesWarning: 'One or more Log File Types have multiple instances defined in this policy. Consider providing a unique Source Alias under Advanced Settings for each instance. The Source Alias will show up as meta in Investigate allowing the logs to be differentiated.',
         eventSourceConfigGuide: 'Need help integrating the available File Types with NetWitness Platform? Check out <a href="https://community.rsa.com/community/products/netwitness/parser-network/event-sources" target="_blank">Event Source Integration Guides</a>',
+        eventSourceError: 'One or more typespec files are removed from NetWitness Server. If this was not intended, consider replacing the typespec file that was removed from the server for the affected File Type and restart the service. If this was intended, remove the affected File Type configuration from this policy to make it valid.',
         fileSourceType: {
           add: 'Add Selected File Type',
           placeholder: 'Pick a Log File Type'

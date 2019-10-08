@@ -532,7 +532,7 @@ export default [
         sourceName: 'Exchange aye!',
         exclusionFilters: [],
         errorState: {
-          state: 1,
+          state: 0,
           errors: ['MISSING_TYPE_SPECIFICATION']
         }
       }

@@ -7,6 +7,7 @@ import {
   addPolicyFileSource
 } from 'admin-source-management/actions/creators/policy-wizard-creators';
 import {
+  fileSources,
   fileSourcesIds,
   sourceConfig,
   fileSourcesList,
@@ -15,6 +16,7 @@ import {
 } from 'admin-source-management/reducers/usm/policy-wizard/filePolicy/file-selectors';
 
 const stateToComputed = (state) => ({
+  fileSources: fileSources(state),
   sourcesIds: fileSourcesIds(state),
   columns: sourceConfig(),
   fileSourcesList: fileSourcesList(state),
@@ -38,6 +40,12 @@ const DefinePolicySourcesStep = Component.extend({
 
   _scrollToAddSelectedFileTypeBtn() {
     this.get('element').querySelector('.add-selected-file-type').scrollIntoView(false);
+  },
+
+  @computed('fileSources')
+  hasSourceError(fileSources) {
+    const errorCount = fileSources ? fileSources.filter((source) => source?.errorState?.state) : [];
+    return errorCount.length;
   },
 
   actions: {

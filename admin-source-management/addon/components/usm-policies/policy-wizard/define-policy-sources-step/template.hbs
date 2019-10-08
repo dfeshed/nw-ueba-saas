@@ -1,3 +1,12 @@
+{{#if hasSourceError}}
+  <vbox class="event-source-guide-box event-source-error">
+    {{#rsa-content-warn-text-box
+      value=(t 'adminUsm.policyWizard.filePolicy.eventSourceError')
+      isAlert=true
+    }}
+    {{/rsa-content-warn-text-box}}
+  </vbox>
+{{/if}}
 <hbox class="control">
   <div class="label">
     {{t 'adminUsm.policyWizard.filePolicy.filePolicySettingsHeader'}}
@@ -7,27 +16,31 @@
   {{t 'adminUsm.policyWizard.filePolicy.helpTitle'}}
 </div>
 {{!-- event source configuration guide box --}}
-<vbox class="event-source-guide-box">
-  {{#rsa-content-warn-text-box
-    value=(t 'adminUsm.policyWizard.filePolicy.eventSourceConfigGuide')
-    isInfo=true
-  }}
-  {{/rsa-content-warn-text-box}}
-</vbox>
+
 <div class="file-source-parent-container">
   <div class="source-container">
-    {{#rsa-data-table lazy=true items=sourcesIds columnsConfig=columns}}
-      {{!-- note that 'item' below will currently be the source index --}}
-      {{#rsa-data-table/body as |item index column|}}
-        {{#rsa-data-table/body-cell item=item index=index column=column}}
-          {{component column.component
-            itemId=item
-            index=index
-            column=column
-          }}
-        {{/rsa-data-table/body-cell}}
-      {{/rsa-data-table/body}}
-    {{/rsa-data-table}}
+
+    <vbox class="event-source-guide-box">
+      {{#rsa-content-warn-text-box
+        value=(t 'adminUsm.policyWizard.filePolicy.eventSourceConfigGuide')
+        isInfo=true
+      }}
+      {{/rsa-content-warn-text-box}}
+    </vbox>
+
+    {{#each sourcesIds as |item index|}}
+      <div class="rsa-data-table-body-row {{if (get fileSources (concat index '.errorState.state')) 'warning'}}">
+        <div class="inner-row">
+          {{#each columns as |column|}}
+            {{component column.component
+              itemId=item
+              index=item
+              column=column
+            }}
+          {{/each}}
+        </div>
+      </div>
+    {{/each}}
   </div>
 
   <h4 class='subheading'>
