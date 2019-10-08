@@ -759,6 +759,11 @@ const QueryPills = RsaContextMenu.extend({
   _recentQueryPillCreated(data, position) {
     const { language, aliases } = this.get('languageAndAliasesForParser');
     const pills = transformTextToPillData(data, { language, aliases, returnMany: true });
+    if (this.pillsData.length > 0) {
+      // Add an AND operator if there's some existing pills
+      const andOperator = createOperator(OPERATOR_AND);
+      pills.unshift(andOperator);
+    }
     this.send('batchAddPills', { pillsData: pills, initialPosition: position });
     this._pillsExited();
   },

@@ -3261,6 +3261,31 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   });
 
+  test('Selecting a recent query will append to existing query with AND operator', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()// P & P
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await selectChoose(PILL_SELECTORS.recentQuery, 'medium = 32');
+    await settled();
+    // at this point you should see P & P & medium=32
+    const pills = findAll(`${PILL_SELECTORS.allPills} > div`);
+    assert.equal(pills.length, 11, 'should be 11 divs in .query-pills');
+    assert.ok(_hasClass(pills[7], 'logical-operator'), 'should be &&');
+    assert.ok(_hasClass(pills[9], 'query-pill'), 'should be pill');
+  });
+
   test('Entering an open paren will insert a pair of parens', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
