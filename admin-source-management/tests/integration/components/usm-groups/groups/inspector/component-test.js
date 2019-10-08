@@ -66,7 +66,7 @@ module('Integration | Component | Group Inspector', function(hooks) {
 
     await render(hbs`{{usm-groups/groups/inspector}}`);
     assert.equal(findAll('.usm-groups-inspector .heading').length, 4, 'expected headings are shown');
-    assert.equal(findAll('.usm-groups-inspector .heading')[0].innerText, 'Policy(ies) Applied', 'first heading is as expected');
+    assert.equal(findAll('.usm-groups-inspector .heading')[0].innerText, 'Policies Applied', 'first heading is as expected');
     assert.equal(findAll('.usm-groups-inspector .heading')[3].innerText, 'History', 'History is the last section as expected');
     assert.equal(findAll('.usm-groups-inspector .title').length, 6, 'expected property names are shown');
     assert.equal(findAll('.usm-groups-inspector .group-criteria')[0].innerText,

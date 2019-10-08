@@ -4450,8 +4450,8 @@ export default {
         select: 'Select',
         name: 'Group Name',
         publishStatus: 'Publication Status',
-        assignedPolicies: 'Policy(ies) Applied',
-        sourceType: 'Source Types Applied',
+        assignedPolicies: 'Policies Applied',
+        sourceType: 'Policy Types Applied',
         description: 'Group Description',
         sourceCount: 'Source Count',
         lastUpdated: 'Last Updated',
@@ -4463,7 +4463,7 @@ export default {
         noAssignedPolicies: 'N/A'
       },
       filter: {
-        sourceType: 'Source Type',
+        sourceType: 'Policy Type',
         groupType: 'Group Type',
         appliedPolices: 'Applied Policies'
       },
@@ -4502,7 +4502,7 @@ export default {
         select: 'Select',
         name: 'Policy Name',
         publishStatus: 'Publication Status',
-        sourceType: 'Source Type',
+        sourceType: 'Policy Type',
         associatedGroups: 'Applied to Group(s)',
         description: 'Policy Description',
         noResultsMessage: 'No Policies found.',
@@ -4510,7 +4510,7 @@ export default {
         noAssociatedGroups: 'None'
       },
       filter: {
-        sourceType: 'Source Type',
+        sourceType: 'Policy Type',
         appliedGroups: 'Applied To Group(s)',
         policyParameters: 'Policy Parameters'
       },
@@ -4548,18 +4548,18 @@ export default {
       },
       modals: {
         deletePolicies: {
-          title: 'Delete Policy(ies)',
-          confirm: 'You are about to permanently delete {{numItems}} policy(ies). Deletion will take immediate effect. Any groups currently applying these policies will no longer do so. Default policies are automatically excluded from deletion.',
-          ok: 'Delete Policy(ies)',
-          success: 'Successfully deleted selected Policy(ies)',
-          failure: 'There was an unexpected problem deleting selected Policy(ies)'
+          title: 'Delete Policies',
+          confirm: 'You are about to permanently delete {{numItems}} Policies. Deletion will take immediate effect. Any groups currently applying these policies will no longer do so. Default policies are automatically excluded from deletion.',
+          ok: 'Delete Policies',
+          success: 'Successfully deleted selected Policies',
+          failure: 'There was an unexpected problem deleting selected Policies'
         },
         publishPolicies: {
-          title: 'Publish Policy(ies)',
-          confirm: 'You are about to publish the {{numItems}} selected Unpublished Policy(ies)?',
-          ok: 'Publish Policy(ies)',
-          success: 'Successfully published selected Policy(ies)',
-          failure: 'There was an unexpected problem publishing the Policy(ies)'
+          title: 'Publish Policies',
+          confirm: 'You are about to publish the {{numItems}} selected Unpublished Policies?',
+          ok: 'Publish Policies',
+          success: 'Successfully published selected Policies',
+          failure: 'There was an unexpected problem publishing the Policies'
         }
       },
       tooltips: {
@@ -4593,7 +4593,7 @@ export default {
         lastUpdatedOn: 'Last Updated On',
         lastUpdatedBy: 'Last Updated By',
         lastPublishedOn: 'Last Published On',
-        windowsLogSettings: 'Windows Log Settings',
+        windowsLogSettings: 'Windows Connection Settings',
         channelFilterSettings: 'Channel Filter Settings',
         windowsLogPolicyEnabled: 'Status',
         primaryDestination: 'Primary Destination',
@@ -4614,18 +4614,18 @@ export default {
       },
       modals: {
         deletePolicies: {
-          title: 'Delete Policy(ies)',
-          confirm: 'You are about to permanently delete {{numItems}} policy(ies). Deletion will take immediate effect. Any groups currently applying these policies will no longer do so. Default policies are automatically excluded from deletion.',
-          ok: 'Delete Policy(ies)',
-          success: 'Successfully deleted selected Policy(ies)',
-          failure: 'There was an unexpected problem deleting selected Policy(ies)'
+          title: 'Delete Policies',
+          confirm: 'You are about to permanently delete {{numItems}} Policies. Deletion will take immediate effect. Any groups currently applying these policies will no longer do so. Default policies are automatically excluded from deletion.',
+          ok: 'Delete Policies',
+          success: 'Successfully deleted selected Policies',
+          failure: 'There was an unexpected problem deleting selected Policies'
         },
         publishPolicies: {
-          title: 'Publish Policy(ies)',
-          confirm: 'You are about to publish the {{numItems}} selected Unpublished Policy(ies)?',
-          ok: 'Publish Policy(ies)',
-          success: 'Successfully published selected Policy(ies)',
-          failure: 'There was an unexpected problem publishing the Policy(ies)'
+          title: 'Publish Policies',
+          confirm: 'You are about to publish the {{numItems}} selected Unpublished Policies?',
+          ok: 'Publish Policies',
+          success: 'Successfully published selected Policies',
+          failure: 'There was an unexpected problem publishing the Policies'
         }
       },
       tooltips: {
@@ -4641,10 +4641,10 @@ export default {
     groupWizard: {
       // identify-group-step
       identifyGroup: 'Identify Group',
-      sourceType: 'Source Type',
-      sourceTypePlaceholder: 'Choose a Source Type',
+      sourceType: 'Policy Type',
+      sourceTypePlaceholder: 'Choose a Policy Type',
       edrSourceType: 'Agent Endpoint',
-      fileLogSourceType: 'Agent Log Files',
+      fileLogSourceType: 'Agent File Logs',
       windowsLogSourceType: 'Agent Windows Logs',
       name: 'Group Name',
       namePlaceholder: 'Enter a unique group name',
@@ -4660,7 +4660,7 @@ export default {
       defineGroup: 'Define Group',
       // apply-policy-step
       applyPolicy: {
-        stepTitle: 'Apply Policy(ies)',
+        stepTitle: 'Apply Policies',
         helpTitle: {
           label1: 'A group does not need to apply a policy, however, for a policy to be active, it must be applied to a group.',
           label2: 'If this step is skipped, policies can still be applied to this group later.',
@@ -4670,20 +4670,20 @@ export default {
         preview: 'Simulated Source Settings',
         setting: 'SETTING',
         governingPolicy: 'GOVERNING POLICY - GROUP',
-        sourceType: 'Source Type',
-        sourceTypeTooltip: 'Choose a source type to apply policies for.',
+        sourceType: 'Policy Type',
+        sourceTypeTooltip: 'Choose a Policy Type to apply policies for.',
         selectedPolicy: 'Selected Policy',
         policyPlaceholder: 'Select a Policy',
-        addSourceType: 'Add Another Source Type',
+        addSourceType: 'Add Another Policy Type',
         policyStatus: 'Policy Status',
         policyName: 'POLICY NAME',
         appliedToGroup: 'APPLIED TO GROUP(S)',
         description: 'POLICY DESCRIPTION',
         available: 'Available Policies',
-        availableTooltip: 'Available Policies shows all the published policies for the selected source type. If you do not see a ' +
+        availableTooltip: 'Available Policies shows all the published policies for the selected policy Type. If you do not see a ' +
           'policy you are expecting to see, you may need to return to the Policies tab and publish it. Click on the + icon to select the policy.',
         selected: 'Selected Policy',
-        selectedTooltip: 'The Selected Policy will be applied by this group. A group can only apply one policy per source type. ' +
+        selectedTooltip: 'The Selected Policy will be applied by this group. A group can only apply one policy per Policy Type. ' +
           'If sources in this group fall into multiple groups, this policy may not be applied to those sources depending on the group ranking. ' +
           'Use Edit Ranking on the Groups tab to ensure this policy will be applied as intended.'
       },
@@ -4740,7 +4740,7 @@ export default {
         nSources: 'Source Count',
         preview: 'Simulate'
       },
-      chooseSource: 'Choose Source Type',
+      chooseSource: 'Choose Policy Type',
       sourceTooltip: '\
 A source takes its settings from the\n\
 policies applied by the groups it belongs to,\n\
@@ -4767,18 +4767,16 @@ Set Group Ranking Down One Step  Shift+DownArrow\n\
 Set Group To Top Ranking       Shift+Alt+UpArrow\n\
 Set Group To Bottom Ranking  Shift+Alt+DownArrow\n',
       previewTooltip: '\
-The preview shows how the policy settings will be\n\
-applied to a hypothetical source.\n\
+The Simulated Source Settings panel shows how the policy\n\
+settings will be applied to a hypothetical source.\n\
 \n\
-Use the preview toggles in the table to choose\n\
-what groups the previewed source belongs to.\n\
+Use the Simulate toggles in the table to choose\n\
+which groups the simulated source belongs to.\n\
 \n\
-Selecting a row will highlight the settings that \n\
-belong to that policy and any potential conflicts.\n\
-Change the order of the row to see how this\n\
-effects the previewed source.',
+Change the order of the row*s* to see how this\n\
+effects the simulated source.',
       editRanking: 'Edit Ranking',
-      chooseSourceTopText: 'Ranking is established per source type.  Select a source type to continue.',
+      chooseSourceTopText: 'Ranking is established per policy Type.  Select a policy type to continue.',
       error: {
         generic: 'An unexpected error has occurred attempting to retrieve this data'
       },
@@ -4797,11 +4795,11 @@ effects the previewed source.',
       agentFileLogs: 'AGENT FILE LOGS',
       // identify-policy-step
       identifyPolicy: 'Identify Policy',
-      sourceType: 'Source Type',
-      sourceTypeTooltip: 'Choose a source type to create a policy for.',
-      sourceTypePlaceholder: 'Choose a Source Type',
+      sourceType: 'Policy Type',
+      sourceTypeTooltip: 'Choose a policy Type to create a policy for.',
+      sourceTypePlaceholder: 'Choose a Policy Type',
       edrSourceType: 'Agent Endpoint',
-      fileLogSourceType: 'Agent Log Files',
+      fileLogSourceType: 'Agent File Logs',
       windowsLogSourceType: 'Agent Windows Logs',
       name: 'Policy Name',
       nameTooltip: 'Policy name must be unique and 256 characters or less.',
@@ -4981,7 +4979,7 @@ effects the previewed source.',
       },
       // windowsLog policy settings
       windowsLogPolicy: {
-        windowsLogSettingsHeader: 'Windows Log Settings',
+        windowsLogSettingsHeader: 'Windows Connection Settings',
         radioOptionEnabled: 'Enabled',
         radioOptionDisabled: 'Disabled',
         enabled: 'Windows Log Collection', // 'Status',
@@ -5019,15 +5017,15 @@ effects the previewed source.',
       },
       // filePolicy settings
       filePolicy: {
-        fileSettingsHeader: 'File Settings',
+        fileSettingsHeader: 'File Connection Settings',
         filePolicySettingsHeader: 'File Policy Settings',
         helpTitle: 'Select an application log file type from the list of supported file types to configure its log collection settings',
         radioOptionEnabled: 'Enabled',
         radioOptionDisabled: 'Disabled',
         radioOptionEnable: 'Enable',
         radioOptionDisable: 'Disable',
-        enabled: 'File Collection', // 'Status',
-        enabledTooltip: 'If enabled, the log file collection capability of the agent will be activated. Logs will be collected and forwarded to the NetWitness Platform as they are generated. If disabled, no defined event source logs will be collected.', // 'Status',
+        enabled: 'Collect File Logs', // 'Status',
+        enabledTooltip: 'If enabled, the Collect File Logs capability of the agent will be activated. Logs will be collected and forwarded to the NetWitness Platform as they are generated. If disabled, no defined event source logs will be collected.', // 'Status',
         sendTestLog: 'Send Test Log',
         sendTestLogTooltip: 'If enabled, a connectivity test log will be sent to the configured server when the policy is loaded. This allows the configuration to be tested before standard logs become available.',
         primaryDestination: 'Primary Log Decoder / Log Collector',
@@ -5043,15 +5041,15 @@ effects the previewed source.',
         customConfigInvalidMsg: 'The custom setting cannot be empty or greater than 4000 characters',
         logFileType: 'Log File Type',
         logFileTypeTooltip: 'Select the type of event source to be monitored. For more information go to <a href="https://community.rsa.com/community/products/netwitness/integrations/event-sources" target="_blank">RSA Event Sources</a>.',
-        enableOnAgent: 'Log File Collection on Agent',
-        enableOnAgentTooltip: 'If enabled, log files for this file type instance will be collected and forwarded to the NetWitness Platform. "File Collection" must be enabled on each individual source applying this policy for these specific logs to be collected.',
-        dataCollection: 'Data Collection',
+        enableOnAgent: 'Collect Logs',
+        enableOnAgentTooltip: 'If enabled, log files for this file type instance will be collected and forwarded to the NetWitness Platform. "Collect File Logs" must be enabled on each individual source applying this policy for these specific logs to be collected.',
+        dataCollection: 'On First Connect',
         dataCollectionTooltip: 'Determines whether the NetWitness Agent will collect all logs or only newly created logs located in the specified paths upon initial collection. Historical logs cannot be collected after an agent has begun collecting logs. In both cases new logs will be collected going forward.',
         collectNew: 'Collect new data only',
         collectAll: 'Collect historical and new data',
         fileEncoding: 'File Encoding',
         fileEncodingTooltip: 'Specifies the type of character encoding of the log files.  If "Local Encoding" is selected, the NetWitness Agent will use the default encoding of the windows machine it is running on. This setting must match the encoding of the file being read or it will not be processed correctly. UTF-8/Ascii is the recommended setting.',
-        sourceName: 'Source Name',
+        sourceName: 'Source Alias',
         sourceNameTooltip: 'Optionally enter a hostname, IPv4 or IPv6 to identify individual sources. This is recommended when there are two or more sources of the same type on the same server e.g. a server running two instances of Apache web server. Configuring this setting will result in this source being applicable to a single server. This setting cannot exceed 255 characters.',
         exclusionFilters: 'Exclusion Filters',
         exclusionFiltersTooltip: 'An optional list of regex patterns which can be used to filter out any logs that match the patterns. A maximum of 16 exclusion filters (regex patterns) can be applied with each separated by a new line.',
@@ -5061,14 +5059,14 @@ effects the previewed source.',
         logFilePathTooltip: 'The location of the log files to be read. Each source is limited to 16 paths. This setting must include an absolute path and a file spec. Example: "C:\\Program Files\\apache-tomcat-*\\logs\\*.log".',
         addPath: 'Add Path',
         advancedSettings: 'Advanced Settings',
-        invalidSourceName: 'Source Name is invalid',
+        invalidSourceName: 'Enter a valid hostname, IPv4, or IPv6 that is less than 256 characters',
         invalidDirPath: 'Path cannot be empty',
         invalidPathAngleBrackets: 'Path cannot contain angle brackets',
         dirPathEmpty: 'Provide at least one valid path',
         exclusionFiltersSyntaxError: 'Syntax error in the Regular Expression on line ',
         exclusionFiltersLengthError: 'Please limit the filters to 16',
         exclusionFiltersEmptyLines: 'Exclusion Filters cannot contain empty lines',
-        invalidLogFileTypesWarning: 'One or more Log File Types have multiple instances defined in this policy. Consider providing a unique Source Name under Advanced Settings for each instance. The Source Name will show up as meta in Investigate allowing the logs to be differentiated.',
+        invalidLogFileTypesWarning: 'One or more Log File Types have multiple instances defined in this policy. Consider providing a unique Source Alias under Advanced Settings for each instance. The Source Alias will show up as meta in Investigate allowing the logs to be differentiated.',
         eventSourceConfigGuide: 'Need help integrating the available File Types with NetWitness Platform? Check out <a href="https://community.rsa.com/community/products/netwitness/parser-network/event-sources" target="_blank">Event Source Integration Guides</a>',
         fileSourceType: {
           add: 'Add Selected File Type',
@@ -5079,7 +5077,7 @@ effects the previewed source.',
     policyTypes: {
       edrPolicy: 'Agent Endpoint',
       edrPolicyDisabledTooltip: '',
-      filePolicy: 'Agent Log Files',
+      filePolicy: 'Agent File Logs',
       filePolicyDisabledTooltip: 'Endpoint servers need to be on version 11.4 and above to configure log file collection.',
       windowsLogPolicy: 'Agent Windows Logs',
       windowsLogPolicyDisabledTooltip: ''
