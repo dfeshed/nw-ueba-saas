@@ -15,7 +15,7 @@ import { htmlStringToElement, getOuterHeight } from 'component-lib/utils/jquery-
 
 export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   classNames: 'rsa-data-table-body-row',
-  classNameBindings: ['isSelected', 'isAtGroupingSize', 'isLast', 'isSearchMatch', 'isScrollMatch', 'isRowChecked', 'isChild'],
+  classNameBindings: ['isSelected', 'isAtGroupingSize', 'isLast', 'isSearchMatch', 'isScrollMatch', 'isRowChecked', 'isChild', 'isParent'],
   attributeBindings: ['style'],
 
   // determines if this row is at the limit of the group size

@@ -329,7 +329,21 @@ export const clientSortedData = createSelector(
 // exported for testing
 export const updateStreamKeyTree = (streamKeyTree, e, keyA, keyB, keyC, keyD) => {
   if (streamKeyTree[e[keyA]]?.[e[keyB]]?.[e[keyC]]?.[e[keyD]]) {
-    if (isEmpty(e['session.split']) || (!isEmpty(e['session.split']) && e['session.split'] < streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]['session.split'])) {
+    const split = e['session.split'];
+    const thisEventIsParent = isEmpty(split);
+    const thisKeyIsEmpty = isEmpty(streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]);
+    const thisKeyIsPopulated = !isEmpty(streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]);
+
+    const thisKeyIsPopulatedWithChild = thisKeyIsPopulated && !isEmpty(streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]['session.split']);
+    const thisKeyIsPopulatedWithParent = thisKeyIsPopulated && isEmpty(streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]['session.split']);
+    const thisEventIsPriorTime = e.time < streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]].time;
+    const thisEventIsPriorSplit = split < streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]['session.split'];
+
+    if (thisKeyIsEmpty ||
+      (thisKeyIsPopulatedWithChild && thisEventIsParent) ||
+      (thisKeyIsPopulatedWithParent && thisEventIsPriorTime) ||
+      (thisKeyIsPopulatedWithChild && thisEventIsPriorSplit)
+    ) {
       streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]] = e;
     }
   } else {
@@ -376,18 +390,39 @@ export const nestChildEvents = createSelector(
 
       for (let eventIndex = 0; eventIndex < events.length; eventIndex++) {
         const event = events[eventIndex];
-        let insertAtIndex = event.eventIndex;
+        let parent;
+
+        event.presentAsParent = false;
         if (event['ip.dst'] && event['ip.src'] && event['tcp.dstport'] && event['tcp.srcport']) {
-          insertAtIndex = streamKeyTree[event['ip.dst']][event['ip.src']][event['tcp.dstport']][event['tcp.srcport']].eventIndex;
+          event.tuple = `ip.dst: ${event['ip.dst']} | ip.src: ${event['ip.src']} | tcp.dstport: ${event['tcp.dstport']} | tcp.srcport: ${event['tcp.srcport']}`;
+          parent = streamKeyTree[event['ip.dst']][event['ip.src']][event['tcp.dstport']][event['tcp.srcport']];
         } else if (event['ip.dst'] && event['ip.src'] && event['udp.dstport'] && event['udp.srcport']) {
-          insertAtIndex = streamKeyTree[event['ip.dst']][event['ip.src']][event['udp.dstport']][event['udp.srcport']].eventIndex;
+          event.tuple = `ip.dst: ${event['ip.dst']} | ip.src: ${event['ip.src']} | udp.dstport: ${event['udp.dstport']} | udp.srcport: ${event['udp.srcport']}`;
+          parent = streamKeyTree[event['ip.dst']][event['ip.src']][event['udp.dstport']][event['udp.srcport']];
         } else if (event['ipv6.dst'] && event['ipv6.src'] && event['tcp.dstport'] && event['tcp.srcport']) {
-          insertAtIndex = streamKeyTree[event['ipv6.dst']][event['ipv6.src']][event['tcp.dstport']][event['tcp.srcport']].eventIndex;
+          event.tuple = `ipv6.dst: ${event['ipv6.dst']} | ipv6.src: ${event['ipv6.src']} | tcp.dstport: ${event['tcp.dstport']} | tcp.srcport: ${event['tcp.srcport']}`;
+          parent = streamKeyTree[event['ipv6.dst']][event['ipv6.src']][event['tcp.dstport']][event['tcp.srcport']];
         } else if (event['ipv6.dst'] && event['ipv6.src'] && event['udp.dstport'] && event['udp.srcport']) {
-          insertAtIndex = streamKeyTree[event['ipv6.dst']][event['ipv6.src']][event['udp.dstport']][event['udp.srcport']].eventIndex;
+          event.tuple = `ipv6.dst: ${event['ipv6.dst']} | ipv6.src: ${event['ipv6.src']} | udp.dstport: ${event['udp.dstport']} | udp.srcport: ${event['udp.srcport']}`;
+          parent = streamKeyTree[event['ipv6.dst']][event['ipv6.src']][event['udp.dstport']][event['udp.srcport']];
+        } else {
+          parent = event;
+        }
+        parent.presentAsParent = true;
+
+        if ((isEmpty(event['session.split']) && isEmpty(parent['session.split'])) && event.sessionId !== parent.sessionId) {
+          event.groupedWithoutSplit = true;
         }
 
-        event.eventIndex = isEmpty(event['session.split']) ? insertAtIndex : insertAtIndex + event['session.split'];
+        if (isEmpty(event['session.split'])) {
+          if (event.groupedWithoutSplit) {
+            event.eventIndex = parent.eventIndex + parseFloat(`.${event.time}`);
+          } else {
+            event.eventIndex = parent.eventIndex;
+          }
+        } else {
+          event.eventIndex = parent.eventIndex + ((event['session.split'] || .9999) * .0001);
+        }
       }
 
       return sort(events).asc((e) => e.eventIndex);

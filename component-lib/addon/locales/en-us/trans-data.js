@@ -519,6 +519,10 @@ export default {
     }
   },
   investigate: {
+    splitSessionLabels: {
+      withSplit: 'This event is part of a split session (split.session: {{split}}) matching the following parameters: {{tuple}}',
+      onlyGrouped: 'This event is related to a previous session matching the following parameters: {{tuple}}'
+    },
     controls: {
       toggle: 'Show/Hide Events List Panel',
       togglePreferences: 'Toggle Investigate Preferences'

@@ -1931,6 +1931,77 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].sessionId, 1);
   });
 
+  test('nestChildEvents for tuple with multiple parents and different times', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            {
+              'time': 300,
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 1
+            },
+            {
+              'time': 100,
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 2
+            },
+            {
+              'time': 200,
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 3
+            }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [
+            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
+            { metaName: 'ipv6.dst' },
+            { metaName: 'ipv6.src' },
+            { metaName: 'tcp.dstport' },
+            { metaName: 'tcp.srcport' },
+            { metaName: 'udp.dstport' },
+            { metaName: 'udp.srcport' }
+          ]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = nestChildEvents(state);
+    assert.equal(result[0].sessionId, 2);
+    assert.equal(result[1].sessionId, 3);
+    assert.equal(result[2].sessionId, 1);
+  });
+
   test('updateStreamKeyTree on initial pass', async function(assert) {
     const result = updateStreamKeyTree(
       {},

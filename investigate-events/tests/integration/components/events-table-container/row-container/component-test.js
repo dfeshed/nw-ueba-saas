@@ -141,7 +141,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
     return settled();
   });
 
-  test('will set is-child', async function(assert) {
+  test('will set is-child with split', async function(assert) {
     this.setProperties({
       item: {
         'session.split': 0
@@ -150,6 +150,30 @@ module('Integration | Component | Events Table Row', function(hooks) {
 
     await render(hbs`{{events-table-container/row-container item=item}}`);
     assert.equal(findAll('.is-child').length, 1, 'Expected .is-child to be present');
+    assert.equal(findAll('i.grouped-with-split').length, 1, 'Expected i to be present');
+  });
+
+  test('will set is-child when grouped', async function(assert) {
+    this.setProperties({
+      item: {
+        groupedWithoutSplit: true
+      }
+    });
+
+    await render(hbs`{{events-table-container/row-container item=item}}`);
+    assert.equal(findAll('.is-child').length, 1, 'Expected .is-child to be present');
+    assert.equal(findAll('i.grouped-without-split').length, 1, 'Expected i to be present');
+  });
+
+  test('will set is-parent', async function(assert) {
+    this.setProperties({
+      item: {
+        presentAsParent: true
+      }
+    });
+
+    await render(hbs`{{events-table-container/row-container item=item}}`);
+    assert.equal(findAll('.is-parent').length, 1, 'Expected .is-parent to be present');
   });
 
   test('will receive and issue row click action', async function(assert) {
