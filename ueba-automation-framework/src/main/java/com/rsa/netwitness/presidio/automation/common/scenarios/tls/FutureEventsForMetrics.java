@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.common.scenarios.tls;
 
-import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.event.network.NetworkEventsGenerator;
 
@@ -21,9 +21,9 @@ public class FutureEventsForMetrics extends NetworkScenarioBase{
     }
 
 
-    public Stream<NetworkEvent> get() throws GeneratorException {
+    public Stream<TlsEvent> get() throws GeneratorException {
         NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
-        List<NetworkEvent> events = regularGen.generate();
+        List<TlsEvent> events = regularGen.generate();
         return events.stream();
     }
 

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import presidio.data.domain.event.Event;
-import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.common.GeneratorException;
 
 import java.util.LinkedList;
@@ -32,7 +32,7 @@ public class NetworkDataPreparation extends DataPreparationBase {
 
         TlsAlerts tlsAlerts = new TlsAlerts(historicalDaysBack,anomalyDay);
 
-        List<NetworkEvent> networkEvents = new LinkedList<>();
+        List<TlsEvent> networkEvents = new LinkedList<>();
 
         for (TlsAlert alert : tlsAlerts.get()) {
             networkEvents.addAll(alert.getIndicators().stream().flatMap(e -> e.generateEvents().stream()).collect(Collectors.toList()));

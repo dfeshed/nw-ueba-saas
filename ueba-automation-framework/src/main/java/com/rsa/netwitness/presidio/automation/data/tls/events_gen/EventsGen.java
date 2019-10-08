@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.rsa.netwitness.presidio.automation.data.tls.feilds_gen.TlsEventsGen;
 import com.rsa.netwitness.presidio.automation.utils.common.Lazy;
 import org.slf4j.LoggerFactory;
-import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.common.time.SingleTimeGeneratorFactory;
@@ -25,7 +25,7 @@ public abstract class EventsGen {
     private final String entity;
     private final String entityType;
 
-    private Lazy<List<NetworkEvent>> eventsHolder = new Lazy<>();
+    private Lazy<List<TlsEvent>> eventsHolder = new Lazy<>();
 
     public EventsGen(String title, String entity, String entityType) {
         this.title = title;
@@ -33,7 +33,7 @@ public abstract class EventsGen {
         this.entityType = entityType;
     }
 
-    public  List<NetworkEvent> getEvents() {
+    public  List<TlsEvent> getEvents() {
         return eventsHolder.getOrCompute(this::generateAll);
     }
 
@@ -90,9 +90,9 @@ public abstract class EventsGen {
         return null;
     }
 
-    protected Function<NetworkEventsGenerator, List<NetworkEvent>> generate = gen -> {
+    protected Function<NetworkEventsGenerator, List<TlsEvent>> generate = gen -> {
         try {
-            List<NetworkEvent> result = gen.generate();
+            List<TlsEvent> result = gen.generate();
             LOGGER.info(gen.getTimeGenerator().getFirst().toString() + " - "
                     + gen.getTimeGenerator().getLast().toString() + "; Count: " + result.size());
             return result;
@@ -103,10 +103,10 @@ public abstract class EventsGen {
         return Lists.newLinkedList();
     };
 
-    private List<NetworkEvent> generateAll() {
+    private List<TlsEvent> generateAll() {
         LOGGER.info("Generating events for: " + entityType + " # " + entity + " # " + title);
         assertThat(eventGenerators).isNotEmpty();
-        List<NetworkEvent> events = Lists.newLinkedList();
+        List<TlsEvent> events = Lists.newLinkedList();
         eventGenerators.forEach(generator -> events.addAll(generate.apply(generator)));
         LOGGER.debug("Indicator events count: " + events.size());
         return events;

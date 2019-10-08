@@ -1,10 +1,10 @@
 package com.rsa.netwitness.presidio.automation.converter.conveters.network;
 
 import com.rsa.netwitness.presidio.automation.converter.events.CefHeader;
-import com.rsa.netwitness.presidio.automation.converter.events.TlsEvent;
+import com.rsa.netwitness.presidio.automation.converter.events.TlsEventConverter;
 import fortscale.common.general.Schema;
 import presidio.data.domain.Location;
-import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.domain.event.network.TlsEvent;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,12 +15,12 @@ import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.ge
 import static org.assertj.core.util.Lists.list;
 
 
-class NetwitnessTlsEventBuilder extends TlsEvent {
+class NetwitnessTlsEventConverterBuilder extends TlsEventConverter {
 
-    private final NetworkEvent networkEvent;
+    private final TlsEvent networkEvent;
 
 
-    NetwitnessTlsEventBuilder(NetworkEvent event) {
+    NetwitnessTlsEventConverterBuilder(TlsEvent event) {
         super(event.getDateTime(), Schema.TLS);
         this.networkEvent = event;
         cefHeader = getCefHeader();
@@ -35,7 +35,7 @@ class NetwitnessTlsEventBuilder extends TlsEvent {
     }
 
 
-    public NetwitnessTlsEventBuilder getTls() {
+    public NetwitnessTlsEventConverterBuilder getTls() {
         event_source_id = networkEvent.getEventId();
         data_source = networkEvent.getDataSource();
         ip_src = networkEvent.getSourceIp();

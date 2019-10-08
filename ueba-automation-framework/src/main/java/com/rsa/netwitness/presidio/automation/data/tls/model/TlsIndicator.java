@@ -3,7 +3,7 @@ package com.rsa.netwitness.presidio.automation.data.tls.model;
 import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.data.tls.events_gen.EventsGen;
 import org.slf4j.LoggerFactory;
-import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.domain.event.network.TlsEvent;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class TlsIndicator {
         return new ArrayList<>(abnormalValues);
     }
 
-    public List<NetworkEvent> generateEvents() {
+    public List<TlsEvent> generateEvents() {
         return eventsGenerator.getEvents();
     }
 

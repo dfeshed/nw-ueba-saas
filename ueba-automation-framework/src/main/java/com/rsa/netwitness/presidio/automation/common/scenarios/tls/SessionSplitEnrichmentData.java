@@ -1,7 +1,7 @@
 package com.rsa.netwitness.presidio.automation.common.scenarios.tls;
 
 import presidio.data.domain.event.network.NETWORK_DIRECTION_TYPE;
-import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.common.time.SingleSampleTimeGenerator;
@@ -42,7 +42,7 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
     public static final TestDataParameters secondEventHaveJa3AndSslSubject = generateDataParamsByIndex(9);
 
 
-    public Stream<NetworkEvent> generateAll() {
+    public Stream<TlsEvent> generateAll() {
         return Stream.of(
                 getBaseTestEvents(),
                 getMaxIntervalTestEvents(),
@@ -57,16 +57,16 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
     }
 
 
-    private Stream<NetworkEvent> getBaseTestEvents() {
+    private Stream<TlsEvent> getBaseTestEvents() {
         return generateSessionSplitHourlyEvents(EVENTS_END_TIME, 10, simpleEnrichmentTestDataParams);
     }
 
-    private Stream<NetworkEvent> getMaxIntervalTestEvents() {
+    private Stream<TlsEvent> getMaxIntervalTestEvents() {
         return generateSessionSplitHourlyEvents(EVENTS_END_TIME, 13, maxIntervalTestDataParams);
     }
 
     // 012457..9
-    private Stream<NetworkEvent> getMissingSessionsInTheMiddleTestEvents() {
+    private Stream<TlsEvent> getMissingSessionsInTheMiddleTestEvents() {
         Random r = new Random();
         List<Integer> indexesToFilter = r.ints(2, 9).limit(3).boxed().collect(toList());
         int minIndex = indexesToFilter.stream().sorted().findFirst().get();
@@ -77,38 +77,38 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
     }
 
     // 01123445..9
-    private Stream<NetworkEvent> getDuplicatedSessionsInTheMiddleTestEvents() {
+    private Stream<TlsEvent> getDuplicatedSessionsInTheMiddleTestEvents() {
         Random r = new Random();
         List<Integer> duplicatesIndexes = r.ints(2, 9).limit(3).boxed().collect(toList());
         int minIndex = duplicatesIndexes.stream().sorted().findFirst().get();
 
-        Stream<NetworkEvent> mainStream = generateSessionSplitHourlyEvents(EVENTS_END_TIME, 10, duplicatedSessionsInTheMiddleTestDataParams)
+        Stream<TlsEvent> mainStream = generateSessionSplitHourlyEvents(EVENTS_END_TIME, 10, duplicatedSessionsInTheMiddleTestDataParams)
                 .peek(e -> markPreviousEvent.accept(minIndex, e));
 
-        List<NetworkEvent> duplicates = generateSessionSplitHourlyEvents(EVENTS_END_TIME, 10, duplicatedSessionsInTheMiddleTestDataParams)
+        List<TlsEvent> duplicates = generateSessionSplitHourlyEvents(EVENTS_END_TIME, 10, duplicatedSessionsInTheMiddleTestDataParams)
                 .filter(e -> duplicatesIndexes.contains(e.getSessionSplit())).collect(toList());
         // adding 5 min to the duplicates
         duplicates.forEach(e -> e.setDateTime(e.getDateTime().plusSeconds(300)));
         return Stream.concat(mainStream, duplicates.stream());
     }
 
-    private Stream<NetworkEvent> getMissingZeroSessionTestEvents() {
+    private Stream<TlsEvent> getMissingZeroSessionTestEvents() {
         return generateSessionSplitHourlyEvents(EVENTS_END_TIME, 3, missingZeroSessionTestDataParams)
                 .filter(e -> e.getSessionSplit() != 0);
     }
 
     // 012012
-    private Stream<NetworkEvent> newSessionOpenedTestEvents() {
-        List<NetworkEvent> session1 = generateSessionSplitHourlyEvents(EVENTS_END_TIME, 3, newSessionOpenedFirstSession).collect(toList());
-        Instant secondSessionEndTime = session1.stream().map(NetworkEvent::getDateTime).min(comparing(Instant::getEpochSecond)).get();
-        Stream<NetworkEvent> session2 = generateSessionSplitHourlyEvents(secondSessionEndTime, 3, newSessionOpenedSecondSession);
+    private Stream<TlsEvent> newSessionOpenedTestEvents() {
+        List<TlsEvent> session1 = generateSessionSplitHourlyEvents(EVENTS_END_TIME, 3, newSessionOpenedFirstSession).collect(toList());
+        Instant secondSessionEndTime = session1.stream().map(TlsEvent::getDateTime).min(comparing(Instant::getEpochSecond)).get();
+        Stream<TlsEvent> session2 = generateSessionSplitHourlyEvents(secondSessionEndTime, 3, newSessionOpenedSecondSession);
         return Stream.concat(session1.stream(), session2);
     }
 
     // 0123245
-    private Stream<NetworkEvent> newSessionOpenedAndZeroEventIsMissingTestEvents() {
-        List<NetworkEvent> session = generateSessionSplitHourlyEvents(EVENTS_END_TIME, 7, newSessionOpenedAndZeroEventIsMissing)
-                .sorted(comparing(NetworkEvent::getSessionSplit))
+    private Stream<TlsEvent> newSessionOpenedAndZeroEventIsMissingTestEvents() {
+        List<TlsEvent> session = generateSessionSplitHourlyEvents(EVENTS_END_TIME, 7, newSessionOpenedAndZeroEventIsMissing)
+                .sorted(comparing(TlsEvent::getSessionSplit))
                 .collect(toList());
 
         session.get(4).setSessionSplit(2);
@@ -117,9 +117,9 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
         return session.stream();
     }
 
-    private Stream<NetworkEvent> zeroSessionEventHasNullJa3AndSslSubjectTestEvents() {
-        List<NetworkEvent> events = generateSessionSplitHourlyEvents(EVENTS_END_TIME, 3, zeroSessionEventHasNullJa3AndSslSubject)
-                .sorted(comparing(NetworkEvent::getSessionSplit))
+    private Stream<TlsEvent> zeroSessionEventHasNullJa3AndSslSubjectTestEvents() {
+        List<TlsEvent> events = generateSessionSplitHourlyEvents(EVENTS_END_TIME, 3, zeroSessionEventHasNullJa3AndSslSubject)
+                .sorted(comparing(TlsEvent::getSessionSplit))
                 .collect(toList());
 
         events.get(0).setSslSubject(null);
@@ -127,9 +127,9 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
         return events.stream();
     }
 
-    private Stream<NetworkEvent> secondEventHaveJa3AndSslSubjectTestEvents() {
-        List<NetworkEvent> events = generateSessionSplitHourlyEvents(EVENTS_END_TIME, 3, secondEventHaveJa3AndSslSubject)
-                .sorted(comparing(NetworkEvent::getSessionSplit))
+    private Stream<TlsEvent> secondEventHaveJa3AndSslSubjectTestEvents() {
+        List<TlsEvent> events = generateSessionSplitHourlyEvents(EVENTS_END_TIME, 3, secondEventHaveJa3AndSslSubject)
+                .sorted(comparing(TlsEvent::getSessionSplit))
                 .collect(toList());
 
         events.get(2).setSslSubject("dummy");
@@ -186,14 +186,14 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
         );
     }
 
-    private BiConsumer<Integer, NetworkEvent> markPreviousEvent = (i, e) -> {
+    private BiConsumer<Integer, TlsEvent> markPreviousEvent = (i, e) -> {
         if (e.getSessionSplit() == i - 1) {
             e.setEventId(MARKER + e.getEventId());
         }
     };
 
-    private Stream<NetworkEvent> generateSessionSplitHourlyEvents(Instant lastEventTime, int eventsAmount, TestDataParameters params) {
-        UnaryOperator<NetworkEvent> commonFieldsSetup = event -> {
+    private Stream<TlsEvent> generateSessionSplitHourlyEvents(Instant lastEventTime, int eventsAmount, TestDataParameters params) {
+        UnaryOperator<TlsEvent> commonFieldsSetup = event -> {
             event.setSourceIp(params.srcIp);
             event.setSourcePort(params.srcPort);
             event.setDstIp(params.dstIp);
@@ -201,7 +201,7 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
             return event;
         };
 
-        UnaryOperator<NetworkEvent> enrichmentFieldsSetup = event -> {
+        UnaryOperator<TlsEvent> enrichmentFieldsSetup = event -> {
             if (event.getSessionSplit() == 0) {
                 event.setSslSubject(params.sslSubject);
                 event.setJa3(params.ja3);
@@ -211,7 +211,7 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
             return event;
         };
 
-        List<NetworkEvent> event = IntStream.range(0, eventsAmount)
+        List<TlsEvent> event = IntStream.range(0, eventsAmount)
                 .mapToObj(i -> hourlyEventsWithSessionSplit(eventsAmount - i - 1, lastEventTime, i + 1, params.id))
                 .map(commonFieldsSetup)
                 .map(enrichmentFieldsSetup)
@@ -224,9 +224,9 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
         return new SingleSampleTimeGenerator(lastEventTime.minus(hourBackFromLastEventTime, ChronoUnit.HOURS));
     }
 
-    private NetworkEvent hourlyEventsWithSessionSplit(int splitIndex, Instant lastEventTime, int hoursBackward, String id) {
+    private TlsEvent hourlyEventsWithSessionSplit(int splitIndex, Instant lastEventTime, int hoursBackward, String id) {
         try {
-            NetworkEvent event = new NetworkEvent(singleSampleTimeGen(lastEventTime, hoursBackward).getNext());
+            TlsEvent event = new TlsEvent(singleSampleTimeGen(lastEventTime, hoursBackward).getNext());
             event.setEventId(id.concat("#").concat(String.valueOf(splitIndex)).concat("#").concat(String.valueOf(System.nanoTime())));
             event.setSessionSplit(splitIndex);
             event.setDirection(NETWORK_DIRECTION_TYPE.OUTBOUND);

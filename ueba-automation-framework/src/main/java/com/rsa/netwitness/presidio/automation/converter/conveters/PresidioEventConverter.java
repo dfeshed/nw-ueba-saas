@@ -11,7 +11,7 @@ import presidio.data.domain.event.Event;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.domain.event.file.FileEvent;
-import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.domain.event.process.ProcessEvent;
 import presidio.data.domain.event.registry.RegistryEvent;
 
@@ -35,8 +35,8 @@ public class PresidioEventConverter<T extends Event> implements EventConverter<T
         if (event instanceof RegistryEvent) {
             return new NetwitnessRegistryEventConverter().convert((RegistryEvent) event);
         }
-        if (event instanceof NetworkEvent) {
-            return new NetwitnessTlsEventConverter().convert((NetworkEvent) event);
+        if (event instanceof TlsEvent) {
+            return new NetwitnessTlsEventConverter().convert((TlsEvent) event);
         }
 
         throw new RuntimeException("Event type is not supported for: " + event.getClass().getTypeName());

@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.common.scenarios.tls;
 
-import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.random.GaussianLongGenerator;
@@ -30,10 +30,10 @@ public class UnusualTrafficVolumeAlerts extends NetworkScenarioBase {
     }
 
     // unusual from SourceIp To SslSubject Domain Organisation DestPort
-    public Stream<NetworkEvent> fromSourceIpToSslSubjectDomainOrganisationDestPort() throws GeneratorException {
+    public Stream<TlsEvent> fromSourceIpToSslSubjectDomainOrganisationDestPort() throws GeneratorException {
         NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
         regularGen.setNumOfBytesSentGenerator(regularTrafficGenerator);
-        List<NetworkEvent> events = regularGen
+        List<TlsEvent> events = regularGen
                 .modify()
                 .setSSLSubjectEntityValue(SSLSubjEntity(0))
                 .fixSourceIp()
@@ -59,10 +59,10 @@ public class UnusualTrafficVolumeAlerts extends NetworkScenarioBase {
 
 
     // unusual To SslSubject Domain Organisation DestPort ja3
-    public Stream<NetworkEvent> toSslSubjectDomainOrganisationDestPortJa3() throws GeneratorException {
+    public Stream<TlsEvent> toSslSubjectDomainOrganisationDestPortJa3() throws GeneratorException {
         NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
         regularGen.setNumOfBytesSentGenerator(regularTrafficGenerator);
-        List<NetworkEvent> events = regularGen
+        List<TlsEvent> events = regularGen
                 .modify()
                 .setJa3EntityValue(Ja3Entity(2))
                 .setSSLSubjectEntityValue(SSLSubjEntity(2))
