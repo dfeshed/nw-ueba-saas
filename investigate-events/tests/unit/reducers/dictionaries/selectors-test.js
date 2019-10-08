@@ -235,7 +235,7 @@ module('Unit | Selectors | dictionaries', function(hooks) {
   test('metaMapForColumns selector returns array of field/title objects for columnGroup candidate columns',
     function(assert) {
 
-      const state = new ReduxDataHelper().language().build();
+      const state = new ReduxDataHelper().metaKeyCache().build();
       const result = metaMapForColumns(state);
       assert.ok(result[0].hasOwnProperty('field'));
       assert.ok(result[0].hasOwnProperty('title'));

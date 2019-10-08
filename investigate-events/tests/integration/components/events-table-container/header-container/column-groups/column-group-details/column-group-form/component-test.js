@@ -35,7 +35,7 @@ module('Integration | Component | Column Group form', function(hooks) {
       assert.notOk(newGroup, 'editColumnGroup is not called if there is no change');
     });
 
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details/column-group-form
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
@@ -46,7 +46,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     assert.equal(find('.group-details p.message').textContent.trim(), 'Add a meta key from the list below',
       'Message displayed when no columns present in displayed keys');
 
-    assert.equal(findAll(AVAILABLE_META).length, 20, '20 meta keys available');
+    assert.equal(findAll(AVAILABLE_META).length, 95, '95 meta keys available');
 
   });
 
@@ -58,7 +58,7 @@ module('Integration | Component | Column Group form', function(hooks) {
       assert.notOk(newGroup, 'editColumnGroup is called with null if group has name and no columns');
     });
 
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).build();
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details/column-group-form
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
@@ -78,13 +78,13 @@ module('Integration | Component | Column Group form', function(hooks) {
       assert.notOk(newGroup, 'editColumnGroup is called with null if group has columns and no name');
     });
 
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details/column-group-form
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
 
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 0, 'No columns present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 20, '20 meta keys available');
+    assert.equal(findAll(AVAILABLE_META).length, 95, '95 meta keys available');
 
     const availableOptions = findAll(`${AVAILABLE_META} button`);
     // add candidate meta
@@ -92,7 +92,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     await click(availableOptions[9]);
 
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 2, '2 columns present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 18, '18 meta keys available');
+    assert.equal(findAll(AVAILABLE_META).length, 93, '93 meta keys available');
   });
 
   test('it will display a message if all meta are added', async function(assert) {
@@ -100,7 +100,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     this.set('columnGroup', null);
     this.set('editColumnGroup', () => {});
 
-    new ReduxDataHelper(setState).language([{ metaName: 'foo', displayName: 'bar' }]).build();
+    new ReduxDataHelper(setState).metaKeyCache([{ metaName: 'foo', displayName: 'bar' }]).build();
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details/column-group-form
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
@@ -125,7 +125,7 @@ module('Integration | Component | Column Group form', function(hooks) {
       }
     });
 
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).metaKeyCache().build();
 
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details/column-group-form
       columnGroup=columnGroup
@@ -142,7 +142,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     await click(availableOptions[3]);
 
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 19, '19 meta keys available');
+    assert.equal(findAll(AVAILABLE_META).length, 94, '94 meta keys available');
 
     // typing in spaces only will trigger editColumnGroup, but with null object
     // thus running the editColumnGroup assertion only once
@@ -158,7 +158,7 @@ module('Integration | Component | Column Group form', function(hooks) {
       assert.notOk(newGroup, 'edit is called when it adds and removes meta');
     });
 
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details/column-group-form
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
@@ -173,7 +173,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     await click(selectedOptions[0]);
 
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 19, '19 meta keys available');
+    assert.equal(findAll(AVAILABLE_META).length, 94, '94 meta keys available');
   });
 
   test('will filter available meta', async function(assert) {
@@ -182,7 +182,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     this.set('columnGroup', null);
     this.set('editColumnGroup', () => {});
 
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`
       {{events-table-container/header-container/column-groups/column-group-details/column-group-form
         columnGroup=columnGroup
@@ -205,7 +205,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     this.set('columnGroup', null);
     this.set('editColumnGroup', () => {});
 
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`
       {{events-table-container/header-container/column-groups/column-group-details/column-group-form
         columnGroup=columnGroup
@@ -218,7 +218,7 @@ module('Integration | Component | Column Group form', function(hooks) {
 
     // add selected meta
     const availableOptions = findAll(`${AVAILABLE_META} button`);
-    await click(availableOptions[0]); // a (A), fake meta from test data
+    await click(availableOptions[0]); // time (TIME), meta from test data
 
     selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
     assert.ok(selectedOptions.length === 1, 'one meta selected yet');
@@ -235,7 +235,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     this.set('columnGroup', null);
     this.set('editColumnGroup', () => {});
 
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`
       {{events-table-container/header-container/column-groups/column-group-details/column-group-form
         columnGroup=columnGroup
@@ -245,7 +245,7 @@ module('Integration | Component | Column Group form', function(hooks) {
 
     // add selected meta and filter it out
     const availableOptions = findAll(`${AVAILABLE_META} button`);
-    await click(availableOptions[0]); // a (A), fake meta from test data
+    await click(availableOptions[0]); // time (TIME), meta from test data
     await fillIn('.filter-group input', 'blahhhh');
 
     assert.ok(findAll('.columns-filtered').length === 1, 'proper message is displayed');
@@ -257,7 +257,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     this.set('columnGroup', null);
     this.set('editColumnGroup', () => {});
 
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`
       {{events-table-container/header-container/column-groups/column-group-details/column-group-form
         columnGroup=columnGroup
@@ -276,7 +276,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     this.set('columnGroup', null);
     this.set('editColumnGroup', () => {});
 
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`
       {{events-table-container/header-container/column-groups/column-group-details/column-group-form
         columnGroup=columnGroup
@@ -295,7 +295,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     this.set('columnGroup', null);
     this.set('editColumnGroup', () => {});
 
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`
       {{events-table-container/header-container/column-groups/column-group-details/column-group-form
         columnGroup=columnGroup
@@ -316,7 +316,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     this.set('columnGroup', null);
     this.set('editColumnGroup', () => {});
 
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`
       {{events-table-container/header-container/column-groups/column-group-details/column-group-form
         columnGroup=columnGroup
@@ -350,7 +350,7 @@ module('Integration | Component | Column Group form', function(hooks) {
       assert.notOk(newGroup, 'newGroup is null if all details added but name is not unique');
     });
 
-    new ReduxDataHelper(setState).language().columnGroups().build();
+    new ReduxDataHelper(setState).metaKeyCache().columnGroups().build();
     await render(hbs`
       {{events-table-container/header-container/column-groups/column-group-details/column-group-form
         columnGroup=columnGroup
@@ -377,7 +377,7 @@ module('Integration | Component | Column Group form', function(hooks) {
       }
     });
 
-    new ReduxDataHelper(setState).language().columnGroups().build();
+    new ReduxDataHelper(setState).metaKeyCache().columnGroups().build();
     await render(hbs`
       {{events-table-container/header-container/column-groups/column-group-details/column-group-form
         columnGroup=columnGroup

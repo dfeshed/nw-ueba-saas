@@ -12,6 +12,7 @@ const indices = [NONE, KEY, VALUE];
 // ACCESSOR FUNCTIONS
 const _language = (state) => state.investigate.dictionaries.language;
 const _aliases = (state) => state.investigate.dictionaries.aliases;
+const _metaKeyCache = (state) => state.investigate.dictionaries.metaKeyCache;
 
 // UTILS
 
@@ -137,16 +138,16 @@ export const languageAndAliasesForParser = createSelector(
 );
 
 /**
- * Returns the language dictionary as an array of candidate meta
+ * Returns the metaKeys from metaKeyCache as an array of candidate meta
  * for column groups
  *
  * @public
  */
 export const metaMapForColumns = createSelector(
-  [ _language ],
-  (language = []) => {
+  [ _metaKeyCache],
+  (metaKeys = []) => {
 
-    return language.map((meta) => {
+    return metaKeys.map((meta) => {
       return {
         field: meta.metaName,
         title: meta.displayName
@@ -155,4 +156,3 @@ export const metaMapForColumns = createSelector(
 
   }
 );
-

@@ -54,7 +54,7 @@ module('Integration | Component | Column Group Details', function(hooks) {
   test('columnGroup details should render an edit form to create a new column group', async function(assert) {
 
     this.set('columnGroup', null);
-    new ReduxDataHelper(setState).language().build();
+    new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details columnGroup=columnGroup}}`);
 
     assert.ok(find('.column-group-form'), 'Column Group Details rendered correctly');
@@ -63,7 +63,7 @@ module('Integration | Component | Column Group Details', function(hooks) {
     assert.equal(find('.group-details .name').textContent.trim(), 'Displayed Meta Keys');
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 0, 'No columns present in displayed keys');
     assert.equal(find('.add-details .name').textContent.trim(), 'Available Meta Keys');
-    assert.equal(findAll(AVAILABLE_META).length, 20, '20 meta keys available');
+    assert.equal(findAll(AVAILABLE_META).length, 95, '95 meta keys available');
 
   });
 

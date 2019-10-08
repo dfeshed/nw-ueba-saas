@@ -3,7 +3,7 @@ import { lookup } from 'ember-dependency-lookup';
 import { run } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 
-import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
+import { fetchAliases, fetchLanguage, fetchMetaKeyCache } from './fetch/dictionaries';
 import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
 import fetchRecentQueries from './fetch/recent-queries';
 import fetchValueSuggestions from './fetch/value-suggestions';
@@ -181,6 +181,23 @@ const _getProfiles = () => {
           }
         }
       });
+    }
+  };
+};
+
+/**
+ * Get all meta keys the user has ever seen.
+ *
+ * @private
+ */
+const _getMetaKeyCache = () => {
+  return {
+    type: ACTION_TYPES.META_KEY_CACHE_RETRIEVE,
+    promise: fetchMetaKeyCache(),
+    meta: {
+      onFailure(response) {
+        handleInvestigateErrorCode(response, 'GET_META_KEY_CACHE');
+      }
     }
   };
 };
@@ -436,9 +453,9 @@ export const initializeInvestigate = function(
     // 2) Initialize global preferences state
     _initializeGlobalPreferences(dispatch);
 
-    // 3) Retrieve the column groups and profiles, it isn't important that
-    //    this be syncronized with anything else, so can just
-    //    kick it off
+    // 3) Retrieve the column groups, and profiles
+    // it isn't important that this be syncronized with anything else,
+    // so can just kick it off
     dispatch(_getColumnGroups());
     dispatch(_getProfiles());
     dispatch(isQueryExecutedByColumnGroup(false));
@@ -616,6 +633,11 @@ export const getDictionaries = (resolve = noop, reject = noop) => {
               onFailure(response) {
                 handleInvestigateErrorCode(response, 'FETCH_LANGUAGE');
                 rejectLang(response);
+              },
+              onSuccess() {
+                // Every language call populates a metaKeyCache with metaKeys
+                // that can be made available to create/edit columnGroups and metaGroups
+                dispatch(_getMetaKeyCache());
               },
               onFinish() {
                 resolveLang();

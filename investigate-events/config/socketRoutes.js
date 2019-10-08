@@ -109,6 +109,13 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/meta/values/suggestions'
       }
     },
+    'meta-key-cache': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/investigate/meta/keys/get-all',
+        requestDestination: '/ws/investigate/meta/keys/get-all'
+      }
+    },
     'columnGroup': {
       socketUrl,
       findAll: {

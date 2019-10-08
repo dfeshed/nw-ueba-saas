@@ -1,7 +1,12 @@
 import {
   queryPromiseRequest,
-  serviceIdFilter
+  serviceIdFilter,
+  findAllPromiseRequest
 } from 'investigate-shared/actions/api/events/utils';
+
+const LANGUAGE_MODEL_NAME = 'core-meta-key';
+const ALIAS_MODEL_NAME = 'core-meta-alias';
+const META_KEY_CACHE_MODEL_NAME = 'meta-key-cache';
 
 /**
  * Fetch the language for a given service.
@@ -16,7 +21,7 @@ const fetchLanguage = (serviceId) => {
     ]
   };
   return queryPromiseRequest(
-    'core-meta-key',
+    LANGUAGE_MODEL_NAME,
     query
   );
 };
@@ -34,12 +39,20 @@ const fetchAliases = (serviceId) => {
     ]
   };
   return queryPromiseRequest(
-    'core-meta-alias',
+    ALIAS_MODEL_NAME,
     query
   );
 };
 
+/**
+ * Fetch all the meta keys.
+ * @return {object} RSVP Promise
+ * @public
+ */
+const fetchMetaKeyCache = () => findAllPromiseRequest(META_KEY_CACHE_MODEL_NAME);
+
 export {
   fetchLanguage,
-  fetchAliases
+  fetchAliases,
+  fetchMetaKeyCache
 };

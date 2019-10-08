@@ -1,7 +1,7 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
-
+import sort from 'fast-sort';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
@@ -9,6 +9,7 @@ const _initialState = Immutable.from({
   aliasesCache: {},
   language: undefined,
   languageCache: {},
+  metaKeyCache: undefined,
   languageError: false,
   aliasesError: false
 });
@@ -51,6 +52,25 @@ export default handleActions({
     const { payload: serviceId } = action;
     const language = state.languageCache[serviceId];
     return state.merge({ language });
+  },
+
+  [ACTION_TYPES.META_KEY_CACHE_RETRIEVE]: (state, action) => {
+    const metaKeys = action.payload ?
+      sort(action.payload.data).by([{ asc: (meta) => meta.metaName.toUpperCase() }]) : [];
+
+    return handle(state, action, {
+      // TODO failure
+      failure: (s) => s.set('metaKeyCache', []),
+      success: (s) => {
+        if (metaKeys) {
+          // metaKeys retrieved
+          return s.set('metaKeyCache', metaKeys);
+        } else {
+          // TODO if no metaKeys returned
+          return s.set('metaKeyCache', []);
+        }
+      }
+    });
   },
 
   // Handles the results from a Promise call to fetch `aliases` for a given
