@@ -1,16 +1,21 @@
 import redux from 'redux';
-import thunk from 'redux-thunk';
-import { middleware } from 'redux-pack';
-import reducers from 'investigate-events/reducers/index';
-import ReduxService from 'ember-redux/services/redux';
+import { reduxBatch } from 'redux-batch';
 import Immutable from 'seamless-immutable';
+
+import reducers from 'investigate-events/reducers/index';
+import middlewares from 'investigate-events/middleware/index';
+import ReduxService from 'investigate-events/services/redux';
 
 const { createStore, applyMiddleware, compose } = redux;
 
 export function patchReducer(context, initState) {
+
   const makeStoreInstance = () => {
-    const middlewares = applyMiddleware(thunk, middleware);
-    const createStoreWithMiddleware = compose(middlewares)(createStore);
+    const { middleware } = middlewares;
+    const createStoreWithMiddleware = compose(
+      applyMiddleware(...middleware),
+      reduxBatch
+    )(createStore);
     return createStoreWithMiddleware(reducers, Immutable.from(initState));
   };
 

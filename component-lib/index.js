@@ -69,6 +69,20 @@ module.exports = {
       'redux-actions': {
         vendor: ['dist/redux-actions.js']
       },
+      '@manaflair/redux-batch': {
+        vendor: {
+          processTree(tree) {
+            return new WebpackWriter([tree], {
+              entry: './@manaflair/redux-batch/index.js',
+              output: {
+                library: 'redux-batch',
+                libraryTarget: 'amd',
+                filename: 'redux-batch.amd.js'
+              }
+            });
+          }
+        }
+      },
       'redux-pack': {
         vendor: {
           processTree(tree) {
@@ -178,6 +192,7 @@ module.exports = {
     });
     this.import('vendor/redux-persist-transform-filter.amd.js');
     this.import('vendor/reselect.amd.js');
+    this.import('vendor/redux-batch.amd.js');
     this.import('vendor/core-js.amd.js');
 
     // Sanitize Html

@@ -29,6 +29,7 @@
     "@html-next/flexi-dsl": "2.2.0",
     "@html-next/flexi-layouts": "2.2.2",
     "@html-next/vertical-collection": "1.0.0-beta.12",
+    "@manaflair/redux-batch": "1.0.0",
     "@mind-trace/stompjs": "2.3.5",
     "amcharts4-ember-hardcoded": "4.0.21-alpha.1",
     "babel-eslint": "10.0.2",

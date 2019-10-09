@@ -36,6 +36,7 @@
     "@html-next/flexi-default-styles": "2.2.0",
     "@html-next/flexi-dsl": "2.2.0",
     "@html-next/flexi-layouts": "2.2.2",
+    "@manaflair/redux-batch": "1.0.0",
     "broccoli-replace": "^0.12.0",
     "broccoli-webpack": "^1.0.0",
     "core-js": "3.2.1",

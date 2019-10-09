@@ -2,7 +2,7 @@ import { remainingMetaKeyBatches, initMetaKeyStates, isMetaStreaming } from 'inv
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import * as ACTION_TYPES from './types';
 import executeMetaValuesRequest from './fetch/fetch-meta';
-import { addGuidedPill } from 'investigate-events/actions/guided-creators';
+import { addGuidedPill } from 'investigate-events/actions/pill-creators';
 import { buildMetaValueStreamInputs } from './utils';
 import quote from 'investigate-events/util/quote';
 

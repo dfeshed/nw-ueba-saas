@@ -9,8 +9,9 @@ import {
   findAllEmptyParens,
   findEmptyParensAtPosition,
   findSelectedPills,
-  selectPillsFromPosition
-} from 'investigate-events/actions/utils';
+  findMissingTwins
+} from 'investigate-events/actions/pill-utils';
+import { deselectAllGuidedPills } from 'investigate-events/actions/pill-selection-creators';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { ValidatableFilter } from 'investigate-events/util/filter-types';
 import {
@@ -22,34 +23,6 @@ import {
 } from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
-
-// Check if a given set a pills contains any orphaned
-// twins. If it does, return the matching twins from state
-const _findMissingTwins = (pills, pillsFromState) => {
-  // filter to those that are missing twins in the input
-  const twins = pills.filter((pD) => {
-    if (pD.twinId) {
-      const twinPresent = pills
-        // filter out the pill being processed as it'll
-        // obviously have a matching twin id
-        .filter((p) => p.id !== pD.id)
-        // find twin
-        .some((potentialTwinPill) => {
-          return pD.twinId === potentialTwinPill.twinId;
-        });
-      return !twinPresent;
-    }
-    return false;
-  }).map((twinsie) => {
-    // now find the twins
-    return pillsFromState.find((pill) => {
-      // want a matching twin id, but not the exact same pill
-      return pill.twinId === twinsie.twinId && pill.id !== twinsie.id;
-    });
-  });
-
-  return twins;
-};
 
 const _isLogicalOperator = (pill) => pill?.type === OPERATOR_AND || pill?.type === OPERATOR_OR;
 
@@ -119,34 +92,6 @@ const _clientSideValidation = ({ pillData, position, isFromParser = false }) => 
     // The only pills left once we get here are invalid pills that were invalid
     // before being sent to this method. Those are already marked invalid in
     // state, so no work needs to be done.
-  };
-};
-
-const _pillSelectDeselect = (actionType, pillData, shouldIgnoreFocus = false) => {
-  return (dispatch, getState) => {
-
-    // now locate potential twins
-    const { investigate: { queryNode: { pillsData } } } = getState();
-    const missingTwins = _findMissingTwins(pillData, pillsData);
-    if (missingTwins.length > 0) {
-      dispatch({
-        type: actionType,
-        payload: {
-          pillData: missingTwins,
-          // twins don't get focus, not yet at least
-          shouldIgnoreFocus: true
-        }
-      });
-    }
-
-    // handle the ones being passed in
-    dispatch({
-      type: actionType,
-      payload: {
-        pillData,
-        shouldIgnoreFocus
-      }
-    });
   };
 };
 
@@ -264,7 +209,7 @@ export const editGuidedPill = ({ pillData, position }) => {
 
 export const deleteGuidedPill = ({ pillData }) => {
   return (dispatch, getState) => {
-    const missingTwins = _findMissingTwins(pillData, pillsData(getState()));
+    const missingTwins = findMissingTwins(pillData, pillsData(getState()));
     if (missingTwins.length > 0) {
       pillData = [...pillData, ...missingTwins];
     }
@@ -324,44 +269,19 @@ export const addPillFocus = (position) => {
   };
 };
 
+const _removePillFocus = (getState) => {
+  const pillData = focusedPill(getState());
+  if (pillData) {
+    return {
+      type: ACTION_TYPES.REMOVE_FOCUS_GUIDED_PILL,
+      payload: { pillData }
+    };
+  }
+};
+
 export const removePillFocus = () => {
   return (dispatch, getState) => {
-    const pillData = focusedPill(getState());
-    if (pillData) {
-      dispatch({
-        type: ACTION_TYPES.REMOVE_FOCUS_GUIDED_PILL,
-        payload: { pillData }
-      });
-    }
-  };
-};
-
-export const deselectAllGuidedPills = () => {
-  return (dispatch, getState) => {
-    const pillData = selectedPills(getState());
-    if (pillData.length > 0) {
-      dispatch(deselectGuidedPills({ pillData }, true));
-    }
-  };
-};
-
-export const deselectGuidedPills = ({ pillData }, shouldIgnoreFocus = false) => {
-  return (dispatch) => {
-    dispatch(_pillSelectDeselect(ACTION_TYPES.DESELECT_GUIDED_PILLS, pillData, shouldIgnoreFocus));
-  };
-};
-
-export const selectGuidedPills = ({ pillData }, shouldIgnoreFocus = false) => {
-  return (dispatch) => {
-    dispatch(_pillSelectDeselect(ACTION_TYPES.SELECT_GUIDED_PILLS, pillData, shouldIgnoreFocus));
-  };
-};
-
-export const selectAllPillsTowardsDirection = (position, direction) => {
-  return (dispatch, getState) => {
-    const { investigate: { queryNode: { pillsData } } } = getState();
-    const pillsToBeSelected = selectPillsFromPosition(pillsData, position, direction);
-    dispatch(selectGuidedPills({ pillData: pillsToBeSelected }, true));
+    dispatch(_removePillFocus(getState));
   };
 };
 
@@ -387,18 +307,14 @@ export const addFreeFormFilter = ({ pillData, position = 0, shouldAddFocusToNewP
   };
 };
 
-export const addTextFilter = ({ pillData, position = 0, shouldAddFocusToNewPill = false }) => {
-  return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.ADD_PILL,
-      payload: {
-        pillData,
-        position,
-        shouldAddFocusToNewPill
-      }
-    });
-  };
-};
+export const addTextFilter = ({ pillData, position = 0, shouldAddFocusToNewPill = false }) => ({
+  type: ACTION_TYPES.ADD_PILL,
+  payload: {
+    pillData,
+    position,
+    shouldAddFocusToNewPill
+  }
+});
 
 // Transform the text to what it would look like in pill form
 export const updatedFreeFormText = (freeFormText) => {
@@ -459,14 +375,23 @@ export const replaceLogicalOperator = ({ pillData, position }) => ({
 });
 
 export const focusAndToggleLogicalOperator = ({ pillData, position }) => {
-  return (dispatch) => {
-    dispatch(removePillFocus());
+  return (dispatch, getState) => {
+    const batchActions = [];
+
+    const removeFocusAction = _removePillFocus(getState);
+    if (removeFocusAction) {
+      batchActions.push(removeFocusAction);
+    }
+
     const newPillData = {
       ...pillData,
       isFocused: true,
       type: pillData.type === OPERATOR_AND ? OPERATOR_OR : OPERATOR_AND
     };
-    dispatch(replaceLogicalOperator({ pillData: newPillData, position: position + 1 }));
+    const replaceAction = replaceLogicalOperator({ pillData: newPillData, position: position + 1 });
+    batchActions.push(replaceAction);
+
+    dispatch(batchActions);
   };
 };
 

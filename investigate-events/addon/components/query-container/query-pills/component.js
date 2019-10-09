@@ -36,18 +36,21 @@ import {
   deleteGuidedPill,
   deleteSelectedGuidedPills,
   deleteSelectedParenContents,
-  deselectAllGuidedPills,
-  deselectGuidedPills,
   editGuidedPill,
   focusAndToggleLogicalOperator,
   openGuidedPillForEdit,
   removePillFocus,
   replaceLogicalOperator,
   resetGuidedPill,
-  selectGuidedPills,
-  selectAllPillsTowardsDirection,
   wrapWithParens
-} from 'investigate-events/actions/guided-creators';
+} from 'investigate-events/actions/pill-creators';
+import {
+  deselectAllGuidedPills,
+  deselectGuidedPills,
+  selectGuidedPills,
+  selectAllPillsTowardsDirection
+} from 'investigate-events/actions/pill-selection-creators';
+
 import { hasMinimumCoreServicesVersionForTextSearch } from 'investigate-events/reducers/investigate/services/selectors';
 import { getRecentQueries, valueSuggestions } from 'investigate-events/actions/initialization-creators';
 import { metaKeySuggestionsForQueryBuilder, languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
@@ -60,7 +63,7 @@ import {
   TEXT_FILTER,
   QUERY_FILTER
 } from 'investigate-events/constants/pill';
-import { isValidToWrapWithParens, selectedPillIndexes } from 'investigate-events/actions/utils';
+import { isValidToWrapWithParens, selectedPillIndexes } from 'investigate-events/actions/pill-utils';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 

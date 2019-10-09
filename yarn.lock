@@ -996,6 +996,11 @@
     ember-compatibility-helpers "^0.1.2"
     ember-raf-scheduler "0.1.0"
 
+"@manaflair/redux-batch@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/@manaflair/redux-batch/-/redux-batch-1.0.0.tgz#3af65dc3ac4ba81cf115c96f9759a6d4077b49f5"
+  integrity sha512-99bfmZ7xX3c8CWQ4C9iFm7Pte0pDfW/XJ3p1KEmjlJjf8nDUbW22n+FhO3buZKhgjoKKB2XGM46SaZFvNeL3QA==
+
 "@mind-trace/stompjs@2.3.5":
   version "2.3.5"
   resolved "https://registry.npmjs.org/@mind-trace/stompjs/-/stompjs-2.3.5.tgz#481780c19e653fec653eb22b6498a84753975a08"
@@ -5842,6 +5847,7 @@ ember-require-module@^0.2.0:
 ember-resolver@4.3.0:
   version "4.3.0"
   resolved "https://registry.npmjs.org/ember-resolver/-/ember-resolver-4.3.0.tgz#aaf0e43646be2e7da14399a0c2e9574c2130ce69"
+  integrity sha512-SC9tPaPlAYdGIlyna0wVQ4rQLsE0BRAOtS2EsE7uCHvGxLS9AIs6Mn0CnsKF6BZ1paMram9O7OHKyRtEBD8Smg==
   dependencies:
     "@glimmer/resolver" "^0.4.1"
     babel-plugin-debug-macros "^0.1.10"

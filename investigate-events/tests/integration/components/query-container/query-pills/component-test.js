@@ -8,7 +8,9 @@ import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
-import guidedCreators from 'investigate-events/actions/guided-creators';
+import pillCreators from 'investigate-events/actions/pill-creators';
+import pillSelectionCreators from 'investigate-events/actions/pill-selection-creators';
+
 import {
   createBasicPill,
   doubleClick,
@@ -49,20 +51,20 @@ const OPEN_PAREN_KEY = KEY_MAP.openParen.key;
 const SPACE_KEY = KEY_MAP.space.key;
 const modifiers = { shiftKey: true };
 
-const newActionSpy = sinon.spy(guidedCreators, 'addGuidedPill');
-const deleteActionSpy = sinon.spy(guidedCreators, 'deleteGuidedPill');
-const editGuidedPillSpy = sinon.spy(guidedCreators, 'editGuidedPill');
-const selectActionSpy = sinon.spy(guidedCreators, 'selectGuidedPills');
-const deselectActionSpy = sinon.spy(guidedCreators, 'deselectGuidedPills');
-const openGuidedPillForEditSpy = sinon.spy(guidedCreators, 'openGuidedPillForEdit');
-const resetGuidedPillSpy = sinon.spy(guidedCreators, 'resetGuidedPill');
-const selectAllPillsTowardsDirectionSpy = sinon.spy(guidedCreators, 'selectAllPillsTowardsDirection');
-const deleteSelectedGuidedPillsSpy = sinon.spy(guidedCreators, 'deleteSelectedGuidedPills');
+const newActionSpy = sinon.spy(pillCreators, 'addGuidedPill');
+const deleteActionSpy = sinon.spy(pillCreators, 'deleteGuidedPill');
+const editGuidedPillSpy = sinon.spy(pillCreators, 'editGuidedPill');
+const selectActionSpy = sinon.spy(pillSelectionCreators, 'selectGuidedPills');
+const deselectActionSpy = sinon.spy(pillSelectionCreators, 'deselectGuidedPills');
+const openGuidedPillForEditSpy = sinon.spy(pillCreators, 'openGuidedPillForEdit');
+const resetGuidedPillSpy = sinon.spy(pillCreators, 'resetGuidedPill');
+const selectAllPillsTowardsDirectionSpy = sinon.spy(pillSelectionCreators, 'selectAllPillsTowardsDirection');
+const deleteSelectedGuidedPillsSpy = sinon.spy(pillCreators, 'deleteSelectedGuidedPills');
 const recentQueriesSpy = sinon.spy(initializationCreators, 'getRecentQueries');
-const batchAddQueriesSpy = sinon.spy(guidedCreators, 'batchAddPills');
+const batchAddQueriesSpy = sinon.spy(pillCreators, 'batchAddPills');
 const valueSuggestionsSpy = sinon.spy(initializationCreators, 'valueSuggestions');
-const cancelPillCreationSpy = sinon.spy(guidedCreators, 'cancelPillCreation');
-// const addFreeFormFilterSpy = sinon.spy(guidedCreators, 'addFreeFormFilterSpy');
+const cancelPillCreationSpy = sinon.spy(pillCreators, 'cancelPillCreation');
+// const addFreeFormFilterSpy = sinon.spy(pillCreators, 'addFreeFormFilterSpy');
 const spys = [
   newActionSpy, deleteActionSpy, editGuidedPillSpy, selectActionSpy,
   deselectActionSpy, openGuidedPillForEditSpy, resetGuidedPillSpy,

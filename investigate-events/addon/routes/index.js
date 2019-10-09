@@ -18,9 +18,9 @@ import {
 import { hasMinimumCoreServicesVersionForColumnSorting } from '../reducers/investigate/services/selectors';
 import { hasInvalidPill, isPillValidationInProgress } from '../reducers/investigate/query-node/selectors';
 import { teardownNotifications, initializeNotifications } from '../actions/notification-creators';
-import { replaceAllGuidedPills } from 'investigate-events/actions/guided-creators';
+import { replaceAllGuidedPills } from 'investigate-events/actions/pill-creators';
 import { removeEmptyParens } from 'investigate-shared/actions/api/events/utils';
-import { findSelectedPills } from 'investigate-events/actions/utils';
+import { findSelectedPills } from 'investigate-events/actions/pill-utils';
 
 const SUMMARY_CALL_INTERVAL = 60000;
 let timerId;

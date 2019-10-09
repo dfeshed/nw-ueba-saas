@@ -4,7 +4,7 @@ import { debounce, scheduleOnce, throttle } from '@ember/runloop';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { freeFormText, hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { validMetaKeySuggestions, languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
-import { addFreeFormFilter, deleteAllGuidedPills, updatedFreeFormText } from 'investigate-events/actions/guided-creators';
+import { addFreeFormFilter, deleteAllGuidedPills, updatedFreeFormText } from 'investigate-events/actions/pill-creators';
 import { isEnter } from 'investigate-events/util/keys';
 
 const stateToComputed = (state) => ({

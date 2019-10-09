@@ -2,7 +2,7 @@ import {
   isValidToWrapWithParens,
   findSelectedPills,
   selectedPillIndexes
-} from 'investigate-events/actions/utils';
+} from 'investigate-events/actions/pill-utils';
 
 const queryWithSelected = (context, i18n) => {
   return {

@@ -10,13 +10,13 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
-import guidedCreators from 'investigate-events/actions/guided-creators';
+import pillCreators from 'investigate-events/actions/pill-creators';
 
 const ENTER_KEY = KEY_MAP.enter.key;
 const X_KEY = 'KeyX';
 
-const addFreeFormFilterSpy = sinon.spy(guidedCreators, 'addFreeFormFilter');
-const updatedFreeFormTextSpy = sinon.spy(guidedCreators, 'updatedFreeFormText');
+const addFreeFormFilterSpy = sinon.spy(pillCreators, 'addFreeFormFilter');
+const updatedFreeFormTextSpy = sinon.spy(pillCreators, 'updatedFreeFormText');
 const spys = [addFreeFormFilterSpy, updatedFreeFormTextSpy];
 
 let setState;
