@@ -14,6 +14,8 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 const LeftArrowKey = KEY_MAP.arrowLeft.key;
 const RightArrowKey = KEY_MAP.arrowRight.key;
 const EnterKey = KEY_MAP.enter.key;
+const DeleteKey = KEY_MAP.delete.key;
+const BackspaceKey = KEY_MAP.backspace.key;
 
 module('Integration | Component | Logical Operator', function(hooks) {
   setupRenderingTest(hooks, {
@@ -205,4 +207,62 @@ module('Integration | Component | Logical Operator', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', EnterKey);
   });
 
+  test('it sends a message when focused and Backspace is pressed', async function(assert) {
+    assert.expect(3);
+
+    this.set('sendMessage', (messageType, position) => {
+      assert.equal(
+        messageType,
+        MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT,
+        'the correct message type is sent when left is pressed'
+      );
+      assert.equal(position, 2, 'position is passed');
+    });
+    this.set('pillData', {
+      ...createOperator(OPERATOR_AND),
+      isFocused: true
+    });
+
+    await render(hbs`
+      {{query-container/logical-operator
+        pillData=pillData
+        sendMessage=sendMessage
+        position=2
+      }}
+    `);
+
+    assert.ok(find(PILL_SELECTORS.focusedPill), 'the pill is focused');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BackspaceKey);
+  });
+
+
+  test('it sends a message when focused and Delete is pressed', async function(assert) {
+    assert.expect(3);
+
+    this.set('sendMessage', (messageType, position) => {
+      assert.equal(
+        messageType,
+        MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT,
+        'the correct message type is sent when right is pressed'
+      );
+      assert.equal(position, 2, 'position is passed');
+    });
+    this.set('pillData', {
+      ...createOperator(OPERATOR_AND),
+      isFocused: true
+    });
+
+    await render(hbs`
+      {{query-container/logical-operator
+        pillData=pillData
+        sendMessage=sendMessage
+        position=2
+      }}
+    `);
+
+    assert.ok(find(PILL_SELECTORS.focusedPill), 'the pill is focused');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DeleteKey);
+  });
 });

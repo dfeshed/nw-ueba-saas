@@ -26,7 +26,8 @@ import {
   isTab,
   isHome,
   isEnd,
-  isDelete
+  isDelete,
+  isBackspace
 } from 'investigate-events/util/keys';
 import {
   addAndRemoveElements,
@@ -389,7 +390,21 @@ const RecentQueryComponent = Component.extend({
       } else if (isDelete(event) && !this.get('isLastPill')) {
         // Message is broadcasted when delete button is pressed.
         this._clearDropDown(powerSelectAPI);
-        this._broadcast(MESSAGE_TYPES.META_DELETE_PRESSED);
+        this._broadcast(MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, {
+          isFocusedPill: false,
+          isDeleteEvent: true,
+          isBackspaceEvent: false,
+          isFromRecentQuery: true
+        });
+      } else if (isBackspace(event) && !this.get('isFirstPill')) {
+        // Message is broadcasted when delete button is pressed.
+        this._clearDropDown(powerSelectAPI);
+        this._broadcast(MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, {
+          isFocusedPill: false,
+          isDeleteEvent: false,
+          isBackspaceEvent: true,
+          isFromRecentQuery: true
+        });
       } else {
         // If recent queries tab is open and some text is typed in,
         // this is a possible search against recent queries API.

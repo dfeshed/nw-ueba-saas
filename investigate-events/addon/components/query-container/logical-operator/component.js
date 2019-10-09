@@ -67,7 +67,8 @@ export default Component.extend({
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED]: () => this._focusedLeftArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED]: () => this._focusedRightArrowPressed(),
-      [MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED]: () => this._operatorToggled()
+      [MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED]: () => this._operatorToggled(),
+      [MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED]: (data) => this._deleteOrBackspacePressed(data)
     });
   },
 
@@ -100,6 +101,15 @@ export default Component.extend({
     this._broadcast(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT);
   },
 
+  _deleteOrBackspacePressed(data) {
+    const { isDeleteEvent, isBackspaceEvent } = data;
+    if (isDeleteEvent) {
+      this._focusedRightArrowPressed();
+    } else if (isBackspaceEvent) {
+      this._focusedLeftArrowPressed();
+    }
+  },
+
   actions: {
     /**
      * Handler for all messages coming from sub components.
@@ -107,10 +117,10 @@ export default Component.extend({
      * @param {Object} data The event data
      * @public
      */
-    handleMessage(type) {
+    handleMessage(type, data) {
       const messageHandlerFn = this.get('_messageHandlerMap')[type];
       if (messageHandlerFn) {
-        messageHandlerFn();
+        messageHandlerFn(data);
       } else {
         // Any messages that do not match expected message types get send up
         // to the query-pills component.

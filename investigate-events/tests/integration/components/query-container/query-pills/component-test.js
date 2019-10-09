@@ -838,8 +838,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  // TODO - Fix when deleting of a pill also deletes associated logical operator
-  skip('Pressing Delete key once a pill is focused will delete it', async function(assert) {
+  test('Pressing Delete key once a pill is focused will delete it', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -897,8 +896,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   });
 
-  // TODO - Fix when deleting of a pill also deletes associated logical operator
-  skip('Pressing Delete on all keys should move the focus to the last empty pill template', async function(assert) {
+  test('Pressing Delete on all keys should move the focus to the last empty pill template', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -930,15 +928,14 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  // TODO - Fix when deleting of a pill also deletes associated logical operator
-  skip('Pressing Backspace key once a pill is focused will delete it', async function(assert) {
+  test('Pressing Backspace key once a pill is focused will delete it and moves the focus to the next pill if present or else to the new pill template', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
-    assert.expect(6);
+    assert.expect(9);
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
@@ -946,22 +943,26 @@ module('Integration | Component | Query Pills', function(hooks) {
       </div>
     `);
 
-    await leaveNewPillTemplate();
-
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
-    const metas = findAll(PILL_SELECTORS.meta);
-    await click(`#${metas[0].id}`); // make the 1st pill focused and selected
+
+    // clicking backspace on the last meta will move the focus to the last pill
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', BACKSPACE_KEY);
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+    // clicking backspace on the last pill will move the focus to next pill
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Should be one pill plus template.');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Focus shifts to the other pill');
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'One focus holder should be present');
 
+    // clicking backspace on the last remaining pill will move the focus to new pill template
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
 
-    return settled().then(() => {
-      assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Should be one pill plus template.');
-      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Focus shifts to the other pill');
-      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'One focus holder should be present');
-    });
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'Notifications focus holder should be present');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'Should be just template.');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Focus shifts to the next pill');
+
   });
 
   test('Pressing Delete key once a complex pill is focused will delete it', async function(assert) {
@@ -1028,8 +1029,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  // TODO - Fix when deleting of a pill also deletes associated logical operator
-  skip('Pressing Delete key on a focused pill which is not selected, will delete only that pill', async function(assert) {
+  test('Pressing Delete key on a focused pill which is not selected, will delete only that pill', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -3628,6 +3628,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
     assert.notOk(find(PILL_SELECTORS.openParen), 'open paren is present');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'close paren is present');
+    // empty pill is opened.
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'Focus holder should not be present now');
     assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1, 'Focus shits to the next empty pill');
   });
 
@@ -3652,6 +3654,58 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.notOk(find(PILL_SELECTORS.openParen), 'open paren is present');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'close paren is present');
     assert.equal(findAll(PILL_SELECTORS.meta).length, 1, '1 pill deleted so just the template remains');
+  });
+
+  // TODO - Fix when deleting of a focused open paren does not delete associated logical operator
+  skip('Typing BACKSPACE when an open paren is focused will delete both the open and closed paren', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await leaveNewPillTemplate();
+
+    // the open paren is selected and focused. Pressing backspace would not only delete open
+    // and closed parens but also all pills between them.
+    await click(PILL_SELECTORS.openParen);
+    // the open paren is just focused and not selected after the second click. Pressing backspace
+    // would only delete open and closed parens allowing the focus to shift to the pill left.
+    await click(PILL_SELECTORS.openParen);
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
+    assert.notOk(find(PILL_SELECTORS.openParen), 'Missing open paren');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'Missing close paren');
+    // empty pill is opened.
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'Focus holder should not be present now');
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1, 'Focus shits to the next empty pill');
+
+  });
+
+  // TODO - Fix when deleting of a focused close paren does not delete associated logical operator
+  skip('Typing BACKSPACE when an close paren is focused will delete both the open and closed paren', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await leaveNewPillTemplate();
+
+    await click(PILL_SELECTORS.closeParen);
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
+    assert.notOk(find(PILL_SELECTORS.openParen), 'open paren is present');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'close paren is present');
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1, 'Focus shits to the next empty pill');
   });
 
   test('Can create pill using mouse clicks on value suggestions', async function(assert) {
@@ -4428,6 +4482,31 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Focus shifts to the next pill');
   });
 
+  test('Pressing backspace key on a new pill trigger from recent queries tab will move the focus to the next pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(3);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'No pill focused');
+
+    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await focus(PILL_SELECTORS.recentQuerySelectInput);
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', BACKSPACE_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Focus shifts to the next pill');
+  });
+
   test('it will toggle and focus a logical operator', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -4545,5 +4624,57 @@ module('Integration | Component | Query Pills', function(hooks) {
     await settled();
 
     assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'Should not find 2 open parens');
+  });
+
+  test('Pressing Backspace key on a new pill trigger will move the focus to the next pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(3);
+
+    await render(hbs` 
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', BACKSPACE_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'One focus holder should be present');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Focus shifts to the next pill');
+
+  });
+
+  test('Pressing Backspace key from the first focused pill will open empty pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(3);
+
+    await render(hbs` 
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    const pills = findAll(PILL_SELECTORS.queryPill);
+    // selecting the first pill
+    await click(`#${pills[0].id}`);
+    await waitUntil(() => findAll(PILL_SELECTORS.selectedPill).length === 1, { timeout: 5000 }).then(async() => {
+      // focusing the first pill
+      await click(PILL_SELECTORS.selectedPill);
+
+      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'One focus holder should be present');
+      await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
+      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+      assert.ok(find(PILL_SELECTORS.metaTrigger), 'Empty pill open');
+    });
   });
 });

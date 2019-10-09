@@ -24,10 +24,13 @@ module('Integration | Component | focus-holder', function(hooks) {
   });
 
   test('it sends a message when delete is pressed', async function(assert) {
-    assert.expect(1);
+    assert.expect(4);
 
-    this.set('sendMessage', (messageType) => {
-      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED, 'the correct message type is sent when delete is pressed');
+    this.set('sendMessage', (messageType, data) => {
+      assert.equal(messageType, MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, 'the correct message type is sent when delete is pressed');
+      assert.ok(data, 'should send out pill data');
+      assert.ok(data.isDeleteEvent, 'should be a delete event');
+      assert.ok(data.isFocusedPill, 'should be a focused pill');
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
@@ -35,10 +38,13 @@ module('Integration | Component | focus-holder', function(hooks) {
   });
 
   test('it sends a message when Backspace is pressed', async function(assert) {
-    assert.expect(1);
+    assert.expect(4);
 
-    this.set('sendMessage', (messageType) => {
-      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED, 'the correct message type is sent when Backspace is pressed');
+    this.set('sendMessage', (messageType, data) => {
+      assert.equal(messageType, MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, 'the correct message type is sent when Backspace is pressed');
+      assert.ok(data, 'should send out pill data');
+      assert.ok(data.isBackspaceEvent, 'should be a backspace event');
+      assert.ok(data.isFocusedPill, 'should be a focused pill');
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);

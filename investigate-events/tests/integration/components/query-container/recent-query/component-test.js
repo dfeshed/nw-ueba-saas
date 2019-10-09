@@ -29,6 +29,7 @@ const TAB_KEY = KEY_MAP.tab.key;
 const HOME_KEY = KEY_MAP.home.key;
 const END_KEY = KEY_MAP.end.key;
 const DELETE_KEY = KEY_MAP.delete.key;
+const BACKSPACE_KEY = KEY_MAP.backspace.key;
 const modifiers = { shiftKey: true };
 
 // This trim also removes extra spaces inbetween words
@@ -498,9 +499,12 @@ module('Integration | Component | Recent Query', function(hooks) {
   });
 
   test('it broadcasts a message when delete is pressed', async function(assert) {
-    assert.expect(1);
-    this.set('handleMessage', (type) => {
-      assert.equal(type, MESSAGE_TYPES.META_DELETE_PRESSED, 'Correct message sent up');
+    assert.expect(4);
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, 'Correct message sent up');
+      assert.ok(data, 'should send out pill data');
+      assert.ok(data.isDeleteEvent, 'should be a delete event');
+      assert.ok(!data.isFocusedPill, 'should be a focused pill');
     });
     await render(hbs`
       {{query-container/recent-query
@@ -511,6 +515,26 @@ module('Integration | Component | Recent Query', function(hooks) {
     await clickTrigger(PILL_SELECTORS.recentQuery);
 
     await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', DELETE_KEY);
+
+  });
+
+  test('it broadcasts a message when backspace is pressed', async function(assert) {
+    assert.expect(4);
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, 'Correct message sent up');
+      assert.ok(data, 'should send out pill data');
+      assert.ok(data.isBackspaceEvent, 'should be a delete event');
+      assert.ok(!data.isFocusedPill, 'should be a focused pill');
+    });
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', BACKSPACE_KEY);
 
   });
 

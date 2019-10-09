@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { throttle } from '@ember/runloop';
 
 import * as MESSAGE_TYPES from '../message-types';
-import KEY_MAP from 'investigate-events/util/keys';
+import KEY_MAP, { isDelete, isBackspace } from 'investigate-events/util/keys';
 
 export default Component.extend({
   classNames: ['focus-holder'],
@@ -51,7 +51,11 @@ export default Component.extend({
   },
 
   _backspaceDeleteHandler({ e }) {
-    this._broadcast(MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED);
+    this._broadcast(MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, {
+      isFocusedPill: true,
+      isDeleteEvent: isDelete(e),
+      isBackspaceEvent: isBackspace(e)
+    });
     // Firefox by default redirects to the previous page.
     // This is to prevent from going back.
     e.preventDefault();

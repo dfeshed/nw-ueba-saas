@@ -312,7 +312,6 @@ export default Component.extend({
       [MESSAGE_TYPES.OPERATOR_PASTE]: (value) => this._operatorPaste(value),
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
       [MESSAGE_TYPES.DELETE_CLICKED]: () => this._deletePill(),
-      [MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED]: () => this._focusedDeletePressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED]: () => this._focusedEnterPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED]: () => this._focusedLeftArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED]: () => this._focusedRightArrowPressed(),
@@ -344,7 +343,7 @@ export default Component.extend({
       [MESSAGE_TYPES.PILL_LOGICAL_OPERATOR]: (data) => this._logicalOperator(data),
       [MESSAGE_TYPES.PILL_HOME_PRESSED]: (data) => this._homeButtonPressed(data),
       [MESSAGE_TYPES.PILL_END_PRESSED]: () => this._endButtonPressed(),
-      [MESSAGE_TYPES.META_DELETE_PRESSED]: () => this._metaDeletePressed()
+      [MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED]: (data) => this._deleteOrBackspacePressed(data)
     });
 
     if (this.get('isExistingPill')) {
@@ -1092,16 +1091,6 @@ export default Component.extend({
 
   /**
    * Handles events propagating from focus-holder
-   * This will be called only when a pill is focused and
-   * user either presses delete or backspace
-   * @private
-   */
-  _focusedDeletePressed() {
-    this._broadcast(MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, this._createPillData(this.get('valueString'), this.get('position')));
-  },
-
-  /**
-   * Handles events propagating from focus-holder
    * This will be called only when a pill is selected and
    * user presses enter for editing
    * @private
@@ -1154,20 +1143,8 @@ export default Component.extend({
   _homeButtonPressed(data) {
     const isFromRecentQuery = data?.isFromRecentQuery;
     // If home is pressed from recent query, close that component by resetting query pill.
-    // This is needed in order to prevent query pills from getting confused about which exact
-    // location to open a new component.
     if (isFromRecentQuery) {
-      this.setProperties({
-        activePillTab: AFTER_OPTION_TAB_META,
-        isActive: false,
-        isMetaActive: false,
-        isOperatorActive: false,
-        isValueActive: false,
-        selectedMeta: null,
-        selectedOperator: null,
-        valueString: null
-      });
-      this._resetTabCounts();
+      this._resetToMoveOutOfRecentQuery();
     }
     this._broadcast(MESSAGE_TYPES.PILL_HOME_PRESSED, this.get('pillData'));
   },
@@ -1187,8 +1164,17 @@ export default Component.extend({
    * when the user clicks on delete button and relays the message.
    * When editing the pill, the event is not relayed.
    */
-  _metaDeletePressed() {
-    this._broadcast(MESSAGE_TYPES.META_DELETE_PRESSED, this.get('position'));
+  _deleteOrBackspacePressed(data) {
+    const { isFocusedPill } = data;
+    const isFromRecentQuery = data?.isFromRecentQuery;
+    // If delete or backspace is pressed from recent query, close that component by resetting query pill.
+    if (isFromRecentQuery) {
+      this._resetToMoveOutOfRecentQuery();
+    }
+    this._broadcast(MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED,
+      { ...data,
+        pillData: isFocusedPill ? this._createPillData(this.get('valueString')) : null
+      }, this.get('position'));
   },
 
 
@@ -1404,7 +1390,23 @@ export default Component.extend({
       this.set('prepopulatedRecentQueryText', undefined);
     });
   },
-
+  /**
+   * This is needed in order to prevent query pills from getting confused about which exact
+   *  location to open a new component when moving away from recent queries
+   */
+  _resetToMoveOutOfRecentQuery() {
+    this.setProperties({
+      activePillTab: AFTER_OPTION_TAB_META,
+      isActive: false,
+      isMetaActive: false,
+      isOperatorActive: false,
+      isValueActive: false,
+      selectedMeta: null,
+      selectedOperator: null,
+      valueString: null
+    });
+    this._resetTabCounts();
+  },
   // ************************ TODO FUNCTIONALITY **************************** //
   /**
    * Handles the right arrow key.

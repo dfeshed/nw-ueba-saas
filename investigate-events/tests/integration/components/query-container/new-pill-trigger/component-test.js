@@ -24,6 +24,7 @@ const ENTER_KEY = KEY_MAP.enter.key;
 const ESCAPE_KEY = KEY_MAP.escape.key;
 const SPACE_KEY = KEY_MAP.space.key;
 const DELETE_KEY = KEY_MAP.delete.key;
+const BACKSPACE_KEY = KEY_MAP.backspace.key;
 
 module('Integration | Component | New Pill Trigger', function(hooks) {
   setupRenderingTest(hooks, {
@@ -504,12 +505,13 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
 
   test('DELETE broadcasts a mete delete message', async function(assert) {
     const done = assert.async();
-    assert.expect(4);
+    assert.expect(5);
     this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data) => {
-      if (type === MESSAGE_TYPES.META_DELETE_PRESSED) {
-        assert.equal(type, MESSAGE_TYPES.META_DELETE_PRESSED, 'Incorrect message being sent up');
-        assert.ok(data !== null);
+      if (type === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED) {
+        assert.ok(data, 'should send out pill data');
+        assert.ok(data.isDeleteEvent, 'should be a delete event');
+        assert.ok(!data.isFocusedPill, 'should be a focused pill');
         done();
       }
     });
@@ -523,6 +525,32 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     await click(PILL_SELECTORS.newPillTrigger);
     assert.equal(findAll(PILL_SELECTORS.newPillTrigger).length, 0, 'In the new pill state');
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', DELETE_KEY);
+    await waitUntil(() => findAll(PILL_SELECTORS.newPillTrigger).length > 0, { timeout: 5000 }).then(async() => {
+      assert.equal(findAll(PILL_SELECTORS.newPillTrigger).length, 1, 'It is not in the new pill state');
+    });
+  });
+
+  test('Backspace broadcasts a message', async function(assert) {
+    const done = assert.async();
+    assert.expect(4);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED) {
+        assert.ok(data, 'should send out pill data');
+        assert.ok(data.isBackspaceEvent, 'should be a backspace event');
+        assert.ok(!data.isFocusedPill, 'is not a focused pill');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        newPillPosition=1
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', BACKSPACE_KEY);
     await waitUntil(() => findAll(PILL_SELECTORS.newPillTrigger).length > 0, { timeout: 5000 }).then(async() => {
       assert.equal(findAll(PILL_SELECTORS.newPillTrigger).length, 1, 'It is not in the new pill state');
     });

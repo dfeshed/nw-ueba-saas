@@ -1169,7 +1169,8 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('focused pill sends up a message when delete is pressed', async function(assert) {
-    assert.expect(2);
+    const done = assert.async();
+    assert.expect(5);
 
     const pillState = new ReduxDataHelper(setState)
       .pillsDataPopulated()
@@ -1180,13 +1181,18 @@ module('Integration | Component | Query Pill', function(hooks) {
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
 
-    this.set('handleMessage', (messageType, data) => {
+    this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
-
-      assert.equal(messageType, MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, 'Message sent for pill delete');
-      assert.propEqual(data, { meta: 'a', operator: '=', value: '\'x\'', type: 'query', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
+      if (messageType === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED) {
+        assert.ok(position === 0);
+        assert.ok(data, 'should send out pill data');
+        assert.ok(data.isDeleteEvent, 'should be a delete event');
+        assert.ok(data.isFocusedPill, 'is a focused pill');
+        assert.propEqual(data.pillData, { meta: 'a', operator: '=', value: '\'x\'', type: 'query', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
+        done();
+      }
     });
 
     await render(hbs`
@@ -1202,7 +1208,8 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('focused pill sends up a message when backspace is pressed', async function(assert) {
-    assert.expect(2);
+    const done = assert.async();
+    assert.expect(5);
 
     const pillState = new ReduxDataHelper(setState)
       .pillsDataPopulated()
@@ -1213,13 +1220,18 @@ module('Integration | Component | Query Pill', function(hooks) {
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
 
-    this.set('handleMessage', (messageType, data) => {
+    this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
-
-      assert.equal(messageType, MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, 'Message sent for pill delete');
-      assert.propEqual(data, { meta: 'a', operator: '=', value: '\'x\'', type: 'query', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
+      if (messageType === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED) {
+        assert.ok(position === 0);
+        assert.ok(data, 'should send out pill data');
+        assert.ok(data.isBackspaceEvent, 'should be a backspace event');
+        assert.ok(data.isFocusedPill, 'is a focused pill');
+        assert.propEqual(data.pillData, { meta: 'a', operator: '=', value: '\'x\'', type: 'query', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
+        done();
+      }
     });
 
     await render(hbs`
@@ -3085,10 +3097,13 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('Delete on pill meta template broadcasts a message', async function(assert) {
     const done = assert.async();
-    assert.expect(1);
-    this.set('handleMessage', (type, position) => {
-      if (type === MESSAGE_TYPES.META_DELETE_PRESSED) {
+    assert.expect(4);
+    this.set('handleMessage', (type, data, position) => {
+      if (type === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED) {
         assert.ok(position === 0);
+        assert.ok(data, 'should send out pill data');
+        assert.ok(data.isDeleteEvent, 'should be a delete event');
+        assert.ok(!data.isFocusedPill, 'is not a focused pill');
         done();
       }
     });

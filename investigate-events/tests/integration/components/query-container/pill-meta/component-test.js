@@ -35,6 +35,7 @@ const ESCAPE_KEY = KEY_MAP.escape.key;
 const OPEN_PAREN = KEY_MAP.openParen.key;
 const TAB_KEY = KEY_MAP.tab.key;
 const DELETE_KEY = KEY_MAP.delete.key;
+const BACKSPACE_KEY = KEY_MAP.backspace.key;
 const modifiers = { shiftKey: true };
 
 // This trim also removes extra spaces inbetween words
@@ -1104,11 +1105,13 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it broadcasts a message to query-pill when delete is pressed via pill meta', async function(assert) {
     const done = assert.async();
-    assert.expect(1);
+    assert.expect(3);
     this.set('metaOptions', metaOptions);
-    this.set('handleMessage', (type) => {
-      if (type === MESSAGE_TYPES.META_DELETE_PRESSED) {
-        assert.ok('Correct message dispatched');
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED) {
+        assert.ok(data, 'should send out pill data');
+        assert.ok(data.isDeleteEvent, 'should be a delete event');
+        assert.ok(!data.isFocusedPill, 'is not a focused pill');
         done();
       }
     });
@@ -1120,6 +1123,28 @@ module('Integration | Component | Pill Meta', function(hooks) {
       }}
     `);
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', DELETE_KEY);
+  });
+
+  test('it broadcasts a message to query-pill when backspace is pressed via pill meta', async function(assert) {
+    const done = assert.async();
+    assert.expect(3);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED) {
+        assert.ok(data, 'should send out pill data');
+        assert.ok(data.isBackspaceEvent, 'should be a backspace event');
+        assert.ok(!data.isFocusedPill, 'is not a focused pill');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', BACKSPACE_KEY);
   });
 
   test('it broadcasts a message that a logical operator was entered', async function(assert) {

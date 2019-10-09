@@ -301,12 +301,15 @@ module('Integration | Component | complex-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', ESCAPE_KEY);
   });
 
-  test('sends DELETE_PRESSED_ON_FOCUSED_PILL message up when focused and delete is pressed', async function(assert) {
-    assert.expect(3);
+  test('sends PILL_DELETE_OR_BACKSPACE_PRESSED message up when focused and delete is pressed', async function(assert) {
+    assert.expect(6);
     const pD = { complexFilterText: 'FOOOOOOOO', isFocused: true };
     this.set('handleMessage', (messageType, data) => {
-      assert.ok(messageType === MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, 'should send out correct action');
-      assert.ok(data === pD, 'should send out pill data');
+      assert.ok(messageType === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, 'should send out correct action');
+      assert.ok(data, 'should send out pill data');
+      assert.ok(data.isDeleteEvent, 'should be a delete event');
+      assert.ok(data.isFocusedPill, 'should be a focused pill');
+      assert.equal(data.pillData.complexFilterText, pD.complexFilterText, 'should have the correct text');
     });
     this.set('pillData', pD);
     await render(hbs`
@@ -322,12 +325,15 @@ module('Integration | Component | complex-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
   });
 
-  test('sends DELETE_PRESSED_ON_FOCUSED_PILL message up when focused and backspace is pressed', async function(assert) {
-    assert.expect(3);
+  test('sends PILL_DELETE_OR_BACKSPACE_PRESSED message up when focused and backspace is pressed', async function(assert) {
+    assert.expect(6);
     const pD = { complexFilterText: 'FOOOOOOOO', isFocused: true };
     this.set('handleMessage', (messageType, data) => {
-      assert.ok(messageType === MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, 'should send out correct action');
-      assert.ok(data === pD, 'should send out pill data');
+      assert.ok(messageType === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, 'should send out correct action');
+      assert.ok(data, 'should send out pill data');
+      assert.ok(data.isBackspaceEvent, 'should be a backspace event');
+      assert.ok(data.isFocusedPill, 'should be a focused pill');
+      assert.equal(data.pillData.complexFilterText, pD.complexFilterText, 'should have the correct text');
     });
     this.set('pillData', pD);
     await render(hbs`
