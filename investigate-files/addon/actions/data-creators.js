@@ -396,9 +396,9 @@ const fetchAgentId = (hostName, callBack) => {
   };
 };
 
-const fetchHostNames = (checksum) => {
+const fetchHostNames = (checksum, sid) => {
   return (dispatch, getState) => {
-    const serviceId = getState().endpointQuery.serverId;
+    const serviceId = getState().endpointQuery.serverId || sid;
     dispatch({
       type: ACTION_TYPES.SET_HOST_NAME_LIST,
       promise: File.getHostCount(serviceId, checksum)
@@ -436,7 +436,7 @@ const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat
 
     request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
 
-    dispatch(fetchHostNames(checksum));
+    dispatch(fetchHostNames(checksum, sid));
 
     dispatch(_getSelectedFileProperties(checksum));
 
