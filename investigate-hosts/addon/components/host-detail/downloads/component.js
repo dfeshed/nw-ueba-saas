@@ -13,6 +13,7 @@ import { getFirstPageOfDownloads, deleteSelectedFiles, saveLocalMFTCopy } from '
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import { FILTER_TYPES } from './filter-types';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
+import { toggleHostDetailsFilter } from 'investigate-hosts/actions/ui-state-creators';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
@@ -21,7 +22,7 @@ const stateToComputed = (state) => ({
   savedFilter: savedFilter(state.endpoint.hostDownloads),
   hostDownloadsFilters: state.endpoint.hostDownloads.filter.savedFilterList,
   selectedFileList: state.endpoint.hostDownloads.downloads.selectedFileList,
-  isShowFilterPanel: state.endpoint.visuals.showHostDetailsFilter
+  isShowHostDetailsFilterPanel: state.endpoint.visuals.showHostDetailsFilter
 });
 
 const dispatchToActions = {
@@ -33,7 +34,8 @@ const dispatchToActions = {
   getFirstPageOfDownloads,
   deleteSelectedFiles,
   saveLocalFileCopy,
-  saveLocalMFTCopy
+  saveLocalMFTCopy,
+  toggleHostDetailsFilter
 };
 
 const HostDownloads = Component.extend({

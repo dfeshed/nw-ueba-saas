@@ -191,6 +191,22 @@ module('Integration | Component | downloads', function(hooks) {
 
   });
 
+  test('Downloads Filter penal close action', async function(assert) {
+    await render(hbs`{{host-detail/downloads}}`);
+    assert.equal(findAll('.files-content .filter-wrapper').length, 1, 'Filter has loaded');
+    assert.equal(findAll('.files-content .filter-wrapper .filter-controls').length, 4, '4 Filter types present');
+
+    patchSocket((method, modelName) => {
+      assert.equal(method, 'getFilter');
+      assert.equal(modelName, 'filters');
+    });
+    await click(find('.close-filter button'));
+    await click(find('.close-zone button'));
+    const state = this.owner.lookup('service:redux').getState();
+    const { endpoint: { visuals: { showHostDetailsFilter } } } = state;
+    assert.equal(showHostDetailsFilter, false, 'showHOstDetailsFilter is successfully set false');
+
+  });
   test('Delete downloaded files', async function(assert) {
     const selectedFileList = [{
       id: '5ce784209829f106f0ce60b3',

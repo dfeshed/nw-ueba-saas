@@ -12,8 +12,8 @@ const ActionBarComponent = Component.extend({
   classNames: ['downloads-action-bar'],
   accessControl: service(),
   actions: {
-    showFilterPanel() {
-      this.openFilterPanel();
+    showFilterPanel(openFilterPanel) {
+      openFilterPanel();
       this.send('toggleHostDetailsFilter', true);
     }
   }

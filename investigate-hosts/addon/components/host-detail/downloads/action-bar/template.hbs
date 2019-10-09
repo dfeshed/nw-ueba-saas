@@ -1,7 +1,7 @@
 <div class="title-header">
   {{#rsa-form-button
     class='close-filter'
-    defaultAction=(action 'showFilterPanel')
+    defaultAction=(action 'showFilterPanel' openFilterPanel)
   }}
     {{rsa-icon name='filter-2' size='small'}}
     <span>{{t 'investigateFiles.filter.filter'}}</span>
