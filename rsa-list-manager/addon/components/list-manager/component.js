@@ -57,7 +57,6 @@ const ListManager = Component.extend({
     const updatedProperties =
       this.getProperties(
         'stateLocation',
-        'list',
         'selectedItemId',
       );
     this.send('initializeListManager', updatedProperties);
