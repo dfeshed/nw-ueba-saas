@@ -1,7 +1,8 @@
 {{#if (and (eq disabled true) (eq hasDisabledTooltip true))}}
   {{#rsa-text-with-tooltip value=disabledTooltip
-    style="standard"
-    alwaysShow=true
+    style=tooltipStyle
+    alwaysShow=tooltipAlwaysShow
+    copyText=tooltipCopyText
   }}
     <span class="disabled-option-in-tootlip">
       {{optionLabel}}

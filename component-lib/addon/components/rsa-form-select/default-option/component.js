@@ -13,6 +13,11 @@ const DefaultOption = Component.extend({
   optionLabel: '',
   // enabledTooltip: '', // add if/when needed
 
+  // rsa-text-with-tooltip options
+  tooltipStyle: 'standard',
+  tooltipAlwaysShow: true,
+  tooltipCopyText: false, // hide copy button as it currently doesn't work nested in a power-select
+
   @computed('disabledTooltip')
   hasDisabledTooltip(disabledTooltip) {
     return !isBlank(disabledTooltip);
