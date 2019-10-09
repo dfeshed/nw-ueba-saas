@@ -4345,7 +4345,7 @@ export default {
       properties: 'Properties',
       events: 'Events List ({{count}})',
       all: 'All',
-      alerts: 'Alerts ({{count}})',
+      alerts: 'Risk Details ({{count}})',
       hosts: 'Hosts ({{count}})'
     },
     eventsTable: {

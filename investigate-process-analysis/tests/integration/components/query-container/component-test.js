@@ -112,5 +112,6 @@ module('Integration | Component | Query Container', function(hooks) {
   test('It renders the tabs in query-container disabled', async function(assert) {
     await render(hbs`{{query-container}}`);
     assert.equal(find('.rsa-nav-tab-group').classList.contains('disabled'), true, 'Tabs are disabled on no node selected');
+    assert.equal(findAll('.process-detail-navigation .rsa-nav-tab')[2].textContent.trim(), 'Risk Details (0)', 'Risk detail tab name is changed properly');
   });
 });
