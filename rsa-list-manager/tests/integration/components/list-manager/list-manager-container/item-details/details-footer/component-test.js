@@ -77,7 +77,7 @@ module('Integration | Component | item details - details footer', function(hooks
     assert.ok(find('.rsa-form-button[disabled]'), 'Save button is disabled until valid editedItem provided');
   });
 
-  test('renders footer for list details with close/enabled-save when editedItem is passed', async function(assert) {
+  test('renders footer for list details with cancel/enabled-save when editedItem is passed', async function(assert) {
     assert.expect(4);
     const editedItem = { name: 'bar' };
     new ReduxDataHelper(setState).stateLocation(stateLocation1).listName('Foos').list([item]).build();
@@ -94,10 +94,10 @@ module('Integration | Component | item details - details footer', function(hooks
     assert.ok(find('footer.details-footer'));
 
     const buttons = findAll('footer.details-footer button');
-    assert.equal(buttons[0].textContent.trim(), 'Close');
+    assert.equal(buttons[0].textContent.trim(), 'Cancel');
     assert.equal(buttons[1].textContent.trim(), 'Save Foo', 'Save option rendered when new item is being created');
 
-    assert.equal(findAll('footer.details-footer button[disabled]').length, 0, 'Both close and save enabled');
+    assert.equal(findAll('footer.details-footer button[disabled]').length, 0, 'Save enabled');
   });
 
   test('clicking save with valid new item triggers createItem', async function(assert) {
@@ -153,4 +153,27 @@ module('Integration | Component | item details - details footer', function(hooks
     assert.equal(buttons[1].textContent.trim(), 'Select Foo', 'Select option rendered when item is being edited');
     await click(buttons[1]);
   });
+
+  test('renders footer for list details with done/select when editedItem is saved', async function(assert) {
+    const editedItem = { name: 'bar' };
+    new ReduxDataHelper(setState).stateLocation(stateLocation1).listName('Foos').list([item]).build();
+    this.set('stateLocation', stateLocation1);
+    this.set('editedItem', editedItem);
+    this.set('item', { name: 'bar', id: 2 }); // an editedItem becomes an item when saved
+    this.set('itemSelection', () => {});
+
+    await render(hbs`{{list-manager/list-manager-container/item-details/details-footer
+      stateLocation=stateLocation
+      item=item
+      editedItem=editedItem
+      itemSelection=itemSelection
+    }}`);
+
+    assert.ok(find('footer.details-footer'));
+
+    const buttons = findAll('footer.details-footer button');
+    assert.equal(buttons[0].textContent.trim(), 'Done');
+    assert.equal(buttons[1].textContent.trim(), 'Select Foo');
+  });
+
 });

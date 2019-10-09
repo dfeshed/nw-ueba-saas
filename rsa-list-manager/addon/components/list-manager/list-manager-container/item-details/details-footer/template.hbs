@@ -1,7 +1,24 @@
 <div class='footer-buttons'>
-  {{#rsa-form-button class='close' defaultAction=(action 'detailsDone')}}
-    Close
-  {{/rsa-form-button}}
+  {{!-- left button => close/cancel/done--}}
+  {{#if editedItem}}
+    {{!-- after item was just saved --}}
+    {{#if item}}
+      {{#rsa-form-button class='done' defaultAction=(action 'detailsDone')}}
+        Done
+      {{/rsa-form-button}}
+    {{else}}
+      {{#rsa-form-button class='cancel' defaultAction=(action 'detailsDone')}}
+        {{!-- this is for new item. In case of edit, it will be reset TODO --}}
+        Cancel
+      {{/rsa-form-button}}
+    {{/if}}
+  {{else}}
+    {{#rsa-form-button class='close' defaultAction=(action 'detailsDone')}}
+      Close
+    {{/rsa-form-button}}
+  {{/if}}
+
+  {{!-- right button => disabled-save/enabled-save/select--}}
   {{#if item}}
     {{#rsa-form-button class='select' defaultAction=(action itemSelection item)}}
       Select {{itemType}}
