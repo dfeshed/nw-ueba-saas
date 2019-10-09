@@ -60,10 +60,11 @@ export default {
       channelFilters: [
         {
           channel: 'Security',
-          eventId: '620,630,640',
+          eventId: '640,630,640',
           filterType: 'EXCLUDE'
         }
-      ]
+      ],
+      customConfig: '{"enabled" : true,"sendTestLog" : false,"protocol" : "TCP","policyType" : "windowsLogPolicy","name" : "Test Windows Log Policy","description" : "Test Windows Log Policy Description."}'
     },
     filePolicy: {
       name: 'Test File Policy',

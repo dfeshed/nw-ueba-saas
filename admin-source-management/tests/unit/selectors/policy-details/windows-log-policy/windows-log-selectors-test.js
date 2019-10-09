@@ -4,12 +4,14 @@ import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import testPolicyAndOrigins from '../../../../data/subscriptions/groups/fetchRankingView/dataWindow';
+import dataWindow from '../../../../data/subscriptions/groups/fetchRankingView/dataWindow';
 
 import {
   focusedPolicy,
   selectedWindowsLogPolicy
 } from 'admin-source-management/reducers/usm/policy-details/windows-log-policy/windows-log-selectors';
+
+const [testPolicyAndOrigins] = dataWindow;
 
 let setState;
 
@@ -43,6 +45,7 @@ const testPolicy = {
       filterType: 'exclude'
     }
   ],
+  customConfig: '',
   associatedGroups: []
 };
 
@@ -59,7 +62,7 @@ module('Unit | Selectors | Policy Details | Windows Log Policy | Windows Log Sel
     const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizWinLogLogServers()
-      .focusedPolicy(testPolicy)
+      .focusedPolicy({ ...testPolicy })
       .setPolicyWindowsEnabled(true)
       .setPolicyWindowsProtocol('TCP')
       .setPolicyWindowsSendTestLog(false)
@@ -178,16 +181,19 @@ module('Unit | Selectors | Policy Details | Windows Log Policy | Windows Log Sel
       .policyWizWinLogLogServers()
       .focusedPolicy(testPolicyAndOrigins)
       .build();
-    assert.expect(7);
+    assert.expect(10);
     const policyForDetails = focusedPolicy(Immutable.from(state));
     const policyDetails = selectedWindowsLogPolicy(Immutable.from(state), policyForDetails.policy);
-    assert.equal(policyDetails.length, 2, '2 section returned as expected');
+    assert.equal(policyDetails.length, 3, '2 section returned as expected');
     assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.windowsLogSettings', 'first section is as expected');
     assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.channelFilterSettings', 'second section is as expected');
+    assert.equal(policyDetails[2].header, 'adminUsm.policyWizard.windowsLogPolicy.advancedConfig', 'third section is as expected');
     assert.equal(policyDetails[0].props.length, 3, '3 properties returned as expected in endpoint server settings');
     assert.equal(policyDetails[0].props[1].value, 'TLS', 'Protocol value shows as expected');
     assert.equal(policyDetails[0].props[2].origin.groupName, 'test', 'groupName returned as expected');
     assert.equal(policyDetails[0].props[2].origin.policyName, 'test', 'policyName returned as expected');
+    assert.equal(policyDetails[2].props[0].name, 'adminUsm.policyWizard.windowsLogPolicy.customConfig', 'customConfig header returned as expected');
+    assert.equal(policyDetails[2].props[0].value, '{a:\"test\"}', 'customConfig value returned as expected'); // eslint-disable-line no-useless-escape
   });
 
   const testPolicyAndNoOrigins = {
@@ -201,16 +207,30 @@ module('Unit | Selectors | Policy Details | Windows Log Policy | Windows Log Sel
       .policyWizWinLogLogServers()
       .focusedPolicy(testPolicyAndNoOrigins)
       .build();
-    assert.expect(7);
+    assert.expect(8);
     const policyForDetails = focusedPolicy(Immutable.from(state));
     const policyDetails = selectedWindowsLogPolicy(Immutable.from(state), policyForDetails.policy);
-    assert.equal(policyDetails.length, 2, '2 section returned as expected');
+    assert.equal(policyDetails.length, 3, '3 sections returned as expected');
     assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.windowsLogSettings', 'first section is as expected');
     assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.channelFilterSettings', 'second section is as expected');
+    assert.equal(policyDetails[2].header, 'adminUsm.policyWizard.windowsLogPolicy.advancedConfig', 'third section is as expected');
     assert.equal(policyDetails[0].props.length, 3, '3 properties returned as expected in endpoint server settings');
     assert.equal(policyDetails[0].props[1].value, 'TLS', 'Protocol value shows as expected');
     assert.equal(policyDetails[0].props[2].origin.groupName, '', 'groupName returned as expected');
     assert.equal(policyDetails[0].props[2].origin.policyName, '', 'policyName returned as expected');
+  });
+
+  test('selectedWindowsPolicy: advanced settings - ignores blank values', function(assert) {
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizWinLogLogServers()
+      .focusedPolicy({ ...testPolicy })
+      .setPolicyCustomConfig('')
+      .build();
+    assert.expect(1);
+    const policyForDetails = focusedPolicy(Immutable.from(state));
+    const policyDetails = selectedWindowsLogPolicy(Immutable.from(state), policyForDetails);
+    assert.equal(policyDetails.length, 1, '1 section returned as expected (basic setttings) and advanced settings is ignored');
   });
 
   test('focusedPolicy', function(assert) {
@@ -219,12 +239,13 @@ module('Unit | Selectors | Policy Details | Windows Log Policy | Windows Log Sel
       .policyWizWinLogLogServers()
       .focusedPolicy(testPolicyAndNoOrigins)
       .build();
-    assert.expect(7);
+    assert.expect(8);
     const policyForDetails = focusedPolicy(Immutable.from(state));
     const policyDetails = selectedWindowsLogPolicy(Immutable.from(state), policyForDetails.policy);
-    assert.equal(policyDetails.length, 2, '1 section returned as expected');
+    assert.equal(policyDetails.length, 3, '3 sections returned as expected');
     assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.windowsLogSettings', 'first section is as expected');
     assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.channelFilterSettings', 'second section is as expected');
+    assert.equal(policyDetails[2].header, 'adminUsm.policyWizard.windowsLogPolicy.advancedConfig', 'third section is as expected');
     assert.equal(policyDetails[0].props.length, 3, '3 properties returned as expected in endpoint server settings');
     assert.equal(policyDetails[0].props[1].value, 'TLS', 'Protocol value shows as expected');
     assert.equal(policyDetails[0].props[2].origin.groupName, '', 'groupName returned as expected');

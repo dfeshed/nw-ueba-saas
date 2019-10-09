@@ -10,7 +10,8 @@ export default {
     let data = dataEdr;
     const { policyType, groupIds } = body.data;
     if (policyType == 'windowsLogPolicy') {
-      data = dataWindow;
+      // no groupIds returns default windows log policy - else return windows log policy with all settings
+      data = (groupIds.length === 0) ? dataWindow[0] : dataWindow[1];
     } else if (policyType == 'filePolicy') {
       // no groupIds returns default file policy - else return file policy with all settings
       data = (groupIds.length === 0) ? dataFile[0] : dataFile[1];
@@ -21,4 +22,3 @@ export default {
     };
   }
 };
-

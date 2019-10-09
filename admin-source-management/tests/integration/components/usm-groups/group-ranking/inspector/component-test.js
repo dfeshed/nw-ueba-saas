@@ -7,10 +7,11 @@ import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import edrTestPolicy from '../../../../../data/subscriptions/groups/fetchRankingView/data';
-import windowsTestPolicy from '../../../../../data/subscriptions/groups/fetchRankingView/dataWindow';
+import dataWindow from '../../../../../data/subscriptions/groups/fetchRankingView/dataWindow';
 import dataFile from '../../../../../data/subscriptions/groups/fetchRankingView/dataFile';
 
 const [fileTestPolicy] = dataFile; // first (default) file policy
+const [windowsTestPolicy] = dataWindow; // first (default) windows policy
 
 let setState;
 
@@ -50,9 +51,9 @@ module('Integration | Component | group-ranking/inspector | Policy Inspector', f
       .focusedPolicy(windowsTestPolicy)
       .build();
     await render(hbs`{{usm-groups/group-ranking/inspector}}`);
-    assert.equal(findAll('.usm-ranking-inspector .heading').length, 2, 'expected headings are shown');
-    assert.equal(findAll('.usm-ranking-inspector .title').length, 5, 'expected property names are shown');
-    assert.equal(findAll('.usm-ranking-inspector .value').length, 14, 'expected value elements are shown');
+    assert.equal(findAll('.usm-ranking-inspector .heading').length, 3, 'expected headings are shown');
+    assert.equal(findAll('.usm-ranking-inspector .title').length, 6, 'expected property names are shown');
+    assert.equal(findAll('.usm-ranking-inspector .value').length, 18, 'expected value elements are shown');
   });
 
   test('It shows the common sections for history and groups for filePolicy', async function(assert) {

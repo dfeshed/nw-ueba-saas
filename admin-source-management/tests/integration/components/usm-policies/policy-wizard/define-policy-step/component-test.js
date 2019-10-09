@@ -59,7 +59,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('When policy is Windows Log policy, All the components in the available settings is rendered on the UI', async function(assert) {
     new ReduxDataHelper(setState).policyWiz('windowsLogPolicy').build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .available-setting').length, 6, 'All windows log policy available settings rendered on the UI');
+    assert.equal(findAll('.available-settings .available-setting').length, 7, 'All windows log policy available settings rendered on the UI');
   });
 
   test('When policy is Windows Log policy, All the components in the selected settings is rendered on the UI ', async function(assert) {
@@ -71,6 +71,12 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     assert.equal(findAll('.selected-settings .selected-setting').length, 1, 'All selected settings rendered on the UI');
+  });
+
+  test('For the Windows Log Policy, Advanced setting is rendered on the UI', async function(assert) {
+    new ReduxDataHelper(setState).policyWiz('windowsLogPolicy').build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.available-settings .customConfig').length, 1, 'Custom Config is shown in the available settings');
   });
 
   test('When policy is File Policy, All the components in the available settings is rendered on the UI', async function(assert) {

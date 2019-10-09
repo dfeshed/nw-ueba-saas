@@ -27,6 +27,7 @@ export const selectedWindowsLogPolicy = createSelector(
     const policyDetails = [];
     const channelFilters = [];
     const basicSettings = [];
+    const advancedConfigSettings = [];
     const windowsLogPolicyEnabled = focusedPolicy ? focusedPolicy.enabled : '';
     const _i18n = lookup('service:i18n');
     for (const prop in focusedPolicy) {
@@ -41,8 +42,11 @@ export const selectedWindowsLogPolicy = createSelector(
       } else {
         if (!isBlank(focusedPolicy[prop])) {
           const basicSetting = _getBasicSetting(prop, focusedPolicy, _listOfLogServers, windowsLogPolicyEnabled);
+          const advancedConfigSetting = _getAdvancedConfigSetting(prop, focusedPolicy, windowsLogPolicyEnabled);
           if (basicSetting) {
             basicSettings.push(basicSetting);
+          } else if (advancedConfigSetting) {
+            advancedConfigSettings.push(advancedConfigSetting);
           }
         }
       }
@@ -57,6 +61,12 @@ export const selectedWindowsLogPolicy = createSelector(
       policyDetails.push({
         header: 'adminUsm.policies.detail.channelFilterSettings',
         channels: channelFilters
+      });
+    }
+    if (advancedConfigSettings.length > 0) {
+      policyDetails.push({
+        header: 'adminUsm.policyWizard.windowsLogPolicy.advancedConfig',
+        props: advancedConfigSettings
       });
     }
     return policyDetails;
@@ -105,6 +115,19 @@ const _getChannelFilterSetting = (chFilter) => {
     name: `${chFilter.channel} ${chFilter.filterType}`,
     value: chFilter.eventId
   };
+};
+
+const _getAdvancedConfigSetting = (prop, focusedPolicy, windowsLogPolicyEnabled) => {
+  let advancedConfigSettings = {};
+  if (windowsLogPolicyEnabled === 'Enabled') {
+    advancedConfigSettings = {
+      customConfig: {
+        name: 'adminUsm.policyWizard.windowsLogPolicy.customConfig',
+        value: focusedPolicy[prop]
+      }
+    };
+  }
+  return advancedConfigSettings[prop];
 };
 
 const _getDisplayName = (prop, destAddress, listOfLogServers) => {

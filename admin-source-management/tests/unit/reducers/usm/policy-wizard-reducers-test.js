@@ -27,7 +27,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
   test('should return the correct initial state when type is windowsLogPolicy', function(assert) {
     assert.equal(initialStateWinLog.policy.policyType, 'windowsLogPolicy', 'correct policyType is loaded in initialState when type is windowsLogPolicy');
-    assert.equal(initialStateWinLog.availableSettings.length, 8, 'correct availableSettings are loaded in initialState when type is windowsLogPolicy');
+    assert.equal(initialStateWinLog.availableSettings.length, 10, 'correct availableSettings are loaded in initialState when type is windowsLogPolicy');
   });
 
   test('should return the correct initial state when type is filePolicy', function(assert) {

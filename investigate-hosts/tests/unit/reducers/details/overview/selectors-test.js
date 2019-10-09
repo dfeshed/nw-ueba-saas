@@ -343,7 +343,8 @@ module('Unit | Selectors | overview', function(hooks) {
           secondaryDestination: 'Moo',
           protocol: '123',
           sendTestLog: true,
-          channelFilters: [{ asd: 'asd' }]
+          channelFilters: [{ asd: 'asd' }],
+          customConfig: ''
         },
         filePolicy: {
           name: 'Test File Policy',
@@ -401,7 +402,8 @@ module('Unit | Selectors | overview', function(hooks) {
       'primaryDestination': 'foo',
       'protocol': '123',
       'secondaryDestination': 'Moo',
-      'sendTestLog': 'Enabled'
+      'sendTestLog': 'Enabled',
+      'customConfig': ''
     });
     assert.deepEqual(resultPolicyAdminUsm.filePolicy, {
       'sources': [],

@@ -4,6 +4,9 @@ import { isBlank } from '@ember/utils';
 import {
   CHANNEL_CONFIG
 } from './windowsLog-settings';
+import {
+  customConfigValidator
+} from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-selectors';
 
 const { createSelector } = reselect;
 
@@ -205,5 +208,6 @@ export const channelFiltersValidator = (state) => {
 export const windowsLogPolicyValidatorFnMap = {
   'primaryDestination': windowsLogDestinationValidator,
   'secondaryDestination': windowsLogDestinationValidator,
-  'channelFilters': channelFiltersValidator
+  'channelFilters': channelFiltersValidator,
+  'customConfig': customConfigValidator
 };

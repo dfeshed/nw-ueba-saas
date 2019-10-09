@@ -423,6 +423,7 @@ export default [
         filterType: 'exclude'
       }
     ],
+    customConfig: '{"enabled" : false,"sendTestLog" : true,"protocol" : "UDP","policyType" : "windowsLogPolicy","name" : "Test Windows Log Policy1","description" : "Test Windows Log Policy1 Description."}',
     associatedGroups: [
       {
         referenceId: '5b7d886500319b5520f4b67d',
@@ -451,6 +452,7 @@ export default [
     sendTestLog: false,
     primaryDestination: '10.10.10.12',
     secondaryDestination: '120.12.12.12',
+    customConfig: '{"enabled" : false,"sendTestLog" : true,"protocol" : "TCP","policyType" : "windowsLogPolicy","name" : "Test Windows Log Policy002","description" : "Test Windows Log Policy002 Description."}',
     lastPublishedCopy: null,
     associatedGroups: []
   },

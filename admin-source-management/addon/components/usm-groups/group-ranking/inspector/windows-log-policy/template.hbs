@@ -14,7 +14,7 @@
           <hbox class="value col-xs-6 col-md-5 propValue">{{channel.origin.policyName}} - {{channel.origin.groupName}}</hbox>
         </hbox>
       {{/each}}
-    {{else}} 
+    {{else}}
       <div class="heading">
         <hbox fit class="col-xs-12">
           <hbox class="value col-xs-6 col-md-7">{{t section.header}}</hbox>
@@ -23,8 +23,17 @@
       </div>
       {{#each section.props as |prop|}}
         <hbox fit class="col-xs-12">
-          <hbox class="title col-xs-6 col-md-4">{{t prop.name}}</hbox>          
-          <hbox class="value col-xs-6 col-md-3">{{prop.value}}</hbox>
+          <hbox class="title col-xs-6 col-md-4">{{t prop.name}}</hbox>
+          {{#if (eq prop.name 'adminUsm.policyWizard.windowsLogPolicy.customConfig') }}
+            <hbox class="value col-xs-6 col-md-3">
+              {{#rsa-text-with-tooltip value=prop.value
+                style="standard"}}
+                <div class="table-cell-text">{{prop.value}}</div>
+              {{/rsa-text-with-tooltip}}
+            </hbox>
+          {{else}}
+            <hbox class="value col-xs-6 col-md-3">{{prop.value}}</hbox>
+          {{/if}}
           <hbox class="value col-xs-6 col-md-5 propValue">{{prop.origin.policyName}} - {{prop.origin.groupName}}</hbox>
         </hbox>
       {{/each}}

@@ -82,7 +82,8 @@ module('Unit | Selectors | Policy Details | windows-log-policy | windows-log-sel
             eventId: '620,630,640',
             filterType: 'EXCLUDE'
           }
-        ]
+        ],
+        customConfig: '{"enabled" : true,"sendTestLog" : false,"protocol" : "UDP","policyType" : "windowsLogPolicy","name" : "Test Windows Log Policy","description" : "Test Windows Log Policy Description."}'
       },
       filePolicy: {
         name: 'Test File Policy',
@@ -101,13 +102,16 @@ module('Unit | Selectors | Policy Details | windows-log-policy | windows-log-sel
   test('selectedWindowsLogPolicy selector', function(assert) {
     const state = new ReduxDataHelper(setState).policy(policyData).build();
     const policyDetails = selectedWindowsLogPolicy(Immutable.from(state));
-    assert.equal(policyDetails.length, 2, '2 sections returned as expected');
+    assert.equal(policyDetails.length, 3, '3 sections returned as expected');
     assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.windowsLogSettings', 'first section is as expected');
     assert.equal(policyDetails[0].props.length, 3, 'first section has 3 properties');
     assert.equal(policyDetails[0].props[2].value, 'Disabled', 'Disabled sendTestLog correct');
     assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.channelFilterSettings', 'second section  is as expected');
     assert.equal(policyDetails[1].channels.length, 1, 'second section has 1 channel');
     assert.equal(policyDetails[1].channels[0].value, '620,630,640', 'eventId value shows');
+    assert.equal(policyDetails[2].header, 'adminUsm.policyWizard.windowsLogPolicy.advancedConfig', 'third section is as expected');
+    assert.equal(policyDetails[2].props.length, 1, 'third section has 1 property');
+    assert.equal(policyDetails[2].props[0].value, '{"enabled" : true,"sendTestLog" : false,"protocol" : "UDP","policyType" : "windowsLogPolicy","name" : "Test Windows Log Policy","description" : "Test Windows Log Policy Description."}', 'advanced config as expected');
   });
 
   const { policy } = policyData;

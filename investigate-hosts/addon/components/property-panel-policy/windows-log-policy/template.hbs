@@ -1,7 +1,7 @@
 <vbox class="rsa-application-layout-panel-content" xs="12" fit>
   {{#each selectedWindowsLogPolicy as |section|}}
     {{#if section.channels}}
-      <div class="content-section__section-name ">{{t section.header}}</div>     
+      <div class="content-section__section-name ">{{t section.header}}</div>
       {{#each section.channels as |channel|}}
         <hbox fit class="col-xs-12 content-section__property">
           <hbox class="property-name col-xs-6 col-md-5">{{channel.name}}</hbox>
@@ -12,11 +12,11 @@
           </hbox>
         </hbox>
       {{/each}}
-    {{else}}      
+    {{else}}
       <div class="content-section__section-name ">{{t section.header}}</div>
       {{#each section.props as |prop|}}
         <hbox fit class="col-xs-12 content-section__property">
-          <hbox class="property-name col-xs-6 col-md-5">{{t prop.name}}</hbox>          
+          <hbox class="property-name col-xs-6 col-md-5">{{t prop.name}}</hbox>
           <hbox class="win-value col-xs-6 col-md-7">
             {{#rsa-text-with-tooltip value=prop.value tipPosition='left'}}
               {{prop.value}}

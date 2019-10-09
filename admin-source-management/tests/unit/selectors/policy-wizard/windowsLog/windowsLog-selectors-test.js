@@ -17,6 +17,7 @@ import {
   channels,
   channelFiltersValidator
 } from 'admin-source-management/reducers/usm/policy-wizard/windowsLogPolicy/windowsLog-selectors';
+import { customConfigValidator } from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-selectors';
 import {
   ENABLED_CONFIG,
   SEND_TEST_LOG_CONFIG
@@ -403,5 +404,48 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     };
     const validActual = channelFiltersValidator(fullState);
     assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
+  });
+
+  test('customConfigValidator selector', function(assert) {
+    const settingId = 'customConfig';
+    const visited = [`policy.${settingId}`];
+    // blank value not allowed
+    let customSettingValue = ' ';
+    let fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizCustomConfig(customSettingValue)
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.policyWizard.edrPolicy.customConfigInvalidMsg'
+    };
+    let validActual = customConfigValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for '${customSettingValue}'`);
+
+    // value greater than 4000
+    let testSetting = '';
+    for (let index = 0; index < 110; index++) {
+      testSetting += 'the-description-is-greater-than-4000-';
+    }
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizCustomConfig(testSetting)
+      .policyWizVisited(visited)
+      .build();
+    validActual = customConfigValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${testSetting}`);
+
+    // valid value
+    customSettingValue = 'foobar';
+    fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizCustomConfig(customSettingValue)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, showError: false, errorMessage: '' };
+    validActual = customConfigValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${customSettingValue}`);
   });
 });
