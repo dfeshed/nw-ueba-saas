@@ -277,6 +277,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
       .build();
 
     await render(hbs`
+      <div id='modalDestination'></div>
       {{host-detail/utils/file-context-wrapper
         storeName=storeName
         tabName=tabName
@@ -284,7 +285,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
       }}
     `);
 
-    await click('.more-action-button');
+    await click('.file-status-more-actions .more-action-button');
     await click('.rsa-dropdown-action-list .panel3');
   });
 
