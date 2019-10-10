@@ -169,11 +169,11 @@ const ColumnGroupForm = Component.extend({
       this._checkDirtyChange();
     },
 
-    // adds candidate meta to sorted columns in display in correct sort order
+    // adds candidate meta to columns at the end of the list
     addMetaToColumns(meta) {
       this._updateFilterSelection();
       const displayedColumns = _.cloneDeep(this.get('displayedColumns'));
-      displayedColumns.splice(_.sortedIndexBy(displayedColumns, meta, (m) => m.field), 0, meta);
+      displayedColumns.push(meta);
       this._updateColumns(displayedColumns);
     },
 

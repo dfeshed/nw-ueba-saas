@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import sort from 'fast-sort';
 import _ from 'lodash';
 
 export default Component.extend({
@@ -13,14 +12,14 @@ export default Component.extend({
   // list-manager function that accepts validated edited item
   editColumnGroup: null,
 
-  // computed columnGroup with columns sorted alphabetically by field
+  // need not show time and medium columns to the user as they are default.
   @computed('columnGroup')
-  sortedColumnGroup(columnGroup) {
+  displayedColumnGroup(columnGroup) {
 
     if (columnGroup?.columns) {
-      const sortedColumnGroup = JSON.parse(JSON.stringify(columnGroup));
-      sort(sortedColumnGroup.columns).by([{ asc: (column) => column.field.toUpperCase() }]);
-      return sortedColumnGroup;
+      const displayedColumnGroup = _.cloneDeep(columnGroup);
+      displayedColumnGroup.columns = displayedColumnGroup.columns.filter((column) => column.field !== 'time' && column.field !== 'medium');
+      return displayedColumnGroup;
     }
     return columnGroup;
   },

@@ -147,12 +147,13 @@ export const metaMapForColumns = createSelector(
   [ _metaKeyCache],
   (metaKeys = []) => {
 
-    return metaKeys.map((meta) => {
+    const mappedKeys = metaKeys.map((meta) => {
       return {
         field: meta.metaName,
         title: meta.displayName
       };
     });
 
+    return mappedKeys.filter((meta) => meta.field !== 'time' && meta.field !== 'medium');
   }
 );

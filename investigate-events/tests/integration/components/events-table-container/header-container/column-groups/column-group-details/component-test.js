@@ -45,10 +45,10 @@ module('Integration | Component | Column Group Details', function(hooks) {
     assert.equal(find('.group-name .name').textContent.trim(), 'Group Name');
     assert.equal(find('.group-name .value').textContent.trim(), 'Summary List');
     assert.equal(find('.group-details .name').textContent.trim(), 'Displayed Meta Keys');
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 5, '5 columns for Summary List rendered');
+    assert.equal(findAll(DISPLAYED_COLUMNS).length, 3, '3/5 columns for Summary List rendered, time, medium not shown');
 
     const metaKeys = findAll(`${DISPLAYED_COLUMNS} span:first-of-type`);
-    assert.equal(getTextFromDOMArray(metaKeys), 'custom.meta-detailscustom.thememediumsizetime', 'Displayed meta keys in alphabetical order');
+    assert.equal(getTextFromDOMArray(metaKeys), 'custom.themesizecustom.meta-details', 'Displayed meta keys');
   });
 
   test('columnGroup details should render an edit form to create a new column group', async function(assert) {
@@ -63,7 +63,7 @@ module('Integration | Component | Column Group Details', function(hooks) {
     assert.equal(find('.group-details .name').textContent.trim(), 'Displayed Meta Keys');
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 0, 'No columns present in displayed keys');
     assert.equal(find('.add-details .name').textContent.trim(), 'Available Meta Keys');
-    assert.equal(findAll(AVAILABLE_META).length, 95, '95 meta keys available');
+    assert.equal(findAll(AVAILABLE_META).length, 93, '93/95 meta keys available');
 
   });
 

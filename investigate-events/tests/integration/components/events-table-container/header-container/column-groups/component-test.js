@@ -156,7 +156,7 @@ module('Integration | Component | Column Groups', function(hooks) {
     // Go to column Group details
     await click(findAll(`${columnGroupItem} .edit-icon button`)[8]);
     assert.equal(find('.group-name .value').textContent.trim(), 'Threat Analysis');
-    assert.equal(findAll('.group-details ul.column-list li').length, 57, '57 columns for Threat Analysis rendered');
+    assert.equal(findAll('.group-details ul.column-list li').length, 55, '55 columns for Threat Analysis rendered');
 
     // Go to list view
     await click(findAll('footer button')[0]);
@@ -164,7 +164,7 @@ module('Integration | Component | Column Groups', function(hooks) {
     // Go to column Group details
     await click(findAll(`${columnGroupItem} .edit-icon button`)[3]);
     assert.equal(find('.group-name .value').textContent.trim(), 'Summary List');
-    assert.equal(findAll('.group-details ul.column-list li').length, 5, '5 columns for Summary List rendered');
+    assert.equal(findAll('.group-details ul.column-list li').length, 3, '3 columns for Summary List rendered');
 
   });
 

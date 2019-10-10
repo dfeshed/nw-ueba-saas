@@ -46,8 +46,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     assert.equal(find('.group-details p.message').textContent.trim(), 'Add a meta key from the list below',
       'Message displayed when no columns present in displayed keys');
 
-    assert.equal(findAll(AVAILABLE_META).length, 95, '95 meta keys available');
-
+    assert.equal(findAll(AVAILABLE_META).length, 93, '93/95 meta keys available');
   });
 
   test('it will add name', async function(assert) {
@@ -84,7 +83,7 @@ module('Integration | Component | Column Group form', function(hooks) {
       editColumnGroup=editColumnGroup}}`);
 
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 0, 'No columns present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 95, '95 meta keys available');
+    assert.equal(findAll(AVAILABLE_META).length, 93, '93 meta keys available');
 
     const availableOptions = findAll(`${AVAILABLE_META} button`);
     // add candidate meta
@@ -92,7 +91,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     await click(availableOptions[9]);
 
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 2, '2 columns present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 93, '93 meta keys available');
+    assert.equal(findAll(AVAILABLE_META).length, 91, '91 meta keys available');
   });
 
   test('it will display a message if all meta are added', async function(assert) {
@@ -142,7 +141,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     await click(availableOptions[3]);
 
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 94, '94 meta keys available');
+    assert.equal(findAll(AVAILABLE_META).length, 92, '92 meta keys available');
 
     // typing in spaces only will trigger editColumnGroup, but with null object
     // thus running the editColumnGroup assertion only once
@@ -173,7 +172,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     await click(selectedOptions[0]);
 
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 94, '94 meta keys available');
+    assert.equal(findAll(AVAILABLE_META).length, 92, '92 meta keys available');
   });
 
   test('will filter available meta', async function(assert) {
