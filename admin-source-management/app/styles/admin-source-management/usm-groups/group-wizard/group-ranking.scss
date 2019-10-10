@@ -130,6 +130,9 @@
             .group-name-cell, .policy-cell {
               padding-left: rsa-whitespace();
               .tooltip-text {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 max-width: 300px;
                 @media (max-width: 1800px) {
                   max-width: 150px;
