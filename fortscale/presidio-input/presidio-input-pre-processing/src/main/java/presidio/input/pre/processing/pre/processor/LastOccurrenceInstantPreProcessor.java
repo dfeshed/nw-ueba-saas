@@ -50,7 +50,9 @@ public class LastOccurrenceInstantPreProcessor extends PreProcessor<LastOccurren
 
                 for (String entityType : entityTypes) {
                     String entityId = (String) reflection.getFieldValue(rawEvent, entityType);
-                    lastOccurrenceInstantWriter.write(schema, entityType, entityId, instant);
+                    if(entityId != null){
+                        lastOccurrenceInstantWriter.write(schema, entityType, entityId, instant);
+                    }
                 }
             }
         }
