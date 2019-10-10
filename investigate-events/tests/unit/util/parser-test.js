@@ -199,20 +199,6 @@ module('Unit | Util | Parser', function(hooks) {
     ]);
   });
 
-  test('throws an error for a meta without operator', function(assert) {
-    const tokens = [
-      { type: LEXEMES.META, text: 'b' },
-      { type: LEXEMES.OPERATOR_EQ, text: '=' },
-      { type: LEXEMES.STRING, text: 'netwitness' },
-      { type: LEXEMES.AND, text: '&&' },
-      { type: LEXEMES.META, text: 'medium' }
-    ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
-    assert.throws(() => {
-      p.parse();
-    }, new Error('Expected token of type OPERATOR but reached the end of the input'));
-  });
-
   test('throws an error for a meta without value when operator requires one (string)', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'b' },

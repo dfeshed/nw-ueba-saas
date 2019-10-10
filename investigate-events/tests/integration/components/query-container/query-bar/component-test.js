@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -124,7 +124,7 @@ module('Integration | Component | Query Bar', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.queryPill)[0].textContent.replace(/\s/g, ''), 'a=1', 'pill text is correct');
   });
 
-  test('Toggling from free form with complex input to pills will create complex pills', async function(assert) {
+  skip('Toggling from free form with complex input to pills will create complex pills', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .pillsDataEmpty(true)

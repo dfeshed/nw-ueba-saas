@@ -3,15 +3,6 @@ import * as LEXEMES from 'investigate-events/constants/lexemes';
 import * as GRAMMAR from 'investigate-events/constants/grammar';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 
-const VALUE_TYPES = [
-  LEXEMES.INTEGER,
-  LEXEMES.FLOAT,
-  LEXEMES.STRING,
-  LEXEMES.IPV4_ADDRESS,
-  LEXEMES.IPV6_ADDRESS,
-  LEXEMES.MAC_ADDRESS
-];
-
 const VALUE_TYPE_MAP = {
   UInt8: LEXEMES.INTEGER,
   UInt16: LEXEMES.INTEGER,
@@ -126,6 +117,19 @@ class Parser {
     return {
       type: GRAMMAR.COMPLEX_FILTER,
       text
+    };
+  }
+
+  /**
+   * Used like _createComplexString, but will attempt the same non-terminal again.
+   * Used to error but still try again to find a criteria.
+   * @param {string} text The complex filter text
+   */
+  _complexAndTryAgain(text) {
+    return {
+      type: GRAMMAR.COMPLEX_FILTER,
+      text,
+      tryAgain: true
     };
   }
 
@@ -283,12 +287,35 @@ class Parser {
   _whereCriteria() {
     const result = {
       type: GRAMMAR.WHERE_CRITERIA,
-      children: [ this._criteriaOrGroupOrTextFilter() ]
+      children: []
     };
+    let child = this._criteriaOrGroupOrTextFilter();
+    while (child.type === GRAMMAR.COMPLEX_FILTER && child.tryAgain) {
+      if (child.text !== '') {
+        result.children.push(child, { type: LEXEMES.AND, text: '&&' });
+      }
+      child = this._criteriaOrGroupOrTextFilter();
+    }
+    result.children.push(child);
     while (this._nextTokenIsOfType([ LEXEMES.AND, LEXEMES.OR ])) {
       const operator = this._advance();
-      const nextCriteriaOrGroup = this._criteriaOrGroupOrTextFilter();
-      result.children.push(operator, nextCriteriaOrGroup);
+      let nextCriteriaOrGroup = this._criteriaOrGroupOrTextFilter();
+      while (nextCriteriaOrGroup.type === GRAMMAR.COMPLEX_FILTER && nextCriteriaOrGroup.tryAgain) {
+        if (nextCriteriaOrGroup.text !== '') {
+          result.children.push(operator, nextCriteriaOrGroup);
+        }
+        nextCriteriaOrGroup = this._criteriaOrGroupOrTextFilter();
+      }
+      if (nextCriteriaOrGroup.type === GRAMMAR.COMPLEX_FILTER && nextCriteriaOrGroup.text === '') {
+        // The empty complex pill signifies that we reached the end of the input while
+        // still expecting a meta. In this particular case, we read an AND or OR and then didn't
+        // see anything after that. To make this clear to the user that they have an invalid trailing
+        // logical operator, push an AND onto the stack to create a new pill and then the invalid
+        // operator to be displayed as the invalid pill.
+        result.children.push({ type: LEXEMES.AND, text: '&&' }, this._createComplexString(operator.text));
+      } else {
+        result.children.push(operator, nextCriteriaOrGroup);
+      }
     }
     return result;
   }
@@ -318,6 +345,10 @@ class Parser {
   _group() {
     this._consume([ LEXEMES.LEFT_PAREN ]);
     const inside = this._whereCriteria();
+    if (inside.type === GRAMMAR.COMPLEX_FILTER && inside.text === '') {
+      // This is an end-of-input error. Make the left paren a complex pill.
+      return this._createComplexString('(');
+    }
     if (!this._nextTokenIsOfType([ LEXEMES.RIGHT_PAREN ])) {
       return this._createComplexString(`(${Parser.transformToString(inside)}`);
     } else {
@@ -344,7 +375,58 @@ class Parser {
    */
   _criteria() {
     let returnComplex = false;
+    if (!this._nextTokenIsOfType([ LEXEMES.META ])) {
+      /**
+       * Error, we are looking at a token that is not a meta but we are expecting a meta.
+       * Could be:
+       * - At the very beginning of a query
+       * - After && or ||
+       * - After (
+       */
+      if (this._nextTokenIsOfType(LEXEMES.OPERATOR_TYPES) && LEXEMES.VALUE_TYPES.includes(this._peekNext()?.type)) {
+        // If we are expecting a meta, but we see an operator and a value, they probably forgot to include the meta.
+        // Group these two tokens together in one complex pill.
+        return this._createComplexString(`${this._advance().text} ${this._advance().text}`);
+      } else if (!this._isAtEnd()) {
+        const badToken = this._advance();
+        if (this._nextTokenIsOfType([ LEXEMES.META ])) {
+          return this._complexAndTryAgain(badToken.text);
+        } else {
+          return this._createComplexString(badToken.text);
+        }
+      } else {
+        // If we're at the end, return an empty complex pill. `_whereCriteria` will see this
+        // and do something with it depending on its context.
+        return this._createComplexString('');
+      }
+    }
     const meta = this._consume([ LEXEMES.META ]);
+    if (!this._nextTokenIsOfType(LEXEMES.OPERATOR_TYPES)) {
+      // We saw a meta, but no operator followed it.
+      if (this._nextTokenIsOfType([ LEXEMES.META ])) {
+        if (LEXEMES.VALUE_TYPES.includes(this._peekNext()?.type)) {
+          // meta meta value
+          return this._createComplexString(`${meta.text} ${this._advance().text} ${this._advance().text}`);
+        } else if (LEXEMES.OPERATOR_TYPES.includes(this._peekNext()?.type)) {
+          // meta meta operator
+          // Cut this out and use the next meta
+          return this._complexAndTryAgain(meta.text);
+        } else {
+          return this._createComplexString(`${meta.text} ${this._advance().text}`);
+        }
+      } else if (this._nextTokenIsOfType([ LEXEMES.RIGHT_PAREN, LEXEMES.AND, LEXEMES.OR ])) {
+        return this._createComplexString(meta.text);
+      } else if (!this._isAtEnd()) {
+        const badToken = this._advance();
+        if (this._nextTokenIsOfType([ LEXEMES.META ])) {
+          return this._complexAndTryAgain(`${meta.text} ${badToken.text}`);
+        } else {
+          return this._createComplexString(`${meta.text} ${badToken.text}`);
+        }
+      } else {
+        return this._createComplexString(meta.text);
+      }
+    }
     const operator = this._consume(LEXEMES.OPERATOR_TYPES);
     // Check that this is a valid meta key & operator
     const configs = this._validateMetaAndOperator(meta, operator);
@@ -358,7 +440,7 @@ class Parser {
     // Unary operators (exists & !exists) do not have values, so push them
     // without a `valueRanges` property
     if (operator.text === 'exists' || operator.text === '!exists') {
-      if (this._nextTokenIsOfType(VALUE_TYPES)) {
+      if (this._nextTokenIsOfType(LEXEMES.VALUE_TYPES)) {
         // Can't have values after unary operators. Pull them out of the queue
         // and put them in a complex pill
         const metaValueRanges = this._metaValueRanges();
@@ -507,7 +589,7 @@ class Parser {
       // Consume the range separator
       this._advance();
       // Check to make sure a value is next
-      if (!this._nextTokenIsOfType(VALUE_TYPES)) {
+      if (!this._nextTokenIsOfType(LEXEMES.VALUE_TYPES)) {
         // If it's another comma, set the validation error but continue
         if (this._nextTokenIsOfType([ LEXEMES.VALUE_SEPARATOR ])) {
           const i18n = lookup('service:i18n');
@@ -559,7 +641,7 @@ class Parser {
     if (this._nextTokenIsOfType([ LEXEMES.HYPHEN ])) {
       // Consume the range token first
       this._consume([ LEXEMES.HYPHEN ]);
-      if (!this._nextTokenIsOfType(VALUE_TYPES) && (this._peek() && this._peek().text.toLowerCase()) !== 'u') {
+      if (!this._nextTokenIsOfType(LEXEMES.VALUE_TYPES) && (this._peek() && this._peek().text.toLowerCase()) !== 'u') {
         // If there is not a value token next, abort
         if (this._peekNext() && (this._peekNext().type === LEXEMES.AND || this._peekNext().type === LEXEMES.OR)) {
           // If the bad token has an operator after it, include the bad token
