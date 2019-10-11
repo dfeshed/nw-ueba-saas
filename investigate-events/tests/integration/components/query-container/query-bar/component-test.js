@@ -142,14 +142,14 @@ module('Integration | Component | Query Bar', function(hooks) {
 
     // Create pill
     await click(PILL_SELECTORS.freeFormInput);
-    await fillIn(PILL_SELECTORS.freeFormInput, '( adslkjalksdj && asdasdsad)');
+    await fillIn(PILL_SELECTORS.freeFormInput, '( adslkjalksdj AND asdasdsad)');
     await blur(PILL_SELECTORS.freeFormBarContainer);
 
     await click(SELECTORS.queryFormatGuidedToggle);
 
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'The template is the only query pill present');
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 1, 'there is a complex pill');
-    assert.equal(findAll(PILL_SELECTORS.complexPill)[0].textContent.replace(/\s/g, ''), '(adslkjalksdj&&asdasdsad)', 'pill text is correct');
+    assert.equal(findAll(PILL_SELECTORS.complexPill)[0].textContent.replace(/\s/g, ''), '(adslkjalksdjANDasdasdsad)', 'pill text is correct');
   });
 
   test('Initial render of query pills will not have focus', async function(assert) {
@@ -402,7 +402,7 @@ module('Integration | Component | Query Bar', function(hooks) {
 
     await settled();
 
-    await selectChoose(PILL_SELECTORS.recentQuery, 'sessionid = 1 && sessionid = 80');
+    await selectChoose(PILL_SELECTORS.recentQuery, 'sessionid = 1 AND sessionid = 80');
 
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, '2 created pills plus a template is not present');
     assert.equal(findAll(PILL_SELECTORS.queryPill)[0].textContent.replace(/\s/g, ''), 'sessionid=1', 'pill text is in-correct');

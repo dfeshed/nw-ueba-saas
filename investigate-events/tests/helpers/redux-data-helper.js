@@ -26,7 +26,7 @@ export const DEFAULT_PROFILES = [
     columnGroup: {
       name: 'RSA Malware Analysis'
     },
-    preQuery: 'filename exists || extension exists || filetype exists || sourcefile exists  || content = \'application/octet-stream\'',
+    preQuery: 'filename exists OR extension exists OR filetype exists OR sourcefile exists  OR content = \'application/octet-stream\'',
     contentType: 'OOTB'
   },
   {
@@ -38,7 +38,7 @@ export const DEFAULT_PROFILES = [
     columnGroup: {
       name: 'RSA Threat Analysis'
     },
-    preQuery: 'threat.desc exists || threat.source exists || threat.category exists || boc exists || ioc exists || eoc exists || alert exists',
+    preQuery: 'threat.desc exists OR threat.source exists OR threat.category exists OR boc exists OR ioc exists OR eoc exists OR alert exists',
     contentType: 'OOTB'
   },
   {
@@ -74,7 +74,7 @@ export const DEFAULT_PROFILES = [
     columnGroup: {
       name: 'RSA User & Entity Behavior Analysis'
     },
-    preQuery: 'user.dst exists || username exists',
+    preQuery: 'user.dst exists OR username exists',
     contentType: 'OOTB'
   }
 ];
@@ -324,18 +324,18 @@ const getRecentQueryObjects = (array) => {
 
 const defaultRecentQueriesFilteredList = [
   'medium = 32',
-  'medium = 32 || medium = 1',
-  '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 || ip.dst = 10.2.54.1 && ip.src = 1.1.3.3) && medium = 32'
+  'medium = 32 OR medium = 1',
+  '(ip.dst = 10.2.54.11 AND ip.src = 1.1.1.1 OR ip.dst = 10.2.54.1 AND ip.src = 1.1.3.3) AND medium = 32'
 ];
 
 const defaultRecentQueriesUnfilteredList = [
   'medium = 32',
-  'medium = 32 || medium = 1',
-  'sessionid = 1 && sessionid = 80',
-  'action = \'GET\' || action = \'PUT\'',
-  '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 || ip.dst = 10.2.54.1 && ip.src = 1.1.3.3) && medium = 32',
-  'service = 80 || service = 90',
-  'foo = bar && bar = foo'
+  'medium = 32 OR medium = 1',
+  'sessionid = 1 AND sessionid = 80',
+  'action = \'GET\' OR action = \'PUT\'',
+  '(ip.dst = 10.2.54.11 AND ip.src = 1.1.1.1 OR ip.dst = 10.2.54.1 AND ip.src = 1.1.3.3) AND medium = 32',
+  'service = 80 OR service = 90',
+  'foo = bar AND bar = foo'
 ];
 
 const DEFAULT_VALUE_SUGGESTIONS = [

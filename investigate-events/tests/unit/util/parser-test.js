@@ -55,12 +55,12 @@ module('Unit | Util | Parser', function(hooks) {
     }]);
   });
 
-  test('correctly parses two meta and &&', function(assert) {
+  test('correctly parses two meta and AND', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.INTEGER, text: '3' },
-      { type: LEXEMES.AND, text: '&&' },
+      { type: LEXEMES.AND, text: 'AND' },
       { type: LEXEMES.META, text: 'filename' },
       { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' },
       { type: LEXEMES.STRING, text: 'hyberfile.sys' }
@@ -80,7 +80,7 @@ module('Unit | Util | Parser', function(hooks) {
           }
         ]
       },
-      { type: LEXEMES.AND, text: '&&' },
+      { type: LEXEMES.AND, text: 'AND' },
       {
         type: GRAMMAR.CRITERIA,
         meta: { type: LEXEMES.META, text: 'filename' },
@@ -245,7 +245,7 @@ module('Unit | Util | Parser', function(hooks) {
   });
 
   test('correctly parses multiple complex filters', function(assert) {
-    // ((b = "text") || (medium != 44)) && (bytes.src = 1)
+    // ((b = "text") OR (medium != 44)) AND (bytes.src = 1)
     const tokens = [
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.LEFT_PAREN, text: '(' },
@@ -253,14 +253,14 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.STRING, text: 'text' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' },
-      { type: LEXEMES.OR, text: '||' },
+      { type: LEXEMES.OR, text: 'OR' },
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' },
       { type: LEXEMES.INTEGER, text: '44' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' },
-      { type: LEXEMES.AND, text: '&&' },
+      { type: LEXEMES.AND, text: 'AND' },
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'bytes.src' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
@@ -295,7 +295,7 @@ module('Unit | Util | Parser', function(hooks) {
                 ]
               }
             },
-            { type: LEXEMES.OR, text: '||' },
+            { type: LEXEMES.OR, text: 'OR' },
             {
               type: GRAMMAR.GROUP,
               group: {
@@ -318,7 +318,7 @@ module('Unit | Util | Parser', function(hooks) {
           ]
         }
       },
-      { type: LEXEMES.AND, text: '&&' },
+      { type: LEXEMES.AND, text: 'AND' },
       {
         type: GRAMMAR.GROUP,
         group: {
@@ -374,7 +374,7 @@ module('Unit | Util | Parser', function(hooks) {
   });
 
   test('transformToString handles logical operators', function(assert) {
-    const source = 'medium exists && medium = 3';
+    const source = 'medium exists AND medium = 3';
     const s = new Scanner(source);
     const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);
     const tree = p.parse();
@@ -392,7 +392,7 @@ module('Unit | Util | Parser', function(hooks) {
   });
 
   test('transformToString handles logical operators and groups', function(assert) {
-    const source = 'medium exists || (alias.ip = 127.0.0.1) && medium = 3';
+    const source = 'medium exists OR (alias.ip = 127.0.0.1) AND medium = 3';
     const s = new Scanner(source);
     const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);
     const tree = p.parse();

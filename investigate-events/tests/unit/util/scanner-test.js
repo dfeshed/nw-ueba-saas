@@ -69,13 +69,13 @@ module('Unit | Util | Scanner', function(hooks) {
   });
 
   test('handles unary operator followed by other operator', function(assert) {
-    const source = 'alert exists && medium = 1';
+    const source = 'alert exists AND medium = 1';
     const s = new Scanner(source);
     const result = s.scanTokens();
     assert.strictEqual(result.length, 6, 'should produce 6 tokens');
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'alert' }, '1. META "alert"');
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EXISTS, text: 'exists' }, '2. OPERATOR_EXISTS "exists"');
-    assert.deepEqual(result[2], { type: LEXEMES.AND, text: '&&' }, '3. AND "&&"');
+    assert.deepEqual(result[2], { type: LEXEMES.AND, text: 'AND' }, '3. AND "AND"');
     assert.deepEqual(result[3], { type: LEXEMES.META, text: 'medium' }, '4. META "medium"');
     assert.deepEqual(result[4], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '5. OPERATOR_EQ "="');
     assert.deepEqual(result[5], { type: LEXEMES.INTEGER, text: '1' }, '6. INTEGER "1"');
@@ -168,12 +168,12 @@ module('Unit | Util | Scanner', function(hooks) {
   });
 
   test('handles both text queries and strings together', function(assert) {
-    const source = `${SEARCH_TERM_MARKER}search term${SEARCH_TERM_MARKER} && b = "some stringy stuff"`;
+    const source = `${SEARCH_TERM_MARKER}search term${SEARCH_TERM_MARKER} AND b = "some stringy stuff"`;
     const s = new Scanner(source);
     const result = s.scanTokens();
     assert.strictEqual(result.length, 5);
     assert.deepEqual(result[0], { type: LEXEMES.TEXT_FILTER, text: 'search term' });
-    assert.deepEqual(result[1], { type: LEXEMES.AND, text: '&&' });
+    assert.deepEqual(result[1], { type: LEXEMES.AND, text: 'AND' });
     assert.deepEqual(result[2], { type: LEXEMES.META, text: 'b' });
     assert.deepEqual(result[3], { type: LEXEMES.OPERATOR_EQ, text: '=' });
     assert.deepEqual(result[4], { type: LEXEMES.STRING, text: 'some stringy stuff' });
@@ -268,24 +268,24 @@ module('Unit | Util | Scanner', function(hooks) {
   });
 
   test('handles a text filter alongside another meta', function(assert) {
-    const source = `medium = 3 && ${SEARCH_TERM_MARKER}this is a text filter${SEARCH_TERM_MARKER}`;
+    const source = `medium = 3 AND ${SEARCH_TERM_MARKER}this is a text filter${SEARCH_TERM_MARKER}`;
     const s = new Scanner(source);
     const result = s.scanTokens();
     assert.strictEqual(result.length, 5);
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
     assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '3' });
-    assert.deepEqual(result[3], { type: LEXEMES.AND, text: '&&' });
+    assert.deepEqual(result[3], { type: LEXEMES.AND, text: 'AND' });
     assert.deepEqual(result[4], { type: LEXEMES.TEXT_FILTER, text: 'this is a text filter' });
   });
 
   test('handles a text filter alongside another meta where the text filter is first', function(assert) {
-    const source = `${SEARCH_TERM_MARKER}this is a text filter${SEARCH_TERM_MARKER} && medium = 3`;
+    const source = `${SEARCH_TERM_MARKER}this is a text filter${SEARCH_TERM_MARKER} AND medium = 3`;
     const s = new Scanner(source);
     const result = s.scanTokens();
     assert.strictEqual(result.length, 5);
     assert.deepEqual(result[0], { type: LEXEMES.TEXT_FILTER, text: 'this is a text filter' });
-    assert.deepEqual(result[1], { type: LEXEMES.AND, text: '&&' });
+    assert.deepEqual(result[1], { type: LEXEMES.AND, text: 'AND' });
     assert.deepEqual(result[2], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result[3], { type: LEXEMES.OPERATOR_EQ, text: '=' });
     assert.deepEqual(result[4], { type: LEXEMES.INTEGER, text: '3' });
@@ -657,7 +657,7 @@ module('Unit | Util | Scanner', function(hooks) {
   });
 
   test('handles nested parentheses and other tokens', function(assert) {
-    const source = '((b = "text") || (medium != 44)) && (bytes.src exists)';
+    const source = '((b = "text") OR (medium != 44)) AND (bytes.src exists)';
     const s = new Scanner(source);
     const result = s.scanTokens();
     assert.strictEqual(result.length, 18, 'Scanner produces 18 tokens');
@@ -667,14 +667,14 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[3], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '4. OPERATOR_EQ "="');
     assert.deepEqual(result[4], { type: LEXEMES.STRING, text: 'text' }, '5. STRING "text"');
     assert.deepEqual(result[5], { type: LEXEMES.RIGHT_PAREN, text: ')' }, '6. RIGHT_PAREN ")"');
-    assert.deepEqual(result[6], { type: LEXEMES.OR, text: '||' }, '7. OR "||"');
+    assert.deepEqual(result[6], { type: LEXEMES.OR, text: 'OR' }, '7. OR "OR"');
     assert.deepEqual(result[7], { type: LEXEMES.LEFT_PAREN, text: '(' }, '8. LEFT_PAREN "("');
     assert.deepEqual(result[8], { type: LEXEMES.META, text: 'medium' }, '9. META "medium"');
     assert.deepEqual(result[9], { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' }, '10. OPERATOR_NOT_EQ "!="');
     assert.deepEqual(result[10], { type: LEXEMES.INTEGER, text: '44' }, '11. INTEGER "44"');
     assert.deepEqual(result[11], { type: LEXEMES.RIGHT_PAREN, text: ')' }, '12. RIGHT_PAREN ")"');
     assert.deepEqual(result[12], { type: LEXEMES.RIGHT_PAREN, text: ')' }, '13. RIGHT_PAREN ")"');
-    assert.deepEqual(result[13], { type: LEXEMES.AND, text: '&&' }, '14. AND "&&"');
+    assert.deepEqual(result[13], { type: LEXEMES.AND, text: 'AND' }, '14. AND "AND"');
     assert.deepEqual(result[14], { type: LEXEMES.LEFT_PAREN, text: '(' }, '15. LEFT_PAREN "("');
     assert.deepEqual(result[15], { type: LEXEMES.META, text: 'bytes.src' }, '16. META "bytes.src"');
     assert.deepEqual(result[16], { type: LEXEMES.OPERATOR_EXISTS, text: 'exists' }, '17. OPERATOR_EXISTS "exists"');

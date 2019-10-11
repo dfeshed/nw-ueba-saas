@@ -59,6 +59,10 @@ const _asString = (filter) => {
     ret = '(';
   } else if (filter.type === CLOSE_PAREN) {
     ret = ')';
+  } else if (filter.type === OPERATOR_AND) {
+    ret = 'AND';
+  } else if (filter.type === OPERATOR_OR) {
+    ret = 'OR';
   }
   return ret;
 };

@@ -415,7 +415,7 @@ module('Integration | Component | Pill Value', function(hooks) {
 
   test('if there are quoted strings within a complex pill, do not remove the outer quotes', async function(assert) {
     const done = assert.async();
-    const inputString = "'GET' || action = 'PUT'";
+    const inputString = "'GET' OR action = 'PUT'";
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.ok(Array.isArray(data), 'correct data type');

@@ -6,12 +6,12 @@ import _ from 'lodash';
  */
 export const recentQueries = [
   'medium = 32',
-  'medium = 32 || medium = 1',
-  'sessionid = 1 && sessionid = 80',
-  'action = \'GET\' || action = \'PUT\'',
-  '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 || ip.dst = 10.2.54.1 && ip.src = 1.1.3.3) && medium = 32',
-  'service = 80 || service = 90',
-  'foo = bar && bar = foo'
+  'medium = 32 OR medium = 1',
+  'sessionid = 1 AND sessionid = 80',
+  'action = \'GET\' OR action = \'PUT\'',
+  '(ip.dst = 10.2.54.11 AND ip.src = 1.1.1.1 OR ip.dst = 10.2.54.1 AND ip.src = 1.1.3.3) AND medium = 32',
+  'service = 80 OR service = 90',
+  'foo = bar AND bar = foo'
 ];
 
 const _asObject = (str) => ({

@@ -38,7 +38,7 @@ module('Integration | Component | copy-trigger', function(hooks) {
     `);
     assert.equal(findAll('.copy-trigger.is-disabled').length, 0);
     assert.equal(findAll('.copy-trigger').length, 1);
-    assert.equal(find('.copy-trigger i').getAttribute('title').trim(), "Click to copy query filters: a = 'x' && b = 'y'");
+    assert.equal(find('.copy-trigger i').getAttribute('title').trim(), "Click to copy query filters: a = 'x' AND b = 'y'");
   });
 
 });

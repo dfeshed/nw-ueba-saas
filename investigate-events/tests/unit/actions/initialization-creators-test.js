@@ -149,7 +149,7 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
         // the known initial order of the data store for recent queries to make
         // sure we are getting what we expect.
         assert.equal(responseQueryArray[0], 'medium = 32', 'Element 0 correct');
-        assert.equal(responseQueryArray[6], 'foo = bar && bar = foo', 'Element 6 correct');
+        assert.equal(responseQueryArray[6], 'foo = bar AND bar = foo', 'Element 6 correct');
         done();
       });
     };

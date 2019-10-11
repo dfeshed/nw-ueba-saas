@@ -465,7 +465,7 @@ test('freeFormText is set properly', function(assert) {
     .build();
 
   const text = freeFormText(state);
-  assert.equal(text, 'a = \'x\' && b = \'y\'', 'freeFormText is set properly');
+  assert.equal(text, 'a = \'x\' AND b = \'y\'', 'freeFormText is set properly');
 });
 
 test('pillBeingEdited returns pill being edited ', function(assert) {

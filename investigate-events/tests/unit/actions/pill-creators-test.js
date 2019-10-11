@@ -533,7 +533,7 @@ module('Unit | Actions | Pill Creators', function(hooks) {
     const action = pillCreators.addFreeFormFilter({
       pillData: {
         type: 'complex',
-        complexFilterText: '(medium = 50 && service = 443)'
+        complexFilterText: '(medium = 50 AND service = 443)'
       }
     });
 
@@ -548,7 +548,7 @@ module('Unit | Actions | Pill Creators', function(hooks) {
         assert.equal(action.type, ACTION_TYPES.ADD_PILL, 'action has the correct type');
         assert.propEqual(action.payload.pillData, {
           type: 'complex',
-          complexFilterText: '(medium = 50 && service = 443)'
+          complexFilterText: '(medium = 50 AND service = 443)'
         }, 'action pillData has the right value and is a complex pill');
       }
     };

@@ -998,19 +998,20 @@ module('Unit | Util | Query Parsing', function(hooks) {
     const encQP = encodeURIComponent('medium = 1');
     const complexPill = transformTextToPillData('foo =', { language: DEFAULT_LANGUAGES });
     const encCP = encodeURIComponent('foo =');
+    const AND = createOperator(OPERATOR_AND);
     const textPill = transformTextToPillData(`${SEARCH_TERM_MARKER}baz${SEARCH_TERM_MARKER}`, DEFAULT_LANGUAGES);
     const unencTP = `${SEARCH_TERM_MARKER}baz${SEARCH_TERM_MARKER}`; // Text Filters are not encoded
     const empty = transformTextToPillData('', DEFAULT_LANGUAGES);
     assert.equal(metaFiltersAsString([queryPill]), encQP, 'query pill only');
     assert.equal(metaFiltersAsString([complexPill]), encCP, 'complex pill only');
     assert.equal(metaFiltersAsString([textPill]), unencTP, 'text pill only');
-    assert.equal(metaFiltersAsString([queryPill, complexPill]), `${encQP} && ${encCP}`, 'query and complex pills');
-    assert.equal(metaFiltersAsString([queryPill, textPill]), `${encQP} && ${unencTP}`, 'query and text pills');
-    assert.equal(metaFiltersAsString([complexPill, textPill]), `${encCP} && ${unencTP}`, 'complex and text pills');
-    assert.equal(metaFiltersAsString([queryPill, complexPill, textPill]), `${encQP} && ${encCP} && ${unencTP}`, 'query, complex, and text pills');
+    assert.equal(metaFiltersAsString([queryPill, AND, complexPill]), `${encQP} AND ${encCP}`, 'query and complex pills');
+    assert.equal(metaFiltersAsString([queryPill, AND, textPill]), `${encQP} AND ${unencTP}`, 'query and text pills');
+    assert.equal(metaFiltersAsString([complexPill, AND, textPill]), `${encCP} AND ${unencTP}`, 'complex and text pills');
+    assert.equal(metaFiltersAsString([queryPill, AND, complexPill, AND, textPill]), `${encQP} AND ${encCP} AND ${unencTP}`, 'query, complex, and text pills');
     assert.deepEqual(metaFiltersAsString([empty]), undefined, 'empty pill');
     assert.equal(metaFiltersAsString([queryPill, empty]), `${encQP}`, 'query and empty pills');
-    assert.equal(metaFiltersAsString([queryPill, empty, textPill]), `${encQP} && ${unencTP}`, 'query, empty, and text pills');
+    assert.equal(metaFiltersAsString([queryPill, AND, empty, textPill]), `${encQP} AND ${unencTP}`, 'query, empty, and text pills');
   });
 
   test('isSearchTerm is capable of determining if a string is marked as a Text pill', function(assert) {

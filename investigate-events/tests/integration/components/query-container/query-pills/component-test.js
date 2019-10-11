@@ -198,7 +198,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
     assert.ok(newActionSpy.calledWithMatch({
       pillData: { meta: 'a', operator: '!=', value: '\'x\'', type: 'query' },
-      position: 2 // 2 because the first && was inserted for us, then our pill above
+      position: 2 // 2 because the first AND was inserted for us, then our pill above
     }), 'The action creator was called with the right arguments including the proper position');
     assert.ok(find(PILL_SELECTORS.pillOpen), 'should have a trigger open for add');
     assert.equal(this.get('cursorPosition'), 3, 'cursor position correct');
@@ -2688,7 +2688,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     const pills = findAll(PILL_SELECTORS.queryPill);
 
     const inputId = `#${pills[0].id} input`;
-    const newValue = 'x && sessionid exists';
+    const newValue = 'x AND sessionid exists';
     await fillIn(inputId, newValue);
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
 
@@ -3136,7 +3136,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await selectChoose(PILL_SELECTORS.operator, '=');
 
-    await typeIn(PILL_SELECTORS.valueSelectInput, '32 || med');
+    await typeIn(PILL_SELECTORS.valueSelectInput, '32 OR med');
 
     await settled();
 
@@ -3172,7 +3172,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await toggleTab(PILL_SELECTORS.metaSelectInput);
 
-    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'medium = 32 ||');
+    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'medium = 32 OR');
 
     await settled();
 
@@ -4294,7 +4294,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     // delete existing text
     await triggerKeyEvent(metaPill, 'keydown', BACKSPACE_KEY);
     // type in an OR operator
-    await typeInSearch('||');
+    await typeInSearch('OR');
     await settled();// Now, it's Pill OR Pill
     assert.ok(find(PILL_SELECTORS.logicalOperatorOR), 'Should be an OR operator');
     assert.notOk(find(PILL_SELECTORS.logicalOperatorAND), 'Should not be an AND operator');
@@ -4325,7 +4325,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     const pills = findAll(`${PILL_SELECTORS.allPills} > div`);
     assert.equal(pills.length, 15, 'should be 15 divs in .query-pills');
     assert.ok(_hasClass(pills[5], 'close-paren'), 'should be )');
-    assert.ok(_hasClass(pills[7], 'logical-operator'), 'should be ||');
+    assert.ok(_hasClass(pills[7], 'logical-operator'), 'should be OR');
     assert.ok(_hasClass(pills[9], 'open-paren'), 'should be (');
   });
 
@@ -4358,7 +4358,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     const allPills = findAll(`${PILL_SELECTORS.allPills} > div`);
     assert.equal(allPills.length, 13, 'should be 13 divs in .query-pills');
     assert.ok(_hasClass(allPills[3], 'close-paren'), 'should be )');
-    assert.ok(_hasClass(allPills[5], 'logical-operator'), 'should be ||');
+    assert.ok(_hasClass(allPills[5], 'logical-operator'), 'should be OR');
     assert.ok(_hasClass(allPills[7], 'open-paren'), 'should be (');
   });
 

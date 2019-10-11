@@ -2952,7 +2952,7 @@ module('Integration | Component | Query Pill', function(hooks) {
         return;
       }
       assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED, 'Incorrect message being sent up');
-      assert.equal(data, 'medium = 32 || medium = 1', 'Incorrect data for recent query being sent up');
+      assert.equal(data, 'medium = 32 OR medium = 1', 'Incorrect data for recent query being sent up');
       done();
     });
     new ReduxDataHelper(setState)

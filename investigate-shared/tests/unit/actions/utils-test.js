@@ -15,9 +15,13 @@ const conditions = [{
   operator: '=',
   value: 'bar'
 }, {
+  type: 'operator-and'
+}, {
   meta: 'foo',
   operator: 'exists',
   value: ''
+}, {
+  type: 'operator-or'
 }, {
   meta: 'foo',
   operator: 'begins',
@@ -32,6 +36,7 @@ const parenConditions = [
     value: 'bar'
   },
   { type: 'close-paren' },
+  { type: 'operator-and' },
   { type: 'open-paren' },
   {
     meta: 'foo',
@@ -50,6 +55,8 @@ const filters = [{
 const complexConditions = [{
   complexFilterText: 'foo=\'bar\'||foo=baz'
 }, {
+  type: 'operator-and'
+}, {
   complexFilterText: 'bar=\'foo\'||baz=foo'
 }];
 
@@ -57,21 +64,21 @@ test('encodeMetaFilterConditions correctly encodes conditions', function(assert)
   assert.expect(1);
   const result = encodeMetaFilterConditions(conditions);
 
-  assert.equal(result, 'foo = bar && foo exists && foo begins \'//\'');
+  assert.equal(result, 'foo = bar AND foo exists OR foo begins \'//\'');
 });
 
 test('encodeMetaFilterConditions correctly encodes complex filters', function(assert) {
   assert.expect(1);
   const result = encodeMetaFilterConditions(complexConditions);
 
-  assert.equal(result, 'foo=\'bar\'||foo=baz && bar=\'foo\'||baz=foo');
+  assert.equal(result, 'foo=\'bar\'||foo=baz AND bar=\'foo\'||baz=foo');
 });
 
 test('encodeMetaFilterConditions correctly encodes back-to-back parens', function(assert) {
   assert.expect(1);
   const result = encodeMetaFilterConditions(parenConditions);
 
-  assert.equal(result, '(foo = bar) && (foo != bar)');
+  assert.equal(result, '(foo = bar) AND (foo != bar)');
 });
 
 test('encodeMetaFilterConditions returns values which exist', function(assert) {
@@ -96,12 +103,15 @@ test('encodeMetaFilterConditions returns relevant string based on valid objects'
       meta: 'foo',
       operator: '=',
       value: 'bar'
-    },
-    {},
-    {
+    }, {
+      type: 'operator-and'
+    }, {
+      // empty
+    }, {
       complexFilterText: 'medium = 1 || medium = 32'
-    },
-    {
+    }, {
+      type: 'operator-and'
+    }, {
       meta: 'foo',
       value: 'exists'
     },
@@ -109,7 +119,7 @@ test('encodeMetaFilterConditions returns relevant string based on valid objects'
   ];
   const result = encodeMetaFilterConditions(filters);
 
-  assert.equal(result, 'foo = bar && medium = 1 || medium = 32 && foo  exists');
+  assert.equal(result, 'foo = bar AND medium = 1 || medium = 32 AND foo  exists');
 });
 
 test('createFilename returns proper fileName when selectAll is true', function(assert) {
@@ -172,28 +182,28 @@ test('mergeFilterStrings returns proper string', function(assert) {
     '(a)', 'single filter within parens'
   );
   assert.equal(
-    ['a', 'b'].reduce(mergeFilterStrings, ''),
-    'a && b', 'two filters'
+    ['a', 'AND', 'b'].reduce(mergeFilterStrings, ''),
+    'a AND b', 'two filters'
   );
   assert.equal(
-    ['(', 'a', 'b', ')'].reduce(mergeFilterStrings, ''),
-    '(a && b)', 'two filters within parens'
+    ['(', 'a', 'AND', 'b', ')'].reduce(mergeFilterStrings, ''),
+    '(a AND b)', 'two filters within parens'
   );
   assert.equal(
-    ['(', 'a', ')', '(', 'b', ')'].reduce(mergeFilterStrings, ''),
-    '(a) && (b)', 'two groups'
+    ['(', 'a', ')', 'OR', '(', 'b', ')'].reduce(mergeFilterStrings, ''),
+    '(a) OR (b)', 'two groups'
   );
   assert.equal(
-    ['(', '(', 'a', ')', '(', 'b', ')', ')'].reduce(mergeFilterStrings, ''),
-    '((a) && (b))', 'two groups within parens'
+    ['(', '(', 'a', ')', 'OR', '(', 'b', ')', ')'].reduce(mergeFilterStrings, ''),
+    '((a) OR (b))', 'two groups within parens'
   );
   assert.equal(
-    ['(', 'a', '(', 'b', ')', ')'].reduce(mergeFilterStrings, ''),
-    '(a && (b))', 'nested groups'
+    ['(', 'a', 'OR', '(', 'b', ')', ')'].reduce(mergeFilterStrings, ''),
+    '(a OR (b))', 'nested groups'
   );
   assert.equal(
-    ['(', '(', 'a', '(', 'b', ')', ')', '(', '(', 'c', ')', 'd', ')', ')'].reduce(mergeFilterStrings, ''),
-    '((a && (b)) && ((c) && d))', 'deeply nested groups'
+    ['(', '(', 'a', 'AND', '(', 'b', ')', ')', 'OR', '(', '(', 'c', ')', 'AND', 'd', ')', ')'].reduce(mergeFilterStrings, ''),
+    '((a AND (b)) OR ((c) AND d))', 'deeply nested groups'
   );
 });
 

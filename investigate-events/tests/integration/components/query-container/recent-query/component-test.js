@@ -410,7 +410,7 @@ module('Integration | Component | Recent Query', function(hooks) {
       .build();
     this.set('handleMessage', (type, data) => {
       assert.equal(type, MESSAGE_TYPES.RECENT_QUERY_SELECTED);
-      assert.equal(data, 'medium = 32 || medium = 1', 'recent query broadcasted has incorrect data');
+      assert.equal(data, 'medium = 32 OR medium = 1', 'recent query broadcasted has incorrect data');
       done();
     });
     await render(hbs`

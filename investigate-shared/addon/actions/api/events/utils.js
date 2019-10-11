@@ -42,31 +42,11 @@ export const removeEmptyParens = (filters) => {
  * @private
  */
 export const mergeFilterStrings = (() => {
-  let _hideSeparator = false;
-  return (acc, cur, idx, src) => {
-    if (cur === '(') {
-      _hideSeparator = true;
-      // Make sure to include an && between a close and open paren and a pill
-      // and open paren, but not multiple open parens. For example:
-      // - ) && (
-      // - pill && (
-      // - ((
-      if (idx > 0 && src[idx - 1] !== '(') {
-        return `${acc} && ${cur}`;
-      } else {
-        return `${acc}${cur}`;
-      }
-    } else if (cur === ')') {
-      return `${acc}${cur}`;
+  return (acc, cur) => {
+    if (cur === 'AND' || cur === 'OR') {
+      return `${acc} ${cur} `;
     } else {
-      let separator = ' && ';
-      // If we're intentionally hiding the separator, or if this is the first
-      // item, then we don't need the separator.
-      if (_hideSeparator || idx === 0) {
-        separator = '';
-        _hideSeparator = false;
-      }
-      return `${acc}${separator}${cur}`;
+      return `${acc}${cur}`;
     }
   };
 })();
@@ -255,6 +235,10 @@ export const encodeMetaFilterConditions = (conditions = []) => {
         return '(';
       } else if (type === 'close-paren') {
         return ')';
+      } else if (type === 'operator-and') {
+        return 'AND';
+      } else if (type === 'operator-or') {
+        return 'OR';
       } else if (complexFilterText) {
         return complexFilterText;
       } else if (searchTerm) {

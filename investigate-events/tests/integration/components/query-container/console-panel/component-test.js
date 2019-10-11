@@ -186,8 +186,9 @@ module('Integration | Component | console-panel', function(hooks) {
   test('renders meta and text filter data', async function(assert) {
     const metaFilters = [
       { id: '1', type: 'query', meta: 'a', operator: '=', value: '"a"' },
-      { id: '2', type: 'query', meta: 'b', operator: 'exists' },
-      { id: '3', type: 'text', searchTerm: 'blahblahblah' }
+      { id: '2', type: 'operator-and' },
+      { id: '3', type: 'query', meta: 'b', operator: 'exists' },
+      { id: '4', type: 'text', searchTerm: 'blahblahblah' }
     ];
     new ReduxDataHelper(setState)
       .withPreviousQuery(metaFilters)
@@ -199,7 +200,7 @@ module('Integration | Component | console-panel', function(hooks) {
     `);
     const filters = findAll('.console-panel .filters');
     assert.equal(filters.length, 2, 'incorrect number of filters');
-    assert.equal(_trim(filters[0].textContent), 'MetaFilter:a="a"&&bexists', 'incorrect DOM for meta filter');
+    assert.equal(_trim(filters[0].textContent), 'MetaFilter:a="a"ANDbexists', 'incorrect DOM for meta filter');
     assert.equal(_trim(filters[1].textContent), 'TextFilter:blahblahblah', 'incorrect DOM for text filter');
     assert.ok(find('.console-panel .filters .label i'), 'warning icon was not shown');
     assert.ok(find('.console-panel .filters .label[title="A text filter matches only indexed meta keys, possibly limiting results loaded in the Events panel."]'), 'warning title for hover not present');

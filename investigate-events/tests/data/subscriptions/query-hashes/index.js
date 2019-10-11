@@ -24,8 +24,8 @@ export const hashCache = [
   },
   {
     id: 'e880',
-    query: 'medium = 1 && action = \'foo\'',
-    displayName: 'medium = 1 && action = \'foo\'',
+    query: 'medium = 1 AND action = \'foo\'',
+    displayName: 'medium = 1 AND action = \'foo\'',
     createdBy: 'local',
     createdOn: '2019-06-19T19:19:19.190Z'
   }
