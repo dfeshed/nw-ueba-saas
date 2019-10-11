@@ -6,6 +6,7 @@ import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 const _contentError = (recon) => recon.data.contentError;
 const _contentLoading = (recon) => recon.data.contentLoading;
 const _headerLoading = (recon) => recon.header.headerLoading;
+const _currentReconView = (recon) => recon.visuals.currentReconView;
 
 /**
  * Use to determine if there was an error retrieving the content of a
@@ -29,17 +30,18 @@ export const isContentError = createSelector(
  * @public
  */
 export const errorMessage = createSelector(
-  [_contentError],
-  (contentError) => {
+  [_contentError, _currentReconView],
+  (contentError, currentReconView) => {
     const errorObj = handleInvestigateErrorCode({ code: contentError });
 
     if (!errorObj) {
       return;
     }
 
+    const i18n = lookup('service:i18n');
     const { errorCode, type, messageLocaleKey } = errorObj;
-
-    return lookup('service:i18n').t(messageLocaleKey, { errorCode, type });
+    const reconView = i18n.t(`recon.titleBar.views.${currentReconView.id}`);
+    return i18n.t(messageLocaleKey, { errorCode, type, reconView });
   }
 );
 

@@ -19,7 +19,8 @@ import {
   hostName,
   user,
   endpointMeta,
-  errorMessage
+  errorMessage,
+  isWebEmail
 } from 'recon/reducers/meta/selectors';
 
 module('Unit | selector | meta', function(hooks) {
@@ -388,6 +389,30 @@ module('Unit | selector | meta', function(hooks) {
     });
 
     assert.equal(result, 'An unexpected error has occurred attempting to retrieve this data. If further details are available, they can be found in the console. code: 1 - UNHANDLED_ERROR');
+  });
+
+  test('isWebEmail', function(assert) {
+
+    let state = { meta: { meta: [['service', 80]] } };
+    assert.notOk(isWebEmail(Immutable.from(state)));
+
+    state = { meta: { meta: [['alias.host', 'web.mail.google.com']] } };
+    assert.notOk(isWebEmail(Immutable.from(state)));
+
+    state = { meta: { meta: [['service', 80], ['alias.host', 'web.mail.google.com']] } };
+    assert.ok(isWebEmail(Immutable.from(state)));
+
+    state = { meta: { meta: [['service', 80], ['alias.host', 'web.mail.live.com']] } };
+    assert.ok(isWebEmail(Immutable.from(state)));
+
+    state = { meta: { meta: [['service', 80], ['alias.host', 'web.mail.yahoo.com']] } };
+    assert.ok(isWebEmail(Immutable.from(state)));
+
+    state = { meta: { meta: [['service', 80], ['alias.host', 'web.mail.unknown.com']] } };
+    assert.notOk(isWebEmail(Immutable.from(state)));
+
+    state = { meta: { meta: [['service', 118], ['alias.host', 'web.mail.google.com']] } };
+    assert.notOk(isWebEmail(Immutable.from(state)));
   });
 
 });

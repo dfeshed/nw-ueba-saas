@@ -7,7 +7,7 @@ module('Unit | Helper | Error Codes');
 test('investigateEventsErrorCodeDictionary has correct entries', function(assert) {
   const codes = investigateEventsErrorCodeDictionary;
 
-  assert.equal(Object.keys(codes).length, 38);
+  assert.equal(Object.keys(codes).length, 39);
 
   assert.equal(codes[1].type, 'UNHANDLED_ERROR');
   assert.equal(codes[1].messageLocaleKey, 'errorDictionaryMessages.investigateEvents.GENERIC');
@@ -44,6 +44,10 @@ test('investigateEventsErrorCodeDictionary has correct entries', function(assert
   assert.equal(codes[1002].type, 'DEVICE_OFFLINE');
   assert.equal(codes[1002].messageLocaleKey, 'errorDictionaryMessages.investigateEvents.DEVICE_OFFLINE');
   assert.equal(codes[1002].sendServerMessage, false);
+
+  assert.equal(codes[65536].type, 'RECONSTRUCTION_ERROR');
+  assert.equal(codes[65536].messageLocaleKey, 'errorDictionaryMessages.investigateEvents.RECONSTRUCTION_ERROR');
+  assert.equal(codes[65536].sendServerMessage, false);
 
   assert.equal(codes[12].type, 'MISSING_SECURITY_TOKEN');
   assert.equal(codes[12].messageLocaleKey, 'errorDictionaryMessages.investigateEvents.GENERIC');
@@ -166,7 +170,7 @@ test('handleInvestigateErrorCode returns the correct error object', function(ass
   [
     1, 11, 119, 13, 110, 129, 130, 1000, 1002, 12, 109, 111, 112, 113, 114, 115,
     116, 117, 118, 122, 123, 124, 125, 126, 127, 128, 131, 132,
-    133, 135, 136, 137, 138, 139, 200, 201, 202, 203
+    133, 135, 136, 137, 138, 139, 200, 201, 202, 203, 65536
   ].forEach((errorCode) => {
     const message = 'Server message.';
     const errorObject = handleInvestigateErrorCode({ errorCode, meta: { message } });

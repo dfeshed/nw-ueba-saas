@@ -15,6 +15,7 @@ const investigateEventsErrorCodeDictionary = {
   130: { type: 'PACKETS_NOT_FOUND', messageLocaleKey: `${localeRoot}.PACKETS_NOT_FOUND`, sendServerMessage: false },
   1000: { type: 'SESSION_NOT_AVAILABLE', messageLocaleKey: `${localeRoot}.SESSION_NOT_AVAILABLE`, sendServerMessage: false },
   1002: { type: 'DEVICE_OFFLINE', messageLocaleKey: `${localeRoot}.DEVICE_OFFLINE`, sendServerMessage: false },
+  65536: { type: 'RECONSTRUCTION_ERROR', messageLocaleKey: `${localeRoot}.RECONSTRUCTION_ERROR`, sendServerMessage: false },
   // uncommon codes
   1: { type: 'UNHANDLED_ERROR', messageLocaleKey: genericMsgKey, sendServerMessage: true },
   12: { type: 'MISSING_SECURITY_TOKEN', messageLocaleKey: genericMsgKey, sendServerMessage: false },

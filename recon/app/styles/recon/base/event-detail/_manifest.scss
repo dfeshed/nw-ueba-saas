@@ -82,4 +82,8 @@
   .rendering-more {
     margin: rsa-whitespace(more);
   }
+
+  .rsa-panel-message > .message > a {
+    padding: 0;
+  }
 }

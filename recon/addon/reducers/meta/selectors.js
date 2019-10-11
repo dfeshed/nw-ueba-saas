@@ -34,6 +34,9 @@ EVENT_VIEW_TYPES.forEach((t) => EVENT_TYPES_BY_NAME[t.name] = t);
 const DEFAULT_EVENT_TYPE = EVENT_TYPES_BY_NAME.NETWORK;
 const HTTP_DATA = 80;
 
+// The only web-email domains we support
+const WEB_EMAIL_HOSTNAMES = ['mail.google.com', 'mail.live.com', 'mail.yahoo.com'];
+
 // Takes meta array directly rather than part of redux state object
 const _metaDirect = (meta) => meta;
 
@@ -208,6 +211,13 @@ export const eventCategory = createSelector(
 export const hostName = createSelector(
   [_meta],
   (meta) => findMetaValue('alias.host', meta)
+);
+
+export const isWebEmail = createSelector(
+  [isHttpData, hostName],
+  (isHttpData, hostName) => {
+    return isHttpData && !!WEB_EMAIL_HOSTNAMES.find((h) => hostName.endsWith(h));
+  }
 );
 
 export const user = createSelector(

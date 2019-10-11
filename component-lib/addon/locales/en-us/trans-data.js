@@ -51,6 +51,7 @@ export default {
       'SESSION_NOT_AVAILABLE': 'Remote content for the session is no longer available. code: {{errorCode}} - {{type}}',
       'PACKETS_NOT_FOUND': 'Data not loaded. It has rolled out of the database. code: {{errorCode}} - {{type}}',
       'DEVICE_OFFLINE': 'Data not loaded. The underlying service is offline. code: {{errorCode}} - {{type}}',
+      'RECONSTRUCTION_ERROR': 'No {{reconView}} reconstruction available for this event.',
       'GENERIC': 'An unexpected error has occurred attempting to retrieve this data. If further details are available, they can be found in the console. code: {{errorCode}} - {{type}}'
     }
   },
@@ -311,7 +312,8 @@ export default {
       emailOfTotal: '{{emailIndex}} of {{emailCount}} messages',
       showMore: 'Show More',
       actualLinkInfoMessage: 'Clicking this link in its original content would have navigated to or opened the following location:',
-      linkAddressLabel: 'Link Address'
+      linkAddressLabel: 'Link Address',
+      webMailRedirect: 'This session has a web email. View the reconstruction of this session <a href="{{url}}" target="_blank">here</a>'
     },
     textView: {
       compressToggleLabel: 'Display Compressed Payloads',

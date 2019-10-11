@@ -1,91 +1,104 @@
-import wait from 'ember-test-helpers/wait';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { render, findAll, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import EmberObject from '@ember/object';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-
+import { setupRenderingTest } from 'ember-qunit';
 import DataHelper from '../../../helpers/data-helper';
 
-moduleForComponent('recon-event-content', 'Integration | Component | recon event content', {
-  integration: true,
-  beforeEach() {
+
+module('Integration | Component | recon event content', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
     this.set('accessControl', EmberObject.create({}));
     this.set('accessControl.hasReconAccess', true);
-
-    this.registry.injection('component:recon-event-content', 'i18n', 'service:i18n');
-    this.registry.injection('component:recon-event-detail/single-text', 'i18n', 'service:i18n');
-    this.inject.service('redux');
-    initialize(this);
-  }
-});
-
-test('it renders child view', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData()
-    .setViewToText()
-    .populateTexts();
-  this.render(hbs`{{recon-event-content accessControl=accessControl}}`);
-  return wait().then(() => {
-    assert.equal(this.$().find('.recon-event-detail-text').length, 1, 'Child view missing');
+    this.set('redux', this.owner.lookup('service:redux'));
+    initialize(this.owner);
   });
-});
 
-test('it renders content error', function(assert) {
-  new DataHelper(this.get('redux'))
-    .setViewToText()
-    .contentRetrieveFailure(129);
-  this.render(hbs`{{recon-event-content accessControl=accessControl}}`);
-  return wait().then(() => {
-    assert.equal(this.$().find('.rsa-panel-message').length, 1, 'Content error not set');
-    assert.equal(this.$().find('.recon-pager').length, 1, 'Pager not rendered');
+  test('it renders child view', async function(assert) {
+    new DataHelper(this.get('redux'))
+      .initializeData()
+      .setViewToText()
+      .populateTexts();
+    await render(hbs`{{recon-event-content accessControl=accessControl}}`);
+    assert.equal(findAll('.recon-event-detail-text').length, 1, 'Child view missing');
   });
-});
 
-test('it renders spinner', function(assert) {
-  new DataHelper(this.get('redux'))
-    .setViewToText()
-    .contentRetrieveStarted();
-  this.render(hbs`{{recon-event-content accessControl=accessControl}}`);
-  return wait().then(() => {
-    assert.equal(this.$().find('.recon-loader').length, 1, 'Spinner missing');
+  test('it renders content error', async function(assert) {
+    new DataHelper(this.get('redux'))
+      .setViewToText()
+      .contentRetrieveFailure(129);
+    await render(hbs`{{recon-event-content accessControl=accessControl}}`);
+
+    assert.equal(findAll('.rsa-panel-message').length, 1, 'Content error not set');
+    assert.equal(findAll('.recon-pager').length, 1, 'Pager not rendered');
   });
-});
 
-test('log events redirect to text view', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData({ eventId: 1, endpointId: 2, meta: [['medium', 32]] })
-    .setViewToText()
-    .populateTexts();
+  test('it renders spinner', async function(assert) {
+    new DataHelper(this.get('redux'))
+      .setViewToText()
+      .contentRetrieveStarted();
+    await render(hbs`{{recon-event-content accessControl=accessControl}}`);
 
-  this.render(hbs`{{recon-event-content accessControl=accessControl}}`);
-  return wait().then(() => {
-    assert.equal(this.$('.recon-event-detail-text').length, 1, 'On the Text View');
-    assert.equal(this.$('.recon-event-detail-packets').length, 0, 'Not on the Packet View');
-    assert.equal(this.$('.recon-event-detail-files').length, 0, 'Not on the File View');
+    assert.equal(findAll('.recon-loader').length, 1, 'Spinner missing');
   });
-});
 
-test('endpoint events redirect to empty view', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData({ eventId: 2, endpointId: 2, meta: [['nwe.callback_id', 'foo']] });
+  test('log events redirect to text view', async function(assert) {
+    new DataHelper(this.get('redux'))
+      .initializeData({ eventId: 1, endpointId: 2, meta: [['medium', 32]] })
+      .setViewToText()
+      .populateTexts();
 
-  this.render(hbs`{{recon-event-content accessControl=accessControl}}`);
-  return wait().then(() => {
-    assert.equal(this.$('.recon-event-detail-text').length, 0, 'Not On the Text View');
-    assert.equal(this.$('.recon-event-detail-packets').length, 0, 'Not on the Packet View');
-    assert.equal(this.$('.recon-event-detail-files').length, 0, 'Not on the File View');
+    await render(hbs`{{recon-event-content accessControl=accessControl}}`);
+    assert.equal(findAll('.recon-event-detail-text').length, 1, 'On the Text View');
+    assert.equal(findAll('.recon-event-detail-packets').length, 0, 'Not on the Packet View');
+    assert.equal(findAll('.recon-event-detail-files').length, 0, 'Not on the File View');
   });
-});
 
-test('displays correct error when missing permissions', function(assert) {
-  this.set('accessControl.hasReconAccess', false);
+  test('endpoint events redirect to empty view', async function(assert) {
+    new DataHelper(this.get('redux'))
+      .initializeData({ eventId: 2, endpointId: 2, meta: [['nwe.callback_id', 'foo']] });
 
-  new DataHelper(this.get('redux'))
-    .initializeData({ eventId: 1, endpointId: 2, meta: [['medium', 32]] })
-    .setViewToText();
+    await render(hbs`{{recon-event-content accessControl=accessControl}}`);
+    assert.equal(findAll('.recon-event-detail-text').length, 0, 'Not On the Text View');
+    assert.equal(findAll('.recon-event-detail-packets').length, 0, 'Not on the Packet View');
+    assert.equal(findAll('.recon-event-detail-files').length, 0, 'Not on the File View');
+  });
 
-  this.render(hbs`{{recon-event-content accessControl=accessControl}}`);
-  return wait().then(() => {
-    assert.equal(this.$('.rsa-panel-message').text().trim(), 'You do not have the required permissions to view this content.', 'Error is displayed with correct message');
+  test('displays correct error when missing permissions', async function(assert) {
+    this.set('accessControl.hasReconAccess', false);
+
+    new DataHelper(this.get('redux'))
+      .initializeData({ eventId: 1, endpointId: 2, meta: [['medium', 32]] })
+      .setViewToText();
+
+    await render(hbs`{{recon-event-content accessControl=accessControl}}`);
+    assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'You do not have the required permissions to view this content.', 'Error is displayed with correct message');
+  });
+
+  test('displays correct error when reconstruction error occurs', async function(assert) {
+    new DataHelper(this.get('redux'))
+      .initializeData({ eventId: 1, endpointId: 2, meta: [['service', 80]] })
+      .setViewToEmail()
+      .contentRetrieveFailure(65536);
+
+    await render(hbs`{{recon-event-content accessControl=accessControl}}`);
+    assert.ok(find('.rsa-panel-message .message'), 'reconstruction error message panel is shown');
+    assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'No Email reconstruction available for this event.', 'Correct error message is shown for reconstruction error');
+  });
+
+  test('test redirect to classic web recon view for web mail', async function(assert) {
+    new DataHelper(this.get('redux'))
+      .initializeData({ eventId: 1, endpointId: 2, meta: [['service', 80], ['alias.host', 'web.mail.google.com']] })
+      .setViewToEmail()
+      .contentRetrieveFailure(65536);
+
+    await render(hbs`{{recon-event-content accessControl=accessControl}}`);
+
+    assert.ok(find('.rsa-panel-message .message'), 'classic redirection message panel is shown');
+    assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'This session has a web email. View the reconstruction of this session here', 'Classic Web email redirection message is shown');
+    assert.equal(find('.rsa-panel-message .message a').pathname, '/investigation/2/navigate/event/WEB/1', 'Classic redirect URL is correct');
   });
 });
