@@ -266,7 +266,7 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT]: (position) => this._openNewPillTriggerRight(position),
       [MESSAGE_TYPES.PILL_INTENT_TO_QUERY]: () => this._submitQuery(),
       [MESSAGE_TYPES.PILL_OPEN_FOR_EDIT]: (pillData) => this._pillOpenForEdit(pillData),
-      [MESSAGE_TYPES.PILL_PASTE]: (text, position) => this._pillPaste(text, position),
+      [MESSAGE_TYPES.PILL_PASTE]: (data, position) => this._pillPaste(data, position),
       [MESSAGE_TYPES.PILL_SELECTED]: (data) => this._pillsSelected([data]),
       [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT]: (position) => this._addFocusToLeftPill(position),
       [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT]: (position) => this._addFocusToRightPill(position),
@@ -494,20 +494,45 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   /**
+   * This function will look to each "side" of the insertion point to determine
+   * if it needs to add a logical operator.
+   * @param {Object[]} newPills - List of new pills to add to `pillsData`
+   * @param {number} position - Index within `pillsData` to insert `newPills`.
+   */
+  _addOperatorIfNeeded(newPills, position) {
+    const previousPill = this.pillsData[position - 1];
+    const nextPill = this.pillsData[position];
+    let newPillsWithOperator;
+    if (previousPill && !_isLogicalOperator(previousPill) && previousPill.type !== OPEN_PAREN) {
+      newPillsWithOperator = [
+        createOperator(OPERATOR_AND),
+        ...newPills
+      ];
+    } else if (nextPill && !_isLogicalOperator(nextPill) && nextPill.type !== CLOSE_PAREN) {
+      newPillsWithOperator = [
+        ...newPills,
+        createOperator(OPERATOR_AND)
+      ];
+    }
+    return newPillsWithOperator || newPills;
+  },
+
+  /**
    * Called when text is pasted into the query bar. Parses the text and inserts
    * pills into state.
-   * @param {String} text - The query text to parse
+   * @param {String} data - The query text to parse
    * @param {Number} position - The position of the first pill to paste
    * @private
    */
-  _pillPaste(text, position) {
-    // Parse the string into an array of pills
+  _pillPaste(data, position) {
     const { language, aliases } = this.get('languageAndAliasesForParser');
-    const pills = transformTextToPillData(text, { language, aliases, returnMany: true });
-
-    this.send('batchAddPills', { pillsData: pills, initialPosition: position });
-
+    let pills = transformTextToPillData(data, { language, aliases, returnMany: true });
     this._pillsExited();
+    if (this.pillsData.length > 0) {
+      pills = this._addOperatorIfNeeded(pills, position);
+    }
+    this.send('batchAddPills', { pillsData: pills, initialPosition: position });
+    this.set('cursorPosition', position + pills.length);
   },
 
   /**
@@ -804,14 +829,10 @@ const QueryPills = RsaContextMenu.extend({
 
   _recentQueryPillCreated(data, position) {
     const { language, aliases } = this.get('languageAndAliasesForParser');
-    const pills = transformTextToPillData(data, { language, aliases, returnMany: true });
-    const previousPill = this.pillsData[position - 1];
+    let pills = transformTextToPillData(data, { language, aliases, returnMany: true });
     this._pillsExited();
-    if (!_isLogicalOperator(previousPill) && previousPill?.type !== OPEN_PAREN) {
-      // Add an AND operator if the previous pill isn't an operator, but isn't
-      // an open paren
-      const andOperator = createOperator(OPERATOR_AND);
-      pills.unshift(andOperator);
+    if (this.pillsData.length > 0) {
+      pills = this._addOperatorIfNeeded(pills, position);
     }
     this.send('batchAddPills', { pillsData: pills, initialPosition: position });
     this.set('cursorPosition', position + pills.length);

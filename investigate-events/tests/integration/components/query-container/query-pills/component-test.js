@@ -1952,70 +1952,57 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  test('Right clicking a paren/pill when both are selected will include parens and contents and any selected pills outside', async function(assert) {
+  test('Right click, Query with selected: will include parens, paren contents, and any selected pills outside', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
-      .pillsDataWithParens()
+      .pillsDataWithParens() // ( P )
       .build();
-
-    const done = assert.async();
 
     const wormholeDiv = document.createElement('div');
     wormholeDiv.id = wormhole;
     document.querySelector('#ember-testing').appendChild(wormholeDiv);
 
-    this.set('executeQuery', () => {
-      done();
-    });
-
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true executeQuery=executeQuery}}
+        {{query-container/query-pills isActive=true}}
         {{context-menu}}
       </div>
     `);
 
-    // create one more pill
+    // create one more pill -> ( P ) & P
     await selectChoose(PILL_SELECTORS.meta, 'medium');
     await selectChoose(PILL_SELECTORS.operator, '=');
     await typeIn(PILL_SELECTORS.valueSelectInput, '32');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
-
-    // Wait for implicit AND to magically appear
     await waitForOperator(PILL_SELECTORS.logicalOperatorAND, 1);
 
-    // create one more pill
+    // create one more pill -> ( P ) & P & P
     await selectChoose(PILL_SELECTORS.meta, 'medium');
     await selectChoose(PILL_SELECTORS.operator, '=');
     await typeIn(PILL_SELECTORS.valueSelectInput, '1');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
-
-    // Wait for implicit AND to magically appear
     await waitForOperator(PILL_SELECTORS.logicalOperatorAND, 2);
+
+    // select first paren and the pill in between ( P ) and last pill
     await leaveNewPillTemplate();
-
     await click(PILL_SELECTORS.openParen);
-    const metas = findAll(PILL_SELECTORS.meta);
-    await click(`#${metas[1].id}`); // make it selected
+    const pills = findAll(PILL_SELECTORS.queryPill);
+    await click(`#${pills[1].id}`);
 
+    // right click and select Query with selected
     await triggerEvent(find(PILL_SELECTORS.openParenSelected), 'contextmenu', { clientX: 100, clientY: 100 });
+    const selector = '.context-menu';
+    const items = findAll(`${selector} > .context-menu__item`);
+    assert.equal(items.length, 3, 'Incorrect number of options for parens');
+    const actionSelector = items.find((op) => op.textContent.includes('selected filters'));
+    await click(`#${actionSelector.id}`);
 
-    return settled().then(async() => {
-      const selector = '.context-menu';
-      const items = findAll(`${selector} > .context-menu__item`);
-      const actionSelector = items.find((op) => op.textContent.includes('selected filters'));
-      assert.equal(items.length, 3, 'Incorrect number of options for parens');
-      await click(`#${actionSelector.id}`);
-      return settled().then(() => {
-        assert.equal(deleteActionSpy.callCount, 1, 'The delete selected pill action creator was called once');
-        // selected( pill ) selectedPill pill -> ( pill ) pill
-        assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present'); // NPT + pill + ( pill )
-        assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'Did not find open paren');
-        assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'Did not find close paren');
-        assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'zero selected pills');
-      });
-    });
+    assert.equal(deleteActionSpy.callCount, 1, 'The delete selected pill action creator was called once');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present'); // ( P ) + P + NPTemp
+    assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'Did not find open paren');
+    assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'Did not find close paren');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'zero selected pills');
   });
 
   test('Clicking an inactive pill switches focus from any other pill that has focus', async function(assert) {
@@ -3224,7 +3211,6 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.propEqual(batchAddQueriesSpy.args[0][0], {
       initialPosition: 0,
       pillsData: [
-        { type: 'operator-and' },
         { meta: 'medium', operator: '=', type: 'query', value: '32' }
       ]
     }, 'The creator should be called with proper arguments');
