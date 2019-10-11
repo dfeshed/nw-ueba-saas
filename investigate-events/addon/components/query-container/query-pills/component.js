@@ -805,13 +805,16 @@ const QueryPills = RsaContextMenu.extend({
   _recentQueryPillCreated(data, position) {
     const { language, aliases } = this.get('languageAndAliasesForParser');
     const pills = transformTextToPillData(data, { language, aliases, returnMany: true });
-    if (this.pillsData.length > 0) {
-      // Add an AND operator if there's some existing pills
+    const previousPill = this.pillsData[position - 1];
+    this._pillsExited();
+    if (!_isLogicalOperator(previousPill) && previousPill?.type !== OPEN_PAREN) {
+      // Add an AND operator if the previous pill isn't an operator, but isn't
+      // an open paren
       const andOperator = createOperator(OPERATOR_AND);
       pills.unshift(andOperator);
     }
     this.send('batchAddPills', { pillsData: pills, initialPosition: position });
-    this._pillsExited();
+    this.set('cursorPosition', position + pills.length);
   },
 
   _insertParens(position) {

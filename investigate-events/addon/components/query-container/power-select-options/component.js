@@ -54,6 +54,7 @@ export default Component.extend({
 
     // DKB, I ADDED THIS TO ORIGINAL CODE
     this.element.addEventListener('mousedown', (e) => {
+      e.preventDefault();
       const optionMouseDownCallback = this.get('onmousedown');
       if (optionMouseDownCallback) {
         optionMouseDownCallback(e);

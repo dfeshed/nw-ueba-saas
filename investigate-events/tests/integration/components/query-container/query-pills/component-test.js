@@ -1767,8 +1767,6 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataWithParens()
       .build();
 
-    const done = assert.async();
-
     const wormholeDiv = document.createElement('div');
     wormholeDiv.id = wormhole;
     document.querySelector('#ember-testing').appendChild(wormholeDiv);
@@ -1780,36 +1778,18 @@ module('Integration | Component | Query Pills', function(hooks) {
       </div>
     `);
 
-    // create one more pill
-    await selectChoose(PILL_SELECTORS.meta, 'medium');
-    await selectChoose(PILL_SELECTORS.operator, '=');
-    await typeIn(PILL_SELECTORS.valueSelectInput, '32');
-    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
-
-    // Wait for implicit AND to magically appear
-    await waitForOperator(PILL_SELECTORS.logicalOperatorAND, 1);
     await leaveNewPillTemplate();
-
     await click(PILL_SELECTORS.openParen);
-    const pills = findAll(PILL_SELECTORS.queryPill);
-    const lastPillId = pills[pills.length - 2].id; // second last pill
-    await click(`#${lastPillId}`);
-
     await triggerEvent(find(PILL_SELECTORS.openParenSelected), 'contextmenu', { clientX: 100, clientY: 100 });
 
-    return settled().then(async() => {
-      const selector = '.context-menu';
-      const items = findAll(`${selector} > .context-menu__item`);
-      const actionSelector = items.find((op) => op.textContent.includes('Delete selection'));
-      await click(`#${actionSelector.id}`); // delete option
-      return settled().then(() => {
-        assert.equal(deleteSelectedGuidedPillsSpy.callCount, 1, 'The delete selected pill action creator was called once');
-        assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'Number of pills present'); // Only NPT should be present
-        assert.notOk(find(PILL_SELECTORS.openParenSelected), 'Should not have found paren');
-        assert.notOk(find(PILL_SELECTORS.closeParenSelected), 'Should not have found paren');
-        done();
-      });
-    });
+    const selector = '.context-menu';
+    const items = findAll(`${selector} > .context-menu__item`);
+    const actionSelector = items.find((op) => op.textContent.includes('Delete selection'));
+    await click(`#${actionSelector.id}`); // delete option
+    assert.equal(deleteSelectedGuidedPillsSpy.callCount, 1, 'The delete selected pill action creator was called once');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'Number of pills present'); // Only NPT should be present
+    assert.notOk(find(PILL_SELECTORS.openParenSelected), 'Should not have found paren');
+    assert.notOk(find(PILL_SELECTORS.closeParenSelected), 'Should not have found paren');
   });
 
   // TODO - Fix Element not found when calling `focus('.new-pill-trigger-container .pill-meta .ember-power-select-trigger')`
@@ -3223,8 +3203,6 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   test('Selecting a pill from recent query dropdown broadcasts a message with correct args', async function(assert) {
-    const done = assert.async();
-
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
       .language()
@@ -3238,29 +3216,18 @@ module('Integration | Component | Query Pills', function(hooks) {
         {{query-container/query-pills isActive=true}}
       </div>
     `);
-
     await clickTrigger(PILL_SELECTORS.meta);
-
     await toggleTab(PILL_SELECTORS.metaSelectInput);
-
     await selectChoose(PILL_SELECTORS.recentQuery, 'medium = 32');
 
-    assert.ok(batchAddQueriesSpy.calledOnce, 'Batch pills creator was not called once');
-    assert.propEqual(batchAddQueriesSpy.args[0][0],
-      {
-        'initialPosition': 0,
-        pillsData: [
-          {
-            meta: 'medium',
-            operator: '=',
-            type: 'query',
-            value: '32'
-          }
-        ]
-      },
-      'The creator was called with the wrong arguments');
-    done();
-
+    assert.ok(batchAddQueriesSpy.calledOnce, 'Batch pills creator should be called once');
+    assert.propEqual(batchAddQueriesSpy.args[0][0], {
+      initialPosition: 0,
+      pillsData: [
+        { type: 'operator-and' },
+        { meta: 'medium', operator: '=', type: 'query', value: '32' }
+      ]
+    }, 'The creator should be called with proper arguments');
   });
 
   test('Selecting a recent query will append to existing query with AND operator', async function(assert) {
