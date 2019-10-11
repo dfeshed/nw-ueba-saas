@@ -293,6 +293,7 @@ export const transformTextToPillData = (queryText, { language, aliases, shouldFo
     const pill = _createComplexQueryFilter(queryText);
     return returnMany ? [ pill ] : pill;
   }
+
   const pills = _treeToPills(result);
   return returnMany ? pills : pills[0];
 };

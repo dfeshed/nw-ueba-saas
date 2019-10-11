@@ -1,8 +1,10 @@
 import Component from '@ember/component';
 import layout from './template';
+import { inject } from '@ember/service';
 
 export default Component.extend({
   layout,
   classNames: ['profile-details'],
-  profile: null // profile to display
+  i18n: inject(),
+  profile: null // profile to display,
 });

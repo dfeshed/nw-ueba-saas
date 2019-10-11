@@ -8,14 +8,14 @@ import {
   PROFILES_LIST_NAME as listName,
   PROFILES_TOPIC_ID
 } from 'investigate-shared/constants/profiles';
-import { profilesWithIsEditable } from 'investigate-events/reducers/investigate/profile/selectors';
+import { enrichedProfiles } from 'investigate-events/reducers/investigate/profile/selectors';
 
 const dispatchToActions = {
   // TODO setProfile
 };
 
 const stateToComputed = (state) => ({
-  profiles: profilesWithIsEditable(state)
+  profiles: enrichedProfiles(state)
 });
 
 const ProfileSelectorWrapper = Component.extend({

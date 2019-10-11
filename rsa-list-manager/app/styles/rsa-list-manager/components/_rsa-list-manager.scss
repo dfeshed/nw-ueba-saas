@@ -1,11 +1,12 @@
 .list-manager {
   display: inline-flex;
-
+  .list-manager-container .list-menu-trigger.rsa-button-group {
+    white-space: nowrap;
+  }
   .list-caption {
     top: -1px;
     right: -2px;
   }
-
   .rsa-button-menu {
     .rsa-form-button-wrapper:not(.is-icon-only) {
       :hover i{
@@ -117,7 +118,6 @@
 
     .item-details {
       min-width: 400px;
-
       .item-details-loading-overlay {
         @include rsa-fill-abs();
         z-index: 2;
@@ -135,6 +135,7 @@
           padding: 0.4rem;
         }
         .details-header {
+          height: 1rem;
           justify-content: space-between;
           display: inline-flex;
           width: 96%;
@@ -160,7 +161,6 @@
 
         .details-body {
           .group-details {
-            margin-top: 1rem;
             &.scroll-box {
               overflow-y: auto;
               position: relative;
@@ -182,12 +182,14 @@
             text-transform: uppercase;
             font-size: 0.7rem;
             font-weight: 800;
+            padding-top: 0.3rem;
             padding-bottom: 0.3rem;
           }
           .value, input {
             color: text-color(primary, lightest);
             font-size: 0.85rem;
             font-weight: 400;
+            padding-bottom: 1rem;
             &.rsa-form-input > input {
               margin-top: -0.8rem;
             }

@@ -136,7 +136,6 @@ const ItemList = Component.extend({
       // else, go to the next item
       nextIndex = currentIndexIsLast ? 0 : this.get('highlightedIndex') + 1;
     }
-
     this.send('setHighlightedIndex', nextIndex, this.get('stateLocation'));
 
     // if item is already selected, go to the next item

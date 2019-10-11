@@ -521,6 +521,13 @@ export default {
     }
   },
   investigate: {
+    profile: {
+      profileGroup: 'Profile Group',
+      metaGroup: 'Meta Group',
+      columnGroup: 'Column Group',
+      profileName: 'Profile Name',
+      prequeryConditions: 'Pre-Query Conditions'
+    },
     splitSessionLabel: 'This event is related to a previous session matching these parameters: {{tuple}}',
     controls: {
       toggle: 'Show/Hide Events List Panel',

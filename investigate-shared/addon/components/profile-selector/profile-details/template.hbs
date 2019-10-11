@@ -1,4 +1,38 @@
-<div class='group-name'>
-  <div class='name'> Group Name </div>
+<div class='profile-name'>
+  <div class='name'>{{t 'investigate.profile.profileName'}}</div>
   <div class='value'>{{profile.name}}</div>
+</div>
+<div class='profile-group-name'>
+  <div class='name'>{{t 'investigate.profile.profileGroup'}}</div>
+  <div class='value'>{{profile.profileGroup.name}}</div>
+</div>
+<div class='meta-group-name'>
+  <div class='name'>{{t 'investigate.profile.metaGroup'}}</div>
+  <div class='value'>{{profile.metaGroup.name}}</div>
+</div>
+<div class='column-group-name'>
+  <div class='name'>{{t 'investigate.profile.columnGroup'}}</div>
+  <div class='value'>{{profile.columnGroup.name}}</div>
+</div>
+<div class='prequery-conditions scroll-box readonly'>
+  <div class='name'>{{t 'investigate.profile.prequeryConditions'}}</div>
+  <ul class='value'>
+    {{#each profile.preQueryPillsData as |item|}}
+      <li class='prequery-pill'>
+        {{#if item.complexFilterText}}
+          <span title={{item.complexFilterText}}>
+            {{item.complexFilterText}}
+          </span>
+        {{else}}
+          {{!-- icon to indicate text pill --}}
+          {{#if (eq item.type 'text')}}
+            {{rsa-icon name='search' class='is-text' title=(t 'investigate.queryStats.textFilter')}}
+          {{/if}}
+          <span title={{concat item.meta item.operator item.value}}>
+            {{item.meta}} {{item.operator}} {{item.value}}
+          </span>
+        {{/if}}
+      </li>
+    {{/each}}
+  </ul>
 </div>
