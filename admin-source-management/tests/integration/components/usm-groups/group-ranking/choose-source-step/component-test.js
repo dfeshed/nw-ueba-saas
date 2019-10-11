@@ -70,7 +70,7 @@ module('Integration | Component | usm-groups/group-ranking/choose-source-step', 
     assert.equal(sourceTypesAll.length, 3, 'All source types rendered');
     assert.equal(sourceTypesDisabled.length, 1, '2 source types enabled, and 1 source type disabled');
     // the filePolicy option should have a tooltip to show why it is disabled
-    const expectedFilePolicyDisabledTooltip = 'Endpoint servers need to be on version 11.4 and above to configure log file collection.';
+    const expectedFilePolicyDisabledTooltip = 'Endpoint servers need to be on version 11.4 or above to configure log file collection.';
     await triggerEvent('.ember-power-select-option[aria-disabled=true] .tooltip-text', 'mouseover');
     const actualFilePolicyDisabledTooltip = findAll('.tool-tip-value')[0].innerText.trim();
     assert.equal(actualFilePolicyDisabledTooltip, expectedFilePolicyDisabledTooltip, 'disabled filePolicy option tooltip is as expected');

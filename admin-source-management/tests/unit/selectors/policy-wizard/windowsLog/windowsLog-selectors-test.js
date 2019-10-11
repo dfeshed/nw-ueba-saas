@@ -72,6 +72,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     const hostExpected = '10.10.10.10';
     const idExpected = 'id1';
     let disabledExpected = false;
+    let disabledExpectedTooltip = '';
     // when policy is windows log
     let fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
@@ -82,7 +83,9 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     assert.deepEqual(logServersSelected[0].host, hostExpected, `logServersSelected[0].host is ${hostExpected}`);
     assert.deepEqual(logServersSelected[0].id, idExpected, `logServersSelected[0].id is ${idExpected}`);
     assert.deepEqual(logServersSelected[1].disabled, disabledExpected, `logServersSelected[1].disabled is ${disabledExpected}`);
+    assert.deepEqual(logServersSelected[1].disabledTooltip, disabledExpectedTooltip, 'logServersSelected[1].disabledTooltip is empty');
     assert.deepEqual(logServersSelected[5].disabled, disabledExpected, `logServersSelected[5].disabled is ${disabledExpected}`);
+    assert.deepEqual(logServersSelected[5].disabledTooltip, disabledExpectedTooltip, 'logServersSelected[5].disabledTooltip is empty');
 
     // when policy is file log, some servers with version older than 11.4 will be disabled in the
     // dropdown
@@ -92,14 +95,18 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
       .build();
     logServersSelected = primaryLogServersList(Immutable.from(fullState));
     disabledExpected = true;
+    disabledExpectedTooltip = 'adminUsm.policyWizard.filePolicy.fileDestinationDisabledTooltip';
     assert.deepEqual(logServersSelected[1].disabled, disabledExpected, `logServersSelected[1].disabled is ${disabledExpected}`);
+    assert.deepEqual(logServersSelected[1].disabledTooltip, disabledExpectedTooltip, `logServersSelected[1].disabledTooltip is ${disabledExpectedTooltip}`);
     assert.deepEqual(logServersSelected[5].disabled, disabledExpected, `logServersSelected[5].disabled is ${disabledExpected}`);
+    assert.deepEqual(logServersSelected[5].disabledTooltip, disabledExpectedTooltip, `logServersSelected[5].disabledTooltip is ${disabledExpectedTooltip}`);
   });
 
   test('secondaryLogServersList selector', function(assert) {
     const hostExpected = '10.10.10.12';
     const idExpected = 'id2';
     let disabledExpected = false;
+    let disabledExpectedTooltip = '';
     let fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogPrimaryDestination('10.10.10.10')
@@ -110,6 +117,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     assert.deepEqual(logServersSelected[0].host, hostExpected, `logServersSelected[0].host is ${hostExpected}`);
     assert.deepEqual(logServersSelected[0].id, idExpected, `logServersSelected[0].id is ${idExpected}`);
     assert.deepEqual(logServersSelected[0].disabled, disabledExpected, `logServersSelected[0].disabled is ${disabledExpected}`);
+    assert.deepEqual(logServersSelected[0].disabledTooltip, disabledExpectedTooltip, 'logServersSelected[0].disabledTooltip is empty');
 
     fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
@@ -118,7 +126,9 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
       .build();
     logServersSelected = secondaryLogServersList(Immutable.from(fullState));
     disabledExpected = true;
+    disabledExpectedTooltip = 'adminUsm.policyWizard.filePolicy.fileDestinationDisabledTooltip';
     assert.deepEqual(logServersSelected[0].disabled, disabledExpected, `logServersSelected[0].disabled is ${disabledExpected}`);
+    assert.deepEqual(logServersSelected[0].disabledTooltip, disabledExpectedTooltip, `logServersSelected[0].disabledTooltip is ${disabledExpectedTooltip}`);
   });
 
   test('selectedPrimaryLogServer selector', function(assert) {
@@ -132,7 +142,8 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
       'id': 'id1',
       'host': '10.10.10.10',
       'name': 'NWAPPLIANCE55555 - Log Server',
-      'disabled': false
+      'disabled': false,
+      'disabledTooltip': ''
     };
     const logServerSelected = selectedPrimaryLogServer(Immutable.from(fullState));
     assert.deepEqual(logServerSelected, logServerExpected, 'The returned value from the selectedPrimaryLogServer selector is as expected');
@@ -161,7 +172,8 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
       'id': 'id4',
       'host': '10.10.10.14',
       'name': 'NWAPPLIANCE66666- Log Server',
-      'disabled': false
+      'disabled': false,
+      'disabledTooltip': ''
     };
     const logServerSelected = selectedSecondaryLogServer(Immutable.from(fullState));
     assert.deepEqual(logServerSelected, logServerExpected, 'The returned value from the selectedSecondaryLogServer selector is as expected');

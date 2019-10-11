@@ -7,9 +7,13 @@
     dropdownClass=errorClass
     searchPlaceholder=(t 'packager.searchPlaceholder')
     selected=selectedLogServer
-    onchange=(action 'updatePolicyProperty' selectedSettingId) as |list|
+    onchange=(action 'updatePolicyProperty' selectedSettingId) as |option|
   }}
-    {{list.name}}
+    {{rsa-form-select/default-option
+      disabled=option.disabled
+      disabledTooltip=(if option.disabledTooltip (t option.disabledTooltip) '')
+      optionLabel=option.name
+    }}
   {{/power-select}}
 </div>
 

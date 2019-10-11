@@ -1,7 +1,7 @@
 import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, findAll, click } from '@ember/test-helpers';
+import { render, findAll, click, triggerEvent } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import sinon from 'sinon';
 import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
@@ -55,6 +55,12 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
     await render(hbs`{{usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations selectedSettingId='primaryDestination'}}`);
     await click('.ember-power-select-placeholder');
     assert.equal(findAll('.ember-power-select-option[aria-disabled=true]').length, 3, 'Primary Log servers with version older than 11.4 are disabled for a file policy');
+    // disabled destination options should have a tooltip to show why they are disabled
+    const expectedDisabledTooltip = 'This Log Decoder / Log Collector needs to be on version 11.4 or above to receive file logs from the agent.';
+    const [disabledDest0] = findAll('.ember-power-select-option[aria-disabled=true] .tooltip-text');
+    await triggerEvent(disabledDest0, 'mouseover');
+    const actualDisabledTooltip = findAll('.tool-tip-value')[0].innerText.trim();
+    assert.equal(actualDisabledTooltip, expectedDisabledTooltip, 'disabled destination option tooltip is as expected');
   });
 
   test('Some secondary destination options can be disabled for a filePolicy', async function(assert) {
@@ -65,6 +71,12 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
     await render(hbs`{{usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations selectedSettingId='secondaryDestination'}}`);
     await click('.ember-power-select-placeholder');
     assert.equal(findAll('.ember-power-select-option[aria-disabled=true]').length, 3, 'Secondary Log servers with version older than 11.4 are disabled for a file policy');
+    // disabled destination options should have a tooltip to show why they are disabled
+    const expectedDisabledTooltip = 'This Log Decoder / Log Collector needs to be on version 11.4 or above to receive file logs from the agent.';
+    const [disabledDest0] = findAll('.ember-power-select-option[aria-disabled=true] .tooltip-text');
+    await triggerEvent(disabledDest0, 'mouseover');
+    const actualDisabledTooltip = findAll('.tool-tip-value')[0].innerText.trim();
+    assert.equal(actualDisabledTooltip, expectedDisabledTooltip, 'disabled destination option tooltip is as expected');
   });
 
   // works locally but is flaky on Jenkins

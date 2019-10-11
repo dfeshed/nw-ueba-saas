@@ -30,14 +30,17 @@ export const primaryLogServersList = createSelector(
     for (let i = 0; i < listOfLogServers.length; i++) {
       // Disable the dropdown option if version < 11.4
       let isOldVersion = false;
+      let oldVersionTooltip = '';
       if (policy.policyType === 'filePolicy' && parseFloat(listOfLogServers[i].version) < 11.4) {
         isOldVersion = true;
+        oldVersionTooltip = 'adminUsm.policyWizard.filePolicy.fileDestinationDisabledTooltip';
       }
       const service = {
         id: listOfLogServers[i].id,
         host: listOfLogServers[i].host,
         name: listOfLogServers[i].displayName,
-        disabled: isOldVersion
+        disabled: isOldVersion,
+        disabledTooltip: oldVersionTooltip
       };
       services.push(service);
     }
