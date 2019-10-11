@@ -31,6 +31,14 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/shared
   // ====================================================================
   // test usage for some edr settings
   // ====================================================================
+  test('should render edrPolicy enable automatic file downloads options when fileDownloadEnabled id is passed', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/shared/usm-radios selectedSettingId='fileDownloadEnabled'}}`);
+    assert.equal(findAll('.fileDownloadEnabled').length, 1, 'expected to have fileDownloadEnabled component in DOM');
+    assert.equal(findAll('.radio-option').length, 2, 'expected to have two radio buttons in dom');
+  });
 
   test('should render edrPolicy scan type options when scanType id is passed', async function(assert) {
     new ReduxDataHelper(setState)

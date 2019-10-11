@@ -184,6 +184,16 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizMaxFileDownloadSize(maxFileDownloadSize) {
+    _set(this.state, 'usm.policyWizard.policy.maxFileDownloadSize', maxFileDownloadSize);
+    return this;
+  }
+
+  policyWizMaxFileDownloadSizeUnit(maxFileDownloadSizeUnit) {
+    _set(this.state, 'usm.policyWizard.policy.maxFileDownloadSizeUnit', maxFileDownloadSizeUnit);
+    return this;
+  }
+
   policyWizPrimaryUdpPort(primaryUdpPort) {
     _set(this.state, 'usm.policyWizard.policy.primaryUdpPort', primaryUdpPort);
     return this;

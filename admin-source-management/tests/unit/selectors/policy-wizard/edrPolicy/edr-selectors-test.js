@@ -35,7 +35,11 @@ import {
   beaconIntervalUnits,
   selectedBeaconIntervalUnit,
   customConfig,
-  customConfigValidator
+  customConfigValidator,
+  dropdownSelectionOptions,
+  maxFileDownloadSizeValidator,
+  selectedDropdownOption,
+  listOfDropdownValues
 } from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-selectors';
 import {
   SCAN_SCHEDULE_CONFIG,
@@ -758,6 +762,192 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
     validExpected = { isError: false, showError: false, errorMessage: '' };
     validActual = customConfigValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${customSettingValue}`);
+  });
+
+  test('dropdownSelectionOptions returns settings of the dropdown options', function(assert) {
+    const policy = {
+      id: '5d91e6fada7bd9033284f6d9',
+      policyType: 'edrPolicy',
+      name: 'test',
+      isolationEnabled: true,
+      fileDownloadCriteria: 'Unsigned'
+    };
+    const state = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicy(policy)
+      .build();
+
+    const listOfDropdownOptions = dropdownSelectionOptions(Immutable.from(state), 'fileDownloadCriteria');
+    const expectedResult = {
+      'dropdownLabel': 'adminUsm.policyWizard.edrPolicy',
+      'items': [
+        {
+          'value': 'Unsigned'
+        },
+        {
+          'value': 'NotKnownSigned'
+        },
+        {
+          'value': 'All'
+        }
+      ],
+      'label': 'adminUsm.policyWizard.edrPolicy.automaticFileDownloads',
+      'name': 'signed-option',
+      'type': 'dropdown'
+    };
+    assert.deepEqual(listOfDropdownOptions, expectedResult, 'Settings of the dropdown options are equal');
+  });
+
+  test('maxFileDownloadSizeValidator returns validation result when size is less than 1KB', function(assert) {
+    const policy = {
+      id: '5d91e6fada7bd9033284f6d9',
+      policyType: 'edrPolicy',
+      name: 'test',
+      isolationEnabled: true,
+      maxFileDownloadSizeUnit: 'KB',
+      maxFileDownloadSize: '0.5'
+    };
+    const state = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicy(policy)
+      .build();
+
+    const validationResult = maxFileDownloadSizeValidator(Immutable.from(state), 'maxFileDownloadSize');
+    const expectedResult = {
+      'errorMessage': 'adminUsm.policyWizard.edrPolicy.maxFileDownloadSizeInvalidMsg',
+      'isError': true,
+      'showError': true
+    };
+    assert.deepEqual(validationResult, expectedResult, 'Error set when size is less than 1KB');
+  });
+
+  test('maxFileDownloadSizeValidator returns validation result when size is in the 1KB - 10MB range', function(assert) {
+    const policy = {
+      id: '5d91e6fada7bd9033284f6d9',
+      policyType: 'edrPolicy',
+      name: 'test',
+      isolationEnabled: true,
+      maxFileDownloadSizeUnit: 'MB',
+      maxFileDownloadSize: 10
+    };
+    const state = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicy(policy)
+      .build();
+
+    const validationResult = maxFileDownloadSizeValidator(Immutable.from(state), 'maxFileDownloadSize');
+    const expectedResult = {
+      'errorMessage': '',
+      'isError': false,
+      'showError': false
+    };
+    assert.deepEqual(validationResult, expectedResult, 'Error not set when size is in the 1KB - 10MB range');
+  });
+
+  test('maxFileDownloadSizeValidator returns validation result when size is more than 10MB', function(assert) {
+    const policy = {
+      id: '5d91e6fada7bd9033284f6d9',
+      policyType: 'edrPolicy',
+      name: 'test',
+      isolationEnabled: true,
+      maxFileDownloadSizeUnit: 'MB',
+      maxFileDownloadSize: 10.01
+    };
+    const state = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicy(policy)
+      .build();
+
+    const validationResult = maxFileDownloadSizeValidator(Immutable.from(state), 'maxFileDownloadSize');
+    const expectedResult = {
+      'errorMessage': 'adminUsm.policyWizard.edrPolicy.maxFileDownloadSizeInvalidMsg',
+      'isError': true,
+      'showError': true
+    };
+    assert.deepEqual(validationResult, expectedResult, 'Error set when size is more than 10MB');
+  });
+
+  test('maxFileDownloadSizeValidator returns validation result when size is not a number', function(assert) {
+    const policy = {
+      id: '5d91e6fada7bd9033284f6d9',
+      policyType: 'edrPolicy',
+      name: 'test',
+      isolationEnabled: true,
+      maxFileDownloadSizeUnit: 'MB',
+      maxFileDownloadSize: 'sfsdfds'
+    };
+    const state = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicy(policy)
+      .build();
+
+    const validationResult = maxFileDownloadSizeValidator(Immutable.from(state), 'maxFileDownloadSize');
+    const expectedResult = {
+      'errorMessage': 'adminUsm.policyWizard.edrPolicy.maxFileDownloadSizeInvalidMsg',
+      'isError': true,
+      'showError': true
+    };
+    assert.deepEqual(validationResult, expectedResult, 'Error set when size is not a number');
+  });
+
+  test('selectedDropdownOption returns selected dropdown options', function(assert) {
+    const policy = {
+      id: '5d91e6fada7bd9033284f6d9',
+      policyType: 'edrPolicy',
+      name: 'test',
+      isolationEnabled: true,
+      fileDownloadCriteria: 'Unsigned'
+    };
+    const state = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicy(policy)
+      .build();
+
+    const selectedDropdownResult = selectedDropdownOption(Immutable.from(state), 'fileDownloadCriteria');
+    const expectedResult = {
+      'name': {
+        'string': 'Exclude All Signed'
+      },
+      'value': 'Unsigned'
+    };
+    assert.equal(selectedDropdownResult.value, expectedResult.value, 'Returns selected dropdown option');
+  });
+
+  test('listOfDropdownValues returns list of dropdown options with translations', function(assert) {
+    const policy = {
+      id: '5d91e6fada7bd9033284f6d9',
+      policyType: 'edrPolicy',
+      name: 'test',
+      isolationEnabled: true,
+      fileDownloadCriteria: 'Unsigned'
+    };
+    const state = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicy(policy)
+      .build();
+
+    const listOfDropdownValuesResult = listOfDropdownValues(Immutable.from(state), 'fileDownloadCriteria');
+    const expectedResult = [
+      {
+        'name': {
+          'string': 'Exclude All Signed'
+        },
+        'value': 'Unsigned'
+      },
+      {
+        'name': {
+          'string': 'Exclude only Microsoft and Apple Signed'
+        },
+        'value': 'NotKnownSigned'
+      },
+      {
+        'name': {
+          'string': 'Include All Signed'
+        },
+        'value': 'All'
+      }
+    ];
+    assert.equal(listOfDropdownValuesResult.length, expectedResult.length, 'Returns list of dropdown option');
   });
 
 });

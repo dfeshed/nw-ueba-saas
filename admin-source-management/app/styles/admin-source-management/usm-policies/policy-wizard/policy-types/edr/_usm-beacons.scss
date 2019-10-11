@@ -1,4 +1,4 @@
-.usm-beacons {
+.usm-beacons, .file-size-selection {
 
   .beacon-interval-value {
     max-width: 75px;
@@ -8,5 +8,5 @@
     margin-top: .67rem; /* it works - why asky why? don't question CSS black magic! */
     margin-left: rsa-whitespace();
   }
-  
+
 }

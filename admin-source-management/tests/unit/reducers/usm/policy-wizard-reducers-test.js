@@ -22,7 +22,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
   test('should return the correct initial state when type is edr', function(assert) {
     assert.equal(initialStateEdr.policy.policyType, 'edrPolicy', 'correct policyType is loaded in initialState when type is edr');
-    assert.equal(initialStateEdr.availableSettings.length, 23, 'correct availableSettings are loaded in initialState when type is edr');
+    assert.equal(initialStateEdr.availableSettings.length, 27, 'correct availableSettings are loaded in initialState when type is edr');
   });
 
   test('should return the correct initial state when type is windowsLogPolicy', function(assert) {
@@ -161,6 +161,10 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
         requestScanOnRegistration: null,
         blockingEnabled: null,
         isolationEnabled: null,
+        maxFileDownloadSize: null,
+        fileDownloadEnabled: null,
+        fileDownloadCriteria: null,
+        maxFileDownloadSizeUnit: null,
         primaryAddress: null,
         primaryNwServiceId: null,
         primaryAlias: null,
@@ -224,8 +228,8 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       payload: fetchPolicyPayload
     });
     const endState = reducers(Immutable.from(initialStateCopy), action);
-    assert.deepEqual(endState.availableSettings.length, 23, 'availableSettings are properly set');
-    assert.equal(endState.availableSettings[22].isEnabled, false, 'isEnabled flag is correctly set for the component agentMode');
+    assert.deepEqual(endState.availableSettings.length, 27, 'availableSettings are properly set');
+    assert.equal(endState.availableSettings[26].isEnabled, false, 'isEnabled flag is correctly set for the component agentMode');
     assert.deepEqual(endState.selectedSettings.length, 11, 'selectedSettings are properly set');
   });
 
@@ -697,7 +701,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const endStateEdr = reducers(Immutable.from(initialStateEdrCopy), action);
     const endStateWinLog = reducers(Immutable.from(initialStateWinLogCopy), action);
     assert.deepEqual(_.sortBy(endStateEdr.selectedSettings, 'index'), expectedEndState.selectedSettings, 'Since blocking component exists on the right, the header for blocking is correctly moved to the right');
-    assert.deepEqual(endStateEdr.availableSettings[12].isEnabled, false, 'Since blocking component is on the right, its header should not exist on the left');
+    assert.deepEqual(endStateEdr.availableSettings[16].isEnabled, false, 'Since blocking component is on the right, its header should not exist on the left');
     assert.deepEqual(_.sortBy(endStateWinLog.selectedSettings, 'index'), expectedWinLogEndState.selectedSettings, 'Since all the windows log settings are moved to the right, the header for windows log setting is correctly moved to the right');
     assert.deepEqual(endStateWinLog.availableSettings[0].isEnabled, false, 'Since all windows log settings components are on the right, its header should not exist on the left');
   });

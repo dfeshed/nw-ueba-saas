@@ -5,8 +5,10 @@ import moment from 'moment';
 // import { _policyWizardState, policy } from '../policy-wizard-selectors';
 import {
   RADIO_BUTTONS_CONFIG,
-  isBetween
+  isBetween,
+  ALL_DROPDOWN_OPTIONS as edrPolicyDropdownOptions
 } from './edr-settings';
+
 import { VALID_HOSTNAME_REGEX } from '../../util/selector-helpers';
 
 const { createSelector } = reselect;
@@ -14,6 +16,27 @@ const { createSelector } = reselect;
 // TODO imports from policy-wizard-selectors are undefined...
 const _policyWizardState = (state) => state.usm.policyWizard;
 const policy = (state) => _policyWizardState(state).policy;
+
+/**
+ * Map to hold policyType specific dropdown settings.
+ * @private
+ */
+
+const dropdownOptionsMap = {
+  'edrPolicy': edrPolicyDropdownOptions
+};
+
+/**
+ * It returns the appropriate dropdown options based on the policyType & selectedSettingId
+ * @public
+ */
+
+export const dropdownSelectionOptions = (state, selectedSettingId) => {
+  const { policyType } = policy(state);
+  const getOptionsById = dropdownOptionsMap[policyType].find((d) => d.id === selectedSettingId);
+  const { options } = getOptionsById;
+  return options;
+};
 
 // ====================================================================
 // Scan Schedule settings
@@ -334,9 +357,37 @@ export const beaconIntervalValueValidator = (state, selectedSettingId) => {
   };
 };
 
+export const maxFileDownloadSizeValidator = (state, selectedSettingId) => {
+  const intervalValue = beaconIntervalValue(state, selectedSettingId);
+  const intervalUnit = _policyWizardState(state).policy[`${selectedSettingId}Unit`];
+
+  let multiplier = 1024; // 1KB in bytes
+  if (intervalUnit === 'MB') {
+    multiplier = 1048576; // 1MB in bytes
+  }
+  const bytes = intervalValue * multiplier;
+
+  let isError = false;
+  let showError = false;
+  let errorMessage = '';
+
+  if ((isNaN(bytes)) || (bytes < 1024) || (bytes > 10485760)) {
+    isError = true;
+    showError = true;
+    errorMessage = `adminUsm.policyWizard.edrPolicy.${selectedSettingId}InvalidMsg`;
+  }
+
+  return {
+    isError,
+    showError,
+    errorMessage
+  };
+};
+
 const BEACON_INTERVAL_UNITS = {
   'primaryHttpsBeaconInterval': ['MINUTES', 'HOURS'],
-  'primaryUdpBeaconInterval': ['SECONDS', 'MINUTES']
+  'primaryUdpBeaconInterval': ['SECONDS', 'MINUTES'],
+  'maxFileDownloadSize': ['KB', 'MB']
 };
 
 /**
@@ -402,6 +453,34 @@ export const customConfigValidator = (state, selectedSettingId) => {
   };
 };
 
+/* Returns the Selected dropdown option */
+
+export const selectedDropdownOption = (state, selectedSettingId) => {
+  const dropdownList = dropdownSelectionOptions(state, selectedSettingId);
+  const value = primaryAddress(state, selectedSettingId);
+  const _i18n = lookup('service:i18n');
+  const { dropdownLabel } = dropdownList;
+  return {
+    name: _i18n.t(`${dropdownLabel}.${value}`),
+    value
+  };
+};
+
+/* Returns the List of dropdown options */
+
+export const listOfDropdownValues = (state, selectedSettingId) => {
+  const dropdownList = dropdownSelectionOptions(state, selectedSettingId);
+  const _i18n = lookup('service:i18n');
+  const { dropdownLabel } = dropdownList;
+  return dropdownList.items.map((item) => {
+    const { value } = item;
+    return {
+      name: _i18n.t(`${dropdownLabel}.${value}`),
+      value
+    };
+  });
+};
+
 // ====================================================================
 // Agent settings
 // * all edr-radios so all use radioButtonOption & radioButtonValue
@@ -419,5 +498,6 @@ export const edrPolicyValidatorFnMap = {
   'primaryUdpPort': isPortValid,
   'primaryHttpsBeaconInterval': beaconIntervalValueValidator,
   'primaryUdpBeaconInterval': beaconIntervalValueValidator,
-  'customConfig': customConfigValidator
+  'customConfig': customConfigValidator,
+  'maxFileDownloadSize': maxFileDownloadSizeValidator
 };

@@ -130,6 +130,22 @@ export const ISOLATION_ENABLED_CONFIG = {
   ]
 };
 
+export const FILE_DOWNLOAD_ENABLED_CONFIG = {
+  name: 'automatic-file-downloads-enabled',
+  label: 'adminUsm.policyWizard.edrPolicy.automaticFileDownloads',
+  type: 'radioGroup',
+  items: [
+    {
+      name: false,
+      label: 'adminUsm.policyWizard.edrPolicy.radioOptionDisabled'
+    },
+    {
+      name: true,
+      label: 'adminUsm.policyWizard.edrPolicy.radioOptionEnabled'
+    }
+  ]
+};
+
 export const AGENT_MODE_CONFIG = {
   name: 'agent-mode',
   label: 'adminUsm.policyWizard.edrPolicy.agentMode',
@@ -146,6 +162,18 @@ export const AGENT_MODE_CONFIG = {
   ]
 };
 
+export const FILE_DOWNLOAD_SIGNED_CONFIG = {
+  name: 'signed-option',
+  label: 'adminUsm.policyWizard.edrPolicy.automaticFileDownloads',
+  dropdownLabel: 'adminUsm.policyWizard.edrPolicy',
+  type: 'dropdown',
+  items: [
+    { value: 'Unsigned' },
+    { value: 'NotKnownSigned' },
+    { value: 'All' }
+  ]
+};
+
 export const ALL_RADIO_OPTIONS = [
   { id: 'scanType', options: SCAN_SCHEDULE_CONFIG },
   // { id: 'captureFloatingCode', options: CAPTURE_CODE_CONFIG },
@@ -154,9 +182,13 @@ export const ALL_RADIO_OPTIONS = [
   { id: 'requestScanOnRegistration', options: REQUEST_SCAN_CONFIG },
   { id: 'blockingEnabled', options: BLOCKING_ENABLED_CONFIG },
   { id: 'isolationEnabled', options: ISOLATION_ENABLED_CONFIG },
+  { id: 'fileDownloadEnabled', options: FILE_DOWNLOAD_ENABLED_CONFIG },
   { id: 'agentMode', options: AGENT_MODE_CONFIG }
 ];
 
+export const ALL_DROPDOWN_OPTIONS = [
+  { id: 'fileDownloadCriteria', options: FILE_DOWNLOAD_SIGNED_CONFIG }
+];
 // Utility function to check if the port number is valid
 export function isBetween(value) {
   if (value === '') {

@@ -257,7 +257,8 @@ module('Unit | Selectors | Groups Selectors', function(hooks) {
       .build();
     const config = filterTypesConfig(Immutable.from(fullState));
     assert.equal(config.length, expectedConfig.length, '2 filters as expected');
-    assert.deepEqual(config, expectedConfig, 'filter config(s) generated as expected');
+    assert.equal(config[0].name, expectedConfig[0].name, 'filter config(s) generated as expected');
+    assert.equal(config[1].name, expectedConfig[1].name, 'filter config(s) generated as expected');
   });
 
 });

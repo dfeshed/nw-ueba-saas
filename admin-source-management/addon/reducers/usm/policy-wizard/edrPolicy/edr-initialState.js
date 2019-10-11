@@ -32,7 +32,11 @@ export default {
     // filterSignedHooks: null, // true or false
     requestScanOnRegistration: null, // true or false
     blockingEnabled: null, // true or false
-    isolationEnabled: null,
+    isolationEnabled: null, // true or false
+    maxFileDownloadSizeUnit: null, // KB or MB
+    maxFileDownloadSize: null, // number, default 1
+    fileDownloadEnabled: null, // true or false
+    fileDownloadCriteria: null, // Unsigned
     primaryAddress: null,
     primaryNwServiceId: null,
     primaryAlias: null,
@@ -73,22 +77,28 @@ export default {
     */
     { index: 13, id: 'requestScanOnRegistration', label: 'adminUsm.policyWizard.edrPolicy.requestScanOnRegistration', isEnabled: true, isGreyedOut: false, headerId: 'advScanSettingsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios', defaults: [{ field: 'requestScanOnRegistration', value: false }] },
     //
+    // Download settings
+    { index: 14, id: 'downloadSettingsHeader', label: 'adminUsm.policyWizard.edrPolicy.downloadSettings', isHeader: true, isEnabled: true },
+    { index: 15, id: 'fileDownloadEnabled', label: 'adminUsm.policyWizard.edrPolicy.automaticFileDownloads', isEnabled: true, isGreyedOut: false, headerId: 'downloadSettingsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios', defaults: [{ field: 'fileDownloadEnabled', value: true }] },
+    { index: 16, id: 'fileDownloadCriteria', label: 'adminUsm.policyWizard.edrPolicy.signature', isEnabled: true, isGreyedOut: false, headerId: 'downloadSettingsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/signature-dropdown', defaults: [{ field: 'fileDownloadCriteria', value: 'Unsigned' }] },
+    { index: 17, id: 'maxFileDownloadSize', label: 'adminUsm.policyWizard.edrPolicy.fileSizeLimit', isEnabled: true, isGreyedOut: false, headerId: 'downloadSettingsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/file-size-selection', defaults: [{ field: 'maxFileDownloadSize', value: 1 }, { field: 'maxFileDownloadSizeUnit', value: 'MB' }] },
+    //
     // Response Action settings
-    { index: 14, id: 'invActionsHeader', label: 'adminUsm.policyWizard.edrPolicy.invasiveActions', isHeader: true, isEnabled: true },
-    { index: 15, id: 'blockingEnabled', label: 'adminUsm.policyWizard.edrPolicy.blockingEnabled', isEnabled: true, isGreyedOut: false, headerId: 'invActionsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
-    { index: 16, id: 'isolationEnabled', label: 'adminUsm.policyWizard.edrPolicy.isolationEnabled', isEnabled: true, isGreyedOut: false, headerId: 'invActionsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios-with-warning', defaults: [{ field: 'isolationEnabled', value: false }] },
+    { index: 18, id: 'invActionsHeader', label: 'adminUsm.policyWizard.edrPolicy.invasiveActions', isHeader: true, isEnabled: true },
+    { index: 19, id: 'blockingEnabled', label: 'adminUsm.policyWizard.edrPolicy.blockingEnabled', isEnabled: true, isGreyedOut: false, headerId: 'invActionsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
+    { index: 20, id: 'isolationEnabled', label: 'adminUsm.policyWizard.edrPolicy.isolationEnabled', isEnabled: true, isGreyedOut: false, headerId: 'invActionsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios-with-warning', defaults: [{ field: 'isolationEnabled', value: false }] },
     //
     // Endpoint server settings
-    { index: 17, id: 'endpointServerHeader', label: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', isHeader: true, isEnabled: true },
-    { index: 18, id: 'primaryAddress', label: 'adminUsm.policyWizard.edrPolicy.primaryAddress', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }, { field: 'primaryAlias', value: '' }] },
-    { index: 19, id: 'primaryHttpsPort', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryHttpsPort', value: 443 }] },
-    { index: 20, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
-    { index: 21, id: 'primaryUdpPort', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpPort', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
-    { index: 22, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] },
+    { index: 21, id: 'endpointServerHeader', label: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', isHeader: true, isEnabled: true },
+    { index: 22, id: 'primaryAddress', label: 'adminUsm.policyWizard.edrPolicy.primaryAddress', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }, { field: 'primaryAlias', value: '' }] },
+    { index: 23, id: 'primaryHttpsPort', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryHttpsPort', value: 443 }] },
+    { index: 24, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
+    { index: 25, id: 'primaryUdpPort', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpPort', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
+    { index: 26, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, headerId: 'endpointServerHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] },
     //
     // Advanced Configuration settings
-    { index: 23, id: 'advancedConfigHeader', label: 'adminUsm.policyWizard.edrPolicy.advancedConfig', isHeader: true, isEnabled: true },
-    { index: 24, id: 'customConfig', label: 'adminUsm.policyWizard.edrPolicy.customConfig', isEnabled: true, isGreyedOut: false, headerId: 'advancedConfigHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/custom-config', defaults: [{ field: 'customConfig', value: '' }] }
+    { index: 27, id: 'advancedConfigHeader', label: 'adminUsm.policyWizard.edrPolicy.advancedConfig', isHeader: true, isEnabled: true },
+    { index: 28, id: 'customConfig', label: 'adminUsm.policyWizard.edrPolicy.customConfig', isEnabled: true, isGreyedOut: false, headerId: 'advancedConfigHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/custom-config', defaults: [{ field: 'customConfig', value: '' }] }
   ]
 
 };
