@@ -528,7 +528,10 @@ export default {
       profileName: 'Profile Name',
       prequeryConditions: 'Pre-Query Conditions'
     },
-    splitSessionLabel: 'This event is related to a previous session matching these parameters: {{tuple}}',
+    splitSessionLabels: {
+      withSplit: 'This event is part of a split session (split.session: {{split}}) matching these parameters: {{{tuple}}}',
+      onlyGrouped: 'This event is related to a previous session matching these parameters: {{{tuple}}}'
+    },
     controls: {
       toggle: 'Show/Hide Events List Panel',
       togglePreferences: 'Toggle Investigate Preferences'
