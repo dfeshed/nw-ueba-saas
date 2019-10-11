@@ -394,16 +394,16 @@ export const nestChildEvents = createSelector(
 
         event.presentAsParent = false;
         if (event['ip.dst'] && event['ip.src'] && event['tcp.dstport'] && event['tcp.srcport']) {
-          event.tuple = `ip.dst: ${event['ip.dst']} | ip.src: ${event['ip.src']} | tcp.dstport: ${event['tcp.dstport']} | tcp.srcport: ${event['tcp.srcport']}`;
+          event.tuple = `ip.dst: ${event['ip.dst']} AND ip.src: ${event['ip.src']} AND tcp.dstport: ${event['tcp.dstport']} AND tcp.srcport: ${event['tcp.srcport']}`;
           parent = streamKeyTree[event['ip.dst']][event['ip.src']][event['tcp.dstport']][event['tcp.srcport']];
         } else if (event['ip.dst'] && event['ip.src'] && event['udp.dstport'] && event['udp.srcport']) {
-          event.tuple = `ip.dst: ${event['ip.dst']} | ip.src: ${event['ip.src']} | udp.dstport: ${event['udp.dstport']} | udp.srcport: ${event['udp.srcport']}`;
+          event.tuple = `ip.dst: ${event['ip.dst']} AND ip.src: ${event['ip.src']} AND udp.dstport: ${event['udp.dstport']} AND udp.srcport: ${event['udp.srcport']}`;
           parent = streamKeyTree[event['ip.dst']][event['ip.src']][event['udp.dstport']][event['udp.srcport']];
         } else if (event['ipv6.dst'] && event['ipv6.src'] && event['tcp.dstport'] && event['tcp.srcport']) {
-          event.tuple = `ipv6.dst: ${event['ipv6.dst']} | ipv6.src: ${event['ipv6.src']} | tcp.dstport: ${event['tcp.dstport']} | tcp.srcport: ${event['tcp.srcport']}`;
+          event.tuple = `ipv6.dst: ${event['ipv6.dst']} AND ipv6.src: ${event['ipv6.src']} AND tcp.dstport: ${event['tcp.dstport']} AND tcp.srcport: ${event['tcp.srcport']}`;
           parent = streamKeyTree[event['ipv6.dst']][event['ipv6.src']][event['tcp.dstport']][event['tcp.srcport']];
         } else if (event['ipv6.dst'] && event['ipv6.src'] && event['udp.dstport'] && event['udp.srcport']) {
-          event.tuple = `ipv6.dst: ${event['ipv6.dst']} | ipv6.src: ${event['ipv6.src']} | udp.dstport: ${event['udp.dstport']} | udp.srcport: ${event['udp.srcport']}`;
+          event.tuple = `ipv6.dst: ${event['ipv6.dst']} AND ipv6.src: ${event['ipv6.src']} AND udp.dstport: ${event['udp.dstport']} AND udp.srcport: ${event['udp.srcport']}`;
           parent = streamKeyTree[event['ipv6.dst']][event['ipv6.src']][event['udp.dstport']][event['udp.srcport']];
         } else {
           parent = event;

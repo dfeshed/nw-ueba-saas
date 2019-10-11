@@ -189,14 +189,13 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     if (!isEmpty(item['session.split'])) {
       $el.append('i')
         .attr('class', 'session-split-decorator grouped-with-split rsa-icon rsa-icon-layers-stacked')
-        .attr('title', this.get('i18n').t('investigate.splitSessionLabels.withSplit', {
-          split: item['session.split'],
+        .attr('title', this.get('i18n').t('investigate.splitSessionLabel', {
           tuple: item.tuple
         }));
     } else if (item.groupedWithoutSplit) {
       $el.append('i')
         .attr('class', 'session-split-decorator grouped-without-split rsa-icon rsa-icon-layers-stacked')
-        .attr('title', this.get('i18n').t('investigate.splitSessionLabels.onlyGrouped', {
+        .attr('title', this.get('i18n').t('investigate.splitSessionLabel', {
           tuple: item.tuple
         }));
     }
