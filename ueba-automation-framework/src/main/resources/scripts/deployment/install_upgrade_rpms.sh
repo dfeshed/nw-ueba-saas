@@ -29,23 +29,23 @@ if [[ "$NEW_RPM_VERSION" -ge "$OLD_RPM_VERSION" ]]&&[[ "$NUMBER_OF_PRESIDIO_RPMS
         echo "Updating Presidio RPMs"
         for i in "${PRESIDIO_RPMS[@]}"
                 do
-                OWB_ALLOW_NON_FIPS=on && sudo -E yum update -y  $i
+                OWB_ALLOW_NON_FIPS=on sudo -E yum update -y  $i
                 done
 else
         if [[ "$NUMBER_OF_PRESIDIO_RPMS" -ne 0 ]]; then
         echo "Removing Old Presidio RPMs"
-        OWB_ALLOW_NON_FIPS=on && sudo -E yum -y remove $(rpm -qa | grep rsa-nw-presidio)
+        OWB_ALLOW_NON_FIPS=on sudo -E yum -y remove $(rpm -qa | grep rsa-nw-presidio)
         fi
         echo "Installing Presidio RPMs"
         for i in "${PRESIDIO_RPMS[@]}"
                 do
-                OWB_ALLOW_NON_FIPS=on && sudo -E yum install -y $i
+                OWB_ALLOW_NON_FIPS=on sudo -E yum install -y $i
                 done
 fi
 
 if [[ NW_LOG_PLAYER -eq 0 ]]; then
         echo "Installing nw-logplyer"
-        sudo -E yum install -y rsa-nw-logplayer
+        OWB_ALLOW_NON_FIPS=on sudo -E yum install -y rsa-nw-logplayer
 fi
 
 PRESIDIO_JARS_AMOUNT=$(ls /var/netwitness/presidio/batch/*jar | wc -l)
@@ -62,4 +62,4 @@ fi
 #fi
 
 sudo  systemctl daemon-reload
-echo "######################################## install_upgrade_rpms.sh Script Started #######################################"
+echo "######################################## install_upgrade_rpms.sh Script Completed #######################################"
