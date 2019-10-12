@@ -2,6 +2,8 @@
 @import "service-modal";
 
 $filter-panel-width: 250px;
+$modalHeaderHeight: 52px;
+$footerHeight: 43px;
 
 .host-container {
   .content-context-menu {
@@ -102,6 +104,46 @@ $filter-panel-width: 250px;
     padding: 0;
     button {
       border: none;
+    }
+  }
+}
+.rsa-application-modal-content.download-warning-modal {
+  width: 36rem;
+  min-height: 150px;
+  height: auto;
+
+  .modal-content {
+    width: 100%;
+    height: calc(100% - (#{$modalHeaderHeight}));
+    top: 0;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+  .download-warning-message {
+    height: 50px;
+    padding: 10px;
+  }
+  .download-warning-doNotShow {
+    padding: 10px
+  }
+
+  footer {
+    height: $footerHeight;
+    box-sizing: border-box;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    padding: rsa-whitespace(less);
+    padding-right: 1rem;
+    padding-bottom: 3rem;
+
+    .modal-footer-buttons {
+      justify-content: flex-end;
+      .rsa-form-button-wrapper {
+        margin: 0 0 0 rsa-whitespace(less);
+      }
     }
   }
 }

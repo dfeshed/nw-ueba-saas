@@ -37,6 +37,10 @@ const HostDetailsMoreActions = Component.extend({
 
   showIsolationModal: false,
 
+  downloadConfig: null,
+
+  showDownloadModal: false,
+
   @computed('isMFTEnabled')
   moreOptions: {
     get() {
@@ -120,12 +124,19 @@ const HostDetailsMoreActions = Component.extend({
       const agentId = this.get('agentId');
       this.send('exportFileContext', { agentId, scanTime, categories: ['AUTORUNS'] });
     },
+
     requestMFTDownload() {
       const callBackOptions = {
         onSuccess: () => success('investigateHosts.hosts.downloadMFT.success'),
         onFailure: (message) => failure(message, null, false)
       };
-      this.send('downloadMFT', this.get('agentId'), this.get('hostDetails').serviceId, callBackOptions);
+      this.set('downloadConfig', {
+        type: 'mftDownload',
+        agentId: this.get('agentId'),
+        serviceId: this.get('hostDetails').serviceId,
+        callBackOptions
+      });
+      this.send('handleDownloadModal');
     },
 
     requestSystemDumpDownload() {
@@ -133,7 +144,48 @@ const HostDetailsMoreActions = Component.extend({
         onSuccess: () => success('investigateHosts.hosts.downloadSystemDump.details.success'),
         onFailure: (message) => failure(message, null, false)
       };
-      this.send('downloadSystemDump', this.get('agentId'), this.get('hostDetails').serviceId, callBackOptions);
+      this.set('downloadConfig', {
+        type: 'systemDump',
+        agentId: this.get('agentId'),
+        serviceId: this.get('hostDetails').serviceId,
+        callBackOptions
+      });
+      this.send('handleDownloadModal');
+    },
+
+    handleDownloadModal() {
+      const doNotShowDownloadModal = localStorage.getItem('doNotShowDownloadModal');
+      if (doNotShowDownloadModal && doNotShowDownloadModal === 'true') {
+        this.send('dumpDownload');
+      } else {
+        this.set('downloadModalCheckbox', false);
+        this.set('showDownloadModal', true);
+      }
+
+    },
+
+    hideDownloadMsgModal() {
+      this.set('showDownloadModal', false);
+    },
+
+    toggleShowDownloadMsg() {
+      this.toggleProperty('downloadModalCheckbox');
+    },
+
+    dumpDownload() {
+      const downloadConfig = this.get('downloadConfig');
+      const { type, agentId, serviceId, callBackOptions } = downloadConfig;
+      if (type === 'systemDump') {
+        this.send('downloadSystemDump', agentId, serviceId, callBackOptions);
+      } else {
+        this.send('downloadMFT', agentId, serviceId, callBackOptions);
+      }
+    },
+
+    continueDownload() {
+      localStorage.setItem('doNotShowDownloadModal', this.get('downloadModalCheckbox'));
+      this.set('showDownloadModal', false);
+      this.send('dumpDownload');
     },
 
     showIsolationModal(item) {

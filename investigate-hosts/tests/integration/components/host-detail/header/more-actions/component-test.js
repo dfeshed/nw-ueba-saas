@@ -7,6 +7,7 @@ import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 import { click, find, findAll, render, settled, triggerEvent } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { waitForSockets } from '../../../../../helpers/wait-for-sockets';
 
 let setState;
 const data = {
@@ -42,6 +43,7 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     setState = (state) => {
       patchReducer(this, state);
     };
+    window.localStorage.removeItem('doNotShowDownloadModal');
   });
 
   test('test for More Actions', async function(assert) {
@@ -72,8 +74,8 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     assert.equal(findAll('.host-details_dropdown-action-list li').length, 2, 'Number of actions present is 2 as No MFT permission added');
   });
 
-  test('test for Request MFT', async function(assert) {
-    assert.expect(2);
+  test('test for download warning modal rendering and for Requesting MFT', async function(assert) {
+    assert.expect(3);
     new ReduxDataHelper(setState)
       .host(data)
       .hostOverview(data)
@@ -81,7 +83,9 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
       .isSnapshotsAvailable(true)
       .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
       .build();
-    await render(hbs `{{host-detail/header/more-actions}}`);
+    await render(hbs `
+    <div id='modalDestination'></div>
+    {{host-detail/header/more-actions}}`);
     await click('.host_more_actions .host-details-more-actions');
     patchSocket((method, model, query) => {
       assert.equal(method, 'downloadMFT');
@@ -94,11 +98,13 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
         });
     });
     await click('.host-details_dropdown-action-list li.downloadMFT-button button');
+    assert.equal(findAll('.download-warning-modal').length, 2, 'modal window is rendered.');
+    await click(findAll('.download-warning-modal .modal-content .close-modal.continue')[0]);
   });
 
 
-  test('test for, request system dump download', async function(assert) {
-    assert.expect(2);
+  test('test for download warning modal not being visible and download continues', async function(assert) {
+    assert.expect(3);
     new ReduxDataHelper(setState)
       .host(data)
       .hostOverview(data)
@@ -106,7 +112,79 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
       .isSnapshotsAvailable(true)
       .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
       .build();
-    await render(hbs `{{host-detail/header/more-actions}}`);
+    window.localStorage.setItem('doNotShowDownloadModal', 'true');
+    await render(hbs `
+    <div id='modalDestination'></div>
+    {{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+    patchSocket((method, model, query) => {
+      assert.equal(method, 'downloadMFT');
+      assert.deepEqual(query,
+        {
+          'data': {
+            'agentId': 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+            'serverId': 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+          }
+        });
+    });
+    await click('.host-details_dropdown-action-list li.downloadMFT-button button');
+    assert.equal(findAll('.download-warning-modal').length, 0, 'modal window does not show up, if doNotShowDownloadModal is set.');
+    window.localStorage.removeItem('doNotShowDownloadModal');
+  });
+
+
+  test('test for download warning modal closes when cancelled', async function(assert) {
+    assert.expect(1);
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+    await render(hbs `
+    <div id='modalDestination'></div>
+    {{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+    await click('.host-details_dropdown-action-list li.downloadMFT-button button');
+    await click(findAll('.download-warning-modal .modal-content .close-modal.cancel')[0]);
+    assert.equal(findAll('.download-warning-modal').length, 0, 'download continues without showing the modal window.');
+  });
+
+  test('test for doNotShowModal persisting', async function(assert) {
+    assert.expect(2);
+    const done = waitForSockets();
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+    await render(hbs `
+    <div id='modalDestination'></div>
+    {{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+    await click('.host-details_dropdown-action-list li.downloadMFT-button button');
+    await click(findAll('.download-warning-modal .modal-content .download-warning-doNotShow .rsa-form-checkbox-label ')[0]);
+    await click(findAll('.download-warning-modal .modal-content .close-modal.continue')[0]);
+    assert.equal(findAll('.download-warning-modal').length, 0, 'download is cancelled and modal closes.');
+    assert.equal(window.localStorage.getItem('doNotShowDownloadModal'), 'true', 'doNotShowModal persisted in the local storage when checkbox in modal was clicked and continued.');
+    done();
+  });
+
+  test('test for, request system dump download', async function(assert) {
+    assert.expect(3);
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+    await render(hbs `
+    <div id='modalDestination'></div>
+    {{host-detail/header/more-actions}}`);
     await click('.host_more_actions .host-details-more-actions');
     patchSocket((method, model, query) => {
       assert.equal(method, 'downloadSystemDump');
@@ -115,6 +193,8 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
       });
     });
     await click('.host-details_dropdown-action-list li.download-sys-dump-button button');
+    assert.equal(findAll('.download-warning-modal').length, 2, 'modal window is rendered.');
+    await click(findAll('.download-warning-modal .modal-content .close-modal.continue')[0]);
   });
 
   test('Test for download system dumo button disabled', async function(assert) {

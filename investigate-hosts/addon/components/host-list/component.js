@@ -49,6 +49,10 @@ const Container = Component.extend({
 
   pivot: service(),
 
+  downloadConfig: null,
+
+  showDownloadModal: false,
+
   @computed('selections')
   isMaxResetRiskScoreLimit(selectedList) {
     return selectedList.length > 100;
@@ -137,7 +141,13 @@ const Container = Component.extend({
       };
       const hosts = this.get('selections');
       const [host] = hosts.length && hosts.length === 1 ? hosts : [{}];
-      this.send('downloadMFT', this.get('agentIds')[0], host.serviceId, callBackOptions);
+      this.set('downloadConfig', {
+        type: 'mftDownload',
+        agentId: this.get('agentIds')[0],
+        serviceId: host.serviceId,
+        callBackOptions
+      });
+      this.send('handleDownloadModal');
     },
 
     requestSystemDumpDownload() {
@@ -147,7 +157,48 @@ const Container = Component.extend({
       };
       const hosts = this.get('selections');
       const [host] = hosts.length && hosts.length === 1 ? hosts : [{}];
-      this.send('downloadSystemDump', this.get('agentIds')[0], host.serviceId, callBackOptions);
+      this.set('downloadConfig', {
+        type: 'systemDump',
+        agentId: this.get('agentIds')[0],
+        serviceId: host.serviceId,
+        callBackOptions
+      });
+      this.send('handleDownloadModal');
+    },
+
+    continueDownload() {
+      localStorage.setItem('doNotShowDownloadModal', this.get('downloadModalCheckbox'));
+      this.set('showDownloadModal', false);
+      this.send('dumpDownload');
+    },
+
+    handleDownloadModal() {
+      const doNotShowDownloadModal = localStorage.getItem('doNotShowDownloadModal');
+      if (doNotShowDownloadModal && doNotShowDownloadModal === 'true') {
+        this.send('dumpDownload');
+      } else {
+        this.set('downloadModalCheckbox', false);
+        this.set('showDownloadModal', true);
+      }
+
+    },
+
+    hideDownloadMsgModal() {
+      this.set('showDownloadModal', false);
+    },
+
+    toggleShowDownloadMsg() {
+      this.toggleProperty('downloadModalCheckbox');
+    },
+
+    dumpDownload() {
+      const downloadConfig = this.get('downloadConfig');
+      const { type, agentId, serviceId, callBackOptions } = downloadConfig;
+      if (type === 'systemDump') {
+        this.send('downloadSystemDump', agentId, serviceId, callBackOptions);
+      } else {
+        this.send('downloadMFT', agentId, serviceId, callBackOptions);
+      }
     }
   }
 });

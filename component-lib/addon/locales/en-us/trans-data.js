@@ -3112,6 +3112,15 @@ export default {
         fileLocation: 'Directory path: ',
         filtersApplied: ' {{count}} filters applied',
         no: 'No'
+      },
+      downloadWarningModal: {
+        title: 'Downloads',
+        message: 'Downloads may take significant time. Additional requests to the agent are queued and processed when the download is complete',
+        doNotShow: 'Do not show again',
+        button: {
+          continue: 'Continue',
+          cancel: 'Cancel'
+        }
       }
     },
     networkIsolation: {

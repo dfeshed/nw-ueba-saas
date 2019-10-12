@@ -55,3 +55,39 @@
     onClose=(action 'onResetScoreModalClose')
     onReset=(action 'handleResetHostsRiskScore')}}
 {{/if}}
+
+{{#if showDownloadModal}}
+  {{#rsa-application-modal
+    eventId='download-warning-modal'
+    style='standard download-warning-modal'
+    autoOpen=true
+    onClose=(action 'hideDownloadMsgModal')
+    label=(t 'investigateHosts.downloads.downloadWarningModal.title')}}
+    <div class="modal-content">
+      <div class="download-warning-message">
+        {{t 'investigateHosts.downloads.downloadWarningModal.message'}}
+      </div>
+      <span class="download-warning-doNotShow">
+        <label class="rsa-form-checkbox-label {{if downloadModalCheckbox 'checked'}}">
+          {{rsa-form-checkbox
+            checked=downloadModalCheckbox
+            change=(action 'toggleShowDownloadMsg')}}
+        </label>
+        {{t 'investigateHosts.downloads.downloadWarningModal.doNotShow'}}
+      </span>
+
+      <footer>
+        <hbox class="modal-footer-buttons">
+          {{#rsa-form-button class='close-modal' click=(action 'hideDownloadMsgModal')}}
+            {{t 'investigateHosts.downloads.downloadWarningModal.button.cancel'}}
+          {{/rsa-form-button}}
+
+          {{#rsa-form-button class='close-modal' style='primary' click=(action 'continueDownload')}}
+            {{t 'investigateHosts.downloads.downloadWarningModal.button.continue'}}
+          {{/rsa-form-button}}
+        </hbox>
+      </footer>
+    </div>
+
+  {{/rsa-application-modal}}
+{{/if}}
