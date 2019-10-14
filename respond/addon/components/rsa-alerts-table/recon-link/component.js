@@ -6,7 +6,7 @@ import { inject as service } from '@ember/service';
 import { lookupCoreDevice } from 'respond-shared/utils/event-analysis';
 import { coreServiceNotUpdated } from 'component-lib/utils/core-services';
 import { getServices } from 'respond/reducers/respond/recon/selectors';
-import { EVENT_TYPES } from 'component-lib/constants/event-types';
+import { EVENT_TYPES, EVENT_TYPES_LABELS } from 'component-lib/constants/event-types';
 
 const stateToComputed = (state) => ({
   services: getServices(state)
@@ -43,6 +43,14 @@ const ReconLink = Component.extend({
     } else {
       return EVENT_TYPES.LOG;
     }
+  },
+
+  /*
+   * Displays the event type label as the recon link.
+   */
+  @computed('eventType')
+  eventTypeLabel(eventType) {
+    return EVENT_TYPES_LABELS[eventType];
   },
 
   @computed('eventId', 'endpointId', 'hasPermissions', 'mixedMode')

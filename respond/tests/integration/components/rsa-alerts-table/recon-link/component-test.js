@@ -69,7 +69,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
 
     await render(hbs`{{rsa-alerts-table/recon-link item=item}}`);
 
-    assert.equal(find(selector).textContent.trim(), eventType);
+    assert.equal(find(selector).textContent.trim(), 'Log');
     assert.equal(findAll(linkTo).length, 1);
 
     await click('.recon-link-to');
@@ -102,7 +102,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
       type: 'Instant IOC'
     });
 
-    assert.equal(find(selector).textContent.trim(), eventType);
+    assert.equal(find(selector).textContent.trim(), 'Log');
     assert.equal(findAll(linkTo).length, 1);
 
     this.set('item', {
@@ -255,7 +255,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
 
     await render(hbs`{{rsa-alerts-table/recon-link item=item}}`);
 
-    assert.equal(find(selector).textContent.trim(), eventType);
+    assert.equal(find(selector).textContent.trim(), 'Log');
     assert.equal(findAll(linkTo).length, 1);
   });
 
@@ -289,7 +289,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
 
     await render(hbs`{{rsa-alerts-table/recon-link item=item}}`);
 
-    assert.equal(find(selector).textContent.trim(), eventType);
+    assert.equal(find(selector).textContent.trim(), 'Log');
     assert.equal(findAll(linkTo).length, 1);
   });
 
@@ -328,7 +328,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
   });
 
   test('eventType is ENDPOINT when device_type property is nwendpoint', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     this.set('item', {
       id: '586ecf95ecd25950034e1312:0',
@@ -352,10 +352,11 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
         selection: '586ecf95ecd25950034e1312:0'
       }
     }]);
+    assert.equal(find(selector).textContent.trim(), 'Endpoint');
   });
 
   test('eventType is NETWORK when device_type property is not nwendpoint and type is Network', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     this.set('item', {
       id: '586ecf95ecd25950034e1312:0',
@@ -378,6 +379,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
         selection: '586ecf95ecd25950034e1312:0'
       }
     }]);
+    assert.equal(find(selector).textContent.trim(), 'Network');
   });
 
   test('when event source is from a core service with an older version (mixed mode) the link fails to render', async function(assert) {

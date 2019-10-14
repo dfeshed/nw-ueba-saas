@@ -7,3 +7,9 @@ export const EVENT_TYPES = {
   LOG,
   NETWORK
 };
+
+export const EVENT_TYPES_LABELS = {
+  ENDPOINT: 'Endpoint',
+  NETWORK: 'Network',
+  LOG: 'Log'
+};
