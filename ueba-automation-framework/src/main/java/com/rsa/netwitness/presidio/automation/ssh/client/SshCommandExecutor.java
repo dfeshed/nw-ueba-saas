@@ -74,7 +74,7 @@ public class SshCommandExecutor {
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream, US_ASCII));
             Instant startTime = Instant.now();
             channel.connect();
-            LOGGER.debug("Connection time: " + Duration.between(Instant.now(), startTime).toMillis() + " ms");
+            LOGGER.debug("Connection time: " + Duration.between(startTime, Instant.now()).toMillis() + " ms");
 
             waitReady(bufferedReader);
 
@@ -134,8 +134,8 @@ public class SshCommandExecutor {
             i++;
         }
 
-        LOGGER.info("Waiting for buffer ready: duration="
-                + Duration.between(Instant.now(), startTime).toMillis() + " ms" + ", status=" + br.ready());
+        LOGGER.debug("Waiting for buffer ready: duration="
+                + Duration.between(startTime, Instant.now()).toMillis() + " ms" + ", status=" + br.ready());
     }
 
     private void printOut(Queue<String> sshOutput) {
