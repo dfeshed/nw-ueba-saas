@@ -74,7 +74,7 @@ public class InputTestManager {
 
         printLogIfError(logPath);
         assertThat(p.exitCode)
-                .withFailMessage("Error exit code. Log: " + logPath)
+                .as("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
     }
 

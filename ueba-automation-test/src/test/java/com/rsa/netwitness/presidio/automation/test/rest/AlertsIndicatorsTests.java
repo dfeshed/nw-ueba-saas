@@ -33,8 +33,8 @@ import java.util.function.Predicate;
 
 import static com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo.ALL_MANDATORY_INDICATORS;
 import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
+import static java.util.Map.Entry.comparingByKey;
+import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.util.Lists.list;
@@ -68,7 +68,6 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     private Map<String, String[]> featureAggregationMap = new HashMap<>();
     private Map<String, String[]> distinctFeatureAggregationMap = new HashMap<>();
     private Map<String, String[]> allIndicatorsTypeNameSamples = new HashMap<>();
-    private SoftAssertions softly = new SoftAssertions();
 
     @BeforeClass
     public void preconditionCheckAndPrepare() {
@@ -107,6 +106,8 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void alerts_count_result_filtered_by_indicator_name_is_correct() {
+        SoftAssertions softly = new SoftAssertions();
+
         for (String indicatorName : indicatorsDistinctNames) {
             PresidioUrl url = restHelper.alerts().url().withMaxSizeAndIndicatorNameParameters(indicatorName);
             List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
@@ -133,6 +134,8 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void alert_indicators_event_time_range_is_within_the_alert_time_range() {
+        SoftAssertions softly = new SoftAssertions();
+
         for (AlertsStoredRecord alert : allAlerts) {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
 
@@ -290,6 +293,8 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @Test(dataProvider = "allIndicatorsDataProvider")
     public void successful_and_failure_indicator_names_should_match_all_result_values_in_related_events(String indicatorName) {
+        SoftAssertions softly = new SoftAssertions();
+
         Boolean success = null;
         if (indicatorName.contains("successful")) {
             success = true;
@@ -372,6 +377,8 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void static_indicator_name_should_appear_only_once_in_alert() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         for (AlertsStoredRecord alert : alerts) {
@@ -394,6 +401,8 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     // todo: ask Yuval
     @Test
     public void highNumberOfDistinctFilesOpenedAttemptsTest() throws JSONException {
+        SoftAssertions softly = new SoftAssertions();
+
         String indicator = "high_number_of_distinct_files_opened_attempts";
 
         if (!distinctFeatureAggregationMap.containsKey(indicator)) {
@@ -423,6 +432,8 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void score_aggregation_indicator_is_unique_by_alertId_name_anomalyValue_and_context() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         for (AlertsStoredRecord alert : alerts) {
@@ -432,24 +443,12 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                     .filter(indicator -> indicator.getType().equals("SCORE_AGGREGATION"))
                     .collect(toList());
 
-
-            Function<AlertsStoredRecord.Indicator, String> relevantContextValue =
-                    indicator -> {
-                        if (indicator.getContexts().containsKey("srcProcessFileName")) {
-                            return indicator.getContexts().get("srcProcessFileName").toString()
-                                    + "_" + indicator.getContexts().get("dstProcessFileName").toString();
-                        } else if (indicator.getContexts().containsKey("processFileName")) {
-                            return indicator.getContexts().get("processFileName").toString()
-                                    + "_" + indicator.getContexts().get("registryKeyGroup").toString();
-                        } else return "NONE";
-                    };
-
             Predicate<List<AlertsStoredRecord.Indicator>> notSingleElementLists = e -> e.size() != 1;
 
             // AlertsStoredRecords grouped by Indicator Name, Anomaly Value and Relevant Context Value
             Map<String, Map<String, Map<String, List<AlertsStoredRecord.Indicator>>>> indicatorsByNameAndAnomalyValueAndContext =
                     scoreAggIndicators.parallelStream()
-                            .collect(groupingBy(relevantContextValue,
+                            .collect(groupingBy(indicatorContextToString,
                                     groupingBy(AlertsStoredRecord.Indicator::getAnomalyValue,
                                             groupingBy(AlertsStoredRecord.Indicator::getName))));
 
@@ -473,6 +472,13 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         }
         softly.assertAll();
     }
+
+    private Function<AlertsStoredRecord.Indicator, String> indicatorContextToString =
+            indicator ->
+                indicator.getContexts().entrySet().parallelStream().sorted(comparingByKey())
+                        .map(entry -> entry.getKey() + "->" + entry.getValue())
+                        .collect(joining("#"));
+
 
 
     class HistoricalDataBucket {

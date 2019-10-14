@@ -86,7 +86,7 @@ public class OutputTestManager {
 
         printLogIfError(logPath);
         assertThat(p.exitCode)
-                .withFailMessage("Error exit code. Log: " + logPath)
+                .as("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
     }
 
@@ -102,7 +102,7 @@ public class OutputTestManager {
 
         printLogIfError(logPath);
         assertThat(p.exitCode)
-                .withFailMessage("Error exit code. Log: " + logPath)
+                .as("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
     }
 

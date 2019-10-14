@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.common.scenarios.tls;
 
-import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.random.GaussianLongGenerator;
@@ -28,11 +28,11 @@ public class HighNumberOf extends NetworkScenarioBase {
         return "high_number_of";
     }
 
-    public Stream<NetworkEvent> distinctSourceIpForJA3() throws GeneratorException {
+    public Stream<TlsEvent> distinctSourceIpForJA3() throws GeneratorException {
 
         NetworkEventsGenerator regularGen = new NetworkEventsGenerator(getDefaultRegularTimeGen());
         regularGen.setNumOfBytesSentGenerator(regularTrafficGenerator);
-        List<NetworkEvent> events = regularGen
+        List<TlsEvent> events = regularGen
                 .modify()
                 .setJa3EntityValue(Ja3Entity(0))
                 .setDistinctSrcIps(5,7)

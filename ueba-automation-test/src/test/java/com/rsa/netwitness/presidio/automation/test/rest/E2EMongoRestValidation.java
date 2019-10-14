@@ -65,7 +65,6 @@ public class E2EMongoRestValidation extends AbstractTestNGSpringContextTests {
     private OutputRegistryStoredDataRepository registryRepository;
 
     private String testName;
-    private SoftAssertions softly = new SoftAssertions();
 
     private int outputProcessingEndDaysBack;
     private int outputProcessingStartDaysBack;
@@ -111,6 +110,8 @@ public class E2EMongoRestValidation extends AbstractTestNGSpringContextTests {
 
     @Test
     public void all_rest_response_entities_must_be_unique_by_entity_type(){
+        SoftAssertions softly = new SoftAssertions();
+
         List<String> entityTypes = list("userId", "ja3", "sslSubject");
         Map<String, List<EntitiesStoredRecord>> actual =
                 allRestEntities.parallelStream().collect(groupingBy(EntitiesStoredRecord::getEntityType));

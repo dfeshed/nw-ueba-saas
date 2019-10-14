@@ -34,7 +34,6 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
             LoggerFactory.getLogger(AlertsRestQueriesTest.class.getName());
 
     private RestHelper restHelper = new RestHelper();
-    private SoftAssertions softly = new SoftAssertions();
 
     @BeforeClass
     public void preconditionCheck() {
@@ -219,6 +218,8 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void static_only_indicators_alert_does_not_exist() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 

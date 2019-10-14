@@ -128,7 +128,7 @@ public class ADETestManager {
 
         printLogIfError(logPath);
         assertThat(p3.exitCode)
-                .withFailMessage("Error exit code. Log: " + logPath)
+                .as("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
     }
 
@@ -143,7 +143,7 @@ public class ADETestManager {
 
         printLogIfError(logPath);
         assertThat(p4.exitCode)
-                .withFailMessage("Error exit code. Log: " + logPath)
+                .as("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
     }
 
@@ -160,7 +160,7 @@ public class ADETestManager {
 
         printLogIfError(logPath);
         assertThat(p4.exitCode)
-                .withFailMessage("Error exit code. Log: " + logPath)
+                .as("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
     }
 
@@ -175,7 +175,7 @@ public class ADETestManager {
 
         printLogIfError(logPath);
         assertThat(p4.exitCode)
-                .withFailMessage("Error exit code. Log: " + logPath)
+                .as("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
     }
 
@@ -189,7 +189,7 @@ public class ADETestManager {
 
         printLogIfError(logPath);
         assertThat(p4.exitCode)
-                .withFailMessage("Error exit code. Log: " + logPath)
+                .as("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
     }
 
@@ -214,7 +214,7 @@ public class ADETestManager {
 
         printLogIfError(logPath);
         assertThat(p4.exitCode)
-                .withFailMessage("Error exit code. Log: " + logPath)
+                .as("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
     }
 
@@ -229,7 +229,7 @@ public class ADETestManager {
 
         printLogIfError(logPath);
         assertThat(p4.exitCode)
-                .withFailMessage("Error exit code. Log: " + logPath)
+                .as("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
     }
 

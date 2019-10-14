@@ -1,16 +1,21 @@
 package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
-import com.rsa.netwitness.presidio.automation.common.scenarios.tls.*;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.FutureEventsForMetrics;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.SessionSplitEnrichmentData;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.UncommonValuesAlerts;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.UnusualTrafficVolumeAlerts;
+import com.rsa.netwitness.presidio.automation.data.tls.TlsAlerts;
+import com.rsa.netwitness.presidio.automation.data.tls.model.TlsAlert;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import presidio.data.domain.event.Event;
-import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.common.GeneratorException;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 public class NetworkDataPreparation extends DataPreparationBase {
@@ -20,34 +25,22 @@ public class NetworkDataPreparation extends DataPreparationBase {
     public List<? extends Event> generate() throws GeneratorException {
         // adapterTestManager.clearAllCollections();
 
+        // todo:
         UncommonValuesAlerts uncommonValuesAlerts = new UncommonValuesAlerts(historicalDaysBack, anomalyDay);
         UnusualTrafficVolumeAlerts unusualTrafficVolumeAlerts = new UnusualTrafficVolumeAlerts(historicalDaysBack, anomalyDay);
         SessionSplitEnrichmentData sessionSplitEnrichmentData = new SessionSplitEnrichmentData();
+
         FutureEventsForMetrics futureEventsGen = new FutureEventsForMetrics(10);
+        TlsAlerts tlsAlerts = new TlsAlerts(historicalDaysBack,anomalyDay);
 
-        Stream<NetworkEvent> resultingStream = Stream.of(
-                sessionSplitEnrichmentData.generateAll(),
-                futureEventsGen.get(),
+        List<TlsEvent> networkEvents = new LinkedList<>();
 
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(11),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(12),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(13),
-                uncommonValuesAlerts.uncommonJa3StartInstantCountryForSrcNetnameSslSubj(14),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(21),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(22),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(23),
-                uncommonValuesAlerts.uncommonDomainDestOrganisationSslSubjectForJa3SrcNetname(24),
-                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(31),
-                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(32),
-                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(33),
-                uncommonValuesAlerts.uncommonDestPortForSslSubjectJa3SrcNetnameDestOrgDomain(34),
+        for (TlsAlert alert : tlsAlerts.get()) {
+            networkEvents.addAll(alert.getIndicators().stream().flatMap(e -> e.generateEvents().stream()).collect(Collectors.toList()));
+        }
 
-                unusualTrafficVolumeAlerts.fromSourceIpToSslSubjectDomainOrganisationDestPort(),
-                unusualTrafficVolumeAlerts.toSslSubjectDomainOrganisationDestPortJa3()
-
-        ).flatMap(i -> i);
-
-        return resultingStream.collect(Collectors.toList());
+        networkEvents.addAll(futureEventsGen.get().collect(Collectors.toList()));
+        return networkEvents;
     }
 
     @Test

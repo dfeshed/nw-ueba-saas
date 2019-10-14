@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class TlsEvent extends NetwitnessEvent {
+public abstract class TlsEventConverter extends NetwitnessEvent {
 
     protected String event_source_id;
     protected String data_source;
@@ -36,14 +36,14 @@ public abstract class TlsEvent extends NetwitnessEvent {
     protected String time;
 
 
-    protected TlsEvent(Instant eventTimeEpoch, Schema schema) {
+    protected TlsEventConverter(Instant eventTimeEpoch, Schema schema) {
         super(eventTimeEpoch, schema);
         time = timeMillis;
     }
 
     @Override
     public Map<String, Object> getEvent() {
-        Field[] classFields = TlsEvent.class.getDeclaredFields();
+        Field[] classFields = TlsEventConverter.class.getDeclaredFields();
         Map<String, Object> eventMap = new LinkedHashMap<>();
 
         for (Field classField : classFields) {

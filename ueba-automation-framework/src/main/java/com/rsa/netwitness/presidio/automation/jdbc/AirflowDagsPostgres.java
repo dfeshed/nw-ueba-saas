@@ -26,12 +26,10 @@ public class AirflowDagsPostgres {
                 .map(this::getMaxExecutionDate)
                 .collect(Collectors.toList());
 
-        for (int i = 0; i < hourlyEntityFlowNames.size() ; i++) {
-            LOGGER.info("{dagId: MAX(execution_date)} = {" + hourlyEntityFlowNames.get(i) + ": " + maxDates.get(i), "}");
+        for (int i = 0; i < hourlyEntityFlowNames.size(); i++) {
+            LOGGER.info("{dagId: MAX(execution_date)} = {" + hourlyEntityFlowNames.get(i) + ": " + maxDates.get(i) + "}");
         }
-
         LOGGER.info("All execution_dates should be after endDate=" + endDate);
-
         return maxDates.stream().map(e -> e.isPresent() && e.get().isAfter(endDate)).reduce(Boolean::logicalAnd).orElse(false);
     }
 

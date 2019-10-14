@@ -42,7 +42,6 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
      * https://wiki.na.rsa.net/display/PRES/User+Severity
      **/
 
-    private SoftAssertions softly = new SoftAssertions();
     private RestHelper restHelper = new RestHelper();
 
     private ImmutableList<EntitiesStoredRecord> allActualEntitiesSortedByScore;
@@ -61,6 +60,8 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void maximum_amount_of_entities_should_not_exceed_percentage_or_static_limit() {
+        SoftAssertions softly = new SoftAssertions();
+
         ImmutableMap<String, Integer> expectedPercentageLimitBySeverity = new ImmutableMap.Builder<String, Integer>()
                 .put("CRITICAL", 1).put("HIGH", 4).put("MEDIUM", 10).build();
 
@@ -91,6 +92,8 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void score_distance_between_categories_should_not_exceed_static_limit() {
+        SoftAssertions softly = new SoftAssertions();
+
         ImmutableList<String> severities = ImmutableList.of("CRITICAL", "HIGH", "MEDIUM", "LOW");
 
         ImmutableMap<String, Double> expectedScoreDistance = new ImmutableMap.Builder<String, Double>()
@@ -158,6 +161,8 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void total_entity_score_equal_to_sum_of_related_alerts_severity_scores() {
+        SoftAssertions softly = new SoftAssertions();
+
         ImmutableMap<String, Integer> severityScoreMap = new ImmutableMap.Builder<String, Integer>()
                 .put("CRITICAL", 20).put("HIGH", 15).put("MEDIUM", 10).put("LOW", 1).build();
 

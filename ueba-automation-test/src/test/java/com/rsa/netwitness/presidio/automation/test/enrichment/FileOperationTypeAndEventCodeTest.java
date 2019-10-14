@@ -35,7 +35,6 @@ public class FileOperationTypeAndEventCodeTest extends AbstractTestNGSpringConte
 
     @Autowired
     private FileEnrichStoredDataRepository enrichRepo;
-    private SoftAssertions softly = new SoftAssertions();
 
     private Map<Integer, List<String>> expectedEventCodeToOperationTypes =
         ImmutableMap.of(
@@ -76,6 +75,7 @@ public class FileOperationTypeAndEventCodeTest extends AbstractTestNGSpringConte
 
     @Test
     public void operation_type_should_match_the_event_code() {
+        SoftAssertions softly = new SoftAssertions();
 
         Map<String, Set<String>> actualEvCodeToOpTypesResult = actualEvents.parallelStream()
                 .collect(groupingBy(FileEnrichStoredData::getDataSource,
@@ -97,6 +97,7 @@ public class FileOperationTypeAndEventCodeTest extends AbstractTestNGSpringConte
 
     @Test
     public void operation_type_categories_should_match_the_operation_type() {
+        SoftAssertions softly = new SoftAssertions();
 
         Map<String, Set<String[]>> actualOpTypesToOpTypeCategories = actualEvents.parallelStream()
                 .collect(groupingBy(FileEnrichStoredData::getOperationType,

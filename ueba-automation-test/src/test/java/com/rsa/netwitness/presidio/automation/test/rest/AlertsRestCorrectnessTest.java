@@ -31,7 +31,6 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
             LoggerFactory.getLogger(AlertsRestCorrectnessTest.class.getName());
 
     private RestHelper restHelper = new RestHelper();
-    private SoftAssertions softly = new SoftAssertions();
 
     @BeforeClass
     public void preconditionCheck() {
@@ -96,6 +95,8 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void severity_score_should_be_in_configuration_score_range() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         Map<String, Integer> configurationSeverityScores = OutputTestsUtils.getSeveritiesValues();
@@ -135,6 +136,8 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void entity_score_contribution_should_match_alert_severity_range() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         Map<String, Integer> configurationScoreContributions = OutputTestsUtils.getAlertEntityScoreContributions();
@@ -157,6 +160,8 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void no_missing_classifications_and_right_order() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
@@ -272,6 +277,8 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void indicators_list_is_not_empty() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
@@ -286,6 +293,8 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void alert_indicator_list_size_equals_to_indicators_name_size_and_indicators_num() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
@@ -304,6 +313,8 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void alerts_indicator_list_names_equals_to_indicator_name_list() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
@@ -324,6 +335,8 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void indicators_list_sorted_by_score_contribution_descending() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
@@ -341,6 +354,8 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void indicators_start_end_time_inside_alert_time_range() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
@@ -367,6 +382,8 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void sum_of_indicator_contribution_result_is_correct() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
@@ -387,6 +404,8 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void alert_time_range_is_one_hour() {
+        SoftAssertions softly = new SoftAssertions();
+
         PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 

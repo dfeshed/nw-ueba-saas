@@ -83,7 +83,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .as("Error exit code.\nCheck the log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessScoreAggr[" + schema.toUpperCase() + "] completed successfully.");
@@ -116,7 +116,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath)
+                    .as("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessModelFeatureBuckets[" + schema.toUpperCase() + "] completed successfully.");
@@ -148,7 +148,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath)
+                    .as("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessSmart[" + entity.toUpperCase() + "] completed successfully.");
@@ -180,7 +180,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath)
+                    .as("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessAccumulateSmart[" + entity.toUpperCase() + "] completed successfully.");
@@ -213,7 +213,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath)
+                    .as("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessModeling[" + group_name.toUpperCase() + "] completed successfully.");
@@ -247,7 +247,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code.Log: " + logPath)
+                    .as("Error exit code.Log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessAccumulateAggr[" + schema.toUpperCase() + "] completed successfully.");
@@ -284,7 +284,7 @@ public class AdeDataProcessingManager {
 
             printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code. Log: " + logPath)
+                    .as("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
             LOGGER.info("ProcessFeatureAggr[" + schema.toUpperCase() + "] completed successfully.");
