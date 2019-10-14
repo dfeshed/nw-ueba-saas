@@ -416,7 +416,7 @@ export const nestChildEvents = createSelector(
 
         if (isEmpty(event['session.split'])) {
           if (event.groupedWithoutSplit) {
-            event.eventIndex = parent.eventIndex + parseFloat(`.${event.time}`);
+            event.eventIndex = parent.eventIndex + parseFloat(`.${new Date(event.time).getTime()}`);
           } else {
             event.eventIndex = parent.eventIndex;
           }

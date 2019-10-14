@@ -1937,7 +1937,7 @@ module('Unit | Selectors | event-results', function(hooks) {
         eventResults: {
           data: [
             {
-              'time': 300,
+              'time': new Date(1571066026000 - 100000),
               'ip.dst': '127.0.0.1',
               'ip.src': '127.0.0.1',
               'tcp.srcport': 25,
@@ -1945,7 +1945,7 @@ module('Unit | Selectors | event-results', function(hooks) {
               sessionId: 1
             },
             {
-              'time': 100,
+              'time': new Date(1571066026000 - 300000),
               'ip.dst': '127.0.0.1',
               'ip.src': '127.0.0.1',
               'tcp.srcport': 25,
@@ -1953,7 +1953,7 @@ module('Unit | Selectors | event-results', function(hooks) {
               sessionId: 2
             },
             {
-              'time': 200,
+              'time': new Date(1571066026000 - 200000),
               'ip.dst': '127.0.0.1',
               'ip.src': '127.0.0.1',
               'tcp.srcport': 25,
