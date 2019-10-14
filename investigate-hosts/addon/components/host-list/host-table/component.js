@@ -15,6 +15,7 @@ import {
   hostTotalLabel,
   nextLoadCount,
   isScanStartButtonDisabled,
+  isScanStopButtonDisabled,
   isAllHostSelected,
   isSortDescending,
   sortField
@@ -50,6 +51,7 @@ const stateToComputed = (state) => ({
   selections: state.endpoint.machines.selectedHostList || [],
   nextLoadCount: nextLoadCount(state),
   isScanStartButtonDisabled: isScanStartButtonDisabled(state),
+  isScanStopButtonDisabled: isScanStopButtonDisabled(state),
   isAllHostSelected: isAllHostSelected(state),
   isSortDescending: isSortDescending(state),
   sortField: sortField(state)

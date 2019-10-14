@@ -114,6 +114,27 @@ const endpointState =
     endpointQuery
   };
 
+const endpointScanPending = {
+  endpoint:
+     {
+       schema: { schema: endpoint.schema },
+       machines: {
+         hostList: hostListState.machines.hostList, selectedHostList: [ { version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'pending' }],
+         hostColumnSort: 'machineIdentity.machineName',
+         focusedHost: null
+       }
+     },
+  preferences: {
+    preferences: {
+      machinePreference: {
+        columnConfig: config
+      }
+    }
+  },
+  endpointServer,
+  endpointQuery
+};
+
 const dummySelectedHostList = new Array(101)
   .join().split(',')
   .map(function(item, index) {
@@ -410,8 +431,8 @@ module('Integration | Component | host-list', function(hooks) {
     });
   });
 
-  test('stop scan action is getting called', async function(assert) {
-    setState(endpointState);
+  test('testscan stop scan action is getting called', async function(assert) {
+    setState(endpointScanPending);
     this.set('closeProperties', () => {});
     this.set('openProperties', () => {});
     await render(hbs`
@@ -430,11 +451,34 @@ module('Integration | Component | host-list', function(hooks) {
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
-      await click(`#${menuItems[3].id}`); // START_SCAN
+      await click(`#${menuItems[3].id}`); // STOP_SCAN
       return settled().then(async() => {
         await click(document.querySelector('.scan-command button'));
         assert.equal(stopScanSpy.callCount, 1, 'Stop Scan action is called');
       });
+    });
+  });
+
+
+  test('For agents scan status in pending state, stop scan is enabled', async function(assert) {
+    setState(endpointScanPending);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items[2].classList.contains('context-menu__item--disabled'), true, 'Context menu start scan option disabled');
+      assert.equal(items[3].classList.contains('context-menu__item--disabled'), false, 'Context menu stop scan option disabled');
     });
   });
 

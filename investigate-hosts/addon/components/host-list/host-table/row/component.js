@@ -80,7 +80,7 @@ export default DataTableBodyRow.extend({
           context.showScanModal('STOP_SCAN');
         },
         disabled(selection, context) {
-          return context.get('isScanStartButtonDisabled');
+          return context.get('isScanStopButtonDisabled');
         }
       },
       {
