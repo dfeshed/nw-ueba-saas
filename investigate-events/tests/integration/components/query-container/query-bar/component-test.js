@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -124,7 +124,7 @@ module('Integration | Component | Query Bar', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.queryPill)[0].textContent.replace(/\s/g, ''), 'a=1', 'pill text is correct');
   });
 
-  skip('Toggling from free form with complex input to pills will create complex pills', async function(assert) {
+  test('Toggling from free form with complex input to pills will create complex pills', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .pillsDataEmpty(true)
@@ -142,14 +142,14 @@ module('Integration | Component | Query Bar', function(hooks) {
 
     // Create pill
     await click(PILL_SELECTORS.freeFormInput);
-    await fillIn(PILL_SELECTORS.freeFormInput, '( adslkjalksdj AND asdasdsad)');
+    await fillIn(PILL_SELECTORS.freeFormInput, '(medium = 1');
     await blur(PILL_SELECTORS.freeFormBarContainer);
 
     await click(SELECTORS.queryFormatGuidedToggle);
 
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'The template is the only query pill present');
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 1, 'there is a complex pill');
-    assert.equal(findAll(PILL_SELECTORS.complexPill)[0].textContent.replace(/\s/g, ''), '(adslkjalksdjANDasdasdsad)', 'pill text is correct');
+    assert.equal(findAll(PILL_SELECTORS.complexPill)[0].textContent.replace(/\s/g, ''), '(medium=1', 'pill text is correct');
   });
 
   test('Initial render of query pills will not have focus', async function(assert) {

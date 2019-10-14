@@ -307,9 +307,6 @@ export const transformTextToPillData = (queryText, { language, aliases, shouldFo
 const _treeToPills = (tree) => {
   // pills holds criteria that have been definitively turned into pills
   const pills = [];
-  // itemList holds parsed items that may or may not be included in a complex
-  // pill, depending on whether or not they are next to an OR (`||`)
-  let itemList = [];
   // We can only add one text pill, so don't allow more than the first we see
   let textPillAdded = false;
   // tree.children holds parsed items (groups, criteria, AND, OR)
@@ -319,46 +316,25 @@ const _treeToPills = (tree) => {
       if (!textPillAdded) {
         textPillAdded = true;
         pills.push(_createTextQueryFilter(item.text));
+      } else if (pills.lastItem?.type === OPERATOR_AND || pills.lastItem?.type === OPERATOR_OR) {
+        // If an extra text pill was included, remove the operator before it (if it exists)
+        pills.splice(pills.lastIndex, 1);
       }
+    } else if (item.type === GRAMMAR.CRITERIA) {
+      pills.push(_criteriaToPill(item));
+    } else if (item.type === LEXEMES.AND) {
+      pills.push(_createOperatorAND());
+    } else if (item.type === LEXEMES.OR) {
+      pills.push(_createOperatorOR());
+    } else if (item.type === GRAMMAR.GROUP) {
+      // Push open paren, any inside pills, close paren.
+      const groupWithParens = createParens();
+      groupWithParens.splice(1, 0, ..._treeToPills(item.group));
+      pills.push(...groupWithParens);
+    } else if (item.type === GRAMMAR.COMPLEX_FILTER) {
+      pills.push(_createComplexQueryFilter(`${Parser.transformToString(item)}`));
     } else {
-      itemList.push(item);
-    }
-
-    // If the next item is a logical AND, add the pill(s) we just saw and consume the AND
-    if ((tree.children.length > 0 && tree.children[0].type === LEXEMES.AND) || tree.children.length === 0) {
-      // Consume the AND
-      tree.children.shift();
-      // If there is only one item waiting to be made into a pill, do that
-      // This happens when the item before does not have an OR in front of it
-      if (itemList.length === 1) {
-        const item = itemList.shift();
-        // If that one item is a normal criteria, turn it into a pill
-        if (item.type === GRAMMAR.CRITERIA) {
-          pills.push(_criteriaToPill(item));
-        // If that one item is a group, add it as a pill IF it only has a single
-        // child which is a criteria. Otherwise, add it as a complex pill.
-        } else if (item.type === GRAMMAR.GROUP) {
-          // Push open paren, any inside pills, close paren.
-          const groupWithParens = createParens();
-          groupWithParens.splice(1, 0, ..._treeToPills(item.group));
-          pills.push(...groupWithParens);
-        } else if (item.type === GRAMMAR.COMPLEX_FILTER) {
-          pills.push(_createComplexQueryFilter(`${Parser.transformToString(item)}`));
-        } else {
-          pills.push(_createComplexQueryFilter(`(${Parser.transformToString(item)})`));
-        }
-      // If there is more than one criteria waiting, they are a complex pill. Transform them all back to strings
-      // and join them together, then add as one complex pill. This happens when the criteria before has at least
-      // one OR and other criteria in front of it. The UI cannot handle this yet, so make it complex.
-      } else if (itemList.length > 1) {
-        pills.push(_createComplexQueryFilter(`(${itemList.map(Parser.transformToString).join('')})`));
-        itemList = [];
-      }
-    } else if (tree.children.length > 0 && tree.children[0].type === LEXEMES.OR) {
-      // Otherwise if it's an OR, add the OR to itemList to be added together in a bigger complex pill
-      // This will tree in any criteria on the right or left of this OR and any before/after it all getting
-      // combined into a larger complex pill.
-      itemList.push(tree.children.shift());
+      pills.push(_createComplexQueryFilter(`(${Parser.transformToString(item)})`));
     }
   }
 

@@ -157,7 +157,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       const { queryNode } = redux.getState().investigate;
       const hashes = queryNode.pillDataHashes || [];
       const pillDataHashesPresent = hashes.length === 3 && hashes[0] === 'd9ee';
-      const pillsDataPopulated = queryNode.pillsData.length === 3;
+      const pillsDataPopulated = queryNode.pillsData.length === 5;
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
         assert.ok(true, 'all the expected initial data was populated and query executed');
         fetchInvestigateDataSpy.restore();
@@ -190,7 +190,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       const { queryNode } = redux.getState().investigate;
       const hashes = queryNode.pillDataHashes || [];
       const pillDataHashesPresent = hashes.length === 1 && hashes[0] === 'e880';
-      const pillsDataPopulated = queryNode.pillsData.length === 2;
+      const pillsDataPopulated = queryNode.pillsData.length === 3;
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
         assert.ok(true, 'all the expected initial data was populated and query executed');
         fetchInvestigateDataSpy.restore();
@@ -223,7 +223,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       const { queryNode } = redux.getState().investigate;
       const hashes = queryNode.pillDataHashes || [];
       const pillDataHashesPresent = hashes.length === 4 && hashes[0] === 'd9ee';
-      const pillsDataPopulated = queryNode.pillsData.length === 5;
+      const pillsDataPopulated = queryNode.pillsData.length === 9;
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
         assert.ok(true, 'all the expected initial data was populated and query executed');
         fetchInvestigateDataSpy.restore();
@@ -293,7 +293,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       const hashes = queryNode.pillDataHashes || [];
       const pillDataHashesPresent = hashes.length === 2 && hashes.includes('d9ee');
       const arePillsInOrder = (hashes.indexOf('d9ee') === 0);
-      const pillsDataPopulated = queryNode.pillsData.length === 2;
+      const pillsDataPopulated = queryNode.pillsData.length === 3;
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated && arePillsInOrder) {
         assert.ok(true, 'all the expected initial data was populated and query executed');
         fetchInvestigateDataSpy.restore();

@@ -9,6 +9,7 @@ import fetchRecentQueries from './fetch/recent-queries';
 import fetchValueSuggestions from './fetch/value-suggestions';
 import { parseBasicQueryParams } from 'investigate-events/actions/utils';
 import { isSearchTerm, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/util/query-parsing';
+import { OperatorAnd } from 'investigate-events/util/grammar-types';
 import { extractSearchTermFromFilters } from 'investigate-shared/actions/api/events/utils';
 import { fetchColumnGroups } from './fetch/column-group';
 import { fetchProfiles } from './fetch/profiles';
@@ -265,9 +266,10 @@ const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigate
           getParamsForHashes(allHashIds).then(({ data: paramsObjectArray }) => {
             const paramsArray = paramsObjectArray.map((pO) => pO.query);
             const { language, aliases } = languageAndAliasesForParser(getState());
-            const newPillData = paramsArray.map((singleParams) => {
-              return transformTextToPillData(singleParams, { language, aliases });
+            const newPillData = paramsArray.flatMap((singleParams) => {
+              return [ transformTextToPillData(singleParams, { language, aliases }), OperatorAnd.create() ];
             });
+            newPillData.splice(newPillData.lastIndex, 1);
 
             // update pills with combined params of pdhash and mf returned by getParamsForHashes
             dispatch({
@@ -395,8 +397,9 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
         // and dispatch those to state. transformTextToPillData now returns
         // an array of pills so flatten after mapping.
         const newPillData = paramsArray.flatMap((singleParams) => {
-          return transformTextToPillData(singleParams, { language, aliases, returnMany: true });
+          return [ ...transformTextToPillData(singleParams, { language, aliases, returnMany: true }), OperatorAnd.create() ];
         });
+        newPillData.splice(newPillData.lastIndex, 1);
 
         // Was there a text search string?
         if (searchTextString) {
