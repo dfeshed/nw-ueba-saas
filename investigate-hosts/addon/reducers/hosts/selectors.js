@@ -304,6 +304,14 @@ const _agentVersion = createSelector(
     return isAgentVersionAdvanced(version);
   });
 
+export const agentVersionSupported = createSelector(
+  [_selectedHostList],
+  (selectedHostList) => {
+    const { version } = selectedHostList.length ? selectedHostList[0] : { version: '0.0' };
+    const versionParts = version.split('.');
+    return Number(versionParts[0]) > 10 && Number(versionParts[1]) > 3;
+  });
+
 export const mftDownloadButtonStatus = createSelector(
   [_isMachineOSWindows, _agentMode, _agentVersion],
   (isMachineOSWindows, agentMode, agentVersion) => {

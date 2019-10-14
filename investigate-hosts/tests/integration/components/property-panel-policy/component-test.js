@@ -22,6 +22,8 @@ module('Integration | Component | property panel policy', function(hooks) {
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
+  const hostList = [{ version: '11.4.0.0' }];
+
   const policyData = {
     serviceId: '63de7bb3-fcd3-415a-97bf-7639958cd5e6',
     serviceName: 'Node-X - Endpoint Server',
@@ -96,7 +98,7 @@ module('Integration | Component | property panel policy', function(hooks) {
   };
 
   test('it renders', async function(assert) {
-    new ReduxDataHelper(setState).policy(policyData).build();
+    new ReduxDataHelper(setState).selectedHostList(hostList).policy(policyData).build();
     await render(hbs`{{property-panel-policy}}`);
     assert.equal(findAll('.host-property-panel').length, 1, 'should rend the component');
     assert.equal(findAll('.blue').length, 3, 'All three acordions are rendering');
@@ -131,7 +133,7 @@ module('Integration | Component | property panel policy', function(hooks) {
   };
 
   test('noWindowsLogPolicy renders', async function(assert) {
-    new ReduxDataHelper(setState).policy(noWindowsLogPolicy).build();
+    new ReduxDataHelper(setState).policy(noWindowsLogPolicy).selectedHostList(hostList).build();
     await render(hbs`{{property-panel-policy}}`);
     assert.equal(findAll('.host-property-panel').length, 1, 'should rend the component');
     assert.equal(findAll('.blue').length, 2, 'two acordions are rendering');
@@ -140,7 +142,7 @@ module('Integration | Component | property panel policy', function(hooks) {
   });
 
   test('noFilePolicies renders', async function(assert) {
-    new ReduxDataHelper(setState).policy(noFilePolicies).build();
+    new ReduxDataHelper(setState).policy(noFilePolicies).selectedHostList(hostList).build();
     await render(hbs`{{property-panel-policy}}`);
     assert.equal(findAll('.host-property-panel').length, 1, 'should rend the component');
     assert.equal(findAll('.blue').length, 2, 'two acordions are rendering');
@@ -149,7 +151,7 @@ module('Integration | Component | property panel policy', function(hooks) {
   });
 
   test('noWindowsLogAndFilePolicies renders', async function(assert) {
-    new ReduxDataHelper(setState).policy(noWindowsLogAndFilePolicies).build();
+    new ReduxDataHelper(setState).policy(noWindowsLogAndFilePolicies).selectedHostList(hostList).build();
     await render(hbs`{{property-panel-policy}}`);
     assert.equal(findAll('.host-property-panel').length, 1, 'should rend the component');
     assert.equal(findAll('.blue').length, 1, 'one acordion is rendering');
@@ -158,7 +160,7 @@ module('Integration | Component | property panel policy', function(hooks) {
   });
 
   test('General data', async function(assert) {
-    new ReduxDataHelper(setState).policy(policyData).build();
+    new ReduxDataHelper(setState).policy(policyData).selectedHostList(hostList).build();
     await render(hbs`{{property-panel-policy}}`);
     assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'GENERAL', 'GENERAL section shows');
     assert.equal(document.querySelectorAll('.property-name')[0].textContent.trim(), 'Evaluated Time', 'Evaluated Time lable shows');
@@ -167,7 +169,7 @@ module('Integration | Component | property panel policy', function(hooks) {
   });
 
   test('on clicking agent-accordion', async function(assert) {
-    new ReduxDataHelper(setState).policy(policyData).build();
+    new ReduxDataHelper(setState).policy(policyData).selectedHostList(hostList).build();
     await render(hbs`{{property-panel-policy}}`);
     assert.equal(document.querySelectorAll('.agent-accordion .liquid-container').length, 1, 'agent-accordion did render');
     assert.equal(document.querySelectorAll('.agent-accordion .liquid-container .liquid-child').length, 0, 'agent-accordion is colapsed');
@@ -178,7 +180,7 @@ module('Integration | Component | property panel policy', function(hooks) {
   });
 
   test('on clicking windows-accordion', async function(assert) {
-    new ReduxDataHelper(setState).policy(policyData).build();
+    new ReduxDataHelper(setState).policy(policyData).selectedHostList(hostList).build();
     await render(hbs`{{property-panel-policy}}`);
     assert.equal(document.querySelectorAll('.windows-accordion .liquid-container').length, 1, 'windows-accordion did render');
     assert.equal(document.querySelectorAll('.windows-accordion .liquid-container .liquid-child').length, 0, 'windows-accordion is colapsed');
@@ -188,10 +190,11 @@ module('Integration | Component | property panel policy', function(hooks) {
     });
   });
 
+  const hostListSupported = [{ version: '11.5.0.0' }];
   test('on clicking file-accordion', async function(assert) {
-    new ReduxDataHelper(setState).policy(policyData).build();
+    new ReduxDataHelper(setState).policy(policyData).selectedHostList(hostListSupported).build();
     await render(hbs`{{property-panel-policy}}`);
-    assert.equal(document.querySelectorAll('.file-accordion .liquid-container').length, 1, 'file-accordion did render');
+    assert.equal(document.querySelectorAll('.file-accordion .liquid-container').length, 1, 'hostListSupported file-accordion did render');
     assert.equal(document.querySelectorAll('.file-accordion .liquid-container .liquid-child').length, 0, 'file-accordion is colapsed');
     await click('.file-accordion h3');
     return settled().then(() => {
@@ -199,4 +202,23 @@ module('Integration | Component | property panel policy', function(hooks) {
     });
   });
 
+  test('agentVersionSupported IS supporting file-accordion', async function(assert) {
+    new ReduxDataHelper(setState).selectedHostList(hostList).policy(policyData).build();
+    await render(hbs`{{property-panel-policy}}`);
+    assert.equal(document.querySelectorAll('.file-accordion .liquid-container').length, 1, 'file-accordion DID render');
+  });
+
+  const hostListNotSupported = [{ version: '11.3.0.0' }];
+  test('hostListNotSupported NOT supporting file-accordion', async function(assert) {
+    new ReduxDataHelper(setState).selectedHostList(hostListNotSupported).policy(policyData).build();
+    await render(hbs`{{property-panel-policy}}`);
+    assert.equal(document.querySelectorAll('.file-accordion .liquid-container').length, 0, 'file-accordion did NOT render');
+  });
+
+  const hostListNotSupported2 = [{ version: '10.4.0.0' }];
+  test('hostListNotSupported2 NOT supporting file-accordion', async function(assert) {
+    new ReduxDataHelper(setState).selectedHostList(hostListNotSupported2).policy(policyData).build();
+    await render(hbs`{{property-panel-policy}}`);
+    assert.equal(document.querySelectorAll('.file-accordion .liquid-container').length, 0, 'test 2 file-accordion did NOT render');
+  });
 });

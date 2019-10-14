@@ -25,7 +25,8 @@ import {
   actionsDisableMessage,
   isolationComment,
   excludedIps,
-  selectedHostDetails } from 'investigate-hosts/reducers/hosts/selectors';
+  selectedHostDetails,
+  agentVersionSupported } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
 const STATE = Immutable.from({
@@ -897,6 +898,56 @@ test('mftDownloadButtonStatus', function(assert) {
   });
   const result5 = mftDownloadButtonStatus(state5);
   assert.deepEqual(result5, { isDisplayed: true });
+});
+
+test('agentVersionSupported', function(assert) {
+  const state1 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          version: '11.4.0.0'
+        }]
+      }
+    }
+  });
+  const result1 = agentVersionSupported(state1);
+  assert.deepEqual(result1, true);
+
+  const state2 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          version: '11.3.0.0'
+        }]
+      }
+    }
+  });
+  const result2 = agentVersionSupported(state2);
+  assert.deepEqual(result2, false);
+
+  const state3 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          version: '11.5.0.0'
+        }]
+      }
+    }
+  });
+  const result3 = agentVersionSupported(state3);
+  assert.deepEqual(result3, true);
+
+  const state4 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          version: '10.5.0.0'
+        }]
+      }
+    }
+  });
+  const result4 = agentVersionSupported(state4);
+  assert.deepEqual(result4, false);
 });
 
 test('processedHostList', function(assert) {
