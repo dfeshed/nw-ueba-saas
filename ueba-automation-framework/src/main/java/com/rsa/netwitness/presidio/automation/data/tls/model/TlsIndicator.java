@@ -16,7 +16,7 @@ public class TlsIndicator {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(TlsIndicator.class);
 
     public final String entity;
-    public final String entityType;
+    public final EntityType entityType;
     public final String name;
 
     List<String> keys = new ArrayList<>();
@@ -25,7 +25,7 @@ public class TlsIndicator {
     EventsGen eventsGenerator;
     Instant unregularHoursStartTime;
 
-    TlsIndicator(String entity, String entityType, String name) {
+    public TlsIndicator(String entity, EntityType entityType, String name) {
         LOGGER.info("    ---> Entity: " + entity);
         this.name = name;
         this.entity = entity;
@@ -48,32 +48,32 @@ public class TlsIndicator {
         return eventsGenerator.getEvents();
     }
 
-    void setEventsGenerator(EventsGen eventsGenerator) {
+    public void setEventsGenerator(EventsGen eventsGenerator) {
         this.eventsGenerator = eventsGenerator;
     }
 
-    void addKeys(List<String> values) {
-        LOGGER.info("    ---> Keys: " + String.join( ", ", values));
+    public void addContext(List<String> values) {
+        LOGGER.info("    ---> Context: " + String.join( ", ", values));
         keys.addAll(values);
     }
-    void addNormalValues(List<String> values) {
+    public void addNormalValues(List<String> values) {
         LOGGER.info("    ---> Normal values: " + String.join( ", ", values));
         normalValues.addAll(values);
     }
-    void addAbnormalValues(List<String> values) {
+    public void addAbnormalValues(List<String> values) {
         LOGGER.info("    ---> Abnormal values: " + String.join( ", ", values));
         abnormalValues.addAll(values);
     }
 
-    <T> void addKeys(List<T> values, Function<T, String> toString) {
+    public <T> void addContext(List<T> values, Function<T, String> toString) {
         List<String> valuesConverted = values.stream().map(toString).collect(toList());
-        addKeys(valuesConverted);
+        addContext(valuesConverted);
     }
-    <T> void addNormalValues(List<T> values, Function<T, String> toString) {
+    public <T> void addNormalValues(List<T> values, Function<T, String> toString) {
         List<String> valuesConverted = values.stream().map(toString).collect(toList());
         addNormalValues(valuesConverted);
     }
-    <T> void addAbnormalValues(List<T> values, Function<T, String> toString) {
+    public <T> void addAbnormalValues(List<T> values, Function<T, String> toString) {
         List<String> valuesConverted = values.stream().map(toString).collect(toList());
         addAbnormalValues(valuesConverted);
     }

@@ -1,27 +1,24 @@
 package com.rsa.netwitness.presidio.automation.data.tls.model;
 
 import ch.qos.logback.classic.Logger;
-import com.rsa.netwitness.presidio.automation.data.tls.events_gen.UncommonValueIndicatorEventsGen;
 import com.rsa.netwitness.presidio.automation.data.tls.events_gen.UnregularHoursIndicatorEventsGen;
-import com.rsa.netwitness.presidio.automation.data.tls.feilds_gen.TlsEventsGen;
+import com.rsa.netwitness.presidio.automation.data.tls.indicators.AbnormalTraffic;
+import com.rsa.netwitness.presidio.automation.data.tls.indicators.UncommonEntityForContext;
+import com.rsa.netwitness.presidio.automation.data.tls.indicators.UncommonValueForContext;
+import com.rsa.netwitness.presidio.automation.data.tls.indicators.UncommonValueForEntity;
 import org.slf4j.LoggerFactory;
 import presidio.data.domain.Location;
-import presidio.data.generators.IBaseGenerator;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import presidio.data.generators.event.tls.TlsRangeEventsGen;
 
 public class SslSubjectTlsAlert {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(SslSubjectTlsAlert.class);
 
     private final TlsAlert alert;
 
-    private final int HISTORICAL_DATA_COMMON_VALUES = 2;
-    private final int UNCOMMON_DATA_VALUES = 2;
+    private final int HISTORICAL_DATA_COMMON_VALUES = 3;
     private final int dataPeriod;
     private final int uncommonStartDay;
-    private final String TYPE = "ssl_subject";
+    private final EntityType TYPE = EntityType.SSL_SUBJECT;
 
     public SslSubjectTlsAlert(String entity, int dataPeriod, int uncommonStartDay) {
         alert = new TlsAlert(entity, TYPE);
@@ -40,10 +37,11 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen abnormalValueGen = new TlsEventsGen(1).setConstantValueSslSubject(alert.entity);
+        TlsRangeEventsGen abnormalValueGen = new TlsRangeEventsGen(1);
+        abnormalValueGen.sslSubjectGen.setConstantValueGen(alert.entity);
 
-        TlsEventsGen historyGen = abnormalValueGen.copy();
-        historyGen.nextJa3Generator(1);
+        TlsRangeEventsGen historyGen = abnormalValueGen.copy();
+        historyGen.ja3Gen.nextRangeGenCyclic(1);
 
         TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
         UnregularHoursIndicatorEventsGen eventsSupplier = new UnregularHoursIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
@@ -53,8 +51,8 @@ public class SslSubjectTlsAlert {
 
         indicator.unregularHoursStartTime = eventsSupplier.getUnregularStartTimeSslSubject();
         indicator.setEventsGenerator(eventsSupplier);
-        indicator.addNormalValues(getValues(historyGen.getSslSubjectGenerator(), 1));
-        indicator.addAbnormalValues(getValues(abnormalValueGen.getSslSubjectGenerator(), 1));
+        indicator.addNormalValues(historyGen.sslSubjectGen.getGenerator().getAllValues());
+        indicator.addAbnormalValues(abnormalValueGen.sslSubjectGen.getGenerator().getAllValues());
         alert.indicators.add(indicator);
         return this;
     }
@@ -65,10 +63,11 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen abnormalValueGen = new TlsEventsGen(1).setConstantValueSslSubject(alert.entity);
+        TlsRangeEventsGen abnormalValueGen = new TlsRangeEventsGen(1);
+        abnormalValueGen.sslSubjectGen.setConstantValueGen(alert.entity);
 
-        TlsEventsGen historyGen = abnormalValueGen.copy();
-        historyGen.nextSslSubjectGenerator(1);
+        TlsRangeEventsGen historyGen = abnormalValueGen.copy();
+        historyGen.sslSubjectGen.nextRangeGenCyclic(1);
 
         TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
         UnregularHoursIndicatorEventsGen eventsSupplier = new UnregularHoursIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
@@ -79,8 +78,8 @@ public class SslSubjectTlsAlert {
         indicator.unregularHoursStartTime = eventsSupplier.getUnregularStartTimeJa3();
 
         indicator.setEventsGenerator(eventsSupplier);
-        indicator.addNormalValues(getValues(historyGen.getJa3Generator(), 1));
-        indicator.addAbnormalValues(getValues(abnormalValueGen.getJa3Generator(), 1));
+        indicator.addNormalValues(historyGen.ja3Gen.getGenerator().getAllValues());
+        indicator.addAbnormalValues(abnormalValueGen.ja3Gen.getGenerator().getAllValues());
         alert.indicators.add(indicator);
         return this;
     }
@@ -91,32 +90,14 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
-        IBaseGenerator<String> keyGen = commonEventsGen.getSourceNetnameGen();
-        IBaseGenerator<String> commonValuesGen = commonEventsGen.getDestinationOrganizationGenerator();
-
-        TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.nextSrcNetnameGenerator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.nextDstOrgGenerator(UNCOMMON_DATA_VALUES);
-        uncommonValuesHistoryGen.setDestinationOrganizationGenerator(abnormalValuesGen);
-
-        TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueSslSubject(alert.entity);
-        uncommonGen.setSourceNetnameGen(keyGen);
-        uncommonGen.setDestinationOrganizationGenerator(abnormalValuesGen);
-
-        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addNormalValues(getValues(commonValuesGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addAbnormalValues(getValues(abnormalValuesGen, UNCOMMON_DATA_VALUES));
-
-        UncommonValueIndicatorEventsGen eventsSupplier = new UncommonValueIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setCommonValuesGen(commonEventsGen)
-                .setUncommonValuesAnomalyGen(uncommonGen)
-                .setUncommonValuesHistoryGen(uncommonValuesHistoryGen);
-
-        indicator.setEventsGenerator(eventsSupplier);
-        alert.indicators.add(indicator);
+        UncommonValueForContext<String, String> indicatorCreator = new UncommonValueForContext<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen commonEventsGen = indicatorCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.srcNetnameGen, eventsGenInit.dstOrgGen);
+        TlsRangeEventsGen uncommonHistoryGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesHistoryGen(uncommonHistoryGen, uncommonHistoryGen.srcNetnameGen, uncommonHistoryGen.dstOrgGen);
+        TlsRangeEventsGen uncommonAlertGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesAnomalyGen(uncommonAlertGen, uncommonAlertGen.srcNetnameGen, uncommonAlertGen.dstOrgGen);
+        alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
 
@@ -126,31 +107,14 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
-        IBaseGenerator<String> keyGen = commonEventsGen.getSourceNetnameGen();
-        IBaseGenerator<String> commonValuesGen = commonEventsGen.getSslSubjectGenerator();
-
-        TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.nextSrcNetnameGenerator(UNCOMMON_DATA_VALUES);
-        uncommonValuesHistoryGen.setConstantValueSslSubject(alert.entity);
-        IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.getSslSubjectGenerator();
-
-        TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueSslSubject(alert.entity);
-        uncommonGen.setSourceNetnameGen(keyGen);
-
-        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addNormalValues(getValues(commonValuesGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addAbnormalValues(getValues(abnormalValuesGen, UNCOMMON_DATA_VALUES));
-
-        UncommonValueIndicatorEventsGen eventsSupplier = new UncommonValueIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setCommonValuesGen(commonEventsGen)
-                .setUncommonValuesAnomalyGen(uncommonGen)
-                .setUncommonValuesHistoryGen(uncommonValuesHistoryGen);
-
-        indicator.setEventsGenerator(eventsSupplier);
-        alert.indicators.add(indicator);
+        UncommonEntityForContext<String> indicatorCreator = new UncommonEntityForContext<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen commonEventsGen = indicatorCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.srcNetnameGen, eventsGenInit.sslSubjectGen);
+        TlsRangeEventsGen uncommonHistoryGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesHistoryGen(uncommonHistoryGen, uncommonHistoryGen.srcNetnameGen, uncommonHistoryGen.sslSubjectGen);
+        TlsRangeEventsGen uncommonAlertGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesAnomalyGen(uncommonAlertGen, uncommonAlertGen.srcNetnameGen, uncommonAlertGen.sslSubjectGen);
+        alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
 
@@ -159,31 +123,14 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
-        IBaseGenerator<String> keyGen = commonEventsGen.getSourceNetnameGen();
-        IBaseGenerator<String> commonValuesGen = commonEventsGen.getFqdnGenerator();
-
-        TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.nextSrcNetnameGenerator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.nextFqdnGenerator(UNCOMMON_DATA_VALUES);
-
-        TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueSslSubject(alert.entity);
-        uncommonGen.setSourceNetnameGen(keyGen);
-        uncommonGen.setFqdnGenerator(abnormalValuesGen);
-
-        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addNormalValues(getValues(commonValuesGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addAbnormalValues(getValues(abnormalValuesGen, UNCOMMON_DATA_VALUES));
-
-        UncommonValueIndicatorEventsGen eventsSupplier = new UncommonValueIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setCommonValuesGen(commonEventsGen)
-                .setUncommonValuesAnomalyGen(uncommonGen)
-                .setUncommonValuesHistoryGen(uncommonValuesHistoryGen);
-
-        indicator.setEventsGenerator(eventsSupplier);
-        alert.indicators.add(indicator);
+        UncommonValueForContext<String, String> indicatorCreator = new UncommonValueForContext<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen commonEventsGen = indicatorCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.srcNetnameGen, eventsGenInit.hostnameGen);
+        TlsRangeEventsGen uncommonHistoryGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesHistoryGen(uncommonHistoryGen, uncommonHistoryGen.srcNetnameGen, uncommonHistoryGen.hostnameGen);
+        TlsRangeEventsGen uncommonAlertGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesAnomalyGen(uncommonAlertGen, uncommonAlertGen.srcNetnameGen, uncommonAlertGen.hostnameGen);
+        alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
 
@@ -192,31 +139,14 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
-        IBaseGenerator<String> keyGen = commonEventsGen.getSourceNetnameGen();
-        IBaseGenerator<Integer> commonValuesGen = commonEventsGen.getDestinationPortGenerator();
-
-        TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.nextSrcNetnameGenerator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<Integer> abnormalValuesGen = uncommonValuesHistoryGen.nextDstPortGenerator(UNCOMMON_DATA_VALUES);
-
-        TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueSslSubject(alert.entity);
-        uncommonGen.setSourceNetnameGen(keyGen);
-        uncommonGen.setDestinationPortGenerator(abnormalValuesGen);
-
-        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addNormalValues(getValues(commonValuesGen, HISTORICAL_DATA_COMMON_VALUES), String::valueOf);
-        indicator.addAbnormalValues(getValues(abnormalValuesGen, UNCOMMON_DATA_VALUES), String::valueOf);
-
-        UncommonValueIndicatorEventsGen eventsSupplier = new UncommonValueIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setCommonValuesGen(commonEventsGen)
-                .setUncommonValuesAnomalyGen(uncommonGen)
-                .setUncommonValuesHistoryGen(uncommonValuesHistoryGen);
-
-        indicator.setEventsGenerator(eventsSupplier);
-        alert.indicators.add(indicator);
+        UncommonValueForContext<String, Integer> indicatorCreator = new UncommonValueForContext<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen commonEventsGen = indicatorCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.srcNetnameGen, eventsGenInit.dstPortGen);
+        TlsRangeEventsGen uncommonHistoryGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesHistoryGen(uncommonHistoryGen, uncommonHistoryGen.srcNetnameGen, uncommonHistoryGen.dstPortGen);
+        TlsRangeEventsGen uncommonAlertGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesAnomalyGen(uncommonAlertGen, uncommonAlertGen.srcNetnameGen, uncommonAlertGen.dstPortGen);
+        alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
 
@@ -226,31 +156,14 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
-        IBaseGenerator<String> keyGen = commonEventsGen.getFqdnGenerator();
-        IBaseGenerator<Integer> commonValuesGen = commonEventsGen.getDestinationPortGenerator();
-
-        TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.nextFqdnGenerator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<Integer> abnormalValuesGen = uncommonValuesHistoryGen.nextDstPortGenerator(UNCOMMON_DATA_VALUES);
-
-        TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueSslSubject(alert.entity);
-        uncommonGen.setFqdnGenerator(keyGen);
-        uncommonGen.setDestinationPortGenerator(abnormalValuesGen);
-
-        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addNormalValues(getValues(commonValuesGen, HISTORICAL_DATA_COMMON_VALUES), String::valueOf);
-        indicator.addAbnormalValues(getValues(abnormalValuesGen, UNCOMMON_DATA_VALUES), String::valueOf);
-
-        UncommonValueIndicatorEventsGen eventsSupplier = new UncommonValueIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setCommonValuesGen(commonEventsGen)
-                .setUncommonValuesAnomalyGen(uncommonGen)
-                .setUncommonValuesHistoryGen(uncommonValuesHistoryGen);
-
-        indicator.setEventsGenerator(eventsSupplier);
-        alert.indicators.add(indicator);
+        UncommonValueForContext<String, Integer> indicatorCreator = new UncommonValueForContext<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen commonEventsGen = indicatorCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.hostnameGen, eventsGenInit.dstPortGen);
+        TlsRangeEventsGen uncommonHistoryGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesHistoryGen(uncommonHistoryGen, uncommonHistoryGen.hostnameGen, uncommonHistoryGen.dstPortGen);
+        TlsRangeEventsGen uncommonAlertGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesAnomalyGen(uncommonAlertGen, uncommonAlertGen.hostnameGen, uncommonAlertGen.dstPortGen);
+        alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
 
@@ -260,30 +173,14 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
-        IBaseGenerator<String> keyGen = commonEventsGen.getSslSubjectGenerator();
-        IBaseGenerator<Integer> commonValuesGen = commonEventsGen.getDestinationPortGenerator();
-
-        TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.nextSslSubjectGenerator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<Integer> abnormalValuesGen = uncommonValuesHistoryGen.nextDstPortGenerator(UNCOMMON_DATA_VALUES);
-
-        TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueSslSubject(alert.entity);
-        uncommonGen.setDestinationPortGenerator(abnormalValuesGen);
-
-        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addNormalValues(getValues(commonValuesGen, HISTORICAL_DATA_COMMON_VALUES), String::valueOf);
-        indicator.addAbnormalValues(getValues(abnormalValuesGen, UNCOMMON_DATA_VALUES), String::valueOf);
-
-        UncommonValueIndicatorEventsGen eventsSupplier = new UncommonValueIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setCommonValuesGen(commonEventsGen)
-                .setUncommonValuesAnomalyGen(uncommonGen)
-                .setUncommonValuesHistoryGen(uncommonValuesHistoryGen);
-
-        indicator.setEventsGenerator(eventsSupplier);
-        alert.indicators.add(indicator);
+        UncommonValueForEntity<Integer> indicatorCreator = new UncommonValueForEntity<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen commonEventsGen = indicatorCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.sslSubjectGen, eventsGenInit.dstPortGen);
+        TlsRangeEventsGen uncommonHistoryGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesHistoryGen(uncommonHistoryGen, uncommonHistoryGen.sslSubjectGen, uncommonHistoryGen.dstPortGen);
+        TlsRangeEventsGen uncommonAlertGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesAnomalyGen(uncommonAlertGen, uncommonAlertGen.sslSubjectGen, uncommonAlertGen.dstPortGen);
+        alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
 
@@ -293,31 +190,15 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
-        commonEventsGen.setConstantValueSslSubject(alert.entity);
-        IBaseGenerator<String> keyGen = commonEventsGen.getSslSubjectGenerator();
-        IBaseGenerator<Location> commonValuesGen = commonEventsGen.getLocationGen();
-
-        TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.nextSslSubjectGenerator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<Location> abnormalValuesGen = uncommonValuesHistoryGen.nextLocationGenerator(UNCOMMON_DATA_VALUES);
-
-        TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueSslSubject(alert.entity);
-        uncommonGen.setLocationGen(abnormalValuesGen);
-
-        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addNormalValues(getValues(commonValuesGen, HISTORICAL_DATA_COMMON_VALUES), Location::getCountry);
-        indicator.addAbnormalValues(getValues(abnormalValuesGen, UNCOMMON_DATA_VALUES), Location::getCountry);
-
-        UncommonValueIndicatorEventsGen eventsSupplier = new UncommonValueIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setCommonValuesGen(commonEventsGen)
-                .setUncommonValuesAnomalyGen(uncommonGen)
-                .setUncommonValuesHistoryGen(uncommonValuesHistoryGen);
-
-        indicator.setEventsGenerator(eventsSupplier);
-        alert.indicators.add(indicator);
+        UncommonValueForEntity<Location> indicatorCreator = new UncommonValueForEntity<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        indicatorCreator.valueToString = Location::getCountry;
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen commonEventsGen = indicatorCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.sslSubjectGen, eventsGenInit.locationGen);
+        TlsRangeEventsGen uncommonHistoryGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesHistoryGen(uncommonHistoryGen, uncommonHistoryGen.sslSubjectGen, uncommonHistoryGen.locationGen);
+        TlsRangeEventsGen uncommonAlertGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesAnomalyGen(uncommonAlertGen, uncommonAlertGen.sslSubjectGen, uncommonAlertGen.locationGen);
+        alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
 
@@ -326,66 +207,31 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
-        IBaseGenerator<String> keyGen = commonEventsGen.getDestinationOrganizationGenerator();
-        IBaseGenerator<Integer> commonValuesGen = commonEventsGen.getDestinationPortGenerator();
-
-        TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.nextDstOrgGenerator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<Integer> abnormalValuesGen = uncommonValuesHistoryGen.nextDstPortGenerator(UNCOMMON_DATA_VALUES);
-
-        TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueSslSubject(alert.entity);
-        uncommonGen.setDestinationOrganizationGenerator(keyGen);
-        uncommonGen.setDestinationPortGenerator(abnormalValuesGen);
-
-        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addNormalValues(getValues(commonValuesGen, HISTORICAL_DATA_COMMON_VALUES), String::valueOf);
-        indicator.addAbnormalValues(getValues(abnormalValuesGen, UNCOMMON_DATA_VALUES), String::valueOf);
-
-        UncommonValueIndicatorEventsGen eventsSupplier = new UncommonValueIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setCommonValuesGen(commonEventsGen)
-                .setUncommonValuesAnomalyGen(uncommonGen)
-                .setUncommonValuesHistoryGen(uncommonValuesHistoryGen);
-
-        indicator.setEventsGenerator(eventsSupplier);
-        alert.indicators.add(indicator);
+        UncommonValueForContext<String, Integer> indicatorCreator = new UncommonValueForContext<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen commonEventsGen = indicatorCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.dstOrgGen, eventsGenInit.dstPortGen);
+        TlsRangeEventsGen uncommonHistoryGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesHistoryGen(uncommonHistoryGen, uncommonHistoryGen.dstOrgGen, uncommonHistoryGen.dstPortGen);
+        TlsRangeEventsGen uncommonAlertGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesAnomalyGen(uncommonAlertGen, uncommonAlertGen.dstOrgGen, uncommonAlertGen.dstPortGen);
+        alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
 
 
     public SslSubjectTlsAlert ssl_subject_abnormal_ja3_for_source_netname_outbound() {
-
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
-        IBaseGenerator<String> keyGen = commonEventsGen.getSourceNetnameGen();
-        IBaseGenerator<String> commonValuesGen = commonEventsGen.getJa3Generator();
-
-        TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.nextSrcNetnameGenerator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.nextJa3Generator(UNCOMMON_DATA_VALUES);
-
-        TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueSslSubject(alert.entity);
-        uncommonGen.setSourceNetnameGen(keyGen);
-        uncommonGen.setJa3Generator(abnormalValuesGen);
-
-        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addNormalValues(getValues(commonValuesGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addAbnormalValues(getValues(abnormalValuesGen, UNCOMMON_DATA_VALUES));
-
-        UncommonValueIndicatorEventsGen eventsSupplier = new UncommonValueIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setCommonValuesGen(commonEventsGen)
-                .setUncommonValuesAnomalyGen(uncommonGen)
-                .setUncommonValuesHistoryGen(uncommonValuesHistoryGen);
-
-        indicator.setEventsGenerator(eventsSupplier);
-        alert.indicators.add(indicator);
+        UncommonValueForContext<String,String> indicatorCreator = new UncommonValueForContext<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen commonEventsGen = indicatorCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.srcNetnameGen, eventsGenInit.ja3Gen);
+        TlsRangeEventsGen uncommonHistoryGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesHistoryGen(uncommonHistoryGen, uncommonHistoryGen.srcNetnameGen, uncommonHistoryGen.ja3Gen);
+        TlsRangeEventsGen uncommonAlertGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesAnomalyGen(uncommonAlertGen, uncommonAlertGen.srcNetnameGen, uncommonAlertGen.ja3Gen);
+        alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
 
@@ -395,31 +241,14 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
-        IBaseGenerator<String> keyGen = commonEventsGen.getJa3Generator();
-        IBaseGenerator<String> commonValuesGen = commonEventsGen.getSslSubjectGenerator();
-
-        TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.setConstantValueSslSubject(alert.entity);
-        uncommonValuesHistoryGen.nextJa3Generator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.getSslSubjectGenerator();
-
-        TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setJa3Generator(keyGen);
-        uncommonGen.setSslSubjectGenerator(abnormalValuesGen);
-
-        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addNormalValues(getValues(commonValuesGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addAbnormalValues(getValues(abnormalValuesGen, UNCOMMON_DATA_VALUES));
-
-        UncommonValueIndicatorEventsGen eventsSupplier = new UncommonValueIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setCommonValuesGen(commonEventsGen)
-                .setUncommonValuesAnomalyGen(uncommonGen)
-                .setUncommonValuesHistoryGen(uncommonValuesHistoryGen);
-
-        indicator.setEventsGenerator(eventsSupplier);
-        alert.indicators.add(indicator);
+        UncommonEntityForContext<String> indicatorCreator = new UncommonEntityForContext<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen commonEventsGen = indicatorCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.ja3Gen, eventsGenInit.sslSubjectGen);
+        TlsRangeEventsGen uncommonHistoryGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesHistoryGen(uncommonHistoryGen, uncommonHistoryGen.ja3Gen, uncommonHistoryGen.sslSubjectGen);
+        TlsRangeEventsGen uncommonAlertGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesAnomalyGen(uncommonAlertGen, uncommonAlertGen.ja3Gen, uncommonAlertGen.sslSubjectGen);
+        alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
 
@@ -428,32 +257,14 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES);
-        commonEventsGen.setConstantValueSslSubject(alert.entity);
-        IBaseGenerator<String> keyGen = commonEventsGen.getJa3Generator();
-        IBaseGenerator<String> commonValuesGen = commonEventsGen.getFqdnGenerator();
-
-        TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.nextJa3Generator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<String> abnormalValuesGen = uncommonValuesHistoryGen.nextFqdnGenerator(UNCOMMON_DATA_VALUES);
-
-        TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueSslSubject(alert.entity);
-        uncommonGen.setConstantValueJa3(alert.entity);
-        uncommonGen.setFqdnGenerator(abnormalValuesGen);
-
-        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addNormalValues(getValues(commonValuesGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addAbnormalValues(getValues(abnormalValuesGen, UNCOMMON_DATA_VALUES));
-
-        UncommonValueIndicatorEventsGen eventsSupplier = new UncommonValueIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setCommonValuesGen(commonEventsGen)
-                .setUncommonValuesAnomalyGen(uncommonGen)
-                .setUncommonValuesHistoryGen(uncommonValuesHistoryGen);
-
-        indicator.setEventsGenerator(eventsSupplier);
-        alert.indicators.add(indicator);
+        UncommonValueForContext<String,String> indicatorCreator = new UncommonValueForContext<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen commonEventsGen = indicatorCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.ja3Gen, eventsGenInit.hostnameGen);
+        TlsRangeEventsGen uncommonHistoryGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesHistoryGen(uncommonHistoryGen, uncommonHistoryGen.ja3Gen, uncommonHistoryGen.hostnameGen);
+        TlsRangeEventsGen uncommonAlertGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesAnomalyGen(uncommonAlertGen, uncommonAlertGen.ja3Gen, uncommonAlertGen.hostnameGen);
+        alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
 
@@ -462,37 +273,185 @@ public class SslSubjectTlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        TlsEventsGen commonEventsGen = new TlsEventsGen(HISTORICAL_DATA_COMMON_VALUES).setConstantValueSslSubject(alert.entity);
-        IBaseGenerator<String> keyGen = commonEventsGen.getJa3Generator();
-        IBaseGenerator<Integer> commonValuesGen = commonEventsGen.getDestinationPortGenerator();
-
-        TlsEventsGen uncommonValuesHistoryGen = commonEventsGen.copy();
-        uncommonValuesHistoryGen.nextJa3Generator(UNCOMMON_DATA_VALUES);
-        IBaseGenerator<Integer> abnormalValuesGen = uncommonValuesHistoryGen.nextDstPortGenerator(UNCOMMON_DATA_VALUES);
-
-        TlsEventsGen uncommonGen = commonEventsGen.copy();
-        uncommonGen.setConstantValueSslSubject(alert.entity);
-        uncommonGen.setJa3Generator(keyGen);
-        uncommonGen.setDestinationPortGenerator(abnormalValuesGen);
-
-        TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        indicator.addKeys(getValues(keyGen, HISTORICAL_DATA_COMMON_VALUES));
-        indicator.addNormalValues(getValues(commonValuesGen, HISTORICAL_DATA_COMMON_VALUES), String::valueOf);
-        indicator.addAbnormalValues(getValues(abnormalValuesGen, UNCOMMON_DATA_VALUES), String::valueOf);
-
-        UncommonValueIndicatorEventsGen eventsSupplier = new UncommonValueIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setCommonValuesGen(commonEventsGen)
-                .setUncommonValuesAnomalyGen(uncommonGen)
-                .setUncommonValuesHistoryGen(uncommonValuesHistoryGen);
-
-        indicator.setEventsGenerator(eventsSupplier);
-        alert.indicators.add(indicator);
+        UncommonValueForContext<String,Integer> indicatorCreator = new UncommonValueForContext<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen commonEventsGen = indicatorCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.ja3Gen, eventsGenInit.dstPortGen);
+        TlsRangeEventsGen uncommonHistoryGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesHistoryGen(uncommonHistoryGen, uncommonHistoryGen.ja3Gen, uncommonHistoryGen.dstPortGen);
+        TlsRangeEventsGen uncommonAlertGen = commonEventsGen.copy();
+        indicatorCreator.createUncommonValuesAnomalyGen(uncommonAlertGen, uncommonAlertGen.ja3Gen, uncommonAlertGen.dstPortGen);
+        alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
 
 
-    private <T> List<T> getValues(IBaseGenerator<T> generator, int numOfValues) {
-        return IntStream.range(0, numOfValues).boxed().map(e -> generator.getNext()).collect(Collectors.toList());
+
+
+
+
+    public SslSubjectTlsAlert high_number_of_bytes_sent_by_src_ip_to_domain_ssl_subject_outbound() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
+
+        indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.srcIpGenerator,eventsGenInitCopy.hostnameGen);
+        TlsRangeEventsGen highTrafficHistoryGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficHistoryGen(highTrafficHistoryGen, highTrafficHistoryGen.srcIpGenerator, highTrafficHistoryGen.hostnameGen);
+        TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen, highTrafficAnomalyGen.srcIpGenerator, highTrafficAnomalyGen.hostnameGen);
+
+        alert.indicators.add(indicatorCreator.getIndicator());
+        return this;
     }
+
+
+    public SslSubjectTlsAlert high_number_of_bytes_sent_by_src_ip_to_dst_org_ssl_subject_outbound() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
+
+        indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.srcIpGenerator,eventsGenInitCopy.dstOrgGen);
+        TlsRangeEventsGen highTrafficHistoryGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficHistoryGen(highTrafficHistoryGen, highTrafficHistoryGen.srcIpGenerator, highTrafficHistoryGen.dstOrgGen);
+        TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen, highTrafficAnomalyGen.srcIpGenerator, highTrafficAnomalyGen.dstOrgGen);
+
+        alert.indicators.add(indicatorCreator.getIndicator());
+        return this;
+    }
+
+    public SslSubjectTlsAlert high_number_of_bytes_sent_by_src_ip_to_ssl_subject_outbound() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
+
+        indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.srcIpGenerator,eventsGenInitCopy.ja3Gen);
+        TlsRangeEventsGen highTrafficHistoryGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficHistoryGen(highTrafficHistoryGen, highTrafficHistoryGen.srcIpGenerator, highTrafficHistoryGen.ja3Gen);
+        TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen, highTrafficAnomalyGen.srcIpGenerator, highTrafficAnomalyGen.ja3Gen);
+
+        alert.indicators.add(indicatorCreator.getIndicator());
+        return this;
+    }
+
+    public SslSubjectTlsAlert high_number_of_bytes_sent_to_domain_ssl_subject_outbound() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
+
+        indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.hostnameGen);
+        TlsRangeEventsGen highTrafficHistoryGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficHistoryGen(highTrafficHistoryGen, highTrafficHistoryGen.hostnameGen);
+        TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen, highTrafficAnomalyGen.hostnameGen);
+
+        alert.indicators.add(indicatorCreator.getIndicator());
+        return this;
+    }
+
+
+    public SslSubjectTlsAlert high_number_of_bytes_sent_to_dst_org_ssl_subject_outbound() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
+
+        indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.dstOrgGen);
+        TlsRangeEventsGen highTrafficHistoryGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficHistoryGen(highTrafficHistoryGen, highTrafficHistoryGen.dstOrgGen);
+        TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen, highTrafficAnomalyGen.dstOrgGen);
+
+        alert.indicators.add(indicatorCreator.getIndicator());
+        return this;
+    }
+
+    public SslSubjectTlsAlert high_number_of_bytes_sent_to_ssl_subject_outbound() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
+
+        indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy);
+        TlsRangeEventsGen highTrafficHistoryGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficHistoryGen(highTrafficHistoryGen);
+        TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen);
+
+        alert.indicators.add(indicatorCreator.getIndicator());
+        return this;
+    }
+
+
+    public SslSubjectTlsAlert high_number_of_bytes_sent_by_src_ip_to_dst_port_ssl_subject_outbound() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        AbnormalTraffic<Integer> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
+
+        indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.srcIpGenerator,eventsGenInitCopy.dstPortGen);
+        TlsRangeEventsGen highTrafficHistoryGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficHistoryGen(highTrafficHistoryGen, highTrafficHistoryGen.srcIpGenerator, highTrafficHistoryGen.dstPortGen);
+        TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen, highTrafficAnomalyGen.srcIpGenerator, highTrafficAnomalyGen.dstPortGen);
+
+        alert.indicators.add(indicatorCreator.getIndicator());
+        return this;
+    }
+
+    public SslSubjectTlsAlert high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        AbnormalTraffic<Integer> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
+
+        indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.dstPortGen);
+        TlsRangeEventsGen highTrafficHistoryGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficHistoryGen(highTrafficHistoryGen, highTrafficHistoryGen.dstPortGen);
+        TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen, highTrafficAnomalyGen.dstPortGen);
+
+        alert.indicators.add(indicatorCreator.getIndicator());
+        return this;
+    }
+
+
+
+
+
+
+
+
+
+
 
 }

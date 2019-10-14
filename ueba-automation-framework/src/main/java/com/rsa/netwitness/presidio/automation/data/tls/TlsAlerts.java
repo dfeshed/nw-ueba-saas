@@ -28,6 +28,49 @@ public class TlsAlerts implements Supplier<List<TlsAlert>>  {
         List<TlsAlert> list = Lists.newLinkedList();
 
 
+        TlsAlert ssl_subject_10 = new SslSubjectTlsAlert("ssl_subject_10", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_by_src_ip_to_domain_ssl_subject_outbound()
+                .ssl_subject_abnormal_ja3_day_time()
+                .ssl_subject_abnormal_ssl_subject_day_time()
+                .create();
+
+
+        TlsAlert ssl_subject_11 = new SslSubjectTlsAlert("ssl_subject_11", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_by_src_ip_to_dst_org_ssl_subject_outbound()
+                .create();
+
+        TlsAlert ssl_subject_12 = new SslSubjectTlsAlert("ssl_subject_12", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_to_domain_ssl_subject_outbound()
+                .create();
+
+        TlsAlert ssl_subject_13 = new SslSubjectTlsAlert("ssl_subject_13", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound()
+                .create();
+
+
+        TlsAlert ssl_subject_14 = new SslSubjectTlsAlert("ssl_subject_14", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_to_ssl_subject_outbound()
+                .create();
+
+        TlsAlert ja3_15 = new Ja3TlsAlert("ja3_15", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_by_ja3_outbound()
+                .high_number_of_distinct_src_ip_for_ja3_outbound()
+                .create();
+
+        TlsAlert ssl_subject_16 = new SslSubjectTlsAlert("ssl_subject_16", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_by_src_ip_to_dst_org_ssl_subject_outbound()
+                .high_number_of_bytes_sent_to_dst_org_ssl_subject_outbound()
+                .create();
+
+        list.add(ssl_subject_10);
+        list.add(ssl_subject_11);
+        list.add(ssl_subject_12);
+        list.add(ssl_subject_13);
+        list.add(ssl_subject_14);
+        list.add(ssl_subject_16);
+        list.add(ja3_15);
+
+
         TlsAlert ja3_1 = new Ja3TlsAlert("cf9d0d62f54f43d3a0073ea42d94c88", dataPeriod, uncommonStartDay)
                 .ja3_abnormal_domain_for_ja3_outbound()
                 // .abnormal_ja3_day_time()   //

@@ -1,8 +1,9 @@
 package com.rsa.netwitness.presidio.automation.data.tls.events_gen;
 
-import com.rsa.netwitness.presidio.automation.data.tls.feilds_gen.TlsEventsGen;
+import com.rsa.netwitness.presidio.automation.data.tls.model.EntityType;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.ITimeGenerator;
+import presidio.data.generators.event.tls.TlsRangeEventsGen;
 
 import java.time.Instant;
 
@@ -13,43 +14,43 @@ public class UnregularHoursIndicatorEventsGen extends EventsGen {
     private ITimeGenerator sslSubjectUnregularHoursHistoryTimeGen = getUnregularHoursHistoryTimeGen(4,7);
     private ITimeGenerator sslSubjectUnregularHoursAnomalyDayTimeGen = getAnomalyDayUnregularHoursTimeGen(4,7);
 
-    public UnregularHoursIndicatorEventsGen(int dataPeriod, int uncommonStartDay, String name, String entity, String entityType) {
+    public UnregularHoursIndicatorEventsGen(int dataPeriod, int uncommonStartDay, String name, String entity, EntityType entityType) {
         super(name, entity, entityType);
         daysBackFrom = dataPeriod;
         daysBackFromAnomaly = uncommonStartDay;
     }
 
-    public UnregularHoursIndicatorEventsGen setRegularHoursHistoryGen(final TlsEventsGen gen) {
-        TlsEventsGen copyGen = gen.copy();
+    public UnregularHoursIndicatorEventsGen setRegularHoursHistoryGen(final TlsRangeEventsGen gen) {
+        TlsRangeEventsGen copyGen = gen.copy();
         copyGen.setTimeGenerator(getCommonValuesTimeGen());
         eventGenerators.add(copyGen);
         return this;
     }
 
-    public UnregularHoursIndicatorEventsGen setUnregularHoursHistoryGenJa3(TlsEventsGen gen) {
-        TlsEventsGen copyGen = gen.copy();
+    public UnregularHoursIndicatorEventsGen setUnregularHoursHistoryGenJa3(TlsRangeEventsGen gen) {
+        TlsRangeEventsGen copyGen = gen.copy();
         copyGen.setTimeGenerator(ja3UnregularHoursHistoryTimeGen);
         eventGenerators.add(copyGen);
         return this;
     }
 
-    public UnregularHoursIndicatorEventsGen setAnomalyDayUnregularHoursGenJa3(final TlsEventsGen gen) {
-        TlsEventsGen copyGen = gen.copy();
+    public UnregularHoursIndicatorEventsGen setAnomalyDayUnregularHoursGenJa3(final TlsRangeEventsGen gen) {
+        TlsRangeEventsGen copyGen = gen.copy();
         copyGen.setTimeGenerator(ja3UnregularHoursAnomalyDayTimeGen);
         eventGenerators.add(copyGen);
         return this;
     }
 
 
-    public UnregularHoursIndicatorEventsGen setUnregularHoursHistoryGenSslSubject(TlsEventsGen gen) {
-        TlsEventsGen copyGen = gen.copy();
+    public UnregularHoursIndicatorEventsGen setUnregularHoursHistoryGenSslSubject(TlsRangeEventsGen gen) {
+        TlsRangeEventsGen copyGen = gen.copy();
         copyGen.setTimeGenerator(sslSubjectUnregularHoursHistoryTimeGen);
         eventGenerators.add(copyGen);
         return this;
     }
 
-    public UnregularHoursIndicatorEventsGen setAnomalyDayUnregularHoursGenSslSubject(final TlsEventsGen gen) {
-        TlsEventsGen copyGen = gen.copy();
+    public UnregularHoursIndicatorEventsGen setAnomalyDayUnregularHoursGenSslSubject(final TlsRangeEventsGen gen) {
+        TlsRangeEventsGen copyGen = gen.copy();
         copyGen.setTimeGenerator(sslSubjectUnregularHoursAnomalyDayTimeGen);
         eventGenerators.add(copyGen);
         return this;

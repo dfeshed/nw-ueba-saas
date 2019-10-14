@@ -7,13 +7,13 @@ import java.util.Set;
 
 public class TlsAlert {
     public final String entity;
-    public final String entityType;
+    public final EntityType entityType;
 
     List<TlsIndicator> indicators = new LinkedList<>();
     Set<String> indicatorNames = new HashSet<>();
 
 
-    TlsAlert(String entity, String entityType) {
+    TlsAlert(String entity, EntityType entityType) {
         this.entity = entity;
         this.entityType = entityType;
     }

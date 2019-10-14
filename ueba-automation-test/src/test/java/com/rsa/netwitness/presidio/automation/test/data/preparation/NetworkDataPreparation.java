@@ -25,11 +25,12 @@ public class NetworkDataPreparation extends DataPreparationBase {
     public List<? extends Event> generate() throws GeneratorException {
         // adapterTestManager.clearAllCollections();
 
+        // todo:
         UncommonValuesAlerts uncommonValuesAlerts = new UncommonValuesAlerts(historicalDaysBack, anomalyDay);
         UnusualTrafficVolumeAlerts unusualTrafficVolumeAlerts = new UnusualTrafficVolumeAlerts(historicalDaysBack, anomalyDay);
         SessionSplitEnrichmentData sessionSplitEnrichmentData = new SessionSplitEnrichmentData();
-        FutureEventsForMetrics futureEventsGen = new FutureEventsForMetrics(10);
 
+        FutureEventsForMetrics futureEventsGen = new FutureEventsForMetrics(10);
         TlsAlerts tlsAlerts = new TlsAlerts(historicalDaysBack,anomalyDay);
 
         List<TlsEvent> networkEvents = new LinkedList<>();
@@ -38,6 +39,7 @@ public class NetworkDataPreparation extends DataPreparationBase {
             networkEvents.addAll(alert.getIndicators().stream().flatMap(e -> e.generateEvents().stream()).collect(Collectors.toList()));
         }
 
+        networkEvents.addAll(futureEventsGen.get().collect(Collectors.toList()));
         return networkEvents;
     }
 

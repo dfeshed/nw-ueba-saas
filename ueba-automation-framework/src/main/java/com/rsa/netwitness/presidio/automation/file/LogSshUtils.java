@@ -24,7 +24,7 @@ public class LogSshUtils {
 
         boolean errorFlag = Objects.requireNonNull(response.output)
                 .stream()
-                .anyMatch(e -> e.contains(" ERROR "));
+                .anyMatch(e -> e.contains(" ERROR ") || e.contains("Exception:"));
 
         if (errorFlag) {
             LOGGER.warn("'ERROR' messages found in log.");
