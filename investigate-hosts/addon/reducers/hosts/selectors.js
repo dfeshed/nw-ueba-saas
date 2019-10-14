@@ -313,7 +313,8 @@ export const selectedHostDetails = createSelector(
   [_selectedHostList],
   (selectedHostList) => {
     if (selectedHostList.length > 0) {
-      const [{ id, serviceId, agentStatus: { isolationStatus } }] = selectedHostList;
+      const [{ id, serviceId, agentStatus = {} }] = selectedHostList;
+      const { isolationStatus } = agentStatus;
       const isIsolated = isolationStatus ? isolationStatus.isolated : '';
       return { id, serviceId, isIsolated };
     }

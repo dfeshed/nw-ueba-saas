@@ -98,7 +98,8 @@ const endpointState =
     {
       schema: { schema: endpoint.schema },
       machines: {
-        hostList: hostListState.machines.hostList, selectedHostList: [ { version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'idle', agentStatus: { isolationStaus: {} } }],
+        hostList: hostListState.machines.hostList,
+        selectedHostList: [ { version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'idle', agentStatus: { isolationStaus: {} } }],
         hostColumnSort: 'machineIdentity.machineName',
         focusedHost: null
       }
@@ -390,7 +391,7 @@ module('Integration | Component | host-list', function(hooks) {
         closeProperties=closeProperties}}
       {{context-menu}}
     `);
-    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    triggerEvent(findAll('.score')[1], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);

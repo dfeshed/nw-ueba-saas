@@ -94,7 +94,7 @@ const HostDownloads = Component.extend({
       this.set('showConfirmationModal', false);
     },
     onCloseSidePanel(side) {
-      if (side == 'left') {
+      if (side === 'left') {
         this.send('toggleHostDetailsFilter', false);
       }
     }

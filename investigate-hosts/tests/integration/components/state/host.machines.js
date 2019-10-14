@@ -1152,11 +1152,13 @@ export default {
     selectedHostList: [
       {
         id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F',
-        version: '5.0.0.0'
+        version: '5.0.0.0',
+        agentStatus: { isolationStaus: {} }
       },
       {
         id: '019A39C8-3E18-387F-EAD4-EA217519638A',
-        version: '5.0.0.0'
+        version: '5.0.0.0',
+        agentStatus: { isolationStaus: {} }
       }
     ],
     hostFetchStatus: 'completed',
