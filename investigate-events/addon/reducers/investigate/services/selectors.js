@@ -9,6 +9,20 @@ const _summaryData = (state) => state.investigate.services.summaryData;
 const _isSummaryRetrieveError = (state) => state.investigate.services.isSummaryRetrieveError;
 const _summaryErrorCode = (state) => state.investigate.services.summaryErrorCode;
 
+export const summaryValuesForClassicUrl = createSelector(
+  [_summaryData],
+  (summaryData) => {
+    if (!!summaryData && summaryData.startTime !== 0) {
+      return {
+        mid1: summaryData.startMetaId,
+        mid2: summaryData.endMetaId,
+        startCollectionTime: summaryData.startTime,
+        endCollectionTime: summaryData.endTime
+      };
+    }
+  }
+);
+
 /**
  * Helper function to detect if all of the services are above a certain version.
  * @param {array} services List of services

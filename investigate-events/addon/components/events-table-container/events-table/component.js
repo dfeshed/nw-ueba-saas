@@ -1,12 +1,17 @@
-import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 import { observer } from '@ember/object';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
+
+import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { getColumns, validEventSortColumns } from 'investigate-events/reducers/investigate/data-selectors';
 import { scheduleOnce } from '@ember/runloop';
-import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
+import { classicEventsURL } from 'component-lib/utils/build-url';
+import {
+  hasMinimumCoreServicesVersionForColumnSorting,
+  summaryValuesForClassicUrl
+} from 'investigate-events/reducers/investigate/services/selectors';
 import {
   areEventsStreaming,
   isCanceled,
@@ -19,7 +24,7 @@ import {
   SORT_ORDER
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
-import { hadTextPill } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { hadTextPill, queryNodeValuesForClassicUrl } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { eventsLogsGet } from 'investigate-events/actions/events-creators';
 import {
   toggleSelectAllEvents,
@@ -61,7 +66,9 @@ const stateToComputed = (state) => {
     notValid,
     hasMinimumCoreServicesVersionForColumnSorting: hasMinimumCoreServicesVersionForColumnSorting(state),
     hadTextPill: hadTextPill(state),
-    isAtThreshold: resultCountAtThreshold(state)
+    isAtThreshold: resultCountAtThreshold(state),
+    queryNodeValuesForClassicUrl: queryNodeValuesForClassicUrl(state),
+    summaryValuesForClassicUrl: summaryValuesForClassicUrl(state)
   };
 };
 
@@ -147,8 +154,8 @@ const EventsTableContextMenu = RsaContextMenu.extend({
     return columns;
   },
 
-  @computed('isCanceled', 'hadTextPill')
-  noResultsMessage(isCanceled, hadTextPill) {
+  @computed('isCanceled', 'hadTextPill', 'queryNodeValuesForClassicUrl', 'summaryValuesForClassicUrl')
+  noResultsMessage(isCanceled, hadTextPill, queryNodeValuesForClassicUrl, summaryValuesForClassicUrl) {
     const i18n = this.get('i18n');
     let message;
     if (isCanceled) {
@@ -156,7 +163,8 @@ const EventsTableContextMenu = RsaContextMenu.extend({
     } else {
       message = i18n.t('investigate.empty.description');
       if (hadTextPill) {
-        message = `${message} ${i18n.t('investigate.textSearchLimitedResults')}`;
+        const url = `${window.location.origin}/${classicEventsURL({ ...queryNodeValuesForClassicUrl, ...summaryValuesForClassicUrl })}`;
+        message = i18n.t('investigate.textSearchLimitedResults', { url, message });
       }
     }
     return message;

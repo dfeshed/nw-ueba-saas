@@ -128,7 +128,7 @@ module('Integration | Component | events-footer', function(hooks) {
     );
     assert.equal(
       find('.rsa-data-table-load-more').textContent.trim(),
-      'All results loaded',
+      'All results loaded.',
       'Footer message when the entire event result is fetched'
     );
   });
@@ -150,7 +150,7 @@ module('Integration | Component | events-footer', function(hooks) {
     );
     assert.equal(
       find('.rsa-data-table-load-more').textContent.trim(),
-      'All results loaded',
+      'All results loaded.',
       'Footer message when the entire event result is fetched'
     );
   });
@@ -172,7 +172,7 @@ module('Integration | Component | events-footer', function(hooks) {
     );
     assert.equal(
       find('.rsa-data-table-load-more').textContent.trim(),
-      'All results loaded',
+      'All results loaded.',
       'Footer message when the entire event result is fetched'
     );
   });
@@ -193,7 +193,7 @@ module('Integration | Component | events-footer', function(hooks) {
     );
     assert.equal(
       find('.rsa-data-table-load-more').textContent.trim(),
-      'All results loaded',
+      'All results loaded.',
       'Footer message when the entire event result is fetched'
     );
   });
@@ -232,7 +232,7 @@ module('Integration | Component | events-footer', function(hooks) {
     );
     assert.equal(
       find('.rsa-data-table-load-more').textContent.trim(),
-      'All results loaded',
+      'All results loaded.',
       'Footer message when the entire event result is fetched'
     );
   });

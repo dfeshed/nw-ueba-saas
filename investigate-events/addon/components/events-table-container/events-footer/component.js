@@ -3,6 +3,7 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
 import { thousandFormat } from 'component-lib/utils/numberFormats';
+import { classicEventsURL } from 'component-lib/utils/build-url';
 import {
   actualEventCount,
   allExpectedDataLoaded,
@@ -12,12 +13,15 @@ import {
   noEvents,
   hideEventsForReQuery
 } from 'investigate-events/reducers/investigate/event-results/selectors';
-import { hadTextPill } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { hadTextPill, queryNodeValuesForClassicUrl } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { summaryValuesForClassicUrl } from 'investigate-events/reducers/investigate/services/selectors';
 
 const stateToComputed = (state) => ({
   actualEventCount: thousandFormat(actualEventCount(state)),
   allExpectedDataLoaded: allExpectedDataLoaded(state),
   areEventsStreaming: areEventsStreaming(state),
+  hadTextPill: hadTextPill(state),
+  hideEventsForReQuery: hideEventsForReQuery(state),
   items: state.investigate.eventResults.data,
   isCanceled: isCanceled(state),
   isEventResultsError: isEventResultsError(state),
@@ -25,10 +29,10 @@ const stateToComputed = (state) => ({
   isQueryExecutedBySort: state.investigate.data.isQueryExecutedBySort,
   maxEvents: thousandFormat(state.investigate.eventResults.streamLimit),
   noEvents: noEvents(state),
+  queryNodeValuesForClassicUrl: queryNodeValuesForClassicUrl(state),
   totalCount: thousandFormat(state.investigate.eventCount.data),
-  status: state.investigate.eventResults.status,
-  hadTextPill: hadTextPill(state),
-  hideEventsForReQuery: hideEventsForReQuery(state)
+  summaryValuesForClassicUrl: summaryValuesForClassicUrl(state),
+  status: state.investigate.eventResults.status
 });
 
 const EventsFooter = Component.extend({
@@ -38,12 +42,13 @@ const EventsFooter = Component.extend({
     return !!results && results.length > 0;
   },
 
-  @computed('hadTextPill')
-  footerMessage(hadTextPill) {
+  @computed('hadTextPill', 'queryNodeValuesForClassicUrl', 'summaryValuesForClassicUrl')
+  footerMessage(hadTextPill, queryNodeValuesForClassicUrl, summaryValuesForClassicUrl) {
     const i18n = this.get('i18n');
     let message = i18n.t('investigate.allResultsLoaded');
     if (hadTextPill) {
-      message = `${message}. ${i18n.t('investigate.textSearchLimitedResults')}`;
+      const url = `${window.location.origin}/${classicEventsURL({ ...queryNodeValuesForClassicUrl, ...summaryValuesForClassicUrl })}`;
+      message = i18n.t('investigate.textSearchLimitedResults', { url, message });
     }
     return message;
   },

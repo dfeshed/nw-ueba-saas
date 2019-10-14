@@ -22,6 +22,7 @@ const _isTimeRangeInvalid = (state) => state.investigate.queryNode.timeRangeInva
 const _queryView = (state) => state.investigate.queryNode.queryView;
 const _currentQueryHash = (state) => state.investigate.queryNode.currentQueryHash;
 const _updatedFreeFormTextPill = (state) => state.investigate.queryNode.updatedFreeFormTextPill;
+const _pillDataHashes = (state) => state.investigate.queryNode.pillDataHashes;
 
 export const pillsData = (state) => state.investigate.queryNode.pillsData;
 
@@ -31,6 +32,24 @@ export const freeFormText = createSelector(
   [pillsData],
   (_pillsData) => {
     return encodeMetaFilterConditions(_pillsData).trim();
+  }
+);
+
+export const queryNodeValuesForClassicUrl = createSelector(
+  [_endTime, _startTime, _previouslySelectedTimeRanges, _serviceId, _pillDataHashes, pillsData],
+  (endTime, startTime, previouslySelectedTimeRanges, serviceId, pillDataHashes, _pillsData) => {
+    if (serviceId) {
+      const timeRangeType = previouslySelectedTimeRanges[serviceId];
+      const textSearchTerm = _pillsData.find((p) => p.type === TEXT_FILTER);
+      return {
+        endTime,
+        startTime,
+        timeRangeType,
+        serviceId,
+        pillDataHashes,
+        textSearchTerm
+      };
+    }
   }
 );
 

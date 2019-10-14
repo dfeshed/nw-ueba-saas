@@ -8,7 +8,8 @@ import {
   hasMinimumCoreServicesVersionForColumnSorting,
   hasMinimumCoreServicesVersionForTextSearch,
   selectedService,
-  queriedService
+  queriedService,
+  summaryValuesForClassicUrl
 } from 'investigate-events/reducers/investigate/services/selectors';
 
 module('Unit | Selectors | services');
@@ -180,4 +181,33 @@ test('determine if Core Services supports column sorting', function(assert) {
   };
   flag = hasMinimumCoreServicesVersionForColumnSorting(truthyState);
   assert.ok(flag, 'Failed to detect that all Core Service are above desired version');
+});
+
+test('summaryValuesForClassicUrl provides values when we have summary', function(assert) {
+  let state = Immutable.from({
+    investigate: {
+      services: {
+        summaryData: {
+          startTime: '1234',
+          endTime: '6789',
+          startMetaId: '20',
+          endMetaId: '99'
+        }
+      }
+    }
+  });
+
+  assert.deepEqual(summaryValuesForClassicUrl(state), {
+    startCollectionTime: '1234',
+    endCollectionTime: '6789',
+    mid1: '20',
+    mid2: '99'
+  }, 'Should see the correct values');
+
+  state = Immutable.from({
+    investigate: {
+      services: { }
+    }
+  });
+  assert.notOk(summaryValuesForClassicUrl(state), 'Should not find any values');
 });

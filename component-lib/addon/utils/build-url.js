@@ -1,6 +1,7 @@
 import moment from 'moment';
-import { windowProxy } from 'component-lib/utils/window-proxy';
 import _ from 'lodash';
+
+import { windowProxy } from 'component-lib/utils/window-proxy';
 
 const _prepareMetaFormatMap = (language) => {
   if (!language) {
@@ -54,6 +55,46 @@ export const buildHostsUrl = (selected, contextDetails) => {
   const metaFormatMap = _prepareMetaFormatMap(contextDetails.language);
   const query = _buildQuery([{ meta: selected.metaName, value: selected.metaValue, operator: '=' }], metaFormatMap);
   return `/investigate/hosts?query=${encodeURIComponent(query)}`;
+};
+
+/**
+ * Constructs a Classic url based on the parameters passed.
+ * @public
+ */
+export const classicEventsURL = ({
+  endTime,
+  startTime,
+  timeRangeType,
+  serviceId,
+  pillDataHashes,
+  textSearchTerm,
+  mid1,
+  mid2,
+  startCollectionTime,
+  endCollectionTime
+}) => {
+  const pillHash = extractHashWithoutTextHash(pillDataHashes);
+  const formattedStartDate = moment(startTime > 0 ? startTime * 1000 : startTime).tz('utc').format();
+  const formattedEndDate = moment(endTime > 0 ? endTime * 1000 : endTime).tz('utc').format();
+  const { searchTerm } = textSearchTerm;
+  return `investigation/${serviceId}/events/${pillHash}date/${formattedStartDate}/${formattedEndDate}?mid1=${mid1}&mid2=${mid2}&lastCollectionDate=${endCollectionTime}&startCollectionDate=${startCollectionTime}&timeRangeType=${timeRangeType}&search=${searchTerm}`;
+};
+
+/**
+ * Given a hash array, extracts hashes, excluding text hash and constructs a comma separated string.
+ * @public
+ */
+export const extractHashWithoutTextHash = (hashesArr) => {
+  let pillHash = '';
+  if (!hashesArr) {
+    return pillHash;
+  } else if (hashesArr.length > 0) {
+    pillHash = hashesArr.join().replace(/\u02F8(.)*\u02F8/, '').replace(/^,|,$/g, '').replace(/,,/g, ',');
+    if (pillHash.length > 0) {
+      pillHash = pillHash.concat('/');
+    }
+  }
+  return pillHash;
 };
 
 /**

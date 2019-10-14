@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { buildEventAnalysisUrl } from 'component-lib/utils/build-url';
+import { buildEventAnalysisUrl, classicEventsURL, extractHashWithoutTextHash } from 'component-lib/utils/build-url';
 import { urlUtil } from 'component-lib/utils/window-proxy';
 
 module('Unit | Util | build-url');
@@ -113,4 +113,92 @@ test('it returns a well formed url if right click actions are coming from outsid
     'The url was malformed'
   );
 
+});
+
+test('It returns a correct Classic events url based on the options passed in', async function(assert) {
+
+  let props = {
+    endTime: '1508178179',
+    startTime: '1508091780',
+    timeRangeType: 'LAST_24_HOURS',
+    serviceId: '555d9a6fe4b0d37c827d402e',
+    pillDataHashes: ['wawa1'],
+    textSearchTerm: { type: 'some', searchTerm: 'foobar' },
+    mid1: '1',
+    mid2: '12296047',
+    startCollectionTime: '1506537600',
+    endCollectionTime: '1508178160'
+  };
+
+
+  let url = classicEventsURL(props);
+  assert.equal(
+    url,
+    'investigation/555d9a6fe4b0d37c827d402e/events/wawa1/date/2017-10-15T18:23:00Z/2017-10-16T18:22:59Z?mid1=1&mid2=12296047&lastCollectionDate=1508178160&startCollectionDate=1506537600&timeRangeType=LAST_24_HOURS&search=foobar',
+    'The classic url was malformed'
+  );
+
+  // If no hash, won't find it in url
+  props = {
+    ...props,
+    pillDataHashes: ['']
+  };
+  url = classicEventsURL(props);
+  assert.equal(
+    url,
+    'investigation/555d9a6fe4b0d37c827d402e/events/date/2017-10-15T18:23:00Z/2017-10-16T18:22:59Z?mid1=1&mid2=12296047&lastCollectionDate=1508178160&startCollectionDate=1506537600&timeRangeType=LAST_24_HOURS&search=foobar',
+    'The classic url was malformed'
+  );
+
+  // If there are text hashes, include them only in searchTerm, not in `events/asd2323/`
+  props = {
+    ...props,
+    pillDataHashes: ['wawa1', '˸foobar˸']
+  };
+  url = classicEventsURL(props);
+  assert.equal(
+    url,
+    'investigation/555d9a6fe4b0d37c827d402e/events/wawa1/date/2017-10-15T18:23:00Z/2017-10-16T18:22:59Z?mid1=1&mid2=12296047&lastCollectionDate=1508178160&startCollectionDate=1506537600&timeRangeType=LAST_24_HOURS&search=foobar',
+    'The classic url was malformed'
+  );
+
+  // text hashes can be the first entry in the array, ignore it too
+  props = {
+    ...props,
+    pillDataHashes: ['˸foobar˸', 'wawa1']
+  };
+  url = classicEventsURL(props);
+  assert.equal(
+    url,
+    'investigation/555d9a6fe4b0d37c827d402e/events/wawa1/date/2017-10-15T18:23:00Z/2017-10-16T18:22:59Z?mid1=1&mid2=12296047&lastCollectionDate=1508178160&startCollectionDate=1506537600&timeRangeType=LAST_24_HOURS&search=foobar',
+    'The classic url was malformed'
+  );
+});
+
+test('extractHashWithoutTextHash outputs string hash without text hash', async function(assert) {
+
+  // no hash
+  let pillDataHashes = [''];
+  let hashString = extractHashWithoutTextHash(pillDataHashes);
+  assert.equal(hashString, '', 'Shouldnt be a string');
+
+  // with hashes
+  pillDataHashes = ['foo', 'bar'];
+  hashString = extractHashWithoutTextHash(pillDataHashes);
+  assert.equal(hashString, 'foo,bar/', 'Should have a / added at the end');
+
+  // with text hash
+  pillDataHashes = ['foo', 'bar', '˸foobar˸'];
+  hashString = extractHashWithoutTextHash(pillDataHashes);
+  assert.equal(hashString, 'foo,bar/', 'Should have a / added at the end');
+
+  // with text hash in front
+  pillDataHashes = ['˸foobar˸', 'foo', 'bar'];
+  hashString = extractHashWithoutTextHash(pillDataHashes);
+  assert.equal(hashString, 'foo,bar/', 'Should have a / added at the end');
+
+  // with text hash in middle (maybe)
+  pillDataHashes = ['foo', '˸foobar˸', 'bar'];
+  hashString = extractHashWithoutTextHash(pillDataHashes);
+  assert.equal(hashString, 'foo,bar/', 'Should have a / added at the end');
 });

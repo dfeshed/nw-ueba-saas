@@ -1289,7 +1289,7 @@ export default Component.extend({
    */
   _recentQueryTextEntered(data, dataSource) {
     if (this.get('isEditing') && dataSource === PILL_VALUE_DATA_SOURCE) {
-      this._requestValueSuggestions(this.get('selectedMeta').metaName, data);
+      this._requestValueSuggestions(this.get('selectedMeta')?.metaName, data);
       return;
     }
     const stringifiedPill = this._getStringifiedPill(data, dataSource);
@@ -1303,7 +1303,7 @@ export default Component.extend({
         const metaCount = this._retrieveCountForMetaText(stringifiedPill, dataSource);
         this.queryCounter.setMetaTabCount(metaCount);
       } else if (dataSource === PILL_VALUE_DATA_SOURCE) {
-        this._requestValueSuggestions(this.get('selectedMeta').metaName, data);
+        this._requestValueSuggestions(this.get('selectedMeta')?.metaName, data);
       }
     }
   },

@@ -13,6 +13,7 @@ import {
   isPillBeingEdited,
   isPillValidationInProgress,
   pillBeingEdited,
+  queryNodeValuesForClassicUrl,
   selectedPills,
   selectedTimeRange,
   selectedTimeRangeId,
@@ -572,4 +573,41 @@ test('hadTextPill detects if a previous query had a Text Filter', function(asser
     }
   } };
   assert.notOk(hadTextPill(invalidState), 'detected a text pill when there was no previous query data');
+});
+
+
+test('queryNodeValuesForClassicUrl sends out values if serviceId is present', function(assert) {
+
+  let state = { investigate: {
+    queryNode: {
+      endTime: '1508178179',
+      startTime: '1508091780',
+      serviceId: '555d9a6fe4b0d37c827d402e',
+      previouslySelectedTimeRanges: {
+        '555d9a6fe4b0d37c827d402e': TIME_RANGES.DEFAULT_TIME_RANGE_ID
+      },
+      pillDataHashes: [
+        'wawa1'
+      ],
+      pillsData: [
+        {
+          type: TEXT_FILTER, searchTerm: 'foobar'
+        }
+      ]
+    }
+  } };
+  assert.deepEqual(queryNodeValuesForClassicUrl(state), {
+    endTime: '1508178179',
+    startTime: '1508091780',
+    timeRangeType: 'LAST_24_HOURS',
+    serviceId: '555d9a6fe4b0d37c827d402e',
+    pillDataHashes: ['wawa1'],
+    textSearchTerm: { type: TEXT_FILTER, searchTerm: 'foobar' }
+  });
+
+  state = { investigate: {
+    queryNode: { }
+  } };
+  assert.notOk(queryNodeValuesForClassicUrl(state), 'Did not find any values');
+
 });

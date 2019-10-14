@@ -531,18 +531,19 @@ module('Integration | Component | events-table', function(hooks) {
     const textFilter = { type: 'text', searchTerm: 'limited' };
     new ReduxDataHelper(setState)
       .withPreviousQuery([textFilter])
+      .hasRequiredValuesToQuery(true)
       .getColumns('SUMMARY', EventColumnGroups)
       .eventCount(0)
       .streamLimit(100)
       .eventResults([])
       .language()
       .eventsPreferencesConfig()
+      .pillsDataText()
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
     assert.notOk(find('.rsa-loader'), 'spinner should not be present');
-    assert.equal(find('.no-results-message').textContent.trim(),
-      'Your filter criteria did not match any records. Results may be limited by a text filter, which matches only indexed meta keys.',
+    assert.ok(find('.no-results-message').textContent.trim().includes('Your filter criteria did not match any records. Results may be limited by a text filter,'),
       'incorrect message'
     );
   });
