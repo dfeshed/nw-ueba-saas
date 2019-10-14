@@ -21,11 +21,13 @@ export default handleActions({
         const columnGroups = mapColumnGroupsForEventTable(action.payload.data);
         if (columnGroups) {
           sort(columnGroups).by([{ asc: (group) => group.name.toUpperCase() }]);
+          // once populated to the listManagers' columnGroups.list,
+          // investigate.columngroup's columnGroups are never to be used
           return s.merge({ columnGroups });
         }
 
         // if none returned, return the default set of column groups
-        return s.set({ columnGroups: mappedColumnGroups });
+        return s.set('columnGroups', mappedColumnGroups);
       }
     });
   }

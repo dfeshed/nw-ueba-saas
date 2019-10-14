@@ -57,6 +57,10 @@ const timeMeta = {
   formattedName: 'time (Time)'
 };
 
+const hasMetaTimeAndMedium = (list) => {
+  return list.filter((meta) => meta.metaName === 'time' || meta.metaName === 'medium').length;
+};
+
 module('Unit | Selectors | dictionaries', function(hooks) {
   setupTest(hooks);
   hooks.beforeEach(function() {
@@ -236,7 +240,13 @@ module('Unit | Selectors | dictionaries', function(hooks) {
     function(assert) {
 
       const state = new ReduxDataHelper().metaKeyCache().build();
+
+      const { metaKeyCache } = state.investigate.dictionaries;
+      assert.ok(hasMetaTimeAndMedium(metaKeyCache), 'time and medium keys available');
+
       const result = metaMapForColumns(state);
+      assert.notOk(hasMetaTimeAndMedium(result), 'time and medium keys available');
+
       assert.ok(result[0].hasOwnProperty('field'));
       assert.ok(result[0].hasOwnProperty('title'));
       assert.notOk(result[0].hasOwnProperty('metaName'));

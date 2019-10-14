@@ -154,6 +154,8 @@ export const metaMapForColumns = createSelector(
       };
     });
 
+    // meta keys time and medium need not be shown to the user for creation of meta/column groups
+    // since they are added by default
     return mappedKeys.filter((meta) => meta.field !== 'time' && meta.field !== 'medium');
   }
 );

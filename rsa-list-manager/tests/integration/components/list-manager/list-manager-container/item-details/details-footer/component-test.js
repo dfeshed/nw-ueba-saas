@@ -10,16 +10,19 @@ import sinon from 'sinon';
 
 let setState;
 
-const createItemStub = sinon.stub(maintenanceCreators, 'createItem');
-
 module('Integration | Component | item details - details footer', function(hooks) {
   setupRenderingTest(hooks);
+
+  let createItemStub;
 
   hooks.beforeEach(function() {
     setState = (state) => {
       patchReducer(this, state);
     };
     initialize(this.owner);
+    if (maintenanceCreators.createItem.displayName !== 'createItem') {
+      createItemStub = sinon.stub(maintenanceCreators, 'createItem');
+    }
   });
 
   hooks.afterEach(function() {

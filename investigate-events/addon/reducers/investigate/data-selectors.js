@@ -1,5 +1,4 @@
 import reselect from 'reselect';
-import { lookup } from 'ember-dependency-lookup';
 import { isEmptyObject } from 'component-lib/utils/jquery-replacement';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import {
@@ -247,19 +246,6 @@ export const getFlattenedColumnList = createSelector(
       });
 
       return [...new Set(columns)];
-    }
-  }
-);
-
-export const getColumnGroups = createSelector(
-  [columnGroups],
-  (columnGroups) => {
-    if (columnGroups) {
-      const i18n = lookup('service:i18n');
-      return [
-        { groupName: i18n.t('investigate.events.columnGroups.custom'), options: columnGroups.filter((column) => !column.ootb) },
-        { groupName: i18n.t('investigate.events.columnGroups.default'), options: columnGroups.filter((column) => column.ootb) }
-      ];
     }
   }
 );

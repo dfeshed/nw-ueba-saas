@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
+import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
 import { selectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { inject as service } from '@ember/service';
@@ -10,6 +11,7 @@ import {
   COLUMN_GROUPS_LIST_NAME as listName
 } from 'investigate-events/constants/columnGroups';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
+import { BASE_COLUMNS } from 'investigate-events/constants/OOTBColumnGroups';
 
 const dispatchToActions = {
   setColumnGroup,
@@ -18,7 +20,7 @@ const dispatchToActions = {
 
 const stateToComputed = (state) => ({
   selectedColumnGroupId: selectedColumnGroup(state),
-  columnGroups: state.investigate.columnGroup.columnGroups
+  columnGroups: columnGroups(state)
 });
 
 const ColumnGroups = Component.extend({
@@ -44,6 +46,7 @@ const ColumnGroups = Component.extend({
     },
 
     columnGroupResponseMapping(columnGroup) {
+      columnGroup.columns = [...BASE_COLUMNS, ...columnGroup.columns ];
       return mapColumnGroupsForEventTable([columnGroup])[0];
     }
 

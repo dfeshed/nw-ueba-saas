@@ -636,7 +636,7 @@ export default {
         displayedMetaKeys: 'Displayed Meta Keys',
         availableMetaKeys: 'Available Meta Keys',
         allMetaKeysAdded: 'All meta keys have been added',
-        groupNamePlaceholder: 'My Custom Group',
+        groupNamePlaceholder: 'Enter column group name',
         nameNotUnique: 'New groups must have a unique name'
       },
       download: {

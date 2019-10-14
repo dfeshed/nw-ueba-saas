@@ -14,6 +14,10 @@
       }
     }
 
+    ::placeholder {
+      font-weight: lighter;
+    }
+
     button {
       padding: 0;
     }
@@ -120,7 +124,7 @@
       min-width: 400px;
       .item-details-loading-overlay {
         @include rsa-fill-abs();
-        z-index: 2;
+        z-index: 20002;
         background-color: background-color(neutral,dark,translucent);
         centered {
           height: 100%;
@@ -191,6 +195,7 @@
             padding-bottom: 0.3rem;
           }
           .value, input {
+            @include rsa-input-placeholder($formInputPlaceholderColor);
             color: text-color(primary, lightest);
             font-size: 0.85rem;
             font-weight: 400;

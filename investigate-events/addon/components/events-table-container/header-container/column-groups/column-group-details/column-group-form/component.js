@@ -5,6 +5,7 @@ import computed from 'ember-computed-decorators';
 import _ from 'lodash';
 
 import { metaMapForColumns } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
 
 const _filterColumns = (columns, filterText) => {
   const filterTextLower = filterText.toLowerCase();
@@ -15,10 +16,7 @@ const _filterColumns = (columns, filterText) => {
 };
 
 const stateToComputed = (state) => ({
-  columnGroups: state.investigate.columnGroup.columnGroups,
-  /* TODO Add Column Group
-   * use meta from language call untill API provides all meta regardless of service selected
-   */
+  columnGroups: columnGroups(state),
   allMeta: metaMapForColumns(state)
 });
 
@@ -105,12 +103,16 @@ const ColumnGroupForm = Component.extend({
    * map columnGroup to server format
    */
   _prepareColumnGroup(columnGroup) {
+
     if (columnGroup?.columns) {
       const { name } = columnGroup;
-      const columns = columnGroup.columns.map((col) => {
+
+      const columns = columnGroup.columns.map((col, index) => {
         return {
           metaName: col.field,
-          displayName: col.title
+          displayName: col.title,
+          // the columns selected by the user follow the default columns ( time and medium ) in position
+          position: index + 2
         };
       });
 

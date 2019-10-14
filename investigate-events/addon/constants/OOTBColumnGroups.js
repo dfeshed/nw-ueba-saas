@@ -1,6 +1,6 @@
 export const BASE_COLUMNS = [
-  { metaName: 'time', displayName: 'Collection Time', width: 175 },
-  { metaName: 'medium', displayName: 'Type' }
+  { metaName: 'time', displayName: 'Collection Time', width: 175, position: 0, visible: true },
+  { metaName: 'medium', displayName: 'Type', position: 1, visible: true }
 ];
 
 export default [
