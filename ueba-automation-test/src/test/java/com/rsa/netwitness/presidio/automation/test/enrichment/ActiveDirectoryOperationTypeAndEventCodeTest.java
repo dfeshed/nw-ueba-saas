@@ -36,7 +36,6 @@ public class ActiveDirectoryOperationTypeAndEventCodeTest extends AbstractTestNG
 
     @Autowired
     private ActiveDirectoryEnrichStoredDataRepository enrichRepo;
-    private SoftAssertions softly = new SoftAssertions();
 
     private List<Integer> eventCodeExcludedFromTest = Lists.newArrayList(4755, 4737);
 
@@ -82,6 +81,7 @@ public class ActiveDirectoryOperationTypeAndEventCodeTest extends AbstractTestNG
 
     @Test
     public void operation_type_should_match_the_event_code() {
+        SoftAssertions softly = new SoftAssertions();
 
         Map<String, Set<String>> actualEvCodeToOpTypesResult = actualEvents.parallelStream()
                 .collect(groupingBy(ActiveDirectoryEnrichStoredData::getDataSource,
@@ -103,6 +103,7 @@ public class ActiveDirectoryOperationTypeAndEventCodeTest extends AbstractTestNG
 
     @Test
     public void operation_type_categories_should_match_the_operation_type() {
+        SoftAssertions softly = new SoftAssertions();
 
         Map<String, Set<List<String>>> actualOpTypesToOpTypeCategories = actualEvents.parallelStream()
                 .collect(groupingBy(ActiveDirectoryEnrichStoredData::getOperationType,

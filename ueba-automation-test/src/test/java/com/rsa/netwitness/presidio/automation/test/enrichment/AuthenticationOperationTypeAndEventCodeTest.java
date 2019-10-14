@@ -37,7 +37,6 @@ public class AuthenticationOperationTypeAndEventCodeTest extends AbstractTestNGS
 
     @Autowired
     private AuthenticationEnrichStoredDataRepository enrichRepo;
-    private SoftAssertions softly = new SoftAssertions();
 
     private Map<String, ArrayList<String>> expectedEventCodeToOperationTypes = Stream.of(
             newHashMap("rsaacesrv", newArrayList("MFA")),
@@ -76,6 +75,7 @@ public class AuthenticationOperationTypeAndEventCodeTest extends AbstractTestNGS
 
     @Test
     public void operation_type_should_match_the_event_code() {
+        SoftAssertions softly = new SoftAssertions();
 
         Map<String, Set<String>> actualEvCodeToOpTypesResult = actualEvents.parallelStream()
                 .collect(groupingBy(EnrichedAuthenticationStoredData::getDataSource,
