@@ -4525,7 +4525,7 @@ export default {
         name: 'Policy Name',
         publishStatus: 'Publication Status',
         sourceType: 'Policy Type',
-        associatedGroups: 'Applied to Group(s)',
+        associatedGroups: 'Applied to Groups',
         description: 'Policy Description',
         noResultsMessage: 'No Policies found.',
         defaultPolicyAssociatedGroup: 'Base Policy',
@@ -4533,7 +4533,7 @@ export default {
       },
       filter: {
         sourceType: 'Policy Type',
-        appliedGroups: 'Applied To Group(s)',
+        appliedGroups: 'Applied To Groups',
         policyParameters: 'Policy Parameters'
       },
       detail: {
@@ -4570,18 +4570,18 @@ export default {
       },
       modals: {
         deletePolicies: {
-          title: 'Delete Policies',
-          confirm: 'You are about to permanently delete {{numItems}} Policies. Deletion will take immediate effect. Any groups currently applying these policies will no longer do so. Default policies are automatically excluded from deletion.',
-          ok: 'Delete Policies',
-          success: 'Successfully deleted selected Policies',
-          failure: 'There was an unexpected problem deleting selected Policies'
+          title: 'Delete Policy(ies)',
+          confirm: 'You are about to permanently delete {{numItems}} policy(ies). Deletion will take immediate effect. Any groups currently applying these policies will no longer do so. Default policies are automatically excluded from deletion.',
+          ok: 'Delete Policy(ies)',
+          success: 'Successfully deleted selected Policy(ies)',
+          failure: 'There was an unexpected problem deleting selected Policy(ies)'
         },
         publishPolicies: {
-          title: 'Publish Policies',
-          confirm: 'You are about to publish the {{numItems}} selected Unpublished Policies?',
-          ok: 'Publish Policies',
-          success: 'Successfully published selected Policies',
-          failure: 'There was an unexpected problem publishing the Policies'
+          title: 'Publish Policy(ies)',
+          confirm: 'You are about to publish the {{numItems}} selected Unpublished Policy(ies)?',
+          ok: 'Publish Policy(ies)',
+          success: 'Successfully published selected Policy(ies)',
+          failure: 'There was an unexpected problem publishing the Policy(ies)'
         }
       },
       tooltips: {
@@ -4597,7 +4597,7 @@ export default {
         name: 'Source Name',
         publishStatus: 'Publication Status',
         sourceType: 'Source Type',
-        associatedGroups: 'Group(s)',
+        associatedGroups: 'Groups',
         description: 'Source Description',
         noResultsMessage: 'No Sources found.',
         defaultPolicyAssociatedGroup: 'Base Policy',
@@ -4605,7 +4605,7 @@ export default {
       },
       filter: {
         sourceType: 'Source Type',
-        appliedGroups: 'Applied To Group(s)',
+        appliedGroups: 'Applied To Groups',
         policyParameters: 'Policy Parameters'
       },
       detail: {
@@ -4699,10 +4699,10 @@ export default {
         addSourceType: 'Add Another Policy Type',
         policyStatus: 'Policy Status',
         policyName: 'POLICY NAME',
-        appliedToGroup: 'APPLIED TO GROUP(S)',
+        appliedToGroup: 'APPLIED TO GROUPS',
         description: 'POLICY DESCRIPTION',
         available: 'Available Policies',
-        availableTooltip: 'Available Policies shows all the published policies for the selected policy Type. If you do not see a ' +
+        availableTooltip: 'Available Policies shows all the published policies for the selected Policy Type. If you do not see a ' +
           'policy you are expecting to see, you may need to return to the Policies tab and publish it. Click on the + icon to select the policy.',
         selected: 'Selected Policy',
         selectedTooltip: 'The Selected Policy will be applied by this group. A group can only apply one policy per Policy Type. ' +
@@ -4795,10 +4795,10 @@ settings will be applied to a hypothetical source.\n\
 Use the Simulate toggles in the table to choose\n\
 which groups the simulated source belongs to.\n\
 \n\
-Change the order of the row*s* to see how this\n\
+Change the order of the row(s) to see how this\n\
 effects the simulated source.',
       editRanking: 'Edit Ranking',
-      chooseSourceTopText: 'Ranking is established per policy Type.  Select a policy type to continue.',
+      chooseSourceTopText: 'Ranking is established per Policy Type.  Select a Policy Type to continue.',
       error: {
         generic: 'An unexpected error has occurred attempting to retrieve this data'
       },
@@ -4818,7 +4818,7 @@ effects the simulated source.',
       // identify-policy-step
       identifyPolicy: 'Identify Policy',
       sourceType: 'Policy Type',
-      sourceTypeTooltip: 'Choose a policy Type to create a policy for.',
+      sourceTypeTooltip: 'Choose a Policy Type to create a policy for.',
       sourceTypePlaceholder: 'Choose a Policy Type',
       edrSourceType: 'Agent Endpoint',
       fileLogSourceType: 'Agent File Logs',
@@ -4838,10 +4838,10 @@ effects the simulated source.',
       descriptionExceedsMaxLength: 'Policy description is limited to 8000 characters',
       // define-policy-step
       definePolicy: 'Define Policy',
-      definePolicyConnection: 'Define Connection Settings',
+      definePolicyConnection: 'Define File Connection Settings',
       definePolicySources: 'Define File Policy Settings',
       availableSettings: 'Available Settings',
-      availableTooltip: 'Available Settings are the settings that can be used in this policy type. Select the settings you wish to include ' +
+      availableTooltip: 'Available Settings are the settings that can be used in this Policy Type. Select the settings you wish to include ' +
         'using the + icon. A policy does not need to include all settings as a source takes its settings from the policies applied by all ' +
         'the groups it belongs to according to rank, then the default policy.',
       selectedSettings: 'Selected Settings',
@@ -5210,7 +5210,7 @@ effects the simulated source.',
       default: 'Unknown response error code',
       601: 'Policy with same name already exists',
       602: 'Group with same name already exists',
-      603: 'Unable to delete a default policy type',
+      603: 'Unable to delete a default Policy Type',
       604: 'Group criteria is invalid',
       605: 'Group criteria is empty',
       606: 'Group criteria conjunction operator is invalid',

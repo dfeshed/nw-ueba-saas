@@ -81,7 +81,7 @@ module('Integration | Component | Policy Inspector', function(hooks) {
     await render(hbs`{{usm-policies/policies/inspector}}`);
     assert.equal(findAll('.usm-policies-inspector .heading').length, 7, 'expected headings are shown');
     assert.equal(findAll('.usm-policies-inspector .heading')[6].innerText, 'History', 'history section is last as expected');
-    assert.equal(findAll('.usm-policies-inspector .heading')[0].innerText, 'Applied to Group(s)', 'first heading is as expected');
+    assert.equal(findAll('.usm-policies-inspector .heading')[0].innerText, 'Applied to Groups', 'first heading is as expected');
     assert.equal(findAll('.usm-policies-inspector .title').length, 18, 'expected property names are shown');
     assert.equal(findAll('.usm-policies-inspector .value').length, 20, 'expected value elements are shown');
     assert.equal(findAll('.usm-policies-inspector .value')[15].innerText, '2018-10-23 02:13', 'created on value shows as expected');
