@@ -77,6 +77,8 @@ const HostTable = Component.extend({
 
   classNames: 'machine-zone',
 
+  isHostIsolated: false,
+
   _sortList(columnList) {
     const i18n = this.get('i18n');
     return _.sortBy(columnList, [(column) => {
@@ -156,15 +158,19 @@ const HostTable = Component.extend({
     beforeContextMenuShow(menu, event) {
       const { contextSelection: item, contextItems } = menu;
       const { isMFTEnabled } = item;
+      const { agentStatus: { isolationStatus = {} } } = item;
+      const { isolated = false } = isolationStatus;
       const selections = this.get('selections');
-
       // Need to store this locally set it back again to menu object
       if (contextItems.length) {
-        if (!this.get('updatedContextConfBackup') && isMFTEnabled) {
+        if (!this.get('updatedContextConfBackup') && isMFTEnabled && !isolated) {
           this.set('updatedContextConfBackup', contextItems);
         }
         if (!this.get('initialContextConfBackup') && !isMFTEnabled) {
           this.set('initialContextConfBackup', contextItems);
+        }
+        if (!this.get('isolatedContextConfBackup') && isMFTEnabled && isolated) {
+          this.set('isolatedContextConfBackup', contextItems);
         }
       }
 
@@ -172,8 +178,10 @@ const HostTable = Component.extend({
       if (event.target.tagName.toLowerCase() === 'a') {
         menu.set('contextItems', []);
       } else {
-        if (isMFTEnabled && (selections.length <= 1)) {
+        if (!isolated && isMFTEnabled && (selections.length <= 1)) {
           menu.set('contextItems', this.get('updatedContextConfBackup'));
+        } else if (isolated && isMFTEnabled && (selections.length <= 1)) {
+          menu.set('contextItems', this.get('isolatedContextConfBackup'));
         } else {
           menu.set('contextItems', this.get('initialContextConfBackup'));
         }

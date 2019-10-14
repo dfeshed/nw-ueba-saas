@@ -22,7 +22,10 @@ import {
   allAreMigratedHosts,
   mftDownloadButtonStatus,
   isAgentMigrated,
-  actionsDisableMessage } from 'investigate-hosts/reducers/hosts/selectors';
+  actionsDisableMessage,
+  isolationComment,
+  excludedIps,
+  selectedHostDetails } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
 const STATE = Immutable.from({
@@ -1060,4 +1063,145 @@ test('isAgentMigrated is broker', function(assert) {
   });
   const result = isAgentMigrated(state);
   assert.equal(result, false);
+});
+
+test('isolationComment test', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          id: 1, version: '4.4', managed: false,
+          agentStatus: {
+            isolationStatus: {
+              isolate: true,
+              comment: 'test',
+              excludedIps: ['0.0.0.0']
+            }
+          }
+        }]
+      },
+      overview: {}
+    }
+  });
+  const state2 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          id: 1, version: '4.4', managed: false,
+          agentStatus: {
+            isolationStatus: {
+              isolate: true,
+              comment: 'test',
+              excludedIps: ['0.0.0.0']
+            }
+          }
+        }]
+      },
+      overview: {
+        agentStatus: {
+          isolationStatus: {
+            isolate: true,
+            comment: 'test',
+            excludedIps: ['0.0.0.0']
+          }
+        }
+      }
+    }
+  });
+  const result = isolationComment(state);
+  assert.equal(result, 'test');
+
+  const result2 = isolationComment(state2);
+  assert.equal(result2, 'test');
+});
+
+test('excludedIps test', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          id: 1, version: '4.4', managed: false,
+          agentStatus: {
+            isolationStatus: {
+              isolate: true,
+              comment: 'test',
+              excludedIps: ['0.0.0.0']
+            }
+          }
+        }]
+      },
+      overview: {}
+    }
+  });
+  const state2 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          id: 1, version: '4.4', managed: false,
+          agentStatus: {
+            isolationStatus: {
+              isolate: true,
+              comment: 'test',
+              excludedIps: ['0.0.0.0']
+            }
+          }
+        }]
+      },
+      overview: {
+        agentStatus: {
+          isolationStatus: {
+            isolate: true,
+            comment: 'test',
+            excludedIps: ['0.0.0.0']
+          }
+        }
+      }
+    }
+  });
+  const result = excludedIps(state);
+  assert.equal(result[0], ['0.0.0.0']);
+
+  const result2 = excludedIps(state2);
+  assert.equal(result2[0], ['0.0.0.0']);
+});
+
+test('selectedHostDetails test', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          id: 1, version: '4.4', managed: false,
+          agentStatus: {
+            isolationStatus: {
+              isolate: true,
+              comment: 'test',
+              excludedIps: ['0.0.0.0']
+            }
+          }
+        }]
+      },
+      overview: {}
+    }
+  });
+  const state2 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: []
+      },
+      overview: {
+        agentStatus: {
+          isolationStatus: {
+            isolate: true,
+            comment: 'test',
+            excludedIps: ['0.0.0.0']
+          }
+        }
+      }
+    }
+  });
+  const result = selectedHostDetails(state);
+  assert.equal(result.id, 1);
+
+  const result2 = selectedHostDetails(state2);
+  assert.deepEqual(result2, {});
 });

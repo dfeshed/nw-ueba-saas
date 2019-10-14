@@ -98,7 +98,7 @@ const endpointState =
     {
       schema: { schema: endpoint.schema },
       machines: {
-        hostList: hostListState.machines.hostList, selectedHostList: [ { version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'idle' }],
+        hostList: hostListState.machines.hostList, selectedHostList: [ { version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'idle', agentStatus: { isolationStaus: {} } }],
         hostColumnSort: 'machineIdentity.machineName',
         focusedHost: null
       }
@@ -138,7 +138,7 @@ const endpointScanPending = {
 const dummySelectedHostList = new Array(101)
   .join().split(',')
   .map(function(item, index) {
-    return { index: { id: ++index, version: index, managed: true } };
+    return { index: { id: ++index, version: index, managed: true }, agentStatus: { isolationStatus: {} } };
   });
 
 const selectedMoreHostsState =

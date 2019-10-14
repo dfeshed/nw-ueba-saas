@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, findAll } from '@ember/test-helpers';
+import { render, click, findAll, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -57,7 +57,8 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
       assert.ok(true);
     });
     this.set('isMFTEnabled', { isDisplayed: false });
-    await render(hbs`{{host-list/host-table/action-bar/more-actions showRiskScoreModal=showRiskScoreModal deleteAction=deleteAction isMFTEnabled=isMFTEnabled}}`);
+    this.set('hostDetails', { isIsolated: false });
+    await render(hbs`{{host-list/host-table/action-bar/more-actions showRiskScoreModal=showRiskScoreModal deleteAction=deleteAction isMFTEnabled=isMFTEnabled hostDetails=hostDetails}}`);
     assert.equal(document.querySelector('.host_more_actions button').textContent.trim(), 'More', 'action bar More button label');
     assert.equal(document.querySelectorAll('.host_more_actions .is-disabled').length, 0, 'action bar more button is enabled');
     await click('.host_more_actions button');
@@ -74,7 +75,8 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
       assert.ok(true);
     });
     this.set('noHostsSelected', true);
-    await render(hbs`{{host-list/host-table/action-bar/more-actions showRiskScoreModal=showRiskScoreModal deleteAction=deleteAction noHostsSelected=noHostsSelected}}`);
+    this.set('hostDetails', { isIsolated: false });
+    await render(hbs`{{host-list/host-table/action-bar/more-actions showRiskScoreModal=showRiskScoreModal deleteAction=deleteAction noHostsSelected=noHostsSelected hostDetails=hostDetails}}`);
     assert.equal(document.querySelector('.host_more_actions button').textContent.trim(), 'More', 'action bar More button label');
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 0, 'no list options should render.');
@@ -90,7 +92,8 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
       assert.ok(true, 'passed action is called');
     });
     this.set('isMFTEnabled', { isDisplayed: false });
-    await render(hbs`{{host-list/host-table/action-bar/more-actions showRiskScoreModal=showRiskScoreModal deleteAction=deleteAction isMFTEnabled=isMFTEnabled}}`);
+    this.set('hostDetails', { isIsolated: false });
+    await render(hbs`{{host-list/host-table/action-bar/more-actions showRiskScoreModal=showRiskScoreModal deleteAction=deleteAction isMFTEnabled=isMFTEnabled hostDetails=hostDetails}}`);
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 2, '2 list options should render.');
     assert.equal(findAll('.rsa-dropdown-action-list li')[0].textContent.trim(), 'Reset Risk Score', 'Reset Risk Score option is rendered.');
@@ -125,6 +128,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
       assert.ok(true);
     });
     this.set('selectedHostList', [selectedData]);
+    this.set('hostDetails', { isIsolated: false });
 
     await render(hbs`{{host-list/host-table/action-bar/more-actions
       showRiskScoreModal=showRiskScoreModal
@@ -132,12 +136,13 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
       isMFTEnabled=isMFTEnabled
       selectedHostList=selectedHostList
       requestMFTDownload=requestMFTDownload
-      requestSystemDumpDownload=requestSystemDumpDownload}}`);
+      requestSystemDumpDownload=requestSystemDumpDownload
+      hostDetails=hostDetails}}`);
 
     await click('.host_more_actions button');
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 4, '4 list options should render as MFT is enabled.');
-    assert.equal(findAll('.rsa-dropdown-action-list li')[2].textContent.trim(), 'Download MFT to Server', 'Download MFT option is rendered.');
-    await click(findAll('.rsa-dropdown-action-list li')[2]);
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 5, '5 list options should render as MFT is enabled.');
+    assert.equal(findAll('.rsa-dropdown-action-list li')[3].textContent.trim(), 'Download MFT to Server', 'Download MFT option is rendered.');
+    await click(findAll('.rsa-dropdown-action-list li')[3]);
   });
 
   test('Download mft option disabled when agent is migrated and not broker', async function(assert) {
@@ -168,6 +173,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     });
     this.set('selectedHostList', [selectedData]);
     this.set('isAgentMigrated', true);
+    this.set('hostDetails', { isIsolated: false });
 
 
     await render(hbs`{{host-list/host-table/action-bar/more-actions
@@ -177,7 +183,8 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
       selectedHostList=selectedHostList
       isAgentMigrated=isAgentMigrated
       requestMFTDownload=requestMFTDownload
-      requestSystemDumpDownload=requestSystemDumpDownload}}`);
+      requestSystemDumpDownload=requestSystemDumpDownload
+      hostDetails=hostDetails}}`);
 
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li.downloadMFT-button .is-disabled').length, 1, 'Download MFT option is disabled.');
@@ -211,6 +218,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     });
     this.set('selectedHostList', [selectedData]);
     this.set('isAgentMigrated', false);
+    this.set('hostDetails', { isIsolated: false });
 
 
     await render(hbs`{{host-list/host-table/action-bar/more-actions
@@ -220,7 +228,8 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
       selectedHostList=selectedHostList
       isAgentMigrated=isAgentMigrated
       requestMFTDownload=requestMFTDownload
-      requestSystemDumpDownload=requestSystemDumpDownload}}`);
+      requestSystemDumpDownload=requestSystemDumpDownload
+      hostDetails=hostDetails}}`);
 
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li.downloadMFT-button .is-disabled').length, 0, 'Download MFT option is enabled.');
@@ -235,6 +244,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
       assert.ok(true, 'passed action is called');
     });
     this.set('isMFTEnabled', { isDisplayed: true });
+    this.set('hostDetails', { isIsolated: false });
     this.set('requestMFTDownload', () => {
       assert.ok(true);
     });
@@ -244,7 +254,8 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
       deleteAction=deleteAction
       isMFTEnabled=isMFTEnabled
       selectedHostList=selectedHostList
-      requestMFTDownload=requestMFTDownload}}`);
+      requestMFTDownload=requestMFTDownload
+      hostDetails=hostDetails}}`);
 
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 2, '2 list options should render as download MFT option should not render if more thatn one host is selected.');
@@ -257,6 +268,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     this.set('deleteAction', () => {
       assert.ok(true);
     });
+    this.set('hostDetails', { isIsolated: false });
     this.set('noHostsSelected', true);
     await render(hbs`{{host-list/host-table/action-bar/more-actions showRiskScoreModal=showRiskScoreModal deleteAction=deleteAction noHostsSelected=noHostsSelected}}`);
     assert.equal(document.querySelector('.host_more_actions button').textContent.trim(), 'More', 'action bar More button label');
@@ -266,6 +278,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
 
   test('More menu contains the option to download system dump', async function(assert) {
     this.set('selectedHostList', [selectedData]);
+    this.set('hostDetails', { isIsolated: false });
     this.set('showRiskScoreModal', () => {
       assert.ok(true);
     });
@@ -286,9 +299,10 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
                       deleteAction=deleteAction 
                       selectedHostList=selectedHostList
                       noHostsSelected=noHostsSelected
-                      requestSystemDumpDownload=requestSystemDumpDownload}}`);
+                      requestSystemDumpDownload=requestSystemDumpDownload
+                      hostDetails=hostDetails}}`);
     await click('.host_more_actions button');
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 4, '4 options should render.');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 5, '4 options should render.');
     assert.equal(findAll('.download-system-dump-button').length, 1, 'Download System dump option is rendered.');
   });
 
@@ -306,6 +320,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
       assert.ok(true);
     });
     this.set('selectedHostList', [selectedData]);
+    this.set('hostDetails', { isIsolated: false });
     this.set('isMFTEnabled', { isDisplayed: false });
     this.set('noHostsSelected', false);
     await render(hbs`{{host-list/host-table/action-bar/more-actions 
@@ -315,7 +330,8 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
                       selectedHostList=selectedHostList
                       noHostsSelected=noHostsSelected
                       requestMFTDownload=requestMFTDownload
-                      requestSystemDumpDownload=requestSystemDumpDownload}}`);
+                      requestSystemDumpDownload=requestSystemDumpDownload
+                      hostDetails=hostDetails}}`);
     await click('.host_more_actions button');
     assert.equal(findAll('.download-system-dump-button').length, 0, 'Download System dump option is hidden.');
   });
@@ -330,6 +346,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     });
     this.set('isMFTEnabled', { isDisplayed: true });
     this.set('noHostsSelected', false);
+    this.set('hostDetails', { isIsolated: false });
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('roles', ['endpoint-server.agent.manage']);
 
@@ -338,7 +355,8 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
                       isMFTEnabled=isMFTEnabled 
                       deleteAction=deleteAction 
                       selectedHostList=selectedHostList
-                      noHostsSelected=noHostsSelected}}`);
+                      noHostsSelected=noHostsSelected
+                      hostDetails=hostDetails}}`);
     await click('.host_more_actions button');
     assert.equal(findAll('.download-system-dump-button').length, 0, 'Download System dump option is hidden.');
   });
@@ -353,6 +371,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     });
     this.set('isMFTEnabled', { isDisplayed: false });
     this.set('noHostsSelected', false);
+    this.set('hostDetails', { isIsolated: false });
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('roles', ['endpoint-server.agent.manage']);
 
@@ -361,7 +380,8 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
                       isMFTEnabled=isMFTEnabled 
                       deleteAction=deleteAction 
                       selectedHostList=selectedHostList
-                      noHostsSelected=noHostsSelected}}`);
+                      noHostsSelected=noHostsSelected
+                      hostDetails=hostDetails}}`);
     await click('.host_more_actions button');
     assert.equal(findAll('.download-system-dump-button').length, 0, 'Download System dump option is hidden.');
   });
@@ -384,6 +404,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     this.set('isMFTEnabled', { isDisplayed: true });
     this.set('noHostsSelected', false);
     this.set('isAgentMigrated', false);
+    this.set('hostDetails', { isIsolated: false });
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('roles', ['endpoint-server.agent.manage']);
 
@@ -395,7 +416,8 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
                       noHostsSelected=noHostsSelected
                       isAgentMigrated=isAgentMigrated
                       requestMFTDownload=requestMFTDownload
-                      requestSystemDumpDownload=requestSystemDumpDownload}}`);
+                      requestSystemDumpDownload=requestSystemDumpDownload
+                      hostDetails=hostDetails}}`);
     await click('.host_more_actions button');
     await click('.download-system-dump-button button');
   });
@@ -428,6 +450,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     });
     this.set('selectedHostList', [selectedData]);
     this.set('isAgentMigrated', true);
+    this.set('hostDetails', { isIsolated: false });
 
 
     await render(hbs`{{host-list/host-table/action-bar/more-actions
@@ -437,10 +460,56 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
       selectedHostList=selectedHostList
       isAgentMigrated=isAgentMigrated
       requestMFTDownload=requestMFTDownload
-      requestSystemDumpDownload=requestSystemDumpDownload}}`);
+      requestSystemDumpDownload=requestSystemDumpDownload
+      hostDetails=hostDetails}}`);
 
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li.download-system-dump-button .is-disabled').length, 1, 'Download MFT option is disabled.');
+  });
+  test('Network isolation options rendered', async function(assert) {
+    const selectedData = {
+      id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+      machineIdentity: {
+        machineName: 'RemDbgDrv',
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      },
+      version: '11.4.0.0',
+      managed: true,
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    };
+    new ReduxDataHelper(setState).scanCount(selectedData).build();
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true, 'passed action is called');
+    });
+    this.set('isMFTEnabled', { isDisplayed: true });
+    this.set('requestMFTDownload', () => {
+      assert.ok(true);
+    });
+    this.set('selectedHostList', [selectedData]);
+    this.set('isAgentMigrated', true);
+    this.set('hostDetails', { agentId: '', isIsolated: false });
+
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions
+      showRiskScoreModal=showRiskScoreModal
+      deleteAction=deleteAction
+      isMFTEnabled=isMFTEnabled
+      selectedHostList=selectedHostList
+      isAgentMigrated=isAgentMigrated
+      requestMFTDownload=requestMFTDownload
+      requestSystemDumpDownload=requestSystemDumpDownload
+      hostDetails=hostDetails}}`);
+
+    await click('.host_more_actions button');
+    assert.equal(findAll('.rsa-dropdown-action-list li.isolate-button').length, 1, 'host-network-isolation option is rendered.');
+    await triggerEvent(findAll('.rsa-dropdown-action-list li.isolate-button button')[0], 'mouseover');
   });
 });
 

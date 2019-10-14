@@ -47,6 +47,43 @@
               {{t moreOption.name}}
             {{/rsa-form-button}}
           </li>
+        {{else if moreOption.subItems}}
+          <li class="isolate-button{{if moreOption.divider ' divider'}}">
+            {{#rsa-content-tethered-panel-trigger
+               panel=moreOption.panelId
+               displayDelay=200
+               hideDelay=100
+               isDisabled=isAgentMigrated
+            }}
+              {{#rsa-form-button}}
+                <span class='host-network-isolation'>
+                  {{t moreOption.name}}
+                </span>
+                {{rsa-icon name='arrow-right-12'}}
+              {{/rsa-form-button}}
+            {{/rsa-content-tethered-panel-trigger}}
+
+            {{#rsa-content-tethered-panel
+               panelClass="machine-isolation-selector"
+               displayCloseButton=false
+               isPopover=true
+               panelId=moreOption.panelId
+               position='right-bottom'
+            }}
+              <ul class="rsa-dropdown-action-list">
+                {{#each moreOption.subItems as |subItem|}}
+                  <li>
+                    {{#rsa-form-button
+                       defaultAction=(action 'displayIsolationModal' subItem.modalName)
+                       isDisabled=subItem.isDisabled}}
+                      {{t subItem.name}}
+                    {{/rsa-form-button}}
+                  </li>
+                {{/each}}
+              </ul>
+            {{/rsa-content-tethered-panel}}
+          </li>
+
         {{/if}}
       {{/each}}
     </ul>

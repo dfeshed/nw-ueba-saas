@@ -26,9 +26,13 @@ export default DataTableBodyRow.extend({
 
   @computed('item')
   contextItems() {
+    let subNavItem = {};
+    const { agentStatus = {} } = this.get('item');
+    const { isolationStatus = {} } = agentStatus;
+    const { isolated = false } = isolationStatus;
     const mft = [{
       label: 'downloadMFT',
-      order: 5,
+      order: 6,
       prefix: 'investigateShared.endpoint.fileActions.',
       showDivider: true,
       action(selection, context) {
@@ -38,10 +42,59 @@ export default DataTableBodyRow.extend({
         return context.get('isAgentMigrated');
       }
     }];
-
+    if (isolated) {
+      subNavItem = {
+        modalName: 'release',
+        label: 'releaseFromIsolation',
+        prefix: 'investigateHosts.networkIsolation.menu.',
+        buttonId: 'release-isolation-button',
+        action(selection, context) {
+          context.showIsolationModal('release');
+        },
+        disabled(selection, context) {
+          return context.get('isAgentMigrated');
+        }
+      };
+    } else {
+      subNavItem = {
+        modalName: 'isolate',
+        label: 'isolate',
+        prefix: 'investigateHosts.networkIsolation.menu.',
+        buttonId: 'isolation-button',
+        action(selection, context) {
+          context.showIsolationModal('isolate');
+        },
+        disabled(selection, context) {
+          return context.get('hostDetails').isIsolated;
+        }
+      };
+    }
+    // Separating network isolation as an additional check will be added for this in future.
+    const networkIsolation = [{
+      showDivider: true,
+      label: 'networkIsolation',
+      prefix: 'investigateHosts.networkIsolation.menu.',
+      buttonId: 'isolation-button',
+      order: 5,
+      subActions: [
+        subNavItem,
+        {
+          modalName: 'edit',
+          label: 'edit',
+          prefix: 'investigateHosts.networkIsolation.menu.',
+          buttonId: 'isolation-button',
+          action(selection, context) {
+            context.showIsolationModal('edit');
+          },
+          disabled(selection, context) {
+            return !context.get('hostDetails').isIsolated;
+          }
+        }
+      ]
+    }];
     const systemDump = [{
       label: 'downloadSystemDump',
-      order: 6,
+      order: 7,
       prefix: 'investigateShared.endpoint.fileActions.',
       action(selection, context) {
         context.requestSystemDumpDownload();
@@ -54,7 +107,7 @@ export default DataTableBodyRow.extend({
     const contextConf = [
       {
         label: 'resetRiskScore',
-        order: 7,
+        order: 8,
         prefix: 'investigateShared.endpoint.fileActions.',
         showDivider: true,
         action(selection, context) {
@@ -139,7 +192,7 @@ export default DataTableBodyRow.extend({
       }
     ];
     if (this.get('item').isMFTEnabled && this.get('accessControl.endpointCanManageFiles')) {
-      contextConf.push(...mft, ...systemDump);
+      contextConf.push(...networkIsolation, ...mft, ...systemDump);
     }
     return contextConf.sortBy('order');
   }

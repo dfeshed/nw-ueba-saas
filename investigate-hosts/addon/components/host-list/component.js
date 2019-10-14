@@ -4,7 +4,13 @@ import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint
 
 import { startScanCommand, stopScanCommand } from 'investigate-hosts/util/scan-command';
 import { inject as service } from '@ember/service';
-import { isScanStartButtonDisabled, warningMessages, extractAgentIds, mftDownloadButtonStatus, isAgentMigrated } from 'investigate-hosts/reducers/hosts/selectors';
+import {
+  isScanStartButtonDisabled,
+  warningMessages,
+  extractAgentIds,
+  mftDownloadButtonStatus,
+  isAgentMigrated,
+  selectedHostDetails } from 'investigate-hosts/reducers/hosts/selectors';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
@@ -20,7 +26,10 @@ const stateToComputed = (state) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   isMFTEnabled: mftDownloadButtonStatus(state),
-  isAgentMigrated: isAgentMigrated(state)
+  isAgentMigrated: isAgentMigrated(state),
+  serverId: state.endpointQuery.serverId,
+  selectedHostList: state.endpoint.machines.selectedHostList,
+  hostDetails: selectedHostDetails(state)
 });
 
 const dispatchToActions = {
@@ -65,7 +74,6 @@ const Container = Component.extend({
       i18n.t('investigateShared.endpoint.hostActions.startScan') :
       i18n.t('investigateShared.endpoint.hostActions.stopScan');
   },
-
   actions: {
     pivotToInvestigate(item, category) {
       this.get('pivot').pivotToInvestigate('machineIdentity.machineName', item, category);
@@ -199,7 +207,17 @@ const Container = Component.extend({
       } else {
         this.send('downloadMFT', agentId, serviceId, callBackOptions);
       }
+      this.send('downloadSystemDump', this.get('agentIds')[0], serviceId, callBackOptions);
+    },
+    showIsolationModal(item) {
+      this.set('showIsolationModal', true);
+      this.set('selectedModal', item);
+    },
+
+    hideIsolationModal() {
+      this.set('showIsolationModal', false);
     }
+
   }
 });
 

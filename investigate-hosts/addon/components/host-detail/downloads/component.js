@@ -92,6 +92,11 @@ const HostDownloads = Component.extend({
 
     hideConfirmationModal() {
       this.set('showConfirmationModal', false);
+    },
+    onCloseSidePanel(side) {
+      if (side == 'left') {
+        this.send('toggleHostDetailsFilter', false);
+      }
     }
   }
 });

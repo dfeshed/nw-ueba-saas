@@ -298,21 +298,45 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       .columns(endpoint.schema)
       .hostList(hostList)
       .hostSortField('machineIdentity.machineName')
-      .selectedHostList([])
+      .selectedHostList([{ agentStatus: { isolationStatus: {} } }])
       .build();
+    this.set('hostDetails', { isIsolated: false });
     await render(hbs`
     <style>
       box, section {
         min-height: 1000px
       }
     </style>
-    {{host-list/host-table}}{{context-menu}}`);
+    {{host-list/host-table hostDetails=hostDetails}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[1], 'contextmenu', e);
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 7, 'Context menu rendered with 7 items with Download MFT option');
+      assert.equal(items.length, 8, 'Context menu rendered with 8 items with Download MFT option');
+    });
+  });
+  test('Network isolation option rendered when criteria is met', async function(assert) {
+    new ReduxDataHelper(initState)
+      .columns(endpoint.schema)
+      .hostList(hostList)
+      .hostSortField('machineIdentity.machineName')
+      .selectedHostList([{ agentStatus: { isolationStatus: {} } }])
+      .build();
+    this.set('hostDetails', { isIsolated: false });
+    await render(hbs`
+    <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+    {{host-list/host-table hostDetails=hostDetails}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[1], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items[4].innerText, 'Network Isolation', 'Context menu rendered with network isolation options');
     });
   });
   test('Download MFT option not rendered when permissions are not there', async function(assert) {
@@ -529,19 +553,20 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       .hostSortField('machineIdentity.machineName')
       .selectedHostList([])
       .build();
+    this.set('hostDetails', { isIsolated: false });
     await render(hbs`
     <style>
       box, section {
         min-height: 1000px
       }
     </style>
-    {{host-list/host-table}}{{context-menu}}`);
+    {{host-list/host-table hostDetails=hostDetails}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[1], 'contextmenu', e);
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 7, 'Context menu rendered with 7 items with Download System dump option');
+      assert.equal(items.length, 8, 'Context menu rendered with 7 items with Download System dump option');
     });
   });
   test('Download System dump option not rendered when permissions are not there', async function(assert) {

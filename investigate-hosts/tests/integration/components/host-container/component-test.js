@@ -64,7 +64,10 @@ const endpointState =
             machines: {
               hostList: hostListState.machines.hostList,
               selectedHostList: [{
-                scanStatus: 'idle'
+                scanStatus: 'idle',
+                agentStatus: {
+                  isolationStatus: {}
+                }
               }],
               hostColumnSort: 'machineIdentity.machineName',
               activeHostListPropertyTab: 'HOST_DETAILS'

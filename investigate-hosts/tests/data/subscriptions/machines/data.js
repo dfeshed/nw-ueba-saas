@@ -7,7 +7,10 @@ export default {
     'agentStatus': {
       'lastSeenTime': '2017-03-08T11:55:33.814Z',
       'lastUpdatedTime': '2017-03-08T11:55:33.814Z',
-      'scanStatus': 'idle'
+      'scanStatus': 'idle',
+      isolationStatus: {
+        isolated: false
+      }
     },
     'groups': [
       {

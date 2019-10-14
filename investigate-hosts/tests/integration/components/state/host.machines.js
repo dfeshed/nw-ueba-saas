@@ -9,7 +9,8 @@ export default {
         agentStatus: {
           lastSeenTime: '2017-03-08T11:55:33.814Z',
           lastUpdatedTime: '2017-03-08T11:55:33.814Z',
-          scanStatus: 'idle'
+          scanStatus: 'idle',
+          isolationStatus: {}
         },
         machineIdentity: {
           id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F',
@@ -171,7 +172,8 @@ export default {
         agentStatus: {
           lastSeenTime: '2017-03-08T11:55:33.814Z',
           lastUpdatedTime: '2017-03-08T11:55:33.814Z',
-          scanStatus: 'idle'
+          scanStatus: 'idle',
+          isolationStatus: {}
         },
         machineIdentity: {
           id: '019A39C8-3E18-387F-EAD4-EA217519638A',
@@ -298,7 +300,8 @@ export default {
         agentStatus: {
           lastSeenTime: '2017-03-08T11:55:33.814Z',
           lastUpdatedTime: '2017-03-08T11:55:33.814Z',
-          scanStatus: 'idle'
+          scanStatus: 'idle',
+          isolationStatus: {}
         },
         machineIdentity: {
           id: '3e6febe6-0cb6-4e9f-bdf6-ce238c7011b6',
@@ -404,7 +407,8 @@ export default {
         agentStatus: {
           lastSeenTime: '2017-03-08T11:55:33.814Z',
           lastUpdatedTime: '2017-03-08T11:55:33.814Z',
-          scanStatus: 'idle'
+          scanStatus: 'idle',
+          isolationStatus: {}
         },
         machineIdentity: {
           id: '71827985-aaf5-45c7-970f-c54329505d60',
@@ -510,7 +514,8 @@ export default {
         agentStatus: {
           lastSeenTime: '2017-03-08T11:55:33.814Z',
           lastUpdatedTime: '2017-03-08T11:55:33.814Z',
-          scanStatus: 'idle'
+          scanStatus: 'idle',
+          isolationStatus: {}
         },
         machineIdentity: {
           id: 'cda86315-c941-4749-8cdb-43f33497a4f8',
@@ -620,7 +625,8 @@ export default {
         agentStatus: {
           lastSeenTime: '2017-03-08T11:55:33.814Z',
           lastUpdatedTime: '2017-03-08T11:55:33.814Z',
-          scanStatus: 'idle'
+          scanStatus: 'idle',
+          isolationStatus: {}
         },
         machineIdentity: {
           id: '3d91b489-8522-486d-aec7-4c3916348e77',
@@ -724,7 +730,8 @@ export default {
         agentStatus: {
           lastSeenTime: '2017-03-08T11:55:33.814Z',
           lastUpdatedTime: '2017-03-08T11:55:33.814Z',
-          scanStatus: 'idle'
+          scanStatus: 'idle',
+          isolationStatus: {}
         },
         machineIdentity: {
           id: '6993fa8c-e00a-4afa-9c60-344736deca65',

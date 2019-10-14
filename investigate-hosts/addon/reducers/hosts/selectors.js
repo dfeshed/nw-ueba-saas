@@ -31,6 +31,7 @@ const _hostTotal = (state) => state.endpoint.machines.totalItems || 0;
 const _expressionList = (state) => state.endpoint.filter.expressionList || [];
 const _hasNext = (state) => state.endpoint.machines.hasNext;
 const _focusedHost = (state) => state.endpoint.machines.focusedHost;
+const _hostOverview = (state) => state.endpoint.overview.hostOverview || {};
 
 const _allAreIdle = (state) => {
   const selectedHosts = state.endpoint.machines.selectedHostList || [];
@@ -305,8 +306,42 @@ const _agentVersion = createSelector(
 
 export const mftDownloadButtonStatus = createSelector(
   [_isMachineOSWindows, _agentMode, _agentVersion],
-  (isMachineOSWindows, agentMode, agentVersion) => ({ isDisplayed: (isMachineOSWindows && agentMode && agentVersion) }));
+  (isMachineOSWindows, agentMode, agentVersion) => {
+    return { isDisplayed: (isMachineOSWindows && agentMode && agentVersion) };
+  });
+export const selectedHostDetails = createSelector(
+  [_selectedHostList],
+  (selectedHostList) => {
+    if (selectedHostList.length > 0) {
+      const [{ id, serviceId, agentStatus: { isolationStatus } }] = selectedHostList;
+      const isIsolated = isolationStatus ? isolationStatus.isolated : '';
+      return { id, serviceId, isIsolated };
+    }
+    return {};
+  });
 
+const _isolateStatus = createSelector(
+  [_selectedHostList, _hostOverview],
+  (selectedHostList, hostOverview) => {
+    let status = {};
+    if (hostOverview.agentStatus) {
+      status = hostOverview.agentStatus.isolationStatus;
+    } else if (selectedHostList.length > 0) {
+      const [{ agentStatus: { isolationStatus } }] = selectedHostList;
+      status = isolationStatus || {};
+    }
+    return status;
+  });
+export const isolationComment = createSelector(
+  [_isolateStatus],
+  (isolateStatus) => {
+    return isolateStatus.comment;
+  });
+export const excludedIps = createSelector(
+  [_isolateStatus],
+  (isolateStatus) => {
+    return isolateStatus.excludedIps;
+  });
 export const processedHostList = createSelector(
   [ _hostList ],
   (machines) => {

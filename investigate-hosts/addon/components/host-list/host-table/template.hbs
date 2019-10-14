@@ -55,8 +55,11 @@
           requestMFTDownload=requestMFTDownload
           requestSystemDumpDownload=requestSystemDumpDownload
           isMFTEnabled=isMFTEnabled
+          hostDetails=hostDetails
+          isHostIsolated=isHostIsolated
           isAgentMigrated=isAgentMigrated
           beforeContextMenuShow=(action 'beforeContextMenuShow')
+          showIsolationModal=showIsolationModal
         )
         noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
         {{host-list/host-table/body-cell

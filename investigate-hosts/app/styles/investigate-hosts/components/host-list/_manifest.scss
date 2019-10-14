@@ -106,6 +106,18 @@ $footerHeight: 43px;
       border: none;
     }
   }
+  li.isolate-button {
+    padding: 0;
+    button {
+      border: none;
+      padding-top: 13px;
+      span {
+
+        margin-right: 70px;
+
+      }
+    }
+  }
 }
 .rsa-application-modal-content.download-warning-modal {
   width: 36rem;

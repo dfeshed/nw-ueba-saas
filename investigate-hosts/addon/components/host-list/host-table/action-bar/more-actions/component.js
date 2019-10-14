@@ -10,15 +10,48 @@ export default Component.extend({
 
   accessControl: service(),
 
-  @computed('isMFTEnabled', 'selectedHostList', 'accessControl')
+  @computed('isMFTEnabled', 'selectedHostList', 'accessControl', 'hostDetails')
   moreOptions() {
+    let subNavItem = {};
     const systemMemoryDump = [
       {
-        panelId: 'panel4',
+        panelId: 'panel5',
         name: 'investigateShared.endpoint.fileActions.downloadSystemDump',
         buttonId: 'downloadSystemDump-button'
       }
     ];
+    if (this.get('hostDetails').isIsolated) {
+      subNavItem = {
+        modalName: 'release',
+        name: 'investigateHosts.networkIsolation.menu.releaseFromIsolation',
+        buttonId: 'release-isolation-button',
+        isDisabled: false
+      };
+    } else {
+      subNavItem = {
+        modalName: 'isolate',
+        name: 'investigateHosts.networkIsolation.menu.isolate',
+        buttonId: 'isolation-button',
+        isDisabled: false
+      };
+    }
+    // Separating network isolation as an additional check will be added for this in future.
+    const networkIsolation = [{
+      panelId: 'panel3',
+      divider: true,
+      name: 'investigateHosts.networkIsolation.menu.networkIsolation',
+      buttonId: 'isolation-button',
+      isDisabled: false,
+      subItems: [
+        subNavItem,
+        {
+          modalName: 'edit',
+          name: 'investigateHosts.networkIsolation.menu.edit',
+          buttonId: 'isolation-button',
+          isDisabled: !this.get('hostDetails').isIsolated
+        }
+      ]
+    }];
     const moreActionOptions = [
       {
         panelId: 'panel1',
@@ -33,16 +66,21 @@ export default Component.extend({
     ];
     const mft = [
       {
-        panelId: 'panel3',
+        panelId: 'panel4',
         name: 'investigateShared.endpoint.fileActions.downloadMFT',
         buttonId: 'downloadMFT-button',
         divider: true
       }
     ];
     if (this.get('isMFTEnabled').isDisplayed && (this.get('selectedHostList').length === 1) && this.get('accessControl.endpointCanManageFiles')) {
-      moreActionOptions.push(...mft, ...systemMemoryDump);
+      moreActionOptions.push(...networkIsolation, ...mft, ...systemMemoryDump);
     }
     return moreActionOptions;
+  },
+  actions: {
+    displayIsolationModal(item) {
+      this.showIsolationModal(item);
+    }
   }
 });
 

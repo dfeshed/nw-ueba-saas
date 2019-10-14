@@ -1,5 +1,5 @@
 <box class="files-content">
-  {{#rsa-page-layout showLeftZone=(readonly isShowHostDetailsFilterPanel) onClose=(action 'toggleHostDetailsFilter' false) showRightZone=false as |layout|}}
+  {{#rsa-page-layout showLeftZone=(readonly isShowHostDetailsFilterPanel) onClose=(action 'onCloseSidePanel') showRightZone=false as |layout|}}
     {{#layout.left as |leftPanel|}}
       {{leftPanel.header iconName='filter-2' title=(t 'investigateHosts.downloads.filters.title')}}
       {{endpoint/filters-wrapper

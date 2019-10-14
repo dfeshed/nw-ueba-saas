@@ -2,6 +2,7 @@
   openFilterPanel=openFilterPanel
   closeProperties=closeProperties
   isMFTEnabled=isMFTEnabled
+  hostDetails=hostDetails
   requestSystemDumpDownload=(action 'requestSystemDumpDownload')
   isAgentMigrated=isAgentMigrated
   showRiskScoreModal=(action 'showRiskScoreModal')
@@ -9,6 +10,7 @@
   showConfirmationModal=(action 'showConfirmationModal')
   showScanModal=(action 'showScanModal')
   requestMFTDownload=(action 'requestMFTDownload')
+  showIsolationModal=(action 'showIsolationModal')
 }}
 {{#if selectedServiceData.isServiceOnline}}
   {{host-list/host-table
@@ -23,6 +25,8 @@
     showScanModal=(action 'showScanModal')
     requestSystemDumpDownload=(action 'requestSystemDumpDownload')
     requestMFTDownload=(action 'requestMFTDownload')
+    showIsolationModal=(action 'showIsolationModal')
+    hostDetails=hostDetails
   }}
 {{else}}
   {{error-page
@@ -88,6 +92,12 @@
         </hbox>
       </footer>
     </div>
-
   {{/rsa-application-modal}}
+{{/if}}  
+{{#if showIsolationModal}}
+  {{utils/machine-isolation-modal
+    closeConfirmModal=(action 'hideIsolationModal')
+    agentId=hostDetails.id
+    serverId=hostDetails.serviceId
+    selectedModal=selectedModal}}
 {{/if}}

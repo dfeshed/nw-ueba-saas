@@ -4,7 +4,7 @@ import computed from 'ember-computed-decorators';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 import { editExclusionListRequest } from 'investigate-hosts/actions/data-creators/host';
 import { isolateMachineValidation } from 'investigate-hosts/util/util';
-
+import { isolationComment, excludedIps } from 'investigate-hosts/reducers/hosts/selectors';
 const callBackOptions = {
   onSuccess: () => success('investigateHosts.networkIsolation.editExclusionList.success'),
 
@@ -12,8 +12,8 @@ const callBackOptions = {
 };
 
 const stateToComputed = (state) => ({
-  comment: state.endpoint.overview.hostOverview.agentStatus.isolationStatus.comment,
-  excludedIps: state.endpoint.overview.hostOverview.agentStatus.isolationStatus.excludedIps
+  comment: isolationComment(state),
+  excludedIps: excludedIps(state)
 });
 
 const dispatchToActions = {
