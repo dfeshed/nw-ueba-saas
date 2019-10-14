@@ -256,6 +256,10 @@ export const _getWindowsLogPolicy = createSelector(
   }
 );
 
+const _setEnableDiableValues = (property, key = 'enabled') => {
+  return property && property[key] ? 'Enabled' : 'Disabled';
+};
+
 export const getPoliciesPropertyData = createSelector(
   [_policyDetails, _hostOverview, _getscheduledScanConfig, _getWindowsLogPolicy],
   (policyDetails, hostOverview, scheduledScanConfig, windowsLogPolicy) => {
@@ -273,7 +277,7 @@ export const getPoliciesPropertyData = createSelector(
       };
     }
     if (edrPolicy) {
-      const { blockingConfig, serverConfig, transportConfig } = edrPolicy;
+      const { blockingConfig, isolationConfig, serverConfig, transportConfig } = edrPolicy;
       let newTransportConfig = {};
       if (transportConfig) {
         const { primary } = transportConfig;
@@ -307,10 +311,13 @@ export const getPoliciesPropertyData = createSelector(
           ...edrPolicy,
           agentMode: edrPolicy.agentMode && edrPolicy.agentMode === 'INSIGHTS' ? 'Insights' : 'Advanced',
           blockingConfig: {
-            enabled: blockingConfig && blockingConfig.enabled ? 'Enabled' : 'Disabled'
+            enabled: _setEnableDiableValues(blockingConfig)
+          },
+          isolationConfig: {
+            enabled: _setEnableDiableValues(isolationConfig)
           },
           serverConfig: {
-            requestScanOnRegistration: serverConfig && serverConfig.requestScanOnRegistration ? 'Enabled' : 'Disabled'
+            requestScanOnRegistration: _setEnableDiableValues(serverConfig, 'requestScanOnRegistration')
           },
           transportConfig: newTransportConfig,
           scheduledScanConfig
@@ -355,6 +362,7 @@ export const policyAdminUsm = createSelector(
           cpuMaxVm: data.edrPolicy.scheduledScanConfig.scanOptions.cpuMaxVm,
           scanMbr: data.edrPolicy.scheduledScanConfig.scanOptions.scanMbr,
           blockingEnabled: data.edrPolicy.blockingConfig.enabled,
+          isolationEnabled: data.edrPolicy.isolationConfig.enabled,
           requestScanOnRegistration: data.edrPolicy.serverConfig.requestScanOnRegistration,
           primaryAddress: data.edrPolicy.transportConfig.primary.address,
           primaryHttpsPort: data.edrPolicy.transportConfig.primary.httpsPort,

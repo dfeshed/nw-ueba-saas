@@ -226,6 +226,10 @@ const _getInvasiveActionsSetting = (prop, focusedPolicy) => {
     blockingEnabled: {
       name: 'adminUsm.policyWizard.edrPolicy.blockingEnabled',
       value: focusedPolicy[prop]
+    },
+    isolationEnabled: {
+      name: 'adminUsm.policyWizard.edrPolicy.isolationEnabled',
+      value: focusedPolicy[prop]
     }
   };
   return invasiveActionSettings[prop];

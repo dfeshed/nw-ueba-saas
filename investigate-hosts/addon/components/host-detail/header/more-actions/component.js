@@ -20,7 +20,8 @@ const stateToComputed = (state) => ({
   scanTime: state.endpoint.detailsInput.scanTime,
   agentId: state.endpoint.detailsInput.agentId,
   isMFTEnabled: mftDownloadButtonStatusDetails(state),
-  isAgentMigrated: isAgentMigrated(state)
+  isAgentMigrated: isAgentMigrated(state),
+  isIsolationEnabled: state.endpoint.overview?.policyDetails?.policy?.edrPolicy?.isolationConfig?.enabled
 });
 
 const dispatchToActions = {
@@ -62,7 +63,7 @@ const HostDetailsMoreActions = Component.extend({
           isDisabled: false
         };
       }
-      // Separating network isolation as an additional check will be added for this in future.
+      // Isolation is added for Windows only if it has been enabled in policy.
       const networkIsolation = {
         panelId: 'panel3',
         divider: true,
@@ -94,7 +95,6 @@ const HostDetailsMoreActions = Component.extend({
 
       // Windows specific actions, MFT, Isolation and System Dump
       const windowsOsActions = [
-        networkIsolation,
         {
           panelId: 'panel4',
           divider: true,
@@ -109,7 +109,11 @@ const HostDetailsMoreActions = Component.extend({
       ];
 
       if (isMFTEnabled.isDisplayed && this.get('accessControl.endpointCanManageFiles')) {
-        moreActionOptions.push(...windowsOsActions);
+        if (this.get('isIsolationEnabled')) {
+          moreActionOptions.push(networkIsolation, ...windowsOsActions);
+        } else {
+          moreActionOptions.push(...windowsOsActions);
+        }
       }
       return moreActionOptions;
     },

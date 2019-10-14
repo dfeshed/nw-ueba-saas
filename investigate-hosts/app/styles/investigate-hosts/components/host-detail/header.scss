@@ -204,12 +204,18 @@
   }
   .downloadMFT-button button, .isolate-button button{
     padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
+    width: 100%;
     .network-isolation {
       display: inline-block;
       width: 87%
     }
     i {
       font-size: 1rem;
+    }
+  }
+  .isolate-button {
+    > span, > span > div {
+      width: 100%;
     }
   }
   .export-button{

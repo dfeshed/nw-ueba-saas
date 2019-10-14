@@ -330,6 +330,9 @@ module('Unit | Selectors | overview', function(hooks) {
           blockingConfig: {
             enabled: false
           },
+          isolationConfig: {
+            enabled: true
+          },
           storageConfig: {
             diskCacheSizeInMb: 100
           },
@@ -366,6 +369,7 @@ module('Unit | Selectors | overview', function(hooks) {
     assert.deepEqual(resultPolicyAdminUsm.edrPolicy, {
       'agentMode': 'Advanced',
       'blockingEnabled': 'Disabled',
+      'isolationEnabled': 'Enabled',
       'cpuMax': '25 %',
       'cpuMaxVm': '10 %',
       'customConfig': '',
@@ -459,6 +463,9 @@ module('Unit | Selectors | overview', function(hooks) {
                 'blockingConfig': {
                   'enabled': false
                 },
+                'isolationConfig': {
+                  'enabled': false
+                },
                 'serverConfig': {
                   'requestScanOnRegistration': false
                 }
@@ -506,6 +513,9 @@ module('Unit | Selectors | overview', function(hooks) {
       'blockingConfig': {
         'enabled': 'Disabled'
       },
+      'isolationConfig': {
+        'enabled': 'Disabled'
+      },
       'serverConfig': {
         'requestScanOnRegistration': 'Disabled'
       }
@@ -541,6 +551,9 @@ module('Unit | Selectors | overview', function(hooks) {
     assert.deepEqual(result2.edrPolicy, {
       'agentMode': 'Advanced',
       'blockingConfig': {
+        'enabled': 'Disabled'
+      },
+      'isolationConfig': {
         'enabled': 'Disabled'
       },
       'scheduledScanConfig': {
@@ -580,6 +593,9 @@ module('Unit | Selectors | overview', function(hooks) {
     assert.deepEqual(result3.edrPolicy, {
       'agentMode': 'Insights',
       'blockingConfig': {
+        'enabled': 'Disabled'
+      },
+      'isolationConfig': {
         'enabled': 'Disabled'
       },
       'scheduledScanConfig': {

@@ -59,6 +59,9 @@ module('Integration | Component | property-panel-policy/edr-policy', function(ho
         blockingConfig: {
           enabled: false
         },
+        isolationConfig: {
+          enabled: false
+        },
         storageConfig: {
           diskCacheSizeInMb: 100
         },
@@ -167,7 +170,7 @@ module('Integration | Component | property-panel-policy/edr-policy', function(ho
   test('Content data', async function(assert) {
     new ReduxDataHelper(setState).policy(policyData).build();
     await render(hbs`{{property-panel-policy/edr-policy}}`);
-    assert.equal(document.querySelectorAll('.edr-value').length, 15, 'All values are showing');
+    assert.equal(document.querySelectorAll('.edr-value').length, 16, 'All values are showing');
     assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'Scan Schedule', 'Scan Schedule section shows');
     assert.equal(document.querySelectorAll('.property-name')[0].textContent.trim(), 'Run Scheduled Scan', 'Run Scheduled Scan lable shows');
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[0].textContent.trim(), 'Enabled', 'Enabled value is showing');
@@ -193,14 +196,14 @@ module('Integration | Component | property-panel-policy/edr-policy', function(ho
   test('Content data scheduledScanConfigDisabled', async function(assert) {
     new ReduxDataHelper(setState).policy(scheduledScanConfigDisabled).build();
     await render(hbs`{{property-panel-policy/edr-policy}}`);
-    assert.equal(document.querySelectorAll('.edr-value').length, 10, 'All values are showing minus five fields in Scan Schedule');
+    assert.equal(document.querySelectorAll('.edr-value').length, 11, 'All values are showing minus five fields in Scan Schedule');
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[0].textContent.trim(), 'Disabled', 'Disabled value is showing');
   });
 
   test('Content data runOnDaysOfWeekData', async function(assert) {
     new ReduxDataHelper(setState).policy(runOnDaysOfWeekData).build();
     await render(hbs`{{property-panel-policy/edr-policy}}`);
-    assert.equal(document.querySelectorAll('.edr-value').length, 15, 'All values are showing');
+    assert.equal(document.querySelectorAll('.edr-value').length, 16, 'All values are showing');
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[2].textContent.trim(), '10:00', '10:00:00 value is shows');
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[1].textContent.trim(), '2020-03-22', '2020-03-22 value is shows');
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[3].textContent.trim(), 'Every 1 day(s) on Tuesday', 'Every 1 day(s) on Tuesday value is shows');

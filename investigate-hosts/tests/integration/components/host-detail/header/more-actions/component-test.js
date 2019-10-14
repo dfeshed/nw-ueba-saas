@@ -31,6 +31,16 @@ const data = {
     managed: true
   }
 };
+const policy = {
+  policy: {
+    edrPolicy: {
+      name: 'Default EDR Policy',
+      isolationConfig: {
+        enabled: true
+      }
+    }
+  }
+};
 
 module('Integration | Component | host-detail/header/more-actions', function(hooks) {
   setupRenderingTest(hooks, {
@@ -49,6 +59,7 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
   test('test for More Actions', async function(assert) {
     new ReduxDataHelper(setState)
       .hostOverview(data)
+      .policy(policy)
       .isJsonExportCompleted(true)
       .build();
     await render(hbs `{{host-detail/header/more-actions}}`);
@@ -349,11 +360,57 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(2) .rsa-form-button-wrapper').textContent.trim(), 'Export Host details', 'In initial state and when previous export is completed, button is active');
   });
 
+  test('Test for absence of network isolation options when policy is disabled', async function(assert) {
+    const isolationDisabled = {
+      policy: {
+        edrPolicy: {
+          name: 'Default EDR Policy',
+          isolationConfig:
+          {
+            enabled: false
+          }
+        }
+      }
+    };
+
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .policy(isolationDisabled)
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+    await render(hbs `
+      <div id='modalDestination'></div>
+      {{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+
+    assert.equal(findAll('.host-details_dropdown-action-list li').length, 4, 'No Network isolation related options rendered');
+  });
+
+  test('test for absence of network isolation options when policy is not present', async function(assert) {
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+    await render(hbs `
+      <div id='modalDestination'></div>
+      {{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+
+    assert.equal(findAll('.host-details_dropdown-action-list li').length, 4, 'No Network isolation related options rendered');
+  });
+
   test('test for network isolation options', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState)
       .host(data)
       .hostOverview(data)
+      .policy(policy)
       .isJsonExportCompleted(true)
       .isSnapshotsAvailable(true)
       .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
@@ -380,6 +437,7 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     new ReduxDataHelper(setState)
       .host(data)
       .hostOverview(data)
+      .policy(policy)
       .isolationStatus(isolationStatus)
       .isJsonExportCompleted(true)
       .isSnapshotsAvailable(true)
@@ -412,6 +470,7 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     new ReduxDataHelper(setState)
       .host(data)
       .hostOverview(data)
+      .policy(policy)
       .isolationStatus(isolationStatus)
       .isJsonExportCompleted(true)
       .isSnapshotsAvailable(true)
@@ -445,6 +504,7 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     new ReduxDataHelper(setState)
       .host(data)
       .hostOverview(data)
+      .policy(policy)
       .isolationStatus(isolationStatus)
       .isJsonExportCompleted(true)
       .isSnapshotsAvailable(true)

@@ -121,7 +121,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     assert.equal(policyDetails[2].header, 'adminUsm.policyWizard.edrPolicy.advScanSettings', 'third section  is as expected');
     assert.equal(policyDetails[2].props.length, 2, 'third section has 2 properties');
     assert.equal(policyDetails[3].header, 'adminUsm.policyWizard.edrPolicy.invasiveActions', 'fourth section  is as expected');
-    assert.equal(policyDetails[3].props.length, 1, 'fourth section has 1 property');
+    assert.equal(policyDetails[3].props.length, 2, 'fourth section has 2 property');
     assert.equal(policyDetails[0].props[3].value, 'Every 1 day(s) on Monday', 'Every 1 day(s) on Monday value is shows');
     assert.equal(policyDetails[4].header, 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', 'fifth section  is as expected');
     assert.equal(policyDetails[4].props.length, 5, 'fifth section has 5 properties');
