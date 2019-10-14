@@ -5,7 +5,7 @@ import presidio.data.generators.common.list.ListBasedGen;
 
 import static presidio.data.generators.common.list.content.SingleWord.SINGLE_WORDS;
 
-public class RandomRangeWordGen extends ListBasedGen {
+public class RandomRangeWordGen extends ListBasedGen<String> {
 
     public RandomRangeWordGen(int fromIndex, int size) {
         super(fromIndex, size, SINGLE_WORDS.size());

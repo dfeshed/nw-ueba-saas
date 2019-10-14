@@ -5,7 +5,7 @@ import presidio.data.generators.common.list.ListBasedGen;
 
 import static presidio.data.generators.common.list.content.AlexaDomains.ALEXA_DOMAINS;
 
-public class RandomRangeDomainGen extends ListBasedGen {
+public class RandomRangeDomainGen extends ListBasedGen<String> {
 
     public RandomRangeDomainGen(int fromIndex, int size) {
         super(fromIndex, size,ALEXA_DOMAINS.size());

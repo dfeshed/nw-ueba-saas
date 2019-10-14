@@ -6,7 +6,7 @@ import presidio.data.generators.common.list.ListBasedGen;
 import static presidio.data.generators.common.list.content.CompanyNames.COMPANY_NAMES;
 
 
-public class RandomRangeCompanyGen extends ListBasedGen {
+public class RandomRangeCompanyGen extends ListBasedGen<String> {
 
     public RandomRangeCompanyGen(int fromIndex, int size) {
         super(fromIndex, size,  COMPANY_NAMES.size());

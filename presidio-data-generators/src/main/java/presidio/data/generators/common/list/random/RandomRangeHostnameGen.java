@@ -5,7 +5,7 @@ import presidio.data.generators.common.list.ListBasedGen;
 
 import static presidio.data.generators.common.list.content.Hostnames.HOSTNAMES;
 
-public class RandomRangeHostnameGen extends ListBasedGen {
+public class RandomRangeHostnameGen extends ListBasedGen<String> {
 
     public RandomRangeHostnameGen(int fromIndex, int size) {
         super(fromIndex, size, HOSTNAMES.size());

@@ -6,7 +6,7 @@ import presidio.data.generators.common.list.ListBasedGen;
 import static presidio.data.generators.common.list.content.CompanyNames.COMPANY_NAMES;
 
 
-public class CyclicRangeCompanyGen extends ListBasedGen {
+public class CyclicRangeCompanyGen extends ListBasedGen<String> {
 
     public CyclicRangeCompanyGen(int fromIndex, int size) {
         super(fromIndex, size, COMPANY_NAMES.size());
@@ -21,4 +21,5 @@ public class CyclicRangeCompanyGen extends ListBasedGen {
     protected ImmutableList<String> getList() {
         return COMPANY_NAMES;
     }
+
 }

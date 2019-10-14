@@ -5,7 +5,7 @@ import presidio.data.generators.common.list.ListBasedGen;
 
 import static presidio.data.generators.common.list.content.Hostnames.HOSTNAMES;
 
-public class CyclicRangeHostnameGen extends ListBasedGen {
+public class CyclicRangeHostnameGen extends ListBasedGen<String> {
 
     public CyclicRangeHostnameGen(int fromIndex, int size) {
         super(fromIndex, size, HOSTNAMES.size());
@@ -20,4 +20,5 @@ public class CyclicRangeHostnameGen extends ListBasedGen {
     protected ImmutableList<String> getList() {
         return HOSTNAMES;
     }
+
 }

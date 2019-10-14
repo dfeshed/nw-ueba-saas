@@ -2,32 +2,24 @@ package presidio.data.generators;
 
 import presidio.data.generators.common.list.RangeGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class FixedValueGenerator<T> implements RangeGenerator<T> {
-
-    private T object;
-
-    public FixedValueGenerator(T object) {
-        this.object = object;
-    }
-
-
+public class NullGenerator<T> implements RangeGenerator<T> {
     @Override
     public T getNext() {
-       return object;
+       return null;
     }
 
     @Override
     public List<T> getAllValues() {
-        return List.of(object);
+        return new ArrayList<>();
     }
-
 
     @Override
     public List<String> getAllValuesToString(Function<T, String> toString) {
-        return List.of(toString.apply(object));
+        return new ArrayList<>();
     }
 
     @Override

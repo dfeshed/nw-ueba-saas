@@ -2,19 +2,24 @@ package presidio.data.generators.common.list;
 
 import com.google.common.collect.ImmutableList;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.IntStream;
 
-public abstract class ListBasedGen implements RangeGenerator<String> {
+import static java.util.stream.Collectors.toList;
 
-    private int fromIndex;
-    private int size;
+public abstract class ListBasedGen<T> implements RangeGenerator<T> {
+
+    private final int fromIndex;
+    private final int size;
     private int currentIndex;
-    protected UnaryOperator<String> formatter = e -> e;
+    public UnaryOperator<T> formatter = e -> e;
+
 
     protected ListBasedGen(int fromIndex, int size, int limit) {
-        if (fromIndex + size < limit) throw new IllegalArgumentException("Unable to allocate " + size
+        if (fromIndex + size > limit) throw new IllegalArgumentException("Unable to allocate " + size
                 + " values from index " + fromIndex + ". Max index is " + (limit-1));
 
         this.fromIndex = fromIndex;
@@ -22,38 +27,33 @@ public abstract class ListBasedGen implements RangeGenerator<String> {
         this.size = size;
     }
 
-    abstract protected ImmutableList<String> getList();
+    abstract protected ImmutableList<T> getList();
 
     @Override
-    public String getNextRandom() {
-        int i = ThreadLocalRandom.current().nextInt(getStartIndex(), getStartIndex() + getSize());
-        return formatter.apply(getList().get(i));
+    public List<T> getAllValues() {
+        return IntStream.range(fromIndex, fromIndex + size).boxed().map(e -> getNextCyclic()).collect(toList());
     }
 
     @Override
-    public String getNextCyclic() {
-        if (currentIndex >= fromIndex+size-1) {
+    public List<String> getAllValuesToString(Function<T, String> toString) {
+        return getAllValues().stream().map(toString).collect(toList());
+    }
+
+    @Override
+    public void reset() {
+        currentIndex = fromIndex;
+    }
+
+    protected T getNextRandom() {
+        int i = ThreadLocalRandom.current().nextInt(fromIndex, fromIndex +size);
+        return formatter.apply(getList().get(i));
+    }
+
+    protected T getNextCyclic() {
+        if (currentIndex >= fromIndex+size) {
             currentIndex = fromIndex;
         }
         return formatter.apply(getList().get(currentIndex++));
     }
 
-    @Override
-    public Function<String, String> getToString() {
-        return e -> e;
-    }
-
-    @Override
-    public int getStartIndex() {
-        return fromIndex;
-    }
-
-    @Override
-    public int getSize() {
-        return size;
-    }
-
-    public void setFormatter(UnaryOperator<String> formatter) {
-        this.formatter = formatter;
-    }
 }

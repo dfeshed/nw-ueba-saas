@@ -5,7 +5,7 @@ import presidio.data.generators.common.list.ListBasedGen;
 
 import static presidio.data.generators.common.list.content.AlexaDomains.ALEXA_DOMAINS;
 
-public class CyclicRangeDomainGen extends ListBasedGen {
+public class CyclicRangeDomainGen extends ListBasedGen<String> {
 
     public CyclicRangeDomainGen(int fromIndex, int size) {
         super(fromIndex, size, ALEXA_DOMAINS.size());
@@ -20,4 +20,5 @@ public class CyclicRangeDomainGen extends ListBasedGen {
     protected ImmutableList<String> getList() {
         return ALEXA_DOMAINS;
     }
+
 }

@@ -1,46 +1,52 @@
 package presidio.data.generators.common.list;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
-public abstract class IndexBasedGen implements RangeGenerator<Number> {
+import static java.util.stream.Collectors.toList;
 
-    private int fromIndex;
-    private int size;
-    private int currentIndex;
+public abstract class IndexBasedGen<T extends Number> implements RangeGenerator<T> {
 
-    public IndexBasedGen(int fromIndex, int size) {
+    private final int fromIndex;
+    private final int size;
+    private Number currentIndex;
+    private final Function<Number, T> TYPE_CONVERTER;
+
+    public IndexBasedGen(int fromIndex, int size, Function<Number, T> typeConverter) {
         this.fromIndex = fromIndex;
         this.currentIndex = fromIndex;
         this.size = size;
+        TYPE_CONVERTER = typeConverter;
     }
 
     @Override
-    public int getStartIndex() {
-        return fromIndex;
+    public List<T> getAllValues() {
+        return IntStream.range(fromIndex, fromIndex + size).boxed().map(e -> getNextCyclic()).collect(toList());
     }
 
     @Override
-    public int getSize() {
-        return size;
+    public List<String> getAllValuesToString(Function<T, String> toString) {
+        return getAllValues().stream().map(toString).collect(toList());
     }
 
     @Override
-    public Function<Number, String> getToString() {
-        return String::valueOf;
+    public void reset() {
+        currentIndex = fromIndex;
     }
 
-    @Override
-    public Number getNextCyclic() {
-        if (currentIndex >= fromIndex+size-1) {
+    protected T getNextCyclic() {
+        if (currentIndex.intValue() >= fromIndex+size) {
             currentIndex = fromIndex;
         }
-        return currentIndex;
+        currentIndex = currentIndex.intValue() + 1;
+        return TYPE_CONVERTER.apply(currentIndex);
     }
 
-    @Override
-    public Number getNextRandom() {
-        return ThreadLocalRandom.current().nextInt(getStartIndex(), getStartIndex() + getSize());
+    protected T getNextRandom() {
+        return TYPE_CONVERTER.apply(ThreadLocalRandom.current()
+                .nextInt(fromIndex, fromIndex + size));
     }
 
 }
