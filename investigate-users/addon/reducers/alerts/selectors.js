@@ -42,6 +42,8 @@ export const timeframesForDateTimeFilter = [
 
 export const severityFilter = ['low', 'medium', 'high', 'critical'];
 
+export const entityFilter = ['all', 'userId', 'ja3', 'sslSubject'];
+
 export const feedbackFilter = ['none', 'rejected'];
 
 export const getTopAlerts = (state) => state.alerts.topAlerts;

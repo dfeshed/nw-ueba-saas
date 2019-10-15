@@ -79,7 +79,10 @@ const getTopTenAlerts = (entityType, timeRange) => {
 
 const getAlertsForGivenTimeInterval = () => {
   return (dispatch, getState) => {
-    const filter = getFilter(getState());
+    let filter = getFilter(getState());
+    if (filter.entityType === 'all') {
+      filter = _.omit(filter, 'entityType');
+    }
 
     fetchData('alertList', filter).then((result) => {
       const { data, info, total } = result;

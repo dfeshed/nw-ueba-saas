@@ -54,6 +54,7 @@ export default {
       'abnormal_reconnaissance_tool_executed',
       'abnormal_process_executed_a_scripting_tool',
       'abnormal_application_triggered_by_scripting_tool',
+      'abnormal_file_permision_change_operation_type',
       'abnormal_process_opened_by_scripting_tool',
       'abnormal_file_permission_change_operation_type',
       'abnormal_process_modified_registry_key_group',

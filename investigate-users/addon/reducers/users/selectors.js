@@ -34,7 +34,7 @@ export const sortOnTrending = (state) => state.users.sortOnTrending;
 
 export const severityFilter = ['', 'Low', 'Medium', 'High', 'Critical'];
 
-export const entityFilter = ['all', 'userId', 'ja3', 'sslSubject'];
+export const entityFilter = ['userId', 'ja3', 'sslSubject'];
 
 export const getUserFilter = (state) => state.users.filter;
 

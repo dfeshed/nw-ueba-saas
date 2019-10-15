@@ -186,7 +186,7 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
   });
 
   test('test entityFilter', (assert) => {
-    assert.deepEqual(Users.entityFilter, ['all', 'userId', 'ja3', 'sslSubject']);
+    assert.deepEqual(Users.entityFilter, ['userId', 'ja3', 'sslSubject']);
   });
 
   test('test selectedEntityType', (assert) => {

@@ -40,6 +40,7 @@ const resetState = Immutable.from({
   filter: {
     sort_direction: 'DESC',
     sort_field: 'startDate',
+    entityType: 'all',
     showCustomDate: false,
     total_severity_count: true,
     severity: null,
@@ -139,6 +140,7 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     });
 
     assert.equal(result.filter.feedback, 'none');
+    assert.equal(result.filter.entityType, 'all');
     assert.equal(result.filter.showCustomDate, true);
     assert.deepEqual(result.relativeDateFilter, {
       name: 'alertTimeRange',

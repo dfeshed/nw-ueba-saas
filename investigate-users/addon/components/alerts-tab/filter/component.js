@@ -1,8 +1,18 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import _ from 'lodash';
-import { getFilter, getExistAnomalyTypes, getSelectedFeedBack, getSelectedAnomalyTypes, getSelectedSeverity, severityFilter, feedbackFilter, dateTimeFilterOptionsForAlerts, selectedEntities } from 'investigate-users/reducers/alerts/selectors';
-import { entityFilter } from 'investigate-users/reducers/users/selectors';
+import {
+  getFilter,
+  getExistAnomalyTypes,
+  getSelectedFeedBack,
+  getSelectedAnomalyTypes,
+  getSelectedSeverity,
+  severityFilter,
+  feedbackFilter,
+  dateTimeFilterOptionsForAlerts,
+  selectedEntities,
+  entityFilter
+} from 'investigate-users/reducers/alerts/selectors';
 import { updateFilter, updateDateRangeFilter } from 'investigate-users/actions/alert-details';
 
 const stateToComputed = (state) => ({

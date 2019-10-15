@@ -104,6 +104,10 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
     assert.equal(Alerts.alertListError(newState), 'error');
   });
 
+  test('test entity type for alerts', function(assert) {
+    assert.deepEqual(Alerts.entityFilter, ['all', 'userId', 'ja3', 'sslSubject']);
+  });
+
   test('test alerts timeline error', function(assert) {
     assert.equal(Alerts.alertsForTimelineError(state), null);
     const newState = state.setIn(['alerts', 'alertsForTimelineError'], 'error');

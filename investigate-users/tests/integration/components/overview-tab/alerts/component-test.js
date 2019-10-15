@@ -54,6 +54,6 @@ module('Integration | Component | overview-tab/alerts', function(hooks) {
     assert.equal(findAll('.user-overview-tab_alerts_entityTimeframe').length, 1);
     assert.equal(findAll('.ember-power-select-trigger').length, 2);
     await clickTrigger('.user-overview-tab_alerts_entityType');
-    assert.equal(findAll('.ember-power-select-option').length, 4);
+    assert.equal(findAll('.ember-power-select-option').length, 3);
   });
 });
