@@ -3,6 +3,7 @@ package fortscale.domain.sessionsplit.store;
 import fortscale.utils.redis.RedisConfiguration;
 import fortscale.utils.redis.RedisSerializers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,18 +28,18 @@ public class SessionSplitStoreRedisConfiguration {
         this.timeout = timeout;
     }
 
-    @Bean
+    @Bean("sessionSplitRedis")
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
         redisTemplate.setConnectionFactory(jedisConnectionFactory);
         redisTemplate.setKeySerializer(RedisSerializers.getStringRedisSerializer());
-        redisTemplate.setHashKeySerializer(RedisSerializers.getStringRedisSerializer());
-        redisTemplate.setHashValueSerializer(RedisSerializers.getInstantRedisSerializer());
+        redisTemplate.setHashValueSerializer(RedisSerializers.getStringRedisSerializer());
         return redisTemplate;
     }
 
     @Bean
-    public SessionSplitStoreRedis sessionSplitStoreRedis() {
-        return new SessionSplitStoreRedis(redisTemplate(), timeout);
+    @Autowired
+    public SessionSplitStoreRedis sessionSplitStoreRedis(@Qualifier("sessionSplitRedis") RedisTemplate redisTemplate) {
+        return new SessionSplitStoreRedis(redisTemplate, timeout);
     }
 }
