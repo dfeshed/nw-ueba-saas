@@ -34,7 +34,7 @@ public class TlsEvent extends Event implements Serializable {
     private Location dstLocation;
 
     private String sslSubject;
-    private String sslCa;
+    private List<String> sslCa;
     private int sessionSplit;
     private boolean isSelfSigned;
 
@@ -46,7 +46,7 @@ public class TlsEvent extends Event implements Serializable {
                     String destinationOrganization, String destinationASN, long numOfBytesSent, long numOfBytesReceived,
                     String sourceNetname, String destinationNetname, String ja3, String ja3s, NETWORK_DIRECTION_TYPE direction,
                     int destinationPort, int sourcePort, String dataSource, Location srcLocation,
-                    Location dstLocation, String sslSubject, String sslCa, int sessionSplit, boolean isSelfSigned) {
+                    Location dstLocation, String sslSubject, List<String> sslCa, int sessionSplit, boolean isSelfSigned) {
         this.eventId = eventId;
         this.dateTime = dateTime;
         this.fqdn = fqdn;
@@ -216,11 +216,11 @@ public class TlsEvent extends Event implements Serializable {
         this.sslSubject = sslSubject;
     }
 
-    public String getSslCa() {
+    public List<String> getSslCa() {
         return sslCa;
     }
 
-    public void setSslCa(String sslCa) {
+    public void setSslCa(List<String>  sslCa) {
         this.sslCa = sslCa;
     }
 

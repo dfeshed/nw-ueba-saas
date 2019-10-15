@@ -6,15 +6,23 @@ import presidio.data.generators.FixedValueGenerator;
 import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.dictionary.SingleWordCyclicGenerator;
+import presidio.data.generators.common.list.random.RandomRangeCompanyGen;
 import presidio.data.generators.common.random.GaussianLongGenerator;
 import presidio.data.generators.common.random.Md5RandomGenerator;
 import presidio.data.generators.common.random.RandomIntegerGenerator;
 import presidio.data.generators.common.random.RandomStringGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
 
+import java.util.function.Supplier;
+
 public class TlsRangeEventsGen extends AbstractEventGenerator<TlsEvent> {
 
     private final int DEFAULT_RANGE;
+    private final Supplier<RandomRangeCompanyGen> sslCaGenSupplier = () -> {
+        RandomRangeCompanyGen gen = new RandomRangeCompanyGen(100, 200);
+        gen.formatter = String::toLowerCase;
+        return gen;
+    };
 
     public final HostnameRangeAllocator hostnameGen = new HostnameRangeAllocator();
     public final DstPortRangeAllocator dstPortGen = new DstPortRangeAllocator();
@@ -28,7 +36,7 @@ public class TlsRangeEventsGen extends AbstractEventGenerator<TlsEvent> {
 
     private final Ipv4RangeAllocator dstIpGenerator = new Ipv4RangeAllocator();
     private IBaseGenerator<String> dstAsnGenerator = new RandomStringGenerator(5, 8);
-    private IBaseGenerator<String> sslCaGenerator = new RandomStringGenerator(3, 5);
+    private IBaseGenerator<String> sslCaGenerator = sslCaGenSupplier.get();
     private IBaseGenerator<String> ja3sGenerator = new Md5RandomGenerator();
     private IBaseGenerator<String> dataSourceGenerator = new RandomStringGenerator(6, 7);
     private IBaseGenerator<String> dstNetnameGen = new SingleWordCyclicGenerator(201);
@@ -38,7 +46,7 @@ public class TlsRangeEventsGen extends AbstractEventGenerator<TlsEvent> {
     private IBaseGenerator<Integer> srcPortGenerator = new RandomIntegerGenerator(0, 9999);
     private IBaseGenerator<Integer> sessionSplitGenerator = new FixedValueGenerator<>(0);
 
-    
+
     public TlsRangeEventsGen(int defaultRange) {
         DEFAULT_RANGE = defaultRange;
 
@@ -105,7 +113,7 @@ public class TlsRangeEventsGen extends AbstractEventGenerator<TlsEvent> {
         tlsEvent.setSrcLocation(locationGen.getGenerator().getNext());
         tlsEvent.setDstLocation(locationGen.getGenerator().getNext());
         tlsEvent.setSslSubject(sslSubjectGen.getGenerator().getNext());
-        tlsEvent.setSslCa(sslCaGenerator.getNext());
+        tlsEvent.setSslCa(sslCaGenerator.nextValues(2));
         tlsEvent.setSessionSplit(sessionSplitGenerator.getNext());
         tlsEvent.setIsSelfSigned(false);
 
