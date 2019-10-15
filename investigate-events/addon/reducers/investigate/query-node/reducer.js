@@ -9,7 +9,12 @@ import { createQueryHash } from 'investigate-events/util/query-hash';
 import { createOperator, createParens, reassignTwinIds } from 'investigate-events/util/query-parsing';
 import { pillBeingEdited, focusedPill } from './selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { OPERATOR_AND, OPERATOR_OR } from 'investigate-events/constants/pill';
+import {
+  CLOSE_PAREN,
+  OPEN_PAREN,
+  OPERATOR_AND,
+  OPERATOR_OR
+} from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line
 
@@ -237,6 +242,13 @@ const _addFocus = (state, needsFocusPill, isSelected) => {
   return state.set('pillsData', newPillsData);
 };
 
+const _isDeletingSingleFocusedParenSet = (pills) => {
+  return pills.length === 2 &&
+    pills.every((d) => d.type === OPEN_PAREN || d.type === CLOSE_PAREN) && // are parens
+    pills.some((d) => d.isFocused) && // at least one pill is focused
+    pills.every((d) => !d.isSelected); // none are selected
+};
+
 const _isPillOrOperatorToBeDelete = (deleteIds, pill, idx, pillsData) => {
   const shouldDeletePill = deleteIds.includes(pill.id);
   if (shouldDeletePill) {
@@ -254,13 +266,17 @@ const _isPillOrOperatorToBeDelete = (deleteIds, pill, idx, pillsData) => {
 const _deletePills = (state, pillsToBeDeleted) => {
   // get ids for pills that need to be deleted
   const deleteIds = pillsToBeDeleted.map((pD) => pD.id);
+  const isParenSetOnly = _isDeletingSingleFocusedParenSet(pillsToBeDeleted);
   // remove those pill ids from state
-  const newPills = state.pillsData.reduce((acc, pill, idx, pillsData) => {
-    if (!_isPillOrOperatorToBeDelete(deleteIds, pill, idx, pillsData)) {
-      acc.push(pill);
+  const newPills = state.pillsData.filter((pill, idx, pillsData) => {
+    if (isParenSetOnly) {
+      // only look for parens that are on the delete list
+      return !deleteIds.includes(pill.id);
+    } else {
+      // look for delete items, and operators that may be left behind
+      return !_isPillOrOperatorToBeDelete(deleteIds, pill, idx, pillsData);
     }
-    return acc;
-  }, []);
+  });
   return state.set('pillsData', newPills);
 };
 

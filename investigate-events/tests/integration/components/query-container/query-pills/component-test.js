@@ -32,7 +32,8 @@ import {
 import initializationCreators from 'investigate-events/actions/initialization-creators';
 import {
   createFilter,
-  createOperator
+  createOperator,
+  createParens
 } from 'investigate-events/util/query-parsing';
 
 const { log } = console;//eslint-disable-line
@@ -838,7 +839,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  test('Pressing Delete key once a pill is focused will delete it', async function(assert) {
+  test('Pressing DELETE once a pill is focused will delete it', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -871,7 +872,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  test('Pressing Delete key on a new pill trigger will move the focus to the next pill', async function(assert) {
+  test('Pressing DELETE on a new pill trigger will move the focus to the next pill', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -896,7 +897,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   });
 
-  test('Pressing Delete on all keys should move the focus to the last empty pill template', async function(assert) {
+  test('Pressing DELETE on all keys should move the focus to the last empty pill template', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -928,7 +929,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  test('Pressing Backspace key once a pill is focused will delete it and moves the focus to the next pill if present or else to the new pill template', async function(assert) {
+  test('Pressing BACKSPACE once a pill is focused will delete it and moves the focus to the next pill if present or else to the new pill template', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -965,7 +966,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   });
 
-  test('Pressing Delete key once a complex pill is focused will delete it', async function(assert) {
+  test('Pressing DELETE once a complex pill is focused will delete it', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -997,7 +998,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  test('Pressing backspace key once a complex pill is focused will delete it', async function(assert) {
+  test('Pressing BACKSPACE once a complex pill is focused will delete it', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1029,7 +1030,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  test('Pressing Delete key on a focused pill which is not selected, will delete only that pill', async function(assert) {
+  test('Pressing DELETE on a focused pill which is not selected, will delete only that pill', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1075,7 +1076,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  test('Pressing delete key on a focused and selected pill will delete that pill and the rest of the selected pills', async function(assert) {
+  test('Pressing DELETE on a focused and selected pill will delete that pill and the rest of the selected pills', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1113,6 +1114,51 @@ module('Integration | Component | Query Pills', function(hooks) {
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'No focused pill should be present');
       done();
     });
+  });
+
+  test('Pressing DELETE on a focused paren will delete it, leaving logical operators behind', async function(assert) {
+    const [OP, CP] = createParens();
+    const OR = createOperator(OPERATOR_OR);
+    const FOO = createFilter(COMPLEX_FILTER, 'foo');
+    const BAR = createFilter(COMPLEX_FILTER, 'bar');
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated([
+        { id: 1, ...OP, twinId: 8
+        }, {
+          id: 2, ...FOO
+        }, {
+          id: 3, ...CP, twinId: 8
+        }, {
+          id: 4, ...OR
+        }, {
+          id: 5, ...OP, twinId: 9
+        }, {
+          id: 6, ...BAR
+        }, {
+          id: 7, ...CP, twinId: 9
+        }])
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    // first click to select/focus
+    await click(PILL_SELECTORS.openParen);
+    // second click to focus
+    await click(PILL_SELECTORS.openParen);
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'should be one focus holder');
+    // press DELETE key
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+    assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'should be one open paren');
+    assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'should be one close paren');
+    assert.ok(find(PILL_SELECTORS.logicalOperatorOR), 'should not have deleted OR');
+    assert.equal(findAll(PILL_SELECTORS.complexPill).length, 2, 'should be two complex pills');
   });
 
   test('Pressing ENTER when there are no pills will submit a query', async function(assert) {
