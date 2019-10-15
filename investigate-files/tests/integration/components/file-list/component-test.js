@@ -360,9 +360,8 @@ module('Integration | Component | file list', function(hooks) {
       assert.equal(find('.rsa-risk-score').textContent.trim(), '100', 'Risk Score is correct.');
     });
   });
-
   // Yet to handle timezone
-  skip('Date field displayed correctly', function(assert) {
+  test(' Date field displayed correctly', function(assert) {
     new ReduxDataHelper(initState)
       .files({ a: { firstSeenTime: 1517978621000 } })
       .schema([{
@@ -383,7 +382,7 @@ module('Integration | Component | file list', function(hooks) {
       {{file-list}}`);
 
     return settled().then(() => {
-      assert.equal(find(find('.rsa-data-table-body-cell .datetime')[0]).text().trim(), '02/07/2018 10:13:41.000', 'Datetime is correct');
+      assert.equal(find('.rsa-data-table-body-cell .datetime').textContent.trim(), '02/07/2018 04:43:41', 'Datetime is rendered correctly without milliseconds');
     });
   });
 

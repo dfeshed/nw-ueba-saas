@@ -11,7 +11,7 @@
         selected=selectedSnapshot
         onchange=(action 'setSelect') as |option|}}
         {{#if option}}
-          {{rsa-content-datetime timestamp=option.scanStartTime }}
+          {{rsa-content-datetime timestamp=option.scanStartTime  displayMilliseconds=false}}
         {{/if}}
       {{/power-select}}
     </label>

@@ -12,7 +12,6 @@ import { snapShot } from '../../../../../data/data';
 import sinon from 'sinon';
 
 let changeSnapShotSpy, setState;
-
 const spys = [];
 
 module('Integration | Component | host detail actionbar', function(hooks) {
@@ -23,11 +22,16 @@ module('Integration | Component | host detail actionbar', function(hooks) {
   hooks.beforeEach(function() {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    this.dateFormat = this.owner.lookup('service:dateFormat');
+    this.timeFormat = this.owner.lookup('service:timeFormat');
+    this.set('dateFormat.selected', 'MM/dd/yyyy', 'MM/dd/yyyy');
+    this.set('timeFormat.selected', 'HR12', 'HR12');
     setState = (state) => {
       patchReducer(this, state);
     };
     spys.push(
       changeSnapShotSpy = sinon.stub(HosDetailsCreators, 'changeSnapshotTime'));
+    this.owner.lookup('service:timezone').set('selected', { zoneId: 'UTC' });
   });
 
   hooks.afterEach(function() {
@@ -61,11 +65,13 @@ module('Integration | Component | host detail actionbar', function(hooks) {
   test('snapshot power select renders appropriate items', async function(assert) {
     new ReduxDataHelper(setState)
       .snapShot(snapShot)
+      .scanTime('2017-03-22T09:54:40.632Z')
       .build();
     await render(hbs`{{host-detail/header/actionbar}}`);
     await clickTrigger();
     assert.ok(find('.actionbar .ember-power-select-trigger'), 'should render the power-select trigger');
     assert.equal(findAll('.ember-power-select-option').length, 4, 'dropdown  rendered with available snapShots');
+    assert.equal(find('.actionbar .rsa-button-group .ember-power-select-selected-item .datetime').textContent.trim().length, 22, 'Snapshot datetime is rendered properly,without miliseconds');
   });
 
 

@@ -88,7 +88,7 @@
             {{/if}}
           {{else if (eq column.dataType 'DATE')}}
             {{#if (get item column.field)}}
-              {{rsa-content-datetime timestamp=(get item column.field)}}
+              {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
             {{else}}
               N/A
             {{/if}}

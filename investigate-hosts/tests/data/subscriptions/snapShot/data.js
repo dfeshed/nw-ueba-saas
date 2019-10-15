@@ -1,10 +1,10 @@
 /* eslint-env node */
 
 const data = [
-  '2017-03-22T09:54:40.632Z',
-  '2017-04-19T11:54:40.632Z',
-  '2017-05-02T10:54:40.632Z',
-  '2017-06-29T18:54:40.632Z'
+  { scanStartTime: '2017-03-22T09:54:40.632Z' },
+  { scanStartTime: '2017-04-22T09:54:40.632Z' },
+  { scanStartTime: '2018-05-22T09:54:40.632Z' },
+  { scanStartTime: '2018-05-22T09:54:40.632Z' }
 ];
 
 export default data;
