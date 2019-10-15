@@ -8,7 +8,7 @@ import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
 import fetchRecentQueries from './fetch/recent-queries';
 import fetchValueSuggestions from './fetch/value-suggestions';
 import { parseBasicQueryParams } from 'investigate-events/actions/utils';
-import { isSearchTerm, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/util/query-parsing';
+import { createOperator, isSearchTerm, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { OperatorAnd } from 'investigate-events/util/grammar-types';
 import { extractSearchTermFromFilters } from 'investigate-shared/actions/api/events/utils';
 import { fetchColumnGroups } from './fetch/column-group';
@@ -22,7 +22,9 @@ import { fetchAdminEventSettings } from 'investigate-shared/actions/api/events/e
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { validMetaKeySuggestions, languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { TextFilter } from 'investigate-events/util/filter-types';
+import { OPERATOR_AND } from 'investigate-events/constants/pill';
 import * as ACTION_TYPES from './types';
+
 
 const noop = () => {};
 
@@ -407,6 +409,19 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
           const { index, searchTerm } = searchTextString;
           const textFilter = TextFilter.create({ searchTerm });
           newPillData.insertAt(index, textFilter);
+
+          // if this was a single text filter, we would not be in this
+          // code that deals with hashes. So we need to connect this to
+          // everything else with an AND.
+          const and = createOperator(OPERATOR_AND);
+
+          // Should the AND go after...
+          if (index === 0) {
+            newPillData.insertAt(index + 1, and);
+          } else {
+            // ...or before?
+            newPillData.insertAt(index, and);
+          }
         }
         dispatch({
           type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
@@ -441,6 +456,7 @@ export const initializeInvestigate = function(
   isInternalQuery
 ) {
   return async function(dispatch, getState) {
+
     const parsedQueryParams = parseBasicQueryParams(queryParams);
     const errorHandler = _handleInitializationError(dispatch);
 
