@@ -3,7 +3,10 @@ package fortscale.domain.lastoccurrenceinstant.store;
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.Validate;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.ValueOperations;
 
 import java.time.Duration;
@@ -68,9 +71,16 @@ public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstan
 
     @Override
     public void writeAll(Schema schema, String entityType, Map<String, Instant> entityIdToLastOccurrenceInstantMap) {
-        redisTemplate.multi();
-        entityIdToLastOccurrenceInstantMap.forEach((key, value) -> write(schema, entityType, key, value));
-        redisTemplate.exec();
+        redisTemplate.execute(new SessionCallback<>() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public List<Object> execute(RedisOperations redisOperations) throws DataAccessException {
+                ValueOperations valueOperations = redisOperations.opsForValue();
+                redisOperations.multi();
+                entityIdToLastOccurrenceInstantMap.forEach((key, value) -> valueOperations.set(key, value, timeout));
+                return redisOperations.exec();
+            }
+        });
     }
 
     @Override
