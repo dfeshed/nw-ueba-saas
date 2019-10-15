@@ -58,9 +58,8 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
 
     @Override
     public JSONObject transform(JSONObject document) {
-        // todo: until redis will be ready:
-        // if(document.isNull(TlsTransformedEvent.SESSION_SPLIT_FIELD_NAME)) {
-        if(true){
+
+        if(document.isNull(TlsTransformedEvent.SESSION_SPLIT_FIELD_NAME)) {
             return document;
         }
 

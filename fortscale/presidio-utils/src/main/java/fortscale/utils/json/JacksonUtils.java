@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
+
 public class JacksonUtils extends HierarchyLeafFinder<JSONObject> {
 
     private static final String PRIMITIVE_FIELD_NAME = "$$primitive$$";
+
     public static List<String> jsonArrayToList(JSONArray jsonArray) {
         ArrayList<String> toReturn = new ArrayList<>();
         if (jsonArray != null) {
@@ -40,25 +42,25 @@ public class JacksonUtils extends HierarchyLeafFinder<JSONObject> {
     /**
      * Sets the given object's field to the given value. This method works for nested objects also. If one would like to
      * change a nested object's field, the nested object delimiter should be found between objects in the field name.
-     *
+     * <p>
      * For example:
      * ============
      * setFieldValue(object = {
-     *     "name": "Aaron",
-     *     "cat": {
-     *         "toy": "mouse"
-     *     }
+     *      "name": "Aaron",
+     *      "cat": {
+     *          "toy": "mouse"
+     *      }
      * }, fieldName = "cat.toy", fieldValue = "rabbit")
      * Becomes:
      * ========
      * {
-     *     "name": "Aaron",
-     *     "cat": {
-     *         "toy": "rabbit"
-     *     }
+     *      "name": "Aaron",
+     *      "cat": {
+     *          "toy": "rabbit"
+     *      }
      * }
      *
-     * @param document     the given JSONOBJECT
+     * @param document   the given JSONOBJECT
      * @param fieldName  the field name belonging to the object which should be set to the given value
      * @param fieldValue the value to set the object's field to
      */
@@ -75,11 +77,14 @@ public class JacksonUtils extends HierarchyLeafFinder<JSONObject> {
 
     @Override
     protected JSONObject getChild(JSONObject parent, String subFieldName) throws JSONException {
-        Object nestedObject = parent.get(subFieldName);
-        if (nestedObject == JSONObject.NULL) return null;
-        if (ClassUtils.isPrimitiveOrWrapper(nestedObject.getClass()) || nestedObject instanceof String) {
-            return new JSONObject(format("{\"%s\": \"%s\"}", PRIMITIVE_FIELD_NAME, nestedObject));
+        if (parent.has(subFieldName)) {
+            Object nestedObject = parent.get(subFieldName);
+            if (nestedObject == JSONObject.NULL) return null;
+            if (ClassUtils.isPrimitiveOrWrapper(nestedObject.getClass()) || nestedObject instanceof String) {
+                return new JSONObject(format("{\"%s\": \"%s\"}", PRIMITIVE_FIELD_NAME, nestedObject));
+            }
+            return parent.getJSONObject(subFieldName);
         }
-        return parent.getJSONObject(subFieldName);
+        return null;
     }
 }
