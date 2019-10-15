@@ -141,10 +141,23 @@ module('Integration | Component | Events Table Row', function(hooks) {
     return settled();
   });
 
-  test('will set is-child with split', async function(assert) {
+  test('will not set is-child with split without tuple', async function(assert) {
     this.setProperties({
       item: {
         'session.split': 0
+      }
+    });
+
+    await render(hbs`{{events-table-container/row-container item=item}}`);
+    assert.equal(findAll('.is-child').length, 0, 'Expected .is-child to be present');
+    assert.equal(findAll('i.grouped-with-split').length, 0, 'Expected i to be present');
+  });
+
+  test('will set is-child with split', async function(assert) {
+    this.setProperties({
+      item: {
+        'session.split': 0,
+        tuple: 'tuple'
       }
     });
 
@@ -156,6 +169,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
   test('will set is-child when grouped', async function(assert) {
     this.setProperties({
       item: {
+        tuple: 'tuple',
         groupedWithoutSplit: true
       }
     });

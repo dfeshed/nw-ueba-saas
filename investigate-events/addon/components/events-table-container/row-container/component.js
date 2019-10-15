@@ -23,7 +23,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
 
   @computed('item')
   isChild(item) {
-    return !isEmpty(item['session.split']) || item.groupedWithoutSplit;
+    return item.tuple && (!isEmpty(item['session.split']) || item.groupedWithoutSplit);
   },
 
   @computed('item.presentAsParent')
@@ -186,19 +186,21 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     // want to accidentally remove non-cell DOM (for example, the hidden resizer element!).
     $el.selectAll('.rsa-data-table-body-cell').remove();
 
-    if (!isEmpty(item['session.split'])) {
-      $el.append('i')
-        .attr('class', 'session-split-decorator grouped-with-split rsa-icon rsa-icon-layers-stacked')
-        .attr('title', this.get('i18n').t('investigate.splitSessionLabels.withSplit', {
-          split: item['session.split'],
-          tuple: item.tuple
-        }));
-    } else if (item.groupedWithoutSplit) {
-      $el.append('i')
-        .attr('class', 'session-split-decorator grouped-without-split rsa-icon rsa-icon-layers-stacked')
-        .attr('title', this.get('i18n').t('investigate.splitSessionLabels.onlyGrouped', {
-          tuple: item.tuple
-        }));
+    if (item.tuple) {
+      if (!isEmpty(item['session.split'])) {
+        $el.append('i')
+          .attr('class', 'session-split-decorator grouped-with-split rsa-icon rsa-icon-layers-stacked')
+          .attr('title', this.get('i18n').t('investigate.splitSessionLabels.withSplit', {
+            split: item['session.split'],
+            tuple: item.tuple
+          }));
+      } else if (item.groupedWithoutSplit) {
+        $el.append('i')
+          .attr('class', 'session-split-decorator grouped-without-split rsa-icon rsa-icon-layers-stacked')
+          .attr('title', this.get('i18n').t('investigate.splitSessionLabels.onlyGrouped', {
+            tuple: item.tuple
+          }));
+      }
     }
 
     // For each column, build a cell DOM element.
