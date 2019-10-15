@@ -41,10 +41,10 @@ public class Ja3HighBytesSentAlerts implements Supplier<Stream<TlsAlert>> {
                 .high_number_of_distinct_src_ip_for_ja3_outbound()
                 .create();
 
+
         list.add(ja3_10);
         list.add(ja3_11);
         list.add(ja3_12);
-
 
         return list;
     }
