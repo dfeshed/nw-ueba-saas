@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { scheduleOnce, debounce } from '@ember/runloop';
 import computed, { gt } from 'ember-computed-decorators';
 import layout from './template';
+import { findBySelector, offset } from 'component-lib/utils/jquery-replacement';
 
 export default Component.extend({
   layout,
@@ -40,24 +41,24 @@ export default Component.extend({
 
   _scrollToMeta() {
     const index = this.get('index');
-    const $parent = this.$().parents().eq(3);
-    const $scrollBox = $parent.find('.scroll-box');
-    const $meta = $parent.find('.highlighted-meta').eq(index);
+    const parent = document.querySelector('.recon-event-wrapper');
+    const [ scrollBox ] = findBySelector([parent], '.scroll-box');
+    const meta = findBySelector([parent], '.highlighted-meta')[index];
 
     // calculate what the scroll top needs to be
     // Need the offset of the parent...
-    const parentWindowOffset = $parent.offset().top;
+    const parentWindowOffset = offset(parent).top;
     // ...and the offset of the item to be highlighted...
-    const metaOffset = $meta.offset().top;
+    const metaOffset = offset(meta).top;
     // ...and the current locaton of where the scroll container is scrolled to...
-    const currentScrollTop = $scrollBox.scrollTop();
+    const currentScrollTop = scrollBox.scrollTop;
     // And calculation is
     // WhereAreWeScrolledToNow
     // + LocationOfMeta (can be negative if first item is above current scroll position)
     // - WhereIsParentWindow
     // - BufferForReadability
     const scrollTop = currentScrollTop + metaOffset - parentWindowOffset - 60;
-    $parent.find('.scroll-box').animate({ scrollTop }, 1000);
+    scrollBox.scroll({ top: scrollTop, behavior: 'smooth' });
   },
 
   _moveIndex(newIndex) {

@@ -10,7 +10,7 @@ const dispatchToActions = {
 
 const MetaContentItem = Component.extend({
   layout,
-  tagName: 'hbox',
+  tagName: 'box',
   classNames: ['recon-meta-content-item'],
   classNameBindings: ['isHovering', 'isSelected'],
   isHovering: false,

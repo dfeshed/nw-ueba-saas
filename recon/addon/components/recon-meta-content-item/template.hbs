@@ -1,7 +1,7 @@
-<hbox xs="4" class="meta-name" align="center">
+<div class="meta-name">
   {{name}}
-</hbox>
-<hbox xs="7" class="meta-value" align="center">
+</div>
+<div class="meta-value">
   {{#if (or (eq name 'time') (eq name 'event.time'))}}
     {{rsa-content-datetime
       displayMilliseconds=false
@@ -13,14 +13,12 @@
       <span class="entity" data-entity-id={{value}} data-meta-key={{name}}>{{value}}</span>
     {{/rsa-context-menu}}
   {{/if}}
-</hbox>
-<hbox xs="1" align="center">
   {{#if shouldShowBinoculars}}
     {{rsa-icon
       click=(action 'clickBinoculars')
       name="binoculars"}}
   {{/if}}
-</hbox>
+</div>
 {{#if shouldShowHighlightScroller}}
   {{recon-meta-content-item/meta-highlight-scroller totalCount=totalCount}}
 {{/if}}

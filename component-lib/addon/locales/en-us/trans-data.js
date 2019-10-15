@@ -4048,6 +4048,13 @@ export default {
   },
   investigateShared: {
     eventMetaTitle: 'Event Meta',
+    groupBy: {
+      name: 'Organize by',
+      options: {
+        alphabet: 'Alphabet (A-Z)',
+        none: 'Default'
+      }
+    },
     machineCount: {
       singular: '{{count}} host',
       plural: '{{count}} hosts'

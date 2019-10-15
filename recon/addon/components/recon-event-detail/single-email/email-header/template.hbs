@@ -1,13 +1,13 @@
 <div class="recon-email-header">
   {{#each-in headerFields as |headerField headerValue|}}
-    <hbox class="recon-meta-content-item">
+    <hbox class="recon-email-header-item">
       <box class="meta-name header-label">{{t (concat 'recon.emailView.' headerField)}}</box>
       <box class="meta-value header-value">{{headerValue}}</box>
     </hbox>
   {{/each-in}}
   {{#if isEmailExpanded}}
     {{#if email.attachments}}
-      <div class="recon-meta-content-item horizontal">
+      <div class="recon-email-header-item horizontal">
         <span class="toggle-icon additional-header attachments">
           {{rsa-icon
               name=(concat 'arrow-' attachmentsCollapseArrowDirection '-12')
@@ -18,7 +18,7 @@
       </div>
 
       {{#if isAttachmentsExpanded}}
-        <hbox class="recon-meta-content-item">
+        <hbox class="recon-email-header-item">
           <box class="meta-name header-label">
             <label class="rsa-form-checkbox-label {{if allAttachmentsSelected 'checked'}}">
               {{rsa-form-checkbox
@@ -31,7 +31,7 @@
           </box>
         </hbox>
         {{#each email.attachments as |attachment|}}
-          <hbox class="recon-meta-content-item">
+          <hbox class="recon-email-header-item">
             <box class="meta-name header-label">
               <label class="rsa-form-checkbox-label {{if (contains attachment.attachmentId selectedAttachments) 'checked'}}">
                 {{rsa-form-checkbox
@@ -47,7 +47,7 @@
       {{/if}}
     {{/if}}
 
-    <div class="recon-meta-content-item horizontal">
+    <div class="recon-email-header-item horizontal">
       <span class="toggle-icon additional-header">
         {{rsa-icon
           name=(concat 'arrow-' headersCollapseArrowDirection '-12')
@@ -60,7 +60,7 @@
 
   {{#if isEmailHeadersExpanded}}
     {{#each-in additionalHeaderFields as |headerField headerValue|}}
-      <hbox class="recon-meta-content-item">
+      <hbox class="recon-email-header-item">
         <box class="meta-name header-label">{{ headerField }}</box>
         <box class="meta-value header-value">{{ headerValue }}</box>
       </hbox>

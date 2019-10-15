@@ -2,6 +2,23 @@
   background-color: #424242;
   margin-top: -8px;
 
+  .recon-email-header-item {
+    color: text-color(neutral);
+    @include rsa-word-wrap();
+    line-height: 1.71rem;
+    padding: 0 0 0 rsa-whitespace();
+
+    .meta-name {
+      @include rsa-font(header, small);
+      color: text-color(primary, lighter);
+      padding-right: rsa-whitespace();
+    }
+
+    .meta-value {
+      @include rsa-font(body, small);
+    }
+  }
+
   .header-label {
     direction:rtl;
     float: left;
