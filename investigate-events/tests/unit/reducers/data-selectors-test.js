@@ -563,6 +563,13 @@ test('flattened list should include fields inside meta-summary and fields always
   assert.ok(columns.includes('nwe.callback_id'), 'must always include callback id');
   assert.ok(columns.includes('sessionid'), 'must always include sessionid');
   assert.ok(columns.includes('ip.dst'), 'fields from inside meta-summary are flattened into array');
+  assert.ok(columns.includes('ip.src'), 'fields from inside meta-summary are flattened into array');
+  assert.ok(columns.includes('ipv6.dst'), 'fields from inside meta-summary are flattened into array');
+  assert.ok(columns.includes('ipv6.src'), 'fields from inside meta-summary are flattened into array');
+  assert.ok(columns.includes('tcp.dstport'), 'fields from inside meta-summary are flattened into array');
+  assert.ok(columns.includes('tcp.srcport'), 'fields from inside meta-summary are flattened into array');
+  assert.ok(columns.includes('udp.dstport'), 'fields from inside meta-summary are flattened into array');
+  assert.ok(columns.includes('udp.srcport'), 'fields from inside meta-summary are flattened into array');
 });
 
 test('flattened list of columns do not include summary fields if no meta-summary column', function(assert) {

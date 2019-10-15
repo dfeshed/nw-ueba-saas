@@ -212,7 +212,6 @@ export const getFlattenedColumnList = createSelector(
     if (columns) {
       columns = columns.map(({ field }) => field);
 
-
       columns = [
         ...columns,
         'sessionid', // always need sessionid
@@ -221,6 +220,8 @@ export const getFlattenedColumnList = createSelector(
         'session.split', // used to determine sibling order of split sessions
         'ip.dst', // used to find parent event when session is split
         'ip.src', // used to find parent event when session is split
+        'ipv6.src', // used to find parent event when session is split
+        'ipv6.dst', // used to find parent event when session is split
         'ip.proto', // used to find parent event when session is split
         'tcp.dstport', // used to find parent event when session is split
         'tcp.srcport', // used to find parent event when session is split
