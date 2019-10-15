@@ -75,9 +75,9 @@ public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstan
             @Override
             @SuppressWarnings("unchecked")
             public List<Object> execute(RedisOperations redisOperations) throws DataAccessException {
-                ValueOperations valueOperations = redisOperations.opsForValue();
                 redisOperations.multi();
-                entityIdToLastOccurrenceInstantMap.forEach((key, value) -> valueOperations.set(key, value, timeout));
+                entityIdToLastOccurrenceInstantMap.forEach((entityId, lastOccurrenceInstant) ->
+                        redisOperations.opsForValue().set(entityId, lastOccurrenceInstant, timeout));
                 return redisOperations.exec();
             }
         });
