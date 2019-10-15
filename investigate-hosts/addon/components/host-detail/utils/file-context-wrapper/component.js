@@ -20,7 +20,8 @@ import {
   fileDownloadButtonStatus,
   focusedRowChecksum,
   selectedFileList,
-  isAnyFileFloatingOrMemoryDll
+  isAnyFileFloatingOrMemoryDll,
+  hostNameList
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { hostDetailPropertyTabs, isProcessDumpDownloadSupported } from 'investigate-hosts/reducers/details/selectors';
 import { hostName, isAgentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
@@ -83,7 +84,8 @@ const stateToComputed = (state, { storeName }) => ({
   filter: state.endpoint.details.filter,
   selectedFilterId: selectedFilterId(state.endpoint.details),
   savedFilter: savedFilter(state.endpoint.details),
-  hostDetailFilters: state.endpoint.details.filter.savedFilterList
+  hostDetailFilters: state.endpoint.details.filter.savedFilterList,
+  hostNameList: hostNameList(state, storeName)
 });
 
 const dispatchToActions = {
@@ -126,6 +128,8 @@ const ContextWrapper = Component.extend({
   flashMessage: service(),
 
   filterTypes: FILTER_TYPES,
+
+  pivot: service(),
 
   callBackOptions,
 
@@ -196,6 +200,14 @@ const ContextWrapper = Component.extend({
     applySavedFilters(belongsTo, filter) {
       this.send('setSavedFilter', filter, belongsTo);
       this.send('applyFilters', filter.criteria.expressionList, belongsTo);
+    },
+    onHostNameClick(target, item) {
+      if ('HOST_NAME' === target) {
+        const serverId = this.get('serverId');
+        window.open(`${window.location.origin}/investigate/hosts/${item.agentId.toUpperCase()}/OVERVIEW?sid=${serverId}`);
+      } else if ('PIVOT_ICON' === target) {
+        this.get('pivot').pivotToInvestigate('machineIdentity.machineName', { machineIdentity: { machineName: item } });
+      }
     }
   }
 

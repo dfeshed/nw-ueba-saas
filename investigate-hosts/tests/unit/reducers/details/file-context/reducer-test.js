@@ -18,6 +18,7 @@ const initialState = {
   fileStatus: {},
   totalItems: null,
   hasNext: false,
+  hostNameList: {},
   isRemediationAllowed: true,
   agentCountMapping: {},
   selectedRowIndex: null

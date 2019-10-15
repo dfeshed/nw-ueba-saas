@@ -8,7 +8,7 @@ const _fileContext = (state, name) => state.endpoint[name].fileContext;
 const _sortConfig = (state, name) => state.endpoint[name].sortConfig;
 const _contextLoadingStatus = (state, name) => state.endpoint[name].contextLoadingStatus;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
-
+const _hostNameList = (state, name) => state.endpoint[name].hostNameList;
 const _fileStatus = (state, name) => state.endpoint[name].fileStatus;
 const _selectedRowId = (state, name) => state.endpoint[name].selectedRowId;
 const _fileContextSelections = (state, name) => {
@@ -45,6 +45,20 @@ export const totalItems = createSelector(
   (totalItems) => totalItems
 );
 
+
+export const hostNameList = createSelector(
+  _hostNameList,
+  (hostNameList = {}) => {
+    return hostNameList;
+  }
+);
+
+export const hostListCount = createSelector(
+  [hostNameList],
+  (hostNameList = []) => {
+    return hostNameList.length;
+  }
+);
 
 export const contextLoadMoreStatus = createSelector(
   _contextLoadMoreStatus,

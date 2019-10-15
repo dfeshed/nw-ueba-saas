@@ -6,7 +6,6 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import sinon from 'sinon';
-import { patchSocket } from '../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
@@ -47,7 +46,7 @@ module('Integration | Component | process-details/host-list-container', function
   });
 
   test('clicking on the host name navigates to host details page', async function(assert) {
-    assert.expect(5);
+    assert.expect(3);
     setState({
       processAnalysis: {
         hostContext: {
@@ -61,16 +60,12 @@ module('Integration | Component | process-details/host-list-container', function
         }
       }
     });
-    patchSocket((method, modelName) => {
-      assert.equal(method, 'stream');
-      assert.equal(modelName, 'core-meta-value');
-    });
 
     await render(hbs`{{process-details/host-list-container}}`);
     const actionSpy = sinon.spy(window, 'open');
     await click(findAll('.host-name__link')[0]);
     assert.ok(actionSpy.calledOnce, 'Window.open is called');
-    assert.ok(actionSpy.args[0][0].includes('123456789'), 'expected to include agent id');
+    assert.ok(actionSpy.args[0][0].includes('0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC'), 'expected to include agent id');
     assert.ok(actionSpy.args[0][0].includes('/investigate/hosts/'), 'expected to include details in url');
     actionSpy.resetHistory();
     actionSpy.restore();

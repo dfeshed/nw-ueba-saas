@@ -23,7 +23,8 @@ import {
   fileStatus,
   isRemediationAllowed,
   fileDownloadButtonStatus,
-  isAnyFileFloatingOrMemoryDll
+  isAnyFileFloatingOrMemoryDll,
+  hostNameList
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 import {
   setFileContextFileStatus,
@@ -87,7 +88,8 @@ const stateToComputed = (state) => ({
   filter: state.endpoint.details.filter,
   selectedFilterId: selectedFilterId(state.endpoint.details),
   savedFilter: savedFilter(state.endpoint.details),
-  hostDetailFilters: state.endpoint.details.filter.savedFilterList
+  hostDetailFilters: state.endpoint.details.filter.savedFilterList,
+  hostNameList: hostNameList(state, 'processes')
 });
 
 const dispatchToActions = {
@@ -122,6 +124,8 @@ const Container = Component.extend({
   tabName: 'PROCESS',
 
   flashMessage: service(),
+
+  pivot: service(),
 
   callBackOptions,
 
@@ -208,6 +212,14 @@ const Container = Component.extend({
       next(() => {
         this.send('applyDetailsFilter', expressionList, filterType);
       });
+    },
+    onHostNameClick(target, item) {
+      if ('HOST_NAME' === target) {
+        const serverId = this.get('serverId');
+        window.open(`${window.location.origin}/investigate/hosts/${item.agentId.toUpperCase()}/OVERVIEW?sid=${serverId}`);
+      } else if ('PIVOT_ICON' === target) {
+        this.get('pivot').pivotToInvestigate('machineIdentity.machineName', { machineIdentity: { machineName: item } });
+      }
     },
 
     applySavedFilters(belongsTo, filter) {

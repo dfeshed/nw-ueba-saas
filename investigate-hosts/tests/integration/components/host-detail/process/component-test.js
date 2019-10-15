@@ -29,6 +29,12 @@ const spys = [
   downloadFilesToServerSpy
 ];
 
+const hosts = [
+  { agentId: '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC', hostname: 'windows', score: 0 },
+  { agentId: '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAB', hostname: 'mac', score: 0 },
+  { agentId: '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAD', hostname: 'linux', score: 0 }
+];
+
 module('Integration | Component | endpoint host detail/process', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolver('investigate-hosts')
@@ -145,7 +151,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       assert.equal(document.querySelectorAll('.process-property-box:not([hidden])').length, 1);
 
       assert.equal(find('.rsa-header .entity-title').textContent.trim().includes('systemd'), true, 'Selected process name on property panel');
-      assert.equal(findAll('.rsa-header .rsa-nav-tab').length, 2, '2 tabs are rendered in detail property');
+      assert.equal(findAll('.rsa-header .rsa-nav-tab').length, 3, '3 tabs are rendered in detail property');
       assert.equal(findAll('.rsa-header .rsa-nav-tab.is-active')[0].textContent.trim(), 'File Details', 'Default tab is file details');
       assert.equal(findAll('.host-property-panel').length, 1, 'Property panel is rendered');
       await click(findAll('.rsa-header .rsa-nav-tab')[1]);
@@ -161,6 +167,68 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       const { endpoint: { process: { selectedRowIndex } } } = state;
       assert.equal(selectedRowIndex, null);
       assert.equal(find('.file-info').textContent.trim().includes('Showing 77 out of 77 processes'), true, 'Shows footer message');
+    });
+  });
+
+  test('it should test the clicking on the host name navigates to host details page', async function(assert) {
+    new ReduxDataHelper(setState)
+      .processList(modifiedList)
+      .processTree(modifiedTree)
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('windows')
+      .machineIdentity(machineIdentity)
+      .searchResultProcessList([])
+      .sortField('name')
+      .isDescOrder(true)
+      .processHostNameList(hosts)
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    return settled().then(async() => {
+      await click(findAll('.rsa-data-table-body-row')[0]);
+      await click(findAll('.rsa-nav-tab')[2]);
+      assert.equal(findAll('.rsa-header .rsa-nav-tab.is-active')[0].textContent.trim(), 'Host', 'Host name list tab is selected');
+      assert.equal(findAll('.host-name-list').length, 1, 'host name list is rendered');
+      assert.equal(findAll('.host-name').length, 3, 'Expected to render 3 host name');
+      const actionSpy = sinon.spy(window, 'open');
+      await click(findAll('.host-name__link')[0]);
+      assert.ok(actionSpy.calledOnce, 'Window.open is called');
+      assert.ok(actionSpy.args[0][0].includes('0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC'), 'expected to include agent id');
+      assert.ok(actionSpy.args[0][0].includes('/investigate/hosts/'), 'expected to include details in url');
+      actionSpy.resetHistory();
+      actionSpy.restore();
+    });
+  });
+
+  test('it should test the clicking on the icon navigates to events page', async function(assert) {
+    new ReduxDataHelper(setState)
+      .processList(modifiedList)
+      .processTree(modifiedTree)
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('windows')
+      .machineIdentity(machineIdentity)
+      .searchResultProcessList([])
+      .sortField('name')
+      .isDescOrder(true)
+      .processHostNameList(hosts)
+      .serviceId('123456')
+      .startTime('1234567890')
+      .endTime('1234567891')
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    return settled().then(async() => {
+      await click(findAll('.rsa-data-table-body-row')[0]);
+      await click(findAll('.rsa-nav-tab')[2]);
+      assert.equal(findAll('.host-name').length, 3, 'Expected to render 3 host name');
+      const actionSpy = sinon.spy(window, 'open');
+      await click(findAll('.pivot-to-investigate button')[0]);
+      assert.ok(actionSpy.calledOnce, 'Window.open is called');
+      assert.ok(actionSpy.args[0][0].includes('123456'), 'expected to include agent id');
+      assert.ok(actionSpy.args[0][0].includes('2009-02-13T23:31:30Z'));
+      assert.ok(actionSpy.args[0][0].includes('/navigate/query'), 'expected to include details in url');
+      actionSpy.resetHistory();
+      actionSpy.restore();
     });
   });
 

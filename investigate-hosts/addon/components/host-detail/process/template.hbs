@@ -120,6 +120,10 @@
           localeNameSpace='investigateHosts.property.file'
           data=process}}
       </box>
+    {{else if (eq activeHostDetailPropertyTab 'HOSTS')}}
+      {{endpoint/host-name-list
+        items=hostNameList
+        onItemClick=(action 'onHostNameClick')}}
     {{/if}}
   {{/layout.right}}
 {{/rsa-page-layout}}

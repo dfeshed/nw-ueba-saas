@@ -18,7 +18,8 @@ const initialState = Immutable.from({
   hasNext: false,
   isRemediationAllowed: true,
   agentCountMapping: {},
-  selectedRowIndex: null
+  selectedRowIndex: null,
+  hostNameList: {}
 });
 
 const LOADING_STATUS = 'loading';
@@ -81,6 +82,14 @@ const fileContext = reduxActions.handleActions({
     } else {
       return state.set('fileContextSelections', []);
     }
+  },
+
+  [ACTION_TYPES.SET_HOST_NAME_LIST]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        return s.set('hostNameList', action.payload.data);
+      }
+    });
   },
 
   [ACTION_TYPES.DESELECT_FILE_CONTEXT_ALL_SELECTION]: (state) => state.set('fileContextSelections', []),

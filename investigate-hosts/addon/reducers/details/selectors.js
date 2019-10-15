@@ -17,6 +17,10 @@ const HOST_DETAIL_PROPERTY_TABS = [
   {
     label: 'investigateHosts.tabs.localRiskDetails',
     name: 'RISK'
+  },
+  {
+    label: 'investigateHosts.tabs.hostName',
+    name: 'HOSTS'
   }
 ];
 

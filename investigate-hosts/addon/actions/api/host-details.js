@@ -175,6 +175,23 @@ const saveLocalMFTCopy = (socketUrlPostfix, data) => {
   });
 };
 
+const getHostCount = (serviceId, checksum) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'getHostCount',
+    modelName: 'endpoint',
+    query: {
+      data: {
+        checksumSha256: checksum
+      }
+    },
+    streamOptions: {
+      socketUrlPostfix: serviceId,
+      requiredSocketUrl: 'endpoint/socket'
+    }
+  });
+};
+
 export default {
   getAllSnapShots,
   getHostDetails,
@@ -186,5 +203,6 @@ export default {
   sendProcessDumpRequest,
   sendFileDownloadToServerRequest,
   deleteSelectedFiles,
-  saveLocalMFTCopy
+  saveLocalMFTCopy,
+  getHostCount
 };

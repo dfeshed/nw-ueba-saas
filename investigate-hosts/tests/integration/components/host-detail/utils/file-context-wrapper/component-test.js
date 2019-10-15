@@ -11,6 +11,7 @@ import { patchReducer } from '../../../../../helpers/vnext-patch';
 import drivers from '../../../state/driver.state';
 import Immutable from 'seamless-immutable';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
+import sinon from 'sinon';
 
 const config = [
   {
@@ -137,6 +138,12 @@ const fileContextSelections = [
   }
 ];
 
+const hosts = [
+  { agentId: '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC', hostname: 'windows', score: 0 },
+  { agentId: '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAB', hostname: 'mac', score: 0 },
+  { agentId: '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAD', hostname: 'linux', score: 0 }
+];
+
 module('Integration | Component | host-detail/utils/file-context-wrapper', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-hosts')
@@ -151,7 +158,8 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     this.set('storeName', 'drivers');
     this.set('tabName', 'DRIVER');
     this.set('columnConfig', config);
-
+    this.timezone = this.owner.lookup('service:timezone');
+    this.get('timezone').set('selected', { zoneId: 'UTC' });
     // Right click setup
     const wormholeDiv = document.createElement('div');
     wormholeDiv.id = wormhole;
@@ -179,14 +187,64 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     `);
     assert.equal(findAll('.rsa-data-table').length, 1, 'Table is rendered');
     assert.equal(findAll('.file-actionbar').length, 1, 'action bar rendered');
-    await click('.rsa-data-table-body-row:nth-child(2)');
-    assert.equal(findAll('.rsa-nav-tab').length, 2, '2 tabs are rendered in detail property');
+    await click('.rsa-data-table-body-row:nth-child(3)');
+    assert.equal(findAll('.rsa-nav-tab').length, 3, '3 tabs are rendered in detail property');
     assert.equal(findAll('.rsa-nav-tab.is-active')[0].textContent.trim(), 'File Details', 'Default tab is file details');
     assert.equal(findAll('.host-property-panel').length, 1, 'Property panel is rendered');
     await click(findAll('.rsa-nav-tab')[1]);
     assert.equal(findAll('.rsa-nav-tab.is-active')[0].textContent.trim(), 'Local Risk Details', 'Risk details tab is selected');
     assert.equal(findAll('.risk-properties').length, 1, 'Risk properties is rendered');
+    await click(findAll('.rsa-nav-tab')[2]);
+    assert.equal(findAll('.rsa-nav-tab.is-active')[0].textContent.trim(), 'Host', 'Host tab is selected');
+    assert.equal(findAll('.host-name-list').length, 1, 'Host list is rendered');
     assert.equal(findAll('.download-process-dump').length, 0, 'Download process Dmup to Server is not available in Driver tab');
+  });
+
+  test('it should test the clicking on the host name navigates to host details page', async function(assert) {
+    this.set('propertyConfig', [{ fields: [] }]);
+    new ReduxDataHelper(setState).drivers(drivers).fileContextSelections(fileContextSelections).hostNameList(hosts).build();
+    await render(hbs`
+     <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-wrapper propertyConfig=propertyConfig storeName=storeName tabName=tabName columnsConfig=columnConfig}}
+    `);
+    await click('.rsa-data-table-body-row:nth-child(3)');
+    await click(findAll('.rsa-nav-tab')[2]);
+    assert.equal(findAll('.host-name').length, 3, 'Expected to render 3 host name');
+    const actionSpy = sinon.spy(window, 'open');
+    await click(findAll('.host-name__link')[0]);
+    assert.ok(actionSpy.calledOnce, 'Window.open is called');
+    assert.ok(actionSpy.args[0][0].includes('0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC'), 'expected to include agent id');
+    assert.ok(actionSpy.args[0][0].includes('/investigate/hosts/'), 'expected to include details in url');
+    actionSpy.resetHistory();
+    actionSpy.restore();
+  });
+
+  test('it should test the clicking on the icon navigates to events page', async function(assert) {
+    this.set('propertyConfig', [{ fields: [] }]);
+    new ReduxDataHelper(setState).drivers(drivers).serviceId('123456').startTime('1234567890').endTime('1234567891').fileContextSelections(fileContextSelections).hostNameList(hosts).build();
+    await render(hbs`
+     <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-wrapper propertyConfig=propertyConfig storeName=storeName tabName=tabName columnsConfig=columnConfig}}
+    `);
+    await click('.rsa-data-table-body-row:nth-child(3)');
+    await click(findAll('.rsa-nav-tab')[2]);
+
+    const actionSpy = sinon.spy(window, 'open');
+    await click(findAll('.pivot-to-investigate button')[0]);
+    assert.ok(actionSpy.calledOnce, 'Window.open is called');
+    assert.ok(actionSpy.args[0][0].includes('123456'), 'expected to include agent id');
+    assert.ok(actionSpy.args[0][0].includes('2009-02-13T23:31:30Z'));
+    assert.ok(actionSpy.args[0][0].includes('/navigate/query'), 'expected to include details in url');
+    actionSpy.resetHistory();
+    actionSpy.restore();
   });
 
   test('property panel not rendered', async function(assert) {

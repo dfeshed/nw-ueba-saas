@@ -109,6 +109,10 @@ const hostsConfigGen = function(env) {
       downloadSystemDump: {
         subscriptionDestination: '/user/queue/endpoint/command/request-system-dump',
         requestDestination: '/ws/endpoint/command/request-system-dump'
+      },
+      getHostCount: {
+        subscriptionDestination: '/user/queue/endpoint/file/risky-hosts',
+        requestDestination: '/ws/endpoint/file/risky-hosts'
       }
     },
     'context-service': {

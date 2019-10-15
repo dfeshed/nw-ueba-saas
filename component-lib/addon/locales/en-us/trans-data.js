@@ -3188,7 +3188,8 @@ export default {
       riskDetails: 'Risk Details',
       localRiskDetails: 'Local Risk Details',
       fileDetails: 'File Details',
-      downloads: 'Downloads'
+      downloads: 'Downloads',
+      hostName: 'Host'
     },
     context: {
       score: 'Score',

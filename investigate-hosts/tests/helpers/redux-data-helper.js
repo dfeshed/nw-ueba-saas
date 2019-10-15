@@ -394,6 +394,14 @@ export default class DataHelper {
     _set(this.state, 'investigate.serviceId', id);
     return this;
   }
+  startTime(id) {
+    _set(this.state, 'investigate.startTime', id);
+    return this;
+  }
+  endTime(id) {
+    _set(this.state, 'investigate.endTime', id);
+    return this;
+  }
   timeRange(range) {
     _set(this.state, 'investigate.timeRange', range);
     return this;
@@ -493,6 +501,14 @@ export default class DataHelper {
   }
   setSavedFilterList(data) {
     _set(this.state, 'details.filter.savedFilterList', data);
+    return this;
+  }
+  hostNameList(data) {
+    _set(this.state, 'drivers.hostNameList', data);
+    return this;
+  }
+  processHostNameList(data) {
+    _set(this.state, 'processes.hostNameList', data);
     return this;
   }
 }

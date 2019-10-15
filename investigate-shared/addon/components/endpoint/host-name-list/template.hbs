@@ -15,7 +15,7 @@
     <ul class="host-name-list__items" test-id="hostNameListItems">
       {{#each items as |item|}}
         <li class="host-name">
-          <a class='host-name__link' title={{item.hostname}} href='#' target='_blank' rel='noopener' {{action 'handleHostNameClick' item.hostname}}>
+          <a class='host-name__link' title={{item.hostname}} href='#' target='_blank' rel='noopener' {{action 'handleHostNameClick' item}}>
             {{item.hostname}}
           </a>
           <span class='score-detail'>

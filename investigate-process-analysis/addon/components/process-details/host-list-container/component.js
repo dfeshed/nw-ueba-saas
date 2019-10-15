@@ -24,16 +24,12 @@ const HostListContainer = Component.extend({
   pivot: service(),
 
   actions: {
-    onHostNameClick(target, machineName) {
+    onHostNameClick(target, item) {
       if ('HOST_NAME' === target) {
-        this.send('fetchAgentId', machineName, ([data]) => {
-          if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-            const serverId = this.get('serverId');
-            window.open(`${window.location.origin}/investigate/hosts/${data.value.toUpperCase()}/OVERVIEW?sid=${serverId}`);
-          }
-        });
+        const serverId = this.get('serverId');
+        window.open(`${window.location.origin}/investigate/hosts/${item.agentId.toUpperCase()}/OVERVIEW?sid=${serverId}`);
       } else if ('PIVOT_ICON' === target) {
-        this.get('pivot').pivotToInvestigate('machineIdentity.machineName', { machineIdentity: { machineName } });
+        this.get('pivot').pivotToInvestigate('machineIdentity.machineName', { machineIdentity: { machineName: item } });
       }
     }
   }

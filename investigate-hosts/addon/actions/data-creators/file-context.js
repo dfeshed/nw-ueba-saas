@@ -46,6 +46,7 @@ const onHostFileSelection = (belongsTo, storeName, { id }, index) => {
       dispatch(getRespondServerStatus());
       dispatch(resetRiskContext());
       dispatch(getHostFileScoreContext(focusedRowChecksum(getState(), storeName), agentId));
+      dispatch(fetchHostNames(belongsTo, focusedRowChecksum(getState(), storeName)));
     }
   };
 };
@@ -176,6 +177,19 @@ const fetchMachineCount = (checksums, tabName) => ({
   }
 });
 
+const fetchHostNames = (tabName, checksum) => {
+  return (dispatch, getState) => {
+    const serviceId = getState().endpointQuery.serverId;
+    dispatch({
+      type: ACTION_TYPES.SET_HOST_NAME_LIST,
+      promise: HostDetails.getHostCount(serviceId, checksum),
+      meta: {
+        belongsTo: tabName
+      }
+    });
+  };
+};
+
 export {
   getFileContext,
   onHostFileSelection,
@@ -191,5 +205,6 @@ export {
   downloadFilesToServer,
   fetchMachineCount,
   setRowSelection,
-  deSelectAllSelection
+  deSelectAllSelection,
+  fetchHostNames
 };
