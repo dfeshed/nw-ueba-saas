@@ -1,3 +1,29 @@
+# [14.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.4.0)
+## Features
+* [ASOC-74238](https://bedfordjira.na.rsa.net/browse/ASOC-74238):&emsp;Insertion of Operators
+* [ASOC-74239](https://bedfordjira.na.rsa.net/browse/ASOC-74239):&emsp;Adding Pills In/Around Operators
+* [ASOC-74240](https://bedfordjira.na.rsa.net/browse/ASOC-74240):&emsp;Operators With Parens
+* [ASOC-74242](https://bedfordjira.na.rsa.net/browse/ASOC-74242):&emsp;Operator Focus
+* [ASOC-74243](https://bedfordjira.na.rsa.net/browse/ASOC-74243):&emsp;Operator Toggle
+* [ASOC-77931](https://bedfordjira.na.rsa.net/browse/ASOC-77931):&emsp;Sort Siblings Together Under Highest Sorted Sibling
+* [ASOC-77939](https://bedfordjira.na.rsa.net/browse/ASOC-77939):&emsp;Add icon/tooltip to indicate relationship
+* [ASOC-78681](https://bedfordjira.na.rsa.net/browse/ASOC-78681):&emsp;Create Column Group Migration
+* [ASOC-78734](https://bedfordjira.na.rsa.net/browse/ASOC-78734):&emsp;Add New Group
+* [ASOC-78748](https://bedfordjira.na.rsa.net/browse/ASOC-78748):&emsp;Allow Filtering of All Items
+* [ASOC-79010](https://bedfordjira.na.rsa.net/browse/ASOC-79010):&emsp;Improve group ranking audit logging
+* [ASOC-79479](https://bedfordjira.na.rsa.net/browse/ASOC-79479):&emsp;Add Column Group Validation
+* [ASOC-79517](https://bedfordjira.na.rsa.net/browse/ASOC-79517):&emsp;Create User Meta Key Cache
+* [ASOC-79923](https://bedfordjira.na.rsa.net/browse/ASOC-79923):&emsp;Policy edit page should show which sources are missing typespec files
+* [ASOC-80076](https://bedfordjira.na.rsa.net/browse/ASOC-80076):&emsp;Display List of Profiles
+* [ASOC-80100](https://bedfordjira.na.rsa.net/browse/ASOC-80100):&emsp;Read-Only Profile
+* [ASOC-80624](https://bedfordjira.na.rsa.net/browse/ASOC-80624):&emsp;Clean up: Windows and File policy creation page
+* [ASOC-81487](https://bedfordjira.na.rsa.net/browse/ASOC-81487):&emsp;Remove with Backspace
+* [ASOC-82466](https://bedfordjira.na.rsa.net/browse/ASOC-82466):&emsp;Add Advanced Settings to file policy global settings
+* [ASOC-82587](https://bedfordjira.na.rsa.net/browse/ASOC-82587):&emsp;Factor in time range when finding value suggestions
+* [ASOC-84054](https://bedfordjira.na.rsa.net/browse/ASOC-84054):&emsp;Leverage Meta Key Cache API
+* [ASOC-84815](https://bedfordjira.na.rsa.net/browse/ASOC-84815):&emsp;Hide file collection policy in Investigate/Hosts UI for 11.3 agents
+
+
 # [14.3.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.3.0)
 ## Features
 * [ASOC-74234](https://bedfordjira.na.rsa.net/browse/ASOC-74234):&emsp;Paren Right-Click Options
