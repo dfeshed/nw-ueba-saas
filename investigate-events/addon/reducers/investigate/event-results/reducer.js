@@ -22,7 +22,9 @@ const _initialState = Immutable.from({
   eventTimeSortOrderPreferenceWhenQueried: undefined,
   searchTerm: null,
   searchScrollIndex: -1,
-  visibleColumns: []
+  visibleColumns: [],
+
+  eventRelationshipsEnabled: false
 });
 
 // * `data` is an array of objects with the following properties
@@ -36,6 +38,12 @@ const _initialState = Immutable.from({
 // }
 
 export default handleActions({
+  [ACTION_TYPES.TOGGLE_EVENT_RELATIONSHIPS]: (state) => {
+    return state.merge({
+      eventRelationshipsEnabled: !state.eventRelationshipsEnabled
+    });
+  },
+
   [ACTION_TYPES.SORT_IN_CLIENT_COMPLETE]: (state) => {
     const newState = state.merge({
       data: state.cachedData,

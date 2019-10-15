@@ -24,7 +24,8 @@ import {
   groupForSortDescending,
   hideEventsForReQuery,
   nestChildEvents,
-  updateStreamKeyTree
+  updateStreamKeyTree,
+  eventsHaveSplits
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -1655,6 +1656,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     const state = {
       investigate: {
         eventResults: {
+          eventRelationshipsEnabled: true,
           data: [
             {
               'ip.dst': '127.0.0.1',
@@ -1725,6 +1727,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     const state = {
       investigate: {
         eventResults: {
+          eventRelationshipsEnabled: true,
           data: [
             {
               'ipv6.dst': '127.0.0.1',
@@ -1795,6 +1798,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     const state = {
       investigate: {
         eventResults: {
+          eventRelationshipsEnabled: true,
           data: [
             {
               'ipv6.dst': '127.0.0.1',
@@ -1865,6 +1869,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     const state = {
       investigate: {
         eventResults: {
+          eventRelationshipsEnabled: true,
           data: [
             {
               'ip.dst': '127.0.0.1',
@@ -1931,10 +1936,82 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].sessionId, 1);
   });
 
+  test('nestChildEvents when nesting is disabled', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          eventRelationshipsEnabled: false,
+          data: [
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 1,
+              sessionId: 1
+            },
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 2
+            },
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 0,
+              sessionId: 3
+            }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [
+            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
+            { metaName: 'ipv6.dst' },
+            { metaName: 'ipv6.src' },
+            { metaName: 'tcp.dstport' },
+            { metaName: 'tcp.srcport' },
+            { metaName: 'udp.dstport' },
+            { metaName: 'udp.srcport' }
+          ]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = nestChildEvents(state);
+    assert.equal(result[0].sessionId, 1);
+    assert.equal(result[1].sessionId, 2);
+    assert.equal(result[2].sessionId, 3);
+  });
+
   test('nestChildEvents for tuple with multiple parents and different times', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
+          eventRelationshipsEnabled: true,
           data: [
             {
               'time': new Date(1571066026000 - 100000),
@@ -2000,6 +2077,140 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[0].sessionId, 2);
     assert.equal(result[1].sessionId, 3);
     assert.equal(result[2].sessionId, 1);
+  });
+
+  test('eventsHaveSplits when true', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          eventRelationshipsEnabled: true,
+          data: [
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 1,
+              sessionId: 1
+            },
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 2
+            },
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 0,
+              sessionId: 3
+            }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [
+            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
+            { metaName: 'ipv6.dst' },
+            { metaName: 'ipv6.src' },
+            { metaName: 'tcp.dstport' },
+            { metaName: 'tcp.srcport' },
+            { metaName: 'udp.dstport' },
+            { metaName: 'udp.srcport' }
+          ]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    assert.equal(eventsHaveSplits(state), true);
+  });
+
+  test('eventsHaveSplits when false', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          eventRelationshipsEnabled: true,
+          data: [
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 1
+            },
+            {
+              'ip.dst': '127.0.0.2',
+              'ip.src': '127.0.0.2',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 2
+            },
+            {
+              'ip.dst': '127.0.0.3',
+              'ip.src': '127.0.0.3',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 3
+            }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [
+            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
+            { metaName: 'ipv6.dst' },
+            { metaName: 'ipv6.src' },
+            { metaName: 'tcp.dstport' },
+            { metaName: 'tcp.srcport' },
+            { metaName: 'udp.dstport' },
+            { metaName: 'udp.srcport' }
+          ]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    assert.equal(eventsHaveSplits(state), false);
   });
 
   test('updateStreamKeyTree on initial pass', async function(assert) {

@@ -4,7 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import { find, render } from '@ember/test-helpers';
+import { find, render, findAll } from '@ember/test-helpers';
 import EventColumnGroups from '../../../../data/subscriptions/column-group/findAll/data';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
@@ -51,6 +51,24 @@ module('Integration | Component | header-container', function(hooks) {
     const tooltip = find(thresholdIconSelector).getAttribute('title').trim().split(' ');
     assert.ok(tooltip.includes('100,000'));
     assert.ok(tooltip.includes('oldest'));
+  });
+
+  test('does not render the relationship toggle when no split sessions', async function(assert) {
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').hasRequiredValuesToQuery(true).columnGroups(EventColumnGroups).eventCount(55).build();
+    await render(hbs`{{events-table-container/header-container}}`);
+    assert.equal(findAll('.x-toggle-component').length, 0, 'rendered toggle');
+  });
+
+  test('render the relationship toggle when split sessions', async function(assert) {
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').hasRequiredValuesToQuery(true).columnGroups(EventColumnGroups).enableRelationships().eventResults([{
+      'session.split': 0,
+      'ip.src': '127.0.0.1',
+      'tcp.srcport': '127.0.0.1',
+      'ip.dst': '127.0.0.1',
+      'tcp.dstport': '127.0.0.1'
+    }]).eventCount(55).build();
+    await render(hbs`{{events-table-container/header-container}}`);
+    assert.equal(findAll('.x-toggle-component').length, 1, 'rendered toggle');
   });
 
   test('render the events header with actualCount when canceled', async function(assert) {

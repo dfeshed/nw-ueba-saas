@@ -35,7 +35,14 @@ module('Integration | Component | Events Table Row', function(hooks) {
   };
   const table = EmberObject.create({
     visibleColumns,
-    aliases
+    aliases,
+    eventRelationshipsEnabled: true
+  });
+
+  const relationshipDisabledTable = EmberObject.create({
+    visibleColumns,
+    aliases,
+    eventRelationshipsEnabled: false
   });
 
   function makeClickAction(assert) {
@@ -141,40 +148,84 @@ module('Integration | Component | Events Table Row', function(hooks) {
     return settled();
   });
 
-  test('will not set is-child with split without tuple', async function(assert) {
+  test('will not set is-child with split without tuple and with nesting enabled', async function(assert) {
     this.setProperties({
+      table,
       item: {
         'session.split': 0
       }
     });
 
-    await render(hbs`{{events-table-container/row-container item=item}}`);
+    await render(hbs`{{events-table-container/row-container item=item table=table}}`);
     assert.equal(findAll('.is-child').length, 0, 'Expected .is-child to be present');
     assert.equal(findAll('i.grouped-with-split').length, 0, 'Expected i to be present');
   });
 
-  test('will set is-child with split', async function(assert) {
+  test('will not set is-child with split and with tuple but nesting disabled', async function(assert) {
     this.setProperties({
+      table: relationshipDisabledTable,
       item: {
         'session.split': 0,
         tuple: 'tuple'
       }
     });
 
-    await render(hbs`{{events-table-container/row-container item=item}}`);
-    assert.equal(findAll('.is-child').length, 1, 'Expected .is-child to be present');
-    assert.equal(findAll('i.grouped-with-split').length, 1, 'Expected i to be present');
+    await render(hbs`{{events-table-container/row-container item=item table=table}}`);
+    assert.equal(findAll('.is-child').length, 0, 'Expected .is-child to be present');
+    assert.equal(findAll('i.grouped-with-split').length, 0, 'Expected i to be present');
   });
 
-  test('will set is-child when grouped', async function(assert) {
+  test('will not set is-child without split and with tuple and nesting enabled', async function(assert) {
     this.setProperties({
+      table,
+      item: {
+        tuple: 'tuple'
+      }
+    });
+
+    await render(hbs`{{events-table-container/row-container item=item table=table}}`);
+    assert.equal(findAll('.is-child').length, 0, 'Expected .is-child to be present');
+    assert.equal(findAll('i.grouped-with-split').length, 0, 'Expected i to be present');
+  });
+
+  test('will not set is-child when grouped with tuple and nesting disabled', async function(assert) {
+    this.setProperties({
+      table: relationshipDisabledTable,
       item: {
         tuple: 'tuple',
         groupedWithoutSplit: true
       }
     });
 
-    await render(hbs`{{events-table-container/row-container item=item}}`);
+    await render(hbs`{{events-table-container/row-container item=item table=table}}`);
+    assert.equal(findAll('.is-child').length, 0, 'Expected .is-child to be present');
+    assert.equal(findAll('i.grouped-without-split').length, 0, 'Expected i to be present');
+  });
+
+  test('will set is-child with split with tuple and with nesting enabled', async function(assert) {
+    this.setProperties({
+      table,
+      item: {
+        'session.split': 0,
+        tuple: 'tuple'
+      }
+    });
+
+    await render(hbs`{{events-table-container/row-container table=table item=item}}`);
+    assert.equal(findAll('.is-child').length, 1, 'Expected .is-child to be present');
+    assert.equal(findAll('i.grouped-with-split').length, 1, 'Expected i to be present');
+  });
+
+  test('will set is-child when grouped and nesting enabled', async function(assert) {
+    this.setProperties({
+      table,
+      item: {
+        tuple: 'tuple',
+        groupedWithoutSplit: true
+      }
+    });
+
+    await render(hbs`{{events-table-container/row-container item=item table=table}}`);
     assert.equal(findAll('.is-child').length, 1, 'Expected .is-child to be present');
     assert.equal(findAll('i.grouped-without-split').length, 1, 'Expected i to be present');
   });

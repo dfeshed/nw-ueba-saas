@@ -37,6 +37,7 @@ const _isQueryExecutedBySort = (state) => state.investigate.data.isQueryExecuted
 const _isQueryExecutedByColumnGroup = (state) => state.investigate.data.isQueryExecutedByColumnGroup;
 const _sortField = (state) => state.investigate.data.sortField;
 const _sortDirection = (state) => state.investigate.data.sortDirection;
+const _eventRelationshipsEnabled = (state) => state.investigate.eventResults.eventRelationshipsEnabled;
 
 export const SORT_ORDER = {
   DESC: 'Descending',
@@ -365,9 +366,9 @@ export const updateStreamKeyTree = (streamKeyTree, e, keyA, keyB, keyC, keyD) =>
 };
 
 export const nestChildEvents = createSelector(
-  [clientSortedData],
-  (events) => {
-    if (isEmpty(events)) {
+  [clientSortedData, _eventRelationshipsEnabled],
+  (events, eventRelationshipsEnabled) => {
+    if (isEmpty(events) || !eventRelationshipsEnabled) {
       return events;
     } else {
       events = Immutable.asMutable(events, { deep: true });
@@ -427,6 +428,15 @@ export const nestChildEvents = createSelector(
 
       return sort(events).asc((e) => e.eventIndex);
     }
+  }
+);
+
+export const eventsHaveSplits = createSelector(
+  [nestChildEvents],
+  (data) => {
+    return data?.some((event) => {
+      return event.tuple && (!isEmpty(event['session.split']) || event.groupedWithoutSplit);
+    });
   }
 );
 

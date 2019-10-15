@@ -37,6 +37,10 @@
         display: table;
         clear: both;
       }
+
+      .x-toggle-component {
+        padding: rsa-whitespace() rsa-whitespace() 0;
+      }
     }
 
     &__eventLabel {
@@ -45,8 +49,9 @@
       h2 {
         text-transform: capitalize;
         @include rsa-font(header, large);
-        padding: rsa-whitespace() rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
+        padding: rsa-whitespace() rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less);
         color: text-color(primary, lighter);
+        display: inline-block;
 
         .at-threshold {
           margin-top: -1px;
@@ -54,7 +59,6 @@
           top: 2px;
           color: text-color(accentFour);
         }
-
       }
     }
 

@@ -21,9 +21,9 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   entityEndpointId: 'CORE',
   autoHighlightEntities: true,
 
-  @computed('item')
-  isChild(item) {
-    return item.tuple && (!isEmpty(item['session.split']) || item.groupedWithoutSplit);
+  @computed('item', 'table.eventRelationshipsEnabled')
+  isChild(item, eventRelationshipsEnabled) {
+    return (eventRelationshipsEnabled && item.tuple) ? !isEmpty(item['session.split']) || item.groupedWithoutSplit : false;
   },
 
   @computed('item.presentAsParent')
@@ -186,7 +186,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     // want to accidentally remove non-cell DOM (for example, the hidden resizer element!).
     $el.selectAll('.rsa-data-table-body-cell').remove();
 
-    if (item.tuple) {
+    if (item.tuple && this.get('table.eventRelationshipsEnabled')) {
       if (!isEmpty(item['session.split'])) {
         $el.append('i')
           .attr('class', 'session-split-decorator grouped-with-split rsa-icon rsa-icon-layers-stacked')
@@ -201,6 +201,8 @@ export default Component.extend(RowMixin, HighlightsEntities, {
             tuple: item.tuple
           }));
       }
+    } else {
+      $el.select('.session-split-decorator').remove();
     }
 
     // For each column, build a cell DOM element.

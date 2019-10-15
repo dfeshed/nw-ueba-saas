@@ -890,3 +890,9 @@ export const eventsLogsGet = (events = []) => {
     }
   };
 };
+
+export const toggleEventRelationships = () => {
+  return {
+    type: ACTION_TYPES.TOGGLE_EVENT_RELATIONSHIPS
+  };
+};

@@ -21,6 +21,7 @@ import {
   dataCount,
   areAllEventsSelected,
   nestChildEvents,
+  eventsHaveSplits,
   SORT_ORDER
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
@@ -68,7 +69,9 @@ const stateToComputed = (state) => {
     hadTextPill: hadTextPill(state),
     isAtThreshold: resultCountAtThreshold(state),
     queryNodeValuesForClassicUrl: queryNodeValuesForClassicUrl(state),
-    summaryValuesForClassicUrl: summaryValuesForClassicUrl(state)
+    summaryValuesForClassicUrl: summaryValuesForClassicUrl(state),
+    eventRelationshipsEnabled: state.investigate.eventResults.eventRelationshipsEnabled,
+    eventsHaveSplits: eventsHaveSplits(state)
   };
 };
 

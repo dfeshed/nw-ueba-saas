@@ -4,7 +4,8 @@ import { setupTest } from 'ember-qunit';
 import {
   eventsStartNewest,
   eventsStartOldest,
-  _deriveSort
+  _deriveSort,
+  toggleEventRelationships
 } from 'investigate-events/actions/events-creators';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import ReduxDataHelper from '../../helpers/redux-data-helper';
@@ -148,6 +149,11 @@ module('Unit | Actions | event-creators', function(hooks) {
     streamBatch = 250;
     streamLimit = 2000;
     actionsByType = {};
+  });
+
+  test('toggleEventRelationships action creator returns proper type', function(assert) {
+    const { type } = toggleEventRelationships();
+    assert.equal(type, ACTION_TYPES.TOGGLE_EVENT_RELATIONSHIPS, 'action has the correct type');
   });
 
   test('_deriveSort', function(assert) {

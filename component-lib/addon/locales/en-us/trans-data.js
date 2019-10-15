@@ -532,6 +532,7 @@ export default {
       withSplit: 'This event is part of a split session (split.session: {{split}}) matching these parameters: {{{tuple}}}',
       onlyGrouped: 'This event is related to a previous session matching these parameters: {{{tuple}}}'
     },
+    enableEventRelationshipsLabel: 'Show Relationships',
     controls: {
       toggle: 'Show/Hide Events List Panel',
       togglePreferences: 'Toggle Investigate Preferences'

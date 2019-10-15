@@ -18,6 +18,17 @@
 
     {{events-table-container/header-container/download-dropdown}}
 
+    {{#if eventsHaveSplits}}
+      {{#x-toggle
+        showLabels=true
+        onLabel=(t 'investigate.enableEventRelationshipsLabel')
+        value=eventRelationshipsEnabled
+        onToggle=(action 'toggleEventRelationships') as |toggle|}}
+        {{toggle.switch}}
+        {{toggle.onLabel value=(readonly (not eventRelationshipsEnabled))}}
+      {{/x-toggle}}
+    {{/if}}
+
     {{#if permissionAllowsIncidentManagement}}
       {{incident-toolbar
         isDisabled=isIncidentButtonsDisabled

@@ -5,6 +5,7 @@ import { connect } from 'ember-redux';
 import { debounce, schedule } from '@ember/runloop';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup, searchForTerm, setSearchScroll } from 'investigate-events/actions/interaction-creators';
+import { toggleEventRelationships } from 'investigate-events/actions/events-creators';
 import { isSummaryColumnVisible } from 'investigate-events/reducers/investigate/data-selectors';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import {
@@ -13,7 +14,8 @@ import {
   eventTimeSortOrder,
   searchScrollDisplay,
   SORT_ORDER,
-  areEventsStreaming
+  areEventsStreaming,
+  eventsHaveSplits
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
@@ -39,13 +41,16 @@ const stateToComputed = (state) => ({
   areEventsStreaming: areEventsStreaming(state),
   eventTimeSortOrderPreferenceWhenQueried: state.investigate.eventResults.eventTimeSortOrderPreferenceWhenQueried,
   canSort: hasMinimumCoreServicesVersionForColumnSorting(state),
-  isSummaryColumnVisible: isSummaryColumnVisible(state)
+  isSummaryColumnVisible: isSummaryColumnVisible(state),
+  eventRelationshipsEnabled: state.investigate.eventResults.eventRelationshipsEnabled,
+  eventsHaveSplits: eventsHaveSplits(state)
 });
 
 const dispatchToActions = {
   setColumnGroup,
   searchForTerm,
-  setSearchScroll
+  setSearchScroll,
+  toggleEventRelationships
 };
 
 const HeaderContainer = Component.extend({

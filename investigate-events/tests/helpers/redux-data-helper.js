@@ -433,6 +433,11 @@ export default class DataHelper {
     return this;
   }
 
+  enableRelationships(value = true) {
+    _set(this.state, 'eventResults.eventRelationshipsEnabled', value);
+    return this;
+  }
+
   streamLimit(limit) {
     _set(this.state, 'eventResults.streamLimit', limit);
     return this;
