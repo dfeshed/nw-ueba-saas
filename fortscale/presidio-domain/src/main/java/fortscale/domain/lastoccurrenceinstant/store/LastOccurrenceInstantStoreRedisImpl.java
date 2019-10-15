@@ -74,11 +74,12 @@ public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstan
         redisTemplate.execute(new SessionCallback<>() {
             @Override
             @SuppressWarnings("unchecked")
-            public List<Object> execute(RedisOperations redisOperations) throws DataAccessException {
+            public Object execute(RedisOperations redisOperations) throws DataAccessException {
                 redisOperations.multi();
                 entityIdToLastOccurrenceInstantMap.forEach((entityId, lastOccurrenceInstant) ->
                         redisOperations.opsForValue().set(entityId, lastOccurrenceInstant, timeout));
-                return redisOperations.exec();
+                redisOperations.exec();
+                return null;
             }
         });
     }
