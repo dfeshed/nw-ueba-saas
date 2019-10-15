@@ -1039,106 +1039,398 @@ export default {
         }
       },
       {
-        id: '66badcbf-0479-4ec5-bcc0-75641f608cb5',
+        id: '019A39C8-3E18-387F-EAD4-EA217519638xx',
+        analysisData: {
+          machineRiskScore: 89
+        },
         agentStatus: {
           lastSeenTime: '2017-03-08T11:55:33.814Z',
           lastUpdatedTime: '2017-03-08T11:55:33.814Z',
-          scanStatus: 'idle'
+          scanStatus: 'idle',
+          isolationStatus: {
+            isolated: true,
+            comment: 'abcd',
+            excludedIps: ['0.0.0.0']
+          }
         },
         machineIdentity: {
-          id: '66badcbf-0479-4ec5-bcc0-75641f608cb5',
-          agentVersion: '5000',
-          machineOsType: 'mac',
-          machineName: 'INKATHYL3Cmac',
+          id: '019A39C8-3E18-387F-EAD4-EA217519638A',
+          group: 'default',
+          agentVersion: '12.0.0.0',
+          machineOsType: 'windows',
+          machineName: 'server.local',
+          agentMode: 'advanced',
           networkInterfaces: [
             {
-              macAddress: '3B:CF:00:F1:1C:12',
-              ipv4: '201.106.4.26',
+              name: 'lo0',
+              macAddress: '00:00:00:00:00:00',
+              ipv4: '127.0.0.1',
+              ipv6: 'fe80::1',
+              promiscuous: false
+            },
+            {
+              name: 'gif0',
+              macAddress: '00:00:00:00:00:00',
+              promiscuous: false
+            },
+            {
+              name: 'stf0',
+              macAddress: '00:00:00:00:00:00',
+              promiscuous: false
+            },
+            {
+              name: 'en0',
+              macAddress: '40:6c:8f:03:db:4e',
+              ipv4: '10.30.94.90',
+              ipv6: 'fe80::182e:a21e:53f:98b',
+              gateway: '[ \'10.30.94.1\']',
+              dns: '[ \'10.30.48.37\' , \'152.62.196.10\' , \'10.146.130.60\' , \'10.253.130.60\']',
+              promiscuous: false
+            },
+            {
+              name: 'en1',
+              macAddress: '70:73:cb:be:64:c1',
+              promiscuous: false
+            },
+            {
+              name: 'en2',
+              macAddress: 'b2:00:1d:8a:b6:61',
+              promiscuous: false
+            },
+            {
+              name: 'fw0',
+              macAddress: '3c:07:54:ff:fe:d8',
+              promiscuous: false
+            },
+            {
+              name: 'bridge0',
+              macAddress: 'b2:00:1d:8a:b6:61',
+              promiscuous: false
+            },
+            {
+              name: 'p2p0',
+              macAddress: '02:73:cb:be:64:c1',
+              promiscuous: false
+            },
+            {
+              name: 'utun0',
+              macAddress: '00:00:00:00:00:00',
+              ipv6: 'fe80::8ade:4ef0:a219:217c',
               promiscuous: false
             }
           ],
           agent: {
-            exeCompileTime: '2017-03-15T16:33:20.8441108+05:30',
-            sysCompileTime: '2017-03-23T16:33:20.8441108+05:30',
-            packageTime: '2017-03-21T16:33:20.8441108+05:30',
-            installTime: '2017-03-23T16:33:20.8441108+05:30',
-            serviceStartTime: '2017-03-18T16:33:20.8441108+05:30',
-            serviceEprocess: 82,
-            serviceProcessId: 2801,
-            serviceStatus: [
-              'LowLevelReads'
-            ],
-            driverStatus: [
-              0
-            ]
+            installTime: '2017-03-22T09:24:26.000Z',
+            serviceStartTime: '2017-03-22T09:24:26.756Z',
+            serviceProcessId: 0
           },
           operatingSystem: {
-            description: 'Mac',
+            description: 'Mac OS X 10.11.4',
+            buildNumber: '15E65',
             servicePack: 0,
-            kernelName: 'macs',
-            kernelVersion: '11.22.20',
-            lastBootTime: '2017-03-23T16:03:20.8441108Z'
+            kernelName: '/System/Library/Kernels/kernel',
+            kernelRelease: '15.4.0',
+            kernelVersion: 'Darwin Kernel Version 15.4.0: Fri Feb 26 22:08:05 PST 2016; root:xnu-3248.40.184~3/RELEASE_X86_64'
           },
           hardware: {
-            processorArchitecture: 'x86x64',
-            processorArchitectureBits: 0,
+            processorArchitecture: 'x86_64',
+            processorArchitectureBits: 64,
             processorCount: 4,
-            processorName: 'intel',
-            totalPhysicalMemory: 0,
-            manufacturer: 'Apple Inc'
+            totalPhysicalMemory: 17179869184,
+            manufacturer: 'Apple',
+            serial: 'C07PQ06BG1J1'
           },
           locale: {
-            defaultLanguage: 'English',
-            isoCountryCode: 'IN',
-            timeZone: '2017-03-24T16:33:20.8441108+05:30'
+            defaultLanguage: '1033',
+            timeZone: 'India Standard Time'
           },
-          lastUpdatedTime: '2017-03-24T11:03:24.820Z'
+          lastUpdatedTime: '2017-03-021T11:55:33.804Z'
         },
         machine: {
-          machineAgentId: '66badcbf-0479-4ec5-bcc0-75641f608cb5',
-          scanStartTime: '2017-03-24T11:03:20.8441108Z',
-          scanRequestTime: '2017-03-24T11:03:20.8441108Z',
+          machineAgentId: '019A39C8-3E18-387F-EAD4-EA217519638A',
+          scanStartTime: '2017-03-08T11:52:06.680Z',
+          scanRequestTime: '2017-03-08T11:55:33.804Z',
           users: [
             {
-              name: 'Woodward, Aishwarya',
+              name: 'phaneendra',
               sessionId: 0,
               isAdministrator: true
             }
           ],
           securityConfigurations: [
-            'safariFraudWebsiteWarningDisabled',
+            'fileVaultDisabled',
             'firewallDisabled',
-            'systemIntegrityProtectionDisabled'
-          ],
-          errors: [],
-          networkShares: [],
-          mountedPaths: [],
-          securityProducts: [
-            {
-              type: 'antiVirus',
-              instance: '',
-              displayName: 'Mcafee',
-              companyName: 'Mcafee',
-              version: '2202',
-              features: [
-                'onAccessScanEnabled',
-                'apiDataTooLong'
-              ]
-            }
-          ],
-          hostFileEntries: [
-            {
-              ip: '127.0.0.0',
-              hosts: [
-                'localhost'
-              ]
-            }
+            'sudoersNoPasswordPrompt'
           ]
         },
         groupPolicy: {
           groups: [],
           policyStatus: 'Updated',
-          managed: false,
+          managed: true,
+          serverName: 'Migrated'
+        }
+      },
+      {
+        id: '019A39C8-3E18-387F-EAD4-EA217519638yy',
+        analysisData: {
+          machineRiskScore: 89
+        },
+        agentStatus: {
+          lastSeenTime: '2017-03-08T11:55:33.814Z',
+          lastUpdatedTime: '2017-03-08T11:55:33.814Z',
+          scanStatus: 'idle',
+          isolationStatus: {
+            isolated: true,
+            comment: 'abcd',
+            excludedIps: ['0.0.0.0']
+          }
+        },
+        machineIdentity: {
+          id: '019A39C8-3E18-387F-EAD4-EA217519638A',
+          group: 'default',
+          agentVersion: '12.0.0.0',
+          machineOsType: 'windows',
+          machineName: 'server.local',
+          agentMode: 'advanced',
+          networkInterfaces: [
+            {
+              name: 'lo0',
+              macAddress: '00:00:00:00:00:00',
+              ipv4: '127.0.0.1',
+              ipv6: 'fe80::1',
+              promiscuous: false
+            },
+            {
+              name: 'gif0',
+              macAddress: '00:00:00:00:00:00',
+              promiscuous: false
+            },
+            {
+              name: 'stf0',
+              macAddress: '00:00:00:00:00:00',
+              promiscuous: false
+            },
+            {
+              name: 'en0',
+              macAddress: '40:6c:8f:03:db:4e',
+              ipv4: '10.30.94.90',
+              ipv6: 'fe80::182e:a21e:53f:98b',
+              gateway: '[ \'10.30.94.1\']',
+              dns: '[ \'10.30.48.37\' , \'152.62.196.10\' , \'10.146.130.60\' , \'10.253.130.60\']',
+              promiscuous: false
+            },
+            {
+              name: 'en1',
+              macAddress: '70:73:cb:be:64:c1',
+              promiscuous: false
+            },
+            {
+              name: 'en2',
+              macAddress: 'b2:00:1d:8a:b6:61',
+              promiscuous: false
+            },
+            {
+              name: 'fw0',
+              macAddress: '3c:07:54:ff:fe:d8',
+              promiscuous: false
+            },
+            {
+              name: 'bridge0',
+              macAddress: 'b2:00:1d:8a:b6:61',
+              promiscuous: false
+            },
+            {
+              name: 'p2p0',
+              macAddress: '02:73:cb:be:64:c1',
+              promiscuous: false
+            },
+            {
+              name: 'utun0',
+              macAddress: '00:00:00:00:00:00',
+              ipv6: 'fe80::8ade:4ef0:a219:217c',
+              promiscuous: false
+            }
+          ],
+          agent: {
+            installTime: '2017-03-22T09:24:26.000Z',
+            serviceStartTime: '2017-03-22T09:24:26.756Z',
+            serviceProcessId: 0
+          },
+          operatingSystem: {
+            description: 'Mac OS X 10.11.4',
+            buildNumber: '15E65',
+            servicePack: 0,
+            kernelName: '/System/Library/Kernels/kernel',
+            kernelRelease: '15.4.0',
+            kernelVersion: 'Darwin Kernel Version 15.4.0: Fri Feb 26 22:08:05 PST 2016; root:xnu-3248.40.184~3/RELEASE_X86_64'
+          },
+          hardware: {
+            processorArchitecture: 'x86_64',
+            processorArchitectureBits: 64,
+            processorCount: 4,
+            totalPhysicalMemory: 17179869184,
+            manufacturer: 'Apple',
+            serial: 'C07PQ06BG1J1'
+          },
+          locale: {
+            defaultLanguage: '1033',
+            timeZone: 'India Standard Time'
+          },
+          lastUpdatedTime: '2017-03-021T11:55:33.804Z'
+        },
+        machine: {
+          machineAgentId: '019A39C8-3E18-387F-EAD4-EA217519638A',
+          scanStartTime: '2017-03-08T11:52:06.680Z',
+          scanRequestTime: '2017-03-08T11:55:33.804Z',
+          users: [
+            {
+              name: 'phaneendra',
+              sessionId: 0,
+              isAdministrator: true
+            }
+          ],
+          securityConfigurations: [
+            'fileVaultDisabled',
+            'firewallDisabled',
+            'sudoersNoPasswordPrompt'
+          ]
+        },
+        groupPolicy: {
+          groups: [],
+          policyStatus: 'Updated',
+          managed: true,
+          serverName: 'Migrated'
+        }
+      },
+      {
+        id: '019A39C8-3E18-387F-EAD4-EA217519638xx',
+        analysisData: {
+          machineRiskScore: 89
+        },
+        agentStatus: {
+          lastSeenTime: '2017-03-08T11:55:33.814Z',
+          lastUpdatedTime: '2017-03-08T11:55:33.814Z',
+          scanStatus: 'idle',
+          isolationStatus: {
+            isolated: false,
+            comment: 'abcd',
+            excludedIps: ['0.0.0.0']
+          }
+        },
+        machineIdentity: {
+          id: '019A39C8-3E18-387F-EAD4-EA217519638A',
+          group: 'default',
+          agentVersion: '12.0.0.0',
+          machineOsType: 'windows',
+          machineName: 'server.local',
+          agentMode: 'advanced',
+          networkInterfaces: [
+            {
+              name: 'lo0',
+              macAddress: '00:00:00:00:00:00',
+              ipv4: '127.0.0.1',
+              ipv6: 'fe80::1',
+              promiscuous: false
+            },
+            {
+              name: 'gif0',
+              macAddress: '00:00:00:00:00:00',
+              promiscuous: false
+            },
+            {
+              name: 'stf0',
+              macAddress: '00:00:00:00:00:00',
+              promiscuous: false
+            },
+            {
+              name: 'en0',
+              macAddress: '40:6c:8f:03:db:4e',
+              ipv4: '10.30.94.90',
+              ipv6: 'fe80::182e:a21e:53f:98b',
+              gateway: '[ \'10.30.94.1\']',
+              dns: '[ \'10.30.48.37\' , \'152.62.196.10\' , \'10.146.130.60\' , \'10.253.130.60\']',
+              promiscuous: false
+            },
+            {
+              name: 'en1',
+              macAddress: '70:73:cb:be:64:c1',
+              promiscuous: false
+            },
+            {
+              name: 'en2',
+              macAddress: 'b2:00:1d:8a:b6:61',
+              promiscuous: false
+            },
+            {
+              name: 'fw0',
+              macAddress: '3c:07:54:ff:fe:d8',
+              promiscuous: false
+            },
+            {
+              name: 'bridge0',
+              macAddress: 'b2:00:1d:8a:b6:61',
+              promiscuous: false
+            },
+            {
+              name: 'p2p0',
+              macAddress: '02:73:cb:be:64:c1',
+              promiscuous: false
+            },
+            {
+              name: 'utun0',
+              macAddress: '00:00:00:00:00:00',
+              ipv6: 'fe80::8ade:4ef0:a219:217c',
+              promiscuous: false
+            }
+          ],
+          agent: {
+            installTime: '2017-03-22T09:24:26.000Z',
+            serviceStartTime: '2017-03-22T09:24:26.756Z',
+            serviceProcessId: 0
+          },
+          operatingSystem: {
+            description: 'Mac OS X 10.11.4',
+            buildNumber: '15E65',
+            servicePack: 0,
+            kernelName: '/System/Library/Kernels/kernel',
+            kernelRelease: '15.4.0',
+            kernelVersion: 'Darwin Kernel Version 15.4.0: Fri Feb 26 22:08:05 PST 2016; root:xnu-3248.40.184~3/RELEASE_X86_64'
+          },
+          hardware: {
+            processorArchitecture: 'x86_64',
+            processorArchitectureBits: 64,
+            processorCount: 4,
+            totalPhysicalMemory: 17179869184,
+            manufacturer: 'Apple',
+            serial: 'C07PQ06BG1J1'
+          },
+          locale: {
+            defaultLanguage: '1033',
+            timeZone: 'India Standard Time'
+          },
+          lastUpdatedTime: '2017-03-021T11:55:33.804Z'
+        },
+        machine: {
+          machineAgentId: '019A39C8-3E18-387F-EAD4-EA217519638A',
+          scanStartTime: '2017-03-08T11:52:06.680Z',
+          scanRequestTime: '2017-03-08T11:55:33.804Z',
+          users: [
+            {
+              name: 'phaneendra',
+              sessionId: 0,
+              isAdministrator: true
+            }
+          ],
+          securityConfigurations: [
+            'fileVaultDisabled',
+            'firewallDisabled',
+            'sudoersNoPasswordPrompt'
+          ]
+        },
+        groupPolicy: {
+          groups: [],
+          policyStatus: 'Updated',
+          managed: true,
           serverName: 'Migrated'
         }
       }

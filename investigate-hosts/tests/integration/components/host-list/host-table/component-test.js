@@ -184,9 +184,9 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     </style>
     {{host-list/host-table closeProperties=closeProperties openProperties=openProperties}}`);
     await click(findAll('.rsa-data-table-header-cell .rsa-form-checkbox')[0]);
-    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 10, 'All 10 rows selected');
+    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 12, 'All 12 rows selected');
     await click(findAll('.rsa-data-table-header-cell .rsa-form-checkbox')[0]);
-    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 0, 'All 10 rows deelected');
+    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 0, 'All 12 rows deelected');
   });
   test('selecting an already check-boxed row, opens the risk panel', async function(assert) {
     this.set('closeProperties', () => {});

@@ -75,6 +75,9 @@ export default DataTableBodyRow.extend({
       label: 'networkIsolation',
       prefix: 'investigateHosts.networkIsolation.menu.',
       buttonId: 'isolation-button',
+      disabled(selection, context) {
+        return context.get('isAgentMigrated');
+      },
       order: 5,
       subActions: [
         subNavItem,

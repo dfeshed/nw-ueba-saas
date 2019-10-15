@@ -55,7 +55,8 @@
                hideDelay=100
                isDisabled=isAgentMigrated
             }}
-              {{#rsa-form-button}}
+              {{#rsa-form-button
+                 isDisabled=isAgentMigrated}}
                 <span class='host-network-isolation'>
                   {{t moreOption.name}}
                 </span>

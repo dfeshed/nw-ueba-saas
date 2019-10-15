@@ -120,7 +120,8 @@ const endpointScanPending = {
      {
        schema: { schema: endpoint.schema },
        machines: {
-         hostList: hostListState.machines.hostList, selectedHostList: [ { version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'pending' }],
+         hostList: hostListState.machines.hostList,
+         selectedHostList: [{ version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'pending', agentStatus: { isolationStatus: { isolate: true } } }],
          hostColumnSort: 'machineIdentity.machineName',
          focusedHost: null
        }
@@ -566,6 +567,143 @@ module('Integration | Component | host-list', function(hooks) {
       return settled().then(async() => {
         await click(findAll('.delete-host-modal .modal-footer-buttons .rsa-form-button-wrapper button')[1]);
         return settled().then(() => done());
+      });
+    });
+  });
+  test('Isolation status options not rendered for not contained but migrated agents', async function(assert) {
+    setState(endpointScanPending);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[1], 'contextmenu', e);
+    return settled().then(async() => {
+      const subItems = findAll('.context-menu--sub');
+      assert.equal(subItems.length, 1, 'Network isolation options disabled for migrated agents');
+    });
+  });
+  test('Isolation status options not rendered for not contained agents', async function(assert) {
+    setState(endpointScanPending);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[11], 'contextmenu', e);
+    return settled().then(async() => {
+      const subItems = findAll('.context-menu--sub');
+      assert.equal(subItems[1].children[0].textContent.trim(), 'Isolate from Network');
+      assert.equal(subItems[1].children[1].textContent.trim(), 'Edit Exclusion List');
+      assert.equal(subItems[1].children[1].classList.contains('context-menu__item--disabled'), true, 'Edit Exclusion List option is disabled');
+    });
+  });
+
+  test('Isolating a host test', async function(assert) {
+    setState(endpointScanPending);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+
+    await render(hbs`
+      <div id='modalDestination'></div>
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[11], 'contextmenu', e);
+    return settled().then(async() => {
+      const subItems = findAll('.context-menu--sub');
+      triggerEvent(subItems[1], 'mouseover');
+      return settled().then(async() => {
+        await click(subItems[1].children[0]);
+        assert.equal(findAll('.machine-isolation h3')[0].textContent.trim(), 'Isolate from Network', 'Isolation modal window displayed');
+      });
+    });
+  });
+  test('Isolation status options rendered for contained host', async function(assert) {
+    setState(endpointScanPending);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[9], 'contextmenu', e);
+    return settled().then(async() => {
+      const subItems = findAll('.context-menu--sub');
+      assert.equal(subItems[1].children[0].textContent.trim(), 'Release from Isolation');
+      assert.equal(subItems[1].children[1].textContent.trim(), 'Edit Exclusion List');
+      assert.equal(subItems[1].children[1].classList.contains('context-menu__item--disabled'), false, 'Edit Exclusion List option is enabled');
+    });
+  });
+  test('Releasing a host test', async function(assert) {
+    setState(endpointScanPending);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+
+    await render(hbs`
+      <div id='modalDestination'></div>
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[10], 'contextmenu', e);
+    return settled().then(async() => {
+      const subItems = findAll('.context-menu--sub');
+      triggerEvent(subItems[1], 'mouseover');
+      return settled().then(async() => {
+        await click(subItems[1].children[0]);
+        assert.equal(findAll('.machine-isolation h3')[0].textContent.trim(), 'Release from Isolation', 'Release from Isolation modal window displayed');
+      });
+    });
+  });
+  test('Edit Exclusion List a host test', async function(assert) {
+    setState(endpointScanPending);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+
+    await render(hbs`
+      <div id='modalDestination'></div>
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[10], 'contextmenu', e);
+    return settled().then(async() => {
+      const subItems = findAll('.context-menu--sub');
+      triggerEvent(subItems[1], 'mouseover');
+      return settled().then(async() => {
+        await click(subItems[1].children[1]);
+        assert.equal(findAll('.machine-isolation h3')[0].textContent.trim(), 'Edit Exclusion List', 'Edit Exclusion List modal window displayed');
       });
     });
   });

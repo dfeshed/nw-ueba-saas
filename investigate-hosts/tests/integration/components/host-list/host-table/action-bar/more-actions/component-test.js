@@ -466,7 +466,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li.download-system-dump-button .is-disabled').length, 1, 'Download MFT option is disabled.');
   });
-  test('Network isolation options rendered', async function(assert) {
+  test('Network isolation options rendered in more actions for migrated agents', async function(assert) {
     const selectedData = {
       id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
       machineIdentity: {
@@ -510,6 +510,165 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li.isolate-button').length, 1, 'host-network-isolation option is rendered.');
     await triggerEvent(findAll('.rsa-dropdown-action-list li.isolate-button button')[0], 'mouseover');
+  });
+
+
+  test('Network isolation options test in more actions for normal agents', async function(assert) {
+    const selectedData = {
+      id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+      machineIdentity: {
+        machineName: 'RemDbgDrv',
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      },
+      version: '11.4.0.0',
+      managed: true,
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    };
+    new ReduxDataHelper(setState).scanCount(selectedData).build();
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true, 'passed action is called');
+    });
+    this.set('isMFTEnabled', { isDisplayed: true });
+    this.set('requestMFTDownload', () => {
+      assert.ok(true);
+    });
+    this.set('selectedHostList', [selectedData]);
+    this.set('isAgentMigrated', false);
+    this.set('hostDetails', { agentId: '', isIsolated: false });
+
+    this.set('showIsolationModal', (item) => {
+      assert.equal(item, 'isolate');
+    });
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions
+      showRiskScoreModal=showRiskScoreModal
+      deleteAction=deleteAction
+      isMFTEnabled=isMFTEnabled
+      selectedHostList=selectedHostList
+      isAgentMigrated=isAgentMigrated
+      requestMFTDownload=requestMFTDownload
+      requestSystemDumpDownload=requestSystemDumpDownload
+      hostDetails=hostDetails
+      showIsolationModal=showIsolationModal}}`);
+
+    await click('.host_more_actions button');
+    assert.equal(findAll('.rsa-dropdown-action-list li.isolate-button').length, 1, 'host-network-isolation option is rendered.');
+    assert.equal(findAll('.rsa-dropdown-action-list li.isolate-button button')[0].disabled, false, 'Netowork isolation option enabled non migrated agents');
+    await triggerEvent(findAll('.rsa-dropdown-action-list li.isolate-button button')[0], 'mouseover');
+    assert.equal(findAll('.machine-isolation-selector button').length, 2, 'Network isolation sub menu options rendered');
+    await click(findAll('.machine-isolation-selector button')[0]);
+  });
+
+  test('Network isolation options test in more actions for isolated agents', async function(assert) {
+    const selectedData = {
+      id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+      machineIdentity: {
+        machineName: 'RemDbgDrv',
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      },
+      version: '11.4.0.0',
+      managed: true,
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    };
+    new ReduxDataHelper(setState).scanCount(selectedData).build();
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true, 'passed action is called');
+    });
+    this.set('isMFTEnabled', { isDisplayed: true });
+    this.set('requestMFTDownload', () => {
+      assert.ok(true);
+    });
+    this.set('selectedHostList', [selectedData]);
+    this.set('isAgentMigrated', false);
+    this.set('hostDetails', { agentId: '', isIsolated: true });
+
+    this.set('showIsolationModal', (item) => {
+      assert.equal(item, 'release');
+    });
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions
+      showRiskScoreModal=showRiskScoreModal
+      deleteAction=deleteAction
+      isMFTEnabled=isMFTEnabled
+      selectedHostList=selectedHostList
+      isAgentMigrated=isAgentMigrated
+      requestMFTDownload=requestMFTDownload
+      requestSystemDumpDownload=requestSystemDumpDownload
+      hostDetails=hostDetails
+      showIsolationModal=showIsolationModal}}`);
+
+    await click('.host_more_actions button');
+    assert.equal(findAll('.rsa-dropdown-action-list li.isolate-button').length, 1, 'host-network-isolation option is rendered.');
+    assert.equal(findAll('.rsa-dropdown-action-list li.isolate-button button')[0].disabled, false, 'Netowork isolation option enabled non migrated agents');
+    await triggerEvent(findAll('.rsa-dropdown-action-list li.isolate-button button')[0], 'mouseover');
+    assert.equal(findAll('.machine-isolation-selector button').length, 2, 'Network isolation sub menu options rendered');
+    await click(findAll('.machine-isolation-selector button')[0]);
+  });
+  test('Network isolation options test in more actions Edit Exclusion list for isolated agents', async function(assert) {
+    const selectedData = {
+      id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+      machineIdentity: {
+        machineName: 'RemDbgDrv',
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      },
+      version: '11.4.0.0',
+      managed: true,
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    };
+    new ReduxDataHelper(setState).scanCount(selectedData).build();
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true, 'passed action is called');
+    });
+    this.set('isMFTEnabled', { isDisplayed: true });
+    this.set('requestMFTDownload', () => {
+      assert.ok(true);
+    });
+    this.set('selectedHostList', [selectedData]);
+    this.set('isAgentMigrated', false);
+    this.set('hostDetails', { agentId: '', isIsolated: true });
+
+    this.set('showIsolationModal', (item) => {
+      assert.equal(item, 'edit');
+    });
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions
+      showRiskScoreModal=showRiskScoreModal
+      deleteAction=deleteAction
+      isMFTEnabled=isMFTEnabled
+      selectedHostList=selectedHostList
+      isAgentMigrated=isAgentMigrated
+      requestMFTDownload=requestMFTDownload
+      requestSystemDumpDownload=requestSystemDumpDownload
+      hostDetails=hostDetails
+      showIsolationModal=showIsolationModal}}`);
+
+    await click('.host_more_actions button');
+    assert.equal(findAll('.rsa-dropdown-action-list li.isolate-button').length, 1, 'host-network-isolation option is rendered.');
+    assert.equal(findAll('.rsa-dropdown-action-list li.isolate-button button')[0].disabled, false, 'Netowork isolation option enabled non migrated agents');
+    await triggerEvent(findAll('.rsa-dropdown-action-list li.isolate-button button')[0], 'mouseover');
+    assert.equal(findAll('.machine-isolation-selector button').length, 2, 'Network isolation sub menu options rendered');
+    await click(findAll('.machine-isolation-selector button')[1]);
   });
 });
 
