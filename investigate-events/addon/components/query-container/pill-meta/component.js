@@ -692,14 +692,14 @@ export default Component.extend({
         this._clearMetaDropDown(powerSelectAPI);
       }
       this._broadcast(MESSAGE_TYPES.PILL_END_PRESSED);
-    } else if (isDelete(event) && !this.get('isEditing') && !this.get('isLastPill')) {
+    } else if (isDelete(event) && !this.get('isEditing') && !this.get('isLastPill') && !event.target.value) {
       this._clearMetaDropDown(powerSelectAPI);
       this._broadcast(MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, {
         isFocusedPill: false,
         isDeleteEvent: true,
         isBackspaceEvent: false
       });
-    } else if (isBackspace(event) && !this.get('isEditing') && !this.get('isFirstPill')) {
+    } else if (isBackspace(event) && !this.get('isEditing') && !this.get('isFirstPill') && !event.target.value) {
       this._clearMetaDropDown(powerSelectAPI);
       this._broadcast(MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, {
         isFocusedPill: false,

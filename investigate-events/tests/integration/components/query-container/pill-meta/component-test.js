@@ -1147,6 +1147,46 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', BACKSPACE_KEY);
   });
 
+  test('it does not broadcast a message to query-pill when delete is pressed via pill meta if it has value', async function(assert) {
+    assert.expect(0);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED) {
+        assert.notOk(type, 'Message should not be passed on');
+        assert.notOk(data, 'Data should not be passed on');
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
+    `);
+    await fillIn(PILL_SELECTORS.metaSelectInput, 'TypedInValue');
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', DELETE_KEY);
+  });
+
+  test('it does not broadcast a message to query-pill when backspace is pressed via pill meta if it has value', async function(assert) {
+    assert.expect(0);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED) {
+        assert.notOk(type, 'Message should not be passed on');
+        assert.notOk(data, 'Data should not be passed on');
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
+    `);
+    await fillIn(PILL_SELECTORS.metaSelectInput, 'TypedInValue');
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', BACKSPACE_KEY);
+  });
+
   test('it broadcasts a message that a logical operator was entered', async function(assert) {
     assert.expect(16);
     let i = 0;
