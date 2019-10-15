@@ -46,18 +46,18 @@ public class JacksonUtils extends HierarchyLeafFinder<JSONObject> {
      * For example:
      * ============
      * setFieldValue(object = {
-     * "name": "Aaron",
-     * "cat": {
-     * "toy": "mouse"
-     * }
+     *      "name": "Aaron",
+     *      "cat": {
+     *          "toy": "mouse"
+     *      }
      * }, fieldName = "cat.toy", fieldValue = "rabbit")
      * Becomes:
      * ========
      * {
-     * "name": "Aaron",
-     * "cat": {
-     * "toy": "rabbit"
-     * }
+     *      "name": "Aaron",
+     *      "cat": {
+     *          "toy": "rabbit"
+     *      }
      * }
      *
      * @param document   the given JSONOBJECT

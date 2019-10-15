@@ -59,7 +59,7 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
     @Override
     public JSONObject transform(JSONObject document) {
 
-         if(document.isNull(TlsTransformedEvent.SESSION_SPLIT_FIELD_NAME)) {
+        if(document.isNull(TlsTransformedEvent.SESSION_SPLIT_FIELD_NAME)) {
             return document;
         }
 
