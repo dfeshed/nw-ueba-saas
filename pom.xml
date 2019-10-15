@@ -9,6 +9,7 @@
     <modules>
         <module>ueba-automation-test</module>
         <module>ueba-automation-framework</module>
+        <module>presidio-integration-performance-test</module>
     </modules>
     <packaging>pom</packaging>
 
