@@ -91,7 +91,7 @@ public class SshCommandExecutor {
                 printOut(sshOutput);
             }
 
-            LOGGER.info("Run CMD finished in " + Duration.between(startTime, Instant.now()).toMillis() + " ms");
+            LOGGER.info("Run CMD finished in " + Duration.between(startTime, Instant.now()).toMillis() + " ms. [exit code = " + channel.getExitStatus() + "]");
             return new SshResponse(channel.getExitStatus(), Lists.newLinkedList(sshOutput));
 
 
