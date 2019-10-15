@@ -9,6 +9,7 @@ REST_API_LOCATION="http://localhost:9200"
 ARCHIVE_API_ENDPOINT="_snapshot/ueba_backup"
 CURL_SILENT="curl --silent --output /dev/stderr"
 CURL_VERBOSE="curl -v --show-error"
+REDIS_DIR="/var/lib/redis"
 
 # source nwcommon functions
 . /usr/lib/netwitness/bootstrap/resources/nwcommon || exit 2
@@ -84,6 +85,9 @@ backup() {
 
   mv "${BACKUP_HOME}"/* "${UEBA_DUMP_DIR}"
 
+  mv "${REDIS_DIR}"/* "${UEBA_DUMP_DIR}"
+
+  echoInfo "- Successfully backed-up REDIS DATA -"
   echoInfo ""
   echoInfo "------------------------------------"
   echoInfo "- Successfully backed-up UEBA DATA -"
@@ -128,6 +132,9 @@ restore() {
     -d "{\"operations\":[]}" ||
     exitError "Redistributing the configuration server parameters failed"
 
+  mv "${UEBA_DUMP_DIR}"/*.rdb "${REDIS_DIR}"
+
+  echoInfo "- Successfully restored REDIS DATA -"
   echoInfo ""
   echoInfo "-----------------------------------"
   echoInfo "- Successfully restored UEBA DATA -"
