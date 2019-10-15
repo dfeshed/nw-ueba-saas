@@ -156,7 +156,6 @@ public class OutputTestsUtils {
     }
 
     public static List<String> getUserNamesListFromOutputCollections(OutputActiveDirectoryStoredDataRepository adRepository, OutputAuthenticationStoredDataRepository authRepository, OutputFileStoredDataRepository fileRepository, OutputProcessStoredDataRepository processRepository, OutputRegistryStoredDataRepository registryRepository) {
-        // TODO: improve query to select distinct user ids, instead of retrieving all the data
         List<OutputActiveDirectoryEnrichedStoredData> adList = adRepository.findAll();
         List<OutputAuthenticationEnrichStoredData> authList = authRepository.findAll();
         List<OutputFileEnrichStoredData> fileList = fileRepository.findAll();

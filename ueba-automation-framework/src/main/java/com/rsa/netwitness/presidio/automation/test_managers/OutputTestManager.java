@@ -148,7 +148,6 @@ public class OutputTestManager {
         }
     }
 
-    // TODO: need to rewrite - JSONObject does not alow the same key in twice in the object
     public JSONObject sendGetAlertsURL(String additionalURLInfo, boolean printRequest) {
         if(!additionalURLInfo.startsWith("/")) {
             additionalURLInfo = "?" + additionalURLInfo;

@@ -1,7 +1,5 @@
 package com.rsa.netwitness.presidio.automation.test_managers;
 
-//TODO: resolve? TESTS SHOULD NOT DEPEND ON product packages, except SDKs!
-
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
 import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;

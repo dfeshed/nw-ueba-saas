@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.getOrNull;
-import static org.assertj.core.util.Lists.list;
 
 
 class NetwitnessTlsEventConverterBuilder extends TlsEventConverter {
@@ -55,8 +54,7 @@ class NetwitnessTlsEventConverterBuilder extends TlsEventConverter {
         network = networkEvent.getDataSource();
         country_src = getOrNull(networkEvent.getSrcLocation(), Location::getCountry);
         alias_host = networkEvent.getFqdn();
-        // todo: change to list
-        ssl_ca = list(networkEvent.getSslCa());
+        ssl_ca = networkEvent.getSslCa();
         session_split = networkEvent.getSessionSplit();
         analysis_service = networkEvent.getIsSelfSigned();
         service_name = "443";

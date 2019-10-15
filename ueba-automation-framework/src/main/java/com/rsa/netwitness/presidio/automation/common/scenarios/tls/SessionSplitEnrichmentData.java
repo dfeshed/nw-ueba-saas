@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.common.scenarios.tls;
 
+import com.google.common.collect.Lists;
 import presidio.data.domain.event.network.NETWORK_DIRECTION_TYPE;
 import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.common.GeneratorException;
@@ -206,7 +207,7 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
                 event.setSslSubject(params.sslSubject);
                 event.setJa3(params.ja3);
                 event.setJa3s(params.ja3s);
-                event.setSslCa(params.sslCa);
+                event.setSslCa(Lists.newArrayList(params.sslCa));
             }
             return event;
         };

@@ -5,6 +5,7 @@ import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.event.tls.TlsRangeEventsGen;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class FutureEventsForMetrics extends NetworkScenarioBase{
@@ -21,12 +22,16 @@ public class FutureEventsForMetrics extends NetworkScenarioBase{
     }
 
 
-    public Stream<TlsEvent> get() throws GeneratorException {
+    public Stream<TlsEvent> get() {
         TlsRangeEventsGen tlsRangeEventsGen = new TlsRangeEventsGen(3);
         tlsRangeEventsGen.setTimeGenerator(getDefaultRegularTimeGen());
 
-        List<TlsEvent> events = tlsRangeEventsGen.generate();
-        return events.stream();
+        List<TlsEvent> events = null;
+        try {
+            events = tlsRangeEventsGen.generate();
+        } catch (GeneratorException e) {
+            e.printStackTrace();
+        }
+        return Objects.requireNonNull(events).stream();
     }
-
 }

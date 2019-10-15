@@ -31,15 +31,8 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 
 /**
  * This class purpose is to monitor Airflow progress on generated scenarios data.
- * The progress measured by comparison of events in mongo collections: netwitness_file_events vs input_file_raw_events.
- * The number of events should be equal in current scenario (no filtering test cases included).
- * Assuming that it's enough to measure progress on one schema. This is because Airflow subdags for all schemas together hour by hour.
- * <p>
- * Status is printed to cosole and written into file "waitAirflowFinish.log" in the working directory.
- * Timeout defined for entire scenario - 20h
- * <p>
- * TODO: improve timeout - check it hourly. This will allow to continue with better status, in case of single hour failure
  **/
+
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringContextTests {

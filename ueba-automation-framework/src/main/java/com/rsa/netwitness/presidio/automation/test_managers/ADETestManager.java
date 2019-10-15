@@ -254,8 +254,6 @@ public class ADETestManager {
         while (Instant.now().isBefore(timeout_time)) {
             status = adeManagerSDK.getHistoricalRunStatus(historicalRunId);
 
-            //TODO: handle status when implemented
-            // if Successfull
             if (status == null) return true;
 
             //if error
