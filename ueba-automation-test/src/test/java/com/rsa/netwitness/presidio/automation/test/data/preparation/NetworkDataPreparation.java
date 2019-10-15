@@ -10,6 +10,7 @@ import presidio.data.domain.event.network.TlsEvent;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -21,8 +22,6 @@ public class NetworkDataPreparation extends DataPreparationBase {
     @Override
     public List<? extends Event> generate() {
         List<TlsEvent> networkEvents = new LinkedList<>();
-
-        SessionSplitEnrichmentData sessionSplitEnrichmentData = new SessionSplitEnrichmentData();
 
         /** TLS alerts generators **/
         List<TlsAlert> tlsAlerts = Stream.of(
@@ -38,8 +37,9 @@ public class NetworkDataPreparation extends DataPreparationBase {
         }
 
         /** future time events **/
-        FutureEventsForMetrics futureEventsGen = new FutureEventsForMetrics(10);
-        networkEvents.addAll(futureEventsGen.get().collect(toList()));
+        networkEvents.addAll(new FutureEventsForMetrics(10).get().collect(toList()));
+        /** Session split data **/
+        networkEvents.addAll(new SessionSplitEnrichmentData().generateAll().collect(Collectors.toList()));
 
         return networkEvents;
     }
