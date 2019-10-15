@@ -675,18 +675,59 @@ const QueryPills = RsaContextMenu.extend({
     this._pillOpenForEdit(pillData);
   },
 
+  /**
+   * Handles moving focus from a new pill trigger to a pill on the left.
+   * @param {number} position - The index of the NPT that we're moving away
+   * from. The index for a NPT always matches the index of the pill to its right.
+   */
   _addFocusToLeftPill(position) {
     if (position !== 0) {
       this._pillsExited();
-      this.send('addPillFocus', position - 1);
+      const nextPill = this.pillsData[position];
+      const prevPill = this.pillsData[position - 1];
+      const isCloseParenToRight = nextPill && nextPill.type === CLOSE_PAREN;
+      const isOperatorToLeft = _isLogicalOperator(prevPill);
+      if (isCloseParenToRight && isOperatorToLeft) {
+        // Someone typed "( P && _ )", they're at the "_" and pressed the left
+        // arrow. We need to remove the operator and focus on the "P" to the
+        // left. We run the addPillFocus in the next runloop so that it happens
+        // after some logic that removes all pill focus caused by the NPT losing
+        // focus. We also send "position - 2" because we need to skip over the
+        // operator we just deleted.
+        this.send('deleteGuidedPill', { pillData: [this.pillsData[position - 1]] });
+        next(this, this.send, 'addPillFocus', position - 2);
+      } else {
+        // Normal left movement
+        this.send('addPillFocus', position - 1);
+      }
     }
   },
 
+  /**
+   * Handles moving focus from a new pill trigger to a pill on the right.
+   * @param {number} position - The index of the NPT that we're moving away
+   * from. The index for a NPT always matches the index of the pill to its right.
+   */
   _addFocusToRightPill(position) {
-    const pillsData = this.get('pillsData');
-    if (position < pillsData.length) {
+    if (position < this.pillsData.length) {
       this._pillsExited();
-      this.send('addPillFocus', position);
+      const nextPill = this.pillsData[position];
+      const prevPill = this.pillsData[position - 1];
+      const isCloseParenToRight = nextPill && nextPill.type === CLOSE_PAREN;
+      const isOperatorToLeft = _isLogicalOperator(prevPill);
+      if (isCloseParenToRight && isOperatorToLeft) {
+        // Someone typed "( P && _ )", they're at the "_" and pressed the right
+        // arrow. We need to remove the operator and focus on the ")" to the
+        // right. We run the addPillFocus in the next runloop so that it happens
+        // after some logic that removes all pill focus caused by the NPT losing
+        // focus. We also send "position - 1" because we removed the operator,
+        // so the ")" moves back one space.
+        this.send('deleteGuidedPill', { pillData: [this.pillsData[position - 1]] });
+        next(this, this.send, 'addPillFocus', position - 1);
+      } else {
+        // Normal right movement
+        this.send('addPillFocus', position);
+      }
     }
   },
 

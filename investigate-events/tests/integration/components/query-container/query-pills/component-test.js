@@ -2320,6 +2320,68 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(pillText, 'b = \'y\'', 'The second pill is the focused pill');
   });
 
+  test('Focus moves to left pill and cleans up logical operator if ARROW-LEFT is pressed', async function(assert) {
+    const OR = createOperator(OPERATOR_OR);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens() // ( P )
+      .insertPillAt(OR, 2) // ( P OR )
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 4, 'correct number of triggers');
+    // click trigger that's between the operator and the close paren
+    await click(triggers[3]);
+    // Press LEFT
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
+    await settled();
+    assert.ok(find(PILL_SELECTORS.openParen), 'found open paren');
+    const focusedPills = findAll(PILL_SELECTORS.focusedPill);
+    assert.equal(focusedPills.length, 1, 'should have 1 focused pill');
+    assert.equal(focusedPills[0].title, 'alert = \'foo\'', 'The correct pill is focused');
+    assert.ok(find(PILL_SELECTORS.closeParen), 'found close paren');
+    assert.notOk(find(PILL_SELECTORS.logicalOperator), 'There should be no logical operators');
+  });
+
+  test('Focus moves to right pill and cleans up logical operator if ARROW-RIGHT is pressed', async function(assert) {
+    const OR = createOperator(OPERATOR_OR);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens() // ( P )
+      .insertPillAt(OR, 2) // ( P OR )
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 4, 'correct number of triggers');
+    // click trigger that's between the operator and the close paren
+    await click(triggers[3]);
+    // Press RIGHT
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
+    await settled();
+    assert.ok(find(PILL_SELECTORS.openParen), 'found open paren');
+    const focusedPills = findAll(PILL_SELECTORS.focusedPill);
+    assert.equal(focusedPills.length, 1, 'should have 1 focused pill');
+    assert.ok(_hasClass(focusedPills[0], 'close-paren'), 'The correct pill is focused');
+    assert.ok(find(PILL_SELECTORS.closeParen), 'found close paren');
+    assert.notOk(find(PILL_SELECTORS.logicalOperator), 'There should be no logical operators');
+  });
+
   test('Nothing happens if ARROW-RIGHT is pressed from a new pill(end of the list) with no meta/operator/value selected with no pill on the right', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
