@@ -7,8 +7,8 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.utils.logging.Logger;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +45,7 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
             throw new SupportingInformationException("Could not find any relevant bucket for histogram creation");
         }
 
-        return createSupportingInformationHistogram(featureBuckets, MapUtils.EMPTY_MAP);
+        return createSupportingInformationHistogram(featureBuckets, MapUtils.EMPTY_SORTED_MAP);
 
     }
 

@@ -9,7 +9,7 @@ import fortscale.domain.rest.EntityRestFilter;
 import fortscale.services.EntityService;
 import fortscale.utils.logging.Logger;
 import presidio.ui.presidiouiapp.demoservices.DemoBuilder;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;

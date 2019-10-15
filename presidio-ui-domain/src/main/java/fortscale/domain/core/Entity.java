@@ -136,6 +136,8 @@ public class Entity extends AbstractDocument {
 	@Field(sourceMachineCountField)
 	private int sourceMachineCount;
 
+	private Map<String, Double> trendingScore;
+
 	public String getAdDn() {
 		return adDn;
 	}
@@ -320,4 +322,12 @@ public class Entity extends AbstractDocument {
 	public void setAlerts(List<Alert> alerts) {
 		this.alerts = alerts;
 	}
+
+	public Map<String, Double> getTrendingScore() {
+		return trendingScore;
+	}
+
+    public void setTrendingScore(Map<String, Double> trendingScore) {
+		this.trendingScore = trendingScore;
+    }
 }

@@ -8,7 +8,7 @@ import fortscale.services.AlertsService;
 import fortscale.services.EntityService;
 import fortscale.services.EntityWithAlertService;
 import presidio.ui.presidiouiapp.demoservices.DemoBuilder;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;

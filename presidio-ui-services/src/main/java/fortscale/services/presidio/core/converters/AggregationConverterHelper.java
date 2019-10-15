@@ -1,7 +1,7 @@
 package fortscale.services.presidio.core.converters;
 
 import fortscale.utils.logging.Logger;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,6 +22,6 @@ public class AggregationConverterHelper {
             }
         }
         logger.debug("Map {} is not found",key);
-        return MapUtils.EMPTY_MAP;
+        return MapUtils.EMPTY_SORTED_MAP;
     }
 }

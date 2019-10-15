@@ -4,7 +4,7 @@ import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.Severity;
 import fortscale.services.presidio.core.converters.EnumConverter;
 import fortscale.services.presidio.core.converters.FeedbackConverter;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

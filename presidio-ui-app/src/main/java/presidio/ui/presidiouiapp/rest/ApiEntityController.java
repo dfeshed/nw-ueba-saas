@@ -20,7 +20,6 @@ import fortscale.utils.logging.Logger;
 
 
 
-import org.apache.commons.collections.CollectionUtils;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -34,6 +33,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import presidio.ui.presidiouiapp.BaseController;
 import presidio.ui.presidiouiapp.beans.AlertTypesCountBean;
@@ -503,7 +503,7 @@ public class ApiEntityController extends BaseController {
 	}
 
 
-	@RequestMapping(value="/entities", method = RequestMethod.GET)
+		@RequestMapping(value="/entities", method = RequestMethod.GET)
 	//@LogException
 	public @ResponseBody
 	DataBean<Set<Map<String, String>>> getEntities(HttpServletRequest httpRequest, HttpServletResponse httpResponse,

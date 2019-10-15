@@ -8,7 +8,7 @@ import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -46,7 +46,7 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
             throw new SupportingInformationException("Could not find any relevant bucket for histogram creation");
         }
 
-        Map<SupportingInformationKey, Double> lastDayMap = MapUtils.EMPTY_MAP;//createLastDayBucket(getNormalizedContextType(contextType), contextValue, evidenceEndTime, dataEntity,evidence);
+        Map<SupportingInformationKey, Double> lastDayMap = MapUtils.EMPTY_SORTED_MAP;//createLastDayBucket(getNormalizedContextType(contextType), contextValue, evidenceEndTime, dataEntity,evidence);
 
         return createSupportingInformationHistogram(featureBuckets, lastDayMap);
     }

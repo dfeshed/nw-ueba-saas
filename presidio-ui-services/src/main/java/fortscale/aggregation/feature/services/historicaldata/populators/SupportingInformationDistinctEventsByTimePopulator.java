@@ -10,7 +10,7 @@ import fortscale.domain.historical.data.SupportingInformationTimestampKey;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -88,7 +88,7 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
 //        }
 //
 //        return supportingInformationHistogram;
-        return MapUtils.EMPTY_MAP;
+        return MapUtils.EMPTY_SORTED_MAP;
     }
 
     protected SupportingInformationTimeGranularity determineTimeGranularity(Evidence evidence) {

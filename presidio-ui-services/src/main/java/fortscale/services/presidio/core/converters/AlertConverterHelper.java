@@ -4,7 +4,7 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.Alert;
 import fortscale.domain.dto.DateRange;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;

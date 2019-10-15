@@ -7,7 +7,7 @@ import fortscale.services.*;
 import fortscale.services.cache.CacheHandler;
 import fortscale.temp.HardCodedMocks;
 import fortscale.utils.logging.Logger;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 

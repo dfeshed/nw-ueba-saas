@@ -14,8 +14,8 @@ import fortscale.services.exception.UserNotFoundExeption;
 import fortscale.services.presidio.core.converters.AggregationConverterHelper;
 import fortscale.services.presidio.core.converters.AlertConverterHelper;
 import fortscale.utils.logging.Logger;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -228,7 +228,7 @@ public class AlertsServiceImpl implements AlertsService {
         }
 
         if (aggregateByEnum == null){
-            return MapUtils.EMPTY_MAP;
+            return MapUtils.EMPTY_SORTED_MAP;
         }
 
         aggregateBy.add(aggregateByEnum);
@@ -239,7 +239,7 @@ public class AlertsServiceImpl implements AlertsService {
 
             return  aggregationConverterHelper.convertAggregation(results,aggregateByEnum.name());
         } catch (ApiException e) {
-            return MapUtils.EMPTY_MAP;
+            return MapUtils.EMPTY_SORTED_MAP;
         }
 
 
@@ -252,7 +252,7 @@ public class AlertsServiceImpl implements AlertsService {
 //		return alertsRepository.groupCount(Alert.nameField,null, null,feedback ,
 //				null, null, null, null);
         //TODO: need further implementation from Karkens
-        return MapUtils.EMPTY_MAP;
+        return MapUtils.EMPTY_SORTED_MAP;
     }
 
     @Override
@@ -299,7 +299,7 @@ public class AlertsServiceImpl implements AlertsService {
 //		}
 //		return results;
 
-        return MapUtils.EMPTY_MAP;
+        return MapUtils.EMPTY_SORTED_MAP;
     }
 
     public Map<String,Integer> getAlertsTypes(){
