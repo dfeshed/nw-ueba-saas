@@ -1717,6 +1717,37 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
+  test('Right click wrap in parens option should be disabled if there is an invalid selected pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .markInvalid(['1'])
+      .build();
+
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+        {{context-menu}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    const selector = '.context-menu';
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`);
+    await click(`#${metas[1].id}`);
+    await triggerEvent(find(PILL_SELECTORS.selectedPill), 'contextmenu', { clientX: 100, clientY: 100 });
+    const items = findAll(`${selector} > .context-menu__item`);
+    const actionSelector = items.find((op) => op.textContent.includes('Wrap'));
+    assert.ok(actionSelector.className.includes('context-menu__item--disabled'), 'Wrap in parens should be disabled');
+  });
+
   test('Right click deleting parens will remove all the selected parens and their contents', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -4627,6 +4658,36 @@ module('Integration | Component | Query Pills', function(hooks) {
     await selectChoose(PILL_SELECTORS.meta, 'medium');
     await selectChoose(PILL_SELECTORS.operator, '=');
     await typeIn(PILL_SELECTORS.valueSelectInput, '32');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+    await leaveNewPillTemplate();
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`);
+    await click(`#${metas[1].id}`); // ( selected pill ) selectedFocused pill
+    await settled();
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN_KEY);
+    await settled();
+
+    assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'Should not find 2 open parens');
+  });
+
+  test('It will not wrap pills in parens if there is an invalid selected pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    // create one more pill
+    await selectChoose(PILL_SELECTORS.meta, 'medium');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, 'error');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
     await leaveNewPillTemplate();
 

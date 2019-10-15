@@ -979,7 +979,7 @@ const QueryPills = RsaContextMenu.extend({
   _wrapSelectedPillsWithParens() {
     const pills = this.get('pillsData');
     const { startIndex, endIndex } = selectedPillIndexes(pills);
-    if (isValidToWrapWithParens(pills, startIndex, endIndex)) {
+    if (isValidToWrapWithParens(pills, startIndex, endIndex) && !this.get('hasInvalidSelectedPill')) {
       this.send('wrapWithParens', { startIndex, endIndex });
       this.send('deselectAllGuidedPills');
     }

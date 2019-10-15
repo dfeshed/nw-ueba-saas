@@ -59,7 +59,7 @@ const wrapWithParens = (context, i18n) => {
     disabled() {
       const pills = context.get('pillsData');
       const { startIndex, endIndex } = selectedPillIndexes(pills);
-      return !isValidToWrapWithParens(pills, startIndex, endIndex);
+      return !isValidToWrapWithParens(pills, startIndex, endIndex) || context.get('hasInvalidSelectedPill');
     },
     action() {
       const pills = context.get('pillsData');
