@@ -36,11 +36,14 @@ export const freeFormText = createSelector(
 );
 
 export const queryNodeValuesForClassicUrl = createSelector(
-  [_endTime, _startTime, _previouslySelectedTimeRanges, _serviceId, _pillDataHashes, pillsData],
-  (endTime, startTime, previouslySelectedTimeRanges, serviceId, pillDataHashes, _pillsData) => {
-    if (serviceId) {
+  [_previouslySelectedTimeRanges, _pillDataHashes, _previousQueryParams],
+  (previouslySelectedTimeRanges, pillDataHashes, previousQueryParams) => {
+    // Must pick up params that have been executed in order to use them in the URL
+    if (previousQueryParams) {
+      const { endTime, startTime, serviceId } = previousQueryParams;
       const timeRangeType = previouslySelectedTimeRanges[serviceId];
-      const textSearchTerm = _pillsData.find((p) => p.type === TEXT_FILTER);
+      const textSearchTerm = previousQueryParams.metaFilter.find((pD) => pD.type === TEXT_FILTER);
+
       return {
         endTime,
         startTime,

@@ -76,7 +76,10 @@ export const classicEventsURL = ({
   const pillHash = extractHashWithoutTextHash(pillDataHashes);
   const formattedStartDate = moment(startTime > 0 ? startTime * 1000 : startTime).tz('utc').format();
   const formattedEndDate = moment(endTime > 0 ? endTime * 1000 : endTime).tz('utc').format();
-  const { searchTerm } = textSearchTerm;
+  let searchTerm;
+  if (textSearchTerm) {
+    searchTerm = textSearchTerm.searchTerm;
+  }
   return `investigation/${serviceId}/events/${pillHash}date/${formattedStartDate}/${formattedEndDate}?mid1=${mid1}&mid2=${mid2}&lastCollectionDate=${endCollectionTime}&startCollectionDate=${startCollectionTime}&timeRangeType=${timeRangeType}&search=${searchTerm}`;
 };
 

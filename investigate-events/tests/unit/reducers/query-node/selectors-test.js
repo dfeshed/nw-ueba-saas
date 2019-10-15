@@ -576,24 +576,24 @@ test('hadTextPill detects if a previous query had a Text Filter', function(asser
 });
 
 
-test('queryNodeValuesForClassicUrl sends out values if serviceId is present', function(assert) {
+test('queryNodeValuesForClassicUrl sends out values if previousQueryParams are present', function(assert) {
 
   let state = { investigate: {
     queryNode: {
-      endTime: '1508178179',
-      startTime: '1508091780',
-      serviceId: '555d9a6fe4b0d37c827d402e',
       previouslySelectedTimeRanges: {
         '555d9a6fe4b0d37c827d402e': TIME_RANGES.DEFAULT_TIME_RANGE_ID
       },
       pillDataHashes: [
         'wawa1'
       ],
-      pillsData: [
-        {
-          type: TEXT_FILTER, searchTerm: 'foobar'
-        }
-      ]
+      previousQueryParams: {
+        metaFilter: [
+          { type: TEXT_FILTER, searchTerm: 'foobar' }
+        ],
+        endTime: '1508178179',
+        startTime: '1508091780',
+        serviceId: '555d9a6fe4b0d37c827d402e'
+      }
     }
   } };
   assert.deepEqual(queryNodeValuesForClassicUrl(state), {
