@@ -60,6 +60,74 @@ const complexConditions = [{
   complexFilterText: 'bar=\'foo\'||baz=foo'
 }];
 
+const textPillInMiddle = [
+  {
+    'id': 'guidedPill_14',
+    'meta': 'action',
+    'operator': '=',
+    'value': 'foo',
+    'type': 'query'
+  },
+  {
+    'type': 'operator-and',
+    'id': 'guidedPill_15'
+  },
+  {
+    'id': 'guidedPill_16',
+    'searchTerm': 'bar',
+    'type': 'text'
+  },
+  {
+    'type': 'operator-and',
+    'id': 'guidedPill_17'
+  },
+  {
+    'id': 'guidedPill_19',
+    'meta': 'action',
+    'operator': '=',
+    'value': 'baz',
+    'type': 'query'
+  }
+];
+
+const textPillAtBeginning = [
+  {
+    'id': 'guidedPill_16',
+    'searchTerm': 'bar',
+    'type': 'text'
+  },
+  {
+    'type': 'operator-and',
+    'id': 'guidedPill_17'
+  },
+  {
+    'id': 'guidedPill_19',
+    'meta': 'action',
+    'operator': '=',
+    'value': 'baz',
+    'type': 'query'
+  }
+];
+
+const textPillAtEnd = [
+  {
+    'id': 'guidedPill_19',
+    'meta': 'action',
+    'operator': '=',
+    'value': 'baz',
+    'type': 'query'
+  },
+  {
+    'type': 'operator-and',
+    'id': 'guidedPill_17'
+  },
+  {
+    'id': 'guidedPill_16',
+    'searchTerm': 'bar',
+    'type': 'text'
+  }
+];
+
 test('encodeMetaFilterConditions correctly encodes conditions', function(assert) {
   assert.expect(1);
   const result = encodeMetaFilterConditions(conditions);
@@ -156,6 +224,7 @@ test('extractSearchTermFromFilters returns an array of pills without any text fi
   assert.expect(3);
   const pills = [
     { meta: 'foo' },
+    { operator: 'will be removed' },
     { searchTerm: 'bar' },
     { meta: 'baz' },
     { meta: 'bang' },
@@ -170,6 +239,30 @@ test('extractSearchTermFromFilters returns an array of pills without any text fi
     { meta: 'boom' }
   ]);
   assert.equal(searchTerm, 'bar', 'Search term should be extracted from array of pills');
+});
+
+test('extractSearchTermFromFilters handles text filters correctly', function(assert) {
+  assert.expect(11);
+
+  let results = extractSearchTermFromFilters(textPillInMiddle);
+
+  assert.equal(results.searchTerm, 'bar', 'Search term should be extracted from array of pills');
+  assert.equal(results.metaFilters.length, 3, 'should be 3 pills left');
+  assert.equal(results.metaFilters[0].type, 'query', 'first should be query pill');
+  assert.equal(results.metaFilters[1].type, 'operator-and', 'second should be operator');
+  assert.equal(results.metaFilters[2].type, 'query', 'third should be query pill');
+
+  results = extractSearchTermFromFilters(textPillAtBeginning);
+
+  assert.equal(results.searchTerm, 'bar', 'Search term should be extracted from array of pills');
+  assert.equal(results.metaFilters.length, 1, 'should be 1 pill left');
+  assert.equal(results.metaFilters[0].type, 'query', 'only should be query pill');
+
+  results = extractSearchTermFromFilters(textPillAtEnd);
+
+  assert.equal(results.searchTerm, 'bar', 'Search term should be extracted from array of pills');
+  assert.equal(results.metaFilters.length, 1, 'should be 1 pill left');
+  assert.equal(results.metaFilters[0].type, 'query', 'only should be query pill');
 });
 
 test('mergeFilterStrings returns proper string', function(assert) {

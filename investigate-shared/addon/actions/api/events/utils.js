@@ -129,15 +129,45 @@ export const searchTermFilter = (value) => ({ field: 'searchTerm', value });
  */
 export const extractSearchTermFromFilters = (filters) => {
   let searchTerm;
-  const metaFilters = filters.reduce((acc, cur) => {
+  const metaFilters = [];
+  let skipNext = false;
+  filters.forEach((cur, i) => {
+    if (skipNext) {
+      skipNext = false;
+      return;
+    }
+
     if (cur.searchTerm) {
       searchTerm = cur.searchTerm;
-      return acc;
+
+      // found a search term, now have to slice out
+      // any connective tissue between that term and
+      // the surrounding query because while we want
+      // it to appear to users that the text search is
+      // just another pill, it isn't, and it cannot
+      // be ANDed or ORed with the rest
+
+      // its the only thing, no connective tissue, escape
+      if (filters.length === 1) {
+        return;
+      }
+
+      // The search term was the first item and there
+      // are many items, need to skip the next operator
+      // so the filters do not start with AND/OR
+      if (i === 0) {
+        skipNext = true;
+        return;
+      }
+
+      // If we got this far, then we have a search term
+      // preceeded by an operator that we do not need/want
+      metaFilters.pop();
     } else {
-      acc.push(cur);
-      return acc;
+      metaFilters.push(cur);
     }
-  }, []);
+  });
+
   return { metaFilters, searchTerm };
 };
 

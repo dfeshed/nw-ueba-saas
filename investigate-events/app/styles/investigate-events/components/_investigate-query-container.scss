@@ -180,9 +180,9 @@
                     margin-right: 0.5rem;
                   }
                 }
-              } 
+              }
             }
-          } 
+          }
           .list-body {
             padding-bottom: 1rem;
             width: 100%;
@@ -909,9 +909,6 @@
     &.is-editing {
       flex: 1 1 100%;
     }
-    &.is-invalid {
-      border-color: border-color(accentOne);
-    }
     &.is-selected {
       background-color: background-color(secondary);
       border-color: border-color(secondary);
@@ -922,6 +919,9 @@
     }
     &.is-focused {
       border-color: border-color(accentTwo);
+    }
+    &.is-invalid {
+      border-color: border-color(accentOne);
     }
   }
 
