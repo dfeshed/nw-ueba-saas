@@ -102,12 +102,7 @@ export default Component.extend({
   },
 
   _deleteOrBackspacePressed(data) {
-    const { isDeleteEvent, isBackspaceEvent } = data;
-    if (isDeleteEvent) {
-      this._focusedRightArrowPressed();
-    } else if (isBackspaceEvent) {
-      this._focusedLeftArrowPressed();
-    }
+    this._broadcast(MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, data);
   },
 
   actions: {

@@ -30,6 +30,7 @@ export default {
   expensivePill: '.query-pill.is-expensive',
   focusedPill: '.is-focused',
   focusedQueryPill: '.query-pill.is-focused',
+  focusedLogicalOperator: '.logical-operator.is-focused',
   focusHolderInput: '.focus-holder input',
   freeFormInput: '.rsa-investigate-free-form-query-bar input',
   freeFormInputFocus: '.rsa-investigate-free-form-query-bar input:focus',

@@ -4799,4 +4799,48 @@ module('Integration | Component | Query Pills', function(hooks) {
       assert.ok(find(PILL_SELECTORS.metaTrigger), 'Empty pill open');
     });
   });
+
+  test('Pressing Delete on focused logical operator', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated() // P & P
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true }}`);
+
+    await click(PILL_SELECTORS.logicalOperator);
+    assert.equal(findAll(PILL_SELECTORS.focusedLogicalOperator).length, 1, 'Logical Operator is focused');
+    assert.equal(findAll(PILL_SELECTORS.focusedQueryPill).length, 0, 'Query Pill is not focused');
+    // Focus should move from logical operator to query pill after pressing delete.
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.focusedLogicalOperator).length, 0, 'Logical Operator is not focused');
+    assert.equal(findAll(PILL_SELECTORS.focusedQueryPill).length, 1, 'Query Pill is focused');
+    const focusedPillPosition = find(PILL_SELECTORS.focusedQueryPill).getAttribute('position');
+    assert.equal(focusedPillPosition, 2, 'Correct Pill Focused');
+
+  });
+
+  test('Pressing Backspace on focused logical operator', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true }}`);
+
+    await click(PILL_SELECTORS.logicalOperator);
+    assert.equal(findAll(PILL_SELECTORS.focusedLogicalOperator).length, 1, 'Logical Operator is focused');
+    assert.equal(findAll(PILL_SELECTORS.focusedQueryPill).length, 0, 'Query Pill is not focused');
+    // Focus should move from logical operator to query pill after pressing backspace.
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.focusedLogicalOperator).length, 0, 'Logical Operator is not focused');
+    assert.equal(findAll(PILL_SELECTORS.focusedQueryPill).length, 1, 'Query Pill is focused');
+    const focusedPillPosition = find(PILL_SELECTORS.focusedQueryPill).getAttribute('position');
+    assert.equal(focusedPillPosition, 0, 'Correct Pill Focused');
+
+  });
 });
