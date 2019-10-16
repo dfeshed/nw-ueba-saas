@@ -3,7 +3,7 @@ package presidio.ui.presidiouiapp.demoservices;
 import fortscale.common.dataentity.DataSourceType;
 import fortscale.domain.core.*;
 import presidio.ui.presidiouiapp.rest.entities.SupportingInformationEntry;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.*;
 

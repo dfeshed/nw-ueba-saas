@@ -2,7 +2,7 @@ package fortscale.services.presidio.core.converters;
 
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.rest.AlertRestFilter;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;

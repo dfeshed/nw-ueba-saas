@@ -4,7 +4,7 @@ import fortscale.domain.core.Alert;
 import fortscale.domain.core.Entity;
 import fortscale.domain.core.Severity;
 import fortscale.domain.rest.EntityRestFilter;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -60,6 +60,7 @@ public class EntityConverterHelper {
         uiEntity.setScore(responseEntity.getScore());
         uiEntity.setScoreSeverity(severityEnumConverter.convertResponseToUiDto(responseEntity.getSeverity()));
         uiEntity.setAlertsCount(responseEntity.getAlertsCount());
+        uiEntity.setTrendingScore(responseEntity.getTrendingScore());
 
         if(CollectionUtils.isNotEmpty(responseEntity.getAlerts())){
             List<Alert> alerts = new ArrayList<>();

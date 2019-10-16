@@ -18,7 +18,6 @@ import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;

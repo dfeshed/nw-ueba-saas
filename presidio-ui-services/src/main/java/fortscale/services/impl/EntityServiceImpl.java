@@ -22,8 +22,8 @@ import fortscale.utils.JksonSerilaizablePair;
 
 import fortscale.utils.logging.Logger;
 
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.collections.SetUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections4.SetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -126,7 +126,7 @@ public class EntityServiceImpl implements EntityService {
 		EntityQuery entityQuery = new EntityQuery();
 		entityQuery.addAggregateByItem(EntityQuery.AggregateByEnum.ALERT_CLASSIFICATIONS);
 		try {
-			Map<String,Map<String,Long>> aggregationData = Optional.ofNullable(remoteEntityClientService.getConterollerApi().getEntities(entityQuery).getAggregationData()).orElse(MapUtils.EMPTY_MAP);
+			Map<String,Map<String,Long>> aggregationData = Optional.ofNullable(remoteEntityClientService.getConterollerApi().getEntities(entityQuery).getAggregationData()).orElse(MapUtils.EMPTY_SORTED_MAP);
 			Map<String,Integer> classificiations = aggregationConverterHelper.convertAggregation(aggregationData,EntityQuery.AggregateByEnum.ALERT_CLASSIFICATIONS.name());
 			return classificiations;
 
@@ -243,7 +243,7 @@ public class EntityServiceImpl implements EntityService {
 //	}
 
 	public Set<Entity> findByFollowed(){
-		return SetUtils.EMPTY_SET;
+		return SetUtils.EMPTY_SORTED_SET;
 	}
 
 	public void updateTags(String username, Map<String, Boolean> tagSettings) {
@@ -309,7 +309,7 @@ public class EntityServiceImpl implements EntityService {
 		final String TAGS = "tags";
 
 
-		return MapUtils.EMPTY_MAP;
+		return MapUtils.EMPTY_SORTED_MAP;
 	}
 
 	@Override
@@ -476,7 +476,7 @@ public class EntityServiceImpl implements EntityService {
 		entityQuery.addAggregateByItem(EntityQuery.AggregateByEnum.INDICATORS);
 
 		try {
-			Map<String, Map<String, Long>> aggregationData = Optional.ofNullable(remoteEntityClientService.getConterollerApi().getEntities(entityQuery).getAggregationData()).orElse(MapUtils.EMPTY_MAP);
+			Map<String, Map<String, Long>> aggregationData = Optional.ofNullable(remoteEntityClientService.getConterollerApi().getEntities(entityQuery).getAggregationData()).orElse(MapUtils.EMPTY_SORTED_MAP);
 			Map<String, Integer> aggregation = aggregationConverterHelper.convertAggregation(aggregationData, EntityQuery.AggregateByEnum.INDICATORS.name());
 
 			return  aggregation;
@@ -499,7 +499,7 @@ public class EntityServiceImpl implements EntityService {
 		try {
 			EntitiesWrapper entitiesWrapper = remoteEntityClientService.getConterollerApi().getEntities(entityQuery);
 			if (entitiesWrapper.getAggregationData() == null) {
-				return MapUtils.EMPTY_MAP;
+				return MapUtils.EMPTY_SORTED_MAP;
 			}
 			Map<String,Long> counts = entitiesWrapper.getAggregationData().get(EntityQuery.AggregateByEnum.SEVERITY.name());
 
@@ -518,7 +518,7 @@ public class EntityServiceImpl implements EntityService {
 			return response;
 		} catch (ApiException e) {
 			logger.error("Cannot aggregate by SEVERITY");
-			return MapUtils.EMPTY_MAP;
+			return MapUtils.EMPTY_SORTED_MAP;
 		}
 
 

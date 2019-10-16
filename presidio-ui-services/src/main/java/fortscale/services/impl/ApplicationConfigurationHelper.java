@@ -7,7 +7,7 @@ package fortscale.services.impl;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

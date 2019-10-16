@@ -1,7 +1,9 @@
 package fortscale.temp;
 
 import fortscale.domain.core.Tag;
-import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections4.ListUtils;
+
+import java.util.ArrayList;
 
 /**
  * Created by shays on 05/07/2017.
@@ -36,7 +38,7 @@ public class TagsMockBuilder {
         tag.setCreatesIndicator(true);
         tag.setIsAssignable(true);
         tag.setPredefined(true);
-        tag.setRules(ListUtils.EMPTY_LIST);
+        tag.setRules(new ArrayList<>());
         tag.setMockId(this.id);
 
         return tag;

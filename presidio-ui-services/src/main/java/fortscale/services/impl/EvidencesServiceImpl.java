@@ -22,7 +22,8 @@ import fortscale.temp.EvidenceMockBuilder;
 import fortscale.temp.HardCodedMocks;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -120,7 +121,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 				SupportingInformationKey anomalyValue = null;
 				Map<SupportingInformationKey, Long> dataMap = new HashMap<>();
 				CountAggregation data = (CountAggregation)indicator.getHistoricalData();
-				if (org.apache.commons.collections.CollectionUtils.isNotEmpty(data.getBuckets())){
+				if (CollectionUtils.isNotEmpty(data.getBuckets())){
 					for (CountBucket countBucket: data.getBuckets()){
 
 						SupportingInformationSingleKey key = new SupportingInformationSingleKey(countBucket.getKey());
@@ -142,7 +143,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 				SupportingInformationKey anomalyValue = null;
 				Map<SupportingInformationKey, Long> dataMap = new HashMap<>();
 				TimeAggregation data = (TimeAggregation)indicator.getHistoricalData();
-				if (org.apache.commons.collections.CollectionUtils.isNotEmpty(data.getBuckets())){
+				if (CollectionUtils.isNotEmpty(data.getBuckets())){
 					for (TimeBucket timeBucket: data.getBuckets()){
 
 						SupportingInformationTimestampKey key = new SupportingInformationTimestampKey(TimestampUtils.convertToMilliSeconds(timeBucket.getKey().longValue())+"");
@@ -162,7 +163,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 				SupportingInformationKey anomalyValue = null;
 				Map<SupportingInformationKey, Long> dataMap = new HashMap<>();
 				WeekdayAggregation data = (WeekdayAggregation)indicator.getHistoricalData();
-				if (org.apache.commons.collections.CollectionUtils.isNotEmpty(data.getBuckets())){
+				if (CollectionUtils.isNotEmpty(data.getBuckets())){
 					List<DailyBucket> dailyBuckets =  data.getBuckets();
 					for (DailyBucket dailyBucket:dailyBuckets){
 						String dayKey = dailyBucket.getKey();
