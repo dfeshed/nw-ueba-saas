@@ -3116,7 +3116,7 @@ export default {
       },
       downloadWarningModal: {
         title: 'Downloads',
-        message: 'Downloads may take significant time. Additional requests to the agent are queued and processed when the download is complete',
+        message: 'Downloads may take significant time. Additional requests to the agent are queued and processed when the download is complete.',
         doNotShow: 'Do not show again',
         button: {
           continue: 'Continue',

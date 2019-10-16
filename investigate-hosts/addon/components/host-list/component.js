@@ -207,7 +207,6 @@ const Container = Component.extend({
       } else {
         this.send('downloadMFT', agentId, serviceId, callBackOptions);
       }
-      this.send('downloadSystemDump', this.get('agentIds')[0], serviceId, callBackOptions);
     },
     showIsolationModal(item) {
       this.set('showIsolationModal', true);
