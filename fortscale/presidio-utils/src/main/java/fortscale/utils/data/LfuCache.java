@@ -3,7 +3,6 @@ package fortscale.utils.data;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * A "Least Frequently Used" cache implementation, that keeps track of the number of times an entry is referenced:
@@ -102,13 +101,14 @@ public class LfuCache<K, V> {
      */
     public Map<K, V> removeLfuEntries(double percentage) {
         assertPercentage(percentage);
-        Map<K, V> lfuEntries = map.entrySet().stream()
+        Map<K, V> lfuEntries = new HashMap<>();
+        map.entrySet().stream()
                 // Sort according to the number of times each entry was referenced (in ascending order).
                 .sorted(Entry.comparingByValue())
                 // Truncate the stream and keep only the first specified percentage of entries.
                 .limit((long)Math.ceil(map.size() * percentage / 100.0))
                 // Collect the entries to a map from keys to values (do not expose the counts).
-                .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().getElement()));
+                .forEach(entry -> lfuEntries.put(entry.getKey(), entry.getValue().getElement()));
         // Remove the entries from this LFU cache.
         lfuEntries.keySet().forEach(map::remove);
         return lfuEntries;
