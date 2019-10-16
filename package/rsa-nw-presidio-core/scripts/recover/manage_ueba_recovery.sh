@@ -65,7 +65,7 @@ backup() {
      mkdir -p "${UEBA_DUMP_DIR}/${ELASTICSEARCH_SUBDIR}"
      mkdir -p "${UEBA_DUMP_DIR}/${REDIS_SUBDIR}"
   else
-     # clear the dump directory
+     # clear the dump directories
      rm -rf "${UEBA_DUMP_DIR}/${ELASTICSEARCH_SUBDIR}"/*
      rm -rf "${UEBA_DUMP_DIR}/${REDIS_SUBDIR}"/*
   fi
@@ -111,7 +111,7 @@ restore() {
     rm -rf "${REDIS_HOME:?}"/*
     cp -rp "${UEBA_DUMP_DIR}/${ELASTICSEARCH_SUBDIR}"/* "${ELASTICSEARCH_HOME}"
     echoInfo "- Successfully restored ELASTICSEARCH DATA -"
-    cp "${UEBA_DUMP_DIR}/${REDIS_SUBDIR}"/* "${REDIS_HOME}"
+    cp -rp "${UEBA_DUMP_DIR}/${REDIS_SUBDIR}"/* "${REDIS_HOME}"
     echoInfo "- Successfully restored REDIS DATA -"
   fi
 
