@@ -26,7 +26,7 @@ public class AggregationDataCountByValuePopulator implements AggregationDataPopu
     public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema,
                                              String featureName, String anomalyValue,
                                              HistoricalDataConfig historicalDataConfig,
-                                             boolean skipAnomaly, Date startDate) {
+                                             boolean skipAnomaly, Date indicatorStartDate) {
 
         // Get the daily histograms.
         // Each daily histogram has a map from a feature value to its number of occurrences on that day.

@@ -21,11 +21,12 @@ public interface AggregationDataPopulator {
      * @param contexts map of contexts (context id (i.e userId) to context value (i.e the user name))
      * @param schema the schema for which to populate historical behavior
      * @param anomalyValue the anomaly value
+     * @param indicatorStartDate the indicator start date
      *
      * @return Aggregation data with anomaly value indication
      */
 
-    Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly, Date startDate);
+    Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly, Date indicatorStartDate);
 
     String getType();
 
