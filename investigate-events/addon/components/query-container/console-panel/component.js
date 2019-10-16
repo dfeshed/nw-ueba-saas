@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
-import { TEXT_FILTER } from 'investigate-events/constants/pill';
 import {
   hasError,
   hasWarning,
@@ -16,6 +15,7 @@ import {
 import { isCanceled, percentageOfEventsDataReturned } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { queriedService } from 'investigate-events/reducers/investigate/services/selectors';
 import { metaFiltersAsString } from 'investigate-events/util/query-parsing';
+import { extractSearchTermFromFilters } from 'investigate-shared/actions/api/events/utils';
 
 const stateToComputed = (state) => ({
   startTime: state.investigate.queryNode.previousQueryParams.startTime,
@@ -50,11 +50,10 @@ const ConsolePanel = Component.extend({
 
   @computed('queryFilters')
   filters: (queryFilters) => {
-    const sansTextFilter = queryFilters.filter((f) => f.type !== TEXT_FILTER);
-    const textFilter = queryFilters.find((f) => f.type === TEXT_FILTER);
+    const { metaFilters, searchTerm } = extractSearchTermFromFilters(queryFilters);
     return {
-      metaFilters: metaFiltersAsString(sansTextFilter, false),
-      textFilter: textFilter ? textFilter.searchTerm : undefined
+      metaFilters: metaFiltersAsString(metaFilters, false),
+      textFilter: searchTerm
     };
   },
 

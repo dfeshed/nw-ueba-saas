@@ -187,8 +187,9 @@ module('Integration | Component | console-panel', function(hooks) {
     const metaFilters = [
       { id: '1', type: 'query', meta: 'a', operator: '=', value: '"a"' },
       { id: '2', type: 'operator-and' },
-      { id: '3', type: 'query', meta: 'b', operator: 'exists' },
-      { id: '4', type: 'text', searchTerm: 'blahblahblah' }
+      { id: '3', type: 'text', searchTerm: 'blahblahblah' },
+      { id: '4', type: 'operator-and' },
+      { id: '5', type: 'query', meta: 'b', operator: 'exists' }
     ];
     new ReduxDataHelper(setState)
       .withPreviousQuery(metaFilters)
