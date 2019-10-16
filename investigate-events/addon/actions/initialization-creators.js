@@ -24,6 +24,7 @@ import { validMetaKeySuggestions, languageAndAliasesForParser } from 'investigat
 import { TextFilter } from 'investigate-events/util/filter-types';
 import { OPERATOR_AND } from 'investigate-events/constants/pill';
 import * as ACTION_TYPES from './types';
+import { getTimeRangeIdFromRange } from 'investigate-shared/utils/time-range-utils';
 
 
 const noop = () => {};
@@ -436,6 +437,19 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
 };
 
 /**
+ * If it is an internal query, timeRangeType has already been set correctly. There is no
+ * need to calculate that again. We will do that only when there is redirect from Classic.
+ */
+const _determineTimeRangeType = (isInternal, state, params) => {
+  if (!isInternal) {
+    return getTimeRangeIdFromRange(params.st, params.et);
+  } else {
+    const { investigate: { queryNode: { previouslySelectedTimeRanges } } } = state;
+    return previouslySelectedTimeRanges[params.sid];
+  }
+};
+
+/**
  * Kick off a series of events to initialize Investigate Events.
  *
  * @param {*} queryParams - Query params
@@ -457,7 +471,8 @@ export const initializeInvestigate = function(
 ) {
   return async function(dispatch, getState) {
 
-    const parsedQueryParams = parseBasicQueryParams(queryParams);
+    const timeRangeType = _determineTimeRangeType(isInternalQuery, getState(), queryParams);
+    const parsedQueryParams = parseBasicQueryParams(queryParams, timeRangeType);
     const errorHandler = _handleInitializationError(dispatch);
 
     // 1) Initialize state from parsedQueryParams

@@ -4,7 +4,6 @@ import { isBlank } from '@ember/utils';
 import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
 import { encodeMetaFilterConditions, addSessionIdFilter } from 'investigate-shared/actions/api/events/utils';
-import { getTimeRangeIdFromRange } from 'investigate-shared/utils/time-range-utils';
 
 /**
  * Creates (but does not start) a stream to fetch a given number of events.
@@ -127,7 +126,7 @@ function executeMetaValuesRequest(request, inputs, values) {
  * @return {object}
  * @public
  */
-function parseBasicQueryParams(params) {
+function parseBasicQueryParams(params, timeRangeType) {
 
   // hashes are comma-separated if there are many
   let pillDataHashes = params.pdhash;
@@ -151,7 +150,7 @@ function parseBasicQueryParams(params) {
     startTime: params.st,
     sortField: params.sortField,
     sortDir: params.sortDir,
-    selectedTimeRangeId: getTimeRangeIdFromRange(params.st, params.et)
+    selectedTimeRangeId: timeRangeType
   };
 }
 
