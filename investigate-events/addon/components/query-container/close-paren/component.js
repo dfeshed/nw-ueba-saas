@@ -72,8 +72,8 @@ export default Component.extend({
    * @param {Object} data The event data
    * @private
    */
-  _broadcast(type) {
-    this.get('sendMessage')(type, this.get('position'));
+  _broadcast(type, data) {
+    this.get('sendMessage')(type, data, this.get('position'));
   },
 
   _focusedLeftArrowPressed() {
@@ -85,10 +85,7 @@ export default Component.extend({
   },
 
   _deleteOrBackspacePressed(data) {
-    this.get('sendMessage')(MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, {
-      ...data,
-      pillData: this.get('pillData')
-    }, this.get('position'));
+    this._broadcast(MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, data);
   },
 
   actions: {

@@ -620,7 +620,7 @@ export default Component.extend({
    */
   _metaArrowLeft() {
     if (this._isPillDataEmpty()) {
-      this.get('sendMessage')(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT, this.get('position'));
+      this._broadcast(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT);
     }
   },
 
@@ -632,7 +632,7 @@ export default Component.extend({
 
   _metaArrowRightWithNoSelection() {
     if (this._isPillDataEmpty()) {
-      this.get('sendMessage')(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT, this.get('position'));
+      this._broadcast(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT);
     }
 
   },
@@ -1104,25 +1104,25 @@ export default Component.extend({
 
   _focusedLeftArrowPressed() {
     if (!this.get('isActive')) {
-      this.get('sendMessage')(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT, this.get('position'));
+      this._broadcast(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT);
     }
   },
 
   _focusedRightArrowPressed() {
     if (!this.get('isActive')) {
-      this.get('sendMessage')(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT, this.get('position'));
+      this._broadcast(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT);
     }
   },
 
   _focusedShiftRightArrowPressed() {
     if (!this.get('isActive')) {
-      this.get('sendMessage')(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT, this.get('position'));
+      this._broadcast(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT);
     }
   },
 
   _focusedShiftLeftArrowPressed() {
     if (!this.get('isActive')) {
-      this.get('sendMessage')(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, this.get('position'));
+      this._broadcast(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT);
     }
   },
 
@@ -1165,16 +1165,12 @@ export default Component.extend({
    * When editing the pill, the event is not relayed.
    */
   _deleteOrBackspacePressed(data) {
-    const { isFocusedPill } = data;
     const isFromRecentQuery = data?.isFromRecentQuery;
     // If delete or backspace is pressed from recent query, close that component by resetting query pill.
     if (isFromRecentQuery) {
       this._resetToMoveOutOfRecentQuery();
     }
-    this._broadcast(MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED,
-      { ...data,
-        pillData: isFocusedPill ? this._createPillData(this.get('valueString')) : null
-      }, this.get('position'));
+    this._broadcast(MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, data);
   },
 
 

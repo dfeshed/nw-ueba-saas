@@ -99,10 +99,10 @@ export default Component.extend({
           this._broadcast(MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW);
           break;
         case MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT:
-          this.get('sendMessage')(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT, this.get('newPillPosition'));
+          this._broadcast(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT);
           break;
         case MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT:
-          this.get('sendMessage')(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT, this.get('newPillPosition'));
+          this._broadcast(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT);
           break;
         case MESSAGE_TYPES.CREATE_FREE_FORM_PILL:
           this.set('isAddNewPill', false);

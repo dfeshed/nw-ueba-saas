@@ -262,16 +262,16 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW]: () => this._pillEnteredForAppend(),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW]: (pillData, position) => this._pillEnteredForInsert(position),
-      [MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT]: (position) => this._openNewPillTriggerLeft(position),
-      [MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT]: (position) => this._openNewPillTriggerRight(position),
+      [MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT]: (data, position) => this._openNewPillTriggerLeft(position),
+      [MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT]: (data, position) => this._openNewPillTriggerRight(position),
       [MESSAGE_TYPES.PILL_INTENT_TO_QUERY]: () => this._submitQuery(),
       [MESSAGE_TYPES.PILL_OPEN_FOR_EDIT]: (pillData) => this._pillOpenForEdit(pillData),
       [MESSAGE_TYPES.PILL_PASTE]: (data, position) => this._pillPaste(data, position),
       [MESSAGE_TYPES.PILL_SELECTED]: (data) => this._pillsSelected([data]),
-      [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT]: (position) => this._addFocusToLeftPill(position),
-      [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT]: (position) => this._addFocusToRightPill(position),
-      [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT]: (position) => this._pillsSelectAllToRight(position),
-      [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT]: (position) => this._pillsSelectAllToLeft(position),
+      [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT]: (data, position) => this._addFocusToLeftPill(position),
+      [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT]: (data, position) => this._addFocusToRightPill(position),
+      [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT]: (data, position) => this._pillsSelectAllToRight(position),
+      [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT]: (data, position) => this._pillsSelectAllToLeft(position),
       [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: (data, position) => this._createPill(COMPLEX_FILTER, data, position),
       [MESSAGE_TYPES.CREATE_TEXT_PILL]: (data, position) => this._createPill(TEXT_FILTER, data, position),
       [MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT]: (data) => this._fetchRecentQueries(data),
@@ -735,7 +735,8 @@ const QueryPills = RsaContextMenu.extend({
    * Handles events from pressing delete or backspace on empty pill or a focused pill.
    */
   _deleteOrBackspacePressed(data, position) {
-    const { isFocusedPill, isDeleteEvent, isBackspaceEvent, pillData } = data;
+    const { isFocusedPill, isDeleteEvent, isBackspaceEvent } = data;
+    const pillData = this.pillsData[position];
     if (isFocusedPill && isDeleteEvent) {
       this._deletePressedOnFocusedPill(pillData, position);
     } else if (isFocusedPill && isBackspaceEvent) {

@@ -54,14 +54,15 @@ module('Integration | Component | Logical Operator', function(hooks) {
   });
 
   test('it sends a message when focused and left arrow is pressed', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
-    this.set('sendMessage', (messageType, position) => {
+    this.set('sendMessage', (messageType, data, position) => {
       assert.equal(
         messageType,
         MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT,
         'the correct message type is sent when left is pressed'
       );
+      assert.notOk(data, 'Data should not be passed');
       assert.equal(position, 2, 'position is passed');
     });
     this.set('pillData', {
@@ -83,15 +84,16 @@ module('Integration | Component | Logical Operator', function(hooks) {
   });
 
   test('it sends a message when focused and right arrow is pressed', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
-    this.set('sendMessage', (messageType, position) => {
+    this.set('sendMessage', (messageType, data, position) => {
       assert.equal(
         messageType,
         MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT,
         'the correct message type is sent when right is pressed'
       );
       assert.equal(position, 2, 'position is passed');
+      assert.notOk(data, 'Data should not be passed');
     });
     this.set('pillData', {
       ...createOperator(OPERATOR_AND),
@@ -208,15 +210,16 @@ module('Integration | Component | Logical Operator', function(hooks) {
   });
 
   test('it sends a message when focused and Backspace is pressed', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
-    this.set('sendMessage', (messageType, position) => {
+    this.set('sendMessage', (messageType, data, position) => {
       assert.equal(
         messageType,
         MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT,
         'the correct message type is sent when left is pressed'
       );
       assert.equal(position, 2, 'position is passed');
+      assert.notOk(data, 'Data should not be passed');
     });
     this.set('pillData', {
       ...createOperator(OPERATOR_AND),
@@ -238,15 +241,16 @@ module('Integration | Component | Logical Operator', function(hooks) {
 
 
   test('it sends a message when focused and Delete is pressed', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
-    this.set('sendMessage', (messageType, position) => {
+    this.set('sendMessage', (messageType, data, position) => {
       assert.equal(
         messageType,
         MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT,
         'the correct message type is sent when right is pressed'
       );
       assert.equal(position, 2, 'position is passed');
+      assert.notOk(data, 'Data should not be passed');
     });
     this.set('pillData', {
       ...createOperator(OPERATOR_AND),

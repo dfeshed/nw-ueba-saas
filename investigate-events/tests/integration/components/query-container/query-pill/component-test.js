@@ -1170,7 +1170,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('focused pill sends up a message when delete is pressed', async function(assert) {
     const done = assert.async();
-    assert.expect(5);
+    assert.expect(4);
 
     const pillState = new ReduxDataHelper(setState)
       .pillsDataPopulated()
@@ -1190,7 +1190,6 @@ module('Integration | Component | Query Pill', function(hooks) {
         assert.ok(data, 'should send out pill data');
         assert.ok(data.isDeleteEvent, 'should be a delete event');
         assert.ok(data.isFocusedPill, 'is a focused pill');
-        assert.propEqual(data.pillData, { meta: 'a', operator: '=', value: '\'x\'', type: 'query', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
         done();
       }
     });
@@ -1209,7 +1208,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('focused pill sends up a message when backspace is pressed', async function(assert) {
     const done = assert.async();
-    assert.expect(5);
+    assert.expect(4);
 
     const pillState = new ReduxDataHelper(setState)
       .pillsDataPopulated()
@@ -1229,7 +1228,6 @@ module('Integration | Component | Query Pill', function(hooks) {
         assert.ok(data, 'should send out pill data');
         assert.ok(data.isBackspaceEvent, 'should be a backspace event');
         assert.ok(data.isFocusedPill, 'is a focused pill');
-        assert.propEqual(data.pillData, { meta: 'a', operator: '=', value: '\'x\'', type: 'query', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
         done();
       }
     });
@@ -1281,7 +1279,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
 
   test('focused pill sends up a message when shift and Left Arrow is pressed', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     const pillState = new ReduxDataHelper(setState)
       .pillsDataPopulated()
@@ -1292,11 +1290,11 @@ module('Integration | Component | Query Pill', function(hooks) {
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
-
+      assert.notOk(data, 'Data should not be passed');
       assert.equal(messageType, MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, 'Message sent to select all pills to the left');
       assert.equal(position, 0, 'Message sent contains correct pill position');
     });
@@ -1314,7 +1312,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('focused pill sends up a message when shift and Right Arrow is pressed', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     const pillState = new ReduxDataHelper(setState)
       .pillsDataPopulated()
@@ -1325,11 +1323,11 @@ module('Integration | Component | Query Pill', function(hooks) {
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
-
+      assert.notOk(data, 'Data should not be passed');
       assert.equal(messageType, MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT, 'Message sent to select all pills to the right');
       assert.equal(position, 0, 'Message sent contains correct pill position');
     });
@@ -1446,7 +1444,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('if no meta/operator/value is selected and ARROW_LEFT is pressed, message is sent up', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
       .language()
@@ -1455,12 +1453,13 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('pillData', []);
     this.set('metaOptions', metaOptions);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
       assert.equal(messageType, MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT, 'Message sent to add focus on the relevant pill');
       assert.equal(position, 0, 'Message sent contains correct pill position');
+      assert.notOk(data, 'Data should not be passed');
     });
 
     await render(hbs`
@@ -1475,7 +1474,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('if no meta/operator/value is selected and ARROW_RIGHT is pressed, message is sent up', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
       .language()
@@ -1484,12 +1483,13 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('pillData', []);
     this.set('metaOptions', metaOptions);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
       assert.equal(messageType, MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT, 'Message sent to add focus on the relevant pill');
       assert.equal(position, 0, 'Message sent contains correct pill position');
+      assert.notOk(data, 'Data should not be passed');
     });
 
     await render(hbs`
@@ -1513,11 +1513,11 @@ module('Integration | Component | Query Pill', function(hooks) {
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
-
+      assert.notOk(data, 'Data should not be passed');
       assert.equal(messageType, MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT, 'Message sent to open a new pill trigger on left');
       assert.equal(position, 0, 'Message sent contains correct pill position');
     });
@@ -1544,11 +1544,11 @@ module('Integration | Component | Query Pill', function(hooks) {
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
-
+      assert.notOk(data, 'Data should not be passed');
       assert.equal(messageType, MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT, 'Message sent to open a new pill trigger on right');
       assert.equal(position, 0, 'Message sent contains correct pill position');
     });

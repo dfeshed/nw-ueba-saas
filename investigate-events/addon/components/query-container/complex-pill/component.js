@@ -225,25 +225,25 @@ export default Component.extend({
 
   _focusedLeftArrowPressed() {
     if (!this.get('isActive')) {
-      this.get('sendMessage')(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT, this.get('position'));
+      this._broadcast(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT);
     }
   },
 
   _focusedRightArrowPressed() {
     if (!this.get('isActive')) {
-      this.get('sendMessage')(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT, this.get('position'));
+      this._broadcast(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT);
     }
   },
 
   _focusedShiftRightArrowPressed() {
     if (!this.get('isActive')) {
-      this.get('sendMessage')(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT, this.get('position'));
+      this._broadcast(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT);
     }
   },
 
   _focusedShiftLeftArrowPressed() {
     if (!this.get('isActive')) {
-      this.get('sendMessage')(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, this.get('position'));
+      this._broadcast(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT);
     }
   },
 

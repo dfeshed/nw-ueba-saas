@@ -140,12 +140,12 @@ module('Integration | Component | query-container/text-pill', function(hooks) {
   test('sends message up when focused and delete is pressed', async function(assert) {
     assert.expect(6);
     const pD = { searchTerm: 'foo bar', isFocused: true };
-    this.set('handleMessage', (messageType, data) => {
+    this.set('handleMessage', (messageType, data, position) => {
       assert.ok(messageType === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, 'should send out correct action');
       assert.ok(data, 'should send out pill data');
       assert.ok(data.isDeleteEvent, 'should be a delete event');
       assert.ok(data.isFocusedPill, 'should be a focused pill');
-      assert.equal(data.pillData.complexFilterText, pD.complexFilterText, 'should have the correct text');
+      assert.equal(position, 0, 'correct position is passed');
     });
     this.set('pillData', pD);
     await render(hbs`
@@ -164,12 +164,12 @@ module('Integration | Component | query-container/text-pill', function(hooks) {
   test('sends message up when focused and backspace is pressed', async function(assert) {
     assert.expect(6);
     const pD = { searchTerm: 'foo bar', isFocused: true };
-    this.set('handleMessage', (messageType, data) => {
+    this.set('handleMessage', (messageType, data, position) => {
       assert.ok(messageType === MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, 'should send out correct action');
       assert.ok(data, 'should send out pill data');
       assert.ok(data.isBackspaceEvent, 'should be a backspace event');
       assert.ok(data.isFocusedPill, 'should be a focused pill');
-      assert.equal(data.pillData.complexFilterText, pD.complexFilterText, 'should have the correct text');
+      assert.equal(position, 0, 'correct position is passed');
     });
     this.set('pillData', pD);
     await render(hbs`
@@ -211,14 +211,15 @@ module('Integration | Component | query-container/text-pill', function(hooks) {
 
 
   test('sends SELECT_ALL_PILLS_TO_LEFT message up when focused and shift and left arrow is pressed', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     const pillData = { searchTerm: 'foo bar', isFocused: true };
     this.set('pillData', pillData);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       assert.ok(messageType === MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, 'should send out correct message up');
       assert.equal(position, 0, 'should send out correct pill position');
+      assert.notOk(data, 'Data should not be passed');
     });
 
     await render(hbs`
@@ -235,14 +236,15 @@ module('Integration | Component | query-container/text-pill', function(hooks) {
   });
 
   test('sends SELECT_ALL_PILLS_TO_RIGHT message up when focused and shift and right arrow is pressed', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     const pillData = { searchTerm: 'foo bar', isFocused: true };
     this.set('pillData', pillData);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       assert.ok(messageType === MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT, 'should send out correct message up');
       assert.equal(position, 0, 'should send out correct pill position');
+      assert.notOk(data, 'Data should not be passed');
     });
 
     await render(hbs`
@@ -308,14 +310,15 @@ module('Integration | Component | query-container/text-pill', function(hooks) {
   });
 
   test('If on a focused pill and ARROW_LEFT is pressed, a message is sent up', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     const pillData = { searchTerm: 'foo bar', isFocused: true };
     this.set('pillData', pillData);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       assert.ok(messageType === MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT, 'should send out correct message');
       assert.ok(position === 0, 'should send the correct position');
+      assert.notOk(data, 'Data should not be passed');
     });
 
     await render(hbs`
@@ -332,14 +335,15 @@ module('Integration | Component | query-container/text-pill', function(hooks) {
   });
 
   test('If on a focused pill and ARROW_RIGHT is pressed, a message is sent up', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     const pillData = { searchTerm: 'foo bar', isFocused: true };
     this.set('pillData', pillData);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       assert.ok(messageType === MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT, 'should send out correct message');
       assert.ok(position === 0, 'should send the correct position');
+      assert.notOk(data, 'Data should not be passed');
     });
 
     await render(hbs`

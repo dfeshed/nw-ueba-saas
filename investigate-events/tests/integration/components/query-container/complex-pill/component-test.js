@@ -374,14 +374,15 @@ module('Integration | Component | complex-pill', function(hooks) {
   });
 
   test('sends SELECT_ALL_PILLS_TO_LEFT message up when focused and shift and left arrow is pressed', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     const pillData = { complexFilterText: 'FOOOOOOOO', isFocused: true };
     this.set('pillData', pillData);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       assert.ok(messageType === MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, 'should send out correct message up');
       assert.equal(position, 0, 'should send out correct pill position');
+      assert.notOk(data, 'Data should not be passed');
     });
 
     await render(hbs`
@@ -399,14 +400,15 @@ module('Integration | Component | complex-pill', function(hooks) {
 
 
   test('sends SELECT_ALL_PILLS_TO_RIGHT message up when focused and shift and right arrow is pressed', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     const pillData = { complexFilterText: 'FOOOOOOOO', isFocused: true };
     this.set('pillData', pillData);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       assert.ok(messageType === MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT, 'should send out correct message up');
       assert.equal(position, 0, 'should send out correct pill position');
+      assert.notOk(data, 'Data should not be passed');
     });
 
     await render(hbs`
@@ -472,14 +474,15 @@ module('Integration | Component | complex-pill', function(hooks) {
   });
 
   test('If on a focused pill and ARROW_LEFT is pressed, a message is sent up', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     const pillData = { complexFilterText: 'FOOOOOOOO', isFocused: true };
     this.set('pillData', pillData);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       assert.ok(messageType === MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT, 'should send out correct message');
       assert.ok(position === 0, 'should send the correct position');
+      assert.notOk(data, 'Data should not be passed');
     });
 
     await render(hbs`
@@ -496,14 +499,15 @@ module('Integration | Component | complex-pill', function(hooks) {
   });
 
   test('If on a focused pill and ARROW_RIGHT is pressed, a message is sent up', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     const pillData = { complexFilterText: 'FOOOOOOOO', isFocused: true };
     this.set('pillData', pillData);
 
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       assert.ok(messageType === MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT, 'should send out correct message');
       assert.ok(position === 0, 'should send the correct position');
+      assert.notOk(data, 'Data should not be passed');
     });
 
     await render(hbs`

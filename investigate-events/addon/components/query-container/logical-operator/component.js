@@ -89,8 +89,8 @@ export default Component.extend({
    * @param {string} type The event type from `event-types`
    * @private
    */
-  _broadcast(type) {
-    this.get('sendMessage')(type, this.get('position'));
+  _broadcast(type, data) {
+    this.get('sendMessage')(type, data, this.get('position'));
   },
 
   _focusedLeftArrowPressed() {

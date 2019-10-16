@@ -43,15 +43,16 @@ module('Integration | Component | Close Paren', function(hooks) {
   });
 
   test('it sends a message when focused and left arrow is pressed', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
-    this.set('sendMessage', (messageType, position) => {
+    this.set('sendMessage', (messageType, data, position) => {
       assert.equal(
         messageType,
         MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT,
         'the correct message type is sent when left is pressed'
       );
       assert.equal(position, 1, 'position is passed');
+      assert.notOk(data, 'Data should not be passed');
     });
     this.set('position', 1);
     this.set('pillData', {
@@ -72,15 +73,16 @@ module('Integration | Component | Close Paren', function(hooks) {
   });
 
   test('it sends a message when focused and right arrow is pressed', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
-    this.set('sendMessage', (messageType, position) => {
+    this.set('sendMessage', (messageType, data, position) => {
       assert.equal(
         messageType,
         MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT,
         'the correct message type is sent when left is pressed'
       );
       assert.equal(position, 7, 'position is passed');
+      assert.notOk(data, 'Data should not be passed');
     });
     this.set('position', 7);
     this.set('pillData', {
@@ -166,7 +168,7 @@ module('Integration | Component | Close Paren', function(hooks) {
   test('it sends a message when delete is pressed', async function(assert) {
     assert.expect(6);
 
-    this.set('sendMessage', (messageType, data) => {
+    this.set('sendMessage', (messageType, data, position) => {
       assert.equal(
         messageType,
         MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED,
@@ -175,14 +177,12 @@ module('Integration | Component | Close Paren', function(hooks) {
       assert.ok(data, 'should send out pill data');
       assert.ok(data.isDeleteEvent, 'should be a delete event');
       assert.ok(data.isFocusedPill, 'should be a focused pill');
-      assert.equal(data.pillData.id, 12345, 'pill data is passed');
+      assert.equal(position, 7, 'the position is right');
     });
     this.set('position', 7);
     this.set('pillData', {
-      id: 12345,
       isFocused: true
     });
-
     await render(hbs`
       {{query-container/close-paren
         sendMessage=sendMessage
@@ -199,7 +199,7 @@ module('Integration | Component | Close Paren', function(hooks) {
   test('it sends a message when backspace is pressed', async function(assert) {
     assert.expect(6);
 
-    this.set('sendMessage', (messageType, data) => {
+    this.set('sendMessage', (messageType, data, position) => {
       assert.equal(
         messageType,
         MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED,
@@ -208,11 +208,10 @@ module('Integration | Component | Close Paren', function(hooks) {
       assert.ok(data, 'should send out pill data');
       assert.ok(data.isBackspaceEvent, 'should be a backspace event');
       assert.ok(data.isFocusedPill, 'should be a focused pill');
-      assert.equal(data.pillData.id, 12345, 'pill data is passed');
+      assert.equal(position, 7, 'the position is right');
     });
     this.set('position', 7);
     this.set('pillData', {
-      id: 12345,
       isFocused: true
     });
 

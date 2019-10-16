@@ -172,13 +172,14 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
 
   test('if no meta/operator/value is selected and ARROW_LEFT is pressed, a message is sent up', async function(assert) {
     this.set('metaOptions', metaOptions);
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
 
       assert.equal(messageType, MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT, 'Correct message type');
       assert.equal(position, 0, 'Correct position of the pill');
+      assert.notOk(data, 'Data should not be passed');
     });
     await render(hbs`
       {{query-container/new-pill-trigger
@@ -193,13 +194,14 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
 
   test('if no meta/operator/value is selected and ARROW_RIGHT is pressed, a message is sent up', async function(assert) {
     this.set('metaOptions', metaOptions);
-    this.set('handleMessage', (messageType, position) => {
+    this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
 
       assert.equal(messageType, MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT, 'Correct message type');
       assert.equal(position, 0, 'Correct position of the pill');
+      assert.notOk(data, 'Data should not be passed');
     });
     await render(hbs`
       {{query-container/new-pill-trigger
