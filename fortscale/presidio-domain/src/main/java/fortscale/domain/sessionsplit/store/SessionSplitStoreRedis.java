@@ -46,10 +46,12 @@ public class SessionSplitStoreRedis {
         redisTemplate.executePipelined(new SessionCallback<List<Object>>() {
             @Override
             public List<Object> execute(RedisOperations operations) throws DataAccessException {
+                operations.multi();
                 splitTransformerMap.forEach((sessionSplitTransformerKey, sessionSplitTransformerValue) -> {
                     String key = getRedisKey(sessionSplitTransformerKey.getSrcIp(), sessionSplitTransformerKey.getDstIp(), sessionSplitTransformerKey.getSrcPort(), sessionSplitTransformerKey.getDstPort());
                     operations.opsForValue().set(key, sessionSplitTransformerValue, timeout);
                 });
+                operations.exec();
                 return null;
             }
         });
