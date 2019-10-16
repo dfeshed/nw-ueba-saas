@@ -73,4 +73,9 @@ public class HistoricalDataConfig {
     public Boolean getSkipAnomaly() {
         return skipAnomaly;
     }
+
+    @JsonProperty("skipAnomaly")
+    public void setSkipAnomaly(Boolean skipAnomaly) {
+        this.skipAnomaly = skipAnomaly;
+    }
 }
