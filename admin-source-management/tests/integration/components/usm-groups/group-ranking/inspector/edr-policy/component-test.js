@@ -45,6 +45,11 @@ const testPolicy = {
     // filterSignedHooks: false,
     requestScanOnRegistration: true,
     blockingEnabled: false,
+    isolationEnabled: false,
+    fileDownloadEnabled: true,
+    fileDownloadCriteria: 'Unsigned',
+    maxFileDownloadSizeUnit: 'KB',
+    maxFileDownloadSize: 20,
     primaryAddress: '10.10.10.10',
     primaryNwServiceId: 'id1',
     primaryHttpsPort: 443,
@@ -146,6 +151,11 @@ const testPolicy = {
       'policyName': 'test',
       'conflict': false
     },
+    'isolationEnabled': {
+      'groupName': 'test',
+      'policyName': 'test',
+      'conflict': false
+    },
     'requestScanOnRegistration': {
       'groupName': 'test',
       'policyName': 'test',
@@ -219,12 +229,12 @@ module('Integration | Component | group-ranking/inspector | EDR Policy', functio
       .build();
     const primaryUdpBeaconInterval = '3 Minutes';
     await render(hbs`{{usm-groups/group-ranking/inspector/edr-policy}}`);
-    assert.equal(findAll('.heading').length, 5, '5 headings are shown');
+    assert.equal(findAll('.heading').length, 6, '6 headings are shown');
     assert.equal(findAll('.heading .col-md-7')[0].innerText, 'Scan Schedule', 'first heading first part is as expected');
     assert.equal(findAll('.heading .col-md-5')[0].innerText, '', 'first heading second part is as expected');
-    assert.equal(findAll('.title').length, 13, '13 property names are shown');
-    assert.equal(findAll('.value').length, 36, '36 value elements are shown');
-    assert.equal(findAll('.value')[34].innerText.trim(), primaryUdpBeaconInterval, 'primaryUdpBeaconInterval config value is as expected');
+    assert.equal(findAll('.title').length, 17, '17 property names are shown');
+    assert.equal(findAll('.value').length, 46, '46 value elements are shown');
+    assert.equal(findAll('.value')[44].innerText.trim(), primaryUdpBeaconInterval, 'primaryUdpBeaconInterval config value is as expected');
   });
 
 });

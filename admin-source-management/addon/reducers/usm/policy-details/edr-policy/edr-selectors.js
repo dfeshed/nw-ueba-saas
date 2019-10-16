@@ -41,6 +41,7 @@ export const selectedEdrPolicy = createSelector(
     const scanScheduleSettings = [];
     const advancedScanSettings = [];
     const invasiveActionsSettings = [];
+    const downloadSettings = [];
     const endpointServersSettings = [];
     const agentSettings = [];
     const advancedConfigSettings = [];
@@ -66,6 +67,7 @@ export const selectedEdrPolicy = createSelector(
         const scanSetting = _getScanSetting(prop, focusedPolicy, _focusedPolicyOrigin, emptyOrigin);
         const advScanSetting = _getAdvancedScanSetting(prop, focusedPolicy, _focusedPolicyOrigin, emptyOrigin);
         const invActionSetting = _getInvasiveActionsSetting(prop, focusedPolicy, _focusedPolicyOrigin, emptyOrigin);
+        const fileDownloadSettings = _getFileDownloadSettings(prop, focusedPolicy, _focusedPolicyOrigin, emptyOrigin);
         const endpointSetting = _getEndpointServerSetting(prop, focusedPolicy, _listOfEndpoints, _focusedPolicyOrigin, emptyOrigin);
         const agentSetting = _getAgentSetting(prop, focusedPolicy, _focusedPolicyOrigin, emptyOrigin);
         const advancedConfigSetting = _getAdvancedConfigSetting(prop, focusedPolicy, _focusedPolicyOrigin, emptyOrigin);
@@ -76,6 +78,8 @@ export const selectedEdrPolicy = createSelector(
           advancedScanSettings.push(advScanSetting);
         } else if (invActionSetting) {
           invasiveActionsSettings.push(invActionSetting);
+        } else if (fileDownloadSettings) {
+          downloadSettings.push(fileDownloadSettings);
         } else if (endpointSetting) {
           endpointServersSettings.push(endpointSetting);
         } else if (agentSetting) {
@@ -101,6 +105,12 @@ export const selectedEdrPolicy = createSelector(
       policyDetails.push({
         header: 'adminUsm.policyWizard.edrPolicy.advScanSettings',
         props: advancedScanSettings
+      });
+    }
+    if (downloadSettings.length > 0) {
+      policyDetails.push({
+        header: 'adminUsm.policyWizard.edrPolicy.downloadSettings',
+        props: downloadSettings
       });
     }
     if (invasiveActionsSettings.length > 0) {
@@ -214,9 +224,38 @@ const _getInvasiveActionsSetting = (prop, focusedPolicy, _focusedPolicyOrigin, e
       name: 'adminUsm.policyWizard.edrPolicy.blockingEnabled',
       value: _setSelectedValue(focusedPolicy[prop]),
       origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin
+    },
+    isolationEnabled: {
+      name: 'adminUsm.policyWizard.edrPolicy.isolationEnabled',
+      value: _setSelectedValue(focusedPolicy[prop]),
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin
     }
   };
   return invasiveActionSettings[prop];
+};
+
+const _getFileDownloadSettings = (prop, focusedPolicy, _focusedPolicyOrigin, emptyOrigin) => {
+  const _i18n = lookup('service:i18n');
+  const unit = focusedPolicy.maxFileDownloadSizeUnit || '';
+  const maxFileDownloadSizeUnit = _i18n.t(`adminUsm.policyWizard.edrPolicy.maxFileDownloadSize_${unit.toUpperCase()}`);
+  const fileDownloadSettings = {
+    fileDownloadEnabled: {
+      name: 'adminUsm.policyWizard.edrPolicy.automaticFileDownloads',
+      value: _setSelectedValue(focusedPolicy[prop]),
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin
+    },
+    fileDownloadCriteria: {
+      name: 'adminUsm.policyWizard.edrPolicy.signature',
+      value: _i18n.t(`adminUsm.policyWizard.edrPolicy.${focusedPolicy[prop]}`),
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin
+    },
+    maxFileDownloadSize: {
+      name: 'adminUsm.policyWizard.edrPolicy.fileSizeLimit',
+      value: `${focusedPolicy[prop]} ${maxFileDownloadSizeUnit}`,
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin
+    }
+  };
+  return fileDownloadSettings[prop];
 };
 
 const _setSelectedValue = (enabled) => {

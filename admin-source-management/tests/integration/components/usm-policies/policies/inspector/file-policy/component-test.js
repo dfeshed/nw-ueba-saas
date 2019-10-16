@@ -22,6 +22,10 @@ const testPolicy = {
   lastModifiedOn: 1540318426092,
   lastPublishedOn: 0,
   lastPublishedCopy: null,
+  fileDownloadEnabled: true,
+  fileDownloadCriteria: 'Unsigned',
+  maxFileDownloadSizeUnit: 'KB',
+  maxFileDownloadSize: 20,
   enabled: true,
   protocol: 'TCP',
   sendTestLog: false,
@@ -105,11 +109,11 @@ module('Integration | Component | Policy Inspector | File Policy', function(hook
 
     const expectedCustomSetting = '"enabled" : false,"sendTestLog" : true,"protocol" : "UDP","policyType" : "filePolicy","name" : "Test File Policy1","description" : "Test File Policy1 Description."';
     await render(hbs`{{usm-policies/policies/inspector/edr-policy}}`);
-    assert.equal(findAll('.heading').length, 1, '1 Advanced heading is shown');
-    assert.equal(findAll('.heading')[0].innerText, 'Advanced Configuration', 'advanced setting heading as expected');
-    assert.equal(findAll('.title').length, 1, '1 property name is shown');
-    assert.equal(findAll('.value').length, 1, '1 value element is shown');
-    assert.equal(findAll('.value')[0].innerText.trim(),
+    assert.equal(findAll('.heading').length, 2, '2 headings are shown');
+    assert.equal(findAll('.heading')[1].innerText, 'Advanced Configuration', 'advanced setting heading as expected');
+    assert.equal(findAll('.title').length, 4, '4 property name is shown');
+    assert.equal(findAll('.value').length, 4, '4 value element is shown');
+    assert.equal(findAll('.value')[3].innerText.trim(),
       expectedCustomSetting,
       'custom config value is as expected');
     await triggerEvent('.value .tooltip-text', 'mouseover');

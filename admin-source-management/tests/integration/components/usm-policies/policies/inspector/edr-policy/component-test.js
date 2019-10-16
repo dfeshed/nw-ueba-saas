@@ -44,6 +44,11 @@ const testPolicy = {
   // filterSignedHooks: false,
   requestScanOnRegistration: true,
   blockingEnabled: false,
+  isolationEnabled: false,
+  fileDownloadEnabled: true,
+  fileDownloadCriteria: 'Unsigned',
+  maxFileDownloadSizeUnit: 'KB',
+  maxFileDownloadSize: 20,
   primaryAddress: '10.10.10.10',
   primaryAlias: 'id1-alias',
   primaryNwServiceId: 'id1',
@@ -81,11 +86,11 @@ module('Integration | Component | Policy Inspector | EDR Policy', function(hooks
       .build();
 
     await render(hbs`{{usm-policies/policies/inspector/edr-policy}}`);
-    assert.equal(findAll('.heading').length, 5, '5 headings are shown');
+    assert.equal(findAll('.heading').length, 6, '6 headings are shown');
     assert.equal(findAll('.heading')[0].innerText, 'Scan Schedule', 'first heading is as expected');
     // assert.equal(findAll('.value')[4].innerText, 'Enabled', 'capture floating code shows expected value');
-    assert.equal(findAll('.title').length, 14, '14 property names are shown');
-    assert.equal(findAll('.value').length, 14, '14 value elements are shown');
+    assert.equal(findAll('.title').length, 18, '18 property names are shown');
+    assert.equal(findAll('.value').length, 18, '18 value elements are shown');
   });
 
   test('Custom config setting and its tooltip is shown', async function(assert) {
@@ -96,11 +101,11 @@ module('Integration | Component | Policy Inspector | EDR Policy', function(hooks
 
     const expectedCustomSetting = '"cpuMax" : 90,"cpuMaxVm" : 90,"scanMbr" : false,"blockingEnabled" : false,"requestScanOnRegistration" : false,"primaryHttpsPort" : 443,"primaryHttpsBeaconInterval" : 15,"primaryHttpsBeaconIntervalUnit" : "MINUTES","primaryUdpPort" : 444,"primaryUdpBeaconInterval" : 30,"primaryUdpBeaconIntervalUnit" : "SECONDS","agentMode" : "ADVANCED","offlineDiskStorageSizeInMb" : 100,"policyType" : "edrPolicy","name" : "Default EDR Policy","description" : "These are the settings that are applied when not defined in another policy applied to an agent.","dirty" : false,"defaultPolicy" : true,';
     await render(hbs`{{usm-policies/policies/inspector/edr-policy}}`);
-    assert.equal(findAll('.heading').length, 6, '6 headings are shown');
-    assert.equal(findAll('.heading')[5].innerText, 'Advanced Configuration', 'advanced setting heading as expected');
-    assert.equal(findAll('.title').length, 15, '15 property names are shown');
-    assert.equal(findAll('.value').length, 15, '15 value elements are shown');
-    assert.equal(findAll('.value')[14].innerText.trim(),
+    assert.equal(findAll('.heading').length, 7, '7 headings are shown');
+    assert.equal(findAll('.heading')[6].innerText, 'Advanced Configuration', 'advanced setting heading as expected');
+    assert.equal(findAll('.title').length, 19, '19 property names are shown');
+    assert.equal(findAll('.value').length, 19, '19 value elements are shown');
+    assert.equal(findAll('.value')[18].innerText.trim(),
       expectedCustomSetting,
       'custom config value is as expected');
     await triggerEvent('.value .tooltip-text', 'mouseover');

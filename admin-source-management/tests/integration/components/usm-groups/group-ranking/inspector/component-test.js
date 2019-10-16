@@ -40,9 +40,9 @@ module('Integration | Component | group-ranking/inspector | Policy Inspector', f
       .focusedPolicy(edrTestPolicy)
       .build();
     await render(hbs`{{usm-groups/group-ranking/inspector}}`);
-    assert.equal(findAll('.usm-ranking-inspector .heading').length, 6, 'expected headings are shown');
-    assert.equal(findAll('.usm-ranking-inspector .title').length, 16, 'expected property names are shown');
-    assert.equal(findAll('.usm-ranking-inspector .value').length, 44, 'expected value elements are shown');
+    assert.equal(findAll('.usm-ranking-inspector .heading').length, 7, 'expected headings are shown');
+    assert.equal(findAll('.usm-ranking-inspector .title').length, 19, 'expected property names are shown');
+    assert.equal(findAll('.usm-ranking-inspector .value').length, 52, 'expected value elements are shown');
   });
 
   test('It shows the common sections for history and groups for windowPolicy', async function(assert) {

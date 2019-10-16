@@ -44,6 +44,11 @@ const testPolicy = {
   // filterSignedHooks: false,
   requestScanOnRegistration: true,
   blockingEnabled: false,
+  isolationEnabled: false,
+  fileDownloadEnabled: true,
+  fileDownloadCriteria: 'Unsigned',
+  maxFileDownloadSizeUnit: 'KB',
+  maxFileDownloadSize: 20,
   primaryAddress: '10.10.10.10',
   primaryNwServiceId: 'id1',
   primaryHttpsPort: 443,
@@ -79,16 +84,18 @@ module('Integration | Component | Policy Inspector', function(hooks) {
       .focusedPolicy(testPolicy).build();
 
     await render(hbs`{{usm-policies/policies/inspector}}`);
-    assert.equal(findAll('.usm-policies-inspector .heading').length, 7, 'expected headings are shown');
-    assert.equal(findAll('.usm-policies-inspector .heading')[6].innerText, 'History', 'history section is last as expected');
+
+    assert.equal(findAll('.usm-policies-inspector .heading').length, 8, 'expected headings are shown');
+    assert.equal(findAll('.usm-policies-inspector .heading')[7].innerText, 'History', 'history section is last as expected');
     assert.equal(findAll('.usm-policies-inspector .heading')[0].innerText, 'Applied to Groups', 'first heading is as expected');
-    assert.equal(findAll('.usm-policies-inspector .title').length, 18, 'expected property names are shown');
-    assert.equal(findAll('.usm-policies-inspector .value').length, 20, 'expected value elements are shown');
-    assert.equal(findAll('.usm-policies-inspector .value')[15].innerText, '2018-10-23 02:13', 'created on value shows as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[16].innerText, 'admin', 'created by value shows as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[17].innerText, '2018-10-23 02:13', 'last updated on value shows as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[18].innerText, 'admin', 'last updated by value shows as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[19].innerText, '2018-05-28 02:32', 'last published on value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .title').length, 22, 'expected property names are shown');
+    assert.equal(findAll('.usm-policies-inspector .value').length, 24, 'expected value elements are shown');
+    assert.equal(findAll('.usm-policies-inspector .value')[19].innerText, '2018-10-23 02:13', 'created on value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[20].innerText, 'admin', 'created by value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[21].innerText, '2018-10-23 02:13', 'last updated on value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[22].innerText, 'admin', 'last updated by value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[23].innerText, '2018-05-28 02:32', 'last published on value shows as expected');
+
   });
 
   test('It does not show the groups section when no groups. Test no error', async function(assert) {
@@ -99,8 +106,8 @@ module('Integration | Component | Policy Inspector', function(hooks) {
 
     await render(hbs`{{usm-policies/policies/inspector}}`);
     assert.equal(findAll('.rsa-content-warn-text-box').length, 0, 'rsa-content-warn-text-box is NOT showing');
-    assert.equal(findAll('.usm-policies-inspector .heading').length, 6, 'expected headings are shown');
-    assert.equal(findAll('.usm-policies-inspector .heading')[5].innerText, 'History', 'history section is last as expected');
+    assert.equal(findAll('.usm-policies-inspector .heading').length, 7, 'expected headings are shown');
+    assert.equal(findAll('.usm-policies-inspector .heading')[6].innerText, 'History', 'history section is last as expected');
   });
 
   test('It shows the history properties with values', async function(assert) {
@@ -123,11 +130,11 @@ module('Integration | Component | Policy Inspector', function(hooks) {
       .build();
 
     await render(hbs`{{usm-policies/policies/inspector}}`);
-    assert.equal(findAll('.usm-policies-inspector .heading').length, 7, 'expected headings are shown');
-    assert.equal(findAll('.usm-policies-inspector .heading')[6].innerText, 'History', 'history section is last as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[15].innerText, 'System Created', 'created on value shows as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[16].innerText, 'admin', 'created by value shows as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[17].innerText, '2018-10-23 02:13', 'last updated on value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .heading').length, 8, 'expected headings are shown');
+    assert.equal(findAll('.usm-policies-inspector .heading')[7].innerText, 'History', 'history section is last as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[19].innerText, 'System Created', 'created on value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[20].innerText, 'admin', 'created by value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[21].innerText, '2018-10-23 02:13', 'last updated on value shows as expected');
     assert.equal(findAll('.usm-policies-inspector .lastModifiedBy').length, 0, 'last modified by is missing as expected');
     assert.equal(findAll('.usm-policies-inspector .lastPublishedOn').length, 0, 'last published on is missing as expected');
   });
