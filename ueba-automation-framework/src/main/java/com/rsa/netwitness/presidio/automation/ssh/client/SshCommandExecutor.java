@@ -82,7 +82,7 @@ public class SshCommandExecutor {
             Queue<String> sshOutput = new EvictingQueue<>(MAX_LINES_TO_COLLECT);
             while ((line = bufferedReader.readLine()) != null || channel.getExitStatus()!=0) {
                 if (verbose) LOGGER.info(line);
-                sshOutput.add(line);
+                if (line!=null) sshOutput.add(line);
                 waitReady(bufferedReader);
             }
 
