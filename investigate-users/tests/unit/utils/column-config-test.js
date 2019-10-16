@@ -8,7 +8,7 @@ module('Unit | Utility | column-config', function() {
   });
 
   test('test columnConfigForUsers have all columns', (assert) => {
-    assert.ok(columnConfigForUsers.length === 5);
+    assert.equal(columnConfigForUsers.length, 7);
   });
 
   test('test severityMap have all severity', (assert) => {
@@ -23,6 +23,6 @@ module('Unit | Utility | column-config', function() {
   });
 
   test('test sortOptions have all columns', (assert) => {
-    assert.ok(sortOptions.length === 3);
+    assert.equal(sortOptions.length, 5);
   });
 });

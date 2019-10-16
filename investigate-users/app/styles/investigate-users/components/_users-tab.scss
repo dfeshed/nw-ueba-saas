@@ -259,6 +259,12 @@
         color: text-color(secondary, light);
       }
 
+      &_timeRange {
+        @include rsa-font(default);
+        color: text-color(primary);
+        padding: 0 rsa-whitespace(less);
+      }
+
       &_watched {
         color: text-color(accentOne, light);
         margin: rsa-whitespace();

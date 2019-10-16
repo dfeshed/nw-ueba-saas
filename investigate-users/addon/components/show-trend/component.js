@@ -15,10 +15,10 @@ const dispatchToActions = {
 const ShowTrendComponent = Component.extend({
   classNames: 'show-trend',
   trendOptions: [{
-    key: 1,
+    key: 'daily',
     name: 'lastDay'
   }, {
-    key: 7,
+    key: 'weekly',
     name: 'lastWeek'
   }]
 });

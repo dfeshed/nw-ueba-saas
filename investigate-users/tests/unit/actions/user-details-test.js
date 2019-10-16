@@ -119,7 +119,27 @@ module('Unit | Actions | User Details Actions', (hooks) => {
       assert.equal(payload.length, 5);
       done();
     };
-    getUserOverview()(dispatch);
+    const getState = () => {
+      return Immutable.from({ users: { sortOnTrending: false } });
+    };
+    getUserOverview()(dispatch, getState);
+  });
+
+  test('it can getUserOverview for trending user', (assert) => {
+    assert.expect(2);
+    const done = assert.async();
+    const dispatch = ({ type, payload }) => {
+      assert.equal(type, 'INVESTIGATE_USER::GET_TOP_RISKY_USER');
+      assert.equal(payload.length, 5);
+      done();
+    };
+    const getState = () => {
+      return Immutable.from({ users: { sortOnTrending: true, trendRange: {
+        key: 'daily',
+        name: 'lastDay'
+      } } });
+    };
+    getUserOverview()(dispatch, getState);
   });
 
   test('it can getUserOverview for SSlSubject', (assert) => {
@@ -132,7 +152,10 @@ module('Unit | Actions | User Details Actions', (hooks) => {
       patchUrl = null;
       done();
     };
-    getUserOverview('sslSubject')(dispatch);
+    const getState = () => {
+      return Immutable.from({ users: { sortOnTrending: false } });
+    };
+    getUserOverview('sslSubject')(dispatch, getState);
   });
 
   test('it should dispatch error if getUserOverview is failing', (assert) => {
@@ -151,7 +174,10 @@ module('Unit | Actions | User Details Actions', (hooks) => {
       assert.equal(payload, 'topUsersError');
       done();
     };
-    getUserOverview()(dispatch);
+    const getState = () => {
+      return Immutable.from({ users: { sortOnTrending: false } });
+    };
+    getUserOverview()(dispatch, getState);
   });
 
   test('it should dispatch error if no user data is present for getUserOverview', (assert) => {
@@ -172,7 +198,10 @@ module('Unit | Actions | User Details Actions', (hooks) => {
       assert.equal(payload, 'noUserData');
       done();
     };
-    getUserOverview()(dispatch);
+    const getState = () => {
+      return Immutable.from({ users: { sortOnTrending: false } });
+    };
+    getUserOverview()(dispatch, getState);
   });
 
   test('it can resetUser', (assert) => {
@@ -225,22 +254,50 @@ module('Unit | Actions | User Details Actions', (hooks) => {
   });
 
   test('it can updateSortTrend', (assert) => {
-    assert.expect(1);
-    const dispatch = ({ type }) => {
-      assert.equal(type, 'INVESTIGATE_USER::SORT_ON_TREND');
+    assert.expect(2);
+    const actions = [
+      'INVESTIGATE_USER::GET_TOP_RISKY_USER',
+      'INVESTIGATE_USER::SORT_ON_TREND'
+    ];
+    const getState = () => {
+      return Immutable.from({ users: { sortOnTrending: false, filter: { entityType: 'userId' } } });
     };
-    dispatch(updateSortTrend());
+    const dispatch = (obj) => {
+      if (obj.type) {
+        assert.ok(actions.includes(obj.type));
+      }
+      if (typeof obj === 'function') {
+        obj(({ type }) => {
+          assert.ok(actions.includes(type));
+        }, getState);
+      }
+    };
+    updateSortTrend()(dispatch, getState);
   });
 
   test('it can updateTrendRange', (assert) => {
-    assert.expect(1);
-    const dispatch = ({ type }) => {
-      assert.equal(type, 'INVESTIGATE_USER::UPDATE_TREND_RANGE');
+    assert.expect(2);
+    const actions = [
+      'INVESTIGATE_USER::GET_TOP_RISKY_USER',
+      'INVESTIGATE_USER::UPDATE_TREND_RANGE'
+    ];
+    const getState = () => {
+      return Immutable.from({ users: { sortOnTrending: false, filter: { entityType: 'userId' } } });
     };
-    dispatch(updateTrendRange({
-      key: 1,
+    const dispatch = (obj) => {
+      if (obj.type) {
+        assert.ok(actions.includes(obj.type));
+      }
+      if (typeof obj === 'function') {
+        obj(({ type }) => {
+          assert.ok(actions.includes(type));
+        }, getState);
+      }
+    };
+    updateTrendRange({
+      key: 'daily',
       name: 'lastDay'
-    }));
+    })(dispatch, getState);
   });
 
 });

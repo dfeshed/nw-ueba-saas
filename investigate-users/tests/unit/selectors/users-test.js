@@ -25,7 +25,7 @@ const state = Immutable.from({
     usersError: null,
     favorites: favoriteFilter.data,
     trendRange: {
-      key: 1,
+      key: 'daily',
       name: 'lastDay'
     },
     sortOnTrending: false,
@@ -62,7 +62,7 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
   test('test Top Risky Users', (assert) => {
     const topUsers = Users.getTopRiskyUsers(state);
     assert.equal(topUsers.length, 5);
-    assert.equal(topUsers[0].trendScore, 0);
+    assert.equal(topUsers[0].trendingScore, '15.0');
     assert.equal(topUsers[0].followed, true);
     assert.equal(topUsers[0].score, 131);
     assert.deepEqual(topUsers[0].alertGroup, {
@@ -77,7 +77,7 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
     const newState = state.setIn(['users', 'topUsers', 0, 'alerts', 0, 'startDate'], new Date().getTime());
     const topUsers = Users.getTopRiskyUsers(newState);
     assert.equal(topUsers.length, 5);
-    assert.equal(topUsers[0].trendScore, 10);
+    assert.equal(topUsers[0].trendingScore, '15.0');
     assert.equal(topUsers[0].followed, true);
     assert.equal(topUsers[0].score, 131);
     assert.deepEqual(topUsers[0].alertGroup, {
@@ -220,7 +220,7 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
 
   test('test trendRange', (assert) => {
     assert.deepEqual(Users.trendRange(state), {
-      key: 1,
+      key: 'daily',
       name: 'lastDay'
     });
   });

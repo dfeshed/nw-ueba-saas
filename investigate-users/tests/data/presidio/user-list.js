@@ -5,6 +5,10 @@ export default {
     'username': 'auth_qa_1_2',
     'noDomainUsername': null,
     'followed': true,
+    'trendingScore': {
+      weekly: '0.5',
+      daily: '15.0'
+    },
     'alerts': [{
       'id': 'b777c6a4-91ea-4784-8689-74506270f10c',
       'name': 'multiple_logons_by_user',
@@ -88,6 +92,10 @@ export default {
     'displayName': 'qa_ad_contains_static',
     'username': 'qa_ad_contains_static',
     'noDomainUsername': null,
+    'trendingScore': {
+      weekly: '0.5',
+      daily: '15.0'
+    },
     'followed': false,
     'alerts': [{
       'id': '49150421-838d-4608-93d5-ab4b7209231e',

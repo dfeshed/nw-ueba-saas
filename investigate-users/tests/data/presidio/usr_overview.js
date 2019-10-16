@@ -5,6 +5,10 @@ export default {
     'username': 'ad_qa_1_9',
     'noDomainUsername': null,
     'followed': true,
+    'trendingScore': {
+      weekly: '0.5',
+      daily: '15.0'
+    },
     'alerts': [{
       'id': '07fdc97b-cb20-4373-9ef4-f578e80d6cb4',
       'name': 'abnormal_ad_changes',
@@ -300,6 +304,10 @@ export default {
     'displayName': 'file_qa_1_3',
     'username': 'file_qa_1_3',
     'noDomainUsername': null,
+    'trendingScore': {
+      weekly: '5.5',
+      daily: '10.0'
+    },
     'followed': false,
     'alerts': [{
       'id': '90459286-9082-4c49-bc9f-73d499df20a3',
@@ -520,6 +528,10 @@ export default {
     'username': 'file_qa_1_18',
     'noDomainUsername': null,
     'followed': false,
+    'trendingScore': {
+      weekly: '10.5',
+      daily: '5.0'
+    },
     'alerts': [{
       'id': 'af853ee1-1707-4271-bab9-ac7b20baebcf',
       'name': 'abnormal_file_access',
@@ -548,6 +560,10 @@ export default {
       'endDate': 1533373200000,
       'entityType': 'User',
       'entityName': 'file_qa_1_18',
+      'trendingScore': {
+        weekly: '15',
+        daily: '50'
+      },
       'entityId': '43335706-3c3e-492f-81f8-1301f8df247c',
       'evidences': [],
       'evidenceSize': 2,
@@ -832,6 +848,10 @@ export default {
     'username': 'file_qa_1_19',
     'noDomainUsername': null,
     'followed': false,
+    'trendingScore': {
+      weekly: '10.5',
+      daily: '5.0'
+    },
     'alerts': [{
       'id': 'bc92ec56-d30c-4dca-9dfb-d04bd4a628a5',
       'name': 'abnormal_file_access',
@@ -1151,6 +1171,10 @@ export default {
     'displayName': 'mixed_qa_1_2',
     'username': 'mixed_qa_1_2',
     'noDomainUsername': null,
+    'trendingScore': {
+      weekly: '10.5',
+      daily: '5.0'
+    },
     'followed': false,
     'alerts': [{
       'id': '34aaf6c9-6b05-4600-a600-ae02e0a2649b',
@@ -1281,6 +1305,10 @@ export default {
       'endDate': 1533380400000,
       'entityType': 'User',
       'entityName': 'mixed_qa_1_2',
+      'trendingScore': {
+        weekly: '10.5',
+        daily: '5.0'
+      },
       'entityId': 'a0979b0c-7214-4a53-8114-c1552aa0952c',
       'evidences': [],
       'evidenceSize': 13,

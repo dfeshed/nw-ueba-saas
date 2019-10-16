@@ -21,8 +21,16 @@ export const columnConfigForUsers = [{
   width: '3vw',
   disableSort: true
 }, {
+  field: 'trendingScore.daily',
+  width: '7vw',
+  disableSort: true
+}, {
+  field: 'trendingScore.weekly',
+  width: '7vw',
+  disableSort: true
+}, {
   field: 'displayName',
-  width: '20vw',
+  width: '10vw',
   disableSort: true
 },
 {
@@ -59,4 +67,8 @@ export const sortOptions = [{
   id: 'name'
 }, {
   id: 'alertsCount'
+}, {
+  id: 'trending.daily'
+}, {
+  id: 'trending.weekly'
 }];

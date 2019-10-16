@@ -40,10 +40,8 @@ export const getUserFilter = (state) => state.users.filter;
 
 export const getTopRiskyUsers = createSelector(
   [_topUsers, trendRange],
-  (users, range) => {
-    const topUser = _.map(users, (user) => {
-      const weekOldData = Date.now() - range.key * 24 * 3600 * 1000;
-      const trend = _.sumBy(_.filter(user.alerts, (alert) => parseInt(alert.startDate, 10) > weekOldData), 'userScoreContribution');
+  (users, { key }) => {
+    return _.map(users, (user) => {
       const alertGroup = _.groupBy(user.alerts, (alert) => alert.severity);
       return {
         id: user.id,
@@ -51,7 +49,7 @@ export const getTopRiskyUsers = createSelector(
         followed: user.followed,
         scoreSeverity: user.scoreSeverity,
         score: user.score,
-        trendScore: trend,
+        trendingScore: user.trendingScore[key],
         alertGroup: {
           Critical: alertGroup.Critical ? alertGroup.Critical.length : 0,
           High: alertGroup.High ? alertGroup.High.length : 0,
@@ -60,7 +58,6 @@ export const getTopRiskyUsers = createSelector(
         }
       };
     });
-    return topUser;
   });
 
 export const hasTopRiskyUsers = createSelector(

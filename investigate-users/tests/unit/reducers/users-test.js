@@ -49,7 +49,7 @@ const resetState = Immutable.from({
   topUsers: [],
   topUsersError: null,
   trendRange: {
-    key: 1,
+    key: 'daily',
     name: 'lastDay'
   },
   sortOnTrending: false,
@@ -223,12 +223,12 @@ module('Unit | Reducers | Users Reducer', (hooks) => {
     const result = reducer(Immutable.from({}), {
       type: ACTION_TYPES.UPDATE_TREND_RANGE,
       payload: {
-        key: 1,
+        key: 'daily',
         name: 'lastDay'
       }
     });
     assert.deepEqual(result.trendRange, {
-      key: 1,
+      key: 'daily',
       name: 'lastDay'
     });
   });

@@ -33,8 +33,13 @@ const getWatchedUserCount = (entityType = 'userId') => {
   };
 };
 const getUserOverview = (entityType = 'userId') => {
-  return (dispatch) => {
-    fetchData('userOverview', { entityType }).then((result) => {
+  return (dispatch, getState) => {
+    const { sortOnTrending, trendRange } = getState();
+    const additionalFilter = { entityType, sort_field: 'score' };
+    if (sortOnTrending) {
+      additionalFilter.sort_field = trendRange.key === 'daily' ? 'trendingScore.daily' : 'trendingScore.weekly';
+    }
+    fetchData('userOverview', additionalFilter).then((result) => {
       if (result === 'error' || result.data.length === 0) {
         dispatch({
           type: ACTION_TYPES.TOP_USERS_ERROR,
@@ -61,9 +66,21 @@ const updateEntityType = (entityType) => {
   };
 };
 
-const updateSortTrend = () => ({ type: ACTION_TYPES.SORT_ON_TREND });
+const updateSortTrend = () => {
+  return (dispatch, getState) => {
+    const { entityType } = getUserFilter(getState());
+    dispatch({ type: ACTION_TYPES.SORT_ON_TREND });
+    dispatch(getUserOverview(entityType));
+  };
+};
 
-const updateTrendRange = (payload) => ({ type: ACTION_TYPES.UPDATE_TREND_RANGE, payload });
+const updateTrendRange = (payload) => {
+  return (dispatch, getState) => {
+    const { entityType } = getUserFilter(getState());
+    dispatch({ type: ACTION_TYPES.UPDATE_TREND_RANGE, payload });
+    dispatch(getUserOverview(entityType));
+  };
+};
 
 const resetUser = () => ({ type: ACTION_TYPES.RESET_USER });
 

@@ -4,7 +4,7 @@ export default {
   // Overview Tab Urls.
   riskyUserCount: '/presidio/api/entity/count?minScore=0&',
   watchedUserCount: '/presidio/api/entity/count?isWatched=true&',
-  userOverview: '/presidio/api/entity?min_score=0&size=10&sort_direction=DESC&sort_field=score&',
+  userOverview: '/presidio/api/entity?min_score=0&size=10&sort_direction=DESC&',
   alertOverview: '/presidio/api/alerts?isOverview=true&page=1&size=10&sort_direction=DESC&sort_field=score&status=open&',
   alertTimeline: `/presidio/api/alerts/alert-by-day-and-severity?alert_start_range=${moment().subtract('months', 3).unix()},${moment().unix()}`,
 

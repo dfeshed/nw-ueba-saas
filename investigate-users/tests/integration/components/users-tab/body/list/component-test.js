@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, click } from '@ember/test-helpers';
+import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -42,7 +42,7 @@ module('Integration | Component | users-tab/body/list', function(hooks) {
     redux.dispatch(getUsers());
     await render(hbs`{{users-tab/body/list}}`);
     assert.equal(findAll('.rsa-data-table-body-row').length, 2);
-    assert.equal(find('.rsa-data-table-body-rows').textContent.replace(/\s/g, ''), '45auth_qa_1_23Alerts40qa_ad_contains_static2Alerts');
+    assert.equal(findAll('.rsa-data-table-body-cell').length, 14);
   });
 
   test('it should open entity details on user click', async function(assert) {

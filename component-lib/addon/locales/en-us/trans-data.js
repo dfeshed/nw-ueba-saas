@@ -5338,7 +5338,11 @@ effects the simulated source.',
     sortOptions: {
       name: 'Name',
       score: 'Risk Score',
-      alertsCount: 'Alerts'
+      alertsCount: 'Alerts',
+      trending: {
+        daily: 'Trending LastDay',
+        weekly: 'Trending LastWeek'
+      }
     },
     entityTypes: {
       all: 'All Entities',

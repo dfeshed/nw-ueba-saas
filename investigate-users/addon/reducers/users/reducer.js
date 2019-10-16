@@ -39,7 +39,7 @@ const initialState = Immutable.from({
   topUsers: [],
   topUsersError: null,
   trendRange: {
-    key: 1,
+    key: 'daily',
     name: 'lastDay'
   },
   sortOnTrending: false,

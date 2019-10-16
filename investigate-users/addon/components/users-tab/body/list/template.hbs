@@ -9,8 +9,12 @@
             {{rsa-icon size='large' name='account-group-5'}}
           </span>
         {{/if}}
+      {{else if (eq column.field 'trendingScore.daily')}}
+        + {{get item column.field}} <span class='users-tab_body_list_timeRange'>{{t 'investigateUsers.trendRange.lastDay'}}</span>
+      {{else if (eq column.field 'trendingScore.weekly')}}
+        + {{get item column.field}} <span class='users-tab_body_list_timeRange'>{{t 'investigateUsers.trendRange.lastWeek'}}</span>
       {{else if (eq column.field 'alerts')}}
-        {{users-tab/body/list/alerts  userId=(get item 'id') alerts=(get item column.field)}}
+        {{users-tab/body/list/alerts  userId=(get item 'id') alerts=(get item column.field)}}    
       {{else if (eq column.field 'displayName')}}
         <span class='users-tab_body_list_name'>
           {{get item column.field}}
