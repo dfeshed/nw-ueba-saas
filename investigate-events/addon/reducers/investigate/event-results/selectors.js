@@ -368,7 +368,7 @@ export const updateStreamKeyTree = (streamKeyTree, e, keyA, keyB, keyC, keyD) =>
 export const nestChildEvents = createSelector(
   [clientSortedData, _eventRelationshipsEnabled],
   (events, eventRelationshipsEnabled) => {
-    if (isEmpty(events) || !eventRelationshipsEnabled) {
+    if (isEmpty(events)) {
       return events;
     } else {
       events = Immutable.asMutable(events, { deep: true });
@@ -426,7 +426,7 @@ export const nestChildEvents = createSelector(
         }
       }
 
-      return sort(events).asc((e) => e.eventIndex);
+      return eventRelationshipsEnabled ? sort(events).asc((e) => e.eventIndex) : events;
     }
   }
 );

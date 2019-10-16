@@ -1652,6 +1652,60 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].foo, state.investigate.eventResults.data[1].foo, '3');
   });
 
+  test('nestChildEvents should decorate events regardless of enablement', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          eventRelationshipsEnabled: false,
+          data: [
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 1,
+              sessionId: 1
+            }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [
+            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
+            { metaName: 'ipv6.dst' },
+            { metaName: 'ipv6.src' },
+            { metaName: 'tcp.dstport' },
+            { metaName: 'tcp.srcport' },
+            { metaName: 'udp.dstport' },
+            { metaName: 'udp.srcport' }
+          ]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = nestChildEvents(state);
+    assert.equal(result[0].tuple, 'ip.src=127.0.0.1 AND ip.dst=127.0.0.1 AND tcp.srcport=25 AND tcp.dstport=25');
+  });
+
   test('nestChildEvents for tuple: ip.dst|ip.src|tcp.srcport|tcp.dstport', async function(assert) {
     const state = {
       investigate: {
