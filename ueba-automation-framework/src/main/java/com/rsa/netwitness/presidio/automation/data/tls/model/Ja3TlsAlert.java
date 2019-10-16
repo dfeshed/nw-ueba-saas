@@ -306,9 +306,9 @@ public class Ja3TlsAlert {
         LOGGER.info("Adding indicator: " + name);
         alert.indicatorNames.add(name);
 
-        HighNumberOf<String> indicatorCreator = new HighNumberOf<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        HighNumberOfSrcIPs indicatorCreator = new HighNumberOfSrcIPs(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
         TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(2);
-        indicatorCreator.createHighNumberOfDistinctSecIpGen(eventsGenInit);
+        indicatorCreator.createHighNumberOfDistinctSrcIpGen(eventsGenInit);
         alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
