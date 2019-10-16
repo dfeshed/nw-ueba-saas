@@ -23,7 +23,7 @@ public class AggregationDataCountByTimeGlobalPopulator implements AggregationDat
     }
 
     @Override
-    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly) {
+    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly, Date startDate) {
 
         List<Bucket<String, Double>> global_buckets = new ArrayList<>();
         List<DailyHistogram<Integer, Double>> globalDailyHistograms = historicalDataFetcher.getGlobalMaxDailyHistogramsForAggregatedFeature(timeRange, schema, featureName);
@@ -37,9 +37,10 @@ public class AggregationDataCountByTimeGlobalPopulator implements AggregationDat
 
             // iterate over hours
             for (Integer hour : dailyHistogram.getHistogram().keySet()) {
+                long startTimeInSeconds = startDate.getTime() / 1000;
                 long epocTime = dailyHistogram.getDate().atStartOfDay().plus(hour, ChronoUnit.HOURS).toEpochSecond(ZoneOffset.UTC);
                 Double valueForHour = dailyHistogram.getHistogram().get(hour);
-                boolean isAnomaly = !skipAnomaly && anomalyValue.equals(valueForHour.toString());
+                boolean isAnomaly = !skipAnomaly && startTimeInSeconds == epocTime && anomalyValue.equals(valueForHour.toString());
                 Bucket<String, Double> bucket = new Bucket<>(Long.toString(epocTime), valueForHour, isAnomaly);
                 global_buckets.add(bucket);
             }

@@ -8,6 +8,7 @@ import presidio.output.domain.records.alerts.CountAggregation;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,7 +25,8 @@ public class AggregationDataCountByValuePopulator implements AggregationDataPopu
     @Override
     public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema,
                                              String featureName, String anomalyValue,
-                                             HistoricalDataConfig historicalDataConfig, boolean skipAnomaly) {
+                                             HistoricalDataConfig historicalDataConfig,
+                                             boolean skipAnomaly, Date startDate) {
 
         // Get the daily histograms.
         // Each daily histogram has a map from a feature value to its number of occurrences on that day.

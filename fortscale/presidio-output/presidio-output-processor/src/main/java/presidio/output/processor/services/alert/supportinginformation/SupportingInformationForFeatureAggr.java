@@ -116,7 +116,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
             String featureName = historicalDataConfig.getFeatureName() == null? adeAggregationRecord.getFeatureName():historicalDataConfig.getFeatureName() ;
             Map<String, String> contexts = historicalDataConfig.getContexts() == null ? getHistoricalDataContexts(indicatorConfig.getModelContextFields(), indicator) : getHistoricalDataContexts(historicalDataConfig.getContexts(), indicator);
             boolean skipAnomaly = historicalDataConfig.getSkipAnomaly() == null ? false : historicalDataConfig.getSkipAnomaly();
-            aggregation = aggregationDataPopulator.createAggregationData(timeRange, contexts, schema, featureName, anomalyValue, historicalDataConfig, skipAnomaly);
+            aggregation = aggregationDataPopulator.createAggregationData(timeRange, contexts, schema, featureName, anomalyValue, historicalDataConfig, skipAnomaly, indicator.getStartDate());
             aggregations.add(aggregation);
         }
 

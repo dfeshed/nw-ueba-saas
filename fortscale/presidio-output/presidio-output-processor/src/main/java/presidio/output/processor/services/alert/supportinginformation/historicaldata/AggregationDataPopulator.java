@@ -5,6 +5,7 @@ import fortscale.utils.time.TimeRange;
 import presidio.output.domain.records.alerts.Aggregation;
 import presidio.output.processor.config.HistoricalDataConfig;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -24,7 +25,7 @@ public interface AggregationDataPopulator {
      * @return Aggregation data with anomaly value indication
      */
 
-    Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly);
+    Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly, Date startDate);
 
     String getType();
 

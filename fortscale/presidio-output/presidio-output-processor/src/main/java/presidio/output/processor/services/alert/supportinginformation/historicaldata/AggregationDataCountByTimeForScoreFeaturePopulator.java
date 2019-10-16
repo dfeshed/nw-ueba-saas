@@ -10,6 +10,7 @@ import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class AggregationDataCountByTimeForScoreFeaturePopulator implements Aggre
     }
 
     @Override
-    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly) {
+    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly, Date startDate) {
 
         List<Bucket<String, Double>> buckets = new ArrayList<>();
 
@@ -46,9 +47,13 @@ public class AggregationDataCountByTimeForScoreFeaturePopulator implements Aggre
             for (String hour : dailyHistogram.getHistogram().keySet()) {
 
                 Double valueForHour = dailyHistogram.getHistogram().get(hour).doubleValue();
-                boolean isAnomaly = !skipAnomaly && anomalyValue.equals(valueForHour.toString());
+                long startTimeInSeconds = startDate.getTime() / 1000;
+
                 // The key format is : {featureName#epochtime} and we need to extract the epochtime
-                Bucket<String, Double> bucket = new Bucket<>(hour.split("#")[1], valueForHour, isAnomaly);
+                String epochTime = hour.split("#")[1];
+
+                boolean isAnomaly = !skipAnomaly && Long.toString(startTimeInSeconds).equals(epochTime) && anomalyValue.equals(valueForHour.toString());
+                Bucket<String, Double> bucket = new Bucket<>(epochTime, valueForHour, isAnomaly);
                 buckets.add(bucket);
             }
         }
