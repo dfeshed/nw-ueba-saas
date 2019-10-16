@@ -83,6 +83,8 @@
   .banner-content {
     @extend .eula-content;
     padding: 12px;
+    white-space: pre-wrap;
+    text-align: justify;
   }
 
   .login-wrapper {
