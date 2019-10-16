@@ -1,13 +1,9 @@
 /*
-
 This test is failing for the following reason:
-
 > A component or helper named "link-to-external" could not be found
-
 link-to-external is inside ember-engines, this component uses the
 investigate-header which then uses link-to-external
 component.
-
 */
 
 // import hbs from 'htmlbars-inline-precompile';
