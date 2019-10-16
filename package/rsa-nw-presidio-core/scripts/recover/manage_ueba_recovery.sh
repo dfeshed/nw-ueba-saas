@@ -70,8 +70,12 @@ backup() {
      rm -rf "${UEBA_DUMP_DIR}/${REDIS_SUBDIR}"/*
   fi
 
+  # clear the ELASTICSEARCH_HOME dir
+  rm -rf "${ELASTICSEARCH_HOME:?}"/*
+
   echoDebug "dump dir = ${DUMP_DIR}"
 
+  # the following rest commands populate the ELASTICSEARCH_HOME directory
   ${CURL_COMMAND} \
     -H "Accept: application/json" \
     -H "Content-Type:application/json" \
@@ -86,7 +90,7 @@ backup() {
 
   echoInfo "- Successfully backed-up ELASTICSEARCH DATA -"
 
-  mv "${REDIS_HOME}"/* "${UEBA_DUMP_DIR}/${REDIS_SUBDIR}"
+  cp -rp "${REDIS_HOME}"/* "${UEBA_DUMP_DIR}/${REDIS_SUBDIR}"
 
   echoInfo "- Successfully backed-up REDIS DATA -"
   echoInfo ""
