@@ -52,7 +52,7 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         String anomalyValue = String.valueOf(2370.0);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
-        Aggregation aggregation = aggregationDataCountByTimeForScoreFeaturePopulator.createAggregationData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig.get(0), true);
+        Aggregation aggregation = aggregationDataCountByTimeForScoreFeaturePopulator.createAggregationData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig.get(0), true, new Date(Long.parseLong("1517403600")));
         HistoricalData historicalData = new HistoricalData(Arrays.asList(aggregation));
         Assert.assertTrue(CollectionUtils.isEmpty(historicalData.getAggregation().get(0).getBuckets()));
     }
@@ -82,7 +82,8 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         String anomalyValue = String.valueOf(2370);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
-        Aggregation aggregation = aggregationDataCountByTimeForScoreFeaturePopulator.createAggregationData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig.get(0), true);
+        Date anomalyDate = new Date(Long.parseLong("1517403600"));
+        Aggregation aggregation = aggregationDataCountByTimeForScoreFeaturePopulator.createAggregationData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig.get(0), true, anomalyDate);
         HistoricalData historicalData = new HistoricalData(Arrays.asList(aggregation));
         Assert.assertTrue(CollectionUtils.isNotEmpty(historicalData.getAggregation().get(0).getBuckets()));
         Assert.assertEquals(9, historicalData.getAggregation().get(0).getBuckets().size());
