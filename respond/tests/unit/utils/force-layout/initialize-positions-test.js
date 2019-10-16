@@ -1,6 +1,7 @@
 import initializePositions from 'respond/utils/force-layout/initialize-positions';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import createAdjacency from 'respond/utils/entity/adjacency';
 
 /*
 * Compare 2 numbers within 5 decimal places.
@@ -27,14 +28,19 @@ module('Unit | Utility | Initialize positions', function(hooks) {
         ccGroup: 1
       }
     ];
+    const links = [{
+      id: 'asd',
+      source: nodes[0],
+      target: nodes[1]
+    }];
+    createAdjacency(nodes, links);
 
-    const groupInfos = initializePositions(nodes);
+    const { groupInfos } = initializePositions(nodes);
     assert.ok(groupInfos, 'groupInfos array is expected');
-    assert.equal(groupInfos[0].x, 500, 'group center is on x=500 line');
-    assert.equal(groupInfos[0].y, 0, 'group center is on y=0 line');
+    assert.equal(groupInfos.length, 1, 'only a single group is detected');
 
-    equalWithinPrecision(assert, groupInfos[0].x, 500, 'group center is on x=500 line');
-    equalWithinPrecision(assert, groupInfos[0].y, 0, 'group center is on y=0 line');
+    equalWithinPrecision(assert, groupInfos[0].x, 0, 'group center is at origin');
+    equalWithinPrecision(assert, groupInfos[0].y, 0, 'group center is at origin');
   });
 
   test('initializePositions for multiple groups', function(assert) {
@@ -48,14 +54,15 @@ module('Unit | Utility | Initialize positions', function(hooks) {
         ccGroup: 2
       }
     ];
+    createAdjacency(nodes, []);
 
-    const groupInfos = initializePositions(nodes);
+    const { groupInfos } = initializePositions(nodes);
     assert.ok(groupInfos, 'groupInfos array is expected');
 
-    equalWithinPrecision(assert, groupInfos[0].x, 500, 'group 1 center is on x=500 line');
+    equalWithinPrecision(assert, groupInfos[0].x, 1000, 'group 1 center is on x=1000 line');
     equalWithinPrecision(assert, groupInfos[0].y, 0, 'group 1 center is on y=0 line');
 
-    equalWithinPrecision(assert, groupInfos[1].x, -500, 'group 2 center is on x=-500 line');
+    equalWithinPrecision(assert, groupInfos[1].x, -1000, 'group 2 center is on x=-1000 line');
     equalWithinPrecision(assert, groupInfos[1].y, 0, 'group 2 center is on y=0 line');
   });
 });

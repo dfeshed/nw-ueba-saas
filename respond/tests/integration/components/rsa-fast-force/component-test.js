@@ -3,6 +3,7 @@ import { module, test } from 'qunit';
 import { settled, findAll, find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import createAdjacency from 'respond/utils/entity/adjacency';
 
 module('rsa-fast-force', 'Integration | Component | Fast Force Layout', function(hooks) {
   setupRenderingTest(hooks, {
@@ -36,6 +37,8 @@ module('rsa-fast-force', 'Integration | Component | Fast Force Layout', function
       source: ip2,
       target: domain
     }];
+
+  createAdjacency(nodes, links);
 
   const data = { nodes, links };
 

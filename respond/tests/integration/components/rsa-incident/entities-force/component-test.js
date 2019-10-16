@@ -7,6 +7,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import _ from 'lodash';
+import createAdjacency from 'respond/utils/entity/adjacency';
 
 let setState;
 
@@ -38,6 +39,7 @@ const links = [
     target: domain
   }];
 
+createAdjacency(nodes, links);
 const data = { nodes, links };
 
 module('Integration | Component | Incident Entities Force Layout', function(hooks) {

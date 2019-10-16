@@ -3,12 +3,11 @@ export default function connectedComponents(nodes) {
     return 0;
   }
 
-  let i;
   let curGroup = 1;
   const numVertices = nodes.length;
 
   let corruptNodeCount = 0;
-  for (i = 0; i < numVertices; ++i) {
+  for (let i = 0; i < numVertices; ++i) {
     nodes[i].ccGroup = 0;
     if (!nodes[i].incomingLinks || !nodes[i].outgoingLinks) {
       corruptNodeCount++;
@@ -22,7 +21,7 @@ export default function connectedComponents(nodes) {
     return 1;
   }
 
-  for (i = 0; i < numVertices; ++i) {
+  for (let i = 0; i < numVertices; ++i) {
     if (nodes[i].ccGroup !== 0) {
       continue;
     }
