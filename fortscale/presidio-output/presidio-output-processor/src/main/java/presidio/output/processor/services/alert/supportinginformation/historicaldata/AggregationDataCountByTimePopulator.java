@@ -27,7 +27,7 @@ public class AggregationDataCountByTimePopulator implements AggregationDataPopul
     }
 
     @Override
-    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly) {
 
         List<Bucket<String,Double >> buckets = new ArrayList<Bucket<String, Double>>();
 
@@ -48,7 +48,7 @@ public class AggregationDataCountByTimePopulator implements AggregationDataPopul
             for (Integer hour : dailyHistogram.getHistogram().keySet()) {
                 long epocTime = dailyHistogram.getDate().atStartOfDay().plus(hour, ChronoUnit.HOURS).toEpochSecond(ZoneOffset.UTC);
                 Double valueForHour = dailyHistogram.getHistogram().get(hour);
-                boolean isAnomaly = anomalyValue.equals(valueForHour.toString());
+                boolean isAnomaly = !skipAnomaly && anomalyValue.equals(valueForHour.toString());
                 Bucket<String, Double> bucket = new Bucket<String, Double>(Long.toString(epocTime), valueForHour, isAnomaly);
                 buckets.add(bucket);
             }

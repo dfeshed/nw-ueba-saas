@@ -26,7 +26,7 @@ public class AggregationDataCountByTimeForScoreFeaturePopulator implements Aggre
     }
 
     @Override
-    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly) {
 
         List<Bucket<String, Double>> buckets = new ArrayList<>();
 
@@ -46,7 +46,7 @@ public class AggregationDataCountByTimeForScoreFeaturePopulator implements Aggre
             for (String hour : dailyHistogram.getHistogram().keySet()) {
 
                 Double valueForHour = dailyHistogram.getHistogram().get(hour).doubleValue();
-                boolean isAnomaly = anomalyValue.equals(String.valueOf(valueForHour.intValue()));
+                boolean isAnomaly = !skipAnomaly && anomalyValue.equals(valueForHour.toString());
                 // The key format is : {featureName#epochtime} and we need to extract the epochtime
                 Bucket<String, Double> bucket = new Bucket<>(hour.split("#")[1], valueForHour, isAnomaly);
                 buckets.add(bucket);

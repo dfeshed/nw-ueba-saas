@@ -115,7 +115,8 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
             // populate historical data
             String featureName = historicalDataConfig.getFeatureName() == null? adeAggregationRecord.getFeatureName():historicalDataConfig.getFeatureName() ;
             Map<String, String> contexts = historicalDataConfig.getContexts() == null ? getHistoricalDataContexts(indicatorConfig.getModelContextFields(), indicator) : getHistoricalDataContexts(historicalDataConfig.getContexts(), indicator);
-            aggregation = aggregationDataPopulator.createAggregationData(timeRange, contexts, schema, featureName, anomalyValue, historicalDataConfig);
+            boolean skipAnomaly = historicalDataConfig.getSkipAnomaly() == null ? false : historicalDataConfig.getSkipAnomaly();
+            aggregation = aggregationDataPopulator.createAggregationData(timeRange, contexts, schema, featureName, anomalyValue, historicalDataConfig, skipAnomaly);
             aggregations.add(aggregation);
         }
 
@@ -125,16 +126,6 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
 
         return historicalData;
     }
-
-    private Map<String, String> getHistoricalDataContexts(List<String> contexts, Indicator indicator){
-        return contexts.stream().collect(Collectors.toMap(
-                Function.identity(),
-                contextFieldName -> indicator.getContexts().get(contextFieldName),
-                (oldValue, newValue) -> oldValue,
-                LinkedHashMap::new));
-
-    }
-
 
     @Override
     public String getType() {

@@ -1403,6 +1403,7 @@ indicators:
         featureName: maxSumOfBytesSentBySrcIpToDomainOutboundTlsHourly
         contexts:
           - domain.name
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: maxSumOfBytesSentBySrcIpToSslSubjectOutboundTlsHourly

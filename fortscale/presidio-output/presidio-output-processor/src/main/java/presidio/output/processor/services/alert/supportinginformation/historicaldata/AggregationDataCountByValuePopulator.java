@@ -24,7 +24,7 @@ public class AggregationDataCountByValuePopulator implements AggregationDataPopu
     @Override
     public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema,
                                              String featureName, String anomalyValue,
-                                             HistoricalDataConfig historicalDataConfig) {
+                                             HistoricalDataConfig historicalDataConfig, boolean skipAnomaly) {
 
         // Get the daily histograms.
         // Each daily histogram has a map from a feature value to its number of occurrences on that day.
@@ -46,7 +46,7 @@ public class AggregationDataCountByValuePopulator implements AggregationDataPopu
 
         // Convert each entry in the map to a Bucket instance.
         List<Bucket<String, Double>> buckets = featureValueToNumberOfDaysMap.entrySet().stream()
-                .map(entry -> new Bucket<>(entry.getKey(), entry.getValue(), entry.getKey().equals(anomalyValue)))
+                .map(entry -> new Bucket<>(entry.getKey(), entry.getValue(),  !skipAnomaly && entry.getKey().equals(anomalyValue)))
                 .collect(Collectors.toList());
 
         return new CountAggregation(buckets, contexts);

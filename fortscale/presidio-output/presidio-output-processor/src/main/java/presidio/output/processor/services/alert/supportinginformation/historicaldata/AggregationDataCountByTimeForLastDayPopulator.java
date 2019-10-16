@@ -23,7 +23,7 @@ public class AggregationDataCountByTimeForLastDayPopulator implements Aggregatio
     }
 
     @Override
-    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly) {
 
         List<Bucket<String, Double>> buckets = new ArrayList<>();
 
@@ -41,7 +41,7 @@ public class AggregationDataCountByTimeForLastDayPopulator implements Aggregatio
             for (Integer hour : dailyHistogram.getHistogram().keySet()) {
                 long epocTime = dailyHistogram.getDate().atStartOfDay().plus(hour, ChronoUnit.HOURS).toEpochSecond(ZoneOffset.UTC);
                 Double valueForHour = dailyHistogram.getHistogram().get(hour);
-                boolean isAnomaly = anomalyValue.equals(valueForHour.toString());
+                boolean isAnomaly = !skipAnomaly && anomalyValue.equals(valueForHour.toString());
                 Bucket<String, Double> bucket = new Bucket<>(Long.toString(epocTime), valueForHour, isAnomaly);
                 buckets.add(bucket);
             }

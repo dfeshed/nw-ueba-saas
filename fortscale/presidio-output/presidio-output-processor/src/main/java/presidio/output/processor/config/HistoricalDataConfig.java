@@ -26,6 +26,9 @@ public class HistoricalDataConfig {
     @JsonProperty("contexts")
     private List<String> contexts;
 
+    @JsonProperty("skipAnomaly")
+    private Boolean skipAnomaly;
+
     @JsonProperty("type")
     public String getType() {
         return type;
@@ -64,5 +67,10 @@ public class HistoricalDataConfig {
     @JsonProperty("contexts")
     public void setContexts(List<String> contexts) {
         this.contexts = contexts;
+    }
+
+    @JsonProperty("skipAnomaly")
+    public Boolean getSkipAnomaly() {
+        return skipAnomaly;
     }
 }

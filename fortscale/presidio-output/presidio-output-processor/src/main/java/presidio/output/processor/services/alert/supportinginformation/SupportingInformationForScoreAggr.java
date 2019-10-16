@@ -124,17 +124,13 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
         Schema schema = indicatorConfig.getSchema();
         String anomalyValue = getAnomalyValue(indicator, indicatorConfig);
-        Map<String, String> modelContexts = indicatorConfig.getModelContextFields().stream().collect(Collectors.toMap(
-                Function.identity(),
-                field -> indicator.getContexts().get(field),
-                (oldValue, newValue) -> oldValue,
-                LinkedHashMap::new));
-
 
         for(HistoricalDataConfig historicalDataConfig : historicalDataConfigList) {
             AggregationDataPopulator aggregationDataPopulator = aggregationDataPopulatorFactory.createAggregationDataPopulation(historicalDataConfig.getType());
             String featureName = historicalDataConfig.getFeatureName();
-            Aggregation aggregation = aggregationDataPopulator.createAggregationData(timeRange, modelContexts, schema, featureName, anomalyValue, historicalDataConfig);
+            Map<String, String> contexts = historicalDataConfig.getContexts() == null ? getHistoricalDataContexts(indicatorConfig.getModelContextFields(), indicator) : getHistoricalDataContexts(historicalDataConfig.getContexts(), indicator);
+            boolean skipAnomaly = historicalDataConfig.getSkipAnomaly() == null ? false : historicalDataConfig.getSkipAnomaly();
+            Aggregation aggregation = aggregationDataPopulator.createAggregationData(timeRange, contexts, schema, featureName, anomalyValue, historicalDataConfig, skipAnomaly);
             aggregations.add(aggregation);
         }
 

@@ -24,7 +24,7 @@ public interface AggregationDataPopulator {
      * @return Aggregation data with anomaly value indication
      */
 
-    Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig);
+    Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly);
 
     String getType();
 

@@ -25,7 +25,7 @@ public class AggregationDataCountByWeekdayPopulator implements AggregationDataPo
     }
 
     @Override
-    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly) {
 
         // map of day of week -> <hour -> count>
         Map<Integer, Map<Integer, Double>> weekdayMap = new HashMap<Integer, Map<Integer, Double>>();
@@ -74,7 +74,7 @@ public class AggregationDataCountByWeekdayPopulator implements AggregationDataPo
             for (Integer hour: weekdayMap.get(dayOfWeek).keySet()) {
 
                 Double valueInHour =   weekdayMap.get(dayOfWeek).get(hour);
-                boolean anomaly = anomalyDayOfWeek == dayOfWeek.intValue() && anomalyHourOfWeek == hour.intValue();
+                boolean anomaly = !skipAnomaly && anomalyDayOfWeek == dayOfWeek.intValue() && anomalyHourOfWeek == hour.intValue();
                 Bucket<String, Integer> hourlyBucket = new Bucket<String, Integer>(hour.toString(), valueInHour.intValue(), anomaly);
                 dayOfweekHours.add(hourlyBucket);
             }

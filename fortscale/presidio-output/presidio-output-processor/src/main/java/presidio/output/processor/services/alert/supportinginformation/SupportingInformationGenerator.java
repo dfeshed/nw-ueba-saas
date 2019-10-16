@@ -10,9 +10,12 @@ import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.processor.services.alert.AlertServiceImpl;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public interface SupportingInformationGenerator {
 
@@ -54,6 +57,15 @@ public interface SupportingInformationGenerator {
 
         logger.debug("building supporting info for feature {}, indicator ID {} has been completed", adeAggregationRecord.getFeatureName(), adeAggregationRecord.getId());
         return indicators;
+    }
+
+    default Map<String, String> getHistoricalDataContexts(List<String> contexts, Indicator indicator){
+        return contexts.stream().collect(Collectors.toMap(
+                Function.identity(),
+                contextFieldName -> indicator.getContexts().get(contextFieldName),
+                (oldValue, newValue) -> oldValue,
+                LinkedHashMap::new));
+
     }
 
     List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize, String entityType, String entityId) throws Exception;
