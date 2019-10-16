@@ -4,12 +4,14 @@
 #
 
 # statics
-BACKUP_HOME="/etc/elasticsearch/backup"
+ELASTICSEARCH_HOME="/etc/elasticsearch/backup"
 REST_API_LOCATION="http://localhost:9200"
 ARCHIVE_API_ENDPOINT="_snapshot/ueba_backup"
 CURL_SILENT="curl --silent --output /dev/stderr"
 CURL_VERBOSE="curl -v --show-error"
-REDIS_DIR="/var/lib/redis"
+REDIS_HOME="/var/lib/redis"
+REDIS_SUBDIR="redis"
+ELASTICSEARCH_SUBDIR="elasticsearch"
 
 # source nwcommon functions
 . /usr/lib/netwitness/bootstrap/resources/nwcommon || exit 2
@@ -46,7 +48,7 @@ cat <<EOF
    "type": "fs",
    "settings": {
        "compress" : true,
-       "location" : "${BACKUP_HOME}"
+       "location" : "${ELASTICSEARCH_HOME}"
    }
   }
 EOF
@@ -59,16 +61,14 @@ backup() {
   echoInfo "Backing up UEBA data..."
   # If we don't have a backup yet
   if ! [ -d "${UEBA_DUMP_DIR}" ]; then
-     # Make a directory
-     mkdir -p "${UEBA_DUMP_DIR}"
+     # Make the backup dump directories
+     mkdir -p "${UEBA_DUMP_DIR}/${ELASTICSEARCH_SUBDIR}"
+     mkdir -p "${UEBA_DUMP_DIR}/${REDIS_SUBDIR}"
   else
-     #clear the dump directory
-     rm -rf "${UEBA_DUMP_DIR:?}"/*
+     # clear the dump directory
+     rm -rf "${UEBA_DUMP_DIR}/${ELASTICSEARCH_SUBDIR}"/*
+     rm -rf "${UEBA_DUMP_DIR}/${REDIS_SUBDIR}"/*
   fi
-
-  # clear the BACKUP_HOME dir
-  rm -rf "${BACKUP_HOME:?}"/*
-
 
   echoDebug "dump dir = ${DUMP_DIR}"
 
@@ -82,10 +82,11 @@ backup() {
     -X PUT "${REST_API_LOCATION}/${ARCHIVE_API_ENDPOINT}/snapshot_ueba?wait_for_completion=true" ||
     exitError "backup to snapshot failed"
 
+  mv "${ELASTICSEARCH_HOME}"/* "${UEBA_DUMP_DIR}/${ELASTICSEARCH_SUBDIR}"
 
-  mv "${BACKUP_HOME}"/* "${UEBA_DUMP_DIR}"
+  echoInfo "- Successfully backed-up ELASTICSEARCH DATA -"
 
-  mv "${REDIS_DIR}"/* "${UEBA_DUMP_DIR}"
+  mv "${REDIS_HOME}"/* "${UEBA_DUMP_DIR}/${REDIS_SUBDIR}"
 
   echoInfo "- Successfully backed-up REDIS DATA -"
   echoInfo ""
@@ -102,8 +103,12 @@ restore() {
   if ! [ -d "${UEBA_DUMP_DIR}" ]; then
     exitError "UEBA Backup directory not found."
   else
-    rm -rf "${BACKUP_HOME:?}"/*
-    cp -rp "${UEBA_DUMP_DIR}"/* "${BACKUP_HOME}"
+    rm -rf "${UEBA_DUMP_DIR:?}/${ELASTICSEARCH_SUBDIR}"/*
+    rm -rf "${UEBA_DUMP_DIR}/${REDIS_SUBDIR}"/*
+    cp -rp "${UEBA_DUMP_DIR}"/* "${ELASTICSEARCH_HOME}"
+    echoInfo "- Successfully restored ELASTICSEARCH DATA -"
+    cp "${UEBA_DUMP_DIR}/${REDIS_SUBDIR}"/* "${REDIS_HOME}"
+    echoInfo "- Successfully restored REDIS DATA -"
   fi
 
   #create snapshot fs if it doesn't exist
@@ -132,9 +137,6 @@ restore() {
     -d "{\"operations\":[]}" ||
     exitError "Redistributing the configuration server parameters failed"
 
-  mv "${UEBA_DUMP_DIR}"/*.rdb "${REDIS_DIR}"
-
-  echoInfo "- Successfully restored REDIS DATA -"
   echoInfo ""
   echoInfo "-----------------------------------"
   echoInfo "- Successfully restored UEBA DATA -"
