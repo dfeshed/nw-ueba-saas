@@ -153,7 +153,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                 try {
                     JSONArray indicatorsEventsList = indicatorEvents.getJSONArray("events");
                     softly.assertThat(indicatorsEventsList.length())
-                            .as(url + "\nEmpty response body")
+                            .as(url + "\nIndicator has empty events array.")
                             .isGreaterThan(0);
 
 
