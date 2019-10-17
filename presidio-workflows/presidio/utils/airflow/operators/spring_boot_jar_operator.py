@@ -28,6 +28,39 @@ RETRY_RUNNING_STATE = "RUNNING"
 RETRY_FAIL_STATE = "FAIL"
 RETRY_SUCCESS_STATE = "SUCCESS"
 
+_BASH_OPERATOR_INIT_METHOD_ARGUMENT_NAMES = [
+    "task_id",
+    "owner",
+    "email",
+    "email_on_retry",
+    "email_on_failure",
+    "retries",
+    "retry_delay",
+    "retry_exponential_backoff",
+    "max_retry_delay",
+    "start_date",
+    "end_date",
+    "schedule_interval",
+    "depends_on_past",
+    "wait_for_downstream",
+    "dag",
+    "params",
+    "default_args",
+    "adhoc",
+    "priority_weight",
+    "queue",
+    "pool",
+    "sla",
+    "execution_timeout",
+    "on_failure_callback",
+    "on_success_callback",
+    "on_retry_callback",
+    "trigger_rule",
+    "resources",
+    "run_as_user",
+    "task_concurrency"
+]
+
 
 class SpringBootJarOperator(BashOperator):
     """
@@ -90,15 +123,20 @@ class SpringBootJarOperator(BashOperator):
         if self._should_run_clean_command_before_retry(kwargs):
             kwargs['params']['retry_command'] = self.get_retry_command()
 
-        super(SpringBootJarOperator, self).__init__(retries=retry_args['retries'],
-                                                    retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
-                                                    retry_exponential_backoff=retry_args['retry_exponential_backoff'],
-                                                    max_retry_delay=timedelta(
-                                                        seconds=int(retry_args['max_retry_delay'])),
-                                                    bash_command=bash_command, on_retry_callback=retry_callback,
-                                                    pool=pool_name,
-                                                    execution_timeout=execution_timeout,
-                                                    *args, **kwargs)
+        super(SpringBootJarOperator, self).__init__(
+            retries=retry_args['retries'],
+            retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
+            retry_exponential_backoff=retry_args['retry_exponential_backoff'],
+            max_retry_delay=timedelta(seconds=int(retry_args['max_retry_delay'])),
+            bash_command=bash_command,
+            on_retry_callback=retry_callback,
+            pool=pool_name,
+            execution_timeout=execution_timeout,
+            # BaseOperator will write a warning to the log if invalid arguments are passed to the __init__ method
+            # (i.e. arguments that are passed through *args or **kwargs/arguments that are not named), because the
+            # support for passing such arguments will be dropped in Airflow 2.0. Since the log is flooded with this
+            # warning, arguments that are not named in the __init__ method are filtered out from kwargs.
+            **{key: kwargs[key] for key in _BASH_OPERATOR_INIT_METHOD_ARGUMENT_NAMES if key in kwargs})
 
     def get_retry_callback(self, retry_fn):
         return functools.partial(SpringBootJarOperator.handle_retry, retry_fn=retry_fn)
