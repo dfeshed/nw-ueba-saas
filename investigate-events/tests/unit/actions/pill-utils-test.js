@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { setupTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
-
 import pillUtils from 'investigate-events/actions/pill-utils';
 import { CLOSE_PAREN, OPEN_PAREN, QUERY_FILTER, TEXT_FILTER, COMPLEX_FILTER } from 'investigate-events/constants/pill';
 
@@ -294,7 +293,6 @@ module('Unit | Helper | Pill Actions Utils', function(hooks) {
   });
 
   test('selectedPillIndexes return start and end indexes for selected pills (only QF, Complex, Text )', function(assert) {
-
     const pillsData = [
       { type: OPEN_PAREN, isSelected: true },
       { type: QUERY_FILTER },

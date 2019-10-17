@@ -8,15 +8,46 @@ import { fetchInvestigateData, getServiceSummary, updateSort } from './data-crea
 import { getDictionaries, queryIsRunning } from './initialization-creators';
 import { cancelEventCountStream } from './event-count-creators';
 import { cancelEventsStream } from './events-creators';
-import { getDbStartTime, getDbEndTime, hasMinimumCoreServicesVersionForColumnSorting } from '../reducers/investigate/services/selectors';
-import { useDatabaseTime, selectedTimeRange } from '../reducers/investigate/query-node/selectors';
+import { replaceAllGuidedPills } from './pill-creators';
+import {
+  getDbStartTime,
+  getDbEndTime,
+  hasMinimumCoreServicesVersionForColumnSorting
+} from '../reducers/investigate/services/selectors';
+import { useDatabaseTime, selectedTimeRange, isDirty } from '../reducers/investigate/query-node/selectors';
 import {
   getCurrentPreferences,
-  getDefaultPreferences
+  getDefaultPreferences,
+  selectedColumnGroup
 } from 'investigate-events/reducers/investigate/data-selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { SORT_ORDER, areAllEventsSelected, nestChildEvents } from 'investigate-events/reducers/investigate/event-results/selectors';
+import {
+  SORT_ORDER,
+  areAllEventsSelected,
+  nestChildEvents
+} from 'investigate-events/reducers/investigate/event-results/selectors';
 import { isConsoleEmpty } from 'investigate-events/reducers/investigate/query-stats/selectors';
+
+/**
+ * reset sort state to ensure the column being sorted on exists
+ * time is the default sort meta, and has it's own default in preferences
+ * @param {object} prefs  e.g. { currentReconView: "PACKET", isHeaderOpen: true, isMetaShown: true, ... }
+ * @param {*} dispatch
+ */
+const _resetSortState = (dispatch, prefs) => {
+  const sortDirection = (prefs && prefs.eventTimeSortOrder) || SORT_ORDER.ASC;
+  const sortField = 'time';
+  dispatch(updateSort('time', sortDirection));
+  const params = updateUrl(window.location.search, {
+    sortField,
+    sortDir: sortDirection
+  });
+  history.pushState(
+    null,
+    document.querySelector('title').innerHTML,
+    `${window.location.pathname}?${params}`
+  );
+};
 
 /**
  *
@@ -226,24 +257,63 @@ export const setColumnGroup = (selectedGroup) => {
     if (hasMinimumCoreServicesVersionForColumnSorting(getState())) {
       // reset sort state to ensure the column being sorted on exists
       // time is the default sort meta, and has it's own default in preferences
-      const sortDirection = (prefs && prefs.eventTimeSortOrder) || SORT_ORDER.ASC;
-      const sortField = 'time';
-      dispatch(updateSort('time', sortDirection));
-      const params = updateUrl(window.location.search, {
-        sortField,
-        sortDir: sortDirection
-      });
-      history.pushState(
-        null,
-        document.querySelector('title').innerHTML,
-        `${window.location.pathname}?${params}`
-      );
+      _resetSortState(dispatch, prefs);
     }
-
     dispatch(cancelQuery(false));
     dispatch(setReconClosed());
     dispatch(isQueryExecutedByColumnGroup(true));
     dispatch(fetchInvestigateData());
+  };
+};
+
+/**
+ * select a profile and use its column group and prequery conditions
+ * @param {object} profile profile to select
+ * @param {function} executeQuery function to execute query
+ */
+export const setProfile = (profile, executeQuery) => {
+  return (dispatch, getState) => {
+    const currentState = getState();
+    const newQueryPillsData = profile.preQueryPillsData;
+    const currentColumnGroupId = selectedColumnGroup(currentState);
+    const newColumnGroupId = profile.columnGroup.id;
+
+    // replace any existing pills with profile's prequery pills
+    // whether column group changed or not
+    dispatch(replaceAllGuidedPills(newQueryPillsData));
+
+    // if new profile's column group is different than currently selected column group
+    if (newColumnGroupId !== currentColumnGroupId) {
+      const newState = getState();
+
+      // apply the new column group
+      dispatch({
+        type: ACTION_TYPES.SET_SELECTED_COLUMN_GROUP,
+        payload: newColumnGroupId
+      });
+      // Extracts (and merges) all the preferences from redux state and sends to the backend for persisting.
+      const prefService = lookup('service:preferences');
+      prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(newState), getDefaultPreferences(newState));
+      const prefs = newState.investigate.data.eventAnalysisPreferences;
+
+      // reset sort state
+      if (hasMinimumCoreServicesVersionForColumnSorting(getState())) {
+        _resetSortState(dispatch, prefs);
+      }
+
+      dispatch(cancelQuery(false));
+      dispatch(setReconClosed());
+
+      // if query changed, execute
+      // executeQuery takes place only if column group and query both changed
+      if (isDirty(newState)) {
+        executeQuery();
+      } else {
+        // if query did not change, fetch data
+        dispatch(isQueryExecutedByColumnGroup(true));
+        dispatch(fetchInvestigateData());
+      }
+    }
   };
 };
 

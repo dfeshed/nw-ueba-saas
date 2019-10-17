@@ -72,7 +72,7 @@ export const isPillBeingEdited = createSelector(
   (pills) => pills.some((d) => d.isEditing)
 );
 
-const _isDirty = createSelector(
+export const isDirty = createSelector(
   [_currentQueryHash, _serviceId, _startTime, _endTime, pillsData, _isFreeFormTextUpdated, isPillBeingEdited],
   (currentQueryHash, serviceId, startTime, endTime, pills, isFreeFormTextUpdated, isPillBeingEdited) => {
     // We check to see if a pill is being edited because the _pillData is
@@ -115,7 +115,7 @@ export const useDatabaseTime = createSelector(
 );
 
 export const hasRequiredValuesToQuery = createSelector(
-  [selectedService, hasSummaryData, selectedTimeRange, _isTimeRangeInvalid, _isDirty],
+  [selectedService, hasSummaryData, selectedTimeRange, _isTimeRangeInvalid, isDirty],
   (selectedService, hasSummaryData, selectedTimeRange, isTimeRangeInvalid, isDirty) => {
     return !!(selectedService && selectedService.id && hasSummaryData && selectedTimeRange && !isTimeRangeInvalid && isDirty);
   }
@@ -144,7 +144,7 @@ export const isOnGuided = createSelector(
  * @public
  */
 export const getActiveQueryNode = createSelector(
-  [_endTime, _isDirty, _metaFilter, _previousQueryParams, _serviceId, _startTime],
+  [_endTime, isDirty, _metaFilter, _previousQueryParams, _serviceId, _startTime],
   (endTime, isDirty, metaFilter, previousQueryParams, serviceId, startTime) => {
     if (isDirty && previousQueryParams) {
       return previousQueryParams;

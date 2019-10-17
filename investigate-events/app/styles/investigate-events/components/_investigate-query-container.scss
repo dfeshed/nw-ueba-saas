@@ -154,7 +154,7 @@
                     }
                   }
                 }
-                .prequery-pill{
+                .prequery-pill {
                   white-space: nowrap;
                   overflow: hidden;
                   text-overflow: ellipsis;
@@ -180,7 +180,25 @@
                     margin-right: 0.5rem;
                   }
                 }
-              }
+                .prequery-pill-operator {
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  display: inline-block;
+                  border-width: 1px;
+                  border-style: none;
+                  border-radius: 0.25rem;
+                  flex: 0 1 auto;
+                  margin: 0 4px 4px 0;
+                  padding: 0.3rem;
+                  min-height: 2rem;
+                  line-height: 2rem;
+                  transition: border-color 0.5s;
+                  min-width: 0;
+                  width: auto;
+                  max-width: 96%;
+                }
+              } 
             }
           }
           .list-body {

@@ -9,9 +9,10 @@ import {
   PROFILES_TOPIC_ID
 } from 'investigate-shared/constants/profiles';
 import { enrichedProfiles } from 'investigate-events/reducers/investigate/profile/selectors';
+import { setProfile } from 'investigate-events/actions/interaction-creators';
 
 const dispatchToActions = {
-  // TODO setProfile
+  setProfile
 };
 
 const stateToComputed = (state) => ({
@@ -21,7 +22,7 @@ const stateToComputed = (state) => ({
 const ProfileSelectorWrapper = Component.extend({
   layout,
   classNames: ['profile-selector-wrapper'],
-  // TODO eventBus: service(),
+
   modelName,
   listName,
   stateLocation,
@@ -35,10 +36,8 @@ const ProfileSelectorWrapper = Component.extend({
   },
 
   actions: {
-    // TODO
-    selectProfile() {
-      // this.get('eventBus').trigger('rsa-content-tethered-panel-hide-tableSearchPanel');
-      // this.send('setProfile', profile);
+    selectProfile(profile) {
+      this.send('setProfile', profile, this.get('executeQuery'));
     }
   }
 });

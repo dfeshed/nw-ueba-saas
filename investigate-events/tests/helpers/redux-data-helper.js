@@ -3,6 +3,7 @@ import CONFIG from 'investigate-events/reducers/investigate/config';
 import EventColumnGroups from '../data/subscriptions/column-group/findAll/data';
 import METAKEYS from '../data/subscriptions/meta-key-cache/findAll/data';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
+import { createQueryHash } from 'investigate-events/util/query-hash';
 
 export const DEFAULT_PROFILES = [
   {
@@ -133,7 +134,7 @@ export const DEFAULT_ALIASES = {
   }
 };
 
-const DEFAULT_PILLS_DATA = [{
+export const DEFAULT_PILLS_DATA = [{
   id: '1',
   meta: 'a',
   operator: '=',
@@ -162,7 +163,7 @@ const DEFAULT_PILLS_DATA = [{
   complexFilterText: undefined
 }];
 
-const COMPLEX_PILL_DATA = [{
+export const COMPLEX_PILL_DATA = [{
   id: '1',
   meta: undefined,
   operator: undefined,
@@ -174,7 +175,7 @@ const COMPLEX_PILL_DATA = [{
   complexFilterText: 'foo = bar'
 }];
 
-const TEXT_PILL_DATA = [{
+export const TEXT_PILL_DATA = [{
   id: '1',
   type: 'text',
   isEditing: false,
@@ -583,6 +584,13 @@ export default class DataHelper {
     if (!flag) {
       // Add an invalid pill
       _set(this.state, 'queryNode.pillsData', INVALID_PILL_DATA);
+    }
+    return this;
+  }
+
+  currentQueryHash(service, startTime, endTime, pills) {
+    if (service && startTime && endTime && pills) {
+      _set(this.state, 'queryNode.currentQueryHash', createQueryHash(service, startTime, endTime, pills));
     }
     return this;
   }

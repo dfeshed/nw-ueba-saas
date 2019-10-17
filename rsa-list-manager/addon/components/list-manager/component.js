@@ -53,11 +53,10 @@ const ListManager = Component.extend({
 
   didReceiveAttrs() {
     // attrs received after didInsertElement - send them
-    // in order to set list and persist previous selection
+    // in order to persist previous selection
     const updatedProperties =
       this.getProperties(
         'stateLocation',
-        'list',
         'selectedItemId',
       );
     this.send('initializeListManager', updatedProperties);

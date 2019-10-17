@@ -526,7 +526,11 @@ export default {
       metaGroup: 'Meta Group',
       columnGroup: 'Column Group',
       profileName: 'Profile Name',
-      prequeryConditions: 'Pre-Query Conditions'
+      prequeryConditions: {
+        prequeryConditions: 'Pre-Query Conditions',
+        or: 'OR',
+        and: 'AND'
+      }
     },
     splitSessionLabels: {
       withSplit: 'This event is part of a split session (split.session: {{split}}) matching these parameters: {{{tuple}}}',

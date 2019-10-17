@@ -8,11 +8,10 @@ const ProfileSelector = Component.extend({
   listName: null,
   stateLocation: null,
   profiles: null, // list of profiles
-  selectProfile: null, // TODO action
+  selectProfile: null,
   helpId: null,
   actions: {
     setProfile(profile) {
-      // TODO
       this.get('selectProfile')(profile);
     }
   }

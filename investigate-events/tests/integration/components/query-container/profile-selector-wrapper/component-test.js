@@ -20,7 +20,8 @@ module('Integration | Component | Profile Selector Wrapper', function(hooks) {
     };
     initialize(this.owner);
   });
-
+  const profileSelectorWrapperSelector = '.profile-selector-wrapper';
+  const profileSelectorSelector = '.rsa-investigate-query-container__profile-selector';
   const profiles1 = [
     ...DEFAULT_PROFILES,
     {
@@ -40,6 +41,17 @@ module('Integration | Component | Profile Selector Wrapper', function(hooks) {
   test('it renders with proper class', async function(assert) {
     new ReduxDataHelper(setState).profiles(profiles1).build();
     await render(hbs`{{query-container/profile-selector-wrapper}}`);
-    assert.equal(findAll('.profile-selector-wrapper').length, 1, 'Shall render profile-selector-wrapper component');
+    assert.equal(findAll(profileSelectorWrapperSelector).length, 1, 'Shall render profile-selector-wrapper component');
+    assert.equal(findAll(profileSelectorSelector).length, 1,
+      'Shall render profile-selector component if profiles exists');
+  });
+
+  test('it does not render profile selector if profiles list does not exist', async function(assert) {
+    // creating state with no profiles
+    new ReduxDataHelper(setState).build();
+    await render(hbs`{{query-container/profile-selector-wrapper}}`);
+    assert.equal(findAll(profileSelectorWrapperSelector).length, 1, 'Shall render profile-selector-wrapper component');
+    assert.equal(findAll(profileSelectorSelector).length, 0,
+      'Shall not render profile-selector component if profiles does not exist');
   });
 });

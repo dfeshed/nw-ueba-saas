@@ -6,5 +6,5 @@ export default Component.extend({
   layout,
   classNames: ['profile-details'],
   i18n: inject(),
-  profile: null // profile to display,
+  profile: null // profile to display
 });

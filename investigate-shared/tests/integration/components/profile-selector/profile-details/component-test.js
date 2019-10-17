@@ -16,8 +16,47 @@ module('Integration | Component | Profile Details', function(hooks) {
   const metaGroupNameSelector = '.meta-group-name';
   const columnGroupNameSelector = '.column-group-name';
   const prequeryConditionsSelector = '.prequery-conditions.scroll-box.readonly';
+  const prequeryConditionsItemSelector = `${prequeryConditionsSelector} ul li`;
+  const prequeryPillSelector = `${prequeryConditionsItemSelector}.prequery-pill`;
+  const prequeryOperatorSelector = `${prequeryConditionsItemSelector}.prequery-pill-operator`;
+  const prequeryTextIconSelector = `${prequeryPillSelector} i.is-text.rsa-icon.rsa-icon-search`;
   const nameSelector = '.name';
   const valueSelector = '.value';
+
+  const pillsData1 = [
+    {
+      id: '1',
+      meta: 'a',
+      operator: '=',
+      value: '\'x\'',
+      type: 'query'
+    },
+    {
+      id: '2',
+      type: 'operator-and'
+    },
+    {
+      id: '3',
+      meta: 'b',
+      operator: '=',
+      value: '\'y\'',
+      type: 'query'
+    }
+  ];
+  const pillsData2 = [
+    ...pillsData1,
+    {
+      id: '100',
+      type: 'operator-or'
+    },
+    {
+      id: '101',
+      meta: 'b',
+      operator: '=',
+      value: '\'zzz\'',
+      type: 'text'
+    }
+  ];
   const profile1 = {
     id: '2222',
     name: 'Some Profile',
@@ -34,10 +73,11 @@ module('Integration | Component | Profile Details', function(hooks) {
       name: 'Meta Group 1'
     },
     preQuery: 'service=80',
+    preQueryPillsData: pillsData1,
     contentType: 'USER'
   };
 
-  test('it renders profile name correctly', async function(assert) {
+  test('it renders profile properties correctly', async function(assert) {
     this.set('profile', profile1);
     await render(hbs`
       {{profile-selector/profile-details profile=profile}}
@@ -72,5 +112,37 @@ module('Integration | Component | Profile Details', function(hooks) {
     assert.equal(findAll(`${prequeryConditionsSelector} ${nameSelector}`).length, 1, 'Shall render prequery-conditions name div with correct class');
     assert.equal(findAll(`${prequeryConditionsSelector} ${valueSelector}`).length, 1, 'Shall render prequery-conditions value div with correct class');
     assert.equal(findAll(`${prequeryConditionsSelector} ul.value`).length, 1, 'Shall render prequery-conditions ul');
+  });
+
+  test('it renders correct number of pills with correct text', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    this.set('profile', profile1);
+    await render(hbs`
+      {{profile-selector/profile-details profile=profile}}
+    `);
+    assert.equal(findAll(prequeryPillSelector).length, 2, 'Shall render correct number of pills');
+    assert.equal(findAll(prequeryOperatorSelector).length, 1, 'Shall render correct number of operators');
+    assert.equal(findAll(prequeryConditionsItemSelector).length, 3,
+      'Shall render correct number of items for prequery conditions');
+    assert.equal(find(prequeryPillSelector).innerText.trim(), 'a = \'x\'', 'Shall render correct text in pill');
+    assert.equal(find(prequeryOperatorSelector).innerText.trim(),
+      translation.t('investigate.profile.prequeryConditions.and'), 'Shall render correct text for operator');
+    assert.equal(findAll(prequeryTextIconSelector).length, 0, 'Shall not render icon in non-text pills');
+  });
+
+  test('it renders icon correctly to indicate text pill in prequery conditions', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    this.set('profile', { ...profile1, preQueryPillsData: pillsData2 });
+    await render(hbs`
+      {{profile-selector/profile-details profile=profile}}
+    `);
+    assert.equal(findAll(prequeryPillSelector).length, 3, 'Shall render correct number of pills');
+    assert.equal(findAll(prequeryOperatorSelector).length, 2, 'Shall render correct number of operators');
+    assert.equal(findAll(prequeryConditionsItemSelector).length, 5, 'Shall render correct number of items for prequery conditions');
+    assert.equal(findAll(prequeryTextIconSelector).length, 1, 'Shall render icon to indicate text pill');
+    assert.equal(findAll(prequeryOperatorSelector)[0].innerText.trim(),
+      translation.t('investigate.profile.prequeryConditions.and'), 'Shall render correct text for operator');
+    assert.equal(findAll(prequeryOperatorSelector)[1].innerText.trim(),
+      translation.t('investigate.profile.prequeryConditions.or'), 'Shall render correct text for operator');
   });
 });

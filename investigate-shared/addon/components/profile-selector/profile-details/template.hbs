@@ -15,24 +15,40 @@
   <div class='value'>{{profile.columnGroup.name}}</div>
 </div>
 <div class='prequery-conditions scroll-box readonly'>
-  <div class='name'>{{t 'investigate.profile.prequeryConditions'}}</div>
+  <div class='name'>{{t 'investigate.profile.prequeryConditions.prequeryConditions'}}</div>
   <ul class='value'>
     {{#each profile.preQueryPillsData as |item|}}
-      <li class='prequery-pill'>
-        {{#if item.complexFilterText}}
+      {{#if item.complexFilterText}}
+        <li class='prequery-pill'>
           <span title={{item.complexFilterText}}>
             {{item.complexFilterText}}
           </span>
-        {{else}}
-          {{!-- icon to indicate text pill --}}
+        </li>
+        {{!-- OR operator --}}
+      {{else if (eq item.type 'operator-or')}}
+        <li class='prequery-pill-operator'>
+          <span title={{t 'investigate.profile.prequeryConditions.or'}}>
+            {{t 'investigate.profile.prequeryConditions.or'}}
+          </span>
+        </li>
+        {{!-- AND operator --}}
+      {{else if (eq item.type 'operator-and')}}
+        <li class='prequery-pill-operator'>
+          <span title={{t 'investigate.profile.prequeryConditions.and'}}>
+            {{t 'investigate.profile.prequeryConditions.and'}}
+          </span>
+        </li>
+      {{else}}
+        {{!-- icon to indicate text pill --}}
+        <li class='prequery-pill'>
           {{#if (eq item.type 'text')}}
             {{rsa-icon name='search' class='is-text' title=(t 'investigate.queryStats.textFilter')}}
           {{/if}}
           <span title={{concat item.meta item.operator item.value}}>
             {{item.meta}} {{item.operator}} {{item.value}}
           </span>
-        {{/if}}
-      </li>
+        </li>
+      {{/if}}
     {{/each}}
   </ul>
 </div>
