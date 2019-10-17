@@ -67,6 +67,16 @@ public class SessionSplitStoreRedis {
         return (SessionSplitTransformerValue) valueOperations.get(key);
     }
 
+    /**
+     * Remove sessionSplitKey from the store
+     * @param sessionSplitTransformerKey
+     */
+    public void remove(SessionSplitTransformerKey sessionSplitTransformerKey) {
+        String key = getRedisKey(sessionSplitTransformerKey.getSrcIp(), sessionSplitTransformerKey.getDstIp(), sessionSplitTransformerKey.getSrcPort(), sessionSplitTransformerKey.getDstPort());
+        valueOperations.getOperations().delete(key);
+    }
+
+
     private static String getRedisKey(String srcIp, String dstIp, String srcPort, String dstPort) {
         return String.format("%s:%s:%s:%s:%s", REDIS_KEY_PREFIX, srcIp, dstIp, srcPort, dstPort);
     }

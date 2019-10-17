@@ -14,7 +14,7 @@ public interface ISessionSplitStoreCache {
     void write(SessionSplitTransformerKey sessionSplitTransformerKey, SessionSplitTransformerValue sessionSplitTransformerValue);
 
     /**
-     * Remove sessionSplitKey
+     * Remove sessionSplitKey from the cache and redis
      *
      * @param sessionSplitTransformerKey
      */
