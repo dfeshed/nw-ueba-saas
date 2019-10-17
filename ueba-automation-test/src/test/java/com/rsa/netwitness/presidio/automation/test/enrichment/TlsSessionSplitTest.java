@@ -12,6 +12,7 @@ import fortscale.domain.core.entityattributes.Ja3;
 import fortscale.domain.core.entityattributes.SslSubject;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.util.Lists;
+import org.junit.Ignore;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,7 +49,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         assertHelper.assertAll();
     }
 
-    @Test
+    @Ignore
     public void zero_split_session_before_12_hours_is_ignored() {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.maxIntervalTestDataParams;
@@ -66,7 +67,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
         result.sort(Comparator.comparing(TlsEnrichStoredData::getId));
         Optional<Integer> first = IntStream.range(0, result.size()).filter(i -> result.get(i).getEventId().startsWith(MARKER)).boxed().findFirst();
-        if (!first.isPresent()) fail("First missing event id marker is missing");
+        if (first.isEmpty()) fail("First missing event id marker is missing");
         int firstIndex = first.get();
 
         /** enrichment should be until the first missing element*/
@@ -84,7 +85,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
         result.sort(Comparator.comparing(TlsEnrichStoredData::getId));
         Optional<Integer> first = IntStream.range(0, result.size()).filter(i -> result.get(i).getEventId().startsWith(MARKER)).boxed().findFirst();
-        if (!first.isPresent()) fail("First duplicate event id marker is missing");
+        if (first.isEmpty()) fail("First duplicate event id marker is missing");
         int firstIndex = first.get();
 
         /** enrichment should be until the first duplicate element*/
@@ -169,15 +170,15 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
 
 
         private SoftAssertions softly = new SoftAssertions();
-        private List<TlsEnrichStoredData> enreached = Lists.emptyList();
-        private List<TlsEnrichStoredData> notEnreached = Lists.emptyList();
+        private List<TlsEnrichStoredData> enriched = Lists.emptyList();
+        private List<TlsEnrichStoredData> notEnriched = Lists.emptyList();
         private Function<TlsEnrichStoredData, String> toString = e -> "[eventId=" + eventId.apply(e)
                 + ", sslSubject=" + sslSubject.apply(e) + ", ja3=" + ja3.apply(e) + ", ja3s=" + ja3s.apply(e)
                 + ", sslCas={" + String.join(",", sslCas.apply(e)) + "} ]";
 
 
         void assertEnrichmentFieldsMatchExpected(List<TlsEnrichStoredData> actual, SessionSplitEnrichmentData.TestDataParameters expected) {
-            enreached = actual;
+            enriched.addAll(actual);
             softly.assertThat(actual).extracting(sslSubject).as("SslSubject").isNotNull().containsOnly(expected.sslSubject);
             softly.assertThat(actual).extracting(ja3).as("Ja3").isNotNull().containsOnly(expected.ja3);
             softly.assertThat(actual).extracting(ja3s).as("Ja3s").isNotNull().containsOnly(expected.ja3s);
@@ -185,7 +186,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         }
 
         void assertEnrichmentFieldsAreNull(List<TlsEnrichStoredData> actual) {
-            notEnreached = actual;
+            notEnriched.addAll(actual);
             softly.assertThat(actual).extracting(sslSubject).as("SslSubject").containsOnlyNulls();
             softly.assertThat(actual).extracting(ja3).as("Ja3").containsOnlyNulls();
             softly.assertThat(actual).extracting(ja3s).as("Ja3s").containsOnlyNulls();
@@ -195,9 +196,9 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         void assertAll() {
             if (! softly.wasSuccess()) {
                 LOGGER.error("Session split events expected to be enriched:");
-                LOGGER.error(enreached.stream().map(toString).collect(Collectors.joining("\n")));
+                LOGGER.error(enriched.stream().map(toString).collect(Collectors.joining("\n")));
                 LOGGER.error("Session split events expected to NOT be enriched:");
-                LOGGER.error(notEnreached.stream().map(toString).collect(Collectors.joining("\n")));
+                LOGGER.error(notEnriched.stream().map(toString).collect(Collectors.joining("\n")));
             }
 
             softly.assertAll();
