@@ -11,7 +11,7 @@ const visualsInitialState = Immutable.from({
   showDeleteHostsModal: false,
   activeSystemInformationTab: 'HOST_ENTRIES',
   isProcessDetailsView: false,
-  showHostDetailsFilter: false
+  showHostDetailsFilter: true
 });
 
 const getStateKey = (tabName, subTabName) => {

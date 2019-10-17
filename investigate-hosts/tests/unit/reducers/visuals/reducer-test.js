@@ -16,7 +16,7 @@ test('should return the initial state', function(assert) {
     activeSystemInformationTab: 'HOST_ENTRIES',
     activePropertyPanelTab: 'HOST_DETAILS',
     isProcessDetailsView: false,
-    showHostDetailsFilter: false
+    showHostDetailsFilter: true
   });
 });
 
@@ -41,7 +41,7 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     activeSystemInformationTab: 'HOST_ENTRIES',
     activePropertyPanelTab: 'HOST_DETAILS',
     isProcessDetailsView: false,
-    showHostDetailsFilter: false
+    showHostDetailsFilter: true
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.RESET_INPUT_DATA });

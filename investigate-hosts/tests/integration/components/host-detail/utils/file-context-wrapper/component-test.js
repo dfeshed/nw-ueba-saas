@@ -10,7 +10,6 @@ import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import drivers from '../../../state/driver.state';
 import Immutable from 'seamless-immutable';
-import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 
 const config = [
@@ -780,7 +779,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
   });
   test('Filter panel test file-context-wrapper with isShowOpenFilterButton', async function(assert) {
 
-    assert.expect(3);
+    assert.expect(2);
 
     const hostDetails = {
       machineIdentity: {
@@ -833,8 +832,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     this.set('subTabs', [{ name: 'test', label: 'test' }]);
     new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig subTabs=subTabs isShowOpenFilterButton=true}}`);
-    assert.equal(findAll('.rsa-icon-filter-2').length, 2, 'on clicking Fiters button filter panel opens up');
-    assert.equal(findAll('.close-filter').length, 1, 'Filters button will hide on opening of Filter panel');
+    assert.equal(findAll('.rsa-icon-filter-2').length, 1, 'on clicking Fiters button filter panel opens up');
     await click('.close-zone .rsa-form-button');
     assert.equal(findAll('.close-filter').length, 1, 'on click of close Filters button Filters button showed');
   });
@@ -893,17 +891,17 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     ];
     new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
-    assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
+    assert.equal(findAll('.close-filter').length, 0, 'Filters button will be hidden by default');
+    assert.equal(findAll('.rsa-icon-filter-2').length, 1, 'filter panel opens up by default');
+    await click('.close-zone .rsa-form-button');
+    assert.equal(findAll('.close-filter').length, 1, 'on click of close, Filters button showed');
     await click('.close-filter .rsa-form-button');
     assert.equal(findAll('.rsa-icon-filter-2').length, 1, 'on clicking Fiters button filter panel opens up');
-    assert.equal(findAll('.close-filter').length, 0, 'Filters button will hide on opening of Filter panel');
-    await click('.close-zone .rsa-form-button');
-    assert.equal(findAll('.close-filter').length, 1, 'on click of close Filters button Filters button showed');
   });
 
   test('On selecting the filter data is getting filtered', async function(assert) {
 
-    assert.expect(3);
+    assert.expect(1);
 
     const hostDetails = {
       machineIdentity: {
@@ -913,46 +911,10 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     const fileContextSelections = [];
     new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
-    assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
-    await click('.close-filter .rsa-form-button');
-    assert.equal(findAll('.rsa-icon-filter-2').length, 1, 'on clicking Fiters button filter panel opens up');
     await click('.fileProperties-signature-features .list-filter .list-filter-option');
     await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(findAll('.rsa-data-table-body-row').length, 1, 'one row is getting filtered');
   });
 
-  test('On selecting saved filter data is getting filtered', async function(assert) {
-
-    assert.expect(3);
-
-    const hostDetails = {
-      machineIdentity: {
-        agentMode: 'Advanced'
-      }
-    };
-    const fileContextSelections = [];
-    new ReduxDataHelper(setState)
-      .drivers(drivers)
-      .setSavedFilterList([
-        {
-          id: 1,
-          criteria: {
-            expressionList: [{
-              'propertyName': 'fileProperty.signature.features',
-              'restrictionType': 'IN',
-              'propertyValues': [{ 'value': 'unsigned' }]
-            }]
-          }
-        }
-      ])
-      .host(hostDetails)
-      .fileContextSelections(fileContextSelections).build();
-    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
-    assert.equal(findAll('.close-filter').length, 1, 'Fiters button displayed by default');
-    await click('.close-filter .rsa-form-button');
-    assert.equal(findAll('.rsa-icon-filter-2').length, 1, 'on clicking Fiters button filter panel opens up');
-    await clickTrigger();
-    assert.equal(findAll('.rsa-data-table-body-row').length, 1, 'one row is getting filtered');
-  });
 
 });

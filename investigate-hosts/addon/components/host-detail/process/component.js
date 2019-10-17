@@ -15,7 +15,6 @@ import { setHostDetailPropertyTab, applyDetailsFilter } from 'investigate-hosts/
 import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
 import { getColumnsConfig, hostDetailPropertyTabs, isProcessDumpDownloadSupported } from 'investigate-hosts/reducers/details/selectors';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
-import { setSavedFilter } from 'investigate-hosts/actions/data-creators/host-details';
 import summaryItems from './summary-item-config';
 import { machineOsType, hostName, isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
 import { serviceList, isInsightsAgent, isAgentMigrated } from 'investigate-hosts/reducers/hosts/selectors';
@@ -40,8 +39,6 @@ import { componentSelectionForFileType } from 'investigate-shared/utils/file-ana
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import { toggleHostDetailsFilter } from 'investigate-hosts/actions/ui-state-creators';
 import {
-  createCustomSearch,
-  deleteFilter,
   resetFilters
 } from 'investigate-shared/actions/data-creators/filter-creators';
 
@@ -104,11 +101,8 @@ const dispatchToActions = {
   getUpdatedRiskScoreContext,
   saveLocalFileCopy,
   toggleHostDetailsFilter,
-  createCustomSearch,
-  deleteFilter,
   resetFilters,
-  applyDetailsFilter,
-  setSavedFilter
+  applyDetailsFilter
 };
 
 const Container = Component.extend({
@@ -220,11 +214,6 @@ const Container = Component.extend({
       } else if ('PIVOT_ICON' === target) {
         this.get('pivot').pivotToInvestigate('machineIdentity.machineName', { machineIdentity: { machineName: item } });
       }
-    },
-
-    applySavedFilters(belongsTo, filter) {
-      this.send('setSavedFilter', filter, belongsTo);
-      this.send('applyFilters', filter.criteria.expressionList, belongsTo);
     }
   }
 

@@ -76,6 +76,13 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     assert.equal(findAll('.rsa-data-filters').length, 1, 'Filters Rendered');
   });
 
+  test('It hides saved filters, if showSavedFilters is false', async function(assert) {
+    this.set('filterState', { filter: { }, expressionList: [] });
+    this.set('filterTypes', FILTER_TYPE);
+    await render(hbs`{{endpoint/filters-wrapper showSavedFilters=false filterState=filterState filterTypes=filterTypes}}`);
+    assert.equal(findAll('.saved-filter-list').length, 0, 'Filters Rendered');
+  });
+
   test('apply filter getting called', async function(assert) {
     assert.expect(1);
     this.set('showSaveFilterButton', true);

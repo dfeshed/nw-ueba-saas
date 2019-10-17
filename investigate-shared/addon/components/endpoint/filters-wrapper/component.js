@@ -124,6 +124,12 @@ export default Component.extend({
 
   accessControl: service(),
 
+  showSavedFilters: true,
+
+  showSaveAsFilterButton: true,
+
+  showSaveFilterButton: true,
+
   didReceiveAttrs() {
     this._super(...arguments);
     const state = {

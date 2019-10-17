@@ -1,13 +1,16 @@
-{{endpoint/saved-filter-list
-  selectedFilterId=selectedFilterId
-  savedFilter=savedFilter
-  savedFilters=savedFilters
-  applyFilter=(action 'applyFilters' filterType)
-  deleteFilter=(action 'deleteSavedFilter' filterType)}}
+{{#if showSavedFilters}}
+  {{endpoint/saved-filter-list
+    selectedFilterId=selectedFilterId
+    savedFilter=savedFilter
+    savedFilters=savedFilters
+    applyFilter=(action 'applyFilters' filterType)
+    deleteFilter=(action 'deleteSavedFilter' filterType)}}
+{{/if}}
 
 {{rsa-data-filters
   config=allFilters
-  showSaveFilterButton=true
+  showSaveFilterButton=showSaveFilterButton
+  showSaveAsFilterButton=showSaveAsFilterButton
   closeEntityDetails=closeEntityDetails
   onSave=(action 'showSaveFilter')
   onFilterChange=(action 'filterChanged')
