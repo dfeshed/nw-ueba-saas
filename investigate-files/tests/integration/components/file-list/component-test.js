@@ -360,7 +360,7 @@ module('Integration | Component | file list', function(hooks) {
       assert.equal(find('.rsa-risk-score').textContent.trim(), '100', 'Risk Score is correct.');
     });
   });
-  // Yet to handle timezone
+
   test(' Date field displayed correctly', function(assert) {
     new ReduxDataHelper(initState)
       .files({ a: { firstSeenTime: 1517978621000 } })
