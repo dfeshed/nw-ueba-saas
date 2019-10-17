@@ -7,8 +7,8 @@ public class UncommonValuesEventsGen extends EventsGen {
 
     public UncommonValuesEventsGen(int dataPeriod, int uncommonStartDay, String name, String entity, EntityType entityType) {
         super(name, entity, entityType);
-        daysBackFrom = dataPeriod;
-        daysBackFromAnomaly = uncommonStartDay;
+        super.daysBackFrom = dataPeriod;
+        super.daysBackFromAnomaly = uncommonStartDay;
     }
 
     public UncommonValuesEventsGen setCommonValuesGen(final TlsRangeEventsGen gen) {

@@ -44,8 +44,8 @@ public class SslSubjectTlsAlert {
         historyGen.ja3Gen.nextRangeGenCyclic(1);
 
         TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        UnregularHoursIndicatorEventsGen eventsSupplier = new UnregularHoursIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setRegularHoursHistoryGen(abnormalValueGen)
+        UnregularHoursIndicatorEventsGen eventsSupplier = new UnregularHoursIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE);
+        eventsSupplier.setRegularHoursHistoryGen(abnormalValueGen)
                 .setUnregularHoursHistoryGenJa3(historyGen)
                 .setAnomalyDayUnregularHoursGenJa3(abnormalValueGen);
 
@@ -70,8 +70,8 @@ public class SslSubjectTlsAlert {
         historyGen.sslSubjectGen.nextRangeGenCyclic(1);
 
         TlsIndicator indicator = new TlsIndicator(alert.entity, TYPE, name);
-        UnregularHoursIndicatorEventsGen eventsSupplier = new UnregularHoursIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE)
-                .setRegularHoursHistoryGen(abnormalValueGen)
+        UnregularHoursIndicatorEventsGen eventsSupplier = new UnregularHoursIndicatorEventsGen(dataPeriod, uncommonStartDay, name, alert.entity, TYPE);
+        eventsSupplier.setRegularHoursHistoryGen(abnormalValueGen)
                 .setUnregularHoursHistoryGenSslSubject(historyGen)
                 .setAnomalyDayUnregularHoursGenSslSubject(abnormalValueGen);
 

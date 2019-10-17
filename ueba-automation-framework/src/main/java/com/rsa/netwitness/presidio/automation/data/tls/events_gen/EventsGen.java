@@ -89,8 +89,7 @@ public abstract class EventsGen {
 
     protected ITimeGenerator getTimeGen(int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo, int intervalMinutes) {
         try {
-            return new SingleTimeGeneratorFactory(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes)
-                    .createTimeGenerator();
+            return new SingleTimeGeneratorFactory(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes).createTimeGenerator();
         } catch (GeneratorException e) {
             e.printStackTrace();
         }

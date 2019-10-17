@@ -25,10 +25,10 @@ public class NetworkDataPreparation extends DataPreparationBase {
 
         /** TLS alerts generators **/
         List<TlsAlert> tlsAlerts = Stream.of(
-                new Ja3UncommonAlerts(historicalDaysBack,anomalyDay).get(),
-                new Ja3HighBytesSentAlerts(historicalDaysBack,anomalyDay).get(),
-                new SslSubjectUncommonAlerts(historicalDaysBack,anomalyDay).get(),
-                new SslSubjectHighBytesSentAlerts(historicalDaysBack,anomalyDay).get()
+                new Ja3UncommonAlerts(historicalDaysBack, anomalyDay).get(),
+                new Ja3HighBytesSentAlerts(historicalDaysBack, anomalyDay).get(),
+                new SslSubjectUncommonAlerts(historicalDaysBack, anomalyDay).get(),
+                new SslSubjectHighBytesSentAlerts(historicalDaysBack, anomalyDay).get()
 
         ).flatMap(e -> e).collect(toList());
 
