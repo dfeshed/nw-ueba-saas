@@ -170,8 +170,8 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
 
 
         private SoftAssertions softly = new SoftAssertions();
-        private List<TlsEnrichStoredData> enriched = Lists.emptyList();
-        private List<TlsEnrichStoredData> notEnriched = Lists.emptyList();
+        private List<TlsEnrichStoredData> enriched = Lists.newArrayList();
+        private List<TlsEnrichStoredData> notEnriched = Lists.newArrayList();
         private Function<TlsEnrichStoredData, String> toString = e -> "[eventId=" + eventId.apply(e)
                 + ", sslSubject=" + sslSubject.apply(e) + ", ja3=" + ja3.apply(e) + ", ja3s=" + ja3s.apply(e)
                 + ", sslCas={" + String.join(",", sslCas.apply(e)) + "} ]";
