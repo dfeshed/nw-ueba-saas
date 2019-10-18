@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { determineNewComponentPropsFromPillData, resultsCount, matcher } from 'investigate-events/components/query-container/query-pill/query-pill-util';
+import { determineNewComponentPropsFromPillData, resultsCount, searcher } from 'investigate-events/components/query-container/query-pill/query-pill-util';
 import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
 import { metaIsIndexedByNoneUInt16 as metaConfigIsIndexedByNone,
   metaIsIndexedByValueText as metaConfigIsIndexedByValue
@@ -154,15 +154,105 @@ test('provides a count 0 when there is no valid meta', function(assert) {
   assert.equal(count, 0, 'Matcher function not returning a correct count');
 });
 
-test('matcher function should find an index if text is present', function(assert) {
+test('searcher function finds appropriate meta given a search term', function(assert) {
+  const outputMeta = searcher('foo', []);
+  assert.deepEqual(outputMeta, [], 'searcher doesnt choke on empty array');
 
-  const m1 = { displayName: 'foo', metaName: 'bar' };
-  const m2 = { displayName: 'bar', metaName: 'baz' };
-  const m3 = { displayName: 'bar', metaName: 'baz' };
+  const metas1 = [{
+    metaName: 'bar',
+    displayName: 'Bar'
+  }];
+  const outputMetas1 = searcher('foo', metas1);
+  assert.deepEqual(outputMetas1, [], 'searcher handles finding nothing');
 
-  assert.equal(matcher(m1, 'foo'), 0, 'Did not find item in "displayName"');
-  assert.equal(matcher(m1, 'baz'), -1, 'Found item but should not have');
-  assert.equal(matcher(m2, 'foo'), -1, 'Found item but should not have');
-  assert.equal(matcher(m2, 'baz'), 0, 'Did not find item in "metaName"');
-  assert.equal(matcher(m3, '   baz'), 0, 'Did not ignore leading spaces');
+  const metas2 = [{
+    metaName: 'Bar',
+    displayName: 'nope'
+  }, {
+    metaName: 'Nopeynope',
+    displayName: 'NopeToTheNope'
+  }];
+  const outputMetas2 = searcher('bar', metas2);
+  assert.equal(outputMetas2.length, 1, 'searcher will find based on meta name with wrong case');
+  assert.deepEqual(outputMetas2[0], metas2[0], 'searcher will find based on meta name with wrong case');
+
+  const metas3 = [{
+    metaName: 'foo',
+    displayName: 'Bar'
+  }, {
+    metaName: 'Nopeynope',
+    displayName: 'NopeToTheNope'
+  }];
+  const outputMetas3 = searcher('bar', metas3);
+  assert.equal(outputMetas3.length, 1, 'searcher will find based on displayName with wrong case');
+  assert.deepEqual(outputMetas3[0], metas3[0], 'searcher will find based on displayName with wrong case');
+
+  const metas4 = [{
+    metaName: 'foo Fooey foooooo',
+    displayName: 'Bar'
+  }, {
+    metaName: 'Nopeynope',
+    displayName: 'NopeToTheNope'
+  }];
+  const outputMetas4 = searcher('fooey', metas4);
+  assert.equal(outputMetas4.length, 1, 'searcher will find based on partial meta name match with wrong case');
+  assert.deepEqual(outputMetas4[0], metas4[0], 'searcher will find based on partial meta name with wrong case');
+
+  const metas5 = [{
+    metaName: 'foo Fooey foooooo',
+    displayName: 'Bar Barrrrr Brr'
+  }, {
+    metaName: 'Nopeynope',
+    displayName: 'NopeToTheNope'
+  }];
+  const outputMetas5 = searcher('barrrrr', metas5);
+  assert.equal(outputMetas5.length, 1, 'searcher will find based on partial display name match with wrong case');
+  assert.deepEqual(outputMetas5[0], metas5[0], 'searcher will find based on partial display name with wrong case');
+
+});
+
+test('searcher function orders results properly', function(assert) {
+
+  const metas = [{
+    metaName: 'foo',
+    id: 1,
+    displayName: 'Bar'
+  }, {
+    metaName: 'blahblah foo blahblah',
+    id: 2,
+    displayName: 'Bar'
+  }, {
+    metaName: 'bar',
+    id: 3,
+    displayName: 'asdkjasld foo'
+  }, {
+    metaName: 'blahblah foo',
+    id: 4,
+    displayName: 'Bar'
+  }, {
+    metaName: 'bar',
+    id: 5,
+    displayName: 'foo'
+  }, {
+    metaName: 'bar',
+    id: 6,
+    displayName: 'Bar'
+  }, {
+    metaName: 'bar',
+    id: 7,
+    displayName: 'aasdfooasdas'
+  }, {
+    metaName: 'foo',
+    id: 8,
+    displayName: 'Bar'
+  }, {
+    metaName: 'bar',
+    id: 9,
+    displayName: 'foo'
+  }];
+
+  const outputMetas = searcher('foo', metas).map((m) => m.id);
+  assert.equal(outputMetas.length, 8, 'searcher will find 8 of 9, leaving out id 6');
+  assert.deepEqual(outputMetas, [1, 8, 5, 9, 2, 4, 3, 7], 'searcher spits out metas in right order');
+
 });

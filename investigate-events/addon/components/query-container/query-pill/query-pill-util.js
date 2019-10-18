@@ -114,21 +114,63 @@ export const determineNewComponentPropsFromPillData = (pillData) => {
   return propertyObject;
 };
 
-/**
-   * Function that power-select uses to make an autosuggest match. This function
-   * looks at the meta's `metaName` and `displayName` properties for a match.
-   * If it finds a match anywhere within those two strings, it's considered a
-   * match.
-   * @param {Object} meta A meta object
-   * @param {string} input The search string
-   * @return {number} The index of the string match
-   * @private
-   */
-export const matcher = (meta, input) => {
-  const _input = input.toLowerCase().replace(LEADING_SPACES, '');
-  const _metaName = meta.metaName.toLowerCase();
-  const _displayName = meta.displayName.toLowerCase();
-  return _metaName.indexOf(_input) & _displayName.indexOf(_input);
+// Given a search term and an array of metas
+// return the list of metas that match the
+// search term in various ways, sorted by
+// priority of match
+export const searcher = (term, metas) => {
+  // do not bother processing if for some reason
+  // we have no metas
+  if (metas.length === 0) {
+    return metas;
+  }
+
+  term = term.toLowerCase().replace(LEADING_SPACES, '');
+
+  const matchedByType = {
+    exactMetaName: [],
+    exactDisplayName: [],
+    partialMetaName: [],
+    partialDisplayName: []
+  };
+
+  metas.forEach((meta) => {
+
+    // First, is there an exact system name match
+    const metaName = meta.metaName.toLowerCase();
+    if (metaName === term) {
+      matchedByType.exactMetaName.push(meta);
+      return;
+    }
+
+    // Second, is there an exact display name match
+    const displayName = meta.displayName.toLowerCase();
+    if (displayName === term) {
+      matchedByType.exactDisplayName.push(meta);
+      return;
+    }
+
+    // Third, is there a partial system name match
+    if (metaName.includes(term)) {
+      matchedByType.partialMetaName.push(meta);
+      return;
+    }
+
+    // Last, is there a partial display name match
+    if (displayName.includes(term)) {
+      matchedByType.partialDisplayName.push(meta);
+    }
+
+    // If it doesn't match any of those criteria, we drop it
+  });
+
+  // Build result array ==> in proper order <==
+  return [
+    ...matchedByType.exactMetaName,
+    ...matchedByType.exactDisplayName,
+    ...matchedByType.partialMetaName,
+    ...matchedByType.partialDisplayName
+  ];
 };
 
 /**
@@ -143,9 +185,9 @@ export const resultsCount = (metaOptions, input) => {
     return 0;
   }
   const count = metaOptions.filter(filterValidMeta).reduce((acc, meta) => {
-    const num = matcher(meta, input);
+    const hasMetaMatch = searcher(input, [meta]).length > 0;
     // do not include isIndexedByNone in count
-    if (num >= 0) {
+    if (hasMetaMatch) {
       acc++;
     }
     return acc;

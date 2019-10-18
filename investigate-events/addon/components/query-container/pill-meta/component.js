@@ -33,7 +33,7 @@ import KEY_MAP, {
 import BoundedList from 'investigate-events/util/bounded-list';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
-import { matcher } from '../query-pill/query-pill-util';
+import { searcher } from '../query-pill/query-pill-util';
 import { filterValidMeta, lastValidMeta } from 'investigate-events/util/meta';
 
 const { log } = console;// eslint-disable-line
@@ -156,11 +156,6 @@ export default Component.extend({
    * Will contain the name of the component
    */
   source: undefined,
-
-  /**
-   * Function that power-select uses to make an autosuggest match.
-   */
-  _matcher: matcher,
 
   /**
    * List of meta for selection
@@ -437,6 +432,10 @@ export default Component.extend({
           debounce(this, this._broadcastRecentQuerySearch, searchTerm, 100);
         }
       }
+    },
+
+    onSearch(term) {
+      return searcher(term, this.get('metaOptions'));
     },
 
     /**

@@ -14,7 +14,6 @@
     dropdownClass='investigate-query-dropdown meta-tab'
     extra=(hash labelPath='metaName')
     initiallyOpened=false
-    matcher=_matcher
     matchTriggerWidth=false
     noMatchesMessage=(t 'queryBuilder.metaNoMatch')
     onchange=(action 'onChange')
@@ -22,6 +21,7 @@
     oninput=(action 'onInput')
     onkeydown=(action 'onKeyDown')
     options=metaOptions
+    search=(action 'onSearch')
     optionsComponent=(
       component 'query-container/power-select-options'
       onmousedown=(action 'onOptionMouseDown')
