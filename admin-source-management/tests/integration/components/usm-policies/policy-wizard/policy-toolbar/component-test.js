@@ -531,4 +531,104 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
     await click(saveBtnEl);
   });
+
+  const sourcesNoErr = [
+    {
+      fileType: 'apache',
+      enabled: false,
+      startOfEvents: false,
+      fileEncoding: 'UTF-8 / ASCII',
+      paths: ['/c/apache_path-hint-1/*.log', '/c/Program Files/Apache Group/Apache[2-9]/*.log', 'apache_path-hint-2'],
+      sourceName: 'Meta-Source-Name',
+      exclusionFilters: ['exclude-string-1', 'exclude-string-2', 'exclude-string-3'],
+      errorState: {
+        state: 0,
+        errors: ['MISSING_TYPE_SPECIFICATION']
+      }
+    },
+    {
+      fileType: 'exchange',
+      enabled: true,
+      startOfEvents: true,
+      fileEncoding: 'UTF-8 / ASCII',
+      paths: ['/[cd]/exchange/logs/*.log'],
+      sourceName: 'Exchange aye!',
+      exclusionFilters: [],
+      errorState: {
+        state: 0,
+        errors: ['MISSING_TYPE_SPECIFICATION']
+      }
+    }
+  ];
+  const sourcesWithErr = [
+    {
+      fileType: 'apache',
+      enabled: false,
+      startOfEvents: false,
+      fileEncoding: 'UTF-8 / ASCII',
+      paths: ['/c/apache_path-hint-1/*.log', '/c/Program Files/Apache Group/Apache[2-9]/*.log', 'apache_path-hint-2'],
+      sourceName: 'Meta-Source-Name',
+      exclusionFilters: ['exclude-string-1', 'exclude-string-2', 'exclude-string-3'],
+      errorState: {
+        state: 1,
+        errors: ['MISSING_TYPE_SPECIFICATION']
+      }
+    },
+    {
+      fileType: 'exchange',
+      enabled: true,
+      startOfEvents: true,
+      fileEncoding: 'UTF-8 / ASCII',
+      paths: ['/[cd]/exchange/logs/*.log'],
+      sourceName: 'Exchange aye!',
+      exclusionFilters: [],
+      errorState: {
+        state: 0,
+        errors: ['MISSING_TYPE_SPECIFICATION']
+      }
+    }
+  ];
+  test('Define connection Step - The Publish button with sourcesNoErr missing typespec', async function(assert) {
+    const state = new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizName('test name')
+      .policyWizFileSources(sourcesNoErr)
+      .build();
+    this.set('step', state.usm.policyWizard.steps[1]);
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
+    assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The Publish button appears in the DOM and is NOT disabled in Define connection Step');
+  });
+
+  test('Define file policy Step - The Publish button with sourcesNoErr missing typespec', async function(assert) {
+    const state = new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizName('test name')
+      .policyWizFileSources(sourcesNoErr)
+      .build();
+    this.set('step', state.usm.policyWizard.steps[2]);
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
+    assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The Publish button appears in the DOM and is NOT disabled in Define file policy Step');
+  });
+
+  test('Define connection Step - The Publish button sourcesWithErr missing typespec', async function(assert) {
+    const state = new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizName('test name')
+      .policyWizFileSources(sourcesWithErr)
+      .build();
+    this.set('step', state.usm.policyWizard.steps[1]);
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
+    assert.equal(findAll('.publish-button.is-disabled').length, 1, 'The Publish button appears in the DOM and IS disabled in Define connection Step');
+  });
+
+  test('Define file policy Step - The Publish button sourcesWithErr missing typespec', async function(assert) {
+    const state = new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizName('test name')
+      .policyWizFileSources(sourcesWithErr)
+      .build();
+    this.set('step', state.usm.policyWizard.steps[2]);
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
+    assert.equal(findAll('.publish-button.is-disabled').length, 1, 'The Publish button appears in the DOM and IS disabled in Define file policy Step');
+  });
 });

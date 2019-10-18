@@ -26,6 +26,10 @@ import {
   discardPolicyChanges
 } from 'admin-source-management/actions/creators/policy-wizard-creators';
 
+import {
+  fileSources
+} from 'admin-source-management/reducers/usm/policy-wizard/filePolicy/file-selectors';
+
 const stateToComputed = (state) => ({
   policy: policy(state),
   hasPolicyChanged: hasPolicyChanged(state),
@@ -37,7 +41,8 @@ const stateToComputed = (state) => ({
   isDefinePolicySourcesStepValid: isDefinePolicySourcesStepValid(state),
   definePolicySourcesStepShowErrors: definePolicySourcesStepShowErrors(state),
   areFilePolicyStepsValid: areFilePolicyStepsValid(state),
-  isWizardValid: isWizardValid(state)
+  isWizardValid: isWizardValid(state),
+  fileSources: fileSources(state)
 });
 
 const dispatchToActions = {
@@ -58,6 +63,12 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
   // closure action required to be passed in
   transitionToStep: null,
   _showConfirmationModal: false,
+
+  @computed('fileSources')
+  hasSourceErr(fileSources) {
+    const errorCount = fileSources ? fileSources.filter((source) => source?.errorState?.state) : [];
+    return errorCount.length > 0;
+  },
 
   @computed(
     'step',

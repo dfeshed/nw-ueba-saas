@@ -27,7 +27,7 @@
   class='publish-button'
   style='primary'
   defaultAction=(action 'publish')
-  isDisabled=step.publishButtonDisabled
+  isDisabled=(or step.publishButtonDisabled hasSourceErr)
 }}
   {{t 'adminUsm.policyWizard.publishPolicy'}}
 {{/rsa-form-button}}
