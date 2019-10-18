@@ -1,9 +1,9 @@
-export const BASE_COLUMNS = [
+const BASE_COLUMNS = [
   { metaName: 'time', displayName: 'Collection Time', width: 175 },
   { metaName: 'medium', displayName: 'Type' }
 ];
 
-export default [
+export const columnGroups = [
   {
     id: 'EMAIL1',
     name: 'Custom 1',
@@ -43,8 +43,7 @@ export default [
         displayName: 'Source Country'
       }],
     contentType: 'USER'
-  },
-  {
+  }, {
     id: 'MALWARE1',
     name: 'Custom 2',
     columns: [
@@ -74,8 +73,7 @@ export default [
         displayName: 'Destination Domain'
       }],
     contentType: 'USER'
-  },
-  {
+  }, {
     id: 'SUMMARY',
     name: 'Summary List',
     contentType: 'OOTB',
@@ -84,8 +82,7 @@ export default [
       { metaName: 'size', displayName: 'Size' },
       { metaName: 'custom.meta-summary', displayName: 'Summary', width: null }
     ])
-  },
-  {
+  }, {
     id: 'SUMMARY2',
     name: 'Summary List',
     contentType: 'OOTB',
@@ -94,8 +91,7 @@ export default [
       { metaName: 'size', displayName: 'Size' },
       { metaName: 'custom.meta-details', displayName: 'Details', width: null }
     ])
-  },
-  {
+  }, {
     id: 'SUMMARY3',
     name: 'Summary List',
     contentType: 'OOTB',
@@ -105,8 +101,7 @@ export default [
       { metaName: 'ip.dst', displayName: 'Destination IP Address' },
       { metaName: 'custom.meta-summary', displayName: 'Summary', width: null }
     ])
-  },
-  {
+  }, {
     id: 'SUMMARY4',
     name: 'Summary List',
     contentType: 'OOTB',
@@ -116,8 +111,7 @@ export default [
       { metaName: 'ip.dst', displayName: 'Destination IP Address' },
       { metaName: 'custom.metasummary', displayName: 'Summary', width: null }
     ])
-  },
-  {
+  }, {
     id: 'EMAIL',
     name: 'Email Analysis',
     columns: BASE_COLUMNS.concat([
@@ -889,3 +883,5 @@ export default [
     contentType: 'OOTB'
   }
 ];
+
+export default columnGroups;

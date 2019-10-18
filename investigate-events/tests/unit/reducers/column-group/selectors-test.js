@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
 import { hasColumnGroups, columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
-import EventColumnGroups from '../../../data/subscriptions/column-group/findAll/data';
+import EventColumnGroups from '../../../data/subscriptions/column-group';
 import { DEFAULT_LANGUAGES } from '../../../helpers/redux-data-helper';
 
 module('Unit | Selectors | column-group');

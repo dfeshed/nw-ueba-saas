@@ -6,7 +6,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { patchReducer } from '../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { click, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
-import EventColumnGroups from '../../../data/subscriptions/column-group/findAll/data';
+import EventColumnGroups from '../../../data/subscriptions/column-group';
 import KEY_MAP from 'investigate-events/util/keys';
 
 let setState;

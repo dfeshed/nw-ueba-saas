@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import EventColumnGroups from '../../data/subscriptions/column-group/findAll/data';
+import EventColumnGroups from '../../data/subscriptions/column-group';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 
 module('Unit | Util | Mapping', function(hooks) {

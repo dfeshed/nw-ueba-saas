@@ -1,6 +1,6 @@
 import Immutable from 'seamless-immutable';
 import CONFIG from 'investigate-events/reducers/investigate/config';
-import EventColumnGroups from '../data/subscriptions/column-group/findAll/data';
+import EventColumnGroups from '../data/subscriptions/column-group';
 import METAKEYS from '../data/subscriptions/meta-key-cache/findAll/data';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 import { createQueryHash } from 'investigate-events/util/query-hash';

@@ -6,7 +6,7 @@ import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import { find, findAll, render } from '@ember/test-helpers';
-import EventColumnGroups from '../../../../../../data/subscriptions/column-group/findAll/data';
+import EventColumnGroups from '../../../../../../data/subscriptions/column-group';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 
 let setState;

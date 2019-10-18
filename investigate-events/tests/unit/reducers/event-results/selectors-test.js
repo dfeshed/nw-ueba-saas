@@ -30,7 +30,7 @@ import {
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import CONFIG from 'investigate-events/reducers/investigate/config';
-import EventColumnGroups from '../../../data/subscriptions/column-group/findAll/data';
+import EventColumnGroups from '../../../data/subscriptions/column-group';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 
 module('Unit | Selectors | event-results', function(hooks) {

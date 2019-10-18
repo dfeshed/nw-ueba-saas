@@ -131,14 +131,27 @@
         }
         ul.column-list {
           li {
-            span {
-              display: inline-table;
-              width: 48%
+            transition: all .125s;
+            &.is-dragging {
+              transition-duration: 0s;
             }
             &.editable {
               span {
                 width: 42%
               }
+              .thumb {
+                width: 20px;
+                height: 20px;
+                cursor: move;
+                user-select: none;
+                i {
+                  margin: 0 2px;
+                }
+              }
+            }
+            span {
+              display: inline-table;
+              width: 48%
             }
             span.title {
               vertical-align: middle;

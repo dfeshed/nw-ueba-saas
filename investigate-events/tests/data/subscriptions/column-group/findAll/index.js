@@ -1,4 +1,4 @@
-import data from './data';
+import { columnGroups } from '..';
 
 export default {
   subscriptionDestination: '/user/queue/investigate/column/groups/get',
@@ -8,7 +8,7 @@ export default {
       meta: {
         complete: false
       },
-      data
+      data: columnGroups
     };
   }
 };

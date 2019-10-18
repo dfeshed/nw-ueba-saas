@@ -21,17 +21,20 @@
   <section class ='displayed-details'>
     <div class='name'>{{t 'investigate.events.columnGroups.displayedMetaKeys'}}</div>
     {{#if filteredDisplayedColumns}}
-      <ul class='column-list value editable'>
+      {{#sortable-group tagName='ul' class='column-list value editable' onChange=(action 'reorderColumns') as |group|}}
         {{#each filteredDisplayedColumns as |column|}}
-          <li class='editable'>
+          {{#sortable-item tagName='li' class='editable' model=column group=group handle='.thumb'}}
             {{#rsa-form-button class='remove-meta-key' defaultAction=(action 'removeMetaFromColumns' column)}}
               {{rsa-icon name='subtract-circle-1'}}
             {{/rsa-form-button}}
             <span class='field'>{{column.field}}</span>
             <span title={{column.title}} class='title'>{{column.title}}</span>
-          </li>
+            <span class='thumb'>
+              {{rsa-icon name='navigation-drawer-1'}}
+            </span>
+          {{/sortable-item}}
         {{/each}}
-      </ul>
+      {{/sortable-group}}
     {{else}}
       {{!-- why are there no columns? Because filtered or because there just aren't any --}}
       {{#if areDisplayedColumnsFiltered}}

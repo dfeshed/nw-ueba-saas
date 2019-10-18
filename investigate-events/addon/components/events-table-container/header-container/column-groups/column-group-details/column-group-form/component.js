@@ -188,6 +188,10 @@ const ColumnGroupForm = Component.extend({
     updateColumnFilterText(filterText) {
       this.element.querySelector('.group-details').scrollTop = 0;
       this.set('columnFilterText', filterText);
+    },
+
+    reorderColumns(newOrder) {
+      this._updateColumns(newOrder);
     }
   }
 

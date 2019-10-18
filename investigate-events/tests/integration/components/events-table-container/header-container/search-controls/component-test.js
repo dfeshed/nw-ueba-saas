@@ -6,7 +6,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { findAll, render } from '@ember/test-helpers';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
-import EventColumnGroups from '../../../../../data/subscriptions/column-group/findAll/data';
+import EventColumnGroups from '../../../../../data/subscriptions/column-group';
 
 let setState;
 

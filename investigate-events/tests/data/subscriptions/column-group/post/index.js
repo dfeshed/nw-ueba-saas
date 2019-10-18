@@ -1,3 +1,5 @@
+import { columnGroups } from '..';
+
 export default {
   delay: 100,
   subscriptionDestination: '/user/queue/investigate/column/groups/set',
@@ -5,14 +7,18 @@ export default {
   message(frame) {
     const body = JSON.parse(frame.body);
     const num = Date.now();
+    const newGroup = {
+      'id': body.columnGroup.id ? body.columnGroup.id : `abc${num}`,
+      'name': body.columnGroup.name,
+      'contentType': 'USER',
+      'columns': body.columnGroup.columns
+    };
+
+    // Save off to columnGroup cache
+    columnGroups.push(newGroup);
 
     return {
-      data: {
-        'id': body.columnGroup.id ? body.columnGroup.id : `abc${num}`,
-        'name': body.columnGroup.name,
-        'contentType': 'USER',
-        'columns': body.columnGroup.columns
-      }
+      data: newGroup
     };
   }
 };

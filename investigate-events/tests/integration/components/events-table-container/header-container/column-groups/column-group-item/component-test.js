@@ -4,7 +4,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { find, render } from '@ember/test-helpers';
-import EventColumnGroups from '../../../../../../data/subscriptions/column-group/findAll/data';
+import EventColumnGroups from '../../../../../../data/subscriptions/column-group';
 
 module('Integration | Component | Column Group Item', function(hooks) {
 

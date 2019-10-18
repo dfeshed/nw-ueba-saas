@@ -11,7 +11,7 @@ import {
   validEventSortColumns,
   isSummaryColumnVisible
 } from 'investigate-events/reducers/investigate/data-selectors';
-import EventColumnGroups from '../../data/subscriptions/column-group/findAll/data';
+import EventColumnGroups from '../../data/subscriptions/column-group';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
 
