@@ -53,12 +53,6 @@ export const hostNameList = createSelector(
   }
 );
 
-export const hostListCount = createSelector(
-  [hostNameList],
-  (hostNameList = []) => {
-    return hostNameList.length;
-  }
-);
 
 export const contextLoadMoreStatus = createSelector(
   _contextLoadMoreStatus,

@@ -82,7 +82,8 @@ const stateToComputed = (state, { storeName }) => ({
   selectedFilterId: selectedFilterId(state.endpoint.details),
   savedFilter: savedFilter(state.endpoint.details),
   hostDetailFilters: state.endpoint.details.filter.savedFilterList,
-  hostNameList: hostNameList(state, storeName)
+  hostNameList: hostNameList(state, storeName),
+  serverId: state.endpointQuery.serverId
 });
 
 const dispatchToActions = {

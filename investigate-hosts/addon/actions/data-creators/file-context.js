@@ -177,18 +177,13 @@ const fetchMachineCount = (checksums, tabName) => ({
   }
 });
 
-const fetchHostNames = (tabName, checksum) => {
-  return (dispatch, getState) => {
-    const serviceId = getState().endpointQuery.serverId;
-    dispatch({
-      type: ACTION_TYPES.SET_HOST_NAME_LIST,
-      promise: HostDetails.getHostCount(serviceId, checksum),
-      meta: {
-        belongsTo: tabName
-      }
-    });
-  };
-};
+const fetchHostNames = (tabName, checksum) => ({
+  type: ACTION_TYPES.SET_HOST_NAME_LIST,
+  promise: HostDetails.getHostCount(checksum),
+  meta: {
+    belongsTo: tabName
+  }
+});
 
 export {
   getFileContext,

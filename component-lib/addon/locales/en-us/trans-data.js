@@ -2574,8 +2574,7 @@ export default {
       machineOsType: 'Operating System',
       reputationStatus: 'Reputation',
       score: 'Risk Score',
-      hostCount: 'Active On',
-      onHost: 'On Host',
+      hostCount: 'On Hosts',
       remediationAction: 'Remediation',
       elf: {
         classType: 'ELF.Class Type',
@@ -2888,7 +2887,7 @@ export default {
       downloadProcessDump: 'Download Process Dump to Server',
       analyzeProcess: 'Analyze Process',
       analyzeProcessDisabledTooltip: 'Select a single file to analyze.',
-      machineCount: 'Active On',
+      machineCount: 'On Hosts',
       toolTip: {
         openProcessDetails: 'Open Process details.',
         openFileDetails: 'Open File details.',
@@ -3194,7 +3193,7 @@ export default {
       localRiskDetails: 'Local Risk Details',
       fileDetails: 'File Details',
       downloads: 'Downloads',
-      hostName: 'Host'
+      hostName: 'Hosts'
     },
     context: {
       score: 'Score',
@@ -4013,7 +4012,7 @@ export default {
       fileName: 'Filename',
       machineFileScore: 'Local Risk Score',
       globalScore: 'Global Risk Score',
-      hostCount: 'Active On',
+      hostCount: 'On Hosts',
       reputationStatus: 'Reputation',
       fileStatus: 'File Status',
       signature: 'Signature',
@@ -4240,7 +4239,7 @@ export default {
     nodeList: {
       processName: 'Process Name',
       riskScore: 'Risk Score',
-      hostCount: 'Active On',
+      hostCount: 'On Hosts',
       launchArguments: 'Launch Arguments',
       eventTypes: 'Event Types'
     },
@@ -4976,7 +4975,7 @@ effects the simulated source.',
         signature: 'Signature',
         Unsigned: 'Exclude All Signed',
         NotKnownSigned: 'Exclude only Microsoft and Apple Signed',
-        All: 'Include All Signed',
+        All: 'Include All',
         fileSizeLimit: 'File Size Limit',
         signatureTooltip: 'Limits the download of files based on the signature for only Windows and Mac.',
         automaticFileDownloadsTooltip: 'Automatically download the files to the NetWitness Endpoint server based on the file size and signature.',

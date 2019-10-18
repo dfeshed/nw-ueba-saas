@@ -16,7 +16,8 @@ import {
   fileDownloadButtonStatus,
   focusedRowChecksum,
   selectedFileList,
-  isAnyFileFloatingOrMemoryDll
+  isAnyFileFloatingOrMemoryDll,
+  hostNameList
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 import { fileContextSelectionsData } from '../../../../integration/components/state/fileContextData';
@@ -720,6 +721,33 @@ module('Unit | Selectors | File Context', function() {
     });
     const result = isAnyFileFloatingOrMemoryDll(state, 'drivers');
     assert.equal(result, true);
+  });
+
+  test('hostNameList', function(assert) {
+    const result = hostNameList(Immutable.from({
+      endpoint: {
+        drivers: {
+          hostNameList: [
+            {
+              agentId: '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC',
+              hostname: 'windows',
+              score: 0
+            },
+            {
+              agentId: '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAB',
+              hostname: 'linux',
+              score: 0
+            }
+          ]
+        },
+        explore: {
+
+        },
+        datatable: {
+        }
+      }
+    }), 'drivers');
+    assert.equal(result.length, 2);
   });
 });
 

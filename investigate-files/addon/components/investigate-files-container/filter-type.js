@@ -67,16 +67,8 @@ const FILTER_TYPES = [
   },
   {
     'name': 'hostCount',
-    'label': 'investigateFiles.fields.onHost',
+    'label': 'investigateFiles.fields.hostCount',
     'type': 'number',
-    'validations': {
-      format: {
-        validator: (value) => {
-          return /^\d+$/.test(value);
-        },
-        message: 'investigateFiles.filter.invalidCharsAlphaNumericOnly'
-      }
-    },
     'useI18N': true,
     'operators': [
       { label: 'investigateFiles.filter.label.greaterThan', type: 'GREATER_THAN' },

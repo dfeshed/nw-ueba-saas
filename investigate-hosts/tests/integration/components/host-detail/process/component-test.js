@@ -187,7 +187,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     return settled().then(async() => {
       await click(findAll('.rsa-data-table-body-row')[0]);
       await click(findAll('.rsa-nav-tab')[2]);
-      assert.equal(findAll('.rsa-header .rsa-nav-tab.is-active')[0].textContent.trim(), 'Host', 'Host name list tab is selected');
+      assert.equal(findAll('.rsa-header .rsa-nav-tab.is-active')[0].textContent.trim(), 'Hosts', 'Host name list tab is selected');
       assert.equal(findAll('.host-name-list').length, 1, 'host name list is rendered');
       assert.equal(findAll('.host-name').length, 3, 'Expected to render 3 host name');
       const actionSpy = sinon.spy(window, 'open');

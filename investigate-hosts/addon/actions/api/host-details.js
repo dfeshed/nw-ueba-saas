@@ -175,7 +175,7 @@ const saveLocalMFTCopy = (socketUrlPostfix, data) => {
   });
 };
 
-const getHostCount = (serviceId, checksum) => {
+const getHostCount = (checksum) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getHostCount',
@@ -184,10 +184,6 @@ const getHostCount = (serviceId, checksum) => {
       data: {
         checksumSha256: checksum
       }
-    },
-    streamOptions: {
-      socketUrlPostfix: serviceId,
-      requiredSocketUrl: 'endpoint/socket'
     }
   });
 };

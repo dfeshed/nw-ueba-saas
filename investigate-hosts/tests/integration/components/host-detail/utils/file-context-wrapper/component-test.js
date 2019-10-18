@@ -194,7 +194,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     assert.equal(findAll('.rsa-nav-tab.is-active')[0].textContent.trim(), 'Local Risk Details', 'Risk details tab is selected');
     assert.equal(findAll('.risk-properties').length, 1, 'Risk properties is rendered');
     await click(findAll('.rsa-nav-tab')[2]);
-    assert.equal(findAll('.rsa-nav-tab.is-active')[0].textContent.trim(), 'Host', 'Host tab is selected');
+    assert.equal(findAll('.rsa-nav-tab.is-active')[0].textContent.trim(), 'Hosts', 'Host tab is selected');
     assert.equal(findAll('.host-name-list').length, 1, 'Host list is rendered');
     assert.equal(findAll('.download-process-dump').length, 0, 'Download process Dmup to Server is not available in Driver tab');
   });

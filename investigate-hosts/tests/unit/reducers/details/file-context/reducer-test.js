@@ -394,4 +394,23 @@ module('Unit | Reducers | File Context', function() {
     const result = reducer(previous, { type: ACTION_TYPES.DESELECT_FILE_CONTEXT_ALL_SELECTION, payload: driver });
     assert.equal(result.fileContextSelections.length, 0);
   });
+
+  test('SET_HOST_NAME_LIST', function(assert) {
+    const previous = Immutable.from({
+      hostNameList: {}
+    });
+    const result = [
+      {
+        agentId: '2324ASD',
+        hostname: 'Windows',
+        score: 0
+      }
+    ];
+    const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.SET_HOST_NAME_LIST,
+      payload: { data: result }
+    });
+    const newEndState = reducer(previous, successAction);
+    assert.equal(newEndState.hostNameList.length, 1);
+  });
 });
