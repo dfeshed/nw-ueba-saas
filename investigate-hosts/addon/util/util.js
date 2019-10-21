@@ -36,3 +36,20 @@ export const isolateMachineValidation = (value) => {
   const isInvalidIPFormatPresent = listOfIPs.some((item) => !IPv4IPv6Format.test(item));
   return { listOfIPs, isInvalidIPFormatPresent };
 };
+
+export const convertBytesIntoKbOrMb = (bytes = 1024) => {
+  const KB = 1024; // 1KB in bytes.
+  const MB = 1048576; // 1MB in bytes.
+  let unit = 'KB';
+  let value = 1;
+  if (bytes >= MB) {
+    value = bytes / MB;
+    unit = 'MB';
+  } else {
+    value = bytes / KB;
+  }
+  return {
+    value: value.toFixed(2),
+    unit
+  };
+};

@@ -256,7 +256,7 @@ export const _getWindowsLogPolicy = createSelector(
   }
 );
 
-const _setEnableDiableValues = (property, key = 'enabled') => {
+const _setEnableDisableValues = (property, key = 'enabled') => {
   return property && property[key] ? 'Enabled' : 'Disabled';
 };
 
@@ -311,13 +311,13 @@ export const getPoliciesPropertyData = createSelector(
           ...edrPolicy,
           agentMode: edrPolicy.agentMode && edrPolicy.agentMode === 'INSIGHTS' ? 'Insights' : 'Advanced',
           blockingConfig: {
-            enabled: _setEnableDiableValues(blockingConfig)
+            enabled: _setEnableDisableValues(blockingConfig)
           },
           isolationConfig: {
-            enabled: _setEnableDiableValues(isolationConfig)
+            enabled: _setEnableDisableValues(isolationConfig)
           },
           serverConfig: {
-            requestScanOnRegistration: _setEnableDiableValues(serverConfig, 'requestScanOnRegistration')
+            requestScanOnRegistration: _setEnableDisableValues(serverConfig, 'requestScanOnRegistration')
           },
           transportConfig: newTransportConfig,
           scheduledScanConfig
@@ -340,6 +340,7 @@ export const policyAdminUsm = createSelector(
       const weekDay = runOnDaysOfWeekVal ? runOnDaysOfWeekVal.map((day) => week[day]) : [];
       const scanStartTime = data.edrPolicy.scheduledScanConfig.recurrentSchedule.runAtTime;
       const runAtTime = scanStartTime.substring(0, scanStartTime.lastIndexOf(':'));
+      const fileDownloadEnabled = _setEnableDisableValues(data.edrPolicy.fileDownloadConfig);
       return {
         general: {
           policyStatus: data.policyStatus,
@@ -363,6 +364,10 @@ export const policyAdminUsm = createSelector(
           scanMbr: data.edrPolicy.scheduledScanConfig.scanOptions.scanMbr,
           blockingEnabled: data.edrPolicy.blockingConfig.enabled,
           isolationEnabled: data.edrPolicy.isolationConfig.enabled,
+          fileDownloadEnabled,
+          fileDownloadCriteria: data.edrPolicy?.fileDownloadConfig?.criteria,
+          maxFileDownloadSize: data.edrPolicy?.fileDownloadConfig?.maxSize,
+          maxFileDownloadSizeUnit: data.edrPolicy.maxFileDownloadSizeUnit,
           requestScanOnRegistration: data.edrPolicy.serverConfig.requestScanOnRegistration,
           primaryAddress: data.edrPolicy.transportConfig.primary.address,
           primaryHttpsPort: data.edrPolicy.transportConfig.primary.httpsPort,

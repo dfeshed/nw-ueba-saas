@@ -59,6 +59,11 @@ module('Unit | Selectors | Policy Details | file-policy | file-selectors', funct
             cpuMaxVm: 10,
             scanMbr: false }
         },
+        fileDownloadConfig: {
+          criteria: 'Unsigned',
+          maxSize: 10000,
+          enabled: true
+        },
         blockingConfig: {
           enabled: false
         },

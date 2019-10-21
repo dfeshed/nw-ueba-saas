@@ -327,6 +327,11 @@ module('Unit | Selectors | overview', function(hooks) {
               cpuMaxVm: 10,
               scanMbr: false }
           },
+          fileDownloadConfig: {
+            criteria: 'Unsigned',
+            maxSize: 10000,
+            enabled: true
+          },
           blockingConfig: {
             enabled: false
           },
@@ -370,6 +375,10 @@ module('Unit | Selectors | overview', function(hooks) {
       'agentMode': 'Advanced',
       'blockingEnabled': 'Disabled',
       'isolationEnabled': 'Enabled',
+      'fileDownloadCriteria': 'Unsigned',
+      'fileDownloadEnabled': 'Enabled',
+      'maxFileDownloadSize': 10000,
+      'maxFileDownloadSizeUnit': undefined,
       'cpuMax': '25 %',
       'cpuMaxVm': '10 %',
       'customConfig': '',
@@ -421,6 +430,118 @@ module('Unit | Selectors | overview', function(hooks) {
     assert.deepEqual(resultPolicyAdminUsm.sources, {
       'hasWindowsLogPolicy': true,
       'hasFilePolicy': true
+    });
+  });
+
+  test('policyAdminUsm when file download config not present', function(assert) {
+    const policyData = {
+      serviceId: '63de7bb3-fcd3-415a-97bf-7639958cd5e6',
+      serviceName: 'Node-X - Endpoint Server',
+      usmRevision: 0,
+      groups: [],
+      policy: {
+        edrPolicy: {
+          name: 'Default EDR Policy',
+          customConfig: '',
+          transportConfig: {
+            primary: {
+              address: '10.40.15.154',
+              httpsPort: 443,
+              httpsBeaconIntervalInSeconds: 900,
+              udpPort: 444,
+              udpBeaconIntervalInSeconds: 30
+            }
+          },
+          agentMode: 'ADVANCED',
+          scheduledScanConfig: {
+            enabled: true,
+            recurrentSchedule: {
+              recurrence: {
+                interval: 1,
+                unit: 'DAYS'
+              },
+              runAtTime: '09:00:00',
+              runOnDaysOfWeek: [1],
+              scheduleStartDate: '2019-03-22'
+            },
+            scanOptions: {
+              cpuMax: 25,
+              cpuMaxVm: 10,
+              scanMbr: false
+            }
+          },
+          blockingConfig: {
+            enabled: false
+          },
+          isolationConfig: {
+            enabled: true
+          },
+          storageConfig: {
+            diskCacheSizeInMb: 100
+          },
+          serverConfig: {
+            requestScanOnRegistration: false
+          }
+        },
+        windowsLogPolicy: {
+          enabled: true,
+          primaryDestination: 'foo',
+          secondaryDestination: 'Moo',
+          protocol: '123',
+          sendTestLog: true,
+          channelFilters: [{ asd: 'asd' }],
+          customConfig: ''
+        },
+        filePolicy: {
+          name: 'Test File Policy',
+          enabled: false,
+          sendTestLog: true,
+          primaryDestination: '111',
+          secondaryDestination: '222',
+          protocol: 'TLS',
+          customConfig: '',
+          sources: []
+        }
+      },
+      policyStatus: 'Testing',
+      evaluatedTime: '2019-05-07T05:25:41.109+0000'
+    };
+    const state = new ReduxDataHelper(setState).policy(policyData).build();
+    const resultPolicyAdminUsm = policyAdminUsm(Immutable.from(state));
+
+    assert.deepEqual(resultPolicyAdminUsm.edrPolicy, {
+      'agentMode': 'Advanced',
+      'blockingEnabled': 'Disabled',
+      'isolationEnabled': 'Enabled',
+      'fileDownloadCriteria': undefined,
+      'fileDownloadEnabled': 'Disabled',
+      'maxFileDownloadSize': undefined,
+      'maxFileDownloadSizeUnit': undefined,
+      'cpuMax': '25 %',
+      'cpuMaxVm': '10 %',
+      'customConfig': '',
+      'name': 'Default EDR Policy',
+      'offlineDiskStorageSizeInMb': 100,
+      'primaryAddress': '10.40.15.154',
+      'primaryHttpsBeaconInterval': 15,
+      'primaryHttpsBeaconIntervalUnit': 'MINUTES',
+      'primaryHttpsPort': 443,
+      'primaryUdpBeaconInterval': 30,
+      'primaryUdpBeaconIntervalUnit': 'SECONDS',
+      'primaryUdpPort': 444,
+      'rarPolicyBeaconInterval': '',
+      'rarPolicyPort': undefined,
+      'rarPolicyServer': undefined,
+      'recurrenceInterval': 1,
+      'recurrenceUnit': 'DAYS',
+      'requestScanOnRegistration': 'Disabled',
+      'runOnDaysOfWeek': [
+        'MONDAY'
+      ],
+      'scanMbr': 'Disabled',
+      'scanStartDate': '2019-03-22',
+      'scanStartTime': '09:00',
+      'scanType': 'Scheduled'
     });
   });
 

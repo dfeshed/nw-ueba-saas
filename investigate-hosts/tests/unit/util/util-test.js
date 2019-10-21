@@ -4,7 +4,8 @@ import {
   generateColumns,
   getSelectedAgentIds,
   isAlreadySelected,
-  isolateMachineValidation
+  isolateMachineValidation,
+  convertBytesIntoKbOrMb
 } from 'investigate-hosts/util/util';
 
 module('Unit | Util');
@@ -110,4 +111,16 @@ test('IsolateMachineValidation', function(assert) {
     isInvalidIPFormatPresent: true,
     listOfIPs: ['1.2.3.4', '00:0a:95:9d:68:16', '3ffe:1900:4545:3:200:f8ff:fe21:67cf']
   });
+});
+
+test('convertBytesIntoKbOrMb', function(assert) {
+  const value1 = convertBytesIntoKbOrMb();
+  assert.deepEqual(value1, { unit: 'KB', value: '1.00' }, '1 KB returned when no value is passed.');
+
+  const value2 = convertBytesIntoKbOrMb(1524000);
+  assert.deepEqual(value2, { unit: 'MB', value: '1.45' }, '1.45 MB returned when no value is passed.');
+
+  const value3 = convertBytesIntoKbOrMb(1500);
+  assert.deepEqual(value3, { unit: 'KB', value: '1.46' }, '1.46 KB returned when no value is passed.');
+
 });
