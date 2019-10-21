@@ -292,7 +292,7 @@ public class ApiEvidenceController  {
 			List<SupportingInformationEntry> rearrangedEntries = rearrangeEntriesIfNeeded(rawListOfEntries, historicalDataRestFilter, isSupportingInformationAnomalyValueExists);
 			Map<String, Object> dataMapForResponse = new HashMap<>();
 			dataMapForResponse.put("contexts", evidenceSupportingInformation.getContexts());
-			dataMapForResponse.put("dataObj", rearrangedEntries);
+			dataMapForResponse.put("data", rearrangedEntries);
 			supportingInformationEntrylist.add(dataMapForResponse);
 		});
 
