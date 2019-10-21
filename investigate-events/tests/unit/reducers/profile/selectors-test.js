@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { profiles, enrichedProfiles } from 'investigate-events/reducers/investigate/profile/selectors';
+import { profiles, enrichedProfiles, isProfileViewActive } from 'investigate-events/reducers/investigate/profile/selectors';
 import { DEFAULT_PROFILES } from '../../../helpers/redux-data-helper';
 
 module('Unit | Selectors | profile');
@@ -79,4 +79,23 @@ test('enrichedProfiles returns profiles with preQueryPillsData property', functi
   result.forEach((item) => {
     assert.ok(item.hasOwnProperty('preQueryPillsData'), 'each profile shall have preQueryPillsData property');
   });
+});
+
+test('isProfileViewActive returns true when profile is expanded', function(assert) {
+  let state = {
+    listManagers: {
+      profiles: {
+        isExpanded: true
+      }
+    }
+  };
+  assert.ok(isProfileViewActive(state), 'Did not find it expanded');
+  state = {
+    listManagers: {
+      profiles: {
+        isExpanded: false
+      }
+    }
+  };
+  assert.notOk(isProfileViewActive(state), 'Found it expanded');
 });

@@ -11,7 +11,7 @@ import pillCreators from 'investigate-events/actions/pill-creators';
 import ACTION_TYPES from 'investigate-events/actions/types';
 import { QueryFilter, ComplexFilter } from 'investigate-events/util/filter-types';
 import { createOperator } from 'investigate-events/util/query-parsing';
-import { OPERATOR_AND, OPERATOR_OR } from 'investigate-events/constants/pill';
+import { QUERY_FILTER, OPERATOR_AND, OPERATOR_OR } from 'investigate-events/constants/pill';
 
 module('Unit | Actions | Pill Creators', function(hooks) {
   setupTest(hooks);
@@ -733,6 +733,71 @@ module('Unit | Actions | Pill Creators', function(hooks) {
     assert.equal(action.type, ACTION_TYPES.WRAP_WITH_PARENS, 'action has the correct type');
     assert.deepEqual(action.payload.startIndex, 0, 'action startIndex has the right value');
     assert.deepEqual(action.payload.endIndex, 2, 'action endIndex has the right value');
+  });
+
+  test('StashPills will send a proper payload when actionType is add', function(assert) {
+    assert.expect(3);
+    const getState = () => {
+      return new ReduxDataHelper()
+        .language()
+        .pillsDataPopulated()
+        .build();
+    };
+    const { investigate: { queryNode: { pillsData } } } = getState();
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.STASH_PILLS_DATA, 'action has the correct type');
+      assert.deepEqual(action.payload.originalPills, pillsData, 'Should expect pillsData to be passed in as original pills');
+      assert.ok(Object.keys(action.payload).length === 1, 'Should just contain original pills');
+    };
+    const thunk = pillCreators.stashPills({ actionType: 'add' });
+    thunk(dispatch, getState);
+  });
+
+  test('StashPills will send out a correct payload on actionType edit', function(assert) {
+    assert.expect(3);
+    const profilePills = [
+      { id: '1', type: QUERY_FILTER },
+      { id: '2', type: QUERY_FILTER }
+    ];
+    const getState = () => {
+      return new ReduxDataHelper()
+        .language()
+        .pillsDataPopulated()
+        .build();
+    };
+    const { investigate: { queryNode: { pillsData } } } = getState();
+
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.STASH_PILLS_DATA, 'action has the correct type');
+      assert.deepEqual(action.payload.pillsData, profilePills, 'profile pills should be passed as pillsData');
+      assert.deepEqual(action.payload.originalPills, pillsData, 'original pills should be the ones we started off with');
+    };
+    const thunk = pillCreators.stashPills(
+      {
+        actionType: 'edit',
+        profilePills
+      }
+    );
+    thunk(dispatch, getState);
+  });
+
+  test('StashPills will send out a correct payload on actionType close', function(assert) {
+    assert.expect(3);
+    const getState = () => {
+      return new ReduxDataHelper()
+        .language()
+        .pillsDataPopulated()
+        .populateOriginalPills()
+        .build();
+    };
+    const { investigate: { queryNode: { originalPills } } } = getState();
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.STASH_PILLS_DATA, 'action has the correct type');
+      assert.deepEqual(action.payload.pillsData, originalPills, 'pillsData should be set back with original pills');
+      assert.ok(action.payload.originalPills.length === 0, 'original pills should be reset too');
+    };
+    const thunk = pillCreators.stashPills({ actionType: 'close' });
+    thunk(dispatch, getState);
   });
 });
 

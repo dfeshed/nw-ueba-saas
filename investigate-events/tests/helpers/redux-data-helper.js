@@ -1064,4 +1064,9 @@ export default class DataHelper {
     _set(this.state, 'queryNode.valueSuggestions', list);
     return this;
   }
+
+  populateOriginalPills(pD = COMPLEX_PILL_DATA) {
+    _set(this.state, 'queryNode.originalPills', pD);
+    return this;
+  }
 }

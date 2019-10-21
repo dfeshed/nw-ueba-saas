@@ -46,6 +46,10 @@ const _initialState = Immutable.from({
   // Stores all data for pills
   pillsData: [],
 
+  // When query container is rendered in profiles, we save off pillsData
+  // as originalPills. Once that component is closed, we replace them back.
+  originalPills: [],
+
   // Is a query in progress. This possibly includes server
   // validation if that is taking a long time to return
   isQueryRunning: false,
@@ -899,5 +903,9 @@ export default handleActions({
   [ACTION_TYPES.REPLACE_LOGICAL_OPERATOR]: (state, { payload }) => {
     const { pillData, position } = payload;
     return _handleLogicalOperator(state, pillData, position, true);
+  },
+
+  [ACTION_TYPES.STASH_PILLS_DATA]: (state, { payload }) => {
+    return state.merge({ ...payload });
   }
 }, _initialState);

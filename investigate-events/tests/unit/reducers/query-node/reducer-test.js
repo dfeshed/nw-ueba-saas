@@ -1697,3 +1697,84 @@ test('WRAP_WITH_PARENS wraps pills with parens at the provided indexes', functio
   assert.equal(result.pillsData[3].type, QUERY_FILTER, 'pillsData item 3 is the right type');
   assert.equal(result.pillsData[4].type, CLOSE_PAREN, 'pillsData item 4 is the right type');
 });
+
+test('STASH_PILLS_DATA add scenario', function(assert) {
+  const initialState = Immutable.from({
+    pillsData: [
+      { id: 1, type: QUERY_FILTER },
+      { id: 2, type: QUERY_FILTER },
+      { id: 3, type: QUERY_FILTER }
+    ],
+    originalPills: []
+  });
+
+  const action = {
+    type: ACTION_TYPES.STASH_PILLS_DATA,
+    payload: {
+      originalPills: initialState.pillsData
+    }
+  };
+
+  // pillsData should now be saved off as original pills
+  // pillsData should be left untouched
+  const result = reducer(initialState, action);
+  assert.deepEqual(result.originalPills, initialState.pillsData, 'Did not find original pills copied over');
+  assert.deepEqual(result.pillsData, initialState.pillsData, 'Should not change pillsData though');
+});
+
+test('STASH_PILLS_DATA edit scenario', function(assert) {
+  const profilePills = [
+    { id: '1', type: QUERY_FILTER },
+    { id: '2', type: QUERY_FILTER }
+  ];
+  const initialState = Immutable.from({
+    pillsData: [
+      { id: 1, type: QUERY_FILTER },
+      { id: 2, type: QUERY_FILTER },
+      { id: 3, type: QUERY_FILTER }
+    ],
+    originalPills: []
+  });
+
+  const action = {
+    type: ACTION_TYPES.STASH_PILLS_DATA,
+    payload: {
+      originalPills: initialState.pillsData,
+      pillsData: profilePills
+    }
+  };
+
+  // pillsData should now be saved off as original pills
+  // pillsData now contains proflePills
+  const result = reducer(initialState, action);
+  assert.deepEqual(result.originalPills, initialState.pillsData, 'Did not find original pills copied over');
+  assert.deepEqual(result.pillsData, profilePills, 'Did not find profile pills copied over to pillsData');
+});
+
+test('STASH_PILLS_DATA close scenario', function(assert) {
+  const initialState = Immutable.from({
+    pillsData: [
+      { id: 21, type: COMPLEX_FILTER },
+      { id: 33, type: QUERY_FILTER }
+    ],
+    originalPills: [
+      { id: 1, type: QUERY_FILTER },
+      { id: 2, type: QUERY_FILTER },
+      { id: 3, type: QUERY_FILTER }
+    ]
+  });
+
+  const action = {
+    type: ACTION_TYPES.STASH_PILLS_DATA,
+    payload: {
+      pillsData: initialState.originalPills,
+      originalPills: []
+    }
+  };
+
+  // pillsData copies back pills from original
+  // original pills are reset
+  const result = reducer(initialState, action);
+  assert.ok(result.originalPills.length === 0, 'Original pills were not reset');
+  assert.deepEqual(result.pillsData, initialState.originalPills, 'PillsData should be set back to their original state');
+});
