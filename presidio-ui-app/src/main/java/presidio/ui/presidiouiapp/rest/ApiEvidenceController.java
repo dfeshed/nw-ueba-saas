@@ -4,6 +4,7 @@ package presidio.ui.presidiouiapp.rest;
 
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationAggrFunc;
 
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.domain.core.*;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 
@@ -13,7 +14,6 @@ import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.services.EvidencesService;
 import fortscale.services.LocalizationService;
 
-import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
 
 
@@ -22,8 +22,6 @@ import fortscale.domain.rest.HistoricalDataRestFilter;
 import presidio.ui.presidiouiapp.demoservices.DemoBuilder;
 
 
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.stereotype.Controller;
@@ -266,9 +264,9 @@ public class ApiEvidenceController  {
 	@RequestMapping(value="/{id}/historical-data",method = RequestMethod.GET)
 	@ResponseBody
 	//@LogException
-	public DataBean<List<SupportingInformationEntry>> getEvidenceSupportingInformation(@PathVariable(value = "id") String evidenceId,
+	public DataBean<List<Map<String, Object>>> getEvidenceSupportingInformation(@PathVariable(value = "id") String evidenceId,
 																		   HistoricalDataRestFilter historicalDataRestFilter) {
-		DataBean<List<SupportingInformationEntry>> supportingInformationBean = new DataBean<>();
+		DataBean<List<Map<String, Object>>> supportingInformationBean = new DataBean<>();
 
 		//get the evidence from mongo according to ID
 //		Evidence evidence = evidencesService.findById(evidenceId);
@@ -276,24 +274,29 @@ public class ApiEvidenceController  {
 //		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence,
 //				historicalDataRestFilter);
 
-		SupportingInformationData evidenceSupportingInformationData = evidencesService.getSupportingInformationIndicatorId(evidenceId);
+		List<Map<String, Object>> supportingInformationEntrylist = new ArrayList<>();
+		List<SupportingInformationGenericData> evidenceSupportingInformationData = evidencesService.getSupportingInformationIndicatorId(evidenceId);
 		if (evidenceSupportingInformationData == null){
 			throw new ResourceNotFoundException("Can't get evidence of id: " + evidenceId);
 		}
 
-		boolean isSupportingInformationAnomalyValueExists = isSupportingInformationAnomalyValueExists(evidenceSupportingInformationData);
+		evidenceSupportingInformationData.stream().forEach(evidenceSupportingInformation -> {
+			boolean isSupportingInformationAnomalyValueExists = isSupportingInformationAnomalyValueExists(evidenceSupportingInformation);
 
-		List<SupportingInformationEntry> rawListOfEntries = createListOfEntries(evidenceSupportingInformationData, isSupportingInformationAnomalyValueExists);
+			List<SupportingInformationEntry> rawListOfEntries = createListOfEntries(evidenceSupportingInformation, isSupportingInformationAnomalyValueExists);
 
-		if(historicalDataRestFilter.getNumColumns() == null){
-			historicalDataRestFilter.setNumColumns(rawListOfEntries.size());
-		}
+			if(historicalDataRestFilter.getNumColumns() == null){
+				historicalDataRestFilter.setNumColumns(rawListOfEntries.size());
+			}
 
-		List<SupportingInformationEntry> rearrangedEntries = rearrangeEntriesIfNeeded(rawListOfEntries, historicalDataRestFilter, isSupportingInformationAnomalyValueExists);
+			List<SupportingInformationEntry> rearrangedEntries = rearrangeEntriesIfNeeded(rawListOfEntries, historicalDataRestFilter, isSupportingInformationAnomalyValueExists);
+			Map<String, Object> dataMapForResponse = new HashMap<>();
+			dataMapForResponse.put("contexts", evidenceSupportingInformation.getContexts());
+			dataMapForResponse.put("dataObj", rearrangedEntries);
+			supportingInformationEntrylist.add(dataMapForResponse);
+		});
 
-		if (evidenceSupportingInformationData.getTimeGranularity() != null) {
-			addTimeGranularityInformation(supportingInformationBean, evidenceSupportingInformationData);
-		}
+
 
 //		//Add countries list for supported information if needed
 //		Set<String> supportingInformationCountries = getSupportingInformationCountries(historicalDataRestFilter, evidence);
@@ -304,18 +307,10 @@ public class ApiEvidenceController  {
 //		rearrangedEntries.add(new SupportingInformationEntry(Arrays.asList("0x12"),25));
 //		rearrangedEntries.add(new SupportingInformationEntry(Arrays.asList("0x13"),100));
 //		rearrangedEntries.add(new SupportingInformationEntry(Arrays.asList("0x14"),200));
-		supportingInformationBean.setData(rearrangedEntries);
+		supportingInformationBean.setData(supportingInformationEntrylist);
 
-
-
-
-		supportingInformationBean.setData(rearrangedEntries);
-		supportingInformationBean.setTotal(rearrangedEntries.size());
+		// supportingInformationBean.setTotal(rearrangedEntries.size());
 		return supportingInformationBean;
-
-
-
-
 
 	}
 
@@ -388,13 +383,6 @@ public class ApiEvidenceController  {
 		return evidenceSupportingInformationData.getAnomalyValue() != null;
 	}
 
-	private void addTimeGranularityInformation(DataBean<List<SupportingInformationEntry>> supportingInformationBean,
-											   SupportingInformationData evidenceSupportingInformationData) {
-		Map<String, Object> infoMap = new HashMap<>(1);
-		infoMap.put(TIME_GRANULARITY_PROPERTY, evidenceSupportingInformationData.getTimeGranularity().name().
-				toLowerCase());
-		supportingInformationBean.setInfo(infoMap);
-	}
 
 	private Integer getNumOfAdditionalColumns(boolean isEvidenceSupportAnomalyValue) {
 		// num columns + 1 others +1 anomaly

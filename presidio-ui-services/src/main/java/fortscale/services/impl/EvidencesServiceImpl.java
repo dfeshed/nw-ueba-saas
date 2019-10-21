@@ -111,90 +111,91 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	}
 
 
-	public SupportingInformationData getSupportingInformationIndicatorId(String indicatorId){
+	public List<SupportingInformationGenericData> getSupportingInformationIndicatorId(String indicatorId){
 		try {
 			Indicator indicator = remoteAlertClientService.getConterollerApi().getIndicatorByAlert(indicatorId,"0",true);
 			if (indicator==null || indicator.getHistoricalData()==null){
 				return null;
 			}
-			if (indicator.getHistoricalData() instanceof CountAggregation){
-				SupportingInformationKey anomalyValue = null;
-				Map<SupportingInformationKey, Long> dataMap = new HashMap<>();
-				CountAggregation data = (CountAggregation)indicator.getHistoricalData();
-				if (CollectionUtils.isNotEmpty(data.getBuckets())){
-					for (CountBucket countBucket: data.getBuckets()){
 
-						SupportingInformationSingleKey key = new SupportingInformationSingleKey(countBucket.getKey());
-						long value = countBucket.getValue().longValue();
-						dataMap.put(key,value);
-						boolean isAnommaly = BooleanUtils.isTrue(countBucket.getAnomaly());
-						if (isAnommaly){
-							anomalyValue = key;
-						}
-
-					};
-					SupportingInformationGenericData<Long> supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue);
-					return supportingInformationGenericData;
-				}
+			List<SupportingInformationGenericData> supportingInformationGenericDataList = new ArrayList<>();
+			List<HistoricalData> historicalDataList = indicator.getHistoricalData();
 
 
+			historicalDataList.stream().forEach( historicalData -> {
+				if ( historicalData instanceof CountAggregation){
+					SupportingInformationKey anomalyValue = null;
+					Map<SupportingInformationKey, Long> dataMap = new HashMap<>();
+					CountAggregation data = (CountAggregation)historicalData;
+					if (CollectionUtils.isNotEmpty(data.getBuckets())){
+						for (CountBucket countBucket: data.getBuckets()){
 
-			} else if (indicator.getHistoricalData() instanceof TimeAggregation){
-				SupportingInformationKey anomalyValue = null;
-				Map<SupportingInformationKey, Long> dataMap = new HashMap<>();
-				TimeAggregation data = (TimeAggregation)indicator.getHistoricalData();
-				if (CollectionUtils.isNotEmpty(data.getBuckets())){
-					for (TimeBucket timeBucket: data.getBuckets()){
-
-						SupportingInformationTimestampKey key = new SupportingInformationTimestampKey(TimestampUtils.convertToMilliSeconds(timeBucket.getKey().longValue())+"");
-						long value = timeBucket.getValue().longValue();
-						dataMap.put(key,value);
-						boolean isAnommaly = BooleanUtils.isTrue(timeBucket.getAnomaly());
-						if (isAnommaly){
-							anomalyValue = key;
-						}
-
-					};
-					SupportingInformationGenericData<Long> supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue);
-					return supportingInformationGenericData;
-				}
-
-			}	else if (indicator.getHistoricalData() instanceof WeekdayAggregation){
-				SupportingInformationKey anomalyValue = null;
-				Map<SupportingInformationKey, Long> dataMap = new HashMap<>();
-				WeekdayAggregation data = (WeekdayAggregation)indicator.getHistoricalData();
-				if (CollectionUtils.isNotEmpty(data.getBuckets())){
-					List<DailyBucket> dailyBuckets =  data.getBuckets();
-					for (DailyBucket dailyBucket:dailyBuckets){
-						String dayKey = dailyBucket.getKey();
-						for (HourlyBucket hourlyBucket:dailyBucket.getValue()){
-
-							SupportingInformationDualKey supportingInformationDualKey = new SupportingInformationDualKey(dayKey,hourlyBucket.getKey());
-							long value = hourlyBucket.getValue().longValue();
-							dataMap.put(supportingInformationDualKey,value);
-							boolean isAnommaly = BooleanUtils.isTrue(hourlyBucket.getAnomaly());
+							SupportingInformationSingleKey key = new SupportingInformationSingleKey(countBucket.getKey());
+							long value = countBucket.getValue().longValue();
+							dataMap.put(key,value);
+							boolean isAnommaly = BooleanUtils.isTrue(countBucket.getAnomaly());
 							if (isAnommaly){
-								anomalyValue = supportingInformationDualKey;
+								anomalyValue = key;
 							}
-						}
+
+						};
+						SupportingInformationGenericData<Long> supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue, data.getContexts());
+						supportingInformationGenericDataList.add(supportingInformationGenericData);
+					}
+				} else if (historicalData instanceof TimeAggregation){
+					SupportingInformationKey anomalyValue = null;
+					Map<SupportingInformationKey, Long> dataMap = new HashMap<>();
+					TimeAggregation data = (TimeAggregation)historicalData;
+					if (CollectionUtils.isNotEmpty(data.getBuckets())){
+						for (TimeBucket timeBucket: data.getBuckets()){
+
+							SupportingInformationTimestampKey key = new SupportingInformationTimestampKey(TimestampUtils.convertToMilliSeconds(timeBucket.getKey().longValue())+"");
+							long value = timeBucket.getValue().longValue();
+							dataMap.put(key,value);
+							boolean isAnommaly = BooleanUtils.isTrue(timeBucket.getAnomaly());
+							if (isAnommaly){
+								anomalyValue = key;
+							}
+
+						};
+						SupportingInformationGenericData<Long> supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue,data.getContexts());
+						supportingInformationGenericDataList.add(supportingInformationGenericData);
 					}
 
-					SupportingInformationGenericData<Long> supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue);
-					return supportingInformationGenericData;
+				}	else if (historicalData instanceof WeekdayAggregation){
+					SupportingInformationKey anomalyValue = null;
+					Map<SupportingInformationKey, Long> dataMap = new HashMap<>();
+					WeekdayAggregation data = (WeekdayAggregation)historicalData;
+					if (CollectionUtils.isNotEmpty(data.getBuckets())){
+						List<DailyBucket> dailyBuckets =  data.getBuckets();
+						for (DailyBucket dailyBucket:dailyBuckets){
+							String dayKey = dailyBucket.getKey();
+							for (HourlyBucket hourlyBucket:dailyBucket.getValue()){
+
+								SupportingInformationDualKey supportingInformationDualKey = new SupportingInformationDualKey(dayKey,hourlyBucket.getKey());
+								long value = hourlyBucket.getValue().longValue();
+								dataMap.put(supportingInformationDualKey,value);
+								boolean isAnommaly = BooleanUtils.isTrue(hourlyBucket.getAnomaly());
+								if (isAnommaly){
+									anomalyValue = supportingInformationDualKey;
+								}
+							}
+						}
+
+						SupportingInformationGenericData<Long> supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue,data.getContexts());
+						supportingInformationGenericDataList.add(supportingInformationGenericData);
+					}
+
+				} else {
+					logger.error("Historical data of indicator id {}, of type {} is not match to any relevant type",indicatorId, indicator.getHistoricalData().getClass());
+					supportingInformationGenericDataList.add(null);
 				}
-
-			} else {
-				logger.error("Historical data of indicator id {}, of type {} is not match to any relevant type",indicatorId, indicator.getHistoricalData().getClass());
-				return null;
-			}
-
+			});
+			return supportingInformationGenericDataList;
 		} catch (ApiException e) {
 			logger.debug("Cannot find evidence with id: {}",indicatorId);
 			return  null;
 		}
-
-		return null;
-
 	}
 	private List<Evidence> getEvidencesMocks() {
 		return Arrays.asList(getEvidenceMock());

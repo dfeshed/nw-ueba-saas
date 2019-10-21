@@ -60,7 +60,6 @@ public class EntityConverterHelper {
         uiEntity.setScore(responseEntity.getScore());
         uiEntity.setScoreSeverity(severityEnumConverter.convertResponseToUiDto(responseEntity.getSeverity()));
         uiEntity.setAlertsCount(responseEntity.getAlertsCount());
-        uiEntity.setTrendingScore(responseEntity.getTrendingScore());
 
         if(CollectionUtils.isNotEmpty(responseEntity.getAlerts())){
             List<Alert> alerts = new ArrayList<>();
