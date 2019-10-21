@@ -132,8 +132,11 @@
         ul.column-list {
           li {
             transition: all .125s;
+            position: relative;
             &.is-dragging {
               transition-duration: 0s;
+              background-color: background-color(primary, darker);
+              z-index: 10;
             }
             &.editable {
               span {
