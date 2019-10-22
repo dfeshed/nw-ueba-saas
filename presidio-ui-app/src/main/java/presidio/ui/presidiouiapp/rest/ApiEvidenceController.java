@@ -268,12 +268,6 @@ public class ApiEvidenceController  {
 																		   HistoricalDataRestFilter historicalDataRestFilter) {
 		DataBean<List<Map<String, Object>>> supportingInformationBean = new DataBean<>();
 
-		//get the evidence from mongo according to ID
-//		Evidence evidence = evidencesService.findById(evidenceId);
-
-//		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence,
-//				historicalDataRestFilter);
-
 		List<Map<String, Object>> supportingInformationEntrylist = new ArrayList<>();
 		List<SupportingInformationGenericData> evidenceSupportingInformationData = evidencesService.getSupportingInformationIndicatorId(evidenceId);
 		if (evidenceSupportingInformationData == null){
@@ -297,19 +291,7 @@ public class ApiEvidenceController  {
 		});
 
 
-
-//		//Add countries list for supported information if needed
-//		Set<String> supportingInformationCountries = getSupportingInformationCountries(historicalDataRestFilter, evidence);
-//		if (CollectionUtils.isNotEmpty(supportingInformationCountries)) {
-//			supportingInformationBean.addInfo(COUNTRIES_INFO_ATTRIBUTE, supportingInformationCountries);
-//		}
-//		List<SupportingInformationEntry> rearrangedEntries = new ArrayList<>();
-//		rearrangedEntries.add(new SupportingInformationEntry(Arrays.asList("0x12"),25));
-//		rearrangedEntries.add(new SupportingInformationEntry(Arrays.asList("0x13"),100));
-//		rearrangedEntries.add(new SupportingInformationEntry(Arrays.asList("0x14"),200));
 		supportingInformationBean.setData(supportingInformationEntrylist);
-
-		// supportingInformationBean.setTotal(rearrangedEntries.size());
 		return supportingInformationBean;
 
 	}
@@ -323,10 +305,6 @@ public class ApiEvidenceController  {
 	private Set<String> getSupportingInformationCountries(HistoricalDataRestFilter historicalDataRestFilter, Evidence evidence) {
 		Set<String> supportingInformationCountries = new HashSet<>();
 		EntitySupportingInformation supportingInformation = evidence.getSupportingInformation();
-//		if (supportingInformation instanceof VpnGeoHoppingSupportingInformation &&
-//				historicalDataRestFilter.getFeature().equals(COUNTRY_FEATURE)) {
-//			supportingInformationCountries = ((VpnGeoHoppingSupportingInformation) supportingInformation).fetchCountriesNames();
-//		}
 		return supportingInformationCountries;
 	}
 

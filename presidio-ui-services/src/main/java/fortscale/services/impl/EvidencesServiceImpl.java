@@ -123,6 +123,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 
 			historicalDataList.stream().forEach( historicalData -> {
+				SupportingInformationGenericData<Long> supportingInformationGenericData = null;
 				if ( historicalData instanceof CountAggregation){
 					SupportingInformationKey anomalyValue = null;
 					Map<SupportingInformationKey, Long> dataMap = new HashMap<>();
@@ -139,8 +140,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 							}
 
 						};
-						SupportingInformationGenericData<Long> supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue, data.getContexts());
-						supportingInformationGenericDataList.add(supportingInformationGenericData);
+						supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue, data.getContexts());
 					}
 				} else if (historicalData instanceof TimeAggregation){
 					SupportingInformationKey anomalyValue = null;
@@ -158,8 +158,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 							}
 
 						};
-						SupportingInformationGenericData<Long> supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue,data.getContexts());
-						supportingInformationGenericDataList.add(supportingInformationGenericData);
+						supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue,data.getContexts());
 					}
 
 				}	else if (historicalData instanceof WeekdayAggregation){
@@ -181,15 +180,13 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 								}
 							}
 						}
-
-						SupportingInformationGenericData<Long> supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue,data.getContexts());
-						supportingInformationGenericDataList.add(supportingInformationGenericData);
+						supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue,data.getContexts());
 					}
-
 				} else {
 					logger.error("Historical data of indicator id {}, of type {} is not match to any relevant type",indicatorId, indicator.getHistoricalData().getClass());
 					supportingInformationGenericDataList.add(null);
 				}
+				supportingInformationGenericDataList.add(supportingInformationGenericData);
 			});
 			return supportingInformationGenericDataList;
 		} catch (ApiException e) {
