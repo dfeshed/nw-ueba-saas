@@ -537,6 +537,7 @@ export default {
       onlyGrouped: 'This event is related to a previous session matching these parameters: {{{tuple}}}'
     },
     enableEventRelationshipsLabel: 'Show Relationships',
+    disabledEnableEventRelationshipsLabel: 'Showing relationships is disabled because there are no relationships present in these events.',
     controls: {
       toggle: 'Show/Hide Events List Panel',
       togglePreferences: 'Toggle Investigate Preferences'

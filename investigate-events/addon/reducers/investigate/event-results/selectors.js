@@ -342,7 +342,7 @@ export const updateStreamKeyTree = (streamKeyTree, e, keyA, keyB, keyC, keyD) =>
 
     if (thisKeyIsEmpty ||
       (thisKeyIsPopulatedWithChild && thisEventIsParent) ||
-      (thisKeyIsPopulatedWithParent && thisEventIsPriorTime) ||
+      (thisKeyIsPopulatedWithParent && thisEventIsParent && thisEventIsPriorTime) ||
       (thisKeyIsPopulatedWithChild && thisEventIsPriorSplit)
     ) {
       streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]] = e;
@@ -417,7 +417,7 @@ export const nestChildEvents = createSelector(
 
         if (isEmpty(event['session.split'])) {
           if (event.groupedWithoutSplit) {
-            event.eventIndex = parent.eventIndex + parseFloat(`.${new Date(event.time).getTime()}`);
+            event.eventIndex = parent.eventIndex + parseFloat(`.00000${new Date(event.time).getTime()}`);
           } else {
             event.eventIndex = parent.eventIndex;
           }
@@ -452,7 +452,7 @@ export const selectedIndex = createSelector(
 );
 
 export const eventType = createSelector(
-  selectedIndex, nestChildEvents,
+  [selectedIndex, nestChildEvents],
   (index, data) => {
     const event = data ? data[index] : null;
     let type = null;
@@ -578,7 +578,6 @@ export const actualEventCount = createSelector(
 export const getDownloadOptions = createSelector(
   [_eventAnalysisPreferences, _items, _selectedEventIds, nestChildEvents],
   (eventAnalysisPreferences, items, selectedEventIds, data) => {
-
     let selectedEventIdsArray;
     if (selectedEventIds) {
       selectedEventIdsArray = Object.values(selectedEventIds);

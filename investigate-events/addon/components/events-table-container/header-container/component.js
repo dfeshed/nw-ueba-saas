@@ -148,6 +148,13 @@ const HeaderContainer = Component.extend({
   },
 
   actions: {
+    toggleEventRelationshipsWithTableFocus() {
+      this.send('toggleEventRelationships');
+      schedule('afterRender', () => {
+        document.querySelector('.x-toggle-component').blur();
+      });
+    },
+
     debouncedSearchForTerm(term, event) {
       if (event.key === 'Enter') {
         const { searchScrollIndex, searchMatchesCount } = this.getProperties('searchScrollIndex', 'searchMatchesCount');

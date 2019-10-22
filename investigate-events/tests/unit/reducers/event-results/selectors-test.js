@@ -1665,7 +1665,24 @@ module('Unit | Selectors | event-results', function(hooks) {
               'tcp.dstport': 25,
               'session.split': 1,
               sessionId: 1
+            },
+            {
+              'time': 'Tue Oct 11 2019 13:54:16',
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 2
+            },
+            {
+              'time': 'Tue Oct 12 2019 13:54:16',
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 3
             }
+
           ]
         },
         data: {
@@ -1704,6 +1721,8 @@ module('Unit | Selectors | event-results', function(hooks) {
 
     const result = nestChildEvents(state);
     assert.equal(result[0].tuple, 'ip.src=127.0.0.1 AND ip.dst=127.0.0.1 AND tcp.srcport=25 AND tcp.dstport=25');
+    assert.equal(result[1].eventIndex, 1);
+    assert.equal(result[2].eventIndex, 1.000001570902856);
   });
 
   test('nestChildEvents for tuple: ip.dst|ip.src|tcp.srcport|tcp.dstport', async function(assert) {
@@ -2389,5 +2408,57 @@ module('Unit | Selectors | event-results', function(hooks) {
       }
     });
   });
+
+  test('updateStreamKeyTree should not update previously saved true parent event with earlier child', async function(assert) {
+    const result = updateStreamKeyTree(
+      {
+        '127.0.0.1': {
+          '127.0.0.1': {
+            25: {
+              25: {
+                'sessionId': 1,
+                'time': 'Tue Oct 12 2019 13:54:16',
+                'ip.src': '127.0.0.1',
+                'ip.dst': '127.0.0.1',
+                'tcp.srcport': 25,
+                'tcp.dstport': 25
+              }
+            }
+          }
+        }
+      },
+      {
+        'sessionId': 2,
+        'time': 'Tue Oct 12 2019 13:34:16',
+        'ip.src': '127.0.0.1',
+        'ip.dst': '127.0.0.1',
+        'tcp.srcport': 25,
+        'tcp.dstport': 25,
+        'session.split': 0
+      },
+      'ip.src',
+      'ip.dst',
+      'tcp.srcport',
+      'tcp.dstport'
+    );
+
+    assert.deepEqual(result, {
+      '127.0.0.1': {
+        '127.0.0.1': {
+          25: {
+            25: {
+              'sessionId': 1,
+              'time': 'Tue Oct 12 2019 13:54:16',
+              'ip.src': '127.0.0.1',
+              'ip.dst': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25
+            }
+          }
+        }
+      }
+    });
+  });
+
 
 });

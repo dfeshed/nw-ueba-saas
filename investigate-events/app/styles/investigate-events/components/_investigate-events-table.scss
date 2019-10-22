@@ -32,14 +32,14 @@
     &__content {
       min-width: 70%;
 
+      .toggle-wrapper {
+        display: inline-flex;
+      }
+
       &::after {
         content: "";
         display: table;
         clear: both;
-      }
-
-      .x-toggle-component {
-        padding: rsa-whitespace() rsa-whitespace() 0;
       }
     }
 
@@ -531,6 +531,33 @@
   .selected-events-threshold {
     position: relative;
     color: text-color(accentFour);
+  }
+}
+
+.recon-is-open, .recon-is-expanded {
+  .rsa-investigate-events-table {
+    &__header {
+      &__content {
+        .x-toggle-component {
+          margin-left: rsa-whitespace(less);
+          margin-bottom: rsa-whitespace(less);
+        }
+      }
+    }
+  }
+}
+
+.recon-is-closed {
+  .rsa-investigate-events-table {
+    &__header {
+      &__content {
+        display: flex;
+        .x-toggle-component {
+          margin-left: rsa-whitespace();
+        }
+
+      }
+    }
   }
 }
 

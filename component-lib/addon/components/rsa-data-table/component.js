@@ -473,7 +473,7 @@ export default Component.extend(DomWatcher, {
    * The intent is to keep the selectedRow in view if new records push it out of view.
    * @private
    */
-  _scrollTopWillChange: observer('itemsCount', function() {
+  _scrollTopWillChange: observer('itemsCount', 'eventRelationshipsEnabled', function() {
     once(this, () => {
       this._scrollToInitial();
     });

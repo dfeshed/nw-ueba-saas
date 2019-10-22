@@ -56,7 +56,7 @@ module('Integration | Component | header-container', function(hooks) {
   test('does not render the relationship toggle when no split sessions', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').hasRequiredValuesToQuery(true).columnGroups(EventColumnGroups).eventCount(55).build();
     await render(hbs`{{events-table-container/header-container}}`);
-    assert.equal(findAll('.x-toggle-component').length, 0, 'rendered toggle');
+    assert.equal(findAll('.x-toggle-component .x-toggle-container-disabled').length, 1, 'rendered toggle');
   });
 
   test('render the relationship toggle when split sessions', async function(assert) {
@@ -86,7 +86,7 @@ module('Integration | Component | header-container', function(hooks) {
   test('render the events header with required fields ', async function(assert) {
     await renderDefaultHeaderContainer(assert);
     assert.equal(find(headerContainerSelector).childElementCount, 2, 'rendered with two elements - header__content, events-table-control');
-    assert.equal(find(headerContentSelector).childElementCount, 4, 'rendered with 4 elements - eventLabel, columnGroups, downloadEvents, manageIncidents');
+    assert.equal(find(headerContentSelector).childElementCount, 5, 'rendered with 4 elements - eventLabel, columnGroups, downloadEvents, manageIncidents');
     assert.equal(find(eventLabelSelector).textContent.trim().replace(/\s+/g, ''), '55Events(Asc)', 'rendered event header title');
     assert.equal(find(`${columnGroupManager} .list-caption`).textContent.trim(), 'Column Group: Summary List', 'rendered ColumnGroup title');
     assert.equal(find(`${downloadSelector} .ember-power-select-trigger span[title='Download']`).textContent.trim(), 'Download', 'rendered event header title');
@@ -149,7 +149,7 @@ module('Integration | Component | header-container', function(hooks) {
 
     await render(hbs`{{events-table-container/header-container}}`);
 
-    assert.equal(find(headerContentSelector).childElementCount, 4, '__eventLabel, __columngroup, _downloadEvents, __manageIncident visible.');
+    assert.equal(find(headerContentSelector).childElementCount, 5, '__eventLabel, __columngroup, _downloadEvents, __manageIncident visible.');
 
     assert.ok(find(createIncidentSelector), 'Create Incident button is visible');
     assert.ok(find(addToIncidentSelector), 'Add to Incident button is visible');
@@ -166,7 +166,7 @@ module('Integration | Component | header-container', function(hooks) {
 
     await render(hbs`{{events-table-container/header-container}}`);
 
-    assert.equal(find(headerContentSelector).childElementCount, 3, 'only __eventLabel, __columngroup, _downloadEvents visible.');
+    assert.equal(find(headerContentSelector).childElementCount, 4, 'only __eventLabel, __columngroup, _downloadEvents visible.');
 
     assert.notOk(find(createIncidentSelector), 'Create Incident button is not displayed');
     assert.notOk(find(addToIncidentSelector), 'Add to Incident button is not displayed');
@@ -184,7 +184,7 @@ module('Integration | Component | header-container', function(hooks) {
 
     await render(hbs`{{events-table-container/header-container}}`);
 
-    assert.equal(find(headerContentSelector).childElementCount, 3, 'only __eventLabel, __columngroup, _downloadEvents visible.');
+    assert.equal(find(headerContentSelector).childElementCount, 4, 'only __eventLabel, __columngroup, _downloadEvents visible.');
 
     assert.notOk(find(createIncidentSelector), 'Create Incident button is not displayed');
     assert.notOk(find(addToIncidentSelector), 'Add to Incident button is not displayed');
