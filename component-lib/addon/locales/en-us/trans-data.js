@@ -4413,6 +4413,7 @@ export default {
       getGoogle: 'Google',
       getRobtex: 'Robtex',
       sansIPHistoryLabel: 'SANS IP History',
+      getIPVoidSearch: 'IPVoidSearch',
       googleMalwareDiagnosticsLabel: 'Google Malware Diagnostic for IPs and Hostnames',
       mcAfeeHostnameSiteAdvisorLabel: 'McAfee SiteAdvisor for Hostnames',
       getBFKPassiveDNSCollection: 'BFK Passive DNS Collection',
