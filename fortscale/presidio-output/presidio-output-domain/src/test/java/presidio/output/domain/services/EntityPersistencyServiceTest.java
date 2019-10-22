@@ -762,14 +762,6 @@ public class EntityPersistencyServiceTest{
     }
 
     @Test
-    public void testEmptyTrending() {
-        Entity entity = generateEntity(classifications1, "entity1", "entityId1", 50d);
-        Entity createdEntity = entityPersistencyService.save(entity);
-        Entity savedEntity = entityPersistencyService.findEntityByDocumentId(createdEntity.getId());
-        assertEquals(savedEntity.getTrendingScore(), null);
-    }
-
-    @Test
     public void testSortByTrending() {
         Entity entity1 = generateEntity(classifications1, "entity1", "entityId1", 50d);
         Entity entity2 = generateEntity(classifications1, "entity2", "entityId2", 50d);
