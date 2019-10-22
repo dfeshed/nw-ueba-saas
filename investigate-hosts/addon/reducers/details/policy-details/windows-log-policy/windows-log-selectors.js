@@ -123,7 +123,7 @@ const _getAdvancedConfigSetting = (prop, focusedPolicy, windowsLogPolicyEnabled)
     advancedConfigSettings = {
       customConfig: {
         name: 'adminUsm.policyWizard.windowsLogPolicy.customConfig',
-        value: focusedPolicy[prop]
+        value: JSON.stringify(focusedPolicy[prop])
       }
     };
   }

@@ -83,7 +83,7 @@ module('Unit | Selectors | Policy Details | windows-log-policy | windows-log-sel
             filterType: 'EXCLUDE'
           }
         ],
-        customConfig: '{"enabled" : true,"sendTestLog" : false,"protocol" : "UDP","policyType" : "windowsLogPolicy","name" : "Test Windows Log Policy","description" : "Test Windows Log Policy Description."}'
+        customConfig: { 'enabled': true, 'sendTestLog': false, 'protocol': 'TCP', 'policyType': 'windowsLogPolicy', 'name': 'Test Windows Log Policy', 'description': 'Test Windows Log Policy Description.' }
       },
       filePolicy: {
         name: 'Test File Policy',
@@ -111,7 +111,7 @@ module('Unit | Selectors | Policy Details | windows-log-policy | windows-log-sel
     assert.equal(policyDetails[1].channels[0].value, '620,630,640', 'eventId value shows');
     assert.equal(policyDetails[2].header, 'adminUsm.policyWizard.windowsLogPolicy.advancedConfig', 'third section is as expected');
     assert.equal(policyDetails[2].props.length, 1, 'third section has 1 property');
-    assert.equal(policyDetails[2].props[0].value, '{"enabled" : true,"sendTestLog" : false,"protocol" : "UDP","policyType" : "windowsLogPolicy","name" : "Test Windows Log Policy","description" : "Test Windows Log Policy Description."}', 'advanced config as expected');
+    assert.equal(policyDetails[2].props[0].value, '{"enabled":true,"sendTestLog":false,"protocol":"TCP","policyType":"windowsLogPolicy","name":"Test Windows Log Policy","description":"Test Windows Log Policy Description."}', 'windows advanced config as expected');
   });
 
   const { policy } = policyData;

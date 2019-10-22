@@ -96,7 +96,7 @@ module('Unit | Selectors | Policy Details | file-policy | file-selectors', funct
         primaryDestination: '',
         secondaryDestination: '',
         protocol: 'TLS',
-        customConfig: 'enabled : true,sendTestLog : false,protocol : UDP,policyType : filePolicy,name : Test File Policy,description : Test File Policy Description.'
+        customConfig: { 'enabled': true, 'sendTestLog': false, 'protocol': 'UDP', 'policyType': 'filePolicy', 'name': 'Test File Policy', 'description': 'Test File Policy Description.' }
       }
     },
     policyStatus: 'Updated',
@@ -113,7 +113,7 @@ module('Unit | Selectors | Policy Details | file-policy | file-selectors', funct
     assert.equal(policyDetails[0].props[2].value, 'Disabled', 'Disabled sendTestLog correct');
     assert.equal(policyDetails[1].header, 'adminUsm.policyWizard.filePolicy.advancedConfig', 'second section is as expected');
     assert.equal(policyDetails[1].props.length, 1, 'second section has 1 property');
-    assert.equal(policyDetails[1].props[0].value, '\"enabled : true,sendTestLog : false,protocol : UDP,policyType : filePolicy,name : Test File Policy,description : Test File Policy Description.\"'); // eslint-disable-line no-useless-escape
+    assert.equal(policyDetails[1].props[0].value, '{"enabled":true,"sendTestLog":false,"protocol":"UDP","policyType":"filePolicy","name":"Test File Policy","description":"Test File Policy Description."}', 'file advanced config as expected');
   });
 
   const { policy } = policyData;

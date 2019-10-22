@@ -64,7 +64,7 @@ export default {
           filterType: 'EXCLUDE'
         }
       ],
-      customConfig: '{"enabled" : true,"sendTestLog" : false,"protocol" : "TCP","policyType" : "windowsLogPolicy","name" : "Test Windows Log Policy","description" : "Test Windows Log Policy Description."}'
+      customConfig: { 'enabled': true, 'sendTestLog': false, 'protocol': 'TCP', 'policyType': 'windowsLogPolicy', 'name': 'Test Windows Log Policy', 'description': 'Test Windows Log Policy Description.' }
     },
     filePolicy: {
       name: 'Test File Policy',
@@ -73,7 +73,7 @@ export default {
       primaryDestination: '',
       secondaryDestination: '',
       protocol: 'TLS',
-      customConfig: '"enabled" : true,"sendTestLog" : false,"protocol" : "UDP","policyType" : "filePolicy","name" : "Test File Policy","description" : "Test File Policy Description."',
+      customConfig: { 'enabled': true, 'sendTestLog': false, 'protocol': 'UDP', 'policyType': 'filePolicy', 'name': 'Test File Policy', 'description': 'Test File Policy Description.' },
       sources: [
         {
           fileType: 'apache',
