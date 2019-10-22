@@ -36,6 +36,17 @@ module('Integration | Component | recon event content', function(hooks) {
     assert.equal(findAll('.recon-pager').length, 1, 'Pager not rendered');
   });
 
+  test('content error is not shown when there is data for a view', async function(assert) {
+    new DataHelper(this.get('redux'))
+      .initializeData()
+      .populateFiles()
+      .setViewToFile()
+      .contentRetrieveFailure(129);
+    await render(hbs`{{recon-event-content accessControl=accessControl}}`);
+
+    assert.notOk(find('.rsa-panel-message'), 'Content error should not be shown when data is available');
+  });
+
   test('it renders spinner', async function(assert) {
     new DataHelper(this.get('redux'))
       .setViewToText()

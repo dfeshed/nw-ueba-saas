@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
+import { doesStateHaveViewData } from 'recon/utils/reconstruction-types';
 import {
   errorMessage,
   isContentError,
@@ -22,7 +23,7 @@ import ReconPagerMixin from 'recon/mixins/recon-pager';
 const stateToComputed = ({ recon }) => ({
   currentReconView: recon.visuals.currentReconView,
   errorMessage: errorMessage(recon),
-  isContentError: isContentError(recon),
+  isContentError: isContentError(recon) && !doesStateHaveViewData(recon, recon.visuals.currentReconView),
   isLoading: isLoading(recon),
   isMetaShown: recon.visuals.isMetaShown,
   reconData: recon.data,
