@@ -1,16 +1,23 @@
 .rsa-content-warn-text-box {
   @include rsa-font(paragraph);
   position: relative;
-  padding: rsa-whitespace(less);
   width: 100%;
   @include border(1px, solid, accentFour);
   border-color: text-color(accentFour);
-  background-color: rgba(69, 50, 18);
+  background-color: background-color(primary, darkest);
   border-radius: 5px;
+  .inner-div {
+    box-sizing: border-box;
+    padding: rsa-whitespace(less);
+    width: 100%;
+    border-radius: 5px;
+    background-color: rgba(var(--background-color-accent-four-base), var(--opacity-nearly-transparent));
+  }
   .rsa-icon {
     color: text-color(accentFour);
   }
   .message {
+    white-space: pre-line;
     padding-left: 25px;
   }
   .icon {
@@ -27,13 +34,17 @@
       color: text-color(accentOne, dark);
     }
     border-color: text-color(accentOne, dark);
-    background-color: rgba(58, 23, 23);
+    .inner-div {
+      background-color: rgba(var(--background-color-accent-one-base), var(--opacity-nearly-transparent));
+    }
   }
   &.is-info {
     .rsa-icon {
       color: rgba(var(--text-color-secondary-base));
     }
     border-color: rgba(var(--border-color-secondary-base));
-    background-color: rgba(var(--background-color-secondary-base), var(--opacity-nearly-transparent));
+    .inner-div {
+      background-color: rgba(var(--background-color-secondary-base), var(--opacity-nearly-transparent));
+    }
   }
 }

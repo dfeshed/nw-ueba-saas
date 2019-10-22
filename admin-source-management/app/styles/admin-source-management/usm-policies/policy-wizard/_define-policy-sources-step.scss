@@ -129,6 +129,7 @@
       overflow: hidden; /* removes scrollbars from body & cells that aren't really scrolling */
     }
     .rsa-data-table-body-row {
+      box-sizing: border-box;
       .file-type .ember-power-select-status-icon {
         display: none;
       }
