@@ -145,6 +145,7 @@ public class RestEntityServiceImpl implements RestEntityService {
         convertedEntity.setEntityName(entity.getEntityName());
         convertedEntity.setAlertClassifications(entity.getAlertClassifications());
         convertedEntity.setAlertsCount(entity.getAlertsCount());
+        convertedEntity.setTerndingScore(entity.getTrendingScore());
         return convertedEntity;
     }
 

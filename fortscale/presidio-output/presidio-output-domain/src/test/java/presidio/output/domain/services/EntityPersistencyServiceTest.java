@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntityEnums;
 import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.services.entities.EntityPersistencyService;
@@ -749,5 +750,47 @@ public class EntityPersistencyServiceTest{
         assertEquals(1L, result.getContent().size());
         Iterator<Entity> iterator = result.iterator();
         Assert.assertEquals("Donald Duck", iterator.next().getEntityName());
+    }
+
+    @Test
+    public void testTrending() {
+        Entity entity = generateEntity(classifications1, "entity1", "entityId1", 50d);
+        entity.setTrendingScore(Map.of(EntityEnums.Trends.weekly, 1.5d, EntityEnums.Trends.daily, 2.3d));
+        Entity createdEntity = entityPersistencyService.save(entity);
+        Entity savedEntity = entityPersistencyService.findEntityByDocumentId(createdEntity.getId());
+        assertEquals(savedEntity.getTrendingScore().size(), 2);
+    }
+
+    @Test
+    public void testEmptyTrending() {
+        Entity entity = generateEntity(classifications1, "entity1", "entityId1", 50d);
+        Entity createdEntity = entityPersistencyService.save(entity);
+        Entity savedEntity = entityPersistencyService.findEntityByDocumentId(createdEntity.getId());
+        assertEquals(savedEntity.getTrendingScore(), null);
+    }
+
+    @Test
+    public void testSortByTrending() {
+        Entity entity1 = generateEntity(classifications1, "entity1", "entityId1", 50d);
+        Entity entity2 = generateEntity(classifications1, "entity2", "entityId2", 50d);
+        Entity entity3 = generateEntity(classifications1, "entity3", "entityId3", 50d);
+        entity1.setTrendingScore(Map.of(EntityEnums.Trends.weekly, 1.5d, EntityEnums.Trends.daily, 2.3d));
+        entity2.setTrendingScore(Map.of(EntityEnums.Trends.weekly, 0.5d, EntityEnums.Trends.daily, 15d));
+
+        List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);
+        entityPersistencyService.save(entityList);
+
+        EntityQuery entityQuery =
+                new EntityQuery.EntityQueryBuilder()
+                        .sort(Sort.by(Sort.Direction.DESC, Entity.TRENDING_SCORE + "." + EntityEnums.Trends.daily))
+                        .build();
+
+        Page<Entity>  result = entityPersistencyService.find(entityQuery);
+
+        assertEquals(3L, result.getContent().size());
+        Iterator<Entity> iterator = result.iterator();
+        Assert.assertEquals("entity2", iterator.next().getEntityName());
+        Assert.assertEquals("entity1", iterator.next().getEntityName());
+        Assert.assertEquals("entity3", iterator.next().getEntityName());
     }
 }

@@ -2,10 +2,9 @@ package presidio.webapp.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import presidio.output.domain.records.entity.EntityEnums;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static presidio.webapp.model.EntityQueryEnums.EntitySeverity;
 
@@ -44,6 +43,9 @@ public class Entity {
 
     @JsonProperty("alertClassifications")
     private List<String> alertClassifications = new ArrayList<String>();
+
+    @JsonProperty("trendingScore")
+    private Map<EntityEnums.Trends, Double> terndingScore = new HashMap<>();
 
     public Entity id(String id) {
         this.id = id;
@@ -159,6 +161,20 @@ public class Entity {
         this.score = score;
     }
 
+    /**
+     * Get scores by trend preiod
+     * minimum: 0
+     *
+     * @return Map of trending scores ({weekly -> 20.0, daily -> 5.0})
+     **/
+    public Map<EntityEnums.Trends, Double> getTerndingScore() {
+        return terndingScore;
+    }
+
+    public void setTerndingScore(Map<EntityEnums.Trends, Double> terndingScore) {
+        this.terndingScore = terndingScore;
+    }
+
     public Entity entitySeverity(EntitySeverity entitySeverity) {
         this.severity = entitySeverity;
         return this;
@@ -265,6 +281,7 @@ public class Entity {
     public int hashCode() {
         return Objects.hash(id, entityId, entityName, tags, score, severity, alertsCount, alerts, alertClassifications);
     }
+
 
     @Override
     public String toString() {
