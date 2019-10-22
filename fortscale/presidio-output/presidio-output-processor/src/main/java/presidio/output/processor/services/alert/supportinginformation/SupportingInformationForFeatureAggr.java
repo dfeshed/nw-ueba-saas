@@ -19,14 +19,11 @@ import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.config.IndicatorConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
-import presidio.output.processor.services.alert.supportinginformation.historicaldata.AggregationDataPopulator;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.AggregationDataPopulatorFactory;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Supporting information (events and historical data) for FEATURE_AGGREGATION events (AKA 'F')
@@ -90,35 +87,14 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     public HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) {
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
 
-        AggregationDataPopulator aggregationDataPopulator;
-
         List<HistoricalDataConfig> historicalDataConfigList = indicatorConfig.getHistoricalData();
-
-        List<Aggregation> aggregations = new ArrayList<>();
 
         Instant startInstant = adeAggregationRecord.getStartInstant().minus(historicalPeriodInDays, ChronoUnit.DAYS);
         TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
         Schema schema = indicatorConfig.getSchema();
         String anomalyValue = indicator.getAnomalyValue();
 
-        for(HistoricalDataConfig historicalDataConfig : historicalDataConfigList){
-            Aggregation aggregation;
-
-            // create aggregation populator
-            try {
-                aggregationDataPopulator = aggregationDataPopulatorFactory.createAggregationDataPopulation(historicalDataConfig.getType());
-            } catch (IllegalArgumentException ex) {
-                logger.error("failed to create aggregation populator for {} historical data type", historicalDataConfig.getType());
-                return null;
-            }
-
-            // populate historical data
-            String featureName = historicalDataConfig.getFeatureName() == null? adeAggregationRecord.getFeatureName():historicalDataConfig.getFeatureName() ;
-            Map<String, String> contexts = historicalDataConfig.getContexts() == null ? getHistoricalDataContexts(indicatorConfig.getModelContextFields(), indicator) : getHistoricalDataContexts(historicalDataConfig.getContexts(), indicator);
-            boolean skipAnomaly = historicalDataConfig.getSkipAnomaly() == null ? false : historicalDataConfig.getSkipAnomaly();
-            aggregation = aggregationDataPopulator.createAggregationData(timeRange, contexts, schema, featureName, anomalyValue, historicalDataConfig, skipAnomaly, indicator.getStartDate());
-            aggregations.add(aggregation);
-        }
+        List<Aggregation> aggregations = generateAggregations(aggregationDataPopulatorFactory, historicalDataConfigList, adeAggregationRecord, indicatorConfig, indicator, timeRange, schema, anomalyValue);
 
         HistoricalData historicalData = new HistoricalData(aggregations);
         historicalData.setIndicatorId(indicator.getId());
@@ -131,4 +107,8 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     public String getType() {
         return AggregatedFeatureType.FEATURE_AGGREGATION.name();
     }
+
+    @Override
+    public String getFeatureName(HistoricalDataConfig historicalDataConfig, AdeAggregationRecord adeAggregationRecord) {
+        return historicalDataConfig.getFeatureName() == null? adeAggregationRecord.getFeatureName():historicalDataConfig.getFeatureName();     }
 }

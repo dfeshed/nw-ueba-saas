@@ -1,19 +1,19 @@
 package presidio.output.processor.services.alert.supportinginformation;
 
+import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
-import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.HistoricalData;
-import presidio.output.domain.records.alerts.Indicator;
-import presidio.output.domain.records.alerts.IndicatorEvent;
+import presidio.output.domain.records.alerts.*;
+import presidio.output.processor.config.HistoricalDataConfig;
+import presidio.output.processor.config.IndicatorConfig;
 import presidio.output.processor.services.alert.AlertServiceImpl;
+import presidio.output.processor.services.alert.supportinginformation.historicaldata.AggregationDataPopulator;
+import presidio.output.processor.services.alert.supportinginformation.historicaldata.AggregationDataPopulatorFactory;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -59,7 +59,7 @@ public interface SupportingInformationGenerator {
         return indicators;
     }
 
-    default Map<String, String> getHistoricalDataContexts(List<String> contexts, Indicator indicator){
+    default Map<String, String> getHistoricalDataContexts(List<String> contexts, Indicator indicator) {
         return contexts.stream().collect(Collectors.toMap(
                 Function.identity(),
                 contextFieldName -> indicator.getContexts().get(contextFieldName),
@@ -67,6 +67,36 @@ public interface SupportingInformationGenerator {
                 LinkedHashMap::new));
 
     }
+
+    default List<Aggregation> generateAggregations(AggregationDataPopulatorFactory aggregationDataPopulatorFactory, List<HistoricalDataConfig> historicalDataConfigList,
+                                                   AdeAggregationRecord adeAggregationRecord, IndicatorConfig indicatorConfig, Indicator indicator, TimeRange timeRange, Schema schema, String anomalyValue) {
+
+        List<Aggregation> aggregations = new ArrayList<>();
+
+        for (HistoricalDataConfig historicalDataConfig : historicalDataConfigList) {
+
+            // create aggregation populator
+            AggregationDataPopulator aggregationDataPopulator;
+
+            try {
+                aggregationDataPopulator = aggregationDataPopulatorFactory.createAggregationDataPopulation(historicalDataConfig.getType());
+            } catch (IllegalArgumentException ex) {
+                logger.error("failed to create aggregation populator for {} historical data type", historicalDataConfig.getType());
+                return null;
+            }
+
+            String featureName = getFeatureName(historicalDataConfig, adeAggregationRecord);
+            Map<String, String> contexts = historicalDataConfig.getContexts() == null ? getHistoricalDataContexts(indicatorConfig.getModelContextFields(), indicator) : getHistoricalDataContexts(historicalDataConfig.getContexts(), indicator);
+            boolean skipAnomaly = historicalDataConfig.getSkipAnomaly() == null ? false : historicalDataConfig.getSkipAnomaly();
+            Aggregation aggregation = aggregationDataPopulator.createAggregationData(timeRange, contexts, schema, featureName, anomalyValue, historicalDataConfig, skipAnomaly, indicator.getStartDate());
+
+            aggregations.add(aggregation);
+        }
+
+        return aggregations;
+    }
+
+    String getFeatureName(HistoricalDataConfig historicalDataConfig, AdeAggregationRecord adeAggregationRecord);
 
     List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize, String entityType, String entityId) throws Exception;
 
