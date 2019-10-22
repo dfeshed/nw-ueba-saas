@@ -21,14 +21,6 @@ export const columnConfigForUsers = [{
   width: '3vw',
   disableSort: true
 }, {
-  field: 'trendingScore.daily',
-  width: '7vw',
-  disableSort: true
-}, {
-  field: 'trendingScore.weekly',
-  width: '7vw',
-  disableSort: true
-}, {
   field: 'displayName',
   width: '10vw',
   disableSort: true
@@ -43,6 +35,14 @@ export const columnConfigForUsers = [{
   disableSort: true
 }, {
   field: 'alerts',
+  width: '7vw',
+  disableSort: true
+}, {
+  field: 'trendingScore.daily',
+  width: '7vw',
+  disableSort: true
+}, {
+  field: 'trendingScore.weekly',
   width: 'auto',
   disableSort: true
 }];

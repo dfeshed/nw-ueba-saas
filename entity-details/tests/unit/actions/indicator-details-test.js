@@ -98,13 +98,12 @@ module('Unit | Actions | indicator-details Actions', (hooks) => {
 
   test('it can getHistoricalData', (assert) => {
     assert.expect(3);
-    const types = ['ENTITY_DETAILS::INITIATE_INDICATOR', 'ENTITY_DETAILS::GET_INDICATOR_EVENTS', 'ENTITY_DETAILS::GET_INDICATOR_HISTORICAL_DATA'];
     const dispatch = ({ type, payload }) => {
       if (type) {
-        assert.ok(types.includes(type));
+        assert.equal(type, 'ENTITY_DETAILS::GET_INDICATOR_HISTORICAL_DATA');
         if (payload) {
-          assert.equal(payload.data.length, 4);
-          assert.equal(payload.globalData.length, 1);
+          assert.equal(payload.data[0].data.length, 4);
+          assert.equal(payload.data[0].contexts['userId.name'], 'testUser');
         }
       }
     };

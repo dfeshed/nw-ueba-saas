@@ -49,7 +49,7 @@ export const getTopRiskyUsers = createSelector(
         followed: user.followed,
         scoreSeverity: user.scoreSeverity,
         score: user.score,
-        trendingScore: user.trendingScore[key],
+        trendingScore: user.trendingScore ? user.trendingScore[key] : 0,
         alertGroup: {
           Critical: alertGroup.Critical ? alertGroup.Critical.length : 0,
           High: alertGroup.High ? alertGroup.High.length : 0,

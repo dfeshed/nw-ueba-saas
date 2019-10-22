@@ -32,8 +32,7 @@ const state = {
   indicators: {
     selectedIndicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
     events: indicatorEventsData.data,
-    historicalData: indicatorCount.data,
-    globalBaselineData: indicatorCount.globalData,
+    historicalData: indicatorCount,
     indicatorGraphError: false,
     indicatorEventError: false,
     totalEvents: 100,
@@ -86,10 +85,10 @@ test('test indicatorEvents for selected incident', function(assert) {
   assert.deepEqual(indicatorEvents(state), indicatorEventsData.data);
 });
 test('test historicalData for selected incident', function(assert) {
-  assert.deepEqual(historicalData(state), indicatorCount.data);
+  assert.deepEqual(historicalData(state), indicatorCount.data[0].data);
 });
 test('test globalBaselineData for selected incident', function(assert) {
-  assert.deepEqual(globalBaselineData(state), indicatorCount.globalData);
+  assert.deepEqual(globalBaselineData(state), indicatorCount.data[1].data);
 });
 test('test allEventsReceived for selected incident to stop scrollbar', function(assert) {
   assert.equal(areAllEventsReceived(state), false);

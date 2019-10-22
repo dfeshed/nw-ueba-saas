@@ -21,7 +21,7 @@ module('Unit | Utils | heatmap-settings', (hooks) => {
 
   test('it dataAggregator function aggregates data', (assert) => {
     const settings = heatmapSettings('abnormal_logon_day_time');
-    let changedData = _.map(indicatorEvents.data, settings.dataAdapter);
+    let changedData = _.map(indicatorEvents.data[0].data, settings.dataAdapter);
     assert.equal(changedData.length, 60);
     assert.deepEqual(changedData[0], {
       color: '#CC3300',

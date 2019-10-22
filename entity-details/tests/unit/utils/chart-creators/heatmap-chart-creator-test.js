@@ -21,7 +21,7 @@ module('Unit | Utils | heatmap-chart-creator', (hooks) => {
     document.querySelector('body').append(htmlStringToElement('<div id="chartComponentPlaceholder"></div>'));
     assert.expect(1);
     const settings = heatmapSettings('account_management_change_anomaly');
-    const updatedSettings = chartDataAdapter(settings, chartData.data);
+    const updatedSettings = chartDataAdapter(settings, chartData.data[0].data);
     const chart = heatmapChartCreator(updatedSettings);
     return waitUntil(() => document.querySelectorAll('svg').length === 2).then(() => {
       assert.ok(chart);

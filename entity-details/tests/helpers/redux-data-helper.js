@@ -43,7 +43,7 @@ export default class DataHelper {
       indicators: {
         selectedIndicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
         events: indicatorEvents.data,
-        historicalData: indicatorCount.data,
+        historicalData: indicatorCount,
         indicatorGraphError: false,
         indicatorEventError: false,
         totalEvents: 100,

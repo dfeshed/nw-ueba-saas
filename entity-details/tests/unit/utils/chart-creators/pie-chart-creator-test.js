@@ -20,7 +20,7 @@ module('Unit | Utils | pie-chart-creator', (hooks) => {
     document.querySelector('body').append(htmlStringToElement('<div id="chartComponentPlaceholder"></div>'));
     assert.expect(1);
     const settings = singlePieSettings('account_management_change_anomaly');
-    const updatedSettings = chartDataAdapter(settings, chartData.data);
+    const updatedSettings = chartDataAdapter(settings, chartData.data[0].data);
     const chart = pieChartCreator(updatedSettings);
     return waitUntil(() => document.getElementById('chartComponentPlaceholderLegend') != null).then(() => {
       assert.ok(chart);

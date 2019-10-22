@@ -67,7 +67,7 @@ module('Unit | Reducers | Indicators Reducer', (hooks) => {
       payload: indicatorCount
     });
 
-    assert.deepEqual(result.historicalData, indicatorCount.data);
+    assert.deepEqual(result.historicalData, indicatorCount);
   });
 
   test('test indicator baseline data', (assert) => {

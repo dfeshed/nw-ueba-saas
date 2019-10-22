@@ -6,7 +6,6 @@ const initialState = Immutable.from({
   selectedIndicatorId: null,
   events: [],
   historicalData: null,
-  globalBaselineData: null,
   totalEvents: null,
   indicatorGraphError: false,
   indicatorEventError: false,
@@ -32,11 +31,7 @@ const indicators = handleActions({
     newState = newState.setIn(['eventFilter', 'page'], newState.getIn(['eventFilter', 'page']) + 1);
     return newState;
   },
-  [ACTION_TYPES.GET_INDICATOR_HISTORICAL_DATA]: (state, { payload: { data, globalData } }) => {
-    let newState = state.set('historicalData', data);
-    newState = newState.set('globalBaselineData', globalData);
-    return newState;
-  }
+  [ACTION_TYPES.GET_INDICATOR_HISTORICAL_DATA]: (state, { payload }) => state.set('historicalData', payload)
 }, initialState);
 
 export default indicators;

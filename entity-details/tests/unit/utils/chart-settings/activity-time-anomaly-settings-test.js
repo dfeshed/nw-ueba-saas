@@ -18,7 +18,7 @@ module('Unit | Utils | activity-time-anomaly-settings', (hooks) => {
 
   test('it dataAggregator function aggregates data', (assert) => {
     const settings = activityTimeAnomalySettings('high_number_of_successful_object_change_operations');
-    const changedData = _.map(indicatorEvents.data, (data) => settings.dataAdapter(data, 'UTC', 'en'));
+    const changedData = _.map(indicatorEvents.data[0].data, (data) => settings.dataAdapter(data, 'UTC', 'en'));
     assert.equal(changedData.length, 262);
 
     assert.deepEqual(changedData[0], {
@@ -32,7 +32,7 @@ module('Unit | Utils | activity-time-anomaly-settings', (hooks) => {
 
   test('it dataAggregator function aggregates data', (assert) => {
     const settings = activityTimeAnomalySettings('high_number_of_successful_object_change_operations');
-    const changedData = _.map(indicatorEvents.data, (data) => settings.dataAdapter(data, 'UTC', 'en', 'globalData-'));
+    const changedData = _.map(indicatorEvents.data[0].data, (data) => settings.dataAdapter(data, 'UTC', 'en', 'globalData-'));
     assert.equal(changedData.length, 262);
 
     assert.deepEqual(changedData[0], {
