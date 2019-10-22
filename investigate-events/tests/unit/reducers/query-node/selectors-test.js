@@ -18,6 +18,7 @@ import {
   selectedTimeRange,
   selectedTimeRangeId,
   selectedTimeRangeName,
+  shouldUseStashedPills,
   useDatabaseTime
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -365,7 +366,7 @@ test('check isOnGuided', function(assert) {
 
 test('enrichedPillsData is false when status is not error', function(assert) {
   const state = new ReduxDataHelper().language().pillsDataPopulated().build();
-  const pD = enrichedPillsData(state);
+  const pD = enrichedPillsData(state).pillsData;
   assert.equal(pD.length, 3, 'returns correct number of pill data');
   assert.equal(pD[0].meta.metaName, 'a', 'transforms meta correctly');
   assert.equal(pD[0].operator.displayName, '=', 'transforms operator correctly');
@@ -378,9 +379,29 @@ test('enrichedPillsData contains proper twin focused details', function(assert) 
     .pillsDataWithParens()
     .markFocused(['3'])
     .build();
-  const pD = enrichedPillsData(state);
+  const pD = enrichedPillsData(state).pillsData;
   assert.equal(pD[0].isTwinFocused, true, 'does not indicate twin is focused');
   assert.equal(pD[2].isTwinFocused, undefined, 'indicates twin is focused when IT is focused');
+});
+
+test('shouldUseStashedPills should return true if profile is expanded', function(assert) {
+  let state = {
+    listManagers: {
+      profiles: {
+        isExpanded: true
+      }
+    }
+  };
+  assert.ok(shouldUseStashedPills(state), 'Did not return true');
+
+  state = {
+    listManagers: {
+      profiles: {
+        isExpanded: false
+      }
+    }
+  };
+  assert.notOk(shouldUseStashedPills(state), 'Did not return false');
 });
 
 test('selectedPills returns only those pills that are selected', function(assert) {

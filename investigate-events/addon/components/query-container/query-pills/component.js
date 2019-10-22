@@ -21,7 +21,8 @@ import {
   hasInvalidSelectedPill,
   hasTextPill,
   isPillValidationInProgress,
-  selectedPills
+  selectedPills,
+  shouldUseStashedPills
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import {
   addFreeFormFilter,
@@ -67,7 +68,7 @@ import { isValidToWrapWithParens, selectedPillIndexes } from 'investigate-events
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
-const stateToComputed = (state) => ({
+const stateToComputed = (state, attrs = {}) => ({
   canQueryGuided: canQueryGuided(state),
   deselectedPills: deselectedPills(state),
   hasInvalidSelectedPill: hasInvalidSelectedPill(state),
@@ -75,7 +76,7 @@ const stateToComputed = (state) => ({
   isPillValidationInProgress: isPillValidationInProgress(state),
   metaOptions: metaKeySuggestionsForQueryBuilder(state),
   languageAndAliasesForParser: languageAndAliasesForParser(state),
-  pillsData: enrichedPillsData(state),
+  pillsData: shouldUseStashedPills(state) && attrs.isPrimary ? enrichedPillsData(state).originalPills : enrichedPillsData(state).pillsData,
   selectedPills: selectedPills(state),
   canPerformTextSearch: hasMinimumCoreServicesVersionForTextSearch(state),
   valueSuggestions: state.investigate.queryNode.valueSuggestions || [],
@@ -192,6 +193,13 @@ const QueryPills = RsaContextMenu.extend({
 
   // Is a pill rendered by this component open for edit?
   isPillOpenForEdit: false,
+
+  /**
+   * Is this the component that resides inside query-bar?
+   * In order to re-use this component, we stash pillsData as originalPills
+   * and toggle between them when required.
+   */
+  isPrimary: undefined,
 
   /**
    * List of all possible right click options for pills and parens

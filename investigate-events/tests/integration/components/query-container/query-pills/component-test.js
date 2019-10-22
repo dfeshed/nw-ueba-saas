@@ -2,12 +2,13 @@ import { module, skip, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import Immutable from 'seamless-immutable';
 import { click, fillIn, findAll, find, triggerEvent, render, settled, triggerKeyEvent, waitUntil, typeIn } from '@ember/test-helpers';
 import { clickTrigger, typeInSearch, selectChoose } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import ReduxDataHelper, { DEFAULT_LANGUAGES, DEFAULT_PILLS_DATA, COMPLEX_PILL_DATA } from '../../../../helpers/redux-data-helper';
 import pillCreators from 'investigate-events/actions/pill-creators';
 import pillSelectionCreators from 'investigate-events/actions/pill-selection-creators';
 
@@ -127,6 +128,83 @@ module('Integration | Component | Query Pills', function(hooks) {
   test('Upon initialization, one active pill is created', async function(assert) {
     await render(hbs`{{query-container/query-pills}}`);
     assert.equal(findAll(PILL_SELECTORS.allPills).length, 1, 'There should only be one query-pill.');
+  });
+
+  test('State will hydrate component with pillsData when its primary and profile is not expanded', async function(assert) {
+
+    patchReducer(this, Immutable.from({
+      investigate: {
+        queryNode: {
+          pillsData: DEFAULT_PILLS_DATA,
+          originalPills: COMPLEX_PILL_DATA,
+          metaFilter: [],
+          previouslySelectedTimeRanges: {},
+          serviceId: '1',
+          queryView: 'guided'
+        },
+        services: {
+          serviceData: [{ id: '1', displayName: 'concentrator', version: '11.4.0' }],
+          summaryData: { startTime: 1506537600 }
+        },
+        dictionaries: {
+          language: DEFAULT_LANGUAGES
+        }
+      },
+      listManagers: {
+        profiles: {
+          isExpanded: false
+        }
+      }
+    }));
+
+    await render(hbs`
+    <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills
+          isActive=true
+          isPrimary=true
+        }}
+    </div>
+    `);
+    assert.equal(findAll(PILL_SELECTORS.queryPillNotTemplate).length, 2, 'There should only 2 pills from DEFAULT_PILLS_DATA.');
+  });
+
+  test('State will hydrate component with originalPills when its primary and profile is expanded', async function(assert) {
+
+    patchReducer(this, Immutable.from({
+      investigate: {
+        queryNode: {
+          pillsData: DEFAULT_PILLS_DATA,
+          originalPills: COMPLEX_PILL_DATA,
+          metaFilter: [],
+          previouslySelectedTimeRanges: {},
+          serviceId: '1',
+          queryView: 'guided'
+        },
+        services: {
+          serviceData: [{ id: '1', displayName: 'concentrator', version: '11.4.0' }],
+          summaryData: { startTime: 1506537600 }
+        },
+        dictionaries: {
+          language: DEFAULT_LANGUAGES
+        }
+      },
+      listManagers: {
+        profiles: {
+          isExpanded: true
+        }
+      }
+    }));
+
+    await render(hbs`
+    <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills
+          isActive=true
+          isPrimary=true
+        }}
+    </div>
+    `);
+    assert.equal(findAll(PILL_SELECTORS.complexPill).length, 1, 'There should only 1 pill from COMPLEX_PILL_DATA.');
+    assert.equal(find(PILL_SELECTORS.complexPill).title, 'foo = bar', 'Did not find the correct pill');
   });
 
   test('Creating a pill sends action for redux state update', async function(assert) {

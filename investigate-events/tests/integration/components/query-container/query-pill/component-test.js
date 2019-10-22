@@ -43,7 +43,7 @@ const trim = (text) => text.replace(/\s+/g, '').trim();
 const _getEnrichedPill = (component) => {
   component.set('metaOptions', metaOptions);
   const pillState = new ReduxDataHelper(setState).pillsDataPopulated().language().build();
-  const [ enrichedPill ] = enrichedPillsData(pillState);
+  const [ enrichedPill ] = enrichedPillsData(pillState).pillsData;
   return enrichedPill;
 };
 
@@ -1178,7 +1178,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .markFocused(['1'])
       .build();
 
-    const [ enrichedPill ] = enrichedPillsData(pillState);
+    const [ enrichedPill ] = enrichedPillsData(pillState).pillsData;
     this.set('pillData', enrichedPill);
 
     this.set('handleMessage', (messageType, data, position) => {
@@ -1216,7 +1216,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .markFocused(['1'])
       .build();
 
-    const [ enrichedPill ] = enrichedPillsData(pillState);
+    const [ enrichedPill ] = enrichedPillsData(pillState).pillsData;
     this.set('pillData', enrichedPill);
 
     this.set('handleMessage', (messageType, data, position) => {
@@ -1253,7 +1253,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .markFocused(['1'])
       .build();
 
-    const [ enrichedPill ] = enrichedPillsData(pillState);
+    const [ enrichedPill ] = enrichedPillsData(pillState).pillsData;
     this.set('pillData', enrichedPill);
 
     this.set('handleMessage', (messageType, data) => {
@@ -1287,7 +1287,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .markFocused(['1'])
       .build();
 
-    const [ enrichedPill ] = enrichedPillsData(pillState);
+    const [ enrichedPill ] = enrichedPillsData(pillState).pillsData;
     this.set('pillData', enrichedPill);
 
     this.set('handleMessage', (messageType, data, position) => {
@@ -1320,7 +1320,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .markFocused(['1'])
       .build();
 
-    const [ enrichedPill ] = enrichedPillsData(pillState);
+    const [ enrichedPill ] = enrichedPillsData(pillState).pillsData;
     this.set('pillData', enrichedPill);
 
     this.set('handleMessage', (messageType, data, position) => {
@@ -1354,7 +1354,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .markSelected(['1'])
       .build();
 
-    const [ enrichedPill ] = enrichedPillsData(pillState);
+    const [ enrichedPill ] = enrichedPillsData(pillState).pillsData;
     this.set('pillData', enrichedPill);
 
     this.set('handleMessage', (messageType) => {
@@ -1386,7 +1386,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .markFocused(['1'])
       .build();
 
-    const [ enrichedPill ] = enrichedPillsData(pillState);
+    const [ enrichedPill ] = enrichedPillsData(pillState).pillsData;
     this.set('pillData', enrichedPill);
 
     this.set('handleMessage', (messageType) => {
@@ -1412,7 +1412,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .pillsDataPopulated()
       .language()
       .build();
-    const [ enrichedPill ] = enrichedPillsData(pillState);
+    const [ enrichedPill ] = enrichedPillsData(pillState).pillsData;
 
     this.set('pillData', enrichedPill);
     this.set('metaOptions', metaOptions);
@@ -1510,7 +1510,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .markFocused(['1'])
       .build();
 
-    const [ enrichedPill ] = enrichedPillsData(pillState);
+    const [ enrichedPill ] = enrichedPillsData(pillState).pillsData;
     this.set('pillData', enrichedPill);
 
     this.set('handleMessage', (messageType, data, position) => {
@@ -1541,7 +1541,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .markFocused(['1'])
       .build();
 
-    const [ enrichedPill ] = enrichedPillsData(pillState);
+    const [ enrichedPill ] = enrichedPillsData(pillState).pillsData;
     this.set('pillData', enrichedPill);
 
     this.set('handleMessage', (messageType, data, position) => {

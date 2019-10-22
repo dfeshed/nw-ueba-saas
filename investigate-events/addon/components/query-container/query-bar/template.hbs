@@ -1,11 +1,18 @@
 <div class='query-bar-options'>
 
   {{#if isOnGuided}}
-    {{query-container/query-pills executeQuery=executeQuery takeFocus=(unbound takeFocus)}}
+    {{query-container/query-pills
+      isPrimary=true
+      executeQuery=executeQuery
+      takeFocus=(unbound takeFocus)
+    }}
   {{/if}}
 
   {{#if isOnFreeForm}}
-    {{query-container/free-form executeQuery=executeQuery takeFocus=(unbound takeFocus)}}
+    {{query-container/free-form
+      executeQuery=executeQuery
+      takeFocus=(unbound takeFocus)
+    }}
   {{/if}}
 
   {{!-- TODO: add additional disabled states and uncomment --}}

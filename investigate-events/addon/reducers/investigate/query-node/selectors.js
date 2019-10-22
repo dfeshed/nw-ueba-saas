@@ -7,6 +7,7 @@ import { createQueryHash } from 'investigate-events/util/query-hash';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 import { validMetaKeySuggestions } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { isProfileViewActive } from 'investigate-events/reducers/investigate/profile/selectors';
 
 const { createSelector } = reselect;
 
@@ -23,8 +24,24 @@ const _queryView = (state) => state.investigate.queryNode.queryView;
 const _currentQueryHash = (state) => state.investigate.queryNode.currentQueryHash;
 const _updatedFreeFormTextPill = (state) => state.investigate.queryNode.updatedFreeFormTextPill;
 const _pillDataHashes = (state) => state.investigate.queryNode.pillDataHashes;
+const _originalPills = (state) => state.investigate.queryNode.originalPills || [];
 
 export const pillsData = (state) => state.investigate.queryNode.pillsData;
+
+// This transforms the meta/operator from state, which are just strings,
+// into the full operator/meta objects used by the components
+const _transformPills = (pills, metaKeys) => {
+  return pills.map((pillData) => {
+    const meta = metaKeys.find((mK) => mK.metaName === pillData.meta);
+    const operator = relevantOperators(meta, pillData.operator).find((possOp) => possOp.displayName === pillData.operator);
+
+    return {
+      ...pillData,
+      operator,
+      meta
+    };
+  });
+};
 
 
 // SELECTOR FUNCTIONS
@@ -184,23 +201,43 @@ const _twinProcessedPills = createSelector(
   }
 );
 
-export const enrichedPillsData = createSelector(
-  [validMetaKeySuggestions, _twinProcessedPills],
-  (metaKeys, _pillsData) => {
-    // This transforms the meta/operator from state, which are just strings,
-    // into the full operator/meta objects used by the components
-    const newPillsData = _pillsData.map((pillData) => {
-      const meta = metaKeys.find((mK) => mK.metaName === pillData.meta);
-      const operator = relevantOperators(meta, pillData.operator).find((possOp) => possOp.displayName === pillData.operator);
+const _twinProcessedOGPills = createSelector(
+  [_originalPills],
+  (_pillsData) => {
+    // See if a twin-able pill is focused
+    const twin = _pillsData.find((pD) => !!pD.twinId && pD.isFocused);
 
-      return {
-        ...pillData,
-        operator,
-        meta
-      };
+    // no twin? done here, no work to do
+    if (!twin) {
+      return _pillsData;
+    }
+
+    // Finds twin of focused pill and flags for
+    // twin focusing
+    return _pillsData.map((pD) => {
+      if (pD.twinId == twin.twinId && !pD.isFocused) {
+        return {
+          ...pD,
+          isTwinFocused: true
+        };
+      }
+      return pD;
     });
+  }
+);
 
-    return newPillsData;
+export const shouldUseStashedPills = createSelector(
+  [isProfileViewActive],
+  (isProfileViewActive) => isProfileViewActive
+);
+
+export const enrichedPillsData = createSelector(
+  [validMetaKeySuggestions, _twinProcessedPills, _twinProcessedOGPills],
+  (metaKeys, _pillsData, _originalPills) => {
+    return {
+      pillsData: _transformPills(_pillsData, metaKeys),
+      originalPills: _transformPills(_originalPills, metaKeys)
+    };
   }
 );
 
