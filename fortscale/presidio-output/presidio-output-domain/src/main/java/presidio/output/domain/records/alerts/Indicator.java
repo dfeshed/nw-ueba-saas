@@ -38,6 +38,7 @@ public class Indicator extends AbstractElasticDocument {
     public static final String EVENTS_NUM = "eventsNum";
     public static final String SCORE_CONTRIBUTION = "scoreContribution";
     public static final String CONTEXTS = "contexts";
+    public static final String ENTITY_TYPE = "entityType";
 
     @JsonProperty(NAME)
     private String name;
@@ -76,6 +77,9 @@ public class Indicator extends AbstractElasticDocument {
     @JsonProperty(CONTEXTS)
     private Map<String,String> contexts;
 
+    @JsonProperty(ENTITY_TYPE)
+    private String entityType;
+
     @JsonIgnore
     @ToStringExclude
     @OneToMany
@@ -94,10 +98,11 @@ public class Indicator extends AbstractElasticDocument {
         // empty const for JSON deserialization
     }
 
-    public Indicator(String alertId) {
+    public Indicator(String alertId, String entityType) {
         super();
         events = new ArrayList<IndicatorEvent>();
         this.alertId = alertId;
+        this.entityType = entityType;
     }
 
     public void setScoreContribution(double scoreContribution) {
@@ -210,6 +215,14 @@ public class Indicator extends AbstractElasticDocument {
 
     public void setContexts(Map<String, String> contexts) {
         this.contexts = contexts;
+    }
+
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 
     @Override

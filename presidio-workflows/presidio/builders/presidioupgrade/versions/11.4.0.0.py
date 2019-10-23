@@ -30,6 +30,8 @@ SIZE = 1000
 ENTITY_TYPE = "userId"
 INDEX_ALERT = "presidio-output-alert"
 DOC_TYPE_ALERT = "alert"
+INDEX_EVENT = "presidio-output-event"
+DOC_TYPE_EVENT = "event"
 INDEX_INDICATOR = "presidio-output-indicator"
 DOC_TYPE_INDICATOR = "indicator"
 INDEX_USER_SEVERITY_RANGE = "presidio-output-user-severities-range"
@@ -95,7 +97,7 @@ def update_alerts_hits(hits):
         es.index(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, id=item["_id"], body=alert)
 
 
-# Update indicator table in elastic to List of aggregations
+# Update indicator table in elastic to List of aggregations and new entityType field
 def update_indicators_hits(hits):
     for item in hits:
         aggregations_list = [item["_source"]["historicalData"]["aggregation"]]
@@ -116,10 +118,18 @@ def update_indicators_hits(hits):
             'scoreContribution': item["_source"]["scoreContribution"],
             'type': item["_source"]["type"],
             'eventsNum': item["_source"]["eventsNum"],
-            'contexts': item["_source"]["contexts"]
+            'contexts': item["_source"]["contexts"],
+            "entityType": ENTITY_TYPE
         }
 
         es.index(index=INDEX_INDICATOR, doc_type=DOC_TYPE_INDICATOR, id=item["_id"], body=indicator)
+
+
+# Update the event table in elastic with the new field names
+def update_events_hits(hits):
+    for item in hits:
+        item["_source"].update({"entityType": ENTITY_TYPE})
+        es.index(index=INDEX_EVENT, doc_type=DOC_TYPE_EVENT, id=item["_id"], body=item["_source"])
 
 
 def scroll_and_update_data(index, doc_type, update_function):
@@ -174,20 +184,33 @@ def alert_not_process():
     return True
 
 
-def indicator_not_process():
+def indicators_not_process():
     es.indices.refresh()
     res = es.search(index=INDEX_INDICATOR, doc_type=DOC_TYPE_INDICATOR, body={
         "query": {
-            "match_all": {}
-        },
-        "size": 1
+            "exists": {
+                "field": "entityType"
+            }
+        }
     })
-
     if res['hits']['total'] > 0:
-        if isinstance(res['hits']['hits'][0]['_source']['historicalData']['aggregation'], list):
-            print("Index {} already processed".format(INDEX_INDICATOR))
-            return False
+        print("Index {} already processed".format(INDEX_INDICATOR))
+        return False
+    return True
 
+
+def events_not_process():
+    es.indices.refresh()
+    res = es.search(index=INDEX_EVENT, doc_type=DOC_TYPE_EVENT, body={
+        "query": {
+            "exists": {
+                "field": "entityType"
+            }
+        }
+    })
+    if res['hits']['total'] > 0:
+        print("Index {} already processed".format(INDEX_EVENT))
+        return False
     return True
 
 
@@ -205,9 +228,14 @@ if index_exists(INDEX_ALERT) & alert_not_process():
     scroll_and_update_data(INDEX_ALERT, DOC_TYPE_ALERT, update_alerts_hits)
 
 # Check indicator index is exists
-if index_exists(INDEX_INDICATOR) & indicator_not_process():
+if index_exists(INDEX_INDICATOR) & indicators_not_process():
     # Scrolling indicators
     scroll_and_update_data(INDEX_INDICATOR, DOC_TYPE_INDICATOR, update_indicators_hits)
+
+# Check event index is exists
+if index_exists(INDEX_EVENT) & events_not_process():
+    # Scrolling events
+    scroll_and_update_data(INDEX_EVENT, DOC_TYPE_EVENT, update_events_hits)
 
 # Check user severities range index is exists
 if index_exists(INDEX_USER_SEVERITY_RANGE):

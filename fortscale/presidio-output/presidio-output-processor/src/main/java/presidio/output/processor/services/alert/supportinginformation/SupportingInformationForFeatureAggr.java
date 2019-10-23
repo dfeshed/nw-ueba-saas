@@ -76,6 +76,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
                 event.setIndicatorId(indicator.getId());
                 event.setEventTime(Date.from(rawEvent.getEventDate()));
                 event.setSchema(indicatorConfig.getSchema());
+                event.setEntityType(indicator.getEntityType());
                 events.add(event);
 
             }

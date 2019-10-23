@@ -1,0 +1,29 @@
+[
+  {
+    "_id": "d79e0ee0-a29b-11e7-bf94-db45269a46a7",
+    "_type": "search",
+    "_source": {
+      "title": "Top Entities",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "severity",
+        "entityName",
+        "tags",
+        "score",
+        "alertsCount",
+        "alertClassifications",
+        "indicators",
+        "entityId"
+      ],
+      "sort": [
+        "score",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-output-entity\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  }
+]
