@@ -309,14 +309,17 @@ class Parser {
       if (nextCriteriaOrGroup.type === GRAMMAR.COMPLEX_FILTER && nextCriteriaOrGroup.text === '') {
         // The empty complex pill signifies that we reached the end of the input while
         // still expecting a meta. In this particular case, we read an AND or OR and then didn't
-        // see anything after that. To make this clear to the user that they have an invalid trailing
-        // logical operator, push an AND onto the stack to create a new pill and then the invalid
-        // operator to be displayed as the invalid pill.
-        result.children.push({ type: LEXEMES.AND, text: '&&' }, this._createComplexString(operator.text));
+        // see anything after that.
+        result.children.push(operator);
       } else {
         result.children.push(operator, nextCriteriaOrGroup);
       }
     }
+    // Remove AND/OR as last element of array
+    if (result.children.lastItem?.type === LEXEMES.AND || result.children.lastItem?.type === LEXEMES.OR) {
+      result.children.splice(result.children.lastIndex, 1);
+    }
+
     return result;
   }
 
