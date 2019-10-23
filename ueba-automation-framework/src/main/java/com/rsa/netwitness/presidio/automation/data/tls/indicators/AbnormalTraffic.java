@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 public class AbnormalTraffic<T> {
 
-    private final int UNCOMMON_DATA_VALUES = 2;
+    private final int UNCOMMON_DATA_VALUES = 1;
 
     private final String entity;
     private final EntityType entityType;
@@ -52,14 +52,14 @@ public class AbnormalTraffic<T> {
     }
 
     public TlsRangeEventsGen createHighTrafficHistoryGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<String> sourceGen,  FieldRangeAllocator<T> destinationGen){
-        // todo: need to investigate
 
-//        sourceGen.nextRangeGenCyclic(UNCOMMON_DATA_VALUES);
-//        setEntity(initialGenCopy);
-//        initialGenCopy.setNumOfBytesSentGenerator(unusualTrafficGenerator);
-//
-//        indicator.addAbnormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(4, String::valueOf));
-//        eventsSupplier.setUncommonValuesHistoryGen(initialGenCopy.copy());
+        // uncommon traffic from another src_ip
+        initialGenCopy.srcIpGenerator.nextRangeGenCyclic(UNCOMMON_DATA_VALUES);
+        setEntity(initialGenCopy);
+        initialGenCopy.setNumOfBytesSentGenerator(unusualTrafficGenerator);
+
+        indicator.addAbnormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(4, String::valueOf));
+        eventsSupplier.setUncommonValuesHistoryGen(initialGenCopy.copy());
 
         return initialGenCopy.copy();
     }
