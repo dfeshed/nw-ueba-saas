@@ -92,7 +92,7 @@ module('Integration | Component | Context Menu', function(hooks) {
       assert.equal(find(`${parentSelector}:nth-of-type(1) .context-menu--sub li:nth-of-type(7)`).textContent.trim(), 'Malwaredomainlist.com Search');
       assert.equal(find(`${parentSelector}:nth-of-type(1) .context-menu--sub li:nth-of-type(8)`).textContent.trim(), 'Robtex IP Search');
       assert.equal(find(`${parentSelector}:nth-of-type(1) .context-menu--sub li:nth-of-type(9)`).textContent.trim(), 'ThreatExpert Search');
-      assert.equal(find(`${parentSelector}:nth-of-type(1) .context-menu--sub li:nth-of-type(10)`).textContent.trim(), 'getIPVoidSearch');
+      assert.equal(find(`${parentSelector}:nth-of-type(1) .context-menu--sub li:nth-of-type(10)`).textContent.trim(), 'IPVoidSearch');
 
       const dataScienceSubItems = `${parentSelector}:nth-of-type(2) .context-menu--sub li`;
       assert.equal(findAll(dataScienceSubItems).length, 3);

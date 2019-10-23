@@ -5904,10 +5904,10 @@ ember-sinon@4.0.0:
     ember-cli-babel "^7.7.3"
     sinon "^7.3.2"
 
-ember-sortable@1.12.9:
-  version "1.12.9"
-  resolved "https://registry.npmjs.org/ember-sortable/-/ember-sortable-1.12.9.tgz#7b53cdebd0641946ae4f92b2edd6c4753ef0c924"
-  integrity sha512-3IJ4E2n1NU5IOIkXcNwQQDwYdpcpZNaGOcAdkDvs9AYFgTV+gHwF52eGjipBGipHBicrnl4b2N6BEfHkHUWvdA==
+ember-sortable@1.12.10:
+  version "1.12.10"
+  resolved "https://registry.npmjs.org/ember-sortable/-/ember-sortable-1.12.10.tgz#3d28ae7cae4cc5fe0e067ff08ee0f5d4d0e8353e"
+  integrity sha512-QYgm5IQtXvbsk9/MOTb/ECGuX57wEsVBuYxdc4OZ+ZXzgx4HnujBDn4zz+0eLFkopVnuqRy7TRMQsZEeMzvTAA==
   dependencies:
     ember-cli-babel "^7.1.2"
     ember-cli-htmlbars "^3.0.0"

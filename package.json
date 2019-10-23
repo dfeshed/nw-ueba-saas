@@ -93,7 +93,7 @@
     "ember-resolver": "4.3.0",
     "ember-simple-auth": "file:ember-simple-auth",
     "ember-sinon": "4.0.0",
-    "ember-sortable": "1.12.9",
+    "ember-sortable": "1.12.10",
     "ember-source": "3.12.0",
     "ember-tether": "1.0.0",
     "ember-toggle": "5.3.2",
