@@ -13,24 +13,23 @@ import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.sdk.common.AdeManagerSdk;
+import presidio.output.domain.records.alerts.Aggregation;
 import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.ScoredEnrichedEvent;
 import presidio.output.domain.services.event.ScoredEventService;
+import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.config.IndicatorConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
-import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulator;
-import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulatorFactory;
+import presidio.output.processor.services.alert.supportinginformation.historicaldata.AggregationDataPopulatorFactory;
 import presidio.output.processor.services.alert.supportinginformation.transformer.SupportingInformationTransformer;
 import presidio.output.processor.services.alert.supportinginformation.transformer.SupportingInformationTransformerFactory;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Supporting information (events and historical data) for SCORE_AGGREGATION events (AKA 'P')
@@ -50,7 +49,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
     private SupportingInformationConfig config;
 
-    private HistoricalDataPopulatorFactory historicalDataPopulatorFactory;
+    private AggregationDataPopulatorFactory aggregationDataPopulatorFactory;
 
     private ScoredEventService scoredEventService;
 
@@ -61,9 +60,9 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
     private RecordReaderFactoryService recordReaderFactoryService;
 
 
-    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, ScoredEventService scoredEventService, SupportingInformationUtils supportingInfoUtils, AdeManagerSdk adeManagerSdk, RecordReaderFactoryService recordReaderFactoryService) {
+    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, AggregationDataPopulatorFactory aggregationDataPopulatorFactory, ScoredEventService scoredEventService, SupportingInformationUtils supportingInfoUtils, AdeManagerSdk adeManagerSdk, RecordReaderFactoryService recordReaderFactoryService) {
         this.config = supportingInformationConfig;
-        this.historicalDataPopulatorFactory = historicalDataPopulatorFactory;
+        this.aggregationDataPopulatorFactory = aggregationDataPopulatorFactory;
         this.scoredEventService = scoredEventService;
         this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
         this.supportingInfoUtils = supportingInfoUtils;
@@ -114,23 +113,18 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
     public HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) {
 
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
-        HistoricalDataPopulator historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(indicatorConfig.getHistoricalData().getType());
+        List<HistoricalDataConfig> historicalDataConfigList = indicatorConfig.getHistoricalData();
 
         Instant startInstant = EnrichedEvent.EVENT_DATE_FIELD_NAME.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField()) ?
                 adeAggregationRecord.getStartInstant().minus(historicalActivityTimePeriodInDays, ChronoUnit.DAYS) :
                 adeAggregationRecord.getStartInstant().minus(historicalPeriodInDays, ChronoUnit.DAYS);
         TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
-
         Schema schema = indicatorConfig.getSchema();
-        String featureName = indicatorConfig.getHistoricalData().getFeatureName();
         String anomalyValue = getAnomalyValue(indicator, indicatorConfig);
 
-        Map<String, String> modelContexts = indicatorConfig.getModelContextFields().stream().collect(Collectors.toMap(
-                                            Function.identity(),
-                                            field -> indicator.getContexts().get(field),
-                                            (oldValue, newValue) -> oldValue,
-                                            LinkedHashMap::new));
-        HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, modelContexts, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
+        List<Aggregation> aggregations = generateAggregations(aggregationDataPopulatorFactory, historicalDataConfigList, adeAggregationRecord, indicatorConfig, indicator, timeRange, schema, anomalyValue);
+
+        HistoricalData historicalData = new HistoricalData(aggregations);
         historicalData.setIndicatorId(indicator.getId());
         historicalData.setSchema(indicator.getSchema());
 
@@ -143,15 +137,20 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
     }
 
     @Override
+    public String getFeatureName(HistoricalDataConfig historicalDataConfig, AdeAggregationRecord adeAggregationRecord) {
+        return historicalDataConfig.getFeatureName();
+    }
+
+    @Override
     public String getType() {
         return AggregatedFeatureType.SCORE_AGGREGATION.name();
     }
-
 
     private String getAnomalyValue(Indicator indicator, IndicatorConfig indicatorConfig) {
         // static indicator -> the event value is static and therefore taken from the configuration (e.g: admin_changed_his_own_password => PASSWORD_CHANGED)
         // dynamic indicators -> the event value is taken from the indicator itself (e.g: abnormal_file_action_operation_type => FILE_OPENED, FILE_MOVED ...)
         return StringUtils.isNotEmpty(indicator.getAnomalyValue()) ? indicator.getAnomalyValue() : indicatorConfig.getAnomalyDescriptior().getAnomalyValue();
     }
+
 
 }

@@ -97,11 +97,32 @@ def update_alerts_hits(hits):
         es.index(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, id=item["_id"], body=alert)
 
 
-# Update the indicator table in elastic with the new field names
+# Update indicator table in elastic to List of aggregations
 def update_indicators_hits(hits):
     for item in hits:
-        item["_source"].update({"entityType": ENTITY_TYPE})
-        es.index(index=INDEX_INDICATOR, doc_type=DOC_TYPE_INDICATOR, id=item["_id"], body=item["_source"])
+        aggregations_list = [item["_source"]["historicalData"]["aggregation"]]
+        item["_source"]["historicalData"]["aggregation"] = aggregations_list
+
+        indicator = {
+            'createdDate': item["_source"]["createdDate"],
+            'updatedDate': item["_source"]["updatedDate"],
+            'updatedBy': item["_source"]["updatedBy"],
+            'name': item["_source"]["name"],
+            'anomalyValue': item["_source"]["anomalyValue"],
+            'alertId': item["_source"]["alertId"],
+            'historicalData': item["_source"]["historicalData"],
+            'startDate': item["_source"]["startDate"],
+            'endDate': item["_source"]["endDate"],
+            'schema': item["_source"]["schema"],
+            'score': item["_source"]["score"],
+            'scoreContribution': item["_source"]["scoreContribution"],
+            'type': item["_source"]["type"],
+            'eventsNum': item["_source"]["eventsNum"],
+            'contexts': item["_source"]["contexts"],
+            "entityType": ENTITY_TYPE
+        }
+
+        es.index(index=INDEX_INDICATOR, doc_type=DOC_TYPE_INDICATOR, id=item["_id"], body=indicator)
 
 
 # Update the event table in elastic with the new field names

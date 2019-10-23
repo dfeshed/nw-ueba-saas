@@ -18,6 +18,11 @@ public abstract class HierarchyLeafFinder <T> {
         return hierarchyValidatingLeaf.getValue();
     }
 
+    public Object getFieldValue(T object, String fieldName, Object defaultValue) {
+        HierarchyValidatingLeaf<T> hierarchyValidatingLeaf = getLeaf(object, fieldName);
+        return hierarchyValidatingLeaf.isHierarchyBroken() ? defaultValue : hierarchyValidatingLeaf.getValue();
+    }
+
     protected @NotNull HierarchyValidatingLeaf <T> getLeaf(T value, @NotNull String fieldName) {
         notNull(fieldName, NULL_FIELD_NAME_EXCEPTION_MESSAGE);
         T parent = value;

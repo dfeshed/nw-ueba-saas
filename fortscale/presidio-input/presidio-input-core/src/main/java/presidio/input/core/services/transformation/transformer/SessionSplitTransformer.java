@@ -58,9 +58,8 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
 
     @Override
     public JSONObject transform(JSONObject document) {
-        // todo: until redis will be ready:
-        // if(document.isNull(TlsTransformedEvent.SESSION_SPLIT_FIELD_NAME)) {
-        if(true){
+
+        if(document.isNull(TlsTransformedEvent.SESSION_SPLIT_FIELD_NAME)) {
             return document;
         }
 
@@ -103,6 +102,8 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
                     logger.debug("Enrich {} tls event with missed fields.", document.get(DOCUMENT_ID_FIELD));
                 } else {
                     logger.info("The {} tls event can't be enriched due to missing zero session split event.", document.get(DOCUMENT_ID_FIELD));
+                    //remove key of closed session
+                    sessionSplitStoreCache.remove(key);
                 }
             } else {
                 logger.info("There is no appropriate tls event with zero session split for {} event.", document.get(DOCUMENT_ID_FIELD));

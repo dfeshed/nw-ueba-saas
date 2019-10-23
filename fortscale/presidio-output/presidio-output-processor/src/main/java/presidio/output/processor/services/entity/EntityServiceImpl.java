@@ -12,6 +12,7 @@ import presidio.output.commons.services.entity.EntityMappingServiceImpl;
 import presidio.output.commons.services.entity.EntitySeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntityEnums;
 import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.records.events.EnrichedEvent;
@@ -140,6 +141,9 @@ public class EntityServiceImpl implements EntityService {
         entity.setIndicators(indicatorsUnion);
         entity.incrementAlertsCountByNumber(entitiesAlertData.getAlertsCount());
         entity.incrementEntityScoreByNumber(entitiesAlertData.getEntityScore());
+        // temporary - for integration
+        entity.setTrendingScore(Map.of(EntityEnums.Trends.weekly, entity.getScore(), EntityEnums.Trends.daily, entity.getScore()));
+        // temporary - for integration
         EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false, entity.getEntityType()).getEntitySeverity(entity.getScore());
         entity.setSeverity(newSeverity);
     }

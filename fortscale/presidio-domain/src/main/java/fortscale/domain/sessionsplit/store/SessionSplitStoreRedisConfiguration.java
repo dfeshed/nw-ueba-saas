@@ -28,17 +28,15 @@ public class SessionSplitStoreRedisConfiguration {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
+    public RedisTemplate<String, Object> sessionSplitRedisTemplate() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(jedisConnectionFactory);
         redisTemplate.setKeySerializer(RedisSerializers.getStringRedisSerializer());
-        redisTemplate.setHashKeySerializer(RedisSerializers.getStringRedisSerializer());
-        redisTemplate.setHashValueSerializer(RedisSerializers.getInstantRedisSerializer());
         return redisTemplate;
     }
 
     @Bean
     public SessionSplitStoreRedis sessionSplitStoreRedis() {
-        return new SessionSplitStoreRedis(redisTemplate(), timeout);
+        return new SessionSplitStoreRedis(sessionSplitRedisTemplate(), timeout);
     }
 }

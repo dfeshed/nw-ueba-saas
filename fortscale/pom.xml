@@ -85,7 +85,8 @@
         <perf4j.version>0.9.7</perf4j.version>
         <jade4j.version>1.1.4</jade4j.version>
         <commons-jexl.version>1.1</commons-jexl.version>
-        <commons-httpclient.version>3.1</commons-httpclient.version>
+        <apache-httpclient.version>4.5.10</apache-httpclient.version>
+        <maven-core.version>3.6.2</maven-core.version>
         <commons-lang.version>2.6</commons-lang.version>
         <org-json.version>20140107</org-json.version>
         <commons-lang3.version>3.5</commons-lang3.version>
@@ -116,7 +117,7 @@
         <auto-service.version>1.0-rc5</auto-service.version>
         <spring-test.version>4.3.20.RELEASE</spring-test.version>
         <jackson-core.version>2.9.9</jackson-core.version>
-        <jackson-databind.version>2.9.9.3</jackson-databind.version>
+        <jackson-databind.version>2.9.10</jackson-databind.version>
         <jackson-bom.version>2.9.9.20190807</jackson-bom.version>
         <log4j.version>2.11.2</log4j.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
@@ -329,9 +330,9 @@
                 <version>${commons-jexl.version}</version>
             </dependency>
             <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>${commons-httpclient.version}</version>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${apache-httpclient.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.retry</groupId>
@@ -432,6 +433,11 @@
                 <groupId>com.github.kongchen</groupId>
                 <artifactId>swagger-maven-plugin</artifactId>
                 <version>${swagger-maven-plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-core</artifactId>
+                <version>${maven-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
