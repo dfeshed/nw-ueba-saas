@@ -95,11 +95,19 @@ const pollAgentStatus = () => {
  */
 const getPageOfMachines = (query) => {
   return (dispatch, getState) => {
+    const { endpoint: { filter } } = getState();
 
     if (query && !isEmpty(query)) {
+
       const expression = parseQueryString(query);
       const savedFilter = { id: -1, criteria: { expressionList: expression } };
       dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'MACHINE' } });
+
+    } else if (!filter.selectedFilter || filter.selectedFilter.id === 1) {
+
+      const savedFilter = { id: 1, criteria: { expressionList: filter.expressionList } };
+      dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'MACHINE' } });
+
     }
 
     const { hostColumnSort } = getState().endpoint.machines;
