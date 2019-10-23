@@ -961,6 +961,33 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.notOk(result[2].isInvalid, 'should not be invalid');
   });
 
+  test('transformTextToPillData removes extra operators at beginning of query', function(assert) {
+    const text = 'AND || medium = 1';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '1', 'operator should match');
+  });
+
+  test('transformTextToPillData removes extra operators in the middle of a query', function(assert) {
+    const text = 'medium = 1 AND OR medium = 2';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 3);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '1', 'operator should match');
+    assert.notOk(result[0].isInvalid, 'should not be invalid');
+    assert.equal(result[1].type, OPERATOR_AND, 'type should match');
+    assert.equal(result[2].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[2].meta, 'medium', 'meta should match');
+    assert.equal(result[2].operator, '=', 'operator should match');
+    assert.equal(result[2].value, '2', 'operator should match');
+    assert.notOk(result[2].isInvalid, 'should not be invalid');
+  });
+
   test('transformTextToPillData removes trailing AND/OR', function(assert) {
     const text = '(medium = 1 && medium = 2) &&';
     const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });

@@ -246,6 +246,41 @@ class Parser {
   }
 
   /**
+   * Removes operator tokens from the beginning and end of the token string.
+   * e.g. AND medium = 1 OR becomes medium = 1
+   * Also removes more than one consecutive operator
+   * medium = 1 AND OR medium = 2 becomes medium = 1 AND medium = 2
+   * @private
+   */
+  _preprocess() {
+    let firstNonOperatorSeen = false;
+    let lastItemWasOperator = false;
+    this.tokens = this.tokens.filter((item) => {
+      if (item.type === LEXEMES.AND || item.type === LEXEMES.OR) {
+        if (!firstNonOperatorSeen) {
+          // If we haven't seen any non-operator yet, remove them from the beginning
+          // of the token string
+          return false;
+        } else if (lastItemWasOperator) {
+          // If the last thing we saw was an operator, remove any operators directly following it
+          return false;
+        } else {
+          // Otherwise, set the flag and this operator is good
+          lastItemWasOperator = true;
+          return true;
+        }
+      } else {
+        firstNonOperatorSeen = true;
+        lastItemWasOperator = false;
+        return true;
+      }
+    });
+    if (this.tokens.lastItem?.type === LEXEMES.AND || this.tokens.lastItem?.type === LEXEMES.OR) {
+      this.tokens.splice(this.tokens.lastIndex, 1);
+    }
+  }
+
+  /**
    * Parses the list of tokens into a syntax tree.
    * @public
    */
@@ -260,6 +295,8 @@ class Parser {
    * @private
    */
   _whereClause() {
+    // Remove operator tokens at beginning and end of token string
+    this._preprocess();
     const result = this._whereCriteria();
     if (!this._isAtEnd()) {
       // If we come out of whereCriteria and more tokens are still left, they
@@ -314,10 +351,6 @@ class Parser {
       } else {
         result.children.push(operator, nextCriteriaOrGroup);
       }
-    }
-    // Remove AND/OR as last element of array
-    if (result.children.lastItem?.type === LEXEMES.AND || result.children.lastItem?.type === LEXEMES.OR) {
-      result.children.splice(result.children.lastIndex, 1);
     }
 
     return result;
