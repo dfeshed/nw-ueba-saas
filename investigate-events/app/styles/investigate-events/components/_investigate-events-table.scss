@@ -20,21 +20,19 @@
     background-color: background-color(primary, darkest);
     @include border-bottom(1px, solid, primary, darker);
     align-items: baseline;
-    justify-content: space-between;
 
     &__container {
       display: flex;
       flex-direction: row;
       width: 100%;
-      justify-content: space-between;
+    }
+
+    .apper {
+      display: inline-flex;
     }
 
     &__content {
-      min-width: 70%;
-
-      .toggle-wrapper {
-        display: inline-flex;
-      }
+      display: inline-flex;
 
       &::after {
         content: "";
@@ -62,9 +60,43 @@
       }
     }
 
+    &__content {
+      display: flex;
+      flex: 1 1 auto;
+
+      h2 {
+        white-space: nowrap;
+      }
+    }
+
+    .rsa-investigate-events-table__header__controls {
+      display: inline-flex;
+      flex: 1 1 auto;
+      overflow: hidden;
+      flex-wrap: wrap;
+      padding-left: rsa-whitespace(less);
+
+      .toggle-wrapper {
+        line-height: 30px;
+      }
+
+      .x-toggle-component {
+        float: left;
+        white-space: nowrap;
+        margin-left: rsa-whitespace(less);
+      }
+
+      .rsa-investigate-events-table__header__columnGroups {
+        position: relative;
+        left: 2px;
+        margin-right: rsa-whitespace(least);
+        margin-bottom: rsa-whitespace(least);
+      }
+
+    }
+
+
     &__columnGroups {
-      margin-top: rsa-whitespace(less);
-      margin-left: rsa-whitespace(less);
       float: left;
 
       .rsa-button-group {
@@ -95,6 +127,8 @@
               button.rsa-form-button {
                 border-left: none;
                 color: text-color(primary, light);
+                position: relative;
+                left: -1px;
               }
               i {
                 font-size: .65rem;
@@ -170,8 +204,9 @@
     }
 
     &__manageIncident {
-      margin-top: rsa-whitespace(less);
-      margin-left: rsa-whitespace(less);
+      margin: 0;
+      margin-right: rsa-whitespace(less);
+      margin-left: rsa-whitespace(least);
 
       .rsa-button-group {
         > .rsa-form-button-wrapper:first-of-type {
@@ -204,6 +239,10 @@
       display: inline-block;
       float: left;
       max-height: 43px;
+      margin-right: rsa-whitespace(least);
+      margin-bottom: rsa-whitespace(least);
+      margin-left: rsa-whitespace(least);
+
       iframe {
         opacity: 0;
         width: 1px;
@@ -236,8 +275,6 @@
         }
       }
       div {
-        margin-top: rsa-whitespace(less);
-        margin-left: rsa-whitespace(less);
         min-width: 150px;
       }
 
@@ -258,10 +295,9 @@
       display: none;
     }
     .events-table-control {
-      display: inline-block;
+      display: inline-flex;
       margin-top: 17px;
-      min-width: 100px;
-      margin-right: rsa-whitespace();
+      margin-right: rsa-whitespace(less);
       color: text-color(primary, light);
       .rsa-icon {
         cursor: pointer;
@@ -531,33 +567,6 @@
   .selected-events-threshold {
     position: relative;
     color: text-color(accentFour);
-  }
-}
-
-.recon-is-open, .recon-is-expanded {
-  .rsa-investigate-events-table {
-    &__header {
-      &__content {
-        .x-toggle-component {
-          margin-left: rsa-whitespace(less);
-          margin-bottom: rsa-whitespace(less);
-        }
-      }
-    }
-  }
-}
-
-.recon-is-closed {
-  .rsa-investigate-events-table {
-    &__header {
-      &__content {
-        display: flex;
-        .x-toggle-component {
-          margin-left: rsa-whitespace();
-        }
-
-      }
-    }
   }
 }
 

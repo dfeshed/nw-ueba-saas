@@ -499,7 +499,7 @@ export const allExpectedDataLoaded = createSelector(
 );
 
 export const searchMatches = createSelector(
-  [_searchTerm, _resultsData, eventTableFormattingOpts, _selectedColumnGroup, columnGroups, _visibleColumns],
+  [_searchTerm, nestChildEvents, eventTableFormattingOpts, _selectedColumnGroup, columnGroups, _visibleColumns],
   (searchTerm, data, opts, columnGroup, columnGroups, visibleColumns) => {
     // return empty set unless searchTerm meets length requirement
     const searchTermLengthRequirement = 2;

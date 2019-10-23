@@ -193,6 +193,12 @@ module('Unit | Selectors | event-results', function(hooks) {
             locale: 'locale'
           }
         },
+        services: {
+          serviceData: [{ version: 11.4 }]
+        },
+        eventCount: {
+          data: 3
+        },
         eventResults: {
           searchTerm: '',
           data: [
@@ -222,6 +228,9 @@ module('Unit | Selectors | event-results', function(hooks) {
         dictionaries: {
           aliases: 'aliases'
         },
+        services: {
+          serviceData: [{ version: 11.4 }]
+        },
         data: {
           globalPreferences: {
             dateFormat: 'dateFormat',
@@ -229,6 +238,9 @@ module('Unit | Selectors | event-results', function(hooks) {
             timeZone: 'timeZone',
             locale: 'locale'
           }
+        },
+        eventCount: {
+          data: 3
         },
         columnGroup: {
         }
@@ -255,6 +267,12 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         dictionaries: {
           aliases: 'aliases'
+        },
+        services: {
+          serviceData: [{ version: 11.4 }]
+        },
+        eventCount: {
+          data: 3
         },
         data: {
           selectedColumnGroup: 'EMAIL',
@@ -292,6 +310,12 @@ module('Unit | Selectors | event-results', function(hooks) {
         dictionaries: {
           aliases: 'aliases'
         },
+        eventCount: {
+          data: 3
+        },
+        services: {
+          serviceData: [{ version: 11.4 }]
+        },
         data: {
           selectedColumnGroup: 'EMAIL',
           globalPreferences: {
@@ -326,6 +350,12 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         dictionaries: {
           aliases: 'aliases'
+        },
+        services: {
+          serviceData: [{ version: 11.4 }]
+        },
+        eventCount: {
+          data: 3
         },
         data: {
           selectedColumnGroup: 'EMAIL',
@@ -363,6 +393,12 @@ module('Unit | Selectors | event-results', function(hooks) {
         dictionaries: {
           aliases: 'aliases'
         },
+        services: {
+          serviceData: [{ version: 11.4 }]
+        },
+        eventCount: {
+          data: 3
+        },
         data: {
           selectedColumnGroup: 'EMAIL',
           globalPreferences: {
@@ -399,6 +435,12 @@ module('Unit | Selectors | event-results', function(hooks) {
         dictionaries: {
           aliases: 'aliases'
         },
+        services: {
+          serviceData: [{ version: 11.4 }]
+        },
+        eventCount: {
+          data: 3
+        },
         data: {
           selectedColumnGroup: 'EMAIL',
           globalPreferences: {
@@ -431,8 +473,14 @@ module('Unit | Selectors | event-results', function(hooks) {
             { sessionId: 3 }
           ]
         },
+        services: {
+          serviceData: [{ version: 11.4 }]
+        },
         dictionaries: {
           aliases: 'aliases'
+        },
+        eventCount: {
+          data: 3
         },
         data: {
           selectedColumnGroup: 'SUMMARY',

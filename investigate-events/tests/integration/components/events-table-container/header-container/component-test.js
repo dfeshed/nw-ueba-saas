@@ -45,7 +45,7 @@ module('Integration | Component | header-container', function(hooks) {
   test('render the events header with data at threshold', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).hasRequiredValuesToQuery(true).eventCount(100000).build();
     await render(hbs`{{events-table-container/header-container}}`);
-    assert.equal(find(eventLabelSelector).textContent.trim().replace(/\s+/g, ''), 'oldest100,000Events(Asc)', 'rendered event header title');
+    assert.ok(find(eventLabelSelector).textContent.includes('oldest 100,000 Events (Asc)'), 'rendered event header title');
     const thresholdIconSelector = `${headerContainerSelector} .at-threshold`;
     assert.ok(find(thresholdIconSelector), 'at threshold icon is present');
     const tooltip = find(thresholdIconSelector).getAttribute('title').trim().split(' ');
@@ -74,20 +74,19 @@ module('Integration | Component | header-container', function(hooks) {
   test('render the events header with actualCount when canceled', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').selectedEventIds([]).columnGroups(EventColumnGroups).eventResults(eventResultsData).hasRequiredValuesToQuery(true).eventCount(10).build();
     await render(hbs`{{events-table-container/header-container}}`);
-    assert.equal(find(eventLabelSelector).textContent.trim().replace(/\s+/g, ''), '1Events(Asc)', 'rendered event header title');
+    assert.ok(find(eventLabelSelector).textContent.includes('1 Events (Asc)'), 'rendered event header title');
   });
 
   test('render the events header with eventTimeSortOrderPreferenceWhenQueried when cannot sort', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').selectedEventIds([]).columnGroups(EventColumnGroups).eventResults(eventResultsData).hasRequiredValuesToQuery(false).eventTimeSortOrderPreferenceWhenQueried().eventCount(10).build();
     await render(hbs`{{events-table-container/header-container}}`);
-    assert.equal(find(eventLabelSelector).textContent.trim().replace(/\s+/g, ''), '1Events(Asc)', 'rendered event header title');
+    assert.ok(find(eventLabelSelector).textContent.includes('1 Events (Asc)'), 'rendered event header title');
   });
 
   test('render the events header with required fields ', async function(assert) {
     await renderDefaultHeaderContainer(assert);
     assert.equal(find(headerContainerSelector).childElementCount, 2, 'rendered with two elements - header__content, events-table-control');
-    assert.equal(find(headerContentSelector).childElementCount, 5, 'rendered with 4 elements - eventLabel, columnGroups, downloadEvents, manageIncidents');
-    assert.equal(find(eventLabelSelector).textContent.trim().replace(/\s+/g, ''), '55Events(Asc)', 'rendered event header title');
+    assert.ok(find(eventLabelSelector).textContent.includes('55 Events (Asc)'), 'rendered event header title');
     assert.equal(find(`${columnGroupManager} .list-caption`).textContent.trim(), 'Column Group: Summary List', 'rendered ColumnGroup title');
     assert.equal(find(`${downloadSelector} .ember-power-select-trigger span[title='Download']`).textContent.trim(), 'Download', 'rendered event header title');
     assert.equal(find(`${headerContentSelector} .create-incident-button`).textContent.trim(), 'Create Incident', 'rendered Create Incident title');
@@ -149,8 +148,6 @@ module('Integration | Component | header-container', function(hooks) {
 
     await render(hbs`{{events-table-container/header-container}}`);
 
-    assert.equal(find(headerContentSelector).childElementCount, 5, '__eventLabel, __columngroup, _downloadEvents, __manageIncident visible.');
-
     assert.ok(find(createIncidentSelector), 'Create Incident button is visible');
     assert.ok(find(addToIncidentSelector), 'Add to Incident button is visible');
   });
@@ -165,8 +162,6 @@ module('Integration | Component | header-container', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container/header-container}}`);
-
-    assert.equal(find(headerContentSelector).childElementCount, 4, 'only __eventLabel, __columngroup, _downloadEvents visible.');
 
     assert.notOk(find(createIncidentSelector), 'Create Incident button is not displayed');
     assert.notOk(find(addToIncidentSelector), 'Add to Incident button is not displayed');
@@ -183,8 +178,6 @@ module('Integration | Component | header-container', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container/header-container}}`);
-
-    assert.equal(find(headerContentSelector).childElementCount, 4, 'only __eventLabel, __columngroup, _downloadEvents visible.');
 
     assert.notOk(find(createIncidentSelector), 'Create Incident button is not displayed');
     assert.notOk(find(addToIncidentSelector), 'Add to Incident button is not displayed');

@@ -12,36 +12,38 @@
           {{t "investigate.events.title" count=actualEventCount sort=abbreviatedSortOrder}}
         {{/if}}
       </h2>
+
+      <div class="rsa-investigate-events-table__header__controls">
+        {{events-table-container/header-container/column-groups}}
+
+        {{events-table-container/header-container/download-dropdown}}
+
+        {{#if permissionAllowsIncidentManagement}}
+          {{incident-toolbar
+            isDisabled=isIncidentButtonsDisabled
+            allSelectedEventIds=selectedEventIds
+            endpointId=endpointId
+            startTime=startTime
+            endTime=endTime
+            limit=maxEventsSelectionLimit
+            class="rsa-investigate-events-table__header__manageIncident"}}
+        {{/if}}
+
+        <div class="toggle-wrapper" title={{ if (not eventsHaveSplits) (t 'investigate.disabledEnableEventRelationshipsLabel') }}>
+          {{#x-toggle
+            disabled=(not eventsHaveSplits)
+            showLabels=true
+            onLabel=(t 'investigate.enableEventRelationshipsLabel')
+            value=eventRelationshipsEnabled
+            onToggle=(action 'toggleEventRelationshipsWithTableFocus') as |toggle|}}
+            {{toggle.switch}}
+            {{toggle.onLabel value=(readonly (not eventRelationshipsEnabled))}}
+          {{/x-toggle}}
+        </div>
+      </div>
     </div>
-
-    {{events-table-container/header-container/column-groups}}
-
-    {{events-table-container/header-container/download-dropdown}}
-
-    {{#if permissionAllowsIncidentManagement}}
-      {{incident-toolbar
-        isDisabled=isIncidentButtonsDisabled
-        allSelectedEventIds=selectedEventIds
-        endpointId=endpointId
-        startTime=startTime
-        endTime=endTime
-        limit=maxEventsSelectionLimit
-        class="rsa-investigate-events-table__header__manageIncident"}}
-    {{/if}}
-
-    <div class="toggle-wrapper" title={{ if (not eventsHaveSplits) (t 'investigate.disabledEnableEventRelationshipsLabel') }}>
-      {{#x-toggle
-        disabled=(not eventsHaveSplits)
-        showLabels=true
-        onLabel=(t 'investigate.enableEventRelationshipsLabel')
-        value=eventRelationshipsEnabled
-        onToggle=(action 'toggleEventRelationshipsWithTableFocus') as |toggle|}}
-        {{toggle.switch}}
-        {{toggle.onLabel value=(readonly (not eventRelationshipsEnabled))}}
-      {{/x-toggle}}
-    </div>
-
   </div>
+
   <div class="events-table-control">
     {{#if isSearchDisabled}}
       {{rsa-icon
