@@ -30,6 +30,8 @@ SIZE = 1000
 ENTITY_TYPE = "userId"
 INDEX_ALERT = "presidio-output-alert"
 DOC_TYPE_ALERT = "alert"
+INDEX_INDICATOR = "presidio-output-indicator"
+DOC_TYPE_INDICATOR = "indicator"
 INDEX_USER_SEVERITY_RANGE = "presidio-output-user-severities-range"
 INDEX_ENTITY_SEVERITY_RANGE = "presidio-output-entity-severities-range"
 DOC_TYPE_USER_SEVERITY_RANGE = "user-severities-range"
@@ -93,6 +95,33 @@ def update_alerts_hits(hits):
         es.index(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, id=item["_id"], body=alert)
 
 
+# Update indicator table in elastic to List of aggregations
+def update_indicators_hits(hits):
+    for item in hits:
+        aggregations_list = [item["_source"]["historicalData"]["aggregation"]]
+        item["_source"]["historicalData"]["aggregation"] = aggregations_list
+
+        indicator = {
+            'createdDate': item["_source"]["createdDate"],
+            'updatedDate': item["_source"]["updatedDate"],
+            'updatedBy': item["_source"]["updatedBy"],
+            'name': item["_source"]["name"],
+            'anomalyValue': item["_source"]["anomalyValue"],
+            'alertId': item["_source"]["alertId"],
+            'historicalData': item["_source"]["historicalData"],
+            'startDate': item["_source"]["startDate"],
+            'endDate': item["_source"]["endDate"],
+            'schema': item["_source"]["schema"],
+            'score': item["_source"]["score"],
+            'scoreContribution': item["_source"]["scoreContribution"],
+            'type': item["_source"]["type"],
+            'eventsNum': item["_source"]["eventsNum"],
+            'contexts': item["_source"]["contexts"]
+        }
+
+        es.index(index=INDEX_INDICATOR, doc_type=DOC_TYPE_INDICATOR, id=item["_id"], body=indicator)
+
+
 def scroll_and_update_data(index, doc_type, update_function):
     # Init scroll by search
     data = es.search(
@@ -145,6 +174,23 @@ def alert_not_process():
     return True
 
 
+def indicator_not_process():
+    es.indices.refresh()
+    res = es.search(index=INDEX_INDICATOR, doc_type=DOC_TYPE_INDICATOR, body={
+        "query": {
+            "match_all": {}
+        },
+        "size": 1
+    })
+
+    if res['hits']['total'] > 0:
+        if isinstance(res['hits']['hits'][0]['_source']['historicalData']['aggregation'], list):
+            print("Index {} already processed".format(INDEX_INDICATOR))
+            return False
+
+    return True
+
+
 # Check user index is exists
 if index_exists(INDEX_USER):
     # Scrolling users
@@ -157,6 +203,11 @@ if index_exists(INDEX_USER):
 if index_exists(INDEX_ALERT) & alert_not_process():
     # Scrolling alerts
     scroll_and_update_data(INDEX_ALERT, DOC_TYPE_ALERT, update_alerts_hits)
+
+# Check indicator index is exists
+if index_exists(INDEX_INDICATOR) & indicator_not_process():
+    # Scrolling indicators
+    scroll_and_update_data(INDEX_INDICATOR, DOC_TYPE_INDICATOR, update_indicators_hits)
 
 # Check user severities range index is exists
 if index_exists(INDEX_USER_SEVERITY_RANGE):

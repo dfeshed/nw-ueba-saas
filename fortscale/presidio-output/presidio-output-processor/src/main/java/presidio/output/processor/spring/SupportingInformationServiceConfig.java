@@ -106,38 +106,48 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
     }
 
     @Bean
-    public HistoricalDataCountByTimeForScoreFeaturePopulator historicalDataCountByTimeForScoreFeaturePopulator() {
-        return new HistoricalDataCountByTimeForScoreFeaturePopulator(historicalDataFetcher);
+    public AggregationDataCountByTimeForScoreFeaturePopulator aggregationDataCountByTimeForScoreFeaturePopulator() {
+        return new AggregationDataCountByTimeForScoreFeaturePopulator(historicalDataFetcher);
     }
 
     @Bean
-    public HistoricalDataCountByTimePopulator historicalDataCountByTimePopulator() {
-        return new HistoricalDataCountByTimePopulator(historicalDataFetcher);
+    public AggregationDataCountByTimePopulator aggregationDataCountByTimePopulator() {
+        return new AggregationDataCountByTimePopulator(historicalDataFetcher);
     }
 
     @Bean
-    public HistoricalDataCountByValuePopulator historicalDataCountByValuePopulator() {
-        return new HistoricalDataCountByValuePopulator(historicalDataFetcher);
+    public AggregationDataCountByTimeForLastDayPopulator aggregationDataCountByTimeForNewOccrurencesPopulator() {
+        return new AggregationDataCountByTimeForLastDayPopulator(historicalDataFetcher);
     }
 
     @Bean
-    public HistoricalDataCountByWeekdayPopulator historicalDataCountByWeekdayPopulator() {
-        return new HistoricalDataCountByWeekdayPopulator(historicalDataFetcher);
+    public AggregationDataCountByTimeGlobalPopulator aggregationDataCountByTimeGlobalPopulator() {
+        return new AggregationDataCountByTimeGlobalPopulator(historicalDataFetcher);
     }
 
     @Bean
-    public HistoricalDataPopulatorFactory historicalDataPopulatorFactory() {
-        return new HistoricalDataPopulatorFactory();
+    public AggregationDataCountByValuePopulator aggregationDataCountByValuePopulator() {
+        return new AggregationDataCountByValuePopulator(historicalDataFetcher);
+    }
+
+    @Bean
+    public AggregationDataCountByWeekdayPopulator aggregationDataCountByWeekdayPopulator() {
+        return new AggregationDataCountByWeekdayPopulator(historicalDataFetcher);
+    }
+
+    @Bean
+    public AggregationDataPopulatorFactory aggregationDataPopulatorFactory() {
+        return new AggregationDataPopulatorFactory();
     }
 
     @Bean
     public SupportingInformationForFeatureAggr supportingInformationForFeatureAggr() {
-        return new SupportingInformationForFeatureAggr(supportingInformationConfig, eventPersistencyService, historicalDataPopulatorFactory(), supportingInformationUtils);
+        return new SupportingInformationForFeatureAggr(supportingInformationConfig, eventPersistencyService, aggregationDataPopulatorFactory(), supportingInformationUtils);
     }
 
     @Bean
     public SupportingInformationForScoreAggr supportingInformationForScoreAggr() {
-        return new SupportingInformationForScoreAggr(supportingInformationConfig, historicalDataPopulatorFactory(), scoredEventService, supportingInformationUtils, adeManagerSdk, recordReaderFactoryService);
+        return new SupportingInformationForScoreAggr(supportingInformationConfig, aggregationDataPopulatorFactory(), scoredEventService, supportingInformationUtils, adeManagerSdk, recordReaderFactoryService);
     }
 
     @Bean

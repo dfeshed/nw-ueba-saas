@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.domain.records.alerts.Aggregation;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.proccesor.spring.TestConfig;
@@ -32,13 +33,13 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
 
     private HistoricalDataFetcher historicalDataFetcher =
             Mockito.mock(HistoricalDataFetcher.class);
-    private HistoricalDataCountByTimeForScoreFeaturePopulator historicalDataCountByTimeForScoreFeaturePopulator =
-            new HistoricalDataCountByTimeForScoreFeaturePopulator(historicalDataFetcher);
+    private AggregationDataCountByTimeForScoreFeaturePopulator aggregationDataCountByTimeForScoreFeaturePopulator =
+            new AggregationDataCountByTimeForScoreFeaturePopulator(historicalDataFetcher);
 
     @Test
     public void test_NoEvents() {
         String featureName = "highestNumOfPagesScoreUserIdPrintHourly";
-        HistoricalDataConfig historicalDataConfig = config.getIndicatorConfig(featureName).getHistoricalData();
+        List<HistoricalDataConfig> historicalDataConfig = config.getIndicatorConfig(featureName).getHistoricalData();
         String contextValue = "contextValue";
         List<DailyHistogram<String, Number>> result = new ArrayList<>();
         LocalDate date = LocalDate.of(2018, 2, 25);
@@ -51,14 +52,15 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         String anomalyValue = String.valueOf(2370.0);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
-        HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
-        Assert.assertTrue(CollectionUtils.isEmpty(historicalData.getAggregation().getBuckets()));
+        Aggregation aggregation = aggregationDataCountByTimeForScoreFeaturePopulator.createAggregationData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig.get(0), true, new Date(Long.parseLong("1517403600")));
+        HistoricalData historicalData = new HistoricalData(Arrays.asList(aggregation));
+        Assert.assertTrue(CollectionUtils.isEmpty(historicalData.getAggregation().get(0).getBuckets()));
     }
 
     @Test
     public void test_createHistoricalData() {
         String featureName = "highestNumOfPagesScoreUserIdPrintHourly";
-        HistoricalDataConfig historicalDataConfig = config.getIndicatorConfig(featureName).getHistoricalData();
+        List<HistoricalDataConfig> historicalDataConfig = config.getIndicatorConfig(featureName).getHistoricalData();
         String contextValue = "contextValue";
         List<DailyHistogram<String, Number>> result = new ArrayList<>();
         LocalDate date = LocalDate.of(2018, 2, 25);
@@ -80,11 +82,13 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         String anomalyValue = String.valueOf(2370);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
-        HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
-        Assert.assertTrue(CollectionUtils.isNotEmpty(historicalData.getAggregation().getBuckets()));
-        Assert.assertEquals(9, historicalData.getAggregation().getBuckets().size());
+        Date anomalyDate = new Date(Long.parseLong("1517403600"));
+        Aggregation aggregation = aggregationDataCountByTimeForScoreFeaturePopulator.createAggregationData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig.get(0), true, anomalyDate);
+        HistoricalData historicalData = new HistoricalData(Arrays.asList(aggregation));
+        Assert.assertTrue(CollectionUtils.isNotEmpty(historicalData.getAggregation().get(0).getBuckets()));
+        Assert.assertEquals(9, historicalData.getAggregation().get(0).getBuckets().size());
 
-        for (Object object : historicalData.getAggregation().getBuckets()) {
+        for (Object object : historicalData.getAggregation().get(0).getBuckets()) {
             Bucket bucket = (Bucket)object;
             if (anomalyValue.equals(bucket.getValue().toString())) Assert.assertTrue(bucket.isAnomaly());
         }

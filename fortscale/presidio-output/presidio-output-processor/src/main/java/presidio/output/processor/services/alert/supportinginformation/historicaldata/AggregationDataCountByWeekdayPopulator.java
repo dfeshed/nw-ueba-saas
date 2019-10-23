@@ -2,8 +2,8 @@ package presidio.output.processor.services.alert.supportinginformation.historica
 
 import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeRange;
+import presidio.output.domain.records.alerts.Aggregation;
 import presidio.output.domain.records.alerts.Bucket;
-import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.domain.records.alerts.WeekdayAggregation;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
@@ -12,23 +12,20 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopulator {
+public class AggregationDataCountByWeekdayPopulator implements AggregationDataPopulator {
 
     public static final String WEEKDAY_AGGREGATIONS = "weekday_aggregations";
 
     HistoricalDataFetcher historicalDataFetcher;
 
-    public HistoricalDataCountByWeekdayPopulator(HistoricalDataFetcher historicalDataFetcher) {
+    public AggregationDataCountByWeekdayPopulator(HistoricalDataFetcher historicalDataFetcher) {
         this.historicalDataFetcher = historicalDataFetcher;
     }
 
     @Override
-    public HistoricalData createHistoricalData(TimeRange timeRange,Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig, boolean skipAnomaly, Date indicatorStartDate) {
 
         // map of day of week -> <hour -> count>
         Map<Integer, Map<Integer, Double>> weekdayMap = new HashMap<Integer, Map<Integer, Double>>();
@@ -77,7 +74,7 @@ public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopu
             for (Integer hour: weekdayMap.get(dayOfWeek).keySet()) {
 
                 Double valueInHour =   weekdayMap.get(dayOfWeek).get(hour);
-                boolean anomaly = anomalyDayOfWeek == dayOfWeek.intValue() && anomalyHourOfWeek == hour.intValue();
+                boolean anomaly = !skipAnomaly && anomalyDayOfWeek == dayOfWeek.intValue() && anomalyHourOfWeek == hour.intValue();
                 Bucket<String, Integer> hourlyBucket = new Bucket<String, Integer>(hour.toString(), valueInHour.intValue(), anomaly);
                 dayOfweekHours.add(hourlyBucket);
             }
@@ -87,8 +84,7 @@ public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopu
             buckets.add(dayOfWeekBucket);
         }
 
-        WeekdayAggregation aggregation = new WeekdayAggregation(buckets);
-        return new HistoricalData(aggregation);
+        return new WeekdayAggregation(buckets, contexts);
     }
 
 

@@ -46,4 +46,28 @@ public interface AggregationEventsAccumulationDataReader {
         Instant end = timeRange.getEnd();
         return findAccumulatedEventsByContextIdAndStartTimeRange(aggregatedFeatureName, contextId, start, end);
     }
+
+    /**
+     *
+     * @param aggregatedFeatureName feature name
+     * @param startTime start date
+     * @param endTime end date
+     * @return accumulated records by start timeRange
+     */
+    List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByStartTimeRange(
+            String aggregatedFeatureName,
+            Instant startTime,
+            Instant endTime);
+
+    /**
+     * @see this#findAccumulatedEventsByContextIdAndStartTimeRange(String, String, Instant, Instant) - this method is just syntactic sugar
+     */
+    default List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByStartTimeRange(
+            String aggregatedFeatureName,
+            TimeRange timeRange)
+    {
+        Instant start = timeRange.getStart();
+        Instant end = timeRange.getEnd();
+        return findAccumulatedEventsByStartTimeRange(aggregatedFeatureName, start, end);
+    }
 }
