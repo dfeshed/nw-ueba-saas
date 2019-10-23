@@ -12,7 +12,7 @@
       "version": 1,
       "timeRestore": true,
       "timeTo": "now",
-      "timeFrom": "now-90d",
+      "timeFrom": "now-10d",
       "refreshInterval": {
         "display": "Off",
         "pause": false,
