@@ -113,6 +113,12 @@
             flex-flow: row wrap;
             overflow-x: hidden;
             overflow-y: auto;
+            .column-group-name {
+              .ember-power-select-trigger,.ember-power-select-typeahead-input {
+                margin-top: -0.5rem;
+                margin-bottom: 0.3rem;
+              }
+            }
             .prequery-conditions {
               &.scroll-box {
               position: relative;
@@ -130,7 +136,7 @@
                 }
                 ul {
                   width: 100%;
-                  max-height: 5rem;
+                  max-height: 9rem;
                   padding-top: 0.2rem;
                   &:not(.editable) {
                     overflow-y: auto;

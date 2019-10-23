@@ -131,11 +131,22 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/column/groups/delete-by-id'
       }
     },
-    'profiles': {
+    'profileRequest': {
       socketUrl,
       findAll: {
         subscriptionDestination: '/user/queue/investigate/profile/get-all',
         requestDestination: '/ws/investigate/profile/get-all'
+      },
+      post: {
+        subscriptionDestination: '/user/queue/investigate/profile/set',
+        requestDestination: '/ws/investigate/profile/set'
+      }
+    },
+    'metaGroup': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/investigate/meta/groups/get-all',
+        requestDestination: '/ws/investigate/meta/groups/get-all'
       }
     },
     'query-hashes': {

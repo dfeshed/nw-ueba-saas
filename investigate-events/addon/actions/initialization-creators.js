@@ -12,6 +12,7 @@ import { createOperator, isSearchTerm, parsePillDataFromUri, transformTextToPill
 import { OperatorAnd } from 'investigate-events/util/grammar-types';
 import { extractSearchTermFromFilters } from 'investigate-shared/actions/api/events/utils';
 import { fetchColumnGroups } from './fetch/column-group';
+import { fetchMetaGroups } from './fetch/meta-group';
 import { fetchProfiles } from './fetch/profiles';
 import { fetchInvestigateData, getServiceSummary, updateGlobalPreferences, updateSort } from './data-creators';
 import { isQueryExecutedByColumnGroup } from './interaction-creators';
@@ -159,6 +160,29 @@ const _getColumnGroups = () => {
         meta: {
           onFailure(response) {
             handleInvestigateErrorCode(response, 'GET_COLUMN_GROUPS');
+          }
+        }
+      });
+    }
+  };
+};
+
+/**
+ * Redux thunk to get all meta groups
+ *
+ * @return {function} A Redux thunk
+ * @public
+ */
+const _getMetaGroups = () => {
+  return (dispatch, getState) => {
+    const { metaGroups } = getState().investigate.metaGroup;
+    if (!metaGroups) {
+      dispatch({
+        type: ACTION_TYPES.META_GROUPS_RETRIEVE,
+        promise: fetchMetaGroups(),
+        meta: {
+          onFailure(response) {
+            handleInvestigateErrorCode(response, 'GET_META_GROUPS');
           }
         }
       });
@@ -491,6 +515,7 @@ export const initializeInvestigate = function(
     // it isn't important that this be syncronized with anything else,
     // so can just kick it off
     dispatch(_getColumnGroups());
+    dispatch(_getMetaGroups());
     dispatch(_getProfiles());
     dispatch(isQueryExecutedByColumnGroup(false));
 

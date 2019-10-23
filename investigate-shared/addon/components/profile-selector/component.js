@@ -8,7 +8,11 @@ const ProfileSelector = Component.extend({
   listName: null,
   stateLocation: null,
   profiles: null, // list of profiles
-  selectProfile: null,
+  metaGroups: null, // list of meta groups
+  columnGroups: null, // list of column groups
+  selectedColumnGroupId: null, // id of currently selected column group
+  selectProfile: null, // function
+  enrichProfile: null, // function to use for itemTransform in list manager details
   helpId: null,
   actions: {
     setProfile(profile) {

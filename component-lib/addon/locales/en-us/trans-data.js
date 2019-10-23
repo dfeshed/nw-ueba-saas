@@ -526,6 +526,8 @@ export default {
       metaGroup: 'Meta Group',
       columnGroup: 'Column Group',
       profileName: 'Profile Name',
+      profileNamePlaceholder: 'Enter profile name',
+      profileNameNotUnique: 'New profile must have a unique name',
       prequeryConditions: {
         prequeryConditions: 'Pre-Query Conditions',
         or: 'OR',

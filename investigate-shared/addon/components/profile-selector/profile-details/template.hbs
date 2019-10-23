@@ -1,54 +1,14 @@
-<div class='profile-name'>
-  <div class='name'>{{t 'investigate.profile.profileName'}}</div>
-  <div class='value'>{{profile.name}}</div>
-</div>
-<div class='profile-group-name'>
-  <div class='name'>{{t 'investigate.profile.profileGroup'}}</div>
-  <div class='value'>{{profile.profileGroup.name}}</div>
-</div>
-<div class='meta-group-name'>
-  <div class='name'>{{t 'investigate.profile.metaGroup'}}</div>
-  <div class='value'>{{profile.metaGroup.name}}</div>
-</div>
-<div class='column-group-name'>
-  <div class='name'>{{t 'investigate.profile.columnGroup'}}</div>
-  <div class='value'>{{profile.columnGroup.name}}</div>
-</div>
-<div class='prequery-conditions scroll-box readonly'>
-  <div class='name'>{{t 'investigate.profile.prequeryConditions.prequeryConditions'}}</div>
-  <ul class='value'>
-    {{#each profile.preQueryPillsData as |item|}}
-      {{#if item.complexFilterText}}
-        <li class='prequery-pill'>
-          <span title={{item.complexFilterText}}>
-            {{item.complexFilterText}}
-          </span>
-        </li>
-        {{!-- OR operator --}}
-      {{else if (eq item.type 'operator-or')}}
-        <li class='prequery-pill-operator'>
-          <span title={{t 'investigate.profile.prequeryConditions.or'}}>
-            {{t 'investigate.profile.prequeryConditions.or'}}
-          </span>
-        </li>
-        {{!-- AND operator --}}
-      {{else if (eq item.type 'operator-and')}}
-        <li class='prequery-pill-operator'>
-          <span title={{t 'investigate.profile.prequeryConditions.and'}}>
-            {{t 'investigate.profile.prequeryConditions.and'}}
-          </span>
-        </li>
-      {{else}}
-        {{!-- icon to indicate text pill --}}
-        <li class='prequery-pill'>
-          {{#if (eq item.type 'text')}}
-            {{rsa-icon name='search' class='is-text' title=(t 'investigate.queryStats.textFilter')}}
-          {{/if}}
-          <span title={{concat item.meta item.operator item.value}}>
-            {{item.meta}} {{item.operator}} {{item.value}}
-          </span>
-        </li>
-      {{/if}}
-    {{/each}}
-  </ul>
-</div>
+{{#if isEditing}}
+  {{profile-selector/profile-details/profile-form
+    profile=profile
+    editProfile=editProfile
+    columnGroups=columnGroups
+    metaGroups=metaGroups
+    selectedColumnGroupId=selectedColumnGroupId
+    profiles=profiles
+  }}
+{{else}}
+  {{profile-selector/profile-details/profile-view
+    profile=profile
+  }}
+{{/if}}

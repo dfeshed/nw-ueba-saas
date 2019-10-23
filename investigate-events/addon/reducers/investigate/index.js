@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import data from './data-reducer';
 import columnGroup from './column-group/reducer';
+import metaGroup from './meta-group/reducer';
 import profile from './profile/reducer';
 import dictionaries from './dictionaries/reducer';
 import eventCount from './event-count/reducer';
@@ -16,6 +17,7 @@ import services from './services/reducer';
 export default combineReducers({
   data,
   columnGroup,
+  metaGroup,
   profile,
   dictionaries,
   eventCount,

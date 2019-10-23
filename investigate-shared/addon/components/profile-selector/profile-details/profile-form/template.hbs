@@ -1,0 +1,30 @@
+<div class='profile-name'>
+  <div class='name'>{{t 'investigate.profile.profileName'}}</div>
+  {{rsa-form-input
+    class='value'
+    type='text'
+    maxLength=64
+    isError=isNameError
+    errorMessage=nameInvalidMessage
+    onKeyUp=(action 'handleNameChange')
+    placeholder=(t 'investigate.profile.profileNamePlaceholder')
+  }}
+</div>
+<div class='column-group-name'>
+  <div class='name'>{{t 'investigate.profile.columnGroup'}}</div>
+  <label class="rsa-form-label power-select select-column-group">
+    {{#power-select
+      options=columnGroups
+      selected=newProfile.columnGroup
+      searchEnabled=true
+      searchField='name'
+      onchange=(action 'onColumnGroupChange') as |option|
+    }}
+      {{option.name}}
+    {{/power-select}}
+  </label>
+</div>
+<div class='prequery-conditions scroll-box readonly'>
+  <div class='name'>{{t 'investigate.profile.prequeryConditions.prequeryConditions'}}</div>
+  {{profile-selector/profile-details/profile-form/profile-form-prequery-conditions}}
+</div>

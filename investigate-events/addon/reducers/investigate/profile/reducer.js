@@ -14,14 +14,13 @@ export default handleActions({
       sort(action.payload.data).by([{ asc: (group) => group.name.toUpperCase() }]) : [];
 
     return handle(state, action, {
-      // TODO failure
       failure: (s) => s.set('profiles', []),
       success: (s) => {
         if (profilesData) {
           // profiles retrieved
           return s.set('profiles', profilesData);
         } else {
-          // TODO if no profiles returned
+          // if no profiles returned
           return s.set('profiles', []);
         }
       }

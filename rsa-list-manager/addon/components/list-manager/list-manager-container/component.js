@@ -51,7 +51,13 @@ const ListManagerContainer = Component.extend({
   },
 
   actions: {
-    collapseManagerList() {
+    collapseManagerList(e) {
+      // do not close list manager if user clicked on search input field of power select
+      if (e.target.classList.contains('ember-power-select-search-input')) {
+        if (e.target.type === 'search' && e.target.tagName === 'INPUT') {
+          return;
+        }
+      }
       this.send('closeListManager', this.get('stateLocation'));
     },
 

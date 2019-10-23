@@ -274,7 +274,7 @@ export const setColumnGroup = (selectedGroup) => {
 export const setProfile = (profile, executeQuery) => {
   return (dispatch, getState) => {
     const currentState = getState();
-    const newQueryPillsData = profile.preQueryPillsData;
+    const newQueryPillsData = profile.preQueryPillsData || [];
     const currentColumnGroupId = selectedColumnGroup(currentState);
     const newColumnGroupId = profile.columnGroup.id;
 
@@ -283,7 +283,7 @@ export const setProfile = (profile, executeQuery) => {
     dispatch(replaceAllGuidedPills(newQueryPillsData));
 
     // if new profile's column group is different than currently selected column group
-    if (newColumnGroupId !== currentColumnGroupId) {
+    if (newColumnGroupId && newColumnGroupId !== currentColumnGroupId) {
       const newState = getState();
 
       // apply the new column group

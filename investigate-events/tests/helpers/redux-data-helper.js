@@ -2,6 +2,7 @@ import Immutable from 'seamless-immutable';
 import CONFIG from 'investigate-events/reducers/investigate/config';
 import EventColumnGroups from '../data/subscriptions/column-group';
 import METAKEYS from '../data/subscriptions/meta-key-cache/findAll/data';
+import DEFAULT_META_GROUPS from '../data/subscriptions/meta-group/findAll/data';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 import { createQueryHash } from 'investigate-events/util/query-hash';
 
@@ -478,6 +479,11 @@ export default class DataHelper {
 
   profiles(profiles = DEFAULT_PROFILES) {
     _set(this.state, 'profile.profiles', profiles);
+    return this;
+  }
+
+  metaGroups(metaGroups = DEFAULT_META_GROUPS) {
+    _set(this.state, 'metaGroup.metaGroups', metaGroups);
     return this;
   }
 

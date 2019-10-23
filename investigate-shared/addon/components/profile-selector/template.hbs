@@ -11,14 +11,21 @@
 
   {{manager.filter}}
 
-  {{#manager.itemList as |itemList|}}
-    {{#itemList.item as |item|}}
+  {{#manager.itemList as |list|}}
+    {{#list.item as |item|}}
       {{profile-selector/profile-item profile=item}}
-    {{/itemList.item}}
+    {{/list.item}}
   {{/manager.itemList}}
 
-  {{#manager.details as |item|}}
-    {{profile-selector/profile-details profile=item.item}}
+  {{#manager.details itemTransform=enrichProfile as |details|}}
+    {{profile-selector/profile-details
+      profile=details.item
+      editProfile=details.itemEdited
+      profiles=profiles
+      columnGroups=columnGroups
+      selectedColumnGroupId=selectedColumnGroupId
+      metaGroups=metaGroups
+    }}
   {{/manager.details}}
 
 {{/list-manager}}

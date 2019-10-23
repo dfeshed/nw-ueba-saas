@@ -26,6 +26,7 @@ const DetailsFooter = Component.extend({
 
   // valid edited item sent by user
   editedItem: null,
+  itemTransform: null, // function
 
   actions: {
     detailsDone() {
@@ -33,7 +34,8 @@ const DetailsFooter = Component.extend({
     },
 
     saveItem() {
-      const { editedItem, isNewItem, stateLocation, itemTransform } = this.getProperties('editedItem', 'isNewItem', 'stateLocation', 'itemTransform');
+      const { editedItem, isNewItem, stateLocation, itemTransform } =
+        this.getProperties('editedItem', 'isNewItem', 'stateLocation', 'itemTransform');
 
       if (isNewItem) {
         this.send('createItem', editedItem, stateLocation, itemTransform);

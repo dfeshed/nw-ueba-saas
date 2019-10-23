@@ -14,6 +14,7 @@ export const createItem = (item, stateLocation, itemTransform) => {
     const apiModelName = modelName(state, stateLocation);
     const payload = {};
     payload[apiModelName] = item;
+
     dispatch({
       type: ACTION_TYPES.ITEM_CREATE,
       promise: apiCreateOrUpdateItem(payload, apiModelName),

@@ -2,11 +2,15 @@
 {{#if profiles}}
   {{profile-selector
     profiles=profiles
+    columnGroups=columnGroups
+    metaGroups=metaGroups
+    selectedColumnGroupId=selectedColumnGroupId
     helpId=helpId
     selectProfile=(action 'selectProfile')
     modelName=modelName
     listName=listName
     stateLocation=stateLocation
+    enrichProfile=(action 'enrichProfile')
   }}
 {{/if}}
 

@@ -17,7 +17,7 @@ const listManagerInitialState = Immutable.from({
   filterText: undefined,
   highlightedIndex: -1,
   editItemId: undefined,
-  viewName: undefined, // View to be rendered through button actions (list-view, detail-view, etc)
+  viewName: undefined, // View to be rendered through button actions (list-view, edit-view)
   shouldSelectedItemPersist: true, // true if an item can be selected and persist, true by default
   selectedItemId: undefined, // id of object to identify an item as selected in the manager's button caption,
   helpId: undefined, // object for contextual help { moduleId: "investigation", topicId: "eaColumnGroups" }

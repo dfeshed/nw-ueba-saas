@@ -8,7 +8,10 @@ import {
   PROFILES_LIST_NAME as listName,
   PROFILES_TOPIC_ID
 } from 'investigate-shared/constants/profiles';
-import { enrichedProfiles } from 'investigate-events/reducers/investigate/profile/selectors';
+import { enrichedProfiles, enrichedProfile, languageAndAliases } from 'investigate-events/reducers/investigate/profile/selectors';
+import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
+import { metaGroups } from 'investigate-events/reducers/investigate/meta-group/selectors';
+import { selectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { setProfile } from 'investigate-events/actions/interaction-creators';
 
 const dispatchToActions = {
@@ -16,7 +19,11 @@ const dispatchToActions = {
 };
 
 const stateToComputed = (state) => ({
-  profiles: enrichedProfiles(state)
+  profiles: enrichedProfiles(state),
+  languageAndAliases: languageAndAliases(state),
+  columnGroups: columnGroups(state),
+  metaGroups: metaGroups(state),
+  selectedColumnGroupId: selectedColumnGroup(state)
 });
 
 const ProfileSelectorWrapper = Component.extend({
@@ -38,6 +45,14 @@ const ProfileSelectorWrapper = Component.extend({
   actions: {
     selectProfile(profile) {
       this.send('setProfile', profile, this.get('executeQuery'));
+    },
+
+    /**
+     * enrich a profile with isEditable and preQueryPillsData
+     * @param {object} profile
+     */
+    enrichProfile(profile) {
+      return enrichedProfile(profile, this.get('languageAndAliases'));
     }
   }
 });

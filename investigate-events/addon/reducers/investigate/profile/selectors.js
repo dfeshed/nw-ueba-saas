@@ -9,22 +9,43 @@ const _profileWithIsEditable = (item) => ({
   isEditable: item.contentType && item.contentType !== 'OOTB'
 });
 
+/**
+ * enriches and returns one profile with isEditable and preQueryPillsData
+ * @param {object} profile
+ * @param {object} languageAndAliases { language, aliases }
+ */
+export const enrichedProfile = (profile, languageAndAliases) => {
+  const { language, aliases } = languageAndAliases;
+  return {
+    ..._profileWithIsEditable(profile),
+    preQueryPillsData: profile.preQuery ? transformTextToPillData(profile.preQuery, { language, aliases, returnMany: true }) : []
+  };
+};
+
 // ACCESSOR FUNCTIONS
-const _languageAndAliasesForParser = (state) => languageAndAliasesForParser(state);
-export const profiles = (state) => state.investigate.profile.profiles || undefined;
+const _originalProfiles = (state) => state.investigate.profile.profiles || undefined;
+const _updatedProfiles = (state) => state.listManagers?.profiles?.list;
+export const languageAndAliases = (state) => languageAndAliasesForParser(state);
 export const isProfileViewActive = (state) => state.listManagers?.profiles?.isExpanded;
 
 // SELECTORS
+export const profiles = createSelector(
+  [_originalProfiles, _updatedProfiles],
+  (originalProfiles = [], updatedProfiles) => {
+    // refer to listManager's profiles for up to date list
+    if (updatedProfiles) {
+      return updatedProfiles;
+    }
+    // return original only if listManager state doesn't have updated profiles
+    return originalProfiles;
+  }
+);
+
 export const enrichedProfiles = createSelector(
-  [profiles, _languageAndAliasesForParser],
+  [profiles, languageAndAliases],
   (profiles = [], languageAndAliases) => {
-    const { language, aliases } = languageAndAliases;
     return profiles.map((profile) => {
-      const enriched = {
-        ..._profileWithIsEditable(profile),
-        preQueryPillsData: transformTextToPillData(profile.preQuery, { language, aliases, returnMany: true })
-      };
-      return enriched;
+      return enrichedProfile(profile, languageAndAliases);
     });
   }
 );

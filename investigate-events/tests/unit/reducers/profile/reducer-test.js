@@ -14,7 +14,7 @@ const profiles2 = [{ id: 9876, name: 'ZZZZZ' }, ...DEFAULT_PROFILES, { id: 9876,
 
 test('Shall get profiles from server', function(assert) {
   const previous = Immutable.from({
-    profile: null
+    profiles: null
   });
 
   const successAction = makePackAction(LIFECYCLE.SUCCESS, {
@@ -27,7 +27,7 @@ test('Shall get profiles from server', function(assert) {
 
 test('Shall sort profiles alphabetically', function(assert) {
   const previous = Immutable.from({
-    profile: null
+    profiles: null
   });
 
   const successAction = makePackAction(LIFECYCLE.SUCCESS, {

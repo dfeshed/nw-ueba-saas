@@ -6,6 +6,8 @@ The list manager can be used in your template as follows:
   stateLocation=stateLocation
   listName=name
   list=list
+  modelName=modelName
+  shouldSelectedItemPersist=false
   selectedItemId=selectedItemId
   itemSelection=handleSelection
   helpId=helpId
@@ -34,10 +36,11 @@ The list manager can be used in your template as follows:
 ```
 
 ## Inputs
-* `stateLocation`, *String*, __required__, Location of list-manager within state e.g. 'listManagers.columnGroups'
+* `stateLocation`, *String*, __required__, Location of list-manager within state e.g. 'listManagers.columnGroups', 'listManagers.profile'
 * `listName`, *String ending with s(plural)*, __required__, Caption for List
-* `modelName`, *String*, __required__, for API socket model name and post request header name both being identical, e.g. 'columnGroup'
 * `list`, *Array of objects with name(required), id(required), isEditable(boolean, optional) parameters*, __required__, The list to be rendered
+* `modelName`, *String*, __required__, for API socket model name and post request header name both being identical, e.g. 'columnGroup'
+* `shouldSelectedItemPersist`, *boolean*, __optional__, true if item can be "selected" and persist e.g. column groups, false if item is used once e.g. profiles
 * `selectedItemId`, *String*,__optional__, The id of the option that needs to be displayed with listName for the caption and highlighted as selected in the list
 * `helpId`, *Object*,__optional__, Object with moduleId & topicId
 

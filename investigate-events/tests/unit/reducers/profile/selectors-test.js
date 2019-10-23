@@ -1,6 +1,11 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { profiles, enrichedProfiles, isProfileViewActive } from 'investigate-events/reducers/investigate/profile/selectors';
+import {
+  profiles,
+  enrichedProfiles,
+  isProfileViewActive,
+  enrichedProfile
+} from 'investigate-events/reducers/investigate/profile/selectors';
 import { DEFAULT_PROFILES } from '../../../helpers/redux-data-helper';
 
 module('Unit | Selectors | profile');
@@ -35,6 +40,7 @@ const language1 = [{
   displayName: 'Access Point',
   formattedName: 'access.point (Access Point)'
 }];
+const languageAndAliases1 = { language: language1, aliases: aliases1 };
 const state1 = {
   investigate: {
     dictionaries: {
@@ -47,11 +53,31 @@ const state1 = {
   }
 };
 
-test('profiles selects profiles', function(assert) {
+test('profiles selects profiles from investigate.profile if list has not been updated in listManagers', function(assert) {
   assert.deepEqual(
     profiles(
       Immutable.from(state1)
     ), profiles1, 'profiles selects profiles');
+});
+
+test('profiles selects profiles from listManagers.profiles if list has been updated in listManagers', function(assert) {
+  const profiles2 = [ ...profiles1, { name: 'new profile' } ];
+  const state2 = {
+    ...state1,
+    listManagers: {
+      profiles: {
+        list: profiles2
+      }
+    }
+  };
+  assert.deepEqual(
+    profiles(Immutable.from(state2)), profiles2, 'profiles shall select updated profiles from listManagers.profile');
+});
+
+test('enrichedProfile returns profile with isEditable and preQueryPillsData properties', function(assert) {
+  const result = enrichedProfile(DEFAULT_PROFILES[0], languageAndAliases1);
+  assert.ok(result.hasOwnProperty('isEditable'), 'profile shall have isEditable property');
+  assert.ok(result.hasOwnProperty('preQueryPillsData'), 'profile shall have isEditable property');
 });
 
 test('enrichedProfiles returns profiles with isEditable property', function(assert) {
