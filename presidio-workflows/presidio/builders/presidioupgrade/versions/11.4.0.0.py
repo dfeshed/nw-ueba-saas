@@ -97,7 +97,7 @@ def update_alerts_hits(hits):
         es.index(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, id=item["_id"], body=alert)
 
 
-# Update indicator table in elastic to List of aggregations
+# Update indicator table in elastic to List of aggregations and new entityType field
 def update_indicators_hits(hits):
     for item in hits:
         aggregations_list = [item["_source"]["historicalData"]["aggregation"]]
