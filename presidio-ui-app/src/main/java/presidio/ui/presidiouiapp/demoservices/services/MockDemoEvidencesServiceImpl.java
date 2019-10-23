@@ -1,6 +1,6 @@
 package presidio.ui.presidiouiapp.demoservices.services;
 
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.common.dataentity.DataSourceType;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Events;
@@ -69,7 +69,7 @@ public class MockDemoEvidencesServiceImpl implements EvidencesService, Initializ
 	}
 
 	@Override
-	public SupportingInformationData getSupportingInformationIndicatorId(String indicatorId) {
+	public List<SupportingInformationGenericData> getSupportingInformationIndicatorId(String indicatorId) {
 		return null;
 	}
 

@@ -1,5 +1,6 @@
 package fortscale.services;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Events;
 import fortscale.domain.dto.DateRange;
@@ -62,7 +63,7 @@ public interface EvidencesService {
 	 */
 	void saveEvidenceInRepository(Evidence evidence);
 
-	SupportingInformationData getSupportingInformationIndicatorId(String indicatorId);
+	List<SupportingInformationGenericData> getSupportingInformationIndicatorId(String indicatorId);
 
 //	/**
 //	 * Find all evidences for evidence type that their value matches one of the values in the comma separated string

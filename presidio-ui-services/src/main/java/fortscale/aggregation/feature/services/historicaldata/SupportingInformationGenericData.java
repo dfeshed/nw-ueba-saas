@@ -12,6 +12,9 @@ import java.util.Map;
  * Date: 03/09/2015
  */
 public class SupportingInformationGenericData<T> implements SupportingInformationData{
+
+    private Map<String, String> contexts  = new HashMap<>();
+
     protected Map<SupportingInformationKey, T> dataMap = new HashMap<>();
 
     @SuppressWarnings("rawtypes")
@@ -21,13 +24,19 @@ public class SupportingInformationGenericData<T> implements SupportingInformatio
 
     protected SupportingInformationTimeGranularity timeGranularity;
 
-    public SupportingInformationGenericData(Map<SupportingInformationKey, T> dataMap, SupportingInformationKey anomalyValue) {
+    public SupportingInformationGenericData(Map<SupportingInformationKey, T> dataMap, SupportingInformationKey anomalyValue ) {
         this.dataMap = dataMap;
         this.anomalyValue = anomalyValue;
     }
 
     public SupportingInformationGenericData(Map<SupportingInformationKey, T> dataMap) {
         this.dataMap = dataMap;
+    }
+
+    public SupportingInformationGenericData(Map<SupportingInformationKey, T> dataMap, SupportingInformationKey anomalyValue, Map<String, String> contexts) {
+        this.dataMap = dataMap;
+        this.anomalyValue = anomalyValue;
+        this.contexts = contexts;
     }
 
     @Override
@@ -37,6 +46,10 @@ public class SupportingInformationGenericData<T> implements SupportingInformatio
 
     public SupportingInformationKey getAnomalyValue() {
         return anomalyValue;
+    }
+
+    public  Map<String, String> getContexts() {
+        return contexts;
     }
 
     @SuppressWarnings("rawtypes")

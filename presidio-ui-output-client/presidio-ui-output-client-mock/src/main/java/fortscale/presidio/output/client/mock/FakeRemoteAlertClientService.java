@@ -9,6 +9,7 @@ import presidio.output.client.client.ApiException;
 import presidio.output.client.model.*;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,6 @@ public class FakeRemoteAlertClientService implements AlertsPresidioOutputClient 
             AlertsWrapper alertsWrapper = fakeAlertsCreator.getAlerts(10);
             alertsWrapper.setAggregationData(fakeAlertsCreator.getAggregationDate());
             return alertsWrapper;
-
         }
 
         @Override
@@ -61,7 +61,10 @@ public class FakeRemoteAlertClientService implements AlertsPresidioOutputClient 
                 historicalData.addBucketsItem(countBucket);
             }
 
-            indicator.setHistoricalData(historicalData);
+            List<HistoricalData> history = new ArrayList();
+            history.add(historicalData);
+
+            indicator.setHistoricalData(history);
             return indicator;
 
         }
