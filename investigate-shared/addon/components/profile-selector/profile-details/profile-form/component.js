@@ -17,7 +17,7 @@ export default Component.extend({
 
   didInsertElement() {
     this.set('newProfile', {
-      // SUMMARY column group selected by default
+      // currently selected column group by default
       columnGroup: this.get('columnGroups')?.find(({ id }) => id === this.get('selectedColumnGroupId')),
       metaGroup: this.get('metaGroups')[0], // TODO temporary default until we allow user selection
       preQuery: 'service=24,25,109,110,995,143,220,993' // TODO temporary until prequery component is ready

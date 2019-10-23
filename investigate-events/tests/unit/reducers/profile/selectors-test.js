@@ -7,6 +7,7 @@ import {
   enrichedProfile
 } from 'investigate-events/reducers/investigate/profile/selectors';
 import { DEFAULT_PROFILES } from '../../../helpers/redux-data-helper';
+import EventColumnGroups from '../../../data/subscriptions/column-group';
 
 module('Unit | Selectors | profile');
 
@@ -47,6 +48,9 @@ const state1 = {
       aliases: aliases1,
       language: language1
     },
+    columnGroup: {
+      columnGroups: EventColumnGroups
+    },
     profile: {
       profiles: profiles1
     }
@@ -78,6 +82,13 @@ test('enrichedProfile returns profile with isEditable and preQueryPillsData prop
   const result = enrichedProfile(DEFAULT_PROFILES[0], languageAndAliases1);
   assert.ok(result.hasOwnProperty('isEditable'), 'profile shall have isEditable property');
   assert.ok(result.hasOwnProperty('preQueryPillsData'), 'profile shall have isEditable property');
+});
+
+test('enrichedProfile returns profile with SUMMARY column group if columnGroup is missing', function(assert) {
+  const profile1 = { ...DEFAULT_PROFILES[0], columnGroup: undefined };
+  const result = enrichedProfile(profile1, languageAndAliases1, EventColumnGroups);
+  assert.ok(result.hasOwnProperty('columnGroup'), 'profile shall have columnGroup property');
+  assert.equal(result.columnGroup.id, 'SUMMARY', 'profile shall have SUMMARY column group by default');
 });
 
 test('enrichedProfiles returns profiles with isEditable property', function(assert) {

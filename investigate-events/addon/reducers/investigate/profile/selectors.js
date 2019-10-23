@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 const { createSelector } = reselect;
 import { languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 
 // UTIL
@@ -11,15 +12,25 @@ const _profileWithIsEditable = (item) => ({
 
 /**
  * enriches and returns one profile with isEditable and preQueryPillsData
+ * and column group set to SUMMARY if missing
  * @param {object} profile
  * @param {object} languageAndAliases { language, aliases }
+ * @param {object[]} columnGroups
  */
-export const enrichedProfile = (profile, languageAndAliases) => {
+export const enrichedProfile = (profile, languageAndAliases, columnGroups) => {
   const { language, aliases } = languageAndAliases;
-  return {
+  const enriched = {
     ..._profileWithIsEditable(profile),
     preQueryPillsData: profile.preQuery ? transformTextToPillData(profile.preQuery, { language, aliases, returnMany: true }) : []
   };
+
+  // if profile was returned from API without columnGroup property
+  // assign the summary column group
+  if (!enriched.columnGroup) {
+    enriched.columnGroup = columnGroups?.find(({ id }) => id === 'SUMMARY');
+  }
+
+  return enriched;
 };
 
 // ACCESSOR FUNCTIONS
@@ -42,10 +53,10 @@ export const profiles = createSelector(
 );
 
 export const enrichedProfiles = createSelector(
-  [profiles, languageAndAliases],
-  (profiles = [], languageAndAliases) => {
+  [profiles, languageAndAliases, columnGroups],
+  (profiles = [], languageAndAliases, columnGroups) => {
     return profiles.map((profile) => {
-      return enrichedProfile(profile, languageAndAliases);
+      return enrichedProfile(profile, languageAndAliases, columnGroups);
     });
   }
 );
