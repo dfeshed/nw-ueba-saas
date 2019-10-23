@@ -2,6 +2,7 @@ export const LEFT_PAREN = 'LEFT_PAREN';
 export const RIGHT_PAREN = 'RIGHT_PAREN';
 export const AND = 'AND';
 export const OR = 'OR';
+export const NOT = 'NOT';
 
 export const META = 'META';
 export const OPERATOR_EQ = 'OPERATOR_EQ';

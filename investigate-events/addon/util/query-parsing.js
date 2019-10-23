@@ -331,6 +331,9 @@ const _treeToPills = (tree) => {
       const groupWithParens = createParens();
       groupWithParens.splice(1, 0, ..._treeToPills(item.group));
       pills.push(...groupWithParens);
+    } else if (item.type === GRAMMAR.NOT) {
+      // TODO: Change once NOT pills are created in the UI
+      pills.push(_createComplexQueryFilter(`NOT(${Parser.transformToString(item.group)})`));
     } else if (item.type === GRAMMAR.COMPLEX_FILTER) {
       pills.push(_createComplexQueryFilter(`${Parser.transformToString(item)}`));
     } else {

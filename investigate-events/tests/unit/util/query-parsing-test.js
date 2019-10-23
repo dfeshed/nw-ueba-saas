@@ -1007,6 +1007,28 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[4].type, CLOSE_PAREN, 'type should match');
   });
 
+  test('transformTextToPillData handles NOT', function(assert) {
+    const text = 'NOT(medium = 1) AND medium = 2';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 3);
+    assert.equal(result[0].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[0].complexFilterText, 'NOT(medium = 1)', 'meta should match');
+    assert.equal(result[1].type, OPERATOR_AND, 'type should match');
+    assert.equal(result[2].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[2].meta, 'medium', 'meta should match');
+    assert.equal(result[2].operator, '=', 'operator should match');
+    assert.equal(result[2].value, '2', 'operator should match');
+    assert.notOk(result[2].isInvalid, 'should not be invalid');
+  });
+
+  test('transformTextToPillData handles NOT with missing right paren', function(assert) {
+    const text = 'NOT(medium = 1 AND medium = 2';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[0].complexFilterText, 'NOT(medium = 1 AND medium = 2)', 'meta should match');
+  });
+
   test('transformTextToPillData removes empty strings', function(assert) {
     const text = "b = 'get','','post'";
     const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });

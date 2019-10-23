@@ -33,6 +33,41 @@ module('Unit | Util | Parser', function(hooks) {
     ], 'children contains the expected single criteria with correct values');
   });
 
+  test('correctly parses NOT', function(assert) {
+    const tokens = [
+      { type: LEXEMES.NOT, text: 'NOT' },
+      { type: LEXEMES.LEFT_PAREN, text: '(' },
+      { type: LEXEMES.META, text: 'medium' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
+      { type: LEXEMES.INTEGER, text: '3' },
+      { type: LEXEMES.RIGHT_PAREN, text: ')' }
+    ];
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
+    const result = p.parse();
+    assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is WHERE_CRITERIA');
+    assert.deepEqual(result.children, [
+      {
+        type: GRAMMAR.NOT,
+        group: {
+          type: GRAMMAR.WHERE_CRITERIA,
+          children: [
+            {
+              type: GRAMMAR.CRITERIA,
+              meta: { type: LEXEMES.META, text: 'medium' },
+              operator: { type: LEXEMES.OPERATOR_EQ, text: '=' },
+              valueRanges: [
+                {
+                  type: GRAMMAR.META_VALUE,
+                  value: { type: LEXEMES.INTEGER, text: '3' }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]);
+  });
+
   test('correctly parses a negative number', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
@@ -381,8 +416,6 @@ module('Unit | Util | Parser', function(hooks) {
     assert.strictEqual(Parser.transformToString(tree), source);
   });
 
-  // Support for this is currently commented out in the parser until UI support is added.
-  // This test can be used once those blocks are un-commented and UI support exists.
   test('transformToString handles ranges and value separators', function(assert) {
     const source = 'medium = 3,5-7,9';
     const s = new Scanner(source);
@@ -393,6 +426,14 @@ module('Unit | Util | Parser', function(hooks) {
 
   test('transformToString handles logical operators and groups', function(assert) {
     const source = 'medium exists OR (alias.ip = 127.0.0.1) AND medium = 3';
+    const s = new Scanner(source);
+    const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);
+    const tree = p.parse();
+    assert.strictEqual(Parser.transformToString(tree), source);
+  });
+
+  test('transformToString handles NOT', function(assert) {
+    const source = 'NOT(medium = 2)';
     const s = new Scanner(source);
     const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);
     const tree = p.parse();

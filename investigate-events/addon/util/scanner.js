@@ -294,6 +294,9 @@ class Scanner {
       case 'or':
         this._addToken(LEXEMES.OR, alphaString);
         break;
+      case 'not':
+        this._addToken(LEXEMES.NOT, alphaString);
+        break;
       // If it doesn't match any reserved words, add it as a meta key
       default:
         this._addToken(LEXEMES.META, alphaString);

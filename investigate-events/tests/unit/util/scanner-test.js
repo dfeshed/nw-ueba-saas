@@ -594,6 +594,23 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[3], { type: LEXEMES.INTEGER, text: '5' });
   });
 
+  test('handles NOT', function(assert) {
+    const source = 'medium = 1 AND NOT(medium = 2)';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 10);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '1' });
+    assert.deepEqual(result[3], { type: LEXEMES.AND, text: 'AND' });
+    assert.deepEqual(result[4], { type: LEXEMES.NOT, text: 'NOT' });
+    assert.deepEqual(result[5], { type: LEXEMES.LEFT_PAREN, text: '(' });
+    assert.deepEqual(result[6], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[7], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[8], { type: LEXEMES.INTEGER, text: '2' });
+    assert.deepEqual(result[9], { type: LEXEMES.RIGHT_PAREN, text: ')' });
+  });
+
   test('handles empty strings', function(assert) {
     const source = "b = 'a','','c'";
     const s = new Scanner(source);
