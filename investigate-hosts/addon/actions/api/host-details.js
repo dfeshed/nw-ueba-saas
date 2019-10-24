@@ -56,12 +56,16 @@ const getHostDetails = (data) => {
  * @public
  * @returns {Promise}
  */
-const getFileContextData = (data) => {
+const getFileContextData = (serviceId, data) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getFileContextList',
     modelName: 'endpoint',
-    query: { data }
+    query: { data },
+    streamOptions: {
+      socketUrlPostfix: serviceId,
+      requiredSocketUrl: 'endpoint/socket'
+    }
   });
 };
 
@@ -175,7 +179,7 @@ const saveLocalMFTCopy = (socketUrlPostfix, data) => {
   });
 };
 
-const getHostCount = (checksum) => {
+const getHostCount = (serviceId, checksum) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getHostCount',
@@ -184,6 +188,10 @@ const getHostCount = (checksum) => {
       data: {
         checksumSha256: checksum
       }
+    },
+    streamOptions: {
+      socketUrlPostfix: serviceId,
+      requiredSocketUrl: 'endpoint/socket'
     }
   });
 };

@@ -1,19 +1,23 @@
 import { lookup } from 'ember-dependency-lookup';
 
 // Get processes based on agentId and scanTime. query = { agentId, scanTime }
-const getProcessTree = (query) => {
+const getProcessTree = (serviceId, query) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getProcessTree',
     modelName: 'endpoint',
     query: {
       data: query
+    },
+    streamOptions: {
+      socketUrlPostfix: serviceId,
+      requiredSocketUrl: 'endpoint/socket'
     }
   });
 };
 
 // Get processes based on sorted order. query = { agentId, scanTime }
-const getProcessList = (query) => {
+const getProcessList = (serviceId, query) => {
   query.sort = { keys: ['name'], descending: true };
   const request = lookup('service:request');
   return request.promiseRequest({
@@ -21,6 +25,10 @@ const getProcessList = (query) => {
     modelName: 'endpoint',
     query: {
       data: query
+    },
+    streamOptions: {
+      socketUrlPostfix: serviceId,
+      requiredSocketUrl: 'endpoint/socket'
     }
   });
 };

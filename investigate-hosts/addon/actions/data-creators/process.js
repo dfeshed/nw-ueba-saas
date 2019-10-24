@@ -2,6 +2,7 @@ import * as ACTION_TYPES from '../types';
 import { Process } from '../api';
 import { handleError } from '../creator-utils';
 import { resetRiskContext, getHostFileScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
+import { fetchHostNames } from './file-context';
 
 const toggleProcessView = () => {
   return (dispatch, getState) => {
@@ -25,9 +26,10 @@ const _getList = () => {
   return (dispatch, getState) => {
     const { sortField: key, isDescOrder: descending } = getState().endpoint.process;
     const { detailsInput: { agentId, scanTime } } = getState().endpoint;
+    const serviceId = getState().endpointQuery.serverId;
     dispatch({
       type: ACTION_TYPES.GET_PROCESS_LIST,
-      promise: Process.getProcessList({ agentId, scanTime }, { key, descending }),
+      promise: Process.getProcessList(serviceId, { agentId, scanTime }, { key, descending }),
       meta: {
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_LIST, response)
       }
@@ -37,10 +39,11 @@ const _getList = () => {
 
 const _getTree = () => {
   return (dispatch, getState) => {
+    const serviceId = getState().endpointQuery.serverId;
     const { detailsInput: { agentId, scanTime } } = getState().endpoint;
     dispatch({
       type: ACTION_TYPES.GET_PROCESS_TREE,
-      promise: Process.getProcessTree({ agentId, scanTime }),
+      promise: Process.getProcessTree(serviceId, { agentId, scanTime }),
       meta: {
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_TREE, response)
       }
@@ -89,6 +92,7 @@ const onProcessSelection = (processId, checksumSha256) => {
     dispatch(resetRiskContext());
     dispatch(getProcessDetails(processId));
     dispatch(getHostFileScoreContext(checksumSha256, agentId));
+    dispatch(fetchHostNames('processes', checksumSha256));
   };
 };
 

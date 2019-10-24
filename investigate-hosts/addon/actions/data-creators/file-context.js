@@ -19,6 +19,7 @@ const getFileContext = (belongsTo, categories) => {
   return (dispatch, getState) => {
     // Get selected agentId and scan time from the state
     const { endpoint: { detailsInput: { agentId, scanTime } } } = getState();
+    const serviceId = getState().endpointQuery.serverId;
     const data = {
       agentId,
       scanTime,
@@ -27,7 +28,7 @@ const getFileContext = (belongsTo, categories) => {
     dispatch({ type: ACTION_TYPES.RESET_CONTEXT_DATA, meta: { belongsTo } });
     dispatch({
       type: ACTION_TYPES.FETCH_FILE_CONTEXT,
-      promise: HostDetails.getFileContextData(data),
+      promise: HostDetails.getFileContextData(serviceId, data),
       meta: {
         belongsTo,
         onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT, response)
@@ -177,13 +178,18 @@ const fetchMachineCount = (checksums, tabName) => ({
   }
 });
 
-const fetchHostNames = (tabName, checksum) => ({
-  type: ACTION_TYPES.SET_HOST_NAME_LIST,
-  promise: HostDetails.getHostCount(checksum),
-  meta: {
-    belongsTo: tabName
-  }
-});
+const fetchHostNames = (tabName, checksum) => {
+  return (dispatch, getState) => {
+    const serviceId = getState().endpointQuery.serverId;
+    dispatch({
+      type: ACTION_TYPES.SET_HOST_NAME_LIST,
+      promise: HostDetails.getHostCount(serviceId, checksum),
+      meta: {
+        belongsTo: tabName
+      }
+    });
+  };
+};
 
 export {
   getFileContext,
