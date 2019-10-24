@@ -85,7 +85,7 @@ module('Unit | Reducers | Users Reducer', (hooks) => {
       payload: usrOverview
     });
 
-    assert.equal(result.topUsers[0].data.length, 5);
+    assert.equal(result.topUsers.length, 5);
   });
 
   test('test get watched user count', (assert) => {

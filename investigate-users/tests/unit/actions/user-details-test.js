@@ -112,11 +112,12 @@ module('Unit | Actions | User Details Actions', (hooks) => {
   });
 
   test('it can getUserOverview', (assert) => {
-    assert.expect(2);
+    assert.expect(3);
     const done = assert.async();
     const dispatch = ({ type, payload }) => {
       assert.equal(type, 'INVESTIGATE_USER::GET_TOP_RISKY_USER');
-      assert.equal(payload.length, 5);
+      assert.equal(payload.data.length, 5);
+      assert.equal(payload.total, 57);
       done();
     };
     const getState = () => {
@@ -126,11 +127,12 @@ module('Unit | Actions | User Details Actions', (hooks) => {
   });
 
   test('it can getUserOverview for trending user', (assert) => {
-    assert.expect(2);
+    assert.expect(3);
     const done = assert.async();
     const dispatch = ({ type, payload }) => {
       assert.equal(type, 'INVESTIGATE_USER::GET_TOP_RISKY_USER');
-      assert.equal(payload.length, 5);
+      assert.equal(payload.data.length, 5);
+      assert.equal(payload.total, 57);
       done();
     };
     const getState = () => {
@@ -143,12 +145,13 @@ module('Unit | Actions | User Details Actions', (hooks) => {
   });
 
   test('it can getUserOverview for SSlSubject', (assert) => {
-    assert.expect(3);
+    assert.expect(4);
     const done = assert.async();
     const dispatch = ({ type, payload }) => {
       assert.ok(patchUrl.indexOf('entityType=sslSubject') > -1);
       assert.equal(type, 'INVESTIGATE_USER::GET_TOP_RISKY_USER');
-      assert.equal(payload.length, 5);
+      assert.equal(payload.data.length, 5);
+      assert.equal(payload.total, 57);
       patchUrl = null;
       done();
     };

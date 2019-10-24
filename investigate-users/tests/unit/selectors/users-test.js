@@ -89,7 +89,7 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
   });
 
   test('test Total Users', (assert) => {
-    assert.equal(Users.getTotalUsers(state), 100);
+    assert.equal(Users.totalEntitiesCount(state), 100);
   });
 
   test('test Sort Field', (assert) => {

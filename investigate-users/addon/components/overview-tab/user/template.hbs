@@ -1,14 +1,4 @@
-<div class='user-overview-tab_users_entities'>
-  {{#rsa-form-button isFullWidth=true style='primary' class=(if (eq entityType 'userId') 'selected') click=(action 'updateEntityType' 'userId')}}
-    {{t 'investigateUsers.entityTypes.userId'}}
-  {{/rsa-form-button}}
-  {{#rsa-form-button isFullWidth=true style='primary' class=(if (eq entityType 'sslSubject') 'selected') click=(action 'updateEntityType' 'sslSubject')}}
-    {{t 'investigateUsers.entityTypes.sslSubject'}}
-  {{/rsa-form-button}}
-  {{#rsa-form-button isFullWidth=true style='primary' class=(if (eq entityType 'ja3') 'selected') click=(action 'updateEntityType' 'ja3')}}
-    {{t 'investigateUsers.entityTypes.ja3'}}
-  {{/rsa-form-button}}
-</div>
+{{overview-tab/user/entity-type-selector}}
 <div class='user-overview-tab_title'>
   {{t 'investigateUsers.users.highRisk'}} {{t (concat 'investigateUsers.entityTypes.' entityType)}}
 </div>

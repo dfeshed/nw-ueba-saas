@@ -1,13 +1,13 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getUsersSeverity, getSortField, getTotalUsers, getUserFilter, allWatched } from 'investigate-users/reducers/users/selectors';
+import { getUsersSeverity, getSortField, totalEntitiesCount, getUserFilter, allWatched } from 'investigate-users/reducers/users/selectors';
 import { updateFilter, exportUsers, followUsers, unfollowUsers } from 'investigate-users/actions/user-tab-actions';
 import { sortOptions } from 'investigate-users/utils/column-config';
 
 const stateToComputed = (state) => ({
   usersSeverity: getUsersSeverity(state),
   sortBy: getSortField(state),
-  totalUsers: getTotalUsers(state),
+  totalUsers: totalEntitiesCount(state),
   filter: getUserFilter(state),
   allWatched: allWatched(state)
 });

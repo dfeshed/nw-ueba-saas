@@ -50,7 +50,7 @@ const getUserOverview = (entityType = 'userId') => {
 
       dispatch({
         type: ACTION_TYPES.GET_TOP_RISKY_USER,
-        payload: result.data
+        payload: result
       });
     });
   };

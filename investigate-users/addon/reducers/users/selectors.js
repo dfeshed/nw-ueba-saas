@@ -18,7 +18,7 @@ export const riskyUserCount = (state) => state.users.riskyUserCount;
 
 export const watchedUserCount = (state) => state.users.watchedUserCount;
 
-export const getTotalUsers = (state) => state.users.totalUsers;
+export const totalEntitiesCount = (state) => state.users.totalUsers;
 
 export const usersError = (state) => state.users.usersError;
 
@@ -91,7 +91,7 @@ export const getSortField = createSelector(
   });
 
 export const allUsersReceived = createSelector(
-  [getUsers, getTotalUsers],
+  [getUsers, totalEntitiesCount],
   (users, _totalUsers) => {
     return _totalUsers && _totalUsers <= users.length;
   });

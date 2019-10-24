@@ -25,13 +25,32 @@
         display: flex;
         justify-content: space-between;
         padding: rsa-whitespace(less) rsa-whitespace(less);
+        height: 40px;
         border-bottom: 2px SOLID background-color(primary, darker);
         > div {
           flex-basis: 100%;
           padding: rsa-whitespace(less);
+          > button {
+            border: 1px solid text-color(secondary, light);
+          }
         }
+       
         .selected > button{
           background-color: background-color(secondary, darkest) !important;
+          border: 1px solid text-color(secondary, light);
+        }
+
+        &_network {
+          > div {
+            flex-basis: 100%;
+            > button {
+              border: 1px solid text-color(primary, light);
+            }
+          }
+            &_list {
+            position: relative;
+            z-index: 10;
+          }
         }
       }
 
@@ -39,6 +58,12 @@
         display: flex;
         padding: 0 rsa-whitespace();
         height: 30px;
+        &_total {
+          > button {
+            border: none;
+            color: text-color(secondary, light);
+          }
+        }
         &_risk {
           > button {
             border: none;

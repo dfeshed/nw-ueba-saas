@@ -148,6 +148,11 @@ export default class DataHelper {
     return this;
   }
 
+  entityType(obj) {
+    _set(this.state, 'users.entityType', obj);
+    return this;
+  }
+
   topAlertsError(topAlertsError) {
     _set(this.state, 'alerts.topAlertsError', topAlertsError);
     return this;

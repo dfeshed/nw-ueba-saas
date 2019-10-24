@@ -12,3 +12,9 @@
     {{t 'investigateUsers.users.watched'}}
   {{/rsa-form-button}}
 </div>
+<div>
+  {{#rsa-form-button class='user-overview-tab_users_watched_total' isFullWidth=true}}
+    {{totalEntitiesCount}}
+    {{t 'investigateUsers.users.all'}} {{t (concat 'investigateUsers.entityTypes.' entityType)}}
+  {{/rsa-form-button}}
+</div>

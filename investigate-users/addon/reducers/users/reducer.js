@@ -58,7 +58,13 @@ const initialState = Immutable.from({
 
 const tabs = handleActions({
   [ACTION_TYPES.RESTORE_DEFAULT]: () => Immutable.from(initialState),
-  [ACTION_TYPES.GET_TOP_RISKY_USER]: (state, { payload }) => state.set('topUsers', [].concat(payload)),
+  [ACTION_TYPES.GET_TOP_RISKY_USER]: (state, { payload: { data, total } }) => {
+    // Concat user list data to current users list.
+    let newState = state.set('topUsers', [].concat(data));
+    // Total user count for display and stop scrolling event.
+    newState = newState.set('totalUsers', total);
+    return newState;
+  },
   [ACTION_TYPES.GET_RISKY_USER_COUNT]: (state, { payload }) => state.set('riskyUserCount', payload),
   [ACTION_TYPES.TOP_USERS_ERROR]: (state, { payload }) => state.set('topUsersError', payload),
   [ACTION_TYPES.USERS_ERROR]: (state, { payload }) => state.set('usersError', payload),
