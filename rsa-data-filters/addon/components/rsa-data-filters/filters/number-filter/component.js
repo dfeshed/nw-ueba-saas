@@ -12,6 +12,7 @@ export default Component.extend({
 
   defaults: {
     filterOnBlur: false,
+    isDecimalAllowed: true,
     operators: [
       { label: 'Equals', type: 'EQUAL' },
       { label: 'Greater Than', type: 'GREATER_THAN' },
@@ -103,6 +104,12 @@ export default Component.extend({
   actions: {
     handleKeyUp(value = '') {
       debounce(this, this._handleFilterChange, value, 600);
+    },
+
+    handleKeyPress(val, event) {
+      if (event.charCode === 46 && !this.get('filterOptions.isDecimalAllowed')) {
+        event.preventDefault();
+      }
     },
 
     changeOperator(option) {

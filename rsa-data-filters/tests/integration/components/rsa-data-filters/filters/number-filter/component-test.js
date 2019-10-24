@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, fillIn, triggerKeyEvent } from '@ember/test-helpers';
+import { render, findAll, fillIn, triggerKeyEvent, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 
@@ -10,6 +10,7 @@ module('Integration | Component | rsa-data-filters/filters/number-filter', funct
   test('it renders', async function(assert) {
     this.set('filterOptions', {
       filterOnBlur: true,
+      isDecimalAllowed: true,
       name: 'size',
       units: [{ type: 'MB', label: 'Mega Bytes' }, { type: 'bytes', label: 'Bytes' }]
     });
@@ -34,6 +35,7 @@ module('Integration | Component | rsa-data-filters/filters/number-filter', funct
     this.set('filterOptions', {
       name: 'size',
       filterOnBlur: true,
+      isDecimalAllowed: true,
       units: [{ type: 'MB', label: 'Mega Bytes' }, { type: 'bytes', label: 'Bytes' }],
       filterValue: { unit: 'MB', value: [10, 20], operator: 'BETWEEN' }
     });
@@ -54,6 +56,7 @@ module('Integration | Component | rsa-data-filters/filters/number-filter', funct
     this.set('filterOptions', {
       name: 'size',
       filterOnBlur: true,
+      isDecimalAllowed: true,
       units: [{ type: 'MB', label: 'Mega Bytes' }, { type: 'bytes', label: 'Bytes' }],
       filterValue: { unit: 'MB', value: [10, 20], operator: 'BETWEEN' }
     });
@@ -63,5 +66,16 @@ module('Integration | Component | rsa-data-filters/filters/number-filter', funct
     await triggerKeyEvent('.number-input.start input', 'keyup', 13);
   });
 
+  test('It test the key press for decimal value not allowed', async function(assert) {
+    this.set('filterOptions', {
+      name: 'hostCount',
+      filterOnBlur: true,
+      isDecimalAllowed: false,
+      filterValue: { value: [10, 20], operator: 'BETWEEN' }
+    });
+    await render(hbs`{{rsa-data-filters/filters/number-filter filterOptions=filterOptions}}`);
+    await triggerEvent('.number-input.start input', 'keypress', { charCode: 46 });
+    assert.equal(document.querySelector('.number-input.start input').value, 10, 'value should be 10');
+  });
 
 });

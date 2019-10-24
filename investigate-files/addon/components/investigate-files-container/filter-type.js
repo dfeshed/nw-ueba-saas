@@ -70,6 +70,7 @@ const FILTER_TYPES = [
     'label': 'investigateFiles.fields.hostCount',
     'type': 'number',
     'useI18N': true,
+    'isDecimalAllowed': false,
     'operators': [
       { label: 'investigateFiles.filter.label.greaterThan', type: 'GREATER_THAN' },
       { label: 'investigateFiles.filter.label.lessThan', type: 'LESS_THAN' },
@@ -91,6 +92,7 @@ const FILTER_TYPES = [
     'label': 'investigateFiles.fields.size',
     'type': 'number',
     'useI18N': true,
+    'isDecimalAllowed': true,
     'operators': [
       { label: 'investigateFiles.filter.label.greaterThan', type: 'GREATER_THAN' },
       { label: 'investigateFiles.filter.label.lessThan', type: 'LESS_THAN' },

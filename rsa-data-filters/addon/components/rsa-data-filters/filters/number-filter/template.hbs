@@ -20,6 +20,7 @@
         type="number"
         value=(readonly filterValue.value.[0])
         placeholder=(t 'dataFilters.textPlaceholder')
+        key-press=(action 'handleKeyPress')
         key-up=(action 'handleKeyUp')}}
     </div>
     <div class="number-input end rsa-form-input">
@@ -27,6 +28,7 @@
         type="number"
         value=(readonly filterValue.value.[1])
         placeholder=(t 'dataFilters.textPlaceholder')
+        key-press=(action 'handleKeyPress')
         key-up=(action 'handleKeyUp')}}
     </div>
   {{else}}
@@ -35,6 +37,7 @@
         type="number"
         value=(readonly filterValue.value.[0])
         placeholder='Enter Value'
+        key-press=(action 'handleKeyPress')
         key-up=(action 'handleKeyUp')}}
     </div>
   {{/if}}
