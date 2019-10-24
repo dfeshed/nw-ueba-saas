@@ -4,14 +4,15 @@ package com.rsa.netwitness.presidio.automation.test.rest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
+import com.rsa.netwitness.presidio.automation.rest.model.HistoricalData;
+import com.rsa.netwitness.presidio.automation.rest.model.HistoricalDataBucket;
+import com.rsa.netwitness.presidio.automation.rest.model.IndicatorREST;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.json.JSONArray;
@@ -30,13 +31,13 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo.ALL_MANDATORY_INDICATORS;
 import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
 import static java.util.Map.Entry.comparingByKey;
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.util.Lists.list;
 
 public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
@@ -231,21 +232,29 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
 
         try {
-            IndicatorResult actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
-            List<HistoricalDataBucket> anomalyBuckets = getAnomalyHistoricalDataBuckets(actualIndicator, url);
-            List<Boolean> anomalyFlags = anomalyBuckets.stream().map(e -> e.anomaly).collect(toList());
+            IndicatorREST actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
+            Map<String, List<HistoricalData>> bucketsByContext = Objects.requireNonNull(actualIndicator.historicalData).parallelStream().collect(groupingBy(HistoricalData::contextToString));
+            assertThat(bucketsByContext).as(url.toString() +"Historical data array is empty").isNotEmpty();
 
-            if (actualIndicator.historicalDataType.equals("TimeAggregation")) {
-                assertThat(anomalyFlags)
-                        .describedAs(url.toString())
-                        .hasSizeGreaterThanOrEqualTo(1)
-                        .containsOnly(true);
-            } else {
-                assertThat(anomalyFlags)
-                        .describedAs(url.toString())
-                        .hasSize(1)
-                        .containsOnly(true);
+
+            for (Map.Entry<String, List<HistoricalData>> entry : bucketsByContext.entrySet()) {
+                Stream<HistoricalDataBucket> anomalyBucketsForContext = entry.getValue().parallelStream().flatMap(e -> e.anomalyBuckets.stream());
+                assertThat(entry.getValue()).as(url.toString() + "Many historicalData elements for the same context=" + entry.getKey()).hasSize(1);
+                String historicalDataType = entry.getValue().get(0).type;
+
+                if (historicalDataType.equals("TimeAggregation")) {
+                    assertThat(anomalyBucketsForContext.map(e -> e.anomaly))
+                            .as(url.toString() + "\nhistoricalDataType = " + historicalDataType)
+                            .hasSizeGreaterThanOrEqualTo(1)
+                            .containsOnly(true);
+                } else {
+                    assertThat(anomalyBucketsForContext.map(e -> e.anomaly))
+                            .as(url.toString() + "\nhistoricalDataType = " + historicalDataType)
+                            .hasSize(1)
+                            .containsOnly(true);
+                }
             }
+
         } catch (JSONException e) {
             Assert.fail(url + "\nCannot getOperationTypeToCategoryMap the requested information from json object. \n" + e.getMessage());
         }
@@ -258,38 +267,45 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         String indicatorId = featureAggregationMap.get(indicator)[1];
         PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
 
-        IndicatorResult actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
-        List<HistoricalDataBucket> anomalyBuckets = getAnomalyHistoricalDataBuckets(actualIndicator, url);
+        IndicatorREST actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
+        Map<String, List<HistoricalData>> bucketsByContext = Objects.requireNonNull(actualIndicator.historicalData).parallelStream().collect(groupingBy(HistoricalData::contextToString));
+        assertThat(bucketsByContext).as(url.toString() +"Historical data array is empty").isNotEmpty();
 
-        List<String> historicalDataAnomalyValues = anomalyBuckets.stream().map(e -> e.value).collect(toList());
-        assertThat(historicalDataAnomalyValues).as(url + "\nhistoricalData anomaly value is missing").isNotEmpty();
+        for (Map.Entry<String, List<HistoricalData>> entry : bucketsByContext.entrySet()) {
+            Stream<HistoricalDataBucket> anomalyBucketsForContext = entry.getValue().parallelStream().flatMap(e -> e.anomalyBuckets.stream());
+            assertThat(entry.getValue()).as(url.toString() + "Many historicalData elements for the same context=" + entry.getKey()).hasSize(1);
 
-        boolean notInExclusionList = !(
-                indicator.equals("high_number_of_file_move_operations_from_shared_drive")
-                        || indicator.equals("high_number_of_successful_file_action_operations")
-                        || actualIndicator.schema.equals("TLS")
-        );
+            List<String> historicalDataAnomalyValues = anomalyBucketsForContext.map(e -> e.value).collect(toList());
+            assertThat(historicalDataAnomalyValues).as(url + "\nhistoricalData anomaly value is missing").isNotEmpty();
 
-        Function<String, Long> toLong = st -> Double.valueOf(st).longValue();
+            boolean notInExclusionList = !(
+                    indicator.equals("high_number_of_file_move_operations_from_shared_drive")
+                            || indicator.equals("high_number_of_successful_file_action_operations")
+                            || actualIndicator.schema.equals("TLS")
+            );
+
+            Function<String, Long> toLong = st -> Double.valueOf(st).longValue();
 
 
-        if (actualIndicator.name.startsWith("high_number_of_") && notInExclusionList) {
-            if (actualIndicator.eventsNum == 10000) {
-                assertThat(toLong.apply(actualIndicator.anomalyValue))
-                        .as(url + "anomalyValue should be >= 10000")
-                        .isGreaterThanOrEqualTo(actualIndicator.eventsNum);
+            if (actualIndicator.name.startsWith("high_number_of_") && notInExclusionList) {
+                if (actualIndicator.eventsNum == 10000) {
+                    assertThat(toLong.apply(actualIndicator.anomalyValue))
+                            .as(url + "anomalyValue should be >= 10000")
+                            .isGreaterThanOrEqualTo(actualIndicator.eventsNum);
+                } else {
+                    assertThat(toLong.apply(actualIndicator.anomalyValue))
+                            .as(url + "\nIndicatorName = " + actualIndicator.name + "\nExpected: anomalyValue == historicalData.anomalyValue == eventsNum")
+                            .isEqualTo(toLong.apply(historicalDataAnomalyValues.get(0)))
+                            .isEqualTo(actualIndicator.eventsNum);
+                }
+
             } else {
-                assertThat(toLong.apply(actualIndicator.anomalyValue))
-                        .as(url + "\nIndicatorName = " + actualIndicator.name + "\nExpected: anomalyValue == historicalData.anomalyValue == eventsNum")
-                        .isEqualTo(toLong.apply(historicalDataAnomalyValues.get(0)))
-                        .isEqualTo(actualIndicator.eventsNum);
+                assertThat(actualIndicator.anomalyValue)
+                        .as(url + "\nIndicatorName = " + actualIndicator.name + "\nExpected: anomalyValue == historicalData.anomalyValue")
+                        .isEqualTo(historicalDataAnomalyValues.get(0));
             }
-
-        } else {
-            assertThat(actualIndicator.anomalyValue)
-                    .as(url + "\nIndicatorName = " + actualIndicator.name + "\nExpected: anomalyValue == historicalData.anomalyValue")
-                    .isEqualTo(historicalDataAnomalyValues.get(0));
         }
+
     }
 
 
@@ -332,7 +348,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         String alertId = allIndicatorsTypeNameSamples.get(indicatorName)[0];
         String indicatorId = allIndicatorsTypeNameSamples.get(indicatorName)[1];
         PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
-        IndicatorResult indicator = getIndicator(alertId, indicatorId);
+        IndicatorREST indicator = getIndicator(alertId, indicatorId);
         String expectedSchema = IndicatorsInfo.getSchemaNameByIndicator(indicatorName).toUpperCase();
         assertThat(indicator.schema)
                 .as(url + "\nIndicator schema name mismatch.\nIndicator name = " + indicatorName)
@@ -414,7 +430,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         String alertId = distinctFeatureAggregationMap.get(indicator)[0];
         String indicatorId = distinctFeatureAggregationMap.get(indicator)[1];
 
-        IndicatorResult actualIndicator = getIndicator(alertId, indicatorId);
+        IndicatorREST actualIndicator = getIndicator(alertId, indicatorId);
         JSONArray events = getEvents(alertId, indicatorId);
 
         List<String> filePaths = new ArrayList<>();
@@ -483,31 +499,9 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
 
 
-    class HistoricalDataBucket {
-        String key;
-        String value;
-        boolean anomaly;
-    }
 
-    class IndicatorResult {
-        final JsonElement json;
-        final String type, schema, anomalyValue, name, historicalDataType;
-        final long eventsNum;
 
-        IndicatorResult(JsonElement json) {
-            this.json = json;
-            type = json.getAsJsonObject().get("type").getAsString();
-            schema = json.getAsJsonObject().get("schema").getAsString();
-            anomalyValue = json.getAsJsonObject().get("anomalyValue").getAsString();
-            name = json.getAsJsonObject().get("name").getAsString();
-            if (json.getAsJsonObject().has("historicalData")) {
-                historicalDataType = json.getAsJsonObject().get("historicalData").getAsJsonObject().get("type").getAsString();
-            } else {
-                historicalDataType = null;
-            }
-            eventsNum = json.getAsJsonObject().get("eventsNum").getAsLong();
-        }
-    }
+
 
     private JSONArray getEvents(String alertId, String indicatorId) {
         PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId)
@@ -518,65 +512,19 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         return eventsList;
     }
 
-    private IndicatorResult getIndicator(String alertId, String indicatorId) {
+    private IndicatorREST getIndicator(String alertId, String indicatorId) {
         PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
         RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
         assertThat(response).as(url + "\nnull response").isNotNull();
-        return new IndicatorResult(new Gson().fromJson(response.getResultBody(), JsonElement.class));
+        return new IndicatorREST(new Gson().fromJson(response.getResultBody(), JsonElement.class));
     }
 
-    private IndicatorResult getIndicatorWithHisoricalData(String alertId, String indicatorId) {
+    private IndicatorREST getIndicatorWithHisoricalData(String alertId, String indicatorId) {
         PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
         RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
         assertThat(response).as(url + "\nnull response").isNotNull();
-        return new IndicatorResult(new Gson().fromJson(response.getResultBody(), JsonElement.class));
+        return new IndicatorREST(new Gson().fromJson(response.getResultBody(), JsonElement.class));
     }
-
-    private List<HistoricalDataBucket> getAnomalyHistoricalDataBuckets(IndicatorResult indicator, PresidioUrl url) {
-        try {
-            JsonObject historicalData = indicator.json.getAsJsonObject().getAsJsonObject("historicalData");
-            JsonArray buckets = historicalData.getAsJsonArray("buckets");
-
-            boolean isValueArray = buckets.getAsJsonArray().get(0).getAsJsonObject().get("value").isJsonArray();
-            List<HistoricalDataBucket> historicalDataBuckets = Lists.newArrayList();
-
-            if (isValueArray) {
-                buckets.forEach(
-                        bucket -> bucket.getAsJsonObject().get("value").getAsJsonArray()
-                                .forEach(
-                                        value -> getAllAnomalyBuckets.apply(value.getAsJsonObject()).ifPresent(historicalDataBuckets::add)));
-            } else {
-                buckets.forEach(
-                        bucket -> getAllAnomalyBuckets.apply(bucket.getAsJsonObject()).ifPresent(historicalDataBuckets::add));
-            }
-            return historicalDataBuckets;
-        } catch (Exception e) {
-            fail(url + "\nFailed to parse historicalData.buckets.value from\n"  + indicator.json.toString());
-        }
-
-        LOGGER.error("should not get there");
-        return Lists.newArrayList();
-    }
-
-    private Function<JsonObject, Optional<HistoricalDataBucket>> getAllAnomalyBuckets = obj -> {
-        if (obj.has("anomaly")) {
-            HistoricalDataBucket bucket = new HistoricalDataBucket();
-            bucket.key = obj.get("key").getAsString();
-            bucket.value = obj.get("value").getAsString();
-            bucket.anomaly = obj.get("anomaly").getAsBoolean();
-            return Optional.of(bucket);
-        } else {
-            return Optional.empty();
-        }
-    };
-
-    private Function<JsonObject, Optional<String>> getAnomalyValue = obj -> {
-        if (obj.has("anomaly")) {
-            return Optional.of(obj.get("value").getAsString());
-        } else {
-            return Optional.empty();
-        }
-    };
 
 
     @DataProvider(name = "indicatorTypeScoreAggregation")
