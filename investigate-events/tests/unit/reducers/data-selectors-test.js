@@ -595,7 +595,8 @@ test('flattened list of columns do not include summary fields if no meta-summary
 });
 
 test('flattened list of columns do not include dupe columns if exist in list and in', function(assert) {
-  const state = Immutable.from({
+  // Scenario when meta-summary is present.
+  let state = Immutable.from({
     investigate: {
       dictionaries: {
         language: [
@@ -613,8 +614,31 @@ test('flattened list of columns do not include dupe columns if exist in list and
       }
     }
   });
-  const columns = getFlattenedColumnList(state);
-  const ipDstColumns = columns.filter((col) => col === 'ip.dst');
+  let columns = getFlattenedColumnList(state);
+  let ipDstColumns = columns.filter((col) => col === 'ip.dst');
+  assert.ok(ipDstColumns.length === 1, 'summary fields not double included');
+
+  // Scenario when meta-summary is not present.
+  state = Immutable.from({
+    investigate: {
+      dictionaries: {
+        language: [
+          { metaName: 'medium' },
+          { metaName: 'nwe.callback_id' },
+          { metaName: 'sessionid' },
+          { metaName: 'ip.dst' }
+        ]
+      },
+      data: {
+        selectedColumnGroup: 'EMAIL1'
+      },
+      columnGroup: {
+        columnGroups: mappedColumnGroups
+      }
+    }
+  });
+  columns = getFlattenedColumnList(state);
+  ipDstColumns = columns.filter((col) => col === 'ip.dst');
   assert.ok(ipDstColumns.length === 1, 'summary fields not double included');
 });
 

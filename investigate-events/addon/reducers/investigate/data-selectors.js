@@ -231,7 +231,7 @@ export const getFlattenedColumnList = createSelector(
 
       // If we don't have a meta-summary column we are done
       if (!hasMetaSummaryColumn) {
-        return columns;
+        return [...new Set(columns)];
       }
 
       // Need to slice out meta-summary and then add
