@@ -43,7 +43,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
 
     @Parameters({"start_time", "end_time", "probability_multiplier", "users_multiplier","schemas"})
     @Test
-    public void performance(@Optional("2018-04-03T23:58:00.00Z") String startTimeStr, @Optional("2018-04-04T01:30:00.00Z") String endTimeStr, @Optional("0.005") double probabilityMultiplier, @Optional("0.005") double usersMultiplier, @Optional("AUTHENTICATION") String schemas ) throws GeneratorException {
+    public void performance(@Optional("2018-04-03T23:58:00.00Z") String startTimeStr, @Optional("2018-04-04T01:30:00.00Z") String endTimeStr, @Optional("0.005") double probabilityMultiplier, @Optional("0.005") double usersMultiplier, @Optional("REGISTRY") String schemas ) throws GeneratorException {
         System.out.println("=================== TEST PARAMETERS =============== ");
         System.out.println("start_time: " + startTimeStr);
         System.out.println("end_time: " + endTimeStr);
@@ -63,7 +63,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
         if (schemas.contains("PROCESS")) {
             ProcessPerformanceStabilityScenario scenario = new ProcessPerformanceStabilityScenario(startInstant, endInstant,
                     numOfNormalUsers, numOfAdminUsers, numOfserviceAccountUsers, probabilityMultiplier);
-            printDaysOfProcessEvents(scenario);
+            //printDaysOfProcessEvents(scenario);
         }
 
         if (schemas.contains("REGISTRY")) {
@@ -123,7 +123,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
         List<Event> events;
         do {
             events = scenario.generateEvents(EVENTS_GENERATION_CHUNK);
-            logPrinter.printHourlyFiles(events);
+            //logPrinter.printHourlyFiles(events);
         } while (events.size() == EVENTS_GENERATION_CHUNK);
     }
 

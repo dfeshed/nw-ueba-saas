@@ -43,23 +43,11 @@ public class AbnormalTraffic<T> {
     public TlsRangeEventsGen createNormalTrafficHistoryGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<String> sourceGen,  FieldRangeAllocator<T> destinationGen){
         setEntity(initialGenCopy);
         initialGenCopy.setNumOfBytesSentGenerator(regularTrafficGenerator);
+        initialGenCopy.srcIpGenerator.nextRangeGenCyclic(20);
 
         indicator.addNormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(4, String::valueOf));
         indicator.addContext(contextToString(sourceGen, destinationGen));
         eventsSupplier.setCommonValuesGen(initialGenCopy);
-
-        return initialGenCopy.copy();
-    }
-
-    public TlsRangeEventsGen createHighTrafficHistoryGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<String> sourceGen,  FieldRangeAllocator<T> destinationGen){
-
-        // uncommon traffic from another src_ip
-        initialGenCopy.srcIpGenerator.nextRangeGenCyclic(UNCOMMON_DATA_VALUES);
-        setEntity(initialGenCopy);
-        initialGenCopy.setNumOfBytesSentGenerator(unusualTrafficGenerator);
-
-        indicator.addAbnormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(4, String::valueOf));
-        eventsSupplier.setUncommonValuesHistoryGen(initialGenCopy.copy());
 
         return initialGenCopy.copy();
     }
@@ -86,21 +74,10 @@ public class AbnormalTraffic<T> {
         return initialGenCopy.copy();
     }
 
-    public TlsRangeEventsGen createHighTrafficHistoryGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<T> destinationGen){
-        setEntity(initialGenCopy);
-        destinationGen.nextRangeGenCyclic(UNCOMMON_DATA_VALUES);
-        initialGenCopy.setNumOfBytesSentGenerator(unusualTrafficGenerator);
-
-        indicator.addAbnormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(4, String::valueOf));
-        eventsSupplier.setUncommonValuesHistoryGen(initialGenCopy.copy());
-
-        return initialGenCopy.copy();
-    }
-
     public TlsRangeEventsGen createHighTrafficAnomalyGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<T> destinationGen){
         setEntity(initialGenCopy);
-        initialGenCopy.srcIpGenerator.nextRangeGenCyclic(2);
-        initialGenCopy.setNumOfBytesSentGenerator(unusualTrafficGenerator);
+        initialGenCopy.srcIpGenerator.nextRangeGenCyclic(20);
+        initialGenCopy.setNumOfBytesSentGenerator(regularTrafficGenerator);
         eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy);
         return initialGenCopy.copy();
     }
@@ -115,13 +92,6 @@ public class AbnormalTraffic<T> {
         indicator.addNormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(4, String::valueOf));
         eventsSupplier.setCommonValuesGen(initialGenCopy);
 
-        return initialGenCopy.copy();
-    }
-
-    public TlsRangeEventsGen createHighTrafficHistoryGen(TlsRangeEventsGen initialGenCopy){
-        initialGenCopy.setNumOfBytesSentGenerator(unusualTrafficGenerator);
-        indicator.addAbnormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(4, String::valueOf));
-        eventsSupplier.setUncommonValuesHistoryGen(initialGenCopy.copy());
         return initialGenCopy.copy();
     }
 
