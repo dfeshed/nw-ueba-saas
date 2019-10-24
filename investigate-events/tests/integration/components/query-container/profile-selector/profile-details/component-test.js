@@ -2,9 +2,18 @@ import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { find, render } from '@ember/test-helpers';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 module('Integration | Component | Profile Details', function(hooks) {
-  setupRenderingTest(hooks);
+
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('investigate-events')
+  });
+
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+  });
 
   const profileViewSelector = '.profile-view';
   const profileFormSelector = '.profile-form';
@@ -29,7 +38,7 @@ module('Integration | Component | Profile Details', function(hooks) {
     this.set('metaGroups', []);
     this.set('columnGroups', []);
     this.set('profiles', [profile1]);
-    await render(hbs`{{profile-selector/profile-details
+    await render(hbs`{{query-container/profile-selector/profile-details
       profile=profile
       editProfile=editProfile
       profiles=profiles
@@ -46,7 +55,7 @@ module('Integration | Component | Profile Details', function(hooks) {
     this.set('metaGroups', []);
     this.set('columnGroups', []);
     this.set('profiles', [profile1]);
-    await render(hbs`{{profile-selector/profile-details
+    await render(hbs`{{query-container/profile-selector/profile-details
       profile=profile
       editProfile=editProfile
       profiles=profiles

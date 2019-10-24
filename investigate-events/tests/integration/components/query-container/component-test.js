@@ -67,7 +67,6 @@ module('Integration | Component | query-container', function(hooks) {
     await render(hbs`{{query-container}}`);
     assert.ok(find('.console-trigger'));
     assert.equal(findAll(SELECTORS.queryButton).length, 1, 'button should be present');
-    assert.equal(findAll('.profile-selector-wrapper').length, 1, 'Shall find profile selector wrapper');
   });
 
   test('TimeRange should be updated when start/endTime in state is updated', async function(assert) {

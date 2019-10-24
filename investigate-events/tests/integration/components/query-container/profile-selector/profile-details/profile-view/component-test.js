@@ -2,11 +2,16 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { find, findAll, render } from '@ember/test-helpers';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 module('Integration | Component | Profile Details - Profile View', function(hooks) {
-  setupRenderingTest(hooks);
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('investigate-events')
+  });
 
   hooks.beforeEach(function() {
+    initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
@@ -78,7 +83,7 @@ module('Integration | Component | Profile Details - Profile View', function(hook
 
   test('it renders profile properties correctly', async function(assert) {
     this.set('profile', profile1);
-    await render(hbs`{{profile-selector/profile-details/profile-view profile=profile}}`);
+    await render(hbs`{{query-container/profile-selector/profile-details/profile-view profile=profile}}`);
 
     assert.equal(findAll(profileViewSelector).length, 1, 'Shall render profile view');
     assert.equal(findAll(profileNameSelector).length, 1, 'Shall render profile-name div with correct class');
@@ -109,7 +114,7 @@ module('Integration | Component | Profile Details - Profile View', function(hook
     const translation = this.owner.lookup('service:i18n');
     this.set('profile', profile1);
     await render(hbs`
-      {{profile-selector/profile-details/profile-view profile=profile}}
+      {{query-container/profile-selector/profile-details/profile-view profile=profile}}
     `);
     assert.equal(findAll(prequeryPillSelector).length, 2, 'Shall render correct number of pills');
     assert.equal(findAll(prequeryOperatorSelector).length, 1, 'Shall render correct number of operators');
@@ -125,7 +130,7 @@ module('Integration | Component | Profile Details - Profile View', function(hook
     const translation = this.owner.lookup('service:i18n');
     this.set('profile', { ...profile1, preQueryPillsData: pillsData2 });
     await render(hbs`
-      {{profile-selector/profile-details/profile-view profile=profile}}
+      {{query-container/profile-selector/profile-details/profile-view profile=profile}}
     `);
     assert.equal(findAll(prequeryPillSelector).length, 3, 'Shall render correct number of pills');
     assert.equal(findAll(prequeryOperatorSelector).length, 2, 'Shall render correct number of operators');

@@ -7,7 +7,7 @@ import respondShared from 'respond-shared/reducers';
 import listManager from 'rsa-list-manager/reducers/list-manager/reducer';
 import { reducerPredicate, createFilteredReducer } from 'component-lib/utils/reducer-wrapper';
 import { COLUMN_GROUPS_STATE_LOCATION } from 'investigate-events/constants/columnGroups';
-import { PROFILES_STATE_LOCATION } from 'investigate-shared/constants/profiles';
+import { PROFILES_STATE_LOCATION } from 'investigate-events/constants/profiles';
 
 export default combineReducers({
   investigate,

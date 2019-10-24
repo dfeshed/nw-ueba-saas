@@ -1,13 +1,13 @@
 import Component from '@ember/component';
+import layout from './template';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import layout from './template';
 import {
   PROFILES_STATE_LOCATION as stateLocation,
   PROFILES_MODEL_NAME as modelName,
   PROFILES_LIST_NAME as listName,
   PROFILES_TOPIC_ID
-} from 'investigate-shared/constants/profiles';
+} from 'investigate-events/constants/profiles';
 import { enrichedProfiles, enrichedProfile, languageAndAliases } from 'investigate-events/reducers/investigate/profile/selectors';
 import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
 import { metaGroups } from 'investigate-events/reducers/investigate/meta-group/selectors';
@@ -26,13 +26,18 @@ const stateToComputed = (state) => ({
   selectedColumnGroupId: selectedColumnGroup(state)
 });
 
-const ProfileSelectorWrapper = Component.extend({
+const ProfileSelector = Component.extend({
   layout,
-  classNames: ['profile-selector-wrapper'],
-
+  classNames: ['rsa-investigate-query-container__profile-selector'],
   modelName,
   listName,
   stateLocation,
+  profiles: null, // list of profiles
+  metaGroups: null, // list of meta groups
+  columnGroups: null, // list of column groups
+  selectedColumnGroupId: null, // id of currently selected column group
+  selectProfile: null, // function
+  enrichProfile: null, // function to use for itemTransform in list manager details
 
   @computed()
   helpId() {
@@ -57,4 +62,4 @@ const ProfileSelectorWrapper = Component.extend({
   }
 });
 
-export default connect(stateToComputed, dispatchToActions)(ProfileSelectorWrapper);
+export default connect(stateToComputed, dispatchToActions)(ProfileSelector);

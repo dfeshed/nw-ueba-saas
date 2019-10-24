@@ -1,12 +1,17 @@
 import { module, test } from 'qunit';
-import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { setupRenderingTest } from 'ember-qunit';
 import { find, findAll, render } from '@ember/test-helpers';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 module('Integration | Component | Profile Details - Profile Form', function(hooks) {
-  setupRenderingTest(hooks);
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('investigate-events')
+  });
 
   hooks.beforeEach(function() {
+    initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
@@ -22,7 +27,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
     this.set('profile', {});
     this.set('metaGroups', []);
     this.set('columnGroups', []);
-    await render(hbs`{{profile-selector/profile-details/profile-form profile=profile columnGroups=columnGroups metaGroups=metaGroups}}`);
+    await render(hbs`{{query-container/profile-selector/profile-details/profile-form profile=profile columnGroups=columnGroups metaGroups=metaGroups}}`);
 
     assert.equal(findAll(profileFormSelector).length, 1, 'Shall render profile form');
     assert.equal(findAll(profileNameSelector).length, 1, 'Shall render profile-name div with correct class');
