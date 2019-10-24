@@ -1,10 +1,11 @@
-{{#if profiles}}
+{{#if renderProfiles}}
   {{#list-manager
     stateLocation=stateLocation
     listName=listName
     modelName=modelName
     shouldSelectedItemPersist=false
     list=profiles
+    isDisabled=isDisabled
     itemSelection=(action 'selectProfile')
     helpId=helpId
     as |manager|

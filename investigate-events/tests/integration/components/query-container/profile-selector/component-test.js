@@ -29,8 +29,8 @@ module('Integration | Component | Profile Selector', function(hooks) {
     new ReduxDataHelper(setState).build();
     await render(hbs`{{query-container/profile-selector}}`);
     assert.equal(findAll(profileSelectorSelector).length, 1, 'Shall render profile-selector component');
-    assert.equal(findAll(listManagerSelector).length, 0,
-      'Shall not render list manager component if profiles does not exist');
+    assert.equal(findAll(listManagerSelector).length, 1,
+      'Shall render list manager component if profiles does not exist');
   });
 
   test('it renders with proper class', async function(assert) {
@@ -39,5 +39,19 @@ module('Integration | Component | Profile Selector', function(hooks) {
     assert.equal(findAll(profileSelectorSelector).length, 1, 'Shall render profile-selector component with proper class');
     assert.equal(findAll(listManagerSelector).length, 1,
       'Shall render list manager if profiles exists');
+  });
+
+  test('renders list manager in disabled state when profile read permissions are removed', async function(assert) {
+    new ReduxDataHelper(setState).profiles([]).build();
+    const accessControl = this.owner.lookup('service:accessControl');
+    const origRoles = [...accessControl.roles];
+    // removing profile read permission
+    accessControl.set('roles', []);
+    await render(hbs`{{query-container/profile-selector}}`);
+    assert.equal(findAll(profileSelectorSelector).length, 1,
+      'Shall render profile-selector component if profiles exists');
+    assert.equal(findAll(listManagerSelector).length, 1, 'Should display list manager');
+    // reset roles
+    accessControl.set('roles', origRoles);
   });
 });

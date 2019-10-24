@@ -1,7 +1,8 @@
 import Component from '@ember/component';
 import layout from './template';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import computed, { not } from 'ember-computed-decorators';
+import { inject as service } from '@ember/service';
 import {
   PROFILES_STATE_LOCATION as stateLocation,
   PROFILES_MODEL_NAME as modelName,
@@ -38,6 +39,13 @@ const ProfileSelector = Component.extend({
   selectedColumnGroupId: null, // id of currently selected column group
   selectProfile: null, // function
   enrichProfile: null, // function to use for itemTransform in list manager details
+  accessControl: service(),
+  @not('accessControl.hasInvestigateProfilesAccess') isDisabled: false,
+
+  @computed('profiles')
+  renderProfiles(profiles) {
+    return !!profiles;
+  },
 
   @computed()
   helpId() {

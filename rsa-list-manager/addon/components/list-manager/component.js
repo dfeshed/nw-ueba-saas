@@ -37,6 +37,9 @@ const ListManager = Component.extend({
   // e.g. { moduleId: "investigation", topicId: "eaColumnGroups" }
   helpId: null,
 
+  // flag to disable the list-manager
+  isDisabled: false,
+
   didInsertElement() {
     const initialProperties =
       this.getProperties(

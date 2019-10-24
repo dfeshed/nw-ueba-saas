@@ -44,6 +44,8 @@ export default Service.extend({
     'investigate-server.metrics.read',
     'investigate-server.event.read',
     'investigate-server.content.export',
+    'investigate-server.columngroup.read',
+    'investigate-server.profile.read',
     'investigate-server.content.reconstruct',
     'investigate-server.predicate.read',
     'endpoint-server.agent.read'
@@ -117,6 +119,16 @@ export default Service.extend({
   @computed('roles.[]')
   hasInvestigateContentExportAccess(roles) {
     return this._hasPermission(roles, 'investigate-server.content.export');
+  },
+
+  @computed('roles.[]')
+  hasInvestigateProfilesAccess(roles) {
+    return this._hasPermission(roles, 'investigate-server.profile.read');
+  },
+
+  @computed('roles.[]')
+  hasInvestigateColumnGroupsAccess(roles) {
+    return this._hasPermission(roles, 'investigate-server.columngroup.read');
   },
 
   @computed('roles.[]')

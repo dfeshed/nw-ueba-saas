@@ -17,6 +17,8 @@ module('Integration | Component | list-manager', function(hooks) {
   });
 
   const listManagerSelector = '.list-manager';
+  const listManagerContainer = '.list-manager .list-manager-container';
+  const listManagerTrigger = '.list-manager .list-menu-trigger';
   const stateLocation1 = 'listManager';
   const listName1 = 'Some Things';
 
@@ -41,6 +43,7 @@ module('Integration | Component | list-manager', function(hooks) {
     {{/list-manager}}`);
 
     assert.ok(find(listManagerSelector), 'list manager shall be found');
+    assert.ok(find(listManagerContainer), 'list manager shall be found');
   });
 
   test('stateLocation exists', async function(assert) {
@@ -57,5 +60,25 @@ module('Integration | Component | list-manager', function(hooks) {
     {{/list-manager}}`);
 
     assert.equal(this.get('stateLocation'), stateLocation1, 'stateLocation exists and has correct value in list-manager component');
+  });
+
+  test('list manager when disabled is rendered', async function(assert) {
+    new ReduxDataHelper(setState).build();
+    this.set('stateLocation', stateLocation1);
+    this.set('list', []);
+    this.set('listName', listName1);
+    this.set('isDisabled', true);
+
+    await render(hbs`{{#list-manager
+      stateLocation=stateLocation
+      list=list
+      listName=listName
+      isDisabled=isDisabled
+    }}
+    {{/list-manager}}`);
+
+    assert.ok(find(listManagerSelector), 'list manager should be found');
+    assert.notOk(find(listManagerContainer), 'list manager container should not be found');
+    assert.ok(find(listManagerTrigger), 'list manager trigger should be found');
   });
 });

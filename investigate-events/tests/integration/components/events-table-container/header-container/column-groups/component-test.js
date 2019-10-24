@@ -11,6 +11,7 @@ import { typeInSearch } from 'ember-power-select/test-support/helpers';
 
 const columnGroupManagerSelector = '.rsa-investigate-events-table__header__columnGroups';
 const dropdownSelector = `${columnGroupManagerSelector} .rsa-split-dropdown button`;
+const dropdownSelectorDisabled = `${columnGroupManagerSelector} .rsa-split-dropdown.is-disabled`;
 const columnGroupItem = `${columnGroupManagerSelector} ul.rsa-item-list > li.rsa-list-item`;
 
 let setState;
@@ -35,6 +36,8 @@ module('Integration | Component | Column Groups', function(hooks) {
     assert.ok(find(columnGroupManagerSelector), 'Column Group Manager present');
     assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: Summary List',
       'Default column group is Summary List.');
+    assert.notOk(find(`${columnGroupManagerSelector} .list-caption .is-disabled`), 'column group is not disabled.');
+    assert.notOk(find(dropdownSelectorDisabled), 'dropdown button is not disabled');
   });
 
   test('it provides option to select column groups', async function(assert) {
@@ -166,6 +169,23 @@ module('Integration | Component | Column Groups', function(hooks) {
     assert.equal(find('.group-name .value').textContent.trim(), 'Summary List');
     assert.equal(findAll('.group-details ul.column-list li').length, 3, '3 columns for Summary List rendered');
 
+  });
+  test('columnGroup manager should be visible when disabled', async function(assert) {
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').columnGroups(EventColumnGroups).build();
+    const accessControl = this.owner.lookup('service:accessControl');
+    const origRoles = [...accessControl.roles];
+    // removing column group permissions
+    accessControl.set('roles', []);
+    await render(hbs`{{events-table-container/header-container/column-groups}}`);
+    assert.ok(find(columnGroupManagerSelector), 'Column Group Manager present');
+    assert.equal(find(`${columnGroupManagerSelector} .list-caption.is-disabled`).textContent.trim(), 'Column Group: Summary List',
+      'Default column group is Summary List.');
+    assert.ok(find(dropdownSelector), 'dropdown buttons present');
+    await click(dropdownSelector);
+    assert.notOk(find(`${columnGroupManagerSelector} .rsa-button-menu.expanded`), 'Column Group Menu expanded');
+    assert.ok(find(dropdownSelectorDisabled), 'dropdown button disabled');
+    // reset roles
+    accessControl.set('roles', origRoles);
   });
 
 });

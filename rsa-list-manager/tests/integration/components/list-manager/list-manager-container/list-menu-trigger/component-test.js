@@ -24,6 +24,8 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
   const listCaption = '.list-caption';
   const stateLocation1 = 'listManager';
   const listName1 = 'My Items';
+  const listCaptionDisabled = '.list-caption.is-disabled';
+  const splitDropdownDisabled = '.rsa-split-dropdown.is-disabled';
 
   const items = [
     { id: 3, name: 'eba', subItems: [ 'a', 'b', 'c' ] },
@@ -44,6 +46,8 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
     assert.ok(find(buttonGroupSelector), 'Shall have rsa-button-group class');
     assert.ok(find(splitDropdown), 'Shall have button with rsa-split-dropdown class');
     assert.ok(find(listCaption), 'Shall have list caption with list-caption class');
+    assert.notOk(find(splitDropdownDisabled), 'Should not have button with rsa-split-dropdown class disabled');
+    assert.notOk(find(listCaptionDisabled), 'Should not have list caption with list-caption class disabled');
     assert.equal(find(listCaption).textContent.trim(), listName1, 'Shall have correct list caption');
   });
 
@@ -106,5 +110,24 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
 
     const state2 = this.owner.lookup('service:redux').getState();
     assert.ok(state2.listManager.isExpanded, 'clicking split dropdown sets isExpanded to true');
+  });
+
+  test('The list-menu-trigger component when disabled renders to the DOM ', async function(assert) {
+    new ReduxDataHelper(setState).list(items).listName(listName1).build();
+    this.set('stateLocation', stateLocation1);
+    this.set('isDisabled', true);
+
+    await render(hbs`{{#list-manager/list-manager-container/list-menu-trigger
+      stateLocation=stateLocation
+      isDisabled=isDisabled
+    }}
+    {{/list-manager/list-manager-container/list-menu-trigger}}`);
+
+    assert.ok(find(buttonGroupSelector), 'Shall have rsa-button-group class');
+    assert.ok(find(splitDropdown), 'Shall have button with rsa-split-dropdown class');
+    assert.ok(find(listCaption), 'Shall have list caption with list-caption class');
+    assert.ok(find(splitDropdownDisabled), 'Should have button with rsa-split-dropdown class disabled');
+    assert.ok(find(listCaptionDisabled), 'Should have list caption with list-caption class disabled');
+    assert.equal(find(listCaption).textContent.trim(), listName1, 'Shall have correct list caption');
   });
 });

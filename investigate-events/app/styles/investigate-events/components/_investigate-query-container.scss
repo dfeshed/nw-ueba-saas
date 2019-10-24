@@ -86,23 +86,7 @@
     .list-manager {
       .list-manager-container {
         .list-menu-trigger.rsa-button-group {
-          .list-caption {
-            top: 0;
-            .rsa-form-button {
-              border-right-width: 0px;
-            }
-          }
-          .list-help-icon {
-            i {
-              margin-right: 0px;
-            }
-          }
-          .rsa-split-dropdown {
-            .rsa-form-button {
-              border-left-width: 0px;
-              margin-left: -2px;
-            }
-          }
+          @extend .list-menu-trigger-style
         }
         .rsa-button-menu {
           .item-details {
@@ -270,6 +254,28 @@
           }
         }
       }
+      .list-menu-trigger.rsa-button-group {
+         @extend .list-menu-trigger-style
+      }
+      .list-menu-trigger-style {
+        .list-caption {
+          top: 0;
+          .rsa-form-button {
+            border-right-width: 0px;
+          }
+        }
+        .list-help-icon {
+          i {
+            margin-right: 0px;
+          }
+        }
+        .rsa-split-dropdown {
+          .rsa-form-button {
+            border-left-width: 0px;
+            margin-left: -2px;
+          }
+        }
+      }    
     }
   }
 

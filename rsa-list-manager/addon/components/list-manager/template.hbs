@@ -1,9 +1,16 @@
 {{#if isListManagerReady}}
-  {{#list-manager/list-manager-container
-    stateLocation=stateLocation
-    itemSelection=itemSelection
-    as |manager|
-  }}
-    {{yield manager}}
-  {{/list-manager/list-manager-container}}
+  {{#if isDisabled}}
+    {{list-manager/list-manager-container/list-menu-trigger
+      stateLocation=stateLocation
+      isDisabled=isDisabled
+    }}
+  {{else}}
+    {{#list-manager/list-manager-container
+      stateLocation=stateLocation
+      itemSelection=itemSelection
+      as |manager|
+    }}
+      {{yield manager}}
+    {{/list-manager/list-manager-container}}
+  {{/if}}
 {{/if}}

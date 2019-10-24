@@ -364,4 +364,18 @@ module('Unit | Service | access control', function(hooks) {
     service.set('roles', ['endpoint-server.filter.manage', 'accessInvestigationModule']);
     assert.equal(service.get('endpointCanManageFilter'), true);
   });
+
+  test('hasInvestigateProfilesAccess is set when required roles are included', function(assert) {
+    const service = this.owner.lookup('service:access-control');
+    assert.equal(service.get('hasInvestigateProfilesAccess'), false);
+    service.set('roles', ['investigate-server.profile.read']);
+    assert.equal(service.get('hasInvestigateProfilesAccess'), true);
+  });
+
+  test('hasInvestigateColumnGroupsAccess is set when required roles are included', function(assert) {
+    const service = this.owner.lookup('service:access-control');
+    assert.equal(service.get('hasInvestigateColumnGroupsAccess'), false);
+    service.set('roles', ['investigate-server.columngroup.read']);
+    assert.equal(service.get('hasInvestigateColumnGroupsAccess'), true);
+  });
 });

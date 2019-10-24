@@ -22,6 +22,7 @@ const ListMenuTrigger = Component.extend({
   layout,
   classNames: ['list-menu-trigger', 'rsa-button-group'],
   stateLocation: undefined,
+  isDisabled: false,
 
   actions: {
     triggerClicked() {
