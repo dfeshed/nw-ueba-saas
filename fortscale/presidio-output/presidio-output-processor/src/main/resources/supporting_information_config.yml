@@ -1290,7 +1290,15 @@ indicators:
       - dstOrg.name
     historicalData:
       - type: hourly_aggregations
+        featureName: sumOfBytesSentToDstOrgSslSubjectOutboundTlsHourly
+        contexts:
+          - dstOrg.name
+          - sslSubject.name
+      - type: hourly_aggregations
         featureName: sumOfBytesSentToDstOrgOutboundTlsHourly
+        contexts:
+          - dstOrg.name
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: sumOfBytesSentToDstPortScoresSumSslSubjectOutboundTlsHourly
@@ -1308,7 +1316,15 @@ indicators:
       - dstPort.name
     historicalData:
       - type: hourly_aggregations
+        featureName: sumOfBytesSentToDstPortSslSubjectOutboundTlsHourly
+        contexts:
+          - dstPort.name
+          - sslSubject.name
+      - type: hourly_aggregations
         featureName: sumOfBytesSentToDstPortOutboundTlsHourly
+        contexts:
+          - dstPort.name
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: sumOfBytesSentToDomainScoresSumSslSubjectOutboundTlsHourly
@@ -1326,7 +1342,15 @@ indicators:
       - domain.name
     historicalData:
       - type: hourly_aggregations
+        featureName: sumOfBytesSentToDomainSslSubjectOutboundTlsHourly
+        contexts:
+          - domain.name
+          - sslSubject.name
+      - type: hourly_aggregations
         featureName: sumOfBytesSentToDomainOutboundTlsHourly
+        contexts:
+          - domain.name
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: sumOfBytesSentToSslSubjectOutboundTlsHourly
@@ -1359,7 +1383,15 @@ indicators:
       - dstPort.name
     historicalData:
       - type: hourly_aggregations
+        featureName: maxSumOfBytesSentBySrcIpToDstPortSslSubjectOutboundTlsHourly
+        contexts:
+          - dstPort.name
+          - sslSubject.name
+      - type: hourly_aggregations
         featureName: maxSumOfBytesSentBySrcIpToDstPortOutboundTlsHourly
+        contexts:
+          - dstPort.name
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: maxSumOfBytesSentBySrcIpToDstOrgScoresSumSslSubjectOutboundTlsHourly
@@ -1377,7 +1409,15 @@ indicators:
       - dstOrg.name
     historicalData:
       - type: hourly_aggregations
+        featureName: maxSumOfBytesSentBySrcIpToDstOrgSslSubjectOutboundTlsHourly
+        contexts:
+          - dstOrg.name
+          - sslSubject.name
+      - type: hourly_aggregations
         featureName: maxSumOfBytesSentBySrcIpToDstOrgOutboundTlsHourly
+        contexts:
+          - dstOrg.name
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: maxSumOfBytesSentBySrcIpToDomainScoresSumSslSubjectOutboundTlsHourly
