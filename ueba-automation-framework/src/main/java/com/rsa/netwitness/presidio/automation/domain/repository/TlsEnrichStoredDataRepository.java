@@ -16,4 +16,7 @@ public interface TlsEnrichStoredDataRepository extends MongoRepository<TlsEnrich
     @Query("{'eventId': {$regex: ?0 }})")
     List<TlsEnrichStoredData> findByIdContains(String substring);
 
+    @Query("{'dstOrg.name': {$regex: ?0 }})")
+    List<TlsEnrichStoredData> findByDstOrgContains(String substring);
+
 }
