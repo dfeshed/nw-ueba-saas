@@ -2,7 +2,7 @@
   class='list-caption'
   isDisabled=isDisabled
   defaultAction=(action 'triggerClicked')
-  title=titleTooltip
+  title=(if isDisabled (t 'rsaListManager.listMenuTrigger.disabled.permission') titleTooltip)
 }}
   {{caption}}
 {{/rsa-form-button}}

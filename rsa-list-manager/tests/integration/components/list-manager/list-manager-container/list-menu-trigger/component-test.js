@@ -5,6 +5,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import Component from '@ember/component';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
+import { lookup } from 'ember-dependency-lookup';
 
 let setState;
 
@@ -49,6 +50,7 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
     assert.notOk(find(splitDropdownDisabled), 'Should not have button with rsa-split-dropdown class disabled');
     assert.notOk(find(listCaptionDisabled), 'Should not have list caption with list-caption class disabled');
     assert.equal(find(listCaption).textContent.trim(), listName1, 'Shall have correct list caption');
+    assert.equal(find(listCaption).getAttribute('title'), null, 'When no value is selected the title is empty');
   });
 
   test('Clicking list caption opens the list and triggers listOpened', async function(assert) {
@@ -113,6 +115,7 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
   });
 
   test('The list-menu-trigger component when disabled renders to the DOM ', async function(assert) {
+    const i18n = lookup('service:i18n');
     new ReduxDataHelper(setState).list(items).listName(listName1).build();
     this.set('stateLocation', stateLocation1);
     this.set('isDisabled', true);
@@ -129,5 +132,7 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
     assert.ok(find(splitDropdownDisabled), 'Should have button with rsa-split-dropdown class disabled');
     assert.ok(find(listCaptionDisabled), 'Should have list caption with list-caption class disabled');
     assert.equal(find(listCaption).textContent.trim(), listName1, 'Shall have correct list caption');
+    assert.equal(find(listCaptionDisabled).getAttribute('title').trim(), i18n.t('rsaListManager.listMenuTrigger.disabled.permission'),
+      'disabled list menu trigger should have correct title');
   });
 });

@@ -6286,6 +6286,11 @@ effects the simulated source.',
       disabled: {
         delete: 'This column group cannot be deleted because it is currently active'
       }
+    },
+    listMenuTrigger: {
+      disabled: {
+        permission: 'Please contact the administrator to gain access to this feature'
+      }
     }
   }
 };
