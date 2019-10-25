@@ -50,11 +50,14 @@
   color: text-color(neutral);
   @include rsa-word-wrap();
   line-height: 1.10rem;
-  padding: 0 0 rsa-whitespace(less) rsa-whitespace();
+  padding: 0 0 rsa-whitespace(less) 1.75rem;
   i {
     &:hover {
       cursor: pointer;
     }
+  }
+  &.should-show-binoculars {
+    padding: 0 0 rsa-whitespace(less) 0;
   }
   &.is-hovering {
     background-color: background-color(primary, darkest);
@@ -79,5 +82,8 @@
   .has-context-data {
     text-decoration: underline;
     text-decoration-style: dashed;
+  }
+  .binocular-icon {
+    padding: rsa-whitespace(less) rsa-whitespace(least) 0 0;
   }
 }

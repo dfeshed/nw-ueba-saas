@@ -4071,8 +4071,8 @@ export default {
     groupBy: {
       name: 'Organize by',
       options: {
-        alphabet: 'Alphabet (A-Z)',
-        none: 'Default'
+        alphabet: 'Alphabet',
+        none: 'Sequence'
       }
     },
     machineCount: {

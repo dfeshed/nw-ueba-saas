@@ -55,7 +55,7 @@ module('Integration | Component | recon-meta-content', function(hooks) {
 
     assert.equal(find('.meta-grouping .meta-grouping-label').textContent, 'Organize by', 'grouping drop down label name');
 
-    assert.equal(find('.meta-grouping .meta-grouping-drop-down').textContent.trim(), 'Default', 'default grouping type');
+    assert.equal(find('.meta-grouping .meta-grouping-drop-down').textContent.trim(), 'Sequence', 'default grouping type');
 
     assert.notOk(find('.recon-meta-content-group .meta-content-section'), 'Grouping of metas is not done on default grouping type');
 
@@ -69,13 +69,13 @@ module('Integration | Component | recon-meta-content', function(hooks) {
 
     await clickTrigger('.meta-grouping .meta-grouping-drop-down');
 
-    assert.equal(find('.meta-grouping .meta-grouping-drop-down').textContent.trim(), 'Default', 'default grouping type');
+    assert.equal(find('.meta-grouping .meta-grouping-drop-down').textContent.trim(), 'Sequence', 'default grouping type');
 
     assert.equal(findAll('.ember-power-select-options li.ember-power-select-option').length, 2, 'There are 2 options available');
 
     await selectChoose('.meta-grouping .meta-grouping-drop-down', '.ember-power-select-option', 1);
 
-    assert.equal(find('.meta-grouping .meta-grouping-drop-down').textContent.trim(), 'Alphabet (A-Z)', 'default grouping type');
+    assert.equal(find('.meta-grouping .meta-grouping-drop-down').textContent.trim(), 'Alphabet', 'default grouping type');
 
     assert.equal(findAll('.recon-meta-content-group .meta-content-section').length, 4, '4 grouping sections are displayed');
 
