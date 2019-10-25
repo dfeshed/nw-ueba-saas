@@ -295,7 +295,7 @@ public class SslSubjectTlsAlert {
         alert.indicatorNames.add(name);
 
         AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
-        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
         TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
 
         indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.srcIpGenerator,eventsGenInitCopy.hostnameGen);
@@ -313,7 +313,7 @@ public class SslSubjectTlsAlert {
         alert.indicatorNames.add(name);
 
         AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
-        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
         TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
 
         indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.srcIpGenerator,eventsGenInitCopy.dstOrgGen);
@@ -330,7 +330,7 @@ public class SslSubjectTlsAlert {
         alert.indicatorNames.add(name);
 
         AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
-        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
         TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
 
         indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.srcIpGenerator,eventsGenInitCopy.ja3Gen);
@@ -347,7 +347,7 @@ public class SslSubjectTlsAlert {
         alert.indicatorNames.add(name);
 
         AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
-        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
         TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
 
         indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.hostnameGen);
@@ -365,7 +365,7 @@ public class SslSubjectTlsAlert {
         alert.indicatorNames.add(name);
 
         AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
-        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
         TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
 
         indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.dstOrgGen);
@@ -382,7 +382,7 @@ public class SslSubjectTlsAlert {
         alert.indicatorNames.add(name);
 
         AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
-        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
         TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
 
         indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy);
@@ -400,7 +400,7 @@ public class SslSubjectTlsAlert {
         alert.indicatorNames.add(name);
 
         AbnormalTraffic<Integer> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
-        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
         TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
 
         indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.srcIpGenerator,eventsGenInitCopy.dstPortGen);
@@ -417,7 +417,7 @@ public class SslSubjectTlsAlert {
         alert.indicatorNames.add(name);
 
         AbnormalTraffic<Integer> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
-        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
         TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
 
         indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.dstPortGen);

@@ -18,6 +18,13 @@ public class UncommonValuesEventsGen extends EventsGen {
         return this;
     }
 
+    public UncommonValuesEventsGen setCommonValuesGen(final TlsRangeEventsGen gen, int intervalMinutes) {
+        TlsRangeEventsGen copyGen = gen.copy();
+        copyGen.setTimeGenerator(getCommonValuesTimeGen(intervalMinutes));
+        eventGenerators.add(copyGen);
+        return this;
+    }
+
     public UncommonValuesEventsGen setUncommonValuesHistoryGen(final TlsRangeEventsGen gen) {
         TlsRangeEventsGen copyGen = gen.copy();
         copyGen.setTimeGenerator(getUncommonValuesHistoryTimeGen());

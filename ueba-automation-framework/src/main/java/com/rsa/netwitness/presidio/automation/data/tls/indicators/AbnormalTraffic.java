@@ -5,6 +5,7 @@ import com.rsa.netwitness.presidio.automation.data.tls.model.EntityType;
 import com.rsa.netwitness.presidio.automation.data.tls.model.TlsIndicator;
 import org.assertj.core.util.Lists;
 import presidio.data.generators.IBaseGenerator;
+import presidio.data.generators.common.list.RangeGenerator;
 import presidio.data.generators.common.random.GaussianLongGenerator;
 import presidio.data.generators.event.tls.FieldRangeAllocator;
 import presidio.data.generators.event.tls.TlsRangeEventsGen;
@@ -24,7 +25,9 @@ public class AbnormalTraffic<T> {
 
     public Function<T, String> contextToString = String::valueOf;
 
-    private final IBaseGenerator<Long> regularTrafficGenerator = new GaussianLongGenerator(1e9, 10e6);
+    private double BYTES_SEND = 1e9;
+    private final IBaseGenerator<Long> regularTrafficGenerator = new GaussianLongGenerator(BYTES_SEND, 10e6);
+    private final Function<Integer, IBaseGenerator<Long>> trafficGenerator = e -> new GaussianLongGenerator(BYTES_SEND * e, 10e6);
 
     private final IBaseGenerator<Long> unusualTrafficGenerator = new GaussianLongGenerator(1.5e9, 10e6);
 
@@ -38,47 +41,61 @@ public class AbnormalTraffic<T> {
     }
 
 
+    String ubnormalIP;
+    RangeGenerator<String> uncommonIpGenerator;
 
 
     public TlsRangeEventsGen createNormalTrafficHistoryGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<String> sourceGen,  FieldRangeAllocator<T> destinationGen){
+        // 3 ips with regularTraffic per 1 hour
+
         setEntity(initialGenCopy);
         initialGenCopy.setNumOfBytesSentGenerator(regularTrafficGenerator);
-        initialGenCopy.srcIpGenerator.nextRangeGenCyclic(20);
+        initialGenCopy.srcIpGenerator.nextRangeGenCyclic(3);
 
-        indicator.addNormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(4, String::valueOf));
+        ubnormalIP = initialGenCopy.srcIpGenerator.getGenerator().getAllValues().get(0);
+
+        indicator.addNormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(3, String::valueOf));
         indicator.addContext(contextToString(sourceGen, destinationGen));
-        eventsSupplier.setCommonValuesGen(initialGenCopy);
+        eventsSupplier.setCommonValuesGen(initialGenCopy, 20);
 
         return initialGenCopy.copy();
     }
 
     public TlsRangeEventsGen createHighTrafficAnomalyGen(TlsRangeEventsGen heightTrafficAnomalyGen, FieldRangeAllocator<String> sourceGen,  FieldRangeAllocator<T> destinationGen){
+        // 1 ip with 2*regularTraffic per 1 hour
         setEntity(heightTrafficAnomalyGen);
-        heightTrafficAnomalyGen.setNumOfBytesSentGenerator(unusualTrafficGenerator);
-        eventsSupplier.setUncommonValuesAnomalyGen(heightTrafficAnomalyGen);
+        heightTrafficAnomalyGen.srcIpGenerator.setConstantValueGen(ubnormalIP);
+        heightTrafficAnomalyGen.setNumOfBytesSentGenerator(trafficGenerator.apply(2));
+        eventsSupplier.setUncommonValuesAnomalyGen(heightTrafficAnomalyGen, 60);
         return heightTrafficAnomalyGen.copy();
     }
-
- 
 
 
 
     public TlsRangeEventsGen createNormalTrafficHistoryGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<T> destinationGen){
+        // 1 ip with 3*regularTraffic per 1 hour
+
         setEntity(initialGenCopy);
         initialGenCopy.setNumOfBytesSentGenerator(regularTrafficGenerator);
+        uncommonIpGenerator = initialGenCopy.srcIpGenerator.nextRangeGenCyclic(3);
+        ubnormalIP = uncommonIpGenerator.getNext();
+        initialGenCopy.srcIpGenerator.setConstantValueGen(ubnormalIP);
 
-        indicator.addNormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(4, String::valueOf));
+        indicator.addNormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(1, String::valueOf));
         indicator.addContext(destinationGen.getGenerator().getAllValuesToString(contextToString));
-        eventsSupplier.setCommonValuesGen(initialGenCopy);
+        eventsSupplier.setCommonValuesGen(initialGenCopy, 60);
 
         return initialGenCopy.copy();
     }
 
     public TlsRangeEventsGen createHighTrafficAnomalyGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<T> destinationGen){
+        // 3 ips with regularTraffic per 1 hour
+
         setEntity(initialGenCopy);
-        initialGenCopy.srcIpGenerator.nextRangeGenCyclic(20);
+
+        initialGenCopy.srcIpGenerator.setGenerator(uncommonIpGenerator);
         initialGenCopy.setNumOfBytesSentGenerator(regularTrafficGenerator);
-        eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy);
+        eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy, 20);
         return initialGenCopy.copy();
     }
 
