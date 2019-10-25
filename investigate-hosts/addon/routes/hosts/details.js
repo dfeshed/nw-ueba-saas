@@ -37,7 +37,14 @@ export default Route.extend({
   model(params) {
     const redux = this.get('redux');
     const isPageReload = this.get('isPageLoading');
+    const { endpoint: { filter } } = redux.getState();
     const { sid, id } = params;
+
+    if (!filter.selectedFilter || filter.selectedFilter.id === 1) {
+      const savedFilter = { id: 1, criteria: { expressionList: filter.expressionList } };
+      redux.dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'MACHINE' } });
+    }
+
     if (sid && id) {
       return redux.dispatch(initializeHostDetailsPage(params, isPageReload)).then(() => {
         return params;
