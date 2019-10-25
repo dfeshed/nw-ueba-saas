@@ -72,7 +72,7 @@ module('Integration | Component | process-details/host-list-container', function
   });
 
   test('clicking on the icon navigates to events page', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
     setState({
       processAnalysis: {
         hostContext: {
@@ -97,8 +97,7 @@ module('Integration | Component | process-details/host-list-container', function
     await click(findAll('.pivot-to-investigate button')[0]);
     assert.ok(actionSpy.calledOnce, 'Window.open is called');
     assert.ok(actionSpy.args[0][0].includes('123456789'), 'expected to include agent id');
-    assert.ok(actionSpy.args[0][0].includes('2009-02-13T23:31:30Z'));
-    assert.ok(actionSpy.args[0][0].includes('/navigate/query'), 'expected to include details in url');
+    assert.ok(actionSpy.args[0][0].includes('/investigate/events'), 'expected to include details in url');
     actionSpy.resetHistory();
     actionSpy.restore();
   });

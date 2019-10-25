@@ -57,11 +57,14 @@ const _getQuery = (metaName, metaValue) => {
  * Opens the investigate page with events query
  * @private
  */
-const navigateToInvestigateEventsAnalysis = ({ metaName, metaValue, itemList, additionalFilter }, serviceId, timeRange, zoneId) => {
-  const { value, unit } = timeRange;
-  const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
-
+const navigateToInvestigateEventsAnalysis = ({ metaName, metaValue, itemList, additionalFilter, startTime, endTime }, serviceId, timeRange, zoneId) => {
+  let range = { startTime, endTime };
   let mf = _buildFilter(metaName, metaValue, itemList);
+
+  if (timeRange) {
+    const { value, unit } = timeRange;
+    range = buildTimeRange(value, unit, zoneId);
+  }
 
   if (additionalFilter) {
     mf = `${mf} && ${additionalFilter}`;
@@ -70,8 +73,8 @@ const navigateToInvestigateEventsAnalysis = ({ metaName, metaValue, itemList, ad
   const queryParams = {
     sid: serviceId, // Service Id
     mf: encodeURIComponent(mf), // Meta filter
-    st: startTime, // Stat time
-    et: endTime, // End time
+    st: range.startTime, // Stat time
+    et: range.endTime, // End time
     mps: 'default', // Meta panel size
     rs: 'max' // Recon size
   };

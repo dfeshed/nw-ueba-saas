@@ -8,7 +8,7 @@ export default Service.extend({
 
   redux: service(),
 
-  pivotToInvestigate(metaName, item, category, tab = 'NAVIGATE') {
+  pivotToInvestigate(metaName, item, category, tab = 'EVENTS') {
     const state = this.get('redux').getState();
     const investigateServer = serviceId(state);
     if (investigateServer !== '-1') {

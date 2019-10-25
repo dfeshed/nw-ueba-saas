@@ -225,8 +225,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       await click(findAll('.pivot-to-investigate button')[0]);
       assert.ok(actionSpy.calledOnce, 'Window.open is called');
       assert.ok(actionSpy.args[0][0].includes('123456'), 'expected to include agent id');
-      assert.ok(actionSpy.args[0][0].includes('2009-02-13T23:31:30Z'));
-      assert.ok(actionSpy.args[0][0].includes('/navigate/query'), 'expected to include details in url');
+      assert.ok(actionSpy.args[0][0].includes('/events'), 'expected to include details in url');
       actionSpy.resetHistory();
       actionSpy.restore();
     });
