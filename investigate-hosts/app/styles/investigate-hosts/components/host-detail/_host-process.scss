@@ -57,6 +57,12 @@
 }
 
 .host-process-wrapper {
+  .rsa-header{
+    .rsa-nav-tab{
+        margin-bottom: 0px;
+        padding-bottom: 1rem;
+      }
+    }
   .process-list-box {
     position: relative;
     .rsa-data-table {

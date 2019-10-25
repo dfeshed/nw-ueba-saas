@@ -3,9 +3,9 @@
     {{#layout.center}}
       <div class='file-analysis-header'>
         {{#link-to 'hosts.details.tab' agentId activeHostDetailTab}}
-          <div class='close-action-wrapper file-analysis-title'>
+          {{#rsa-form-button class='close-action-wrapper file-analysis-title'}}
             {{rsa-icon size="small" name="arrow-left-12"}} <span class='backButton'>{{t backToActiveHostDatailTab}}</span>
-          </div>
+          {{/rsa-form-button}}
         {{/link-to}}
         <span class='file-analysis-title'>{{t 'investigateShared.endpoint.fileAnalysis.title'}}</span>
         -
