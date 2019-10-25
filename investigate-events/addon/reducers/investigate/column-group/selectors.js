@@ -21,7 +21,7 @@ const _profiles = (state) => state.investigate.profile?.profiles;
 const _markDeletable = (columnGroups, profiles) => {
   const i18n = lookup('service:i18n');
   return columnGroups.map((columnGroup) => {
-    const associatedProfiles = profiles.filter((profile) => columnGroup.id === profile?.columnGroup.id);
+    const associatedProfiles = profiles.filter((profile) => columnGroup.id === profile?.columnGroup?.id);
     const isDeletable = associatedProfiles.length === 0;
     let reason;
     if (!isDeletable) {
