@@ -99,6 +99,11 @@ export default class DataHelper {
     return this;
   }
 
+  editedItem(item) {
+    _set(this.state, 'editedItem', item);
+    return this;
+  }
+
   isItemsLoading(value) {
     _set(this.state, 'isItemsLoading', value);
     return this;

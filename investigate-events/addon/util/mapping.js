@@ -26,7 +26,8 @@ export const mapColumnGroupsForEventTable = (eventColumnGroups) => {
           return {
             field: col.metaName,
             title: col.displayName,
-            position: col.position,
+            // TODO add back when we decide to use it. As of now, they are not used and un-reliable
+            // position: col.position,
             visible: col.visible,
             width
           };

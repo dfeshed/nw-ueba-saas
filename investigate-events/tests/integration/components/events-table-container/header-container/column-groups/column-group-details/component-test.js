@@ -29,14 +29,14 @@ module('Integration | Component | Column Group Details', function(hooks) {
     initialize(this.owner);
   });
 
-  const DISPLAYED_COLUMNS = '.group-details > ul.column-list li';
+  const DISPLAYED_COLUMNS = '.displayed-details > ul.column-list li';
   const AVAILABLE_META = '.add-details > ul.column-list li';
 
   const getTextFromDOMArray = (arr) => {
     return arr.reduce((a, c) => a + c.textContent.trim().replaceAll(' ', ''), '');
   };
 
-  test('columnGroup details should render column details when an item is available', async function(assert) {
+  test('renders read only columnGroup details when an ootb columnGroup is being viewed', async function(assert) {
 
     this.set('columnGroup', mappedColumnGroups[3]);
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details columnGroup=columnGroup}}`);
@@ -51,11 +51,12 @@ module('Integration | Component | Column Group Details', function(hooks) {
     assert.equal(getTextFromDOMArray(metaKeys), 'custom.themesizecustom.meta-details', 'Displayed meta keys');
   });
 
-  test('columnGroup details should render an edit form to create a new column group', async function(assert) {
+  test('renders an edit form to create a new column group', async function(assert) {
 
     this.set('columnGroup', null);
+    this.set('editColumnGroup', () => {});
     new ReduxDataHelper(setState).metaKeyCache().build();
-    await render(hbs`{{events-table-container/header-container/column-groups/column-group-details columnGroup=columnGroup}}`);
+    await render(hbs`{{events-table-container/header-container/column-groups/column-group-details columnGroup=columnGroup editColumnGroup=editColumnGroup}}`);
 
     assert.ok(find('.column-group-form'), 'Column Group Details rendered correctly');
     assert.equal(find('.group-name .name').textContent.trim(), 'Group Name');
@@ -67,4 +68,32 @@ module('Integration | Component | Column Group Details', function(hooks) {
 
   });
 
+  test('renders an edit form to edit a custom column group', async function(assert) {
+
+    const customColumnGroup = {
+      id: 2,
+      name: 'foo',
+      columns: [
+        { field: 'time', title: 'Time' },
+        { field: 'medium', title: 'Type' },
+        { field: 'action', title: 'Action' }
+      ],
+      isEditable: true
+    };
+
+    this.set('columnGroup', customColumnGroup);
+    this.set('editColumnGroup', () => {});
+    new ReduxDataHelper(setState).metaKeyCache().build();
+    await render(hbs`{{events-table-container/header-container/column-groups/column-group-details columnGroup=columnGroup editColumnGroup=editColumnGroup}}`);
+
+    assert.ok(find('.column-group-form'), 'Column Group Details rendered correctly');
+    assert.equal(find('.group-name .name').textContent.trim(), 'Group Name');
+    assert.ok(find('.group-name .value input'), 'input for group name');
+    assert.equal(findAll('.group-name .value input')[0].value, customColumnGroup.name, 'renders original group name');
+    assert.equal(find('.group-details .name').textContent.trim(), 'Displayed Meta Keys');
+    assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
+    assert.equal(find('.add-details .name').textContent.trim(), 'Available Meta Keys');
+    assert.equal(findAll(AVAILABLE_META).length, 92, '92/95 meta keys available');
+
+  });
 });

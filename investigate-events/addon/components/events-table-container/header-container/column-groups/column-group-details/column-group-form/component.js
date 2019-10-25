@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 import { run } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
-
+import { hasUniqueName } from 'investigate-events/util/validations';
 import { metaMapForColumns } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
 
@@ -29,8 +29,8 @@ const ColumnGroupForm = Component.extend({
   // original columnGroup with sorted columns
   columnGroup: null,
 
-  // new columnGroup on create/edit
-  newColumnGroup: null,
+  // name of the columnGroup being created/edited
+  columnGroupName: null,
 
   // columns selected for the columnGroup
   displayedColumns: [],
@@ -48,16 +48,26 @@ const ColumnGroupForm = Component.extend({
 
   nameInvalidMessage: null,
 
+  // initialize form data when a columnGroup has begun edit
+  // reset form data when columnGroup is created, updated or reset
+  didReceiveAttrs() {
+    if (this.get('columnGroup')) {
+      this.initializeFormData();
+    }
+  },
+
   /**
    * initialize a working copy of columns and leave original column group alone
    */
-  didInsertElement() {
-    this.set('newColumnGroup', {});
-    const columnGroup = this.get('columnGroup');
-
-    if (columnGroup?.columns) {
-      this.set('displayedColumns', columnGroup.columns);
+  initializeFormData() {
+    if (this.get('isNameError')) {
+      this.set('isNameError', false);
+      this.set('nameInvalidMessage', null);
     }
+    const columnGroup = this.get('columnGroup');
+    this.set('displayedColumns', columnGroup?.columns || []);
+    this.set('columnGroupName', columnGroup?.name);
+    this._broadcastChangedGroup();
   },
 
   @computed('allMeta', 'displayedColumns')
@@ -94,9 +104,7 @@ const ColumnGroupForm = Component.extend({
    */
   _updateColumns(columns) {
     this.set('displayedColumns', columns);
-    const newColumnGroup = this.get('newColumnGroup');
-    newColumnGroup.columns = columns;
-    this._checkDirtyChange();
+    this._broadcastChangedGroup();
   },
 
   /**
@@ -104,38 +112,37 @@ const ColumnGroupForm = Component.extend({
    */
   _prepareColumnGroup(columnGroup) {
 
-    if (columnGroup?.columns) {
-      const { name } = columnGroup;
+    columnGroup.contentType = 'USER';
+    delete columnGroup?.isEditable;
 
-      const columns = columnGroup.columns.map((col, index) => {
+    if (columnGroup?.columns) {
+      columnGroup.columns = columnGroup.columns.map((col) => {
         return {
           metaName: col.field,
           displayName: col.title,
-          // the columns selected by the user follow the default columns ( time and medium ) in position
-          position: index + 2
+          // TODO add back when needed and reliable. the columns selected by the user follow the default columns ( time and medium ) in position
+          // position: index + 2,
+          visible: col.visible,
+          width: col.width
         };
       });
-
-      return { name, columns };
     }
+
     return columnGroup;
   },
 
-  _checkDirtyChange() {
+  _broadcastChangedGroup() {
     let editedColumnGroup = null;
-    const originalGroup = this.get('columnGroup');
-    const newGroup = this.get('newColumnGroup');
+    const { columnGroup: originalGroup, columnGroupName, displayedColumns } = this.getProperties('columnGroup', 'columnGroupName', 'displayedColumns');
 
-    if (!this.get('isNameError') && newGroup?.name && newGroup?.columns?.length) {
-      const isNewGroupChanged = JSON.stringify(newGroup) !== JSON.stringify(originalGroup);
-      editedColumnGroup = isNewGroupChanged ? newGroup : null;
-      editedColumnGroup = this._prepareColumnGroup(editedColumnGroup);
-    }
+    const trimmedGroupName = columnGroupName?.trim();
 
-    // Calling editColumnGroup with null is an indicator to the called function that
-    // the data being edited is currently invalid
+    editedColumnGroup = _.cloneDeep(originalGroup) || {};
+    editedColumnGroup.name = trimmedGroupName;
+    editedColumnGroup.columns = displayedColumns;
+    editedColumnGroup = this._prepareColumnGroup(editedColumnGroup);
+
     this.get('editColumnGroup')(editedColumnGroup);
-
   },
 
   _updateFilterSelection() {
@@ -149,10 +156,8 @@ const ColumnGroupForm = Component.extend({
 
   _validateForErrors(value) {
     const columnGroups = this.get('columnGroups') || [];
-    // TODO edit unique name check for new items only
-    const hasUniqueName = !columnGroups.find((item) => item.name == value);
 
-    const isNameError = !hasUniqueName;
+    const isNameError = !hasUniqueName(value, this.get('columnGroup')?.id, columnGroups);
     const nameInvalidMessage = isNameError ? this.get('i18n').t('investigate.events.columnGroups.nameNotUnique') : null;
 
     this.set('isNameError', isNameError);
@@ -162,13 +167,9 @@ const ColumnGroupForm = Component.extend({
   actions: {
 
     handleNameChange(value) {
-      value = value.trim();
-      const newColumnGroup = this.get('newColumnGroup');
-      newColumnGroup.name = value;
-
+      this.set('columnGroupName', value);
       this._validateForErrors(value);
-
-      this._checkDirtyChange();
+      this._broadcastChangedGroup();
     },
 
     // adds candidate meta to columns at the end of the list

@@ -6,16 +6,19 @@ import { setupRenderingTest } from 'ember-qunit';
 module('Integration | Component | item ', function(hooks) {
   setupRenderingTest(hooks);
 
-  const editable = 'rsa-icon-settings-1';
+  const isEditableIcon = 'rsa-icon-settings-1';
+  const isBuiltInIcon = 'rsa-icon-lock-close-1';
+
+  const editDetailsIcon = 'rsa-icon-pencil-1';
+  const readOnlyDetailsIcon = 'rsa-icon-information-circle';
+
   const item = { id: '1', name: 'foo' };
+  const editableItem = { id: '1', name: 'foo', isEditable: true };
+  const builtInItem = { id: '1', name: 'foo', isEditable: false };
 
-  test('Component for item renders when no selectedItem is passed, no is-editable indicators', async function(assert) {
-    assert.expect(6);
-
+  test('renders correctly for list with no contentType indicators', async function(assert) {
     this.set('item', item);
-    this.set('itemSelection', (itemClicked) => {
-      assert.deepEqual(itemClicked, item, 'Clicking an Item triggers itemSelection');
-    });
+    this.set('itemSelection', () => {});
     this.set('hasIsEditableIndicators', false);
 
     await render(hbs`{{list-manager/list-manager-container/item-list/item
@@ -26,21 +29,71 @@ module('Integration | Component | item ', function(hooks) {
 
     assert.ok(find('li.rsa-list-item'), 'list found');
     assert.notOk(find('li .is-editable-indicator'), 'is-editable indicator found');
-    assert.notOk(find('li.is-selected'));
     assert.equal(find('li a').getAttribute('title'), 'foo', 'tooltip for item on hover shows item name');
-    assert.equal(find('li').getAttribute('tabindex'), -1, 'tabindex attribute exists');
+  });
 
+  test('renders editableItem with contentType indicators', async function(assert) {
+    this.set('item', editableItem);
+    this.set('itemSelection', () => {});
+    this.set('hasIsEditableIndicators', true);
+
+    await render(hbs`{{list-manager/list-manager-container/item-list/item
+      item=item
+      itemSelection=itemSelection
+      hasIsEditableIndicators=hasIsEditableIndicators
+    }}`);
+
+    assert.ok(find('li.rsa-list-item'), 'list found');
+    assert.ok(find('li .is-editable-indicator'), 'is-editable indicator found');
+    assert.equal(find('li .is-editable-icon-wrapper').title, 'User created content');
+    assert.ok(find('li .is-editable-indicator').classList.contains(isEditableIcon), 'is-editable indicator found');
+    assert.ok(find('li .edit-icon i').classList.contains(editDetailsIcon), 'edit icon');
+  });
+
+  test('renders builtIntem with contentType indicators', async function(assert) {
+    this.set('item', builtInItem);
+    this.set('itemSelection', () => {});
+    this.set('hasIsEditableIndicators', true);
+
+    await render(hbs`{{list-manager/list-manager-container/item-list/item
+      item=item
+      itemSelection=itemSelection
+      hasIsEditableIndicators=hasIsEditableIndicators
+    }}`);
+
+    assert.ok(find('li.rsa-list-item'), 'list found');
+    assert.ok(find('li .is-editable-indicator'), 'is-editable indicator found');
+    assert.equal(find('li .is-editable-icon-wrapper').title, 'RSA built-in content');
+    assert.ok(find('li .is-editable-indicator').classList.contains(isBuiltInIcon), 'is-editable indicator found');
+    assert.ok(find('li .edit-icon i').classList.contains(readOnlyDetailsIcon), 'edit icon');
+  });
+
+  test('selecting an item executes selection', async function(assert) {
+    assert.expect(2);
+
+    this.set('item', editableItem);
+    this.set('itemSelection', (itemClicked) => {
+      assert.deepEqual(itemClicked, editableItem, 'Clicking an Item triggers itemSelection');
+    });
+    this.set('hasIsEditableIndicators', false);
+
+    await render(hbs`{{list-manager/list-manager-container/item-list/item
+      item=item
+      itemSelection=itemSelection
+      hasIsEditableIndicators=hasIsEditableIndicators
+    }}`);
+
+    assert.equal(find('li').getAttribute('tabindex'), -1, 'tabindex attribute exists');
     await click('li a');
   });
 
-  test('Component for item renders when selectedItem is clicked', async function(assert) {
-    assert.expect(3);
+  test('renders correctly when item should be selected', async function(assert) {
+    assert.expect(2);
 
-    const item1 = { id: '1', name: 'foo', isEditable: true };
-    this.set('item', item1);
-    this.set('selectedItemId', item1.id);
+    this.set('item', item);
+    this.set('selectedItemId', item.id);
     this.set('itemSelection', (itemClicked) => {
-      assert.deepEqual(itemClicked, item1, 'Clicking an Item triggers itemSelection');
+      assert.deepEqual(itemClicked, item, 'Clicking an Item triggers itemSelection');
     });
     this.set('hasIsEditableIndicators', true);
 
@@ -52,19 +105,15 @@ module('Integration | Component | item ', function(hooks) {
     }}`);
 
     assert.ok(find('li.is-selected'), 'the item rendered is a selected item');
-    assert.ok(find('li .is-editable-indicator').classList.contains(editable), 'icon is editable');
-
     await click('li.is-selected a');
   });
 
-  test('Component for item renders correctly when item should be highlighted', async function(assert) {
-    const item = { id: 'someid', name: 'foo' };
-
+  test('renders correctly when item should be highlighted', async function(assert) {
     this.set('item', item);
     this.set('itemSelection', () => {
     });
     this.set('hasIsEditableIndicators', true);
-    this.set('highlightedId', 'someid');
+    this.set('highlightedId', item.id);
 
     await render(hbs`{{list-manager/list-manager-container/item-list/item
       item=item
@@ -76,9 +125,7 @@ module('Integration | Component | item ', function(hooks) {
     assert.ok(find('li.is-highlighted'), 'the item shall have is-highlighted class');
   });
 
-  test('Component for item renders correctly when item should not be highlighted', async function(assert) {
-    const item = { id: 'someid', name: 'foo' };
-
+  test('renders correctly when item should not be highlighted', async function(assert) {
     this.set('item', item);
     this.set('itemSelection', () => {
     });

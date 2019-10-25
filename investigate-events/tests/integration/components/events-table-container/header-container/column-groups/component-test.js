@@ -27,6 +27,7 @@ module('Integration | Component | Column Groups', function(hooks) {
       patchReducer(this, state);
     };
     initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
   test('columnGroup manager should be visible', async function(assert) {
@@ -152,7 +153,7 @@ module('Integration | Component | Column Groups', function(hooks) {
   test('clicking the edit icon shows details of the columnGroup', async function(assert) {
 
     new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().language().build();
-    await render(hbs`<div class = 'other-div'></div>{{events-table-container/header-container/column-groups}}`);
+    await render(hbs`{{events-table-container/header-container/column-groups}}`);
 
     await click(dropdownSelector);
 

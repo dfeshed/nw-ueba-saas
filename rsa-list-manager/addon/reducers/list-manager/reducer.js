@@ -5,6 +5,7 @@ import { handle } from 'redux-pack';
 import sort from 'fast-sort';
 import {
   LIST_VIEW,
+  // May want to call it DETAILS_VIEW to be fair to both EDIT and READ_ONLY VIEWS
   EDIT_VIEW
 } from 'rsa-list-manager/constants/list-manager';
 
@@ -36,7 +37,8 @@ const listManagerReducer = handleActions({
       isExpanded: !state.isExpanded,
       highlightedIndex: -1,
       filterText: '',
-      viewName: LIST_VIEW
+      viewName: LIST_VIEW,
+      editItemId: undefined
     });
   },
   [ACTION_TYPES.SET_VIEW_NAME]: (state, action) => {
@@ -97,7 +99,37 @@ const listManagerReducer = handleActions({
       }
     });
   },
+  [ACTION_TYPES.ITEM_UPDATE]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => {
+        return s.merge({
+          isItemsLoading: true,
+          updateItemErrorCode: null,
+          updateItemErrorMessage: null
+        });
+      },
+      failure: (s) => s.merge({
+        isItemsLoading: false,
+        updateItemErrorCode: action.payload.code,
+        updateItemErrorMessage: action.payload.meta ? action.payload.meta.message : undefined
+      }),
+      success: (s) => {
+        let { payload: { data: updatedItem } } = action;
+        const { meta: { itemTransform } } = action;
 
+        if (typeof itemTransform === 'function') {
+          updatedItem = itemTransform(updatedItem);
+        }
+        // replace the updated item by id
+        const updatedIdRemoved = [...s.list].filter((item) => item.id !== updatedItem.id);
+        const list = sort([...updatedIdRemoved, updatedItem]).by([{ asc: (item) => item.name.toUpperCase() }]);
+        return s.merge({
+          list,
+          isItemsLoading: false
+        });
+      }
+    });
+  },
   [ACTION_TYPES.ITEM_DELETE]: (state, action) => {
     return handle(state, action, {
       start: (s) => {
@@ -121,34 +153,6 @@ const listManagerReducer = handleActions({
           isItemsLoading: false,
           viewName: LIST_VIEW,
           editItemId: undefined
-        });
-      }
-    });
-  },
-
-  [ACTION_TYPES.ITEM_UPDATE]: (state, action) => {
-    return handle(state, action, {
-      start: (s) => {
-        return s.merge({
-          isItemsLoading: true,
-          updateItemErrorCode: null,
-          updateItemErrorMessage: null
-        });
-      },
-      failure: (s) => s.merge({
-        isItemsLoading: false,
-        updateItemErrorCode: action.payload.code,
-        updateItemErrorMessage: action.payload.meta ? action.payload.meta.message : undefined
-      }),
-      success: (s) => {
-        const updatedItem = action.payload.data;
-        // TODO bhanun mapping function
-        // replace the updated item by id
-        const updatedIdRemoved = [...s.list].filter((item) => item.id !== updatedItem.id);
-        const list = sort([...updatedIdRemoved, updatedItem]).by([{ asc: (item) => item.name.toUpperCase() }]);
-        return s.merge({
-          list,
-          isItemsLoading: false
         });
       }
     });

@@ -21,6 +21,7 @@
 
   {{#manager.details
     itemTransform=(action 'columnGroupResponseMapping')
+    isValidItem=(action 'validateEditedColumnGroup')
     as |details|}}
 
     {{events-table-container/header-container/column-groups/column-group-details

@@ -25,7 +25,8 @@ The list manager can be used in your template as follows:
 
   {{!-- required --}}
   {{#manager.details
-    itemTransform=someTransformFunction
+    itemTransform=(action 'transformMyItem')
+    isValidItem=(action 'validateMyItem')
     as |details|}}
     {{your-component
       myItem=details.item
@@ -47,9 +48,11 @@ The list manager can be used in your template as follows:
 ## Actions
 * `itemSelection`, *Action*, __required__,  An action to execute when an item is selected.
 * `itemTransform`, *Action*, __optional__,  An action to execute when an item from server needs mapping to another format for UI. e.g. metaName: 'foo' > field: 'foo'
+* `isValidItem`, *Action*, __optional__,  Any custom validation for editedItem.
 
 ## NOTE
-* `itemEdited` is a function that takes an editedItem from `your-component`
-* list-manager validates if the editedItem has a unique name and does not provide any other validation.
-* For any other validation, the editedItem passed to `itemEdited` should either be null or it must pass custom validity.
+* `details.item` is the originalItem object yielded to `your-component`
+* `details.itemEdited` is a function that takes an editedItem from `your-component`
+* list-manager validates if the editedItem has name and does not provide any other validation.
+* For any other validation, a custom validation function should be passed to `isValidItem`.
 * refer `investigate-events/events-table-container/header-container/column-groups` for usage

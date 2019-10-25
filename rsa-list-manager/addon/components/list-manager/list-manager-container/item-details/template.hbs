@@ -11,7 +11,7 @@
   </div>
   <div class='details-body'>
     {{yield (hash
-      item=item
+      item=originalItem
       itemEdited=(action 'itemEdited')
      )
     }}
@@ -29,8 +29,10 @@
 
 {{list-manager/list-manager-container/item-details/details-footer
   stateLocation=stateLocation
-  item=item
+  originalItem=originalItem
   editedItem=editedItem
   itemTransform=itemTransform
   itemSelection=itemSelection
+  isValidItem=isValidItem
+  itemReset=(action 'resetItem')
 }}

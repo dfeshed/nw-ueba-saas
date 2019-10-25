@@ -520,6 +520,18 @@ export default {
       generic: 'An unexpected error has occurred attempting to download file(s). If further details are available, they can be found in the console.'
     }
   },
+  contentType: {
+    'user-created': {
+      tooltip: 'User created content',
+      icon: 'settings-1',
+      detailsIcon: 'pencil-1'
+    },
+    'built-in': {
+      tooltip: 'RSA built-in content',
+      icon: 'lock-close-1',
+      detailsIcon: 'information-circle'
+    }
+  },
   investigate: {
     profile: {
       profileGroup: 'Profile Group',

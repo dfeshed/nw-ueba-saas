@@ -57,7 +57,7 @@ export const viewChanged = (viewname, stateLocation) => ({
 
 export const setSelectedItem = (item, stateLocation) => _setSelectedItemById(item.id, stateLocation);
 
-export const editItem = (editItemId, stateLocation) => ({
+export const beginEditItem = (editItemId, stateLocation) => ({
   type: ACTION_TYPES.EDIT_ITEM,
   payload: editItemId,
   meta: { belongsTo: stateLocation }

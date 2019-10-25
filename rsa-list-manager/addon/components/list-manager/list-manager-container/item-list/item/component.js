@@ -2,10 +2,10 @@ import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { editItem } from 'rsa-list-manager/actions/creators/creators';
+import { beginEditItem } from 'rsa-list-manager/actions/creators/creators';
 
 const dispatchToActions = {
-  editItem
+  beginEditItem
 };
 
 const Item = Component.extend({
@@ -32,16 +32,19 @@ const Item = Component.extend({
   },
 
   @computed('item')
-  iconName(item) {
-    if (!item.isEditable) {
-      return 'lock-close-1';
-    }
-    return 'settings-1';
+  contentType(item) {
+    const contentType = item.isEditable ? 'user-created' : 'built-in';
+    const i18n = this.get('i18n');
+
+    const toolTip = i18n.t(`contentType.${contentType}.tooltip`);
+    const typeIcon = i18n.t(`contentType.${contentType}.icon`);
+    const detailsIcon = i18n.t(`contentType.${contentType}.detailsIcon`);
+    return { toolTip, typeIcon, detailsIcon };
   },
 
   actions: {
     editDetails() {
-      this.send('editItem', this.get('item').id, this.get('stateLocation'));
+      this.send('beginEditItem', this.get('item').id, this.get('stateLocation'));
     }
   }
 });

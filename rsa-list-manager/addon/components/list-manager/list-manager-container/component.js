@@ -46,10 +46,6 @@ const ListManagerContainer = Component.extend({
   // style for the recon-button-menu derived from the buttonGroup style
   offsetsStyle: null,
 
-  _updateView(viewName) {
-    this.send('viewChanged', viewName, this.get('stateLocation'));
-  },
-
   actions: {
     collapseManagerList(e) {
       // do not close list manager if user clicked on search input field of power select

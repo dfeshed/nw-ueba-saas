@@ -1,12 +1,12 @@
 <a {{action itemSelection item}} title="{{item.name}}">
   {{#if hasIsEditableIndicators}}
-    {{#rsa-form-button class='is-editable-icon-wrapper' isIconOnly=true}}
-      {{rsa-icon class='is-editable-indicator' name=iconName}}
+    {{#rsa-form-button title=contentType.toolTip class='is-editable-icon-wrapper' isIconOnly=true}}
+      {{rsa-icon class='is-editable-indicator' name=contentType.typeIcon}}
     {{/rsa-form-button}}
   {{/if}}
   {{yield item}}
 </a>
+{{!--TODO edit followup PR what if hasEditableIndicators is false--}}
 {{#rsa-form-button class='edit-icon' defaultAction=(action 'editDetails')}}
-  {{! pencil-write-2 for editable TODO edit}}
-  {{rsa-icon name='information-circle'}}
+  {{rsa-icon name=contentType.detailsIcon}}
 {{/rsa-form-button}}

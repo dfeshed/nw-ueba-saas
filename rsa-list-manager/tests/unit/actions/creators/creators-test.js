@@ -76,8 +76,8 @@ module('Unit | Actions | Creators', function(hooks) {
     assert.ok(true, 'setSelectedItem shall not dispatch if shouldSelectedItemPersist is false');
   });
 
-  test('editItem action creator returns proper type', function(assert) {
-    const { type } = creators.editItem(null, stateLocation1);
+  test('beginEditItem action creator returns proper type', function(assert) {
+    const { type } = creators.beginEditItem(null, stateLocation1);
     assert.equal(type, ACTION_TYPES.EDIT_ITEM, 'action has the correct type');
   });
 

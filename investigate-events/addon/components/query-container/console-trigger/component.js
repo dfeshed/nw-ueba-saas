@@ -92,7 +92,8 @@ const ConsoleTrigger = Component.extend({
     const triggerClicked = parentClass && parentClass.includes('console-trigger');
     const closestQueryBarSelection = element.closest('.query-bar-selection');
     const findConsolePanel = findBySelector([closestQueryBarSelection], '.console-panel');
-    const hierarchyClicked = clickedEl.className.includes('circle');
+    // TODO if a clicked element does not have a string type className
+    const hierarchyClicked = typeof clickedEl.className === 'string' && clickedEl.className.includes('circle');
     const consoleClicked = findElement(findConsolePanel, clickedEl).length > 0;
     const isOpen = this.get('isOpen');
 

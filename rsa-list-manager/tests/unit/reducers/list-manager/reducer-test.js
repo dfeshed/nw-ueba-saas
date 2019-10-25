@@ -455,6 +455,48 @@ test('Should set relevant properties correctly after successfully updating item'
   assert.notOk(newEndState.updateItemErrorMessage, 'updateItemErrorMessage shall not be set');
 });
 
+test('should transform updated item if transform function present', function(assert) {
+  const someItemAttribute = [ { foo: 'a', bar: 'b' }];
+  const originalItem = {
+    name: 'OldName',
+    id: '23',
+    someItemAttribute
+  };
+  const previous = Immutable.from({
+    list: [ originalItem ],
+    editItemId: originalItem.id
+  });
+
+  const updatedItem = {
+    name: 'NewName',
+    id: originalItem.id,
+    someItemAttribute
+  };
+
+  const itemTransform = (data) => {
+    return {
+      name: data.name,
+      id: data.id,
+      someItemAttribute: [ { baz: 'a', taz: 'b' }]
+    };
+  };
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.ITEM_UPDATE,
+    payload: { data: updatedItem },
+    meta: { itemTransform }
+  });
+
+  const newEndState = reducer(previous, successAction);
+  assert.equal(newEndState.list[0].name, updatedItem.name);
+  assert.deepEqual(newEndState.list[0].someItemAttribute, [ { baz: 'a', taz: 'b' }], 'item transformed correctly');
+  assert.equal(newEndState.isItemsLoading, false, 'isItemsLoading shall be set false');
+  assert.equal(newEndState.editItemId, '23', 'item created will be set for edit');
+  assert.notOk(newEndState.createItemErrorCode, 'createItemErrorCode shall not be set');
+  assert.notOk(newEndState.createItemErrorMessage, 'createItemErrorMessage shall not be set');
+});
+
+
 test('Should set relevant properties correctly after failure to update item', function(assert) {
   const previous = Immutable.from({
     list: [

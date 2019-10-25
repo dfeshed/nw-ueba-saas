@@ -1,13 +1,12 @@
 const BASE_COLUMNS = [
-  { metaName: 'time', displayName: 'Collection Time', width: 175 },
-  { metaName: 'medium', displayName: 'Type' }
+  { metaName: 'time', displayName: 'Collection Time', width: 175, position: 0, visible: true },
+  { metaName: 'medium', displayName: 'Type', width: 100, position: 1, visible: true }
 ];
-
 export const columnGroups = [
   {
     id: 'EMAIL1',
     name: 'Custom 1',
-    columns: [
+    columns: BASE_COLUMNS.concat([
       {
         metaName: 'service',
         displayName: 'Service Type'
@@ -41,12 +40,12 @@ export const columnGroups = [
       }, {
         metaName: 'country.src',
         displayName: 'Source Country'
-      }],
+      }]),
     contentType: 'USER'
   }, {
     id: 'MALWARE1',
     name: 'Custom 2',
-    columns: [
+    columns: BASE_COLUMNS.concat([
       {
         metaName: 'service',
         displayName: 'Service Type'
@@ -71,7 +70,7 @@ export const columnGroups = [
       }, {
         metaName: 'domain.dst',
         displayName: 'Destination Domain'
-      }],
+      }]),
     contentType: 'USER'
   }, {
     id: 'SUMMARY',

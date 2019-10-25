@@ -1,10 +1,10 @@
 <div class='footer-buttons'>
   {{#rsa-form-button class='create-item' defaultAction=(action 'createItem')}}
-    {{rsa-icon name='add-1'}}
+    {{rsa-icon title=newItemIconTooltip name='add-1'}}
     {{newItemButtonTitle}}
   {{/rsa-form-button}}
   {{#if hasContextualHelp}}
-    {{#rsa-form-button class='list-help-icon' defaultAction=(action 'goToHelp')}}
+    {{#rsa-form-button title='Help' class='list-help-icon' defaultAction=(action 'goToHelp')}}
       {{rsa-icon name='help-circle'}}
     {{/rsa-form-button}}
   {{/if}}

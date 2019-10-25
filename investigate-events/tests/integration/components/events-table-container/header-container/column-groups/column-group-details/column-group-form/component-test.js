@@ -27,12 +27,17 @@ module('Integration | Component | Column Group form', function(hooks) {
   const AVAILABLE_META = '.add-details > ul.column-list li';
   const groupNameInput = '.group-name .value input';
 
-  test('it will render editable form for a new item', async function(assert) {
-    assert.expect(4);
+  const columnGroup = {
+    id: '2',
+    name: 'foo',
+    columns: [{ field: 'action', title: 'Action Event' }]
+  };
 
+  test('renders editable form for a new item', async function(assert) {
+    assert.expect(4);
     this.set('columnGroup', null);
-    this.set('editColumnGroup', (newGroup) => {
-      assert.notOk(newGroup, 'editColumnGroup is not called if there is no change');
+    this.set('editColumnGroup', () => {
+      assert.ok(true, 'editColumnGroup is not called when a new item form is rendered');
     });
 
     new ReduxDataHelper(setState).metaKeyCache().build();
@@ -49,12 +54,31 @@ module('Integration | Component | Column Group form', function(hooks) {
     assert.equal(findAll(AVAILABLE_META).length, 93, '93/95 meta keys available');
   });
 
-  test('it will add name', async function(assert) {
-    assert.expect(2);
+  test('renders form populated with details of item being edited', async function(assert) {
 
+    assert.expect(5);
+    this.set('columnGroup', columnGroup);
+    this.set('editColumnGroup', () => {
+      assert.ok(true, 'calls editColumnGroup when there are pre-populated values to be broadcasted');
+    });
+
+    new ReduxDataHelper(setState).metaKeyCache().build();
+    await render(hbs`{{events-table-container/header-container/column-groups/column-group-details/column-group-form
+      columnGroup=columnGroup
+      editColumnGroup=editColumnGroup}}`);
+
+    assert.ok(find(groupNameInput), 'input for group name');
+    assert.ok(findAll(groupNameInput)[0].value, columnGroup.name, 'columngroup name rendered correctly');
+    assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
+
+    assert.equal(findAll(AVAILABLE_META).length, 92, '92/95 meta keys available, 2 hidden, 1 chosen');
+  });
+
+  test('it will add name', async function(assert) {
+    assert.expect(3);
     this.set('columnGroup', null);
-    this.set('editColumnGroup', (newGroup) => {
-      assert.notOk(newGroup, 'editColumnGroup is called with null if group has name and no columns');
+    this.set('editColumnGroup', () => {
+      assert.ok(true, 'calls editColumnGroup when a change is broadcasted');
     });
 
     new ReduxDataHelper(setState).build();
@@ -67,14 +91,37 @@ module('Integration | Component | Column Group form', function(hooks) {
     // simulate typeIn
     await fillIn(groupNameInput, 'A');
     await triggerEvent(groupNameInput, 'keyup');
+
+    assert.equal(findAll(groupNameInput)[0].value, 'A');
+  });
+
+  test('will update name', async function(assert) {
+    assert.expect(5);
+    this.set('columnGroup', columnGroup);
+    this.set('editColumnGroup', () => {
+      assert.ok(true, 'called once during initializeForm and then on updating the name');
+    });
+
+    new ReduxDataHelper(setState).build();
+    await render(hbs`{{events-table-container/header-container/column-groups/column-group-details/column-group-form
+      columnGroup=columnGroup
+      editColumnGroup=editColumnGroup}}`);
+
+    assert.ok(find(groupNameInput), 'input for group name');
+    assert.equal(findAll(groupNameInput)[0].value, columnGroup.name);
+
+    // simulate typeIn
+    await fillIn(groupNameInput, 'A');
+    await triggerEvent(groupNameInput, 'keyup');
+    assert.equal(findAll(groupNameInput)[0].value, 'A');
   });
 
   test('it will add meta', async function(assert) {
-    assert.expect(6);
 
+    assert.expect(6);
     this.set('columnGroup', null);
-    this.set('editColumnGroup', (newGroup) => {
-      assert.notOk(newGroup, 'editColumnGroup is called with null if group has columns and no name');
+    this.set('editColumnGroup', () => {
+      assert.ok(true, 'called both the times meta is added');
     });
 
     new ReduxDataHelper(setState).metaKeyCache().build();
@@ -89,6 +136,30 @@ module('Integration | Component | Column Group form', function(hooks) {
     // add candidate meta
     await click(availableOptions[3]);
     await click(availableOptions[9]);
+
+    assert.equal(findAll(DISPLAYED_COLUMNS).length, 2, '2 columns present in displayed keys');
+    assert.equal(findAll(AVAILABLE_META).length, 91, '91 meta keys available');
+  });
+
+  test('it will update meta', async function(assert) {
+
+    assert.expect(6);
+    this.set('columnGroup', columnGroup);
+    this.set('editColumnGroup', () => {
+      assert.ok(true, 'called once during initializeForm and then on adding meta');
+    });
+
+    new ReduxDataHelper(setState).metaKeyCache().build();
+    await render(hbs`{{events-table-container/header-container/column-groups/column-group-details/column-group-form
+      columnGroup=columnGroup
+      editColumnGroup=editColumnGroup}}`);
+
+    assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, 'No columns present in displayed keys');
+    assert.equal(findAll(AVAILABLE_META).length, 92, '93 meta keys available');
+
+    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    // add candidate meta
+    await click(availableOptions[3]);
 
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 2, '2 columns present in displayed keys');
     assert.equal(findAll(AVAILABLE_META).length, 91, '91 meta keys available');
@@ -114,65 +185,22 @@ module('Integration | Component | Column Group form', function(hooks) {
       'Message displayed when all meta added');
   });
 
-  test('it will add meta and name', async function(assert) {
-    assert.expect(4);
-
-    this.set('columnGroup', null);
-    this.set('editColumnGroup', (newGroup) => {
-      if (newGroup) {
-        assert.ok(newGroup, 'Edit is called with new group everytime group is updated to have name and column');
-      }
-    });
-
-    new ReduxDataHelper(setState).metaKeyCache().build();
-
-    await render(hbs`{{events-table-container/header-container/column-groups/column-group-details/column-group-form
-      columnGroup=columnGroup
-      editColumnGroup=editColumnGroup}}`);
-
-    assert.ok(find(groupNameInput), 'input for group name');
-
-    // simulate typeIn
-    await fillIn(groupNameInput, 'F');
-    await triggerEvent(groupNameInput, 'keyup');
-
-    const availableOptions = findAll(`${AVAILABLE_META} button`);
-    // add candidate meta
-    await click(availableOptions[3]);
-
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 92, '92 meta keys available');
-
-    // typing in spaces only will trigger editColumnGroup, but with null object
-    // thus running the editColumnGroup assertion only once
-    await fillIn(groupNameInput, ' ');
-    await triggerEvent(groupNameInput, 'keyup');
-  });
-
   test('it will remove meta', async function(assert) {
-    assert.expect(5);
 
-    this.set('columnGroup', null);
-    this.set('editColumnGroup', (newGroup) => {
-      assert.notOk(newGroup, 'edit is called when it adds and removes meta');
-    });
+    this.set('columnGroup', columnGroup);
+    this.set('editColumnGroup', () => {});
 
     new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details/column-group-form
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
-
-    const availableOptions = findAll(`${AVAILABLE_META} button`);
-    // add candidate meta
-    await click(availableOptions[3]);
-    await click(availableOptions[9]);
 
     const selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
     // remove column
     await click(selectedOptions[0]);
 
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 92, '92 meta keys available');
+    assert.equal(findAll(DISPLAYED_COLUMNS).length, 0, '1 column present in displayed keys');
+    assert.equal(findAll(AVAILABLE_META).length, 93, '93 meta keys available');
   });
 
   test('will filter available meta', async function(assert) {
@@ -342,12 +370,10 @@ module('Integration | Component | Column Group form', function(hooks) {
     assert.ok(lengthOfSelection === 1, 'text in box is selected');
   });
 
-  test('editColumnGroup action is called with null if the new columnGroup does not have a unique name', async function(assert) {
-    assert.expect(2);
+  test('renders nameError if columnGroup name is not unique', async function(assert) {
+
     this.set('columnGroup', null);
-    this.set('editColumnGroup', (newGroup) => {
-      assert.notOk(newGroup, 'newGroup is null if all details added but name is not unique');
-    });
+    this.set('editColumnGroup', () => {});
 
     new ReduxDataHelper(setState).metaKeyCache().columnGroups().build();
     await render(hbs`
@@ -360,36 +386,12 @@ module('Integration | Component | Column Group form', function(hooks) {
     // simulate typeIn
     await fillIn(groupNameInput, 'Custom 1');
     await triggerEvent(groupNameInput, 'keyup');
-
-    const availableOptions = findAll(`${AVAILABLE_META} button`);
-    // add candidate meta
-    await click(availableOptions[3]);
-  });
-
-  test('editColumnGroup action is called with valid object if new Group has unique name and columns', async function(assert) {
-
-    assert.expect(1);
-    this.set('columnGroup', null);
-    this.set('editColumnGroup', (newGroup) => {
-      if (newGroup) {
-        assert.ok(newGroup, 'newGroup is null if name is not unique');
-      }
-    });
-
-    new ReduxDataHelper(setState).metaKeyCache().columnGroups().build();
-    await render(hbs`
-      {{events-table-container/header-container/column-groups/column-group-details/column-group-form
-        columnGroup=columnGroup
-        editColumnGroup=editColumnGroup
-      }}
-    `);
+    assert.ok(find('.group-name .value.is-error'), 'element has error');
 
     // simulate typeIn
-    await fillIn(groupNameInput, 'Some new name');
+    await fillIn(groupNameInput, 'Custom');
     await triggerEvent(groupNameInput, 'keyup');
-
-    const availableOptions = findAll(`${AVAILABLE_META} button`);
-    // add candidate meta
-    await click(availableOptions[3]);
+    assert.notOk(find('.group-name .value.is-error'), 'element does not have error');
   });
+
 });

@@ -125,7 +125,13 @@ const isEventFiredFromQueryPill = (event) => {
 
 const isEventFromContextMenus = (event) => {
   const { target: clickedElement } = event;
-  return clickedElement.className.includes('context-menu__item');
+  if (typeof clickedElement.className === 'string') {
+    // TODO context menu component should have string type className, but in case it doesn't,
+    // we should assert from classList ?
+    return clickedElement.className.includes('context-menu__item');
+  } else {
+    return clickedElement.classList.contains('context-menu__item') || clickedElement.classList.contains('context-menu__item__label');
+  }
 };
 
 const _hasCloseParenToRight = (pd, i) => pd[i] && pd[i].type === CLOSE_PAREN;

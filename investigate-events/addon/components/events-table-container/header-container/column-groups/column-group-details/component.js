@@ -12,12 +12,12 @@ export default Component.extend({
   // list-manager function that accepts validated edited item
   editColumnGroup: null,
 
-  // need not show time and medium columns to the user as they are default.
   @computed('columnGroup')
   displayedColumnGroup(columnGroup) {
 
     if (columnGroup?.columns) {
       const displayedColumnGroup = _.cloneDeep(columnGroup);
+      // need not show time and medium columns to the user as they are default.
       displayedColumnGroup.columns = displayedColumnGroup.columns.filter((column) => column.field !== 'time' && column.field !== 'medium');
       return displayedColumnGroup;
     }
@@ -27,9 +27,7 @@ export default Component.extend({
   @computed('columnGroup')
   isEditing(columnGroup) {
     if (!_.isEmpty(columnGroup)) {
-      // TODO Edit Group Items. Until then, custom columnGroups will also be read-only
-      // return columnGroup.isEditable;
-      return false;
+      return columnGroup.isEditable;
     }
     return true;
   }

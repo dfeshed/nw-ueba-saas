@@ -10,8 +10,7 @@ import { modelName, editItemId } from 'rsa-list-manager/selectors/list-manager/s
  */
 export const createItem = (item, stateLocation, itemTransform) => {
   return (dispatch, getState) => {
-    const state = getState();
-    const apiModelName = modelName(state, stateLocation);
+    const apiModelName = modelName(getState(), stateLocation);
     const payload = {};
     payload[apiModelName] = item;
 
@@ -34,14 +33,17 @@ export const createItem = (item, stateLocation, itemTransform) => {
  * 1. itemPayload of item to delete,
  * 2. list's stateLocation
  */
-export const updateItem = (payload, stateLocation) => {
+export const updateItem = (item, stateLocation, itemTransform) => {
   return (dispatch, getState) => {
     const apiModelName = modelName(getState(), stateLocation);
+    const payload = {};
+    payload[apiModelName] = item;
     dispatch({
       type: ACTION_TYPES.ITEM_UPDATE,
       promise: apiCreateOrUpdateItem(payload, apiModelName),
       meta: {
         belongsTo: stateLocation,
+        itemTransform,
         onFailure(response) {
           handleInvestigateErrorCode(response, `PUT_${apiModelName.toUpperCase()}_ITEM`);
         }
