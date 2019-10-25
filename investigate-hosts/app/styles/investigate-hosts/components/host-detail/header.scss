@@ -237,6 +237,9 @@
     padding: rsa-whitespace();
     border: none;
   }
+  .rsa-dropdown-action-list li.editDisabled {
+    background-color: transparent;
+  }
 }
 
 .host-container-detail {

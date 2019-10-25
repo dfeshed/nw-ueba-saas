@@ -3164,6 +3164,7 @@ export default {
         invalidIp: 'One or more of the IPv4/IPv6 addresses are invalid',
         ipListLimit: 'A maximum of a 100 IPs can be excluded',
         comments: 'COMMENTS<sup>*</sup>',
+        editExclusionList: 'Exclusion List',
         placeholder: 'Enter comments',
         success: 'Host Isolation initiated successfully'
       },

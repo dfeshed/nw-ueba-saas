@@ -1,8 +1,11 @@
 <div class='edit-modal-content'>
   <div class='exclusion-list-wrapper'>
     <box class="comment-box">
-      <label class="comment-box-label">
+      <label class="comment-box-description">
         {{t 'investigateHosts.networkIsolation.isolate.checkboxDescription'}}
+      </label>
+      <label class="comment-box-label">
+        {{t 'investigateHosts.networkIsolation.isolate.editExclusionList'}}
       </label>
       {{rsa-form-textarea
         value=exclusionList
