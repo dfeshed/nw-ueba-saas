@@ -511,12 +511,12 @@ export const initializeInvestigate = function(
     // 2) Initialize global preferences state
     _initializeGlobalPreferences(dispatch);
 
-    // 3) Retrieve the column groups, and profiles
+    // 3) Retrieve profiles, column groups, and meta groups
     // it isn't important that this be syncronized with anything else,
     // so can just kick it off
+    dispatch(_getProfiles());
     dispatch(_getColumnGroups());
     dispatch(_getMetaGroups());
-    dispatch(_getProfiles());
     dispatch(isQueryExecutedByColumnGroup(false));
 
     // 4) Get all the user's preferences

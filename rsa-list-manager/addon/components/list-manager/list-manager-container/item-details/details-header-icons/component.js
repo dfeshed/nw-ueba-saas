@@ -29,10 +29,27 @@ const DetailsHeaderIcons = Component.extend({
   classNames: ['details-header-icons'],
   contextualHelp: service(),
   stateLocation: undefined,
+  item: undefined,
 
   @computed('isEditable', 'isNewItem')
   showDeleteIcon(isEditable, isNewItem) {
     return isEditable && !isNewItem;
+  },
+
+  @computed('isSelected', 'item')
+  isDeletable(isSelected, item = {}) {
+    return !isSelected && !!item.isDeletable;
+  },
+
+  @computed('isSelected', 'item')
+  titleMessage(isSelected, item = {}) {
+    if (isSelected) {
+      return this.i18n.t('rsaListManager.iconMessage.disabled.delete');
+    } else if (!item.isDeletable && item.undeletableReason) {
+      return item.undeletableReason;
+    } else {
+      return '';
+    }
   },
 
   actions: {

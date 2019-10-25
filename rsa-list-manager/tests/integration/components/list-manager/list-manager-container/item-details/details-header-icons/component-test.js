@@ -24,8 +24,8 @@ module('Integration | Component | item details - details header icons', function
   const deleteIcon = '.list-delete-icon';
   const disabledIcon = '.is-disabled';
   const listLocation1 = 'listManager';
-  const list1 = [{ id: '123', name: 'foo', isEditable: true }];
-  const list2 = [{ id: '456', name: 'foo', isEditable: false }];
+  const list1 = [{ id: '123', name: 'foo', isEditable: true, isDeletable: true }];
+  const list2 = [{ id: '456', name: 'foo', isEditable: false, isDeletable: true }];
   const helpId1 = { moduleId: 'foo', topicId: '123' };
   const helpId2 = { moduleId: 'bar' };
 
@@ -81,9 +81,11 @@ module('Integration | Component | item details - details header icons', function
       .listName('Foos')
       .build();
     this.set('stateLocation', listLocation1);
+    this.set('item', list1[0]);
 
     await render(hbs`{{list-manager/list-manager-container/item-details/details-header-icons
       stateLocation=stateLocation
+      item=item
     }}`);
 
     assert.equal(findAll(deleteIcon).length, 1, 'shall render one delete icon');
@@ -119,6 +121,40 @@ module('Integration | Component | item details - details header icons', function
     }}`);
 
     assert.equal(findAll(deleteIcon).length, 0, 'shall not render delete icon');
+  });
+
+  test('shall render disabled delete icon if list item is not deletable', async function(assert) {
+    const reason = 'yo yo yo';
+    const list = [
+      {
+        id: '123',
+        name: 'foo',
+        isEditable: true,
+        isDeletable: false,
+        undeletableReason: reason
+      }
+    ];
+
+    new ReduxDataHelper(setState)
+      .stateLocation(listLocation1)
+      .editItemId(list[0].id)
+      .list(list)
+      .listName('Foos')
+      .build();
+    this.set('stateLocation', listLocation1);
+    this.set('item', list[0]);
+
+    await render(hbs`
+      {{list-manager/list-manager-container/item-details/details-header-icons
+        stateLocation=stateLocation
+        item=item
+      }}
+    `);
+
+    const icon = find(deleteIcon);
+    assert.ok(icon, 'shall render delete icon');
+    assert.ok(icon.getAttribute('class').includes('is-disabled'), 'icon is disabled');
+    assert.equal(icon.getAttribute('title'), reason, 'title explains why delete is disabled');
   });
 
   test('shall render delete icon with is-disabled class if item is currently selected and is isEditable', async function(assert) {

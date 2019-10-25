@@ -5,7 +5,7 @@ import sort from 'fast-sort';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
-  profiles: null
+  profiles: undefined
 });
 
 export default handleActions({

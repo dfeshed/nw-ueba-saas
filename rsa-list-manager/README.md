@@ -37,13 +37,20 @@ The list manager can be used in your template as follows:
 ```
 
 ## Inputs
-* `stateLocation`, *String*, __required__, Location of list-manager within state e.g. 'listManagers.columnGroups', 'listManagers.profile'
-* `listName`, *String ending with s(plural)*, __required__, Caption for List
-* `list`, *Array of objects with name(required), id(required), isEditable(boolean, optional) parameters*, __required__, The list to be rendered
-* `modelName`, *String*, __required__, for API socket model name and post request header name both being identical, e.g. 'columnGroup'
-* `shouldSelectedItemPersist`, *boolean*, __optional__, true if item can be "selected" and persist e.g. column groups, false if item is used once e.g. profiles
-* `selectedItemId`, *String*,__optional__, The id of the option that needs to be displayed with listName for the caption and highlighted as selected in the list
-* `helpId`, *Object*,__optional__, Object with moduleId & topicId
+* `stateLocation` *String*, __required__, Location of list-manager within state e.g. 'listManagers.columnGroups', 'listManagers.profile'
+* `listName`, *String*, __required__, Caption for List. Should be plural.
+* `list`, *Object[]*, __required__, The list to be rendered. Object properties:
+  * name, *String*, __required__
+  * id, *String*, __required__
+  * isEditable, *Boolean*, __optional__
+  * isDeletable, *Boolean*, __optional__
+  * undeletableReason, *String*, __optional__
+* `modelName`, *String*, __required__, API socket model name and post request header name both being identical, e.g. 'columnGroup'
+* `shouldSelectedItemPersist`, *Boolean*, __optional__, True if item can be "selected" and persist e.g. column groups, false if item is used once e.g. profiles
+* `selectedItemId`, *String*, __optional__, The id of the option that needs to be displayed with listName for the caption and highlighted as selected in the list
+* `helpId`, *Object*, __optional__, Object properties:
+  * moduleId, *String*, __required__
+  * topicId, *String*, __required__
 
 ## Actions
 * `itemSelection`, *Action*, __required__,  An action to execute when an item is selected.

@@ -657,7 +657,10 @@ export default {
         availableMetaKeys: 'Available Meta Keys',
         allMetaKeysAdded: 'All meta keys have been added',
         groupNamePlaceholder: 'Enter column group name',
-        nameNotUnique: 'New groups must have a unique name'
+        nameNotUnique: 'New groups must have a unique name',
+        disabled: {
+          delete: 'This column group cannot be deleted because it is part of the following Profiles: {{profileNames}}'
+        }
       },
       download: {
         selected: 'Download',
