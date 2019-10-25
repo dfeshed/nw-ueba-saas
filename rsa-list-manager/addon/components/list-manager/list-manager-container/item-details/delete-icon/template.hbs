@@ -1,0 +1,13 @@
+{{#if showDeleteIcon}}
+  {{!-- delete icon --}}
+  {{!-- if item is currently selected, icon is disabled --}}
+  {{#rsa-form-button
+    class='list-delete-icon'
+    isDisabled=isSelected
+    defaultAction=(action 'delete')
+    title=(if isSelected (t 'rsaListManager.iconMessage.disabled.delete'))
+  }}
+    {{rsa-icon name='bin-1'}}
+  {{/rsa-form-button}}
+{{/if}}
+
