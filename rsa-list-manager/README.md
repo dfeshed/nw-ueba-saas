@@ -43,8 +43,6 @@ The list manager can be used in your template as follows:
   * name, *String*, __required__
   * id, *String*, __required__
   * isEditable, *Boolean*, __optional__
-  * isDeletable, *Boolean*, __optional__
-  * undeletableReason, *String*, __optional__
 * `modelName`, *String*, __required__, API socket model name and post request header name both being identical, e.g. 'columnGroup'
 * `shouldSelectedItemPersist`, *Boolean*, __optional__, True if item can be "selected" and persist e.g. column groups, false if item is used once e.g. profiles
 * `selectedItemId`, *String*, __optional__, The id of the option that needs to be displayed with listName for the caption and highlighted as selected in the list

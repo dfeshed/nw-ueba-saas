@@ -373,7 +373,7 @@ module('Unit | Selectors | data-selectors', function(hooks) {
     const selectedColumnGroup = getSelectedColumnGroup(state);
     assert.equal(selectedColumnGroup.name, 'Summary List');
     assert.equal(selectedColumnGroup.columns.length, 5);
-    assert.equal(mappedColumnGroups[2].id, selectedColumnGroup.id);
+    assert.deepEqual(mappedColumnGroups[2], selectedColumnGroup);
   });
 
   test('Should fall back to Summary for wrong column group', function(assert) {
@@ -393,8 +393,7 @@ module('Unit | Selectors | data-selectors', function(hooks) {
     const selectedColumnGroup = getSelectedColumnGroup(state);
     assert.equal(selectedColumnGroup.name, 'Summary List');
     assert.equal(selectedColumnGroup.columns.length, 5);
-
-    assert.equal(mappedColumnGroups[2].id, selectedColumnGroup.id);
+    assert.deepEqual(mappedColumnGroups[2], selectedColumnGroup);
   });
 
   test('Should get selected column groups', function(assert) {
@@ -414,7 +413,7 @@ module('Unit | Selectors | data-selectors', function(hooks) {
     const selectedColumnGroup = getSelectedColumnGroup(state);
     assert.equal(selectedColumnGroup.name, 'Web Analysis');
     assert.equal(selectedColumnGroup.columns.length, 53);
-    assert.equal(mappedColumnGroups[9].id, selectedColumnGroup.id);
+    assert.deepEqual(mappedColumnGroups[9], selectedColumnGroup);
   });
 
   test('Should get mutable columns for data table', function(assert) {

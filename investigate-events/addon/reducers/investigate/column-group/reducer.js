@@ -8,7 +8,7 @@ import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 
 const _initialState = Immutable.from({
-  columnGroups: undefined
+  columnGroups: null
 });
 
 export default handleActions({
