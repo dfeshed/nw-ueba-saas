@@ -24,9 +24,41 @@ const DeleteIcon = Component.extend({
   layout,
   stateLocation: undefined,
 
+  // provided by consumer to force disabled
+  disabledOverride: undefined,
+
+  // message used for tooltip when disabled is forced
+  disabledOverrideMessage: undefined,
+
   @computed('isEditable', 'isNewItem')
   showDeleteIcon(isEditable, isNewItem) {
     return isEditable && !isNewItem;
+  },
+
+  @computed('isSelected', 'disabledOverride', 'disabledOverrideMessage')
+  disabledDetails(isSelected, disabledOverride = false, disabledOverrideMessage = '') {
+
+    // if is disabled by caller, provide that callers message
+    if (disabledOverride === true) {
+      return {
+        disabled: true,
+        message: disabledOverrideMessage
+      };
+    }
+
+    // if is disabled because it is selected, provide message
+    if (isSelected) {
+      return {
+        disabled: true,
+        message: this.i18n.t('rsaListManager.iconMessage.disabled.delete')
+      };
+    }
+
+    // otherwise not disabled
+    return {
+      disabled: false,
+      message: ''
+    };
   },
 
   actions: {

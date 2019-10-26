@@ -93,4 +93,28 @@ module('Integration | Component | item details - delete icon', function(hooks) {
     assert.equal(find(`${deleteIcon}${disabledIcon}`).getAttribute('title'), i18n.t('rsaListManager.iconMessage.disabled.delete'),
       'disabled delete icon shall have correct title');
   });
+
+  test('shall render delete icon with is-disabled class and right message if override provided', async function(assert) {
+    new ReduxDataHelper(setState)
+      .stateLocation(listLocation1)
+      .editItemId(list1[0].id)
+      .selectedItemId('100')
+      .list(list1)
+      .listName('Foos')
+      .build();
+    this.set('stateLocation', listLocation1);
+    this.set('message', 'foooooooo');
+
+    await render(hbs`
+      {{list-manager/list-manager-container/item-details/delete-icon
+        stateLocation=stateLocation
+        disabledOverride=true
+        disabledOverrideMessage=message
+      }}
+    `);
+
+    assert.equal(findAll(`${deleteIcon}${disabledIcon}`).length, 1,
+      'shall render one delete icon with is-disabled class');
+    assert.equal(find(deleteIcon).getAttribute('title'), 'foooooooo', 'disabled delete icon shall have correct title');
+  });
 });
