@@ -18,6 +18,10 @@ module('Integration | Component | item details', function(hooks) {
     initialize(this.owner);
   });
 
+  const helpIcon = '.list-help-icon';
+  const listLocation1 = 'listManager';
+  const helpId1 = { moduleId: 'foo', topicId: '123' };
+  const helpId2 = { moduleId: 'bar' };
   const item = { id: '1', name: 'foo' };
   const list1 = [{ id: '1', name: 'foo' }];
   const stateLocation1 = 'listManager';
@@ -47,6 +51,42 @@ module('Integration | Component | item details', function(hooks) {
 
     const buttons = findAll('footer.details-footer button');
     assert.equal(buttons.length, 2);
+  });
+
+  test('renders help icon if hasContextualHelp', async function(assert) {
+    new ReduxDataHelper(setState)
+      .list(list1)
+      .stateLocation(listLocation1)
+      .listName('Foos')
+      .helpId(helpId1)
+      .build();
+    this.set('stateLocation', listLocation1);
+    this.set('itemSelection', () => {});
+
+    await render(hbs`{{list-manager/list-manager-container/item-details
+      stateLocation=stateLocation
+      itemSelection=itemSelection
+    }}`);
+
+    assert.equal(findAll(helpIcon).length, 1, 'shall render one help icon if hasContextualHelp is true');
+  });
+
+  test('shall not render help icon if hasContextualHelp is false', async function(assert) {
+    new ReduxDataHelper(setState)
+      .list(list1)
+      .stateLocation(listLocation1)
+      .listName('Foos')
+      .helpId(helpId2)
+      .build();
+    this.set('stateLocation', listLocation1);
+    this.set('itemSelection', () => {});
+
+    await render(hbs`{{list-manager/list-manager-container/item-details
+      stateLocation=stateLocation
+      itemSelection=itemSelection
+    }}`);
+
+    assert.notOk(find(helpIcon), 'shall not render help icon if hasContextualHelp is false');
   });
 
   test('renders loading indicator overlay if isItemsLoading', async function(assert) {

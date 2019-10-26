@@ -1,12 +1,23 @@
 import Component from '@ember/component';
-import layout from './template';
+import _ from 'lodash';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import { itemType, editItem, isItemsLoading } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { inject as service } from '@ember/service';
+
+import layout from './template';
+import {
+  itemType,
+  editItem,
+  isItemsLoading,
+  helpId,
+  hasContextualHelp
+} from 'rsa-list-manager/selectors/list-manager/selectors';
 import { beginEditItem } from 'rsa-list-manager/actions/creators/creators';
-import _ from 'lodash';
+
 
 const stateToComputed = (state, attrs) => ({
+  hasContextualHelp: hasContextualHelp(state, attrs.stateLocation),
+  helpId: helpId(state, attrs.stateLocation),
   itemType: itemType(state, attrs.stateLocation),
   // TODO edit followup PR fix cloning when item is between start updating and success
   originalItem: _.cloneDeep(editItem(state, attrs.stateLocation)),
@@ -20,6 +31,7 @@ const dispatchToActions = {
 const ItemDetails = Component.extend({
   layout,
   classNames: ['item-details'],
+  contextualHelp: service(),
   stateLocation: undefined,
   editedItem: null,
 
@@ -42,6 +54,11 @@ const ItemDetails = Component.extend({
 
     resetItem() {
       this.send('beginEditItem', this.get('originalItem').id, this.get('stateLocation'));
+    },
+
+    goToHelp() {
+      const { moduleId, topicId } = this.get('helpId');
+      this.get('contextualHelp').goToHelp(moduleId, topicId);
     }
   }
 
