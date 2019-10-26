@@ -6,8 +6,11 @@
 
     <div class='details-header-icons'>
       {{!-- delete icon --}}
-      {{list-manager/list-manager-container/item-details/delete-icon
-        stateLocation=stateLocation
+      {{yield (hash
+          delete=(component 'list-manager/list-manager-container/item-details/delete-icon'
+            stateLocation=stateLocation
+          )
+        )
       }}
 
       {{!-- help icon --}}
@@ -21,9 +24,9 @@
   </div>
   <div class='details-body'>
     {{yield (hash
-      item=originalItem
-      itemEdited=(action 'itemEdited')
-     )
+        item=originalItem
+        itemEdited=(action 'itemEdited')
+      )
     }}
   </div>
 

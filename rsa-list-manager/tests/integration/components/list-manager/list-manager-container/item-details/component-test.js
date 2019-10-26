@@ -18,12 +18,15 @@ module('Integration | Component | item details', function(hooks) {
     initialize(this.owner);
   });
 
+  const deleteIcon = '.list-delete-icon';
   const helpIcon = '.list-help-icon';
   const listLocation1 = 'listManager';
   const helpId1 = { moduleId: 'foo', topicId: '123' };
   const helpId2 = { moduleId: 'bar' };
   const item = { id: '1', name: 'foo' };
-  const list1 = [{ id: '1', name: 'foo' }];
+  const list1 = [{ id: '1', name: 'foo', isEditable: true }];
+  const list2 = [{ id: '1', name: 'foo', isEditable: false }];
+
   const stateLocation1 = 'listManager';
   const itemDetails = '.item-details';
   const title = `${itemDetails} .title`;
@@ -139,5 +142,87 @@ module('Integration | Component | item details', function(hooks) {
     assert.equal(buttons.length, 2);
 
     assert.equal(findAll(loadingOverlay).length, 0, 'Shall not render loading overlay');
+  });
+
+  test('will render contexutual delete component if it is editable', async function(assert) {
+    new ReduxDataHelper(setState)
+      .list(list1)
+      .listName('Foos')
+      .editItemId(item.id)
+      .isItemsLoading(false)
+      .build();
+    this.set('stateLocation', stateLocation1);
+    this.set('itemSelection', () => {});
+
+    await render(hbs`
+      {{#list-manager/list-manager-container/item-details
+        stateLocation=stateLocation
+        itemSelection=itemSelection
+        as |details|
+      }}
+        {{#if details.delete}}
+          {{details.delete}}
+        {{/if}}
+      {{/list-manager/list-manager-container/item-details}}
+    `);
+
+    assert.ok(find(deleteIcon), 'Renders delete button');
+  });
+
+  test('will not render contexutual delete component if it is not editable', async function(assert) {
+    new ReduxDataHelper(setState)
+      .list(list2)
+      .listName('Foos')
+      .editItemId(item.id)
+      .isItemsLoading(false)
+      .build();
+    this.set('stateLocation', stateLocation1);
+    this.set('itemSelection', () => {});
+
+    await render(hbs`
+      {{#list-manager/list-manager-container/item-details
+        stateLocation=stateLocation
+        itemSelection=itemSelection
+        as |details|
+      }}
+        {{#if details.delete}}
+          {{details.delete}}
+        {{/if}}
+      {{/list-manager/list-manager-container/item-details}}
+    `);
+
+    assert.notOk(find(deleteIcon), 'Renders delete button');
+  });
+
+  test('yields twice', async function(assert) {
+    new ReduxDataHelper(setState)
+      .list(list2)
+      .listName('Foos')
+      .editItemId(item.id)
+      .isItemsLoading(false)
+      .build();
+    this.set('stateLocation', stateLocation1);
+    this.set('itemSelection', () => {});
+
+    await render(hbs`
+      <div class='contextual-render-test'>
+        {{#list-manager/list-manager-container/item-details
+          stateLocation=stateLocation
+          itemSelection=itemSelection
+          as |details|
+        }}
+          {{#if details.delete}}
+            SOSPLEASE
+          {{else}}
+            SENDHELP
+          {{/if}}
+        {{/list-manager/list-manager-container/item-details}}
+      </div>
+    `);
+
+    const textContent = find('.contextual-render-test').textContent.trim();
+
+    assert.ok(textContent.includes('SOSPLEASE'), 'got in delete block');
+    assert.ok(textContent.includes('SENDHELP'), 'got in else block');
   });
 });

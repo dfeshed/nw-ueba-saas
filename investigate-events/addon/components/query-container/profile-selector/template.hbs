@@ -20,14 +20,18 @@
     {{/manager.itemList}}
 
     {{#manager.details itemTransform=(action 'enrichProfile') as |details|}}
-      {{query-container/profile-selector/profile-details
-        profile=details.item
-        editProfile=details.itemEdited
-        profiles=profiles
-        columnGroups=columnGroups
-        selectedColumnGroupId=selectedColumnGroupId
-        metaGroups=metaGroups
-      }}
+      {{#if details.delete}}
+        {{details.delete}}
+      {{else}}
+        {{query-container/profile-selector/profile-details
+          profile=details.item
+          editProfile=details.itemEdited
+          profiles=profiles
+          columnGroups=columnGroups
+          selectedColumnGroupId=selectedColumnGroupId
+          metaGroups=metaGroups
+        }}
+      {{/if}}
     {{/manager.details}}
 
   {{/list-manager}}

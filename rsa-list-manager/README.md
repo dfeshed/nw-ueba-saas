@@ -28,9 +28,17 @@ The list manager can be used in your template as follows:
     itemTransform=(action 'transformMyItem')
     isValidItem=(action 'validateMyItem')
     as |details|}}
-    {{your-component
-      myItem=details.item
-      myItemEditFunction=details.itemEdited}}
+
+    {{!-- this block gets yielded to twice --}}
+    {{#if details.delete}}
+      {{!-- optional -- renders the delete icon --}}
+      {{details.delete}}
+    {{else}}
+      {{your-component
+        myItem=details.item
+        myItemEditFunction=details.itemEdited}}
+    {{/if}}
+
   {{/manager.details}}
 
 {{/list-manager}}
