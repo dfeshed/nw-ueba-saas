@@ -28,6 +28,7 @@ import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
   COMPLEX_FILTER,
+  OPERATOR_AND,
   OPERATOR_OR
 } from 'investigate-events/constants/pill';
 import initializationCreators from 'investigate-events/actions/initialization-creators';
@@ -1551,6 +1552,73 @@ module('Integration | Component | Query Pills', function(hooks) {
       newValue,
       'The edit pill action creator was with the right text'
     );
+  });
+
+  test('Editing a complex pill can create a guided pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataComplex()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await leaveNewPillTemplate();
+
+    let pills = findAll(PILL_SELECTORS.complexPill);
+    doubleClick(`#${pills[0].id}`); // open pill for edit
+    await settled();
+
+    // new ID, get them again
+    pills = findAll(PILL_SELECTORS.complexPill);
+    const inputId = `#${pills[0].id} input`;
+    const newValue = 'medium = 1';
+    await fillIn(inputId, newValue);
+    await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', ENTER_KEY);
+
+    // action to store in state called
+    assert.equal(editGuidedPillSpy.callCount, 1, 'The edit pill action creator was called once');
+    const [ [ calledWith ] ] = editGuidedPillSpy.args;
+    assert.equal(calledWith.pillData.meta, 'medium');
+    assert.equal(calledWith.pillData.operator, '=');
+    assert.equal(calledWith.pillData.value, '1');
+    assert.equal(batchAddQueriesSpy.callCount, 0, 'Batch add pills was not called');
+  });
+
+  test('Editing a complex pill can create multiple guided pills', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataComplex()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await leaveNewPillTemplate();
+
+    let pills = findAll(PILL_SELECTORS.complexPill);
+    doubleClick(`#${pills[0].id}`); // open pill for edit
+    await settled();
+
+    // new ID, get them again
+    pills = findAll(PILL_SELECTORS.complexPill);
+    const inputId = `#${pills[0].id} input`;
+    const newValue = 'medium = 1 AND medium = 2';
+    await fillIn(inputId, newValue);
+    await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', ENTER_KEY);
+
+    // action to store in state called
+    assert.equal(deleteActionSpy.callCount, 1, 'The delete pill action creator was called once');
+    const [ [ calledWith ] ] = deleteActionSpy.args;
+    assert.equal(calledWith.pillData[0].complexFilterText, 'medium = 1 AND medium = 2', 'Correct pill was deleted');
+    assert.equal(batchAddQueriesSpy.callCount, 1, 'Batch add pills was called once');
+    const [ [ batchCalledWith ] ] = batchAddQueriesSpy.args;
+    assert.equal(batchCalledWith.pillsData.length, 3, 'Two pills were batch added');
+    assert.equal(batchCalledWith.pillsData[0].meta, 'medium');
+    assert.equal(batchCalledWith.pillsData[0].operator, '=');
+    assert.equal(batchCalledWith.pillsData[0].value, '1');
+    assert.equal(batchCalledWith.pillsData[1].type, OPERATOR_AND);
+    assert.equal(batchCalledWith.pillsData[2].meta, 'medium');
+    assert.equal(batchCalledWith.pillsData[2].operator, '=');
+    assert.equal(batchCalledWith.pillsData[2].value, '2');
   });
 
   test('Editing a guided pill with commas will quote as expected', async function(assert) {

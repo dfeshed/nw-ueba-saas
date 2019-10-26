@@ -821,10 +821,25 @@ const QueryPills = RsaContextMenu.extend({
    * @private
    */
   _pillEdited(pillData) {
+    const { language, aliases } = this.get('languageAndAliasesForParser');
+    let newPillsData = [ pillData ];
     const pillsData = this.get('pillsData');
+    // Attempt to parse the edited text if the user edited a complex pill. That way,
+    // if they corrected an error it will turn into a guided pill.
+    if (pillData.type === COMPLEX_FILTER) {
+      newPillsData = transformTextToPillData(pillData.complexFilterText, { language, aliases, returnMany: true });
+      newPillsData[0].id = pillData.id;
+    }
     const position = pillsData.map((pD) => pD.id).indexOf(pillData.id);
     this._pillsExited();
-    this.send('editGuidedPill', { pillData, position });
+    if (newPillsData.length === 1) {
+      this.send('editGuidedPill', { pillData: newPillsData[0], position });
+    } else {
+      // As long as pill deletion is done on pill id, it is okay to send the newly modified pill data
+      // because here it still has the old id
+      this.send('deleteGuidedPill', { pillData: [ pillData ] });
+      this.send('batchAddPills', { pillsData: newPillsData, initialPosition: position });
+    }
   },
 
   _pillsSelected(pillData) {
