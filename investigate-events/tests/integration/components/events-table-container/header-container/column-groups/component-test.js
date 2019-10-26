@@ -6,7 +6,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import EventColumnGroups from '../../../../../data/subscriptions/column-group';
-import { find, findAll, render, click } from '@ember/test-helpers';
+import { find, findAll, render, click, fillIn, triggerEvent } from '@ember/test-helpers';
 import { typeInSearch } from 'ember-power-select/test-support/helpers';
 
 const columnGroupManagerSelector = '.rsa-investigate-events-table__header__columnGroups';
@@ -29,6 +29,10 @@ module('Integration | Component | Column Groups', function(hooks) {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
+
+  const DISPLAYED_COLUMNS = '.displayed-details > ul.column-list li';
+  const AVAILABLE_META = '.add-details > ul.column-list li';
+  const groupNameInput = '.group-name .value input';
 
   test('columnGroup manager should be visible', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').columnGroups(EventColumnGroups).build();
@@ -152,7 +156,7 @@ module('Integration | Component | Column Groups', function(hooks) {
 
   test('clicking the edit icon shows details of the columnGroup', async function(assert) {
 
-    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().language().build();
+    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().metaKeyCache().build();
     await render(hbs`{{events-table-container/header-container/column-groups}}`);
 
     await click(dropdownSelector);
@@ -171,6 +175,111 @@ module('Integration | Component | Column Groups', function(hooks) {
     assert.equal(findAll('.group-details ul.column-list li').length, 3, '3 columns for Summary List rendered');
 
   });
+
+  test('columnGroup edit is validated correctly when existing columnGroup name is changed', async function(assert) {
+    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().metaKeyCache().build();
+    await render(hbs`{{events-table-container/header-container/column-groups}}`);
+
+    await click(dropdownSelector);
+
+    // Go to custom column group details
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[1]);
+
+    // simulate typeIn
+    await fillIn(groupNameInput, 'A');
+    await triggerEvent(groupNameInput, 'keyup');
+
+    assert.ok(find('footer .reset'));
+    assert.ok(find('footer .update'));
+    assert.notOk(find('footer .update.is-disabled'));
+
+  });
+
+  test('columnGroup edit is validated correctly when existing columnGroup name is empty', async function(assert) {
+    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().metaKeyCache().build();
+    await render(hbs`{{events-table-container/header-container/column-groups}}`);
+
+    await click(dropdownSelector);
+
+    // Go to custom column group details
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[1]);
+
+    // simulate typeIn
+    await fillIn(groupNameInput, '');
+    await triggerEvent(groupNameInput, 'keyup');
+
+    assert.ok(find('footer .reset'));
+    assert.ok(find('footer .update.is-disabled'));
+
+  });
+
+  test('columnGroup edit is validated correctly when existing columnGroup name is not unique', async function(assert) {
+    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().metaKeyCache().build();
+    await render(hbs`{{events-table-container/header-container/column-groups}}`);
+
+    await click(dropdownSelector);
+
+    // Go to custom column group details
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[1]);
+
+    // simulate typeIn
+    await fillIn(groupNameInput, 'Custom 1');
+    await triggerEvent(groupNameInput, 'keyup');
+
+    assert.ok(find('footer .reset'));
+    assert.ok(find('footer .update.is-disabled'));
+
+  });
+
+  test('columnGroup edit is validated correctly when existing columnGroup meta change', async function(assert) {
+    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().metaKeyCache().build();
+    await render(hbs`{{events-table-container/header-container/column-groups}}`);
+
+    await click(dropdownSelector);
+
+    // Go to custom column group details
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[1]);
+
+    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    // add candidate meta
+    await click(availableOptions[0]);
+
+    assert.ok(find('footer .reset'));
+    assert.ok(find('footer .update'));
+    assert.notOk(find('footer .update.is-disabled'));
+
+  });
+
+  test('columnGroup edit is validated correctly when all meta are removed', async function(assert) {
+    const customGroup = {
+      id: 1,
+      name: 'FOO',
+      contentType: 'USER',
+      columns: [
+        {
+          field: 'action',
+          title: 'Action'
+        }
+      ]
+    };
+    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups([customGroup, ...EventColumnGroups]).eventsPreferencesConfig().metaKeyCache().build();
+    await render(hbs`{{events-table-container/header-container/column-groups}}`);
+
+    await click(dropdownSelector);
+
+    // Go to custom column group details
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[0]);
+
+    const displayedMeta = findAll(`${DISPLAYED_COLUMNS} button`);
+
+    // remove all meta
+    await click(displayedMeta[0]);
+
+    assert.ok(find('footer .reset'), 'reset');
+    assert.ok(find('footer .update.is-disabled'), 'Update disabled');
+
+  });
+
   test('columnGroup manager should be visible when disabled', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').columnGroups(EventColumnGroups).build();
     const accessControl = this.owner.lookup('service:accessControl');

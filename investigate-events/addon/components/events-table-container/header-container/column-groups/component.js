@@ -12,7 +12,7 @@ import {
 } from 'investigate-events/constants/columnGroups';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 import { BASE_COLUMNS } from 'investigate-events/constants/OOTBColumnGroups';
-import { hasUniqueName } from 'investigate-events/util/validations';
+import { isColumnGroupValid } from 'investigate-events/util/validations';
 
 const dispatchToActions = {
   setColumnGroup,
@@ -53,20 +53,8 @@ const ColumnGroups = Component.extend({
     },
 
     validateEditedColumnGroup(editedGroup) {
-
-      if (!editedGroup?.name) {
-        return false;
-      }
-
       const columnGroups = this.get('columnGroups') || [];
-      const isNameError = !hasUniqueName(editedGroup?.name, editedGroup?.id, columnGroups);
-      if (isNameError) {
-        return false;
-      }
-
-      // there should be atleast one column besides the baseColumns 'time' and 'medium'
-      const hasColumns = editedGroup?.columns?.length >= 3;
-      return hasColumns;
+      return isColumnGroupValid(editedGroup, columnGroups);
     }
   }
 });

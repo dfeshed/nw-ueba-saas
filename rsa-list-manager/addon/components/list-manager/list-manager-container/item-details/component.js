@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import _ from 'lodash';
+import { run } from '@ember/runloop';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
@@ -12,21 +13,14 @@ import {
   helpId,
   hasContextualHelp
 } from 'rsa-list-manager/selectors/list-manager/selectors';
-import { beginEditItem } from 'rsa-list-manager/actions/creators/creators';
-
 
 const stateToComputed = (state, attrs) => ({
   hasContextualHelp: hasContextualHelp(state, attrs.stateLocation),
   helpId: helpId(state, attrs.stateLocation),
   itemType: itemType(state, attrs.stateLocation),
-  // TODO edit followup PR fix cloning when item is between start updating and success
-  originalItem: _.cloneDeep(editItem(state, attrs.stateLocation)),
+  item: editItem(state, attrs.stateLocation),
   isItemsLoading: isItemsLoading(state, attrs.stateLocation)
 });
-
-const dispatchToActions = {
-  beginEditItem
-};
 
 const ItemDetails = Component.extend({
   layout,
@@ -34,6 +28,17 @@ const ItemDetails = Component.extend({
   contextualHelp: service(),
   stateLocation: undefined,
   editedItem: null,
+  didReset: false,
+
+  /*
+   * original item needs to be recomputed for re-render, every time
+   * 1. item is updated, or
+   * 2. form is reset in which case item needs to be force updated via cloning
+   */
+  @computed('item', 'didReset')
+  originalItem(item, didReset) {
+    return didReset ? _.cloneDeep(item) : item;
+  },
 
   @computed('originalItem', 'itemType')
   heading(originalItem, itemType) {
@@ -53,7 +58,12 @@ const ItemDetails = Component.extend({
     },
 
     resetItem() {
-      this.send('beginEditItem', this.get('originalItem').id, this.get('stateLocation'));
+      this.set('didReset', true);
+
+      // let rendering happen then set it back
+      run.next(() => {
+        this.set('didReset', false);
+      });
     },
 
     goToHelp() {
@@ -64,4 +74,4 @@ const ItemDetails = Component.extend({
 
 });
 
-export default connect(stateToComputed, dispatchToActions)(ItemDetails);
+export default connect(stateToComputed, undefined)(ItemDetails);
