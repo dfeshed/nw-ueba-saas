@@ -313,10 +313,11 @@ export default Component.extend({
     event.preventDefault();
     next(this, () => {
       const previousValue = event.target.value;
+      const pastePos = event.target.selectionStart;
       if (previousValue) {
         event.target.value = '';
       }
-      const value = previousValue + pastedValue;
+      const value = `${previousValue.slice(0, pastePos)}${pastedValue}${previousValue.slice(pastePos)}`;
 
       if (!value) {
         return;
