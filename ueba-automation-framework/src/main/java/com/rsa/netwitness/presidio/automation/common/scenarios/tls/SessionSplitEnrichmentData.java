@@ -189,6 +189,7 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
 
     private BiConsumer<Integer, TlsEvent> markPreviousEvent = (i, e) -> {
         if (e.getSessionSplit() == i - 1) {
+            e.setEventId(MARKER + e.getEventId());
             e.setDestinationOrganization(MARKER + e.getDestinationOrganization());
         }
     };
@@ -230,6 +231,7 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
     private TlsEvent hourlyEventsWithSessionSplit(int splitIndex, Instant lastEventTime, int hoursBackward, String id) {
         try {
             TlsEvent event = new TlsEvent(singleSampleTimeGen(lastEventTime, hoursBackward).getNext());
+            event.setEventId(id.concat("#").concat(String.valueOf(splitIndex)).concat("#").concat(String.valueOf(System.nanoTime())));
             event.setDestinationOrganization(id.concat("#").concat(String.valueOf(splitIndex)).concat("#").concat(String.valueOf(System.nanoTime())));
             event.setSessionSplit(splitIndex);
             event.setDirection(NETWORK_DIRECTION_TYPE.OUTBOUND);
