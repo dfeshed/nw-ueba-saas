@@ -73,7 +73,7 @@ const DetailsFooter = Component.extend({
       if (isNewItem) {
         this.send('createItem', editedItem, stateLocation, itemTransform);
       } else {
-        this.send('updateItem', editedItem, stateLocation, itemTransform);
+        this.send('updateItem', editedItem, stateLocation, itemTransform, this.get('itemUpdate'));
       }
     }
   }

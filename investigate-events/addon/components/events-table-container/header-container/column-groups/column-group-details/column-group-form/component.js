@@ -197,4 +197,4 @@ const ColumnGroupForm = Component.extend({
 
 });
 
-export default connect(stateToComputed, undefined)(ColumnGroupForm);
+export default connect(stateToComputed)(ColumnGroupForm);

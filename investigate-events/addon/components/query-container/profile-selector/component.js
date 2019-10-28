@@ -69,7 +69,6 @@ const ProfileSelector = Component.extend({
       return enrichedProfile(profile, this.get('languageAndAliases'));
     },
 
-
     validateEditedProfile(editedProfile) {
       const profiles = this.get('profiles') || [];
       return isProfileValid(editedProfile, profiles);

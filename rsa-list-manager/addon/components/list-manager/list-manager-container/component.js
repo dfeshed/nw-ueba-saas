@@ -61,6 +61,15 @@ const ListManagerContainer = Component.extend({
       this.set('offsetsStyle', menuOffsetsStyle(this.get('element')));
     },
 
+    handleItemUpdate(item) {
+      const selectedItemId = this.get('selectedItemId');
+      // if a selectedItem was updated, itemSelection should re-execute to reflect the changes
+      if (selectedItemId === item.id) {
+        this.get('itemSelection')(item);
+        this.send('toggleListVisibility', this.get('stateLocation'));
+      }
+    },
+
     handleItemSelection(item) {
       const selectedItemId = this.get('selectedItemId');
       // Some types of lists don't have an active/selected item, in those cases once

@@ -6,6 +6,9 @@ import { setupRenderingTest } from 'ember-qunit';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { getTextFromDOMArray } from '../../../../helpers/util';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import apiCreators from 'rsa-list-manager/actions/api/api-interactions';
+import sinon from 'sinon';
+import RSVP from 'rsvp';
 
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
@@ -16,10 +19,23 @@ let setState;
 module('Integration | Component | list-manager-container', function(hooks) {
   setupRenderingTest(hooks);
 
+  let apiCreateOrUpdateItemStub;
+
   hooks.beforeEach(function() {
     setState = (state) => {
       patchReducer(this, state);
     };
+    if (apiCreators.apiCreateOrUpdateItem.displayName !== 'apiCreateOrUpdateItem') {
+      apiCreateOrUpdateItemStub = sinon.stub(apiCreators, 'apiCreateOrUpdateItem').returns(RSVP.resolve({ data: { id: 3, name: 'fdfh' } }));
+    }
+  });
+
+  hooks.afterEach(function() {
+    apiCreateOrUpdateItemStub.resetHistory();
+  });
+
+  hooks.after(function() {
+    apiCreateOrUpdateItemStub.restore();
   });
 
   const listManagerContainerSelector = '.list-manager-container';
@@ -31,6 +47,12 @@ module('Integration | Component | list-manager-container', function(hooks) {
   const stateLocation1 = 'listManager';
   const listName1 = 'My Items';
 
+  const itemsWithEditableIndicators = [
+    { id: 3, name: 'eba', isEditable: true, subItems: [ 'a', 'b', 'c' ] },
+    { id: 1, name: 'foo', subItems: [ 'a', 'b' ] },
+    { id: 2, name: 'bar', subItems: [ 'e', 'b', 'c' ] },
+    { id: 4, name: 'Baz', subItems: [ 'c' ] }
+  ];
   const items = [
     { id: 3, name: 'eba', subItems: [ 'a', 'b', 'c' ] },
     { id: 1, name: 'foo', subItems: [ 'a', 'b' ] },
@@ -736,6 +758,103 @@ module('Integration | Component | list-manager-container', function(hooks) {
     assert.ok(find('.rsa-button-menu.expanded'));
 
     // Select Item
+    await click(findAll('footer button')[1]);
+    assert.ok(find('.rsa-button-menu.collapsed'), 'Item selection from details causes list to collapse');
+  });
+
+  test('clicking on `Update Item` in an unselected  item\'s details does not cause item seletion', async function(assert) {
+    assert.expect(1);
+    new ReduxDataHelper(setState).list(itemsWithEditableIndicators).listName(listName1).selectedItemId(itemsWithEditableIndicators[1].id).build();
+    this.set('stateLocation', stateLocation1);
+    this.set('handleSelection', (item) => {
+      assert.ok(item, 'selection not executed');
+    });
+
+    this.set('newItem', { id: 3, name: 'food', isEditable: true, subItems: [ 'a', 'b' ] });
+
+    await render(hbs`{{#list-manager/list-manager-container
+      stateLocation=stateLocation
+      itemSelection=handleSelection
+      as |manager|}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+        {{#manager.details as |details|}}
+           <ul>
+             {{#each details.item.subItems as |subItem|}}
+               <li>{{subItem}}</li>
+             {{/each}}
+           </ul>
+          {{#if details.itemEdited}}
+            {{#rsa-form-button class='edit-button' defaultAction=(action details.itemEdited newItem)}}
+               click to send editedit
+            {{/rsa-form-button}}
+          {{/if}}
+        {{/manager.details}}
+      {{/list-manager/list-manager-container}}`);
+
+    // expand button menu
+    await click(`${buttonGroupSelector} button`);
+
+    const itemDetailsButtons = findAll('.edit-icon button');
+    await click(itemDetailsButtons[0]);
+
+    assert.ok(find('.rsa-button-menu.expanded'));
+
+    // Edit Item
+    await click(find('.edit-button button'));
+
+    // Update Item
+    await click(findAll('footer button')[1]);
+  });
+
+  test('clicking on `Update Item` in a selected item\'s details causes item selection', async function(assert) {
+    assert.expect(3);
+    new ReduxDataHelper(setState).list(itemsWithEditableIndicators).listName(listName1).selectedItemId(itemsWithEditableIndicators[0].id).build();
+    this.set('stateLocation', stateLocation1);
+    this.set('handleSelection', (item) => {
+      assert.ok(true, `${item.name} is selected`);
+    });
+
+    this.set('newItem', { id: 3, name: 'food', isEditable: true, subItems: [ 'a', 'b' ] });
+
+    await render(hbs`{{#list-manager/list-manager-container
+      stateLocation=stateLocation
+      itemSelection=handleSelection
+      as |manager|}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+        {{#manager.details as |details|}}
+           <ul>
+             {{#each details.item.subItems as |subItem|}}
+               <li>{{subItem}}</li>
+             {{/each}}
+           </ul>
+          {{#if details.itemEdited}}
+            {{#rsa-form-button class='edit-button' defaultAction=(action details.itemEdited newItem)}}
+               click to send editedit
+            {{/rsa-form-button}}
+          {{/if}}
+        {{/manager.details}}
+      {{/list-manager/list-manager-container}}`);
+
+    // expand button menu
+    await click(`${buttonGroupSelector} button`);
+
+    const itemDetailsButtons = findAll('.edit-icon button');
+    await click(itemDetailsButtons[0]);
+
+    assert.ok(find('.rsa-button-menu.expanded'));
+
+    // Edit Item
+    await click(find('.edit-button button'));
+
+    // Update Item
     await click(findAll('footer button')[1]);
     assert.ok(find('.rsa-button-menu.collapsed'), 'Item selection from details causes list to collapse');
   });

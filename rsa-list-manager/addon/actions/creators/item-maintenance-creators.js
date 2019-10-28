@@ -1,7 +1,7 @@
 import { apiCreateOrUpdateItem, apiDeleteItem } from '../api/api-interactions';
 import * as ACTION_TYPES from '../types';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
-import { modelName, editItemId } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { modelName, editItemId, editItem } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 /**
  * @param {*}
@@ -33,7 +33,7 @@ export const createItem = (item, stateLocation, itemTransform) => {
  * 1. itemPayload of item to delete,
  * 2. list's stateLocation
  */
-export const updateItem = (item, stateLocation, itemTransform) => {
+export const updateItem = (item, stateLocation, itemTransform, itemUpdate) => {
   return (dispatch, getState) => {
     const apiModelName = modelName(getState(), stateLocation);
     const payload = {};
@@ -46,6 +46,10 @@ export const updateItem = (item, stateLocation, itemTransform) => {
         itemTransform,
         onFailure(response) {
           handleInvestigateErrorCode(response, `PUT_${apiModelName.toUpperCase()}_ITEM`);
+        },
+        onSuccess() {
+          const updatedItem = editItem(getState(), stateLocation);
+          itemUpdate(updatedItem);
         }
       }
     });

@@ -74,4 +74,4 @@ const ItemDetails = Component.extend({
 
 });
 
-export default connect(stateToComputed, undefined)(ItemDetails);
+export default connect(stateToComputed)(ItemDetails);
