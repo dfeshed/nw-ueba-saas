@@ -73,6 +73,16 @@
     overflow: hidden;
     padding-top: rsa-whitespace();
     padding-left: rsa-whitespace();
+    .rsa-icon-information-circle {
+      color: text-color(primary, light);
+    }
+    .rsa-icon-remove-circle-1, .rsa-icon-add-circle-1 {
+      color: text-color(primary, lightest);
+    }
+  }
+
+  div.rsa-wizard-titlebar-container .rsa-icon {
+    color: text-color(primary, lighter);
   }
 
   .rsa-wizard-step-container {

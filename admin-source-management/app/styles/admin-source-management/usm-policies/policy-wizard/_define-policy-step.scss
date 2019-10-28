@@ -44,7 +44,7 @@
         .is-greyed-out {
           color: text-color(primary);
           .rsa-icon-add-circle-1 {
-            color: text-color(primary, dark);
+            color: text-color(primary);
             pointer-events: none;
           }
           .rsa-icon-information-circle {
@@ -61,11 +61,8 @@
         }
       }
       .selected-settings {
-        .remove-setting .rsa-icon {
-          color: text-color(primary, lightest);
-        }
         .is-greyed-out .rsa-icon {
-          color: text-color(primary, dark);
+          color: text-color(primary, base);
           pointer-events: none;
         }
       }

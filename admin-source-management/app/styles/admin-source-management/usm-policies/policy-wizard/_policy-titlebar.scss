@@ -16,12 +16,12 @@
 
     .policy-name-label {
       @include rsa-font(header);
-      color: text-color(primary);
+      color: text-color(primary,lighter);
     }
 
     .policy-description-label {
       @include rsa-font(default, small);
-      color: text-color(primary);
+      color: text-color(primary,lighter);
     }
   }
 

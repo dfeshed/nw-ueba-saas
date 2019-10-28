@@ -40,7 +40,7 @@
   }
   &.is-info {
     .rsa-icon {
-      color: rgba(var(--text-color-secondary-base));
+      color: text-color(secondary) !important;
     }
     border-color: rgba(var(--border-color-secondary-base));
     .inner-div {
