@@ -10,4 +10,5 @@ public class Ipv4 {
     public static final int START_POSITION = 167772160;
 
     public static Function<Integer, String> indexToIpv4 = index -> fromInteger(index + START_POSITION).getHostAddress();
+    public static Function<Integer, String> indexToIpv4NoOffset = index -> fromInteger(index ).getHostAddress();
 }
