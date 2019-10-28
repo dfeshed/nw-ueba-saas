@@ -67,7 +67,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.missingSessionsInTheMiddleTestDataParams;
         List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByDstOrgContains(expected.id);
         result.sort(Comparator.comparing(TlsEnrichStoredData::getId));
-        Optional<Integer> first = IntStream.range(0, result.size()).filter(i -> result.get(i).getEventId().startsWith(MARKER)).boxed().findFirst();
+        Optional<Integer> first = IntStream.range(0, result.size()).filter(i -> result.get(i).getDstOrg().getName().startsWith(MARKER)).boxed().findFirst();
         if (first.isEmpty()) fail("First missing event id marker is missing");
         int firstIndex = first.get();
 
@@ -85,7 +85,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.duplicatedSessionsInTheMiddleTestDataParams;
         List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByDstOrgContains(expected.id);
         result.sort(Comparator.comparing(TlsEnrichStoredData::getId));
-        Optional<Integer> first = IntStream.range(0, result.size()).filter(i -> result.get(i).getEventId().startsWith(MARKER)).boxed().findFirst();
+        Optional<Integer> first = IntStream.range(0, result.size()).filter(i -> result.get(i).getDstOrg().getName().startsWith(MARKER)).boxed().findFirst();
         if (first.isEmpty()) fail("First duplicate event id marker is missing");
         int firstIndex = first.get();
 
