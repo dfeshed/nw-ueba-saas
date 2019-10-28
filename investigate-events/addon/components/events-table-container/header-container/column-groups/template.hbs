@@ -25,7 +25,7 @@
     as |details|}}
 
     {{#if details.delete}}
-      {{details.delete}}
+      {{details.delete disabledOverride=(is-column-group-in-profile details.item profiles)}}
     {{else}}
       {{events-table-container/header-container/column-groups/column-group-details
         columnGroup=details.item

@@ -35,14 +35,14 @@ const DeleteIcon = Component.extend({
     return isEditable && !isNewItem;
   },
 
-  @computed('isSelected', 'disabledOverride', 'disabledOverrideMessage')
-  disabledDetails(isSelected, disabledOverride = false, disabledOverrideMessage = '') {
+  @computed('isSelected', 'disabledOverride')
+  disabledDetails(isSelected, disabledOverride) {
 
     // if is disabled by caller, provide that callers message
-    if (disabledOverride === true) {
+    if (disabledOverride?.disableDelete === true) {
       return {
         disabled: true,
-        message: disabledOverrideMessage
+        message: disabledOverride.reason
       };
     }
 

@@ -1,10 +1,12 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed, { not } from 'ember-computed-decorators';
+import { inject as service } from '@ember/service';
+
 import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
+import { profiles } from 'investigate-events/reducers/investigate/profile/selectors';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
 import { selectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
-import { inject as service } from '@ember/service';
 import {
   COLUMN_GROUPS_STATE_LOCATION as stateLocation,
   COLUMN_GROUPS_MODEL_NAME as modelName,
@@ -21,7 +23,8 @@ const dispatchToActions = {
 
 const stateToComputed = (state) => ({
   selectedColumnGroupId: selectedColumnGroup(state),
-  columnGroups: columnGroups(state)
+  columnGroups: columnGroups(state),
+  profiles: profiles(state)
 });
 
 const ColumnGroups = Component.extend({

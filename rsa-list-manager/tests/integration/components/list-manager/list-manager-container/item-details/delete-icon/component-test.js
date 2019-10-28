@@ -103,13 +103,15 @@ module('Integration | Component | item details - delete icon', function(hooks) {
       .listName('Foos')
       .build();
     this.set('stateLocation', listLocation1);
-    this.set('message', 'foooooooo');
+    this.set('disabledOverride', {
+      disableDelete: true,
+      reason: 'foooooooo'
+    });
 
     await render(hbs`
       {{list-manager/list-manager-container/item-details/delete-icon
         stateLocation=stateLocation
-        disabledOverride=true
-        disabledOverrideMessage=message
+        disabledOverride=disabledOverride
       }}
     `);
 
