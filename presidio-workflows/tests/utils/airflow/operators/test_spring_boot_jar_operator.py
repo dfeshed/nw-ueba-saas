@@ -20,7 +20,6 @@ MAIN_CLASS = 'com.fortscale.test.TestMockProjectApplication'
 LAUNCHER = 'org.springframework.boot.loader.PropertiesLauncher'
 DEFAULT_DATE = timezone.datetime(2014, 1, 1)
 COMMAND = 'run'
-EXPECTED_ADD_OPENS_JVM_OPTIONS = "--add-opens java.base/java.lang=ALL-UNNAMED"
 
 
 def assert_bash_comment(task, expected_bash_comment, expected_java_args={}):
@@ -120,9 +119,8 @@ class TestSpringBootJarOperator(object):
         }
 
         dag = DAG(dag_id="test_jvm_memory_allocation_dag", default_args=default_args, schedule_interval=timedelta(1))
-        expected_bash_command = "/usr/bin/java -Xms500m -Xmx2050m {} {} -cp {} -Dloader.main={} {}".format(
+        expected_bash_command = "/usr/bin/java -Xms500m -Xmx2050m {} -cp {} -Dloader.main={} {}".format(
             "-Duser.timezone=UTC",
-            EXPECTED_ADD_OPENS_JVM_OPTIONS,
             JAR_PATH,
             MAIN_CLASS,
             LAUNCHER
@@ -146,9 +144,8 @@ class TestSpringBootJarOperator(object):
         }
 
         dag = DAG("test_timezone", default_args=default_args, schedule_interval=timedelta(1))
-        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} -cp {} -Dloader.main={} {}".format(
+        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} -cp {} -Dloader.main={} {}".format(
             "-Duser.timezone=America/New_York",
-            EXPECTED_ADD_OPENS_JVM_OPTIONS,
             JAR_PATH,
             MAIN_CLASS,
             LAUNCHER
@@ -172,10 +169,9 @@ class TestSpringBootJarOperator(object):
         }
 
         dag = DAG("test_logback", default_args=default_args, schedule_interval=timedelta(1))
-        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} {} -cp {} -Dloader.main={} {}".format(
+        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} -cp {} -Dloader.main={} {}".format(
             "-Duser.timezone=UTC",
             "-Dlogging.config={}/tests/resources/xmls/test_logback.xml".format(PATH),
-            EXPECTED_ADD_OPENS_JVM_OPTIONS,
             JAR_PATH,
             MAIN_CLASS,
             LAUNCHER
@@ -201,10 +197,9 @@ class TestSpringBootJarOperator(object):
         }
 
         dag = DAG("test_remote_debug", default_args=default_args, schedule_interval=timedelta(1))
-        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} {} -cp {} -Dloader.main={} {}".format(
+        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} -cp {} -Dloader.main={} {}".format(
             "-Duser.timezone=UTC",
             "-agentlib:jdwp=transport=dt_socket,address=9211,server=y,suspend=n",
-            EXPECTED_ADD_OPENS_JVM_OPTIONS,
             JAR_PATH,
             MAIN_CLASS,
             LAUNCHER
@@ -227,9 +222,8 @@ class TestSpringBootJarOperator(object):
         }
 
         dag = DAG("test_jar_path", default_args=default_args, schedule_interval=timedelta(1))
-        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} -cp {} -Dloader.main={} {}".format(
+        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} -cp {} -Dloader.main={} {}".format(
             "-Duser.timezone=UTC",
-            EXPECTED_ADD_OPENS_JVM_OPTIONS,
             JAR_PATH,
             MAIN_CLASS,
             LAUNCHER
@@ -263,13 +257,12 @@ class TestSpringBootJarOperator(object):
         }
 
         dag = DAG("test_all_params", default_args=default_args, schedule_interval=timedelta(1))
-        expected_bash_command = "/usr/bin/java -Xms101m -Xmx2049m {} {} {} {} {} {} -cp {} -Dloader.main={} {}".format(
+        expected_bash_command = "/usr/bin/java -Xms101m -Xmx2049m {} {} {} {} {} -cp {} -Dloader.main={} {}".format(
             "-XX:+UseG1GC",
             "-XX:MaxGCPauseMillis=200",
             "-Duser.timezone=America/New_York",
             "-Dlogging.config={}/tests/resources/xmls/test_logback.xml".format(PATH),
             "-agentlib:jdwp=transport=dt_socket,address=9222,server=y,suspend=n",
-            EXPECTED_ADD_OPENS_JVM_OPTIONS,
             JAR_PATH,
             MAIN_CLASS,
             LAUNCHER
@@ -296,12 +289,11 @@ class TestSpringBootJarOperator(object):
         }
 
         dag = DAG('test_jmx_dag', default_args=default_args, schedule_interval=timedelta(1))
-        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} {} {} {} -cp {} -Dloader.main={} {}".format(
+        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} {} {} -cp {} -Dloader.main={} {}".format(
             "-Duser.timezone=UTC",
             "-Djavax.management.builder.initial=",
             "-Dcom.sun.management.jmxremote",
             "-Dcom.sun.management.jmxremote.port=9302",
-            EXPECTED_ADD_OPENS_JVM_OPTIONS,
             JAR_PATH,
             MAIN_CLASS,
             LAUNCHER
@@ -394,9 +386,8 @@ class TestSpringBootJarOperator(object):
         task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
         tis = get_task_instances(dag)
 
-        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} -cp {} -Dloader.main={} {}".format(
+        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} -cp {} -Dloader.main={} {}".format(
             "-Duser.timezone=UTC",
-            EXPECTED_ADD_OPENS_JVM_OPTIONS,
             JAR_PATH,
             MAIN_CLASS,
             LAUNCHER
@@ -439,11 +430,12 @@ class TestSpringBootJarOperator(object):
 class TestOperator(SpringBootJarOperator):
     cleanup_cnt = 0
 
-    # def execute(self, context):
-    #     super(SpringBootJarOperator, self).execute(context)
-    #
-    # def get_retry_callback(self, retry_fn):
-    #     return retry_fn
+    def _is_execution_date_valid(self, context):
+        pass
+
     def get_retry_command(self):
         self.cleanup_cnt = self.cleanup_cnt + 1
         return "echo Hi!!!!!"
+
+    def append_add_opens_jvm_options(self, bash_command):
+        pass

@@ -270,7 +270,7 @@ class SpringBootJarOperator(BashOperator):
         self.logback(bash_command)
         self.remote_debug_options(bash_command)
         self.jmx(bash_command)
-        SpringBootJarOperator._append_add_opens_jvm_options(bash_command)
+        self.append_add_opens_jvm_options(bash_command)
         self.jar_path(bash_command)
         self.jar_args(bash_command, self.command)
         self.extra_args(bash_command)
@@ -415,8 +415,7 @@ class SpringBootJarOperator(BashOperator):
 
             bash_command.extend(jmx.split(' '))
 
-    @staticmethod
-    def _append_add_opens_jvm_options(bash_command):
+    def append_add_opens_jvm_options(self, bash_command):
         bash_command.append("--add-opens {}".format(" ".join([
             "java.base/java.lang=ALL-UNNAMED"
             # Add additional "add opens" JVM options here.
