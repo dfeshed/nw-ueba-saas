@@ -2691,6 +2691,81 @@ module('Integration | Component | Query Pill', function(hooks) {
     await toggleTab(PILL_SELECTORS.valueSelectInput);
   });
 
+  test('Moving between value and operator would not shift focus to start of value for every Type in value', async function(assert) {
+    const done = assert.async();
+    let count = 0;
+
+    this.set('metaOptions', metaOptions);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    this.set('handleMessage', (messageType, stringifiedPillText) => {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
+        return;
+      }
+      if (messageType === MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT) {
+      // This message is sent everytime some text is entered or a selection is made, as
+      // we need to keep the counts in sync.
+        if (count === 0) {
+          assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
+          assert.equal(stringifiedPillText, 'alert');
+          count++;
+        } else if (count === 1) {
+          assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
+          assert.equal(stringifiedPillText, 'alert contains');
+          count++;
+        } else if (count === 2) {
+          assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
+          assert.equal(stringifiedPillText, 'alert contains foo');
+          count++;
+        } else if (count === 3) {
+          assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
+          assert.equal(stringifiedPillText, 'alert contains fool');
+          count++;
+        } else if (count === 4) {
+          assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
+          assert.equal(stringifiedPillText, 'alert contains fools');
+          count++;
+          done();
+        }
+      }
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await selectChoose(PILL_SELECTORS.metaTrigger, 'alert');
+
+    await selectChoose(PILL_SELECTORS.operatorTrigger, 'contains');
+
+    await fillIn(PILL_SELECTORS.valueSelectInput, 'foo');
+
+    await click(PILL_SELECTORS.operator);
+
+    find(PILL_SELECTORS.operatorSelectInput).setSelectionRange(8, 8);
+
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_RIGHT_KEY);
+
+    // await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', END_KEY);
+
+    await fillIn(PILL_SELECTORS.valueSelectInput, 'fool');
+
+    await typeIn(PILL_SELECTORS.valueSelectInput, 's');
+
+
+  });
+
   test('Typing text in meta tab from pill-meta and toggling over to recent-query tab will filter the current list', async function(assert) {
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
