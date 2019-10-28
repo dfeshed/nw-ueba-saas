@@ -1,4 +1,4 @@
-import { profiles } from '..';
+import profiles from '..';
 
 export default {
   delay: 100,

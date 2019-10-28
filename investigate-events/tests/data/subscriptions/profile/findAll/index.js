@@ -1,4 +1,4 @@
-import data from './data';
+import profiles from '..';
 
 export default {
   subscriptionDestination: '/user/queue/investigate/profile/get-all',
@@ -8,7 +8,7 @@ export default {
       meta: {
         complete: false
       },
-      data
+      data: profiles
     };
   }
 };

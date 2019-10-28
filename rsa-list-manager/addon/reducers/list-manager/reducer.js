@@ -145,7 +145,8 @@ const listManagerReducer = handleActions({
         deleteItemErrorMessage: action.payload.meta ? action.payload.meta.message : undefined
       }),
       success: (s) => {
-        const deletedId = action.payload.request.id;
+        const { request } = action.payload;
+        const deletedId = request.profileRequest ? request.profileRequest.id : request.id;
         // remove the deleted item from state
         const list = s.list.filter((item) => item.id !== deletedId);
         return s.merge({

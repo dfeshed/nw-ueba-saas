@@ -140,6 +140,10 @@ const investigateConfigGen = function(env) {
       post: {
         subscriptionDestination: '/user/queue/investigate/profile/set',
         requestDestination: '/ws/investigate/profile/set'
+      },
+      delete: {
+        subscriptionDestination: '/user/queue/investigate/profile/remove',
+        requestDestination: '/ws/investigate/profile/remove'
       }
     },
     'metaGroup': {
