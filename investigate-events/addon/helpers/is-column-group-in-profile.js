@@ -1,7 +1,7 @@
 import { helper } from '@ember/component/helper';
 import { lookup } from 'ember-dependency-lookup';
 
-export function isColumnGroupInProfile([columnGroup, profiles]) {
+export function isColumnGroupInProfile([columnGroup, profiles = []]) {
   const profilesWithColumnGroup = profiles.filter((profile) => columnGroup.id === profile?.columnGroup?.id);
   const disableDelete = profilesWithColumnGroup.length > 0;
   let reason = '';

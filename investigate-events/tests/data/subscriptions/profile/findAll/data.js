@@ -1,5 +1,15 @@
 export default [
   {
+    id: 'SUMMARY1',
+    name: 'Summary1',
+    metaGroup: {
+      name: 'RSA Email Analysis'
+    },
+    columnGroupView: 'SUMMARY_VIEW',
+    preQuery: 'service=24,25,109,110,995,143,220,993',
+    contentType: 'OOTB'
+  },
+  {
     id: 'EMAIL',
     name: 'RSA Email Analysis',
     metaGroup: {

@@ -29,8 +29,8 @@ module('Integration | Component | Profile Selector', function(hooks) {
     new ReduxDataHelper(setState).build();
     await render(hbs`{{query-container/profile-selector}}`);
     assert.equal(findAll(profileSelectorSelector).length, 1, 'Shall render profile-selector component');
-    assert.equal(findAll(listManagerSelector).length, 1,
-      'Shall render list manager component if profiles does not exist');
+    assert.equal(findAll(listManagerSelector).length, 0,
+      'Shall not render list manager component if profiles does not exist');
   });
 
   test('it renders with proper class', async function(assert) {

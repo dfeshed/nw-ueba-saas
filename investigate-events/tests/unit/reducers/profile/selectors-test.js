@@ -84,6 +84,21 @@ module('Unit | Selectors | profile', function(hooks) {
       profiles(Immutable.from(state2)), profiles2, 'profiles shall select updated profiles from listManagers.profile');
   });
 
+  test('profiles returns undefined if both investigate.profile and listManagers.profiles have undefined list', function(assert) {
+    const state2 = { ...state1,
+      listManagers: {
+        profiles: {
+          list: undefined
+        }
+      }
+    };
+    state2.investigate.profile.profiles = undefined;
+    assert.equal(
+      profiles(
+        Immutable.from(state2)
+      ), undefined, 'profiles returns undefined if both investigate.profile and listManagers.profiles have undefined list');
+  });
+
   test('enrichedProfile returns profile with isEditable and preQueryPillsData properties', function(assert) {
     const result = enrichedProfile(DEFAULT_PROFILES[0], languageAndAliases1);
     assert.ok(result.hasOwnProperty('isEditable'), 'profile shall have isEditable property');
@@ -97,17 +112,53 @@ module('Unit | Selectors | profile', function(hooks) {
     assert.equal(result.columnGroup.id, 'SUMMARY', 'profile shall have SUMMARY column group by default');
   });
 
+  test('enrichedProfiles returns undefined if profiles is undefined', function(assert) {
+    const state2 = { ...state1 };
+    state2.investigate.profile.profiles = undefined;
+    const result = enrichedProfiles(Immutable.from(state2));
+    assert.notOk(result, 'shall return undefined if profiles is undefined');
+  });
+
   test('enrichedProfiles returns profiles with isEditable property', function(assert) {
-    assert.expect(profiles1.length);
-    const result = enrichedProfiles(Immutable.from(state1));
-    result.forEach((item) => {
+    const state2 = {
+      investigate: {
+        dictionaries: {
+          aliases: aliases1,
+          language: language1
+        },
+        columnGroup: {
+          columnGroups: EventColumnGroups
+        },
+        profile: {
+          profiles: profiles1
+        }
+      }
+    };
+    const result = enrichedProfiles(Immutable.from(state2));
+    assert.ok(result, 'shall return enriched profiles');
+    result?.forEach((item) => {
       assert.ok(item.hasOwnProperty('isEditable'), 'each profile shall have isEditable property');
     });
   });
 
   test('enrichedProfiles returns profiles with isEditable property set correctly', function(assert) {
-    const result = enrichedProfiles(Immutable.from(state1));
-    result.forEach((item) => {
+    const state2 = {
+      investigate: {
+        dictionaries: {
+          aliases: aliases1,
+          language: language1
+        },
+        columnGroup: {
+          columnGroups: EventColumnGroups
+        },
+        profile: {
+          profiles: profiles1
+        }
+      }
+    };
+    const result = enrichedProfiles(Immutable.from(state2));
+    assert.ok(result, 'shall return enriched profiles');
+    result?.forEach((item) => {
       assert.ok(item.hasOwnProperty('isEditable'), 'each profile shall have isEditable property');
     });
 
@@ -117,9 +168,23 @@ module('Unit | Selectors | profile', function(hooks) {
   });
 
   test('enrichedProfiles returns profiles with preQueryPillsData property', function(assert) {
-    assert.expect(profiles1.length);
-    const result = enrichedProfiles(Immutable.from(state1));
-    result.forEach((item) => {
+    const state2 = {
+      investigate: {
+        dictionaries: {
+          aliases: aliases1,
+          language: language1
+        },
+        columnGroup: {
+          columnGroups: EventColumnGroups
+        },
+        profile: {
+          profiles: profiles1
+        }
+      }
+    };
+    const result = enrichedProfiles(Immutable.from(state2));
+    assert.ok(result, 'shall return enriched profiles');
+    result?.forEach((item) => {
       assert.ok(item.hasOwnProperty('preQueryPillsData'), 'each profile shall have preQueryPillsData property');
     });
   });

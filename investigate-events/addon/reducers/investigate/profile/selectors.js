@@ -29,20 +29,19 @@ export const enrichedProfile = (profile, languageAndAliases, columnGroups) => {
   if (!enriched.columnGroup) {
     enriched.columnGroup = columnGroups?.find(({ id }) => id === 'SUMMARY');
   }
-
   return enriched;
 };
 
 // ACCESSOR FUNCTIONS
-const _originalProfiles = (state) => state.investigate.profile.profiles || undefined;
-const _updatedProfiles = (state) => state.listManagers?.profiles?.list;
+const _originalProfiles = (state) => state.investigate?.profile?.profiles || undefined;
+const _updatedProfiles = (state) => state.listManagers?.profiles?.list || undefined;
 export const languageAndAliases = (state) => languageAndAliasesForParser(state);
 export const isProfileViewActive = (state) => state.listManagers?.profiles?.isExpanded;
 
 // SELECTORS
 export const profiles = createSelector(
   [_originalProfiles, _updatedProfiles],
-  (originalProfiles = [], updatedProfiles) => {
+  (originalProfiles, updatedProfiles) => {
     // refer to listManager's profiles for up to date list
     if (updatedProfiles) {
       return updatedProfiles;
@@ -54,9 +53,11 @@ export const profiles = createSelector(
 
 export const enrichedProfiles = createSelector(
   [profiles, languageAndAliases, columnGroups],
-  (profiles = [], languageAndAliases, columnGroups) => {
-    return profiles.map((profile) => {
-      return enrichedProfile(profile, languageAndAliases, columnGroups);
-    });
+  (profiles, languageAndAliases, columnGroups) => {
+    if (profiles) {
+      return profiles.map((profile) => {
+        return enrichedProfile(profile, languageAndAliases, columnGroups);
+      });
+    }
   }
 );
