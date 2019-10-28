@@ -20,8 +20,7 @@ MAIN_CLASS = 'com.fortscale.test.TestMockProjectApplication'
 LAUNCHER = 'org.springframework.boot.loader.PropertiesLauncher'
 DEFAULT_DATE = timezone.datetime(2014, 1, 1)
 COMMAND = 'run'
-
-
+EXPECTED_ADD_OPENS_JVM_OPTIONS = "--add-opens java.base/java.lang=ALL-UNNAMED"
 
 
 def assert_bash_comment(task, expected_bash_comment, expected_java_args={}):
@@ -38,15 +37,17 @@ def assert_bash_comment(task, expected_bash_comment, expected_java_args={}):
 
     assert bash_command == expected_bash_comment
 
-    args = task_bash_command[-(len(task_bash_command)-launcher_index):].strip()
+    args = task_bash_command[-(len(task_bash_command) - launcher_index):].strip()
     shell_command_index = args.rfind(COMMAND) + len(COMMAND)
     assert shell_command_index >= 0
 
     args_without_command = args[shell_command_index:].strip()
-
-    args_splited = args_without_command.strip(SpringBootJarOperator.java_args_prefix).split(SpringBootJarOperator.java_args_prefix)
-    java_args_dict = {k:v.strip('"') for k,v in [i.strip().split(" ",1) for i in args_splited]}
+    args_split = args_without_command \
+        .strip(SpringBootJarOperator.java_args_prefix) \
+        .split(SpringBootJarOperator.java_args_prefix)
+    java_args_dict = {k: v.strip('"') for k, v in [i.strip().split(" ", 1) for i in args_split]}
     assert java_args_dict == expected_java_args
+
 
 @pytest.fixture
 def default_args():
@@ -92,19 +93,22 @@ def build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected
     assert_bash_comment(task, expected_bash_comment, expected_java_args)
     assert_task_success_state(task_instances, task.task_id)
 
+
 class TestSpringBootJarOperator(object):
     @classmethod
     def setup_class(cls):
         ConfigServerConfigurationReaderTestBuilder().build()
+
     @classmethod
     def teardown_class(cls):
         print ('teardown_class()')
-    def test_jvm_memory_allocation(self,default_args, java_args):
+
+    def test_jvm_memory_allocation(self, default_args, java_args):
         """
-    
         Test xmx and xmx
         :param default_args: default_args to dag
         :type default_args: dict
+        :param java_args
         :return: 
         """
         logging.info('Test xms and xmx options:')
@@ -115,20 +119,23 @@ class TestSpringBootJarOperator(object):
             'main_class': MAIN_CLASS,
         }
 
-        dag = DAG(
-            dag_id="test_jvm_memory_allocation_dag", default_args=default_args, schedule_interval=timedelta(1))
+        dag = DAG(dag_id="test_jvm_memory_allocation_dag", default_args=default_args, schedule_interval=timedelta(1))
+        expected_bash_command = "/usr/bin/java -Xms500m -Xmx2050m {} {} -cp {} -Dloader.main={} {}".format(
+            "-Duser.timezone=UTC",
+            EXPECTED_ADD_OPENS_JVM_OPTIONS,
+            JAR_PATH,
+            MAIN_CLASS,
+            LAUNCHER
+        )
+        expected_java_args = {'a': 'one', 'b': 'two'}
+        build_and_run_task(jvm_args, dag, java_args, expected_bash_command, expected_java_args)
 
-        expected_bash_comment = '/usr/bin/java -Xms500m -Xmx2050m -Duser.timezone=UTC -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
-        expected_java_args = {'a':'one', 'b':'two'}
-        build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
-
-
-    def test_timezone(self,default_args, java_args):
+    def test_timezone(self, default_args, java_args):
         """
-    
         Test timezone
         :param default_args: default_args to dag
         :type default_args: dict
+        :param java_args
         :return:
         """
         logging.info('Test timezone:')
@@ -138,20 +145,23 @@ class TestSpringBootJarOperator(object):
             'main_class': MAIN_CLASS,
         }
 
-        dag = DAG(
-            "test_timezone", default_args=default_args, schedule_interval=timedelta(1))
-
-        expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=America/New_York -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
+        dag = DAG("test_timezone", default_args=default_args, schedule_interval=timedelta(1))
+        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} -cp {} -Dloader.main={} {}".format(
+            "-Duser.timezone=America/New_York",
+            EXPECTED_ADD_OPENS_JVM_OPTIONS,
+            JAR_PATH,
+            MAIN_CLASS,
+            LAUNCHER
+        )
         expected_java_args = {'a': 'one', 'b': 'two'}
-        build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
+        build_and_run_task(jvm_args, dag, java_args, expected_bash_command, expected_java_args)
 
-
-    def test_logback(self,default_args, java_args):
+    def test_logback(self, default_args, java_args):
         """
-    
         Test logback
         :param default_args: default_args to dag
         :type default_args: dict
+        :param java_args
         :return:
         """
         logging.info('Test logback:')
@@ -161,20 +171,24 @@ class TestSpringBootJarOperator(object):
             'main_class': MAIN_CLASS,
         }
 
-        dag = DAG(
-            "test_logback", default_args=default_args, schedule_interval=timedelta(1))
-
-        expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -Dlogging.config=' + PATH + '/tests/resources/xmls/test_logback.xml -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
+        dag = DAG("test_logback", default_args=default_args, schedule_interval=timedelta(1))
+        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} {} -cp {} -Dloader.main={} {}".format(
+            "-Duser.timezone=UTC",
+            "-Dlogging.config={}/tests/resources/xmls/test_logback.xml".format(PATH),
+            EXPECTED_ADD_OPENS_JVM_OPTIONS,
+            JAR_PATH,
+            MAIN_CLASS,
+            LAUNCHER
+        )
         expected_java_args = {'a': 'one', 'b': 'two'}
-        build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
+        build_and_run_task(jvm_args, dag, java_args, expected_bash_command, expected_java_args)
 
-
-    def test_remote_debug(self,default_args, java_args):
+    def test_remote_debug(self, default_args, java_args):
         """
-    
         Test remote debug
         :param default_args: default_args to dag
         :type default_args: dict
+        :param java_args
         :return:
         """
         logging.info('test remote debug:')
@@ -186,20 +200,24 @@ class TestSpringBootJarOperator(object):
             'main_class': MAIN_CLASS,
         }
 
-        dag = DAG(
-            "test_remote_debug", default_args=default_args, schedule_interval=timedelta(1))
-
-        expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -agentlib:jdwp=transport=dt_socket,address=9211,server=y,suspend=n -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
+        dag = DAG("test_remote_debug", default_args=default_args, schedule_interval=timedelta(1))
+        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} {} -cp {} -Dloader.main={} {}".format(
+            "-Duser.timezone=UTC",
+            "-agentlib:jdwp=transport=dt_socket,address=9211,server=y,suspend=n",
+            EXPECTED_ADD_OPENS_JVM_OPTIONS,
+            JAR_PATH,
+            MAIN_CLASS,
+            LAUNCHER
+        )
         expected_java_args = {'a': 'one', 'b': 'two'}
-        build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
+        build_and_run_task(jvm_args, dag, java_args, expected_bash_command, expected_java_args)
 
-
-    def test_jar_path(self,default_args, java_args):
+    def test_jar_path(self, default_args, java_args):
         """
-    
         Test jar path
         :param default_args: default_args to dag
         :type default_args: dict
+        :param java_args
         :return:
         """
         logging.info('test jar path:')
@@ -207,20 +225,24 @@ class TestSpringBootJarOperator(object):
             'jar_path': JAR_PATH,
             'main_class': MAIN_CLASS,
         }
-        dag = DAG(
-            "test_jar_path", default_args=default_args, schedule_interval=timedelta(1))
 
-        expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
+        dag = DAG("test_jar_path", default_args=default_args, schedule_interval=timedelta(1))
+        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} -cp {} -Dloader.main={} {}".format(
+            "-Duser.timezone=UTC",
+            EXPECTED_ADD_OPENS_JVM_OPTIONS,
+            JAR_PATH,
+            MAIN_CLASS,
+            LAUNCHER
+        )
         expected_java_args = {'a': 'one', 'b': 'two'}
-        build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
+        build_and_run_task(jvm_args, dag, java_args, expected_bash_command, expected_java_args)
 
-
-    def test_all_params(self,default_args, java_args):
+    def test_all_params(self, default_args, java_args):
         """
-    
         Test task with all options of jvm_args
         :param default_args: default_args to dag
         :type default_args: dict
+        :param java_args
         :return:
         """
         logging.info('test jar operator with all params:')
@@ -239,23 +261,30 @@ class TestSpringBootJarOperator(object):
             'jmx_port': 9302,
             'extra_jvm': '-XX:+UseG1GC -XX:MaxGCPauseMillis=200'
         }
-        dag = DAG(
-            "test_all_params", default_args=default_args, schedule_interval=timedelta(1))
 
-        expected_bash_comment = '/usr/bin/java -Xms101m -Xmx2049m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Duser.timezone=America/New_York -Dlogging.config=' + PATH + '/tests/resources/xmls/test_logback.xml -agentlib:jdwp=transport=dt_socket,address=9222,server=y,suspend=n -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
+        dag = DAG("test_all_params", default_args=default_args, schedule_interval=timedelta(1))
+        expected_bash_command = "/usr/bin/java -Xms101m -Xmx2049m {} {} {} {} {} {} -cp {} -Dloader.main={} {}".format(
+            "-XX:+UseG1GC",
+            "-XX:MaxGCPauseMillis=200",
+            "-Duser.timezone=America/New_York",
+            "-Dlogging.config={}/tests/resources/xmls/test_logback.xml".format(PATH),
+            "-agentlib:jdwp=transport=dt_socket,address=9222,server=y,suspend=n",
+            EXPECTED_ADD_OPENS_JVM_OPTIONS,
+            JAR_PATH,
+            MAIN_CLASS,
+            LAUNCHER
+        )
         expected_java_args = {'a': 'one', 'b': 'two'}
-        build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
-
+        build_and_run_task(jvm_args, dag, java_args, expected_bash_command, expected_java_args)
 
     @pytest.mark.skipif(os.geteuid() != 0, reason="The test should to be skipped if user is not root")
-    def test_jmx(self,default_args, java_args):
+    def test_jmx(self, default_args, java_args):
         """
-    
         The test should to be skipped if user is not root, jmxremote.password file readable only for root.
-    
         Test remote jmx
         :param default_args: default_args to dag
         :type default_args: dict
+        :param java_args
         :return:
         """
         logging.info('test jmx:')
@@ -266,20 +295,26 @@ class TestSpringBootJarOperator(object):
             'main_class': MAIN_CLASS,
         }
 
-        dag = DAG(
-            'test_jmx_dag', default_args=default_args, schedule_interval=timedelta(1))
-
-        expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -Djavax.management.builder.initial= -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9302 -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
+        dag = DAG('test_jmx_dag', default_args=default_args, schedule_interval=timedelta(1))
+        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} {} {} {} -cp {} -Dloader.main={} {}".format(
+            "-Duser.timezone=UTC",
+            "-Djavax.management.builder.initial=",
+            "-Dcom.sun.management.jmxremote",
+            "-Dcom.sun.management.jmxremote.port=9302",
+            EXPECTED_ADD_OPENS_JVM_OPTIONS,
+            JAR_PATH,
+            MAIN_CLASS,
+            LAUNCHER
+        )
         expected_java_args = {'a': 'one', 'b': 'two'}
-        build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
+        build_and_run_task(jvm_args, dag, java_args, expected_bash_command, expected_java_args)
 
-
-    def test_no_main_class(self,default_args, java_args):
+    def test_no_main_class(self, default_args, java_args):
         """
-    
         Test task without main_class parameter
         :param default_args: default_args to dag
         :type default_args: dict
+        :param java_args
         :return:
         """
         logging.info('test jar operator without main class:')
@@ -293,10 +328,8 @@ class TestSpringBootJarOperator(object):
         with pytest.raises(Exception, message="Expecting error of jar operator"):
             build_and_run_task(jvm_args, dag, java_args, '')
 
-
-    def test_no_params(self,default_args):
+    def test_no_params(self, default_args):
         """
-    
         Test expecting error when no options of jvm_args passed
         :param default_args: default_args to dag
         :type default_args: dict
@@ -308,13 +341,12 @@ class TestSpringBootJarOperator(object):
         with pytest.raises(Exception, message="Expecting error of jar operator"):
             build_and_run_task({}, dag, {}, '')
 
-
-    def test_no_jar(self,default_args, java_args):
+    def test_no_jar(self, default_args, java_args):
         """
-    
         Test task with no jar file
         :param default_args: default_args to dag
         :type default_args: dict
+        :param java_args
         :return:
         """
         logging.info('test jar operator without jar file:')
@@ -329,13 +361,12 @@ class TestSpringBootJarOperator(object):
         with pytest.raises(Exception, message="Expecting error of bash operator"):
             build_and_run_task(jvm_args, dag, java_args, '')
 
-
-    def test_update_java_args(self,default_args, java_args):
+    def test_update_java_args(self, default_args, java_args):
         """
-    
         Test update of java args
         :param default_args: default_args to dag
         :type default_args: dict
+        :param java_args
         :return:
         """
         logging.info('test update of java args:')
@@ -363,17 +394,23 @@ class TestSpringBootJarOperator(object):
         task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
         tis = get_task_instances(dag)
 
-        expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
+        expected_bash_command = "/usr/bin/java -Xms100m -Xmx2048m {} {} -cp {} -Dloader.main={} {}".format(
+            "-Duser.timezone=UTC",
+            EXPECTED_ADD_OPENS_JVM_OPTIONS,
+            JAR_PATH,
+            MAIN_CLASS,
+            LAUNCHER
+        )
         expected_java_args = {'a': 'one', 'b': 'two', 'c': 'three'}
-        assert_bash_comment(task, expected_bash_comment, expected_java_args)
+        assert_bash_comment(task, expected_bash_command, expected_java_args)
         assert_task_success_state(tis, 'run_jar_file')
 
     def test_retries(self, default_args, java_args):
         """
-
         Test cleanup is called once failure appear
         :param default_args: default_args to dag
         :type default_args: dict
+        :param java_args
         :return:
         """
         logging.info('test update of java args:')
@@ -399,7 +436,7 @@ class TestSpringBootJarOperator(object):
         assert task.cleanup_cnt > 0
 
 
-class TestOperator (SpringBootJarOperator):
+class TestOperator(SpringBootJarOperator):
     cleanup_cnt = 0
 
     # def execute(self, context):
@@ -408,6 +445,5 @@ class TestOperator (SpringBootJarOperator):
     # def get_retry_callback(self, retry_fn):
     #     return retry_fn
     def get_retry_command(self):
-        self.cleanup_cnt=self.cleanup_cnt+1
-        return "echo hiiiiiii"
-
+        self.cleanup_cnt = self.cleanup_cnt + 1
+        return "echo Hi!!!!!"

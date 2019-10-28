@@ -7,6 +7,7 @@ from airflow import DAG
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.configuration.config_server_reader_test_builder import ConfigServerConfigurationReaderTestBuilder
 from tests.utils.airflow.operators.base_test_operator import assert_task_success_state, get_task_instances
+from tests.utils.airflow.operators.test_spring_boot_jar_operator import EXPECTED_ADD_OPENS_JVM_OPTIONS
 from tests.utils.airflow.operators.test_spring_boot_jar_operator import JAR_PATH, MAIN_CLASS, LAUNCHER
 from tests.utils.airflow.operators.test_spring_boot_jar_operator import assert_bash_comment
 
@@ -90,7 +91,8 @@ class TestFixedDurationJarOperator(object):
         tis = get_task_instances(dag)
         assert_task_success_state(tis, task.task_id)
 
-        bash_command = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp {} -Dloader.main={} {}'.format(
+        bash_command = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC {} -cp {} -Dloader.main={} {}'.format(
+            EXPECTED_ADD_OPENS_JVM_OPTIONS,
             JAR_PATH,
             MAIN_CLASS,
             LAUNCHER
