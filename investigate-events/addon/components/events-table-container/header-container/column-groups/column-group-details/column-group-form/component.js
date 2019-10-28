@@ -132,12 +132,11 @@ const ColumnGroupForm = Component.extend({
   },
 
   _broadcastChangedGroup() {
-    let editedColumnGroup = null;
     const { columnGroup: originalGroup, columnGroupName, displayedColumns } = this.getProperties('columnGroup', 'columnGroupName', 'displayedColumns');
 
     const trimmedGroupName = columnGroupName?.trim();
 
-    editedColumnGroup = _.cloneDeep(originalGroup) || {};
+    let editedColumnGroup = _.cloneDeep(originalGroup) || {};
     editedColumnGroup.name = trimmedGroupName;
     editedColumnGroup.columns = displayedColumns;
     editedColumnGroup = this._prepareColumnGroup(editedColumnGroup);

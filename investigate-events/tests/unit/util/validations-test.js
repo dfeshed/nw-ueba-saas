@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { hasUniqueName, isColumnGroupValid } from 'investigate-events/util/validations';
+import { hasUniqueName, isColumnGroupValid, isProfileValid } from 'investigate-events/util/validations';
 
 module('Unit | Util | Validations', function(hooks) {
   setupTest(hooks);
@@ -10,33 +10,41 @@ module('Unit | Util | Validations', function(hooks) {
     { field: 'b', title: 'b' },
     { field: 'c', title: 'c' }
   ];
-  const list = [
+  const columnGroupsList = [
     { name: 'foo', id: 1, columns },
     { name: 'bar', id: 2, columns }
   ];
 
+  const columnGroup = {};
+  const metaGroup = {};
+  const preQuery = 'PRE_QUERY';
+  const profilesList = [
+    { name: 'jaz', id: 1, columnGroup, metaGroup, preQuery },
+    { name: 'taz', id: 2, columnGroup, metaGroup, preQuery }
+  ];
+
   test('hasUniqueName has correct result when newItem name is unique', function(assert) {
-    const result = hasUniqueName('baz', undefined, list);
+    const result = hasUniqueName('baz', undefined, columnGroupsList);
     assert.ok(result);
   });
 
   test('hasUniqueName has correct result when newItem name is not unique', function(assert) {
-    const result = hasUniqueName('bar', undefined, list);
+    const result = hasUniqueName('bar', undefined, columnGroupsList);
     assert.notOk(result);
   });
 
   test('hasUniqueName has correct result when editedItem name is unique', function(assert) {
-    const result = hasUniqueName('baz', list[1].id, list);
+    const result = hasUniqueName('baz', columnGroupsList[1].id, columnGroupsList);
     assert.ok(result);
   });
 
   test('hasUniqueName has correct result when editedItem name is unchanged', function(assert) {
-    const result = hasUniqueName('bar', list[1].id, list);
+    const result = hasUniqueName('bar', columnGroupsList[1].id, columnGroupsList);
     assert.ok(result);
   });
 
   test('hasUniqueName has correct result when editedItem name matched another item name', function(assert) {
-    const result = hasUniqueName('foo', list[1].id, list);
+    const result = hasUniqueName('foo', columnGroupsList[1].id, columnGroupsList);
     assert.notOk(result);
   });
 
@@ -45,7 +53,7 @@ module('Unit | Util | Validations', function(hooks) {
       name: 'baz',
       columns
     };
-    const result = isColumnGroupValid(columnGroup, list);
+    const result = isColumnGroupValid(columnGroup, columnGroupsList);
     assert.ok(result);
   });
 
@@ -54,7 +62,7 @@ module('Unit | Util | Validations', function(hooks) {
       name: 'foo',
       columns
     };
-    const result = isColumnGroupValid(columnGroup, list);
+    const result = isColumnGroupValid(columnGroup, columnGroupsList);
     assert.notOk(result);
   });
 
@@ -63,7 +71,7 @@ module('Unit | Util | Validations', function(hooks) {
       name: '',
       columns
     };
-    const result = isColumnGroupValid(columnGroup, list);
+    const result = isColumnGroupValid(columnGroup, columnGroupsList);
     assert.notOk(result);
   });
 
@@ -75,7 +83,70 @@ module('Unit | Util | Validations', function(hooks) {
         { field: 'b', title: 'b' }
       ]
     };
-    const result = isColumnGroupValid(columnGroup, list);
+    const result = isColumnGroupValid(columnGroup, columnGroupsList);
+    assert.notOk(result);
+  });
+
+  test('isProfileValid has correct result when editedItem has unique name and all the required parameters', function(assert) {
+    const profile = {
+      name: 'My Profile',
+      columnGroup,
+      metaGroup,
+      preQuery
+    };
+    const result = isProfileValid(profile, profilesList);
+    assert.ok(result);
+  });
+
+  test('isProfileValid has correct result when editedItem has no name', function(assert) {
+    const profile = {
+      name: '',
+      columnGroup,
+      metaGroup,
+      preQuery
+    };
+    const result = isProfileValid(profile, profilesList);
+    assert.notOk(result);
+  });
+
+  test('isProfileValid has correct result when editedItem does not have a unique name', function(assert) {
+    const profile = {
+      name: 'taz',
+      columnGroup,
+      metaGroup,
+      preQuery
+    };
+    const result = isProfileValid(profile, profilesList);
+    assert.notOk(result);
+  });
+
+  test('isProfileValid has correct result when editedItem does not have a columnGroup', function(assert) {
+    const profile = {
+      name: 'My Profile',
+      metaGroup,
+      preQuery
+    };
+    const result = isProfileValid(profile, profilesList);
+    assert.notOk(result);
+  });
+
+  test('isProfileValid has correct result when editedItem does not have a metaGroup', function(assert) {
+    const profile = {
+      name: 'My Profile',
+      columnGroup,
+      preQuery
+    };
+    const result = isProfileValid(profile, profilesList);
+    assert.notOk(result);
+  });
+
+  test('isProfileValid has correct result when editedItem does not have a preQuery', function(assert) {
+    const profile = {
+      name: 'My Profile',
+      columnGroup,
+      metaGroup
+    };
+    const result = isProfileValid(profile, profilesList);
     assert.notOk(result);
   });
 });

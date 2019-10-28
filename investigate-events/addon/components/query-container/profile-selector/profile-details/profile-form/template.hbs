@@ -15,7 +15,7 @@
   <label class="rsa-form-label power-select select-column-group">
     {{#power-select
       options=columnGroups
-      selected=newProfile.columnGroup
+      selected=columnGroup
       searchEnabled=true
       searchField='name'
       onchange=(action 'onColumnGroupChange') as |option|

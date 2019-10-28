@@ -10,6 +10,10 @@ const _profileWithIsEditable = (item) => ({
   isEditable: item.contentType && item.contentType !== 'OOTB'
 });
 
+const _isEnriched = (profile) => {
+  return profile.hasOwnProperty('preQueryPillsData') && profile.hasOwnProperty('isEditable');
+};
+
 /**
  * enriches and returns one profile with isEditable and preQueryPillsData
  * and column group set to SUMMARY if missing
@@ -19,16 +23,21 @@ const _profileWithIsEditable = (item) => ({
  */
 export const enrichedProfile = (profile, languageAndAliases, columnGroups) => {
   const { language, aliases } = languageAndAliases;
-  const enriched = {
-    ..._profileWithIsEditable(profile),
-    preQueryPillsData: profile.preQuery ? transformTextToPillData(profile.preQuery, { language, aliases, returnMany: true }) : []
-  };
+  let enriched = profile;
+
+  if (!_isEnriched(profile)) {
+    enriched = {
+      ..._profileWithIsEditable(profile),
+      preQueryPillsData: profile.preQuery ? transformTextToPillData(profile.preQuery, { language, aliases, returnMany: true }) : []
+    };
+  }
 
   // if profile was returned from API without columnGroup property
   // assign the summary column group
   if (!enriched.columnGroup) {
     enriched.columnGroup = columnGroups?.find(({ id }) => id === 'SUMMARY');
   }
+
   return enriched;
 };
 

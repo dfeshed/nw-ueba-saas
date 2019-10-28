@@ -82,8 +82,12 @@ module('Integration | Component | Profile Details - Profile View', function(hook
   };
 
   test('it renders profile properties correctly', async function(assert) {
+    this.set('editProfile', () => {});
     this.set('profile', profile1);
-    await render(hbs`{{query-container/profile-selector/profile-details/profile-view profile=profile}}`);
+    await render(hbs`{{query-container/profile-selector/profile-details/profile-view
+      profile=profile
+      editProfile=editProfile
+    }}`);
 
     assert.equal(findAll(profileViewSelector).length, 1, 'Shall render profile view');
     assert.equal(findAll(profileNameSelector).length, 1, 'Shall render profile-name div with correct class');
@@ -112,9 +116,13 @@ module('Integration | Component | Profile Details - Profile View', function(hook
 
   test('it renders correct number of pills with correct text', async function(assert) {
     const translation = this.owner.lookup('service:i18n');
+    this.set('editProfile', () => {});
     this.set('profile', profile1);
     await render(hbs`
-      {{query-container/profile-selector/profile-details/profile-view profile=profile}}
+      {{query-container/profile-selector/profile-details/profile-view
+        profile=profile
+        editProfile=editProfile
+      }}
     `);
     assert.equal(findAll(prequeryPillSelector).length, 2, 'Shall render correct number of pills');
     assert.equal(findAll(prequeryOperatorSelector).length, 1, 'Shall render correct number of operators');
@@ -129,8 +137,12 @@ module('Integration | Component | Profile Details - Profile View', function(hook
   test('it renders icon correctly to indicate text pill in prequery conditions', async function(assert) {
     const translation = this.owner.lookup('service:i18n');
     this.set('profile', { ...profile1, preQueryPillsData: pillsData2 });
+    this.set('editProfile', () => {});
     await render(hbs`
-      {{query-container/profile-selector/profile-details/profile-view profile=profile}}
+      {{query-container/profile-selector/profile-details/profile-view
+        profile=profile
+        editProfile=editProfile
+      }}
     `);
     assert.equal(findAll(prequeryPillSelector).length, 3, 'Shall render correct number of pills');
     assert.equal(findAll(prequeryOperatorSelector).length, 2, 'Shall render correct number of operators');

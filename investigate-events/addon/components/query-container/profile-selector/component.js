@@ -14,6 +14,7 @@ import { columnGroups } from 'investigate-events/reducers/investigate/column-gro
 import { metaGroups } from 'investigate-events/reducers/investigate/meta-group/selectors';
 import { selectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { setProfile } from 'investigate-events/actions/interaction-creators';
+import { isProfileValid } from 'investigate-events/util/validations';
 
 const dispatchToActions = {
   setProfile
@@ -66,6 +67,12 @@ const ProfileSelector = Component.extend({
      */
     enrichProfile(profile) {
       return enrichedProfile(profile, this.get('languageAndAliases'));
+    },
+
+
+    validateEditedProfile(editedProfile) {
+      const profiles = this.get('profiles') || [];
+      return isProfileValid(editedProfile, profiles);
     }
   }
 });

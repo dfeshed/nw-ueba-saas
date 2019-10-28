@@ -8,7 +8,10 @@
     profiles=profiles
   }}
 {{else}}
+  {{!-- Passing editProfile through forms to validate editable profiles that are readonly as of now. TODO edit profiles--}}
+
   {{query-container/profile-selector/profile-details/profile-view
     profile=profile
+    editProfile=editProfile
   }}
 {{/if}}

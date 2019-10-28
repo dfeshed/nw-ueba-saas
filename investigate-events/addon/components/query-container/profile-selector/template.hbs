@@ -19,7 +19,10 @@
       {{/list.item}}
     {{/manager.itemList}}
 
-    {{#manager.details itemTransform=(action 'enrichProfile') as |details|}}
+    {{#manager.details
+      itemTransform=(action 'enrichProfile')
+      isValidItem=(action 'validateEditedProfile')
+      as |details|}}
       {{#if details.delete}}
         {{details.delete}}
       {{else}}
