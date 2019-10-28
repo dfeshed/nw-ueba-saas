@@ -146,7 +146,7 @@ public class SmartRecordConfService extends AslConfigurationService {
         String smartRecordName = smartRecordConf.getName();
 
         if (featureBucketStrategy != smartRecordStrategy) {
-            logger.info(
+            logger.debug(
                     "The strategy of aggregated feature event {} ({}) is " +
                     "different than the strategy of smart record {} ({}).",
                     aggregatedFeatureEventName, featureBucketStrategy,
@@ -158,7 +158,7 @@ public class SmartRecordConfService extends AslConfigurationService {
         Map<String, List<String>> smartRecordContextToFieldsMap = smartRecordConf.getContextToFieldsMap();
 
         if (featureBucketContextFieldNames.size() != smartRecordContextToFieldsMap.size()) {
-            logger.info(
+            logger.debug(
                     "The number of contexts of aggregated feature event {} ({}) is " +
                     "different than the number of contexts of smart record {} ({}).",
                     aggregatedFeatureEventName, featureBucketContextFieldNames.size(),
@@ -172,7 +172,7 @@ public class SmartRecordConfService extends AslConfigurationService {
             copyOfFeatureBucketContextFieldNames.retainAll(smartRecordContextAndFields.getValue());
 
             if (copyOfFeatureBucketContextFieldNames.isEmpty()) {
-                logger.info(
+                logger.debug(
                         "The context field names of aggregated feature event {} contain no " +
                         "representative from the possible fields of context {} in smart record {}.",
                         aggregatedFeatureEventName, smartRecordContextAndFields.getKey(), smartRecordName);
