@@ -23,6 +23,9 @@ import java.util.function.Supplier;
 public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
 
     private static AtomicInteger UNIQUE_ID_COUNTER = new AtomicInteger(0);
+    private TlsPerfClusterParams params;
+    private final int UNIQUE_ID;
+
     private final Supplier<RandomRangeCompanyGen> sslCaGenSupplier = () -> {
         RandomRangeCompanyGen gen = new RandomRangeCompanyGen(100, 200);
         gen.formatter = String::toLowerCase;
@@ -30,12 +33,7 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
     };
 
 
-    private TlsPerfClusterParams params;
-    private final int UNIQUE_ID;
 
-
-
-    public final HostnameRangeAllocator hostnameGen = new HostnameRangeAllocator();
 
     private IBaseGenerator<Integer> dstPortGen;
     private IBaseGenerator<String> ja3Gen;
@@ -45,6 +43,7 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
     private IBaseGenerator<String> srcIpGenerator;
 
     public final LocationRangeAllocator locationGen = new LocationRangeAllocator();
+    public final HostnameRangeAllocator hostnameGen = new HostnameRangeAllocator();
 
     private final Ipv4RangeAllocator dstIpGenerator = new Ipv4RangeAllocator();
     private IBaseGenerator<String> dstAsnGenerator = new RandomStringGenerator(5, 8);
