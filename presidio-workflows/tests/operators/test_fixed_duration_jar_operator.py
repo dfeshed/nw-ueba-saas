@@ -84,6 +84,13 @@ class TestFixedDurationJarOperator(object):
             condition=lambda context: True
         )
 
+        # Override appending "add opens" JVM options.
+        task.append_add_opens_jvm_options = type(FixedDurationJarOperator.append_add_opens_jvm_options)(
+            TestFixedDurationJarOperator.append_add_opens_jvm_options,
+            task,
+            FixedDurationJarOperator
+        )
+
         task.clear()
         dummy_task_instance = DummyTaskInstance(dag_id=dag.dag_id, task_id=task.task_id, execution_date=default)
         task.execute(context={'execution_date': default, 'task_instance': dummy_task_instance})
@@ -105,6 +112,10 @@ class TestFixedDurationJarOperator(object):
         }
 
         assert_bash_comment(task, bash_command, java_args)
+
+    @staticmethod
+    def append_add_opens_jvm_options(*args, **kwargs):
+        pass
 
 
 class DummyTaskInstance(object):

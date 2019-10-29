@@ -258,35 +258,22 @@ class SpringBootJarOperator(BashOperator):
 
     def get_bash_command(self):
         """
-
-        Create bash command in order to run jar
-
-        :return:
+        :return: A bash command that runs a JAR
+        :rtype: list[str]
         """
         bash_command = []
-
         self.java_path(bash_command)
-
         self.jvm_memory_allocation(bash_command)
-
         self.extra_jvm(bash_command)
-
         self.timezone(bash_command)
-
         self.spring_profile(bash_command)
-
         self.logback(bash_command)
-
         self.remote_debug_options(bash_command)
-
         self.jmx(bash_command)
-
+        self.append_add_opens_jvm_options(bash_command)
         self.jar_path(bash_command)
-
         self.jar_args(bash_command, self.command)
-
         self.extra_args(bash_command)
-
         bash_command = [elem for elem in bash_command if (elem != "''" and elem != "")]
         bash_command = ' '.join(bash_command)
         return bash_command
@@ -427,6 +414,12 @@ class SpringBootJarOperator(BashOperator):
                 raise ValueError('Please set jmx_port')
 
             bash_command.extend(jmx.split(' '))
+
+    def append_add_opens_jvm_options(self, bash_command):
+        bash_command.append("--add-opens {}".format(" ".join([
+            "java.base/java.lang=ALL-UNNAMED"
+            # Add additional "add opens" JVM options here.
+        ])))
 
     def timezone(self, bash_command):
         """
