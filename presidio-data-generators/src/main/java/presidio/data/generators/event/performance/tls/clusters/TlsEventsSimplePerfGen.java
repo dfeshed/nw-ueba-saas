@@ -44,8 +44,6 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
     private IBaseGenerator<String> srcNetnameGen;
     private IBaseGenerator<String> srcIpGenerator;
 
-
-
     public final LocationRangeAllocator locationGen = new LocationRangeAllocator();
 
     private final Ipv4RangeAllocator dstIpGenerator = new Ipv4RangeAllocator();
@@ -66,7 +64,6 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         UNIQUE_ID = UNIQUE_ID_COUNTER.addAndGet(1);
 
         dstIpGenerator.nextRangeRandom(params.dstIpSize);
-        hostnameGen.nextRangeGenCyclic(params.hostnameSize);
 
         dstPortGen = new DstPortPerfGen(UNIQUE_ID, params.dstPortSize);
         ja3Gen = new Ja3PerfGen(UNIQUE_ID, params.ja3Size);
@@ -76,6 +73,7 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         srcIpGenerator = new Ipv4PerfGen(UNIQUE_ID, params.srcIpSize);
 
         locationGen.nextRangeGenCyclic(params.locationSize);
+        hostnameGen.nextRangeGenCyclic(params.hostnameSize);
     }
 
 
@@ -84,8 +82,8 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         copyGen.setTimeGenerator(this.getTimeGenerator());
         copyGen.hostnameGen.setGenerator(this.hostnameGen.getGenerator());
         copyGen.setSrcPortGenerator(this.getSrcPortGenerator());
-        copyGen.dstPortGen = this.dstPortGen;
 
+        copyGen.dstPortGen = this.dstPortGen;
         copyGen.ja3Gen = this.ja3Gen;
         copyGen.sslSubjectGen = this.sslSubjectGen;
         copyGen.dstOrgGen = this.dstOrgGen;
