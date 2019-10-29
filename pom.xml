@@ -88,7 +88,7 @@
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
         <ehcache-core.version>2.6.9</ehcache-core.version>
         <spring-security-core.version>4.2.13.RELEASE</spring-security-core.version>
-        <spring-security-oauth2.version>2.0.17.RELEASE</spring-security-oauth2.version>
+        <spring-security-oauth2.version>2.0.18.RELEASE</spring-security-oauth2.version>
         <tomcat-juli.version>9.0.22</tomcat-juli.version>
     </properties>
 

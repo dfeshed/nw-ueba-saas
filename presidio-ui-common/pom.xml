@@ -13,9 +13,9 @@
     <artifactId>presidio-ui-common</artifactId>
     <version>11.4.0-0-SNAPSHOT</version>
 
-
     <properties>
         <dnsjava.version>2.1.1</dnsjava.version>
+        <guava.version>18.0</guava.version>
     </properties>
 
     <dependencies>
@@ -47,11 +47,8 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>15.0</version>
+            <version>${guava.version}</version>
         </dependency>
-
-
-
     </dependencies>
 
     <build>
@@ -65,8 +62,7 @@
                     <target>${java-lang-config.version}</target>
                 </configuration>
             </plugin>
-            <!-- Use aspectj compile load weaver to inject spring bean into non managed
-    beans -->
+            <!-- Use aspectj compile load weaver to inject spring bean into non managed beans -->
             <plugin>
                 <groupId>com.nickwongdev</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
