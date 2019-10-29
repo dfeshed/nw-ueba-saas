@@ -4,6 +4,7 @@ import com.rsa.netwitness.presidio.automation.data.tls.events_gen.UncommonValues
 import com.rsa.netwitness.presidio.automation.data.tls.model.EntityType;
 import com.rsa.netwitness.presidio.automation.data.tls.model.TlsIndicator;
 import org.assertj.core.util.Lists;
+import presidio.data.generators.FixedValueGenerator;
 import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.common.list.RangeGenerator;
 import presidio.data.generators.common.random.GaussianLongGenerator;
@@ -88,14 +89,10 @@ public class AbnormalTraffic<T> {
         return initialGenCopy.copy();
     }
 
-    public TlsRangeEventsGen createHighTrafficAnomalyGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<T> destinationGen){
-        // 3 ips with regularTraffic per 1 hour
-
-        setEntity(initialGenCopy);
-
-        initialGenCopy.srcIpGenerator.setGenerator(uncommonIpGenerator);
-        initialGenCopy.setNumOfBytesSentGenerator(regularTrafficGenerator);
-        eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy, 20);
+    public TlsRangeEventsGen addSslSubjectsToUncommonDomain(TlsRangeEventsGen initialGenCopy){
+        initialGenCopy.setNumOfBytesSentGenerator(new FixedValueGenerator<>(100L));
+        eventsSupplier.setCommonValuesGen(initialGenCopy, 60);
+        eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy, 60);
         return initialGenCopy.copy();
     }
 
@@ -120,7 +117,17 @@ public class AbnormalTraffic<T> {
         return heightTrafficAnomalyGen.copy();
     }
 
-    
+
+    public TlsRangeEventsGen createHighTrafficAnomalyGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<T> destinationGen){
+        // 3 ips with regularTraffic per 1 hour
+
+        setEntity(initialGenCopy);
+
+        initialGenCopy.srcIpGenerator.setGenerator(uncommonIpGenerator);
+        initialGenCopy.setNumOfBytesSentGenerator(regularTrafficGenerator);
+        eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy, 20);
+        return initialGenCopy.copy();
+    }
     
 
 
