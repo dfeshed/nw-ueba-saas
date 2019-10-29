@@ -8,14 +8,10 @@ export default Component.extend({
   classNames: ['profile-details'],
   profile: null, // profile to display
   editProfile: null, // list-manager function that accepts validated edited item
+  pillsData: null, // pillsData to handle prequery pills change
 
   @computed('profile')
   isEditing(profile) {
-    if (!_.isEmpty(profile)) {
-      // TODO Edit Group Items. Until then, custom profile will also be read-only
-      // return profile.isEditable;
-      return false;
-    }
-    return true;
+    return _.isEmpty(profile) ? true : profile.isEditable;
   }
 });

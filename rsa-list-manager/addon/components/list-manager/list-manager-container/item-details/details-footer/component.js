@@ -24,6 +24,8 @@ const DetailsFooter = Component.extend({
   layout,
   classNames: ['details-footer'],
   stateLocation: undefined,
+  editedItem: null,
+  originalItem: null,
   itemTransform: null, // function
   isItemEditedValid: false,
   itemReset: null,
@@ -31,9 +33,7 @@ const DetailsFooter = Component.extend({
   isValidItem: null,
 
   didReceiveAttrs() {
-
     let editedItem = _.cloneDeep(this.get('editedItem'));
-
     const { originalItem, isValidItem } = this.getProperties('originalItem', 'isValidItem');
     if (editedItem) {
       const itemTransform = this.get('itemTransform');

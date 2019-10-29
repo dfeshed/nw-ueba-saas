@@ -58,7 +58,7 @@ module('Integration | Component | Profile Selector', function(hooks) {
     accessControl.set('roles', origRoles);
   });
 
-  test('save profile is disabled when the profile form has not been edited at all', async function(assert) {
+  test('Save is disabled when profile form has not been edited at all', async function(assert) {
 
     new ReduxDataHelper(setState).profiles(DEFAULT_PROFILES).metaGroups().getColumns().build();
     await render(hbs`{{query-container/profile-selector}}`);
@@ -72,7 +72,7 @@ module('Integration | Component | Profile Selector', function(hooks) {
     assert.ok(find('footer .save.is-disabled'), 'disabled-save option available when new profile created is not valid');
   });
 
-  test('enables save profile when a profile creation is valid', async function(assert) {
+  test('Save disabled and Close button available when not all required fields valid', async function(assert) {
 
     new ReduxDataHelper(setState).profiles(DEFAULT_PROFILES).metaGroups().getColumns().build();
     await render(hbs`{{query-container/profile-selector}}`);
@@ -82,15 +82,11 @@ module('Integration | Component | Profile Selector', function(hooks) {
     // create new profile
     await click(findAll('footer button')[0]);
 
-    // simulate typeIn
+    // enter profile name
     await fillIn(profileNameInput, 'A');
     await triggerEvent(profileNameInput, 'keyup');
 
-    assert.ok(find('footer .cancel'), 'Cancel option available');
-    assert.ok(find('footer .save'), 'Save option available');
-    assert.notOk(find('footer .save.is-disabled'), 'Save option is enabled');
-
-    // TODO add more tests for metaGroup, preQuery, once editable
+    assert.ok(find('footer .close'), 'Close option available');
+    assert.ok(find('footer .save.is-disabled'), 'Save option shall render disabled');
   });
-
 });

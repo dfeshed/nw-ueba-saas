@@ -157,7 +157,7 @@ export const viewName = createSelector(
 export const highlightedId = createSelector(
   [filteredList, highlightedIndex],
   (filteredList, highlightedIndex) => {
-    return filteredList?.length && highlightedIndex > -1 ? filteredList[highlightedIndex].id : undefined;
+    return filteredList?.length && highlightedIndex > -1 ? filteredList[highlightedIndex]?.id : undefined;
   }
 );
 

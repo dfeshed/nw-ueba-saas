@@ -5,10 +5,7 @@ import { columnGroups } from 'investigate-events/reducers/investigate/column-gro
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 
 // UTIL
-const _profileWithIsEditable = (item) => ({
-  ...item,
-  isEditable: item.contentType && item.contentType !== 'OOTB'
-});
+const _isEditable = (item) => item.contentType && item.contentType !== 'OOTB';
 
 const _isEnriched = (profile) => {
   return profile.hasOwnProperty('preQueryPillsData') && profile.hasOwnProperty('isEditable');
@@ -23,21 +20,24 @@ const _isEnriched = (profile) => {
  */
 export const enrichedProfile = (profile, languageAndAliases, columnGroups) => {
   const { language, aliases } = languageAndAliases;
-  let enriched = profile;
+  const enriched = { ...profile };
 
   if (!_isEnriched(profile)) {
-    enriched = {
-      ..._profileWithIsEditable(profile),
-      preQueryPillsData: profile.preQuery ? transformTextToPillData(profile.preQuery, { language, aliases, returnMany: true }) : []
-    };
+    enriched.isEditable = _isEditable(profile);
+    enriched.preQueryPillsData = profile.preQuery ? transformTextToPillData(profile.preQuery.trim(), { language, aliases, returnMany: true }) : [];
   }
 
   // if profile was returned from API without columnGroup property
+  // or columnGroupView is 'SUMMARY_VIEW' - because summary columnGroup is not saved
   // assign the summary column group
-  if (!enriched.columnGroup) {
+  if (!enriched.columnGroup || enriched.columnGroupView === 'SUMMARY_VIEW') {
     enriched.columnGroup = columnGroups?.find(({ id }) => id === 'SUMMARY');
+  } else {
+    // updated profile's column group using id
+    // in case column group has changed since profile was created
+    const profileColumnGroupId = enriched.columnGroup.id;
+    enriched.columnGroup = columnGroups?.find(({ id }) => id === profileColumnGroupId);
   }
-
   return enriched;
 };
 

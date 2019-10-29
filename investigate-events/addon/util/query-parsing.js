@@ -291,6 +291,7 @@ export const transformTextToPillData = (queryText, { language, aliases, shouldFo
   } catch (err) {
     // Scanning or parsing error, make complex pill
     const pill = _createComplexQueryFilter(queryText);
+
     return returnMany ? [ pill ] : pill;
   }
 

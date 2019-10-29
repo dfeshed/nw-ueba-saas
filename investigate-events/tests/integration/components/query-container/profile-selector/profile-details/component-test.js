@@ -26,9 +26,10 @@ module('Integration | Component | Profile Details', function(hooks) {
     },
     columnGroupView: 'CUSTOM',
     columnGroup: {
+      id: 'EMAIL',
       name: 'RSA Email Analysis'
     },
-    preQuery: 'service=24,25,109,110,995,143,220,993',
+    preQuery: 'service=80',
     contentType: 'OOTB'
   };
 
@@ -49,7 +50,7 @@ module('Integration | Component | Profile Details', function(hooks) {
     assert.notOk(find(profileFormSelector), 'Shall not render profile-form');
   });
 
-  test('profile details should render profile-view when an item is available', async function(assert) {
+  test('profile details should render profile-form when an item is available', async function(assert) {
     const editProfile1 = () => {};
     this.set('profile', {});
     this.set('editProfile', editProfile1);

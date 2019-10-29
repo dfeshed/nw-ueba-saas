@@ -18,7 +18,7 @@ export default [
     columnGroupView: 'CUSTOM',
     columnGroup: {
       name: 'RSA Email Analysis',
-      id: 'EMAIL'
+      id: 'EMAIL1'
     },
     preQuery: 'service=24,25,109,110,995,143,220,993',
     contentType: 'OOTB'

@@ -112,6 +112,13 @@ module('Unit | Selectors | profile', function(hooks) {
     assert.equal(result.columnGroup.id, 'SUMMARY', 'profile shall have SUMMARY column group by default');
   });
 
+  test('enrichedProfile returns profile with SUMMARY column group if columnGroupView is SUMMARY_VIEW', function(assert) {
+    const profile1 = { ...DEFAULT_PROFILES[0], columnGroup: { id: 'someid123', name: 'some group' }, columnGroupView: 'SUMMARY_VIEW' };
+    const result = enrichedProfile(profile1, languageAndAliases1, EventColumnGroups);
+    assert.ok(result.hasOwnProperty('columnGroup'), 'profile shall have columnGroup property');
+    assert.equal(result.columnGroup.id, 'SUMMARY', 'profile shall have SUMMARY column group by default');
+  });
+
   test('enrichedProfiles returns undefined if profiles is undefined', function(assert) {
     const state2 = { ...state1 };
     state2.investigate.profile.profiles = undefined;

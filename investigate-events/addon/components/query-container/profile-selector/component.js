@@ -18,6 +18,7 @@ import {
 import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
 import { metaGroups } from 'investigate-events/reducers/investigate/meta-group/selectors';
 import { selectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
+import { pillsData } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { setProfile } from 'investigate-events/actions/interaction-creators';
 import { isProfileValid } from 'investigate-events/util/validations';
 
@@ -30,7 +31,8 @@ const stateToComputed = (state) => ({
   metaGroups: metaGroups(state),
   languageAndAliases: languageAndAliases(state),
   profiles: enrichedProfiles(state),
-  selectedColumnGroupId: selectedColumnGroup(state)
+  selectedColumnGroupId: selectedColumnGroup(state),
+  pillsData: pillsData(state)
 });
 
 const ProfileSelector = Component.extend({
@@ -39,10 +41,6 @@ const ProfileSelector = Component.extend({
   modelName,
   listName,
   stateLocation,
-  profiles: null, // list of profiles
-  metaGroups: null, // list of meta groups
-  columnGroups: null, // list of column groups
-  selectedColumnGroupId: null, // id of currently selected column group
   selectProfile: null, // function
   enrichProfile: null, // function to use for itemTransform in list manager details
   accessControl: service(),
@@ -71,7 +69,7 @@ const ProfileSelector = Component.extend({
      * @param {object} profile
      */
     enrichProfile(profile) {
-      return enrichedProfile(profile, this.get('languageAndAliases'));
+      return enrichedProfile(profile, this.get('languageAndAliases'), this.get('columnGroups'));
     },
 
     validateEditedProfile(editedProfile) {
