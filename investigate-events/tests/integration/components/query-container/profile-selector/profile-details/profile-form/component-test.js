@@ -19,7 +19,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   const profileNameSelector = '.profile-name';
   const columnGroupNameSelector = '.column-group-name';
   const selectColumnGroupSelector = 'label.rsa-form-label.power-select.select-column-group';
-  const prequeryConditionsSelector = '.prequery-conditions.scroll-box.readonly';
+  const prequeryConditionsSelector = '.prequery-conditions.scroll-box';
   const nameSelector = '.name';
 
   test('it renders correctly', async function(assert) {

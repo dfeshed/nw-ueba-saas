@@ -2,9 +2,9 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
 import {
+  isProfileExpanded,
   profiles,
   enrichedProfiles,
-  isProfileViewActive,
   enrichedProfile
 } from 'investigate-events/reducers/investigate/profile/selectors';
 import { DEFAULT_PROFILES } from '../../../helpers/redux-data-helper';
@@ -189,7 +189,7 @@ module('Unit | Selectors | profile', function(hooks) {
     });
   });
 
-  test('isProfileViewActive returns true when profile is expanded', function(assert) {
+  test('isProfileExpanded returns true when profile is expanded', function(assert) {
     let state = {
       listManagers: {
         profiles: {
@@ -197,7 +197,7 @@ module('Unit | Selectors | profile', function(hooks) {
         }
       }
     };
-    assert.ok(isProfileViewActive(state), 'Did not find it expanded');
+    assert.ok(isProfileExpanded(state), 'Did not find it expanded');
     state = {
       listManagers: {
         profiles: {
@@ -205,6 +205,6 @@ module('Unit | Selectors | profile', function(hooks) {
         }
       }
     };
-    assert.notOk(isProfileViewActive(state), 'Found it expanded');
+    assert.notOk(isProfileExpanded(state), 'Found it expanded');
   });
 });

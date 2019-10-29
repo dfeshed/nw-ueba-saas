@@ -1,5 +1,5 @@
 import * as ACTION_TYPES from 'rsa-list-manager/actions/types';
-import { isExpanded, shouldSelectedItemPersist } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { isExpanded, shouldSelectedItemPersist, list, viewName } from 'rsa-list-manager/selectors/list-manager/selectors';
 import { EDIT_VIEW } from 'rsa-list-manager/constants/list-manager';
 
 const _setSelectedItemById = (id, stateLocation) => {
@@ -57,11 +57,19 @@ export const viewChanged = (viewname, stateLocation) => ({
 
 export const setSelectedItem = (item, stateLocation) => _setSelectedItemById(item.id, stateLocation);
 
-export const beginEditItem = (editItemId, stateLocation) => ({
-  type: ACTION_TYPES.EDIT_ITEM,
-  payload: editItemId,
-  meta: { belongsTo: stateLocation }
-});
+export const beginEditItem = (editItemId, stateLocation) => {
+  return (dispatch, getState) => {
+    // including entire edit item as reducers outside rsa-list-manager
+    // are interested in that item's contents
+    const l = list(getState(), stateLocation);
+    const editItem = l && editItemId ? l.find((item) => item.id === editItemId) : undefined;
+    dispatch({
+      type: ACTION_TYPES.EDIT_ITEM,
+      payload: { editItemId, editItem },
+      meta: { belongsTo: stateLocation }
+    });
+  };
+};
 
 export const beginCreateItem = (stateLocation) => viewChanged(EDIT_VIEW, stateLocation);
 
@@ -70,8 +78,15 @@ export const closeListManager = (stateLocation) => {
     const currentlyExpanded = isExpanded(getState(), stateLocation);
     // close list only if isExpanded
     if (currentlyExpanded) {
+
+      // Include details about what view the manager was exiting
+      // with the action as consumers of list-manager that care
+      // about these actions may have state maintenance work to do
+      const view = viewName(getState(), stateLocation);
+      const actionType = view === EDIT_VIEW ? 'close' : undefined;
       dispatch({
         type: ACTION_TYPES.TOGGLE_LIST_VISIBILITY,
+        payload: { actionType },
         meta: { belongsTo: stateLocation }
       });
     }

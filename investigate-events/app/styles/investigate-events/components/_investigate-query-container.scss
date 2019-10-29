@@ -1125,6 +1125,7 @@
 
 // dropdown styles
 .investigate-query-dropdown {
+  z-index: 20001;
   @include border(1px, solid, primary, lighter);
   border-bottom: transparent;
   border-right: transparent;
@@ -1297,4 +1298,16 @@
     }
 
   }
+}
+
+.profile-query-bar {
+  background-color: background-color(primary, darkest);
+  width: 380px;
+  .rsa-investigate-query-container {
+
+    .query-pills {
+      width: 100%;
+    }
+  }
+
 }

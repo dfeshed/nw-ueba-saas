@@ -42,10 +42,10 @@ export const enrichedProfile = (profile, languageAndAliases, columnGroups) => {
 };
 
 // ACCESSOR FUNCTIONS
+export const languageAndAliases = (state) => languageAndAliasesForParser(state);
+export const isProfileExpanded = (state) => state.listManagers?.profiles?.isExpanded;
 const _originalProfiles = (state) => state.investigate?.profile?.profiles || undefined;
 const _updatedProfiles = (state) => state.listManagers?.profiles?.list || undefined;
-export const languageAndAliases = (state) => languageAndAliasesForParser(state);
-export const isProfileViewActive = (state) => state.listManagers?.profiles?.isExpanded;
 
 // SELECTORS
 export const profiles = createSelector(

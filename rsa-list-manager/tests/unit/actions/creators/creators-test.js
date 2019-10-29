@@ -13,6 +13,12 @@ module('Unit | Actions | Creators', function(hooks) {
   });
 
   const stateLocation1 = 'listManager';
+  const items = [
+    { id: 3, name: 'eba', subItems: [ 'a', 'b', 'c' ] },
+    { id: 1, name: 'foo', subItems: [ 'a', 'b' ] },
+    { id: 2, name: 'bar', subItems: [ 'e', 'b', 'c' ] },
+    { id: 4, name: 'Baz', subItems: [ 'c' ] }
+  ];
 
   test('initializeListManager action creator returns proper type', function(assert) {
     const initialProps1 = {
@@ -77,8 +83,18 @@ module('Unit | Actions | Creators', function(hooks) {
   });
 
   test('beginEditItem action creator returns proper type', function(assert) {
-    const { type } = creators.beginEditItem(null, stateLocation1);
-    assert.equal(type, ACTION_TYPES.EDIT_ITEM, 'action has the correct type');
+
+    const getState = () => {
+      return new ReduxDataHelper().list(items).build();
+    };
+    const dispatchEdit = (action) => {
+      assert.equal(action.type, ACTION_TYPES.EDIT_ITEM, 'action has the correct type');
+      assert.equal(action.payload.editItemId, '1', 'Action has the correct payload');
+      assert.equal(action.payload.editItem.name, 'foo', 'Action has the correct edit item');
+    };
+
+    const editThunk = creators.beginEditItem(1, stateLocation1);
+    editThunk(dispatchEdit, getState);
   });
 
   test('beginCreateItem action creator returns proper type', function(assert) {

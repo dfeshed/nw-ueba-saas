@@ -3,13 +3,18 @@ import layout from './template';
 import { connect } from 'ember-redux';
 import computed, { not } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
+
 import {
   PROFILES_STATE_LOCATION as stateLocation,
   PROFILES_MODEL_NAME as modelName,
   PROFILES_LIST_NAME as listName,
   PROFILES_TOPIC_ID
 } from 'investigate-events/constants/profiles';
-import { enrichedProfiles, enrichedProfile, languageAndAliases } from 'investigate-events/reducers/investigate/profile/selectors';
+import {
+  enrichedProfiles,
+  enrichedProfile,
+  languageAndAliases
+} from 'investigate-events/reducers/investigate/profile/selectors';
 import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
 import { metaGroups } from 'investigate-events/reducers/investigate/meta-group/selectors';
 import { selectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
@@ -21,10 +26,10 @@ const dispatchToActions = {
 };
 
 const stateToComputed = (state) => ({
-  profiles: enrichedProfiles(state),
-  languageAndAliases: languageAndAliases(state),
   columnGroups: columnGroups(state),
   metaGroups: metaGroups(state),
+  languageAndAliases: languageAndAliases(state),
+  profiles: enrichedProfiles(state),
   selectedColumnGroupId: selectedColumnGroup(state)
 });
 

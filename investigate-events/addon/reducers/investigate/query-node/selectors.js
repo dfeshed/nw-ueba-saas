@@ -7,7 +7,7 @@ import { createQueryHash } from 'investigate-events/util/query-hash';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 import { validMetaKeySuggestions } from 'investigate-events/reducers/investigate/dictionaries/selectors';
-import { isProfileViewActive } from 'investigate-events/reducers/investigate/profile/selectors';
+import { isProfileExpanded } from 'investigate-events/reducers/investigate/profile/selectors';
 
 const { createSelector } = reselect;
 
@@ -25,6 +25,7 @@ const _currentQueryHash = (state) => state.investigate.queryNode.currentQueryHas
 const _updatedFreeFormTextPill = (state) => state.investigate.queryNode.updatedFreeFormTextPill;
 const _pillDataHashes = (state) => state.investigate.queryNode.pillDataHashes;
 const _originalPills = (state) => state.investigate.queryNode.originalPills || [];
+const _isPillsDataStashed = (state) => state.investigate.queryNode.originalPills !== undefined;
 
 export const pillsData = (state) => state.investigate.queryNode.pillsData;
 
@@ -227,8 +228,8 @@ const _twinProcessedOGPills = createSelector(
 );
 
 export const shouldUseStashedPills = createSelector(
-  [isProfileViewActive],
-  (isProfileViewActive) => isProfileViewActive
+  [_isPillsDataStashed, isProfileExpanded],
+  (isPillsDataStashed, isProfileExpanded) => isPillsDataStashed && isProfileExpanded
 );
 
 export const enrichedPillsData = createSelector(

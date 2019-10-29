@@ -21,9 +21,25 @@ import {
   shouldUseStashedPills,
   useDatabaseTime
 } from 'investigate-events/reducers/investigate/query-node/selectors';
-import ReduxDataHelper from '../../../helpers/redux-data-helper';
+import ReduxDataHelper, { DEFAULT_PROFILES } from '../../../helpers/redux-data-helper';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import { TEXT_FILTER, QUERY_FILTER } from 'investigate-events/constants/pill';
+
+const profiles1 = [
+  ...DEFAULT_PROFILES,
+  {
+    name: 'New Web Analysis',
+    metaGroup: {
+      name: 'RSA Web Analysis'
+    },
+    columnGroupView: 'CUSTOM',
+    columnGroup: {
+      name: 'RSA Web Analysis'
+    },
+    preQuery: 'service=80,8080,443',
+    contentType: 'CUSTOM'
+  }
+];
 
 module('Unit | Selectors | queryNode');
 
@@ -384,8 +400,16 @@ test('enrichedPillsData contains proper twin focused details', function(assert) 
   assert.equal(pD[2].isTwinFocused, undefined, 'indicates twin is focused when IT is focused');
 });
 
-test('shouldUseStashedPills should return true if profile is expanded', function(assert) {
+test('shouldUseStashedPills should return true if profile is expanded and pills are stashed', function(assert) {
   let state = {
+    investigate: {
+      queryNode: {
+        originalPills: []
+      },
+      profile: {
+        profiles: profiles1
+      }
+    },
     listManagers: {
       profiles: {
         isExpanded: true
@@ -395,9 +419,34 @@ test('shouldUseStashedPills should return true if profile is expanded', function
   assert.ok(shouldUseStashedPills(state), 'Did not return true');
 
   state = {
+    investigate: {
+      queryNode: {
+        originalPills: []
+      },
+      profile: {
+        profiles: profiles1
+      }
+    },
     listManagers: {
       profiles: {
         isExpanded: false
+      }
+    }
+  };
+  assert.notOk(shouldUseStashedPills(state), 'Did not return false');
+
+  state = {
+    investigate: {
+      queryNode: {
+        originalPills: undefined
+      },
+      profile: {
+        profiles: profiles1
+      }
+    },
+    listManagers: {
+      profiles: {
+        isExpanded: true
       }
     }
   };

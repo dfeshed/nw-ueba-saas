@@ -141,7 +141,7 @@ test('ACTION_TYPES.EDIT_ITEM sets editItemId and viewName', function(assert) {
 
   const action = {
     type: ACTION_TYPES.EDIT_ITEM,
-    payload: randomId
+    payload: { editItemId: randomId }
   };
 
   const result = reducer(prevState, action);

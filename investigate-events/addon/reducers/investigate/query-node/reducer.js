@@ -15,6 +15,7 @@ import {
   OPERATOR_AND,
   OPERATOR_OR
 } from 'investigate-events/constants/pill';
+import { LIST_VIEW, EDIT_VIEW } from 'rsa-list-manager/constants/list-manager';
 
 const { log } = console; // eslint-disable-line
 
@@ -48,7 +49,7 @@ const _initialState = Immutable.from({
 
   // When query container is rendered in profiles, we save off pillsData
   // as originalPills. Once that component is closed, we replace them back.
-  originalPills: [],
+  originalPills: undefined,
 
   // Is a query in progress. This possibly includes server
   // validation if that is taking a long time to return
@@ -121,6 +122,29 @@ const _cloneQueryParams = (state) => {
     startTime
   };
 };
+
+/**
+ * Replaces pillsData with original pills that were stashed
+ * when a sibling query-pills component was rendered.
+ */
+const _replacePillsWithOriginalPills = (state) => {
+  const oG = state.originalPills;
+  return state.merge({
+    pillsData: Immutable.from(oG),
+    originalPills: undefined
+  });
+};
+
+/**
+ * Copy pillsData as originalPills so that they can be
+ * used by the original component again.
+ */
+const _stashPills = (state) => {
+  const originalPills = state.pillsData;
+  return state.set('originalPills', originalPills);
+};
+
+const _isTriggeredByProfileListManager = (meta) => meta?.belongsTo === 'listManagers.profiles';
 
 // Takes in state and a new pill, finds the old pill in
 // state and replaces it with a new version
@@ -905,7 +929,44 @@ export default handleActions({
     return _handleLogicalOperator(state, pillData, position, true);
   },
 
-  [ACTION_TYPES.STASH_PILLS_DATA]: (state, { payload }) => {
-    return state.merge({ ...payload });
+  [ACTION_TYPES.RSA_LIST_MANAGER_SET_VIEW_NAME]: (state, { payload, meta }) => {
+    // Only care about this action if the source of the action is
+    // the list manager instance responsible for maintaining profiles
+    if (_isTriggeredByProfileListManager(meta)) {
+      let newState;
+      switch (payload) {
+        // add new profile
+        case EDIT_VIEW: {
+          newState = _stashPills(state);
+          break;
+        }
+        // close profile drop-down
+        case LIST_VIEW: {
+          newState = _replacePillsWithOriginalPills(state);
+          break;
+        }
+      }
+      return newState;
+    }
+  },
+
+  [ACTION_TYPES.RSA_LIST_MANAGER_EDIT_ITEM]: (state, { payload, meta }) => {
+    // Only care about this action if the source of the action is
+    // the list manager instance responsible for maintaining profiles
+    if (_isTriggeredByProfileListManager(meta)) {
+      const { editItem: { preQueryPillsData } } = payload;
+      const newState = _stashPills(state);
+      return _replaceAllPills(newState, preQueryPillsData);
+    }
+    return state;
+  },
+
+  [ACTION_TYPES.RSA_LIST_MANAGER_TOGGLE_VISIBILITY]: (state, { payload, meta }) => {
+    // Only care about this action if the source of the action is
+    // the list manager instance responsible for maintaining profiles
+    if (_isTriggeredByProfileListManager(meta) && payload?.actionType === 'close') {
+      return _replacePillsWithOriginalPills(state);
+    }
+    return state;
   }
 }, _initialState);

@@ -18,6 +18,7 @@ import {
   createFilter,
   createOperator
 } from 'investigate-events/util/query-parsing';
+import { LIST_VIEW, EDIT_VIEW } from 'rsa-list-manager/constants/list-manager';
 
 const { log } = console;//eslint-disable-line
 
@@ -1698,21 +1699,21 @@ test('WRAP_WITH_PARENS wraps pills with parens at the provided indexes', functio
   assert.equal(result.pillsData[4].type, CLOSE_PAREN, 'pillsData item 4 is the right type');
 });
 
-test('STASH_PILLS_DATA add scenario', function(assert) {
+// edit-view -> add new profile
+test('RSA_LIST_MANAGER_SET_VIEW_NAME add scenario', function(assert) {
   const initialState = Immutable.from({
     pillsData: [
       { id: 1, type: QUERY_FILTER },
       { id: 2, type: QUERY_FILTER },
       { id: 3, type: QUERY_FILTER }
     ],
-    originalPills: []
+    originalPills: undefined
   });
 
   const action = {
-    type: ACTION_TYPES.STASH_PILLS_DATA,
-    payload: {
-      originalPills: initialState.pillsData
-    }
+    type: ACTION_TYPES.RSA_LIST_MANAGER_SET_VIEW_NAME,
+    payload: EDIT_VIEW,
+    meta: { belongsTo: 'listManagers.profiles' }
   };
 
   // pillsData should now be saved off as original pills
@@ -1722,10 +1723,10 @@ test('STASH_PILLS_DATA add scenario', function(assert) {
   assert.deepEqual(result.pillsData, initialState.pillsData, 'Should not change pillsData though');
 });
 
-test('STASH_PILLS_DATA edit scenario', function(assert) {
+test('RSA_LIST_MANAGER_EDIT_ITEM edit scenario', function(assert) {
   const profilePills = [
-    { id: '1', type: QUERY_FILTER },
-    { id: '2', type: QUERY_FILTER }
+    { id: '1', type: QUERY_FILTER, meta: 'foo', operator: '=', value: 'foobar' },
+    { id: '2', type: QUERY_FILTER, meta: 'bar', operator: '=', value: 'baz' }
   ];
   const initialState = Immutable.from({
     pillsData: [
@@ -1733,48 +1734,76 @@ test('STASH_PILLS_DATA edit scenario', function(assert) {
       { id: 2, type: QUERY_FILTER },
       { id: 3, type: QUERY_FILTER }
     ],
-    originalPills: []
+    originalPills: undefined
   });
 
   const action = {
-    type: ACTION_TYPES.STASH_PILLS_DATA,
-    payload: {
-      originalPills: initialState.pillsData,
-      pillsData: profilePills
-    }
+    type: ACTION_TYPES.RSA_LIST_MANAGER_EDIT_ITEM,
+    payload: { editItemId: '1', editItem: { preQueryPillsData: profilePills } },
+    meta: { belongsTo: 'listManagers.profiles' }
   };
 
   // pillsData should now be saved off as original pills
   // pillsData now contains proflePills
   const result = reducer(initialState, action);
   assert.deepEqual(result.originalPills, initialState.pillsData, 'Did not find original pills copied over');
-  assert.deepEqual(result.pillsData, profilePills, 'Did not find profile pills copied over to pillsData');
+  assert.equal(result.pillsData[0].meta, 'foo', 'Did not find first profile pill copied over to pillsData');
+  assert.equal(result.pillsData[1].meta, 'bar', 'Did not find second profile pill copied over to pillsData');
 });
 
-test('STASH_PILLS_DATA close scenario', function(assert) {
+// list-view -> close
+test('RSA_LIST_MANAGER_SET_VIEW_NAME close scenario', function(assert) {
   const initialState = Immutable.from({
     pillsData: [
       { id: 21, type: COMPLEX_FILTER },
       { id: 33, type: QUERY_FILTER }
     ],
     originalPills: [
-      { id: 1, type: QUERY_FILTER },
-      { id: 2, type: QUERY_FILTER },
-      { id: 3, type: QUERY_FILTER }
+      { id: 1, type: QUERY_FILTER, meta: 'foo', operator: '=', value: 'foobar' },
+      { id: 2, type: OPERATOR_AND },
+      { id: 3, type: QUERY_FILTER, meta: 'bar', operator: '=', value: 'baz' }
     ]
   });
 
   const action = {
-    type: ACTION_TYPES.STASH_PILLS_DATA,
-    payload: {
-      pillsData: initialState.originalPills,
-      originalPills: []
-    }
+    type: ACTION_TYPES.RSA_LIST_MANAGER_SET_VIEW_NAME,
+    payload: LIST_VIEW,
+    meta: { belongsTo: 'listManagers.profiles' }
   };
 
   // pillsData copies back pills from original
   // original pills are reset
   const result = reducer(initialState, action);
-  assert.ok(result.originalPills.length === 0, 'Original pills were not reset');
-  assert.deepEqual(result.pillsData, initialState.originalPills, 'PillsData should be set back to their original state');
+  assert.ok(result.originalPills === undefined, 'Original pills were not reset');
+  assert.equal(result.pillsData[0].meta, 'foo', 'Did not find first profile pill copied over to pillsData');
+  assert.equal(result.pillsData[2].meta, 'bar', 'Did not find third profile pill copied over to pillsData');
+  assert.equal(result.pillsData[1].type, OPERATOR_AND, 'Did not find the operator in pillsData');
+});
+
+test('Replace pills if profile drop-down was abruptly closed before saving edit', function(assert) {
+  const initialState = Immutable.from({
+    pillsData: [
+      { id: 21, type: COMPLEX_FILTER },
+      { id: 33, type: QUERY_FILTER }
+    ],
+    originalPills: [
+      { id: 1, type: QUERY_FILTER, meta: 'foo', operator: '=', value: 'foobar' },
+      { id: 2, type: OPERATOR_AND },
+      { id: 3, type: QUERY_FILTER, meta: 'bar', operator: '=', value: 'baz' }
+    ]
+  });
+
+  const action = {
+    type: ACTION_TYPES.RSA_LIST_MANAGER_TOGGLE_VISIBILITY,
+    payload: { actionType: 'close' },
+    meta: { belongsTo: 'listManagers.profiles' }
+  };
+
+  // pillsData copies back pills from original
+  // original pills are reset
+  const result = reducer(initialState, action);
+  assert.ok(result.originalPills === undefined, 'Original pills were not reset');
+  assert.equal(result.pillsData[0].meta, 'foo', 'Did not find first profile pill copied over to pillsData');
+  assert.equal(result.pillsData[2].meta, 'bar', 'Did not find third profile pill copied over to pillsData');
+  assert.equal(result.pillsData[1].type, OPERATOR_AND, 'Did not find the operator in pillsData');
 });

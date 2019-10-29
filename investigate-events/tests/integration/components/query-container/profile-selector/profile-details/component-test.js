@@ -13,6 +13,7 @@ module('Integration | Component | Profile Details', function(hooks) {
 
   hooks.beforeEach(function() {
     initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
   const profileViewSelector = '.profile-view';

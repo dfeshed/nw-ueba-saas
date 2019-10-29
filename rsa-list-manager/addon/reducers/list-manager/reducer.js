@@ -62,7 +62,7 @@ const listManagerReducer = handleActions({
   },
   [ACTION_TYPES.EDIT_ITEM]: (state, action) => {
     return state.merge({
-      editItemId: action.payload,
+      editItemId: action.payload.editItemId,
       viewName: EDIT_VIEW
     });
   },

@@ -4,6 +4,7 @@ import { inject } from '@ember/service';
 
 export default Component.extend({
   layout,
-  classNames: ['profile-form-prequery-conditions'],
+  classNames: ['profile-query-bar'],
+  tagName: 'vbox',
   i18n: inject()
 });
