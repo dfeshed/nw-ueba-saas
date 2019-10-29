@@ -64,9 +64,17 @@ export const deleteItem = (stateLocation) => {
   return (dispatch, getState) => {
     const id = editItemId(getState(), stateLocation);
     const apiModelName = modelName(getState(), stateLocation);
+
+    let payload = { id };
+    // TODO make payloads uniform for delete if and once MT changes in place
+    if (apiModelName === 'profileRequest') {
+      payload = {};
+      payload[apiModelName] = { id };
+    }
+
     dispatch({
       type: ACTION_TYPES.ITEM_DELETE,
-      promise: apiDeleteItem(id, apiModelName),
+      promise: apiDeleteItem(payload, apiModelName),
       meta: {
         belongsTo: stateLocation,
         onFailure(response) {

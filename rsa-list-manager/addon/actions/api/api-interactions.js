@@ -2,15 +2,12 @@ import { lookup } from 'ember-dependency-lookup';
 
 /**
  *
- * @param {string} id - Id of item to delete
+ * @param { object } payload for id to delete
  * @param {string} modelName
  */
-export const apiDeleteItem = (id, modelName) => {
+export const apiDeleteItem = (payload, modelName) => {
   const request = lookup('service:request');
-  const query = {};
-  query[modelName] = {
-    id
-  };
+  const query = payload;
 
   return request.promiseRequest({
     method: 'delete',
