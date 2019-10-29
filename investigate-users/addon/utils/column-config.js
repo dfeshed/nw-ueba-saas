@@ -1,5 +1,5 @@
 export const columnsDataForIndicatorTable = [{
-  field: 'name',
+  field: 'anomalyTypeFieldName',
   width: '22vw',
   disableSort: true
 }, {

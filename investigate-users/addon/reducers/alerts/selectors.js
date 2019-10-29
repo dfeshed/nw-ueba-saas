@@ -15,27 +15,27 @@ const _relativeDateFilter = (state) => state.alerts.relativeDateFilter;
 
 export const timeframesForDateTimeFilter = [
   {
-    'name': 'LAST_SEVEN_DAYS',
+    'name': 'IN_LAST_SEVEN_DAYS',
     'unit': 'Days',
     'value': 7
   },
   {
-    'name': 'LAST_TWO_WEEKS',
+    'name': 'IN_LAST_TWO_WEEKS',
     'unit': 'Weeks',
     'value': 2
   },
   {
-    'name': 'LAST_ONE_MONTH',
+    'name': 'IN_LAST_ONE_MONTH',
     'unit': 'Months',
     'value': 1
   },
   {
-    'name': 'LAST_THREE_MONTH',
+    'name': 'IN_LAST_THREE_MONTH',
     'unit': 'Months',
     'value': 3
   },
   {
-    'name': 'LAST_SIX_MONTH',
+    'name': 'IN_LAST_SIX_MONTH',
     'unit': 'Months',
     'value': 6
   }

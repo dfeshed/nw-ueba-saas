@@ -19,7 +19,7 @@ const resetState = Immutable.from({
   currentAlertsCount: 0,
   topAlertsEntity: 'all',
   topAlertsTimeFrame: {
-    name: 'LAST_THREE_MONTH',
+    name: 'IN_LAST_THREE_MONTH',
     unit: 'Months',
     value: 3
   },

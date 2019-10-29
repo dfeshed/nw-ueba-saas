@@ -34,6 +34,7 @@ export default (settings) => {
   });
   xAxis.renderer.grid.template.disabled = true;
   xAxis.renderer.minGridDistance = 5;
+  yAxis.renderer.minGridDistance = 20;
 
   yAxis.renderer.inversed = true;
 
@@ -44,7 +45,7 @@ export default (settings) => {
   series.dataFields.categoryY = 'hour';
   series.dataFields.value = 'value';
   series.sequencedInterpolation = true;
-  series.defaultState.transitionDuration = 3000;
+  series.defaultState.transitionDuration = 2000;
   series.legendSettings.labelText = '[bold white]{value}[/]';
   series.columns.template.propertyFields.fill = 'color';
   series.columns.template.propertyFields.stroke = 'strokeColor';
@@ -58,7 +59,7 @@ export default (settings) => {
 
   // columnTemplate.stroke = bgColor;
   columnTemplate.tooltipText =
-    "{weekday}, {hour}: {value.workingValue.formatNumber('#.')}";
+    "{weekday}, {value.workingValue.formatNumber('#.')}";
   columnTemplate.width = Am4core.percent(100);
   columnTemplate.height = Am4core.percent(100);
 
@@ -69,35 +70,6 @@ export default (settings) => {
     max: chart.colors.getIndex(0)
   });
 
-  // heat legend
-  const heatLegend = chart.bottomAxesContainer.createChild(Am4charts.HeatLegend);
-  heatLegend.width = Am4core.percent(100);
-  heatLegend.series = series;
-  heatLegend.valueAxis.renderer.labels.template.fontSize = 9;
-  heatLegend.valueAxis.renderer.labels.template.fill = Am4core.color('white');
-
-  heatLegend.valueAxis.renderer.minGridDistance = 10;
-
-  // heat legend behavior
-  series.columns.template.events.on('over', (event) => {
-    handleHover(event.target);
-  });
-
-  series.columns.template.events.on('hit', (event) => {
-    handleHover(event.target);
-  });
-
-  function handleHover(column) {
-    if (!isNaN(column.dataItem.value)) {
-      heatLegend.valueAxis.showTooltipAt(column.dataItem.value);
-    } else {
-      heatLegend.valueAxis.hideTooltip();
-    }
-  }
-
-  series.columns.template.events.on('out', () => {
-    heatLegend.valueAxis.hideTooltip();
-  });
   chart.data = settings.chartSettings.dataProvider;
   return chart;
 };

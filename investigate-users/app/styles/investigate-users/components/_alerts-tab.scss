@@ -225,30 +225,45 @@
                   width: 25%;
                   padding: rsa-whitespace(less);
                   color: text-color(secondary, light);
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
                 }
 
                 .entityName {
                   width: 15%;
                   padding: rsa-whitespace(less);
                   color: text-color(primary, lighter);
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
                 }
 
                 .startTime {
                   width: 15%;
                   padding: rsa-whitespace(less);
                   color: text-color(primary, lighter);
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
                 }
 
                 .indicatorCount {
                   width: 15%;
                   padding: rsa-whitespace(less);
                   color: text-color(primary, lighter);
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
                 }
 
                 .status {
                   width: 15%;
                   padding: rsa-whitespace(less);
                   color: text-color(primary, lighter);
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
                 }
                 &_indicator-table {
                   max-height: 100vh;

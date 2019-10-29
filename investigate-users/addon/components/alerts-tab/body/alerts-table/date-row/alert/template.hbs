@@ -14,13 +14,13 @@
           </div>
           {{alert.severity}}
         </div>
-        <div class='alertName'>
+        <div class='alertName' title='{{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}}'>
           <span {{action 'initiateUser' (hash userId=alert.entityId alertId=alert.id)}}>
             {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}}
           </span>
           <span class='lighter'> | {{alert.timeframe}} </span>
         </div>
-        <div class='entityName'>
+        <div class='entityName' title='{{alert.entityName}}'>
           {{alert.entityName}}
         </div>
         <div class='startTime'>

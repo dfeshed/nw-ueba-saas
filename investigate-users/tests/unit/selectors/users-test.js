@@ -69,7 +69,7 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
     assert.deepEqual(topUsers[0].alertGroup, {
       Critical: 0,
       High: 2,
-      Medium: 10,
+      Medium: 9,
       Low: 1
     });
   });

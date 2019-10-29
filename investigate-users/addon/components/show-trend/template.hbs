@@ -13,3 +13,14 @@
     {{t (concat 'investigateUsers.trendRange.' option.name)}}
   {{/power-select}}
 </div>
+<div class='show-trend-help-icon'>
+  {{#rsa-content-tethered-panel-trigger
+    panel='showTrendSortHelp'
+    triggerEvent='hover'
+  }}
+    {{rsa-icon name="help-circle"}}
+  {{/rsa-content-tethered-panel-trigger}}
+  {{#rsa-content-tethered-panel displayCloseButton=false position='top' panelId='showTrendSortHelp' panelClass='show-trend-help-icon-content'}}
+    {{t 'investigateUsers.sortByTrendDataHelp'}}
+  {{/rsa-content-tethered-panel}}
+</div>

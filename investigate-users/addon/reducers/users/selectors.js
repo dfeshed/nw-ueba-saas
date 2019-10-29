@@ -43,7 +43,8 @@ export const getTopRiskyUsers = createSelector(
   [_topUsers, trendRange, sortOnTrending],
   (users, { key }, sortTrending) => {
     return _.orderBy(_.map(users, (user) => {
-      const alertGroup = _.groupBy(user.alerts, (alert) => alert.severity);
+      const filteredAlerts = _.filter(user.alerts, (alert) => alert.userScoreContribution !== 0);
+      const alertGroup = _.groupBy(filteredAlerts, (alert) => alert.severity);
       return {
         id: user.id,
         displayName: user.displayName,

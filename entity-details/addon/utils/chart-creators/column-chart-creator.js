@@ -14,6 +14,9 @@ export default (settings, { entityType, entityName, dataEntitiesIds }, brokerId)
   const chart = Am4core.create('chartComponentPlaceholder', Am4charts.XYChart);
   chart.data = settings.chartSettings.dataProvider;
   chart.colors.step = 10;
+
+  chart.legend = new Am4charts.Legend();
+  chart.legend.labels.template.fill = '#FFF';
   /* Create axes */
   const categoryAxis = chart.xAxes.push(new Am4charts.CategoryAxis());
   categoryAxis.dataFields.category = 'category';
@@ -71,8 +74,7 @@ export default (settings, { entityType, entityName, dataEntitiesIds }, brokerId)
     circleBase.strokeWidth = 2;
   }
   const scrollbarX = new Am4charts.XYChartScrollbar();
-  scrollbarX.series.push(lineSeries);
   chart.scrollbarX = scrollbarX;
-  chart.scrollbarX.minHeight = 40;
+  chart.scrollbarX.minHeight = 15;
   return chart;
 };

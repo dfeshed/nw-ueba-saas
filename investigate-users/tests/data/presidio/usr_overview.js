@@ -26,7 +26,7 @@ export default {
       'severity': 'Medium',
       'status': 'Open',
       'feedback': 'None',
-      'userScoreContribution': 10.0,
+      'userScoreContribution': 0.0,
       'userScoreContributionFlag': true,
       'timeframe': 'Hourly',
       'dataSourceAnomalyTypePair': null

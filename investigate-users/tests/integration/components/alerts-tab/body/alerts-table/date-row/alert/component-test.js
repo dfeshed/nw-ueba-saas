@@ -1,4 +1,4 @@
-import { findAll, render, click, waitUntil } from '@ember/test-helpers';
+import { findAll, render, find, click, waitUntil } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -74,6 +74,8 @@ module('Integration | Component | alerts-tab/body/alerts-table/date-row/alert', 
   test('it should render rows', async function(assert) {
     this.set('alerts', [[], alerts, [], []]);
     await render(hbs`{{alerts-tab/body/alerts-table/date-row/alert alerts=alerts}}`);
+    assert.equal(find('.alerts-tab_body_body-table_body_row_alerts_alert > .alertName').title, 'Abnormal AD Changes');
+    assert.equal(find('.alerts-tab_body_body-table_body_row_alerts_alert > .entityName').title, 'mixed_qa_1_2');
     assert.equal(findAll('.alerts-tab_body_body-table_body_row_alerts_alert').length, 3);
     assert.equal(findAll('.alerts-tab_body_body-table_body_row_alerts_alert > .severity').length, 3);
   });

@@ -21,7 +21,7 @@ const initialState = Immutable.from({
   topAlerts: [],
   topAlertsEntity: 'all',
   topAlertsTimeFrame: {
-    name: 'LAST_THREE_MONTH',
+    name: 'IN_LAST_THREE_MONTH',
     unit: 'Months',
     value: 3
   },

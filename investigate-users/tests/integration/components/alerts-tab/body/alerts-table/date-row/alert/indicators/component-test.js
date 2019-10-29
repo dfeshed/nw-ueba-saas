@@ -1,4 +1,4 @@
-import { findAll, render, click } from '@ember/test-helpers';
+import { findAll, render, click, find } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -92,6 +92,8 @@ module('Integration | Component | alerts-tab/body/alerts-table/date-row/alert/in
     this.set('alert', alert);
     await render(hbs`{{alerts-tab/body/alerts-table/date-row/alert/indicators alert=alert}}`);
     assert.equal(findAll('.rsa-data-table-body-row').length, 2);
+    assert.equal(findAll('.anomalyTypeFieldName').length, 2);
+    assert.equal(find('.anomalyTypeFieldName').innerText, 'Abnormal Active Directory Change Time');
     assert.equal(findAll('.rsa-data-table-body-cell').length, 8);
   });
   test('it should intiate user on row click', async function(assert) {

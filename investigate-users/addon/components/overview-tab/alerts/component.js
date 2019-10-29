@@ -1,7 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getTopAlerts, hasTopAlerts, topAlertsError, timeframesForDateTimeFilter, topAlertsEntity, topAlertsTimeFrame } from 'investigate-users/reducers/alerts/selectors';
-import { entityFilter } from 'investigate-users/reducers/users/selectors';
+import {
+  getTopAlerts,
+  hasTopAlerts,
+  topAlertsError,
+  timeframesForDateTimeFilter,
+  topAlertsEntity,
+  topAlertsTimeFrame,
+  entityFilter
+} from 'investigate-users/reducers/alerts/selectors';
 import { getTopTenAlerts } from 'investigate-users/actions/alert-details';
 
 const stateToComputed = (state) => ({
