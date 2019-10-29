@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, settled } from '@ember/test-helpers';
+import { render, find, findAll, settled, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
@@ -37,30 +37,32 @@ module('Integration | Component | users-tab/filter/category', function(hooks) {
 
   test('it renders', async function(assert) {
     await render(hbs`{{users-tab/filter/category}}`);
-    assert.equal(findAll('.risky').length, 1);
-    assert.equal(findAll('.watched').length, 1);
+    assert.equal(findAll('.users-tab_filter_user_row').length, 2);
+    assert.equal(findAll('.rsa-form-checkbox-label').length, 2);
   });
 
   test('it renders with counts for risky admin and watched', async function(assert) {
     new ReduxDataHelper(setState).usersCount(10, 20).build();
     await render(hbs`{{users-tab/filter/category}}`);
-    assert.ok(find('.risky').parentElement.innerText.indexOf('10') > 0);
-    assert.ok(find('.watched').parentElement.innerText.indexOf('20') > 0);
+    assert.ok(find('.users-tab_filter_user_row').innerText.indexOf('10') > 0);
+    assert.ok(find('.users-tab_filter_user_row:nth-child(2)').innerText.indexOf('20') > 0);
   });
 
   test('it renders with selected filter', async function(assert) {
     new ReduxDataHelper(setState).usersCount(10, 20).usersFilter({ ...initialFilterState, isWatched: true, minScore: 0, userTags: ['risky'] }).build();
     await render(hbs`{{users-tab/filter/category}}`);
-    assert.equal(findAll('.rsa-form-button-clicked').length, 2);
-    await find('.users-tab_filter_user_row button').click();
+    assert.equal(findAll('.rsa-form-checkbox-label.checked').length, 2);
+    await find('.rsa-form-checkbox-label').click();
+    assert.equal(findAll('.rsa-form-checkbox-label.checked').length, 1);
     return settled();
   });
 
   test('it renders with selected filter for watchlist', async function(assert) {
     new ReduxDataHelper(setState).usersCount(10, 20).usersFilter({ ...initialFilterState, isWatched: true, minScore: 0, userTags: ['watched'] }).build();
     await render(hbs`{{users-tab/filter/category}}`);
-    assert.equal(findAll('.rsa-form-button-clicked').length, 2);
-    await find('.users-tab_filter_user_row:nth-child(2) button').click();
+    assert.equal(findAll('.rsa-form-checkbox-label.checked').length, 2);
+    await click('.users-tab_filter_user_row:nth-child(2) > a');
+    assert.equal(findAll('.rsa-form-checkbox-label.checked').length, 1);
     return settled();
   });
 });

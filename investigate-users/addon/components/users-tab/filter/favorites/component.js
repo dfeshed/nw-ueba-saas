@@ -12,7 +12,6 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   updateFilter,
   deleteFavorite
-
 };
 
 const UsersTabFilterFavoritesComponent = Component.extend({
@@ -20,9 +19,9 @@ const UsersTabFilterFavoritesComponent = Component.extend({
   selected: null,
   columnsData: columnDataForFavorites,
   actions: {
-    applyFilter({ id, filter }) {
-      this.set('selected', id);
-      this.send('updateFilter', filter);
+    applyFilter(filterObj) {
+      this.set('selected', filterObj);
+      this.send('updateFilter', filterObj.filter);
     }
   }
 });

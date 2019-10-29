@@ -37,7 +37,7 @@ const state = Immutable.from({
       sort_field: 'startDate',
       total_severity_count: true,
       severity: ['high'],
-      entityType: null,
+      entityType: 'all',
       feedback: 'none',
       alert_start_range: null,
       showCustomDate: false,
@@ -163,7 +163,7 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
   });
 
   test('test Alerts Selected Entity', function(assert) {
-    assert.deepEqual(Alerts.selectedEntities(state), undefined);
+    assert.deepEqual(Alerts.selectedEntities(state), 'all');
     const newState = Immutable.from({
       alerts: {
         filter: {
@@ -176,6 +176,10 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
 
   test('test Exist Anomaly Types', function(assert) {
     assert.equal(Alerts.getExistAnomalyTypes(state).length, 26);
+    assert.deepEqual(Alerts.getExistAnomalyTypes(state)[0], {
+      displayLabel: 'Abnormal File Access Event (45 Users)',
+      id: 'abnormal_file_action_operation_type'
+    });
   });
 
   test('test getSelectedAnomalyTypes', function(assert) {

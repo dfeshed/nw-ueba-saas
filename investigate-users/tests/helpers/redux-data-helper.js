@@ -103,6 +103,7 @@ export default class DataHelper {
           sort_direction: 'DESC',
           sort_field: 'startDate',
           total_severity_count: true,
+          entityType: 'all',
           severity: null,
           feedback: null,
           indicator_types: null,

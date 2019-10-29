@@ -1,7 +1,25 @@
 <div class='alerts-tab_filter_filters'>
   <div class='alerts-tab_filter_filters_title'>
-    {{t 'investigateUsers.alerts.filters.title'}}
+    {{rsa-icon name='filter-2' style='filled'}} {{t 'investigateUsers.alerts.filters.title'}}
   </div>
+  <label class="rsa-form-label power-select users-tab_filter_filter_select">
+    <div class="label-text">
+      {{t 'investigateUsers.alerts.filters.entityType'}}
+    </div>
+    {{#power-select
+      options=entityFilter
+      selected=selectedEntities
+      searchEnabled=false
+      onchange=(action 'updateEntityTypes') as |option|}}
+      {{#if option}}
+        <span title='{{t (concat 'investigateUsers.severity.' option)}}'>
+          <span title='{{option}}'>{{t (concat 'investigateUsers.entityTypes.' option)}}</span>
+        </span>
+      {{else}}
+        &nbsp;
+      {{/if}}
+    {{/power-select}}
+  </label>
   <label class="rsa-form-label power-select users-tab_filter_filter_select">
     <div class="label-text">
       {{t 'investigateUsers.alerts.filters.severity'}}
@@ -37,24 +55,6 @@
       onchange=(action 'updateAnomalyFilter') as |option|}}
       <span title='{{option.displayLabel}}'>{{option.displayLabel}}</span>
     {{/power-select-multiple}}
-  </label>
-  <label class="rsa-form-label power-select users-tab_filter_filter_select">
-    <div class="label-text">
-      {{t 'investigateUsers.alerts.filters.entityType'}}
-    </div>
-    {{#power-select
-      options=entityFilter
-      selected=selectedEntities
-      searchEnabled=false
-      onchange=(action 'updateEntityTypes') as |option|}}
-      {{#if option}}
-        <span title='{{t (concat 'investigateUsers.severity.' option)}}'>
-          <span title='{{option}}'>{{t (concat 'investigateUsers.entityTypes.' option)}}</span>
-        </span>
-      {{else}}
-        &nbsp;
-      {{/if}}
-    {{/power-select}}
   </label>
   <div>
     <div class="label-text">

@@ -17,6 +17,10 @@
       &_title {
         @include rsa-font(default, large);
         color: text-color(primary, lighter);
+        padding-bottom: rsa-whitespace();
+        > i {
+          padding-right: rsa-whitespace(less);
+        }
       }
 
       .label-text {

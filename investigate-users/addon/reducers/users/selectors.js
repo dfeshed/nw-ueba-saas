@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import _ from 'lodash';
 import { lookup } from 'ember-dependency-lookup';
+import entityAnomalyMap from 'investigate-users/utils/entity-anomaly-map';
 
 const _usersSeverity = (state) => state.users.usersSeverity;
 
@@ -39,9 +40,9 @@ export const entityFilter = ['userId', 'ja3', 'sslSubject'];
 export const getUserFilter = (state) => state.users.filter;
 
 export const getTopRiskyUsers = createSelector(
-  [_topUsers, trendRange],
-  (users, { key }) => {
-    return _.map(users, (user) => {
+  [_topUsers, trendRange, sortOnTrending],
+  (users, { key }, sortTrending) => {
+    return _.orderBy(_.map(users, (user) => {
       const alertGroup = _.groupBy(user.alerts, (alert) => alert.severity);
       return {
         id: user.id,
@@ -57,7 +58,7 @@ export const getTopRiskyUsers = createSelector(
           Low: alertGroup.Low ? alertGroup.Low.length : 0
         }
       };
-    });
+    }), [sortTrending ? 'trendingScore' : 'score'], ['desc']);
   });
 
 export const hasTopRiskyUsers = createSelector(
@@ -81,7 +82,7 @@ export const selectedEntityType = createSelector(
 export const getFavorites = createSelector(
   [_favorites],
   (favorites) => {
-    return _.sortBy(favorites, ['filterName']);
+    return [{ id: null, filterName: 'Select' }].concat(_.sortBy(favorites, ['filterName']));
   });
 
 export const getSortField = createSelector(
@@ -134,13 +135,20 @@ export const getExistAlertTypes = createSelector(
   });
 
 export const getExistAnomalyTypes = createSelector(
-  [_existAnomalyTypes],
-  (existAnomalyTypes) => {
+  [selectedEntityType, _existAnomalyTypes],
+  (entityType, existAnomalyTypes) => {
+    const anomalyKeys = entityAnomalyMap[entityType];
     const i18n = lookup('service:i18n');
-    return _.toArray((_.mapValues(existAnomalyTypes, (value, key) => ({
-      id: key,
-      displayLabel: `${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${key}.name`)} (${value} Users)`
-    }))));
+    const mappedArray = [];
+    _.forEach(existAnomalyTypes, (value, key) => {
+      if (anomalyKeys.includes(key)) {
+        mappedArray.push({
+          id: key,
+          displayLabel: `${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${key}.name`)} (${value} Users)`
+        });
+      }
+    });
+    return mappedArray;
   });
 
 export const getSelectedAlertTypes = createSelector(

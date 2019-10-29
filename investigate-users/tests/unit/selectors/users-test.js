@@ -63,6 +63,7 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
     const topUsers = Users.getTopRiskyUsers(state);
     assert.equal(topUsers.length, 5);
     assert.equal(topUsers[0].trendingScore, '15.0');
+    assert.equal(topUsers[0].displayName, 'ad_qa_1_9');
     assert.equal(topUsers[0].followed, true);
     assert.equal(topUsers[0].score, 131);
     assert.deepEqual(topUsers[0].alertGroup, {
@@ -73,18 +74,19 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
     });
   });
 
-  test('test Top Risky Users for with trend', (assert) => {
-    const newState = state.setIn(['users', 'topUsers', 0, 'alerts', 0, 'startDate'], new Date().getTime());
+  test('test Top Risky Users with trend', (assert) => {
+    const newState = state.setIn(['users', 'sortOnTrending'], true);
     const topUsers = Users.getTopRiskyUsers(newState);
     assert.equal(topUsers.length, 5);
-    assert.equal(topUsers[0].trendingScore, '15.0');
-    assert.equal(topUsers[0].followed, true);
-    assert.equal(topUsers[0].score, 131);
+    assert.equal(topUsers[0].trendingScore, '5.0');
+    assert.equal(topUsers[0].displayName, 'file_qa_1_18');
+    assert.equal(topUsers[0].followed, false);
+    assert.equal(topUsers[0].score, 85);
     assert.deepEqual(topUsers[0].alertGroup, {
       Critical: 0,
-      High: 2,
-      Medium: 10,
-      Low: 1
+      High: 5,
+      Medium: 0,
+      Low: 10
     });
   });
 
@@ -129,7 +131,11 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
   });
 
   test('test Exist Anomaly Types', (assert) => {
-    assert.equal(Users.getExistAnomalyTypes(state).length, 26);
+    assert.equal(Users.getExistAnomalyTypes(state).length, 25);
+    assert.deepEqual(Users.getExistAnomalyTypes(state)[0], {
+      displayLabel: 'Abnormal File Access Event (3 Users)',
+      id: 'abnormal_file_action_operation_type'
+    });
   });
 
   test('test users error', (assert) => {
@@ -171,10 +177,10 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
   });
 
   test('test Favorites', (assert) => {
-    assert.equal(favoriteFilter.data[0].filterName, 'test');
+    assert.equal(favoriteFilter.data[1].filterName, 'Test1');
     const favFilter = Users.getFavorites(state);
-    assert.equal(favFilter.length, 2);
-    assert.equal(favFilter[0].filterName, 'Test1');
+    assert.equal(favFilter.length, 3);
+    assert.equal(favFilter[1].filterName, 'Test1');
   });
 
   test('test Users', (assert) => {

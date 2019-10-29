@@ -47,9 +47,9 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
       user_password_reset: 52
     }).build();
     await render(hbs`{{alerts-tab/filter}}`);
-    await clickTrigger('.users-tab_filter_filter_select:nth-child(4)');
+    await clickTrigger('.users-tab_filter_filter_select:nth-child(5)');
     assert.equal(findAll('.ember-power-select-option').length, 3);
-    await selectChoose('.users-tab_filter_filter_select:nth-child(4)', 'Abnormal File Access Event');
+    await selectChoose('.users-tab_filter_filter_select:nth-child(5)', 'Abnormal File Access Event');
     return settled();
   });
 
@@ -60,9 +60,9 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
       user_password_reset: 52
     }).build();
     await render(hbs`{{alerts-tab/filter}}`);
-    await clickTrigger('.users-tab_filter_filter_select:nth-child(2)');
+    await clickTrigger('.users-tab_filter_filter_select:nth-child(3)');
     assert.equal(findAll('.ember-power-select-option').length, 4);
-    await selectChoose('.users-tab_filter_filter_select:nth-child(2)', 'High');
+    await selectChoose('.users-tab_filter_filter_select:nth-child(3)', 'High');
     return settled();
   });
 
@@ -73,9 +73,9 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
       user_password_reset: 52
     }).build();
     await render(hbs`{{alerts-tab/filter}}`);
-    await clickTrigger('.users-tab_filter_filter_select:nth-child(3)');
+    await clickTrigger('.users-tab_filter_filter_select:nth-child(4)');
     assert.equal(findAll('.ember-power-select-option').length, 2);
-    await selectChoose('.users-tab_filter_filter_select:nth-child(3)', 'None');
+    await selectChoose('.users-tab_filter_filter_select:nth-child(4)', 'None');
     return settled();
   });
 
@@ -87,9 +87,9 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
       user_password_reset: 52
     }).build();
     await render(hbs`{{alerts-tab/filter}}`);
-    await clickTrigger('.users-tab_filter_filter_select:nth-child(5)');
+    await clickTrigger('.users-tab_filter_filter_select:nth-child(2)');
     assert.equal(findAll('.ember-power-select-option').length, 4);
-    await selectChoose('.users-tab_filter_filter_select:nth-child(5)', 'JA3');
+    await selectChoose('.users-tab_filter_filter_select:nth-child(2)', 'JA3');
     assert.equal(find('.ember-power-select-selected-item').innerText, 'JA3');
     return settled();
   });

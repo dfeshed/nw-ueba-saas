@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, click, settled } from '@ember/test-helpers';
+import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
@@ -8,6 +8,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import favorite from '../../../../../data/presidio/favorite_filter';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchFetch } from '../../../../../helpers/patch-fetch';
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import { Promise } from 'rsvp';
 import { later } from '@ember/runloop';
 
@@ -39,26 +40,23 @@ module('Integration | Component | users-tab/filter/favorites', function(hooks) {
 
   test('it renders', async function(assert) {
     await render(hbs`{{users-tab/filter/favorites}}`);
-    assert.equal(find('.users-tab_filter_favorites').textContent.replace(/\s/g, ''), 'Favorites');
+    assert.equal(findAll('.users-tab_filter_favorites').length, 1);
+    assert.equal(findAll('.ember-power-select-placeholder').length, 1);
   });
 
   test('it renders all favorites', async function(assert) {
     new ReduxDataHelper(setState).usersFavorites(favorite.data).build();
-    const done = assert.async();
     await render(hbs`{{users-tab/filter/favorites}}`);
-    assert.equal(findAll('.users-tab_filter_favorites_filter').length, 2);
-    click('.rsa-form-button');
-    return settled().then(() => {
-      assert.equal(findAll('.rsa-form-button-clicked').length, 2);
-      done();
-    });
+    await clickTrigger('.users-tab_filter_filter_select');
+    assert.equal(findAll('.ember-power-select-option').length, 3);
   });
 
   test('it should delete favorite', async function(assert) {
     const done = assert.async();
     new ReduxDataHelper(setState).usersFavorites(favorite.data).build();
     await render(hbs`{{users-tab/filter/favorites}}`);
-    assert.equal(findAll('.users-tab_filter_favorites_filter_close').length, 2);
+    await clickTrigger('.users-tab_filter_filter_select');
+    assert.equal(findAll('.users-tab_filter_favorites_delete').length, 2);
     patchFetch(() => {
       return new Promise(function(resolve) {
         resolve({
@@ -75,7 +73,7 @@ module('Integration | Component | users-tab/filter/favorites', function(hooks) {
     // get first filled icon
     await click(findAll('.rsa-icon-bin-1').shift());
     later(() => {
-      assert.equal(findAll('.users-tab_filter_favorites_filter_close').length, 0);
+      assert.equal(findAll('.users-tab_filter_favorites_delete').length, 0);
       done();
     }, 1000);
   });

@@ -2,7 +2,7 @@ import * as ACTION_TYPES from './types';
 import { fetchData } from './fetch/data';
 import { flashErrorMessage } from 'investigate-users/utils/flash-message';
 import { updateFilter } from 'investigate-users/actions/user-tab-actions';
-import { getUserFilter } from 'investigate-users/reducers/users/selectors';
+import { getUserFilter, trendRange, sortOnTrending } from 'investigate-users/reducers/users/selectors';
 
 const getRiskyUserCount = (entityType = 'userId') => {
   return (dispatch) => {
@@ -34,10 +34,11 @@ const getWatchedUserCount = (entityType = 'userId') => {
 };
 const getUserOverview = (entityType = 'userId') => {
   return (dispatch, getState) => {
-    const { sortOnTrending, trendRange } = getState();
+    const sortTrending = sortOnTrending(getState());
+    const trend = trendRange(getState());
     const additionalFilter = { entityType, sort_field: 'score' };
-    if (sortOnTrending) {
-      additionalFilter.sort_field = trendRange.key === 'daily' ? 'trendingScore.daily' : 'trendingScore.weekly';
+    if (sortTrending) {
+      additionalFilter.sort_field = trend.key === 'daily' ? 'DAILY_TRENDS' : 'WEEKLY_TRENDS';
     }
     fetchData('userOverview', additionalFilter).then((result) => {
       if (result === 'error' || result.data.length === 0) {

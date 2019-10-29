@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import _ from 'lodash';
 import { lookup } from 'ember-dependency-lookup';
+import entityAnomalyMap from 'investigate-users/utils/entity-anomaly-map';
 
 const _totalAlerts = (state) => state.alerts.totalAlerts;
 
@@ -109,14 +110,20 @@ export const hasAlerts = createSelector(
   });
 
 export const getExistAnomalyTypes = createSelector(
-  [_existAnomalyTypes],
-  (existAnomalyTypes) => {
+  [_existAnomalyTypes, selectedEntities],
+  (existAnomalyTypes, entityType) => {
+    const anomalyKeys = entityAnomalyMap[entityType];
     const i18n = lookup('service:i18n');
-    const anomalyTypesWithKey = _.mapValues(existAnomalyTypes, (value, key) => ({
-      id: key,
-      displayLabel: `${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${key}.name`)} (${value} Users)`
-    }));
-    return _.toArray(anomalyTypesWithKey);
+    const mappedArray = [];
+    _.forEach(existAnomalyTypes, (value, key) => {
+      if (entityType === 'all' || anomalyKeys.includes(key)) {
+        mappedArray.push({
+          id: key,
+          displayLabel: `${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${key}.name`)} (${value} Users)`
+        });
+      }
+    });
+    return mappedArray;
   });
 
 export const getSelectedAnomalyTypes = createSelector(

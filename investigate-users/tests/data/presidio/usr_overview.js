@@ -306,7 +306,7 @@ export default {
     'noDomainUsername': null,
     'trendingScore': {
       weekly: '5.5',
-      daily: '10.0'
+      daily: '20.0'
     },
     'followed': false,
     'alerts': [{

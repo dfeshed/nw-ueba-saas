@@ -1,28 +1,26 @@
-<div class='users-tab_filter_favorites_title'>
-  {{t 'investigateUsers.users.filters.favorites'}}
-</div>
 <div class='users-tab_filter_filter_list'>
-  {{#each favorites as |favoriteFilter|}}
-    <div class='users-tab_filter_favorites_filter'>
-      <div class='users-tab_filter_favorites_filter_select'>
-        {{#rsa-form-button
-          isFullWidth=true
-          click=(action 'applyFilter' favoriteFilter)
-          class=(if (eq selected favoriteFilter.id) 'rsa-form-button-clicked')
-        }}
-          {{favoriteFilter.filterName}}
-        {{/rsa-form-button}}
-      </div>
-      <div class='users-tab_filter_favorites_filter_close' title='Delete saved filter'>
-        {{#rsa-form-button
-          isIconOnly=true
-          isFullWidth=true
-          class=(if (eq selected favoriteFilter.id) 'rsa-form-button-clicked')
-          click=(action 'deleteFavorite' favoriteFilter.id)
-        }}
-          {{rsa-icon name='bin-1' size='smaller'}}
-        {{/rsa-form-button}}
-      </div>
+  <label class="rsa-form-label power-select users-tab_filter_filter_select">
+    <div class="label-text">
+      {{t 'investigateUsers.users.filters.favorites'}}
     </div>
-  {{/each}}
+    {{#power-select
+      options=favorites
+      selected=selected
+      searchEnabled=false
+      placeholder='Select'
+      onchange=(action 'applyFilter') as |option|}}
+      {{option.filterName}}
+      {{#if (and option.id (not-eq option.id selected.id))}}
+        <span class='users-tab_filter_favorites_delete'>
+          {{#rsa-form-button
+            isIconOnly=true
+            class=(if (eq selected favoriteFilter.id) 'rsa-form-button-clicked')
+            click=(action 'deleteFavorite' favoriteFilter.id)
+          }}
+            {{rsa-icon name='bin-1' size='smaller'}}
+          {{/rsa-form-button}}
+        </span>
+      {{/if}}
+    {{/power-select}}
+  </label>
 </div>

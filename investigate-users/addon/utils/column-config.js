@@ -68,7 +68,7 @@ export const sortOptions = [{
 }, {
   id: 'alertsCount'
 }, {
-  id: 'trending.daily'
+  id: 'DAILY_TRENDS'
 }, {
-  id: 'trending.weekly'
+  id: 'WEEKLY_TRENDS'
 }];

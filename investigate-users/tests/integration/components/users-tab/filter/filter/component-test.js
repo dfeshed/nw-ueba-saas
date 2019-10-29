@@ -47,14 +47,14 @@ module('Integration | Component | users-tab/filter/filter', function(hooks) {
   test('it renders with selected filter', async function(assert) {
     new ReduxDataHelper(setState).existAnomalyTypesForUsers(existAnomalyTypes).usersExistAlertTypes(existAlertTypes.data).build();
     await render(hbs`{{users-tab/filter/filter}}`);
-    await clickTrigger('.users-tab_filter_filter_select:nth-child(2)');
+    await clickTrigger('.users-tab_filter_filter_select:nth-child(4)');
     assert.equal(findAll('.ember-power-select-option').length, 9);
-    await selectChoose('.users-tab_filter_filter_select:nth-child(2)', 'Snooping User');
+    await selectChoose('.users-tab_filter_filter_select:nth-child(4)', 'Snooping User');
     return settled().then(() => {
-      clickTrigger('.users-tab_filter_filter_select:nth-child(3)');
+      clickTrigger('.users-tab_filter_filter_select:nth-child(5)');
       return settled().then(() => {
-        assert.equal(findAll('.ember-power-select-option').length, 26);
-        selectChoose('.users-tab_filter_filter_select:nth-child(3)', 'Abnormal File Access Time');
+        assert.equal(findAll('.ember-power-select-option').length, 25);
+        selectChoose('.users-tab_filter_filter_select:nth-child(5)', 'Abnormal File Access Time');
         return settled();
       });
     });
@@ -64,9 +64,9 @@ module('Integration | Component | users-tab/filter/filter', function(hooks) {
     assert.expect(2);
     const redux = this.owner.lookup('service:redux');
     await render(hbs`{{users-tab/filter/filter}}`);
-    await clickTrigger('.users-tab_filter_filter_select:nth-child(1)');
+    await clickTrigger('.users-tab_filter_filter_select:nth-child(3)');
     assert.equal(findAll('.ember-power-select-option').length, 5);
-    selectChoose('.users-tab_filter_filter_select:nth-child(1)', 'High');
+    selectChoose('.users-tab_filter_filter_select:nth-child(3)', 'High');
     const select = waitForReduxStateChange(redux, ('users.filter.severity'));
     return select.then(() => {
       const state = redux.getState();
@@ -78,9 +78,9 @@ module('Integration | Component | users-tab/filter/filter', function(hooks) {
     assert.expect(2);
     const redux = this.owner.lookup('service:redux');
     await render(hbs`{{users-tab/filter/filter}}`);
-    await clickTrigger('.users-tab_filter_filter_select:nth-child(4)');
+    await clickTrigger('.users-tab_filter_filter_select:nth-child(1)');
     assert.equal(findAll('.ember-power-select-option').length, 3);
-    selectChoose('.users-tab_filter_filter_select:nth-child(4)', 'JA3');
+    selectChoose('.users-tab_filter_filter_select:nth-child(1)', 'JA3');
     const select = waitForReduxStateChange(redux, ('users.filter.entityType'));
     return select.then(() => {
       const state = redux.getState();

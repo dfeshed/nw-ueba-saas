@@ -5364,10 +5364,8 @@ effects the simulated source.',
       name: 'Name',
       score: 'Risk Score',
       alertsCount: 'Alerts',
-      trending: {
-        daily: 'Trending LastDay',
-        weekly: 'Trending LastWeek'
-      }
+      DAILY_TRENDS: 'Trending LastDay',
+      WEEKLY_TRENDS: 'Trending LastWeek'
     },
     entityTypes: {
       all: 'All Entities',
@@ -5382,7 +5380,7 @@ effects the simulated source.',
       lastWeek: 'Last Week'
     },
     resetFilters: 'Reset Filters',
-    addToFavorites: 'Add To Favorites',
+    addToFavorites: 'Save as...',
     filterName: 'Filter Name :',
     save: 'Save',
     cancel: 'Cancel',
@@ -5435,7 +5433,7 @@ effects the simulated source.',
       watched: 'Watched',
       admin: 'Admin',
       filters: {
-        favorites: 'Favorites',
+        favorites: 'Saved Filter',
         title: 'Filters',
         allTypes: 'All Types',
         indicators: 'Indicators',
