@@ -19,6 +19,7 @@ public class EventsProducerFactory {
     public EventsProducerFactory(NetwitnessEventStore netwitnessEventStore) {
 
         producers.putIfAbsent(CEF_DAILY_FILE, new DailyCefFileProducer(new BrokerCefFormatter()));
+        producers.putIfAbsent(CEF_HOURLY_FILE, new HourlyCefFileProducer(new BrokerCefFormatter()));
         producers.putIfAbsent(CEF_DAILY_BROKER, new DailyBrokerCefProducer(new BrokerCefFormatter()));
         producers.putIfAbsent(CEF_HOURLY_BROKER, new HourlyBrokerCefProducer(new BrokerCefFormatter()));
         producers.putIfAbsent(MONGO_ADAPTER, new MongoAdapterNetwitnessEventProducer(new MongoAdapterFormatter(), netwitnessEventStore));

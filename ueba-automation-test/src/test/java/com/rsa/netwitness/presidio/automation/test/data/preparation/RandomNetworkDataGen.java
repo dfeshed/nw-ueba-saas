@@ -40,11 +40,11 @@ public class RandomNetworkDataGen extends AbstractTestNGSpringContextTests {
     @Autowired
     private NetwitnessEventStore netwitnessEventStore;
 
-    protected int MAX_BUCKET_SIZE = 10000;
-    protected int TOTAL = 1000000;
-    protected int startHourOfDay = 8;
-    protected int endHourOfDay = 22;
-    protected int daysBackTo = 1;   // -1 is current day
+    protected int MAX_BUCKET_SIZE = 300;
+    protected int TOTAL = 5000000;
+    protected int startHourOfDay = 5;
+    protected int endHourOfDay = 10;
+    protected int daysBackTo = -1;   // -1 is current day
     protected int intervalMinutes = 1;
 
 
@@ -56,9 +56,12 @@ public class RandomNetworkDataGen extends AbstractTestNGSpringContextTests {
 
     @Parameters({"historical_days_back", "anomaly_day", "generator_format"})
     @BeforeClass
-    public void setup(@Optional("30") int historicalDaysBack,
-                      @Optional("1000000") int numOfEvents,
-                      @Optional("MONGO_ADAPTER") GeneratorFormat generatorFormat) throws GeneratorException {
+    public void setup(@Optional("0") int historicalDaysBack,
+                      @Optional("5000000") int numOfEvents,
+                      @Optional("CEF_DAILY_FILE") GeneratorFormat generatorFormat) throws GeneratorException, InterruptedException {
+
+
+        numOfEvents = TOTAL;
 
         setParams(historicalDaysBack, anomalyDay, generatorFormat);
         TlsRangeEventsGen gen = getGen();
@@ -74,24 +77,20 @@ public class RandomNetworkDataGen extends AbstractTestNGSpringContextTests {
             while (precidioEvents.size() < BUCKET_SIZE) {
                 precidioEvents.addAll(gen.generate(BUCKET_SIZE));
                 eventsCount += precidioEvents.size();
+                LOGGER.info("  ++++++ eventsCount: " + eventsCount);
+
                 if (precidioEvents.size() < BUCKET_SIZE) {
                     gen.setTimeGenerator(getCommonValuesTimeGen());
                 }
             }
 
 
-            LOGGER.info("  ++++++ Going to convert.");
             List<NetwitnessEvent> converted = precidioEvents.parallelStream()
                     .map(getConverter()::convert)
                     .collect(Collectors.toList());
 
             LOGGER.info("  ++++++ Going to send.");
             generatorResultCount = getProducer().send(converted);
-
-            LOGGER.info("   ++++++  Sent events count result:");
-
-            generatorResultCount.forEach(
-                    (schema, count) -> LOGGER.info(schema.toString().concat(" -> ").concat(String.valueOf(count))));
         }
     }
 
