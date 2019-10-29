@@ -25,7 +25,7 @@ const _currentQueryHash = (state) => state.investigate.queryNode.currentQueryHas
 const _updatedFreeFormTextPill = (state) => state.investigate.queryNode.updatedFreeFormTextPill;
 const _pillDataHashes = (state) => state.investigate.queryNode.pillDataHashes;
 const _originalPills = (state) => state.investigate.queryNode.originalPills || [];
-const _isPillsDataStashed = (state) => state.investigate.queryNode.originalPills !== undefined;
+const _isPillsDataStashed = (state) => state.investigate.queryNode.isPillsDataStashed;
 
 export const pillsData = (state) => state.investigate.queryNode.pillsData;
 

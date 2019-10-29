@@ -1707,7 +1707,7 @@ test('RSA_LIST_MANAGER_SET_VIEW_NAME add scenario', function(assert) {
       { id: 2, type: QUERY_FILTER },
       { id: 3, type: QUERY_FILTER }
     ],
-    originalPills: undefined
+    originalPills: []
   });
 
   const action = {
@@ -1734,7 +1734,7 @@ test('RSA_LIST_MANAGER_EDIT_ITEM edit scenario', function(assert) {
       { id: 2, type: QUERY_FILTER },
       { id: 3, type: QUERY_FILTER }
     ],
-    originalPills: undefined
+    originalPills: []
   });
 
   const action = {
@@ -1774,7 +1774,7 @@ test('RSA_LIST_MANAGER_SET_VIEW_NAME close scenario', function(assert) {
   // pillsData copies back pills from original
   // original pills are reset
   const result = reducer(initialState, action);
-  assert.ok(result.originalPills === undefined, 'Original pills were not reset');
+  assert.ok(result.originalPills.length === 0, 'Original pills were not reset');
   assert.equal(result.pillsData[0].meta, 'foo', 'Did not find first profile pill copied over to pillsData');
   assert.equal(result.pillsData[2].meta, 'bar', 'Did not find third profile pill copied over to pillsData');
   assert.equal(result.pillsData[1].type, OPERATOR_AND, 'Did not find the operator in pillsData');
@@ -1802,7 +1802,7 @@ test('Replace pills if profile drop-down was abruptly closed before saving edit'
   // pillsData copies back pills from original
   // original pills are reset
   const result = reducer(initialState, action);
-  assert.ok(result.originalPills === undefined, 'Original pills were not reset');
+  assert.ok(result.originalPills.length === 0, 'Original pills were not reset');
   assert.equal(result.pillsData[0].meta, 'foo', 'Did not find first profile pill copied over to pillsData');
   assert.equal(result.pillsData[2].meta, 'bar', 'Did not find third profile pill copied over to pillsData');
   assert.equal(result.pillsData[1].type, OPERATOR_AND, 'Did not find the operator in pillsData');

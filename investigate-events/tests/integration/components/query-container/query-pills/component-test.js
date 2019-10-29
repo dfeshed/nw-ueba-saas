@@ -179,7 +179,8 @@ module('Integration | Component | Query Pills', function(hooks) {
           metaFilter: [],
           previouslySelectedTimeRanges: {},
           serviceId: '1',
-          queryView: 'guided'
+          queryView: 'guided',
+          isPillsDataStashed: true
         },
         services: {
           serviceData: [{ id: '1', displayName: 'concentrator', version: '11.4.0' }],

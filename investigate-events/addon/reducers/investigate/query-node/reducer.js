@@ -49,7 +49,10 @@ const _initialState = Immutable.from({
 
   // When query container is rendered in profiles, we save off pillsData
   // as originalPills. Once that component is closed, we replace them back.
-  originalPills: undefined,
+  originalPills: [],
+
+  // An indication that our pillsData has been saved off as original pills
+  isPillsDataStashed: false,
 
   // Is a query in progress. This possibly includes server
   // validation if that is taking a long time to return
@@ -131,7 +134,8 @@ const _replacePillsWithOriginalPills = (state) => {
   const oG = state.originalPills;
   return state.merge({
     pillsData: Immutable.from(oG),
-    originalPills: undefined
+    originalPills: Immutable.from([]),
+    isPillsDataStashed: false
   });
 };
 
@@ -141,7 +145,10 @@ const _replacePillsWithOriginalPills = (state) => {
  */
 const _stashPills = (state) => {
   const originalPills = state.pillsData;
-  return state.set('originalPills', originalPills);
+  return state.merge({
+    originalPills,
+    isPillsDataStashed: true
+  });
 };
 
 const _isTriggeredByProfileListManager = (meta) => meta?.belongsTo === 'listManagers.profiles';

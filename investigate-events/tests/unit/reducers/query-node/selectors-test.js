@@ -404,7 +404,7 @@ test('shouldUseStashedPills should return true if profile is expanded and pills 
   let state = {
     investigate: {
       queryNode: {
-        originalPills: []
+        isPillsDataStashed: true
       },
       profile: {
         profiles: profiles1
@@ -421,7 +421,7 @@ test('shouldUseStashedPills should return true if profile is expanded and pills 
   state = {
     investigate: {
       queryNode: {
-        originalPills: []
+        isPillsDataStashed: true
       },
       profile: {
         profiles: profiles1
@@ -438,7 +438,7 @@ test('shouldUseStashedPills should return true if profile is expanded and pills 
   state = {
     investigate: {
       queryNode: {
-        originalPills: undefined
+        isPillsDataStashed: false
       },
       profile: {
         profiles: profiles1
