@@ -86,7 +86,7 @@ class TestFixedDurationJarOperator(object):
 
         # Override appending "add opens" JVM options.
         task.append_add_opens_jvm_options = type(FixedDurationJarOperator.append_add_opens_jvm_options)(
-            self.append_add_opens_jvm_options,
+            TestFixedDurationJarOperator.append_add_opens_jvm_options,
             task,
             FixedDurationJarOperator
         )
@@ -113,7 +113,8 @@ class TestFixedDurationJarOperator(object):
 
         assert_bash_comment(task, bash_command, java_args)
 
-    def append_add_opens_jvm_options(self, bash_command):
+    @staticmethod
+    def append_add_opens_jvm_options(*args, **kwargs):
         pass
 
 
