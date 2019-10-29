@@ -57,24 +57,22 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
     private IBaseGenerator<Integer> sessionSplitGenerator = new FixedValueGenerator<>(0);
 
 
+
     public TlsEventsSimplePerfGen(TlsPerfClusterParams params) {
         this.params = params;
         UNIQUE_ID = UNIQUE_ID_COUNTER.addAndGet(1);
 
-        dstIpGenerator.nextRangeRandom(params.dstIpSize);
+        dstIpGenerator.nextRangeRandom(params.getDstIpSize());
 
-
-        dstPortGen = new DstPortPerfGen(UNIQUE_ID, params.dstPortSize);
-        ja3Gen = new Ja3PerfGen(UNIQUE_ID, params.ja3Size);
-        sslSubjectGen = new SslSubjectPerfGen(UNIQUE_ID, params.sslSubjectSize);
-        dstOrgGen = new DstOrgPerfGen(UNIQUE_ID, params.dstOrgSize);
-        srcNetnameGen = new SrcNetnamePerfGen(UNIQUE_ID, params.srcNetnameSize);
-        srcIpGenerator = new Ipv4PerfGen(UNIQUE_ID, params.srcIpSize);
-        locationGen = new LocationPrefGen(UNIQUE_ID, params.locationSize);
-        hostnameGen = new HostNamePrefGen(UNIQUE_ID, params.hostnameSize);
-
+        dstPortGen = new DstPortPerfGen(UNIQUE_ID, params.getDstPortSize());
+        ja3Gen = new Ja3PerfGen(UNIQUE_ID, params.getJa3Size());
+        sslSubjectGen = new SslSubjectPerfGen(UNIQUE_ID, params.getSslSubjectSize());
+        dstOrgGen = new DstOrgPerfGen(UNIQUE_ID, params.getDstOrgSize());
+        srcNetnameGen = new SrcNetnamePerfGen(UNIQUE_ID, params.getSrcNetnameSize());
+        srcIpGenerator = new Ipv4PerfGen(UNIQUE_ID, params.getSrcIpSize());
+        locationGen = new LocationPrefGen(UNIQUE_ID, params.getLocationSize());
+        hostnameGen = new HostNamePrefGen(UNIQUE_ID, params.getHostnameSize());
     }
-
 
     public TlsEventsSimplePerfGen copy() {
         TlsEventsSimplePerfGen copyGen = new TlsEventsSimplePerfGen(this.params);
