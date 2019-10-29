@@ -1,6 +1,6 @@
 .host-process-details {
+  height: 100%;
   .rsa-page-layout {
-    height: inherit;
     .process-content-box {
         width: 100%;
     }
@@ -47,4 +47,7 @@
       margin-top: 2rem;
     }
   }
+}
+.start-scan-modal {
+  z-index: 10000;
 }

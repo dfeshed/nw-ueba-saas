@@ -16,10 +16,8 @@
   displayCloseButton=false
   isPopover=true
   panelId='host-details-more-actions'
-  position='bottom-right'
-  as |hideTooltip|
-}}
-  <ul class='host-details_dropdown-action-list' {{action hideTooltip}}>
+  position='bottom-right'}}
+  <ul class='host-details_dropdown-action-list'>
     {{#each moreOptions as |moreOption|}}
       {{#if (eq moreOption.buttonId 'startScan-button')}}
         <li>

@@ -63,8 +63,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
   test('Click on Download Process Dump to Server calls the passed action', async function(assert) {
     assert.expect(2);
     this.set('itemList', [
-      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
-      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' }
     ]);
 
     this.set('accessControl', EmberObject.create({}));
