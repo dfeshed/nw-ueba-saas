@@ -1,7 +1,6 @@
 package presidio.output.processor.services.alert.supportinginformation.historicaldata;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGenerator;
 
 import java.util.List;
 
@@ -14,13 +13,13 @@ import java.util.List;
  * @author gils
  * Date: 05/08/2015
  */
-public class HistoricalDataPopulatorFactory {
+public class AggregationDataPopulatorFactory {
 
     @Autowired
-    private List<HistoricalDataPopulator> historicalDataPopulators;
+    private List<AggregationDataPopulator> aggregationDataPopulators;
 
-    public HistoricalDataPopulator createHistoricalDataPopulation(String aggregationType) {
-        return historicalDataPopulators.stream()
+    public AggregationDataPopulator createAggregationDataPopulation(String aggregationType) {
+        return aggregationDataPopulators.stream()
                 .filter(generator -> aggregationType.equals(generator.getType()))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);

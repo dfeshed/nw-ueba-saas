@@ -29,6 +29,9 @@ public class IndicatorEvent extends AbstractElasticDocument {
     @Field(type = FieldType.Object, store = true)
     Map<String, Double> scores;
 
+    @Field(type = FieldType.Keyword, store = true)
+    String entityType;
+
     public IndicatorEvent() {
         super();
     }
@@ -71,5 +74,13 @@ public class IndicatorEvent extends AbstractElasticDocument {
 
     public void setScores(Map<String, Double> scores) {
         this.scores = scores;
+    }
+
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 }

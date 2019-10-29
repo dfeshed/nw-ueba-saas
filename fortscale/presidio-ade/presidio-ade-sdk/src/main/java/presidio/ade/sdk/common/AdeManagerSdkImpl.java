@@ -230,8 +230,13 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     }
 
     @Override
-    public List<AccumulatedAggregationFeatureRecord> getAccumulatedAggregatedFeatureEvents(String featureName, String contextId, TimeRange timeRange) {
+    public List<AccumulatedAggregationFeatureRecord> getAccumulatedAggregatedFeatureEventsByContextId(String featureName, String contextId, TimeRange timeRange) {
         return aggregationEventsAccumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(featureName,contextId,timeRange);
+    }
+
+    @Override
+    public List<AccumulatedAggregationFeatureRecord> getAccumulatedAggregatedFeatureEvents(String featureName, TimeRange timeRange) {
+        return aggregationEventsAccumulationDataReader.findAccumulatedEventsByStartTimeRange(featureName, timeRange);
     }
 
     @Override

@@ -234,6 +234,7 @@ public class AlertPersistencyServiceTest {
         event.setIndicatorId(indicator.getId());
         alert.setIndicators(Collections.singletonList(indicator));
         indicator.setEvents(Collections.singletonList(event));
+        event.setEntityType("entityType");
         alertPersistencyService.save(alert);
         Page<Indicator> testIndicator = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 1));
         assertEquals(1, testIndicator.getTotalElements());
@@ -888,13 +889,13 @@ public class AlertPersistencyServiceTest {
         String firstEntityName = "Z_normalized_entityname_ipusr1@somebigcompany.com";
         Alert alert1 = new Alert("entityId1", "smartId", null, "Z", firstEntityName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D, "entityType");
         List<Indicator> indicators = new ArrayList<>();
-        Indicator indicator1 = new Indicator(alert1.getId());
+        Indicator indicator1 = new Indicator(alert1.getId(), alert1.getEntityType());
         indicator1.setScoreContribution(0.5);
-        Indicator indicator3 = new Indicator(alert1.getId());
+        Indicator indicator3 = new Indicator(alert1.getId(), alert1.getEntityType());
         indicator3.setScoreContribution(0.2);
-        Indicator indicator4 = new Indicator(alert1.getId());
+        Indicator indicator4 = new Indicator(alert1.getId(), alert1.getEntityType());
         indicator4.setScoreContribution(0.3);
-        Indicator indicator2 = new Indicator(alert1.getId());
+        Indicator indicator2 = new Indicator(alert1.getId(), alert1.getEntityType());
         indicator2.setScoreContribution(0.3);
         indicators.add(indicator1);
         indicators.add(indicator2);
@@ -970,16 +971,19 @@ public class AlertPersistencyServiceTest {
         Instant instant1 = LocalDate.parse("2018-04-17").atTime(LocalTime.parse("03:00:10")).toInstant(ZoneOffset.UTC);
         event1.setEventTime(new Date(instant1.toEpochMilli()));
         event1.setIndicatorId(indicator.getId());
+        event1.setEntityType("entityType");
 
         IndicatorEvent event2 = new IndicatorEvent();
         Instant instant2 = LocalDate.parse("2018-04-11").atTime(LocalTime.parse("01:00:10")).toInstant(ZoneOffset.UTC);
         event2.setEventTime(new Date(instant2.toEpochMilli()));
         event2.setIndicatorId(indicator.getId());
+        event2.setEntityType("entityType");
 
         IndicatorEvent event3 = new IndicatorEvent();
         Instant instant3 = LocalDate.parse("2018-04-17").atTime(LocalTime.parse("01:00:10")).toInstant(ZoneOffset.UTC);
         event3.setEventTime(new Date(instant3.toEpochMilli()));
         event3.setIndicatorId(indicator.getId());
+        event3.setEntityType("entityType");
 
         List<IndicatorEvent> eventsList = Arrays.asList(event1, event2, event3);
         alert.setIndicators(Collections.singletonList(indicator));

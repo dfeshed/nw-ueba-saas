@@ -55,7 +55,7 @@ public class IndicatorConfig {
     private AnomalyDescriptiorConfig anomalyDescriptior;
 
     @JsonProperty("historicalData")
-    private HistoricalDataConfig historicalData;
+    private List<HistoricalDataConfig> historicalData;
 
     @JsonProperty("classification")
     private String classification;
@@ -109,12 +109,12 @@ public class IndicatorConfig {
     }
 
     @JsonProperty("historicalData")
-    public HistoricalDataConfig getHistoricalData() {
+    public List<HistoricalDataConfig> getHistoricalData() {
         return historicalData;
     }
 
     @JsonProperty("historicalData")
-    public void setHistoricalData(HistoricalDataConfig historicalData) {
+    public void setHistoricalData(List<HistoricalDataConfig> historicalData) {
         this.historicalData = historicalData;
     }
 

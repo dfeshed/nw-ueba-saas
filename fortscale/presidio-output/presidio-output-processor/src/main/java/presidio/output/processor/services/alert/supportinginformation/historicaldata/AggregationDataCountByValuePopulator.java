@@ -2,29 +2,31 @@ package presidio.output.processor.services.alert.supportinginformation.historica
 
 import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeRange;
+import presidio.output.domain.records.alerts.Aggregation;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.CountAggregation;
-import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class HistoricalDataCountByValuePopulator implements HistoricalDataPopulator {
+public class AggregationDataCountByValuePopulator implements AggregationDataPopulator {
     public static final String COUNT_AGGREGATIONS = "count_aggregations";
 
     private final HistoricalDataFetcher historicalDataFetcher;
 
-    public HistoricalDataCountByValuePopulator(HistoricalDataFetcher historicalDataFetcher) {
+    public AggregationDataCountByValuePopulator(HistoricalDataFetcher historicalDataFetcher) {
         this.historicalDataFetcher = historicalDataFetcher;
     }
 
     @Override
-    public HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema,
-                                               String featureName, String anomalyValue,
-                                               HistoricalDataConfig historicalDataConfig) {
+    public Aggregation createAggregationData(TimeRange timeRange, Map<String, String> contexts, Schema schema,
+                                             String featureName, String anomalyValue,
+                                             HistoricalDataConfig historicalDataConfig,
+                                             boolean skipAnomaly, Date indicatorStartDate) {
 
         // Get the daily histograms.
         // Each daily histogram has a map from a feature value to its number of occurrences on that day.
@@ -46,11 +48,10 @@ public class HistoricalDataCountByValuePopulator implements HistoricalDataPopula
 
         // Convert each entry in the map to a Bucket instance.
         List<Bucket<String, Double>> buckets = featureValueToNumberOfDaysMap.entrySet().stream()
-                .map(entry -> new Bucket<>(entry.getKey(), entry.getValue(), entry.getKey().equals(anomalyValue)))
+                .map(entry -> new Bucket<>(entry.getKey(), entry.getValue(),  !skipAnomaly && entry.getKey().equals(anomalyValue)))
                 .collect(Collectors.toList());
 
-        CountAggregation countAggregation = new CountAggregation(buckets);
-        return new HistoricalData(countAggregation);
+        return new CountAggregation(buckets, contexts);
     }
 
     @Override
