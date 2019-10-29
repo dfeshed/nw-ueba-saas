@@ -92,7 +92,9 @@ class CefFilesPrinter {
         try {
             if (!distinctPath.getParent().toFile().exists())
                 Files.createDirectories(distinctPath.getParent());
-            Files.createFile(distinctPath);
+            if (!distinctPath.toFile().exists()) {
+                Files.createFile(distinctPath);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

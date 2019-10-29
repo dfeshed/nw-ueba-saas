@@ -39,12 +39,13 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private TlsEnrichStoredDataRepository tlsEnrichStoredDataRepository;
 
+    /** dstOrg field contains unique event identifier including test name, marker, session split id  */
 
     @Test
     public void ten_splitted_events_have_enriched_fields() {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.simpleEnrichmentTestDataParams;
-        List<TlsEnrichStoredData> actual = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
+        List<TlsEnrichStoredData> actual = tlsEnrichStoredDataRepository.findByDstOrgContains(expected.id);
         assertHelper.assertEnrichmentFieldsMatchExpected(actual, expected);
         assertHelper.assertAll();
     }
@@ -53,7 +54,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
     public void zero_split_session_before_12_hours_is_ignored() {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.maxIntervalTestDataParams;
-        List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
+        List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByDstOrgContains(expected.id);
         List<TlsEnrichStoredData> actual = result.subList(1, result.size());
         assertHelper.assertEnrichmentFieldsAreNull(actual);
         assertHelper.assertAll();
@@ -64,9 +65,9 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
     public void missing_sessions_in_the_middle() {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.missingSessionsInTheMiddleTestDataParams;
-        List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
+        List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByDstOrgContains(expected.id);
         result.sort(Comparator.comparing(TlsEnrichStoredData::getId));
-        Optional<Integer> first = IntStream.range(0, result.size()).filter(i -> result.get(i).getEventId().startsWith(MARKER)).boxed().findFirst();
+        Optional<Integer> first = IntStream.range(0, result.size()).filter(i -> result.get(i).getDstOrg().getName().startsWith(MARKER)).boxed().findFirst();
         if (first.isEmpty()) fail("First missing event id marker is missing");
         int firstIndex = first.get();
 
@@ -82,9 +83,9 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
     public void duplicated_sessions_in_the_middle() {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.duplicatedSessionsInTheMiddleTestDataParams;
-        List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
+        List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByDstOrgContains(expected.id);
         result.sort(Comparator.comparing(TlsEnrichStoredData::getId));
-        Optional<Integer> first = IntStream.range(0, result.size()).filter(i -> result.get(i).getEventId().startsWith(MARKER)).boxed().findFirst();
+        Optional<Integer> first = IntStream.range(0, result.size()).filter(i -> result.get(i).getDstOrg().getName().startsWith(MARKER)).boxed().findFirst();
         if (first.isEmpty()) fail("First duplicate event id marker is missing");
         int firstIndex = first.get();
 
@@ -100,7 +101,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
     public void missing_zero_session() {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.missingZeroSessionTestDataParams;
-        List<TlsEnrichStoredData> actual = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
+        List<TlsEnrichStoredData> actual = tlsEnrichStoredDataRepository.findByDstOrgContains(expected.id);
         assertHelper.assertEnrichmentFieldsAreNull(actual);
         assertHelper.assertAll();
     }
@@ -109,11 +110,11 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
     public void multiple_sessions_from_same_src_to_same_dest() {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expectedSession1 = SessionSplitEnrichmentData.newSessionOpenedFirstSession;
-        List<TlsEnrichStoredData> actualSession1 = tlsEnrichStoredDataRepository.findByIdContains(expectedSession1.id);
+        List<TlsEnrichStoredData> actualSession1 = tlsEnrichStoredDataRepository.findByDstOrgContains(expectedSession1.id);
         assertHelper.assertEnrichmentFieldsMatchExpected(actualSession1, expectedSession1);
 
         SessionSplitEnrichmentData.TestDataParameters expectedSession2 = SessionSplitEnrichmentData.newSessionOpenedSecondSession;
-        List<TlsEnrichStoredData> actualSession2 = tlsEnrichStoredDataRepository.findByIdContains(expectedSession2.id);
+        List<TlsEnrichStoredData> actualSession2 = tlsEnrichStoredDataRepository.findByDstOrgContains(expectedSession2.id);
         assertHelper.assertEnrichmentFieldsMatchExpected(actualSession2, expectedSession2);
 
         assertHelper.assertAll();
@@ -123,7 +124,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
     public void multiple_sessions_with_missing_zero_session() {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.newSessionOpenedAndZeroEventIsMissing;
-        List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
+        List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByDstOrgContains(expected.id);
         result.sort(Comparator.comparing(TlsEnrichStoredData::getId));
         int firstIndex = 4;
 
@@ -139,7 +140,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
     public void zero_session_event_has_null_ja3_and_ssl_subject() {
         SoftAssertions softly = new SoftAssertions();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.zeroSessionEventHasNullJa3AndSslSubject;
-        List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
+        List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByDstOrgContains(expected.id);
         List<TlsEnrichStoredData> actual = result.subList(1, result.size());
 
         softly.assertThat(actual).extracting("sslSubject").containsOnlyNulls();
@@ -155,7 +156,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
     public void second_event_have_ja3_and_ssl_subject() {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.secondEventHaveJa3AndSslSubject;
-        List<TlsEnrichStoredData> actual = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
+        List<TlsEnrichStoredData> actual = tlsEnrichStoredDataRepository.findByDstOrgContains(expected.id);
         assertHelper.assertEnrichmentFieldsMatchExpected(actual, expected);
         assertHelper.assertAll();
     }
