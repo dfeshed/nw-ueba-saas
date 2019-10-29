@@ -44,9 +44,13 @@ public class AbnormalTraffic<T> {
         setEntity(initialGenCopy);
         initialGenCopy.setNumOfBytesSentGenerator(regularTrafficGenerator);
 
+        TlsRangeEventsGen addSslSubjectsToDomain = initialGenCopy.copy();
+        addSslSubjectsToDomain.sslSubjectGen.nextRangeRandom(5);
+
         indicator.addNormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(4, String::valueOf));
         indicator.addContext(contextToString(sourceGen, destinationGen));
         eventsSupplier.setCommonValuesGen(initialGenCopy);
+        eventsSupplier.setCommonValuesGen(addSslSubjectsToDomain);
 
         return initialGenCopy.copy();
     }
@@ -66,8 +70,13 @@ public class AbnormalTraffic<T> {
 
     public TlsRangeEventsGen createHighTrafficAnomalyGen(TlsRangeEventsGen heightTrafficAnomalyGen, FieldRangeAllocator<String> sourceGen,  FieldRangeAllocator<T> destinationGen){
         setEntity(heightTrafficAnomalyGen);
+
+        TlsRangeEventsGen addSslSubjectsToDomain = heightTrafficAnomalyGen.copy();
+        addSslSubjectsToDomain.sslSubjectGen.nextRangeRandom(5);
+
         heightTrafficAnomalyGen.setNumOfBytesSentGenerator(unusualTrafficGenerator);
         eventsSupplier.setUncommonValuesAnomalyGen(heightTrafficAnomalyGen);
+        eventsSupplier.setUncommonValuesAnomalyGen(addSslSubjectsToDomain);
         return heightTrafficAnomalyGen.copy();
     }
 
