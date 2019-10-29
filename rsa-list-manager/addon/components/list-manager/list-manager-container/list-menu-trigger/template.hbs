@@ -2,7 +2,7 @@
   class='list-caption'
   isDisabled=isDisabled
   defaultAction=(action 'triggerClicked')
-  title=(if isDisabled (t 'rsaListManager.listMenuTrigger.disabled.permission') titleTooltip)
+  title=(if isDisabled (t 'rsaListManager.listMenuTrigger.disabled.permission' listName=disabledListName) titleTooltip)
 }}
   {{caption}}
 {{/rsa-form-button}}
@@ -11,6 +11,7 @@
   class='rsa-split-dropdown'
   isDisabled=isDisabled
   defaultAction=(action 'triggerClicked')
+  title=(if isDisabled (t 'rsaListManager.listMenuTrigger.disabled.permission' listName=disabledListName))
 }}
   {{rsa-icon name='arrow-down-12'}}
 {{/rsa-form-button}}

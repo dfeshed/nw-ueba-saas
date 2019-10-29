@@ -6,12 +6,14 @@ import {
 } from 'rsa-list-manager/actions/creators/creators';
 import {
   caption,
-  titleTooltip
+  titleTooltip,
+  disabledListName
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
   caption: caption(state, attrs.stateLocation),
-  titleTooltip: titleTooltip(state, attrs.stateLocation)
+  titleTooltip: titleTooltip(state, attrs.stateLocation),
+  disabledListName: disabledListName(state, attrs.stateLocation)
 });
 
 const dispatchToActions = {

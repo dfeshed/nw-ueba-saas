@@ -6373,7 +6373,7 @@ effects the simulated source.',
     },
     listMenuTrigger: {
       disabled: {
-        permission: 'Please contact the administrator to gain access to this feature'
+        permission: 'Please contact your administrator to obtain the necessary permissions to view {{listName}}'
       }
     }
   }

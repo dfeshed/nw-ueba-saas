@@ -51,6 +51,7 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
     assert.notOk(find(listCaptionDisabled), 'Should not have list caption with list-caption class disabled');
     assert.equal(find(listCaption).textContent.trim(), listName1, 'Shall have correct list caption');
     assert.equal(find(listCaption).getAttribute('title'), null, 'When no value is selected the title is empty');
+    assert.equal(find(splitDropdown).getAttribute('title'), null, 'When not disabled the title is empty');
   });
 
   test('Clicking list caption opens the list and triggers listOpened', async function(assert) {
@@ -120,6 +121,7 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
     this.set('stateLocation', stateLocation1);
     this.set('isDisabled', true);
 
+
     await render(hbs`{{#list-manager/list-manager-container/list-menu-trigger
       stateLocation=stateLocation
       isDisabled=isDisabled
@@ -132,7 +134,9 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
     assert.ok(find(splitDropdownDisabled), 'Should have button with rsa-split-dropdown class disabled');
     assert.ok(find(listCaptionDisabled), 'Should have list caption with list-caption class disabled');
     assert.equal(find(listCaption).textContent.trim(), listName1, 'Shall have correct list caption');
-    assert.equal(find(listCaptionDisabled).getAttribute('title').trim(), i18n.t('rsaListManager.listMenuTrigger.disabled.permission'),
+    assert.equal(find(listCaptionDisabled).getAttribute('title'), i18n.t('rsaListManager.listMenuTrigger.disabled.permission') + listName1.toLowerCase(),
+      'disabled list menu trigger should have correct title');
+    assert.equal(find(splitDropdownDisabled).getAttribute('title'), i18n.t('rsaListManager.listMenuTrigger.disabled.permission') + listName1.toLowerCase(),
       'disabled list menu trigger should have correct title');
   });
 });

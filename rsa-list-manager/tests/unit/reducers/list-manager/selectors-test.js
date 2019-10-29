@@ -24,7 +24,8 @@ import {
   hasIsEditableIndicators,
   editItem,
   isNewItem,
-  shouldSelectedItemPersist
+  shouldSelectedItemPersist,
+  disabledListName
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 import { LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -367,6 +368,28 @@ test('filterPlaceholder returns filterPlaceholder for stateLocation', function(a
   const result = filterPlaceholder(state, stateLocation1);
   const expected = `Filter ${listName1.toLowerCase()}`;
   assert.equal(result, expected, 'Shall select filterPlaceholder based on stateLocation and listName');
+});
+
+test('disabledListName returns listName for stateLocation', function(assert) {
+  const state = new ReduxDataHelper()
+    .stateLocation(stateLocation1)
+    .list(list1)
+    .listName(listName1)
+    .build();
+  const result = disabledListName(state, stateLocation1);
+  const expected = listName1.toLowerCase();
+  assert.equal(result, expected, 'Shall select disabledListName based on listName');
+});
+
+test('disabledListName returns empty when listName is not available', function(assert) {
+  const state = new ReduxDataHelper()
+    .stateLocation(stateLocation1)
+    .list(list1)
+    .listName(undefined)
+    .build();
+  const result = disabledListName(state, stateLocation1);
+  const expected = '';
+  assert.equal(result, expected, 'Shall select disabledListName based on listName');
 });
 
 test('hasIsEditableIndicators returns true for stateLocation if filteredList contains items with isEditable property',

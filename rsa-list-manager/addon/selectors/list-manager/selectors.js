@@ -205,6 +205,13 @@ export const caption = createSelector(
   }
 );
 
+export const disabledListName = createSelector(
+  [listName],
+  (listName) => {
+    return listName ? listName.toLowerCase() : '';
+  }
+);
+
 export const titleTooltip = createSelector(
   [_selectedItemName],
   (selectedItemName) => {
