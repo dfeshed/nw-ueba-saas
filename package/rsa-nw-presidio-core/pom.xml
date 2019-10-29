@@ -206,6 +206,7 @@
                             <directory>${presidio-app.directory}/recover/</directory>
                             <username>${presidio.username}</username>
                             <groupname>${presidio.groupname}</groupname>
+                            <filemode>770</filemode>
                             <sources>
                                 <source>
                                     <location>scripts/recover</location>
