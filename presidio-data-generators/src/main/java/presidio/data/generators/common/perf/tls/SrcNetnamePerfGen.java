@@ -1,17 +1,13 @@
 package presidio.data.generators.common.perf.tls;
 
-import presidio.data.generators.common.list.RangeGenerator;
-import presidio.data.generators.common.list.random.RandomRangeCompanyGen;
 import presidio.data.generators.common.perf.UniformBasedPerfGen;
 
 import java.util.function.Function;
 
-import static presidio.data.generators.common.list.content.CompanyNames.COMPANY_NAMES;
-
 public class SrcNetnamePerfGen extends UniformBasedPerfGen<String> {
 
 
-    private RangeGenerator subjects = new RandomRangeCompanyGen(0, COMPANY_NAMES.size());
+    private static final String prefix = "private";
 
     public SrcNetnamePerfGen(int uniqueId, int amount) {
         super(uniqueId, amount);
@@ -19,12 +15,12 @@ public class SrcNetnamePerfGen extends UniformBasedPerfGen<String> {
 
     @Override
     protected Function<Integer, String> getMappingFunc() {
-        return i -> subjects.getNext() + " " + UNIQUE_ID + " " + i;
+        return i -> prefix + "_" + UNIQUE_ID + "_" + i;
     }
 
     @Override
     protected Function<String, String> getTransformationFunc() {
-        return  e -> e.toLowerCase().replaceAll("\\W+"," ").trim();
+        return e -> e;
     }
 
 }
