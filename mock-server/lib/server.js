@@ -63,6 +63,17 @@ const start = function({ subscriptionLocations, routes }, cb, { urlPattern, cust
     res.send('false');
   });
 
+  app.use('/investigate/recon/serve/email/body/message-id', function(req, res) {
+    res.send('<div>Secure Email body </div><div><a recon-ouri="/original/url" onclick="javascript:recon_show_ouri(this)">Link</a></div>');
+  });
+
+  app.use('/investigate/recon/serve/email/body/message-id-delayed', function(req, res) {
+    // send response after delay of 2sec
+    setTimeout(function() {
+      res.send('<div>Secure Email body</div>');
+    }, 2000);
+  });
+
   app.use('/display/security/securitybanner/get', function(req, res) {
     res.json({ 'data': [
       {

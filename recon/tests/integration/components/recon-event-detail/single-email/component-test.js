@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll } from '@ember/test-helpers';
+import { render, find, findAll, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import EmberObject from '@ember/object';
 import emailData from '../../../../data/subscriptions/reconstruction-email-data/stream/data';
@@ -29,5 +29,52 @@ module('Integration | Component | recon-event-detail/single-email', function(hoo
 
     await render(hbs`{{recon-event-detail/single-email emailIndex=emailIndex emailCount=emailCount email=email}}`);
     assert.equal(find('.recon-email-collapse-header .header-text').textContent.trim(), '1 of 1 messages');
+  });
+
+  test('secure email body is lazy-loaded and rendered', async function(assert) {
+    const [, , , , , email] = emailData;
+    email.bodyUrl = '/investigate/recon/serve/email/body/message-id';
+    this.set('email', EmberObject.create(email));
+    this.set('emailCount', 1);
+    this.set('emailIndex', 1);
+
+    await render(hbs`{{recon-event-detail/single-email emailIndex=emailIndex emailCount=emailCount email=email}}`);
+    await waitUntil(() => {
+      return !find('.rsa-loader');
+    });
+    assert.ok(find('iframe'), 'email body is rendered');
+  });
+
+  test('spinner is shown before secure email body is loaded', async function(assert) {
+    const [, , , , , email] = emailData;
+    email.bodyUrl = '/investigate/recon/serve/email/body/message-id-delayed';
+    this.set('email', EmberObject.create(email));
+    this.set('emailCount', 1);
+    this.set('emailIndex', 1);
+
+    render(hbs`{{recon-event-detail/single-email emailIndex=emailIndex emailCount=emailCount email=email}}`);
+    await waitUntil(() => {
+      return find('.rsa-loader');
+    });
+    assert.ok(find('.rsa-loader'), 'spinner is rendered');
+
+    await waitUntil(() => {
+      return !find('.rsa-loader');
+    }, { timeout: 10000 });
+    assert.ok(find('iframe'), 'email body is rendered eventually');
+  });
+
+  test('error is shown when email body is not fetched from the bodyUrl', async function(assert) {
+    const [, , , , , email] = emailData;
+    email.bodyUrl = '/investigate/recon/serve/email/body/message-id-invalid';
+    this.set('email', EmberObject.create(email));
+    this.set('emailCount', 1);
+    this.set('emailIndex', 1);
+
+    render(hbs`{{recon-event-detail/single-email emailIndex=emailIndex emailCount=emailCount email=email}}`);
+    await waitUntil(() => {
+      return !find('.rsa-loader');
+    }, { timeout: 10000 });
+    assert.ok(find('.email-lazyload-error'), 'email body retrieve error is shown');
   });
 });

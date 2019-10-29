@@ -1,7 +1,7 @@
 import wait from 'ember-test-helpers/wait';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, click } from '@ember/test-helpers';
+import { render, find, click, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import EmberObject from '@ember/object';
 import emailData from '../../../../../data/subscriptions/reconstruction-email-data/stream/data';
@@ -13,7 +13,7 @@ const _first200 = (str) => str.trim().replace(/\s/g, '').substring(0, 200);
 module('Integration | Component | recon-event-detail/single-email/email-body-content', function(hooks) {
   setupRenderingTest(hooks);
 
-  test('renders single email body content, if response is not splitted and body content is less then 10K characters', async function(assert) {
+  test('renders single email body content, if response is not split and body content is less than 10K characters', async function(assert) {
     this.set('email', EmberObject.create(emailData[1]));
     await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
     return wait().then(() => {
@@ -24,7 +24,7 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     });
   });
 
-  test('renders single email body content, if response is splitted and body content is more then 10K characters', async function(assert) {
+  test('renders single email body content, if response is split and body content is more than 10K characters', async function(assert) {
     const state = {
       recon: {
         emails: {
@@ -94,7 +94,53 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     this.set('email', EmberObject.create(emailData[2]));
     await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
     assert.ok(find('.email-body-text'), 'show single email message content');
+    await waitUntil(() => {
+      return !!find('iframe').contentDocument.body;
+    });
     assert.equal(_first200(find('iframe').contentDocument.body.innerText), 'googleemailmessagetextcontentgoogle2');
+  });
+
+  test('renders well formatted plain text email body content', async function(assert) {
+    const [, , , email] = emailData;
+    email.bodyContent = 'first line\\nsecond line\\nthird line';
+    this.set('email', EmberObject.create(email));
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
+    assert.equal(find('iframe').contentDocument.body.innerText, email.bodyContent, 'Plain text email body must be well formatted');
+  });
+
+  test('renders lazy loaded email body', async function(assert) {
+    const secureBody = '<html><div>lazy loaded body</div></html>';
+    this.set('email', EmberObject.create(emailData[5]));
+    this.set('lazyLoadedBody', secureBody);
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email lazyLoadedBody=lazyLoadedBody}}`);
+    assert.equal(find('iframe').contentDocument.body.innerText.trim(), 'lazy loaded body', 'body is rendered');
+  });
+
+  test('adds hrefs to hyperlinks in the body', async function(assert) {
+    this.set('email', EmberObject.create(emailData[2]));
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
+    const renderedBody = find('iframe').contentDocument.body;
+    const hyperlinks = renderedBody.querySelectorAll('a');
+    assert.ok(hyperlinks.length > 0, 'hyperlinks in the body are rendered');
+    hyperlinks.forEach((a) => {
+      assert.equal(a.href, 'javascript:void(0);', 'dummy href added to the hyperlink');
+    });
+  });
+
+  test('clicking on hyperlink shows original url in a popup', async function(assert) {
+    this.set('email', EmberObject.create(emailData[2]));
+    await render(hbs`<div id='modalDestination'></div>{{recon-event-detail/single-email/email-body-content email=email}}`);
+    const renderedBody = find('iframe').contentDocument.body;
+    const hyperlinks = renderedBody.querySelectorAll('a');
+    assert.equal(hyperlinks.length, 2, 'hyperlinks in the body are rendered');
+
+    await click(hyperlinks[0]);
+    assert.ok(find('.email-recon-link-info-dialog'), 'link popup is shown');
+    assert.equal(find('.email-recon-link-info-dialog .original-link').innerText.trim(), 'http://www.google.com', 'original link included in the popup');
+
+    await click(hyperlinks[1]);
+    assert.ok(find('.email-recon-link-info-dialog'), 'link popup is shown');
+    assert.equal(find('.email-recon-link-info-dialog .original-link').innerText.trim(), 'http://www.google2.com', 'original link included in the popup');
   });
 });
 

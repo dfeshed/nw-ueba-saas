@@ -300,6 +300,7 @@ export default {
       received: 'received',
       attachment: 'attachments',
       noEmailData: 'No Email reconstruction available for this event.',
+      noEmailBody: 'Could not retrieve the body of this email.',
       cc: 'cc',
       bcc: 'bcc',
       replyTo: 'replyTo',

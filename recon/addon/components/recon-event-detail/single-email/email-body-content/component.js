@@ -17,7 +17,6 @@ export default Component.extend({
   resizeIframe: null,
   actualLink: null,
   disableContextMenu: null,
-  openLinkModal: null,
 
   didRender() {
     this.set('frame', document.getElementById(this.emailRenderId));
@@ -28,14 +27,19 @@ export default Component.extend({
         this.get('frame').style.height = iframeHeight.toString().concat('px');
         const hyperlinks = iframeDoc.getElementsByTagName('a');
         for (const link of hyperlinks) {
+          // anchor tags do not show up as hyperlinks if href is not defined
+          link.href = 'javascript:void(0);';
+
+          // disable right-click
           link.addEventListener('contextmenu', this.disableContextMenu = (event) => {
             event.preventDefault();
           });
-          this.set('openLinkModal', (event) => {
-            event.preventDefault();
-            this.set('actualLink', event.target.href);
-          });
-          link.addEventListener('click', this.openLinkModal);
+
+          // As part of reconstruction, investigate MT adds "recon_show_ouri" as the click handler.
+          // UI just needs to provide implementation for "recon_show_ouri"
+          link.recon_show_ouri = (a) => {
+            this.set('actualLink', a.getAttribute('recon-ouri'));
+          };
         }
       });
     });
@@ -47,7 +51,7 @@ export default Component.extend({
     const hyperlinks = iframeDoc.getElementsByTagName('a');
     for (const link of hyperlinks) {
       link.removeEventListener('contextmenu', this.disableContextMenu);
-      link.removeEventListener('click', this.openLinkModal);
+      link.removeEventListener('click', link.recon_show_ouri);
     }
     this.get('frame').removeEventListener('load', this.resizeIframe);
   },
@@ -60,12 +64,17 @@ export default Component.extend({
   @computed('portionsToRender', 'email')
   displayShowRemainingButton(portionsToRender, email) {
     const renderedContentLength = portionsToRender.join('').length;
-    return !(email.realBodyContentLength <= renderedContentLength);
+    return email.realBodyContentLength > renderedContentLength;
   },
 
-  @computed('email.bodyContent')
+  @computed('email.bodyContent', 'lazyLoadedBody')
+  emailBody(embeddedBodyContent, lazyLoadedBody) {
+    return embeddedBodyContent || lazyLoadedBody;
+  },
+
+  @computed('emailBody')
   emailPortions(emailContent) {
-    if (!emailContent.length > CHUNK_SIZE) {
+    if (emailContent.length <= CHUNK_SIZE) {
       return [emailContent];
     }
 
@@ -82,16 +91,24 @@ export default Component.extend({
     return portions;
   },
 
-  @computed('portionsToRender', 'emailPortions')
-  renderEmailBodyContent(portionsToRender, emailPortions) {
-    if (emailPortions.length > 0 && portionsToRender.length <= 0) {
-      this.set('portionsToRender', [emailPortions[0]]);
-      return _.unescape(this.get('portionsToRender'));
-    } else if (portionsToRender.length > 0) {
-      return _.unescape(portionsToRender.join(''));
-    } else {
-      return [];
+  @computed('portionsToRender', 'emailPortions', 'email.bodyContentType')
+  renderEmailBodyContent(portionsToRender, emailPortions, contentType) {
+    let toRender = '';
+    if (emailPortions) {
+      if (emailPortions.length > 0 && portionsToRender.length <= 0) {
+        this.set('portionsToRender', [emailPortions[0]]);
+        toRender = _.unescape(this.get('portionsToRender'));
+      } else if (portionsToRender.length > 0) {
+        toRender = _.unescape(portionsToRender.join(''));
+      }
     }
+    return contentType === 'PlainText' ? this.htmlify(toRender) : toRender;
+  },
+
+  htmlify(plainText) {
+    return plainText
+      .replace(/(?:\r\n|\r|\n)/g, '<br>')
+      .replace(/\t/g, '&emsp;&emsp;');
   },
 
   @computed('displayedPercent')

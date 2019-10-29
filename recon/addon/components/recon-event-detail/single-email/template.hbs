@@ -15,7 +15,13 @@
   {{recon-event-detail/single-email/email-header email=email isEmailExpanded=isEmailExpanded}}
 
   {{#if isEmailExpanded}}
-    {{recon-event-detail/single-email/email-body-content email=email}}
+    {{#if isBodyLoaded}}
+      {{recon-event-detail/single-email/email-body-content email=email lazyLoadedBody=lazyLoadedBody}}
+    {{else if lazyLoadError}}
+      <div class="email-lazyload-error">{{t 'recon.emailView.noEmailBody'}}</div>
+    {{else}}
+      {{rsa-loader size='medium'}}
+    {{/if}}
   {{/if}}
 
 </div>

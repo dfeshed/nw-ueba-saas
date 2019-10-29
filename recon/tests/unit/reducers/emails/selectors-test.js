@@ -42,7 +42,7 @@ test('renderedEmails', function(assert) {
   assert.equal(tests.noEmailNoRenderIds.length, 0, 'renderedEmail should return empty array, when emails/render IDs missing');
   assert.equal(tests.hasEmailNoRenderIds.length, 0, 'renderedEmail should return empty array, when has render IDs');
   assert.equal(tests.noEmailHasRenderIds.length, 0, 'renderedEmail should return empty array, when no emails');
-  assert.equal(tests.hasEmailHasRenderIds.length, 4, 'renderedEmail should not return empty array, when emails/render Ids exists');
+  assert.ok(tests.hasEmailHasRenderIds.length > 0, 'renderedEmail should not return empty array, when emails/render Ids exists');
 
 });
 
