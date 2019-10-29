@@ -87,7 +87,12 @@ public class PageConverter {
                 case "alertsCount":
                     sortByFields.add(EntityQuery.SortFieldNamesEnum.ALERT_NUM);
                     break;
-
+                case "WEEKLY_TRENDS":
+                    sortByFields.add(EntityQuery.SortFieldNamesEnum.WEEKLY_TRENDS);
+                    break;
+                case "DAILY_TRENDS":
+                    sortByFields.add(EntityQuery.SortFieldNamesEnum.DAILY_TRENDS);
+                    break;
             }
         });
         if (sortByFields.isEmpty()){
