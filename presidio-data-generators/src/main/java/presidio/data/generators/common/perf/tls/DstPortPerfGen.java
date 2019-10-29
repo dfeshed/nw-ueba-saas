@@ -17,9 +17,4 @@ public class DstPortPerfGen extends UniformBasedPerfGen<Integer> {
         return i -> UNIQUE_ID * 1000 + i;
     }
 
-    @Override
-    protected Function<Integer, Integer> getTransformationFunc() {
-        return e -> e;
-    }
-
 }

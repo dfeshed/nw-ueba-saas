@@ -15,9 +15,4 @@ public class Ja3PerfGen extends UniformBasedPerfGen<String> {
         return i ->  "6e1932bea4b34db0b3cb4f" + "-" + UNIQUE_ID + "-" + i;
     }
 
-    @Override
-    protected Function<String, String> getTransformationFunc() {
-        return  e -> e;
-    }
-
 }

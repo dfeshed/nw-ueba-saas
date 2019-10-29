@@ -1,6 +1,7 @@
 package presidio.data.generators.common.perf;
 
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class UniformBasedPerfGen<T> extends DistributionBasedGen<T, Integer> {
@@ -14,6 +15,11 @@ public abstract class UniformBasedPerfGen<T> extends DistributionBasedGen<T, Int
     @Override
     protected Supplier<Integer> getSample() {
         return () -> ThreadLocalRandom.current().nextInt(0, maxBound);
+    }
+
+    @Override
+    protected Function<T, T> getTransformationFunc() {
+        return  e -> e;
     }
 
 }

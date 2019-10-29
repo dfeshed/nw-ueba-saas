@@ -1,5 +1,6 @@
 package presidio.data.generators.event.performance.tls.clusters;
 
+import presidio.data.domain.Location;
 import presidio.data.domain.event.network.NETWORK_DIRECTION_TYPE;
 import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.FixedValueGenerator;
@@ -13,9 +14,7 @@ import presidio.data.generators.common.random.Md5RandomGenerator;
 import presidio.data.generators.common.random.RandomIntegerGenerator;
 import presidio.data.generators.common.random.RandomStringGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
-import presidio.data.generators.event.tls.HostnameRangeAllocator;
 import presidio.data.generators.event.tls.Ipv4RangeAllocator;
-import presidio.data.generators.event.tls.LocationRangeAllocator;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -34,9 +33,6 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
     private final int UNIQUE_ID;
 
 
-
-    public final HostnameRangeAllocator hostnameGen = new HostnameRangeAllocator();
-
     private IBaseGenerator<Integer> dstPortGen;
     private IBaseGenerator<String> ja3Gen;
     private IBaseGenerator<String> sslSubjectGen;
@@ -45,8 +41,8 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
     private IBaseGenerator<String> srcIpGenerator;
 
 
-
-    public final LocationRangeAllocator locationGen = new LocationRangeAllocator();
+    private IBaseGenerator<Location> locationGen;
+    private IBaseGenerator<String> hostnameGen;
 
     private final Ipv4RangeAllocator dstIpGenerator = new Ipv4RangeAllocator();
     private IBaseGenerator<String> dstAsnGenerator = new RandomStringGenerator(5, 8);
@@ -66,7 +62,7 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         UNIQUE_ID = UNIQUE_ID_COUNTER.addAndGet(1);
 
         dstIpGenerator.nextRangeRandom(params.dstIpSize);
-        hostnameGen.nextRangeGenCyclic(params.hostnameSize);
+
 
         dstPortGen = new DstPortPerfGen(UNIQUE_ID, params.dstPortSize);
         ja3Gen = new Ja3PerfGen(UNIQUE_ID, params.ja3Size);
@@ -74,15 +70,16 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         dstOrgGen = new DstOrgPerfGen(UNIQUE_ID, params.dstOrgSize);
         srcNetnameGen = new SrcNetnamePerfGen(UNIQUE_ID, params.srcNetnameSize);
         srcIpGenerator = new Ipv4PerfGen(UNIQUE_ID, params.srcIpSize);
+        locationGen = new LocationPrefGen(UNIQUE_ID, params.locationSize);
+        hostnameGen = new HostNamePrefGen(UNIQUE_ID, params.hostnameSize);
 
-        locationGen.nextRangeGenCyclic(params.locationSize);
     }
 
 
     public TlsEventsSimplePerfGen copy() {
         TlsEventsSimplePerfGen copyGen = new TlsEventsSimplePerfGen(this.params);
         copyGen.setTimeGenerator(this.getTimeGenerator());
-        copyGen.hostnameGen.setGenerator(this.hostnameGen.getGenerator());
+
         copyGen.setSrcPortGenerator(this.getSrcPortGenerator());
         copyGen.dstPortGen = this.dstPortGen;
 
@@ -93,7 +90,8 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         copyGen.srcIpGenerator = this.srcIpGenerator;
 
         copyGen.setDstNetnameGen(this.getDstNetnameGen());
-        copyGen.locationGen.setGenerator(this.locationGen.getGenerator());
+        copyGen.locationGen = this.locationGen;
+        copyGen.hostnameGen = this.hostnameGen;
         copyGen.setDataSourceGenerator(this.getDataSourceGenerator());
         copyGen.setDstAsnGenerator(this.getDstAsnGenerator());
         copyGen.dstIpGenerator.setGenerator(this.dstIpGenerator.getGenerator());
@@ -104,14 +102,13 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         copyGen.setSessionSplitGenerator(this.getSessionSplitGenerator());
         return copyGen;
     }
-    
-    
-    
+
+
     @Override
     public TlsEvent generateNext() throws GeneratorException {
         TlsEvent tlsEvent = new TlsEvent(timeGenerator.getNext());
         tlsEvent.setEventId(eventIdGenerator.getNext());
-        tlsEvent.setFqdn(hostnameGen.getGenerator().nextValues(3));
+        tlsEvent.setFqdn(hostnameGen.nextValues(3));
         tlsEvent.setDstIp(dstIpGenerator.getGenerator().getNext());
         tlsEvent.setSourceIp(srcIpGenerator.getNext());
         tlsEvent.setDestinationOrganization(dstOrgGen.getNext());
@@ -126,8 +123,8 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         tlsEvent.setDirection(NETWORK_DIRECTION_TYPE.OUTBOUND);
         tlsEvent.setDestinationPort(dstPortGen.getNext());
         tlsEvent.setSourcePort(srcPortGenerator.getNext());
-        tlsEvent.setSrcLocation(locationGen.getGenerator().getNext());
-        tlsEvent.setDstLocation(locationGen.getGenerator().getNext());
+        tlsEvent.setSrcLocation(locationGen.getNext());
+        tlsEvent.setDstLocation(locationGen.getNext());
         tlsEvent.setSslSubject(sslSubjectGen.getNext());
         tlsEvent.setSslCa(sslCaGenerator.nextValues(2));
         tlsEvent.setSessionSplit(sessionSplitGenerator.getNext());

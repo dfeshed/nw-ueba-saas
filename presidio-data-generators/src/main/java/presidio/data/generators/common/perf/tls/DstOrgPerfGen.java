@@ -18,9 +18,5 @@ public class DstOrgPerfGen extends UniformBasedPerfGen<String> {
         return i -> prefix + "_" + UNIQUE_ID + "_" + i;
     }
 
-    @Override
-    protected Function<String, String> getTransformationFunc() {
-        return e -> e;
-    }
 
 }
