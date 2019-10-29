@@ -660,7 +660,7 @@ export default {
         groupNamePlaceholder: 'Enter column group name',
         nameNotUnique: 'New groups must have a unique name',
         disabled: {
-          delete: 'This column group cannot be deleted because it is part of the following Profiles: {{profileNames}}'
+          delete: 'This column group cannot be deleted because it is part of the following profiles: {{profileNames}}'
         }
       },
       download: {

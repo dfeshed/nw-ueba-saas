@@ -12,7 +12,6 @@ const contextMockDirectory = require('../context').mockDestinations;
 const licenseMockDirectory = require('../license').mockDestinations;
 const respondSharedMockDir = require('../respond-shared').mockDestinations;
 
-
 module.exports = EngineAddon.extend({
   name: projectName,
 
