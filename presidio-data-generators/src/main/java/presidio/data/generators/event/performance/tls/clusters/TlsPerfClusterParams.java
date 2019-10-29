@@ -1,27 +1,141 @@
 package presidio.data.generators.event.performance.tls.clusters;
 
+import org.testng.Assert;
+
 public class TlsPerfClusterParams {
+    private int hostnameSize = -1;
+    private int dstPortSize = -1;
+    private int ja3Size = -1;
+    private int sslSubjectSize = -1;
+    private int dstOrgSize = -1;
+    private int srcNetnameSize = -1;
+    private int locationSize = -1;
+    private int srcIpSize = -1;
+    private int dstIpSize = -1;
 
-    public final int hostnameSize;
-    public final int dstPortSize;
-    public final int ja3Size;
-    public final int sslSubjectSize;
-    public final int dstOrgSize;
-    public final int srcNetnameSize;
-    public final int locationSize;
-    public final int srcIpSize;
-    public final int dstIpSize;
+    private TlsPerfClusterParams() {
+    }
+
+    public static class Builder {
 
 
-    public TlsPerfClusterParams(int hostnameSize, int dstPortSize, int ja3Size, int sslSubjectSize, int dstOrgSize, int srcNetnameSize, int locationSize, int srcIpSize, int dstIpSize) {
-        this.hostnameSize = hostnameSize;
-        this.dstPortSize = dstPortSize;
-        this.ja3Size = ja3Size;
-        this.sslSubjectSize = sslSubjectSize;
-        this.dstOrgSize = dstOrgSize;
-        this.srcNetnameSize = srcNetnameSize;
-        this.locationSize = locationSize;
-        this.srcIpSize = srcIpSize;
-        this.dstIpSize = dstIpSize;
+        private int hostnameSize;
+        private int dstPortSize;
+        private int ja3Size;
+        private int sslSubjectSize;
+        private int dstOrgSize;
+        private int srcNetnameSize;
+        private int locationSize;
+        private int srcIpSize;
+        private int dstIpSize;
+
+
+        public Builder setHostnameSize(int hostnameSize) {
+            this.hostnameSize = hostnameSize;
+            return this;
+        }
+
+        public Builder setDstPortSize(int dstPortSize) {
+            this.dstPortSize = dstPortSize;
+            return this;
+        }
+
+        public Builder setJa3Size(int ja3Size) {
+            this.ja3Size = ja3Size;
+            return this;
+        }
+
+        public Builder setSslSubjectSize(int sslSubjectSize) {
+            this.sslSubjectSize = sslSubjectSize;
+            return this;
+        }
+
+        public Builder setDstOrgSize(int dstOrgSize) {
+            this.dstOrgSize = dstOrgSize;
+            return this;
+        }
+
+        public Builder setSrcNetnameSize(int srcNetnameSize) {
+            this.srcNetnameSize = srcNetnameSize;
+            return this;
+        }
+
+        public Builder setLocationSize(int locationSize) {
+            this.locationSize = locationSize;
+            return this;
+        }
+
+        public Builder setSrcIpSize(int srcIpSize) {
+            this.srcIpSize = srcIpSize;
+            return this;
+        }
+
+        public Builder setDstIpSize(int dstIpSize) {
+            this.dstIpSize = dstIpSize;
+            return this;
+        }
+
+        public TlsPerfClusterParams build(){
+            TlsPerfClusterParams params = new TlsPerfClusterParams();
+
+            params.hostnameSize = this.hostnameSize;
+            params.dstPortSize = this.dstPortSize;
+            params.ja3Size = this.ja3Size;
+            params.sslSubjectSize = this.sslSubjectSize;
+            params.dstOrgSize = this.dstOrgSize;
+            params.srcNetnameSize = this.srcNetnameSize;
+            params.locationSize = this.locationSize;
+            params.srcIpSize = this.srcIpSize;
+            params.dstIpSize = this.dstIpSize;
+
+            Assert.assertTrue(params.hostnameSize > 0, "hostnameSize not set");
+            Assert.assertTrue(params.dstPortSize > 0, "dstPortSize not set");
+            Assert.assertTrue(params.ja3Size > 0, "ja3Size not set");
+            Assert.assertTrue(params.sslSubjectSize > 0, "sslSubjectSize not set");
+            Assert.assertTrue(params.dstOrgSize > 0, "dstOrgSize not set");
+            Assert.assertTrue(params.srcNetnameSize > 0, "srcNetnameSize not set");
+            Assert.assertTrue(params.locationSize > 0, "locationSize not set");
+            Assert.assertTrue(params.srcIpSize > 0, "srcIpSize not set");
+            Assert.assertTrue(params.dstIpSize > 0, "dstIpSize not set");
+
+            return params;
+        }
+    }
+
+
+    public int getHostnameSize() {
+        return hostnameSize;
+    }
+
+    public int getDstPortSize() {
+        return dstPortSize;
+    }
+
+    public int getJa3Size() {
+        return ja3Size;
+    }
+
+    public int getSslSubjectSize() {
+        return sslSubjectSize;
+    }
+
+    public int getDstOrgSize() {
+        return dstOrgSize;
+    }
+
+    public int getSrcNetnameSize() {
+        return srcNetnameSize;
+    }
+
+    public int getLocationSize() {
+        return locationSize;
+    }
+
+    public int getSrcIpSize() {
+        return srcIpSize;
+    }
+
+    public int getDstIpSize() {
+        return dstIpSize;
     }
 }
