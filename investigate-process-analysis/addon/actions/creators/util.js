@@ -125,7 +125,24 @@ export const getMetaFilterFor = (filterFor, agentId, pid, filters) => {
       }
       break;
   }
-  return { conditions };
+  return { conditions: _addAndOperators(conditions) };
+};
+/**
+ * Adding And type operator between each condition to fetch the events
+ * @param conditions
+ * @returns {Array}
+ * @private
+ */
+const _addAndOperators = (conditions) => {
+  const finalConditions = [];
+  const andOperator = { type: 'operator-and' };
+  for (let i = 0; i < conditions.length; i++) {
+    finalConditions.push(conditions[i]);
+    if (i !== conditions.length - 1) {
+      finalConditions.push(andOperator);
+    }
+  }
+  return finalConditions;
 };
 
 const _hasSha256 = (hash) => {

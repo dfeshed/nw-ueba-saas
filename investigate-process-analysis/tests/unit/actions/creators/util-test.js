@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 
 import { getQueryNode, getMetaFilterFor, hasherizeEventMeta } from 'investigate-process-analysis/actions/creators/util';
 
-module('Unit | Selectors | process-tree', function() {
+module('Unit | Selectors | creators | utils', function() {
 
   test('getQueryNode returns query for getting the events', function(assert) {
 
@@ -17,7 +17,7 @@ module('Unit | Selectors | process-tree', function() {
     const queryNode = getQueryNode(input);
 
     assert.equal(queryNode.serviceId, 1);
-    assert.equal(queryNode.metaFilter.conditions.length, 3, 'should contains 3 conditions');
+    assert.equal(queryNode.metaFilter.conditions.length, 5, 'should contains 5 conditions');
   });
 
   test('hasherizeEventMeta returns object of the events', function(assert) {
@@ -49,12 +49,12 @@ module('Unit | Selectors | process-tree', function() {
 
   test('getMetaFilterFor returns correct conditions for parent and child', function(assert) {
     const { conditions } = getMetaFilterFor('PARENT_CHILD', '1', '2');
-    assert.equal(conditions[4].value, '(process.vid.src = \'2\' || process.vid.dst = \'2\')');
+    assert.equal(conditions[4].value, '(category=\'Process Event\' || category = \'Registry Event\' || category = \'File Event\' || category = \'Network Event\' || category = \'Console Event\')');
   });
 
   test('getMetaFilterFor returns correct conditions for filters', function(assert) {
     const { conditions } = getMetaFilterFor('PARENT_CHILD', '1', '2', [ {}, {} ]);
-    assert.equal(conditions.length, 5);
+    assert.equal(conditions.length, 9);
   });
 
 });

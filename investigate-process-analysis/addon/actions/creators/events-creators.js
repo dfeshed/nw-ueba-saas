@@ -230,6 +230,9 @@ export const getMetaValues = ({ filter, serviceId, metaName, startTime, endTime,
           operator: '=',
           value: '\'nwendpoint\''
         },
+        {
+          type: 'operator-and'
+        },
         ...filter
       ]
     };

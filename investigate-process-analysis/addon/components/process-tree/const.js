@@ -16,9 +16,9 @@ const CONST = {
 };
 
 const ICON = {
-  EXPAND: '\uea77',
-  FILTER: '\uea78',
-  COLLAPSE: '\uea7c'
+  EXPAND: '\ue9c6',
+  FILTER: '\ue9d0',
+  COLLAPSE: '\ue9d3'
 };
 
 const DISTANCE = {

@@ -27,7 +27,8 @@ export default DataTableBodyRow.extend({
   @computed('item')
   contextItems() {
     let subNavItem = {};
-    const { agentStatus = {} } = this.get('item');
+    const { agentStatus = {}, groupPolicy = {} } = this.get('item');
+    const { isolationAllowed = false } = groupPolicy;
     const { isolationStatus = {} } = agentStatus;
     const { isolated = false } = isolationStatus;
     const mft = [{
@@ -195,7 +196,10 @@ export default DataTableBodyRow.extend({
       }
     ];
     if (this.get('item').isMFTEnabled && this.get('accessControl.endpointCanManageFiles')) {
-      contextConf.push(...networkIsolation, ...mft, ...systemDump);
+      contextConf.push(...mft, ...systemDump);
+      if (isolationAllowed) {
+        contextConf.push(...networkIsolation);
+      }
     }
     return contextConf.sortBy('order');
   }

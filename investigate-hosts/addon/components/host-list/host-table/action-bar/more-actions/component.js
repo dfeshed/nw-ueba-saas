@@ -73,7 +73,10 @@ export default Component.extend({
       }
     ];
     if (this.get('isMFTEnabled').isDisplayed && (this.get('selectedHostList').length === 1) && this.get('accessControl.endpointCanManageFiles')) {
-      moreActionOptions.push(...networkIsolation, ...mft, ...systemMemoryDump);
+      moreActionOptions.push(...mft, ...systemMemoryDump);
+      if (this.get('hostDetails').isolationAllowed) {
+        moreActionOptions.push(...networkIsolation);
+      }
     }
     return moreActionOptions;
   },

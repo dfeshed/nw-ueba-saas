@@ -161,7 +161,8 @@ export default {
           ],
           policyStatus: 'Updated',
           managed: false,
-          serverName: 'Migrated'
+          serverName: 'Migrated',
+          isolationAllowed: false
         }
       },
       {
@@ -173,7 +174,11 @@ export default {
           lastSeenTime: '2017-03-08T11:55:33.814Z',
           lastUpdatedTime: '2017-03-08T11:55:33.814Z',
           scanStatus: 'idle',
-          isolationStatus: {}
+          isolationStatus: {
+            isolated: false,
+            comment: 'abcd',
+            excludedIps: ['0.0.0.0']
+          }
         },
         machineIdentity: {
           id: '019A39C8-3E18-387F-EAD4-EA217519638A',
@@ -289,7 +294,8 @@ export default {
           groups: [],
           policyStatus: 'Updated',
           managed: false,
-          serverName: 'Migrated'
+          serverName: 'Migrated',
+          isolationAllowed: true
         }
       },
       {
@@ -1167,7 +1173,8 @@ export default {
           groups: [],
           policyStatus: 'Updated',
           managed: true,
-          serverName: 'Migrated'
+          serverName: 'Migrated',
+          isolationAllowed: true
         }
       },
       {
@@ -1299,11 +1306,12 @@ export default {
           groups: [],
           policyStatus: 'Updated',
           managed: true,
-          serverName: 'Migrated'
+          serverName: 'Migrated',
+          isolationAllowed: true
         }
       },
       {
-        id: '019A39C8-3E18-387F-EAD4-EA217519638xx',
+        id: '019A39C8-3E18-387F-EAD4-EA217519638yyk',
         analysisData: {
           machineRiskScore: 89
         },
@@ -1431,7 +1439,8 @@ export default {
           groups: [],
           policyStatus: 'Updated',
           managed: true,
-          serverName: 'Migrated'
+          serverName: 'Migrated',
+          isolationAllowed: true
         }
       }
     ],

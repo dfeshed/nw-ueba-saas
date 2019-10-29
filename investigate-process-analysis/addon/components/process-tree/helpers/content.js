@@ -149,12 +149,12 @@ export const addNodeContent = (processNode, nodeEnter, parentContext, idCounter,
     .attr('class', 'score-text');
 
 
-  appendIconEvent({ className: 'process-icon', node: nodeEnter, fontSize: '30px', text: '\ue944', dx: DISTANCE.ICON_X, dy: DISTANCE.ICON_Y, parentContext, idCounter, callback }); // file icon
-  appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: (d) => d.data.eventCategory && d.data.eventCategory.hasNetwork ? '\uea7b' : '', dx: DISTANCE.PROCESS_TYPE_X, dy: DISTANCE.PROCESS_TYPE_Y }); // network
+  appendIconEvent({ className: 'process-icon', node: nodeEnter, fontSize: '30px', text: '\ue9cc', dx: DISTANCE.ICON_X, dy: DISTANCE.ICON_Y, parentContext, idCounter, callback }); // file gear icon
+  appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: (d) => d.data.eventCategory && d.data.eventCategory.hasNetwork ? '\ue9d2' : '', dx: DISTANCE.PROCESS_TYPE_X, dy: DISTANCE.PROCESS_TYPE_Y }); // network
   appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px',
-    text: (d) => d.data.eventCategory && d.data.eventCategory.hasFile ? '\uea7a' : '', dx: (d) => _findFileIconPosition(d), dy: DISTANCE.PROCESS_TYPE_Y }); // file
+    text: (d) => d.data.eventCategory && d.data.eventCategory.hasFile ? '\ue9cd' : '', dx: (d) => _findFileIconPosition(d), dy: DISTANCE.PROCESS_TYPE_Y }); // file
   appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px',
-    text: (d) => d.data.eventCategory && d.data.eventCategory.hasRegistry ? '\uea79' : '', dx: (d) => _findRegistryIconPosition(d), dy: DISTANCE.PROCESS_TYPE_Y }); // registry
+    text: (d) => d.data.eventCategory && d.data.eventCategory.hasRegistry ? '\ue9c8' : '', dx: (d) => _findRegistryIconPosition(d), dy: DISTANCE.PROCESS_TYPE_Y }); // registry
 
 
   appendText({
