@@ -55,6 +55,7 @@
         @include rsa-font(header, large);
         border: none;
         font-weight: lighter;
+        width: 4rem;
         .ember-power-select-status-icon {
           width: 1rem;
           &::after {
@@ -146,7 +147,7 @@
 .recon-is-full,
 .recon-is-expanded,
 .recon-is-standalone {
-  @media (min-width: 1361px) {
+  @media (min-width: 1000px) {
     .heading-select {
       display: none;
     }
@@ -155,7 +156,7 @@
     }
   }
 
-  @media (max-width: 1360px) {
+  @media (max-width: 1000px) {
     .heading-select {
       display: block;
     }
