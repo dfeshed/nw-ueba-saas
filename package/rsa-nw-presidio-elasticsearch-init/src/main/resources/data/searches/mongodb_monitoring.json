@@ -28,6 +28,9 @@
     "_id": "MongoDB-search",
     "_type": "search",
     "_source": {
+      "title": "MongoDB search",
+      "description": "",
+      "hits": 0,
       "columns": [
         "_source"
       ],
@@ -35,12 +38,9 @@
         "@timestamp",
         "desc"
       ],
-      "hits": 0,
-      "description": "",
-      "title": "MongoDB search",
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"metricbeat-*\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"metricset.module:mongodb\"}},\"filter\":[],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647}}"
+        "searchSourceJSON": "{\"index\":\"metricbeat-*\",\"query\":{\"query_string\":{\"query\":\"event.module:mongodb\",\"analyze_wildcard\":true}},\"filter\":[],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647},\"highlightAll\":true,\"version\":true}"
       }
     }
   },
