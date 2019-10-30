@@ -1,7 +1,8 @@
 package presidio.data.generators.event.performance.tls.clusters;
 
 import org.testng.Assert;
-import presidio.data.generators.common.time.MultiRangeTimeGenerator;
+
+import java.time.Instant;
 
 public class TlsPerfClusterParams {
     private int hostnameSize = -1;
@@ -14,8 +15,11 @@ public class TlsPerfClusterParams {
     private int srcIpSize = -1;
     private int dstIpSize = -1;
 
-    private MultiRangeTimeGenerator normalActivityTimeGen = null;
-    private double abnormalActivityTimeProbability = -1;
+    private Instant startInstant = null;
+    private Instant endInstant = null;
+    private int millisBetweenEvents = -1;
+
+    private double alertsProbability = -1;
     private int abnormalActivityStartHour = -1;
     private int abnormalActivityEndHour = -1;
 
@@ -33,10 +37,13 @@ public class TlsPerfClusterParams {
         private int locationSize;
         private int srcIpSize;
         private int dstIpSize;
-        private MultiRangeTimeGenerator normalActivityTimeGen;
-        private double abnormalActivityTimeProbability;
+
+        private double alertsProbability;
         private int abnormalActivityStartHour;
         private int abnormalActivityEndHour;
+        private Instant startInstant;
+        private Instant endInstant;
+        private int millisBetweenEvents;
 
         public Builder setHostnameSize(int hostnameSize) {
             this.hostnameSize = hostnameSize;
@@ -83,10 +90,21 @@ public class TlsPerfClusterParams {
             return this;
         }
 
-        public Builder setNormalActivityTimeGen(MultiRangeTimeGenerator normalActivityTimeGen) {
-            this.normalActivityTimeGen = normalActivityTimeGen;
+        public Builder setStartInstant(Instant startInstant) {
+            this.startInstant = startInstant;
             return this;
         }
+
+        public Builder setEndInstant(Instant endInstant) {
+            this.endInstant = endInstant;
+            return this;
+        }
+
+        public Builder setMillisBetweenEvents(int millisBetweenEvents) {
+            this.millisBetweenEvents = millisBetweenEvents;
+            return this;
+        }
+
 
         public Builder setAbnormalActivityStartHour(int abnormalActivityStartHour) {
             this.abnormalActivityStartHour = abnormalActivityStartHour;
@@ -98,8 +116,8 @@ public class TlsPerfClusterParams {
             return this;
         }
 
-        public Builder setAbnormalActivityTimeProbability(double abnormalActivityTimeProbability) {
-            this.abnormalActivityTimeProbability = abnormalActivityTimeProbability;
+        public Builder setAlertsProbability(double alertsProbability) {
+            this.alertsProbability = alertsProbability;
             return this;
         }
 
@@ -116,10 +134,13 @@ public class TlsPerfClusterParams {
             params.srcIpSize = this.srcIpSize;
             params.dstIpSize = this.dstIpSize;
 
-            params.normalActivityTimeGen = this.normalActivityTimeGen;
+            params.startInstant = this.startInstant;
+            params.endInstant = this.endInstant;
             params.abnormalActivityStartHour = this.abnormalActivityStartHour;
             params.abnormalActivityEndHour = this.abnormalActivityEndHour;
-            params.abnormalActivityTimeProbability = this.abnormalActivityTimeProbability;
+            params.alertsProbability = this.alertsProbability;
+            params.millisBetweenEvents = this.millisBetweenEvents;
+
 
             Assert.assertTrue(params.hostnameSize > 0, "hostnameSize not set");
             Assert.assertTrue(params.dstPortSize > 0, "dstPortSize not set");
@@ -131,9 +152,13 @@ public class TlsPerfClusterParams {
             Assert.assertTrue(params.srcIpSize > 0, "srcIpSize not set");
             Assert.assertTrue(params.dstIpSize > 0, "dstIpSize not set");
 
-            Assert.assertTrue(params.abnormalActivityTimeProbability > 0, "abnormalActivityTimeProbability not set");
+            Assert.assertNotNull(startInstant, "startInstant not set");
+            Assert.assertNotNull(endInstant, "endInstant not set");
+
+            Assert.assertTrue(params.alertsProbability > 0, "alertsProbability not set");
             Assert.assertTrue(params.abnormalActivityStartHour > 0, "abnormalActivityStartHour not set");
             Assert.assertTrue(params.abnormalActivityEndHour > 0, "abnormalActivityEndHour not set");
+            Assert.assertTrue(params.millisBetweenEvents > 0, "abnormalActivityEndHour not set");
 
             return params;
         }
@@ -176,12 +201,8 @@ public class TlsPerfClusterParams {
         return dstIpSize;
     }
 
-    public MultiRangeTimeGenerator getNormalActivityTimeGen() {
-        return normalActivityTimeGen;
-    }
-
-    public double getAbnormalActivityTimeProbability() {
-        return abnormalActivityTimeProbability;
+    public double getAlertsProbability() {
+        return alertsProbability;
     }
 
     public int getAbnormalActivityStartHour() {
@@ -190,5 +211,17 @@ public class TlsPerfClusterParams {
 
     public int getAbnormalActivityEndHour() {
         return abnormalActivityEndHour;
+    }
+
+    public Instant getStartInstant() {
+        return startInstant;
+    }
+
+    public Instant getEndInstant() {
+        return endInstant;
+    }
+
+    public int getMillisBetweenEvents() {
+        return millisBetweenEvents;
     }
 }

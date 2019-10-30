@@ -26,8 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static java.time.temporal.ChronoUnit.DAYS;
-
 public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
 
     private static AtomicInteger UNIQUE_ID_COUNTER = new AtomicInteger(0);
@@ -67,11 +65,10 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
     private Predicate<Double> isAnomaly = probabiliity -> random.nextDouble() <= probabiliity;
 
     public TlsEventsSimplePerfGen(TlsPerfClusterParams params) {
-        timeGenerator = getDefaultTimeGen();
-
         this.params = params;
-        UNIQUE_ID = UNIQUE_ID_COUNTER.addAndGet(1);
 
+        timeGenerator = getDefaultTimeGen();
+        UNIQUE_ID = UNIQUE_ID_COUNTER.addAndGet(1);
         dstIpGenerator.nextRangeRandom(params.getDstIpSize());
 
         dstPortGen = new DstPortPerfGen(UNIQUE_ID, params.getDstPortSize());
@@ -113,19 +110,21 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         return copyGen;
     }
 
-    public static MultiRangeTimeGenerator getDefaultTimeGen() {
+    private  MultiRangeTimeGenerator getDefaultTimeGen() {
         List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
-        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(10,0), LocalTime.of(18,0), Duration.ofMillis(1000)));
 
-        Instant endTime = Instant.now().minus(1, DAYS);
-        Instant startTime = Instant.now().minus(3, DAYS);
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(10,0),
+                LocalTime.of(18,0), Duration.ofMillis(params.getMillisBetweenEvents())));
 
-        return new MultiRangeTimeGenerator(startTime, endTime, rangesList, Duration.ofMillis(1000));
+        Instant endTime = params.getEndInstant();
+        Instant startTime = params.getStartInstant();
+
+        return new MultiRangeTimeGenerator(startTime, endTime, rangesList, Duration.ofMillis(params.getMillisBetweenEvents()));
     }
 
     @Override
     public TlsEvent generateNext() throws GeneratorException {
-        Instant nextTime = isAnomaly.test(params.getAbnormalActivityTimeProbability())  ?
+        Instant nextTime = isAnomaly.test(params.getAlertsProbability())  ?
                 setAbnormalActivityTime(timeGenerator.getNext()) : timeGenerator.getNext();
 
         TlsEvent tlsEvent = new TlsEvent(nextTime);
@@ -158,7 +157,7 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
 
     private Instant setAbnormalActivityTime(Instant normalActivityTime) {
         int abnormalHour =  ThreadLocalRandom.current().nextInt(params.getAbnormalActivityStartHour(), params.getAbnormalActivityEndHour());
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC).withHour(abnormalHour);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(normalActivityTime, ZoneOffset.UTC).withHour(abnormalHour);
         return localDateTime.toInstant(ZoneOffset.UTC);
     }
 
