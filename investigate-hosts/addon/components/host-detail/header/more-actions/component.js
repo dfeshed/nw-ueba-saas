@@ -131,7 +131,7 @@ const HostDetailsMoreActions = Component.extend({
 
     requestMFTDownload() {
       const callBackOptions = {
-        onSuccess: () => success('investigateHosts.hosts.downloadMFT.success'),
+        onSuccess: () => success('investigateHosts.hosts.download.details.success', { label: 'MFT' }),
         onFailure: (message) => failure(message, null, false)
       };
       this.set('downloadConfig', {
@@ -145,7 +145,7 @@ const HostDetailsMoreActions = Component.extend({
 
     requestSystemDumpDownload() {
       const callBackOptions = {
-        onSuccess: () => success('investigateHosts.hosts.downloadSystemDump.details.success'),
+        onSuccess: () => success('investigateHosts.hosts.download.details.success', { label: 'System dump' }),
         onFailure: (message) => failure(message, null, false)
       };
       this.set('downloadConfig', {

@@ -144,7 +144,7 @@ const Container = Component.extend({
 
     requestMFTDownload() {
       const callBackOptions = {
-        onSuccess: () => success('investigateHosts.hosts.downloadMFT.success'),
+        onSuccess: () => success('investigateHosts.hosts.download.success', { label: 'MFT' }),
         onFailure: (message) => failure(message, null, false)
       };
       const hosts = this.get('selections');
@@ -160,7 +160,7 @@ const Container = Component.extend({
 
     requestSystemDumpDownload() {
       const callBackOptions = {
-        onSuccess: () => success('investigateHosts.hosts.downloadSystemDump.success'),
+        onSuccess: () => success('investigateHosts.hosts.download.success', { label: 'System dump' }),
         onFailure: (message) => failure(message, null, false)
       };
       const hosts = this.get('selections');

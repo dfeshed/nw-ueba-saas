@@ -3375,9 +3375,12 @@ export default {
           status: 'Status'
         }
       },
-      downloadMFT: {
-        success: 'MFT is set for download. Check the "Downloads" column for status.',
-        tooltip: 'MFT can be downloaded only for Windows OS and only a single host can be selected at a time.'
+      download: {
+        success: '{{label}} is set for download. Go to the downloads tab within the host to view details.',
+        tooltip: 'MFT can be downloaded only for Windows OS and only a single host can be selected at a time.',
+        details: {
+          success: '{{label}} is set for download. View details in the Downloads tab.'
+        }
       },
       downloadSystemDump: {
         success: 'Files are set for download. Click the hostname and go to Downloads tab for status.',
@@ -4024,7 +4027,7 @@ export default {
       iconTitle: 'Analyze Events'
     },
     flash: {
-      fileDownloadRequestSent: 'Files are set for download. Check the "Downloaded" column for status.',
+      fileDownloadRequestSent: 'File is set for download.',
       genericFileDownloadRequestSent: 'Files are set for download. Check the "Downloads" tab for status.',
       hostUnavailable: 'File cannot be downloaded as the host associated with this file cannot be found.'
     },
