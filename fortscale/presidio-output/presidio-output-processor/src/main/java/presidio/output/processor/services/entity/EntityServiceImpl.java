@@ -1,5 +1,6 @@
 package presidio.output.processor.services.entity;
 
+import com.google.common.collect.Iterators;
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReader;
@@ -22,6 +23,7 @@ import presidio.output.domain.services.event.EventPersistencyService;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by efratn on 22/08/2017.
@@ -141,9 +143,6 @@ public class EntityServiceImpl implements EntityService {
         entity.setIndicators(indicatorsUnion);
         entity.incrementAlertsCountByNumber(entitiesAlertData.getAlertsCount());
         entity.incrementEntityScoreByNumber(entitiesAlertData.getEntityScore());
-        // temporary - for integration
-        entity.setTrendingScore(Map.of(EntityEnums.Trends.weekly, entity.getScore(), EntityEnums.Trends.daily, entity.getScore()));
-        // temporary - for integration
         EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false, entity.getEntityType()).getEntitySeverity(entity.getScore());
         entity.setSeverity(newSeverity);
     }
@@ -160,7 +159,7 @@ public class EntityServiceImpl implements EntityService {
     public boolean updateAllEntitiesAlertData(Instant endDate, String entityType) {
 
         //Get map of entities ids to new score and alerts count
-        Map<String, EntitiesAlertData> aggregatedEntityScore = entityScoreService.calculateEntityScores(alertEffectiveDurationInDays, endDate, entityType);
+        Map<String, EntitiesAlertData> aggregatedEntityScore = entityScoreService.calculateEntityAlertsData(alertEffectiveDurationInDays, endDate, entityType);
 
         //Get entities in batches and update the score only if it changed, and add to changesEntities
         Set<String> entitiesIDForBatch = new HashSet<>();
@@ -271,5 +270,14 @@ public class EntityServiceImpl implements EntityService {
         } else {
             setEntityAlertDataToDefault(entity);
         }
+    }
+
+    @Override
+    public void updateEntityTrends(EntityEnums.Trends trend, Instant time, String entityType) {
+        Instant startTime = time.minus(trend.getPeriod());
+        Map<String, Double> entityScores = entityScoreService.calculateEntityScores(startTime, time, entityType);
+        Iterators.partition(entityScores.entrySet().iterator(), defaultEntitiesBatchSize).forEachRemaining(scores -> {
+            entityPersistencyService.updateTrends(trend, scores.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        });
     }
 }

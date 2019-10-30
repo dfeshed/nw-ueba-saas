@@ -8,7 +8,7 @@ import presidio.output.domain.records.entity.Entity;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-public interface EntityRepository extends ElasticsearchRepository<Entity, String> {
+public interface EntityRepository extends ElasticsearchRepository<Entity, String>, EntityRepositoryCustom {
     Page<Entity> findByEntityName(String entityName, Pageable pageable);
 
     Page<Entity> findByEntityId(String entityId, Pageable pageable);

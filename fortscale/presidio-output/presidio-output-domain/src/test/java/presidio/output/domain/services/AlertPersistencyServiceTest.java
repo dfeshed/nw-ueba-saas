@@ -282,7 +282,7 @@ public class AlertPersistencyServiceTest {
                         .aggregateByFields(aggregationFields)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         assertThat(testAlert.getTotalElements(), is(2L));
     }
 
@@ -303,7 +303,7 @@ public class AlertPersistencyServiceTest {
                         .filterByMinScore(90)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         assertThat(testAlert.getTotalElements(), is(1L));
     }
 
@@ -329,7 +329,7 @@ public class AlertPersistencyServiceTest {
                         .filterByMaxScore(60)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         assertThat(testAlert.getTotalElements(), is(2L));
     }
 
@@ -356,7 +356,7 @@ public class AlertPersistencyServiceTest {
                         .filterByMinScore(50)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         assertThat(testAlert.getTotalElements(), is(2L));
     }
 
@@ -388,7 +388,7 @@ public class AlertPersistencyServiceTest {
                         .filterByClassification(classifications1)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         assertThat(testAlert.getTotalElements(), is(2L));
     }
 
@@ -419,7 +419,7 @@ public class AlertPersistencyServiceTest {
                         .filterByClassification(classifications3)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         assertThat(testAlert.getTotalElements(), is(1L));
     }
 
@@ -448,7 +448,7 @@ public class AlertPersistencyServiceTest {
                         .filterByClassification(classifications4)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         assertThat(testAlert.getTotalElements(), is(0L));
     }
 
@@ -477,7 +477,7 @@ public class AlertPersistencyServiceTest {
                         .filterByClassification(null)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         assertThat(testAlert.getTotalElements(), is(3L));
     }
 
@@ -504,7 +504,7 @@ public class AlertPersistencyServiceTest {
                         .filterByTags(tags)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         assertThat(testAlert.getTotalElements(), is(1L));
     }
 
@@ -535,7 +535,7 @@ public class AlertPersistencyServiceTest {
                         .aggregateByFields(aggregationFields)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
         StringTerms severityAgg = (StringTerms) stringAggregationMap.get("severity");
         List<StringTerms.Bucket> buckets = severityAgg.getBuckets();
@@ -569,7 +569,7 @@ public class AlertPersistencyServiceTest {
                         .aggregateByFields(Arrays.asList(Alert.FEEDBACK))
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
         StringTerms feedbackAgg = (StringTerms) stringAggregationMap.get("feedback");
         List<StringTerms.Bucket> buckets = feedbackAgg.getBuckets();
@@ -606,7 +606,7 @@ public class AlertPersistencyServiceTest {
                         .aggregateByFields(aggregationFields)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
         StringTerms classificationsAgg = (StringTerms) stringAggregationMap.get(Alert.CLASSIFICATIONS);
         List<StringTerms.Bucket> buckets = classificationsAgg.getBuckets();
@@ -644,7 +644,7 @@ public class AlertPersistencyServiceTest {
                         .aggregateByFields(aggregationFields)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
         StringTerms classificationsAgg = (StringTerms) stringAggregationMap.get(Alert.CLASSIFICATIONS);
         List<StringTerms.Bucket> buckets = classificationsAgg.getBuckets();
@@ -703,7 +703,7 @@ public class AlertPersistencyServiceTest {
                         .aggregateByFields(aggregationFields)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
         Histogram severityPerDayAggr = (Histogram) stringAggregationMap.get(Alert.AGGR_SEVERITY_PER_DAY);
         List<? extends Histogram.Bucket> buckets = severityPerDayAggr.getBuckets();
@@ -750,7 +750,7 @@ public class AlertPersistencyServiceTest {
                         .aggregateByFields(aggregationFields)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
         StringTerms indicatorsAgg = (StringTerms) stringAggregationMap.get(Alert.INDICATOR_NAMES);
         List<StringTerms.Bucket> buckets = indicatorsAgg.getBuckets();
@@ -783,7 +783,7 @@ public class AlertPersistencyServiceTest {
                         .filterByIndicatorNames(Arrays.asList("c", "b"))
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         Assert.assertEquals(2, testAlert.getTotalElements());
         Iterator<Alert> iterator = testAlert.iterator();
         Alert firstAlert = iterator.next();
@@ -815,7 +815,7 @@ public class AlertPersistencyServiceTest {
                         .sortField(Alert.INDEXED_ENTITY_NAME, true)
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         Assert.assertEquals(3, testAlert.getTotalElements());
         Iterator<Alert> iterator = testAlert.iterator();
         Assert.assertEquals(secondEntityName, iterator.next().getEntityName());
@@ -846,7 +846,7 @@ public class AlertPersistencyServiceTest {
                         .filterByEntityName(Arrays.asList(firstEntityName.toLowerCase()))
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         Assert.assertEquals(1, testAlert.getTotalElements());
         Iterator<Alert> iterator = testAlert.iterator();
         Assert.assertEquals(firstEntityName, iterator.next().getEntityName());
@@ -875,7 +875,7 @@ public class AlertPersistencyServiceTest {
                         .filterByEntityName(Arrays.asList("Z_normalized_entityname_ipusr1"))
                         .build();
 
-        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.findPage(alertQuery);
         Assert.assertEquals(1, testAlert.getTotalElements());
         Iterator<Alert> iterator = testAlert.iterator();
         Assert.assertEquals(firstEntityName, iterator.next().getEntityName());
@@ -933,7 +933,7 @@ public class AlertPersistencyServiceTest {
         alertPersistencyService.removeByTimeRangeAndEntityType(startDate, endDate, "entityType");
         elasticsearchTemplate.refresh(Alert.class);
         AlertQuery alertQuery = new AlertQuery.AlertQueryBuilder().filterByStartDate(startDate.toEpochMilli()).filterByEndDate(endDate.toEpochMilli()).build();
-        Assert.assertEquals(0, alertPersistencyService.find(alertQuery).getTotalElements());
+        Assert.assertEquals(0, alertPersistencyService.findPage(alertQuery).getTotalElements());
         Assert.assertEquals(count - 1, alertPersistencyService.countAlerts());
 
     }
@@ -954,7 +954,7 @@ public class AlertPersistencyServiceTest {
 
 
         AlertQuery alertQuery = new AlertQuery.AlertQueryBuilder().filterByEntityDocumentId(Arrays.asList("123-000")).build();
-        Page<Alert> alertsResult = alertPersistencyService.find(alertQuery);
+        Page<Alert> alertsResult = alertPersistencyService.findPage(alertQuery);
         Assert.assertEquals(1, alertsResult.getTotalElements());
     }
 

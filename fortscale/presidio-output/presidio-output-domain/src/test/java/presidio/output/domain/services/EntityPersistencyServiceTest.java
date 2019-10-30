@@ -774,7 +774,7 @@ public class EntityPersistencyServiceTest{
 
         EntityQuery entityQuery =
                 new EntityQuery.EntityQueryBuilder()
-                        .sort(Sort.by(Sort.Direction.DESC, Entity.TRENDING_SCORE + "." + EntityEnums.Trends.daily))
+                        .sort(Sort.by(Sort.Direction.DESC, Entity.TRENDING_SCORE_FIELD_NAME + "." + EntityEnums.Trends.daily))
                         .build();
 
         Page<Entity>  result = entityPersistencyService.find(entityQuery);
@@ -784,5 +784,16 @@ public class EntityPersistencyServiceTest{
         Assert.assertEquals("entity2", iterator.next().getEntityName());
         Assert.assertEquals("entity1", iterator.next().getEntityName());
         Assert.assertEquals("entity3", iterator.next().getEntityName());
+    }
+
+    @Test
+    public void testUpdateTrending() {
+        Entity entity = generateEntity(classifications1, "entity1","entityId1" , 50d);
+        entity.setTrendingScore(Map.of(EntityEnums.Trends.weekly, 1.5d, EntityEnums.Trends.daily, 2.3d));
+        Entity createdEntity = entityPersistencyService.save(entity);
+        Entity savedEntity = entityPersistencyService.findEntityByDocumentId(createdEntity.getId());
+        entityPersistencyService.updateTrend(EntityEnums.Trends.weekly, savedEntity.getId(), 10d);
+        Entity updatedEntity = entityPersistencyService.findEntityByDocumentId(createdEntity.getId());
+        assertEquals(updatedEntity.getTrendingScore().get(EntityEnums.Trends.weekly), 10,0);
     }
 }

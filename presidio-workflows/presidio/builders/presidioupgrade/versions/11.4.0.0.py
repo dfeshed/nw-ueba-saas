@@ -62,6 +62,7 @@ def convert_users_to_entities(hits):
             'alertsCount': item["_source"]["alertsCount"],
             'lastUpdateLogicalStartDate': item["_source"]["updatedByLogicalStartDate"],
             'lastUpdateLogicalEndDate': item["_source"]["updatedByLogicalEndDate"],
+            'trendingScore': {'weekly': 0, 'daily': 0},
             'entityType': ENTITY_TYPE
         }
 

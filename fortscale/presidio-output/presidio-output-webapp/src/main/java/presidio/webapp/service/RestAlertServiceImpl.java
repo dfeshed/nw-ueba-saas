@@ -66,7 +66,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         AlertQuery convertedAlertQuery = createQuery(alertQuery);
         Page<presidio.output.domain.records.alerts.Alert> alerts;
         try {
-            alerts = alertPersistencyService.find(convertedAlertQuery);
+            alerts = alertPersistencyService.findPage(convertedAlertQuery);
         } catch (Exception ex) {
             alerts = new PageImpl<>(null, null, 0);
         }
