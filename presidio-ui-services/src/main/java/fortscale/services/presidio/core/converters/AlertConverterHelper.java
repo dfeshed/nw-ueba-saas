@@ -93,7 +93,7 @@ public class AlertConverterHelper {
         uiAlert.setTimeframe(AlertTimeframe.Hourly);
         uiAlert.setEntityId(alert.getEntityDocumentId());
         uiAlert.setEntityName(alert.getEntityName());
-        uiAlert.setEntityType(EntityType.User);
+        uiAlert.setEntityType(alert.getEntityType());
         uiAlert.setMockId(alert.getId());
 
         uiAlert.setEvidences(indicatorConverter.convertIndicators(alert.getIndicators(),uiAlert.getTimeframe(),uiAlert.getEntityName()));
