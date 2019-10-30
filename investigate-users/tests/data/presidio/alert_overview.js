@@ -4,12 +4,12 @@ export default {
     'name': 'abnormal_ad_changes',
     'startDate': 1533380400000,
     'endDate': 1533384000000,
-    'entityType': 'User',
+    'entityType': 'userId',
     'entityName': 'mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2',
     'entityId': 'a0979b0c-7214-4a53-8114-c1552aa0952c',
     'evidences': [{
       'id': '07ce09d8-9f43-4d8a-aad0-f955c1bb413f',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2mixed_qa_1_2',
       'startDate': 1533380400000,
@@ -33,7 +33,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '185ed494-03f7-4d14-8231-0035158f2256',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533380400000,
@@ -57,7 +57,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '2ba14f7b-8fdb-42a5-a5b1-8119acb16569',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533380580000,
@@ -81,7 +81,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '2c411902-f206-4f4c-964a-adf69e13c08a',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533380400000,
@@ -105,7 +105,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'be5babe0-4152-4879-811f-f3e213241952',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533382380000,
@@ -129,7 +129,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '9b1f7990-b8a3-4115-8b72-4dd0fecb4fd5',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533381660000,
@@ -153,7 +153,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'cbd81251-7a1c-4c7e-9b12-392257b2b7db',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533380640000,
@@ -177,7 +177,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '1c8624b7-5878-45ab-8c11-97ea5f88e58b',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533381600000,
@@ -201,7 +201,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'a19de5c0-95e3-4600-9ddf-609c89719120',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533380400000,
@@ -225,7 +225,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '4991c309-aafe-4052-9e26-b0f233046d05',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533382260000,
@@ -249,7 +249,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '80de5fa9-a5ec-4bbf-a897-061b0b2b036a',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533381840000,
@@ -273,7 +273,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '2ec92a45-557b-42dc-af75-965351a2f4e8',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533380940000,
@@ -297,7 +297,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '9ae28a35-27a4-414b-9f16-bbfeee0ac127',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533382440000,
@@ -321,7 +321,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'ff72beaf-e31e-4341-8617-fefc5e8f6d6b',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533380580000,
@@ -345,7 +345,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '10499e49-935d-4b7a-af13-4f109387830d',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533380520000,
@@ -369,7 +369,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'ca18a634-a949-4c1e-be31-61a38ae5d3f6',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533380460000,
@@ -393,7 +393,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '0b249e7f-1ad7-496b-b54f-6239506ad346',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533380460000,
@@ -431,12 +431,12 @@ export default {
     'name': 'abnormal_ad_changes',
     'startDate': 1533384000000,
     'endDate': 1533387600000,
-    'entityType': 'User',
+    'entityType': 'userId',
     'entityName': 'mixed_qa_1_2',
     'entityId': 'a0979b0c-7214-4a53-8114-c1552aa0952c',
     'evidences': [{
       'id': '13d4fca1-12d1-438f-896d-b247b80496cd',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533384000000,
@@ -460,7 +460,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '69f7d586-9443-4c1d-b53f-cf4f66363baa',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533384420000,
@@ -484,7 +484,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'c08ea05f-26de-4ae2-8d9f-6dbe91356271',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533384000000,
@@ -508,7 +508,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '266eb0a1-6db1-4003-b9fc-82c48d0838d1',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533384000000,
@@ -532,7 +532,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '151c993e-a863-4fef-b415-dbcc3d94f934',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533385800000,
@@ -556,7 +556,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '6ed27c91-a5a4-4793-9b0e-ba66a3f916ef',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533386100000,
@@ -580,7 +580,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '4491aefe-1c67-4454-8d8b-7eb2fade820a',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533386460000,
@@ -604,7 +604,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '5cdded78-2ea8-4bad-a826-314f6de1d05a',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533384000000,
@@ -628,7 +628,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '10849223-66c6-4dbf-9153-76f5cdcd2e57',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533384060000,
@@ -652,7 +652,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'fd7fdb6c-fbd6-4cd7-9ad0-26e67c46738b',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533385980000,
@@ -676,7 +676,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'a8f2464e-9104-4747-bb87-29eb12375e79',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533386580000,
@@ -700,7 +700,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '64737b18-08bf-431b-9086-552d039807ef',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533384000000,
@@ -724,7 +724,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '242efa2d-21d9-42ed-8aef-bcddfbdcb9e6',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533384300000,
@@ -748,7 +748,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '30492581-90ae-4fb7-854b-c8402705259e',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533384420000,
@@ -772,7 +772,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '683ee9d7-9016-4abf-b927-84d0689b0538',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533384180000,
@@ -810,12 +810,12 @@ export default {
     'name': 'multiple_logons_by_user',
     'startDate': 1533376800000,
     'endDate': 1533380400000,
-    'entityType': 'User',
+    'entityType': 'userId',
     'entityName': 'mixed_qa_1_2',
     'entityId': 'a0979b0c-7214-4a53-8114-c1552aa0952c',
     'evidences': [{
       'id': '8f2fc059-f2e8-4a67-90e3-69881a427d5c',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533376800000,
@@ -839,7 +839,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'aa6ba4a6-41b7-40c1-9dd5-fcd41a6e5414',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533378660000,
@@ -863,7 +863,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '38edb1d6-b923-485d-915d-5b57f4526476',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533376800000,
@@ -887,7 +887,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '0a896e3e-7fee-412f-8de6-123aea7f45af',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533376800000,
@@ -911,7 +911,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '38722403-d838-4f1e-a37e-9c031de1da98',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533376800000,
@@ -935,7 +935,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '2d18ab6b-f113-4656-b273-f46692b33a81',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533376860000,
@@ -959,7 +959,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '394cc9f7-2d27-4762-99cb-0708f44ef7b8',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533378660000,
@@ -983,7 +983,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '6202da48-4507-46a1-9fdf-ea612dec1ead',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533376920000,
@@ -1007,7 +1007,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '30ae5638-3cf8-4824-ac5a-42fa853a124f',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533379020000,
@@ -1031,7 +1031,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '24a7c907-597b-4175-86e2-fd5a15777a46',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533378840000,
@@ -1055,7 +1055,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '75c0f010-e634-4c44-abf4-1dcc43126ad3',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533376980000,
@@ -1079,7 +1079,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '596f49a7-dd9a-4a5a-8a82-03ad398c7cb0',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533376920000,
@@ -1103,7 +1103,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '4b42d539-b4ea-409d-bb0d-21aa72c48666',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'mixed_qa_1_2',
       'startDate': 1533376860000,
@@ -1141,12 +1141,12 @@ export default {
     'name': 'snooping_user',
     'startDate': 1533207600000,
     'endDate': 1533211200000,
-    'entityType': 'User',
+    'entityType': 'userId',
     'entityName': 'file_qa_1_19',
     'entityId': 'c291d9ad-d056-42f9-9f0c-f3a40517a392',
     'evidences': [{
       'id': 'ddc95b75-b55c-4116-abb2-5c0922205bec',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533207600000,
@@ -1170,7 +1170,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '7b47133d-e297-4ff6-8194-ab98256160f2',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533207600000,
@@ -1194,7 +1194,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'a1bdca6b-0438-48be-8462-e6ecbc0ba87e',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533207600000,
@@ -1218,7 +1218,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'a7d82667-7110-413e-b451-be7aab41eebf',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533207600000,
@@ -1256,12 +1256,12 @@ export default {
     'name': 'snooping_user',
     'startDate': 1533204000000,
     'endDate': 1533207600000,
-    'entityType': 'User',
+    'entityType': 'userId',
     'entityName': 'file_qa_1_19',
     'entityId': 'c291d9ad-d056-42f9-9f0c-f3a40517a392',
     'evidences': [{
       'id': '885d8638-d6de-47f2-8a51-b238ff7e5980',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533204000000,
@@ -1285,7 +1285,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '41645754-9208-4a2d-8839-8c71c9a398d9',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533204000000,
@@ -1309,7 +1309,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '3a11a02f-a40c-431b-a0ca-3a8237b45a51',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533204000000,
@@ -1333,7 +1333,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'dd3fa2a8-9480-4633-86f1-71d06845e141',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533204000000,
@@ -1371,12 +1371,12 @@ export default {
     'name': 'snooping_user',
     'startDate': 1533200400000,
     'endDate': 1533204000000,
-    'entityType': 'User',
+    'entityType': 'userId',
     'entityName': 'file_qa_1_19',
     'entityId': 'c291d9ad-d056-42f9-9f0c-f3a40517a392',
     'evidences': [{
       'id': '8536a5f6-5478-4dc5-be13-f6b539f980c7',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533200400000,
@@ -1400,7 +1400,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '77d49926-a050-479a-acb5-5659205881de',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533200400000,
@@ -1424,7 +1424,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'ce57d49b-2189-4c5b-b7e2-53fd556b047f',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533200400000,
@@ -1448,7 +1448,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'ca4f87d7-fca2-47b7-ac1c-a3edff771875',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533200400000,
@@ -1486,12 +1486,12 @@ export default {
     'name': 'snooping_user',
     'startDate': 1533196800000,
     'endDate': 1533200400000,
-    'entityType': 'User',
+    'entityType': 'userId',
     'entityName': 'file_qa_1_19',
     'entityId': 'c291d9ad-d056-42f9-9f0c-f3a40517a392',
     'evidences': [{
       'id': '4324c12d-a06e-4386-a12b-4c2ea0fb3ee8',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533196800000,
@@ -1515,7 +1515,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'c1ada6e4-f877-434d-9bae-a963aefadea7',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533198600000,
@@ -1539,7 +1539,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '5ce06361-1d2e-4ae9-a941-5476eaf41b4f',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533196800000,
@@ -1563,7 +1563,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'f8fd2c91-6285-4b20-929a-59ac1efeaef9',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533198600000,
@@ -1587,7 +1587,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '7537c949-4975-49dc-a59e-a04f6341173f',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_19',
       'startDate': 1533196800000,
@@ -1625,12 +1625,12 @@ export default {
     'name': 'snooping_user',
     'startDate': 1533207600000,
     'endDate': 1533211200000,
-    'entityType': 'User',
+    'entityType': 'userId',
     'entityName': 'file_qa_1_18',
     'entityId': '43335706-3c3e-492f-81f8-1301f8df247c',
     'evidences': [{
       'id': '63596d5a-1e82-4061-b7a7-c9f46d4cc4d3',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_18',
       'startDate': 1533207600000,
@@ -1654,7 +1654,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '2260986e-1477-4d64-9b31-c07e23e1a798',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_18',
       'startDate': 1533207600000,
@@ -1678,7 +1678,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'a9e39971-0a0c-4f20-9c68-417d7001d1c4',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_18',
       'startDate': 1533207600000,
@@ -1716,12 +1716,12 @@ export default {
     'name': 'snooping_user',
     'startDate': 1533204000000,
     'endDate': 1533207600000,
-    'entityType': 'User',
+    'entityType': 'userId',
     'entityName': 'file_qa_1_18',
     'entityId': '43335706-3c3e-492f-81f8-1301f8df247c',
     'evidences': [{
       'id': 'df023b64-c1bd-4c89-b566-89ed3024f07d',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_18',
       'startDate': 1533204000000,
@@ -1745,7 +1745,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '2f7f8aeb-ad07-416d-9bb6-89da24800a1e',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_18',
       'startDate': 1533204000000,
@@ -1769,7 +1769,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '8facd827-1284-4ae5-83a3-caadcbc8c8c1',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_18',
       'startDate': 1533204000000,
@@ -1807,12 +1807,12 @@ export default {
     'name': 'snooping_user',
     'startDate': 1533200400000,
     'endDate': 1533204000000,
-    'entityType': 'User',
+    'entityType': 'userId',
     'entityName': 'file_qa_1_18',
     'entityId': '43335706-3c3e-492f-81f8-1301f8df247c',
     'evidences': [{
       'id': 'cfcaa9d8-e8a8-4186-a9d1-0e47a2e4e0b3',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_18',
       'startDate': 1533200400000,
@@ -1836,7 +1836,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': '1d6e1a53-09fb-4198-86df-3365c00db7e6',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_18',
       'startDate': 1533200400000,
@@ -1860,7 +1860,7 @@ export default {
       'supportingInformation': null
     }, {
       'id': 'd21a5032-6232-4502-b255-c66e3d49247e',
-      'entityType': 'User',
+      'entityType': 'userId',
       'entityTypeFieldName': null,
       'entityName': 'file_qa_1_18',
       'startDate': 1533200400000,

@@ -15,7 +15,7 @@
         {{rsa-content-datetime timestamp=(get alert 'startDate') displayMilliseconds=false}}
       </div>
       <div class='user-overview-tab_alerts_alerts_container_pill_details_time_name'>
-        | {{alert.entityType}}
+        | {{t (concat 'investigateUsers.entityTypes.' alert.entityType)}}
       </div>
       <div class='user-overview-tab_alerts_alerts_container_pill_details_time_name'>
         | {{alert.entityName}}
