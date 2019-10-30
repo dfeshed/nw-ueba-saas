@@ -6,3 +6,4 @@ export const PROFILES_LIST_NAME = 'Query Profiles';
 export const PROFILES_MODEL_NAME = 'profileRequest';
 export const PROFILES_STATE_LOCATION = 'listManagers.profiles';
 export const PROFILES_TOPIC_ID = 'eaManageProfiles';
+export const PROFILES_MODULE_ID = 'investigation';

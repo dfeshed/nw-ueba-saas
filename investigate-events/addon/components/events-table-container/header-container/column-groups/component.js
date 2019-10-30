@@ -10,7 +10,9 @@ import { selectedColumnGroup } from 'investigate-events/reducers/investigate/dat
 import {
   COLUMN_GROUPS_STATE_LOCATION as stateLocation,
   COLUMN_GROUPS_MODEL_NAME as modelName,
-  COLUMN_GROUPS_LIST_NAME as listName
+  COLUMN_GROUPS_LIST_NAME as listName,
+  COLUMN_GROUPS_TOPIC_ID as topicId,
+  COLUMN_GROUPS_MODULE_ID as moduleId
 } from 'investigate-events/constants/columnGroups';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 import { BASE_COLUMNS } from 'investigate-events/constants/OOTBColumnGroups';
@@ -38,8 +40,8 @@ const ColumnGroups = Component.extend({
   @computed()
   helpId() {
     return {
-      moduleId: 'investigation',
-      topicId: 'eaColumnGroups'
+      moduleId,
+      topicId
     };
   },
 

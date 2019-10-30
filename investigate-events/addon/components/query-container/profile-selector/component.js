@@ -8,7 +8,8 @@ import {
   PROFILES_STATE_LOCATION as stateLocation,
   PROFILES_MODEL_NAME as modelName,
   PROFILES_LIST_NAME as listName,
-  PROFILES_TOPIC_ID
+  PROFILES_TOPIC_ID as topicId,
+  PROFILES_MODULE_ID as moduleId
 } from 'investigate-events/constants/profiles';
 import {
   enrichedProfiles,
@@ -54,8 +55,8 @@ const ProfileSelector = Component.extend({
   @computed()
   helpId() {
     return {
-      moduleId: 'investigation',
-      topicId: PROFILES_TOPIC_ID
+      moduleId,
+      topicId
     };
   },
 
