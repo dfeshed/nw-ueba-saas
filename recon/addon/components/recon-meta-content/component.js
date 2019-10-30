@@ -75,6 +75,7 @@ const MetaContentComponent = Component.extend(HighlightsEntities, {
   actions: {
     changeOption(option) {
       this.set('selectedGroupBy', option);
+      next(this, 'highlightEntities');
 
       // Reset highlightMeta when meta grouping drop down option changes
       this.send('highlightMeta', null);
