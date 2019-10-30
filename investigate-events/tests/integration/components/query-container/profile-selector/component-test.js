@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import { find, findAll, render, click, fillIn, triggerEvent } from '@ember/test-helpers';
+import { find, findAll, render, click } from '@ember/test-helpers';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper, { DEFAULT_PROFILES } from '../../../../helpers/redux-data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -25,7 +25,6 @@ module('Integration | Component | Profile Selector', function(hooks) {
   const profileSelectorSelector = '.rsa-investigate-query-container__profile-selector';
   const listManagerSelector = '.list-manager';
   const dropdownSelector = `${profileSelectorSelector} .rsa-split-dropdown button`;
-  const profileNameInput = '.profile-name .value input';
 
   test('it does not render profile selector if profiles list does not exist', async function(assert) {
     // creating state with no profiles
@@ -73,18 +72,19 @@ module('Integration | Component | Profile Selector', function(hooks) {
   });
 
   test('Save disabled and Close button available when not all required fields valid', async function(assert) {
+    new ReduxDataHelper(setState)
+      .profiles(DEFAULT_PROFILES)
+      .metaGroups()
+      .columnGroups()
+      .getColumns()
+      .build();
 
-    new ReduxDataHelper(setState).profiles(DEFAULT_PROFILES).metaGroups().columnGroups().getColumns().build();
     await render(hbs`{{query-container/profile-selector}}`);
     assert.equal(findAll(dropdownSelector).length, 1, 'Shall render profile-selector component with proper class');
 
     await click(dropdownSelector);
-    // create new profile
+    // create new profile, but do not provide a name
     await click(findAll('footer button')[0]);
-
-    // enter profile name
-    await fillIn(profileNameInput, 'A');
-    await triggerEvent(profileNameInput, 'keyup');
 
     assert.ok(find('footer .close'), 'Close option available');
     assert.ok(find('footer .save.is-disabled'), 'Save option shall render disabled');

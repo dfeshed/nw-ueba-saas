@@ -149,4 +149,15 @@ module('Unit | Util | Validations', function(hooks) {
     const result = isProfileValid(profile, profilesList);
     assert.notOk(result);
   });
+
+  test('isProfileValid has correct result when editedItem has an empty pre-query', function(assert) {
+    const profile = {
+      name: 'My Profile',
+      columnGroup,
+      metaGroup,
+      preQuery: ''
+    };
+    const result = isProfileValid(profile, profilesList);
+    assert.ok(result);
+  });
 });

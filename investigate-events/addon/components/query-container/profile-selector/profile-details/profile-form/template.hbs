@@ -7,7 +7,7 @@
     isError=isNameError
     errorMessage=nameInvalidMessage
     value=name
-    onKeyUp=(action 'handleNameChange')
+    onKeyUp=(action 'onNameChange')
     placeholder=(t 'investigate.profile.profileNamePlaceholder')
   }}
 </div>
@@ -26,6 +26,8 @@
   </label>
 </div>
 <div class='prequery-conditions scroll-box'>
-  <div class='name'>{{t 'investigate.profile.prequeryConditions.prequeryConditions'}}</div>
+  <div class='name'>
+    {{t 'investigate.profile.prequeryConditions.prequeryConditions'}}
+  </div>
   {{query-container/profile-selector/profile-details/profile-query-bar}}
 </div>
