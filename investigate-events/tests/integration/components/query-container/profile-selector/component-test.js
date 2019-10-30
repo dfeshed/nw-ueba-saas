@@ -74,7 +74,7 @@ module('Integration | Component | Profile Selector', function(hooks) {
 
   test('Save disabled and Close button available when not all required fields valid', async function(assert) {
 
-    new ReduxDataHelper(setState).profiles(DEFAULT_PROFILES).metaGroups().getColumns().build();
+    new ReduxDataHelper(setState).profiles(DEFAULT_PROFILES).metaGroups().columnGroups().getColumns().build();
     await render(hbs`{{query-container/profile-selector}}`);
     assert.equal(findAll(dropdownSelector).length, 1, 'Shall render profile-selector component with proper class');
 

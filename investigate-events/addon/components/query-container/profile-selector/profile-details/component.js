@@ -9,6 +9,7 @@ export default Component.extend({
   profile: null, // profile to display
   editProfile: null, // list-manager function that accepts validated edited item
   pillsData: null, // pillsData to handle prequery pills change
+  columnGroups: null, // column groups
 
   @computed('profile')
   isEditing(profile) {

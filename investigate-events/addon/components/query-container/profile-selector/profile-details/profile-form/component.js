@@ -53,7 +53,7 @@ export default Component.extend({
       this.set('columnGroup', this.get('columnGroups')?.find(({ id }) => id === this.get('selectedColumnGroupId')));
       this.set('metaGroup', this.get('metaGroups')[0]); // TODO temporary default until we allow user selection
     }
-
+    // new profile needs broadcast for prequery changes
     this._broadcastChangedProfile();
   },
 
@@ -64,8 +64,11 @@ export default Component.extend({
     newProfile.columnGroup = columnGroup;
     newProfile.columnGroupView = columnGroup?.id === 'SUMMARY' ? 'SUMMARY_VIEW' : 'CUSTOM';
     newProfile.metaGroup = metaGroup;
-    // convert pillsData into preQuery string
-    newProfile.preQuery = this.get('pillsData') ? encodeMetaFilterConditions(this.get('pillsData')) : undefined;
+    let newPreQuery;
+    if (this.get('pillsData')) {
+      newPreQuery = encodeMetaFilterConditions(this.get('pillsData'));
+    }
+    newProfile.preQuery = newPreQuery;
 
     this.get('editProfile')(newProfile);
   },

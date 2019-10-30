@@ -1,15 +1,12 @@
 import reselect from 'reselect';
 const { createSelector } = reselect;
+import _ from 'lodash';
 import { languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 
 // UTIL
-const _isEditable = (item) => item.contentType && item.contentType !== 'OOTB';
-
-const _isEnriched = (profile) => {
-  return profile.hasOwnProperty('preQueryPillsData') && profile.hasOwnProperty('isEditable');
-};
+const _isEditable = (item) => item?.contentType && item?.contentType !== 'OOTB';
 
 /**
  * enriches and returns one profile with isEditable and preQueryPillsData
@@ -20,12 +17,9 @@ const _isEnriched = (profile) => {
  */
 export const enrichedProfile = (profile, languageAndAliases, columnGroups) => {
   const { language, aliases } = languageAndAliases;
-  const enriched = { ...profile };
-
-  if (!_isEnriched(profile)) {
-    enriched.isEditable = _isEditable(profile);
-    enriched.preQueryPillsData = profile.preQuery ? transformTextToPillData(profile.preQuery.trim(), { language, aliases, returnMany: true }) : [];
-  }
+  const enriched = _.cloneDeep(profile);
+  enriched.isEditable = _isEditable(profile);
+  enriched.preQueryPillsData = profile.preQuery ? transformTextToPillData(profile.preQuery.trim(), { language, aliases, returnMany: true }) : [];
 
   // if profile was returned from API without columnGroup property
   // or columnGroupView is 'SUMMARY_VIEW' - because summary columnGroup is not saved

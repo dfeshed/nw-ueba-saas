@@ -34,16 +34,22 @@ const DetailsFooter = Component.extend({
 
   didReceiveAttrs() {
     let editedItem = _.cloneDeep(this.get('editedItem'));
-    const { originalItem, isValidItem } = this.getProperties('originalItem', 'isValidItem');
+    // eslint-disable-next-line prefer-const
+    let { originalItem, isValidItem } = this.getProperties('originalItem', 'isValidItem');
     if (editedItem) {
       const itemTransform = this.get('itemTransform');
 
       // if itemTransform is a function and returns an item, replace edited item with transformed item
       if (typeof itemTransform === 'function') {
         editedItem = itemTransform(editedItem) || editedItem;
+
+        // TODO fix this - temporary solution to edit profile bug
+        // checking if object is profile
+        if (originalItem?.hasOwnProperty('preQuery') && !originalItem?.hasOwnProperty('columns')) {
+          originalItem = itemTransform(originalItem) || originalItem;
+        }
       }
     }
-
     this.set('didItemChange', this._didItemChange(originalItem, editedItem));
 
     // Use default list-manager validation unless custom validation action is provided

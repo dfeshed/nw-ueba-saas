@@ -55,7 +55,6 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('shall render editable form for a new profile', async function(assert) {
-    assert.expect(4);
     this.set('profile', null);
     this.set('editProfile', () => {
       assert.ok(true, 'editProfile called');
@@ -72,7 +71,6 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('renders form populated with details of profile being edited', async function(assert) {
-    assert.expect(5);
     const profile2 = { ...profile1 };
     this.set('profile', profile2);
     this.set('columnGroups', columnGroups);
@@ -96,7 +94,6 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('shall update profile name from user input', async function(assert) {
-    assert.expect(4);
     this.set('profile', null);
     this.set('editProfile', () => {
       assert.ok(true, 'editProfile called');
@@ -115,7 +112,6 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('shall update profile column group from user selection', async function(assert) {
-    assert.expect(4);
     this.set('profile', null);
     this.set('columnGroups', columnGroups);
     this.set('editProfile', () => {
