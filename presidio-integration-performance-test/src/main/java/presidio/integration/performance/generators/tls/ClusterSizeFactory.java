@@ -2,9 +2,11 @@ package presidio.integration.performance.generators.tls;
 
 import presidio.data.generators.event.performance.tls.clusters.TlsPerfClusterParams;
 
+import java.time.Instant;
+
 public class ClusterSizeFactory {
 
-    public static TlsPerfClusterParams getSmallClusterParams() {
+    public static TlsPerfClusterParams getSmallClusterParams(double tlsAlertsProbability, Instant startInstant, Instant endInstant, int millisBetweenEvents) {
         return new TlsPerfClusterParams.Builder()
                 .setDstIpSize(2)
                 .setDstOrgSize(2)
@@ -17,11 +19,14 @@ public class ClusterSizeFactory {
                 .setSrcIpSize(2)
                 .setAbnormalActivityStartHour(1)
                 .setAbnormalActivityEndHour(5)
-                .setAbnormalActivityTimeProbability(0.3)
+                .setStartInstant(startInstant)
+                .setEndInstant(endInstant)
+                .setMillisBetweenEvents(millisBetweenEvents)
+                .setAlertsProbability(tlsAlertsProbability)
                 .build();
     }
 
-    public static TlsPerfClusterParams getMediumClusterParams() {
+    public static TlsPerfClusterParams getMediumClusterParams(double tlsAlertsProbability, Instant startInstant, Instant endInstant, int millisBetweenEvents) {
         return new TlsPerfClusterParams.Builder()
                 .setDstIpSize(10)
                 .setDstOrgSize(10)
@@ -35,11 +40,14 @@ public class ClusterSizeFactory {
                 .setLocationSize(10)
                 .setAbnormalActivityStartHour(1)
                 .setAbnormalActivityEndHour(5)
-                .setAbnormalActivityTimeProbability(0.3)
+                .setStartInstant(startInstant)
+                .setEndInstant(endInstant)
+                .setMillisBetweenEvents(millisBetweenEvents)
+                .setAlertsProbability(tlsAlertsProbability)
                 .build();
     }
 
-    public static TlsPerfClusterParams getLargeClusterParams() {
+    public static TlsPerfClusterParams getLargeClusterParams(double tlsAlertsProbability, Instant startInstant, Instant endInstant, int millisBetweenEvents) {
         return new TlsPerfClusterParams.Builder()
                 .setDstIpSize(1000)
                 .setDstOrgSize(1000)
@@ -53,10 +61,11 @@ public class ClusterSizeFactory {
                 .setLocationSize(50)
                 .setAbnormalActivityStartHour(1)
                 .setAbnormalActivityEndHour(5)
-                .setAbnormalActivityTimeProbability(0.3)
+                .setStartInstant(startInstant)
+                .setEndInstant(endInstant)
+                .setMillisBetweenEvents(millisBetweenEvents)
+                .setAlertsProbability(tlsAlertsProbability)
                 .build();
     }
-
-
 
 }

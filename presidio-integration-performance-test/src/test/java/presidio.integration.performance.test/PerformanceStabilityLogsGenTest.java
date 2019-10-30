@@ -1,6 +1,7 @@
 package presidio.integration.performance.test;
 
 import com.google.common.collect.Iterators;
+import com.google.common.collect.UnmodifiableIterator;
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter;
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverterFactory;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
@@ -57,10 +58,11 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
 
     int total = 0;
 
-    @Parameters({"start_time", "end_time", "probability_multiplier", "users_multiplier","schemas"})
+    @Parameters({"start_time", "end_time", "probability_multiplier", "users_multiplier","schemas", "tlsGroupsMultiplier", "tlsAlertsProbability", "tlsMillisBetweenEvents"})
     @Test
     public void performance(@Optional("2018-04-03T23:58:00.00Z") String startTimeStr, @Optional("2018-04-04T01:30:00.00Z") String endTimeStr,
                             @Optional("0.005") double probabilityMultiplier, @Optional("0.005") double usersMultiplier,
+                            @Optional("1") int tlsGroupsMultiplier, @Optional("0.1") double tlsAlertsProbability, @Optional("100") int tlsMillisBetweenEvents,
                             @Optional("TLS") String schemas ) throws GeneratorException {
 
         System.out.println("=================== TEST PARAMETERS =============== ");
@@ -80,14 +82,19 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
         stopWatch.start();
 
         if (schemas.contains("TLS")) {
-            TlsPerformanceStabilityScenario scenario = new TlsPerformanceStabilityScenario(startInstant, endInstant,
-                    numOfNormalUsers, probabilityMultiplier);
+            TlsPerformanceStabilityScenario scenario = new TlsPerformanceStabilityScenario(startInstant, endInstant, tlsGroupsMultiplier, tlsAlertsProbability, tlsMillisBetweenEvents);
+
             Stream<TlsEvent> tlsEventStream = scenario.tlsEventsGenerators.stream()
                     .map(IEventGenerator::generateToStream)
                     .flatMap(e -> e);
 
-            Iterators.partition(tlsEventStream.iterator(), EVENTS_GENERATION_CHUNK).forEachRemaining(this::process);
-            System.out.println("TLS TOTAL: " + total);
+            UnmodifiableIterator<List<TlsEvent>> partition = Iterators.partition(tlsEventStream.iterator(), EVENTS_GENERATION_CHUNK);
+
+            while (partition.hasNext()) {
+                List<TlsEvent> tlsEvents = partition.next();
+                process(tlsEvents);
+            }
+            System.out.println("TOTAL TLS: " + total);
         }
 
 
