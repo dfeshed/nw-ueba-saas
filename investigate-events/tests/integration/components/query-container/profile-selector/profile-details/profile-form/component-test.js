@@ -55,6 +55,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('shall render editable form for a new profile', async function(assert) {
+    assert.expect(4);
     this.set('profile', null);
     this.set('editProfile', () => {
       assert.ok(true, 'editProfile called');
@@ -70,7 +71,34 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
     assert.ok(find(columnGroupNameSelector), 'shall render column group select dropdown');
   });
 
+  test('renders form to create new profile populated with column group of current page', async function(assert) {
+    assert.expect(5);
+    // creating a new profile
+    this.set('profile', null);
+    this.set('columnGroups', columnGroups);
+    this.set('selectedColumnGroupId', columnGroups[2].id);
+    const columnGroupName = columnGroups.find(({ id }) => id === columnGroups[2].id).name;
+    this.set('metaGroups', []);
+    this.set('editProfile', () => {
+      assert.ok(true, 'calls editProfile when there are pre-populated values to be broadcasted');
+    });
+
+    await render(hbs`{{query-container/profile-selector/profile-details/profile-form
+      profile=profile
+      columnGroups=columnGroups
+      selectedColumnGroupId=selectedColumnGroupId
+      metaGroups=metaGroups
+      editProfile=editProfile}}`);
+
+    assert.ok(find(profileNameInputSelector), 'Shall render input for profile name');
+    assert.equal(find(profileNameInputSelector).value?.trim(), '', 'profile name empty');
+    assert.ok(find(columnGroupPowerSelectSelector), 'shall render profile column group dropdown');
+    assert.equal(find(columnGroupSelectedSelector).innerText?.trim(),
+      columnGroupName, 'shall render profile column group name to be currently selected column group');
+  });
+
   test('renders form populated with details of profile being edited', async function(assert) {
+    assert.expect(5);
     const profile2 = { ...profile1 };
     this.set('profile', profile2);
     this.set('columnGroups', columnGroups);
@@ -94,6 +122,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('shall update profile name from user input', async function(assert) {
+    assert.expect(4);
     this.set('profile', null);
     this.set('editProfile', () => {
       assert.ok(true, 'editProfile called');
@@ -112,6 +141,8 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('shall update profile column group from user selection', async function(assert) {
+    assert.expect(4);
+
     this.set('profile', null);
     this.set('columnGroups', columnGroups);
     this.set('editProfile', () => {
@@ -132,8 +163,39 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
       newColumnGroupName, 'shall render profile column group name correctly');
   });
 
-  test('shall display error message if profile name is not unique', async function(assert) {
+  test('shall not reset column group selection after profile name changes', async function(assert) {
+    assert.expect(6);
 
+    this.set('profile', null);
+    this.set('columnGroups', columnGroups);
+    this.set('selectedColumnGroupId', columnGroups[3].id);
+    this.set('editProfile', () => {
+      assert.ok(true, 'editProfile called');
+    });
+    const newColumnGroupName = columnGroups[0].name;
+
+    await render(hbs`{{query-container/profile-selector/profile-details/profile-form
+      profile=profile
+      columnGroups=columnGroups
+      selectedColumnGroupId=selectedColumnGroupId
+      editProfile=editProfile}}`);
+
+    assert.ok(find(columnGroupPowerSelectSelector), 'shall render profile column group dropdown');
+
+    await click(`${columnGroupPowerSelectSelector} .ember-power-select-trigger`);
+    await click('li:nth-of-type(1)');
+    assert.equal(find(columnGroupSelectedSelector).innerText?.trim(),
+      newColumnGroupName, 'shall render profile column group name correctly');
+
+    // profile name changed
+    await fillIn(profileNameInputSelector, 'A');
+    await triggerEvent(profileNameInputSelector, 'keyup');
+
+    assert.equal(find(columnGroupSelectedSelector).innerText?.trim(),
+      newColumnGroupName, 'shall render profile column group name correctly');
+  });
+
+  test('shall display error message if profile name is not unique', async function(assert) {
     this.set('profile', null);
     this.set('profiles', profiles);
     this.set('editProfile', () => {});

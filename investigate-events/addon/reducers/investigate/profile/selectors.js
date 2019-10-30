@@ -18,8 +18,10 @@ const _isEditable = (item) => item?.contentType && item?.contentType !== 'OOTB';
 export const enrichedProfile = (profile, languageAndAliases, columnGroups) => {
   const { language, aliases } = languageAndAliases;
   const enriched = _.cloneDeep(profile);
+  const preQueryExists = !!profile.preQuery && profile.preQuery.length;
   enriched.isEditable = _isEditable(profile);
-  enriched.preQueryPillsData = profile.preQuery ? transformTextToPillData(profile.preQuery.trim(), { language, aliases, returnMany: true }) : [];
+  enriched.preQuery = preQueryExists ? profile.preQuery : '';
+  enriched.preQueryPillsData = preQueryExists ? transformTextToPillData(profile.preQuery.trim(), { language, aliases, returnMany: true }) : [];
 
   // if profile was returned from API without columnGroup property
   // or columnGroupView is 'SUMMARY_VIEW' - because summary columnGroup is not saved

@@ -6,17 +6,23 @@ export default {
   requestDestination: '/ws/investigate/profile/set',
   message(frame) {
     const body = JSON.parse(frame.body);
-    const num = Date.now();
 
-    // Save off to profile cache
+    // Save profile cache
     profiles.push(body.profileRequest);
 
-    return {
+    const toReturn = {
       data: {
         ...body.profileRequest,
-        id: num,
         contentType: 'USER'
       }
     };
+
+    // add id if new profile
+    // existing profile edited will have id
+    if (!toReturn.data.id) {
+      const num = Date.now();
+      toReturn.data.id = num;
+    }
+    return toReturn;
   }
 };

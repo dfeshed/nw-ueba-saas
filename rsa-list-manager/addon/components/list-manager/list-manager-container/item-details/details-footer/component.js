@@ -45,7 +45,7 @@ const DetailsFooter = Component.extend({
 
         // TODO fix this - temporary solution to edit profile bug
         // checking if object is profile
-        if (originalItem?.hasOwnProperty('preQuery') && !originalItem?.hasOwnProperty('columns')) {
+        if (originalItem && !originalItem.hasOwnProperty('columns')) {
           originalItem = itemTransform(originalItem) || originalItem;
         }
       }

@@ -57,12 +57,11 @@ export default Component.extend({
   // initialize form data when edit has begun
   // reset form data when profile is created, updated or reset
   didReceiveAttrs() {
-    this.initializeFormData();
+    this.updateFormData();
   },
 
   // initialize a working copy of original profile
-  initializeFormData() {
-
+  updateFormData() {
     // reset error state
     if (this.get('isNameError')) {
       this.set('isNameError', false);
@@ -71,22 +70,32 @@ export default Component.extend({
 
     const profile = this.get('profile');
 
+    // use this boolean to decide whether or not to update columnGroup in form
+    // to not overwrite already selected column group in form
+    const formHasColumnGroup = !!this.get('columnGroup');
+    let newColumnGroup;
+
     // If profile exists, then we are editing
     // an existing profile, otherwise we are
     // creating a new one
     if (profile) {
+      newColumnGroup = formHasColumnGroup ? undefined : this.get('columnGroups')?.find(({ id }) => id === profile.columnGroup.id);
       this.set('name', profile.name);
-      const columnGroupFound = this.get('columnGroups')?.find(({ id }) => id === profile.columnGroup.id);
-      this.set('columnGroup', columnGroupFound);
       this.set('columnGroupView', profile.columnGroupView);
       this.set('metaGroup', profile.metaGroup);
       this.set('preQuery', profile.preQuery);
+
     } else {
       // The first meta groups is used as a temporary default
       // until we allow user selection
       // TODO replace this when meta groups are introduced
+      newColumnGroup = formHasColumnGroup ? undefined : this.get('columnGroups')?.find(({ id }) => id === this.get('selectedColumnGroupId'));
       this.set('metaGroup', this.get('metaGroups')[0]);
-      this.set('columnGroup', this.get('columnGroups')?.find(({ id }) => id === this.get('selectedColumnGroupId')));
+    }
+
+    // if columnGroup needs to be updated
+    if (newColumnGroup) {
+      this.set('columnGroup', newColumnGroup);
     }
 
     // For list-manager to light up the "Save" button
@@ -102,7 +111,6 @@ export default Component.extend({
   // object and provide it to list manager callback
   // which allows buttons to shift/change
   _broadcastChangedProfile() {
-
     const { name, columnGroup, metaGroup } =
       this.getProperties('name', 'columnGroup', 'metaGroup');
     const newProfile = _.cloneDeep(this.get('profile')) || {};
