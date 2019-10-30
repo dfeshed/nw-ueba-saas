@@ -4,6 +4,7 @@ import { render, findAll, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Immutable from 'seamless-immutable';
 import { patchReducer } from '../../../helpers/vnext-patch';
+import EmberObject from '@ember/object';
 
 import { revertPatch } from '../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -46,20 +47,20 @@ module('Integration | Component | rar-container', function(hooks) {
 
   test('When user have endpoint rar read permission', async function(assert) {
     new ReduxDataHelper(setState).downloadId('test_id').build();
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('hasEndpointRarReadPermission', true);
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.hasEndpointRarReadPermission', true);
     this.set('serverId', 'test_serverId');
-    await render(hbs`{{rar-container serverId=serverId enableRarPage=enableRarPage}}`);
+    await render(hbs`{{rar-container serverId=serverId accessControl=accessControl}}`);
     assert.equal(findAll('.endpoint-rar-header').length, 1, 'Relay server is displayed');
 
   });
 
   test('When user dont have endpoint rar read permission', async function(assert) {
     new ReduxDataHelper(setState).downloadId('test_id').build();
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('hasEndpointRarReadPermission', false);
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.hasEndpointRarReadPermission', false);
     this.set('serverId', 'test_serverId');
-    await render(hbs`{{rar-container serverId=serverId enableRarPage=enableRarPage}}`);
+    await render(hbs`{{rar-container serverId=serverId accessControl=accessControl}}`);
     assert.equal(findAll('.rsa-panel-message').length, 1, 'error message is displayed');
   });
 
