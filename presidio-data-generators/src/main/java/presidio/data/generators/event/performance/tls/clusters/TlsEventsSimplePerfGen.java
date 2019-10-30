@@ -13,11 +13,20 @@ import presidio.data.generators.common.random.GaussianLongGenerator;
 import presidio.data.generators.common.random.Md5RandomGenerator;
 import presidio.data.generators.common.random.RandomIntegerGenerator;
 import presidio.data.generators.common.random.RandomStringGenerator;
+import presidio.data.generators.common.time.MultiRangeTimeGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
 import presidio.data.generators.event.tls.Ipv4RangeAllocator;
 
+import java.time.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
 
@@ -28,10 +37,8 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         return gen;
     };
 
-
     private TlsPerfClusterParams params;
     private final int UNIQUE_ID;
-
 
     private IBaseGenerator<Integer> dstPortGen;
     private IBaseGenerator<String> ja3Gen;
@@ -56,9 +63,12 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
     private IBaseGenerator<Integer> srcPortGenerator = new RandomIntegerGenerator(0, 9999);
     private IBaseGenerator<Integer> sessionSplitGenerator = new FixedValueGenerator<>(0);
 
-
+    private final Random random = new Random(0);
+    private Predicate<Double> isAnomaly = probabiliity -> random.nextDouble() <= probabiliity;
 
     public TlsEventsSimplePerfGen(TlsPerfClusterParams params) {
+        timeGenerator = getDefaultTimeGen();
+
         this.params = params;
         UNIQUE_ID = UNIQUE_ID_COUNTER.addAndGet(1);
 
@@ -76,7 +86,9 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
 
     public TlsEventsSimplePerfGen copy() {
         TlsEventsSimplePerfGen copyGen = new TlsEventsSimplePerfGen(this.params);
-        copyGen.setTimeGenerator(this.getTimeGenerator());
+
+        copyGen.params = this.params;
+        copyGen.timeGenerator = this.timeGenerator;
 
         copyGen.setSrcPortGenerator(this.getSrcPortGenerator());
         copyGen.dstPortGen = this.dstPortGen;
@@ -101,10 +113,23 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         return copyGen;
     }
 
+    public static MultiRangeTimeGenerator getDefaultTimeGen() {
+        List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(10,0), LocalTime.of(18,0), Duration.ofMillis(1000)));
+
+        Instant endTime = Instant.now().minus(1, DAYS);
+        Instant startTime = Instant.now().minus(3, DAYS);
+
+        return new MultiRangeTimeGenerator(startTime, endTime, rangesList, Duration.ofMillis(1000));
+    }
 
     @Override
     public TlsEvent generateNext() throws GeneratorException {
-        TlsEvent tlsEvent = new TlsEvent(timeGenerator.getNext());
+        Instant nextTime = isAnomaly.test(params.getAbnormalActivityTimeProbability())  ?
+                setAbnormalActivityTime(timeGenerator.getNext()) : timeGenerator.getNext();
+
+        TlsEvent tlsEvent = new TlsEvent(nextTime);
+
         tlsEvent.setEventId(eventIdGenerator.getNext());
         tlsEvent.setFqdn(hostnameGen.nextValues(3));
         tlsEvent.setDstIp(dstIpGenerator.getGenerator().getNext());
@@ -131,6 +156,11 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         return tlsEvent;
     }
 
+    private Instant setAbnormalActivityTime(Instant normalActivityTime) {
+        int abnormalHour =  ThreadLocalRandom.current().nextInt(params.getAbnormalActivityStartHour(), params.getAbnormalActivityEndHour());
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC).withHour(abnormalHour);
+        return localDateTime.toInstant(ZoneOffset.UTC);
+    }
 
     public IBaseGenerator<String> getJa3Gen() {
         return ja3Gen;
