@@ -1,5 +1,8 @@
 package presidio.integration.performance.test;
 
+import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
+import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducer;
+import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducerFactory;
 import fortscale.common.general.Schema;
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -10,7 +13,9 @@ import presidio.data.domain.MachineEntity;
 import presidio.data.domain.event.Event;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.domain.event.file.FileEvent;
+import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.event.performance.tls.clusters.TlsEventsSimplePerfGen;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.RandomMultiMachineEntityGenerator;
 import presidio.integration.performance.generators.printer.EventLogPrinter;
@@ -19,6 +24,11 @@ import presidio.integration.performance.scenario.*;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.stream.Stream;
+
+import static com.rsa.netwitness.presidio.automation.enums.GeneratorFormat.CEF_DAILY_FILE;
+import static java.util.stream.Collectors.toList;
 
 public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContextTests {
     private final int EVENTS_GENERATION_CHUNK = 10000;
@@ -40,10 +50,15 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
     private final int NUM_OF_LOCAL_SERVER_MACHINES_PER_CLUSTER = 5;
 
     private StopWatch stopWatch = new StopWatch();
+    private EventsProducer<List<NetwitnessEvent>> eventsProducer = new EventsProducerFactory(null).get(CEF_DAILY_FILE);
+
 
     @Parameters({"start_time", "end_time", "probability_multiplier", "users_multiplier","schemas"})
     @Test
-    public void performance(@Optional("2018-04-03T23:58:00.00Z") String startTimeStr, @Optional("2018-04-04T01:30:00.00Z") String endTimeStr, @Optional("0.005") double probabilityMultiplier, @Optional("0.005") double usersMultiplier, @Optional("AUTHENTICATION") String schemas ) throws GeneratorException {
+    public void performance(@Optional("2018-04-03T23:58:00.00Z") String startTimeStr, @Optional("2018-04-04T01:30:00.00Z") String endTimeStr,
+                            @Optional("0.005") double probabilityMultiplier, @Optional("0.005") double usersMultiplier,
+                            @Optional("TLS") String schemas ) throws GeneratorException {
+
         System.out.println("=================== TEST PARAMETERS =============== ");
         System.out.println("start_time: " + startTimeStr);
         System.out.println("end_time: " + endTimeStr);
@@ -60,10 +75,17 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
 
         stopWatch.start();
 
+        if (schemas.contains("TLS")) {
+            TlsPerformanceStabilityScenario scenario = new TlsPerformanceStabilityScenario(startInstant, endInstant,
+                    numOfNormalUsers, probabilityMultiplier);
+            process(scenario);
+        }
+
+
         if (schemas.contains("PROCESS")) {
             ProcessPerformanceStabilityScenario scenario = new ProcessPerformanceStabilityScenario(startInstant, endInstant,
                     numOfNormalUsers, numOfAdminUsers, numOfserviceAccountUsers, probabilityMultiplier);
-            printDaysOfProcessEvents(scenario);
+            //printDaysOfProcessEvents(scenario);
         }
 
         if (schemas.contains("REGISTRY")) {
@@ -104,6 +126,35 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
         System.out.println(stopWatch.toSplitString());
     }
 
+    private void process(TlsPerformanceStabilityScenario scenario){
+        int chunkSizePerGenerator = EVENTS_GENERATION_CHUNK / scenario.tlsEventsGenerators.size();
+        int total = 0;
+
+        while (true) {
+            Stream<TlsEvent> tlsEvents = scenario.tlsEventsGenerators.stream()
+                    .map(e -> generateBucket.apply(e, chunkSizePerGenerator)).flatMap(e -> e);
+
+            List<NetwitnessEvent> convertedEvents = tlsEvents.parallel().map(scenario.eventEventConverter::convert).collect(toList());
+            if (convertedEvents.isEmpty()) break;
+            Map<Schema, Long> sent = eventsProducer.send(convertedEvents);
+            sent.forEach((key, value) -> System.out.println(key + " -> " + value));
+            total += sent.get(Schema.TLS).intValue();
+        }
+
+        System.out.println("TOTAL: " + total);
+    }
+
+    private BiFunction<TlsEventsSimplePerfGen, Integer, Stream<TlsEvent>> generateBucket = (gen, chunkSizePerGenerator) -> {
+        try {
+            return gen.generate(chunkSizePerGenerator).stream();
+        } catch (GeneratorException e) {
+            e.printStackTrace();
+        }
+
+        return Stream.empty();
+    };
+
+
     private void printDaysOfProcessEvents(ProcessPerformanceStabilityScenario scenario) throws GeneratorException {
         System.out.println("$$$$ Starts Generating Process Events $$$$");
         /** Generate and send events **/
@@ -123,7 +174,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
         List<Event> events;
         do {
             events = scenario.generateEvents(EVENTS_GENERATION_CHUNK);
-            logPrinter.printHourlyFiles(events);
+            //logPrinter.printHourlyFiles(events);
         } while (events.size() == EVENTS_GENERATION_CHUNK);
     }
 

@@ -45,8 +45,7 @@
         <dependency>
             <groupId>com.rsa.netwitness.presidio.automation</groupId>
             <artifactId>ueba-automation-framework</artifactId>
-            <version>11.4.0-0-SNAPSHOT</version>
-            <scope>test</scope>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
     <build>
