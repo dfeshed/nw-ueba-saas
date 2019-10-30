@@ -355,6 +355,9 @@ const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onCom
         operator: '=',
         value: '\'nwendpoint\''
       },
+      {
+        type: 'operator-and'
+      },
       filter
     ]
   };
