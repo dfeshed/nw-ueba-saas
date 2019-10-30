@@ -1,3 +1,36 @@
+# [14.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.5.0)
+## Features
+* [ASOC-74231](https://bedfordjira.na.rsa.net/browse/ASOC-74231):&emsp;Pill Selection Paren Actions
+* [ASOC-74244](https://bedfordjira.na.rsa.net/browse/ASOC-74244):&emsp;Handle Paste of Query
+* [ASOC-77922](https://bedfordjira.na.rsa.net/browse/ASOC-77922):&emsp;Sort Children Under Adjacent Parent Regardless of Query's Sort
+* [ASOC-78415](https://bedfordjira.na.rsa.net/browse/ASOC-78415):&emsp;Add telemetry data for file policy
+* [ASOC-78747](https://bedfordjira.na.rsa.net/browse/ASOC-78747):&emsp;Allow Drag and Drop Reordering of Selected Items
+* [ASOC-78749](https://bedfordjira.na.rsa.net/browse/ASOC-78749):&emsp;Edit Group Items
+* [ASOC-79257](https://bedfordjira.na.rsa.net/browse/ASOC-79257):&emsp;Full Regression of Classic Column Group/Profile/Meta Groups
+* [ASOC-79998](https://bedfordjira.na.rsa.net/browse/ASOC-79998):&emsp;Migrate Profile Groups
+* [ASOC-80055](https://bedfordjira.na.rsa.net/browse/ASOC-80055):&emsp;Delete Profile
+* [ASOC-80056](https://bedfordjira.na.rsa.net/browse/ASOC-80056):&emsp;Prevent Delete of Column Group If It is in Profile
+* [ASOC-80089](https://bedfordjira.na.rsa.net/browse/ASOC-80089):&emsp;Selecting a Profile
+* [ASOC-81089](https://bedfordjira.na.rsa.net/browse/ASOC-81089):&emsp;Enhanced Parsing Validation
+* [ASOC-82022](https://bedfordjira.na.rsa.net/browse/ASOC-82022):&emsp;Serve reconstructed files generated in email reconstruction
+* [ASOC-82352](https://bedfordjira.na.rsa.net/browse/ASOC-82352):&emsp;Misc Query Pill Updates v2
+* [ASOC-82383](https://bedfordjira.na.rsa.net/browse/ASOC-82383):&emsp;Allow user to enable/disable the relationship view
+* [ASOC-83178](https://bedfordjira.na.rsa.net/browse/ASOC-83178):&emsp;Add icon should be brighter than the info icon
+* [ASOC-83209](https://bedfordjira.na.rsa.net/browse/ASOC-83209):&emsp;USM - Color Fixes in Groups and Policies Wizard
+* [ASOC-83921](https://bedfordjira.na.rsa.net/browse/ASOC-83921):&emsp;Create Meta Group Migration
+* [ASOC-83932](https://bedfordjira.na.rsa.net/browse/ASOC-83932):&emsp;Update default context menu actions
+* [ASOC-83934](https://bedfordjira.na.rsa.net/browse/ASOC-83934):&emsp;Add link to legacy search when free-text search results displayed
+* [ASOC-84066](https://bedfordjira.na.rsa.net/browse/ASOC-84066):&emsp;Create force to separate nodes with high degrees from each other
+* [ASOC-84532](https://bedfordjira.na.rsa.net/browse/ASOC-84532):&emsp;Lower Event Limit Default to 10,000
+* [ASOC-84536](https://bedfordjira.na.rsa.net/browse/ASOC-84536):&emsp;API calls need to honor new operators
+* [ASOC-84664](https://bedfordjira.na.rsa.net/browse/ASOC-84664):&emsp;Add Advanced Settings to windows policy settings
+* [ASOC-84755](https://bedfordjira.na.rsa.net/browse/ASOC-84755):&emsp;As an administrator, i must be able to view certificate expiry popup window when the certificates are due to expire.
+* [ASOC-84875](https://bedfordjira.na.rsa.net/browse/ASOC-84875):&emsp;Display message in Events to indicate permissions required to view events table	User Story
+* [ASOC-84949](https://bedfordjira.na.rsa.net/browse/ASOC-84949):&emsp;Feed back for grouping in meta-panel
+* [ASOC-84953](https://bedfordjira.na.rsa.net/browse/ASOC-84953):&emsp;Regression for RE and Dashboards
+* [ASOC-84954](https://bedfordjira.na.rsa.net/browse/ASOC-84954):&emsp;Upgrade for RE, Dashboard, TII and Entitlements
+
+
 # [14.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.4.0)
 ## Features
 * [ASOC-74238](https://bedfordjira.na.rsa.net/browse/ASOC-74238):&emsp;Insertion of Operators
