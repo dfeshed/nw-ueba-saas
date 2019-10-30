@@ -13,6 +13,11 @@ import {
   helpId,
   hasContextualHelp
 } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { beginEditItem } from 'rsa-list-manager/actions/creators/creators';
+
+const dispatchToActions = {
+  beginEditItem
+};
 
 const stateToComputed = (state, attrs) => ({
   hasContextualHelp: hasContextualHelp(state, attrs.stateLocation),
@@ -60,6 +65,9 @@ const ItemDetails = Component.extend({
     resetItem() {
       this.set('didReset', true);
 
+      // The consumer of list-mananger will have to be notified about reset
+      this.send('beginEditItem', this.get('editedItem').id, this.get('stateLocation'));
+
       // let rendering happen then set it back
       run.next(() => {
         this.set('didReset', false);
@@ -74,4 +82,4 @@ const ItemDetails = Component.extend({
 
 });
 
-export default connect(stateToComputed)(ItemDetails);
+export default connect(stateToComputed, dispatchToActions)(ItemDetails);

@@ -1751,6 +1751,35 @@ test('RSA_LIST_MANAGER_EDIT_ITEM edit scenario', function(assert) {
   assert.equal(result.pillsData[1].meta, 'bar', 'Did not find second profile pill copied over to pillsData');
 });
 
+test('Will not stash if pills are already stashed in edit action, which means it is a reset', function(assert) {
+  const profilePills = [
+    { id: '1', type: QUERY_FILTER, meta: 'foo', operator: '=', value: 'foobar' },
+    { id: '2', type: QUERY_FILTER, meta: 'bar', operator: '=', value: 'baz' }
+  ];
+  const initialState = Immutable.from({
+    isPillsDataStashed: true,
+    pillsData: profilePills,
+    originalPills: [
+      { id: 1, type: QUERY_FILTER },
+      { id: 2, type: QUERY_FILTER },
+      { id: 3, type: QUERY_FILTER }
+    ]
+  });
+
+  const action = {
+    type: ACTION_TYPES.RSA_LIST_MANAGER_EDIT_ITEM,
+    payload: { editItemId: '1', editItem: { preQueryPillsData: profilePills } },
+    meta: { belongsTo: 'listManagers.profiles' }
+  };
+
+  // pillsData should now be saved off as original pills
+  // pillsData now contains proflePills
+  const result = reducer(initialState, action);
+  assert.deepEqual(result.originalPills, initialState.originalPills, 'There should be no change to original pills are they are already stashed');
+  assert.equal(result.pillsData[0].meta, 'foo', 'Did not find first profile pill copied over to pillsData');
+  assert.equal(result.pillsData[1].meta, 'bar', 'Did not find second profile pill copied over to pillsData');
+});
+
 // list-view -> close
 test('RSA_LIST_MANAGER_SET_VIEW_NAME close scenario', function(assert) {
   const initialState = Immutable.from({

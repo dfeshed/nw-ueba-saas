@@ -220,7 +220,7 @@ export default {
     insertFilter: 'Insert new filter',
     noMatches: 'No matches found',
     open: 'Open in a new tab',
-    placeholder: 'Enter individual statements consisting of a Meta Key, Operator, and Value (optional)',
+    placeholder: 'Enter a text search or filter with a meta key, operator, and value',
     query: 'Query with filters',
     queryEvents: 'Query Events',
     querySelected: 'Query with selected filters',

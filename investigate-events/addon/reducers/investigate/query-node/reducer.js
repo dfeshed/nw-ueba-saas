@@ -963,7 +963,12 @@ export default handleActions({
     // the list manager instance responsible for maintaining profiles
     if (_isTriggeredByProfileListManager(meta)) {
       const { editItem: { preQueryPillsData } } = payload;
-      const newState = _stashPills(state);
+      let newState = state;
+      // If pills are already stashed, no need to replace pillsData
+      // This might be a reset form scenario
+      if (!state.isPillsDataStashed) {
+        newState = _stashPills(newState);
+      }
       return _replaceAllPills(newState, preQueryPillsData);
     }
     return state;

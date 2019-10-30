@@ -10,6 +10,7 @@ import {
   hasTextPill,
   isOnFreeForm,
   isOnGuided,
+  isDirty,
   isPillBeingEdited,
   isPillValidationInProgress,
   pillBeingEdited,
@@ -680,4 +681,69 @@ test('queryNodeValuesForClassicUrl sends out values if previousQueryParams are p
   } };
   assert.notOk(queryNodeValuesForClassicUrl(state), 'Did not find any values');
 
+});
+
+test('isDirty returns false if profile pills are modified and pills are stashed', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        currentQueryHash: 'A-1234-0987-a=b',
+        serviceId: 'A',
+        startTime: '1234',
+        endTime: '0987',
+        pillsData: [ { id: '1' }],
+        isPillsDataStashed: true,
+        originalPills: [{
+          type: QUERY_FILTER,
+          id: '2',
+          meta: 'a',
+          operator: '=',
+          value: 'b'
+        }]
+      }
+    },
+    listManagers: {
+      profiles: {
+        isExpanded: true
+      }
+    }
+  };
+
+  // original pills were used to create the hash
+  assert.notOk(isDirty(state), 'PillsData is different but isDirty will still return false');
+});
+
+test('isDirty returns true if pills are modified and they are not stashed', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        currentQueryHash: 'A-1234-0987',
+        serviceId: 'A',
+        startTime: '1234',
+        endTime: '0987',
+        pillsData: [{
+          type: QUERY_FILTER,
+          id: '2',
+          meta: 'a',
+          operator: '=',
+          value: 'b'
+        }],
+        isPillsDataStashed: false,
+        originalPills: [{
+          type: QUERY_FILTER,
+          id: '23',
+          meta: 'awewe',
+          operator: '=',
+          value: 'bwewe'
+        }]
+      }
+    },
+    listManagers: {
+      profiles: {
+        isExpanded: false
+      }
+    }
+  };
+
+  assert.ok(isDirty(state), 'PillsData are different, state should be dirty');
 });

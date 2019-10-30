@@ -228,7 +228,10 @@ const QueryPills = RsaContextMenu.extend({
   contextMenu({ target }) {
     const currentClass = target.classList.contains('is-selected');
     const parentClass = target.parentElement.classList.contains('is-selected');
-    if (currentClass || parentClass) {
+
+    // Need right click actions only when this is the primary component
+    // and something is selected
+    if ((currentClass || parentClass) && this.get('isPrimary')) {
       const isParen = target.classList.contains('open-paren') ||
         target.classList.contains('close-paren') ||
         target.parentElement.classList.contains('open-paren') ||

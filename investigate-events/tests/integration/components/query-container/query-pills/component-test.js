@@ -862,7 +862,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true}}
+        {{query-container/query-pills isActive=true isPrimary=true}}
       </div>
     `);
 
@@ -899,7 +899,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true}}
+        {{query-container/query-pills isActive=true isPrimary=true}}
         {{context-menu}}
       </div>
     `);
@@ -1713,7 +1713,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true executeQuery=executeQuery}}
+        {{query-container/query-pills isActive=true isPrimary=true executeQuery=executeQuery}}
         {{context-menu}}
       </div>
     `);
@@ -1793,7 +1793,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true}}
+        {{query-container/query-pills isActive=true isPrimary=true}}
         {{context-menu}}
       </div>
     `);
@@ -1828,7 +1828,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true}}
+        {{query-container/query-pills isActive=true isPrimary=true}}
         {{context-menu}}
       </div>
     `);
@@ -1866,7 +1866,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true}}
+        {{query-container/query-pills isActive=true isPrimary=true}}
         {{context-menu}}
       </div>
     `);
@@ -1924,7 +1924,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true}}
+        {{query-container/query-pills isActive=true isPrimary=true}}
         {{context-menu}}
       </div>
     `);
@@ -1956,7 +1956,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true}}
+        {{query-container/query-pills isActive=true isPrimary=true}}
         {{context-menu}}
       </div>
     `);
@@ -1997,7 +1997,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true}}
+        {{query-container/query-pills isActive=true isPrimary=true}}
         {{context-menu}}
       </div>
     `);
@@ -2032,7 +2032,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true}}
+        {{query-container/query-pills isActive=true isPrimary=true}}
         {{context-menu}}
       </div>
     `);
@@ -2088,7 +2088,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true executeQuery=executeQuery}}
+        {{query-container/query-pills isActive=true isPrimary=true executeQuery=executeQuery}}
         {{context-menu}}
       </div>
     `);
@@ -2144,7 +2144,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true executeQuery=executeQuery}}
+        {{query-container/query-pills isActive=true isPrimary=true executeQuery=executeQuery}}
         {{context-menu}}
       </div>
     `);
@@ -2189,7 +2189,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true}}
+        {{query-container/query-pills isActive=true isPrimary=true}}
         {{context-menu}}
       </div>
     `);
