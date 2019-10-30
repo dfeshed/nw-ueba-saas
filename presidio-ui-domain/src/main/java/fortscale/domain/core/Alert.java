@@ -50,7 +50,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Indexed(unique = false) @Field(startDateField) private long startDate;
 
 	@Indexed(unique = false) @Field(endDateField) private long endDate;
-	@Field(entityTypeField) private EntityType entityType;
+	@Field(entityTypeField) private String entityType;
 	@Field(entityNameField) private String entityName;
 	@Field(entityIdField) private String entityId;
 	@Field(evidencesField)
@@ -101,7 +101,7 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.setUserScoreContributionFlag(alert.userScoreContributionFlag);
 	}
 
-	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
+	public Alert(String name, long startDate, long endDate, String entityType, String entityName,
 				 List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status,
 				 AlertFeedback feedback, String entityId, AlertTimeframe timeframe, double userScoreContribution,
 				 boolean userScoreContributionFlag) {
@@ -146,11 +146,11 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.endDate = endDate;
 	}
 
-	public EntityType getEntityType() {
+	public String getEntityType() {
 		return entityType;
 	}
 
-	public void setEntityType(EntityType entityType) {
+	public void setEntityType(String entityType) {
 		this.entityType = entityType;
 	}
 
@@ -261,7 +261,7 @@ public class Alert extends AbstractDocument implements Serializable {
 		value.append(" Start Time: " + startDate);
 		value.append(" End Time: " + endDate);
 		value.append(" Entity Name: " + entityName);
-		value.append(" Entity Type: " + entityType.name());
+		value.append(" Entity Type: " + entityType);
 		value.append(" Severity: " + severity.name());
 		value.append(" Alert Status: " + status.name());
 		if (addIndicators) {
@@ -276,7 +276,7 @@ public class Alert extends AbstractDocument implements Serializable {
 				append(name).
 				append(startDate).
 				append(endDate).
-				append(entityType.name()).
+				append(entityType).
 				append(entityName).
 				append(score).
 				append(severity.name()).

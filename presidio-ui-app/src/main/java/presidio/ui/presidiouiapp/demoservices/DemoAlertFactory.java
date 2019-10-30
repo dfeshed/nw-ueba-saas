@@ -32,7 +32,7 @@ public class DemoAlertFactory extends DemoFactoryAbstract<Alert>{
         a.setEntityName(entityName);
         a.setEvidenceSize(totalIndicators);
         a.setTimeframe(AlertTimeframe.valueOf(timeframe));
-        a.setEntityType(EntityType.User);
+        a.setEntityType("userId");
         a.setStatus(AlertStatus.Open);
         a.setFeedback(AlertFeedback.None);
         a.setMockId(UUID.randomUUID().toString());
