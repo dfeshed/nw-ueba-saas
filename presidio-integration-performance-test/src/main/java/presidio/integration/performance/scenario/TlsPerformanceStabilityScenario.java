@@ -1,8 +1,5 @@
 package presidio.integration.performance.scenario;
 
-import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter;
-import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverterFactory;
-import presidio.data.domain.event.Event;
 import presidio.data.generators.event.performance.tls.clusters.TlsEventsSimplePerfGen;
 
 import java.time.Instant;
@@ -20,7 +17,6 @@ public class TlsPerformanceStabilityScenario {
     private final int LOW_SIZE_CLUSTERS = 500;
     private final int MEDIUM_SIZE_CLUSTERS = 200;
     private final int LARGE_SIZE_CLUSTERS = 3;
-    public final EventConverter<Event> eventEventConverter = new EventConverterFactory().get();
 
     private List<TlsEventsSimplePerfGen> tlsGroupSmall = IntStream.range(0, LOW_SIZE_CLUSTERS).boxed().map(index -> new TlsEventsSimplePerfGen(getSmallClusterParams())).collect(toList());
     private List<TlsEventsSimplePerfGen> tlsGroupMedium = IntStream.range(0, MEDIUM_SIZE_CLUSTERS).boxed().map(index -> new TlsEventsSimplePerfGen(getMediumClusterParams())).collect(toList());

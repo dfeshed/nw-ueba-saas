@@ -15,6 +15,9 @@ public class ClusterSizeFactory {
                 .setSslSubjectSize(2)
                 .setLocationSize(2)
                 .setSrcIpSize(2)
+                .setAbnormalActivityStartHour(1)
+                .setAbnormalActivityEndHour(5)
+                .setAbnormalActivityTimeProbability(0.3)
                 .build();
     }
 
@@ -30,6 +33,9 @@ public class ClusterSizeFactory {
 
                 .setHostnameSize(10)
                 .setLocationSize(10)
+                .setAbnormalActivityStartHour(1)
+                .setAbnormalActivityEndHour(5)
+                .setAbnormalActivityTimeProbability(0.3)
                 .build();
     }
 
@@ -45,6 +51,12 @@ public class ClusterSizeFactory {
 
                 .setHostnameSize(100)
                 .setLocationSize(50)
+                .setAbnormalActivityStartHour(1)
+                .setAbnormalActivityEndHour(5)
+                .setAbnormalActivityTimeProbability(0.3)
                 .build();
     }
+
+
+
 }
