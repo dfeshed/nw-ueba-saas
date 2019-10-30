@@ -955,6 +955,7 @@ export default handleActions({
       }
       return newState;
     }
+    return state;
   },
 
   [ACTION_TYPES.RSA_LIST_MANAGER_EDIT_ITEM]: (state, { payload, meta }) => {
