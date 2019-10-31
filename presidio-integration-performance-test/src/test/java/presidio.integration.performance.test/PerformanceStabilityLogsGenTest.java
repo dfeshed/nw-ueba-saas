@@ -59,7 +59,8 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
     public final EventConverter<Event> eventEventConverter = new EventConverterFactory().get();
 
 
-    @Parameters({"start_time", "end_time", "probability_multiplier", "users_multiplier","schemas", "tls_groups_multiplier", "tls_alerts_probability", "tls_millis_between_events"})
+    @Parameters({"start_time", "end_time", "probability_multiplier", "users_multiplier",
+            "tls_groups_multiplier", "tls_alerts_probability", "tls_millis_between_events","schemas"})
     @Test
     public void performance(@Optional("2019-10-30T00:00:00.00Z") String startTimeStr, @Optional("2019-10-31T23:59:00.00Z") String endTimeStr,
                             @Optional("0.005") double probabilityMultiplier, @Optional("0.005") double usersMultiplier,
