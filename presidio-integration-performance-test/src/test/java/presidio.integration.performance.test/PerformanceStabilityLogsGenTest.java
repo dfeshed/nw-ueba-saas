@@ -30,7 +30,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static com.rsa.netwitness.presidio.automation.enums.GeneratorFormat.CEF_DAILY_FILE;
+import static com.rsa.netwitness.presidio.automation.enums.GeneratorFormat.CEF_DAILY_BROKER;
 import static java.util.stream.Collectors.toList;
 
 public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContextTests {
@@ -52,17 +52,18 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
     private final String LOCAL_SERVER_MACHINES_CLUSTER_PREFIX = "local_srv_";
     private final int NUM_OF_LOCAL_SERVER_MACHINES_PER_CLUSTER = 5;
 
+    private int totalTls = 0;
+
     private StopWatch stopWatch = new StopWatch();
-    private EventsProducer<List<NetwitnessEvent>> eventsProducer = new EventsProducerFactory(null).get(CEF_DAILY_FILE);
+    private EventsProducer<List<NetwitnessEvent>> eventsProducer = new EventsProducerFactory(null).get(CEF_DAILY_BROKER);
     public final EventConverter<Event> eventEventConverter = new EventConverterFactory().get();
 
-    int total = 0;
 
     @Parameters({"start_time", "end_time", "probability_multiplier", "users_multiplier","schemas", "tlsGroupsMultiplier", "tlsAlertsProbability", "tlsMillisBetweenEvents"})
     @Test
-    public void performance(@Optional("2018-04-03T23:58:00.00Z") String startTimeStr, @Optional("2018-04-04T01:30:00.00Z") String endTimeStr,
+    public void performance(@Optional("2019-10-30T00:00:00.00Z") String startTimeStr, @Optional("2019-10-31T23:59:00.00Z") String endTimeStr,
                             @Optional("0.005") double probabilityMultiplier, @Optional("0.005") double usersMultiplier,
-                            @Optional("1") int tlsGroupsMultiplier, @Optional("0.1") double tlsAlertsProbability, @Optional("100") int tlsMillisBetweenEvents,
+                            @Optional("1") int tlsGroupsMultiplier, @Optional("0.1") double tlsAlertsProbability, @Optional("60000") int tlsMillisBetweenEvents,
                             @Optional("TLS") String schemas ) throws GeneratorException {
 
         System.out.println("=================== TEST PARAMETERS =============== ");
@@ -94,7 +95,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
                 List<TlsEvent> tlsEvents = partition.next();
                 process(tlsEvents);
             }
-            System.out.println("TOTAL TLS: " + total);
+            System.out.println("TOTAL TLS: " + totalTls);
         }
 
 
@@ -150,7 +151,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
 
         Map<Schema, Long> sent = eventsProducer.send(convertedEvents);
         sent.forEach((key, value) -> System.out.println(key + " -> " + value));
-        total += sent.get(Schema.TLS).intValue();
+        totalTls += sent.get(Schema.TLS).intValue();
     }
 
 
