@@ -72,6 +72,9 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
         System.out.println("end_time: " + endTimeStr);
         System.out.println("probability_multiplier: " + probabilityMultiplier);
         System.out.println("users_multiplier: " + usersMultiplier);
+        System.out.println("tls_groups_multiplier: " + tlsGroupsMultiplier);
+        System.out.println("tls_alerts_probability: " + tlsAlertsProbability);
+        System.out.println("tls_millis_between_events: " + tlsMillisBetweenEvents);
         System.out.println("=================================================== ");
 
         Instant startInstant = Instant.parse(startTimeStr);
