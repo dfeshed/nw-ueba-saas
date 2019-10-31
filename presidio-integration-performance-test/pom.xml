@@ -28,9 +28,9 @@
         <probability_multiplier>0.15</probability_multiplier>
         <users_multiplier>0.1</users_multiplier>
 
-        <tlsGroupsMultiplier>1</tlsGroupsMultiplier>
-        <tlsAlertsProbability>0.01</tlsAlertsProbability>
-        <tlsMillisBetweenEvents>60000</tlsMillisBetweenEvents>
+        <tls_groups_multiplier>1</tls_groups_multiplier>
+        <tls_alerts_probability>0.01</tls_alerts_probability>
+        <tls_millis_between_events>60000</tls_millis_between_events>
     </properties>
 
     <dependencies>
