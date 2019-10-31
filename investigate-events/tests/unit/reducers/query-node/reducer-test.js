@@ -1836,3 +1836,26 @@ test('Replace pills if profile drop-down was abruptly closed before saving edit'
   assert.equal(result.pillsData[2].meta, 'bar', 'Did not find third profile pill copied over to pillsData');
   assert.equal(result.pillsData[1].type, OPERATOR_AND, 'Did not find the operator in pillsData');
 });
+
+test('UNSTASH_PILLS copies back data from original pills', function(assert) {
+  const initialState = Immutable.from({
+    pillsData: [
+      { id: 21, type: COMPLEX_FILTER },
+      { id: 33, type: QUERY_FILTER }
+    ],
+    originalPills: [
+      { id: 1, type: QUERY_FILTER, meta: 'foo', operator: '=', value: 'foobar' },
+      { id: 2, type: OPERATOR_AND },
+      { id: 3, type: QUERY_FILTER, meta: 'bar', operator: '=', value: 'baz' }
+    ]
+  });
+
+  const action = { type: ACTION_TYPES.UNSTASH_PILLS };
+  // pillsData copies back pills from original
+  // original pills are reset
+  const result = reducer(initialState, action);
+  assert.ok(result.originalPills.length === 0, 'Original pills were not reset');
+  assert.equal(result.pillsData[0].meta, 'foo', 'Did not find first profile pill copied over to pillsData');
+  assert.equal(result.pillsData[2].meta, 'bar', 'Did not find third profile pill copied over to pillsData');
+  assert.equal(result.pillsData[1].type, OPERATOR_AND, 'Did not find the operator in pillsData');
+});

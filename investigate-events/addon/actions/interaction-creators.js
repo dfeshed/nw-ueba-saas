@@ -8,7 +8,7 @@ import { fetchInvestigateData, getServiceSummary, updateSort } from './data-crea
 import { getDictionaries, queryIsRunning } from './initialization-creators';
 import { cancelEventCountStream } from './event-count-creators';
 import { cancelEventsStream } from './events-creators';
-import { replaceAllGuidedPills } from './pill-creators';
+import { replaceAllGuidedPills, unstashPills } from './pill-creators';
 import {
   getDbStartTime,
   getDbEndTime,
@@ -277,6 +277,11 @@ export const setProfile = (profile, executeQuery) => {
     const newQueryPillsData = profile.preQueryPillsData || [];
     const currentColumnGroupId = selectedColumnGroup(currentState);
     const newColumnGroupId = profile.columnGroup.id;
+
+    // Before setting the profile which may contain its own pills
+    // we want the primary query-pills container to resume it's
+    // normal activities
+    dispatch(unstashPills());
 
     // replace any existing pills with profile's prequery pills
     // whether column group changed or not

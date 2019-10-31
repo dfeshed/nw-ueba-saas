@@ -734,4 +734,40 @@ module('Unit | Actions | Pill Creators', function(hooks) {
     assert.deepEqual(action.payload.startIndex, 0, 'action startIndex has the right value');
     assert.deepEqual(action.payload.endIndex, 2, 'action endIndex has the right value');
   });
+
+  test('unstash pills sends out action if pills are stashed', async function(assert) {
+    assert.expect(1);
+    const getState = () => {
+      return new ReduxDataHelper()
+        .language()
+        .pillsDataPopulated()
+        .populateOriginalPills()
+        .isPillsDataStashed()
+        .build();
+    };
+
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.UNSTASH_PILLS, 'action has the correct type');
+    };
+    const thunk = pillCreators.unstashPills();
+    thunk(dispatch, getState);
+  });
+
+  test('unstash pills will not send out action if pills are not stashed', async function(assert) {
+    assert.expect(0);
+    const getState = () => {
+      return new ReduxDataHelper()
+        .language()
+        .pillsDataPopulated()
+        .populateOriginalPills()
+        .isPillsDataStashed(false)
+        .build();
+    };
+
+    const dispatch = () => {
+      assert.notOk('This action was not called');
+    };
+    const thunk = pillCreators.unstashPills();
+    thunk(dispatch, getState);
+  });
 });

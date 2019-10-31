@@ -402,3 +402,12 @@ export const wrapWithParens = ({ startIndex, endIndex }) => ({
     endIndex
   }
 });
+
+export const unstashPills = () => {
+  return (dispatch, getState) => {
+    const { investigate: { queryNode: { isPillsDataStashed } } } = getState();
+    if (isPillsDataStashed) {
+      dispatch({ type: ACTION_TYPES.UNSTASH_PILLS });
+    }
+  };
+};

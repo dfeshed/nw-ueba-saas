@@ -38,6 +38,11 @@ const menuOffsetsStyle = (el) => {
   }
 };
 
+export const queryTabClicked = (target) => {
+  return target.classList.contains('tabrow') ||
+    (target.parentElement && queryTabClicked(target.parentElement));
+};
+
 const ListManagerContainer = Component.extend({
   layout,
   classNames: ['list-manager-container'],
@@ -53,6 +58,9 @@ const ListManagerContainer = Component.extend({
         if (e.target.type === 'search' && e.target.tagName === 'INPUT') {
           return;
         }
+      }
+      if (queryTabClicked(e.target)) {
+        return;
       }
       this.send('closeListManager', this.get('stateLocation'));
     },

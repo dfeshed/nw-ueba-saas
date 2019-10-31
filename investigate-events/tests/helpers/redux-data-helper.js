@@ -1075,4 +1075,9 @@ export default class DataHelper {
     _set(this.state, 'queryNode.originalPills', pD);
     return this;
   }
+
+  isPillsDataStashed(flag = true) {
+    _set(this.state, 'queryNode.isPillsDataStashed', flag);
+    return this;
+  }
 }

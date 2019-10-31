@@ -130,7 +130,7 @@ const _cloneQueryParams = (state) => {
  * Replaces pillsData with original pills that were stashed
  * when a sibling query-pills component was rendered.
  */
-const _replacePillsWithOriginalPills = (state) => {
+const _unstashPills = (state) => {
   const oG = state.originalPills;
   return state.merge({
     pillsData: Immutable.from(oG),
@@ -936,6 +936,13 @@ export default handleActions({
     return _handleLogicalOperator(state, pillData, position, true);
   },
 
+  [ACTION_TYPES.UNSTASH_PILLS]: (state) => {
+    return _unstashPills(state);
+  },
+
+
+  // RSA-LIST-MANAGER
+
   [ACTION_TYPES.RSA_LIST_MANAGER_SET_VIEW_NAME]: (state, { payload, meta }) => {
     // Only care about this action if the source of the action is
     // the list manager instance responsible for maintaining profiles
@@ -949,7 +956,7 @@ export default handleActions({
         }
         // close profile drop-down
         case LIST_VIEW: {
-          newState = _replacePillsWithOriginalPills(state);
+          newState = _unstashPills(state);
           break;
         }
       }
@@ -978,7 +985,7 @@ export default handleActions({
     // Only care about this action if the source of the action is
     // the list manager instance responsible for maintaining profiles
     if (_isTriggeredByProfileListManager(meta) && payload?.actionType === 'close') {
-      return _replacePillsWithOriginalPills(state);
+      return _unstashPills(state);
     }
     return state;
   }
