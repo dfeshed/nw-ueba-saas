@@ -274,7 +274,6 @@
         <module>presidio-ui-output-client</module>
         <module>presidio-ui-domain</module>
         <module>presidio-ui-services</module>
-        <module>presidio-ui-ui</module>
         <module>presidio-ui-app</module>
     </modules>
 
