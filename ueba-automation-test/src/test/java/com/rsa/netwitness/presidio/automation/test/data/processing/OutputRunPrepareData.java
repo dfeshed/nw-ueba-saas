@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.time.Instant.parse;
@@ -29,7 +30,7 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
     private static TitlesPrinter ART_GEN = new TitlesPrinter();
 
     private OutputDataProcessingManager dataProcessingHelper = new OutputDataProcessingManager();
-    private List<String> SMART_RECORD_CONF_NAMES = AutomationConf.CORE_ENTITIES_TO_PROCESS.stream().map(e -> e.concat("_hourly")).collect(toList());
+    private Function<String, String> SMART_RECORD_CONF_NAMES = e -> e.concat("_hourly");
     private List<String> ENTITIES_TO_PROCESS = AutomationConf.CORE_ENTITIES_TO_PROCESS;
 
     @Parameters("historical_days_back")
@@ -37,7 +38,7 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
     public void beforeClass(@Optional("10") int historicalDaysBack) throws JSONException, InterruptedException {
         TitlesPrinter.printTitle(getClass().getSimpleName());
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack);
-        LOGGER.info("SMART_RECORD_CONF_NAMES = ".concat(String.join(", ", SMART_RECORD_CONF_NAMES)));
+        LOGGER.info("SMART_RECORD_CONF_NAMES = ".concat(ENTITIES_TO_PROCESS.stream().map(SMART_RECORD_CONF_NAMES).collect(Collectors.joining(", "))));
         LOGGER.info("ENTITIES_TO_PROCESS = ".concat(String.join(", ", ENTITIES_TO_PROCESS)));
 
         List<List<? extends Callable<Integer>>> parallelTasksToExecute = Stream.of(
@@ -82,8 +83,8 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
 
 
     private List<OutputDataProcessingManager.ProcessorRun> processorRun(Instant startDate, Instant endDate) {
-        return SMART_RECORD_CONF_NAMES.stream()
-                .map(smartRecordConfName -> dataProcessingHelper.processorRun(startDate, endDate, smartRecordConfName))
+            return ENTITIES_TO_PROCESS.stream()
+                .map(entity -> dataProcessingHelper.processorRun(startDate, endDate, entity, SMART_RECORD_CONF_NAMES.apply(entity)))
                 .collect(toList());
     }
 
