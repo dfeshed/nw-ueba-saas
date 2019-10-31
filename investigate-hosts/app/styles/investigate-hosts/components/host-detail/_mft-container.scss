@@ -1,4 +1,5 @@
 .mft-container-panel {
+  min-height: calc(100vh - 212px);
   .mft-container {
     min-height: 100%;
     .mft-content {
@@ -12,6 +13,10 @@
           .close-zone {
             padding-top: 1.3rem;
           }
+        }
+        .content-body {
+          height: calc(100vh - 399px);
+          overflow: scroll;
         }
       }
       .mft-action {
@@ -89,6 +94,9 @@
         height: calc(100vh - 286px);
         [test-id$="Si"] {
           margin-bottom: rsa-whitespace(more);
+          &:last-child {
+            margin-bottom: 0;
+          }
         }
       }
     }
