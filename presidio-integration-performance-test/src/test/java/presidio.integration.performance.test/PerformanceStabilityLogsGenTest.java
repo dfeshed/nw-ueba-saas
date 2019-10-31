@@ -53,8 +53,9 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
     private final int NUM_OF_LOCAL_SERVER_MACHINES_PER_CLUSTER = 5;
 
     private int totalTls = 0;
-
     private StopWatch stopWatch = new StopWatch();
+    private StopWatch tlsStopWatch = new StopWatch();
+
     private EventsProducer<List<NetwitnessEvent>> eventsProducer = new EventsProducerFactory(null).get(CEF_DAILY_FILE);
     public final EventConverter<Event> eventEventConverter = new EventConverterFactory().get();
 
@@ -95,11 +96,13 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
 
             UnmodifiableIterator<List<TlsEvent>> partition = Iterators.partition(tlsEventStream.iterator(), EVENTS_GENERATION_CHUNK);
 
+            tlsStopWatch.start();
             while (partition.hasNext()) {
                 List<TlsEvent> tlsEvents = partition.next();
                 process(tlsEvents);
             }
-            System.out.println("TOTAL TLS: " + totalTls);
+            System.out.println("TOTAL TLS: " + totalTls + ". Generation time: " + stopWatch.toString());
+            tlsStopWatch.stop();
         }
 
 
@@ -149,13 +152,17 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
 
 
     private void process(List<TlsEvent> bucket){
-
         List<NetwitnessEvent> convertedEvents = bucket.parallelStream()
                 .map(eventEventConverter::convert).collect(toList());
 
         Map<Schema, Long> sent = eventsProducer.send(convertedEvents);
-        sent.forEach((key, value) -> System.out.println(key + " -> " + value));
         totalTls += sent.get(Schema.TLS).intValue();
+        tlsStopWatch.split();
+        if (Instant.ofEpochMilli(tlsStopWatch.getSplitTime()).minusSeconds(30).toEpochMilli() > 0) {
+            System.out.println("TLS EVENTS COUNT -> " + totalTls + ". Took " + tlsStopWatch.getSplitTime() + " msec.");
+            tlsStopWatch.reset();
+            tlsStopWatch.start();
+        }
     }
 
 
