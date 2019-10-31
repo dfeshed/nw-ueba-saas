@@ -26,11 +26,6 @@ public class TlsPerformanceStabilityScenario {
 
     public List<TlsEventsSimplePerfGen> tlsEventsGenerators = new LinkedList<>();
 
-    private List<TlsEventsSimplePerfGen> tlsGroupSmall = new LinkedList<>();
-    private List<TlsEventsSimplePerfGen> tlsGroupMedium = new LinkedList<>();
-    private List<TlsEventsSimplePerfGen> tlsGroupLarge = new LinkedList<>();
-
-
     public TlsPerformanceStabilityScenario(Instant startInstant, Instant endInstant, int tlsGroupsMultiplier, double tlsAlertsProbability, int millisBetweenEvents) {
         this.startInstant = startInstant;
         this.endInstant = endInstant;
@@ -45,13 +40,13 @@ public class TlsPerformanceStabilityScenario {
         TlsPerfClusterParams mediumClusterParams = getMediumClusterParams(TLS_ALERTS_PROBABILITY, startInstant, endInstant, millisBetweenEvents);
         TlsPerfClusterParams largeClusterParams = getLargeClusterParams(TLS_ALERTS_PROBABILITY, startInstant, endInstant, millisBetweenEvents);
 
-        tlsGroupSmall = IntStream.range(0, LOW_SIZE_CLUSTERS * TLS_GROUPS_MULTIPLIER).boxed()
+        List<TlsEventsSimplePerfGen> tlsGroupSmall = IntStream.range(0, LOW_SIZE_CLUSTERS * TLS_GROUPS_MULTIPLIER).boxed()
                 .map(index -> new TlsEventsSimplePerfGen(smallClusterParams)).collect(toList());
 
-        tlsGroupMedium = IntStream.range(0, MEDIUM_SIZE_CLUSTERS * TLS_GROUPS_MULTIPLIER).boxed()
+        List<TlsEventsSimplePerfGen> tlsGroupMedium = IntStream.range(0, MEDIUM_SIZE_CLUSTERS * TLS_GROUPS_MULTIPLIER).boxed()
                 .map(index -> new TlsEventsSimplePerfGen(mediumClusterParams)).collect(toList());
 
-        tlsGroupLarge = IntStream.range(0, LARGE_SIZE_CLUSTERS * TLS_GROUPS_MULTIPLIER).boxed()
+        List<TlsEventsSimplePerfGen> tlsGroupLarge = IntStream.range(0, LARGE_SIZE_CLUSTERS * TLS_GROUPS_MULTIPLIER).boxed()
                 .map(index -> new TlsEventsSimplePerfGen(largeClusterParams)).collect(toList());
 
         tlsEventsGenerators = Stream.of(
