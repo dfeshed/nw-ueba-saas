@@ -55,6 +55,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('shall render editable form for a new profile', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
     assert.expect(4);
     this.set('profile', null);
     this.set('editProfile', () => {
@@ -66,7 +67,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
       editProfile=editProfile}}`);
 
     assert.ok(find(profileNameInputSelector), 'shall render input for profile name');
-    assert.equal(find(profileNameInputSelector).getAttribute('placeholder'), 'Enter profile name',
+    assert.equal(find(profileNameInputSelector).getAttribute('placeholder'), translation.t('investigate.profile.profileNamePlaceholder'),
       'shall render correct placeholder for profile name input');
     assert.ok(find(columnGroupNameSelector), 'shall render column group select dropdown');
   });

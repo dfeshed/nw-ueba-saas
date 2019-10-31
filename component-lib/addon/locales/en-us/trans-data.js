@@ -535,12 +535,12 @@ export default {
   },
   investigate: {
     profile: {
-      profileGroup: 'Profile Group',
+      profileGroup: 'Query Profile Group',
       metaGroup: 'Meta Group',
       columnGroup: 'Column Group',
-      profileName: 'Profile Name',
-      profileNamePlaceholder: 'Enter profile name',
-      profileNameNotUnique: 'New profile must have a unique name',
+      profileName: 'Query Profile Name',
+      profileNamePlaceholder: 'Enter query profile name',
+      profileNameNotUnique: 'New query profile must have a unique name',
       prequeryConditions: {
         prequeryConditions: 'Pre-Query Conditions',
         or: 'OR',
@@ -660,7 +660,7 @@ export default {
         groupNamePlaceholder: 'Enter column group name',
         nameNotUnique: 'New groups must have a unique name',
         disabled: {
-          delete: 'This column group cannot be deleted because it is part of the following profiles: {{profileNames}}'
+          delete: 'This column group cannot be deleted because it is part of the following query profiles: {{profileNames}}'
         }
       },
       download: {

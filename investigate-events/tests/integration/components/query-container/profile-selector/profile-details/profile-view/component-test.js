@@ -82,6 +82,7 @@ module('Integration | Component | Profile Details - Profile View', function(hook
   };
 
   test('it renders profile properties correctly', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
     this.set('editProfile', () => {});
     this.set('profile', profile1);
     await render(hbs`{{query-container/profile-selector/profile-details/profile-view
@@ -93,7 +94,7 @@ module('Integration | Component | Profile Details - Profile View', function(hook
     assert.equal(findAll(profileNameSelector).length, 1, 'Shall render profile-name div with correct class');
     assert.equal(findAll(`${profileNameSelector} ${nameSelector}`).length, 1, 'Shall render profile-name name div with correct class');
     assert.equal(findAll(`${profileNameSelector} ${valueSelector}`).length, 1, 'Shall render profile-name value div with correct class');
-    assert.equal(find(`${profileNameSelector} ${nameSelector}`).innerText.trim(), 'Profile Name', 'Shall render profile-name name div with correct text');
+    assert.equal(find(`${profileNameSelector} ${nameSelector}`).innerText.trim(), translation.t('investigate.profile.profileName'), 'Shall render profile-name name div with correct text');
     assert.equal(find(`${profileNameSelector} ${valueSelector}`).innerText.trim(), profile1.name, 'Shall render profile name correctly');
 
     assert.equal(findAll(metaGroupNameSelector).length, 1, 'Shall render meta-group-name div with correct class');
