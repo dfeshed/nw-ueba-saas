@@ -119,7 +119,7 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         Instant endTime = params.getEndInstant();
         Instant startTime = params.getStartInstant();
 
-        return new MultiRangeTimeGenerator(startTime, endTime, rangesList, Duration.ofMillis(params.getMillisBetweenEvents()));
+        return new MultiRangeTimeGenerator(startTime, endTime, rangesList, null);
     }
 
     @Override

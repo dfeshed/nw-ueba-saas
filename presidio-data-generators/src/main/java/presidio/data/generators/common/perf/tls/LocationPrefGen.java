@@ -2,6 +2,7 @@ package presidio.data.generators.common.perf.tls;
 
 import presidio.data.domain.Location;
 import presidio.data.generators.common.list.content.Locations;
+import presidio.data.generators.common.perf.ConstantPrefGen;
 
 import java.util.List;
 

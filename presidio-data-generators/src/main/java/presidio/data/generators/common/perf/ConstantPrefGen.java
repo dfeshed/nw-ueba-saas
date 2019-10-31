@@ -1,7 +1,6 @@
-package presidio.data.generators.common.perf.tls;
+package presidio.data.generators.common.perf;
 
 import presidio.data.generators.common.list.content.Locations;
-import presidio.data.generators.common.perf.UniformBasedPerfGen;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
