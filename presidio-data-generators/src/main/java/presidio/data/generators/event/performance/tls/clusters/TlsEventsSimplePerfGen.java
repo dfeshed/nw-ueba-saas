@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
@@ -34,6 +33,7 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         gen.formatter = String::toLowerCase;
         return gen;
     };
+    private final IBaseGenerator<Long> unusualTrafficGenerator = new GaussianLongGenerator(1.5e9, 10e6);
 
     private TlsPerfClusterParams params;
     private final int UNIQUE_ID;
@@ -56,13 +56,13 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
     private IBaseGenerator<String> dataSourceGenerator = new RandomStringGenerator(6, 7);
     private IBaseGenerator<String> dstNetnameGen = new SingleWordCyclicGenerator(201);
     private IBaseGenerator<String> eventIdGenerator = new Md5RandomGenerator();
-    private IBaseGenerator<Long> numOfBytesSentGenerator = new GaussianLongGenerator(500000.0D, 100000.0D);
-    private IBaseGenerator<Long> numOfBytesReceivedGenerator = new GaussianLongGenerator(500000.0D, 100000.0D);
+    private IBaseGenerator<Long> numOfBytesSentGenerator = new GaussianLongGenerator(5e5, 2e5);
+    private IBaseGenerator<Long> numOfBytesReceivedGenerator = new GaussianLongGenerator(5e12, 2e11);
     private IBaseGenerator<Integer> srcPortGenerator = new RandomIntegerGenerator(0, 9999);
     private IBaseGenerator<Integer> sessionSplitGenerator = new FixedValueGenerator<>(0);
 
     private final Random random = new Random(0);
-    private Predicate<Double> isAnomaly = probabiliity -> random.nextDouble() <= probabiliity;
+    private Supplier<Boolean> isAnomaly = () -> random.nextDouble() <= params.getAlertsProbability();
 
     public TlsEventsSimplePerfGen(TlsPerfClusterParams params) {
         this.params = params;
@@ -124,9 +124,9 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
 
     @Override
     public TlsEvent generateNext() throws GeneratorException {
-        Instant nextTime = isAnomaly.test(params.getAlertsProbability())  ?
-                setAbnormalActivityTime(timeGenerator.getNext()) : timeGenerator.getNext();
+        boolean ifAbnormalEvent = isAnomaly.get();
 
+        Instant nextTime = ifAbnormalEvent ? setAbnormalActivityTime(timeGenerator.getNext()) : timeGenerator.getNext();
         TlsEvent tlsEvent = new TlsEvent(nextTime);
 
         tlsEvent.setEventId(eventIdGenerator.getNext());
@@ -135,7 +135,7 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         tlsEvent.setSourceIp(srcIpGenerator.getNext());
         tlsEvent.setDestinationOrganization(dstOrgGen.getNext());
         tlsEvent.setDestinationASN(dstAsnGenerator.getNext());
-        tlsEvent.setNumOfBytesSent(numOfBytesSentGenerator.getNext());
+        tlsEvent.setNumOfBytesSent(ifAbnormalEvent ? unusualTrafficGenerator.getNext() : numOfBytesSentGenerator.getNext());
         tlsEvent.setNumOfBytesReceived(numOfBytesReceivedGenerator.getNext());
         tlsEvent.setSourceNetname(srcNetnameGen.getNext());
         tlsEvent.setDestinationNetname(dstNetnameGen.getNext());
