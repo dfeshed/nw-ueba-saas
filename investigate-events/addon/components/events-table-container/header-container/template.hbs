@@ -29,7 +29,7 @@
             class="rsa-investigate-events-table__header__manageIncident"}}
         {{/if}}
 
-        <div class="toggle-wrapper" title={{ if (not eventsHaveSplits) (t 'investigate.disabledEnableEventRelationshipsLabel') }}>
+        <div class="toggle-wrapper" title={{ groupingToggleLabel }}>
           {{#x-toggle
             disabled=(not eventsHaveSplits)
             showLabels=true

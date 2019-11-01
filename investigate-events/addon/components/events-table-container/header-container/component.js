@@ -85,6 +85,15 @@ const HeaderContainer = Component.extend({
     return (!hasResults || areEventsStreaming || isSummaryColumnVisible);
   },
 
+  @computed('eventsHaveSplits')
+  groupingToggleLabel(eventsHaveSplits) {
+    if (eventsHaveSplits) {
+      return this.get('i18n').t('investigate.enabledEnableEventRelationshipsLabel');
+    } else {
+      return this.get('i18n').t('investigate.disabledEnableEventRelationshipsLabel');
+    }
+  },
+
   @computed('items')
   hasResults(results) {
     return !!results && results.length > 0;

@@ -551,8 +551,9 @@ export default {
       withSplit: 'This event is part of a split session (split.session: {{split}}) matching these parameters: {{{tuple}}}',
       onlyGrouped: 'This event is related to a previous session matching these parameters: {{{tuple}}}'
     },
-    enableEventRelationshipsLabel: 'Show Relationships',
-    disabledEnableEventRelationshipsLabel: 'Showing relationships is disabled because there are no relationships present in these events.',
+    enableEventRelationshipsLabel: 'Group Events',
+    disabledEnableEventRelationshipsLabel: 'This option is disabled because there are not multiple events with the same attributes (tuple of ip/ipv6.src, ip/ipv6.dst, tcp/udp.srcport, tcp/udp.dstport).',
+    enabledEnableEventRelationshipsLabel: 'This option groups events that have the same attributes (tuple of ip/ipv6.src, ip/ipv6.dst, tcp/udp.srcport, tcp/udp.dstport).',
     controls: {
       toggle: 'Show/Hide Events List Panel',
       togglePreferences: 'Toggle Investigate Preferences'
