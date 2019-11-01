@@ -1,8 +1,9 @@
 .rsa-application-header {
   height: 47px;
   position: relative;
-  z-index: 2;
+  @include rsa-layer(controls);
   @include border-bottom(1px, solid, primary, dark);
+  background-color: background-color(primary, darkest);
 
   > a {
     float: left;

@@ -33,6 +33,7 @@ $investigateReconFullWidth: 100%;
     @include border-bottom(1px, solid, neutral, dark);
     @include rsa-vendor-prefix(flex-shrink, 0);
     padding: rsa-whitespace(least) rsa-whitespace();
+    @include rsa-layer(controls);
     .rsa-investigate-query {
       .rsa-investigate-query-input {
         @include rsa-vendor-prefix(flex-grow, 1);
@@ -422,5 +423,5 @@ $investigateReconFullWidth: 100%;
 
 .license-banner.shown + .rsa-investigate-query {
   // When license banner is shown, the absolute top position has to be adjusted
-  top: 86px;
+  top: 75px;
 }
