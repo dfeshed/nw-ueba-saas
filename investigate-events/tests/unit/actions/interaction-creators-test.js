@@ -4,6 +4,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import ReduxDataHelper, { DEFAULT_PILLS_DATA, TEXT_PILL_DATA } from '../../helpers/redux-data-helper';
 import interactionCreators, { updateUrl } from 'investigate-events/actions/interaction-creators';
 import ACTION_TYPES from 'investigate-events/actions/types';
+import Immutable from 'seamless-immutable';
 
 let queryIsRunning = true;
 let noMoreEventsAllowed = false;
@@ -398,7 +399,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
 
   test('setProfile replaces query pills, sets column group, and executes query if column group and query both changed',
     function(assert) {
-      assert.expect(3);
+      assert.expect(4);
       const executeQuery = () => {
         assert.ok(true, 'executeQuery triggered only if new column group and new query');
       };
@@ -409,7 +410,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
           name: 'RSA Email Analysis',
           id: 'EMAIL'
         },
-        preQueryPillsData: [ ...DEFAULT_PILLS_DATA, { type: 'text', searchTerm: 'newPill' } ],
+        preQueryPillsData: Immutable.from([ ...DEFAULT_PILLS_DATA, { type: 'text', searchTerm: 'newPill' } ]),
         contentType: 'OOTB'
       };
 
@@ -428,6 +429,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
           if (replaceAllGuidedPillsDispatchCount === 0) {
             // first, check that REPLACE_ALL_GUIDED_PILLS was dispatched
             assert.equal(action.type, ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS, 'sent out action to replace all guided pills');
+            assert.equal(action.payload.pillData.length, 6, 'action has correct number of pills (pre-query pills wrapped in parens)');
             replaceAllGuidedPillsDispatchCount++;
           } else if (colGroupDispatchCount === 0) {
             // second, check that SET_SELECTED_COLUMN_GROUP was dispatched
@@ -444,7 +446,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
 
   test('setProfile replaces query pills if column group did not change and query changed',
     function(assert) {
-      assert.expect(1);
+      assert.expect(2);
       const executeQuery = () => {
         assert.ok(false, 'executeQuery shall not be triggered');
       };
@@ -455,7 +457,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
           name: 'SUMMARY',
           id: 'SUMMARY'
         },
-        preQueryPillsData: [ ...DEFAULT_PILLS_DATA, TEXT_PILL_DATA[0] ],
+        preQueryPillsData: Immutable.from([ ...DEFAULT_PILLS_DATA, ...TEXT_PILL_DATA ]),
         contentType: 'OOTB'
       };
 
@@ -475,6 +477,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
           if (replaceAllGuidedPillsDispatchCount === 0) {
             // first, check that REPLACE_ALL_GUIDED_PILLS was dispatched
             assert.equal(action.type, ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS, 'sent out action to replace all guided pills');
+            assert.equal(action.payload.pillData.length, 6, 'action has correct number of pills (pre-query pills wrapped in parens)');
             replaceAllGuidedPillsDispatchCount++;
           } else if (colGroupDispatchCount === 0) {
             // SET_SELECTED_COLUMN_GROUP shall not be dispatched
@@ -491,7 +494,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
 
   test('setProfile replaces query pills and sets column group if column group changed and query did not change',
     function(assert) {
-      assert.expect(2);
+      assert.expect(3);
       const executeQuery = () => {
         assert.ok(false, 'executeQuery shall not be triggered');
       };
@@ -502,7 +505,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
           name: 'RSA Email Analysis',
           id: 'EMAIL'
         },
-        preQueryPillsData: DEFAULT_PILLS_DATA,
+        preQueryPillsData: Immutable.from(DEFAULT_PILLS_DATA),
         contentType: 'OOTB'
       };
 
@@ -521,6 +524,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
           if (replaceAllGuidedPillsDispatchCount === 0) {
             // first, check that REPLACE_ALL_GUIDED_PILLS was dispatched
             assert.equal(action.type, ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS, 'sent out action to replace all guided pills');
+            assert.equal(action.payload.pillData.length, 5, 'action has correct number of pills (pre-query pills wrapped in parens)');
             replaceAllGuidedPillsDispatchCount++;
           } else if (colGroupDispatchCount === 0) {
             // second, check that SET_SELECTED_COLUMN_GROUP was dispatched

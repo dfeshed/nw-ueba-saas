@@ -27,6 +27,8 @@ import {
   nestChildEvents
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { isConsoleEmpty } from 'investigate-events/reducers/investigate/query-stats/selectors';
+import { createParens } from 'investigate-events/util/query-parsing';
+import { CLOSE_PAREN, OPEN_PAREN } from 'investigate-events/constants/pill';
 
 /**
  * reset sort state to ensure the column being sorted on exists
@@ -47,6 +49,24 @@ const _resetSortState = (dispatch, prefs) => {
     document.querySelector('title').innerHTML,
     `${window.location.pathname}?${params}`
   );
+};
+
+/**
+ * Determines if the pills need to be wrapped in parentheses. This is true for
+ * most cases unless the pills are already wrapped.
+ * @param {Object[]} pills
+ * @return {boolean}
+ * @private
+ */
+const _shouldBeWrappedInParens = (pills) => {
+  const [firstPill] = pills;
+  const lastPill = pills[pills.length - 1];
+  const hasWrappingParens = (
+    firstPill.type === OPEN_PAREN &&
+    lastPill.type === CLOSE_PAREN &&
+    firstPill.twinId === lastPill.twinId
+  );
+  return !hasWrappingParens;
 };
 
 /**
@@ -274,18 +294,24 @@ export const setColumnGroup = (selectedGroup) => {
 export const setProfile = (profile, executeQuery) => {
   return (dispatch, getState) => {
     const currentState = getState();
-    const newQueryPillsData = profile.preQueryPillsData || [];
+    const prequeryPills = profile.preQueryPillsData?.asMutable() || [];
     const currentColumnGroupId = selectedColumnGroup(currentState);
-    const newColumnGroupId = profile.columnGroup.id;
+    const newColumnGroupId = profile.columnGroup?.id;
 
     // Before setting the profile which may contain its own pills
     // we want the primary query-pills container to resume it's
     // normal activities
     dispatch(unstashPills());
 
+    // if there are any prequery pills, wrap them in parens if needed
+    if (prequeryPills.length > 1 && _shouldBeWrappedInParens(prequeryPills)) {
+      const [ open, close ] = createParens();
+      prequeryPills.unshift(open);
+      prequeryPills.push(close);
+    }
     // replace any existing pills with profile's prequery pills
     // whether column group changed or not
-    dispatch(replaceAllGuidedPills(newQueryPillsData));
+    dispatch(replaceAllGuidedPills(prequeryPills));
 
     // if new profile's column group is different than currently selected column group
     if (newColumnGroupId && newColumnGroupId !== currentColumnGroupId) {
