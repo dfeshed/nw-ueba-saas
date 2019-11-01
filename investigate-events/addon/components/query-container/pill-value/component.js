@@ -231,21 +231,33 @@ export default Component.extend({
   @computed('valueString')
   valueDisplay(valueString) {
     let ret = valueString;
+    const quote = "<span class=\"quote-highlight\">'</span>";
     if (typeof(valueString) === 'string') {
       const values = valueList(valueString);
       ret = values.map((value) => {
         if (value.quoted) {
+          if (value.value.includes("'-'")) {
+            const [ chunk1, chunk2 ] = value.value.split("'-'").map((half) => {
+              return Utils.escapeExpression(half);
+            });
+            return `${quote}${chunk1}${quote}-${quote}${chunk2}${quote}`;
+          }
           // For text values with html tags, we will need to encode the string,
           // before passing it through htmlSafe so that the original value is retained.
           // This is an internal Ember API function
           const transformedString = Utils.escapeExpression(value.value);
-          return `
-            <span class="quote-highlight">'</span>
-            ${transformedString}
-            <span class="quote-highlight">'</span>
-          `;
+          return `${quote}${transformedString}${quote}`;
         } else {
-          return Utils.escapeExpression(value.value);
+          const match = /'(.+)'-(.+)|(.+)-'(.+)'/.exec(value.value);
+          if (match) {
+            if (match[1] && match[2]) {
+              return `${quote}${Utils.escapeExpression(match[1])}${quote}-${Utils.escapeExpression(match[2])}`;
+            } else if (match[3] && match[4]) {
+              return `${Utils.escapeExpression(match[3])}-${quote}${Utils.escapeExpression(match[4])}${quote}`;
+            }
+          } else {
+            return Utils.escapeExpression(value.value);
+          }
         }
       }).join(',');
       ret = htmlSafe(ret);

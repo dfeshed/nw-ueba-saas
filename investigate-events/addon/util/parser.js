@@ -577,8 +577,8 @@ class Parser {
             });
             return {
               ...range,
-              to: aliasTo ? { ...range.value, text: aliasTo } : range.to,
-              from: aliasFrom ? { ...range.value, text: aliasFrom } : range.from
+              to: aliasTo ? { ...range.to, text: aliasTo } : range.to,
+              from: aliasFrom ? { ...range.from, text: aliasFrom } : range.from
             };
           }
         });
@@ -712,8 +712,7 @@ class Parser {
    */
   _metaValueRange() {
     const metaValue = this._metaValue();
-    const { value } = metaValue;
-    let { validationError } = metaValue;
+    const { value, validationError } = metaValue;
     if (this._nextTokenIsOfType([ LEXEMES.HYPHEN ])) {
       // Consume the range token first
       this._consume([ LEXEMES.HYPHEN ]);
@@ -729,12 +728,6 @@ class Parser {
         }
       }
       const { value: to, validationError: validationError2 } = this._metaValue();
-      if ((value.type !== LEXEMES.INTEGER && value.type !== LEXEMES.FLOAT && value.text.toLowerCase() !== 'l') ||
-        (to.type !== LEXEMES.INTEGER && to.type !== LEXEMES.FLOAT && to.text.toLowerCase() !== 'u')) {
-        // If either side of the range is not a number or the lower side is "l" or the upper side is "u"...
-        const i18n = lookup('service:i18n');
-        validationError = i18n.t('queryBuilder.validationMessages.nonNumericRange');
-      }
       return {
         range: {
           type: GRAMMAR.META_VALUE_RANGE,

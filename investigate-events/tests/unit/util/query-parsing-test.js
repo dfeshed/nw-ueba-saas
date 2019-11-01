@@ -327,6 +327,42 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.notOk(result[0].validationError, 'validation error should not exist');
   });
 
+  test('transformTextToPillData returns an valid pill for a range using aliases', function(assert) {
+    const text = 'ip.proto = \'TCP\' - \'UDP\'';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'ip.proto', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '\'TCP\'-\'UDP\'', 'value should match');
+    assert.notOk(result[0].isInvalid, 'pill should not be invalid');
+    assert.notOk(result[0].validationError, 'validation error should not exist');
+  });
+
+  test('transformTextToPillData returns an invalid pill for a range using an incorrect alias', function(assert) {
+    const text = 'ip.proto = \'TCP\' - \'BAD\'';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'ip.proto', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '\'TCP\'-\'BAD\'', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.ok(result[0].validationError, 'validation error should exist');
+  });
+
+  test('transformTextToPillData returns an valid pill for a range using a normal value and an alias', function(assert) {
+    const text = 'ip.proto = 1 - \'UDP\'';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'ip.proto', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '1-\'UDP\'', 'value should match');
+    assert.notOk(result[0].isInvalid, 'pill should not be invalid');
+    assert.notOk(result[0].validationError, 'validation error should not exist');
+  });
+
   test('transformTextToPillData returns an invalid pill for an invalid alias', function(assert) {
     const text = 'medium = \'IEEEthernet\'';
     const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
@@ -457,30 +493,6 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].value, '3ffe:1900:4545:3:200:f8ff:fe21:67cf/-5', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
     assert.equal(result[0].validationError.string, 'Negative values are not allowed.', 'validation error should be correct');
-  });
-
-  test('transformTextToPillData returns an invalid pill for ranges with text keys', function(assert) {
-    const text = 'a = \'foo\'-\'bar\'';
-    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    assert.strictEqual(result.length, 1);
-    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
-    assert.equal(result[0].meta, 'a', 'meta should match');
-    assert.equal(result[0].operator, '=', 'operator should match');
-    assert.equal(result[0].value, '\'foo\'-\'bar\'', 'value should match');
-    assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'Ranges can only be used with numeric values.', 'validation error should be correct');
-  });
-
-  test('transformTextToPillData returns an invalid pill for ranges with non-numbers', function(assert) {
-    const text = 'medium = 3-\'4\'';
-    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    assert.strictEqual(result.length, 1);
-    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
-    assert.equal(result[0].meta, 'medium', 'meta should match');
-    assert.equal(result[0].operator, '=', 'operator should match');
-    assert.equal(result[0].value, '3-\'4\'', 'value should match');
-    assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'Ranges can only be used with numeric values.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an invalid pill for negative numbers', function(assert) {
