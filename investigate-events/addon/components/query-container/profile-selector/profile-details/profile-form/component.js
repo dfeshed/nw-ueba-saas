@@ -4,6 +4,11 @@ import _ from 'lodash';
 import layout from './template';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 import { hasUniqueName } from 'investigate-events/util/validations';
+import {
+  COLUMN_GROUP_ID_SUMMARY,
+  COLUMN_GROUP_VIEW_SUMMARY,
+  COLUMN_GROUP_VIEW_CUSTOM
+} from 'investigate-events/constants/columnGroups';
 
 export default Component.extend({
   layout,
@@ -54,69 +59,74 @@ export default Component.extend({
   metaGroup: null, // object
   preQuery: null, // string
 
-  // initialize form data when edit has begun
-  // reset form data when profile is created, updated or reset
+  // reset form
   didReceiveAttrs() {
-    this.updateFormData();
+    this._updateFormData();
   },
 
-  // initialize a working copy of original profile
-  updateFormData() {
-    // reset error state
+  didInsertElement() {
+    this._updateFormData();
+  },
+
+  _updateFormData() {
+    const profile = this.get('profile');
+    if (!profile) {
+      this._initializeNewFormData();
+    } else {
+      this._initializeEditFormData();
+    }
+  },
+
+  _initializeNewFormData() {
+    // The first meta groups is used as a temporary default
+    // until we allow user selection
+    // TODO replace this when meta groups are introduced
+    const newColumnGroup = this.get('columnGroups') ?.find(({ id }) => id === this.get('selectedColumnGroupId'));
+    this.set('metaGroup', this.get('metaGroups')[0]);
+    this.set('columnGroup', newColumnGroup);
+  },
+
+  // called once when editing existing profile
+  _initializeEditFormData() {
+    const profile = this.get('profile');
+    // set values based on original profile before edit begins
+    this.set('name', profile.name);
+    this.set('columnGroup', this.get('columnGroups')?.find(({ id }) => id === profile.columnGroup.id));
+    this.set('columnGroupView', profile.columnGroupView);
+    this.set('metaGroup', profile.metaGroup);
+    this.set('preQuery', profile.preQuery);
+    this._broadcastChangedProfile(this._assembleNewProfile());
+  },
+
+  _resetErrorState() {
     if (this.get('isNameError')) {
       this.set('isNameError', false);
       this.set('nameInvalidMessage', null);
     }
-
-    const profile = this.get('profile');
-
-    // use this boolean to decide whether or not to update columnGroup in form
-    // to not overwrite already selected column group in form
-    const formHasColumnGroup = !!this.get('columnGroup');
-    let newColumnGroup;
-
-    // If profile exists, then we are editing
-    // an existing profile, otherwise we are
-    // creating a new one
-    if (profile) {
-      newColumnGroup = formHasColumnGroup ? undefined : this.get('columnGroups')?.find(({ id }) => id === profile.columnGroup.id);
-      this.set('name', profile.name);
-      this.set('columnGroupView', profile.columnGroupView);
-      this.set('metaGroup', profile.metaGroup);
-      this.set('preQuery', profile.preQuery);
-
-    } else {
-      // The first meta groups is used as a temporary default
-      // until we allow user selection
-      // TODO replace this when meta groups are introduced
-      newColumnGroup = formHasColumnGroup ? undefined : this.get('columnGroups')?.find(({ id }) => id === this.get('selectedColumnGroupId'));
-      this.set('metaGroup', this.get('metaGroups')[0]);
-    }
-
-    // if columnGroup needs to be updated
-    if (newColumnGroup) {
-      this.set('columnGroup', newColumnGroup);
-    }
-
-    // For list-manager to light up the "Save" button
-    // we need to broadcast the edit data so that
-    // list-manager knows something has "changed"
-    //
-    // TODO: Why do we have to broadcast for "new" as
-    // well?
-    this._broadcastChangedProfile();
   },
 
-  // Pull all the form fields, assemble a new profile
-  // object and provide it to list manager callback
-  // which allows buttons to shift/change
-  _broadcastChangedProfile() {
-    const { name, columnGroup, metaGroup } =
-      this.getProperties('name', 'columnGroup', 'metaGroup');
+  // called when a change happens in form
+  _broadcast() {
+    this._resetErrorState();
+
+    // For list-manager details-footer to know
+    // which buttons to display and enable or disable
+    // for example, to light up the "Save" button
+    // or show Reset button or Close button
+    // we need to broadcast the edit data so that
+    // list-manager knows something has "changed"
+    this._broadcastChangedProfile(this._assembleNewProfile());
+  },
+
+  // returns a new (or edited) profile object
+  // based on component properties from form
+  _assembleNewProfile() {
+    // create and populate newProfile object
     const newProfile = _.cloneDeep(this.get('profile')) || {};
+    const { name, columnGroup, metaGroup } = this.getProperties('name', 'columnGroup', 'metaGroup');
     newProfile.name = name?.trim();
     newProfile.columnGroup = columnGroup;
-    newProfile.columnGroupView = columnGroup?.id === 'SUMMARY' ? 'SUMMARY_VIEW' : 'CUSTOM';
+    newProfile.columnGroupView = columnGroup?.id === COLUMN_GROUP_ID_SUMMARY ? COLUMN_GROUP_VIEW_SUMMARY : COLUMN_GROUP_VIEW_CUSTOM;
     newProfile.metaGroup = metaGroup;
     let newPreQuery;
 
@@ -126,8 +136,13 @@ export default Component.extend({
       newPreQuery = encodeMetaFilterConditions(this.get('pillsData'));
     }
     newProfile.preQuery = newPreQuery;
+    return newProfile;
+  },
 
-    this.get('editProfile')(newProfile);
+  // provide updated profile to list manager callback
+  // which allows details-footer buttons to shift/change
+  _broadcastChangedProfile(profileToBraodcast) {
+    this.get('editProfile')(profileToBraodcast);
   },
 
   _validateForErrors(value) {
@@ -143,12 +158,12 @@ export default Component.extend({
     onNameChange(value) {
       this.set('name', value);
       this._validateForErrors(value);
-      this._broadcastChangedProfile();
+      this._broadcastChangedProfile(this._assembleNewProfile());
     },
 
     onColumnGroupChange(columnGroup) {
       this.set('columnGroup', columnGroup);
-      this._broadcastChangedProfile();
+      this._broadcastChangedProfile(this._assembleNewProfile());
     }
   }
 });

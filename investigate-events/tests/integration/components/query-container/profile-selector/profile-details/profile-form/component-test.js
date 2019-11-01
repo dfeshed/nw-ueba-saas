@@ -56,10 +56,10 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
 
   test('shall render editable form for a new profile', async function(assert) {
     const translation = this.owner.lookup('service:i18n');
-    assert.expect(4);
+    assert.expect(3);
     this.set('profile', null);
     this.set('editProfile', () => {
-      assert.ok(true, 'editProfile called');
+      assert.notOk(true, 'editProfile shall not be called');
     });
 
     await render(hbs`{{query-container/profile-selector/profile-details/profile-form
@@ -73,7 +73,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('renders form to create new profile populated with column group of current page', async function(assert) {
-    assert.expect(5);
+    assert.expect(4);
     // creating a new profile
     this.set('profile', null);
     this.set('columnGroups', columnGroups);
@@ -81,7 +81,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
     const columnGroupName = columnGroups.find(({ id }) => id === columnGroups[2].id).name;
     this.set('metaGroups', []);
     this.set('editProfile', () => {
-      assert.ok(true, 'calls editProfile when there are pre-populated values to be broadcasted');
+      assert.notOk(true, 'editProfile called');
     });
 
     await render(hbs`{{query-container/profile-selector/profile-details/profile-form
@@ -99,14 +99,14 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('renders form populated with details of profile being edited', async function(assert) {
-    assert.expect(5);
+    assert.expect(6);
     const profile2 = { ...profile1 };
     this.set('profile', profile2);
     this.set('columnGroups', columnGroups);
     const columnGroupName = columnGroups.find(({ id }) => id === profile2.columnGroup?.id)?.name;
     this.set('metaGroups', []);
     this.set('editProfile', () => {
-      assert.ok(true, 'calls editProfile when there are pre-populated values to be broadcasted');
+      assert.ok(true, 'editProfile called');
     });
 
     await render(hbs`{{query-container/profile-selector/profile-details/profile-form
@@ -123,7 +123,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('shall update profile name from user input', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
     this.set('profile', null);
     this.set('editProfile', () => {
       assert.ok(true, 'editProfile called');
@@ -142,7 +142,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('shall update profile column group from user selection', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
 
     this.set('profile', null);
     this.set('columnGroups', columnGroups);
@@ -165,7 +165,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('shall not reset column group selection after profile name changes', async function(assert) {
-    assert.expect(6);
+    assert.expect(5);
 
     this.set('profile', null);
     this.set('columnGroups', columnGroups);

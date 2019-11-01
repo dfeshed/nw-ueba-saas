@@ -66,7 +66,7 @@ const ItemDetails = Component.extend({
       this.set('didReset', true);
 
       // The consumer of list-mananger will have to be notified about reset
-      this.send('beginEditItem', this.get('editedItem').id, this.get('stateLocation'));
+      this.send('beginEditItem', this.get('originalItem').id, this.get('stateLocation'));
 
       // let rendering happen then set it back
       run.next(() => {
