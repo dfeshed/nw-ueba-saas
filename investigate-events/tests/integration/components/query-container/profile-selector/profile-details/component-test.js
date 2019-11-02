@@ -6,7 +6,6 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 module('Integration | Component | Profile Details', function(hooks) {
-
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
@@ -34,9 +33,8 @@ module('Integration | Component | Profile Details', function(hooks) {
   };
 
   test('profile details should render profile-view when an item is available', async function(assert) {
-    const editProfile1 = () => {};
     this.set('profile', profile1);
-    this.set('editProfile', editProfile1);
+    this.set('editProfile', () => {});
     this.set('metaGroups', []);
     this.set('columnGroups', []);
     this.set('profiles', [profile1]);

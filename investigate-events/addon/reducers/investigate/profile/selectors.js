@@ -21,7 +21,8 @@ export const enrichedProfile = (profile, languageAndAliases, columnGroups) => {
   const preQueryExists = !!profile.preQuery && profile.preQuery.length;
   enriched.isEditable = _isEditable(profile);
   enriched.preQuery = preQueryExists ? profile.preQuery : '';
-  enriched.preQueryPillsData = preQueryExists ? transformTextToPillData(profile.preQuery.trim(), { language, aliases, returnMany: true }) : [];
+  const pillsData = preQueryExists ? transformTextToPillData(profile.preQuery.trim(), { language, aliases, returnMany: true }) : [];
+  enriched.preQueryPillsData = pillsData;
 
   // if profile was returned from API without columnGroup property
   // or columnGroupView is 'SUMMARY_VIEW' - because summary columnGroup is not saved

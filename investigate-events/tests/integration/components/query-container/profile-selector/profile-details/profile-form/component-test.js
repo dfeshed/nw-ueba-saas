@@ -58,13 +58,12 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
     const translation = this.owner.lookup('service:i18n');
     assert.expect(3);
     this.set('profile', null);
-    this.set('editProfile', () => {
-      assert.notOk(true, 'editProfile shall not be called');
+    this.set('sendToBroadcast', () => {
+      assert.notOk(true, 'sendToBroadcast shall not be called');
     });
 
     await render(hbs`{{query-container/profile-selector/profile-details/profile-form
-      profile=profile
-      editProfile=editProfile}}`);
+      profile=profile}}`);
 
     assert.ok(find(profileNameInputSelector), 'shall render input for profile name');
     assert.equal(find(profileNameInputSelector).getAttribute('placeholder'), translation.t('investigate.profile.profileNamePlaceholder'),
@@ -80,8 +79,8 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
     this.set('selectedColumnGroupId', columnGroups[2].id);
     const columnGroupName = columnGroups.find(({ id }) => id === columnGroups[2].id).name;
     this.set('metaGroups', []);
-    this.set('editProfile', () => {
-      assert.notOk(true, 'editProfile called');
+    this.set('sendToBroadcast', () => {
+      assert.notOk(true, 'sendToBroadcast called');
     });
 
     await render(hbs`{{query-container/profile-selector/profile-details/profile-form
@@ -89,7 +88,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
       columnGroups=columnGroups
       selectedColumnGroupId=selectedColumnGroupId
       metaGroups=metaGroups
-      editProfile=editProfile}}`);
+      sendToBroadcast=sendToBroadcast}}`);
 
     assert.ok(find(profileNameInputSelector), 'Shall render input for profile name');
     assert.equal(find(profileNameInputSelector).value?.trim(), '', 'profile name empty');
@@ -99,21 +98,21 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   });
 
   test('renders form populated with details of profile being edited', async function(assert) {
-    assert.expect(6);
+    assert.expect(5);
     const profile2 = { ...profile1 };
     this.set('profile', profile2);
     this.set('columnGroups', columnGroups);
     const columnGroupName = columnGroups.find(({ id }) => id === profile2.columnGroup?.id)?.name;
     this.set('metaGroups', []);
-    this.set('editProfile', () => {
-      assert.ok(true, 'editProfile called');
+    this.set('sendToBroadcast', () => {
+      assert.ok(true, 'sendToBroadcast called once');
     });
 
     await render(hbs`{{query-container/profile-selector/profile-details/profile-form
       profile=profile
       columnGroups=columnGroups
       metaGroups=metaGroups
-      editProfile=editProfile}}`);
+      sendToBroadcast=sendToBroadcast}}`);
 
     assert.ok(find(profileNameInputSelector), 'Shall render input for profile name');
     assert.equal(find(profileNameInputSelector).value?.trim(), profile2.name, 'profile name rendered correctly');
@@ -125,13 +124,13 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   test('shall update profile name from user input', async function(assert) {
     assert.expect(3);
     this.set('profile', null);
-    this.set('editProfile', () => {
-      assert.ok(true, 'editProfile called');
+    this.set('sendToBroadcast', () => {
+      assert.ok(true, 'sendToBroadcast called');
     });
 
     await render(hbs`{{query-container/profile-selector/profile-details/profile-form
       profile=profile
-      editProfile=editProfile}}`);
+      sendToBroadcast=sendToBroadcast}}`);
 
     assert.ok(find(profileNameInputSelector), 'shall render input for profile name');
 
@@ -146,15 +145,15 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
 
     this.set('profile', null);
     this.set('columnGroups', columnGroups);
-    this.set('editProfile', () => {
-      assert.ok(true, 'editProfile called');
+    this.set('sendToBroadcast', () => {
+      assert.ok(true, 'sendToBroadcast called');
     });
     const newColumnGroupName = columnGroups[1].name;
 
     await render(hbs`{{query-container/profile-selector/profile-details/profile-form
       profile=profile
       columnGroups=columnGroups
-      editProfile=editProfile}}`);
+      sendToBroadcast=sendToBroadcast}}`);
 
     assert.ok(find(columnGroupPowerSelectSelector), 'shall render profile column group dropdown');
 
@@ -170,8 +169,8 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
     this.set('profile', null);
     this.set('columnGroups', columnGroups);
     this.set('selectedColumnGroupId', columnGroups[3].id);
-    this.set('editProfile', () => {
-      assert.ok(true, 'editProfile called');
+    this.set('sendToBroadcast', () => {
+      assert.ok(true, 'sendToBroadcast called');
     });
     const newColumnGroupName = columnGroups[0].name;
 
@@ -179,7 +178,7 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
       profile=profile
       columnGroups=columnGroups
       selectedColumnGroupId=selectedColumnGroupId
-      editProfile=editProfile}}`);
+      sendToBroadcast=sendToBroadcast}}`);
 
     assert.ok(find(columnGroupPowerSelectSelector), 'shall render profile column group dropdown');
 
@@ -199,13 +198,13 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
   test('shall display error message if profile name is not unique', async function(assert) {
     this.set('profile', null);
     this.set('profiles', profiles);
-    this.set('editProfile', () => {});
+    this.set('sendToBroadcast', () => {});
 
     await render(hbs`{{query-container/profile-selector/profile-details/profile-form
       profile=profile
       profiles=profiles
       columnGroups=columnGroups
-      editProfile=editProfile}}`);
+      sendToBroadcast=sendToBroadcast}}`);
 
     await typeIn(profileNameInputSelector, profiles[0].name);
     await triggerEvent(profileNameInputSelector, 'keyup');

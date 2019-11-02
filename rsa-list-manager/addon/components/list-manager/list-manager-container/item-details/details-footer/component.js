@@ -5,6 +5,7 @@ import { itemType, isNewItem } from 'rsa-list-manager/selectors/list-manager/sel
 import { viewChanged } from 'rsa-list-manager/actions/creators/creators';
 import { LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
 import { createItem, updateItem } from 'rsa-list-manager/actions/creators/item-maintenance-creators';
+import { removeTwinIdFromPreQueryPillsData } from 'rsa-list-manager/utils/profile-util';
 import _ from 'lodash';
 
 const stateToComputed = (state, attrs) => ({
@@ -43,7 +44,7 @@ const DetailsFooter = Component.extend({
       if (typeof itemTransform === 'function') {
         editedItem = itemTransform(editedItem) || editedItem;
 
-        // TODO fix this - temporary solution to edit profile bug
+        // TODO fix this - temporary solution
         // checking if object is profile
         if (originalItem && !originalItem.hasOwnProperty('columns')) {
           originalItem = itemTransform(originalItem) || originalItem;
@@ -63,6 +64,19 @@ const DetailsFooter = Component.extend({
   },
 
   _didItemChange(originalItem, editedItem) {
+
+    // TODO temporary way to check if item is profile
+    // do not compare twinId in pillsData
+    if (originalItem && !originalItem.hasOwnProperty('columns')) {
+      const originalCopy = _.cloneDeep(originalItem);
+      const editedCopy = _.cloneDeep(editedItem) || {};
+
+      originalCopy.preQueryPillsData = removeTwinIdFromPreQueryPillsData(_.cloneDeep(originalItem.preQueryPillsData));
+      editedCopy.preQueryPillsData = editedItem ? removeTwinIdFromPreQueryPillsData(_.cloneDeep(editedItem.preQueryPillsData)) : [];
+
+      return originalItem.isEditable && !_.isEqual(originalCopy, editedCopy);
+    }
+
     // does not matter if creating a new item or viewing items that are not editable
     return originalItem && originalItem.isEditable && !_.isEqual(originalItem, editedItem);
   },
