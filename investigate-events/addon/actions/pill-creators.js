@@ -247,7 +247,8 @@ export const deleteSelectedGuidedPills = (pillData, isKeyPress = false) => {
         dispatch({
           type: ACTION_TYPES.DELETE_GUIDED_PILLS,
           payload: {
-            pillData: selectedPD
+            pillData: selectedPD,
+            isKeyPress
           }
         });
         // look for empty parens that may have resulted from the deletion of pills

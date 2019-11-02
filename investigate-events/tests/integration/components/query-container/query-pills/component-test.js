@@ -940,7 +940,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make the 1st pill focused and selected
-
+    await click(PILL_SELECTORS.selectedPill); // make the pill focused and not selected.
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
 
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
@@ -3895,8 +3895,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.meta).length, 1, '1 pill deleted so just the template remains');
   });
 
-  // TODO - Fix when deleting of a focused open paren does not delete associated logical operator
-  skip('Typing BACKSPACE when an open paren is focused will delete both the open and closed paren', async function(assert) {
+  test('Typing BACKSPACE when an open paren is focused will delete both the open and closed paren', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -3921,12 +3920,11 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.notOk(find(PILL_SELECTORS.closeParen), 'Missing close paren');
     // empty pill is opened.
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'Focus holder should not be present now');
-    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1, 'Focus shits to the next empty pill');
+    assert.equal(findAll(`${PILL_SELECTORS.newPillTriggerContainer} ${PILL_SELECTORS.metaInput}`).length, 1, 'Focus shits to the next empty pill');
 
   });
 
-  // TODO - Fix when deleting of a focused close paren does not delete associated logical operator
-  skip('Typing BACKSPACE when an close paren is focused will delete both the open and closed paren', async function(assert) {
+  test('Typing BACKSPACE when an close paren is focused will delete both the open and closed paren', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()

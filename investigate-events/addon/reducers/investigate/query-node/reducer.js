@@ -9,9 +9,8 @@ import { createQueryHash } from 'investigate-events/util/query-hash';
 import { createOperator, createParens, reassignTwinIds } from 'investigate-events/util/query-parsing';
 import { pillBeingEdited, focusedPill } from './selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
+import { isDeletingSingleFocusedParenSet, isPillOrOperatorToBeDelete } from 'investigate-events/util/pill-deletion-helpers';
 import {
-  CLOSE_PAREN,
-  OPEN_PAREN,
   OPERATOR_AND,
   OPERATOR_OR
 } from 'investigate-events/constants/pill';
@@ -277,31 +276,10 @@ const _addFocus = (state, needsFocusPill, isSelected) => {
   return state.set('pillsData', newPillsData);
 };
 
-const _isDeletingSingleFocusedParenSet = (pills) => {
-  return pills.length === 2 &&
-    pills.every((d) => d.type === OPEN_PAREN || d.type === CLOSE_PAREN) && // are parens
-    pills.some((d) => d.isFocused) && // at least one pill is focused
-    pills.every((d) => !d.isSelected); // none are selected
-};
-
-const _isPillOrOperatorToBeDelete = (deleteIds, pill, idx, pillsData) => {
-  const shouldDeletePill = deleteIds.includes(pill.id);
-  if (shouldDeletePill) {
-    // quick exit
-    return true;
-  }
-  const nextPill = pillsData[idx + 1];
-  const prevPill = pillsData[idx - 1];
-  const beforePrevPill = pillsData[idx - 2];
-  const shouldDeleteNextPill = nextPill && deleteIds.includes(nextPill.id);
-  const shouldDeletePrevPill = prevPill && deleteIds.includes(prevPill.id) && !_isLogicalOperator(beforePrevPill);
-  return (_isLogicalOperator(pill) && (shouldDeleteNextPill || shouldDeletePrevPill));
-};
-
-const _deletePills = (state, pillsToBeDeleted) => {
+const _deletePills = (state, pillsToBeDeleted, isKeyPress = false) => {
   // get ids for pills that need to be deleted
   const deleteIds = pillsToBeDeleted.map((pD) => pD.id);
-  const isParenSetOnly = _isDeletingSingleFocusedParenSet(pillsToBeDeleted);
+  const isParenSetOnly = isDeletingSingleFocusedParenSet(pillsToBeDeleted, isKeyPress);
   // remove those pill ids from state
   const newPills = state.pillsData.filter((pill, idx, pillsData) => {
     if (isParenSetOnly) {
@@ -309,7 +287,7 @@ const _deletePills = (state, pillsToBeDeleted) => {
       return !deleteIds.includes(pill.id);
     } else {
       // look for delete items, and operators that may be left behind
-      return !_isPillOrOperatorToBeDelete(deleteIds, pill, idx, pillsData);
+      return !isPillOrOperatorToBeDelete(deleteIds, pill, idx, pillsData);
     }
   });
   return state.set('pillsData', newPills);
@@ -672,7 +650,7 @@ export default handleActions({
 
   [ACTION_TYPES.DELETE_GUIDED_PILLS]: (state, { payload }) => {
     const { pillData } = payload;
-    const deletedPillsState = _deletePills(state, pillData);
+    const deletedPillsState = _deletePills(state, pillData, payload?.isKeyPress);
     return _removeFocus(deletedPillsState);
   },
 
