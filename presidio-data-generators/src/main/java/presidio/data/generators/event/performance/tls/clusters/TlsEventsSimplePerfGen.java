@@ -113,8 +113,8 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
     private  MultiRangeTimeGenerator getDefaultTimeGen() {
         List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
 
-        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(10,0),
-                LocalTime.of(18,0), Duration.ofMillis(params.getMillisBetweenEvents())));
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(params.getRegularActivityStartHour(),0),
+                LocalTime.of(params.getRegularActivityEndHour(),0), Duration.ofMillis(params.getMillisBetweenEvents())));
 
         Instant endTime = params.getEndInstant();
         Instant startTime = params.getStartInstant();

@@ -22,6 +22,8 @@ public class TlsPerfClusterParams {
     private double alertsProbability = -1;
     private int abnormalActivityStartHour = -1;
     private int abnormalActivityEndHour = -1;
+    private int regularActivityStartHour = -1;
+    private int regularActivityEndHour = -1;
 
     private TlsPerfClusterParams() { }
 
@@ -41,6 +43,8 @@ public class TlsPerfClusterParams {
         private double alertsProbability;
         private int abnormalActivityStartHour;
         private int abnormalActivityEndHour;
+        private int regularActivityStartHour;
+        private int regularActivityEndHour;
         private Instant startInstant;
         private Instant endInstant;
         private int millisBetweenEvents;
@@ -116,6 +120,16 @@ public class TlsPerfClusterParams {
             return this;
         }
 
+        public Builder setRegularActivityEndHour(int regularActivityEndHour) {
+            this.regularActivityEndHour = regularActivityEndHour;
+            return this;
+        }
+
+        public Builder setRegularActivityStartHour(int regularActivityStartHour) {
+            this.regularActivityStartHour = regularActivityStartHour;
+            return this;
+        }
+
         public Builder setAlertsProbability(double alertsProbability) {
             this.alertsProbability = alertsProbability;
             return this;
@@ -138,6 +152,8 @@ public class TlsPerfClusterParams {
             params.endInstant = this.endInstant;
             params.abnormalActivityStartHour = this.abnormalActivityStartHour;
             params.abnormalActivityEndHour = this.abnormalActivityEndHour;
+            params.regularActivityStartHour = this.regularActivityStartHour;
+            params.regularActivityEndHour = this.regularActivityEndHour;
             params.alertsProbability = this.alertsProbability;
             params.millisBetweenEvents = this.millisBetweenEvents;
 
@@ -158,7 +174,9 @@ public class TlsPerfClusterParams {
             Assert.assertTrue(params.alertsProbability > 0, "alertsProbability not set");
             Assert.assertTrue(params.abnormalActivityStartHour > 0, "abnormalActivityStartHour not set");
             Assert.assertTrue(params.abnormalActivityEndHour > 0, "abnormalActivityEndHour not set");
-            Assert.assertTrue(params.millisBetweenEvents > 0, "abnormalActivityEndHour not set");
+            Assert.assertTrue(params.regularActivityStartHour > 0, "regularActivityStartHour not set");
+            Assert.assertTrue(params.regularActivityEndHour > 0, "regularActivityEndHour not set");
+            Assert.assertTrue(params.millisBetweenEvents > 0, "millisBetweenEvents not set");
 
             return params;
         }
@@ -211,6 +229,14 @@ public class TlsPerfClusterParams {
 
     public int getAbnormalActivityEndHour() {
         return abnormalActivityEndHour;
+    }
+
+    public int getRegularActivityStartHour() {
+        return regularActivityStartHour;
+    }
+
+    public int getRegularActivityEndHour() {
+        return regularActivityEndHour;
     }
 
     public Instant getStartInstant() {
