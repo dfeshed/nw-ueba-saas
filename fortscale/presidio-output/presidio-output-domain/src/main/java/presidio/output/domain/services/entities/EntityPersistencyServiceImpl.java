@@ -1,16 +1,17 @@
 package presidio.output.domain.services.entities;
 
+import fortscale.utils.elasticsearch.PartialUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntityEnums;
 import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.repositories.EntityRepository;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class EntityPersistencyServiceImpl implements EntityPersistencyService {
@@ -63,4 +64,24 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     public Stream<Entity> findEntitiesByLastUpdateLogicalDateAndEntityType(Instant startDate, Instant endDate, String entityType) {
         return entityRepository.findByLastUpdateLogicalStartDateGreaterThanEqualAndLastUpdateLogicalEndDateLessThanEqualAndEntityType(startDate.toEpochMilli(), endDate.toEpochMilli(), entityType);
     }
+
+    @Override
+    public void updateTrend(EntityEnums.Trends trend, String id, double score) {
+        PartialUpdateRequest updateRequest = buildPartialUpdateRequest(trend, id, score);
+        entityRepository.updateEntity(updateRequest);
+    }
+
+    @Override
+    public void updateTrends(EntityEnums.Trends trend, Map<String, Double> entityScores) {
+        List<PartialUpdateRequest> updateRequests = entityScores.entrySet().stream()
+                                                    .map(entityScore -> buildPartialUpdateRequest(trend, entityScore.getKey(), entityScore.getValue()))
+                                                    .collect(Collectors.toList());
+        entityRepository.updateEntities(updateRequests);
+    }
+
+    private PartialUpdateRequest buildPartialUpdateRequest(EntityEnums.Trends trend, String id, double score) {
+        Map<String, Double> trendScore = Map.of(trend.name(), score);
+        return new PartialUpdateRequest(id).withField(Entity.TRENDING_SCORE_FIELD_NAME, trendScore);
+    }
+
 }

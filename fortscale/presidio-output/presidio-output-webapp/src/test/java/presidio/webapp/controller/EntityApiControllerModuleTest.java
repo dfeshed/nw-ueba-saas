@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -17,11 +18,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.ObjectUtils;
+import presidio.output.domain.records.entity.EntityEnums;
 import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.repositories.EntityRepository;
 import presidio.webapp.controllers.entities.EntitiesApi;
 import presidio.webapp.model.EntitiesWrapper;
 import presidio.webapp.model.Entity;
+import presidio.webapp.model.EntityQueryEnums;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
 import java.util.*;
@@ -65,6 +68,8 @@ public class EntityApiControllerModuleTest {
         //save entities in elastic
         entity1 = generateEntity(Collections.singletonList("a"), "entity1", "entityId1", 50d, Collections.singletonList("indicator1"), "userId");
         entity2 = generateEntity(Collections.singletonList("b"), "entity2", "entityId2", 60d, Arrays.asList("indicator1", "indicator2"), "ja3");
+        entity1.setTrendingScore(Map.of(EntityEnums.Trends.weekly, 1.5d, EntityEnums.Trends.daily, 2.3d));
+        entity2.setTrendingScore(Map.of(EntityEnums.Trends.weekly, 0.5d, EntityEnums.Trends.daily, 15d));
         List<presidio.output.domain.records.entity.Entity> entityList = Arrays.asList(entity1, entity2);
         entityRepository.saveAll(entityList);
     }
@@ -181,6 +186,30 @@ public class EntityApiControllerModuleTest {
         Assert.assertEquals(expectedEntity1, actualResponse);
     }
 
+    @Test
+    public void sortEntitiesByTrending() throws Exception {
+
+        // init expected response
+        Entity expectedEntity1 = convertDomainEntityToRestEntity(entity1);
+        Entity expectedEntity2 = convertDomainEntityToRestEntity(entity2);
+        EntitiesWrapper expectedResponse = new EntitiesWrapper();
+        expectedResponse.setTotal(2);
+        List<Entity> entities = Arrays.asList(expectedEntity2, expectedEntity1);
+        expectedResponse.setEntities(entities);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = entitiesApiMVC.perform(get(ENTITIES_URI)
+                                                    .param("sortFieldNames", EntityQueryEnums.EntityQuerySortFieldName.DAILY_TRENDS.name())
+                                                    .param("sortDirection", Sort.Direction.DESC.name()))
+                                            .andExpect(status().isOk())
+                                            .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        EntitiesWrapper actualResponse = objectMapper.readValue(actualResponseStr, EntitiesWrapper.class);
+
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
 
     private presidio.output.domain.records.entity.Entity generateEntity(List<String> classifications, String entityName, String entityId, double score, List<String> indicators, String entityType) {
         return new presidio.output.domain.records.entity.Entity(entityId, entityName, score, classifications, indicators, new ArrayList<>(), EntitySeverity.CRITICAL, 0, entityType);
@@ -201,6 +230,7 @@ public class EntityApiControllerModuleTest {
         convertedEntity.setAlertsCount(entity.getAlertsCount());
         convertedEntity.setEntityId(entity.getEntityId());
         convertedEntity.setEntityType(entity.getEntityType());
+        convertedEntity.setTerndingScore(entity.getTrendingScore());
         return convertedEntity;
     }
 

@@ -431,6 +431,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "ja3.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -490,6 +496,12 @@
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "ja3.name",
+          "expectedValue": null,
+          "negate": true
+        },
         {
           "type": "regex",
           "fieldName": "direction",
@@ -551,6 +563,12 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
+          "type": "equals",
+          "fieldName": "ja3.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
@@ -610,6 +628,12 @@
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "ja3.name",
+          "expectedValue": null,
+          "negate": true
+        },
         {
           "type": "regex",
           "fieldName": "direction",

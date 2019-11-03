@@ -31,6 +31,7 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntityEnums;
 import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -166,8 +167,8 @@ public class OutputExecutionServiceModuleTest {
     @Test
     public void createAlertForNewEntity() {
         try {
-            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId_hourly");
-
+            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId_hourly","userId");
+            esTemplate.refresh(Entity.class);
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(1, Lists.newArrayList(entityPersistencyService.findAll()).size());
             Page<Entity> entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, new PageRequest(0, 9999));
@@ -175,6 +176,7 @@ public class OutputExecutionServiceModuleTest {
             Entity entity = entities.iterator().next();
             Assert.assertEquals(8, entity.getAlertsCount());
             Assert.assertEquals(55, new Double(entity.getScore()).intValue());
+            Assert.assertEquals(55d, entity.getTrendingScore(EntityEnums.Trends.weekly),0);
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -186,7 +188,8 @@ public class OutputExecutionServiceModuleTest {
         Entity entity = new Entity(ENTITY_ID_TEST_ENTITY, "userName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, EntitySeverity.CRITICAL, 8, "userId");
         entityPersistencyService.save(entity);
         try {
-            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId_hourly");
+            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId_hourly", "userId");
+            esTemplate.refresh(Entity.class);
 
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(1, Lists.newArrayList(entityPersistencyService.findAll()).size());
@@ -197,6 +200,7 @@ public class OutputExecutionServiceModuleTest {
             Assert.assertEquals(1, entity1.getAlertClassifications().size());
             Assert.assertEquals(1, entity1.getIndicators().size());
             Assert.assertEquals(150, new Double(entity1.getScore()).intValue());
+            Assert.assertEquals(55d, entity1.getTrendingScore(EntityEnums.Trends.weekly),0);
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -207,7 +211,7 @@ public class OutputExecutionServiceModuleTest {
     public void testCleanAlerts() {
 
         try {
-            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId_hourly");
+            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId_hourly","userId");
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(1, Lists.newArrayList(entityPersistencyService.findAll()).size());
             Page<Entity> entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, new PageRequest(0, 9999));

@@ -6,11 +6,17 @@ import presidio.output.commons.services.entity.EntitySeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntityEnums;
 import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.entities.EntityPersistencyService;
 
-import java.util.*;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by efratn on 04/12/2017.
@@ -81,7 +87,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                 alert.setContributionToEntityScore(origContribution + contributionDelta);
 
                 //3. increase\decrease entity score with the updated alert contribution
-                Entity updatedEntity = updateEntityScore(alert.getEntityDocumentId(), entitiesToBeUpdated, contributionDelta);
+                Entity updatedEntity = updateEntityScore(alert.getEntityDocumentId(), entitiesToBeUpdated, contributionDelta, alert.getStartDate().toInstant());
                 entitiesToBeUpdated.put(updatedEntity.getId(), updatedEntity);
             }
         });
@@ -101,7 +107,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
     }
 
-    private Entity updateEntityScore(String entityId, Map<String, Entity> entitiesCache, Double scoreDelta) {
+    private Entity updateEntityScore(String entityId, Map<String, Entity> entitiesCache, Double scoreDelta, Instant startDate) {
         Entity entity;
         if(entitiesCache.containsKey(entityId)) {
             entity = entitiesCache.get(entityId);
@@ -110,7 +116,22 @@ public class FeedbackServiceImpl implements FeedbackService {
             entity = entityPersistencyService.findEntityByDocumentId(entityId);
         }
         entity.setScore(entity.getScore() + scoreDelta);
+        for (EntityEnums.Trends trend: EntityEnums.Trends.values()) {
+            entity.setTrendingScore(trend, calcTrendScore(trend, entity, scoreDelta, startDate));
+        }
         return entity;
+    }
+
+    private double calcTrendScore(EntityEnums.Trends trend, Entity entity, Double scoreDelta, Instant startDate) {
+        double entityScore = entity.getTrendingScore(trend);
+        Instant currentHour = Instant.now().truncatedTo(ChronoUnit.HOURS);
+        if (currentHour.minus(trend.getPeriod()).compareTo(startDate) <= 0 ) {
+            if (entityScore+scoreDelta >= 0) {
+                entityScore += scoreDelta;
+            }
+        }
+        return entityScore;
+
     }
 
     private Double calcContributionToEntityScoreDelta(Alert alert,

@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "AW1jD_ZfjqYVbK2idN3r",
+    "_type": "visualization",
+    "_source": {
+      "title": "Select Entity Type",
+      "visState": "{\"title\":\"Select Entity Type\",\"type\":\"dropdownpicker\",\"params\":{\"type\":\"dropdownpicker\",\"allowBlank\":true,\"title\":\"\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"dropdownfield\",\"params\":{\"field\":\"entityType\",\"size\":5,\"order\":\"asc\",\"orderBy\":\"_term\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-output-entity\",\"query\":{\"match_all\":{}},\"filter\":[]}"
+      }
+    }
+  }
+]

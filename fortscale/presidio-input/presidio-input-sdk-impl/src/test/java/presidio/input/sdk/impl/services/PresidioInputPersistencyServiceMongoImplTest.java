@@ -28,6 +28,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static java.time.temporal.ChronoUnit.MILLIS;
+
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {MongodbTestConfig.class, PresidioInputPersistencyServiceConfig.class})
 @EnableMongoRepositories(basePackageClasses = DataSourceRepository.class)
@@ -62,7 +64,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     @Test
     public void testReadBoundariesStartTime() throws Exception {
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        AbstractAuditableDocument doc = createEvent(Instant.now());
+        AbstractAuditableDocument doc = createEvent(Instant.now().truncatedTo(MILLIS));
 
         list.add(doc);
         presidioInputPersistencyService.store(Schema.FILE, list);
@@ -84,7 +86,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     @Test
     public void storeOneEventToMongoAndReadEventFromMongo() {
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        AbstractAuditableDocument doc = createEvent(Instant.now());
+        AbstractAuditableDocument doc = createEvent(Instant.now().truncatedTo(MILLIS));
         list.add(doc);
         presidioInputPersistencyService.store(Schema.FILE, list);
         List<FileRawEvent> all = mongoTemplate.findAll(FileRawEvent.class, toCollectionNameTranslator.toCollectionName(Schema.FILE));

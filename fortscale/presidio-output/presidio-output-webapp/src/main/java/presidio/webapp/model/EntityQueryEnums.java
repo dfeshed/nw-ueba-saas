@@ -3,12 +3,17 @@ package presidio.webapp.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntityEnums;
 
 public class EntityQueryEnums {
 
     public enum EntityQuerySortFieldName {
-        SCORE(Entity.SCORE_FIELD_NAME), ALERT_NUM(Entity.ALERTS_COUNT_FIELD_NAME), ENTITY_NAME(Entity.ENTITY_NAME_FIELD_NAME),
-        ENTITY_TYPE_NAME(Entity.ENTITY_TYPE_FIELD_NAME);
+        SCORE(Entity.SCORE_FIELD_NAME),
+        ALERT_NUM(Entity.ALERTS_COUNT_FIELD_NAME),
+        ENTITY_NAME(Entity.ENTITY_NAME_FIELD_NAME),
+        ENTITY_TYPE_NAME(Entity.ENTITY_TYPE_FIELD_NAME),
+        WEEKLY_TRENDS(Entity.TRENDING_SCORE_FIELD_NAME + "." + EntityEnums.Trends.weekly),
+        DAILY_TRENDS(Entity.TRENDING_SCORE_FIELD_NAME + "." + EntityEnums.Trends.daily);
 
         private String value;
 

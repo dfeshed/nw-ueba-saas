@@ -97,7 +97,7 @@ public class RestAlertServiceTest {
                 return false;
             }
         }, 1);
-        when(alertPersistencyService.find(anyObject())).thenReturn(page);
+        when(alertPersistencyService.findPage(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
         AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
@@ -112,7 +112,7 @@ public class RestAlertServiceTest {
         List<Alert> resultList = new ArrayList<>();
         resultList.add(firstAlert);
         Page<Alert> page = new PageImpl<>(resultList);
-        when(alertPersistencyService.find(anyObject())).thenReturn(page);
+        when(alertPersistencyService.findPage(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
 
@@ -126,7 +126,7 @@ public class RestAlertServiceTest {
     public void getAlertsNoAlert() {
         List<Alert> resultList = new ArrayList<>();
         Page<Alert> page = new PageImpl<>(resultList);
-        when(alertPersistencyService.find(anyObject())).thenReturn(page);
+        when(alertPersistencyService.findPage(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
         alertQuery.setEntityDocumentIds(new ArrayList<>(Collections.singletonList("someEntityName")));
@@ -175,7 +175,7 @@ public class RestAlertServiceTest {
         Pageable pageable = new PageRequest(3, 10);
         Page<Alert> page = new PageImpl<>(resultList, pageable, total);
 
-        when(alertPersistencyService.find(anyObject())).thenReturn(page);
+        when(alertPersistencyService.findPage(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
         alertQuery.setPageNumber(3);

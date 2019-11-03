@@ -135,6 +135,28 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
     }
 
     @Override
+    public List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByStartTimeRange(
+            String aggregatedFeatureName,
+            Instant startTimeFrom,
+            Instant startTimeTo) {
+        logger.debug("getting accumulated events for featureName={}", aggregatedFeatureName);
+
+
+        AccumulatedRecordsMetaData metadata = new AccumulatedRecordsMetaData(aggregatedFeatureName);
+        String collectionName = getCollectionName(metadata);
+
+        Query query = new Query()
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD)
+                        .gte(startTimeFrom)
+                        .lt(startTimeTo));
+        List<AccumulatedAggregationFeatureRecord> accumulatedAggregatedFeatureEvents =
+                mongoTemplate.find(query, AccumulatedAggregationFeatureRecord.class, collectionName);
+
+        logger.debug("found {} accumulated events", accumulatedAggregatedFeatureEvents.size());
+        return accumulatedAggregatedFeatureEvents;
+    }
+
+    @Override
     public List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByContextIdAndStartTimeRange(
             String aggregatedFeatureName,
             String contextId,

@@ -141,11 +141,13 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>com.nickwongdev</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.10</version>
+                <version>${nickwongdev-aspectj-maven-plugin.version}</version>
                 <configuration>
-                    <complianceLevel>1.8</complianceLevel>
+                    <source>${java-lang-config.version}</source>
+                    <target>${java-lang-config.version}</target>
+                    <complianceLevel>${aspectj-maven-plugin.complianceLevel}</complianceLevel>
                     <includes>
                         <include>**/*.java</include>
                         <include>**/*.aj</include>

@@ -67,9 +67,7 @@ public class TransformationServiceImpl implements TransformationService {
             }
         }
 
-
-        //todo: until redis will be ready
-//        flushableService.flush();
+        flushableService.flush();
         return transformedEvents;
     }
 }

@@ -91,7 +91,7 @@ public class EntityScoreServiceImplRecalculateScoresTest {
                 new Alert("entity2", "smartId", null, null,null, startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, entityType)
         );
         Page<Alert> alertPage1 = new PageImpl<Alert>(mockAlerts, pageable1, 5);
-        Mockito.when(this.mockAlertPresistency.find(Mockito.any(AlertQuery.class))).thenAnswer(new Answer<Page>() {
+        Mockito.when(this.mockAlertPresistency.findPage(Mockito.any(AlertQuery.class))).thenAnswer(new Answer<Page>() {
             @Override
             public Page answer(InvocationOnMock invocation) throws Throwable {
                 AlertQuery query = (AlertQuery) invocation.getArguments()[0];
@@ -104,7 +104,7 @@ public class EntityScoreServiceImplRecalculateScoresTest {
         });
 
 
-        Map<String, EntitiesAlertData> aggregatedEntityScore = entityScoreService.calculateEntityScores(ALERT_EFFECTIVE_DURATION_IN_DAYS, Instant.now(), entityType);
+        Map<String, EntitiesAlertData> aggregatedEntityScore = entityScoreService.calculateEntityAlertsData(ALERT_EFFECTIVE_DURATION_IN_DAYS, Instant.now(), entityType);
         Assert.assertEquals(2, aggregatedEntityScore.size());
         double entity1Expected = (ALERT_CONTRIBUTION_CRITICAL + ALERT_CONTRIBUTION_HIGH + ALERT_CONTRIBUTION_LOW) * 1D;
         double entity2Expected = (ALERT_CONTRIBUTION_CRITICAL * 2) * 1D;
@@ -148,7 +148,7 @@ public class EntityScoreServiceImplRecalculateScoresTest {
 
         Pageable pageable2 = new PageRequest(1, 5);
         Page<Alert> alertPage2 = new PageImpl<Alert>(mockAlertsPage2, pageable2, 10);
-        Mockito.when(this.mockAlertPresistency.find(Mockito.any(AlertQuery.class))).thenAnswer(new Answer<Page>() {
+        Mockito.when(this.mockAlertPresistency.findPage(Mockito.any(AlertQuery.class))).thenAnswer(new Answer<Page>() {
             @Override
             public Page answer(InvocationOnMock invocation) throws Throwable {
                 AlertQuery query = (AlertQuery) invocation.getArguments()[0];
@@ -165,7 +165,7 @@ public class EntityScoreServiceImplRecalculateScoresTest {
         });
 
 
-        Map<String, EntitiesAlertData> aggregatedEntityScore = Whitebox.invokeMethod(entityScoreService, "calculateEntityScores", ALERT_EFFECTIVE_DURATION_IN_DAYS, Instant.now(), entityType);
+        Map<String, EntitiesAlertData> aggregatedEntityScore = Whitebox.invokeMethod(entityScoreService, "calculateEntityAlertsData", ALERT_EFFECTIVE_DURATION_IN_DAYS, Instant.now(), entityType);
         Assert.assertEquals(3, aggregatedEntityScore.size());
 
         Assert.assertEquals(95D, aggregatedEntityScore.get("entity1").getEntityScore(), 0.1);

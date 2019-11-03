@@ -21,6 +21,7 @@ class OutputOperator(AbstractOutputOperator):
             task_id=task_id,
             fixed_duration_strategy=fixed_duration_strategy,
             command=command,
+            entity_type=entity_type,
             smart_record_conf_name=smart_record_conf_name,
             java_retry_args=java_retry_args,
             *args,

@@ -17,7 +17,7 @@ class InputPreProcessingDagBuilder(PresidioDagBuilder):
             name = pre_processor.get(PRE_PROCESSORS_NAME_KEY)
             static_arguments = pre_processor.get(STATIC_ARGUMENTS_KEY)
             dynamic_arguments = pre_processor.get(DYNAMIC_ARGUMENTS_KEY)
-            # self._add_input_pre_processor_operator(dag, name, schema_name, static_arguments, dynamic_arguments)
+            self._add_input_pre_processor_operator(dag, name, schema_name, static_arguments, dynamic_arguments)
         return dag
 
     def _add_input_pre_processor_operator(self, dag, name, schema_name, static_arguments, dynamic_arguments):

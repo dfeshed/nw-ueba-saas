@@ -22,7 +22,7 @@ dags:
         pre_processors:
           - name: last_occurrence_instant
             static_arguments:
-              entityTypes: [domain]
+              entityTypes: [domain.name, sslSubject.name, ja3.name, dstOrg.name, dstCountry.name, dstPort.name, dstAsn.name]
               schema: TLS
             dynamic_arguments: [startInstant, endInstant]
     smart:

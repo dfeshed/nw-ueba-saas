@@ -59,4 +59,9 @@ public class SessionSplitStoreCacheImpl extends AbstractFlushable implements ISe
         splitTransformerMap.clear();
     }
 
+    @Override
+    public void remove(SessionSplitTransformerKey key) {
+        splitTransformerMap.remove(key);
+        sessionSplitStore.remove(key);
+    }
 }

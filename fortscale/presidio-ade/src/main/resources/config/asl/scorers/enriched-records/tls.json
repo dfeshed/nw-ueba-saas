@@ -37,6 +37,12 @@
               "name": "startInstant.ja3Outbound.tls.score",
               "predicates": [
                 {
+                  "type": "equals",
+                  "fieldName": "ja3.name",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
                   "type": "regex",
                   "fieldName": "direction",
                   "pattern": "OUTBOUND"
@@ -305,6 +311,12 @@
               "name": "ja3.srcNetnameOutbound.tls.score",
               "predicates": [
                 {
+                  "type": "equals",
+                  "fieldName": "ja3.name",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
                   "type": "regex",
                   "fieldName": "direction",
                   "pattern": "OUTBOUND"
@@ -326,6 +338,12 @@
               "type": "conditional",
               "name": "sslSubject.ja3Outbound.tls.score",
               "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "ja3.name",
+                  "expectedValue": null,
+                  "negate": true
+                },
                 {
                   "type": "regex",
                   "fieldName": "direction",
@@ -366,6 +384,12 @@
               "name": "domain.ja3Outbound.tls.score",
               "predicates": [
                 {
+                  "type": "equals",
+                  "fieldName": "ja3.name",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
                   "type": "regex",
                   "fieldName": "direction",
                   "pattern": "OUTBOUND"
@@ -404,6 +428,12 @@
               "type": "conditional",
               "name": "dstPort.ja3Outbound.tls.score",
               "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "ja3.name",
+                  "expectedValue": null,
+                  "negate": true
+                },
                 {
                   "type": "regex",
                   "fieldName": "direction",

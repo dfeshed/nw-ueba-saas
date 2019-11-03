@@ -25,21 +25,26 @@ import java.net.InetAddress;
 public class ElasticsearchTestConfig {
 
     @Value("${elasticsearch.host}")
-    private String EsHost;
+    private String esHost;
 
     @Value("${elasticsearch.port}")
-    private int EsPort;
+    private int esPort;
 
     @Value("${elasticsearch.clustername}")
-    private String EsClusterName;
+    private String esClusterName;
+
+    @Value("${elasticsearch.embedded:true}")
+    private boolean isEsEmbedded;
 
     @Autowired
     public EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser;
 
     @Bean
     public Client client() throws Exception {
-        Settings esSettings = Settings.builder().put("cluster.name", EsClusterName).build();
-        return new PreBuiltTransportClient(esSettings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(EsHost), EsPort));
+        Settings esSettings = Settings.builder().put("cluster.name", esClusterName).build();
+        int transportTcpPort = isEsEmbedded ? embeddedElasticsearchInitialiser.getTransportTcpPort(): esPort;
+        return new PreBuiltTransportClient(esSettings).addTransportAddress(
+                new InetSocketTransportAddress(InetAddress.getByName(esHost), transportTcpPort));
     }
 
 

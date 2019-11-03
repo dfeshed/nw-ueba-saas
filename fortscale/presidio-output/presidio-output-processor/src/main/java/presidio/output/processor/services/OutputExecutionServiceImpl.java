@@ -13,6 +13,7 @@ import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.annotations.RunTime;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntityEnums;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.entity.EntityService;
@@ -72,7 +73,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
      */
     @RunTime
     @Override
-    public void run(Instant startDate, Instant endDate, String configurationName) throws Exception {
+    public void run(Instant startDate, Instant endDate, String configurationName, String entityType) throws Exception {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         List<PageIterator<SmartRecord>> smartPageIterators = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES, configurationName);
 
@@ -80,8 +81,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         List<SmartRecord> smarts = null;
         List<Alert> alerts = new ArrayList<>();
         int indicatorsCountHourly = 0;
-        boolean firstSmart = true;
-        String lastEntityType = null;
+
         for(PageIterator<SmartRecord> smartPageIterator : smartPageIterators){
             while (smartPageIterator.hasNext()) {
                 smarts = smartPageIterator.next();
@@ -91,13 +91,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     Assert.isTrue(smartContextEntries.size() == 1, unexpectedSizeOfSmartContextMessage);
                     Map.Entry<String, String> contextEntry = smartContextEntries.iterator().next();
                     String entityId = contextEntry.getValue();
-                    String entityType = contextEntry.getKey();
-                    if(firstSmart){
-                        lastEntityType = entityType;
-                        firstSmart = false;
-                    }
-                    Assert.isTrue(entityType.equals(lastEntityType), "Not all smarts have the same entity type");
-                    lastEntityType = entityType;
 
                     if (entityId == null || entityId.isEmpty()) {
                         logger.error("Failed to get entity id from smart context, entity id is null or empty for smart {}. skipping to next smart", smart.getId());
@@ -140,7 +133,10 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
 
         storeEntities(new ArrayList<>(entities.values())); //Get the generated entities with the new elasticsearch ID
-        outputMonitoringService.reportTotalEntitiesCount(entities.size(), startDate, lastEntityType);
+
+        trendsCalculation(endDate, entityType);
+
+        outputMonitoringService.reportTotalEntitiesCount(entities.size(), startDate, entityType);
         outputMonitoringService.reportNumericMetric(outputMonitoringService.INDICATORS_COUNT_HOURLY_METRIC_NAME, indicatorsCountHourly, startDate);
 
         if (CollectionUtils.isNotEmpty(smarts)) {
@@ -235,6 +231,15 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             entityService.recalculateEntityAlertData(entity);
         });
         entityService.save(new ArrayList<>(entitiesToUpdate));
+    }
+
+    private void trendsCalculation(Instant endDate, String entityType) {
+        logger.info("starting trends calculation");
+        for (EntityEnums.Trends trend: EntityEnums.Trends.values()) {
+            logger.info("calculating {} trends ", trend);
+            entityService.updateEntityTrends(trend, endDate, entityType);
+        }
+        logger.info("trends calculation is done");
     }
 
 

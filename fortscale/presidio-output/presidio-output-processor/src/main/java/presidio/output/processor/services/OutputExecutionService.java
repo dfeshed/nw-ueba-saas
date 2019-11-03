@@ -11,15 +11,15 @@ public interface OutputExecutionService {
 
     Logger logger = Logger.getLogger(OutputExecutionService.class);
 
-    void run(Instant startDate, Instant endDate, String configurationName) throws Exception;
+    void run(Instant startDate, Instant endDate, String configurationName, String entityType) throws Exception;
     void updateAllEntitiesData(Instant startDate, Instant endDate, String configurationName, String entityType) throws Exception;
     void cleanAlertsByTimeRangeAndEntityType(Instant startDate, Instant endDate, String entityType) throws Exception;
     void cleanAlertsForRetention(Instant endDate, String entityType)throws Exception;
     void cleanAll() throws Exception;
 
-    default int doRun(Instant startDate, Instant endDate, String configurationName) throws Exception {
+    default int doRun(Instant startDate, Instant endDate, String configurationName, String entityType) throws Exception {
         try {
-            run(startDate, endDate, configurationName);
+            run(startDate, endDate, configurationName, entityType);
         }
         catch (Exception e) {
             return 1;

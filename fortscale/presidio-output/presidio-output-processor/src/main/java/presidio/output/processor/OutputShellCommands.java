@@ -34,11 +34,13 @@ public class OutputShellCommands implements CommandMarker {
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME}, mandatory = true, help = "smart configuration name") final String configurationName
+            @CliOption(key = {CommonStrings.COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME}, mandatory = true, help = "smart configuration name") final String configurationName,
+
+            @CliOption(key = {CommonStrings.COMMAND_LINE_ENTITY_TYPE_FIELD_NAME}, mandatory = true, help = "the entity type that will be processed") final String entityType
 
     ) throws Exception {
         ThreadLocalWithBatchInformation.storeBatchInformation(HOURLY_OUTPUT_PROCESSOR_RUN + startTime.toString(), new TimeRange(startTime, endTime));
-        return executionService.doRun(startTime, endTime, configurationName);
+        return executionService.doRun(startTime, endTime, configurationName, entityType);
     }
 
     @CliCommand(value = "recalculate-entity-score", help = "run daily calculation for output")

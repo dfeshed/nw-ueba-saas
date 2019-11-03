@@ -14,7 +14,6 @@ class EntityScoreOperator(AbstractOutputOperator):
     @apply_defaults
     def __init__(self, fixed_duration_strategy, command, smart_record_conf_name, entity_type, task_id=None, *args, **kwargs):
 
-        java_args = {'entity_type': entity_type}
         self.smart_record_conf_name = smart_record_conf_name
 
         super(EntityScoreOperator, self).__init__(
@@ -22,7 +21,7 @@ class EntityScoreOperator(AbstractOutputOperator):
             fixed_duration_strategy=fixed_duration_strategy,
             command=command,
             smart_record_conf_name=smart_record_conf_name,
-            java_args=java_args,
+            entity_type=entity_type,
             *args,
             **kwargs
         )

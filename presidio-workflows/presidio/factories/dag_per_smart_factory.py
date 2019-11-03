@@ -37,8 +37,8 @@ class DagPerSmartFactory(AbstractDagFactory):
                               default_args=smart_conf,
                               end_date=end_date, full_filepath=full_filepath, description=description,
                               template_searchpath=template_searchpath, params=params, dagrun_timeout=dagrun_timeout)
-            logging.debug("dag_id=%s successful initiated", new_dag_id)
-            dags.append(new_dag)
+                logging.debug("dag_id=%s successful initiated", new_dag_id)
+                dags.append(new_dag)
 
         return dags
 

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -47,6 +48,9 @@ public class HistoricalDataTimeAggregation extends HistoricalData  {
   @JsonProperty("type")
   private TypeEnum type = null;
 
+  @JsonProperty("contexts")
+  private Map<String, String> contexts = null;
+
   @JsonProperty("buckets")
   private TimeBuckets buckets = null;
 
@@ -73,6 +77,20 @@ public class HistoricalDataTimeAggregation extends HistoricalData  {
     return this;
   }
 
+  /**
+   * Get contexts
+   *
+   * @return contexts
+   **/
+  @ApiModelProperty(value = "")
+  public Map<String, String> getContexts() {
+    return contexts;
+  }
+
+  public void setContexts(Map<String, String> contexts) {
+    this.contexts = contexts;
+  }
+
    /**
    * Get buckets
    * @return buckets
@@ -97,7 +115,8 @@ public class HistoricalDataTimeAggregation extends HistoricalData  {
     }
     HistoricalDataTimeAggregation historicalDataTimeAggregation = (HistoricalDataTimeAggregation) o;
     return Objects.equals(this.type, historicalDataTimeAggregation.type) &&
-        Objects.equals(this.buckets, historicalDataTimeAggregation.buckets) &&
+            Objects.equals(this.contexts, historicalDataTimeAggregation.contexts) &&
+            Objects.equals(this.buckets, historicalDataTimeAggregation.buckets) &&
         super.equals(o);
   }
 
@@ -112,6 +131,7 @@ public class HistoricalDataTimeAggregation extends HistoricalData  {
     sb.append("class HistoricalDataTimeAggregation {\n");
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
+    sb.append("    contexts: ").append(toIndentedString(contexts)).append("\n");
     sb.append("    buckets: ").append(toIndentedString(buckets)).append("\n");
     sb.append("}");
     return sb.toString();
