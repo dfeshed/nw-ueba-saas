@@ -21,7 +21,7 @@ public class TlsPerformanceStabilityScenario {
     private final int MEDIUM_SIZE_CLUSTERS = 1;
     private final int LARGE_SIZE_CLUSTERS = 1;
     private final int SESSION_SPLIT_CLUSTER = 10;
-    private final int SESSION_SPLIT_LIMIT = 50;
+    private final int SESSION_SPLIT_LIMIT = 1000;
 
     private final Instant startInstant;
     private final Instant endInstant;
