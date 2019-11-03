@@ -416,10 +416,11 @@ class SpringBootJarOperator(BashOperator):
             bash_command.extend(jmx.split(' '))
 
     def append_add_opens_jvm_options(self, bash_command):
-        bash_command.append("--add-opens {}".format(" ".join([
-            "java.base/java.lang=ALL-UNNAMED"
+        bash_command.extend(map(lambda add_opens_jvm_option: "--add-opens {}".format(add_opens_jvm_option), [
+            "java.base/java.lang=ALL-UNNAMED",
+            "java.base/java.util=ALL-UNNAMED"
             # Add additional "add opens" JVM options here.
-        ])))
+        ]))
 
     def timezone(self, bash_command):
         """
