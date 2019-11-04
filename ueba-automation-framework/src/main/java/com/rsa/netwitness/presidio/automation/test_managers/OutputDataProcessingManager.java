@@ -17,8 +17,8 @@ public class OutputDataProcessingManager {
             LoggerFactory.getLogger(OutputDataProcessingManager.class.getName());
 
 
-    public ProcessorRun processorRun(Instant startDate, Instant endDate, String smartRecordConfName) {
-        return new ProcessorRun(startDate, endDate, smartRecordConfName);
+    public ProcessorRun processorRun(Instant startDate, Instant endDate, String smartRecordConfName, String entityType) {
+        return new ProcessorRun(startDate, endDate, smartRecordConfName , entityType);
     }
 
     public RecalculateUserScore recalculateUserScore(Instant startDate, Instant endDate, String entity) {
@@ -30,12 +30,14 @@ public class OutputDataProcessingManager {
         private final Instant startDate;
         private final Instant endDate;
         private final String smart_record_conf_name;
+        private final String entity_type;
 
-        private ProcessorRun(Instant startDate, Instant endDate, String smartRecordConfName) {
+        private ProcessorRun(Instant startDate, Instant endDate, String smartRecordConfName, String entityType) {
 
             this.startDate = startDate;
             this.endDate = endDate;
             this.smart_record_conf_name = smartRecordConfName;
+            this.entity_type = entityType;
         }
 
         @Override
@@ -47,7 +49,7 @@ public class OutputDataProcessingManager {
 
             SshResponse p =  new SshHelper().uebaHostExec().setUserDir(PRESIDIO_DIR).run(
                     Consts.PRESIDIO_OUTPUT, "run", "--start_date " + startDate,
-                    "--end_date " + endDate, "--smart_record_conf_name " + smart_record_conf_name,
+                    "--end_date " + endDate, "--smart_record_conf_name " + smart_record_conf_name,  "--entity_type " + entity_type,
                     " > " + logPath);
 
             printLogIfError(logPath);

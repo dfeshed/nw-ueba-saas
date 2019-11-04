@@ -10,41 +10,12 @@
         </encoder>
     </appender>
 
-    <appender name="AIRFLOW_PRINT_RETRIES" class="ch.qos.logback.core.FileAppender">
-        <file>target/log/airflow_retries.log</file>
-        <append>false</append>
-        <prudent>false</prudent>
-
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%msg%n</Pattern>
-        </encoder>
-    </appender>
-
-    <appender name="AIRFLOW_FAILED_DAGS_TEST" class="ch.qos.logback.core.FileAppender">
-        <file>target/log/airflow_failed_dags.log</file>
-        <append>false</append>
-
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%msg%n</Pattern>
-        </encoder>
-    </appender>
-
 
     <!--need this in DEBUG to print mongo Queries to sysout -->
     <logger name="org.springframework.data.mongodb.core.MongoTemplate" level="INFO" />
 
     <logger name="com.rsa.netwitness.presidio.automation">
         <level value="INFO" />
-    </logger>
-
-    <logger name="com.rsa.netwitness.presidio.automation.test.integration.AirflowPrintRetries">
-        <level value="WARN" />
-        <appender-ref ref="AIRFLOW_PRINT_RETRIES"/>
-    </logger>
-
-    <logger name="com.rsa.netwitness.presidio.automation.test.integration.AirflowFailedDagsTest">
-        <level value="WARN" />
-        <appender-ref ref="AIRFLOW_FAILED_DAGS_TEST"/>
     </logger>
 
 
