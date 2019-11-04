@@ -1421,6 +1421,12 @@ module('Unit | Util | Query Parsing', function(hooks) {
       { value: 'bar', quoted: false },
       { value: 'bazn\\\'t', quoted: true }
     ]);
+    // Remove escapes when told to
+    assert.deepEqual(valueList('can,can\\\'t,could', { removeEscapes: true }), [
+      { value: 'can', quoted: false },
+      { value: 'can\'t', quoted: false },
+      { value: 'could', quoted: false }
+    ]);
     // Empty string is empty array
     assert.deepEqual(valueList(''), []);
     // Empty quotes is empty array

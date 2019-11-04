@@ -233,7 +233,7 @@ export default Component.extend({
     let ret = valueString;
     const quote = "<span class=\"quote-highlight\">'</span>";
     if (typeof(valueString) === 'string') {
-      const values = valueList(valueString);
+      const values = valueList(valueString, { removeEscapes: true });
       ret = values.map((value) => {
         if (value.quoted) {
           if (value.value.includes("'-'")) {
@@ -459,7 +459,13 @@ export default Component.extend({
         if (isComplex) {
           value = searchText.trim();
         } else {
-          value = valueList(searchText);
+          value = valueList(searchText).map((item) => {
+            // Escape all single quotes
+            item.value = item.value.replace(/'/g, '\\\'');
+            // Make sure we didn't double-escape any quotes
+            item.value = item.value.replace(/\\\\'/g, '\\\'');
+            return item;
+          });
         }
         // cleanup
         this.set('_searchString', undefined);

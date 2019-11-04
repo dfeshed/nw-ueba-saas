@@ -492,7 +492,8 @@ export const convertTextToPillData = ({ queryText, availableMeta }) => {
  * Returns an array of values separated by commas.
  * @public
  */
-export const valueList = (string) => {
+export const valueList = (string, options) => {
+  const removeEscapes = options?.removeEscapes ?? false;
   const whitespaceRegex = /\s+/;
   const result = [];
   let tempString = '';
@@ -553,6 +554,11 @@ export const valueList = (string) => {
         tempString = '';
         inbetweenStrings = true;
         goodQuoted = false;
+      } else if (char === '\\') {
+        // This is an escape, only add it if we are not removing escapes
+        if (!removeEscapes) {
+          tempString += char;
+        }
       } else {
         tempString += char;
       }
