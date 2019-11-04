@@ -1,6 +1,6 @@
 $datePickerFontSize: 1rem;
-$datePickerInputWidth: $datePickerFontSize + 0.1rem;
-$datePickerSpacing: $datePickerFontSize * 0.1;
+$datePickerInputWidth: $datePickerFontSize + 0.15rem;
+$datePickerSpacing: $datePickerFontSize * 0.15;
 
 .rsa-date-time-input {
   height: 100%;
@@ -35,12 +35,18 @@ $datePickerSpacing: $datePickerFontSize * 0.1;
     input {
       cursor: pointer;
       width: $datePickerInputWidth;
+      &:focus {
+        width: $datePickerInputWidth + .35rem;
+      }
     }
   }
   .year {
     width: $datePickerInputWidth * 2.1;
     input {
       width: $datePickerInputWidth * 2.1;
+      &:focus {
+        width: ($datePickerInputWidth * 2) + .35rem;
+      }
     }
   }
   .hour {

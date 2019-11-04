@@ -286,8 +286,11 @@
       }
     }
       .rsa-loader__wheel {
-        margin: -2px;
+        margin: -2px rsa-whitespace(less) -2px -2px;
         min-width: 1px;
+        position: relative;
+        top: rsa-whitespace(less);
+        left: rsa-whitespace(less);
       }
     }
     &__downloadEvents > div {
