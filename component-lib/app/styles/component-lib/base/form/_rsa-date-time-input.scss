@@ -73,3 +73,11 @@ $datePickerSpacing: $datePickerFontSize * 0.1;
     color: text-color(accentOne, darkest);
   }
 }
+
+.timerange-selector-panel {
+  .dropdown-action-list {
+    li {
+      white-space: nowrap;
+    }
+  }
+}
