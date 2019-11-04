@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import fetch from 'component-lib/utils/fetch';
 import Route from '@ember/routing/route';
 import config from 'ember-get-config';
 
@@ -13,6 +13,6 @@ export default Route.extend({
   },
 
   model() {
-    return $.getJSON(`${config.visualTourRootUrl}/storage.json`);
+    return fetch(`${config.visualTourRootUrl}/storage.json`);
   }
 });

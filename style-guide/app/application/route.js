@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 
@@ -24,10 +23,11 @@ export default Route.extend({
   },
 
   actions: {
-    scrollTo(selector, offset = -185) {
-      $('.style-guide-content .scroll-box').animate({
-        scrollTop: $(selector).offset().top + offset
-      }, 600);
+    scrollTo(selector, offset = 0) {
+      document.querySelector('.style-guide-content .scroll-box').scroll({
+        top: document.querySelector(selector).offsetTop + offset,
+        behavior: 'smooth'
+      });
     }
   }
 
