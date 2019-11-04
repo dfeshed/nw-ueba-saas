@@ -5,6 +5,7 @@ import { inject as service } from '@ember/service';
 
 import * as MESSAGE_TYPES from '../message-types';
 import { isEscape, isEnter, isHome, isEnd } from 'investigate-events/util/keys';
+import { DELETE_PILL } from 'investigate-events/constants/pill';
 
 export default Component.extend({
   classNames: ['pill', 'complex-pill'],
@@ -100,7 +101,14 @@ export default Component.extend({
     }
   },
 
-  click() {
+  click(e) {
+
+    // If event was triggered through delete-pill, no need
+    // to propogate actions related to selection/focus as
+    // the pill will soon be deleted and removed from dom
+    if (e?.target?.classList?.contains(DELETE_PILL)) {
+      return;
+    }
     // If not active, and clicking pill, then process
     // this as a selection event
     if (!this.get('isActive')) {

@@ -11,10 +11,10 @@ export default Component.extend({
    */
   sendMessage: () => {},
 
-  // Send PILL DELETED action up, but trap the click
-  // event
+  // Send PILL DELETED action up
+  // Propagating this click event up to parent component so that clicks to
+  // delete icon are recognized elsewhere in application. ASOC-80113 #3 for more info.
   click() {
     this.get('sendMessage')(MESSAGE_TYPES.DELETE_CLICKED);
-    return false;
   }
 });

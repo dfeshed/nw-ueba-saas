@@ -23,6 +23,7 @@ export const POWER_SELECT_OPTIONS_QUERY_LABEL = 'Query Filter';
 export const QUERY_FILTER = 'query';
 export const SEARCH_TERM_MARKER = '\u02F8'; // RAISED COLON "˸"
 export const TEXT_FILTER = 'text';
+export const DELETE_PILL = 'delete-pill';
 
 // Selectors
 export const LOADING_SPINNER_SELECTOR = '.investigate-query-dropdown .ember-power-select-options .ember-power-select-loading-options-spinner';

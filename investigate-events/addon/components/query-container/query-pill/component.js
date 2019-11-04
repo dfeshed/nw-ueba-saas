@@ -17,15 +17,16 @@ import {
   resultsCount
 } from './query-pill-util';
 import {
-  COMPLEX_FILTER,
-  QUERY_FILTER,
-  TEXT_FILTER,
   AFTER_OPTION_TAB_META,
   AFTER_OPTION_TAB_RECENT_QUERIES,
+  COMPLEX_FILTER,
+  DELETE_PILL,
+  QUERY_FILTER,
   PILL_META_DATA_SOURCE,
   PILL_OPERATOR_DATA_SOURCE,
   PILL_VALUE_DATA_SOURCE,
-  PILL_RECENT_QUERY_DATA_SOURCE
+  PILL_RECENT_QUERY_DATA_SOURCE,
+  TEXT_FILTER
 } from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
@@ -407,7 +408,13 @@ export default Component.extend({
     this._pillEntered();
   },
 
-  click() {
+  click(e) {
+    // If event was triggered through delete-pill, no need
+    // to propogate actions related to selection/focus as
+    // the pill will soon be deleted and removed from dom
+    if (e?.target?.classList?.contains(DELETE_PILL)) {
+      return;
+    }
     // If not active, and clicking pill, then process
     // this as a selection event
     if (!this.get('isActive')) {
