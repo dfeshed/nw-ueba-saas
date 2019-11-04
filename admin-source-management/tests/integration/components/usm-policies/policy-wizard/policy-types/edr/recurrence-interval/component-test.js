@@ -1,41 +1,32 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, render, findAll, settled } from '@ember/test-helpers';
+import { click, render, findAll } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
-import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../../../helpers/vnext-patch';
-import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
+import waitForReduxStateChange from '../../../../../../../helpers/redux-async-helpers';
+import {
+  intervalType,
+  runOnDaysOfWeek
+} from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-selectors';
 
-let setState, updatePolicyPropertySpy;
-const spys = [];
+let redux, setState;
 
 module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/recurrence-interval', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
   });
 
-  hooks.before(function() {
-    spys.push(updatePolicyPropertySpy = sinon.spy(policyWizardCreators, 'updatePolicyProperty'));
-  });
-
   hooks.beforeEach(function() {
-    setState = (state) => {
-      patchReducer(this, state);
-    };
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
-  });
-
-  hooks.afterEach(function() {
-    spys.forEach((s) => s.resetHistory());
-  });
-
-  hooks.after(function() {
-    spys.forEach((s) => s.restore());
+    setState = (state) => {
+      patchReducer(this, state);
+      redux = this.owner.lookup('service:redux');
+    };
   });
 
   test('should render recurrence interval fields', async function(assert) {
@@ -65,15 +56,24 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/re
     assert.ok(findAll('.ember-power-select-option')[8].getAttribute('aria-disabled') !== 'true');
   });
 
-  // TODO - fix this test, the behaviour is very erratic. Even though action creator is being called, callCount is not being incremented.
-  skip('should trigger the updatePolicyProperty action creator on clicking the Daily or Weekly radio button', async function(assert) {
-    assert.expect(2);
+  test('should trigger the updatePolicyProperty action creator on clicking the Daily or Weekly radio button', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizRecurrenceInterval(1)
+      .policyWizRecurrenceUnit('DAYS')
+      .build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
-    assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when no click is registered');
+    const field1 = 'recurrenceUnit';
+    const expectedValue1 = 'WEEKS';
+    const field2 = 'runOnDaysOfWeek';
+    const expectedValue2 = ['MONDAY']; // should be the default
+    const onChange = waitForReduxStateChange(redux, `usm.policyWizard.policy.${field1}`);
     await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(2) input');
-    return settled().then(() => {
-      assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called Daily/Weekly toggle is changed');
-    });
+    await onChange;
+    const actualValue1 = intervalType(redux.getState());
+    const actualValue2 = runOnDaysOfWeek(redux.getState());
+    assert.deepEqual(actualValue1, expectedValue1, `${field1} updated to ${actualValue1}`);
+    assert.deepEqual(actualValue2, expectedValue2, `${field2} updated to ${actualValue2}`);
   });
 
   test('should display weeks recurrence field options on clicking the Weekly radio button', async function(assert) {
@@ -93,16 +93,20 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/re
     assert.equal(findAll('.week-button')[1].classList.contains('is-primary'), true, 'Default week selection is retained while switching between days and weeks');
   });
 
-  // TODO - fix this test, the behaviour is very erratic. Even though action creator is being called, callCount is not being incremented.
-  skip('should trigger the updatePolicyProperty action creator when clicking the week schedule', async function(assert) {
-    assert.expect(2);
+  test('should trigger the updatePolicyProperty action creator when clicking the week schedule', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizRecurrenceInterval(1)
+      .policyWizRunOnDaysOfWeek(['MONDAY'])
+      .policyWizRecurrenceUnit('WEEKS')
+      .build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
-    assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when no week is selected');
-    // change toggle to weeks. This would bring up a div of buttons for each day of the week (S, M, T, W etc)
-    await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(2) input');
-    await click('.recurrence-run-interval__week-options');
-    return settled().then(() => {
-      assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called when clicking the week schedule');
-    });
+    const field = 'runOnDaysOfWeek';
+    const expectedValue = ['WEDNESDAY'];
+    const onChange = waitForReduxStateChange(redux, `usm.policyWizard.policy.${field}`);
+    await click('.recurrence-run-interval__week-options .week-button:nth-of-type(4) button');
+    await onChange;
+    const actualValue = runOnDaysOfWeek(redux.getState());
+    assert.deepEqual(actualValue, expectedValue, `${field} updated to ${actualValue}`);
   });
 });

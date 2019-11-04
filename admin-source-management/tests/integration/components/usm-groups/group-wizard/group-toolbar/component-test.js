@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, findAll, render, settled } from '@ember/test-helpers';
@@ -295,57 +295,6 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The Publish button appears in the DOM and is enabled');
     assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
     assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
-  });
-
-  skip('Apply Policy Step - Toolbar closure actions with valid data', async function(assert) {
-    const done = assert.async(3);
-    assert.expect(8);
-    const state = new ReduxDataHelper(setState)
-      .groupWiz()
-      .groupWizGroup(groupPayloadApplyPolicyStep)
-      .groupWizPolicyList(policyListPayload)
-      .build();
-    this.set('step', state.usm.groupWizard.steps[2]);
-    this.set('transitionToStep', () => {});
-    this.set('transitionToClose', () => {});
-    await render(hbs`{{usm-groups/group-wizard/group-toolbar
-      step=step
-      transitionToStep=(action transitionToStep)
-      transitionToClose=(action transitionToClose)}}`
-    );
-    await settled();
-    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
-    assert.equal(findAll('.next-button.is-disabled').length, 1, 'The Next button appears in the DOM and is disabled');
-    assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The Publish button appears in the DOM and is enabled');
-    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
-    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
-
-    // clicking the prev-button should call transitionToStep() with the correct stepId
-    // update transitionToStep for prev-button
-    this.set('transitionToStep', (stepId) => {
-      assert.equal(stepId, this.get('step').prevStepId, `transitionToStep(${stepId}) was called with the correct stepId by Previous`);
-      done();
-    });
-    const [prevBtnEl] = findAll('.prev-button:not(.is-disabled) button');
-    await click(prevBtnEl);
-
-    // clicking the publish-button should call transitionToClose()
-    // update transitionToClose for publish-button
-    this.set('transitionToClose', () => {
-      assert.ok('transitionToClose() was properly triggered');
-      done();
-    });
-    const [publishBtnEl] = findAll('.publish-button:not(.is-disabled) button');
-    await click(publishBtnEl);
-
-    // clicking the save-button should call transitionToClose()
-    // update transitionToClose for save-button
-    this.set('transitionToClose', () => {
-      assert.ok('transitionToClose() was properly triggered');
-      done();
-    });
-    const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
-    await click(saveBtnEl);
   });
 
   test('On selecting the Cancel button with no changes does closure action', async function(assert) {

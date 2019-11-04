@@ -1,40 +1,28 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { render, findAll, click, triggerEvent } from '@ember/test-helpers';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import sinon from 'sinon';
 import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../../../helpers/vnext-patch';
-import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
-import { selectChoose } from 'ember-power-select/test-support/helpers';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import waitForReduxStateChange from '../../../../../../../helpers/redux-async-helpers';
+import { selectedPrimaryLogServer } from 'admin-source-management/reducers/usm/policy-wizard/windowsLogPolicy/windowsLog-selectors';
 
-let setState, updatePolicyPropertySpy;
-const spys = [];
+let redux, setState;
 
 module('Integration | Component | usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
   });
 
-  hooks.before(function() {
-    spys.push(updatePolicyPropertySpy = sinon.spy(policyWizardCreators, 'updatePolicyProperty'));
-  });
-
   hooks.beforeEach(function() {
+    initialize(this.owner);
     setState = (state) => {
       patchReducer(this, state);
+      redux = this.owner.lookup('service:redux');
     };
-    initialize(this.owner);
-  });
-
-  hooks.afterEach(function() {
-    spys.forEach((s) => s.resetHistory());
-  });
-
-  hooks.after(function() {
-    spys.forEach((s) => s.restore());
   });
 
   test('should render primaryDestination component when id is primaryDestination', async function(assert) {
@@ -79,15 +67,20 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
     assert.equal(actualDisabledTooltip, expectedDisabledTooltip, 'disabled destination option tooltip is as expected');
   });
 
-  // works locally but is flaky on Jenkins
-  skip('It triggers the update policy action creator when the log server value is changed', async function(assert) {
+  test('It triggers the update policy action creator when the log server value is changed', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogLogServers()
       .build();
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations selectedSettingId='primaryDestination'}}`);
+    const selectedSettingId = 'primaryDestination';
+    this.set('selectedSettingId', selectedSettingId);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations selectedSettingId=selectedSettingId}}`);
+    const expectedValue = '10.10.10.10';
+    const onChange = waitForReduxStateChange(redux, `usm.policyWizard.policy.${selectedSettingId}`);
     await selectChoose('.windows-log-destinations__list', '.ember-power-select-option', 0);
-    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
+    await onChange;
+    const actualValue = selectedPrimaryLogServer(redux.getState());
+    assert.equal(actualValue.host, expectedValue, `${selectedSettingId} updated to ${actualValue.host}`);
   });
 
   test('It shows the error message when the primaryDestination is invalid', async function(assert) {

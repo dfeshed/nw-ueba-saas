@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, findAll, render, settled } from '@ember/test-helpers';
@@ -140,65 +140,9 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
   });
 
-  // Test working locally, failing on PR build system.
-  skip('Define Policy Step - Toolbar closure actions with valid data', async function(assert) {
-    const done = assert.async(3);
-    assert.expect(8);
-    const newSelectedSettings = [
-      { index: 13, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] }
-    ];
-    const state = new ReduxDataHelper(setState)
-      .policyWiz()
-      .policyWizPolicy(policyPayload, false)
-      .policyWizSelectedSettings(newSelectedSettings)
-      .policyWizBlockingEnabled(true)
-      .build();
-    this.set('step', state.usm.policyWizard.steps[1]);
-    this.set('transitionToStep', () => {});
-    this.set('transitionToClose', () => {});
-    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar
-      step=step
-      transitionToStep=(action transitionToStep)
-      transitionToClose=(action transitionToClose)}}`
-    );
-    await settled();
-    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
-    assert.equal(findAll('.next-button.is-disabled').length, 1, 'The Next button appears in the DOM and is disabled');
-    assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The Publish button appears in the DOM and is enabled');
-    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
-    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
-
-    // clicking the prev-button should call transitionToStep() with the correct stepId
-    // update transitionToStep for prev-button
-    this.set('transitionToStep', (stepId) => {
-      assert.equal(stepId, this.get('step').prevStepId, `transitionToStep(${stepId}) was called with the correct stepId by Previous`);
-      done();
-    });
-    const [prevBtnEl] = findAll('.prev-button:not(.is-disabled) button');
-    await click(prevBtnEl);
-
-    // clicking the publish-button should call transitionToClose()
-    // update transitionToClose for publish-button
-    this.set('transitionToClose', () => {
-      assert.ok('transitionToClose() was properly triggered');
-      done();
-    });
-    const [publishBtnEl] = findAll('.publish-button:not(.is-disabled) button');
-    await click(publishBtnEl);
-
-    // clicking the save-button should call transitionToClose()
-    // update transitionToClose for save-button
-    this.set('transitionToClose', () => {
-      assert.ok('transitionToClose() was properly triggered');
-      done();
-    });
-    const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
-    await click(saveBtnEl);
-  });
-
   test('Define Policy Step - Toolbar previous button closure actions', async function(assert) {
 
-    assert.expect(2);
+    assert.expect(7);
 
     // build state with ReduxDataHelper
     const state = new ReduxDataHelper(setState)
@@ -222,13 +166,15 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
       transitionToStep=(action transitionToStep)
       transitionToClose=(action transitionToClose)}}`
     );
-
-    //  find the previous button and make sure it is enabled
+    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
+    assert.equal(findAll('.next-button.is-disabled').length, 1, 'The Next button appears in the DOM and is disabled');
+    assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The Publish button appears in the DOM and is enabled');
+    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
     assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
 
     const [prevBtnEl] = findAll('.prev-button:not(.is-disabled) button');
     await click(prevBtnEl);
-
   });
 
   test('Define Policy Step - Toolbar next button closure actions for a filePolicy', async function(assert) {

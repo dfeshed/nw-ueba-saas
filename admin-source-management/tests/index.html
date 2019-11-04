@@ -15,8 +15,17 @@
 
     {{content-for "head-footer"}}
     {{content-for "test-head-footer"}}
+
+    <style>
+      body {
+        overflow: scroll;
+      }
+      #qunit-modulefilter-dropdown {
+        width: 150%;
+      }
+    </style>
   </head>
-  <body style="overflow: scroll;">
+  <body>
     {{content-for "body"}}
     {{content-for "test-body"}}
     <script src="/testem.js" integrity=""></script>

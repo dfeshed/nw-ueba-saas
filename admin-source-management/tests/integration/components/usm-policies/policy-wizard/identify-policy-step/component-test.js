@@ -1,16 +1,19 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { blur, click, find, findAll, focus, render, settled, triggerEvent } from '@ember/test-helpers';
+import { blur, click, find, findAll, fillIn, focus, render, triggerEvent } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
-import sinon from 'sinon';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
+import waitForReduxStateChange from '../../../../../helpers/redux-async-helpers';
+import {
+  policy,
+  selectedSourceType
+} from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
-let setState;
+let redux, setState;
 
 module('Integration | Component | usm-policies/policy-wizard/identify-policy-step', function(hooks) {
   setupRenderingTest(hooks, {
@@ -18,11 +21,12 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
   });
 
   hooks.beforeEach(function() {
-    setState = (state) => {
-      patchReducer(this, state);
-    };
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n', 'service:features');
+    setState = (state) => {
+      patchReducer(this, state);
+      redux = this.owner.lookup('service:redux');
+    };
   });
 
   test('The component appears in the DOM', async function(assert) {
@@ -155,21 +159,22 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     assert.equal(sourceTypesAll.length, 2, '2 source types rendered, and 1 NOT rendered');
   });
 
-  // TODO - the spy props are not getting set
-  skip('Changing the source type select control dispatches the updatePolicyType action creator', async function(assert) {
-    const actionSpy = sinon.spy(policyWizardCreators, 'updatePolicyType');
+  test('Changing the source type select control dispatches the updatePolicyType action creator', async function(assert) {
+    const edrPolicyType = 'edrPolicy';
     new ReduxDataHelper(setState)
       .policyWiz()
-      .policyWizSourceType('edrPolicy') // the ID since it's a power-select
+      .policyWizSourceType(edrPolicyType) // the ID since it's a power-select
       .build();
     await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
+    const field = 'policyType';
     const expectedValue = 'windowsLogPolicy';
     const translation = this.owner.lookup('service:i18n');
     const optionText = translation.t('adminUsm.policyWizard.windowsLogSourceType');
+    const onChange = waitForReduxStateChange(redux, `usm.policyWizard.policy.${field}`);
     await selectChoose('.control.source-type', optionText);
-    assert.equal(actionSpy.callCount, 1, 'updatePolicyType action creator was called once');
-    assert.equal(actionSpy.calledWith(expectedValue), true, 'updatePolicyType action creator was called with expected args');
-    actionSpy.restore();
+    await onChange;
+    const actualValue = selectedSourceType(redux.getState());
+    assert.equal(actualValue.policyType, expectedValue, `${field} updated from ${edrPolicyType} to ${actualValue.policyType}`);
   });
 
   test('Changing the source type select does not clear policy name and description', async function(assert) {
@@ -193,47 +198,35 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     assert.equal(descEl.value, testDesc, `Policy Description is ${testDesc}`);
   });
 
-  // TODO skipping this as it suddenly fails most of the time - the spy props are not getting set
-  skip('Typing in the policy name control dispatches the editPolicy action creator', async function(assert) {
-    const done = assert.async();
-    assert.expect(4);
-    const actionSpy = sinon.spy(policyWizardCreators, 'editPolicy');
+  test('Typing in the policy name control dispatches the editPolicy action creator', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
     assert.equal(findAll('.control.source-type .ember-power-select-selected-item').length, 1, 'Source Type power-select control appears in the DOM');
     assert.equal(findAll('.control .policy-name input').length, 1, 'Policy Name input control appears in the DOM');
+    const field = 'name';
+    const expectedValue = 'test name';
     const [el] = findAll('.control .policy-name input');
-    await focus(el);
-    el.value = 'test name';
-    const expectedTestName = 'test name';
-    await blur(el);
-    return settled().then(() => {
-      assert.ok(actionSpy.callCount > 0, 'The editPolicy action was called');
-      assert.ok(actionSpy.calledWith('policy.name', expectedTestName), `The editPolicy action was called with trimmed "${expectedTestName}"`);
-      actionSpy.restore();
-      done();
-    });
+    const onChange = waitForReduxStateChange(redux, `usm.policyWizard.policy.${field}`);
+    await fillIn(el, expectedValue);
+    await triggerEvent(el, 'blur');
+    await onChange;
+    const actualValue = policy(redux.getState());
+    assert.equal(actualValue.name, expectedValue, `${field} updated from '' to ${actualValue.name}`);
   });
 
-  // TODO skipping this as it suddenly fails most of the time - the spy props are not getting set
-  skip('Typing in the policy description control dispatches the editPolicy action creator', async function(assert) {
-    const done = assert.async();
-    assert.expect(3);
-    const actionSpy = sinon.spy(policyWizardCreators, 'editPolicy');
+  test('Typing in the policy description control dispatches the editPolicy action creator', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
     assert.equal(findAll('.control .policy-name input').length, 1, 'Policy Name input control appears in the DOM');
+    const field = 'description';
+    const expectedValue = 'test description';
     const [el] = findAll('.control-with-error .policy-description textarea');
-    await focus(el);
-    const expectedTestDesc = 'test description';
-    el.value = expectedTestDesc;
-    await blur(el);
-    return settled().then(() => {
-      assert.ok(actionSpy.callCount > 0, 'The editPolicy action was called');
-      assert.ok(actionSpy.calledWith('policy.description', expectedTestDesc), `The editPolicy action was called with trimmed "${expectedTestDesc}"`);
-      actionSpy.restore();
-      done();
-    });
+    const onChange = waitForReduxStateChange(redux, `usm.policyWizard.policy.${field}`);
+    await fillIn(el, expectedValue);
+    await triggerEvent(el, 'blur');
+    await onChange;
+    const actualValue = policy(redux.getState());
+    assert.equal(actualValue.description, expectedValue, `${field} updated from '' to ${actualValue.description}`);
   });
 
   test('Error message for blank name does not appear if the field has not been visited', async function(assert) {
