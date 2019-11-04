@@ -84,7 +84,7 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
 
     private List<OutputDataProcessingManager.ProcessorRun> processorRun(Instant startDate, Instant endDate) {
             return ENTITIES_TO_PROCESS.stream()
-                .map(entity -> dataProcessingHelper.processorRun(startDate, endDate, entity, SMART_RECORD_CONF_NAMES.apply(entity)))
+                .map(entity -> dataProcessingHelper.processorRun(startDate, endDate, SMART_RECORD_CONF_NAMES.apply(entity), entity))
                 .collect(toList());
     }
 
