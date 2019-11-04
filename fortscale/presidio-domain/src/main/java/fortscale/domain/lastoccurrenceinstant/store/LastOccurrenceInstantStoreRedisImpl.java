@@ -44,7 +44,9 @@ public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstan
 
     @Override
     public Map<String, Instant> readAll(Schema schema, String entityType, List<String> entityIds) {
-        List<Instant> lastOccurrenceInstants = valueOperations.multiGet(entityIds);
+        List<Instant> lastOccurrenceInstants = valueOperations.multiGet(entityIds.stream()
+                .map(entityId -> getRedisKey(schema, entityType, entityId))
+                .collect(Collectors.toList()));
         int numberOfEntityIds = entityIds.size();
 
         if (lastOccurrenceInstants == null) {
@@ -77,8 +79,10 @@ public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstan
             @SuppressWarnings("unchecked")
             public Object execute(RedisOperations redisOperations) throws DataAccessException {
                 redisOperations.multi();
-                entityIdToLastOccurrenceInstantMap.forEach((entityId, lastOccurrenceInstant) ->
-                        redisOperations.opsForValue().set(entityId, lastOccurrenceInstant, timeout));
+                entityIdToLastOccurrenceInstantMap.forEach((entityId, lastOccurrenceInstant) -> {
+                    String redisKey = getRedisKey(schema, entityType, entityId);
+                    redisOperations.opsForValue().set(redisKey, lastOccurrenceInstant, timeout);
+                });
                 redisOperations.exec();
                 return null;
             }
