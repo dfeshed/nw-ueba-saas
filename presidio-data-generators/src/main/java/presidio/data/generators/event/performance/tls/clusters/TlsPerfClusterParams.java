@@ -171,11 +171,11 @@ public class TlsPerfClusterParams {
             Assert.assertNotNull(startInstant, "startInstant not set");
             Assert.assertNotNull(endInstant, "endInstant not set");
 
-            Assert.assertTrue(params.alertsProbability > 0, "alertsProbability not set");
-            Assert.assertTrue(params.abnormalActivityStartHour > 0, "abnormalActivityStartHour not set");
-            Assert.assertTrue(params.abnormalActivityEndHour > 0, "abnormalActivityEndHour not set");
-            Assert.assertTrue(params.regularActivityStartHour > 0, "regularActivityStartHour not set");
-            Assert.assertTrue(params.regularActivityEndHour > 0, "regularActivityEndHour not set");
+            Assert.assertTrue(params.alertsProbability >= 0, "alertsProbability not set");
+            Assert.assertTrue(params.abnormalActivityStartHour >= 0, "abnormalActivityStartHour not set");
+            Assert.assertTrue(params.abnormalActivityEndHour >= 0, "abnormalActivityEndHour not set");
+            Assert.assertTrue(params.regularActivityStartHour >= 0, "regularActivityStartHour not set");
+            Assert.assertTrue(params.regularActivityEndHour >= 0, "regularActivityEndHour not set");
             Assert.assertTrue(params.millisBetweenEvents > 0, "millisBetweenEvents not set");
 
             return params;
