@@ -3,6 +3,7 @@ package fortscale.ml.scorer.algorithms;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Sigmoid;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang3.Validate;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public class CategoryRarityModelScorerAlgorithm {
         Assert.isTrue(featureCount > 0, featureCount < 0 ?
                 "featureCount can't be negative - you probably have a bug" : "if you're scoring a first-time-seen feature, you should pass 1 as its count");
         if(model.getOccurrencesToNumOfPartitionsList() != null) {
-            Assert.isTrue(maxNumOfRarePartitions + maxRareCount <= model.getOccurrencesToNumOfPartitionsList().size(),
+            Validate.isTrue(maxNumOfRarePartitions + maxRareCount <= model.getOccurrencesToNumOfPartitionsList().size(),
                     new StringBuilder("maxNumOfRarePartitions + maxRareCount must be no larger than the model bucket size. ")
                             .append("maxNumOfRarePartitions: ").append(maxNumOfRarePartitions).
                             append(", maxRareCount: ").append(maxRareCount)
