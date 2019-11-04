@@ -130,12 +130,12 @@
     "_type": "visualization",
     "_source": {
       "title": "Metricbeat: Processes By Memory",
-      "visState": "{\"title\":\"Metricbeat: Processes By Memory\",\"type\":\"metrics\",\"params\":{\"id\":\"edfceb30-1b18-11e7-b09e-037021c4f8df\",\"type\":\"top_n\",\"series\":[{\"id\":\"edfceb31-1b18-11e7-b09e-037021c4f8df\",\"color\":\"#68BC00\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"edfceb32-1b18-11e7-b09e-037021c4f8df\",\"type\":\"avg\",\"field\":\"system.process.memory.rss.pct\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"percent\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"terms_field\":\"system.process.name\",\"terms_order_by\":\"edfceb32-1b18-11e7-b09e-037021c4f8df\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"bar_color_rules\":[{\"value\":0,\"id\":\"efb9b660-1b18-11e7-b09e-037021c4f8df\",\"bar_color\":\"rgba(104,188,0,1)\",\"opperator\":\"gte\"},{\"value\":0.7,\"id\":\"17fcb820-1b19-11e7-b09e-037021c4f8df\",\"bar_color\":\"rgba(254,146,0,1)\",\"opperator\":\"gte\"},{\"value\":0.85,\"id\":\"1dd61070-1b19-11e7-b09e-037021c4f8df\",\"bar_color\":\"rgba(211,49,21,1)\",\"opperator\":\"gte\"}],\"drilldown_url\":\"\",\"filter\":\"\"},\"aggs\":[],\"listeners\":{}}",
+      "visState": "{\"title\":\"Metricbeat: Processes By Memory\",\"type\":\"metrics\",\"params\":{\"id\":\"ce8bcad0-fee3-11e9-aeaa-3da853910589\",\"type\":\"timeseries\",\"series\":[{\"id\":\"ce8bcad1-fee3-11e9-aeaa-3da853910589\",\"color\":\"#68BC00\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"ce8bcad2-fee3-11e9-aeaa-3da853910589\",\"type\":\"avg\",\"field\":\"system.process.memory.rss.pct\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"percent\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"terms_order_by\":\"ce8bcad2-fee3-11e9-aeaa-3da853910589\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"background_color_rules\":[{\"id\":\"ec7ce470-fee3-11e9-aeaa-3da853910589\"}],\"bar_color_rules\":[{\"value\":0,\"id\":\"8f5d0f30-fee4-11e9-aeaa-3da853910589\",\"bar_color\":\"rgba(104,188,0,1)\",\"opperator\":\"gte\"},{\"value\":0.7,\"id\":\"9e799ec0-fee4-11e9-aeaa-3da853910589\",\"bar_color\":\"rgba(254,146,0,1)\",\"opperator\":\"gte\"},{\"value\":0.85,\"id\":\"aa4de120-fee4-11e9-aeaa-3da853910589\",\"bar_color\":\"rgba(211,49,21,1)\",\"opperator\":\"gte\"}],\"gauge_color_rules\":[{\"id\":\"242e8d60-fee4-11e9-aeaa-3da853910589\"}],\"gauge_width\":10,\"gauge_inner_width\":10,\"gauge_style\":\"half\",\"drilldown_url\":\"\",\"filter\":\"\"},\"aggs\":[],\"listeners\":{}}",
       "uiStateJSON": "{}",
       "description": "",
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+        "searchSourceJSON": "{\"query\":{\"match_all\":{}},\"filter\":[]}"
       }
     }
   },
@@ -144,12 +144,12 @@
     "_type": "visualization",
     "_source": {
       "title": "Metricbeat: Top Processes By CPU",
-      "visState": "{\"title\":\"Metricbeat: Top Processes By CPU\",\"type\":\"metrics\",\"params\":{\"id\":\"5f5b8d50-1b18-11e7-b09e-037021c4f8df\",\"type\":\"top_n\",\"series\":[{\"id\":\"5f5b8d51-1b18-11e7-b09e-037021c4f8df\",\"color\":\"#68BC00\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"5f5b8d52-1b18-11e7-b09e-037021c4f8df\",\"type\":\"avg\",\"field\":\"system.process.cpu.total.pct\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"percent\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"terms_field\":\"system.process.name\",\"terms_order_by\":\"5f5b8d52-1b18-11e7-b09e-037021c4f8df\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"bar_color_rules\":[{\"value\":0,\"id\":\"60e11be0-1b18-11e7-b09e-037021c4f8df\",\"bar_color\":\"rgba(104,188,0,1)\",\"opperator\":\"gte\"}],\"drilldown_url\":\"\",\"filter\":\"\"},\"aggs\":[],\"listeners\":{}}",
+      "visState": "{\"title\":\"Metricbeat: Top Processes By CPU\",\"type\":\"metrics\",\"params\":{\"id\":\"e8dfa400-fee4-11e9-aeaa-3da853910589\",\"type\":\"timeseries\",\"series\":[{\"id\":\"e8dfa401-fee4-11e9-aeaa-3da853910589\",\"color\":\"#68BC00\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"e8dfa402-fee4-11e9-aeaa-3da853910589\",\"type\":\"avg\",\"field\":\"system.process.cpu.total.pct\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"percent\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"terms_order_by\":\"e8dfa402-fee4-11e9-aeaa-3da853910589\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"background_color_rules\":[{\"id\":\"021e5920-fee5-11e9-aeaa-3da853910589\"}],\"bar_color_rules\":[{\"value\":0,\"id\":\"071c6ca0-fee5-11e9-aeaa-3da853910589\",\"bar_color\":\"rgba(104,188,0,1)\",\"opperator\":\"gte\"}],\"drilldown_url\":\"\",\"filter\":\"\",\"gauge_color_rules\":[{\"id\":\"1aafde50-fee5-11e9-aeaa-3da853910589\"}],\"gauge_width\":10,\"gauge_inner_width\":10,\"gauge_style\":\"half\"},\"aggs\":[],\"listeners\":{}}",
       "uiStateJSON": "{}",
       "description": "",
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+        "searchSourceJSON": "{\"query\":{\"match_all\":{}},\"filter\":[]}"
       }
     }
   },
