@@ -17,16 +17,18 @@ import static presidio.integration.performance.generators.tls.ClusterSizeFactory
 
 public class TlsPerformanceStabilityScenario {
 
-    private final int SMALL_SIZE_CLUSTERS = 100;
-    private final int MEDIUM_SIZE_CLUSTERS = 1;
-    private final int LARGE_SIZE_CLUSTERS = 1;
-    private final int SESSION_SPLIT_CLUSTER = 10;
+    private final int SMALL_SIZE_CLUSTERS = 200;
+    private final int LARGE_SIZE_CLUSTERS = 15;
+    private final int SESSION_SPLIT_CLUSTER = 1;
+
     private final int SESSION_SPLIT_LIMIT = 1000;
 
     private final Instant startInstant;
     private final Instant endInstant;
     private final double TLS_ALERTS_PROBABILITY;
     private final int TLS_GROUPS_MULTIPLIER;
+    private final int TLS_LARGE_GROUP_MILLIS_BETWEEN_EVENTS = 41;
+    private final int TLS_SESSION_SPLIT_GROUP_MILLIS_BETWEEN_EVENTS = 1000;
     private final int millisBetweenEvents;
 
     public List<AbstractEventGenerator<TlsEvent>> tlsEventsGenerators = new LinkedList<>();
@@ -35,22 +37,18 @@ public class TlsPerformanceStabilityScenario {
         this.startInstant = startInstant;
         this.endInstant = endInstant;
         TLS_ALERTS_PROBABILITY = tlsAlertsProbability;
-        TLS_GROUPS_MULTIPLIER =tlsGroupsMultiplier;
+        TLS_GROUPS_MULTIPLIER = tlsGroupsMultiplier;
         this.millisBetweenEvents = millisBetweenEvents;
         init();
     }
 
     private void init() {
-        TlsPerfClusterParams sessionSplitClusterParams = getSmallClusterParams(0, startInstant, endInstant, millisBetweenEvents);
+        TlsPerfClusterParams sessionSplitClusterParams = getSessionSplitClusterParams(0, startInstant, endInstant, TLS_SESSION_SPLIT_GROUP_MILLIS_BETWEEN_EVENTS);
         TlsPerfClusterParams smallClusterParams = getSmallClusterParams(TLS_ALERTS_PROBABILITY, startInstant, endInstant, millisBetweenEvents);
-        TlsPerfClusterParams mediumClusterParams = getMediumClusterParams(TLS_ALERTS_PROBABILITY, startInstant, endInstant, millisBetweenEvents);
-        TlsPerfClusterParams largeClusterParams = getLargeClusterParams(TLS_ALERTS_PROBABILITY, startInstant, endInstant, millisBetweenEvents);
+        TlsPerfClusterParams largeClusterParams = getLargeClusterParams(TLS_ALERTS_PROBABILITY, startInstant, endInstant, TLS_LARGE_GROUP_MILLIS_BETWEEN_EVENTS);
 
         List<TlsEventsSimplePerfGen> tlsGroupSmall = IntStream.range(0, SMALL_SIZE_CLUSTERS * TLS_GROUPS_MULTIPLIER).boxed()
                 .map(index -> new TlsEventsSimplePerfGen(smallClusterParams)).collect(toList());
-
-        List<TlsEventsSimplePerfGen> tlsGroupMedium = IntStream.range(0, MEDIUM_SIZE_CLUSTERS * TLS_GROUPS_MULTIPLIER).boxed()
-                .map(index -> new TlsEventsSimplePerfGen(mediumClusterParams)).collect(toList());
 
         List<TlsEventsSimplePerfGen> tlsGroupLarge = IntStream.range(0, LARGE_SIZE_CLUSTERS * TLS_GROUPS_MULTIPLIER).boxed()
                 .map(index -> new TlsEventsSimplePerfGen(largeClusterParams)).collect(toList());
@@ -62,7 +60,6 @@ public class TlsPerformanceStabilityScenario {
         tlsEventsGenerators = Stream.of(
                 tlsGroupSessionSplit.stream(),
                 tlsGroupSmall.stream(),
-                tlsGroupMedium.stream(),
                 tlsGroupLarge.stream())
                 .flatMap(a -> a)
                 .collect(toList());
