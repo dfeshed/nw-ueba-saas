@@ -25,6 +25,7 @@ import java.util.stream.IntStream;
 public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstantStore {
     private static final Logger logger = Logger.getLogger(LastOccurrenceInstantStoreRedisImpl.class);
     private static final String REDIS_KEY_PREFIX = "last-occurrence-instant";
+    private static final String REDIS_KEY_DELIMITER = ":";
 
     private final RedisTemplate<String, Instant> redisTemplate;
     private final ValueOperations<String, Instant> valueOperations;
@@ -88,6 +89,10 @@ public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstan
     public void close() {}
 
     private static String getRedisKey(Schema schema, String entityType, String entityId) {
-        return String.format("%s:%s:%s:%s", REDIS_KEY_PREFIX, schema.getName(), entityType, entityId);
+        // noinspection StringBufferReplaceableByString - Use StringBuilder instead of String.format.
+        return new StringBuilder(REDIS_KEY_PREFIX).append(REDIS_KEY_DELIMITER)
+                .append(schema.getName()).append(REDIS_KEY_DELIMITER)
+                .append(entityType).append(REDIS_KEY_DELIMITER)
+                .append(entityId).toString();
     }
 }
