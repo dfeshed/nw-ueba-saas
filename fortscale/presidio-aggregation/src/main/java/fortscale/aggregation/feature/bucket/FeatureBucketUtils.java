@@ -27,7 +27,7 @@ public class FeatureBucketUtils {
 
 		List<String> listOfPairs = new ArrayList<>();
 		for (Map.Entry<String, String> entry : listOfEntries) {
-			listOfPairs.add(String.format("%s%s%s", entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()));
+			listOfPairs.add(new StringBuilder(entry.getKey()).append(CONTEXT_ID_SEPARATOR).append(entry.getValue()).toString());
 		}
 
 		return StringUtils.join(listOfPairs, CONTEXT_ID_SEPARATOR);

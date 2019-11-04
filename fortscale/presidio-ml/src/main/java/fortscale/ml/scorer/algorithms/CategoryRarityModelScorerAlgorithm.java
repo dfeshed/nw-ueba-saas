@@ -56,9 +56,10 @@ public class CategoryRarityModelScorerAlgorithm {
                 "featureCount can't be negative - you probably have a bug" : "if you're scoring a first-time-seen feature, you should pass 1 as its count");
         if(model.getOccurrencesToNumOfPartitionsList() != null) {
             Assert.isTrue(maxNumOfRarePartitions + maxRareCount <= model.getOccurrencesToNumOfPartitionsList().size(),
-                    String.format("maxNumOfRarePartitions + maxRareCount must be no larger than the model bucket size. " +
-                                    "maxNumOfRarePartitions: %d, maxRareCount: %d, bucket size: %d",
-                            maxNumOfRarePartitions, maxRareCount, model.getOccurrencesToNumOfPartitionsList().size()));
+                    new StringBuilder("maxNumOfRarePartitions + maxRareCount must be no larger than the model bucket size. ")
+                            .append("maxNumOfRarePartitions: ").append(maxNumOfRarePartitions).
+                            append(", maxRareCount: ").append(maxRareCount)
+                            .append(", bucket size: ").append(model.getOccurrencesToNumOfPartitionsList().size()).toString());
         }
 
         if (featureCount > maxRareCount || featureCount > maxNumOfRarePartitions) {
