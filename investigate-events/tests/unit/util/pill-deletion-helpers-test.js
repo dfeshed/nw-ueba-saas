@@ -153,4 +153,19 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     const deletedIds = [pills[0].id, pills[1].id, pills[2].id, pills[3].id, pills[4].id];
     assert.notOk(includeLogicalOpAfterParens(deletedIds, pill, 5, pills), 'Should not allow deletion of the pill');
   });
+
+  test('should return true if the pill passed is a logical operator after two empty parens, even if the parens are not selected', function(assert) {
+    const text = 'medium = 3 AND ( medium = 4 ) AND b = \'google.com\'';
+    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    // Remove the pill inside the parens
+    results.splice(3, 1);
+    const pills = createPillsWithIds(results);
+    pills[2].isFocused = false;
+    pills[2].isSelected = false;
+    pills[3].isFocused = false;
+    pills[3].isSelected = false;
+    const [,,,, pill ] = pills;
+    const deletedIds = [ pills[2].id, pills[3].id ];
+    assert.notOk(includeLogicalOpAfterParens(deletedIds, pill, 5, pills), 'Should not allow deletion of the pill');
+  });
 });
