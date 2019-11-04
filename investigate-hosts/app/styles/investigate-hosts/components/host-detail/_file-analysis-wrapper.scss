@@ -60,7 +60,8 @@
   .string-filter-wrapper {
     width: 360px;
     display: inline-block;
-    margin-left: 250px;
+    float: right;
+    margin-right: 50px;
     height: 32px;
     label {
       display: inline-block;
