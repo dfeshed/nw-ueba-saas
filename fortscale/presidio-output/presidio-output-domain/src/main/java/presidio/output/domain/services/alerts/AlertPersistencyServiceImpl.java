@@ -195,6 +195,13 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
+    public void clearAlertsContributionByQuery(AlertQuery alertQuery) {
+        SearchQuery query = new AlertElasticsearchQueryBuilder(alertQuery).build();
+        String field = Alert.CONTRIBUTION_TO_ENTITY_SCORE_FIELD_NAME;
+        alertRepository.updateAlertsByQuery(query, field,0);
+    }
+
+    @Override
     public long countAlerts() {
         return alertRepository.count();
     }

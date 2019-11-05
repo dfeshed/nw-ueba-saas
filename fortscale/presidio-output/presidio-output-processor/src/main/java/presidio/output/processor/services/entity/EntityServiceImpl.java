@@ -196,6 +196,8 @@ public class EntityServiceImpl implements EntityService {
 
         //Clean entities which not have alert in the last 90 days, but still have score
         entityScoreService.clearEntityScoreForEntitiesThatShouldNotHaveScore(aggregatedEntityScore.keySet(), entityType);
+        //Reset alerts contribution if alert startDate is before 90 days
+        entityScoreService.clearAlertsContributionThatShouldNotHaveContributionToEntityScore(alertEffectiveDurationInDays, endDate, entityType);
 
         return true;
     }

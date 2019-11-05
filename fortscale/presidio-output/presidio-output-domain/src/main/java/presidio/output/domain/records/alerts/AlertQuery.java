@@ -20,6 +20,7 @@ public class AlertQuery {
     private final List<String> filterByTags;
     private final List<String> filterByIndicatorNames;
     private String filterByEntityType;
+    private double filterByContribution;
 
     // sort
     private final Sort sort;
@@ -48,6 +49,7 @@ public class AlertQuery {
         this.filterByEntityDocumentId = builder.filterByEntityDocumentId;
         this.aggregateByFields = builder.aggregateByFields;
         this.filterByEntityType = builder.filterByEntityType;
+        this.filterByContribution = builder.filterByContribution;
     }
 
     public List<String> getFilterByEntityName() {
@@ -112,6 +114,10 @@ public class AlertQuery {
         return aggregateByFields;
     }
 
+    public double getFilterByContribution() {
+        return filterByContribution;
+    }
+
     public static class AlertQueryBuilder {
 
         // filters
@@ -127,6 +133,7 @@ public class AlertQuery {
         private List<String> filterByIndicatorNames;
         private List<String> filterByEntityDocumentId;
         private String filterByEntityType = null;
+        private double filterByContribution = -1;
 
         // sort
         private Sort sort;
@@ -224,6 +231,11 @@ public class AlertQuery {
 
         public AlertQueryBuilder aggregateByFields(List<String> aggregateByFields) {
             this.aggregateByFields = aggregateByFields;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByContribution(double filterByContribution) {
+            this.filterByContribution = filterByContribution;
             return this;
         }
 
