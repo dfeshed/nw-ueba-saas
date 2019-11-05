@@ -6,7 +6,13 @@ import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.UpdateByQueryAction;
+import org.elasticsearch.index.reindex.UpdateByQueryRequestBuilder;
+import org.elasticsearch.script.Script;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.data.elasticsearch.core.query.UpdateQuery;
 import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 import presidio.output.domain.records.entity.Entity;
@@ -45,6 +51,21 @@ public class EntityRepositoryImpl implements EntityRepositoryCustom {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean updateEntitiesByQuery(SearchQuery searchQuery, String field, Object value) {
+        UpdateByQueryRequestBuilder updateByQuery = UpdateByQueryAction.INSTANCE.newRequestBuilder(elasticsearchOperations.getClient());
+        updateByQuery.filter(searchQuery.getQuery());
+        updateByQuery.script(new Script(String.format("ctx._source.%s=%s",field, value)));
+        try {
+            BulkByScrollResponse updateResponse = updateByQuery.get(TimeValue.timeValueHours(1));
+            logger.debug("updateResponse = {}", updateResponse);
+            return true;
+        } catch (ElasticsearchException ex) {
+            logger.error("update by query failed", ex);
+            return false;
+        }
     }
 
     private UpdateQuery buildQuery(String entityId, Map fields) {
