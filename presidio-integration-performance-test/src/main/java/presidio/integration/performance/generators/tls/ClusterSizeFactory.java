@@ -36,7 +36,7 @@ public class ClusterSizeFactory {
     public static TlsPerfClusterParams getSessionSplitClusterParams(Instant startInstant, Instant endInstant, double eventsPerDay, double tlsAlertsProbability) {
         return new TlsPerfClusterParams.Builder()
                 .setJa3Size(10)
-                .setSslSubjectSize(10)
+                .setSslSubjectSize(500)
 
                 .setDstIpSize(10)
                 .setDstOrgSize(10)

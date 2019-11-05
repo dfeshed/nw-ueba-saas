@@ -20,12 +20,14 @@ public class TlsPerformanceStabilityScenario {
 
     private final int SESSION_SPLIT_CLUSTER = 1;
     private final int SESSION_SPLIT_LIMIT = 100;
+    private final int SESSION_SPLIT_FACTOR = 660;
 
     private final Instant startInstant;
     private final Instant endInstant;
     private final double TLS_ALERTS_PROBABILITY;
     private final int TLS_GROUPS;
     private final double TLS_EVENTS_PER_DAY_PER_GROUP;
+    private final double TLS_SESSSION_SPLIT_EVENTS_PER_DAY;
 
     public List<AbstractEventGenerator<TlsEvent>> tlsEventsGenerators = new LinkedList<>();
 
@@ -36,12 +38,13 @@ public class TlsPerformanceStabilityScenario {
         this.endInstant = endInstant;
         TLS_ALERTS_PROBABILITY = tlsAlertsProbability;
         TLS_GROUPS = groupsToCreate;
-        this.TLS_EVENTS_PER_DAY_PER_GROUP = tlsEventsPerDayPerGroup;
+        TLS_EVENTS_PER_DAY_PER_GROUP = tlsEventsPerDayPerGroup;
+        TLS_SESSSION_SPLIT_EVENTS_PER_DAY = groupsToCreate * tlsEventsPerDayPerGroup / SESSION_SPLIT_FACTOR;
         init();
     }
 
     private void init() {
-        TlsPerfClusterParams sessionSplitClusterParams = getSessionSplitClusterParams(startInstant, endInstant, TLS_EVENTS_PER_DAY_PER_GROUP / 100, TLS_ALERTS_PROBABILITY);
+        TlsPerfClusterParams sessionSplitClusterParams = getSessionSplitClusterParams(startInstant, endInstant, TLS_SESSSION_SPLIT_EVENTS_PER_DAY, 0);
         TlsPerfClusterParams smallClusterParams = tlsParamsGroupA(startInstant, endInstant, TLS_EVENTS_PER_DAY_PER_GROUP, TLS_ALERTS_PROBABILITY);
 
         List<TlsEventsSimplePerfGen> tlsGroupSmall = IntStream.range(0, TLS_GROUPS).boxed()
