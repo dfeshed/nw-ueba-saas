@@ -123,8 +123,6 @@ const fileColumns = [{
   width: '15vw',
   title: 'Source Folder Path',
   visible: true,
-  linkField: 'user_link',
-  additionalFilter: 'directory',
   disableSort: true
 }, {
   field: 'additionalInfo.absoluteDstFilePath',
@@ -137,7 +135,6 @@ const fileColumns = [{
   width: '10vw',
   title: 'Source File Path',
   linkField: 'user_link',
-  additionalFilter: 'filename',
   visible: true,
   disableSort: true
 }, {

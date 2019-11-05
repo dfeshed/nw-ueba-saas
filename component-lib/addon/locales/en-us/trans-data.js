@@ -5628,7 +5628,7 @@ effects the simulated source.',
           },
           abnormal_file_day_time: {
             name: 'Abnormal File Access Time',
-            timeline: '{{entityName}} has accessed a file at an abnormal time}',
+            timeline: '{{entityName}} has accessed a file at an abnormal time',
             chartTitle: 'File Access Time Baseline'
           },
           abnormal_event_day_time: {
@@ -5869,12 +5869,12 @@ effects the simulated source.',
           // Registry anomalies
           abnormal_process_modified_registry_key_group: {
             name: 'Abnormal Process Modified a Registry Group',
-            timeline: '{{value}} has modified {{context.registryKeyGroup}}',
+            timeline: '{{entityName}} has modified {{context.registryKeyGroup}}',
             chartTitle: 'Anomaly for Registry Group'
           },
           abnormal_registry_day_time: {
             name: 'Abnormal Registry Access Time',
-            timeline: '{{value}} has accessed a registry at an abnormal time',
+            timeline: '{{entityName}} has accessed a registry at an abnormal time',
             chartTitle: 'Registry Access Time Baseline'
           },
           abnormal_process_modified_a_service_key_registry: {
@@ -5886,31 +5886,31 @@ effects the simulated source.',
           // Process anomalies
           abnormal_process_injects_into_lsass: {
             name: 'Abnormal process injected into LSASS',
-            timeline: '{{value}} has created a remote thread in the LSASS process',
+            timeline: '{{entityName}} has created a remote thread in the LSASS process',
             chartTitle: 'LSASS Process Injection',
             axisYtitle: ''
           },
           abnormal_reconnaissance_tool_executed: {
             name: 'Abnormal reconnaissance tool executed',
-            timeline: '{{value}} has been created',
+            timeline: '{{entityName}} has been created',
             chartTitle: 'Reconnaissance Tools',
             axisYtitle: ''
           },
           abnormal_process_executed_a_scripting_tool: {
             name: 'Abnormal Process Executed a Scripting Tool',
-            timeline: '{{value}} has created {{contexts.dstProcessFileName}}',
+            timeline: '{{entityName}} has created {{contexts.cdstProcessFileName}}',
             chartTitle: 'Processes Executing Scripting',
             axisYtitle: ''
           },
           abnormal_process_injects_into_windows_process: {
             name: 'Abnormal process injects into windows process',
-            timeline: '{{value}} has created a remote thread in {{contexts.dstProcessFileName}} process',
+            timeline: '{{entityName}} has created a remote thread in {{contexts.dstProcessFileName}} process',
             chartTitle: 'Processes injected to Windows Processes',
             axisYtitle: ''
           },
           uncommon_process_injects_into_windows_process: {
             name: 'Abnormal Process Injects into Windows Process',
-            timeline: '{{value}} was injected into a known windows process',
+            timeline: '{{entityName}} was injected into a known windows process',
             chartTitle: 'Processes injected to Windows Processes',
             axisYtitle: ''
           },
@@ -5922,103 +5922,103 @@ effects the simulated source.',
           },
           abnormal_application_triggered_by_scripting_tool: {
             name: 'Abnormal Application Triggered by Scripting Tool',
-            timeline: '{{value}} was created by {{contexts.srcProcessFileName}}',
+            timeline: '{{entityName}} was created by {{contexts.srcProcessFileName}}',
             chartTitle: 'Applications triggered by Scripting',
             axisYtitle: ''
           },
           abnormal_process_opened_by_scripting_tool: {
             name: 'Abnormal Process Opened by Scripting Tool',
-            timeline: '{{value}} was opened by {{contexts.srcProcessFileName}}',
+            timeline: '{{entityName}} was opened by {{contexts.srcProcessFileName}}',
             chartTitle: 'Processes Opened by Scripting',
             axisYtitle: ''
           },
           high_number_of_distinct_reconnaissance_tools_executed: {
             name: 'Multiple Distinct Reconnaissance Tools Executed',
-            timeline: '{{value}} reconnaissance tools were executed in this hour',
+            timeline: '{{entityName}} reconnaissance tools were executed in this hour',
             chartTitle: 'Distinct Reconnaissance Tools (Last 30 Days)',
             axisYtitle: 'Count of Tools'
           },
           high_number_of_reconnaissance_tool_activities_executed: {
             name: 'Multiple Reconnaissance Tool Activities Executed',
-            timeline: '{{value}} reconnaissance tool activities were executed in this hour',
+            timeline: '{{entityName}} reconnaissance tool activities were executed in this hour',
             chartTitle: 'Reconnaissance Tool Executions (Last 30 Days)',
             axisYtitle: 'Count of Executions'
           },
           high_number_of_reconnaissance_tools_executed_process: {
             name: 'Process Executed Multiple Times by a Reconnaissance Tool',
-            timeline: '{{value}} was executed abnormally multiple times by a reconnaissance tool',
+            timeline: '{{entityName}} was executed abnormally multiple times by a reconnaissance tool',
             chartTitle: 'Process Executions by Reconnaissance Tool (Last 30 Days)',
             axisYtitle: 'Count of Process Executions'
           },
           abnormal_process_day_time: {
             name: 'Abnormal Process Execution Time',
-            timeline: '{{value}} has accessed a process at an abnormal time',
+            timeline: '{{entityName}} has accessed a process at an abnormal time',
             chartTitle: 'Process Access Time Baseline'
           },
           user_abnormal_application_triggered_by_scripting_tool: {
             name: 'Abnormal User Application Triggered by Scripting Tool',
-            timeline: '{{value}} triggered by scripting tool',
+            timeline: '{{entityName}} triggered by scripting tool',
             chartTitle: 'Processes Triggered by Scripting'
           },
           user_abnormal_process_opened_by_scripting_tool: {
             name: 'Abnormal User Application Opened by Scripting Tool',
-            timeline: '{{value}} opened by scripting tool',
+            timeline: '{{entityName}} opened by scripting tool',
             chartTitle: 'Processes Opened by Scripting'
           },
           user_abnormal_process_executed_a_scripting_tool: {
             name: 'Abnormal User Application Executed by Scripting Tool',
-            timeline: '{{value}} executed by scripting tool.',
+            timeline: '{{entityName}} executed by scripting tool.',
             chartTitle: 'Processes Executed by Scripting'
           },
           // logon anomalies
           multiple_failed_authentications: {
             name: 'Multiple Failed Authentications',
-            timeline: '{{value}} failed authentications attempts',
+            timeline: '{{entityName}} failed authentications attempts',
             chartTitle: 'Number of Failed Authentications (Last 30 Days)',
             axisYtitle: 'Failed Authentications'
           },
           logged_onto_multiple_domains: {
             name: 'Logged onto Multiple Domains',
             desc: 'A user has attempted to log on to multiple domains.',
-            timeline: 'accessed  {{value}} domains',
+            timeline: 'accessed  {{entityName}} domains',
             chartTitle: 'Number of Domains (Last 30 Days)',
             axisYtitle: 'Domains'
           },
           account_management_change_anomaly: {
             name: 'Account Management Change Anomaly',
             desc: 'An abnormal change to an Active Directory attribute activity has been made.',
-            timeline: '{{value}}',
+            timeline: '{{entityName}}',
             chartTitle: '',
             axisYtitle: ''
           },
           multiple_account_management_changes: {
             name: 'Multiple Account Management Changes',
             desc: 'A user has sucussfuly executed multiple Active Directory changes',
-            timeline: 'Changed {{value}}> AD objects',
+            timeline: 'Changed {{entityName}} AD objects',
             chartTitle: 'Number Of Account Management Events (Last 30 Days)',
             axisYtitle: 'Account Management Events'
           },
           multiple_privileged_group_membership_changes: {
             name: 'Multiple privileged Group Membership Changes',
             desc: 'A user has sucussfuly executed multiple changes to groups',
-            timeline: 'Changed {{value}} Group Memberships',
+            timeline: 'Changed {{entityName}} Group Memberships',
             chartTitle: 'Number Of Group Update Events (Last 30 Days)',
             axisYtitle: 'Number Of Group membership update Events'
           },
           quest_ca_ad_event_time: {
             name: 'Abnormal Active Directory Change Time',
             desc: 'A user executed Active Directory activity at an abnormal time',
-            timeline: 'Changed AD objects at {{value}}'
+            timeline: 'Changed AD objects at {{entityName}}'
           },
           quest_ca_auth_event_time: {
             name: 'Abnormal Logon Time',
             desc: 'A user executed Active Directory activity at an abnormal time',
-            timeline: 'Changed AD objects at {{value}}'
+            timeline: 'Changed AD objects at {{entityName}}'
           },
           multiple_failed_file_access_events: {
             name: 'Multiple Failed File Access Events',
             desc: 'A user has failed multiple attempts to access a file',
-            timeline: 'Failed to access {{value}} files',
+            timeline: 'Failed to access {{entityName}} files',
             chartTitle: 'Number Of Files Access Events (Last 30 Days)',
             axisYtitle: 'File Access Events'
           },
@@ -6032,7 +6032,7 @@ effects the simulated source.',
           multiple_folder_open_events: {
             name: 'Multiple Folder Open Events',
             desc: 'A user has opened multiple folders',
-            timeline: 'Opened {{value}} folders',
+            timeline: 'Opened {{entityName}} folders',
             chartTitle: 'Number Of Folder Open Events (Last 30 Days)',
             axisYtitle: 'Folder Open Events'
           },
@@ -6043,275 +6043,282 @@ effects the simulated source.',
           },
           high_number_of_bytes_sent_by_src_ip_to_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent from IP to SSL Subject',
-            desc: 'Abnormal number of bytes sent from <IP> to {{entityName}}',
-            timeline: 'Abnormal number of bytes sent from <IP> to {{entityName}}',
+            desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.srcIp}}',
+            timeline: 'Abnormal number of bytes sent from{{contexts.srcIp}} to {{contexts.sslSubjectName}}',
             chartTitle: 'Bytes Sent from IP to SSL Subject Baseline (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
 
           },
           high_number_of_bytes_sent_by_src_ip_to_domain_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent from IP to Domain',
-            desc: 'Abnormal number of bytes sent from <IP> to {{entityName}}',
-            timeline: 'Abnormal number of bytes sent from <IP> to {{entityName}}',
+            desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.domainName}}',
+            timeline: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.domainName}}',
             chartTitle: 'Bytes Sent from IP to Domain Baseline (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_by_src_ip_to_dst_org_ssl_subject_outbound: {
             name: 'Abnormal Traffic Sent from IP to Organization',
-            desc: 'Abnormal number of bytes sent from <IP> to {{entityName}}',
-            timeline: 'Abnormal number of bytes sent from <IP> to {{entityName}}',
+            desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.dstOrgName}}',
+            timeline: 'Abnormal number of bytes sent from{{contexts.srcIp}} to {{contexts.dstOrgName}}',
             chartTitle: 'Bytes Sent from IP to Organization Baseline (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_by_src_ip_to_dst_port_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent from IP to Port',
-            desc: 'Abnormal number of bytes sent from <IP> to {{entityName}}',
-            timeline: 'Abnormal number of bytes sent from <IP> to {{entityName}}',
+            desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.dstPortName}}',
+            timeline: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.dstPortName}}',
             chartTitle: 'Bytes Sent from IP to Port Baseline (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_to_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent to SSL Subject',
-            desc: 'Abnormal number of bytes sent to {{entityName}}',
-            timeline: 'Abnormal number of bytes sent to {{entityName}}',
+            desc: 'Abnormal number of bytes sent to {{contexts.sslSubjectName}}',
+            timeline: 'Abnormal number of bytes sent to {{contexts.sslSubjectName}}',
             chartTitle: 'Bytes Sent Baseline (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_to_domain_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent to Domain',
-            desc: 'Abnormal number of bytes sent to {{entityName}}',
-            timeline: 'Abnormal number of bytes sent to {{entityName}}',
+            desc: 'Abnormal number of bytes sent to {{contexts.domainName}}',
+            timeline: 'Abnormal number of bytes sent to {{contexts.domainName}}',
             chartTitle: 'Bytes Sent to Domain Baseline (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent to Port',
-            desc: 'Abnormal number of bytes sent to {{entityName}}',
-            timeline: 'Abnormal number of bytes sent to {{entityName}}',
+            desc: 'Abnormal number of bytes sent to {{contexts.dstPortName}}',
+            timeline: 'Abnormal number of bytes sent to {{contexts.dstPortName}}',
             chartTitle: 'Bytes Sent to Port Baseline (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_to_dst_org_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent to Organization',
-            desc: 'Abnormal number of bytes sent to {{entityName}}',
-            timeline: 'Abnormal number of bytes sent to {{entityName}}',
+            desc: 'Abnormal number of bytes sent to {{contexts.dstOrgName}}',
+            timeline: 'Abnormal number of bytes sent to {{contexts.dstOrgName}}',
             chartTitle: 'Bytes Sent to Organization Baseline (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_by_ja3_outbound: {
             name: 'Abnormal Traffic Volume Sent from JA3',
-            desc: 'Abnormal number of bytes sent from {{entityName}}',
-            timeline: 'Abnormal number of bytes sent from {{entityName}}',
+            desc: 'Abnormal number of bytes sent from {{contexts.ja3Name}}',
+            timeline: 'Abnormal number of bytes sent from {{contexts.ja3Name}}',
             chartTitle: 'Bytes Sent Baseline (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_distinct_src_ip_for_ja3_outbound: {
             name: 'High Number of IPs Use JA3',
-            desc: 'High number of IPs use {{entityName}}',
-            timeline: 'High number of IPs use {{entityName}}',
+            desc: 'High number of IPs use {{contexts.dstOrgName}}',
+            timeline: 'High number of IPs use {{contexts.dstOrgName}}',
             chartTitle: 'Number of IPs Baseline (Last 30 Days)',
-            axisYtitle: 'Bytes Sent'
+            axisYtitle: 'Number of source IPs'
           },
           abnormal_ssl_subject_for_src_netname_outbound: {
             name: 'Abnormal SSL Subject for Source Netname',
-            desc: 'Abnormal SSL Subject accessed by {{entityName}}',
-            timeline: 'Abnormal SSL Subject accessed by {{entityName}}',
+            desc: 'Abnormal SSL Subject accessed by {{contexts.srcNetname}}',
+            timeline: 'Abnormal SSL Subject accessed by {{contexts.srcNetname}}',
             chartTitle: 'Abnormal SSL Subject',
             axisYtitle: 'Bytes Sent'
           },
           ja3_abnormal_ssl_subject_for_src_netname_outbound: {
             name: 'Abnormal SSL Subject for Source Netname',
-            desc: 'Abnormal SSL Subject accessed by {{entityName}}',
-            timeline: 'Abnormal SSL Subject accessed by {{entityName}}',
+            desc: 'Abnormal SSL Subject accessed by {{contexts.srcNetname}}',
+            timeline: 'Abnormal SSL Subject accessed by {{contexts.srcNetname}}',
             chartTitle: 'Abnormal SSL Subject',
             axisYtitle: 'Abnormal SSL Subject'
           },
           ssl_subject_abnormal_domain_for_src_netname_outbound: {
             name: 'Abnormal Domain for Source Netname',
-            desc: 'Abnormal domain accessed by {{entityName}}',
-            timeline: 'Abnormal domain accessed by {{entityName}}',
+            desc: 'Abnormal domain accessed by {{contexts.srcNetname}}',
+            timeline: 'Abnormal domain accessed by {{contexts.srcNetname}}',
             chartTitle: 'Abnormal Domain',
             axisYtitle: 'Abnormal Domaint'
           },
           ja3_abnormal_domain_for_src_netname_outbound: {
             name: 'Abnormal Domain for Source Netname',
-            desc: 'Abnormal domain accessed by {{entityName}}',
-            timeline: 'Abnormal domain accessed by {{entityName}}',
+            desc: 'Abnormal domain accessed by {{contexts.srcNetname}}',
+            timeline: 'Abnormal domain accessed by {{contexts.srcNetname}}',
             chartTitle: 'Abnormal Domain',
             axisYtitle: 'Abnormal Domaint'
           },
           ssl_subject_abnormal_dst_port_for_src_netname_outbound: {
             name: 'Abnormal Destination Port for Source Netname',
-            desc: 'Abnormal port accessed by {{entityName}}',
-            timeline: 'Abnormal port accessed by {{entityName}}',
+            desc: 'Abnormal port accessed by {{contexts.srcNetname}}',
+            timeline: 'Abnormal port accessed by {{contexts.srcNetname}}',
             chartTitle: 'Abnormal Destination Port',
             axisYtitle: 'Abnormal Destination Port'
           },
           ja3_abnormal_dst_port_for_src_netname_outbound: {
             name: 'Abnormal Destination Port for Source Netname',
-            desc: 'Abnormal port accessed by {{entityName}}',
-            timeline: 'Abnormal port accessed by {{entityName}}',
+            desc: 'Abnormal port accessed by {{contexts.srcNetname}}',
+            timeline: 'Abnormal port accessed by {{contexts.srcNetname}}',
             chartTitle: 'Abnormal Destination Port',
             axisYtitle: 'Abnormal Destination Port'
           },
           ssl_subject_abnormal_dst_org_for_src_netname_outbound: {
             name: 'Abnormal Organization for Source Netname',
-            desc: 'Abnormal organization accessed by {{entityName}}',
-            timeline: 'Abnormal organization accessed by {{entityName}}',
+            desc: 'Abnormal organization accessed by {{contexts.srcNetname}}',
+            timeline: 'Abnormal organization accessed by {{contexts.srcNetname}}',
             chartTitle: 'Abnormal Organization',
             axisYtitle: 'Abnormal Organization'
           },
           ja3_abnormal_dst_org_for_src_netname_outbound: {
             name: 'Abnormal Organization for Source Netname',
-            desc: 'Abnormal organization accessed by {{entityName}}',
-            timeline: 'Abnormal organization accessed by {{entityName}}',
+            desc: 'Abnormal organization accessed by {{contexts.srcNetname}}',
+            timeline: 'Abnormal organization accessed by {{contexts.srcNetname}}',
             chartTitle: 'Abnormal Organization',
             axisYtitle: 'Abnormal Organization'
           },
           ssl_subject_abnormal_country_for_ssl_subject_outbound: {
             name: 'Abnormal Country for SSL Subject',
-            desc: 'Abnormal country for {{entityName}}',
-            timeline: 'Abnormal country for {{entityName}}',
+            desc: 'Abnormal country for {{contexts.sslSubjectName}}',
+            timeline: 'Abnormal country for {{contexts.sslSubjectName}}',
             chartTitle: 'Abnormal Country',
             axisYtitle: 'Abnormal Country'
           },
           ja3_abnormal_country_for_ssl_subject_outbound: {
             name: 'Abnormal Country for SSL Subject',
-            desc: 'Abnormal country for {{entityName}}',
-            timeline: 'Abnormal country for {{entityName}}',
+            desc: 'Abnormal country for {{contexts.sslSubjectName}}',
+            timeline: 'Abnormal country for {{contexts.sslSubjectName}}',
             chartTitle: 'Abnormal Country',
             axisYtitle: 'Abnormal Country'
           },
           ssl_subject_abnormal_dst_port_for_ssl_subject_outbound: {
             name: 'Abnormal Destination Port for SSL Subject',
-            desc: '<ssl subject> was contacted through {{entityName}}',
-            timeline: '<ssl subject> was contacted through {{entityName}}',
+            desc: '{{contexts.sslSubjectName}} was contacted through {{contexts.dstPortName}}',
+            timeline: '{{contexts.sslSubjectName}} was contacted through {{contexts.dstPortName}}',
             chartTitle: 'Abnormal Destination Port',
             axisYtitle: 'Abnormal Destination Port'
           },
           ja3_abnormal_dst_port_for_ssl_subject_outbound: {
             name: 'Abnormal Destination Port for SSL Subject',
-            desc: '<ssl subject> was contacted through {{entityName}}',
-            timeline: '<ssl subject> was contacted through {{entityName}}',
+            desc: '{{contexts.sslSubjectName}} was contacted through {{contexts.dstPortName}}',
+            timeline: '{{contexts.sslSubjectName}} was contacted through {{contexts.dstPortName}}',
             chartTitle: 'Abnormal Destination Port',
             axisYtitle: 'Abnormal Destination Port'
           },
           ssl_subject_abnormal_ssl_subject_day_time: {
             name: 'Abnormal Time for SSL Subject',
-            desc: '{{entityName}} was contacted at an abnormal time',
-            timeline: '{{entityName}} was contacted at an abnormal time',
+            desc: '{{contexts.sslSubjectName}} was contacted at an abnormal time',
+            timeline: '{{contexts.sslSubjectName}} was contacted at an abnormal time',
             chartTitle: 'SSL Subject Contact Time Baseline',
             axisYtitle: 'SSL Subject Contact Time Baseline'
           },
           ja3_abnormal_ssl_subject_day_time: {
             name: 'Abnormal Time for SSL Subject',
-            desc: '{{entityName}} was contacted at an abnormal time',
-            timeline: '{{entityName}} was contacted at an abnormal time',
+            desc: '{{contexts.sslSubjectName}} was contacted at an abnormal time',
+            timeline: '{{contexts.sslSubjectName}} was contacted at an abnormal time',
             chartTitle: 'SSL Subject Contact Time Baseline',
             axisYtitle: 'SSL Subject Contact Time Baseline'
           },
           ssl_subject_abnormal_dst_port_for_domain_outbound: {
             name: 'Abnormal Destination Port for Domain',
-            desc: '{{entityName}} was contacted through <port>',
-            timeline: '{{entityName}} was contacted through <port>',
+            desc: '{{contexts.domainName}} was contacted through {{contexts.dstPortName}}',
+            timeline: '{{contexts.domainName}} was contacted through {{contexts.dstPortName}}',
             chartTitle: 'Abnormal Destination Port',
             axisYtitle: 'Abnormal Destination Port'
           },
           ja3_abnormal_dst_port_for_domain_outbound: {
             name: 'Abnormal Destination Port for Domain',
-            desc: '{{entityName}} was contacted through <port>',
-            timeline: '{{entityName}} was contacted through <port>',
+            desc: '{{contexts.domainName}} was contacted through {{contexts.dstPortName}}',
+            timeline: '{{contexts.domainName}} was contacted through {{contexts.dstPortName}}',
             chartTitle: 'Abnormal Destination Port',
             axisYtitle: 'Abnormal Destination Port'
           },
           ssl_subject_abnormal_dst_port_for_dst_org_outbound: {
             name: 'Abnormal Destination Port for Organization',
-            desc: '{{entityName}} was contacted through <port>',
-            timeline: '{{entityName}} was contacted through <port>',
-            chartTitle: 'Abnormal Destination Port',
-            axisYtitle: 'Abnormal Destination Port'
+            desc: '{{contexts.dstOrgName}} was contacted through {{contexts.dstPortName}}',
+            timeline: '{{contexts.dstOrgName}} was contacted through {{contexts.dstPortName}}',
+            chartTitle: 'Abnormal Port for Organization',
+            axisYtitle: 'Abnormal Port for Organization'
           },
           ja3_abnormal_dst_port_for_dst_org_outbound: {
             name: 'Abnormal Destination Port for Organization',
-            desc: '{{entityName}} was contacted through <port>',
-            timeline: '{{entityName}} was contacted through <port>',
-            chartTitle: 'Abnormal Destination Port',
-            axisYtitle: 'Abnormal Destination Port'
+            desc: '{{contexts.dstOrgName}} was contacted through {{contexts.dstPortName}}',
+            timeline: '{{contexts.dstOrgName}} was contacted through {{contexts.dstPortName}}',
+            chartTitle: 'Abnormal Port for Organization',
+            axisYtitle: 'Abnormal Port for Organization'
           },
           ssl_subject_abnormal_ja3_day_time: {
             name: 'Abnormal Time for JA3',
-            desc: '{{entityName}} was used at an abnormal time',
-            timeline: '{{entityName}} was used at an abnormal time',
+            desc: '{{contexts.ja3Name}} was used at an abnormal time',
+            timeline: '{{contexts.ja3Name}} was used at an abnormal time',
             chartTitle: 'JA3 Time Usage Baseline',
             axisYtitle: 'JA3 Time Usage Baseline'
           },
           abnormal_ja3_day_time: {
             name: 'Abnormal Time for JA3',
-            desc: '{{entityName}} was used at an abnormal time',
-            timeline: '{{entityName}} was used at an abnormal time',
+            desc: '{{contexts.ja3.name}} was used at an abnormal time',
+            timeline: '{{contexts.ja3.name}} was used at an abnormal time',
+            chartTitle: 'JA3 Time Usage Baseline',
+            axisYtitle: 'JA3 Time Usage Baseline'
+          },
+          ja3_abnormal_ja3_day_time: {
+            name: 'Abnormal Time for JA3',
+            desc: '{{contexts.ja3Name}} was used at an abnormal time',
+            timeline: '{{contexts.ja3Name}} was used at an abnormal time',
             chartTitle: 'JA3 Time Usage Baseline',
             axisYtitle: 'JA3 Time Usage Baseline'
           },
           ssl_subject_abnormal_ja3_for_source_netname_outbound: {
             name: 'Abnormal JA3 for Source Netname',
-            desc: '{{entityName}} was contacted by <netname>',
-            timeline: '{{entityName}} was contacted by <netname>',
+            desc: '{{contexts.ja3Name}} was used by {{contexts.srcNetname}}',
+            timeline: '{{contexts.ja3Name}} was used by {{contexts.srcNetname}}',
             chartTitle: 'Abnormal JA3 for Netname',
             axisYtitle: 'Abnormal JA3 for Netname'
           },
           abnormal_ja3_for_source_netname_outbound: {
             name: 'Abnormal JA3 for Source Netname',
-            desc: '{{entityName}} was contacted by <netname>',
-            timeline: '{{entityName}} was contacted by <netname>',
+            desc: '{{contexts.ja3Name}} was used by {{contexts.srcNetname}}',
+            timeline: '{{contexts.ja3Name}} was used by {{contexts.srcNetname}}',
             chartTitle: 'Abnormal JA3 for Netname',
             axisYtitle: 'Abnormal JA3 for Netname'
           },
           ssl_subject_abnormal_ssl_subject_for_ja3_outbound: {
             name: 'Abnormal SSL Subject for JA3',
-            desc: '{{entityName}} was contacted by <JA3>',
-            timeline: '{{entityName}} was contacted by <JA3>',
+            desc: '{{contexts.sslSubjectName}} was contacted by {{contexts.ja3Name}}',
+            timeline: '{{contexts.sslSubjectName}} was contacted by {{contexts.ja3Name}}',
             chartTitle: 'Abnormal SSL Subject for JA3',
             axisYtitle: 'Abnormal SSL Subject for JA3'
           },
           ja3_abnormal_ssl_subject_for_ja3_outbound: {
             name: 'Abnormal SSL Subject for JA3',
-            desc: '{{entityName}} was contacted by <JA3>',
-            timeline: '{{entityName}} was contacted by <JA3>',
+            desc: '{{contexts.sslSubjectName}} was contacted by {{contexts.ja3Name}}',
+            timeline: '{{contexts.sslSubjectName}} was contacted by {{contexts.ja3Name}}',
             chartTitle: 'Abnormal SSL Subject for JA3',
             axisYtitle: 'Abnormal SSL Subject for JA3'
           },
-          ssl_subjectabnormal_domain_for_ja3_outbound: {
+          ssl_subject_abnormal_domain_for_ja3_outbound: {
             name: 'Abnormal Domain for JA3',
-            desc: '{{entityName}} was contacted by <JA3>',
-            timeline: '{{entityName}} was contacted by <JA3>',
-            chartTitle: 'Abnormal SSL Subject for JA3',
-            axisYtitle: 'Abnormal SSL Subject for JA3'
+            desc: '{{contexts.domainName}} was contacted by {{contexts.ja3Name}}',
+            timeline: '{{contexts.domainName}} was contacted by {{contexts.ja3Name}}',
+            chartTitle: 'Abnormal Domain',
+            axisYtitle: 'Abnormal Domain'
           },
           abnormal_domain_for_ja3_outbound: {
             name: 'Abnormal Domain for JA3',
-            desc: '{{entityName}} was contacted by <JA3>',
-            timeline: '{{entityName}} was contacted by <JA3>',
-            chartTitle: 'Abnormal SSL Subject for JA3',
-            axisYtitle: 'Abnormal SSL Subject for JA3'
+            desc: '{{contexts.domainName}} was contacted by {{contexts.ja3Name}}',
+            timeline: '{{contexts.domainName}} was contacted by {{contexts.ja3Name}}',
+            chartTitle: 'Abnormal Domain',
+            axisYtitle: 'Abnormal Domain'
           },
           ssl_subject_abnormal_dst_port_for_ja3_outbound: {
             name: 'Abnormal Destination Port for JA3',
-            desc: '{{entityName}} contacted by <JA3>',
-            timeline: '{{entityName}} contacted by <JA3>',
+            desc: '{{contexts.dstPortName}} was contacted by {{contexts.ja3Name}}',
+            timeline: '{{contexts.dstPortName}} was contacted by {{contexts.ja3Name}}',
             chartTitle: 'Abnormal Destination Port',
             axisYtitle: 'Abnormal Destination Port'
           },
           abnormal_dst_port_for_ja3_outbound: {
             name: 'Abnormal Destination Port for JA3',
-            desc: '{{entityName}} contacted by <JA3>',
-            timeline: '{{entityName}} contacted by <JA3>',
+            desc: '{{contexts.dstPortName}} was contacted by {{contexts.ja3Name}}',
+            timeline: '{{contexts.dstPortName}} was contacted by {{contexts.ja3Name}}',
             chartTitle: 'Abnormal Destination Port',
             axisYtitle: 'Abnormal Destination Port'
           },
           ja3_abnormal_dst_port_for_ja3_outbound: {
             name: 'Abnormal Destination Port for JA3',
-            desc: '{{entityName}} contacted by <JA3>',
-            timeline: '{{entityName}} contacted by <JA3>',
+            desc: '{{contexts.dstPortName}} was contacted by {{contexts.ja3Name}}',
+            timeline: '{{contexts.dstPortName}} was contacted by {{contexts.ja3Name}}',
             chartTitle: 'Abnormal Destination Port',
             axisYtitle: 'Abnormal Destination Port'
           }

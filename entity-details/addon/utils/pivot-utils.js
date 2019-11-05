@@ -14,7 +14,8 @@ const SCHEMA_FILTER = {
 const entityFilter = (entityType, entityValue) => {
   const ENTITY_QUERY = {
     IP: '',
-    User: `username='${entityValue}'||user.dst='${entityValue}'||user.src='${entityValue}'`
+    User: `username='${entityValue}'||user.dst='${entityValue}'||user.src='${entityValue}'`,
+    File: `(obj.name = '${entityValue}' || filename = '${entityValue}')`
   };
   return ENTITY_QUERY[entityType];
 };

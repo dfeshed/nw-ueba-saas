@@ -13,11 +13,13 @@ import {
   getIncidentPositionAndNextIncidentId,
   indicatorGraphError,
   indicatorEventError,
-  brokerId
+  brokerId,
+  entityContexts
 } from 'entity-details/reducers/indicators/selectors';
 import userAlerts from '../../../data/presidio/user_alerts';
 import indicatorEventsData from '../../../data/presidio/indicator-events';
 import indicatorCount from '../../../data/presidio/indicator-count';
+import indicatorGraphPie from '../../../data/presidio/indicator-graph-pie';
 
 module('Unit | Selector | Indicators Selector');
 
@@ -90,6 +92,25 @@ test('test historicalData for selected incident', function(assert) {
 test('test globalBaselineData for selected incident', function(assert) {
   assert.deepEqual(globalBaselineData(state), indicatorCount.data[1].data);
 });
+test('test globalBaselineData if global data is not there', function(assert) {
+  const newState = {
+    indicators: {
+      historicalData: indicatorGraphPie
+    }
+  };
+  assert.notOk(globalBaselineData(newState));
+});
+
+test('test globalBaselineData and historicalData if chart data is not present', function(assert) {
+  const newState = {
+    indicators: {
+      historicalData: []
+    }
+  };
+  assert.notOk(globalBaselineData(newState));
+  assert.notOk(historicalData(newState));
+});
+
 test('test allEventsReceived for selected incident to stop scrollbar', function(assert) {
   assert.equal(areAllEventsReceived(state), false);
 });
@@ -98,6 +119,10 @@ test('test getIndicatorEntity for selected incident', function(assert) {
 });
 test('test indicatorMapSettings for selected incident', function(assert) {
   assert.equal(indicatorMapSettings(state).chartSettings.type, 'pie');
+});
+test('test entityContexts to provide additional information in desriction', function(assert) {
+  assert.equal(state.indicators.historicalData.data[0].contexts['userId.name'], 'testUser');
+  assert.equal(entityContexts(state).userIdName, 'testUser');
 });
 test('test indicatorMapSettings if incident data is not there', function(assert) {
   const newState = {

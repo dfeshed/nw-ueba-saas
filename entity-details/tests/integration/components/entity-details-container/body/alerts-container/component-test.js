@@ -67,4 +67,33 @@ module('Integration | Component | entity-details-container/body/alerts-container
       return settled();
     });
   });
+
+
+  test('it should not scroll if alert id is not selected', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
+    await render(hbs`{{entity-details-container/body/alerts-container}}`);
+    return waitUntil(() => document.querySelectorAll('.entity-details-container-body_alerts_list_content_alert_details_pill').length > 1, { timeout }).then(async() => {
+      const containerDiv = find('.entity-details-container-body_alerts_list_content');
+      const selectedAlertPill = find('.entity-details-container-body_alerts_list_content_alert_details_pill.selectedAlert');
+      assert.ok(containerDiv);
+      assert.equal(containerDiv.scrollTop, 0);
+      assert.notOk(selectedAlertPill);
+      return settled();
+    });
+  });
+
+  test('it should scroll based on alert id', async function(assert) {
+    new ReduxDataHelper(setState).selectedAlertId('0e1cf5a7-9277-4d16-b268-6b405fc7108d').selectedIndicatorId(null).build();
+
+    await render(hbs`{{entity-details-container/body/alerts-container}}`);
+    return waitUntil(() => document.querySelectorAll('.entity-details-container-body_alerts_list_content_alert_details_pill').length > 1, { timeout }).then(async() => {
+      const containerDiv = find('.entity-details-container-body_alerts_list_content');
+      const selectedAlertPill = find('.entity-details-container-body_alerts_list_content_alert_details_pill.selectedAlert');
+      assert.ok(containerDiv);
+      assert.equal(containerDiv.scrollTop, 0);
+      assert.ok(selectedAlertPill);
+      return settled();
+    });
+  });
 });

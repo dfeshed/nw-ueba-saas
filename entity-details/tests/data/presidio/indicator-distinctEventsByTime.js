@@ -2120,7 +2120,7 @@ export default {
         '1542034800000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': true
     },
     {
@@ -2128,7 +2128,7 @@ export default {
         '1541145600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2136,7 +2136,7 @@ export default {
         '1541584800000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2144,7 +2144,7 @@ export default {
         '1542009600000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2152,7 +2152,7 @@ export default {
         '1542110400000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2160,7 +2160,7 @@ export default {
         '1542895200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2168,7 +2168,7 @@ export default {
         '1542985200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2176,7 +2176,7 @@ export default {
         '1541750400000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2184,7 +2184,7 @@ export default {
         '1542200400000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2192,7 +2192,7 @@ export default {
         '1542456000000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2200,7 +2200,7 @@ export default {
         '1541167200000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2208,7 +2208,7 @@ export default {
         '1542448800000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2216,7 +2216,7 @@ export default {
         '1542963600000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2224,7 +2224,7 @@ export default {
         '1541682000000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2232,7 +2232,7 @@ export default {
         '1540648800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2240,7 +2240,7 @@ export default {
         '1540724400000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2248,7 +2248,7 @@ export default {
         '1540800000000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2264,7 +2264,7 @@ export default {
         '1541080800000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2272,7 +2272,7 @@ export default {
         '1541674800000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2280,7 +2280,7 @@ export default {
         '1542636000000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2288,7 +2288,7 @@ export default {
         '1542193200000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2296,7 +2296,7 @@ export default {
         '1540814400000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2304,7 +2304,7 @@ export default {
         '1541325600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2312,7 +2312,7 @@ export default {
         '1541170800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2320,7 +2320,7 @@ export default {
         '1541840400000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2328,7 +2328,7 @@ export default {
         '1541077200000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2336,7 +2336,7 @@ export default {
         '1541847600000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 40,
       'anomaly': false
     },
     {
@@ -2344,7 +2344,7 @@ export default {
         '1542358800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2352,7 +2352,7 @@ export default {
         '1541592000000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2360,7 +2360,7 @@ export default {
         '1542366000000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2368,7 +2368,7 @@ export default {
         '1542614400000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2376,7 +2376,7 @@ export default {
         '1542873600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2384,7 +2384,7 @@ export default {
         '1541930400000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2392,7 +2392,7 @@ export default {
         '1542254400000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2400,7 +2400,7 @@ export default {
         '1542283200000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2408,7 +2408,7 @@ export default {
         '1542790800000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2416,7 +2416,7 @@ export default {
         '1542812400000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2424,7 +2424,7 @@ export default {
         '1541862000000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2432,7 +2432,7 @@ export default {
         '1542722400000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2440,7 +2440,7 @@ export default {
         '1542373200000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2448,7 +2448,7 @@ export default {
         '1541318400000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2456,7 +2456,7 @@ export default {
         '1541757600000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2464,7 +2464,7 @@ export default {
         '1542322800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2472,7 +2472,7 @@ export default {
         '1542304800000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2488,7 +2488,7 @@ export default {
         '1542704400000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2496,7 +2496,7 @@ export default {
         '1540983600000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2504,7 +2504,7 @@ export default {
         '1541667600000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2512,7 +2512,7 @@ export default {
         '1542787200000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2520,7 +2520,7 @@ export default {
         '1540634400000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2528,7 +2528,7 @@ export default {
         '1541062800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2536,7 +2536,7 @@ export default {
         '1542319200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2544,7 +2544,7 @@ export default {
         '1543060800000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2552,7 +2552,7 @@ export default {
         '1542268800000'
       ],
       'additionalInformation': null,
-      'value': 4,
+      'value': 40,
       'anomaly': false
     },
     {
@@ -2560,7 +2560,7 @@ export default {
         '1542880800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2568,7 +2568,7 @@ export default {
         '1540807200000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2576,7 +2576,7 @@ export default {
         '1541235600000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2584,7 +2584,7 @@ export default {
         '1541494800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2592,7 +2592,7 @@ export default {
         '1541408400000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2600,7 +2600,7 @@ export default {
         '1542024000000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2616,7 +2616,7 @@ export default {
         '1542546000000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2624,7 +2624,7 @@ export default {
         '1543057200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2632,7 +2632,7 @@ export default {
         '1540738800000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2640,7 +2640,7 @@ export default {
         '1542978000000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2648,7 +2648,7 @@ export default {
         '1541772000000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2664,7 +2664,7 @@ export default {
         '1540900800000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2672,7 +2672,7 @@ export default {
         '1542542400000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2680,7 +2680,7 @@ export default {
         '1542981600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2688,7 +2688,7 @@ export default {
         '1541163600000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2696,7 +2696,7 @@ export default {
         '1542114000000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2704,7 +2704,7 @@ export default {
         '1540821600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2712,7 +2712,7 @@ export default {
         '1543050000000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2720,7 +2720,7 @@ export default {
         '1542531600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2728,7 +2728,7 @@ export default {
         '1541149200000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2736,7 +2736,7 @@ export default {
         '1541059200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2744,7 +2744,7 @@ export default {
         '1542096000000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2752,7 +2752,7 @@ export default {
         '1541588400000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2760,7 +2760,7 @@ export default {
         '1542808800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2768,7 +2768,7 @@ export default {
         '1542877200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2776,7 +2776,7 @@ export default {
         '1542553200000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2784,7 +2784,7 @@ export default {
         '1540810800000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2792,7 +2792,7 @@ export default {
         '1541577600000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2800,7 +2800,7 @@ export default {
         '1542103200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2808,7 +2808,7 @@ export default {
         '1540911600000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2816,7 +2816,7 @@ export default {
         '1542204000000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2824,7 +2824,7 @@ export default {
         '1541073600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2832,7 +2832,7 @@ export default {
         '1541678400000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2840,7 +2840,7 @@ export default {
         '1542441600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2856,7 +2856,7 @@ export default {
         '1542632400000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2864,7 +2864,7 @@ export default {
         '1540641600000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2872,7 +2872,7 @@ export default {
         '1542240000000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2880,7 +2880,7 @@ export default {
         '1541516400000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2888,7 +2888,7 @@ export default {
         '1541599200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2896,7 +2896,7 @@ export default {
         '1541430000000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2904,7 +2904,7 @@ export default {
         '1542967200000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2912,7 +2912,7 @@ export default {
         '1542463200000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2920,7 +2920,7 @@ export default {
         '1542891600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2928,7 +2928,7 @@ export default {
         '1540720800000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2936,7 +2936,7 @@ export default {
         '1542013200000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -2944,7 +2944,7 @@ export default {
         '1542718800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2952,7 +2952,7 @@ export default {
         '1541944800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2960,7 +2960,7 @@ export default {
         '1540990800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -2968,7 +2968,7 @@ export default {
         '1542708000000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -2992,7 +2992,7 @@ export default {
         '1541329200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3000,7 +3000,7 @@ export default {
         '1542639600000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3008,7 +3008,7 @@ export default {
         '1541415600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3016,7 +3016,7 @@ export default {
         '1542315600000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3024,7 +3024,7 @@ export default {
         '1542362400000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3032,7 +3032,7 @@ export default {
         '1540630800000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3040,7 +3040,7 @@ export default {
         '1541854800000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3048,7 +3048,7 @@ export default {
         '1541404800000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3056,7 +3056,7 @@ export default {
         '1542628800000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3064,7 +3064,7 @@ export default {
         '1542276000000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3072,7 +3072,7 @@ export default {
         '1543071600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3080,7 +3080,7 @@ export default {
         '1541239200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3096,7 +3096,7 @@ export default {
         '1541505600000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3104,7 +3104,7 @@ export default {
         '1541084400000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3112,7 +3112,7 @@ export default {
         '1541689200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3120,7 +3120,7 @@ export default {
         '1541764800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3128,7 +3128,7 @@ export default {
         '1541498400000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3136,7 +3136,7 @@ export default {
         '1542261600000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3144,7 +3144,7 @@ export default {
         '1540731600000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3152,7 +3152,7 @@ export default {
         '1541923200000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3160,7 +3160,7 @@ export default {
         '1542452400000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3168,7 +3168,7 @@ export default {
         '1542186000000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3176,7 +3176,7 @@ export default {
         '1542538800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3184,7 +3184,7 @@ export default {
         '1542121200000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3192,7 +3192,7 @@ export default {
         '1541156400000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3200,7 +3200,7 @@ export default {
         '1541232000000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3208,7 +3208,7 @@ export default {
         '1540735200000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3216,7 +3216,7 @@ export default {
         '1541595600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3224,7 +3224,7 @@ export default {
         '1541671200000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3232,7 +3232,7 @@ export default {
         '1542535200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3240,7 +3240,7 @@ export default {
         '1540803600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3248,7 +3248,7 @@ export default {
         '1541602800000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3256,7 +3256,7 @@ export default {
         '1542369600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3264,7 +3264,7 @@ export default {
         '1542445200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3272,7 +3272,7 @@ export default {
         '1541948400000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3280,7 +3280,7 @@ export default {
         '1542459600000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3288,7 +3288,7 @@ export default {
         '1541509200000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3296,7 +3296,7 @@ export default {
         '1540713600000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3304,7 +3304,7 @@ export default {
         '1542898800000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3312,7 +3312,7 @@ export default {
         '1542974400000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3320,7 +3320,7 @@ export default {
         '1540645200000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3328,7 +3328,7 @@ export default {
         '1542279600000'
       ],
       'additionalInformation': null,
-      'value': 4,
+      'value': 40,
       'anomaly': false
     },
     {
@@ -3336,7 +3336,7 @@ export default {
         '1541246400000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3344,7 +3344,7 @@ export default {
         '1542031200000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3352,7 +3352,7 @@ export default {
         '1542549600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3360,7 +3360,7 @@ export default {
         '1542794400000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3368,7 +3368,7 @@ export default {
         '1541761200000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3376,7 +3376,7 @@ export default {
         '1542960000000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3384,7 +3384,7 @@ export default {
         '1541512800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3392,7 +3392,7 @@ export default {
         '1541926800000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3400,7 +3400,7 @@ export default {
         '1542250800000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3408,7 +3408,7 @@ export default {
         '1541934000000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3416,7 +3416,7 @@ export default {
         '1541419200000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3432,7 +3432,7 @@ export default {
         '1542272400000'
       ],
       'additionalInformation': null,
-      'value': 3,
+      'value': 30,
       'anomaly': false
     },
     {
@@ -3440,7 +3440,7 @@ export default {
         '1543046400000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3448,7 +3448,7 @@ export default {
         '1542308400000'
       ],
       'additionalInformation': null,
-      'value': 1,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3456,7 +3456,7 @@ export default {
         '1542247200000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3464,7 +3464,7 @@ export default {
         '1541768400000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3472,7 +3472,7 @@ export default {
         '1542196800000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3480,7 +3480,7 @@ export default {
         '1542265200000'
       ],
       'additionalInformation': null,
-      'value': 0,
+      'value': 10,
       'anomaly': false
     },
     {
@@ -3496,7 +3496,7 @@ export default {
         '1540976400000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3520,7 +3520,7 @@ export default {
         '1541775600000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {
@@ -3528,7 +3528,7 @@ export default {
         '1541412000000'
       ],
       'additionalInformation': null,
-      'value': 2,
+      'value': 20,
       'anomaly': false
     },
     {

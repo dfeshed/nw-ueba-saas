@@ -1,13 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getSelectedAlertData } from 'entity-details/reducers/alerts/selectors';
-import { getIncidentData } from 'entity-details/reducers/indicators/selectors';
+import { getIncidentData, entityContexts } from 'entity-details/reducers/indicators/selectors';
 import { entityDisplayName } from 'entity-details/reducers/entity/selectors';
 
 const stateToComputed = (state) => ({
   entityDisplayName: entityDisplayName(state),
   alertDetails: getSelectedAlertData(state),
-  incidentDetails: getIncidentData(state)
+  incidentDetails: getIncidentData(state),
+  contexts: entityContexts(state)
 });
 
 const IndicatorDetailsDetailsComponent = Component.extend({

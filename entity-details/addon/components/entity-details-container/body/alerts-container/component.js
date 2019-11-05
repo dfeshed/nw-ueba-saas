@@ -39,7 +39,9 @@ const AlertsContainerComponent = Component.extend({
     // Selected alert which need to be there in view port.
     const selectedAlertPill = this.element.querySelector('.entity-details-container-body_alerts_list_content_alert_details_pill.selectedAlert');
     // Reducing alert container's header height to take care of proper positioning.
-    containerDiv.scrollTop = selectedAlertPill.offsetTop - 150;
+    if (selectedAlertPill) {
+      containerDiv.scrollTop = selectedAlertPill.offsetTop - 150;
+    }
   },
   /**
    * this computed property to move selcted alert in view port.

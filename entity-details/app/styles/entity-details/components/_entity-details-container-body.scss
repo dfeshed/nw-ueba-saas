@@ -162,8 +162,7 @@
 
         &_indicators {
           .selectedIndicator{
-            background-color: background-color(primary, darkest);
-            @include rsa-font(bolder, large);
+            background-color: background-color(secondary, darker);
           }
           &_pill {
             display: flex;

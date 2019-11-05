@@ -4,12 +4,6 @@ import { entityType } from 'entity-details/reducers/entity/selectors';
 import indicatorChartMap from 'entity-details/utils/indicator-chart-map';
 import _ from 'lodash';
 
-const _hasEntityKey = ({ contexts }) => {
-  if (contexts) {
-    return contexts['sslSubject.name'] || contexts['ja3.name'] || contexts['userId.name'] || contexts.userId || contexts.sslSubject || contexts.ja3;
-  }
-};
-
 const _totalEvents = (state) => state.indicators.totalEvents;
 
 const _historicalData = (state) => state.indicators.historicalData;
@@ -27,18 +21,27 @@ export const indicatorEventError = (state) => state.indicators.indicatorEventErr
 export const historicalData = createSelector(
   [_historicalData],
   (historicalData) => {
-    if (historicalData) {
-      const historicalDataForGraph = historicalData.data.find((historicalDataObj) => _hasEntityKey(historicalDataObj));
-      return historicalDataForGraph ? historicalDataForGraph.data : null;
+    if (historicalData && historicalData.data) {
+      return historicalData.data[0].data;
     }
   });
 
 export const globalBaselineData = createSelector(
   [_historicalData],
   (historicalData) => {
-    if (historicalData) {
-      const historicalDataForGraph = historicalData.data.find((historicalDataObj) => !_hasEntityKey(historicalDataObj));
-      return historicalDataForGraph ? historicalDataForGraph.data : null;
+    if (historicalData && historicalData.data && historicalData.data.length > 1) {
+      return historicalData.data[1].data;
+    }
+  });
+
+export const entityContexts = createSelector(
+  [_historicalData],
+  (historicalData) => {
+    if (historicalData && historicalData.data) {
+      const [{ contexts }] = historicalData.data;
+      return _.transform(contexts, (result, value, key) => {
+        result[key.camelize()] = value;
+      });
     }
   });
 

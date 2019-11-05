@@ -21,11 +21,17 @@
   <div class='entity-details-container-body_alerts_list_content'>
     {{#each alerts as |alert|}}
       <div class='entity-details-container-body_alerts_list_content_alert'>
-        {{entity-details-container/body/alerts-container/alert-pill alert=alert  selectedAlert=(if (eq selectedAlert alert.id) true) initAlert=(action 'selectAlert')}}
+        {{entity-details-container/body/alerts-container/alert-pill alert=alert  
+          selectedAlert=(if (and (eq selectedAlert alert.id) (eq selectedIndicatorId null)) true) 
+          initAlert=(action 'selectAlert')
+        }}
         {{#if (eq selectedAlertId alert.id)}}
           <div class='entity-details-container-body_alerts_list_content_alert_indicators'>
             {{#each alertData.evidences as |indicator|}}
-              {{entity-details-container/body/alerts-container/indicator-pill indicator=indicator selectedIndicator=(if (eq selectedIndicatorId  indicator.id) true) initIndicator=(action 'initializeIndicator')}}
+              {{entity-details-container/body/alerts-container/indicator-pill 
+                indicator=indicator
+                selectedIndicator=(if (eq selectedIndicatorId  indicator.id) true) 
+                initIndicator=(action 'initializeIndicator')}}
             {{/each}}
           </div>
         {{/if}}  

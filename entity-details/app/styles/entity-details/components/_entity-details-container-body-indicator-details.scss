@@ -107,6 +107,7 @@
         width: 20%;
         margin-top: 30px;
         height: 100%;
+        padding: 2*rsa-whitespace() 0;
         overflow-y: auto;
         > div {
           overflow: hidden;
@@ -129,4 +130,10 @@
       height: 100%;
     }
   }
+}
+
+// Looks like this element injected in dom to provide link to AM chart. I tried multiple ways to remove using configuration but looks like there is some bug.
+// currently hiding usding css property.
+#chartComponentPlaceholderLegend > div:nth-child(2) > svg > g > g:nth-child(2) > g:nth-child(2) {
+  display: none;
 }
