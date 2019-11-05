@@ -43,6 +43,11 @@ export const queryTabClicked = (target) => {
     (target.parentElement && queryTabClicked(target.parentElement));
 };
 
+export const afterOptionsClicked = (target) => {
+  return target.classList.contains('ember-power-select-after-options') ||
+  (target.parentElement && afterOptionsClicked(target.parentElement));
+};
+
 const ListManagerContainer = Component.extend({
   layout,
   classNames: ['list-manager-container'],
@@ -59,7 +64,7 @@ const ListManagerContainer = Component.extend({
           return;
         }
       }
-      if (queryTabClicked(e.target)) {
+      if (queryTabClicked(e.target) || afterOptionsClicked(e.target)) {
         return;
       }
       this.send('closeListManager', this.get('stateLocation'));

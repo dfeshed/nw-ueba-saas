@@ -245,6 +245,21 @@ const _handlePillFocus = (state, selectedOrDeselectedPills, shouldIgnoreFocus = 
   }
 };
 
+const _removeSelection = (state) => {
+  const { pillsData } = state;
+  const newPillsData = pillsData.map((pill) => {
+    if (pill.isSelected) {
+      return {
+        ...pill,
+        id: _.uniqueId(ID_PREFIX),
+        isSelected: false
+      };
+    }
+    return pill;
+  });
+  return state.set('pillsData', newPillsData);
+};
+
 const _removeFocus = (state) => {
   const { pillsData } = state;
   const newPillsData = pillsData.map((pill) => {
@@ -930,6 +945,7 @@ export default handleActions({
         // add new profile
         case EDIT_VIEW: {
           newState = _stashPills(state);
+          newState = _removeSelection(newState);
           break;
         }
         // close profile drop-down

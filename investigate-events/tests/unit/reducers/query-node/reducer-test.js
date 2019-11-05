@@ -1716,11 +1716,14 @@ test('RSA_LIST_MANAGER_SET_VIEW_NAME add scenario', function(assert) {
     meta: { belongsTo: 'listManagers.profiles' }
   };
 
+  const _isAnySelected = (pillsData) => pillsData.some((p) => p.isSelected);
+
   // pillsData should now be saved off as original pills
   // pillsData should be left untouched
   const result = reducer(initialState, action);
   assert.deepEqual(result.originalPills, initialState.pillsData, 'Did not find original pills copied over');
   assert.deepEqual(result.pillsData, initialState.pillsData, 'Should not change pillsData though');
+  assert.notOk(_isAnySelected(result.pillsData), 'There should not be any pills selected in pillsData');
 });
 
 test('RSA_LIST_MANAGER_EDIT_ITEM edit scenario', function(assert) {
