@@ -51,7 +51,11 @@
       <ul class='column-list value editable'>
         {{#each filteredAvailableMeta  as |meta|}}
           <li class='editable'>
-            {{#rsa-form-button class='add-meta-key' defaultAction=(action 'addMetaToColumns' meta)}}
+            {{#rsa-form-button
+               class='add-meta-key'
+               isDisabled=selectedMetaDetails.atThreshold
+               title=selectedMetaDetails.message
+               defaultAction=(action 'addMetaToColumns' meta)}}
               {{rsa-icon name='add-circle-1'}}
             {{/rsa-form-button}}
             <span class='field'>{{meta.field}}</span>

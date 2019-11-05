@@ -660,6 +660,7 @@ export default {
         allMetaKeysAdded: 'All meta keys have been added',
         groupNamePlaceholder: 'Enter column group name',
         nameNotUnique: 'New groups must have a unique name',
+        selectionThresholdMessage: 'Reached the maximum number of meta keys allowed in the column group',
         disabled: {
           delete: 'This column group cannot be deleted because it is part of the following query profiles: {{profileNames}}'
         }

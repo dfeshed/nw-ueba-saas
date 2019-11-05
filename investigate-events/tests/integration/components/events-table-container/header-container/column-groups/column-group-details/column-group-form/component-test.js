@@ -6,6 +6,8 @@ import { find, findAll, render, click, fillIn, triggerEvent } from '@ember/test-
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
+import METAKEYS from '../../../../../../../data/subscriptions/meta-key-cache/findAll/data';
+import _ from 'lodash';
 
 let setState;
 
@@ -392,6 +394,52 @@ module('Integration | Component | Column Group form', function(hooks) {
     await fillIn(groupNameInput, 'Custom');
     await triggerEvent(groupNameInput, 'keyup');
     assert.notOk(find('.group-name .value.is-error'), 'element does not have error');
+  });
+
+  test('limits number of meta keys user can add to a column group', async function(assert) {
+
+    // array of 74 columns created from metaKeyCache
+    const columns = _.cloneDeep(METAKEYS).splice(1, 74).map((meta) => {
+      return {
+        field: meta.metaName,
+        title: meta.displayName
+      };
+    });
+    const customColumnGroup = {
+      id: '2',
+      name: 'foo',
+      columns
+    };
+
+    const translation = this.owner.lookup('service:i18n');
+
+    this.set('columnGroup', customColumnGroup);
+    this.set('editColumnGroup', () => {});
+
+    new ReduxDataHelper(setState).metaKeyCache().columnGroups().build();
+    await render(hbs`
+      {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+        columnGroup=columnGroup
+        editColumnGroup=editColumnGroup
+      }}
+    `);
+
+    assert.equal(findAll(DISPLAYED_COLUMNS).length, 74);
+    assert.equal(findAll(AVAILABLE_META).length, 19);
+
+    const availableOptions = findAll(`${AVAILABLE_META} button:not(disabled)`);
+    // add candidate meta
+    await click(availableOptions[0]);
+    assert.equal(findAll(DISPLAYED_COLUMNS).length, 75);
+    assert.equal(findAll(AVAILABLE_META).length, 18);
+    assert.equal(findAll(`${AVAILABLE_META} button[disabled]`).length, 18, 'Meta available can not be added beyond 50');
+    assert.equal(findAll(`${AVAILABLE_META} .is-disabled`)[0].title, translation.t('investigate.events.columnGroups.selectionThresholdMessage'));
+
+    const selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
+    // remove a selected meta
+    await click(selectedOptions[0]);
+    assert.equal(findAll(AVAILABLE_META).length, 19);
+    assert.equal(findAll(`${AVAILABLE_META} button[disabled]`).length, 0, 'Enabled available meta to add');
   });
 
 });

@@ -215,8 +215,12 @@
                   margin-left: 0;
                   font-weight: lighter;
                 }
-                &:hover i {
+                &:hover:not(.is-disabled) i {
                   font-weight: 600;
+                }
+                &:hover.is-disabled i {
+                  font-weight: lighter;
+                  color: text-color(primary, light);
                 }
                 .rsa-icon-subtract-circle-1 {
                   color: text-color(accentOne, dark);

@@ -15,6 +15,8 @@ const _filterColumns = (columns, filterText) => {
   });
 };
 
+const COLUMN_THRESHOLD = 75;
+
 const stateToComputed = (state) => ({
   columnGroups: columnGroups(state),
   allMeta: metaMapForColumns(state)
@@ -68,6 +70,15 @@ const ColumnGroupForm = Component.extend({
     this.set('displayedColumns', columnGroup?.columns || []);
     this.set('columnGroupName', columnGroup?.name);
     this._broadcastChangedGroup();
+  },
+
+  @computed('displayedColumns')
+  selectedMetaDetails(displayedColumns) {
+    const atThreshold = displayedColumns.length >= COLUMN_THRESHOLD;
+    return {
+      atThreshold,
+      message: atThreshold ? this.get('i18n').t('investigate.events.columnGroups.selectionThresholdMessage') : null
+    };
   },
 
   @computed('allMeta', 'displayedColumns')
