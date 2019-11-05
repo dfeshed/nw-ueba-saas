@@ -165,7 +165,7 @@ public class EntityScoreServiceModuleTest {
     }
 
     @Test
-    public void testSingleEntityScoreCalculationSomeMoreThen90Days() {
+    public void testSingleEntityScoreCalculationSomeMoreThen90Days() throws InterruptedException {
         //Generate one entity with 3 alerts
         String entityType = "entityType";
         Entity entity1 = new Entity("entityId1", "entityName1", 0d, null, null, null, EntitySeverity.CRITICAL, 0, entityType);
@@ -190,8 +190,9 @@ public class EntityScoreServiceModuleTest {
         entitySeveritiesRangeRepository.save(new EntitySeveritiesRangeDocument(severityToScoreRangeMap, entityType));
         entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
         entitySeverityService.updateSeverities(entityType);
+        Thread.sleep(1000);
 
-        Page<Alert> alertsPageResult = alertPersistencyService.find(new AlertQuery.AlertQueryBuilder().filterByEndDate(getMinusDay(100).getTime()).setPageSize(10).setPageNumber(0).build());
+        Page<Alert> alertsPageResult = alertPersistencyService.findPage(new AlertQuery.AlertQueryBuilder().filterByEndDate(getMinusDay(100).getTime()).setPageSize(10).setPageNumber(0).build());
 
         Entity updatedEntity = entityPersistencyService.findEntityByDocumentId(entityDocumentId);
         Assert.assertEquals("entityId1", updatedEntity.getEntityId());
@@ -212,7 +213,7 @@ public class EntityScoreServiceModuleTest {
     }
 
     @Test
-    public void testSingleEntityScoreCalculationAllAlertsMoreThen90Days() {
+    public void testSingleEntityScoreCalculationAllAlertsMoreThen90Days() throws InterruptedException {
         //Generate one entity with 2 critical alerts
         String entityType = "entityType";
         Entity entity1 = new Entity("entityId1", "entityName1", 0d, null, null, null, EntitySeverity.CRITICAL, 0, entityType);
@@ -239,8 +240,9 @@ public class EntityScoreServiceModuleTest {
 
         entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
         entitySeverityService.updateSeverities(entityType);
+        Thread.sleep(1000);
 
-        Page<Alert> alertsPageResult = alertPersistencyService.find(new AlertQuery.AlertQueryBuilder().setPageSize(10).setPageNumber(0).build());
+        Page<Alert> alertsPageResult = alertPersistencyService.findPage(new AlertQuery.AlertQueryBuilder().setPageSize(10).setPageNumber(0).build());
 
         entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, entitiesPageResult.getContent().size());

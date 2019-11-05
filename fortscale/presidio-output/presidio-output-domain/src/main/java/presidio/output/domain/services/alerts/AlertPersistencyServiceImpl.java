@@ -5,10 +5,13 @@ import edu.emory.mathcs.backport.java.util.Collections;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.data.util.CloseableIterator;
 import org.springframework.data.util.StreamUtils;
@@ -18,6 +21,8 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
+import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntityEnums;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
 import presidio.output.domain.repositories.IndicatorRepository;
@@ -192,6 +197,13 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
             alerts = stream.collect(Collectors.toList());
         }
         return alerts;
+    }
+
+    @Override
+    public void clearAlertsContributionByQuery(AlertQuery alertQuery) {
+        SearchQuery query = new AlertElasticsearchQueryBuilder(alertQuery).build();
+        String field = Alert.CONTRIBUTION_TO_ENTITY_SCORE_FIELD_NAME;
+        alertRepository.updateAlertsByQuery(query, field,0);
     }
 
     @Override

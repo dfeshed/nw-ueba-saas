@@ -95,24 +95,14 @@ public class EntityScoreServiceImpl implements EntityScoreService {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder()
                 .filterByEntityType(entityType)
                 .filterByEndDate(startTimeLong)
+                .filterByContribution(0)
                 .sortField(Alert.START_DATE, true)
                 .setPageSize(this.defaultAlertsBatchSize)
                 .setPageNumber(0);
 
-        List<Alert> clearedAlertsList = new ArrayList<>();
         AlertQuery alertQuery = alertQueryBuilder.build();
-        Page<Alert> alertsPage = alertPersistencyService.find(alertQuery);
-        while (alertsPage != null && alertsPage.hasContent()) {
-            alertsPage.getContent().forEach(alert -> {
-                alert.setContributionToEntityScore(0D);
-                clearedAlertsList.add(alert);
-            });
-            alertsPage = getNextAlertPage(alertQueryBuilder, alertsPage);
-        }
 
-        if(!clearedAlertsList.isEmpty()){
-            alertPersistencyService.save(clearedAlertsList);
-        }
+        alertPersistencyService.clearAlertsContributionByQuery(alertQuery);
     }
 
     /**
