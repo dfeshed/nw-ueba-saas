@@ -140,7 +140,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 							}
 
 						};
-						supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue, data.getContexts());
+						supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue, indicator.getContexts());
 					}
 				} else if (historicalData instanceof TimeAggregation){
 					SupportingInformationKey anomalyValue = null;
@@ -158,7 +158,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 							}
 
 						};
-						supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue,data.getContexts());
+						supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue,indicator.getContexts());
 					}
 
 				}	else if (historicalData instanceof WeekdayAggregation){
@@ -180,7 +180,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 								}
 							}
 						}
-						supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue,data.getContexts());
+						supportingInformationGenericData = new SupportingInformationGenericData(dataMap,anomalyValue,indicator.getContexts());
 					}
 				} else {
 					logger.error("Historical data of indicator id {}, of type {} is not match to any relevant type",indicatorId, indicator.getHistoricalData().getClass());
