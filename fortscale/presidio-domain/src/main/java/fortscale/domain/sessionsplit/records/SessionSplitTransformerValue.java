@@ -1,10 +1,7 @@
 package fortscale.domain.sessionsplit.records;
 
-import fortscale.domain.core.entityattributes.Ja3;
-import fortscale.domain.core.entityattributes.SslSubject;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.List;
 
 public class SessionSplitTransformerValue implements Serializable{

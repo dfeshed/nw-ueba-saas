@@ -55,8 +55,15 @@ public class SessionSplitStoreCacheImpl extends AbstractFlushable implements ISe
     }
 
     public void flush() {
-        sessionSplitStore.writeAll(splitTransformerMap);
-        splitTransformerMap.clear();
+        if (!splitTransformerMap.isEmpty()) {
+            sessionSplitStore.writeAll(splitTransformerMap);
+            splitTransformerMap.clear();
+        }
     }
 
+    @Override
+    public void remove(SessionSplitTransformerKey key) {
+        splitTransformerMap.remove(key);
+        sessionSplitStore.remove(key);
+    }
 }

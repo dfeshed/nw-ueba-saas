@@ -42,6 +42,18 @@
         "store": true,
         "type": "double"
       },
+      "trendingScore": {
+        "properties": {
+          "daily": {
+            "type": "double",
+            "store": true
+          },
+          "weekly": {
+            "type": "double",
+            "store": true
+          }
+        }
+      },
       "alertClassifications": {
         "store": true,
         "type": "string",

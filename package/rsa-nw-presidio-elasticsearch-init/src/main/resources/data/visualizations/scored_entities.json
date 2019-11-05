@@ -18,8 +18,8 @@
     "_id": "0dfa2b10-00f0-11e8-add0-8b3b67fce58a",
     "_type": "visualization",
     "_source": {
-      "title": "Scored Users",
-      "visState": "{\"title\":\"Scored Users\",\"type\":\"metric\",\"params\":{\"fontSize\":\"31\",\"handleNoResults\":true},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Scored Users\"}}],\"listeners\":{}}",
+      "title": "Scored Entities",
+      "visState": "{\"title\":\"Scored Entities\",\"type\":\"metric\",\"params\":{\"fontSize\":\"31\",\"handleNoResults\":true},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Scored Entities\"}}],\"listeners\":{}}",
       "uiStateJSON": "{}",
       "description": "",
       "savedSearchId": "d6856410-00ef-11e8-b7dc-63e69023fe2a",

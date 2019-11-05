@@ -2,10 +2,12 @@ package presidio.output.processor.services.alert;
 
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.entity.Entity;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created by efratn on 24/07/2017.
@@ -23,5 +25,7 @@ public interface AlertService {
     void save(List<Alert> alerts);
 
     List<Alert> cleanAlerts(Instant startDate, Instant endDate, String entityType);
+
+    void forEach(AlertQuery query, Consumer<Alert> action);
 
 }

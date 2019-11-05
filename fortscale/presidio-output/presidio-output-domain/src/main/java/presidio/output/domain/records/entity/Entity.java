@@ -10,11 +10,9 @@ import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Entity.DOC_TYPE, type = Entity.DOC_TYPE)
 @Mapping(mappingPath = "elasticsearch/indexes/presidio-output-entity/mappings.json")
@@ -34,7 +32,9 @@ public class Entity extends AbstractElasticDocument {
     public static final String LAST_UPDATE_BY_LOGICAL_START_DATE_FIELD_NAME = "lastUpdateLogicalStartDate";
     public static final String LAST_UPDATE_BY_LOGICAL_END_DATE_FIELD_NAME = "lastUpdateLogicalEndDate";
     public static final String ENTITY_TYPE_FIELD_NAME = "entityType";
+    public static final String TRENDING_SCORE_FIELD_NAME = "trendingScore";
 
+    public static final Map<EntityEnums.Trends, Double> EMPTY_TRENDS_MAP = EntityEnums.Trends.stream().collect(Collectors.toMap(Function.identity(), v-> 0d));
 
     @JsonProperty(ENTITY_ID_FIELD_NAME)
     private String entityId;
@@ -69,6 +69,9 @@ public class Entity extends AbstractElasticDocument {
 
     @JsonProperty(ENTITY_TYPE_FIELD_NAME)
     private String entityType;
+
+    @JsonProperty(TRENDING_SCORE_FIELD_NAME)
+    private Map<EntityEnums.Trends, Double> trendingScore = EMPTY_TRENDS_MAP;
 
 
     public Entity() {
@@ -128,6 +131,22 @@ public class Entity extends AbstractElasticDocument {
 
     public double getScore() {
         return score;
+    }
+
+    public Map<EntityEnums.Trends, Double> getTrendingScore() {
+        return trendingScore;
+    }
+
+    public double getTrendingScore(EntityEnums.Trends trend) {
+        return trendingScore.get(trend);
+    }
+
+    public void setTrendingScore(Map<EntityEnums.Trends, Double> trendingScore) {
+        this.trendingScore = trendingScore;
+    }
+
+    public void setTrendingScore(EntityEnums.Trends trend, double score) {
+        this.trendingScore.put(trend, score);
     }
 
     public List<String> getAlertClassifications() {

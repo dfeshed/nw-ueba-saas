@@ -9,9 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.data.util.CloseableIterator;
+import org.springframework.data.util.StreamUtils;
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.AbstractElasticDocument;
-import presidio.output.domain.records.alerts.*;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertQuery;
+import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
 import presidio.output.domain.repositories.IndicatorRepository;
@@ -125,8 +131,15 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Page<Alert> find(AlertQuery alertQuery) {
+    public Page<Alert> findPage(AlertQuery alertQuery) {
         return alertRepository.search(new AlertElasticsearchQueryBuilder(alertQuery).build());
+    }
+
+    @Override
+    public Stream<Alert> find(AlertQuery alertQuery) {
+        SearchQuery query = new AlertElasticsearchQueryBuilder(alertQuery).build();
+        CloseableIterator<Alert> iterator = elasticsearchTemplate.stream(query, Alert.class);
+        return StreamUtils.createStreamFromIterator(iterator);
     }
 
     @Override
@@ -190,4 +203,5 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     public Indicator save(Indicator indicator) {
         return indicatorRepository.save(indicator);
     }
+
 }

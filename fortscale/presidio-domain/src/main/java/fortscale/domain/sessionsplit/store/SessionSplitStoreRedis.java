@@ -46,10 +46,12 @@ public class SessionSplitStoreRedis {
         redisTemplate.executePipelined(new SessionCallback<List<Object>>() {
             @Override
             public List<Object> execute(RedisOperations operations) throws DataAccessException {
+                operations.multi();
                 splitTransformerMap.forEach((sessionSplitTransformerKey, sessionSplitTransformerValue) -> {
                     String key = getRedisKey(sessionSplitTransformerKey.getSrcIp(), sessionSplitTransformerKey.getDstIp(), sessionSplitTransformerKey.getSrcPort(), sessionSplitTransformerKey.getDstPort());
                     operations.opsForValue().set(key, sessionSplitTransformerValue, timeout);
                 });
+                operations.exec();
                 return null;
             }
         });
@@ -64,6 +66,16 @@ public class SessionSplitStoreRedis {
         String key = getRedisKey(sessionSplitTransformerKey.getSrcIp(), sessionSplitTransformerKey.getDstIp(), sessionSplitTransformerKey.getSrcPort(), sessionSplitTransformerKey.getDstPort());
         return (SessionSplitTransformerValue) valueOperations.get(key);
     }
+
+    /**
+     * Remove sessionSplitKey from the store
+     * @param sessionSplitTransformerKey
+     */
+    public void remove(SessionSplitTransformerKey sessionSplitTransformerKey) {
+        String key = getRedisKey(sessionSplitTransformerKey.getSrcIp(), sessionSplitTransformerKey.getDstIp(), sessionSplitTransformerKey.getSrcPort(), sessionSplitTransformerKey.getDstPort());
+        valueOperations.getOperations().delete(key);
+    }
+
 
     private static String getRedisKey(String srcIp, String dstIp, String srcPort, String dstPort) {
         return String.format("%s:%s:%s:%s:%s", REDIS_KEY_PREFIX, srcIp, dstIp, srcPort, dstPort);

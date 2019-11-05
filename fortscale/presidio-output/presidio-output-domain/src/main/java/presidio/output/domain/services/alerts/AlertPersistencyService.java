@@ -6,10 +6,8 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
-import presidio.output.domain.records.alerts.IndicatorSummary;
 
 import java.time.Instant;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -36,7 +34,9 @@ public interface AlertPersistencyService {
 
     List<Alert> findByEntityDocumentId(String entityDocumentId);
 
-    Page<Alert> find(AlertQuery alertQuery);
+    Page<Alert> findPage(AlertQuery alertQuery);
+
+    Stream<Alert> find(AlertQuery alertQuery);
 
     Indicator findIndicatorById(String indicatorId);
 
@@ -51,5 +51,6 @@ public interface AlertPersistencyService {
     Stream<Indicator> findIndicatorsByAlertIds(List<String> alertIds);
 
     long countAlerts();
+
 
 }

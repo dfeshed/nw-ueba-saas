@@ -28,6 +28,39 @@ RETRY_RUNNING_STATE = "RUNNING"
 RETRY_FAIL_STATE = "FAIL"
 RETRY_SUCCESS_STATE = "SUCCESS"
 
+_BASH_OPERATOR_INIT_METHOD_ARGUMENT_NAMES = [
+    "task_id",
+    "owner",
+    "email",
+    "email_on_retry",
+    "email_on_failure",
+    "retries",
+    "retry_delay",
+    "retry_exponential_backoff",
+    "max_retry_delay",
+    "start_date",
+    "end_date",
+    "schedule_interval",
+    "depends_on_past",
+    "wait_for_downstream",
+    "dag",
+    "params",
+    "default_args",
+    "adhoc",
+    "priority_weight",
+    "queue",
+    "pool",
+    "sla",
+    "execution_timeout",
+    "on_failure_callback",
+    "on_success_callback",
+    "on_retry_callback",
+    "trigger_rule",
+    "resources",
+    "run_as_user",
+    "task_concurrency"
+]
+
 
 class SpringBootJarOperator(BashOperator):
     """
@@ -90,15 +123,20 @@ class SpringBootJarOperator(BashOperator):
         if self._should_run_clean_command_before_retry(kwargs):
             kwargs['params']['retry_command'] = self.get_retry_command()
 
-        super(SpringBootJarOperator, self).__init__(retries=retry_args['retries'],
-                                                    retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
-                                                    retry_exponential_backoff=retry_args['retry_exponential_backoff'],
-                                                    max_retry_delay=timedelta(
-                                                        seconds=int(retry_args['max_retry_delay'])),
-                                                    bash_command=bash_command, on_retry_callback=retry_callback,
-                                                    pool=pool_name,
-                                                    execution_timeout=execution_timeout,
-                                                    *args, **kwargs)
+        super(SpringBootJarOperator, self).__init__(
+            retries=retry_args['retries'],
+            retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
+            retry_exponential_backoff=retry_args['retry_exponential_backoff'],
+            max_retry_delay=timedelta(seconds=int(retry_args['max_retry_delay'])),
+            bash_command=bash_command,
+            on_retry_callback=retry_callback,
+            pool=pool_name,
+            execution_timeout=execution_timeout,
+            # BaseOperator will write a warning to the log if invalid arguments are passed to the __init__ method
+            # (i.e. arguments that are passed through *args or **kwargs/arguments that are not named), because the
+            # support for passing such arguments will be dropped in Airflow 2.0. Since the log is flooded with this
+            # warning, arguments that are not named in the __init__ method are filtered out from kwargs.
+            **{key: kwargs[key] for key in _BASH_OPERATOR_INIT_METHOD_ARGUMENT_NAMES if key in kwargs})
 
     def get_retry_callback(self, retry_fn):
         return functools.partial(SpringBootJarOperator.handle_retry, retry_fn=retry_fn)
@@ -220,35 +258,22 @@ class SpringBootJarOperator(BashOperator):
 
     def get_bash_command(self):
         """
-
-        Create bash command in order to run jar
-
-        :return:
+        :return: A bash command that runs a JAR
+        :rtype: list[str]
         """
         bash_command = []
-
         self.java_path(bash_command)
-
         self.jvm_memory_allocation(bash_command)
-
         self.extra_jvm(bash_command)
-
         self.timezone(bash_command)
-
         self.spring_profile(bash_command)
-
         self.logback(bash_command)
-
         self.remote_debug_options(bash_command)
-
         self.jmx(bash_command)
-
+        self.append_add_opens_jvm_options(bash_command)
         self.jar_path(bash_command)
-
         self.jar_args(bash_command, self.command)
-
         self.extra_args(bash_command)
-
         bash_command = [elem for elem in bash_command if (elem != "''" and elem != "")]
         bash_command = ' '.join(bash_command)
         return bash_command
@@ -389,6 +414,13 @@ class SpringBootJarOperator(BashOperator):
                 raise ValueError('Please set jmx_port')
 
             bash_command.extend(jmx.split(' '))
+
+    def append_add_opens_jvm_options(self, bash_command):
+        bash_command.extend(map(lambda add_opens_jvm_option: "--add-opens {}".format(add_opens_jvm_option), [
+            "java.base/java.lang=ALL-UNNAMED",
+            "java.base/java.util=ALL-UNNAMED"
+            # Add additional "add opens" JVM options here.
+        ]))
 
     def timezone(self, bash_command):
         """

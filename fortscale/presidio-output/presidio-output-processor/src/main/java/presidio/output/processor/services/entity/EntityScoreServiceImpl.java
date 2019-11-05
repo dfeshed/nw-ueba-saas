@@ -11,8 +11,12 @@ import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.entities.EntityPersistencyService;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Created by shays on 27/08/2017.
@@ -118,7 +122,7 @@ public class EntityScoreServiceImpl implements EntityScoreService {
      * @return map of each entityId to an object that contains the new score and number of alerts
      */
     @Override
-    public Map<String, EntitiesAlertData> calculateEntityScores(int alertEffectiveDurationInDays, Instant endDate, String entityType) {
+    public Map<String, EntitiesAlertData> calculateEntityAlertsData(int alertEffectiveDurationInDays, Instant endDate, String entityType) {
 
         List<LocalDateTime> days = getListOfLastXdays(alertEffectiveDurationInDays, endDate);
 
@@ -144,7 +148,7 @@ public class EntityScoreServiceImpl implements EntityScoreService {
 
                 AlertQuery alertQuery = alertQueryBuilder.build();
 
-                Page<Alert> alertsPage = alertPersistencyService.find(alertQuery);
+                Page<Alert> alertsPage = alertPersistencyService.findPage(alertQuery);
                 while (alertsPage != null && alertsPage.hasContent()) {
                     alertsPage.getContent().forEach(alert -> {
                         String entityDocumentId = alert.getEntityDocumentId();
@@ -165,6 +169,23 @@ public class EntityScoreServiceImpl implements EntityScoreService {
         }
         return aggregatedEntityScore;
     }
+
+    @Override
+    public Map<String, Double> calculateEntityScores(Instant startTime, Instant endTime, String entityType) {
+
+        AlertQuery alertQuery = new AlertQuery.AlertQueryBuilder()
+                .filterByStartDate(startTime.toEpochMilli())
+                .filterByEndDate(endTime.toEpochMilli())
+                .filterByEntityType(entityType)
+                .build();
+
+        Map<String, Double> entitiesScore = new HashMap<>();
+        try (Stream<Alert> stream = alertPersistencyService.find(alertQuery)) {
+            stream.forEach(alert -> entitiesScore.merge(alert.getEntityDocumentId(), alert.getContributionToEntityScore(), Double::sum));
+        }
+        return entitiesScore;
+    }
+
 
     private List<LocalDateTime> getListOfLastXdays(int days, Instant endTime) {
 
@@ -209,7 +230,7 @@ public class EntityScoreServiceImpl implements EntityScoreService {
         if (page.hasNext()) {
             Pageable pageable = page.nextPageable();
             alertQueryBuilder.setPageNumber(pageable.getPageNumber());
-            page = alertPersistencyService.find(alertQueryBuilder.build());
+            page = alertPersistencyService.findPage(alertQueryBuilder.build());
 
         } else {
             page = null;

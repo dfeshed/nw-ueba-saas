@@ -27,8 +27,11 @@ public interface AggregationRecordsManagerSdk {
 	 * @return a list of {@link AccumulatedAggregationFeatureRecord}s
 	 */
 	@Deprecated
-	List<AccumulatedAggregationFeatureRecord> getAccumulatedAggregatedFeatureEvents(
+	List<AccumulatedAggregationFeatureRecord> getAccumulatedAggregatedFeatureEventsByContextId(
 			String featureName, String contextId, TimeRange timeRange);
+
+	List<AccumulatedAggregationFeatureRecord> getAccumulatedAggregatedFeatureEvents(
+			String featureName, TimeRange timeRange);
 
 	/**
 	 *

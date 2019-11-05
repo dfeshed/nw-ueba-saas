@@ -149,7 +149,7 @@
           ]
         },
         {
-          "name": "sumOfHighestDstEntitySslSubjectOutboundScoresJa3TlsHourly",
+          "name": "sumOfHighestDstPortDstEntityOutboundScoresJa3TlsHourly",
           "features": [
             "sumOfHighestDstPortSslSubjectOutboundScoresJa3TlsHourly",
             "sumOfHighestDstPortDomainOutboundScoresJa3TlsHourly",

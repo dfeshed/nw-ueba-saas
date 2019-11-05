@@ -20,9 +20,10 @@ public class EmbeddedElasticsearchInitialiser {
     public static final String EL_DOWNLOAD_URL = "https://libhq-ro.rsa.lab.emc.com/SA/tools/elastic/elasticsearch-5.0.0.zip";
     private final Logger logger = Logger.getLogger(EmbeddedElasticsearchInitialiser.class);
 
-    public static String EL_TEST_VERSION = "5.0.0";
-    public static String EL_TEST_PORT = "9350";
-    public static String EL_TEST_CLUSTER = "fortscalse_test";
+    public final static String EL_TEST_VERSION = "5.0.0";
+    public final static String EL_TEST_PORT = "9300";
+    public final static String EL_TEST_PORT_RANGE = "9350-9360";
+    public final static String EL_TEST_CLUSTER = "fortscalse_test";
 
     private EmbeddedElastic embeddedElastic = null;
 
@@ -37,13 +38,14 @@ public class EmbeddedElasticsearchInitialiser {
             embeddedElastic = EmbeddedElastic.builder()
 //                    .withElasticVersion(EL_TEST_VERSION)// if download url is specified , the version should not be specified
                     .withStartTimeout(2, TimeUnit.MINUTES)
-                    .withSetting(PopularProperties.TRANSPORT_TCP_PORT, EL_TEST_PORT)
+                    .withSetting(PopularProperties.TRANSPORT_TCP_PORT, EL_TEST_PORT_RANGE)
                     .withSetting(PopularProperties.CLUSTER_NAME, EL_TEST_CLUSTER)
                     .withDownloadUrl(new URL(EL_DOWNLOAD_URL))
                     .withSetting("node.max_local_storage_nodes", 3)
                     .withCleanInstallationDirectoryOnStop(true)
                     .build()
                     .start();
+
         } catch (Exception e) {
             embeddedElastic = null;
             logger.error("Failed to start elasticsearch",e);
@@ -55,6 +57,10 @@ public class EmbeddedElasticsearchInitialiser {
         logger.debug("stopping embedded elasticsearch");
         embeddedElastic.stop();
 
+    }
+
+    public int getTransportTcpPort() {
+        return embeddedElastic == null? -1: embeddedElastic.getTransportTcpPort();
     }
 
 }

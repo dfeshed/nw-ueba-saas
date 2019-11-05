@@ -3,11 +3,13 @@ package presidio.output.domain.services.entities;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntityEnums;
 import presidio.output.domain.records.entity.EntityQuery;
 
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public interface EntityPersistencyService {
@@ -26,4 +28,10 @@ public interface EntityPersistencyService {
     Page<Entity> findByIds(Collection<String> ids, PageRequest pageRequest);
 
     Stream<Entity> findEntitiesByLastUpdateLogicalDateAndEntityType(Instant startDate, Instant endDate, String entityType);
+
+    void updateTrend (EntityEnums.Trends trend, String id, double score);
+
+    void updateTrends(EntityEnums.Trends trend, Map<String, Double> scores);
+
+    void clearTrends(EntityEnums.Trends trend, Instant untilInstant);
 }

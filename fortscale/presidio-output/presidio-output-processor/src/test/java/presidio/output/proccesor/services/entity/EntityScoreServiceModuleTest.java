@@ -318,7 +318,7 @@ public class EntityScoreServiceModuleTest {
 
         Page<Entity> entities = entityPersistencyService.find(new EntityQuery.EntityQueryBuilder().pageSize(1).pageNumber(0).build());
         Assert.assertEquals(100, entities.getTotalElements());
-        Page<Alert> alerts = alertPersistencyService.find(new AlertQuery.AlertQueryBuilder().setPageSize(1).setPageNumber(0).build());
+        Page<Alert> alerts = alertPersistencyService.findPage(new AlertQuery.AlertQueryBuilder().setPageSize(1).setPageNumber(0).build());
         Assert.assertEquals(5050, alerts.getTotalElements());
 
         entityService.updateAllEntitiesAlertData(Instant.now(), entityType);

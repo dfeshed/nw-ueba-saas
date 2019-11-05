@@ -8,6 +8,7 @@ import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -22,7 +23,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by efratn on 24/07/2017.
@@ -169,6 +172,12 @@ public class AlertServiceImpl implements AlertService {
         return alertPersistencyService.removeByTimeRangeAndEntityType(startDate, endDate, entityType);
     }
 
+    @Override
+    public void forEach(AlertQuery query, Consumer<Alert> action) {
+        try (Stream<Alert> stream = alertPersistencyService.find(query)) {
+            stream.forEach(action);
+        }
+    }
 
     private AlertEnums.AlertTimeframe getStrategyFromSmart(SmartRecord smart) {
         String strategy = smart.getFixedDurationStrategy().toStrategyName().equals(FiXED_DURATION_HOURLY) ? HOURLY : DAILY;

@@ -11,7 +11,9 @@ public interface EntityScoreService {
 
     void clearEntityScoreForEntitiesThatShouldNotHaveScore(Set<String> excludedEntitiesIds, String entityType);
 
-    Map<String, EntitiesAlertData> calculateEntityScores(int alertEffectiveDurationInDays, Instant endDate, String entityType);
+    Map<String, EntitiesAlertData> calculateEntityAlertsData(int alertEffectiveDurationInDays, Instant endDate, String entityType);
+
+    Map<String, Double> calculateEntityScores(Instant startDate, Instant endDate, String entityType);
 
     void clearAlertsContributionThatShouldNotHaveContributionToEntityScore(int alertEffectiveDurationInDays, Instant endDate, String entityType);
 }

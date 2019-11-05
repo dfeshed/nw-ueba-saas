@@ -1,6 +1,7 @@
 package presidio.output.processor.services.entity;
 
 import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntityEnums;
 
 import java.time.Instant;
 import java.util.List;
@@ -35,5 +36,7 @@ public interface EntityService {
 
 
     void updateEntityData(Instant endDate, String entityType);
+
+    void updateEntityTrends(EntityEnums.Trends trend, Instant time, String entityType);
 
 }

@@ -171,10 +171,10 @@ public class AlertApiControllerModuleTest {
         String firstEntityName = "Z_normalized_entityname_ipusr1@somebigcompany.com";
         presidio.output.domain.records.alerts.Alert alert1 = new presidio.output.domain.records.alerts.Alert("entityId1", "smartId", null, firstEntityName, firstEntityName, startDate, endDate, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D, "entityType");
         List<Indicator> indicators = new ArrayList<>();
-        Indicator indicator1 = createIndicator(alert1.getId(), 0.5, "0.5", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
-        Indicator indicator3 = createIndicator(alert1.getId(), 0.1, "0.1", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
-        Indicator indicator4 = createIndicator(alert1.getId(), 0.2, "0.2", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
-        Indicator indicator2 = createIndicator(alert1.getId(), 0.2, "0.2", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
+        Indicator indicator1 = createIndicator(alert1.getId(), alert1.getEntityType(), 0.5, "0.5", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
+        Indicator indicator3 = createIndicator(alert1.getId(), alert1.getEntityType(), 0.1, "0.1", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
+        Indicator indicator4 = createIndicator(alert1.getId(), alert1.getEntityType(), 0.2, "0.2", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
+        Indicator indicator2 = createIndicator(alert1.getId(), alert1.getEntityType(), 0.2, "0.2", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
         indicators.add(indicator1);
         indicators.add(indicator2);
         indicators.add(indicator3);
@@ -204,9 +204,9 @@ public class AlertApiControllerModuleTest {
         Assert.assertEquals(actualResponse.getIndicators().get(0).getScoreContribution(), 0.5, 0);
     }
 
-    private Indicator createIndicator(String alertId, double scoreContribution, String anomalyValue, Date startDate,
+    private Indicator createIndicator(String alertId, String entityType, double scoreContribution, String anomalyValue, Date startDate,
                                       Date endDate, Schema schema, double score, int envetsNum, AlertEnums.IndicatorTypes indicatorTypes) {
-        Indicator indicator = new Indicator(alertId);
+        Indicator indicator = new Indicator(alertId, entityType);
         indicator.setAnomalyValue(anomalyValue);
         indicator.setScoreContribution(scoreContribution);
         indicator.setStartDate(startDate);
@@ -436,7 +436,7 @@ public class AlertApiControllerModuleTest {
         presidio.output.domain.records.alerts.Alert alert = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, new Date(), "ja3");
 
         //generate indicators
-        Indicator indicator = new Indicator(alert.getId());
+        Indicator indicator = new Indicator(alert.getId(), alert.getEntityType());
 
         //generate events
         List<IndicatorEvent> indicatorEvents = generateEvents(102, indicator.getId());
