@@ -429,7 +429,9 @@ public class EntityServiceImpl implements EntityService {
 	@Override
 	public int updateWatched(EntityRestFilter entityRestFilter, Set<String> relevantEntities, Boolean watch) {
 
-		EntityQuery entityQuery = entityConverterHelper.convertUiFilterToQueryDto(entityRestFilter,null,null,true);
+		EntityQuery entityQuery = entityConverterHelper.convertUiFilterToQueryDto(
+						entityRestFilter, new PageRequest(0, entityRestFilter.getSize()),
+						null,true);
 
 
 		JsonPatch jsonPatch = entityConverterHelper.createPatchOperation(watch);
