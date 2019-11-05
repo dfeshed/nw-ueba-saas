@@ -1071,6 +1071,17 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[2].value, '2', 'forward slash was not parsed correctly');
   });
 
+  test('parsePillDataFromUri correctly parses text filters with special chars', function(assert) {
+    const result = parsePillDataFromUri('filename%20%3D%20\'reston%3D%5C\'virginia.sys\' AND ˸%foobar˸', DEFAULT_LANGUAGES);
+    assert.equal(result.length, 3, 'three pills came out');
+    assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
+    assert.equal(result[0].operator, '=', 'forward slash was not parsed correctly');
+    assert.equal(result[0].value, '\'reston=\\\'virginia.sys\'', 'forward slash was not parsed correctly');
+    assert.equal(result[1].type, OPERATOR_AND, 'forward slash was not parsed correctly');
+    assert.equal(result[2].type, TEXT_FILTER, 'text filter should have been parsed properly');
+    assert.equal(result[2].searchTerm, '%foobar', 'text filter search term was parsed properly');
+  });
+
   test('metaFiltersAsString can convert a pill array to a string suitable for the metaFilter query param', function(assert) {
     const queryPill = transformTextToPillData('medium = 1', DEFAULT_LANGUAGES);
     const encQP = encodeURIComponent('medium = 1');

@@ -258,7 +258,16 @@ export const parsePillDataFromUri = (uri, language = [], aliases = []) => {
     // an empty string in it, which is not what we want.  So we check for '' and return [] explicitly here.
     return [];
   }
-  const decodedQuery = decodeURIComponent(uri);
+
+  // A text filter is never encoded (see metaFiltersAsString), so we cannot decode it.
+  // Instead we return the string as it is.
+  const decodedQuery = uri.split(' ').map((filter) => {
+    if (isSearchTerm(filter)) {
+      return filter;
+    } else {
+      return decodeURIComponent(filter);
+    }
+  }).join(' ');
   return transformTextToPillData(decodedQuery, { language, aliases, returnMany: true });
 };
 
