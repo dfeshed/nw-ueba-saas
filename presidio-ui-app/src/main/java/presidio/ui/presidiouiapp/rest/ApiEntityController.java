@@ -57,6 +57,7 @@ public class ApiEntityController extends BaseController {
 	public static final int DEFAULT_EXPORT_USERS_SIZE = 1000;
 	public static final int FIRST_PAGE_INDEX = 0;
 	public static final int USERS_SEARCH_DEFAULT_PAGE_SIZE = 5;
+	private static final int MAX_PAGE_SIZE = 500000;
 	private static Logger logger = Logger.getLogger(ApiEntityController.class);
 
 	public static final String USER_COUNT = "userCount";
@@ -452,7 +453,7 @@ public class ApiEntityController extends BaseController {
 	public ResponseEntity<EntitiesCount> followEntitiesByFilter(@RequestBody EntityRestFilter entityRestFilter, @PathVariable Boolean watch) {
 
 		if (entityRestFilter.getSize() == null) {
-			entityRestFilter.setSize(Integer.MAX_VALUE);
+			entityRestFilter.setSize(MAX_PAGE_SIZE);
 		}
 
 		int entitiesUpdated;
