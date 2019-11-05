@@ -8,7 +8,11 @@ import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.dictionary.SingleWordCyclicGenerator;
 import presidio.data.generators.common.list.random.RandomRangeCompanyGen;
-import presidio.data.generators.common.perf.tls.*;
+import presidio.data.generators.common.perf.generators.DstPortProbabilityPerfGen;
+import presidio.data.generators.common.perf.generators.LimitedListPerfGenerator;
+import presidio.data.generators.common.perf.generators.SslSubjectContainer;
+import presidio.data.generators.common.perf.generators.SslSubjectLimitedPerfGen;
+import presidio.data.generators.common.perf.lists.PerfGenListMappers;
 import presidio.data.generators.common.random.GaussianLongGenerator;
 import presidio.data.generators.common.random.Md5RandomGenerator;
 import presidio.data.generators.common.random.RandomIntegerGenerator;
@@ -25,6 +29,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
+import static presidio.data.generators.event.performance.tls.TlsEventsSimplePerfGen.*;
+
 public class TlsSessionSplitSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
 
     private static AtomicInteger UNIQUE_ID_COUNTER = new AtomicInteger(0);
@@ -37,6 +43,7 @@ public class TlsSessionSplitSimplePerfGen extends AbstractEventGenerator<TlsEven
 
     private TlsPerfClusterParams params;
     private final int UNIQUE_ID;
+    private SslSubjectLimitedPerfGen sslSubjectEntityGen;
 
     private IBaseGenerator<Integer> dstPortGen;
     private IBaseGenerator<String> ja3Gen;
@@ -61,7 +68,7 @@ public class TlsSessionSplitSimplePerfGen extends AbstractEventGenerator<TlsEven
     private IBaseGenerator<Integer> srcPortGenerator = new RandomIntegerGenerator(0, 9999);
     private IBaseGenerator<Integer> sessionSplitGenerator = new FixedValueGenerator<>(0);
 
-    private final Random random = new Random(0);
+    private final Random random = new Random();
     private TlsPerfUtils tlsPerfUtils = new TlsPerfUtils();
     private Supplier<Boolean> isAnomaly = () -> random.nextDouble() <= params.getAlertsProbability();
 
@@ -73,45 +80,17 @@ public class TlsSessionSplitSimplePerfGen extends AbstractEventGenerator<TlsEven
 
         timeGenerator = getDefaultTimeGen();
         UNIQUE_ID = UNIQUE_ID_COUNTER.addAndGet(1);
-        dstIpGenerator.nextRangeRandom(params.getDstIpSize());
 
-        dstPortGen = new DstPortPerfGen(UNIQUE_ID, params.getDstPortSize());
-        ja3Gen = new Ja3PerfGen(UNIQUE_ID, params.getJa3Size());
-        sslSubjectGen = new SslSubjectPerfGen(UNIQUE_ID, params.getSslSubjectSize());
-        dstOrgGen = new DstOrgPerfGen(UNIQUE_ID, params.getDstOrgSize());
-        srcNetnameGen = new SrcNetnamePerfGen(UNIQUE_ID, params.getSrcNetnameSize());
-        srcIpGenerator = new Ipv4PerfGen(UNIQUE_ID, params.getSrcIpSize());
-        locationGen = new LocationPrefGen(UNIQUE_ID, params.getLocationSize());
-        hostnameGen = new HostNamePrefGen(UNIQUE_ID, params.getHostnameSize());
-    }
 
-    public TlsSessionSplitSimplePerfGen copy() {
-        TlsSessionSplitSimplePerfGen copyGen = new TlsSessionSplitSimplePerfGen(this.params, MAX_SESSIONS);
+        sslSubjectEntityGen = new SslSubjectLimitedPerfGen(params.getSslSubjectSize());
+        ja3Gen = new LimitedListPerfGenerator<>(params.getJa3Size(), PerfGenListMappers.ja3Mapper(NUM_OF_JA3));
+        dstOrgGen = new LimitedListPerfGenerator<>(params.getDstOrgSize(), PerfGenListMappers.dstOrgMapper(NUM_OF_DST_ORG));
+        locationGen = new LimitedListPerfGenerator<>(params.getLocationSize() * 2, PerfGenListMappers.countriesMapper(NUM_OF_COUNTRIES));
+        srcNetnameGen = new FixedValueGenerator<>("netname");
+        dstPortGen = new DstPortProbabilityPerfGen(0.001, 1000, 31000, 443);
 
-        copyGen.params = this.params;
-        copyGen.timeGenerator = this.timeGenerator;
+        srcIpGenerator = new LimitedListPerfGenerator<>(random.nextInt(190) + 10, PerfGenListMappers.ipv4Mapper(NUM_OF_SRC_IPS));
 
-        copyGen.setSrcPortGenerator(this.getSrcPortGenerator());
-        copyGen.dstPortGen = this.dstPortGen;
-
-        copyGen.ja3Gen = this.ja3Gen;
-        copyGen.sslSubjectGen = this.sslSubjectGen;
-        copyGen.dstOrgGen = this.dstOrgGen;
-        copyGen.srcNetnameGen = this.srcNetnameGen;
-        copyGen.srcIpGenerator = this.srcIpGenerator;
-
-        copyGen.setDstNetnameGen(this.getDstNetnameGen());
-        copyGen.locationGen = this.locationGen;
-        copyGen.hostnameGen = this.hostnameGen;
-        copyGen.setDataSourceGenerator(this.getDataSourceGenerator());
-        copyGen.setDstAsnGenerator(this.getDstAsnGenerator());
-        copyGen.dstIpGenerator.setGenerator(this.dstIpGenerator.getGenerator());
-        copyGen.setNumOfBytesSentGenerator(this.getNumOfBytesSentGenerator());
-        copyGen.setNumOfBytesReceivedGenerator(this.getNumOfBytesReceivedGenerator());
-        copyGen.setJa3sGenerator(this.getJa3sGenerator());
-        copyGen.setSslCaGenerator(this.getSslCaGenerator());
-        copyGen.setSessionSplitGenerator(this.getSessionSplitGenerator());
-        return copyGen;
     }
 
     private  MultiRangeTimeGenerator getDefaultTimeGen() {
@@ -147,6 +126,8 @@ public class TlsSessionSplitSimplePerfGen extends AbstractEventGenerator<TlsEven
 
     @Override
     public TlsEvent generateNext() throws GeneratorException {
+        SslSubjectContainer nextSslSubjectEntityGen = sslSubjectEntityGen.getNext();
+
         if (sessionsLeft == 0) {
             sessionsLeft = ThreadLocalRandom.current().nextInt(1, MAX_SESSIONS);
             session = 0;
@@ -156,12 +137,12 @@ public class TlsSessionSplitSimplePerfGen extends AbstractEventGenerator<TlsEven
 
         if (session == 0) {
             srcIp = srcIpGenerator.getNext();
-            dstIp = dstIpGenerator.getGenerator().getNext();
+            dstIp = nextSslSubjectEntityGen.getDstIpGen().getNext();
             srcPort = srcPortGenerator.getNext();
             dstPort = dstPortGen.getNext();
 
 
-            tlsEvent.setSslSubject(sslSubjectGen.getNext());
+            tlsEvent.setSslSubject(nextSslSubjectEntityGen.getSslSubjectGen().getNext());
             tlsEvent.setSslCa(sslCaGenerator.nextValues(2));
             tlsEvent.setJa3(ja3Gen.getNext());
             tlsEvent.setJa3s(ja3sGenerator.getNext());
@@ -177,7 +158,7 @@ public class TlsSessionSplitSimplePerfGen extends AbstractEventGenerator<TlsEven
         tlsEvent.setSessionSplit(session);
 
         tlsEvent.setEventId(eventIdGenerator.getNext());
-        tlsEvent.setFqdn(hostnameGen.nextValues(3));
+        tlsEvent.setFqdn(nextSslSubjectEntityGen.getDomainGen().nextValues(3));
         tlsEvent.setDestinationOrganization(dstOrgGen.getNext());
         tlsEvent.setDestinationASN(dstAsnGenerator.getNext());
         tlsEvent.setNumOfBytesSent(numOfBytesSentGenerator.getNext());
