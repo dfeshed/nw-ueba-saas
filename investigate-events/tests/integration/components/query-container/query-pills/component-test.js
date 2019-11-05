@@ -4988,4 +4988,78 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(focusedPillPosition, 0, 'Correct Pill Focused');
 
   });
+
+  test('Pressing DELETE on a new pill trigger within a newly created parens should delete the parens and logical operator and move the focus to the right pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(12);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    const [, newPillTrigger] = findAll(PILL_SELECTORS.newPillTrigger);
+    await click(newPillTrigger);
+
+    assert.equal(findAll(PILL_SELECTORS.logicalOperatorAND).length, 1, 'One logical operator between pills');
+    assert.notOk(find(PILL_SELECTORS.openParen), 'No open paren is present');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'No close paren is present');
+    assert.notOk(find(PILL_SELECTORS.focusedPill), 'No pill is focused');
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', OPEN_PAREN_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.logicalOperatorAND).length, 2, 'One new logical operator added for the parens');
+    assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'One open paren is added');
+    assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'One close paren is added');
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', DELETE_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.logicalOperatorAND).length, 1, 'One logical operator between pills');
+    assert.notOk(find(PILL_SELECTORS.openParen), 'No open paren is present');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'No close paren is present');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'One pill is focused after delete');
+    assert.equal(find(PILL_SELECTORS.focusedPill).getAttribute('position'), 2, 'The focus is shift to the right pill after delete');
+  });
+
+  test('Pressing BACKSPACE on a new pill trigger within a newly created parens should delete the parens and logical operator and move the focus to the left pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(12);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    const [, newPillTrigger] = findAll(PILL_SELECTORS.newPillTrigger);
+    await click(newPillTrigger);
+
+    assert.equal(findAll(PILL_SELECTORS.logicalOperatorAND).length, 1, 'One logical operator between pills');
+    assert.notOk(find(PILL_SELECTORS.openParen), 'No open paren is present');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'No close paren is present');
+    assert.notOk(find(PILL_SELECTORS.focusedPill), 'No pill is focused');
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', OPEN_PAREN_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.logicalOperatorAND).length, 2, 'One new logical operator added for the parens');
+    assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'One open paren is added');
+    assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'One close paren is added');
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', BACKSPACE_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.logicalOperatorAND).length, 1, 'One logical operator between pills');
+    assert.notOk(find(PILL_SELECTORS.openParen), 'No open paren is present');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'No close paren is present');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'One pill is focused after delete');
+    assert.equal(find(PILL_SELECTORS.focusedPill).getAttribute('position'), 0, 'The focus is shift to the right pill after delete');
+  });
 });
