@@ -1,4 +1,4 @@
-package presidio.data.generators.event.performance.tls.clusters;
+package presidio.data.generators.event.performance.tls;
 
 import org.testng.Assert;
 
@@ -17,7 +17,10 @@ public class TlsPerfClusterParams {
 
     private Instant startInstant = null;
     private Instant endInstant = null;
-    private int millisBetweenEvents = -1;
+
+    private double eventsPerDay = -1;
+    private double offPeekRatio = 0.5;
+    private double weekendSkipEventProbability = 0;
 
     private double alertsProbability = -1;
     private int abnormalActivityStartHour = -1;
@@ -47,7 +50,9 @@ public class TlsPerfClusterParams {
         private int regularActivityEndHour;
         private Instant startInstant;
         private Instant endInstant;
-        private int millisBetweenEvents;
+        private double eventsPerDay;
+        private double offPeekRatio;
+        private double weekendSkipEventProbability;
 
         public Builder setHostnameSize(int hostnameSize) {
             this.hostnameSize = hostnameSize;
@@ -104,11 +109,20 @@ public class TlsPerfClusterParams {
             return this;
         }
 
-        public Builder setMillisBetweenEvents(int millisBetweenEvents) {
-            this.millisBetweenEvents = millisBetweenEvents;
+        public Builder setEventsPerDay(double eventsPerDay) {
+            this.eventsPerDay = eventsPerDay;
             return this;
         }
 
+        public Builder setOffPeekToActiveRatio(double offPeekRatio) {
+            this.offPeekRatio = offPeekRatio;
+            return this;
+        }
+
+        public Builder setWeekendSkipEventProbability(double weekendSkipEventProbability) {
+            this.weekendSkipEventProbability = weekendSkipEventProbability;
+            return this;
+        }
 
         public Builder setAbnormalActivityStartHour(int abnormalActivityStartHour) {
             this.abnormalActivityStartHour = abnormalActivityStartHour;
@@ -155,7 +169,9 @@ public class TlsPerfClusterParams {
             params.regularActivityStartHour = this.regularActivityStartHour;
             params.regularActivityEndHour = this.regularActivityEndHour;
             params.alertsProbability = this.alertsProbability;
-            params.millisBetweenEvents = this.millisBetweenEvents;
+            params.offPeekRatio = this.offPeekRatio;
+            params.weekendSkipEventProbability = this.weekendSkipEventProbability;
+            params.eventsPerDay = this.eventsPerDay;
 
 
             Assert.assertTrue(params.hostnameSize > 0, "hostnameSize not set");
@@ -176,7 +192,7 @@ public class TlsPerfClusterParams {
             Assert.assertTrue(params.abnormalActivityEndHour >= 0, "abnormalActivityEndHour not set");
             Assert.assertTrue(params.regularActivityStartHour >= 0, "regularActivityStartHour not set");
             Assert.assertTrue(params.regularActivityEndHour >= 0, "regularActivityEndHour not set");
-            Assert.assertTrue(params.millisBetweenEvents > 0, "millisBetweenEvents not set");
+            Assert.assertTrue(params.eventsPerDay > 0, "eventsPerDay not set");
 
             return params;
         }
@@ -223,6 +239,15 @@ public class TlsPerfClusterParams {
         return alertsProbability;
     }
 
+    public double getOffPeekToActiveRatio() {
+        return offPeekRatio;
+    }
+
+    public double getWeekendSkipEventProbability() {
+        return weekendSkipEventProbability;
+    }
+
+
     public int getAbnormalActivityStartHour() {
         return abnormalActivityStartHour;
     }
@@ -247,7 +272,7 @@ public class TlsPerfClusterParams {
         return endInstant;
     }
 
-    public int getMillisBetweenEvents() {
-        return millisBetweenEvents;
+    public double getEventsPerDay() {
+        return eventsPerDay;
     }
 }
