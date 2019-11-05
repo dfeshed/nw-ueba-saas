@@ -2,6 +2,7 @@ package fortscale.ml.scorer.algorithms;
 
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Sigmoid;
+import fortscale.ml.scorer.CategoryRarityModelScorer;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.Validate;
 import org.springframework.util.Assert;
@@ -16,6 +17,7 @@ public class CategoryRarityModelScorerAlgorithm {
 
     private static final double MIN_POSSIBLE_SCORE = 1;
     private static final double MAX_POSSIBLE_SCORE = 100;
+    private static final String NUM_OF_PARTITIONS_ERROR = "maxNumOfRarePartitions + maxRareCount must be no larger than the model bucket size. maxNumOfRarePartitions: %d, maxRareCount: %d, bucket size: %d";
 
     private int maxRareCount;
     private int maxNumOfRarePartitions;
@@ -57,8 +59,7 @@ public class CategoryRarityModelScorerAlgorithm {
                 "featureCount can't be negative - you probably have a bug" : "if you're scoring a first-time-seen feature, you should pass 1 as its count");
         if(model.getOccurrencesToNumOfPartitionsList() != null) {
             Validate.isTrue(maxNumOfRarePartitions + maxRareCount <= model.getOccurrencesToNumOfPartitionsList().size(),
-                    "maxNumOfRarePartitions + maxRareCount must be no larger than the model bucket size. " +
-                            "maxNumOfRarePartitions: %d, maxRareCount: %d, bucket size: %d", maxNumOfRarePartitions, maxRareCount, model.getOccurrencesToNumOfPartitionsList().size());
+                    NUM_OF_PARTITIONS_ERROR, maxNumOfRarePartitions, maxRareCount, model.getOccurrencesToNumOfPartitionsList().size());
         }
 
         if (featureCount > maxRareCount || featureCount > maxNumOfRarePartitions) {
