@@ -78,7 +78,7 @@ export const classicEventsURL = ({
   const formattedEndDate = moment(endTime > 0 ? endTime * 1000 : endTime).tz('utc').format();
   let searchTerm;
   if (textSearchTerm) {
-    searchTerm = textSearchTerm.searchTerm;
+    searchTerm = encodeURIComponent(textSearchTerm.searchTerm);
   }
   return `investigation/${serviceId}/events/${pillHash}date/${formattedStartDate}/${formattedEndDate}?mid1=${mid1}&mid2=${mid2}&lastCollectionDate=${endCollectionTime}&startCollectionDate=${startCollectionTime}&timeRangeType=${timeRangeType}&search=${searchTerm}`;
 };

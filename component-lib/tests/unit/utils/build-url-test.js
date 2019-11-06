@@ -115,6 +115,27 @@ test('it returns a well formed url if right click actions are coming from outsid
 
 });
 
+test('it encodes searchTerm when creating a classic url with text filter', async function(assert) {
+  const props = {
+    endTime: '1508178179',
+    startTime: '1508091780',
+    timeRangeType: 'LAST_24_HOURS',
+    serviceId: '555d9a6fe4b0d37c827d402e',
+    pillDataHashes: ['wawa1'],
+    textSearchTerm: { type: 'some', searchTerm: '^&foobar' },
+    mid1: '1',
+    mid2: '12296047',
+    startCollectionTime: '1506537600',
+    endCollectionTime: '1508178160'
+  };
+  const url = classicEventsURL(props);
+  assert.equal(
+    url,
+    'investigation/555d9a6fe4b0d37c827d402e/events/wawa1/date/2017-10-15T18:23:00Z/2017-10-16T18:22:59Z?mid1=1&mid2=12296047&lastCollectionDate=1508178160&startCollectionDate=1506537600&timeRangeType=LAST_24_HOURS&search=%5E%26foobar',
+    'The classic url was malformed'
+  );
+});
+
 test('It returns a correct Classic events url based on the options passed in', async function(assert) {
 
   let props = {
