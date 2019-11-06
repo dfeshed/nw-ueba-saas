@@ -127,7 +127,7 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
         }
         Validate.notBlank(feature.getName(), "Feature name cannot be null, empty or blank. scorer: %s", this);
         Assert.isTrue((feature.getValue() instanceof FeatureStringValue) || (feature.getValue() instanceof FeatureNumericValue) , WRONG_FEATURE_VALUE_TYPE_ERROR_MSG);
-        Validate.notNull(feature.getValue().toString(), "Feature value cannot be null. feature name: %s, scorer: %s",  feature.getName(), this);
+        Validate.notNull(feature.getValue(), "Feature value cannot be null. feature name: %s, scorer: %s",  feature.getName(), this);
         return true;
     }
 
