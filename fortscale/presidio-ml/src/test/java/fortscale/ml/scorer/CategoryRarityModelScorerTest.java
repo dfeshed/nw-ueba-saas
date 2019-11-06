@@ -223,14 +223,6 @@ public class CategoryRarityModelScorerTest {
         scorer.canScore(new CategoryRarityModel(), Collections.emptyList(), new Feature("     ", "host1"));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void calculateScore_null__feature_value_test() {
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
-        CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.canScore(new CategoryRarityModel(), Collections.emptyList(), new Feature("source-machine", (String)null));
-    }
-
-
     //==================================================================================================================
     // CALCULATE SCORE ILLEGAL VALUES TESTS
     //==================================================================================================================
