@@ -73,7 +73,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
 
         /** enrichment should be until the first missing element*/
         List<TlsEnrichStoredData> actualEnriched = result.subList(0, firstIndex + 1);
-        List<TlsEnrichStoredData> actualNotEnriched = result.subList(firstIndex + 2, result.size());
+        List<TlsEnrichStoredData> actualNotEnriched = result.subList(firstIndex + 1, result.size());
         assertHelper.assertEnrichmentFieldsMatchExpected(actualEnriched, expected);
         assertHelper.assertEnrichmentFieldsAreNull(actualNotEnriched);
         assertHelper.assertAll();
@@ -89,8 +89,8 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         if (first.isEmpty()) fail("First duplicate event id marker is missing");
         int firstIndex = first.get();
 
-        /** enrichment should be until the first duplicate element*/
-        List<TlsEnrichStoredData> actualEnriched = result.subList(0, firstIndex + 1);
+        /** enrichment is including the first duplicate element */
+        List<TlsEnrichStoredData> actualEnriched = result.subList(0, firstIndex + 2);
         List<TlsEnrichStoredData> actualNotEnriched = result.subList(firstIndex + 2, result.size());
         assertHelper.assertEnrichmentFieldsMatchExpected(actualEnriched, expected);
         assertHelper.assertEnrichmentFieldsAreNull(actualNotEnriched);
