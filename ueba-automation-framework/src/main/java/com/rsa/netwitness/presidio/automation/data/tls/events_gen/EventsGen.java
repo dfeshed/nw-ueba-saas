@@ -67,6 +67,10 @@ public abstract class EventsGen {
         return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes);
     }
 
+    protected ITimeGenerator getCommonValuesTimeGen(int intervalMinutes) {
+        return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes);
+    }
+
     protected ITimeGenerator getUncommonValuesAnomalyTimeGen() {
         return getTimeGen(startHourOfDayAnomaly, endHourOfDayAnomaly, daysBackFromAnomaly, daysBackToAnomaly, intervalMinutesAnomaly);
     }

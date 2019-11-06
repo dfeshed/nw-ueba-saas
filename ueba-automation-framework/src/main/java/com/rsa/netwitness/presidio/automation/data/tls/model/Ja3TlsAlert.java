@@ -294,7 +294,6 @@ public class Ja3TlsAlert {
         AbnormalTraffic<String> indicatorCreator = new AbnormalTraffic<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
         TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(HISTORICAL_DATA_COMMON_VALUES);
         indicatorCreator.createNormalTrafficHistoryGen(eventsGenInit.copy());
-        indicatorCreator.createHighTrafficHistoryGen(eventsGenInit.copy());
         indicatorCreator.createHighTrafficAnomalyGen(eventsGenInit.copy());
         alert.indicators.add(indicatorCreator.getIndicator());
         return this;

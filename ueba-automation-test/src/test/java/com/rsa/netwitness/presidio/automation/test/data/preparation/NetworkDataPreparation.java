@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
+import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.common.scenarios.tls.*;
 import com.rsa.netwitness.presidio.automation.data.tls.model.TlsAlert;
 import org.slf4j.LoggerFactory;
@@ -10,14 +11,13 @@ import presidio.data.domain.event.network.TlsEvent;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
 
 public class NetworkDataPreparation extends DataPreparationBase {
-    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(NetworkDataPreparation.class.getName());
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(NetworkDataPreparation.class);
 
     @Override
     public List<? extends Event> generate() {
@@ -39,7 +39,7 @@ public class NetworkDataPreparation extends DataPreparationBase {
         /** future time events **/
         networkEvents.addAll(new FutureEventsForMetrics(10).get().collect(toList()));
         /** Session split data **/
-        networkEvents.addAll(new SessionSplitEnrichmentData().generateAll().collect(Collectors.toList()));
+        networkEvents.addAll(new SessionSplitEnrichmentData().generateAll().collect(toList()));
 
         return networkEvents;
     }
