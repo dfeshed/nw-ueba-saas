@@ -61,11 +61,11 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
 
 
     @Parameters({"start_time", "end_time", "probability_multiplier", "users_multiplier",
-            "tls_groups_multiplier", "tls_alerts_probability", "tls_millis_between_events","schemas"})
+            "tls_alerts_probability", "tls_groups_to_create", "tls_events_per_day_per_group","schemas"})
     @Test
     public void performance(@Optional("2019-10-30T00:00:00.00Z") String startTimeStr, @Optional("2019-10-31T23:59:00.00Z") String endTimeStr,
                             @Optional("0.005") double probabilityMultiplier, @Optional("0.005") double usersMultiplier,
-                            @Optional("1") int tlsGroupsMultiplier, @Optional("0.1") double tlsAlertsProbability, @Optional("60000") int tlsMillisBetweenEvents,
+                            @Optional("0.001") double tlsAlertsProbability, @Optional("1") int groupsToCreate, @Optional("1000") double tlsEventsPerDayPerGroup,
                             @Optional("TLS") String schemas ) throws GeneratorException {
 
         System.out.println("=================== TEST PARAMETERS =============== ");
@@ -73,9 +73,10 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
         System.out.println("end_time: " + endTimeStr);
         System.out.println("probability_multiplier: " + probabilityMultiplier);
         System.out.println("users_multiplier: " + usersMultiplier);
-        System.out.println("tls_groups_multiplier: " + tlsGroupsMultiplier);
         System.out.println("tls_alerts_probability: " + tlsAlertsProbability);
-        System.out.println("tls_millis_between_events: " + tlsMillisBetweenEvents);
+        System.out.println("tls_groups_to_create: " + groupsToCreate);
+        System.out.println("tls_events_per_day_per_group: " + tlsEventsPerDayPerGroup);
+        System.out.println("schemas: " + schemas);
         System.out.println("=================================================== ");
 
         Instant startInstant = Instant.parse(startTimeStr);
@@ -88,7 +89,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
         stopWatch.start();
 
         if (schemas.contains("TLS")) {
-            TlsPerformanceStabilityScenario scenario = new TlsPerformanceStabilityScenario(startInstant, endInstant, tlsGroupsMultiplier, tlsAlertsProbability, tlsMillisBetweenEvents);
+            TlsPerformanceStabilityScenario scenario = new TlsPerformanceStabilityScenario(startInstant, endInstant, tlsAlertsProbability, groupsToCreate, tlsEventsPerDayPerGroup);
 
             Stream<TlsEvent> tlsEventStream = scenario.tlsEventsGenerators.stream()
                     .map(IEventGenerator::generateToStream)

@@ -49,7 +49,7 @@ public class OutputDataProcessingManager {
 
             SshResponse p =  new SshHelper().uebaHostExec().setUserDir(PRESIDIO_DIR).run(
                     Consts.PRESIDIO_OUTPUT, "run", "--start_date " + startDate,
-                    "--end_date " + endDate, "--smart_record_conf_name " + smart_record_conf_name,  "--entity_type " + entity_type,
+                    "--end_date " + endDate, "--fixed_duration_strategy 3600.0 " ,"--smart_record_conf_name " + smart_record_conf_name,  "--entity_type " + entity_type,
                     " > " + logPath);
 
             printLogIfError(logPath);
