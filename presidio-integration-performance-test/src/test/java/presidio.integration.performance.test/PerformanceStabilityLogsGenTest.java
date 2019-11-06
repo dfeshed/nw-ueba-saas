@@ -30,7 +30,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static com.rsa.netwitness.presidio.automation.enums.GeneratorFormat.CEF_DAILY_FILE;
+import static com.rsa.netwitness.presidio.automation.enums.GeneratorFormat.CEF_HOURLY_FILE;
 import static java.util.stream.Collectors.toList;
 
 public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContextTests {
@@ -56,7 +56,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
     private StopWatch stopWatch = new StopWatch();
     private StopWatch tlsStopWatch = new StopWatch();
 
-    private EventsProducer<List<NetwitnessEvent>> eventsProducer = new EventsProducerFactory(null).get(CEF_DAILY_FILE);
+    private EventsProducer<List<NetwitnessEvent>> eventsProducer = new EventsProducerFactory(null).get(CEF_HOURLY_FILE);
     public final EventConverter<Event> eventEventConverter = new EventConverterFactory().get();
 
 
