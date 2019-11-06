@@ -104,9 +104,6 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         int activeHoursMillisBetweenEvents = tlsPerfUtils.activeHoursMillisBetweenEvents(activeHours, params.getEventsPerDay(), params.getOffPeekToActiveRatio());
         int offpeekHoursMillisBetweenEvents = tlsPerfUtils.offpeekHoursMillisBetweenEvents(activeHours, params.getEventsPerDay(), params.getOffPeekToActiveRatio());
 
-        System.out.println("activeHoursMillisBetweenEvents = " + activeHoursMillisBetweenEvents);
-        System.out.println("offpeekHoursMillisBetweenEvents = " + offpeekHoursMillisBetweenEvents);
-
         rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(params.getRegularActivityStartHour(),0),
                 LocalTime.of(params.getRegularActivityEndHour(),0),
                 Duration.ofMillis(activeHoursMillisBetweenEvents)));
