@@ -76,6 +76,8 @@ $risk-panel-width: 500px;
 
   .investigate-file-tab {
     .rsa-nav-tab {
+      margin-bottom: 0px;
+      padding-bottom: 8px;
       .label {
         font-family: "Lato";
         font-style: normal;
@@ -85,7 +87,6 @@ $risk-panel-width: 500px;
         display: inline-block;
         margin: 0px;
       }
-
     }
     h3 {
       text-align: center;
