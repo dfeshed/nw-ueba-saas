@@ -2,7 +2,7 @@
   <hbox class="rsa-button-group">
     {{#rsa-form-button
       class="export-packet-button"
-      defaultAction=(action 'processDefault' defaultPacketFormat)
+      defaultAction=(action 'processDefault' defaultDownloadFormat.key)
       isDisabled=isCaptionDisabled
     }}
       {{#if isDownloading}}

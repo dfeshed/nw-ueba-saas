@@ -146,14 +146,23 @@ const createIncidentButton = Component.extend(Notifications, {
   isAlertSeverityInvalid: false,
 
   /**
-   * Indicates whether the form is invalid. the form is invalid if incident name is empty or alert severity which user entered is incorrect
-   * @property isInvalid
+   * Represents whether incident create action is in progress
+   * @property isCreateInProgress
    * @type {boolean}
    * @public
    */
-  @computed('name', 'isAlertSeverityInvalid')
-  isInvalid(name, isAlertSeverityInvalid) {
-    return isEmpty(name) || typeOf(name) === 'string' && isEmpty(name.trim()) || isAlertSeverityInvalid;
+  isCreateInProgress: false,
+
+  /**
+   * Flag to control enable/disable behaviour of create incident button.
+   * True if incident name is empty or alert severity which user entered is incorrect or create incident action started
+   * @property isDisabled
+   * @type {boolean}
+   * @public
+   */
+  @computed('name', 'isAlertSeverityInvalid', 'isCreateInProgress')
+  isDisabled(name, isAlertSeverityInvalid, isCreateInProgress) {
+    return isEmpty(name) || typeOf(name) === 'string' && isEmpty(name.trim()) || isAlertSeverityInvalid || isCreateInProgress;
   },
 
   didInsertElement() {
@@ -175,6 +184,7 @@ const createIncidentButton = Component.extend(Notifications, {
       this.close();
     },
     handleCreate() {
+      this.set('isCreateInProgress', true);
       const { name, priority, assignee, categories } = this.getProperties('name', 'priority', 'assignee', 'categories');
       let incidentDetails = {
         name,

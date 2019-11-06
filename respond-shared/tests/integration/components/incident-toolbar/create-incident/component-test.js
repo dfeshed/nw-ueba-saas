@@ -75,7 +75,7 @@ module('Integration | Component | incident-toolbar/create-incident', function(ho
   });
 
   test('Clicking Apply will execute the create incident and show a success flash message', async function(assert) {
-    assert.expect(5);
+    assert.expect(6);
     const done = assert.async();
     setState();
     await init;
@@ -103,6 +103,7 @@ module('Integration | Component | incident-toolbar/create-incident', function(ho
       });
     });
     await click('.apply .rsa-form-button');
+    assert.equal(findAll('.apply.is-disabled').length, 1, 'The OK button is disabled after user submits create incident details');
   });
 
   test('Manually selected Priority, Assignee and Categories are reflected in request payload', async function(assert) {
