@@ -1440,7 +1440,7 @@ indicators:
           - domain.name
           - sslSubject.name
       - type: hourly_aggregations
-        featureName: maxSumOfBytesSentBySrcIpToDomainSslSubjectOutboundTlsHourly
+        featureName: maxSumOfBytesSentBySrcIpToDomainOutboundTlsHourly
         contexts:
           - domain.name
         skipAnomaly: true
@@ -1757,7 +1757,11 @@ indicators:
         - fieldName: sslSubject.isNewOccurrence
           fieldValue: true
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
+        contexts:
+            - sslSubject.name
+      - type: hourly_aggregations_max_global
+        skipAnomaly: true
     classification: phishing
 
   - id: numberOfDistinctSrcIpToNewDomainScoresSumSslSubjectOutboundTlsHourly
@@ -1774,9 +1778,17 @@ indicators:
           fieldValue: OUTBOUND
         - fieldName: domain.isNewOccurrence
           fieldValue: true
+    splitFields:
+      - domain.name
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
         featureName: numberOfDistinctSrcIpForNewDomainSslSubjectOutboundTlsHourly
+        contexts:
+          - domain.name
+          - sslSubject.name
+      - type: hourly_aggregations_max_global
+        featureName: numberOfDistinctSrcIpForNewDomainSslSubjectOutboundTlsHourly
+        skipAnomaly: true
     classification: phishing
 
   - id: numberOfDistinctSrcIpToNewDstOrgScoresSumSslSubjectOutboundTlsHourly
@@ -1793,9 +1805,17 @@ indicators:
           fieldValue: OUTBOUND
         - fieldName: dstOrg.isNewOccurrence
           fieldValue: true
+    splitFields:
+      - dstOrg.name
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
         featureName: numberOfDistinctSrcIpForNewDstOrgSslSubjectOutboundTlsHourly
+        contexts:
+          - dstOrg.name
+          - sslSubject.name
+      - type: hourly_aggregations_max_global
+        featureName: numberOfDistinctSrcIpForNewDstOrgSslSubjectOutboundTlsHourly
+        skipAnomaly: true
     classification: phishing
 
   - id: numberOfDistinctSrcIpToNewDstPortScoresSumSslSubjectOutboundTlsHourly
@@ -1812,9 +1832,17 @@ indicators:
           fieldValue: OUTBOUND
         - fieldName: dstPort.isNewOccurrence
           fieldValue: true
+    splitFields:
+      - dstPort.name
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
         featureName: numberOfDistinctSrcIpForNewDstPortSslSubjectOutboundTlsHourly
+        contexts:
+          - dstPort.name
+          - sslSubject.name
+      - type: hourly_aggregations_max_global
+        featureName: numberOfDistinctSrcIpForNewDstPortSslSubjectOutboundTlsHourly
+        skipAnomaly: true
     classification: phishing
 
   - id: maxSumOfBytesSentBySrcIpToNewSslSubjectOutboundTlsHourly
@@ -1831,7 +1859,11 @@ indicators:
         - fieldName: sslSubject.isNewOccurrence
           fieldValue: true
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
+        contexts:
+          - sslSubject.name
+      - type: hourly_aggregations_max_global
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: maxSumOfBytesSentBySrcIpToNewDomainScoresSumSslSubjectOutboundTlsHourly
@@ -1851,8 +1883,14 @@ indicators:
     splitFields:
       - domain.name
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
         featureName: maxSumOfBytesSentBySrcIpToNewDomainSslSubjectOutboundTlsHourly
+        contexts:
+          - domain.name
+          - sslSubject.name
+      - type: hourly_aggregations_max_global
+        featureName: maxSumOfBytesSentBySrcIpToNewDomainSslSubjectOutboundTlsHourly
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: maxSumOfBytesSentBySrcIpToNewDstOrgScoresSumSslSubjectOutboundTlsHourly
@@ -1872,8 +1910,14 @@ indicators:
     splitFields:
       - dstOrg.name
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
         featureName: maxSumOfBytesSentBySrcIpToNewDstOrgSslSubjectOutboundTlsHourly
+        contexts:
+          - dstOrg.name
+          - sslSubject.name
+      - type: hourly_aggregations_max_global
+        featureName: maxSumOfBytesSentBySrcIpToNewDstOrgSslSubjectOutboundTlsHourly
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: maxSumOfBytesSentBySrcIpToNewDstPortScoresSumSslSubjectOutboundTlsHourly
@@ -1893,8 +1937,14 @@ indicators:
     splitFields:
       - dstPort.name
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
         featureName: maxSumOfBytesSentBySrcIpToNewDstPortSslSubjectOutboundTlsHourly
+        contexts:
+          - dstPort.name
+          - sslSubject.name
+      - type: hourly_aggregations_max_global
+        featureName: maxSumOfBytesSentBySrcIpToNewDstPortSslSubjectOutboundTlsHourly
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: sumOfBytesSentToNewSslSubjectOutboundTlsHourly
@@ -1911,7 +1961,11 @@ indicators:
         - fieldName: sslSubject.isNewOccurrence
           fieldValue: true
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
+        contexts:
+          - sslSubject.name
+      - type: hourly_aggregations_max_global
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: sumOfBytesSentToNewDomainScoresSumSslSubjectOutboundTlsHourly
@@ -1921,6 +1975,7 @@ indicators:
     adeEventType: tls
     modelContextFields:
       - domain.name
+      - sslSubject.name
     anomalyDescriptior:
       anomalyFilters:
         - fieldName: direction
@@ -1930,8 +1985,14 @@ indicators:
     splitFields:
       - domain.name
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
         featureName: sumOfBytesSentToNewDomainSslSubjectOutboundTlsHourly
+        contexts:
+          - domain.name
+          - sslSubject.name
+      - type: hourly_aggregations_max_global
+        featureName: sumOfBytesSentToNewDomainSslSubjectOutboundTlsHourly
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: sumOfBytesSentToNewDstOrgScoresSumSslSubjectOutboundTlsHourly
@@ -1941,6 +2002,7 @@ indicators:
     adeEventType: tls
     modelContextFields:
       - dstOrg.name
+      - sslSubject.name
     anomalyDescriptior:
       anomalyFilters:
         - fieldName: direction
@@ -1950,8 +2012,14 @@ indicators:
     splitFields:
       - dstOrg.name
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
         featureName: sumOfBytesSentToNewDstOrgSslSubjectOutboundTlsHourly
+        contexts:
+          - dstOrg.name
+          - sslSubject.name
+      - type: hourly_aggregations_max_global
+        featureName: sumOfBytesSentToNewDstOrgSslSubjectOutboundTlsHourly
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: sumOfBytesSentToNewDstPortScoresSumSslSubjectOutboundTlsHourly
@@ -1961,6 +2029,7 @@ indicators:
     adeEventType: tls
     modelContextFields:
       - dstPort.name
+      - sslSubject.name
     anomalyDescriptior:
       anomalyFilters:
         - fieldName: direction
@@ -1970,8 +2039,14 @@ indicators:
     splitFields:
       - dstPort.name
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
         featureName: sumOfBytesSentToNewDstPortSslSubjectOutboundTlsHourly
+        contexts:
+          - dstPort.name
+          - sslSubject.name
+      - type: hourly_aggregations_max_global
+        featureName: sumOfBytesSentToNewDstPortSslSubjectOutboundTlsHourly
+        skipAnomaly: true
     classification: data_exfiltration
 
   - id: sumOfBytesSentToNewJa3OutboundTlsHourly
@@ -1988,7 +2063,11 @@ indicators:
         - fieldName: ja3.isNewOccurrence
           fieldValue: true
     historicalData:
-      - type: hourly_aggregations
+      - type: hourly_aggregations_last_day
+        contexts:
+          - ja3.name
+      - type: hourly_aggregations_max_global
+        skipAnomaly: true
     classification: data_exfiltration
 
   #***************************************
