@@ -86,11 +86,15 @@ export default Component.extend(RowMixin, HighlightsEntities, {
    * @private
    */
   _datetimeDidChange: observer('i18n.locale', 'timezone.selected', 'dateFormat.selected.format', 'timeFormat.selected.format', function() {
-    this._renderCells();
+    if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
+      this._renderCells();
+    }
   }),
 
   _selectionsDidChange: observer('isChecked', function() {
-    this._renderCells();
+    if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
+      this._renderCells();
+    }
   }),
 
   _highlightEntities() {
@@ -104,10 +108,12 @@ export default Component.extend(RowMixin, HighlightsEntities, {
    * @private
    */
   _columnsOrDataDidChange: observer('item', 'table.visibleColumns.[]', function() {
-    once(this, this._renderCells);
-    once(this, this._highlightEntities);
-    if (this.get('isSearchMatch')) {
-      once(this, this._highlightSearchMatch);
+    if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
+      once(this, this._renderCells);
+      once(this, this._highlightEntities);
+      if (this.get('isSearchMatch')) {
+        once(this, this._highlightSearchMatch);
+      }
     }
   }),
 
@@ -117,7 +123,9 @@ export default Component.extend(RowMixin, HighlightsEntities, {
    * @private
    */
   _columnWidthDidChange: observer('table.visibleColumns.@each.width', function() {
-    once(this, this._repaintCellWidths);
+    if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
+      once(this, this._repaintCellWidths);
+    }
   }),
 
   didInsertElement() {

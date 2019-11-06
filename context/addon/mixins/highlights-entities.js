@@ -418,24 +418,30 @@ export default Mixin.create({
 
   // Wires up a given DOM node to the context tooltip.
   _wireEntityToTooltip(el, type, id) {
-    const {
-      entityTooltipPanelId,
-      eventBus,
-      entityTooltipDisplayDelay: displayDelay,
-      entityTooltipHideDelay: hideDelay
-    } = this.getProperties('entityTooltipPanelId', 'eventBus', 'entityTooltipDisplayDelay', 'entityTooltipHideDelay');
+    if (
+      this &&
+      !this.get('isDestroyed') &&
+      !this.get('isDestroying')
+    ) {
+      const {
+        entityTooltipPanelId,
+        eventBus,
+        entityTooltipDisplayDelay: displayDelay,
+        entityTooltipHideDelay: hideDelay
+      } = this.getProperties('entityTooltipPanelId', 'eventBus', 'entityTooltipDisplayDelay', 'entityTooltipHideDelay');
 
-    const triggerEvent = this.get('entityTooltipTriggerEvent');
-    const wireFn = (triggerEvent === 'hover') ?
-      wireTriggerToHover : wireTriggerToClick;
+      const triggerEvent = this.get('entityTooltipTriggerEvent');
+      const wireFn = (triggerEvent === 'hover') ?
+        wireTriggerToHover : wireTriggerToClick;
 
-    wireFn(el, entityTooltipPanelId, eventBus, {
-      model: { type, id },
-      displayDelay,
-      hideDelay,
-      rightClick: triggerEvent === 'contextmenu',
-      trigger: this
-    });
+      wireFn(el, entityTooltipPanelId, eventBus, {
+        model: { type, id },
+        displayDelay,
+        hideDelay,
+        rightClick: triggerEvent === 'contextmenu',
+        trigger: this
+      });
+    }
   },
 
   // Unwires a given DOM node from the context tooltip.

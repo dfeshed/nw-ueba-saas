@@ -147,7 +147,9 @@ const HeaderContainer = Component.extend({
 
   // update searchTerm when cleared via query execution
   searchTermWasChanged: observer('searchTerm', function() {
-    this.set('_searchTerm', this.get('searchTerm'));
+    if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
+      this.set('_searchTerm', this.get('searchTerm'));
+    }
   }),
 
   searchPanelDidOpen() {

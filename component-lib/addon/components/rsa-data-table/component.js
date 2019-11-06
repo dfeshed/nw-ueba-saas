@@ -474,26 +474,30 @@ export default Component.extend(DomWatcher, {
    * @private
    */
   _scrollTopWillChange: observer('itemsCount', 'eventRelationshipsEnabled', function() {
-    once(this, () => {
-      this._scrollToInitial();
-    });
+    if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
+      once(this, () => {
+        this._scrollToInitial();
+      });
+    }
   }),
 
   _searchMatchesDidChange: observer('searchMatches.[]', 'searchScrollIndex', function() {
-    const { searchTerm, searchMatches, items, searchScrollIndex } = this.getProperties('searchTerm', 'searchMatches', 'items', 'searchScrollIndex');
-    if (searchTerm && items && searchMatches && searchScrollIndex > -1) {
-      let matchIndex;
-      items.find((item, index) => {
-        if (item.sessionId === this.get('searchMatches')[searchScrollIndex]) {
-          matchIndex = index;
-          return true;
-        }
-      });
-      if (matchIndex >= 0) {
-        if (this.get('cachedSearchScrollIndex') !== searchScrollIndex) {
-          this.set('selectedIndex', matchIndex);
-          this.set('cachedSearchScrollIndex', searchScrollIndex);
-          this._scrollToInitial(matchIndex);
+    if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
+      const { searchTerm, searchMatches, items, searchScrollIndex } = this.getProperties('searchTerm', 'searchMatches', 'items', 'searchScrollIndex');
+      if (searchTerm && items && searchMatches && searchScrollIndex > -1) {
+        let matchIndex;
+        items.find((item, index) => {
+          if (item.sessionId === this.get('searchMatches')[searchScrollIndex]) {
+            matchIndex = index;
+            return true;
+          }
+        });
+        if (matchIndex >= 0) {
+          if (this.get('cachedSearchScrollIndex') !== searchScrollIndex) {
+            this.set('selectedIndex', matchIndex);
+            this.set('cachedSearchScrollIndex', searchScrollIndex);
+            this._scrollToInitial(matchIndex);
+          }
         }
       }
     }

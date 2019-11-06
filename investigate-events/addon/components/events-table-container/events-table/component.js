@@ -115,11 +115,13 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   // this is a default browser scroll that occurs because of the element size change
   // circumvent that by manually scrolling immediately
   scrollTableLeft: observer('isReconOpen', function() {
-    if (!this.get('isReconOpen')) {
-      scheduleOnce('afterRender', () => {
-        const table = document.querySelector('.rsa-data-table-body');
-        table.scroll(0, table.scrollTop);
-      });
+    if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
+      if (!this.get('isReconOpen')) {
+        scheduleOnce('afterRender', () => {
+          const table = document.querySelector('.rsa-data-table-body');
+          table.scroll(0, table.scrollTop);
+        });
+      }
     }
   }),
 

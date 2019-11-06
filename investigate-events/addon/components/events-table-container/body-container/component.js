@@ -23,7 +23,9 @@ const EventsTableBody = DataTableBody.extend({
   // for any visible log records that need it. Debounces fetch
   // call, because scrolling may fire this handler at rapid rates.
   _visibleItemsDidChange: observer('_visibleItems', function() {
-    run.debounce(this, this._fetchLogData, 1000);
+    if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
+      run.debounce(this, this._fetchLogData, 1000);
+    }
   }),
 
   _fetchLogData() {

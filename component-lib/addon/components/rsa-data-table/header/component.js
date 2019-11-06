@@ -48,10 +48,12 @@ export default Component.extend(HasTableParent, {
    * @private
    */
   _tableBodyScrollLeftDidChange: observer('table.body.scrollLeft', function() {
-    if (this._row) {
-      const left = this.get('table.body.scrollLeft');
-      if (isNumeric(left)) {
-        this._row.style.transform = `translate(-${left}px,0)`;
+    if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
+      if (this._row) {
+        const left = this.get('table.body.scrollLeft');
+        if (isNumeric(left)) {
+          this._row.style.transform = `translate(-${left}px,0)`;
+        }
       }
     }
   }),
