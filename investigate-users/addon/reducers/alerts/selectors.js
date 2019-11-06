@@ -119,7 +119,7 @@ export const getExistAnomalyTypes = createSelector(
       if (entityType === 'all' || anomalyKeys.includes(key)) {
         mappedArray.push({
           id: key,
-          displayLabel: `${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${key}.name`)} (${value} Users)`
+          displayLabel: `${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${key}.name`)} (${value} Entities)`
         });
       }
     });

@@ -273,33 +273,86 @@ const networkColumns = [{
   visible: true,
   disableSort: true
 }, {
-  field: 'sslSubject.name',
-  title: 'SSL',
-  width: '10vw',
+  field: 'srcIp',
+  title: 'Source IP',
+  width: '5vw',
   visible: true,
   disableSort: true
 }, {
-  field: 'ja3.name',
-  width: '10vw',
+  field: 'dstIp',
+  title: 'Destination IP',
+  width: '5vw',
+  visible: true,
+  disableSort: true
+}, {
+  field: 'dstCountry',
+  title: 'Destination Country',
+  width: '5vw',
+  visible: true,
+  disableSort: true
+}, {
+  field: 'sslSubject.name',
+  title: 'SSL',
+  width: '5vw',
+  visible: true,
+  disableSort: true
+}, {
+  field: 'dstOrg',
+  title: 'Destination Organization',
+  width: '5vw',
+  visible: true,
+  disableSort: true
+}, {
+  field: 'dstAsn',
+  title: 'Destination ASN',
+  width: '5vw',
+  visible: true,
+  disableSort: true
+}, {
+  field: 'domain',
+  title: 'Domain',
+  width: '5vw',
+  visible: true,
+  disableSort: true
+}, {
+  field: 'ja3',
+  width: '5vw',
   title: 'JA3',
   visible: true,
-  linkField: 'user_link',
+  disableSort: true
+}, {
+  field: 'ja3s',
+  width: '5vw',
+  title: 'JA3S',
+  visible: true,
+  disableSort: true
+}, {
+  field: 'dstPort',
+  width: '5vw',
+  title: 'Destination Port',
+  visible: true,
   disableSort: true
 }, {
   field: 'srcNetname',
-  width: '10vw',
+  width: '5vw',
   title: 'Source Net Name',
   visible: true,
   disableSort: true
 }, {
+  field: 'dstNetname',
+  width: '5vw',
+  title: 'Destination Net Name',
+  visible: true,
+  disableSort: true
+}, {
   field: 'numOfBytesSent',
-  width: '10vw',
+  width: '5vw',
   title: 'Number of Byte Sent',
   visible: true,
   disableSort: true
 }, {
   field: 'numOfBytesReceived',
-  width: '10vw',
+  width: '5vw',
   title: 'Number of Byte Received',
   visible: true,
   disableSort: true

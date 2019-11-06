@@ -22,10 +22,9 @@ export const columnConfigForUsers = [{
   disableSort: true
 }, {
   field: 'displayName',
-  width: '10vw',
+  width: '20vw',
   disableSort: true
-},
-{
+}, {
   field: 'followed',
   width: '5vw',
   disableSort: true

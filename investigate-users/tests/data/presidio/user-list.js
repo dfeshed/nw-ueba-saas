@@ -1,8 +1,8 @@
 export default {
   'data': [{
     'id': '247a0375-8eb7-4e55-bc1a-8fc16befa035',
-    'displayName': 'auth_qa_1_2',
-    'username': 'auth_qa_1_2',
+    'displayName': 'auth_qa_1_2_some longggggggggg Name',
+    'username': 'auth_qa_1_2_some longggggggggg Name',
     'noDomainUsername': null,
     'followed': true,
     'trendingScore': {

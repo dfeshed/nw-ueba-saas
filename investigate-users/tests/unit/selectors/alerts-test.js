@@ -177,7 +177,7 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
   test('test Exist Anomaly Types', function(assert) {
     assert.equal(Alerts.getExistAnomalyTypes(state).length, 26);
     assert.deepEqual(Alerts.getExistAnomalyTypes(state)[0], {
-      displayLabel: 'Abnormal File Access Event (45 Users)',
+      displayLabel: 'Abnormal File Access Event (45 Entities)',
       id: 'abnormal_file_action_operation_type'
     });
   });
@@ -185,7 +185,7 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
   test('test getSelectedAnomalyTypes', function(assert) {
     assert.deepEqual(Alerts.getSelectedAnomalyTypes(state)[0], {
       id: 'high_number_of_successful_file_permission_change',
-      displayLabel: 'Multiple File Access Permission Changes (11 Users)'
+      displayLabel: 'Multiple File Access Permission Changes (11 Entities)'
     });
   });
 

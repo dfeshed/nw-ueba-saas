@@ -6043,7 +6043,7 @@ effects the simulated source.',
           },
           high_number_of_bytes_sent_by_src_ip_to_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent from IP to SSL Subject',
-            desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.srcIp}}',
+            desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.sslSubjectName}}',
             timeline: 'Abnormal number of bytes sent from{{contexts.srcIp}} to {{contexts.sslSubjectName}}',
             chartTitle: 'Bytes Sent from IP to SSL Subject Baseline (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
@@ -6288,6 +6288,13 @@ effects the simulated source.',
             axisYtitle: 'Abnormal SSL Subject for JA3'
           },
           ssl_subject_abnormal_domain_for_ja3_outbound: {
+            name: 'Abnormal Domain for JA3',
+            desc: '{{contexts.domainName}} was contacted by {{contexts.ja3Name}}',
+            timeline: '{{contexts.domainName}} was contacted by {{contexts.ja3Name}}',
+            chartTitle: 'Abnormal Domain',
+            axisYtitle: 'Abnormal Domain'
+          },
+          ja3_abnormal_domain_for_ja3_outbound: {
             name: 'Abnormal Domain for JA3',
             desc: '{{contexts.domainName}} was contacted by {{contexts.ja3Name}}',
             timeline: '{{contexts.domainName}} was contacted by {{contexts.ja3Name}}',

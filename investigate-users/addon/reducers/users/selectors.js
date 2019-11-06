@@ -130,7 +130,7 @@ export const getExistAlertTypes = createSelector(
     return _.map(existAlertTypes, (value) => {
       return {
         id: value.alertTypes.getIn('0'),
-        displayLabel: `${i18n.t(`investigateUsers.alerts.alertNames.${value.alertTypes.getIn('0')}.name`)} (${value.count} Users)`
+        displayLabel: `${i18n.t(`investigateUsers.alerts.alertNames.${value.alertTypes.getIn('0')}.name`)} (${value.count} Entities)`
       };
     });
   });
@@ -145,7 +145,7 @@ export const getExistAnomalyTypes = createSelector(
       if (anomalyKeys.includes(key)) {
         mappedArray.push({
           id: key,
-          displayLabel: `${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${key}.name`)} (${value} Users)`
+          displayLabel: `${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${key}.name`)} (${value} Entities)`
         });
       }
     });

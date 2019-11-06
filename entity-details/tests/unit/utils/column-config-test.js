@@ -32,7 +32,7 @@ module('Unit | Utils | column-config', (hooks) => {
 
   test('it returns events table column for network schema', (assert) => {
     const columnArray = columnConfig('tls');
-    assert.equal(columnArray.length, 6, 'should return netowrk columns no base columns for network schema');
+    assert.equal(columnArray.length, 15, 'should return netowrk columns no base columns for network schema');
   });
 
   test('it returns base columns for any other schema', (assert) => {

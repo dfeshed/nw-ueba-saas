@@ -133,7 +133,7 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
   test('test Exist Anomaly Types', (assert) => {
     assert.equal(Users.getExistAnomalyTypes(state).length, 25);
     assert.deepEqual(Users.getExistAnomalyTypes(state)[0], {
-      displayLabel: 'Abnormal File Access Event (3 Users)',
+      displayLabel: 'Abnormal File Access Event (3 Entities)',
       id: 'abnormal_file_action_operation_type'
     });
   });
@@ -165,14 +165,14 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
   test('test Selected Alert Types', (assert) => {
     assert.deepEqual(Users.getSelectedAlertTypes(state), [{
       id: 'snooping_user',
-      displayLabel: 'Snooping User (14 Users)'
+      displayLabel: 'Snooping User (14 Entities)'
     }]);
   });
 
   test('test Selected Anomaly Types', (assert) => {
     assert.deepEqual(Users.getSelectedAnomalyTypes(state), [{
       id: 'abnormal_file_action_operation_type',
-      displayLabel: 'Abnormal File Access Event (3 Users)'
+      displayLabel: 'Abnormal File Access Event (3 Entities)'
     }]);
   });
 
