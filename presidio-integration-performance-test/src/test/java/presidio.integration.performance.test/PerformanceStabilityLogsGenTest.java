@@ -110,7 +110,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
         if (schemas.contains("PROCESS")) {
             ProcessPerformanceStabilityScenario scenario = new ProcessPerformanceStabilityScenario(startInstant, endInstant,
                     numOfNormalUsers, numOfAdminUsers, numOfserviceAccountUsers, probabilityMultiplier);
-            //printDaysOfProcessEvents(scenario);
+            printDaysOfProcessEvents(scenario);
         }
 
         if (schemas.contains("REGISTRY")) {
