@@ -26,7 +26,7 @@ then
 
     for try in {1..5} ; do
 	    echo "Cleaning Log-Decoder"
-	    if [[ $(curl || /dev/null -s -w "%{http_code}\n"  -u admin:netwitness "http://$LogDecoderHost:50102/decoder?msg=reset&data=1&log=1&force=1") == '200' ]]; then
+	        if [ $(curl -o /dev/null -s -w "%{http_code}\n"  -u admin:netwitness "http://$LogDecoderHost:50102/decoder?msg=reset&data=1&log=1&force=1") == '200' ]; then
 		    echo "Action succeeded"
 		    break
 	    else
@@ -39,7 +39,7 @@ then
 
     for try in {1..5} ; do
 	    echo "Cleaning Concentrator"
-	    if [[ $(curl || /dev/null -s -w "%{http_code}\n"  -u admin:netwitness "http://$LogDecoderHost:50105/concentrator?msg=reset&data=1&log=1&force=1") == '200' ]]; then
+	if [ $(curl -o /dev/null -s -w "%{http_code}\n"  -u admin:netwitness "http://$LogDecoderHost:50105/concentrator?msg=reset&data=1&log=1&force=1") == '200' ]; then
 		    echo "Action succeeded"
 		    break
 	    else
@@ -52,7 +52,7 @@ then
 
     for try in {1..5} ; do
 	    echo "Starting Log-Decoder"
-	    if [[ $(curl || /dev/null -s -w "%{http_code}\n"  -u admin:netwitness "http://$LogDecoderHost:50102/decoder?msg=start") == '200' ]]; then
+	if [ $(curl -o /dev/null -s -w "%{http_code}\n"  -u admin:netwitness "http://$LogDecoderHost:50102/decoder?msg=start") == '200' ]; then
 		    echo "Action succeeded"
 		    break
 	    else
@@ -65,7 +65,7 @@ then
 
     for try in {1..5} ; do
 	    echo "Strating Concentrator"
-	    if [[ $(curl || /dev/null -s -w "%{http_code}\n"  -u admin:netwitness "http://$LogDecoderHost:50105/concentrator?msg=start") == '200' ]]; then
+	if [ $(curl -o /dev/null -s -w "%{http_code}\n"  -u admin:netwitness "http://$LogDecoderHost:50105/concentrator?msg=start") == '200' ]; then
 		    echo "Action succeeded"
 		    break
 	    else
@@ -80,8 +80,8 @@ sleep 5
 if [[ ${BrokerHost} != "skip" ]]
 then
     for try in {1..5} ; do
-	    echo "Starting Broker"
-	    if [[ $(curl || /dev/null -s -w "%{http_code}\n"  -u admin:netwitness "http://$BrokerHost:50103/broker?msg=start") == '200' ]]; then
+	echo "Strating Broker"
+	if [ $(curl -o /dev/null -s -w "%{http_code}\n"  -u admin:netwitness "http://$BrokerHost:50103/broker?msg=start") == '200' ]; then
 		    echo "Action succeeded"
 		    break
 	    else
