@@ -113,7 +113,7 @@ def CleanEpHybridUebaDBs() {
 
 def ResetUeba() {
     echo "Going to reset UEBA"
-    sh "curl -u admin:netwitness --insecure https://${UEBA_HOST}/admin/airflow/trigger?dag_id=reset_presidio"
+    sh "curl -k -I -u admin:netwitness https://${UEBA_HOST}/admin/airflow/trigger?dag_id=reset_presidio"
 }
 
 /**************************
