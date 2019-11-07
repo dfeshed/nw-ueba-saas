@@ -16,8 +16,8 @@ if [[ -z ${LogDecoderHost} ]]; then
         LogDecoderHost=$(getEnvProperty "log-decoder")
         BrokerHost=$(getEnvProperty "broker")
 else
-	echo "Log-Decoder have been selected by the user- $LogDecoderHost"
-	echo "BrokerHost have been selected by the user- $BrokerHost"
+	echo "Log-Decoder have been selected by the user: $LogDecoderHost"
+	echo "BrokerHost have been selected by the user:  $BrokerHost"
 fi
 
 
