@@ -64,7 +64,7 @@ def convert_users_to_entities(hits):
             'lastUpdateLogicalStartDate': item["_source"]["updatedByLogicalStartDate"],
             'lastUpdateLogicalEndDate': item["_source"]["updatedByLogicalEndDate"],
             'trendingScore': {'weekly': 0, 'daily': 0},
-            'lastAlertDate': LAST_ALERT_DATE_BY_ENTITY.get(item["_source"]["userName"]),
+            'lastAlertDate': LAST_ALERT_DATE_BY_ENTITY.get(item["_source"]["userId"]),
             'entityType': ENTITY_TYPE
         }
 
@@ -102,10 +102,10 @@ def update_alerts_hits(hits):
 
 
 def update_last_alert_date(item):
-    last_alert_date = LAST_ALERT_DATE_BY_ENTITY.get(item["_source"]["userName"])
+    last_alert_date = LAST_ALERT_DATE_BY_ENTITY.get(item["_source"]["userId"])
     end_date = item["_source"]["endDate"]
     if last_alert_date is None or last_alert_date < end_date:
-        LAST_ALERT_DATE_BY_ENTITY['item["_source"]["userName"]'] = end_date
+        LAST_ALERT_DATE_BY_ENTITY['item["_source"]["userId"]'] = end_date
 
 
 # Update indicator table in elastic to List of aggregations and new entityType field
