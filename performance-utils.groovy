@@ -114,6 +114,8 @@ def uebaInstallRPMs() {
     }
     sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-services.sh $VERSION $OLD_UEBA_RPMS"
     sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}setBrokerInputConfiguration.sh"
+    sh "sudo systemctl start airflow-scheduler"
+    
 }
 
 def ResetPresidio() {
