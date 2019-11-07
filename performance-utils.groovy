@@ -28,7 +28,6 @@ pipeline {
                 script { currentBuild.description = "${env.INTEGRATION_TEST_BRANCH_NAME}" }
                 cleanWs()
                 buildIntegrationTestProject()
-                setBaseUrl()
                 copyScripts()
             }
         }
@@ -45,7 +44,7 @@ pipeline {
                 expression { return params.RESET_UEBA }
             }
             steps {
-                CleanEpHybridUebaDBs()
+                ResetUeba()
             }
         }
         stage('UEBA - RPMs Upgrade') {
@@ -54,12 +53,12 @@ pipeline {
             }
             steps {
                 script {
-                    ResetUeba()
+                    setBaseUrl()
+                    uebaInstallRPMs()
                 }
             }
         }
     }
-
 }
 
 
