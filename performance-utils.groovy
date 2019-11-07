@@ -38,8 +38,7 @@ pipeline {
                 expression { return params.RESET_LOG_HYBRID }
             }
             steps {
-                String log_hybrid=params.LOG_HYBRID_HOST
-                ResetLogHybrid(log_hybrid, "skip")
+                sh "bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh ${LOG_HYBRID_HOST} skip"
             }
         }
         stage('Reset NetworkHybrid') {
@@ -47,8 +46,7 @@ pipeline {
                 expression { return params.RESET_NETWORK_HYBRID }
             }
             steps {
-                String log_hybrid=params.NETWORK_HYBRID_HOST
-                ResetLogHybrid(log_hybrid, "skip")
+                sh "bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh ${NETWORK_HYBRID_HOST} skip"
             }
         }
         stage('Start Broker') {
@@ -56,8 +54,7 @@ pipeline {
                 expression { return params.START_BROKER }
             }
             steps {
-                String broker=params.BROKER_HOST
-                ResetLogHybrid("skip", broker)
+                sh "bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh skip ${BROKER_HOST}"
             }
         }
         stage('UEBA - RPMs Upgrade') {
@@ -118,12 +115,6 @@ def uebaInstallRPMs() {
     sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-services.sh $VERSION $OLD_UEBA_RPMS"
 }
 
-def ResetLogHybrid(String logDecoder, String broker) {
-    sh "\\cp ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
-    sh "bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh  $logDecoder $broker"
-}
-
-
 def ResetPresidio() {
     echo "Going to reset UEBA"
     sh "curl -k -I -u admin:netwitness https://${UEBA_HOST}/admin/airflow/trigger?dag_id=reset_presidio"
@@ -144,6 +135,7 @@ def buildIntegrationTestProject(
 
 
 def copyScripts() {
+    sh "\\cp ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
     sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/env_properties_manager.sh /home/presidio/"
     sh "sudo bash /home/presidio/env_properties_manager.sh --create"
 }
