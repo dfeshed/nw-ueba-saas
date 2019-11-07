@@ -93,7 +93,8 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
 
             Stream<TlsEvent> tlsEventStream = scenario.tlsEventsGenerators.stream()
                     .map(IEventGenerator::generateToStream)
-                    .flatMap(e -> e);
+                    .flatMap(e -> e)
+                    .sorted(Comparator.comparing(TlsEvent::getDateTime));
 
             UnmodifiableIterator<List<TlsEvent>> partition = Iterators.partition(tlsEventStream.iterator(), EVENTS_GENERATION_CHUNK);
 
