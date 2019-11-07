@@ -38,7 +38,7 @@ pipeline {
                 expression { return params.RESET_LOG_HYBRID }
             }
             steps {
-                String log_hybrid="${LOG_HYBRID_HOST}"
+                String log_hybrid=params.LOG_HYBRID_HOST
                 ResetLogHybrid(log_hybrid, "skip")
             }
         }
@@ -47,7 +47,7 @@ pipeline {
                 expression { return params.RESET_NETWORK_HYBRID }
             }
             steps {
-                String log_hybrid="${NETWORK_HYBRID_HOST}"
+                String log_hybrid=params.NETWORK_HYBRID_HOST
                 ResetLogHybrid(log_hybrid, "skip")
             }
         }
@@ -56,7 +56,7 @@ pipeline {
                 expression { return params.START_BROKER }
             }
             steps {
-                String broker="${BROKER_HOST}"
+                String broker=params.BROKER_HOST
                 ResetLogHybrid("skip", broker)
             }
         }
