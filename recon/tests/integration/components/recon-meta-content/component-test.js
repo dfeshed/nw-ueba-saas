@@ -75,7 +75,7 @@ module('Integration | Component | recon-meta-content', function(hooks) {
 
     await selectChoose('.meta-grouping .meta-grouping-drop-down', '.ember-power-select-option', 1);
 
-    assert.equal(find('.meta-grouping .meta-grouping-drop-down').textContent.trim(), 'Alphabet', 'default grouping type');
+    assert.equal(find('.meta-grouping .meta-grouping-drop-down').textContent.trim(), 'Alphabet (A - Z)', 'default grouping type');
 
     assert.equal(findAll('.recon-meta-content-group .meta-content-section').length, 4, '4 grouping sections are displayed');
 

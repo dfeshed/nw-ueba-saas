@@ -4080,7 +4080,7 @@ export default {
     groupBy: {
       name: 'Organize by',
       options: {
-        alphabet: 'Alphabet',
+        alphabet: 'Alphabet (A - Z)',
         none: 'Sequence'
       }
     },
