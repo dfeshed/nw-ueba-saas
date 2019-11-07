@@ -113,6 +113,7 @@ def uebaInstallRPMs() {
         sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/install_side_branch_rpms.sh $params.SIDE_BRANCH_JOD_NUMBER"
     }
     sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-services.sh $VERSION $OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}setBrokerInputConfiguration.sh"
 }
 
 def ResetPresidio() {
