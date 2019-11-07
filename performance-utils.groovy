@@ -5,7 +5,9 @@ pipeline {
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         string(name: 'SIDE_BRANCH_JOD_NUMBER', defaultValue: '', description: 'Write the "presidio-build-jars-and-packages" build number from which you want to install the PRMs')
         booleanParam(name: 'RESET_LOG_HYBRID', defaultValue: false, description: '')
-        booleanParam(name: 'RESET_UEBA', defaultValue: false, description: '')
+        booleanParam(name: 'RESET_NETWORK_HYBRID', defaultValue: false, description: '')
+        booleanParam(name: 'START_BROKER', defaultValue: false, description: '')
+        booleanParam(name: 'RESET_PRESIDIO', defaultValue: false, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: false, description: '')
     }
 
@@ -36,15 +38,26 @@ pipeline {
                 expression { return params.RESET_LOG_HYBRID }
             }
             steps {
-                CleanEpHybridUebaDBs()
+                String log_hybrid=${LOG_HYBRID_HOST}
+                ResetLogHybrid(log_hybrid, "skip")
             }
         }
-        stage('Reset UEBA') {
+        stage('Reset NetworkHybrid') {
             when {
-                expression { return params.RESET_UEBA }
+                expression { return params.RESET_NETWORK_HYBRID }
             }
             steps {
-                ResetUeba()
+                String log_hybrid=${NETWORK_HYBRID_HOST}
+                ResetLogHybrid(log_hybrid, "skip")
+            }
+        }
+        stage('Start Broker') {
+            when {
+                expression { return params.START_BROKER }
+            }
+            steps {
+                String broker=${BROKER_HOST}
+                ResetLogHybrid("skip", broker)
             }
         }
         stage('UEBA - RPMs Upgrade') {
@@ -105,13 +118,13 @@ def uebaInstallRPMs() {
     sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-services.sh $VERSION $OLD_UEBA_RPMS"
 }
 
-def CleanEpHybridUebaDBs() {
+def ResetLogHybrid(String logDecoder, String broker) {
     sh "\\cp ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
-    sh "bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh ${LOG_DECODER_HOST} ${BROKER_HOST}"
+    sh "bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh $logDecoder $broker"
 }
 
 
-def ResetUeba() {
+def ResetPresidio() {
     echo "Going to reset UEBA"
     sh "curl -k -I -u admin:netwitness https://${UEBA_HOST}/admin/airflow/trigger?dag_id=reset_presidio"
 }
