@@ -16,6 +16,10 @@
         "store": true,
         "type": "date"
       },
+      "lastAlertDate": {
+        "store": true,
+        "type": "date"
+      },
       "updatedBy": {
         "store": true,
         "type": "string"

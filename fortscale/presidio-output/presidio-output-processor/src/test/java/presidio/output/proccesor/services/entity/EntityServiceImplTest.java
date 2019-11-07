@@ -102,9 +102,9 @@ public class EntityServiceImplTest {
         entitiesIDForBatch.add(entitiesWithOldScore.get(2).getId());
 
         Map<String, EntitiesAlertData> newEntitiesScore = new HashMap<>();
-        newEntitiesScore.put(entitiesWithOldScore.get(0).getId(), new EntitiesAlertData(80D, 1, null, new ArrayList<String>()));
-        newEntitiesScore.put(entitiesWithOldScore.get(1).getId(), new EntitiesAlertData(50D, 1, null, new ArrayList<String>()));
-        newEntitiesScore.put(entitiesWithOldScore.get(2).getId(), new EntitiesAlertData(30D, 1, null, new ArrayList<String>()));
+        newEntitiesScore.put(entitiesWithOldScore.get(0).getId(), new EntitiesAlertData(80D, 1, null, new ArrayList<String>(), null));
+        newEntitiesScore.put(entitiesWithOldScore.get(1).getId(), new EntitiesAlertData(50D, 1, null, new ArrayList<String>(), null));
+        newEntitiesScore.put(entitiesWithOldScore.get(2).getId(), new EntitiesAlertData(30D, 1, null, new ArrayList<String>(), null));
 
         Mockito.when(this.mockEntityPresistency.findByIds(Mockito.any(Set.class), Mockito.any(PageRequest.class))).thenAnswer(invocation -> {
             Set<String> entityIds = (Set<String>) invocation.getArguments()[0];
@@ -138,30 +138,31 @@ public class EntityServiceImplTest {
         assertEquals(null, entity1.getIndicators());
         assertEquals(null, entity1.getAlertClassifications());
         // adding empty classification list and empty indicator list
-        EntitiesAlertData entitiesAlertData1 = new EntitiesAlertData(0, 0, null, indicators1);
+        EntitiesAlertData entitiesAlertData1 = new EntitiesAlertData(0, 0, null, indicators1, null);
         entityService.addEntityAlertData(entity1, entitiesAlertData1);
         assertEquals(null, entity1.getIndicators());
         assertEquals(null, entity1.getAlertClassifications());
         // Adding classification list with 2 classifications but saving only the first one on the entity and adding 2 indicators
-        EntitiesAlertData entitiesAlertData2 = new EntitiesAlertData(0, 0, classification2.get(0), indicators2);
+        EntitiesAlertData entitiesAlertData2 = new EntitiesAlertData(0, 0, classification2.get(0), indicators2, null);
         entityService.addEntityAlertData(entity1, entitiesAlertData2);
         assertEquals(2, entity1.getIndicators().size());
         assertEquals(1, entity1.getAlertClassifications().size());
         // adding classification list of 2 classifications that the first one already exists on the entity and adding 2 indicators one of which already exists
-        EntitiesAlertData entitiesAlertData3 = new EntitiesAlertData(0, 0, classification3.get(0), indicators3);
+        EntitiesAlertData entitiesAlertData3 = new EntitiesAlertData(0, 0, classification3.get(0), indicators3, null);
         entityService.addEntityAlertData(entity1, entitiesAlertData3);
         assertEquals(3, entity1.getIndicators().size());
         assertEquals(1, entity1.getAlertClassifications().size());
         // adding existing classifications and indicators
-        EntitiesAlertData entitiesAlertData4 = new EntitiesAlertData(0, 0, null, indicators1);
+        EntitiesAlertData entitiesAlertData4 = new EntitiesAlertData(0, 0, null, indicators1, null);
         entityService.addEntityAlertData(entity1, entitiesAlertData4);
         assertEquals(3, entity1.getIndicators().size());
         assertEquals(1, entity1.getAlertClassifications().size());
         // adding new classification but existing indicator
-        EntitiesAlertData entitiesAlertData5 = new EntitiesAlertData(0, 0, classification4.get(0), indicators1);
+        EntitiesAlertData entitiesAlertData5 = new EntitiesAlertData(0, 0, classification4.get(0), indicators1, null);
         entityService.addEntityAlertData(entity1, entitiesAlertData5);
         assertEquals(3, entity1.getIndicators().size());
         assertEquals(2, entity1.getAlertClassifications().size());
+
 
     }
 

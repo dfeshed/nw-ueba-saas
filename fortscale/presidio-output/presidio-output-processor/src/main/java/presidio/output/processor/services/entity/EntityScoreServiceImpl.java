@@ -148,8 +148,9 @@ public class EntityScoreServiceImpl implements EntityScoreService {
                             entitiesAlertData.incrementAlertsCount();
                             entitiesAlertData.addClassification(alert.alertPrimaryClassification());
                             entitiesAlertData.addIndicators(alert.getIndicatorsNames());
+                            entitiesAlertData.setLastAlertDate(alert.getEndDate());
                         } else {
-                            aggregatedEntityScore.put(entityDocumentId, new EntitiesAlertData(alert.getContributionToEntityScore(), 1, alert.alertPrimaryClassification(), alert.getIndicatorsNames()));
+                            aggregatedEntityScore.put(entityDocumentId, new EntitiesAlertData(alert.getContributionToEntityScore(), 1, alert.alertPrimaryClassification(), alert.getIndicatorsNames(), alert.getEndDate()));
                         }
 
                     });
