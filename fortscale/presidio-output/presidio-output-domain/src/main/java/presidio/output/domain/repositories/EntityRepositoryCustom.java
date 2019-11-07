@@ -1,6 +1,7 @@
 package presidio.output.domain.repositories;
 
 import fortscale.utils.elasticsearch.PartialUpdateRequest;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 
 import java.util.List;
 
@@ -23,5 +24,14 @@ public interface EntityRepositoryCustom {
      */
     boolean updateEntities (List<PartialUpdateRequest> updateRequests);
 
+
+    /**
+     * Update entities by query
+     * @param searchQuery query to update only entities that match the query
+     * @param field field name to update
+     * @param value field value to update
+     * @return
+     */
+    boolean updateEntitiesByQuery(SearchQuery searchQuery, String field, Object value);
 
 }

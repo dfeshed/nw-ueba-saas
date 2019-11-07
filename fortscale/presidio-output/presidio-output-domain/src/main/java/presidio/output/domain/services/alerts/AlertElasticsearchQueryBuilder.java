@@ -93,6 +93,11 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             boolQueryBuilder.must(rangeQuery(Alert.START_DATE).to(alertQuery.getFilterByEndDate()).includeUpper(true));
         }
 
+        // filter by contribution to entity score - the alert "contributionToEntityScore" is greater than the specified query filter
+        if (alertQuery.getFilterByContribution() >= 0) {
+            boolQueryBuilder.must(rangeQuery(Alert.CONTRIBUTION_TO_ENTITY_SCORE_FIELD_NAME).gt(alertQuery.getFilterByContribution()));
+        }
+
         // filter by tags
         if (CollectionUtils.isNotEmpty(alertQuery.getFilterByTags())) {
             BoolQueryBuilder tagsQuery = new BoolQueryBuilder();

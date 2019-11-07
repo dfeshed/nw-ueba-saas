@@ -165,7 +165,7 @@ public class EntityScoreServiceModuleTest {
     }
 
     @Test
-    public void testSingleEntityScoreCalculationSomeMoreThen90Days() {
+    public void testSingleEntityScoreCalculationSomeMoreThen90Days() throws InterruptedException {
         //Generate one entity with 3 alerts
         String entityType = "entityType";
         Entity entity1 = new Entity("entityId1", "entityName1", 0d, null, null, null, EntitySeverity.CRITICAL, 0, entityType);
@@ -190,12 +190,16 @@ public class EntityScoreServiceModuleTest {
         entitySeveritiesRangeRepository.save(new EntitySeveritiesRangeDocument(severityToScoreRangeMap, entityType));
         entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
         entitySeverityService.updateSeverities(entityType);
+        Thread.sleep(1000);
+
+        Page<Alert> alertsPageResult = alertPersistencyService.findPage(new AlertQuery.AlertQueryBuilder().filterByEndDate(getMinusDay(100).getTime()).setPageSize(10).setPageNumber(0).build());
 
         Entity updatedEntity = entityPersistencyService.findEntityByDocumentId(entityDocumentId);
         Assert.assertEquals("entityId1", updatedEntity.getEntityId());
         Assert.assertEquals("entityName1", updatedEntity.getEntityName());
         Assert.assertEquals(20, updatedEntity.getScore(), 0.00001);
         Assert.assertEquals(EntitySeverity.LOW, updatedEntity.getSeverity());
+        Assert.assertEquals(0, alertsPageResult.getContent().get(0).getContributionToEntityScore(), 0.00001);
 
         EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findById(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName(entityType)).get();
         Assert.assertEquals(new Double(0), entitySeveritiesRangeDocument.getSeverityToScoreRangeMap().get(EntitySeverity.LOW).getLowerBound());
@@ -209,7 +213,7 @@ public class EntityScoreServiceModuleTest {
     }
 
     @Test
-    public void testSingleEntityScoreCalculationAllAlertsMoreThen90Days() {
+    public void testSingleEntityScoreCalculationAllAlertsMoreThen90Days() throws InterruptedException {
         //Generate one entity with 2 critical alerts
         String entityType = "entityType";
         Entity entity1 = new Entity("entityId1", "entityName1", 0d, null, null, null, EntitySeverity.CRITICAL, 0, entityType);
@@ -236,12 +240,16 @@ public class EntityScoreServiceModuleTest {
 
         entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
         entitySeverityService.updateSeverities(entityType);
+        Thread.sleep(1000);
+
+        Page<Alert> alertsPageResult = alertPersistencyService.findPage(new AlertQuery.AlertQueryBuilder().setPageSize(10).setPageNumber(0).build());
 
         entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, entitiesPageResult.getContent().size());
         Assert.assertEquals("entityId1", entitiesPageResult.getContent().get(0).getEntityId());
         Assert.assertEquals("entityName1", entitiesPageResult.getContent().get(0).getEntityName());
         Assert.assertEquals(0, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertEquals(0, alertsPageResult.getContent().get(0).getContributionToEntityScore(), 0.00001);
 
     }
 

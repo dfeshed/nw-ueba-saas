@@ -132,6 +132,11 @@ restore() {
     -X POST "${REST_API_LOCATION}/${ARCHIVE_API_ENDPOINT}/snapshot_ueba/_restore?wait_for_completion=true" ||
     exitError "restore from snapshot failed"
 
+  # open indexes
+  ${CURL_COMMAND} \
+    -X POST "${REST_API_LOCATION}/_all/_open" ||
+    exitError "open indexes failed"
+
   # Redistribute the configuration server parameters
   echoInfo "Redistributing the configuration server parameters"
   ${CURL_COMMAND} \

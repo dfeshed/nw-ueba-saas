@@ -77,8 +77,32 @@ public class EntityScoreServiceImpl implements EntityScoreService {
             entitiesPage = getNextEntityPage(entityQueryBuilder, entitiesPage);
         }
 
+
         log.info("Resetting " + clearedEntitiesList.size() + " entities scores and severity");
         entityPersistencyService.save(clearedEntitiesList);
+    }
+
+    /**
+     * Iterate on all alerts before alertEffectiveDurationInDays days,
+     * and reset the alert contribution to entity score.
+     */
+    public void clearAlertsContributionThatShouldNotHaveContributionToEntityScore(int alertEffectiveDurationInDays, Instant endDate, String entityType) {
+
+        LocalDate endDateLocal = endDate.atZone(ZoneOffset.UTC).toLocalDate();
+        LocalDateTime startTime = endDateLocal.minusDays(alertEffectiveDurationInDays).atStartOfDay();
+        Long startTimeLong = Date.from(startTime.atZone(ZoneOffset.UTC).toInstant()).getTime();
+
+        AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder()
+                .filterByEntityType(entityType)
+                .filterByEndDate(startTimeLong)
+                .filterByContribution(0)
+                .sortField(Alert.START_DATE, true)
+                .setPageSize(this.defaultAlertsBatchSize)
+                .setPageNumber(0);
+
+        AlertQuery alertQuery = alertQueryBuilder.build();
+
+        alertPersistencyService.clearAlertsContributionByQuery(alertQuery);
     }
 
     /**

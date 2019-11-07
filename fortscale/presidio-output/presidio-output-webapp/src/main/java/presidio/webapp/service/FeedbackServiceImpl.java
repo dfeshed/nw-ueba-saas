@@ -115,10 +115,15 @@ public class FeedbackServiceImpl implements FeedbackService {
         else {
             entity = entityPersistencyService.findEntityByDocumentId(entityId);
         }
-        entity.setScore(entity.getScore() + scoreDelta);
+
+        if(entity.getScore() + scoreDelta >= 0){
+            entity.setScore(entity.getScore() + scoreDelta);
+        }
+
         for (EntityEnums.Trends trend: EntityEnums.Trends.values()) {
             entity.setTrendingScore(trend, calcTrendScore(trend, entity, scoreDelta, startDate));
         }
+
         return entity;
     }
 

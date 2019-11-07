@@ -52,5 +52,6 @@ public interface AlertPersistencyService {
 
     long countAlerts();
 
+    void clearAlertsContributionByQuery(AlertQuery alertQuery);
 
 }

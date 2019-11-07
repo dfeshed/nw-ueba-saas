@@ -1,9 +1,12 @@
 package presidio.output.domain.services.entities;
 
 import fortscale.utils.elasticsearch.PartialUpdateRequest;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntityEnums;
 import presidio.output.domain.records.entity.EntityQuery;
@@ -77,6 +80,13 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
                                                     .map(entityScore -> buildPartialUpdateRequest(trend, entityScore.getKey(), entityScore.getValue()))
                                                     .collect(Collectors.toList());
         entityRepository.updateEntities(updateRequests);
+    }
+
+    @Override
+    public void clearTrends(EntityEnums.Trends trend, Instant untilInstant) {
+        RangeQueryBuilder queryBuilder = QueryBuilders.rangeQuery(Entity.LAST_UPDATE_BY_LOGICAL_END_DATE_FIELD_NAME).lte(untilInstant.toEpochMilli());
+        String field = Entity.TRENDING_SCORE_FIELD_NAME + "." + trend;
+        entityRepository.updateEntitiesByQuery(new NativeSearchQuery(queryBuilder), field,0);
     }
 
     private PartialUpdateRequest buildPartialUpdateRequest(EntityEnums.Trends trend, String id, double score) {

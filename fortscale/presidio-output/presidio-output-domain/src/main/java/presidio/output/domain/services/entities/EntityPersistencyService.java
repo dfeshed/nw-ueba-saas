@@ -32,4 +32,6 @@ public interface EntityPersistencyService {
     void updateTrend (EntityEnums.Trends trend, String id, double score);
 
     void updateTrends(EntityEnums.Trends trend, Map<String, Double> scores);
+
+    void clearTrends(EntityEnums.Trends trend, Instant untilInstant);
 }

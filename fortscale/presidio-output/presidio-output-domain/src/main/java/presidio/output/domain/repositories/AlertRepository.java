@@ -7,7 +7,7 @@ import presidio.output.domain.records.alerts.Alert;
 
 import java.util.stream.Stream;
 
-public interface AlertRepository extends ElasticsearchRepository<Alert, String> {
+public interface AlertRepository extends ElasticsearchRepository<Alert, String>, AlertRepositoryCustom {
 
     Page<Alert> findByEntityName(String entityName, Pageable pageable);
 
