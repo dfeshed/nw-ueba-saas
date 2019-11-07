@@ -50,6 +50,7 @@ es = Elasticsearch()
 def convert_users_to_entities(hits):
     for item in hits:
         entity = {
+            'id': item["_source"]["id"],
             'createdDate': item["_source"]["createdDate"],
             'updatedDate': item["_source"]["updatedDate"],
             'updatedBy': item["_source"]["updatedBy"],
@@ -76,6 +77,7 @@ def update_alerts_hits(hits):
     for item in hits:
         update_last_alert_date(item)
         alert = {
+            'id': item["_source"]["id"],
             'createdDate': item["_source"]["createdDate"],
             'updatedDate': item["_source"]["updatedDate"],
             'updatedBy': item["_source"]["updatedBy"],
@@ -115,6 +117,7 @@ def update_indicators_hits(hits):
         item["_source"]["historicalData"]["aggregation"] = aggregations_list
 
         indicator = {
+            'id': item["_source"]["id"],
             'createdDate': item["_source"]["createdDate"],
             'updatedDate': item["_source"]["updatedDate"],
             'updatedBy': item["_source"]["updatedBy"],
