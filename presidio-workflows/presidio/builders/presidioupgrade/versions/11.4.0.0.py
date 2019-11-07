@@ -40,6 +40,7 @@ DOC_TYPE_USER_SEVERITY_RANGE = "user-severities-range"
 DOC_TYPE_ENTITY_SEVERITY_RANGE = "entity-severities-range"
 OLD_DOC_ID_USER_SEVERITY_RANGE = 'user-severities-range-doc-id'
 NEW_DOC_ID_USER_SEVERITY_RANGE = 'userId-severities-range-doc-id'
+LAST_ALERT_DATE_BY_ENTITY = dict()
 
 # Init Elasticsearch instance
 es = Elasticsearch()
@@ -63,6 +64,7 @@ def convert_users_to_entities(hits):
             'lastUpdateLogicalStartDate': item["_source"]["updatedByLogicalStartDate"],
             'lastUpdateLogicalEndDate': item["_source"]["updatedByLogicalEndDate"],
             'trendingScore': {'weekly': 0, 'daily': 0},
+            'lastAlertDate': LAST_ALERT_DATE_BY_ENTITY.get(item["_source"]["userName"]),
             'entityType': ENTITY_TYPE
         }
 
@@ -72,6 +74,7 @@ def convert_users_to_entities(hits):
 # Update the alert table in elastic with the new field names
 def update_alerts_hits(hits):
     for item in hits:
+        update_last_alert_date(item)
         alert = {
             'createdDate': item["_source"]["createdDate"],
             'updatedDate': item["_source"]["updatedDate"],
@@ -96,6 +99,13 @@ def update_alerts_hits(hits):
         }
 
         es.index(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, id=item["_id"], body=alert)
+
+
+def update_last_alert_date(item):
+    last_alert_date = LAST_ALERT_DATE_BY_ENTITY.get(item["_source"]["userName"])
+    end_date = item["_source"]["endDate"]
+    if last_alert_date is None or last_alert_date < end_date:
+        LAST_ALERT_DATE_BY_ENTITY['item["_source"]["userName"]'] = end_date
 
 
 # Update indicator table in elastic to List of aggregations and new entityType field
@@ -215,6 +225,11 @@ def events_not_process():
     return True
 
 
+# Check alert index is exists
+if index_exists(INDEX_ALERT) & alert_not_process():
+    # Scrolling alerts
+    scroll_and_update_data(INDEX_ALERT, DOC_TYPE_ALERT, update_alerts_hits)
+
 # Check user index is exists
 if index_exists(INDEX_USER):
     # Scrolling users
@@ -222,11 +237,6 @@ if index_exists(INDEX_USER):
 
     # Remove user index
     es.indices.delete(index=INDEX_USER)
-
-# Check alert index is exists
-if index_exists(INDEX_ALERT) & alert_not_process():
-    # Scrolling alerts
-    scroll_and_update_data(INDEX_ALERT, DOC_TYPE_ALERT, update_alerts_hits)
 
 # Check indicator index is exists
 if index_exists(INDEX_INDICATOR) & indicators_not_process():
