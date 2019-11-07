@@ -115,7 +115,6 @@ def CleanEpHybridUebaDBs() {
 def ResetUeba() {
     echo "Going to reset UEBA"
     sh "curl -u admin:netwitness --insecure https://${UEBA_HOST}/admin/airflow/trigger?dag_id=reset_presidio"
-    sh "sudo bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh ${LOG_DECODER_HOST} ${BROKER_HOST}"
 }
 
 /**************************
@@ -134,5 +133,5 @@ def buildIntegrationTestProject(
 
 def copyScripts() {
     sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/env_properties_manager.sh /home/presidio/"
-   // sh "sudo bash /home/presidio/env_properties_manager.sh --create"
+    sh "sudo bash /home/presidio/env_properties_manager.sh --create"
 }
