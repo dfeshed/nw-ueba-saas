@@ -38,7 +38,7 @@ pipeline {
                 expression { return params.RESET_LOG_HYBRID }
             }
             steps {
-                def log_hybrid=${LOG_HYBRID_HOST}
+                String log_hybrid="${LOG_HYBRID_HOST}"
                 ResetLogHybrid(log_hybrid, "skip")
             }
         }
@@ -47,7 +47,7 @@ pipeline {
                 expression { return params.RESET_NETWORK_HYBRID }
             }
             steps {
-                def log_hybrid=${NETWORK_HYBRID_HOST}
+                String log_hybrid="${NETWORK_HYBRID_HOST}"
                 ResetLogHybrid(log_hybrid, "skip")
             }
         }
@@ -56,7 +56,7 @@ pipeline {
                 expression { return params.START_BROKER }
             }
             steps {
-                def broker=${BROKER_HOST}
+                String broker="${BROKER_HOST}"
                 ResetLogHybrid("skip", broker)
             }
         }
@@ -118,7 +118,7 @@ def uebaInstallRPMs() {
     sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-services.sh $VERSION $OLD_UEBA_RPMS"
 }
 
-def ResetLogHybrid(logDecoder, broker) {
+def ResetLogHybrid(String logDecoder, String broker) {
     sh "\\cp ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
     sh "bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh  $logDecoder $broker"
 }
