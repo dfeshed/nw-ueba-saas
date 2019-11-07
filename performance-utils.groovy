@@ -107,7 +107,7 @@ def uebaInstallRPMs() {
 
 def CleanEpHybridUebaDBs() {
     sh "\\cp ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
-    sh "sudo bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh ${LOG_DECODER_HOST} ${BROKER_HOST}"
+    sh "bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh ${LOG_DECODER_HOST} ${BROKER_HOST}"
 }
 
 
