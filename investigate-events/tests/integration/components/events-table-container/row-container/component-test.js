@@ -107,6 +107,39 @@ module('Integration | Component | Events Table Row', function(hooks) {
     await settled();
   });
 
+  test('it encodes values with special characters', async function(assert) {
+    assert.expect(1);
+
+    new ReduxDataHelper(setState)
+      .getColumns('EMAIL1', EventColumnGroups)
+      .hasRequiredValuesToQuery(true)
+      .eventThreshold(100000)
+      .eventsPreferencesConfig()
+      .eventsQuerySort('time', 'Ascending')
+      .sortableColumns(['time', 'size'])
+      .language([
+        { format: 'String', metaName: 'ip.src', flags: -2147482605 }
+      ])
+      .eventCount(100000)
+      .enableRelationships()
+      .eventResults([{
+        'ip.src': 'LogsForInvestigate!@#$%^&*():\\\"{}|<>?~~``\\\"\\\";;::,,..&&^^%%$$##@@(){}[]<>' // eslint-disable-line no-useless-escape
+      }])
+      .build();
+
+    await render(hbs`
+      {{#events-table-container/events-table}}
+        {{events-table-container/row-container}}
+      {{/events-table-container/events-table}}
+    `);
+
+    assert.equal(
+      find('.entity').getAttribute('data-entity-id'),
+      'LogsForInvestigate!%40%23%24%25%5E%26*()%3A%5C%22%7B%7D%7C%3C%3E%3F~~%60%60%5C%22%5C%22%3B%3B%3A%3A%2C%2C..%26%26%5E%5E%25%25%24%24%23%23%40%40()%7B%7D%5B%5D%3C%3E',
+      'Expected encoding'
+    );
+  });
+
   test('it renders raw and alias cells correctly', async function(assert) {
     assert.expect(2);
 

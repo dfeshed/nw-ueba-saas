@@ -154,7 +154,7 @@ function buildDefaultCellContent($content, field, item, opts) {
   const value = item[field];
   const tooltip = formatUtil.tooltip(field, value, opts);
   const text = formatUtil.text(field, value, opts);
-  const htmlWrapper = `<span class="entity" data-meta-key="${field}" data-entity-id="${value}" metaname="${field}" metavalue="${value}">${text}</span>`;
+  const htmlWrapper = `<span class="entity" data-meta-key="${field}" data-entity-id="${encodeURIComponent(value)}" metaname="${field}" metavalue="${encodeURIComponent(value)}">${text}</span>`;
   $content
     .attr('title', tooltip)
     .html(htmlWrapper);
