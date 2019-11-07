@@ -966,8 +966,8 @@ const QueryPills = RsaContextMenu.extend({
   _insertParens(position) {
     let cursorPosition = position + 1;
     let positionModifier = 0;
+    const pillsData = this.get('pillsData');
     if (position > 0) {
-      const pillsData = this.get('pillsData');
       const previousPill = pillsData[position - 1];
       // Add logical AND operator if one's missing to the left
       if (_shouldAddLogicalOperator(previousPill)) {
@@ -976,6 +976,15 @@ const QueryPills = RsaContextMenu.extend({
         positionModifier++;
         const op = createOperator(OPERATOR_AND);
         this.send('addLogicalOperator', { pillData: op, position });
+      }
+    }
+    if (position <= pillsData.length) {
+      const nextPill = pillsData[position];
+      // Add logical AND operator if one's missing to the right
+      if (!!nextPill && !_isLogicalOperator(nextPill) && nextPill.type !== CLOSE_PAREN) {
+        const operatorPosition = position + positionModifier;
+        const op = createOperator(OPERATOR_AND);
+        this.send('addLogicalOperator', { pillData: op, position: operatorPosition });
       }
     }
     this.set('cursorPosition', cursorPosition);

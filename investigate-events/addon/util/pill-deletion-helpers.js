@@ -63,9 +63,10 @@ export const includeLogicalOpAfterParens = (deleteIds, pill, idx, pillsData) => 
   const isRemovingMultiplePills = deleteIds.length > 1 && prevPill && beforePrevPill &&
   deleteIds.includes(prevPill.id) && deleteIds.includes(beforePrevPill.id);
   const isFirstPillOpenParen = !!firstPillDeleted && firstPillDeleted.type === OPEN_PAREN && firstPillDeleted.twinId === prevPill.twinId;
-  const areBothParensSelected = !!firstPillDeleted && prevPill.isSelected && firstPillDeleted.isSelected;
+  const areBothParensSelected = !!firstPillDeleted && !!prevPill.isSelected && !!firstPillDeleted.isSelected;
   const isAfterEmptyParens = deleteIds.length === 2;
-  return isRemovingMultiplePills && isFirstPillOpenParen && (areBothParensSelected || isAfterEmptyParens);
+  const isNotAtBeginning = areBothParensSelected ? pillsData.indexOf(firstPillDeleted) > 0 : idx - 2 > 0;
+  return isRemovingMultiplePills && isFirstPillOpenParen && (areBothParensSelected || isAfterEmptyParens) && isNotAtBeginning;
 };
 
 const _isLogicalOperator = (pill) => pill && (pill.type === OPERATOR_AND || pill.type === OPERATOR_OR);

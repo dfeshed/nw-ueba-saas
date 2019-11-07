@@ -130,6 +130,19 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     assert.notOk(isPillOrOperatorToBeDelete(deletedIds, pill, 5, pills), 'Should not allow deletion of the pill');
   });
 
+  test('should return true if the pill passed is logical operator and previous pill is selected paren and delete list has open paren to close paren and everything between', function(assert) {
+    const text = '( medium = 3 AND medium =4 ) AND  medium = 5  AND b = \'google.com\'';
+    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    const pills = createPillsWithIds(results);
+    pills[0].isFocused = true;
+    pills[0].isSelected = true;
+    pills[4].isFocused = true;
+    pills[4].isSelected = true;
+    const [,,,,, pill ] = pills;
+    const deletedIds = [pills[0].id, pills[1].id, pills[2].id, pills[3].id, pills[4].id];
+    assert.ok(isPillOrOperatorToBeDelete(deletedIds, pill, 5, pills), 'Should allow deletion of the pill');
+  });
+
   test('should return false if the pill passed is logical operator and previous pill is not selected paren and delete list has open paren to close paren and everything between', function(assert) {
     const text = 'medium = 3 AND ( medium = 4 ) AND b = \'google.com\'';
     const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
@@ -166,6 +179,21 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     pills[3].isSelected = false;
     const [,,,, pill ] = pills;
     const deletedIds = [ pills[2].id, pills[3].id ];
-    assert.notOk(includeLogicalOpAfterParens(deletedIds, pill, 5, pills), 'Should not allow deletion of the pill');
+    assert.ok(includeLogicalOpAfterParens(deletedIds, pill, 4, pills), 'Should not allow deletion of the pill');
+  });
+
+  test('should return false if the pill passed is a logical operator after two empty parens, at the beginning of the query, even if the parens are not selected', function(assert) {
+    const text = '( medium = 3 ) AND  medium = 4  AND b = \'google.com\'';
+    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    // Remove the pill inside the parens
+    results.splice(1, 1);
+    const pills = createPillsWithIds(results);
+    pills[0].isFocused = false;
+    pills[0].isSelected = false;
+    pills[1].isFocused = false;
+    pills[1].isSelected = false;
+    const [,, pill ] = pills;
+    const deletedIds = [ pills[0].id, pills[1].id ];
+    assert.notOk(includeLogicalOpAfterParens(deletedIds, pill, 2, pills), 'Should allow deletion of the pill');
   });
 });
