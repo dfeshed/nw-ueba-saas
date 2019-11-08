@@ -14,7 +14,7 @@ import KEY_MAP, {
   isTab,
   isShiftTab
 } from 'investigate-events/util/keys';
-import { quoteComplexValues } from 'investigate-events/util/quote';
+import { quoteComplexValues, escapeQuotesInValueList } from 'investigate-events/util/quote';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
@@ -459,13 +459,7 @@ export default Component.extend({
         if (isComplex) {
           value = searchText.trim();
         } else {
-          value = valueList(searchText).map((item) => {
-            // Escape all single quotes
-            item.value = item.value.replace(/'/g, '\\\'');
-            // Make sure we didn't double-escape any quotes
-            item.value = item.value.replace(/\\\\'/g, '\\\'');
-            return item;
-          });
+          value = escapeQuotesInValueList(valueList(searchText));
         }
         // cleanup
         this.set('_searchString', undefined);

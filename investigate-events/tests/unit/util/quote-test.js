@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import quote, { escapeBackslash, escapeSingleQuotes, properlyQuoted, stripOuterSingleQuotes, quoteComplexValues } from 'investigate-events/util/quote';
+import quote, { escapeBackslash, escapeSingleQuotes, escapeQuotesInValueList, properlyQuoted, stripOuterSingleQuotes, quoteComplexValues } from 'investigate-events/util/quote';
 
 module('Unit | Util | quote');
 
@@ -48,4 +48,27 @@ test('properly removes outer single quotes', function(assert) {
 test('detects values which need quoted', function(assert) {
   assert.deepEqual(quoteComplexValues(
     [ 'a', ' b', 'c ', ' d ', 'e,f']), [ 'a', '\' b\'', '\'c \'', '\' d \'', '\'e,f\'']);
+});
+
+test('escapes only the correct quotes', function(assert) {
+  const valueList1 = [
+    { quoted: true, value: "TCP'-'UDP" }
+  ];
+  const valueList2 = [
+    { quoted: false, value: "6-'TCP'" }
+  ];
+  const valueList3 = [
+    { quoted: false, value: "'UDP'-13" }
+  ];
+  const valueList4 = [
+    { quoted: false, value: "can't" }
+  ];
+  const valueList5 = [
+    { quoted: false, value: "action' sample'" }
+  ];
+  assert.deepEqual(escapeQuotesInValueList(valueList1), valueList1, 'does not escape quotes as part of range');
+  assert.deepEqual(escapeQuotesInValueList(valueList2), valueList2, 'does not escape quotes as part of range');
+  assert.deepEqual(escapeQuotesInValueList(valueList3), valueList3, 'does not escape quotes as part of range');
+  assert.deepEqual(escapeQuotesInValueList(valueList4), [{ quoted: false, value: "can\\'t" }], 'escapes quotes not part of range');
+  assert.deepEqual(escapeQuotesInValueList(valueList5), [{ quoted: false, value: "action\\' sample\\'" }], 'escapes quotes not part of range');
 });

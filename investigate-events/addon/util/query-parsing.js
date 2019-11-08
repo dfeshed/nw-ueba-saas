@@ -514,12 +514,13 @@ export const valueList = (string, options) => {
   // Iterate over the entire string
   while (pos < string.length) {
     const char = string[pos];
+    const prevChar = string[pos - 1];
     // While we're not capturing text, we're searching for text to start capturing
     // or quotes to pay attention to
     if (inbetweenStrings) {
       // If we see a quote, store the quote type and location, and start normal
-      // character scanning
-      if (char === '\'' || char === '"') {
+      // character scanning. Make sure the quote is not escaped.
+      if ((char === '\'' && (prevChar === undefined || prevChar !== '\\')) || char === '"') {
         activeQuote = char;
         startingQuotePos = pos;
         inbetweenStrings = false;
@@ -567,6 +568,11 @@ export const valueList = (string, options) => {
         // This is an escape, only add it if we are not removing escapes
         if (!removeEscapes) {
           tempString += char;
+        }
+        if (string[pos + 1] === '\'') {
+          // If this is an escaped quote, make sure to skip past it
+          tempString += '\'';
+          pos += 1;
         }
       } else {
         tempString += char;
