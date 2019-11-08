@@ -24,6 +24,12 @@
       {{/rsa-panel-message}}
     </vbox>
   {{else if (and noEvents eventResultsErrorMessage)}}
+    <div class="rsa-investigate-events-table__header">
+      <div class="rsa-investigate-events-table__header__controls">
+        {{events-table-container/header-container/column-groups}}
+      </div>
+    </div>
+
     <vbox>
       {{#rsa-panel-message}}
         <div class="query-error">{{or eventResultsErrorMessage (t 'investigate.events.error')}}</div>

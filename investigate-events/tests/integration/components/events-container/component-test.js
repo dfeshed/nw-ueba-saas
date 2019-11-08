@@ -7,8 +7,10 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../helpers/vnext-patch';
+import EventColumnGroups from '../../../data/subscriptions/column-group';
 
 let setState;
+const columnGroupManagerSelector = '.rsa-investigate-events-table__header__columnGroups';
 
 module('Integration | Component | events-container', function(hooks) {
   setupRenderingTest(hooks, {
@@ -37,15 +39,17 @@ module('Integration | Component | events-container', function(hooks) {
 
   test('it renders the error block when event results has errored with no results', async function(assert) {
     new ReduxDataHelper(setState)
-      .hasRequiredValuesToQuery(true)
-      .atLeastOneQueryIssued(true)
-      .queryStatsIsComplete()
+      .selectedColumnGroup('SUMMARY')
+      .columnGroups(EventColumnGroups)
       .isEventResultsError(true, 'error')
       .eventResults([])
       .build();
     await render(hbs`{{events-container}}`);
 
-    assert.equal(findAll('.query-error').length, 1, 'Expected query error message on page');
+    assert.ok(find('.query-error'), 'Expected query error message on page');
+    assert.ok(find(columnGroupManagerSelector), 'Did not find column groups along the error panel');
+    assert.ok(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim().includes('Summary List'),
+      'Default column group is Summary List.');
   });
 
   test('it does not render error block if no error', async function(assert) {

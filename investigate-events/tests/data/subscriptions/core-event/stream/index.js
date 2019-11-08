@@ -27,6 +27,15 @@ export default {
           complete: true
         }
       });
+    } else if (searchTermValue === 'error') {
+      sendMessage({
+        requestBody: bodyParsed,
+        dataArray: [],
+        code: 1,
+        meta: {
+          message: 'Mock error!'
+        }
+      });
     } else {
       results = !sessionId ? eventList : eventList.filter(function(evt) {
         return evt.sessionId > sessionId;

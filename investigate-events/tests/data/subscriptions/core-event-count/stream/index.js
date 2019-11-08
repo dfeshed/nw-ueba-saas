@@ -73,7 +73,7 @@ export default {
         }
         // If we query for a Free-Form Filter or Text Filter of "(limited)" or
         // "limited", respectively, send back zero results.
-        if (queryValue === '(limited)' || searchTermValue === 'limited') {
+        if (queryValue === '(limited)' || searchTermValue === 'limited' || queryValue === 'error') {
           dataCount = 0;
         } else {
           dataCount = Math.min(thresholdValue, data().length);

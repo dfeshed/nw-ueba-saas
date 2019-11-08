@@ -43,6 +43,11 @@ $investigateReconFullWidth: 100%;
     }
   }
 
+  // column group in events error state
+  .rsa-investigate-events-table__header__controls {
+    padding-left: 0.8rem;
+  }
+
   &__body {
     position: relative;   /* enables positioning of children */
     @include rsa-vendor-prefix(flex-grow, 1);
