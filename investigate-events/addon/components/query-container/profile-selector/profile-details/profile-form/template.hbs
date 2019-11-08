@@ -16,12 +16,16 @@
   <label class="rsa-form-label power-select select-column-group">
     {{#power-select
       options=columnGroups
+      optionsComponent=(
+        component 'query-container/power-select-options'
+        titleAttribute='name'
+      )
       selected=columnGroup
       searchEnabled=true
       searchField='name'
       onchange=(action 'onColumnGroupChange') as |option|
     }}
-      {{option.name}}
+      <span title={{option.name}}>{{option.name}}</span>
     {{/power-select}}
   </label>
 </div>

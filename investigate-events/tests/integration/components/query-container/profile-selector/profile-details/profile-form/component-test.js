@@ -195,6 +195,27 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
       newColumnGroupName, 'shall render profile column group name correctly');
   });
 
+  test('column group selector has tooltips for selected group and list options', async function(assert) {
+
+    this.set('profile', null);
+    this.set('columnGroups', columnGroups);
+    this.set('selectedColumnGroupId', columnGroups[3].id);
+    this.set('sendToBroadcast', () => {});
+
+    await render(hbs`{{query-container/profile-selector/profile-details/profile-form
+      profile=profile
+      columnGroups=columnGroups
+      selectedColumnGroupId=selectedColumnGroupId
+      sendToBroadcast=sendToBroadcast}}`);
+
+    assert.ok(find(columnGroupPowerSelectSelector), 'shall render profile column group dropdown');
+
+    await click(`${columnGroupPowerSelectSelector} .ember-power-select-trigger`);
+    assert.equal(find(`${columnGroupSelectedSelector} span`).title, columnGroups[3].name, 'selected column group name has a tooltip');
+
+    assert.equal(findAll('.ember-power-select-options li')[0].title, columnGroups[0].name, 'a column group option has a tooltip');
+  });
+
   test('shall display error message if profile name is not unique', async function(assert) {
     this.set('profile', null);
     this.set('profiles', profiles);

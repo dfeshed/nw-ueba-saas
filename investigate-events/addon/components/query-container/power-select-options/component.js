@@ -33,6 +33,7 @@ export default Component.extend({
   tagName: 'ul',
   attributeBindings: ['role', 'aria-controls'],
   role: 'listbox',
+  titleAttribute: null,
 
   // Lifecycle hooks
   didInsertElement() {

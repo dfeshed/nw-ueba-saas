@@ -102,6 +102,14 @@
             }
             .column-group-name {
               margin-top: 0.5rem;
+              .select-column-group {
+                .ember-power-select-selected-item {
+                  display: block;
+                  overflow-x: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                }
+              }
               .ember-power-select-trigger,.ember-power-select-typeahead-input {
                 margin-top: -0.5rem;
                 margin-bottom: 1rem;
@@ -193,7 +201,7 @@
                   width: auto;
                   max-width: 96%;
                 }
-              } 
+              }
             }
           }
           .list-body {
@@ -280,7 +288,7 @@
             margin-left: -2px;
           }
         }
-      }    
+      }
     }
   }
 

@@ -28,7 +28,8 @@
       aria-disabled={{ember-power-select-true-string-if-present opt.disabled}}
       aria-current="{{eq opt select.highlighted}}"
       data-option-index="{{groupIndex}}{{index}}"
-      title={{or opt.query opt.displayName}}
+      {{!-- TODO all users of power-select-options to include titleAttribute in optionsComponent and get rid of the chain of ors? --}}
+      title={{or opt.query opt.displayName (get opt titleAttribute)}}
       role="option">
       {{yield opt select}}
     </li>
