@@ -13,6 +13,18 @@ const _alertsForTimeline = (state) => state.alerts.alertsForTimeline;
 
 const _relativeDateFilter = (state) => state.alerts.relativeDateFilter;
 
+const _findEntityTypeFromAnomalyKey = (entityType, key) => {
+  if (entityType !== 'all') {
+    return entityType;
+  } else {
+    for (const entity in entityAnomalyMap) {
+      if (entityAnomalyMap[entity].includes(key)) {
+        return entity;
+      }
+    }
+  }
+};
+
 export const timeframesForDateTimeFilter = [
   {
     'name': 'IN_LAST_SEVEN_DAYS',
@@ -116,10 +128,12 @@ export const getExistAnomalyTypes = createSelector(
     const i18n = lookup('service:i18n');
     const mappedArray = [];
     _.forEach(existAnomalyTypes, (value, key) => {
+      const entityTypeLabel = _findEntityTypeFromAnomalyKey(entityType, key);
+      const displayLabel = `${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${key}.name`)} (${value} ${i18n.t(`investigateUsers.entityTypes.${entityTypeLabel}`)})`;
       if (entityType === 'all' || anomalyKeys.includes(key)) {
         mappedArray.push({
           id: key,
-          displayLabel: `${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${key}.name`)} (${value} Entities)`
+          displayLabel
         });
       }
     });

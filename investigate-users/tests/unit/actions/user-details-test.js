@@ -5,7 +5,17 @@ import { patchFetch } from '../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
 import dataIndex from '../../data/presidio';
 import { patchFlash } from '../../helpers/patch-flash';
-import { getRiskyUserCount, getWatchedUserCount, getUserOverview, resetUser, initiateUser, updateEntityType, updateSortTrend, updateTrendRange } from 'investigate-users/actions/user-details';
+import {
+  getRiskyUserCount,
+  getWatchedUserCount,
+  getUserOverview,
+  resetUser,
+  initiateUser,
+  updateEntityType,
+  updateSortTrend,
+  getTotalCount,
+  updateTrendRange
+} from 'investigate-users/actions/user-details';
 
 let patchUrl = null;
 
@@ -24,6 +34,35 @@ module('Unit | Actions | User Details Actions', (hooks) => {
           }
         });
       });
+    });
+  });
+
+  test('it can getTotalCount', (assert) => {
+    assert.expect(2);
+    const done = assert.async();
+    const dispatch = ({ type, payload }) => {
+      assert.equal(type, 'INVESTIGATE_USER::GET_TOTAL_USER_COUNT');
+      assert.equal(payload, 100);
+      done();
+    };
+    getTotalCount()(dispatch);
+  });
+
+  test('it can give flash message if getTotalCount is not coming from server', (assert) => {
+    const done = assert.async();
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    getTotalCount()();
+
+    patchFlash((flash) => {
+      assert.equal(flash.type, 'error');
+      done();
     });
   });
 
@@ -218,12 +257,13 @@ module('Unit | Actions | User Details Actions', (hooks) => {
   });
 
   test('it can updateEntityType', (assert) => {
-    assert.expect(5);
+    assert.expect(6);
     const actions = [
       'INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS',
       'INVESTIGATE_USER::RESET_USERS',
       'INVESTIGATE_USER::GET_RISKY_USER_COUNT',
       'INVESTIGATE_USER::GET_WATCHED_USER_COUNT',
+      'INVESTIGATE_USER::GET_TOTAL_USER_COUNT',
       'INVESTIGATE_USER::GET_TOP_RISKY_USER'
     ];
     const getState = () => {

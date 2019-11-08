@@ -175,17 +175,30 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
   });
 
   test('test Exist Anomaly Types', function(assert) {
-    assert.equal(Alerts.getExistAnomalyTypes(state).length, 26);
+    assert.equal(Alerts.getExistAnomalyTypes(state).length, 28);
     assert.deepEqual(Alerts.getExistAnomalyTypes(state)[0], {
-      displayLabel: 'Abnormal File Access Event (45 Entities)',
+      displayLabel: 'Abnormal File Access Event (45 USERS)',
       id: 'abnormal_file_action_operation_type'
+    });
+    assert.deepEqual(Alerts.getExistAnomalyTypes(state)[27], {
+      displayLabel: 'Abnormal Time for JA3 (22 JA3)',
+      id: 'abnormal_ja3_day_time'
+    });
+  });
+
+  test('test Exist Anomaly Types for ja3', function(assert) {
+    const newState = state.setIn(['alerts', 'filter', 'entityType'], 'ja3');
+    assert.equal(Alerts.getExistAnomalyTypes(newState).length, 1);
+    assert.deepEqual(Alerts.getExistAnomalyTypes(newState)[0], {
+      displayLabel: 'Abnormal Time for JA3 (22 JA3)',
+      id: 'abnormal_ja3_day_time'
     });
   });
 
   test('test getSelectedAnomalyTypes', function(assert) {
     assert.deepEqual(Alerts.getSelectedAnomalyTypes(state)[0], {
       id: 'high_number_of_successful_file_permission_change',
-      displayLabel: 'Multiple File Access Permission Changes (11 Entities)'
+      displayLabel: 'Multiple File Access Permission Changes (11 USERS)'
     });
   });
 

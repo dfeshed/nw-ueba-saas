@@ -19,6 +19,9 @@ const UsersTabFilterFavoritesComponent = Component.extend({
   selected: null,
   columnsData: columnDataForFavorites,
   actions: {
+    stopPropagation(e) {
+      e.stopPropagation();
+    },
     applyFilter(filterObj) {
       this.set('selected', filterObj);
       this.send('updateFilter', filterObj.filter);

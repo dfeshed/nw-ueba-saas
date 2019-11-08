@@ -1,7 +1,7 @@
 import * as ACTION_TYPES from './types';
 import { fetchData, exportData } from './fetch/data';
 import { getUserFilter, selectedEntityType } from 'investigate-users/reducers/users/selectors';
-import { getWatchedUserCount, getRiskyUserCount } from './user-details';
+import { getWatchedUserCount, getRiskyUserCount, getTotalCount } from './user-details';
 import { flashErrorMessage } from 'investigate-users/utils/flash-message';
 import _ from 'lodash';
 
@@ -28,6 +28,7 @@ const _followUnfollowUsers = (endpointLocation) => {
       dispatch(getUsers(filter));
       dispatch(getSeverityDetailsForUserTabs(filter));
       dispatch(getWatchedUserCount(entityType));
+      dispatch(getTotalCount(entityType));
     });
   };
 };
@@ -127,6 +128,7 @@ const updateFilter = (filter, needNotToPullUsers) => {
     if (true !== needNotToPullUsers) {
       dispatch(getSeverityDetailsForUserTabs(filter));
       dispatch(getWatchedUserCount(entityType));
+      dispatch(getTotalCount(entityType));
       dispatch(getRiskyUserCount(entityType));
       dispatch(getUsers(filter));
     }

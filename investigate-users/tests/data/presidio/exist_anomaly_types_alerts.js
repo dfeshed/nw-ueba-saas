@@ -24,5 +24,7 @@ export default {
   'high_number_of_failed_file_permission_change_attempts': 18,
   'user_account_locked': 39,
   'high_number_of_failed_active_directory_events': 41,
-  'user_account_unlocked': 54
+  'user_account_unlocked': 54,
+  'ssl_subject_abnormal_ja3_day_time': 23,
+  'abnormal_ja3_day_time': 22
 };

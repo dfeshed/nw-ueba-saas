@@ -34,6 +34,9 @@ const urlMap = [{
   url: 'presidio/api/entity/count?isWatched=true',
   data: watchedCount
 }, {
+  url: 'presidio/api/entity/count?entityType=',
+  data: watchedCount
+}, {
   url: 'presidio/api/entity/count?minScore=0',
   data: notRiskyCount
 }, {

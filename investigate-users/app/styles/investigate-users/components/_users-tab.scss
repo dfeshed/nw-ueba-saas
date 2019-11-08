@@ -216,7 +216,9 @@
           justify-content: center;
 
           &_number {
-            padding: rsa-whitespace()+rsa-whitespace(less) rsa-whitespace() 0 0;
+            width: 100px;
+            text-align: initial;
+            padding: rsa-whitespace()+rsa-whitespace(less) rsa-whitespace() 0 rsa-whitespace();
           }
 
           &_sort {

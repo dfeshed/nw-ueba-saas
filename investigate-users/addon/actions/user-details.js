@@ -32,6 +32,22 @@ const getWatchedUserCount = (entityType = 'userId') => {
     });
   };
 };
+
+const getTotalCount = (entityType = 'userId') => {
+  return (dispatch) => {
+    fetchData('totalCount', { entityType }).then((result) => {
+      if (result === 'error') {
+        flashErrorMessage('investigateUsers.errorMessages.unableToGetTotalUserCount');
+        return;
+      }
+      dispatch({
+        type: ACTION_TYPES.GET_TOTAL_USER_COUNT,
+        payload: result.data
+      });
+    });
+  };
+};
+
 const getUserOverview = (entityType = 'userId') => {
   return (dispatch, getState) => {
     const sortTrending = sortOnTrending(getState());
@@ -63,6 +79,7 @@ const updateEntityType = (entityType) => {
     dispatch(updateFilter(filter, true));
     dispatch(getRiskyUserCount(entityType));
     dispatch(getWatchedUserCount(entityType));
+    dispatch(getTotalCount(entityType));
     dispatch(getUserOverview(entityType));
   };
 };
@@ -95,5 +112,6 @@ export {
   updateEntityType,
   initiateUser,
   updateTrendRange,
-  updateSortTrend
+  updateSortTrend,
+  getTotalCount
 };

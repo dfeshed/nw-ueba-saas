@@ -178,8 +178,6 @@ module('Unit | Reducers | Users Reducer', (hooks) => {
 
     assert.equal(result.users[0].data.length, 2);
 
-    assert.equal(result.totalUsers, 50);
-
     assert.equal(result.allWatched, true);
 
     result = reducer(result, {

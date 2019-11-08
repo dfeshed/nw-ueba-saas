@@ -11,14 +11,16 @@
       onchange=(action 'applyFilter') as |option|}}
       {{option.filterName}}
       {{#if (and option.id (not-eq option.id selected.id))}}
-        <span class='users-tab_filter_favorites_delete'>
-          {{#rsa-form-button
+        <span class='users-tab_filter_favorites_delete' onmouseup={{action "stopPropagation"}} onmousedown={{action "stopPropagation"}}>
+          {{#rsa-button-with-confirmation
+            style='danger'
             isIconOnly=true
             class=(if (eq selected favoriteFilter.id) 'rsa-form-button-clicked')
-            click=(action 'deleteFavorite' favoriteFilter.id)
-          }}
+            isIconOnly=true
+            confirmationMessage=(t 'investigateFiles.filter.customFilters.delete.confirmMessage')
+            onConfirm=(action 'deleteFavorite' option.id)}}
             {{rsa-icon name='bin-1' size='smaller'}}
-          {{/rsa-form-button}}
+          {{/rsa-button-with-confirmation}}
         </span>
       {{/if}}
     {{/power-select}}

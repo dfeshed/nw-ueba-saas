@@ -18,7 +18,6 @@
           <span {{action 'initiateUser' (hash userId=alert.entityId alertId=alert.id)}}>
             {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}}
           </span>
-          <span class='lighter'> | {{alert.timeframe}} </span>
         </div>
         <div class='entityName' title='{{alert.entityName}}'>
           {{alert.entityName}}

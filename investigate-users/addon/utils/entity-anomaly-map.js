@@ -79,7 +79,7 @@ export default {
     'high_number_of_bytes_sent_by_ja3_outbound',
     'high_number_of_distinct_src_ip_for_ja3_outbound',
     'high_number_of_distinct_new_ssl_subjects_for_src_ip_outbound',
-    'sslSubject: abnormal_ssl_subject_for_src_netname_outbound',
+    'abnormal_ssl_subject_for_src_netname_outbound',
     'ssl_subject_abnormal_domain_for_src_netname_outbound',
     'ssl_subject_abnormal_dst_port_for_src_netname_outbound',
     'ssl_subject_abnormal_dst_org_for_src_netname_outbound',

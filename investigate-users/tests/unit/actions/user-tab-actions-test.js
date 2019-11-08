@@ -167,12 +167,13 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
   });
 
   test('it can updateFilter', (assert) => {
-    assert.expect(7);
+    assert.expect(8);
     const actions = [
       'INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS',
       'INVESTIGATE_USER::RESET_USERS',
       'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS',
       'INVESTIGATE_USER::GET_WATCHED_USER_COUNT',
+      'INVESTIGATE_USER::GET_TOTAL_USER_COUNT',
       'INVESTIGATE_USER::GET_RISKY_USER_COUNT',
       'INVESTIGATE_USER::GET_USERS'
     ];
