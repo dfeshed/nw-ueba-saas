@@ -48,7 +48,7 @@ export default (settings) => {
 
   const legendContainer = Am4core.create('chartComponentPlaceholderLegend', Am4core.Container);
   legendContainer.width = Am4core.percent(100);
-  legendContainer.height = '95%';
+  legendContainer.height = '85%';
   chart.legend.parent = legendContainer;
 
   chart.events.on('datavalidated', resizeLegend);

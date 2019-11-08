@@ -285,7 +285,7 @@ const networkColumns = [{
   visible: true,
   disableSort: true
 }, {
-  field: 'dstCountry',
+  field: 'dstCountry.name',
   title: 'Destination Country',
   width: '5vw',
   visible: true,
@@ -297,25 +297,25 @@ const networkColumns = [{
   visible: true,
   disableSort: true
 }, {
-  field: 'dstOrg',
+  field: 'dstOrg.name',
   title: 'Destination Organization',
   width: '5vw',
   visible: true,
   disableSort: true
 }, {
-  field: 'dstAsn',
+  field: 'dstAsn.name',
   title: 'Destination ASN',
   width: '5vw',
-  visible: true,
+  visible: false,
   disableSort: true
 }, {
-  field: 'domain',
+  field: 'domain.name',
   title: 'Domain',
   width: '5vw',
   visible: true,
   disableSort: true
 }, {
-  field: 'ja3',
+  field: 'ja3.name',
   width: '5vw',
   title: 'JA3',
   visible: true,
@@ -324,10 +324,10 @@ const networkColumns = [{
   field: 'ja3s',
   width: '5vw',
   title: 'JA3S',
-  visible: true,
+  visible: false,
   disableSort: true
 }, {
-  field: 'dstPort',
+  field: 'dstPort.name',
   width: '5vw',
   title: 'Destination Port',
   visible: true,
@@ -342,7 +342,7 @@ const networkColumns = [{
   field: 'dstNetname',
   width: '5vw',
   title: 'Destination Net Name',
-  visible: true,
+  visible: false,
   disableSort: true
 }, {
   field: 'numOfBytesSent',
@@ -354,7 +354,7 @@ const networkColumns = [{
   field: 'numOfBytesReceived',
   width: '5vw',
   title: 'Number of Byte Received',
-  visible: true,
+  visible: false,
   disableSort: true
 }];
 
