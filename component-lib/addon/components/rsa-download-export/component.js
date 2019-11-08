@@ -41,7 +41,8 @@ export default Component.extend({
       if (this.get('isAutoDownloadFile')) {
         source = extractLink;
       } else {
-        this.get('flashMessages').success(this.get('i18n').t('fileExtract.ready'));
+        const url = `${window.location.origin}/profile#jobs`;
+        this.get('flashMessages').success(this.get('i18n').t('fileExtract.ready', { url }));
       }
       this.set('lastExtractLink', extractLink);
       debounce(this, this.debouncedAction, 200);

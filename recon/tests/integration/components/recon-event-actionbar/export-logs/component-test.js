@@ -189,6 +189,7 @@ test('the extracted file must be downloaded automatically', function(assert) {
 
 test('the extracted file must not be downloaded automatically', function(assert) {
   const fileLink = 'http://extracted-file-download-link/';
+  const url = `${window.location.origin}/profile#jobs`;
   new DataHelper(this.get('redux'))
     .initializeData()
     .setAutoDownloadPreference(false)
@@ -196,7 +197,7 @@ test('the extracted file must not be downloaded automatically', function(assert)
 
   patchFlash((flash) => {
     const translation = getOwner(this).lookup('service:i18n');
-    const expectedMsg = translation.t('fileExtract.ready');
+    const expectedMsg = translation.t('fileExtract.ready', { url });
     assert.equal(flash.type, 'success');
     assert.equal(flash.message.string, expectedMsg);
   });

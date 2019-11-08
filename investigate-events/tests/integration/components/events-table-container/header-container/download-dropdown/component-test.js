@@ -204,6 +204,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
   test('should not download file automatically when autoDownload preference is set to false', async function(assert) {
     assert.expect(5);
     const fileLink = 'http://extracted-file-download-link/';
+    const url = `${window.location.origin}/profile#jobs`;
     new ReduxDataHelper(setState)
       .defaultEventAnalysisPreferences()
       .setFileExtractLink(fileLink)
@@ -212,7 +213,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
 
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMsg = translation.t('fileExtract.ready');
+      const expectedMsg = translation.t('fileExtract.ready', { url });
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMsg);
     });

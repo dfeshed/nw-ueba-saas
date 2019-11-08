@@ -298,6 +298,7 @@ module('Integration | Component | recon event actionbar/export packet', function
     assert.expect(4);
 
     const fileLink = 'http://extracted-file-download-link/';
+    const url = `${window.location.origin}/profile#jobs`;
 
     const redux = this.owner.lookup('service:redux');
     new DataHelper(redux)
@@ -307,7 +308,7 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMsg = translation.t('fileExtract.ready');
+      const expectedMsg = translation.t('fileExtract.ready', { url });
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMsg);
     });
