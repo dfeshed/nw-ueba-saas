@@ -18,6 +18,15 @@ const queryForLog = {
   ]
 };
 
+const queryForEndpoint = {
+  filter: [
+    { field: 'endpointId', value: 2 },
+    { field: 'filename', value: '2_ENDPOINT_AS_TEXT' },
+    { field: 'sessionIds', values: [ 3 ] },
+    { field: 'outputContentType', value: 'TEXT' }
+  ]
+};
+
 const queryForNetwork = {
   filter: [
     { field: 'endpointId', value: 2 },
@@ -61,7 +70,26 @@ module('Unit | API | extract-file', function(hooks) {
     fetchExtractJobId(endpointId, eventId, fileType, filename, filenames, eventType);
   });
 
-  test('Should create a valid query for netwirk download', function(assert) {
+  test('Should create a valid query for endpoint download', function(assert) {
+    const done = assert.async();
+
+    const endpointId = 2;
+    const eventId = 3;
+    const fileType = 'TEXT';
+    const filename = '2_ENDPOINT_AS_TEXT';
+    const filenames = [ ];
+    const eventType = 'ENDPOINT';
+    assert.expect(3);
+    patchSocket((method, modelName, query) => {
+      assert.equal(modelName, 'reconstruction-extract-LOG-job-id');
+      assert.equal(method, 'query');
+      assert.deepEqual(query, queryForEndpoint);
+      done();
+    });
+    fetchExtractJobId(endpointId, eventId, fileType, filename, filenames, eventType);
+  });
+
+  test('Should create a valid query for network download', function(assert) {
     const done = assert.async();
 
     const endpointId = 2;

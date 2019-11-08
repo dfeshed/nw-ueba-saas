@@ -24,18 +24,36 @@ import { EVENT_DOWNLOAD_TYPES } from 'component-lib/constants/event-download-typ
  * download URL, which can be used to fetch the actual files (zipped).
  * @public
  */
+
+// If extracting files from network event, extractType is the fileType (i.e. 'FILES')
+// If extracting endpoint events, extractType is 'LOG'
+// else extractType is eventType (eg. 'NETWORK', 'LOG')
+const _getExtractType = (eventType, fileType) => {
+
+  switch (eventType) {
+    case EVENT_TYPES.LOG:
+      return EVENT_DOWNLOAD_TYPES.LOG;
+    case EVENT_TYPES.ENDPOINT:
+      return EVENT_DOWNLOAD_TYPES.LOG;
+    case EVENT_TYPES.NETWORK:
+      if (fileType === EVENT_DOWNLOAD_TYPES.FILES) {
+        return EVENT_DOWNLOAD_TYPES.FILES;
+      }
+      return EVENT_DOWNLOAD_TYPES.NETWORK;
+    default:
+      return eventType;
+  }
+};
+
 export default function fetchExtractJobId(endpointId, eventId, fileType, filename, filenames, eventType) {
   const request = lookup('service:request');
   let query = endpointFilter(endpointId);
   query = addFilenameFilter(query, filename);
   query = addSessionIdsFilter(query, [ eventId ]);
 
-  // When extracting files from network event, extractType is the fileType (i.e. 'FILES')
-  // else extractType is eventType (eg. 'NETWORK', 'LOG')
-  let extractType = eventType;
+  const extractType = _getExtractType(eventType, fileType);
 
-  if (eventType === EVENT_TYPES.NETWORK && fileType === EVENT_DOWNLOAD_TYPES.FILES) {
-    extractType = fileType;
+  if (extractType === EVENT_DOWNLOAD_TYPES.FILES) {
     // downloading files requires list of filenames to be downloaded
     query = addFileSelectionsFilter(query, filenames);
   } else {
