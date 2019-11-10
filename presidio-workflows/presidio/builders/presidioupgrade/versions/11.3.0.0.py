@@ -1,5 +1,6 @@
 import requests
 from presidio.utils.airflow.upgrade_utils import run_reset_presidio_for_upgrade
+import json
 
 # Run reset_presidio dag for upgrade
 run_reset_presidio_for_upgrade()
