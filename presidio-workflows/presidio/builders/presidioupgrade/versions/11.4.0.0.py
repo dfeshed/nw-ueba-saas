@@ -136,7 +136,7 @@ def update_indicators_hits(hits):
         }
 
         if "contexts" in item["_source"]:
-            indicator.update({"contexts": item["_source"]["contexts"]})
+            indicator['contexts'] = item["_source"]["contexts"]
 
         es.index(index=INDEX_INDICATOR, doc_type=DOC_TYPE_INDICATOR, id=item["_id"], body=indicator)
 
