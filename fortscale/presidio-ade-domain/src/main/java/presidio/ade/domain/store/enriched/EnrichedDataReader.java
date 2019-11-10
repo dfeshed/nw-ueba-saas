@@ -1,9 +1,11 @@
 package presidio.ade.domain.store.enriched;
 
 import fortscale.utils.pagination.ContextIdToNumOfItems;
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -55,4 +57,8 @@ public interface EnrichedDataReader {
     void ensureContextAndDateTimeIndex(String dataSource, String contextType);
 
     long countRecords(EnrichedRecordsMetadata recordsMetadata, String contextType, String contextId);
+
+    long count(String adeEventType, TimeRange timeRange, Map<String, String> context);
+
+    List<EnrichedRecord> find(String adeEventType, TimeRange timeRange, Map<String, String> context, long skip, int limit);
 }

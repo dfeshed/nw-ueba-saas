@@ -6,6 +6,7 @@ import fortscale.utils.mongodb.util.MongoReflectionUtils;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.record.StoreMetadataProperties;
+import fortscale.utils.time.TimeRange;
 import org.bson.Document;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Sort;
@@ -262,5 +263,32 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
 
         String collectionName = translator.toCollectionName(recordsMetadata);
         return mongoTemplate.count(query, collectionName);
+    }
+
+    @Override
+    public long count(String adeEventType, TimeRange timeRange, Map<String, String> context) {
+        Class pojoClass = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(adeEventType);
+        Query query = getQuery(pojoClass, timeRange, context);
+        String collectionName = translator.toCollectionName(adeEventType);
+        return mongoTemplate.count(query, collectionName);
+    }
+
+    @Override
+    public List<EnrichedRecord> find(String adeEventType, TimeRange timeRange, Map<String, String> context, long skip, int limit) {
+        Class pojoClass = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(adeEventType);
+        Query query = getQuery(pojoClass, timeRange, context).skip(skip).limit(limit);
+        String collectionName = translator.toCollectionName(adeEventType);
+        @SuppressWarnings("unchecked")
+        List<EnrichedRecord> enrichedRecords = mongoTemplate.find(query, pojoClass, collectionName);
+        return enrichedRecords;
+    }
+
+    private Query getQuery(Class pojoClass, TimeRange timeRange, Map<String, String> context) {
+        Query query = new Query(where(EnrichedRecord.START_INSTANT_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
+        context.forEach((contextKey, contextValue) -> {
+            String fieldName = getFieldName(pojoClass, contextKey);
+            query.addCriteria(where(fieldName).is(contextValue));
+        });
+        return query;
     }
 }
