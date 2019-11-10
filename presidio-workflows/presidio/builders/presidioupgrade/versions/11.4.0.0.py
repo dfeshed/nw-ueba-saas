@@ -132,9 +132,11 @@ def update_indicators_hits(hits):
             'scoreContribution': item["_source"]["scoreContribution"],
             'type': item["_source"]["type"],
             'eventsNum': item["_source"]["eventsNum"],
-            'contexts': item["_source"]["contexts"],
             "entityType": ENTITY_TYPE
         }
+
+        if "contexts" in item["_source"]:
+            indicator.update({"contexts": item["_source"]["contexts"]})
 
         es.index(index=INDEX_INDICATOR, doc_type=DOC_TYPE_INDICATOR, id=item["_id"], body=indicator)
 
