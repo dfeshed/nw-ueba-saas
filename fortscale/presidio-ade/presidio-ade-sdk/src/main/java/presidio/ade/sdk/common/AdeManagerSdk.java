@@ -3,6 +3,7 @@ package presidio.ade.sdk.common;
 import presidio.ade.sdk.aggregation_records.AggregationRecordsManagerSdk;
 import presidio.ade.sdk.cleanup.CleanupManagerSdk;
 import presidio.ade.sdk.enriched_records.EnrichedRecordsManagerSdk;
+import presidio.ade.sdk.feature_buckets.FeatureBucketsManagerSdk;
 import presidio.ade.sdk.historical_runs.HistoricalRunsManagerSdk;
 import presidio.ade.sdk.online_run.OnlineRunManagerSdk;
 import presidio.ade.sdk.scored_enriched_records.ScoredEnrichedRecordsManagerSdk;
@@ -23,6 +24,7 @@ public interface AdeManagerSdk extends
         OnlineRunManagerSdk,
         CleanupManagerSdk,
         EnrichedRecordsManagerSdk,
+        FeatureBucketsManagerSdk,
         ScoredEnrichedRecordsManagerSdk,
         AggregationRecordsManagerSdk,
         SmartRecordsManagerSdk,

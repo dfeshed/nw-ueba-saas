@@ -1,7 +1,7 @@
 package presidio.ade.sdk.common;
 
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketReader;
+import fortscale.aggregation.feature.bucket.*;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.smart.record.conf.SmartRecordConf;
@@ -49,6 +49,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     private StoreManagerAwareEnrichedDataStore storeManagerAwareEnrichedDataStore;
     private SmartDataReader smartDataReader;
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
+    private BucketConfigurationService bucketConfigurationService;
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     private FeatureBucketReader featureBucketReader;
     private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
@@ -56,27 +57,32 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     private Map<String, List<String>> aggregationNameToAdeEventTypeMap;
     private Map<String, String> aggregationNameToFeatureBucketConfName;
     private StoreManager storeManager;
+    private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
     private ScoreAggregationRecordSplitter scoreAggregationRecordSplitter;
 
     public AdeManagerSdkImpl(
             StoreManagerAwareEnrichedDataStore storeManagerAwareEnrichedDataStore,
             SmartDataReader smartDataReader,
             ScoredEnrichedDataStore scoredEnrichedDataStore,
+            BucketConfigurationService bucketConfigurationService,
             AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
             FeatureBucketReader featureBucketReader,
             AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader,
             SmartRecordConfService smartRecordConfService,
             StoreManager storeManager,
+            InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator,
             ScoreAggregationRecordSplitter scoreAggregationRecordSplitter) {
 
         this.storeManagerAwareEnrichedDataStore = storeManagerAwareEnrichedDataStore;
         this.smartDataReader = smartDataReader;
         this.scoredEnrichedDataStore = scoredEnrichedDataStore;
+        this.bucketConfigurationService = bucketConfigurationService;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.featureBucketReader = featureBucketReader;
         this.aggregationEventsAccumulationDataReader = aggregationEventsAccumulationDataReader;
         this.smartRecordConfService = smartRecordConfService;
         this.storeManager = storeManager;
+        this.inMemoryFeatureBucketAggregator = inMemoryFeatureBucketAggregator;
         this.scoreAggregationRecordSplitter = scoreAggregationRecordSplitter;
     }
 
@@ -209,6 +215,36 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
         String storeName = storeManagerAwareEnrichedDataStore.getStoreName();
         StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(adeDataStoreCleanupParams.getAdeEventType());
         storeManager.cleanupCollections(storeName, new TimeRange(adeDataStoreCleanupParams.getStartDate(), adeDataStoreCleanupParams.getEndDate()), storeMetadataProperties);
+    }
+
+    @Override
+    public FeatureBucket createFeatureBucketFromEnrichedRecords(
+            String featureBucketConfName, TimeRange timeRange, Map<String, String> context, int pageSize) {
+
+        FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
+        // Assume there is only one ADE event type.
+        String adeEventType = featureBucketConf.getAdeEventTypes().get(0);
+        String strategyName = featureBucketConf.getStrategyName();
+        PageIterator<EnrichedRecord> pageIterator = new PageIterator<>() {
+            private final long count = storeManagerAwareEnrichedDataStore.count(adeEventType, timeRange, context);
+            private final long numberOfPages = (count + pageSize - 1) / pageSize;
+            private long nextPageIndex = 0;
+
+            @Override
+            public boolean hasNext() {
+                return nextPageIndex < numberOfPages;
+            }
+
+            @Override
+            public List<EnrichedRecord> next() {
+                List<EnrichedRecord> enrichedRecords = storeManagerAwareEnrichedDataStore.find(
+                        adeEventType, timeRange, context, nextPageIndex * pageSize, pageSize);
+                ++nextPageIndex;
+                return enrichedRecords;
+            }
+        };
+        FeatureBucketStrategyData featureBucketStrategyData = new FeatureBucketStrategyData(strategyName, strategyName, timeRange);
+        return inMemoryFeatureBucketAggregator.createFeatureBucket(pageIterator, featureBucketConfName, featureBucketStrategyData);
     }
 
     @Override
