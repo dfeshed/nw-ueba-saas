@@ -68,6 +68,16 @@ pipeline {
                 }
             }
         }
+       stage('UEBA - Reset Presidio') {
+            when {
+                expression { return params.RESET_PRESIDIO }
+            }
+            steps {
+                script {
+                    ResetPresidio()
+                }
+            }
+        } 
     }
 }
 
