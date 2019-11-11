@@ -40,10 +40,10 @@ export default {
       query: {
         filter: [{
           field: '_id',
-          regexp: `(?i)${searchText}.*`
+          regexp: `(?i)\\Q${searchText}\\E`
         }, {
           field: 'name',
-          regexp: `(?i)${searchText}.*`
+          regexp: `(?i)\\Q${searchText}\\E`
         }],
         sort: [{
           descending: sortDescending,
