@@ -132,7 +132,7 @@ public class AlertQuery {
         private List<String> filterByTags;
         private List<String> filterByIndicatorNames;
         private List<String> filterByEntityDocumentId;
-        private String filterByEntityType = null;
+        private String filterByEntityType;
         private double filterByContribution = -1;
 
         // sort
