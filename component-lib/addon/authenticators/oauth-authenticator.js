@@ -8,7 +8,7 @@
 import { inject as service } from '@ember/service';
 
 import fetch from 'component-lib/utils/fetch';
-import { run } from '@ember/runloop';
+import { run, later } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 import RSVP from 'rsvp';
 import { makeArray } from '@ember/array';
@@ -119,10 +119,15 @@ export default OAuth2PasswordGrant.extend(csrfToken, {
             }), {
               sticky: true
             });
-          }
 
-          this.set('session.persistedAccessToken', responseJSON.access_token);
-          resolve(responseJSON);
+            later(() => {
+              this.set('session.persistedAccessToken', responseJSON.access_token);
+              resolve(responseJSON);
+            }, 5000);
+          } else {
+            this.set('session.persistedAccessToken', responseJSON.access_token);
+            resolve(responseJSON);
+          }
         });
       }, (xhr) => {
         run(null, reject, xhr.responseJSON || xhr.responseText);
