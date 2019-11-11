@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
+import com.rsa.netwitness.presidio.automation.jdbc.AirflowTasksPostgres;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import com.rsa.netwitness.presidio.automation.test_managers.OutputTestManager;
@@ -23,6 +24,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +32,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.counting;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
@@ -51,10 +54,76 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
 
     @BeforeClass
     public void prepareData() throws JSONException {
-        allEntitiesUrl = restHelper.entities().url().withMaxSizeAndSortedParameters("ASC", "SCORE");
+        allEntitiesUrl = restHelper.entities().url().withMaxSizeAndSortedAndExpendedParameters("ASC", "SCORE");
         allActualEntitiesSortedByScore = ImmutableList.copyOf(restHelper.entities().request().getEntities(allEntitiesUrl));
         assertThat(allActualEntitiesSortedByScore).isNotNull().isNotEmpty();
         assertThat(allActualEntitiesSortedByScore.stream().map(e -> Integer.valueOf(e.getScore()))).isSorted();
+    }
+
+    @Test
+    public void trending_score_equals_sum_of_entity_score_contributions() {
+        Instant lastExecutionDateOfOutput = new AirflowTasksPostgres()
+                .fetchTaskDetails("userId_hourly_ueba_flow", "userId_hourly", Instant.now().minus(3, DAYS))
+                .stream().filter(e -> e.state.equals("success"))
+                .map(e -> e.executionDate)
+                .max(Instant::compareTo)                // last execution of output for E2E automation
+                .orElse(Instant.now().truncatedTo(DAYS).minus(3, DAYS));  // for core automation
+
+        List<EntitiesStoredRecord> entitiesWithoutAlerts = allActualEntitiesSortedByScore.parallelStream()
+                .filter(e -> e.getAlerts().isEmpty())
+                .collect(toList());
+
+        assertThat(allActualEntitiesSortedByScore)
+                .as(allEntitiesUrl + "\nFound entity REST without trending values.")
+                .extracting(EntitiesStoredRecord::getTrendingScore)
+                .doesNotContainNull()
+                .isNotNull()
+                .isNotEmpty();
+
+        assertThat(entitiesWithoutAlerts)
+                .as(allEntitiesUrl + "\nTrending values for entities without alerts must be 0.")
+                .flatExtracting(e -> e.getTrendingScore().values())
+                .doesNotContainNull()
+                .containsOnly(0);
+
+
+        List<EntitiesStoredRecord> entitiesWithAlerts = allActualEntitiesSortedByScore.parallelStream()
+                .filter(e -> !e.getAlerts().isEmpty())
+                .collect(toList());
+
+        for (EntitiesStoredRecord entity : entitiesWithAlerts) {
+            int dailyTrend = entity.getTrendingScore().get("daily");
+            int weeklyTrend = entity.getTrendingScore().get("weekly");
+
+            int dailySumOfScoreContributions = entity.getAlerts().parallelStream()
+                    .filter(alert -> alert.getStartDate().isAfter(lastExecutionDateOfOutput.minus(1, DAYS)))
+                    .mapToInt(e -> Integer.valueOf(e.getEntityScoreContribution()))
+                    .sum();
+
+            int weeklySumOfScoreContributions = entity.getAlerts().parallelStream()
+                    .filter(alert -> alert.getStartDate().isAfter(lastExecutionDateOfOutput.minus(7, DAYS)))
+                    .mapToInt(e -> Integer.valueOf(e.getEntityScoreContribution()))
+                    .sum();
+
+            assertThat(dailySumOfScoreContributions)
+                    .as(allEntitiesUrl + "\nDaily trending value result mismatch for entityId: " + entity.getId()
+                            + "\nAlerts: " + entity.getAlerts().stream().map(e -> "[" + e.getId()
+                            + ", StartDate=" + e.getStartDate() + ", EndDate=" + e.getEndDate() + ", EntityScoreContribution="
+                            + e.getEntityScoreContribution() + "]").collect(joining(",\n"))
+                            + "\nlastExecutionDateOfOutput=" + lastExecutionDateOfOutput
+                            + "\nstartDate should be after " + lastExecutionDateOfOutput.minus(1, DAYS))
+                    .isEqualTo(dailyTrend);
+
+            assertThat(weeklySumOfScoreContributions)
+                    .as(allEntitiesUrl + "\nWeekly trending value result mismatch for entityId: " + entity.getId()
+                            + "\nAlerts: " + entity.getAlerts().stream().map(e -> "[" + e.getId()
+                            + ", StartDate=" + e.getStartDate() + ", EndDate=" + e.getEndDate() + ", EntityScoreContribution="
+                            + e.getEntityScoreContribution() + "]").collect(joining(",\n"))
+                            + "\nlastExecutionDateOfOutput=" + lastExecutionDateOfOutput
+                            + "\nstartDate should be after " + lastExecutionDateOfOutput.minus(7, DAYS))
+                    .isEqualTo(weeklyTrend);
+        }
+
     }
 
 
@@ -150,7 +219,7 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
                 .filter(e -> e.getSeverity().equals("CRITICAL"))
                 .filter(e -> Objects.nonNull(e.getScore()))
                 .filter(e -> Integer.valueOf(e.getScore()) <= 15)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         assertThat(criticalWithScoreLess15)
                 .as(allEntitiesUrl + "\nThe following entities have a critical severity with score less than 15:\n" +

@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class EntitiesStoredRecord {
     @Expose
@@ -26,12 +27,16 @@ public class EntitiesStoredRecord {
     private Integer alertCount;
     @Expose
     private String[] alertClassifications;
+    @Expose
+    private Map<String, Integer> trendingScore;
 
 
     public EntitiesStoredRecord() {
     }
 
-    public EntitiesStoredRecord(String id, List<AlertsStoredRecord> alerts, String entityName, String entityId, String entityType, String[] tags, String score, String sevirity, Integer alertCount, String[] alertClassifications) {
+    public EntitiesStoredRecord(String id, List<AlertsStoredRecord> alerts, String entityName, String entityId,
+                                String entityType, String[] tags, String score, String sevirity, Integer alertCount,
+                                String[] alertClassifications, Map<String, Integer> trendingScore) {
         this.id = id;
         this.alerts = alerts;
         this.entityName = entityName;
@@ -42,6 +47,7 @@ public class EntitiesStoredRecord {
         this.sevirity = sevirity;
         this.alertCount = alertCount;
         this.alertClassifications = alertClassifications;
+        this.trendingScore = trendingScore;
     }
 
     public String getId() {
@@ -124,6 +130,22 @@ public class EntitiesStoredRecord {
         this.alertClassifications = alertClassifications;
     }
 
+    public String getSevirity() {
+        return sevirity;
+    }
+
+    public void setSevirity(String sevirity) {
+        this.sevirity = sevirity;
+    }
+
+    public Map<String, Integer> getTrendingScore() {
+        return trendingScore;
+    }
+
+    public void setTrendingScore(Map<String, Integer> trendingScore) {
+        this.trendingScore = trendingScore;
+    }
+
     public int compareScore(EntitiesStoredRecord anotherEntity) {
         int current = Integer.valueOf(score);
         int another = Integer.valueOf(anotherEntity.score);
@@ -143,6 +165,7 @@ public class EntitiesStoredRecord {
                 ", sevirity='" + sevirity + '\'' +
                 ", alertCount=" + alertCount +
                 ", alertClassifications=" + Arrays.toString(alertClassifications) +
+                ", trendingScore=" + trendingScore +
                 '}';
     }
 }
