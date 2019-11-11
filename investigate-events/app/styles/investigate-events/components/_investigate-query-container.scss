@@ -39,6 +39,9 @@
 .rsa-investigate-query-container {
   display: flex;
 
+  // below includes overwrite styles for global components
+  // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+  // TODO: remove global component overwrites below and update the global component itself
   &__service-selector,
   &__time-selector {
     height: 40px;
@@ -62,6 +65,9 @@
     }
   }
 
+  // below includes overwrite styles for global components
+  // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+  // TODO: remove global component overwrites below and update the global component itself
   &__profile-selector {
     flex: 0 0 auto;
     .rsa-button-group:hover i {
@@ -303,6 +309,10 @@
       }
     }
   }
+
+  // below includes overwrite styles for global components
+  // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+  // TODO: remove global component overwrites below and update the global component itself
   &__time-selector {
     display: flex;
     .rsa-date-time-range {
@@ -375,7 +385,7 @@
     }
 
     .query-bar-options {
-      @include border(1px, solid, primary, light);
+      @include border(1px, solid, primary, lighter);
     }
 
     &.is-console-open {
@@ -772,7 +782,7 @@
         position: absolute;
         top: calc(#{rsa-whitespace(less)} + 1px);
         right: rsa-whitespace(less);
-        color: text-color(primary, lightest);
+        color: text-color(primary, lighter);
         cursor: pointer;
 
         &.is-disabled {
@@ -1136,6 +1146,9 @@
   }
 }
 
+// below includes overwrite styles for global components
+// many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+// TODO: remove global component overwrites below and update the global component itself
 // dropdown styles
 .investigate-query-dropdown {
   z-index: 20001;

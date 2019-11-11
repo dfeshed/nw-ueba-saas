@@ -94,7 +94,9 @@
 
     }
 
-
+    // below includes overwrite styles for global components
+    // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+    // TODO: remove global component overwrites below and update the global component itself
     &__columnGroups {
       float: left;
 
@@ -202,6 +204,9 @@
       }
     }
 
+    // below includes overwrite styles for global components
+    // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+    // TODO: remove global component overwrites below and update the global component itself
     &__manageIncident {
       margin: 0;
       margin-right: rsa-whitespace(less);
@@ -234,6 +239,9 @@
       }
     }
 
+    // below includes overwrite styles for global components
+    // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+    // TODO: remove global component overwrites below and update the global component itself
     &__downloadEvents {
       display: inline-block;
       float: left;
