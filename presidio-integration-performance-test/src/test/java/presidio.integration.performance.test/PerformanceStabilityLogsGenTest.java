@@ -92,6 +92,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
                     .flatMap(e -> e)
                     .sorted(Comparator.comparing(TlsEvent::getDateTime));
 
+            System.out.println("Start Processing");
             tlsStopWatch.start();
 
             process(tlsEventStream);
