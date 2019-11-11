@@ -107,7 +107,7 @@ def update_last_alert_date(item):
     last_alert_date = LAST_ALERT_DATE_BY_ENTITY.get(item["_source"]["userId"])
     end_date = item["_source"]["endDate"]
     if last_alert_date is None or last_alert_date < end_date:
-        LAST_ALERT_DATE_BY_ENTITY['item["_source"]["userId"]'] = end_date
+        LAST_ALERT_DATE_BY_ENTITY[item["_source"]["userId"]] = end_date
 
 
 # Update indicator table in elastic to List of aggregations and new entityType field
