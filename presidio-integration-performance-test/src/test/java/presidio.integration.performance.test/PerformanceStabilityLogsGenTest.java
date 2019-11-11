@@ -1,11 +1,12 @@
 package presidio.integration.performance.test;
 
+import com.google.common.collect.Iterators;
+import com.google.common.collect.UnmodifiableIterator;
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter;
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverterFactory;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
-import com.rsa.netwitness.presidio.automation.converter.formatters.BrokerCefFormatter;
 import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducer;
-import com.rsa.netwitness.presidio.automation.converter.producers.PartitionedCefFileProducer;
+import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducerFactory;
 import fortscale.common.general.Schema;
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -29,8 +30,11 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static com.rsa.netwitness.presidio.automation.enums.GeneratorFormat.CEF_HOURLY_FILE;
+import static java.util.stream.Collectors.toList;
+
 public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContextTests {
-    private final int EVENTS_GENERATION_CHUNK = 10000;
+    private final int EVENTS_GENERATION_CHUNK = 100000;
     private static final int NUM_OF_NORMAL_USERS = 94500;
     private static final int NUM_OF_ADMIN_USERS = 5000;
     private static final int NUM_OF_SERVICE_ACCOUNT_USERS = 500;
@@ -52,7 +56,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
     private StopWatch stopWatch = new StopWatch();
     private StopWatch tlsStopWatch = new StopWatch();
 
-    private EventsProducer<Stream<NetwitnessEvent>> eventsProducer = new PartitionedCefFileProducer(new BrokerCefFormatter());
+    private EventsProducer<List<NetwitnessEvent>> eventsProducer = new EventsProducerFactory(null).get(CEF_HOURLY_FILE);
     public final EventConverter<Event> eventEventConverter = new EventConverterFactory().get();
 
 
@@ -91,10 +95,13 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
                     .map(IEventGenerator::generateToStream)
                     .flatMap(e -> e);
 
-            System.out.println("Start Processing");
-            tlsStopWatch.start();
+            UnmodifiableIterator<List<TlsEvent>> partition = Iterators.partition(tlsEventStream.iterator(), EVENTS_GENERATION_CHUNK);
 
-            process(tlsEventStream);
+            tlsStopWatch.start();
+            while (partition.hasNext()) {
+                List<TlsEvent> tlsEvents = partition.next();
+                process(tlsEvents);
+            }
             System.out.println("TOTAL TLS: " + totalTls + ". Generation time: " + stopWatch.toString());
             tlsStopWatch.stop();
         }
@@ -107,7 +114,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
         }
 
         if (schemas.contains("REGISTRY")) {
-                RegistryPerformanceStabilityScenario registryScenario =
+            RegistryPerformanceStabilityScenario registryScenario =
                     new RegistryPerformanceStabilityScenario(
                             startInstant, endInstant,
                             numOfNormalUsers, numOfAdminUsers, numOfserviceAccountUsers,
@@ -145,9 +152,9 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
     }
 
 
-    private void process(Stream<TlsEvent> bucket){
-        Stream<NetwitnessEvent> convertedEvents = bucket
-                .map(eventEventConverter::convert);
+    private void process(List<TlsEvent> bucket){
+        List<NetwitnessEvent> convertedEvents = bucket.parallelStream()
+                .map(eventEventConverter::convert).collect(toList());
 
         Map<Schema, Long> sent = eventsProducer.send(convertedEvents);
         totalTls += sent.get(Schema.TLS).intValue();
@@ -229,13 +236,13 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
             Map<String, List<Event>> srcMachineToEvents = new HashMap<>();
             Map<String, List<Event>> dstMachineToEvents = new HashMap<>();
             for (Event event : events) {
-            List<Event> srcMachineEvents = srcMachineToEvents.computeIfAbsent(((AuthenticationEvent) event).getSrcMachineEntity().getMachineId(), k -> new ArrayList<>());
-            srcMachineEvents.add(event);
-            List<Event> dstMachineEvents = dstMachineToEvents.computeIfAbsent(((AuthenticationEvent) event).getDstMachineEntity().getMachineId(), k -> new ArrayList<>());
-            dstMachineEvents.add(event);
-        }
+                List<Event> srcMachineEvents = srcMachineToEvents.computeIfAbsent(((AuthenticationEvent) event).getSrcMachineEntity().getMachineId(), k -> new ArrayList<>());
+                srcMachineEvents.add(event);
+                List<Event> dstMachineEvents = dstMachineToEvents.computeIfAbsent(((AuthenticationEvent) event).getDstMachineEntity().getMachineId(), k -> new ArrayList<>());
+                dstMachineEvents.add(event);
+            }
             logPrinter.printHourlyFiles(events);
-    } while (events.size() == EVENTS_GENERATION_CHUNK);
+        } while (events.size() == EVENTS_GENERATION_CHUNK);
     }
 
     private List<MachineEntity> createGlobalServerMachinePool() {
