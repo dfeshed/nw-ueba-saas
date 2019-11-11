@@ -12,8 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class EntitiesRestCallHelper implements IRestCallHelper{
@@ -76,6 +75,11 @@ public class EntitiesRestCallHelper implements IRestCallHelper{
                 String score = tmp.get("score").toString();
                 String severity = tmp.get("severity").toString();
 
+                Map<String, Integer> trendingScore = new HashMap<>();
+                JSONObject trendingScoreObj = tmp.getJSONObject("trendingScore");
+                trendingScore.put("daily" , trendingScoreObj.getInt("daily"));
+                trendingScore.put("weekly" , trendingScoreObj.getInt("weekly"));
+
                 List<AlertsStoredRecord> alerts = null;
                 if(URL.toLowerCase().contains("expand=true")) {
 
@@ -122,7 +126,7 @@ public class EntitiesRestCallHelper implements IRestCallHelper{
                     }
                 }
 
-                entitiesStoredRecords.add(new EntitiesStoredRecord(id, alerts, entityName, entityId, entityType, tags, score, severity, alertCount, alertClassifications));
+                entitiesStoredRecords.add(new EntitiesStoredRecord(id, alerts, entityName, entityId, entityType, tags, score, severity, alertCount, alertClassifications, trendingScore));
             }
 
         } catch (JSONException e) {

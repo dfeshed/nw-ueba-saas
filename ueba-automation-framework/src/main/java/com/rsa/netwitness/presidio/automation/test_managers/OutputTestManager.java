@@ -30,7 +30,9 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.rsa.netwitness.presidio.automation.domain.config.Consts.PRESIDIO_DIR;
 import static com.rsa.netwitness.presidio.automation.domain.config.Consts.PRESIDIO_OUTPUT;
@@ -383,6 +385,11 @@ public class OutputTestManager {
                 String score = tmp.get("score").toString();
                 String severity = tmp.get("severity").toString();
 
+                Map<String, Integer> trendingScore = new HashMap<>();
+                JSONObject trendingScoreObj = tmp.getJSONObject("trendingScore");
+                trendingScore.put("daily" , trendingScoreObj.getInt("daily"));
+                trendingScore.put("weekly" , trendingScoreObj.getInt("weekly"));
+
                 List<AlertsStoredRecord> alerts = null;
                 if(additionalUrlFlags.toLowerCase().contains("expand=true")) {
 
@@ -429,7 +436,7 @@ public class OutputTestManager {
                     }
                 }
 
-                entitiesStoredRecords.add(new EntitiesStoredRecord(id, alerts, entityName, entityId, entityType, tags, score, severity, alertCount, alertClassifications));
+                entitiesStoredRecords.add(new EntitiesStoredRecord(id, alerts, entityName, entityId, entityType, tags, score, severity, alertCount, alertClassifications, trendingScore));
             }
 
         } catch (JSONException e) {
