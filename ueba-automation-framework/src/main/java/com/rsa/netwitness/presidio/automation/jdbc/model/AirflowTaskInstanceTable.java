@@ -27,13 +27,21 @@ public class AirflowTaskInstanceTable {
     public final String taskId;
     public final Instant executionDate;
     public final int tryNumber;
-
-
     public final int maxTries;
+    public final String dagId;
+    public final Instant startDate;
+    public final Instant endDate;
+    public final String state;
 
-    public AirflowTaskInstanceTable(String taskId, Instant executionDate, int tryNumber, int maxTries) {
+
+    public AirflowTaskInstanceTable(String dagId, String taskId, Instant executionDate, Instant startDate,
+                                    Instant endDate, String state, int tryNumber, int maxTries) {
+        this.dagId = dagId;
         this.taskId = taskId;
         this.executionDate = executionDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.state = state;
         this.tryNumber = tryNumber;
         this.maxTries = maxTries;
     }
@@ -45,6 +53,10 @@ public class AirflowTaskInstanceTable {
                 ", executionDate=" + executionDate +
                 ", tryNumber=" + tryNumber +
                 ", maxTries=" + maxTries +
+                ", dagId='" + dagId + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", state='" + state + '\'' +
                 '}';
     }
 

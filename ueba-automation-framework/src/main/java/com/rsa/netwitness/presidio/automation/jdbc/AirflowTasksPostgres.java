@@ -53,32 +53,60 @@ public class AirflowTasksPostgres {
     }
 
     public List<AirflowTaskInstanceTable> fetchRetries(Instant startTime) {
-        String SQL_QUERY = "select * from " + TASK_INSTANCE_TABLE + " where " + AirflowTaskInstanceTable.START_DATE + " > '" + Timestamp.from(startTime) + "'";
-        List<AirflowTaskInstanceTable> airflowTaskFailTables = Lists.newLinkedList();
+        String SQL_QUERY = "select * from " + TASK_INSTANCE_TABLE
+                + " where " + AirflowTaskInstanceTable.START_DATE + " > '" + Timestamp.from(startTime) + "'";
+
+        return fetch(SQL_QUERY);
+    }
+
+    public List<AirflowTaskInstanceTable> fetchTaskDetails(String dagId, String taskId, Instant startTime) {
+        String SQL_QUERY = "select * from " + TASK_INSTANCE_TABLE
+                + " where " + AirflowTaskInstanceTable.START_DATE + " > '" + Timestamp.from(startTime) + "'"
+                + " and " + AirflowTaskInstanceTable.DAG_ID + "='" + dagId + "'"
+                + " and " + AirflowTaskInstanceTable.TASK_ID + "='" + taskId + "'";
+
+        return fetch(SQL_QUERY);
+    }
+
+
+    private List<AirflowTaskInstanceTable> fetch(String SQL_QUERY) {
+        List<AirflowTaskInstanceTable> tasks = Lists.newLinkedList();
 
         try (Connection con = PostgresAirflowConnection.getConnection();
              PreparedStatement pst = con.prepareStatement(SQL_QUERY);
              ResultSet rs = pst.executeQuery()) {
-
-            while (rs.next()) {
-                String taskId = rs.getString(AirflowTaskInstanceTable.TASK_ID);
-                Instant executionDate = rs.getTimestamp(AirflowTaskInstanceTable.EXECUTION_DATE).toInstant();
-                int tryNumber = rs.getInt(AirflowTaskInstanceTable.TRY_NUMBER);
-                int maxTries = rs.getInt(AirflowTaskInstanceTable.MAX_TRIES);
-
-                airflowTaskFailTables.add(new AirflowTaskInstanceTable(
-                        taskId,
-                        executionDate,
-                        tryNumber,
-                        maxTries
-                ));
-            }
+            tasks.addAll(buildTasks(rs));
         } catch (SQLException e) {
             e.printStackTrace();
             fail("SQLException");
         }
-
-        return airflowTaskFailTables;
+        return tasks;
     }
 
+    private List<AirflowTaskInstanceTable> buildTasks(ResultSet rs) throws SQLException {
+        List<AirflowTaskInstanceTable> tasks = Lists.newLinkedList();
+
+        while (rs.next()) {
+            String dagId = rs.getString(AirflowTaskInstanceTable.DAG_ID);
+            String taskId = rs.getString(AirflowTaskInstanceTable.TASK_ID);
+            Instant executionDate = rs.getTimestamp(AirflowTaskInstanceTable.EXECUTION_DATE).toInstant();
+            Instant startDate = rs.getTimestamp(AirflowTaskInstanceTable.START_DATE).toInstant();
+            Instant endDate = rs.getTimestamp(AirflowTaskInstanceTable.END_DATE).toInstant();
+            String state = rs.getString(AirflowTaskInstanceTable.STATE);
+            int tryNumber = rs.getInt(AirflowTaskInstanceTable.TRY_NUMBER);
+            int maxTries = rs.getInt(AirflowTaskInstanceTable.MAX_TRIES);
+
+            tasks.add(new AirflowTaskInstanceTable(
+                    dagId,
+                    taskId,
+                    executionDate,
+                    startDate,
+                    endDate,
+                    state,
+                    tryNumber,
+                    maxTries
+            ));
+        }
+        return tasks;
+    }
 }
