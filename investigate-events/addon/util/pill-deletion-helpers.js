@@ -59,13 +59,18 @@ export const includeLogicalOpAfterParens = (deleteIds, pill, idx, pillsData) => 
   const beforePrevPill = pillsData[idx - 2];
   const [firstDeleteId] = deleteIds;
   const firstPillDeleted = pillsData.find((pill) => pill.id === firstDeleteId);
+  const firstPillDeletedIndex = pillsData.indexOf(firstPillDeleted);
   // making sure Multiple pills are being deleted, eg (),(pill), (pill ..)
   const isRemovingMultiplePills = deleteIds.length > 1 && prevPill && beforePrevPill &&
   deleteIds.includes(prevPill.id) && deleteIds.includes(beforePrevPill.id);
+  // checking if all the pills deleted are between two parens
   const isFirstPillOpenParen = !!firstPillDeleted && firstPillDeleted.type === OPEN_PAREN && firstPillDeleted.twinId === prevPill.twinId;
+  // checking if both parens are selected.
   const areBothParensSelected = !!firstPillDeleted && !!prevPill.isSelected && !!firstPillDeleted.isSelected;
+  // checking if just empty parens are deleted.
   const isAfterEmptyParens = deleteIds.length === 2;
-  const isNotAtBeginning = areBothParensSelected ? pillsData.indexOf(firstPillDeleted) > 0 : idx - 2 > 0;
+  // pill at the beginning of the query or the first pill inside parens when deleted, the associated logical operator to the right should not be retained.
+  const isNotAtBeginning = firstPillDeletedIndex > 0 && pillsData[firstPillDeletedIndex - 1].type !== OPEN_PAREN;
   return isRemovingMultiplePills && isFirstPillOpenParen && (areBothParensSelected || isAfterEmptyParens) && isNotAtBeginning;
 };
 

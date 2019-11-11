@@ -8,7 +8,7 @@ import { clickTrigger, typeInSearch, selectChoose } from 'ember-power-select/tes
 import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import ReduxDataHelper, { DEFAULT_LANGUAGES, DEFAULT_PILLS_DATA, COMPLEX_PILL_DATA } from '../../../../helpers/redux-data-helper';
+import ReduxDataHelper, { DEFAULT_LANGUAGES, DEFAULT_ALIASES, DEFAULT_PILLS_DATA, COMPLEX_PILL_DATA } from '../../../../helpers/redux-data-helper';
 import pillCreators from 'investigate-events/actions/pill-creators';
 import pillSelectionCreators from 'investigate-events/actions/pill-selection-creators';
 
@@ -29,13 +29,16 @@ import {
   AFTER_OPTION_TEXT_LABEL,
   COMPLEX_FILTER,
   OPERATOR_AND,
-  OPERATOR_OR
+  OPERATOR_OR,
+  CLOSE_PAREN,
+  OPEN_PAREN
 } from 'investigate-events/constants/pill';
 import initializationCreators from 'investigate-events/actions/initialization-creators';
 import {
   createFilter,
   createOperator,
-  createParens
+  createParens,
+  transformTextToPillData
 } from 'investigate-events/util/query-parsing';
 
 const { log } = console;//eslint-disable-line
@@ -80,6 +83,24 @@ const allPillsAreClosed = (assert) => {
   assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 0, 'Class for pill open should not be present.');
   assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 0, 'Class for pills open for edit.');
   assert.equal(findAll(PILL_SELECTORS.pillTriggerOpenForAdd).length, 0, 'Class for trigger open should not be present.');
+};
+
+const assignIdsAndTwinIdsToPills = (results) => {
+  const pills = [];
+  const twinIds = [];
+  let twinIdCounter = 0;
+  results.forEach((pill, idx) => {
+    if (!!pill.type && pill.type === OPEN_PAREN) {
+      twinIdCounter++;
+      twinIds.push(twinIdCounter);
+      pills.push({ ...pill, id: `pill${idx}`, twinId: `twinId${twinIdCounter}` });
+    } else if (!!pill.type && pill.type === CLOSE_PAREN) {
+      pills.push({ ...pill, id: `pill${idx}`, twinId: `twinId${twinIds.pop()}` });
+    } else {
+      pills.push({ ...pill, id: `pill${idx}` });
+    }
+  });
+  return pills;
 };
 
 const e = {
@@ -5351,5 +5372,98 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.notOk(find(PILL_SELECTORS.openParen), 'Should not have found paren');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'Should not have found paren');
     assert.notOk(find(PILL_SELECTORS.focusedPill), 'The focus is shift to the right pill after delete');
+  });
+
+  test('Pressing delete on the single pill inside parens at the start of a nested paren, should remove the  parens and the pill along with operator', async function(assert) {
+    const text = 'medium = 1 AND ( ( medium = 32 ) AND medium = 21 ) AND medium = 2';
+    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    const pillsData = assignIdsAndTwinIdsToPills(results);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated(pillsData)
+      .build();
+
+    assert.expect(8);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true isPrimary=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    // deleting the pill inside the nested parens
+    const [, deletePointers] = findAll(PILL_SELECTORS.deletePill);
+    await click(deletePointers);
+
+    // verifying if the pill the nested parens and the logical operator to the right are deleted.
+    assert.equal(findAll(PILL_SELECTORS.logicalOperator).length, 2, 'Two And operators');
+    assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'One open Paren');
+    assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'One close Paren');
+    assert.notOk(find(PILL_SELECTORS.focusedPill), 'The focus is shift to the right pill after delete');
+    // ensuring between the parens there is no logical operator.
+    const logicalOperators = findAll(PILL_SELECTORS.logicalOperator);
+    assert.equal(logicalOperators[0].getAttribute('position'), 1, 'One Logical operator on position 1');
+    assert.equal(find(PILL_SELECTORS.openParen).getAttribute('position'), 2, 'One open Paren on position 2');
+    assert.equal(find(PILL_SELECTORS.closeParen).getAttribute('position'), 4, 'One close Paren on position 4');
+    assert.equal(logicalOperators[1].getAttribute('position'), 5, 'One Logical operator on position 5');
+  });
+
+  test('Pressing delete on the selected parens at the start of a nested paren, should remove the  parens and the pill along with operator', async function(assert) {
+    const text = 'medium = 1 AND ( ( medium = 32 ) AND medium = 21 ) AND medium = 2';
+    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    const pillsData = assignIdsAndTwinIdsToPills(results);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated(pillsData)
+      .build();
+
+    assert.expect(10);
+
+    const done = assert.async();
+
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true isPrimary=true}}
+        {{context-menu}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    // select the inner parens
+    const [, paren] = findAll(PILL_SELECTORS.openParen);
+    await click(paren);
+    // verify if the parens are selected.
+    assert.ok(find(PILL_SELECTORS.openParenSelected), 'Did not find paren selected');
+    assert.ok(find(PILL_SELECTORS.closeParenSelected), 'Did not find paren selected');
+
+    // open the context menu on the selected paren
+    await triggerEvent(find(PILL_SELECTORS.openParenSelected), 'contextmenu', { clientX: 100, clientY: 100 });
+
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      const actionSelector = items.find((op) => op.textContent.includes('Delete selection'));
+      // click the delete option
+      await click(`#${actionSelector.id}`);
+      return settled().then(() => {
+        // verifying if the pill the nested parens and the logical operator to the right are deleted.
+        assert.equal(findAll(PILL_SELECTORS.logicalOperator).length, 2, 'Two And operators');
+        assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'One open Paren');
+        assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'One close Paren');
+        assert.notOk(find(PILL_SELECTORS.focusedPill), 'The focus is shift to the right pill after delete');
+        // ensuring between the parens there is no logical operator.
+        const logicalOperators = findAll(PILL_SELECTORS.logicalOperator);
+        assert.equal(logicalOperators[0].getAttribute('position'), 1, 'One Logical operator on position 1');
+        assert.equal(find(PILL_SELECTORS.openParen).getAttribute('position'), 2, 'One open Paren on position 2');
+        assert.equal(find(PILL_SELECTORS.closeParen).getAttribute('position'), 4, 'One close Paren on position 4');
+        assert.equal(logicalOperators[1].getAttribute('position'), 5, 'One Logical operator on position 5');
+        done();
+      });
+    });
   });
 });

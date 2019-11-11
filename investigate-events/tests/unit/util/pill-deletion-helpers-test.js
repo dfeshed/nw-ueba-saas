@@ -196,4 +196,35 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     const deletedIds = [ pills[0].id, pills[1].id ];
     assert.notOk(includeLogicalOpAfterParens(deletedIds, pill, 2, pills), 'Should allow deletion of the pill');
   });
+
+  test('should return false if the pill passed is a logical operator after selected parens and the selected parens are the first block inside another parens', function(assert) {
+    const text = '( medium = 3 ) AND  ((medium = 4) AND medium = 5)  AND b = \'google.com\'';
+    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    const pills = createPillsWithIds(results);
+    // parens to the right and left of medium = 4 pill are selected.
+    pills[5].isFocused = true;
+    pills[5].isSelected = true;
+    pills[7].isFocused = true;
+    pills[7].isSelected = true;
+    // the logical and pill after the closing parens [ (medium =4 ) AND ] is being checked to see if it needs to be retained.
+    const [,,,,,,,, logicalAndPill ] = pills;
+    // when user selects the nested parens around the pill medium = 4 and uses the right click delete option,
+    // the pill and the parens are all deleted in one call
+    const deletedIds = [ pills[5].id, pills[6].id, pills[7].id];
+    assert.notOk(includeLogicalOpAfterParens(deletedIds, logicalAndPill, pills.indexOf(logicalAndPill), pills), 'Should allow deletion of the pill');
+  });
+
+  test('should return false if the pill passed is a logical operator after two empty parens, and the empty parens are the first block inside another parens', function(assert) {
+    const text = '( medium = 3 ) AND  ((medium = 4) AND medium = 5)  AND b = \'google.com\'';
+    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    // Remove the pill medium = 4 inside the nested parens
+    // this would happen when user deletes the single pill between parens using delete icon.
+    results.splice(6, 1);
+    const pills = createPillsWithIds(results);
+    // the logical and pill after the closing parens [ (medium =4 ) AND ] is being checked to see if it needs to be retained.
+    const [,,,,,,,, logicalAndPill] = pills;
+    // only the encompassing parens of pill medium = 4 are deleted in the second call as the pill alone is deleted first
+    const deletedIds = [ pills[5].id, pills[6].id];
+    assert.notOk(includeLogicalOpAfterParens(deletedIds, logicalAndPill, pills.indexOf(logicalAndPill), pills), 'Should allow deletion of the pill');
+  });
 });
