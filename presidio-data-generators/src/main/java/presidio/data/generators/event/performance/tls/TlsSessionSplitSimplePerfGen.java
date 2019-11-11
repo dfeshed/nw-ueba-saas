@@ -5,6 +5,7 @@ import presidio.data.domain.event.network.NETWORK_DIRECTION_TYPE;
 import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.FixedValueGenerator;
 import presidio.data.generators.IBaseGenerator;
+import presidio.data.generators.NullGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.dictionary.SingleWordCyclicGenerator;
 import presidio.data.generators.common.list.random.RandomRangeCompanyGen;
@@ -57,7 +58,7 @@ public class TlsSessionSplitSimplePerfGen extends AbstractEventGenerator<TlsEven
     private IBaseGenerator<String> hostnameGen;
 
     private final Ipv4RangeAllocator dstIpGenerator = new Ipv4RangeAllocator();
-    private IBaseGenerator<String> dstAsnGenerator = new RandomStringGenerator(5, 8);
+    private IBaseGenerator<String> dstAsnGenerator = new NullGenerator<>();
     private IBaseGenerator<String> sslCaGenerator = sslCaGenSupplier.get();
     private IBaseGenerator<String> ja3sGenerator = new Md5RandomGenerator();
     private IBaseGenerator<String> dataSourceGenerator = new RandomStringGenerator(6, 7);
