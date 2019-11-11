@@ -1,6 +1,7 @@
 package presidio.output.domain.services.alerts;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -38,7 +39,7 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         }
 
         // filter by entity type
-        if (!alertQuery.getFilterByEntityType().isEmpty()) {
+        if (StringUtils.isNotEmpty(alertQuery.getFilterByEntityType())) {
             BoolQueryBuilder entityTypeQuery = new BoolQueryBuilder();
             String entityType = alertQuery.getFilterByEntityType();
             entityTypeQuery.should(matchQuery(Alert.ENTITY_TYPE, entityType));
