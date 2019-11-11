@@ -60,6 +60,7 @@ const fileContextSelections = [
     checksumSha1: '79a1a29d267d6480138d2768041c46430f77bcf5',
     checksumSha256: 'ae69c142dc2210a4ae657c23cea4a6e7cb32c4f4eba039414123cac52157509b',
     checksumMd5: 'cea80c80bed809aa0da6febc04733349',
+    hostCount: 3,
     signature: {
       timeStamp: '2010-11-20T12:29:16.000+0000',
       thumbprint: '02eceea9d5e0a9f3e39b6f4ec3f7131ed4e352c4',
@@ -100,6 +101,7 @@ const fileContextSelections = [
     checksumSha1: '96c00157276e982c7d883bec5478eb1fb242cf1f',
     checksumSha256: '673c2b498744c7eb846f6bd4fdc852b0a9722377d75fd694f7f78e727adf4563',
     checksumMd5: '1151fd4fb0216cfed887bfde29ebd516',
+    hostCount: 3,
     signature: {
       timeStamp: '2010-11-20T15:32:51.000+0000',
       thumbprint: '02eceea9d5e0a9f3e39b6f4ec3f7131ed4e352c4',
@@ -201,7 +203,11 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
 
   test('it should test the clicking on the host name navigates to host details page', async function(assert) {
     this.set('propertyConfig', [{ fields: [] }]);
-    new ReduxDataHelper(setState).drivers(drivers).fileContextSelections(fileContextSelections).hostNameList(hosts).build();
+    new ReduxDataHelper(setState)
+      .drivers(drivers)
+      .fileContextSelections(fileContextSelections)
+      .hostNameList(hosts)
+      .build();
     await render(hbs`
      <style>
         box, section {

@@ -108,6 +108,7 @@
       {{else if (eq activeHostDetailPropertyTab 'HOSTS')}}
         {{endpoint/host-name-list
           items=hostNameList
+          itemCount=selectedFileHostCount
           onItemClick=(action 'onHostNameClick')}}
       {{/if}}
     {{/if}}

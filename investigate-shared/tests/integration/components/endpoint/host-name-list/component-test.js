@@ -29,13 +29,15 @@ module('Integration | Component | endpoint/host-name-list', function(hooks) {
       'linux',
       'mac'
     ]);
-    await render(hbs`{{endpoint/host-name-list items=items}}`);
+    this.set('itemCount', 3);
+    await render(hbs`{{endpoint/host-name-list items=items itemCount=itemCount}}`);
     assert.equal(findAll('[test-id=hostNameListItems] .host-name').length, 3, 'expected to render 3 host names');
   });
 
   test('it displays the title with count (more than 100 host)', async function(assert) {
     this.set('items', new Array(110));
-    await render(hbs`{{endpoint/host-name-list items=items}}`);
+    this.set('itemCount', 110);
+    await render(hbs`{{endpoint/host-name-list items=items itemCount=itemCount}}`);
     assert.equal(find('[test-id=hostNameListTitle]').textContent.trim(), 'Top 100 hosts with high risk scores are listed');
     assert.equal(findAll('.info-icon').length, 1, 'Info icon is loaded');
   });
@@ -44,7 +46,8 @@ module('Integration | Component | endpoint/host-name-list', function(hooks) {
     this.set('items', [
       'windows'
     ]);
-    await render(hbs`{{endpoint/host-name-list items=items}}`);
+    this.set('itemCount', 1);
+    await render(hbs`{{endpoint/host-name-list items=items itemCount=itemCount}}`);
     assert.equal(findAll('[test-id=hostNameListTitle]').length, 0);
   });
 
@@ -56,11 +59,12 @@ module('Integration | Component | endpoint/host-name-list', function(hooks) {
       'linux',
       'mac'
     ]);
+    this.set('itemCount', 3);
     this.set('onItemClick', function(target) {
       assert.ok(true);
       assert.equal(target, 'HOST_NAME');
     });
-    await render(hbs`{{endpoint/host-name-list items=items onItemClick=onItemClick}}`);
+    await render(hbs`{{endpoint/host-name-list items=items itemCount=itemCount onItemClick=onItemClick}}`);
     await click(findAll('.host-name__link')[0]);
   });
 
@@ -72,11 +76,12 @@ module('Integration | Component | endpoint/host-name-list', function(hooks) {
       'linux',
       'mac'
     ]);
+    this.set('itemCount', 3);
     this.set('onItemClick', function(target) {
       assert.ok(true);
       assert.equal(target, 'PIVOT_ICON');
     });
-    await render(hbs`{{endpoint/host-name-list items=items onItemClick=onItemClick}}`);
+    await render(hbs`{{endpoint/host-name-list items=items itemCount=itemCount onItemClick=onItemClick}}`);
     await click(findAll('.pivot-to-investigate button')[0]);
   });
 

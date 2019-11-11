@@ -5,6 +5,8 @@ import { computed } from '@ember/object';
 export default Component.extend({
   layout,
 
+  tagName: 'box',
+
   classNames: ['host-name-list'],
 
   attributeBindings: ['testId:test-id'],
@@ -19,12 +21,10 @@ export default Component.extend({
 
   onPivotToInvestigate: null,
 
-  itemCount: computed('items', function() {
-    return this.items && this.items.length;
-  }),
+  itemCount: null,
 
   hasData: computed('itemCount', function() {
-    return !!this.itemCount;
+    return this.itemCount > 0;
   }),
 
   countLabelKey: computed('itemCount', function() {

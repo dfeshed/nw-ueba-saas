@@ -27,7 +27,7 @@ const LOADING_STATUS = 'loading';
 const _toggleSelection = (state, payload) => {
   const { fileContextSelections } = state;
   const { id, fileName, fileProperties, machineOsType, path, machineName } = payload;
-  const { signature, size, checksumSha256, checksumSha1, checksumMd5, format, pe, downloadInfo = {} } = fileProperties;
+  const { signature, size, checksumSha256, checksumSha1, checksumMd5, format, hostCount, pe, downloadInfo = {} } = fileProperties;
   const features = pe ? pe.features : [];
   const pid = payload.pid || (payload.process ? payload.process.pid : null);
   let selectedList = [];
@@ -35,7 +35,7 @@ const _toggleSelection = (state, payload) => {
   if (fileContextSelections.some((file) => file.id === id)) {
     selectedList = fileContextSelections.filter((file) => file.id !== id);
   } else {
-    selectedList = [...fileContextSelections, { machineName, id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, machineOsType, path, downloadInfo, features, format, pid }];
+    selectedList = [...fileContextSelections, { machineName, id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, machineOsType, path, downloadInfo, features, format, hostCount, pid }];
   }
   return state.merge({ 'fileContextSelections': selectedList, 'fileStatus': {}, isRemediationAllowed: true });
 
@@ -75,9 +75,9 @@ const fileContext = reduxActions.handleActions({
     const { fileContextSelections } = state;
     if (fileContextSelections.length < payload.length) {
       return state.set('fileContextSelections', payload.map((driver) => {
-        const { machineName, id, fileName, path, machineOsType, fileProperties: { signature, size, checksumSha256, checksumSha1, checksumMd5, format, pe, downloadInfo = {} } } = driver;
+        const { machineName, id, fileName, path, machineOsType, fileProperties: { signature, size, checksumSha256, checksumSha1, checksumMd5, hostCount, format, pe, downloadInfo = {} } } = driver;
         const features = pe ? pe.features : [];
-        return { machineName, id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, path, downloadInfo, features, machineOsType, format };
+        return { machineName, id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, path, downloadInfo, features, machineOsType, hostCount, format };
       }));
     } else {
       return state.set('fileContextSelections', []);

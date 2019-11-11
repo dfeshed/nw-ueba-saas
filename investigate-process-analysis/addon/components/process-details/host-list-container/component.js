@@ -3,11 +3,13 @@ import { listOfHostNames } from 'investigate-process-analysis/reducers/host-cont
 import { fetchAgentId } from 'investigate-process-analysis/actions/creators/events-creators';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
+import { processHostCount } from 'investigate-process-analysis/reducers/process-properties/selectors';
 
 const stateToComputed = (state) => ({
   listOfHostNames: listOfHostNames(state),
   isLoading: state.processAnalysis.hostContext.loading,
-  serverId: state.processAnalysis.processTree.selectedServerId
+  serverId: state.processAnalysis.processTree.selectedServerId,
+  processHostCount: processHostCount(state)
 });
 
 const dispatchToActions = {

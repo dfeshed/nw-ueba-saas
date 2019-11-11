@@ -8,6 +8,7 @@ import {
   isNavigatedFromExplore,
   isProcessLoading,
   selectedFileChecksums,
+  selectedFileHostCount,
   selectedProcessName } from 'investigate-hosts/reducers/details/process/selectors';
 import computed from 'ember-computed-decorators';
 import { toggleProcessView, setRowIndex } from 'investigate-hosts/actions/data-creators/process';
@@ -68,6 +69,7 @@ const stateToComputed = (state) => ({
   selectedProcessList: state.endpoint.process.selectedProcessList,
   selectedProcessName: selectedProcessName(state),
   selectedFileChecksums: selectedFileChecksums(state),
+  selectedFileHostCount: selectedFileHostCount(state),
   fileStatus: fileStatus(state, 'processes'),
   osType: machineOsType(state),
   hostName: hostName(state),
@@ -86,7 +88,8 @@ const stateToComputed = (state) => ({
   selectedFilterId: selectedFilterId(state.endpoint.details),
   savedFilter: savedFilter(state.endpoint.details),
   hostDetailFilters: state.endpoint.details.filter.savedFilterList,
-  hostNameList: hostNameList(state, 'processes')
+  hostNameList: hostNameList(state, 'processes'),
+  serverId: state.endpointQuery.serverId
 });
 
 const dispatchToActions = {

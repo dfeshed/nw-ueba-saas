@@ -34,6 +34,7 @@ export const fileContextSelectionsData = [
     size: 150528,
     machineOsType: 'windows',
     path: 'C:\\Users\\kslp\\AppData\\Local\\Temp\\',
+    hostCount: 2,
     downloadInfo: {},
     features: [
       'file.dll',

@@ -21,6 +21,7 @@ let setState, modifiedList, modifiedTree;
 const fileProperties = {
   checksum256: 'test',
   score: 11,
+  hostCount: 3,
   downloadInfo: { status: 'Downloaded' }
 };
 const downloadFilesToServerSpy = sinon.spy(fileContextCreators, 'downloadFilesToServer');

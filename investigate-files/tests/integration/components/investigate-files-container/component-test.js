@@ -383,6 +383,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .endpointServer(endpointServer)
       .endpointQuery(endpointQuery)
       .hostNameList(hosts)
+      .hostListCount(1)
       .activeDataSourceTab('HOSTS')
       .build();
     await render(hbs`{{investigate-files-container}}`);

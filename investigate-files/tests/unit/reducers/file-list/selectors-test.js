@@ -472,24 +472,14 @@ test('hostListCount test', function(assert) {
   const state = Immutable.from({
     files: {
       fileList: {
-        hostNameList: { data: [{ 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC', 'hostname': 'Machine1', 'score': 0 }] }
+        selectedDetailFile: {
+          hostCount: 1
+        }
       }
     }
   });
   const result = hostListCount(state);
   assert.equal(result, 1);
-});
-
-test('hostListCount should be 0 when hostlist is empty', function(assert) {
-  const state = Immutable.from({
-    files: {
-      fileList: {
-        hostNameList: []
-      }
-    }
-  });
-  const result = hostListCount(state);
-  assert.equal(result, 0);
 });
 
 test('isCertificateViewDisabled returns false when service is down', function(assert) {

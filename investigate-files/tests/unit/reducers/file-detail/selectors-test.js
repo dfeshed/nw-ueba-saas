@@ -23,6 +23,7 @@ module('Unit | selectors | file-detail', function(hooks) {
             signature: {
               features: ['valid', 'microsoft', 'signed']
             },
+            hostCount: 2,
             firstFileName: 'dtf.exe'
           }
         }
@@ -31,6 +32,7 @@ module('Unit | selectors | file-detail', function(hooks) {
     const result = fileSummary(state);
     assert.equal(result.filename, 'dtf.exe', 'Filename is in summary');
     assert.equal(result.signature, 'valid,microsoft,signed', 'Signature is correct');
+    assert.equal(result.hostCount, 2, 'Host Count is correct');
   });
 
   test('summary without signature (linux)', function(assert) {

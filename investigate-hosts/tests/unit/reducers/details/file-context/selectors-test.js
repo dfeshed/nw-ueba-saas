@@ -17,7 +17,8 @@ import {
   focusedRowChecksum,
   selectedFileList,
   isAnyFileFloatingOrMemoryDll,
-  hostNameList
+  hostNameList,
+  selectedFileHostCount
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 import { fileContextSelectionsData } from '../../../../integration/components/state/fileContextData';
@@ -749,5 +750,17 @@ module('Unit | Selectors | File Context', function() {
     }), 'drivers');
     assert.equal(result.length, 2);
   });
+
+  test('selectedFileHostCount is set', function(assert) {
+    const result = selectedFileHostCount(Immutable.from({
+      endpoint: {
+        drivers: {
+          fileContextSelections: [...fileContextSelectionsData]
+        }
+      }
+    }), 'drivers');
+    assert.deepEqual(result, 2, 'Verify first file Host Count');
+  });
+
 });
 

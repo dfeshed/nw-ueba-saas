@@ -48,6 +48,7 @@ export default {
         firstFileName: 'ntkrnlpa.exe',
         reputationStatus: 'Known Good',
         score: 0,
+        hostCount: 3,
         firstSeenTime: '2018-09-24T15:27:01.549+0000',
         machineOsType: 'windows',
         signature: {
@@ -182,6 +183,7 @@ export default {
         firstFileName: 'halmacpi.dll',
         reputationStatus: 'Known Good',
         score: 0,
+        hostCount: 3,
         firstSeenTime: '2018-09-24T15:27:01.549+0000',
         machineOsType: 'windows',
         signature: {
@@ -307,6 +309,7 @@ export default {
         firstFileName: 'kdcom.dll',
         reputationStatus: 'Known Good',
         score: 0,
+        hostCount: 3,
         firstSeenTime: '2018-09-24T15:27:01.549+0000',
         machineOsType: 'windows',
         signature: {
@@ -405,6 +408,7 @@ export default {
         signer: 'Microsoft Windows'
       },
       size: 274304,
+      hostCount: 3,
       machineOsType: 'windows',
       downloadInfo: { 'status': 'Error' }
     },
@@ -426,6 +430,7 @@ export default {
         signer: 'Microsoft Windows'
       },
       size: 338944,
+      hostCount: 3,
       machineOsType: 'windows',
       downloadInfo: { 'status': 'Downloaded', refId: 'ewer', serviceId: 'serverId' }
     }

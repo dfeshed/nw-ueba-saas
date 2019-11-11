@@ -7,7 +7,8 @@ import {
   rootHash,
   hasProperties,
   processDetails,
-  processExecutionConfig
+  processExecutionConfig,
+  processHostCount
 } from 'investigate-process-analysis/reducers/process-properties/selectors';
 
 module('Unit | Selectors | process-properties', function() {
@@ -139,6 +140,21 @@ module('Unit | Selectors | process-properties', function() {
       ];
     const data = processExecutionConfig();
     assert.deepEqual(data, expectedResult);
+  });
+
+  test('processHostCount returns the hostCount', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        processProperties: {
+          hostDetails: [
+            { hostCount: 2 }
+          ]
+        }
+      }
+    });
+
+    const test = processHostCount(state);
+    assert.equal(test, 2);
   });
 
 });

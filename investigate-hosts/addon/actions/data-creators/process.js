@@ -92,7 +92,7 @@ const onProcessSelection = (processId, checksumSha256) => {
     dispatch(resetRiskContext());
     dispatch(getProcessDetails(processId));
     dispatch(getHostFileScoreContext(checksumSha256, agentId));
-    dispatch(fetchHostNames('processes', checksumSha256));
+    dispatch(fetchHostNames('PROCESS', checksumSha256));
   };
 };
 

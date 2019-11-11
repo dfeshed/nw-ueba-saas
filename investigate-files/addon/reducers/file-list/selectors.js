@@ -17,6 +17,7 @@ const _fileTotal = (state) => state.files.fileList.totalItems || 0;
 const _hasNext = (state) => state.files.fileList.hasNext;
 const _expressionList = (state) => state.files.filter.expressionList || [];
 const _downloadLink = (state) => state.files.fileList.downloadLink;
+const _selectedDetailFile = (state) => state.files.fileList.selectedDetailFile || 0;
 
 const _areSelectedFilesHavingThumbprint = createSelector(
   _selectedFileList,
@@ -97,6 +98,13 @@ export const checksums = createSelector(
   (selectedFileList) => selectedFileList.map((file) => file.checksumSha256)
 );
 
+export const hostListCount = createSelector(
+  _selectedDetailFile,
+  (selectedDetailFile) => {
+    return selectedDetailFile.hostCount;
+  }
+);
+
 export const selectedFileStatusHistory = createSelector(
   _selectedFileStatusHistory,
   (selectedFileStatusHistory) => selectedFileStatusHistory
@@ -106,13 +114,6 @@ export const hostList = createSelector(
   _hostList,
   (hostList = {}) => {
     return hostList.data;
-  }
-);
-
-export const hostListCount = createSelector(
-  [hostList],
-  (hostList = []) => {
-    return hostList.length;
   }
 );
 

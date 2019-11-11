@@ -333,6 +333,16 @@ export const selectedFileChecksums = createSelector(
     return [];
   }
 );
+
+export const selectedFileHostCount = createSelector(
+  _selectedProcessList,
+  (selectedProcessList) => {
+    if (selectedProcessList && selectedProcessList.length) {
+      return selectedProcessList[0].hostCount;
+    }
+  }
+);
+
 const _preferences = (state) => state.preferences.preferences;
 
 export const savedProcessColumns = createSelector(

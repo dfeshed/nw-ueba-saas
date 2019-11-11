@@ -35,6 +35,13 @@ module('Integration | Component | process-details/host-list-container', function
               { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAD', 'hostname': 'linux', 'score': 0 }
             ]
           }
+        },
+        processProperties: {
+          hostDetails: [
+            {
+              hostCount: 3
+            }
+          ]
         }
       }
     });
@@ -57,6 +64,13 @@ module('Integration | Component | process-details/host-list-container', function
               { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAD', 'hostname': 'linux', 'score': 0 }
             ]
           }
+        },
+        processProperties: {
+          hostDetails: [
+            {
+              hostCount: 3
+            }
+          ]
         }
       }
     });
@@ -83,6 +97,13 @@ module('Integration | Component | process-details/host-list-container', function
               { 'agentId': '0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAD', 'hostname': 'linux', 'score': 0 }
             ]
           }
+        },
+        processProperties: {
+          hostDetails: [
+            {
+              hostCount: 3
+            }
+          ]
         }
       },
       investigate: {

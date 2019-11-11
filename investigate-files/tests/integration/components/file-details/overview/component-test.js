@@ -55,6 +55,7 @@ const sampleData = [{
   firstFileName: 'XXX Test',
   entropy: 1,
   size: 1024,
+  hostCount: 1,
   format: 'PE',
   signature: {
     features: 'XXX unsigned',
@@ -129,6 +130,7 @@ module('Integration | Component | file-details/overview', function(hooks) {
       .activeDataSourceTab('HOSTS')
       .isFilePropertyPanelVisible(true)
       .hostNameList(hosts)
+      .hostListCount(1)
       .build();
     this.set('propertyConfig', config);
     await render(hbs`{{file-details/overview propertyConfig=propertyConfig}}`);
@@ -140,6 +142,7 @@ module('Integration | Component | file-details/overview', function(hooks) {
       .activeDataSourceTab('HOSTS')
       .isFilePropertyPanelVisible(true)
       .hostNameList(hosts)
+      .hostListCount(1)
       .risk(risk)
       .build();
     this.set('propertyConfig', config);

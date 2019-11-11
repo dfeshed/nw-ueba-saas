@@ -1,6 +1,7 @@
 .host-name-list {
   color: text-color(primary, lightest);
   padding: rsa-whitespace();
+  overflow-y: auto;
 
   &__title {
     padding-bottom: rsa-whitespace();

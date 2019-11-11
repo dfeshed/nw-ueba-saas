@@ -87,6 +87,15 @@ export const selectedFileChecksums = createSelector(
   (selectedFileList) => selectedFileList.map((file) => file.checksumSha256)
 );
 
+export const selectedFileHostCount = createSelector(
+  fileContextSelections,
+  (selectedFileList) => {
+    if (selectedFileList && selectedFileList.length) {
+      return selectedFileList[0].hostCount;
+    }
+  }
+);
+
 export const selectedFileList = createSelector(
   fileContextSelections,
   (selectedFiles) => selectedFiles.map(({ checksumSha256, fileName, downloadInfo }) => ({

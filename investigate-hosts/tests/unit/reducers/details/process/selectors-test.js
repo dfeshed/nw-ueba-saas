@@ -21,6 +21,7 @@ import {
   suspiciousThreadsData,
   areAllSelected,
   selectedFileChecksums,
+  selectedFileHostCount,
   selectedProcessName,
   savedProcessColumns,
   schema,
@@ -1149,6 +1150,18 @@ test('selectedFileChecksums returns the empty array for the empty selected list 
   }));
   assert.deepEqual(result, [], 'Returns empty array, for no selected processes');
 });
+
+test('selectedFileHostCount returns the HostCount from the selected list of processes', function(assert) {
+  const result = selectedFileHostCount(Immutable.from({
+    endpoint: {
+      process: {
+        selectedProcessList: [ { hostCount: 2 } ]
+      }
+    }
+  }));
+  assert.deepEqual(result, 2, 'Returns HostCount from the selectedProcessList');
+});
+
 test('selectedProcessName returns the processName', function(assert) {
 
   const result = selectedProcessName(Immutable.from({

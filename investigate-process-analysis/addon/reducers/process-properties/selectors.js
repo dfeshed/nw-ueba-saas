@@ -57,6 +57,15 @@ export const hasProperties = createSelector(
   }
 );
 
+export const processHostCount = createSelector(
+  _processProperties,
+  (processProperties) => {
+    if (processProperties && processProperties.length > 0) {
+      return (processProperties[0].hostCount);
+    }
+  }
+);
+
 export const processDetails = (selectedProcess = {}) => {
   const isSourceMatching = selectedProcess.processVidSrc === selectedProcess.processId;
 
