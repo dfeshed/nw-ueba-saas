@@ -19,7 +19,7 @@ public class AlertQuery {
     private final double filterByMaxScore;
     private final List<String> filterByTags;
     private final List<String> filterByIndicatorNames;
-    private List<String> filterByEntityType;
+    private String filterByEntityType;
     private double filterByContribution;
 
     // sort
@@ -108,7 +108,7 @@ public class AlertQuery {
         return filterByEntityDocumentId;
     }
 
-    public List<String> getFilterByEntityType() { return filterByEntityType; }
+    public String getFilterByEntityType() { return filterByEntityType; }
 
     public List<String> getAggregateByFields() {
         return aggregateByFields;
@@ -132,7 +132,7 @@ public class AlertQuery {
         private List<String> filterByTags;
         private List<String> filterByIndicatorNames;
         private List<String> filterByEntityDocumentId;
-        private List<String> filterByEntityType = null;
+        private String filterByEntityType = null;
         private double filterByContribution = -1;
 
         // sort
@@ -203,7 +203,7 @@ public class AlertQuery {
             return this;
         }
 
-        public AlertQueryBuilder filterByEntityType(List<String> filterByEntityType) {
+        public AlertQueryBuilder filterByEntityType(String filterByEntityType) {
             this.filterByEntityType = filterByEntityType;
             return this;
         }

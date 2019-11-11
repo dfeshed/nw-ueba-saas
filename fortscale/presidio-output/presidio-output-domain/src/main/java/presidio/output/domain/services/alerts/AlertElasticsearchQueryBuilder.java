@@ -40,9 +40,8 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         // filter by entity type
         if (alertQuery.getFilterByEntityType() != null) {
             BoolQueryBuilder entityTypeQuery = new BoolQueryBuilder();
-            for (String entityType : alertQuery.getFilterByEntityType()) {
-                entityTypeQuery.should(matchQuery(Alert.ENTITY_TYPE, entityType));
-            }
+            String entityType = alertQuery.getFilterByEntityType();
+            entityTypeQuery.should(matchQuery(Alert.ENTITY_TYPE, entityType));
             boolQueryBuilder.must(entityTypeQuery);
         }
 

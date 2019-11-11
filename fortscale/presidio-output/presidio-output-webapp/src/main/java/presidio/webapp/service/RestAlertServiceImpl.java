@@ -186,7 +186,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (alertQuery.getStartTimeTo() != null) {
             alertQueryBuilder.filterByEndDate(alertQuery.getStartTimeTo().longValue());
         }
-        if (alertQuery.getEntityType() != null) {
+        if (!alertQuery.getEntityType().isEmpty()) {
             alertQueryBuilder.filterByEntityType(alertQuery.getEntityType());
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getSeverity())) {
