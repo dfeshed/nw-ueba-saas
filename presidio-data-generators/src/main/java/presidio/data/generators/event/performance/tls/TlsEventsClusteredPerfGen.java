@@ -3,8 +3,8 @@ package presidio.data.generators.event.performance.tls;
 import presidio.data.domain.Location;
 import presidio.data.domain.event.network.NETWORK_DIRECTION_TYPE;
 import presidio.data.domain.event.network.TlsEvent;
-import presidio.data.generators.FixedValueGenerator;
 import presidio.data.generators.IBaseGenerator;
+import presidio.data.generators.NullGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.dictionary.SingleWordCyclicGenerator;
 import presidio.data.generators.common.list.random.RandomRangeCompanyGen;
@@ -50,7 +50,7 @@ public class TlsEventsClusteredPerfGen extends AbstractEventGenerator<TlsEvent> 
     private IBaseGenerator<String> hostnameGen;
 
     private final Ipv4RangeAllocator dstIpGenerator = new Ipv4RangeAllocator();
-    private IBaseGenerator<String> dstAsnGenerator = new RandomStringGenerator(5, 8);
+    private IBaseGenerator<String> dstAsnGenerator = new NullGenerator<>();
     private IBaseGenerator<String> sslCaGenerator = sslCaGenSupplier.get();
     private IBaseGenerator<String> ja3sGenerator = new Md5RandomGenerator();
     private IBaseGenerator<String> dataSourceGenerator = new RandomStringGenerator(6, 7);
@@ -59,7 +59,7 @@ public class TlsEventsClusteredPerfGen extends AbstractEventGenerator<TlsEvent> 
     private IBaseGenerator<Long> numOfBytesSentGenerator = new GaussianLongGenerator(5e5, 2e5);
     private IBaseGenerator<Long> numOfBytesReceivedGenerator = new GaussianLongGenerator(5e12, 2e11);
     private IBaseGenerator<Integer> srcPortGenerator = new RandomIntegerGenerator(0, 9999);
-    private IBaseGenerator<Integer> sessionSplitGenerator = new FixedValueGenerator<>(0);
+    private IBaseGenerator<Integer> sessionSplitGenerator = new NullGenerator<>();
 
     private final Random random = new Random(0);
     private Supplier<Boolean> isAnomaly = () -> random.nextDouble() <= params.getAlertsProbability();

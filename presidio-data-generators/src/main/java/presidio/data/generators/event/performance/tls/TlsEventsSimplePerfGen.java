@@ -72,7 +72,7 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
     private IBaseGenerator<Long> numOfBytesSentGenerator = new GaussianLongGenerator(5e5, 2e5);
     private IBaseGenerator<Long> numOfBytesReceivedGenerator = new GaussianLongGenerator(5e12, 2e11);
     private IBaseGenerator<Integer> srcPortGenerator = new RandomIntegerGenerator(0, 9999);
-    private IBaseGenerator<Integer> sessionSplitGenerator = new FixedValueGenerator<>(0);
+    private IBaseGenerator<Integer> sessionSplitGenerator = new NullGenerator<>();
 
     private TlsPerfUtils tlsPerfUtils = new TlsPerfUtils();
     private final Random random;
