@@ -35,7 +35,7 @@ public class TlsEvent extends Event implements Serializable {
 
     private String sslSubject;
     private List<String> sslCa;
-    private int sessionSplit;
+    private Integer sessionSplit;
     private boolean isSelfSigned;
 
     public TlsEvent(Instant dateTime) {
@@ -224,11 +224,11 @@ public class TlsEvent extends Event implements Serializable {
         this.sslCa = sslCa;
     }
 
-    public int getSessionSplit() {
+    public Integer getSessionSplit() {
         return sessionSplit;
     }
 
-    public void setSessionSplit(int sessionSplit) {
+    public void setSessionSplit(Integer sessionSplit) {
         this.sessionSplit = sessionSplit;
     }
 
