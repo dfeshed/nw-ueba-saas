@@ -30,6 +30,7 @@ const state = Immutable.from({
     },
     sortOnTrending: false,
     allWatched: true,
+    currentUserCount: 100,
     totalUsers: 100,
     filter: {
       addAlertsAndDevices: true,

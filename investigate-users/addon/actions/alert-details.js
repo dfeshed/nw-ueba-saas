@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { getFilter, alertsGroupedDaily, currentAlertsCount, topAlertsEntity, topAlertsTimeFrame } from 'investigate-users/reducers/alerts/selectors';
 import moment from 'moment';
 import { flashErrorMessage } from 'investigate-users/utils/flash-message';
+import { lookup } from 'ember-dependency-lookup';
 
 // Severity order, alerts should be grouped in same order.
 const _severityIndex = { Critical: 0, High: 1, Medium: 2, Low: 3 };
@@ -30,7 +31,12 @@ const _severityIndex = { Critical: 0, High: 1, Medium: 2, Low: 3 };
  *  */
 const _getAlertsGroupedDaily = (currentGroupedAlerts, alertsList) => {
   _.forEach(alertsList, (alert) => {
-    const alertDay = moment(alert.startDate).format('MMM DD YYYY');
+    const timezone = lookup('service:timezone');
+    const i18n = lookup('service:i18n');
+    const alertDay = moment(alert.startDate)
+      .locale(i18n.locale || 'en')
+      .tz(timezone.selected ? timezone.selected.zoneId : 'UTC')
+      .format('MMM DD YYYY');
     const alertsForDay = currentGroupedAlerts[alertDay];
     const severityIndex = _severityIndex[alert.severity];
     if (alertsForDay) {

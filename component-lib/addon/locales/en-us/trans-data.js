@@ -6274,6 +6274,13 @@ effects the simulated source.',
             chartTitle: 'Abnormal JA3 for Netname',
             axisYtitle: 'Abnormal JA3 for Netname'
           },
+          ja3_abnormal_ja3_for_source_netname_outbound: {
+            name: 'Abnormal JA3 for Source Netname',
+            desc: '{{contexts.ja3Name}} was used by {{contexts.srcNetname}}',
+            timeline: '{{contexts.ja3Name}} was used by {{contexts.srcNetname}}',
+            chartTitle: 'Abnormal JA3 for Netname',
+            axisYtitle: 'Abnormal JA3 for Netname'
+          },
           abnormal_ja3_for_source_netname_outbound: {
             name: 'Abnormal JA3 for Source Netname',
             desc: '{{contexts.ja3Name}} was used by {{contexts.srcNetname}}',

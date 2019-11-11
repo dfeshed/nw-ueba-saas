@@ -89,6 +89,7 @@ export default {
       'abnormal_reconnaissance_tool_executed',
       'abnormal_ssl_subject_for_src_netname_outbound',
       'ja3_abnormal_ssl_subject_for_src_netname_outbound',
+      'ssl_subject_abnormal_ssl_subject_for_src_netname_outbound',
       'ssl_subject_abnormal_domain_for_src_netname_outbound',
       'ja3_abnormal_domain_for_src_netname_outbound',
       'ssl_subject_abnormal_dst_port_for_src_netname_outbound',

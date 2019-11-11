@@ -13,6 +13,8 @@ const _sortField = (state) => state.users.filter.sortField;
 
 const _topUsers = (state) => state.users.topUsers;
 
+const _currentEntitiesCount = (state) => state.users.currentUserCount;
+
 export const _favorites = (state) => state.users.favorites;
 
 export const riskyUserCount = (state) => state.users.riskyUserCount;
@@ -93,9 +95,9 @@ export const getSortField = createSelector(
   });
 
 export const allUsersReceived = createSelector(
-  [getUsers, totalEntitiesCount],
-  (users, _totalUsers) => {
-    return _totalUsers && _totalUsers <= users.length;
+  [getUsers, _currentEntitiesCount],
+  (users, currentEntitiesCount) => {
+    return currentEntitiesCount && currentEntitiesCount <= users.length;
   });
 
 

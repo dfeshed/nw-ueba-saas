@@ -225,6 +225,7 @@
             padding: rsa-whitespace(less) rsa-whitespace() 0 0;
             color: text-color(primary, light);
             display: flex;
+            width: 300px;
 
             .label-text {
               padding: rsa-whitespace() rsa-whitespace() 0 0;
@@ -233,15 +234,12 @@
 
             .ember-power-select-trigger {
               @include rsa-font(default);
-            }
-
-            .ember-power-select-trigger {
+              width: 180px;
               background: transparent;
               height: 2*rsa-whitespace();
               top: rsa-whitespace(least);
               left: rsa-whitespace(least);
             }
-
           }
         }
 

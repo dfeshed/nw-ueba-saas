@@ -8,6 +8,7 @@ import dataIndex from '../../data/presidio';
 import moment from 'moment';
 import { later } from '@ember/runloop';
 import { patchFlash } from '../../helpers/patch-flash';
+import Service from '@ember/service';
 import { updateDateRangeFilter, exportAlerts, getTopTenAlerts, getAlertsForTimeline, resetAlerts, updateFilter, getExistAnomalyTypesForAlert, getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
 
 export const initialFilterState = Immutable.from({
@@ -26,6 +27,11 @@ module('Unit | Actions | Alert Details', (hooks) => {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
+    this.owner.register('service:timezone', Service.extend({
+      selected: {
+        zoneId: 'UTC'
+      }
+    }));
     patchFetch((url) => {
       return new Promise(function(resolve) {
         resolve({

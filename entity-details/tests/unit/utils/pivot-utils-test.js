@@ -124,6 +124,16 @@ module('Unit | Utils | pivot-utils', (hooks) => {
     });
   });
 
+  test('it should be able to pivot given link with file schema filter', (assert) => {
+    const item = { linkField: 'https://localhost:4200/investigate/events', field: 'TestUser' };
+    const column = { linkField: 'user_link', field: 'username', additionalFilter: null };
+    navigateToInvestigate('User', 'Name1', 'file', 1562192044531, item, column, 'brokerId');
+    return waitUntil(() => currentUrl !== null).then(() => {
+      assert.ok(decodeURIComponent(currentUrl).indexOf("(obj.name = 'Name1' || filename = 'Name1') ") > 0);
+      assert.ok(newTab);
+    });
+  });
+
   test('it should be able to pivot given link with schema filter if broker id is not passed and addition filter', (assert) => {
     const item = { user_link: 'https://localhost:4200/investigation/007f93ca-bf34-4aeb-805a-d039934842ae/events/somedata', username: 'TestUser' };
     const column = { linkField: 'user_link', field: 'username', additionalFilter: 'obj.name' };

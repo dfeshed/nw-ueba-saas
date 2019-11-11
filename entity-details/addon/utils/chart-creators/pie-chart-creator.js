@@ -61,7 +61,7 @@ export default (settings) => {
     if (color) {
       return Am4core.color(color);
     } else {
-      colorIndex = colorIndex === colors.length ? 0 : ++colorIndex;
+      colorIndex = colorIndex === colors.length - 1 ? 0 : ++colorIndex;
       return Am4core.color(colors[colorIndex]);
     }
   });

@@ -61,6 +61,7 @@ const resetState = Immutable.from({
   favorites: null,
   users: [],
   usersError: null,
+  currentUserCount: null,
   totalUsers: null,
   allWatched: false,
   filter: initialFilterState

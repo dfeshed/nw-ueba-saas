@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, find, click } from '@ember/test-helpers';
+import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
@@ -54,7 +54,7 @@ module('Integration | Component | users-tab/filter/favorites', function(hooks) {
   test('it should delete favorite', async function(assert) {
     const done = assert.async();
     new ReduxDataHelper(setState).usersFavorites(favorite.data).build();
-    await render(hbs`<div id='modalDestination' ></div>{{users-tab/filter/favorites}}`);
+    await render(hbs`{{users-tab/filter/favorites}}`);
     await clickTrigger('.users-tab_filter_filter_select');
     assert.equal(findAll('.users-tab_filter_favorites_delete').length, 2);
     patchFetch(() => {
@@ -72,7 +72,6 @@ module('Integration | Component | users-tab/filter/favorites', function(hooks) {
 
     // get first filled icon
     await click(findAll('.rsa-icon-bin-1').shift());
-    await click(find('.modal-footer-buttons > .rsa-form-button-wrapper:nth-child(2)'));
     later(() => {
       assert.equal(findAll('.users-tab_filter_favorites_delete').length, 0);
       done();

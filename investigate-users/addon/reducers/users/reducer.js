@@ -53,13 +53,20 @@ const initialState = Immutable.from({
   users: [],
   usersError: null,
   totalUsers: null,
+  currentUserCount: null,
   filter: initialFilterState
 });
 
 const tabs = handleActions({
   [ACTION_TYPES.RESTORE_DEFAULT]: () => Immutable.from(initialState),
   [ACTION_TYPES.GET_TOTAL_USER_COUNT]: (state, { payload }) => state.set('totalUsers', payload),
-  [ACTION_TYPES.GET_TOP_RISKY_USER]: (state, { payload: { data } }) => state.set('topUsers', [].concat(data)),
+  [ACTION_TYPES.GET_TOP_RISKY_USER]: (state, { payload: { data, total } }) => {
+    // Concat user list data to current users list.
+    let newState = state.set('topUsers', [].concat(data));
+    // Total user count for display and stop scrolling event.
+    newState = newState.set('currentUserCount', total);
+    return newState;
+  },
   [ACTION_TYPES.GET_RISKY_USER_COUNT]: (state, { payload }) => state.set('riskyUserCount', payload),
   [ACTION_TYPES.TOP_USERS_ERROR]: (state, { payload }) => state.set('topUsersError', payload),
   [ACTION_TYPES.USERS_ERROR]: (state, { payload }) => state.set('usersError', payload),
@@ -70,11 +77,13 @@ const tabs = handleActions({
   [ACTION_TYPES.GET_FAVORITES]: (state, { payload }) => state.set('favorites', payload),
   [ACTION_TYPES.SORT_ON_TREND]: (state) => state.set('sortOnTrending', !state.getIn(['sortOnTrending'])),
   [ACTION_TYPES.UPDATE_TREND_RANGE]: (state, { payload }) => state.set('trendRange', payload),
-  [ACTION_TYPES.GET_USERS]: (state, { payload: { data, info } }) => {
+  [ACTION_TYPES.GET_USERS]: (state, { payload: { data, total, info } }) => {
     // Concat user list data to current users list.
     let newState = state.set('users', state.getIn(['users']).concat(data));
 
     newState = newState.set('allWatched', info ? info.allWatched : false);
+    // Total user count for display and stop scrolling event.
+    newState = newState.set('currentUserCount', total);
     // Increment current page by one to fetch next page on scroll again.
     newState = newState.setIn(['filter', 'fromPage'], newState.getIn(['filter', 'fromPage']) + 1);
     return newState;

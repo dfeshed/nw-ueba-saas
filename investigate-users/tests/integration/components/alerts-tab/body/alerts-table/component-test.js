@@ -10,8 +10,15 @@ import dataIndex from '../../../../../data/presidio';
 import { Promise } from 'rsvp';
 import { getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
 import waitForReduxStateChange from '../../../../../helpers/redux-async-helpers';
+import Service from '@ember/service';
 
 let redux;
+
+const timezoneStub = Service.extend({
+  selected: {
+    zoneId: 'UTC'
+  }
+});
 
 module('Integration | Component | alerts-tab/body/alerts-table', function(hooks) {
   setupRenderingTest(hooks, {
@@ -21,6 +28,8 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
   hooks.beforeEach(function() {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    this.owner.inject('component', 'timezone', 'service:timezone');
+    this.owner.register('service:timezone', timezoneStub);
     redux = this.owner.lookup('service:redux');
     patchFetch((url) => {
       return new Promise(function(resolve) {

@@ -60,6 +60,7 @@ export default class DataHelper {
         existAnomalyTypes: null,
         existAlertTypes: null,
         favorites: null,
+        currentUserCount: 30,
         totalUsers: 30,
         filter: {
           addAlertsAndDevices: true,
