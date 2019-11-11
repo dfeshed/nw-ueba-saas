@@ -49,7 +49,6 @@ public class ApiAlertController extends BaseController {
 	private static final String ENTITY_NAME_COLUMN_NAME = "Entity Name";
 	private static final String START_TIME_COLUMN_NAME = "Start Time";
 	private static final String NUMBER_OF_INDICATORS_COLUMN_NAME = "# of Indicators";
-	private static final String STATUS_COLUMN_NAME = "Status";
 	private static final String FEEDBACK_COLUMN_NAME = "Feedback";
 	private static final String SEVERITY_COLUMN_NAME = "Severity";
 	private static final String ALERTS_CSV_FILE_NAME = "alerts.csv";
@@ -139,7 +138,6 @@ public class ApiAlertController extends BaseController {
 				ENTITY_NAME_COLUMN_NAME,
 				START_TIME_COLUMN_NAME,
 				NUMBER_OF_INDICATORS_COLUMN_NAME,
-				STATUS_COLUMN_NAME,
 				FEEDBACK_COLUMN_NAME,
 				SEVERITY_COLUMN_NAME};
 
@@ -158,7 +156,6 @@ public class ApiAlertController extends BaseController {
 					alert.getEntityName(),
 					simpleDateFormat.format(new Date(alert.getStartDate())),
 					evidencesSizeAsString,
-					alert.getStatus().getPrettyValue(),
 					alert.getFeedback().getPrettyValue(),
 					alert.getSeverity().name()};
 			csvWriter.writeNext(alertRow);
