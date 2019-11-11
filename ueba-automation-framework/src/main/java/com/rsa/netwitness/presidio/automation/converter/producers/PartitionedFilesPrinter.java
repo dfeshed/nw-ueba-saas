@@ -58,7 +58,9 @@ class PartitionedFilesPrinter {
 
             // add destination file path
             Map<Path, List<NetwitnessEvent>> eventsByFilePath = nextPartition.parallelStream()
-                    .collect(groupingBy(e -> eventFilePath(e, partitionsCount.getAndIncrement())));
+                    .collect(groupingBy(e -> eventFilePath(e, partitionsCount.get())));
+
+            partitionsCount.incrementAndGet();
             // create destination files
             eventsByFilePath.keySet().parallelStream()
                     .forEach(this::initFile);

@@ -23,7 +23,7 @@
             src/test/resources/PerformanceStabilityMongoGenTest.xml
         </suiteXmlFile>
 
-        <start_time>2018-04-03T00:00:00.00Z</start_time>
+        <start_time>2018-04-01T00:00:00.00Z</start_time>
         <end_time>2018-04-04T00:00:00.00Z</end_time>
         <probability_multiplier>0.15</probability_multiplier>
         <users_multiplier>0.1</users_multiplier>

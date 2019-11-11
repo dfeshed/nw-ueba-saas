@@ -30,7 +30,7 @@ public abstract class TlsEventConverter extends NetwitnessEvent {
     protected String country_src;
     protected List<String> alias_host;
     protected List<String> ssl_ca;
-    protected int session_split;
+    protected Integer session_split;
     protected Boolean analysis_service;
     protected String service_name;
     protected String time;
