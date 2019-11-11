@@ -210,6 +210,30 @@ public class EntityApiControllerModuleTest {
         Assert.assertEquals(expectedResponse, actualResponse);
     }
 
+    @Test
+    public void sortEntitiesByName() throws Exception {
+
+        // init expected response
+        Entity expectedEntity1 = convertDomainEntityToRestEntity(entity1);
+        Entity expectedEntity2 = convertDomainEntityToRestEntity(entity2);
+        EntitiesWrapper expectedResponse = new EntitiesWrapper();
+        expectedResponse.setTotal(2);
+        List<Entity> entities = Arrays.asList(expectedEntity2, expectedEntity1);
+        expectedResponse.setEntities(entities);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = entitiesApiMVC.perform(get(ENTITIES_URI)
+                .param("sortFieldNames", EntityQueryEnums.EntityQuerySortFieldName.ENTITY_NAME.name())
+                .param("sortDirection", Sort.Direction.DESC.name()))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        EntitiesWrapper actualResponse = objectMapper.readValue(actualResponseStr, EntitiesWrapper.class);
+
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
 
     private presidio.output.domain.records.entity.Entity generateEntity(List<String> classifications, String entityName, String entityId, double score, List<String> indicators, String entityType) {
         return new presidio.output.domain.records.entity.Entity(entityId, entityName, score, classifications, indicators, new ArrayList<>(), EntitySeverity.CRITICAL, 0, entityType);
