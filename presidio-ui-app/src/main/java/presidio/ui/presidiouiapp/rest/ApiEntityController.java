@@ -54,26 +54,22 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/entity")
 public class ApiEntityController extends BaseController {
 
-	public static final int DEFAULT_EXPORT_USERS_SIZE = 1000;
+	public static final int DEFAULT_EXPORT_ENTITIES_SIZE = 1000;
 	public static final int FIRST_PAGE_INDEX = 0;
 	public static final int USERS_SEARCH_DEFAULT_PAGE_SIZE = 5;
 	private static final int MAX_PAGE_SIZE = 500000;
 	private static Logger logger = Logger.getLogger(ApiEntityController.class);
 
-	public static final String USER_COUNT = "userCount";
-	public static final String ADMINISTRATOR_TAG = "administrator";
-	public static final String WATCHED_USER = "watched";
+	private static final String ENTITY_NAME_COLUMN_NAME = "Entity Name";
+	private static final String ENTITIES_CSV_FILE_NAME = "entities";
+	private static final String ENTITY_WATCHED_COLUMN_NAME = "Watched";
+	private static final String ENTITY_RISK_SCORE_COLUMN_NAME = "Risk Score";
+	private static final String ENTITY_ALERT_COUNT_COLUMN_NAME = "Total Alerts";
+	private static final String ENTITY_DAILY_TRENDING_SCORE_COLUMN_NAME = "Daily Trending Score";
+	private static final String ENTITY_WEEKLY_TRENDING_SCORE_COLUMN_NAME = "Weekly Trending Score";
+	private static final String ENTITY_DAILY_TRENDING_SCORE = "daily";
+	private static final String ENTITY_WEEKLY_TRENDING_SCORE = "weekly";
 
-	private static final String USER_NAME_COLUMN_NAME = "Username";
-	private static final String USERS_CSV_FILE_NAME = "users";
-	private static final String DISPLAY_NAME_COLUMN_NAME = "Full Name";
-	private static final String USER_ROLE_COLUMN_NAME = "Role";
-	private static final String USER_DEPARTMENT_COLUMN_NAME = "Department";
-	private static final String USER_WATCHED_COLUMN_NAME = "Watched";
-	private static final String USER_RISK_SCORE_COLUMN_NAME = "Risk Score";
-	private static final String USER_ALERT_COUNT_COLUMN_NAME = "Total Alerts";
-	private static final String USER_DEVICE_COUNT_COLUMN_NAME = "Total Devices";
-	private static final String USER_TAGS_COLUMN_NAME = "Tags";
 	private static final String ALL_WATCHED = "allWatched";
 	private static final String CSV_CONTENT_TYPE = "text/plain; charset=utf-8";
 	private List<String> fieldsRequired;
@@ -414,10 +410,10 @@ public class ApiEntityController extends BaseController {
 		return result;
 	}
 
-	@RequestMapping(method = RequestMethod.GET , value = "/export")
+	@RequestMapping(method = RequestMethod.GET, value = "/export")
 	//@LogException
-	public void exportEntitiesToCsv(EntityRestFilter filter, HttpServletResponse httpResponse)  throws  Exception{
-		PageRequest pageRequest = new PageRequest(FIRST_PAGE_INDEX, DEFAULT_EXPORT_USERS_SIZE);
+	public void exportEntitiesToCsv(EntityRestFilter filter, HttpServletResponse httpResponse) throws Exception {
+		PageRequest pageRequest = new PageRequest(FIRST_PAGE_INDEX, DEFAULT_EXPORT_ENTITIES_SIZE);
 
 		List<Entity> entities = getEntities(filter, pageRequest, fieldsRequired).getEntities();
 
@@ -426,22 +422,21 @@ public class ApiEntityController extends BaseController {
 		 */
 		String headerKey = "Content-Disposition";
 		String headerValue = String.format("attachment; filename=\"%s_%s.csv\"",
-				USERS_CSV_FILE_NAME, ZonedDateTime.now().toString());
+				ENTITIES_CSV_FILE_NAME, ZonedDateTime.now().toString());
 		httpResponse.setHeader(headerKey, headerValue);
 		httpResponse.setContentType(CSV_CONTENT_TYPE);
 		filter.setAddAlertsAndDevices(true);
 		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse.getOutputStream()));
-		String[] tableTitleRow = { USER_NAME_COLUMN_NAME, DISPLAY_NAME_COLUMN_NAME, USER_ROLE_COLUMN_NAME,
-				USER_DEPARTMENT_COLUMN_NAME, USER_WATCHED_COLUMN_NAME, USER_RISK_SCORE_COLUMN_NAME,
-				USER_ALERT_COUNT_COLUMN_NAME, USER_DEVICE_COUNT_COLUMN_NAME, USER_TAGS_COLUMN_NAME };
+		String[] tableTitleRow = {ENTITY_NAME_COLUMN_NAME, ENTITY_WATCHED_COLUMN_NAME, ENTITY_RISK_SCORE_COLUMN_NAME,
+				ENTITY_ALERT_COUNT_COLUMN_NAME, ENTITY_DAILY_TRENDING_SCORE_COLUMN_NAME, ENTITY_WEEKLY_TRENDING_SCORE_COLUMN_NAME};
 
 		csvWriter.writeNext(tableTitleRow);
-		entities.stream().forEach(entity -> {
-			String[] userRow = {entity.getUsername(), entity.getDisplayName(), "",
-					"", BooleanUtils.toStringTrueFalse(entity.getFollowed()),
+		entities.forEach(entity -> {
+			String[] entityRow = {entity.getUsername(), BooleanUtils.toStringTrueFalse(entity.getFollowed()),
 					String.valueOf(entity.getScore()), String.valueOf(entity.getAlertsCount()),
-					String.valueOf(entity.getSourceMachineCount()), StringUtils.join(entity.getTags(), ',')};
-			csvWriter.writeNext(userRow);
+					Double.toString(entity.getTrendingScore().get(ENTITY_DAILY_TRENDING_SCORE)),
+					Double.toString(entity.getTrendingScore().get(ENTITY_WEEKLY_TRENDING_SCORE))};
+			csvWriter.writeNext(entityRow);
 		});
 		csvWriter.close();
 
