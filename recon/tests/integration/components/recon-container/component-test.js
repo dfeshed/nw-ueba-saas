@@ -8,10 +8,13 @@ import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { waitForSockets } from '../../../helpers/wait-for-sockets';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import teardownSockets from '../../../helpers/teardown-sockets';
+import dataCreators from 'recon/actions/data-creators';
+import sinon from 'sinon';
 
 let setState;
 
 const NETWORK = 'NETWORK';
+const initializeReconSpy = sinon.spy(dataCreators, 'initializeRecon');
 
 module('Integration | Component | recon container', function(hooks) {
   setupRenderingTest(hooks);
@@ -27,6 +30,11 @@ module('Integration | Component | recon container', function(hooks) {
 
   hooks.afterEach(function() {
     teardownSockets.apply(this);
+    initializeReconSpy.resetHistory();
+  });
+
+  hooks.after(function() {
+    initializeReconSpy.restore();
   });
 
   test('recon container in standalone mode', async function(assert) {
@@ -46,7 +54,7 @@ module('Integration | Component | recon container', function(hooks) {
   });
 
   test('recon container in investigate-events', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     this.set('endpointId', '555d9a6fe4b0d37c827d402e');
     this.set('eventId', '5');
@@ -65,6 +73,55 @@ module('Integration | Component | recon container', function(hooks) {
     `);
 
     assert.equal(findAll('.header-button').length, 2, 'Recon container when provided with a closeAction does not run in standalone mode and has \'close and expand\' buttons');
+    assert.equal(initializeReconSpy.callCount, 1, 'The delete pill action creator was called once');
+  });
+
+  test('initializeReconSpy will be called if sessionIds are different but endpoint is same', async function(assert) {
+    assert.expect(1);
+
+    this.set('endpointId', '555d9a6fe4b0d37c827d402e');
+    this.set('eventId', '5');
+    this.set('eventType', NETWORK);
+    this.set('closeAction', () => {});
+    this.set('expandAction', () => {});
+    this.set('_previousEndpointId', '555d9a6fe4b0d37c827d402e');
+
+    await render(hbs`
+      {{recon-container
+        endpointId=endpointId
+        eventId=eventId
+        eventType=eventType
+        closeAction=(action closeAction)
+        expandAction=(action expandAction)
+        _previousEndpointId=_previousEndpointId
+      }}
+    `);
+
+    assert.equal(initializeReconSpy.callCount, 1, 'The delete pill action creator was called once');
+  });
+
+  test('initializeReconSpy will be called if sessionIds are same but endpoint is different', async function(assert) {
+    assert.expect(1);
+
+    this.set('endpointId', '555d9a6fe4b0d37c827d402e');
+    this.set('eventId', '5');
+    this.set('eventType', NETWORK);
+    this.set('closeAction', () => {});
+    this.set('expandAction', () => {});
+    this.set('_previousEventId', '5');
+
+    await render(hbs`
+      {{recon-container
+        endpointId=endpointId
+        eventId=eventId
+        eventType=eventType
+        closeAction=(action closeAction)
+        expandAction=(action expandAction)
+        _previousEventId=_previousEventId
+      }}
+    `);
+
+    assert.equal(initializeReconSpy.callCount, 1, 'The delete pill action creator was called once');
   });
 
   test('recon container with fatal error code - invalid session', async function(assert) {
@@ -76,6 +133,7 @@ module('Integration | Component | recon container', function(hooks) {
     this.set('eventId', '5');
     this.set('eventType', NETWORK);
     this.set('oldEventId', '5');
+    this.set('_previousEndpointId', '555d9a6fe4b0d37c827d402e');
 
     await render(hbs`
       {{recon-container
@@ -83,6 +141,7 @@ module('Integration | Component | recon container', function(hooks) {
         eventId=eventId
         eventType=eventType
         _previousEventId=oldEventId
+        _previousEndpointId=_previousEndpointId
       }}
     `);
 
@@ -102,6 +161,7 @@ module('Integration | Component | recon container', function(hooks) {
     this.set('eventId', '5456544654654564654654');
     this.set('eventType', NETWORK);
     this.set('oldEventId', '5456544654654564654654');
+    this.set('_previousEndpointId', '555d9a6fe4b0d37c827d402e');
 
     await render(hbs`
       {{recon-container
@@ -109,6 +169,7 @@ module('Integration | Component | recon container', function(hooks) {
         eventId=eventId
         eventType=eventType
         _previousEventId=oldEventId
+        _previousEndpointId=_previousEndpointId
       }}
     `);
 
@@ -128,6 +189,7 @@ module('Integration | Component | recon container', function(hooks) {
     this.set('eventId', '5');
     this.set('eventType', NETWORK);
     this.set('oldEventId', '5');
+    this.set('_previousEndpointId', '555d9a6fe4b0d37c827d402e');
 
     await render(hbs`
       {{recon-container
@@ -135,6 +197,7 @@ module('Integration | Component | recon container', function(hooks) {
         endpointId=endpointId
         eventType=eventType
         _previousEventId=oldEventId
+        _previousEndpointId=_previousEndpointId
       }}
     `);
 
@@ -154,6 +217,7 @@ module('Integration | Component | recon container', function(hooks) {
     this.set('eventId', '5');
     this.set('eventType', NETWORK);
     this.set('oldEventId', '5');
+    this.set('_previousEndpointId', '555d9a6fe4b0d37c827d402e');
 
     await render(hbs`
       {{recon-container
@@ -161,6 +225,7 @@ module('Integration | Component | recon container', function(hooks) {
         eventId=eventId
         eventType=eventType
         _previousEventId=oldEventId
+        _previousEndpointId=_previousEndpointId
       }}
     `);
 
@@ -180,6 +245,7 @@ module('Integration | Component | recon container', function(hooks) {
     this.set('eventId', '5');
     this.set('eventType', NETWORK);
     this.set('oldEventId', '5');
+    this.set('_previousEndpointId', '555d9a6fe4b0d37c827d402e');
 
     await render(hbs`
       {{recon-container
@@ -187,6 +253,7 @@ module('Integration | Component | recon container', function(hooks) {
         eventId=eventId
         eventType=eventType
         _previousEventId=oldEventId
+        _previousEndpointId=_previousEndpointId
       }}
     `);
 
@@ -209,6 +276,7 @@ module('Integration | Component | recon container', function(hooks) {
     this.set('eventId', '5');
     this.set('eventType', NETWORK);
     this.set('oldEventId', '5');
+    this.set('_previousEndpointId', '555d9a6fe4b0d37c827d402e');
     this.set('closeAction', function() {
       assert.ok('close action clicked');
       done();
@@ -220,6 +288,7 @@ module('Integration | Component | recon container', function(hooks) {
         eventId=eventId
         eventType=eventType
         _previousEventId=oldEventId
+        _previousEndpointId=_previousEndpointId
         closeAction=closeAction
       }}
     `);
@@ -237,6 +306,7 @@ module('Integration | Component | recon container', function(hooks) {
     this.set('eventId', '5');
     this.set('eventType', NETWORK);
     this.set('oldEventId', '5');
+    this.set('_previousEndpointId', '555d9a6fe4b0d37c827d402e');
     this.set('expandAction', function() {
       assert.ok('action to expand recon');
       done();
@@ -251,6 +321,7 @@ module('Integration | Component | recon container', function(hooks) {
         eventId=eventId
         eventType=eventType
         _previousEventId=oldEventId
+        _previousEndpointId=_previousEndpointId
         expandAction=expandAction
         shrinkAction=shrinkAction
       }}

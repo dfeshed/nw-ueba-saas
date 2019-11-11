@@ -140,6 +140,7 @@ const ReconContainer = Component.extend({
 
   _isAnimationDone: false,
   _previousEventId: undefined,
+  _previousEndpointId: undefined,
 
   /**
    * Determines if the UI is in a state that is ready to display UI elements.
@@ -186,9 +187,10 @@ const ReconContainer = Component.extend({
     this._super(...arguments);
     const {
       _previousEventId,
+      _previousEndpointId,
       index,
       total
-    } = this.getProperties('_previousEventId', 'index', 'total');
+    } = this.getProperties('_previousEventId', '_previousEndpointId', 'index', 'total');
     const inputs = this.getProperties('endpointId', 'eventId', 'eventType',
       'language', 'eventMeta', 'aliases', 'linkToFileAction', 'size', 'queryInputs');
 
@@ -201,9 +203,11 @@ const ReconContainer = Component.extend({
     assert('Cannot instantiate recon without endpointId and eventId.', inputs.endpointId && inputs.eventId);
 
     // guard against re-running init on any redux state change,
-    // if same id, no need to do anything
-    if (inputs.eventId !== _previousEventId) {
+    // if same id and same service, no need to do anything
+    // But if any of these two changes, initialize
+    if (inputs.eventId !== _previousEventId || inputs.endpointId !== _previousEndpointId) {
       this.set('_previousEventId', inputs.eventId);
+      this.set('_previousEndpointId', inputs.endpointId);
       this.send('initializeRecon', inputs);
     }
 
