@@ -4,7 +4,6 @@ import { alias } from 'ember-computed';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import RSVP from 'rsvp';
 import { get } from '@ember/object';
-import computed from 'ember-computed-decorators';
 
 const TABS = [
   { key: '/navigate', label: 'navigate', route: '/investigation', isClassic: true },
@@ -24,16 +23,12 @@ export default Service.extend({
   flashMessages: service(),
   i18n: service(),
   hasInvestigateAccess: alias('accessControl.hasInvestigateAccess'),
+  options: TABS,
 
   /**
    * Boolean flag indicates whether legacy events tab is enabled or not
    */
   legacyEventsEnabled: false,
-
-  @computed('legacyEventsEnabled')
-  options(legacyEventsEnabled) {
-    return !legacyEventsEnabled ? TABS.filter((tab) => tab.label !== 'events') : TABS;
-  },
 
   persist(value) {
     this.get('request').promiseRequest({

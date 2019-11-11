@@ -96,7 +96,7 @@
             {{t 'userPreferences.defaultInvestigatePage.label'}}
           </div>
           {{#power-select
-            options=investigatePage.options
+            options=investigateViewOptions
             selected=investigatePage.selected
             searchEnabled=false
             onchange=(action 'setDefaultInvestigatePage') as |option|}}

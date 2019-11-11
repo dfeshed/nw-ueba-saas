@@ -69,4 +69,21 @@ module('Unit | Route | protected', function(hooks) {
     assert.equal(isRsaUsmAllowFilePoliciesEnabled, true, 'feature rsa.usm.allowFilePolicies is enabled by the service call');
   });
 
+  test('should check legacy events enabled flag', async function(assert) {
+    await this.owner.register('service:-routing', Service.extend({
+      currentRouteName: 'protected'
+    }));
+
+    const route = this.owner.lookup('route:protected');
+    const investigatePageService = this.owner.lookup('service:investigatePage');
+
+    await route.model({ iframedIntoClassic: false });
+    await route.checkLegacyEvents();
+
+    await waitUntil(() => {
+      return investigatePageService.get('legacyEventsEnabled');
+    }, { timeout: 5000 });
+    assert.ok(investigatePageService.get('legacyEventsEnabled'), 'legacy events enabled flag must be set');
+  });
+
 });

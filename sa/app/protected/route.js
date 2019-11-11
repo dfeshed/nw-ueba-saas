@@ -174,8 +174,16 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
+  checkLegacyEvents() {
+    if (this.get('accessControl.hasInvestigateEventsAccess')) {
+      // Check if legacy events tab in investigate page is enabled or not
+      this.get('investigatePage').checkLegacyEventsEnabled();
+    }
+  },
+
   afterModel(models, transition) {
     this._super(...arguments);
+    this.checkLegacyEvents();
 
     const key = this.get('landingPage.selected.key');
     const classicRedirect = localStorage.getItem('rsa-post-auth-redirect');
@@ -237,12 +245,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
       timezonesPromise,
       preferencesPromise
     ];
-
-    if (this.get('accessControl.hasInvestigateEventsAccess')) {
-      // Promise to check legacy events tab in investigate page is enabled or not
-      const legacyEventsPromise = this.get('investigatePage').checkLegacyEventsEnabled();
-      initializePromises.push(legacyEventsPromise);
-    }
 
     // Resolve the user's name, roles & authorities from the JWT token and update accessControl
     // These are used only for UEBA permission handling, since for the iframed UEBA app

@@ -3,7 +3,7 @@ import { isEmpty } from '@ember/utils';
 import layout from './template';
 import { run } from '@ember/runloop';
 import { inject as service } from '@ember/service';
-import { alias, readOnly } from 'ember-computed-decorators';
+import computed, { alias, readOnly } from 'ember-computed-decorators';
 import csrfToken from '../../mixins/csrf-token';
 import config from 'ember-get-config';
 
@@ -58,6 +58,11 @@ export default Component.extend(csrfToken, {
         this.set('investigatePage.selected', this.get('investigatePage.options').findBy('key', config.investigatePageDefault));
       }
     });
+  },
+
+  @computed('investigatePage.options', 'investigatePage.legacyEventsEnabled')
+  investigateViewOptions(options, legacyEventsEnabled) {
+    return !legacyEventsEnabled ? options.filter((tab) => tab.label !== 'events') : options;
   },
 
   actions: {
