@@ -52,6 +52,7 @@ class PartitionedFilesPrinter {
         logPlayerFolders.clear();
 
         UnmodifiableIterator<List<NetwitnessEvent>> partition = Iterators.partition(eventsList.iterator(), PARTITION_SIZE);
+        LOGGER.info("Going to print CEF files");
 
         while (partition.hasNext()) {
             List<NetwitnessEvent> nextPartition = partition.next();

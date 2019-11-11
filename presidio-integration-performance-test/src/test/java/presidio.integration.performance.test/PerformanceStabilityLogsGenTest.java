@@ -89,8 +89,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
 
             Stream<TlsEvent> tlsEventStream = scenario.tlsEventsGenerators.stream()
                     .map(IEventGenerator::generateToStream)
-                    .flatMap(e -> e)
-                    .sorted(Comparator.comparing(TlsEvent::getDateTime));
+                    .flatMap(e -> e);
 
             System.out.println("Start Processing");
             tlsStopWatch.start();
