@@ -61,13 +61,13 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void trending_score_equals_sun_of_entity_score_contribution() {
+    public void trending_score_equals_sum_of_entity_score_contributions() {
         Instant lastExecutionDateOfOutput = new AirflowTasksPostgres()
                 .fetchTaskDetails("userId_hourly_ueba_flow", "userId_hourly", Instant.now().minus(3, DAYS))
                 .stream().filter(e -> e.state.equals("success"))
                 .map(e -> e.executionDate)
                 .max(Instant::compareTo)                // last execution of output for E2E automation
-                .orElse(Instant.now().truncatedTo(DAYS).minus(2, DAYS));  // for core automation
+                .orElse(Instant.now().truncatedTo(DAYS).minus(3, DAYS));  // for core automation
 
         List<EntitiesStoredRecord> entitiesWithoutAlerts = allActualEntitiesSortedByScore.parallelStream()
                 .filter(e -> e.getAlerts().isEmpty())
