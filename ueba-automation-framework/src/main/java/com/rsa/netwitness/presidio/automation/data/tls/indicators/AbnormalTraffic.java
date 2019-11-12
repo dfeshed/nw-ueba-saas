@@ -139,16 +139,16 @@ public class AbnormalTraffic<T> {
         setEntity(initialGenCopy);
 
         initialGenCopy.srcIpGenerator.setGenerator(uncommonIpGenerator);
-        initialGenCopy.setNumOfBytesSentGenerator(regularTrafficGenerator);
+        initialGenCopy.setNumOfBytesSentGenerator(trafficGenerator.apply(3d));
         eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy, 20);
 
         TlsRangeEventsGen initialGenCopy1 = initialGenCopy.copy();
         initialGenCopy1.sslSubjectGen.setConstantValueGen(entity + " a");
-        initialGenCopy1.setNumOfBytesSentGenerator(trafficGenerator.apply(2d));
+        initialGenCopy1.setNumOfBytesSentGenerator(trafficGenerator.apply(1d));
 
         TlsRangeEventsGen initialGenCopy2 = initialGenCopy.copy();
         initialGenCopy2.sslSubjectGen.setConstantValueGen(entity + " b");
-        initialGenCopy2.setNumOfBytesSentGenerator(trafficGenerator.apply(3d));
+        initialGenCopy2.setNumOfBytesSentGenerator(trafficGenerator.apply(1d));
 
         eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy1, 20);
         eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy2, 20);
