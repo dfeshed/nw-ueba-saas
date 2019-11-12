@@ -10,11 +10,8 @@ import presidio.data.generators.common.random.GaussianLongGenerator;
 import presidio.data.generators.event.tls.FieldRangeAllocator;
 import presidio.data.generators.event.tls.TlsRangeEventsGen;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class AbnormalTraffic<T> {
 
@@ -46,71 +43,52 @@ public class AbnormalTraffic<T> {
 
     String abnormalIP;
     RangeGenerator<String> uncommonIpGenerator;
-    RangeGenerator<String> normalTrafficIpGenerator;
-    List<TlsRangeEventsGen> allGenerators = new ArrayList<>();
+    String ubnormalIP1,ubnormalIP2,ubnormalIP3;
 
     public TlsRangeEventsGen createNormalTrafficHistoryGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<String> sourceGen,  FieldRangeAllocator<T> destinationGen){
-        // 9 ips with regularTraffic per 1 hour
+        // 3 ips with regularTraffic per 1 hour
 
-        TlsRangeEventsGen normalGen = initialGenCopy.copy();
-        setEntity(normalGen);
-        normalGen.setNumOfBytesSentGenerator(regularTrafficGenerator);
-        normalTrafficIpGenerator = normalGen.srcIpGenerator.nextRangeGenCyclic(9);
-        double i = 0.8;
+        setEntity(initialGenCopy);
 
-        List<String> allIps = normalTrafficIpGenerator.getAllValues();
-        for (String ip : allIps) {
-            TlsRangeEventsGen nextGen = normalGen.copy();
-            nextGen.srcIpGenerator.setConstantValueGen(ip);
-            nextGen.setNumOfBytesSentGenerator(trafficGenerator.apply(i+=0.2));
-            allGenerators.add(nextGen);
-        }
+        initialGenCopy.srcIpGenerator.nextRangeGenCyclic(3);
 
-        String sslSubjectGroup2 =  normalGen.sslSubjectGen.nextRangeGenCyclic(1).getNext();
-        String sslSubjectGroup3 =  normalGen.sslSubjectGen.nextRangeGenCyclic(1).getNext();
+        TlsRangeEventsGen group1 = initialGenCopy.copy();
+        group1.setNumOfBytesSentGenerator(regularTrafficGenerator);
+        ubnormalIP1 = group1.srcIpGenerator.getGenerator().getAllValues().get(0);
 
-        IntStream.range(3, 6).boxed().forEach(j -> allGenerators.get(j).sslSubjectGen.setConstantValueGen(sslSubjectGroup2));
-        IntStream.range(6, 9).boxed().forEach(j -> allGenerators.get(j).sslSubjectGen.setConstantValueGen(sslSubjectGroup3));
+        TlsRangeEventsGen group2 = initialGenCopy.copy();
+        group2.sslSubjectGen.setConstantValueGen(entity + " a");
+        group2.setNumOfBytesSentGenerator(trafficGenerator.apply(2d));
+        ubnormalIP2 = group2.srcIpGenerator.getGenerator().getAllValues().get(0);
+
+        TlsRangeEventsGen group3 = initialGenCopy.copy();
+        group3.sslSubjectGen.setConstantValueGen(entity + " a");
+        group3.setNumOfBytesSentGenerator(trafficGenerator.apply(3d));
+        ubnormalIP3 = group3.srcIpGenerator.getGenerator().getAllValues().get(0);
 
 
-        allGenerators.forEach(e ->
-                indicator.addNormalValues(
-                        Lists.newArrayList(String.join(", ", e.srcIpGenerator.getGenerator().getAllValues()) +
-                                " -> "  + e.getNumOfBytesSentGenerator().getNext())));
+        indicator.addNormalValues(initialGenCopy.getNumOfBytesSentGenerator().nextValues(3, String::valueOf));
+        indicator.addContext(contextToString(sourceGen, destinationGen));
 
-        indicator.addContext(allGenerators.stream().map(e -> e.sslSubjectGen.getGenerator().getAllValues().stream()).flatMap(e -> e).collect(Collectors.toList()), String::valueOf);
-        allGenerators.forEach(e ->  eventsSupplier.setCommonValuesGen(e, 60));
+        eventsSupplier.setCommonValuesGen(group1, 20);
+        eventsSupplier.setCommonValuesGen(group2, 20);
+        eventsSupplier.setCommonValuesGen(group3, 20);
 
-        return initialGenCopy.copy();
+        eventsSupplier.setUncommonValuesAnomalyGen(group2, 20);
+        eventsSupplier.setUncommonValuesAnomalyGen(group3, 20);
+
+        return group1.copy();
     }
 
     public TlsRangeEventsGen createHighTrafficAnomalyGen(TlsRangeEventsGen heightTrafficAnomalyGen, FieldRangeAllocator<String> sourceGen,  FieldRangeAllocator<T> destinationGen){
-        // 3 ip with 2*regularTraffic per 1 hour
-
-        TlsRangeEventsGen firstGen = allGenerators.get(0);
-        TlsRangeEventsGen secondGen = allGenerators.get(3);
-        TlsRangeEventsGen thirdGen = allGenerators.get(6);
-
-        String upnormalIp1 = firstGen.srcIpGenerator.getGenerator().getAllValues().get(0);
-        String upnormalIp2 = secondGen.srcIpGenerator.getGenerator().getAllValues().get(0);
-        String upnormalIp3 = thirdGen.srcIpGenerator.getGenerator().getAllValues().get(0);
-
-        firstGen.srcIpGenerator.setConstantValueGen(upnormalIp1);
-        firstGen.setNumOfBytesSentGenerator(trafficGenerator.apply(2d));
-
-        secondGen.srcIpGenerator.setConstantValueGen(upnormalIp2);
-        secondGen.setNumOfBytesSentGenerator(trafficGenerator.apply(2.6d));
-
-        thirdGen.srcIpGenerator.setConstantValueGen(upnormalIp3);
-        thirdGen.setNumOfBytesSentGenerator(trafficGenerator.apply(3.3d));
-
-
-        eventsSupplier.setCommonValuesGen(firstGen, 20);
-        eventsSupplier.setCommonValuesGen(secondGen, 20);
-        eventsSupplier.setCommonValuesGen(thirdGen, 20);
-
+        // 1 ip with 2*regularTraffic per 1 hour
+        setEntity(heightTrafficAnomalyGen);
+        heightTrafficAnomalyGen.srcIpGenerator.setConstantValueGen(ubnormalIP1);
+        heightTrafficAnomalyGen.setNumOfBytesSentGenerator(trafficGenerator.apply(2d));
+        eventsSupplier.setUncommonValuesAnomalyGen(heightTrafficAnomalyGen, 60);
         return heightTrafficAnomalyGen.copy();
     }
+
 
 
 
