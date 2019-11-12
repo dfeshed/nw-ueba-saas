@@ -32,7 +32,8 @@ export default Route.extend({
       const selectedPage = this.get('investigatePage.selected');
       if (selectedPage) {
         if (selectedPage.isClassic) {
-          window.location.href = selectedPage.route;
+          const legacyEventsEnabled = this.get('investigatePage.legacyEventsEnabled');
+          window.location.href = (selectedPage.label === 'events' && !legacyEventsEnabled) ? '/investigation' : selectedPage.route;
         } else {
           const paths = selectedPage.route.split('.'); // ["protected", "investigate", "investigate-hosts"]
           const path = paths.pop();
