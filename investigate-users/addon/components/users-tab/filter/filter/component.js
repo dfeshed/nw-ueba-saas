@@ -36,7 +36,8 @@ const UsersTabFilterFilterComponent = Component.extend({
       this.send('updateFilter', filter);
     },
     updateFilterForEntityType(selections) {
-      const filter = this.get('filter').merge({ entityType: selections });
+      let filter = this.get('filter').merge({ entityType: selections });
+      filter = filter.merge({ indicatorTypes: null });
       this.send('updateFilter', filter);
     }
   }

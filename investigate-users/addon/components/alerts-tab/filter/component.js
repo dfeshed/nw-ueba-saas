@@ -50,7 +50,8 @@ const AlertTabFilterComponent = Component.extend({
       this.send('updateFilter', filter);
     },
     updateEntityTypes(selection) {
-      const filter = this.get('filter').merge({ entityType: selection });
+      let filter = this.get('filter').merge({ entityType: selection });
+      filter = filter.merge({ indicator_types: null });
       this.send('updateFilter', filter);
     }
   }

@@ -18,10 +18,11 @@
         <div class='user-overview-tab_users_row_name'>
           <span>{{user.displayName}}</span>
           <span>
-            {{user.alertGroup.Critical}} C |
-            {{user.alertGroup.High}} H |
-            {{user.alertGroup.Medium}} M |
-            {{user.alertGroup.Low}} L  {{t 'investigateUsers.alerts.title'}} 
+            <div class='user-overview-tab_users_row_alert-severity Critical'></div>{{user.alertGroup.Critical}} | 
+            <div class='user-overview-tab_users_row_alert-severity High'></div>{{user.alertGroup.High}} |
+            <div class='user-overview-tab_users_row_alert-severity Medium'></div>{{user.alertGroup.Medium}} |
+            <div class='user-overview-tab_users_row_alert-severity Low'></div>{{user.alertGroup.Low}}
+            {{t 'investigateUsers.alerts.title'}} 
           </span>
         </div>
         <div class='user-overview-tab_users_row_icon' title='Watched Entity'>

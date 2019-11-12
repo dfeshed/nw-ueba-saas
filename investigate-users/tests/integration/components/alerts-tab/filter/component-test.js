@@ -8,6 +8,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchFetch } from '../../../../helpers/patch-fetch';
+import waitForReduxStateChange from '../../../../helpers/redux-async-helpers';
 import { Promise } from 'rsvp';
 
 let setState;
@@ -80,18 +81,23 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
   });
 
   test('it should render alert tab filter for update filters for entity type', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
+    const redux = this.owner.lookup('service:redux');
     new ReduxDataHelper(setState).existAnomalyTypesForFilter({
       abnormal_file_action_operation_type: 45,
       abnormal_logon_day_time: 25,
       user_password_reset: 52
     }).build();
     await render(hbs`{{alerts-tab/filter}}`);
+    const select = waitForReduxStateChange(redux, ('alerts.filter.entityType'));
     await clickTrigger('.users-tab_filter_filter_select:nth-child(2)');
     assert.equal(findAll('.ember-power-select-option').length, 4);
     await selectChoose('.users-tab_filter_filter_select:nth-child(2)', 'JA3');
     assert.equal(find('.ember-power-select-selected-item').innerText, 'JA3');
-    return settled();
+    return select.then(() => {
+      const state = redux.getState();
+      assert.equal(state.users.filter.indicator_types, null);
+    });
   });
 
 });

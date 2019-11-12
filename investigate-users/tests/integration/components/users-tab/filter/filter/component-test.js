@@ -75,7 +75,7 @@ module('Integration | Component | users-tab/filter/filter', function(hooks) {
   });
 
   test('it should filter entity type', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     const redux = this.owner.lookup('service:redux');
     await render(hbs`{{users-tab/filter/filter}}`);
     await clickTrigger('.users-tab_filter_filter_select:nth-child(1)');
@@ -85,6 +85,7 @@ module('Integration | Component | users-tab/filter/filter', function(hooks) {
     return select.then(() => {
       const state = redux.getState();
       assert.equal(state.users.filter.entityType, 'ja3');
+      assert.equal(state.users.filter.indicatorTypes, null);
     });
   });
 });

@@ -26,6 +26,7 @@ module('Integration | Component | overview-tab/alerts', function(hooks) {
 
   test('it renders', async function(assert) {
     await render(hbs `{{overview-tab/alerts}}`);
+    assert.equal(findAll('.user-overview-tab_title_title').length, 1);
     assert.ok(find('.user-overview-tab_title').textContent.trim().indexOf('Top Alerts') > -1);
   });
 

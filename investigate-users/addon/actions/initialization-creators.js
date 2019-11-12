@@ -1,5 +1,6 @@
 import { UPDATE_ACTIVE_TAB } from './types';
 import { getRiskyUserCount, getTotalCount, getWatchedUserCount, getUserOverview } from './user-details';
+import { selectedEntityType } from 'investigate-users/reducers/users/selectors';
 import { resetAlerts, getTopTenAlerts, updateFilter as updateFilterForALerts, getExistAnomalyTypesForAlert, getAlertsForTimeline } from './alert-details';
 import { resetUsers, getExistAnomalyTypes, getExistAlertTypess, getFavorites, updateFilter } from './user-tab-actions';
 
@@ -9,11 +10,12 @@ import { resetUsers, getExistAnomalyTypes, getExistAlertTypess, getFavorites, up
  * @private
 */
 const _overviewTabCreation = () => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const entityType = selectedEntityType(getState());
     dispatch(getRiskyUserCount());
     dispatch(getWatchedUserCount());
     dispatch(getTotalCount());
-    dispatch(getUserOverview());
+    dispatch(getUserOverview(entityType));
     dispatch(getTopTenAlerts());
     dispatch(getAlertsForTimeline());
   };
