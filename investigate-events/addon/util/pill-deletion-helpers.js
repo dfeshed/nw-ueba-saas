@@ -5,11 +5,18 @@ import {
   OPERATOR_OR
 } from 'investigate-events/constants/pill';
 
-export const isDeletingSingleFocusedParenSet = (pills, isKeyPress = false) => {
-  return pills.length === 2 &&
-    pills.every((d) => d.type === OPEN_PAREN || d.type === CLOSE_PAREN) && // are parens
-    pills.some((d) => d.isFocused) && // at least one pill is focused
-    pills.every((d) => isKeyPress || !d.isSelected); // selected using key press actions or none are selected
+
+export const allParensWithAtleastOneFocused = (pills) => {
+  return pills.every((d) => d.type === OPEN_PAREN || d.type === CLOSE_PAREN) && // are parens
+    pills.some((d) => d.isFocused); // at least one pill is focused
+};
+export const isNonSelectedSingleParenSet = (pills) => {
+  return pills.length === 2 && pills.every((d) => !d.isSelected); // none are selected
+};
+
+export const isKeyPressedOnSelectedParens = (pills, isKeyPress = false) => {
+  return isKeyPress && // used delete or backspace key on the parens
+    pills.every((d) => d.isSelected); // all parens are selected
 };
 
 /**

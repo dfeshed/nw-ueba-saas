@@ -9,7 +9,7 @@ import { createQueryHash } from 'investigate-events/util/query-hash';
 import { createOperator, createParens, reassignTwinIds } from 'investigate-events/util/query-parsing';
 import { pillBeingEdited, focusedPill } from './selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { isDeletingSingleFocusedParenSet, isPillOrOperatorToBeDelete } from 'investigate-events/util/pill-deletion-helpers';
+import { allParensWithAtleastOneFocused, isNonSelectedSingleParenSet, isKeyPressedOnSelectedParens, isPillOrOperatorToBeDelete } from 'investigate-events/util/pill-deletion-helpers';
 import {
   OPERATOR_AND,
   OPERATOR_OR
@@ -294,8 +294,8 @@ const _addFocus = (state, needsFocusPill, isSelected) => {
 const _deletePills = (state, pillsToBeDeleted, isKeyPress = false) => {
   // get ids for pills that need to be deleted
   const deleteIds = pillsToBeDeleted.map((pD) => pD.id);
-  const isParenSetOnly = isDeletingSingleFocusedParenSet(pillsToBeDeleted, isKeyPress);
-  // remove those pill ids from state
+  const isParenSetOnly = allParensWithAtleastOneFocused(pillsToBeDeleted) &&
+    (isNonSelectedSingleParenSet(pillsToBeDeleted) || isKeyPressedOnSelectedParens(pillsToBeDeleted, isKeyPress)); // remove parens alone
   const newPills = state.pillsData.filter((pill, idx, pillsData) => {
     if (isParenSetOnly) {
       // only look for parens that are on the delete list

@@ -1,12 +1,13 @@
 import { module, test } from 'qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { setupTest } from 'ember-qunit';
-import { isDeletingSingleFocusedParenSet, isPillOrOperatorToBeDelete, includeLogicalOpAfterParens } from 'investigate-events/util/pill-deletion-helpers';
+import { allParensWithAtleastOneFocused, isNonSelectedSingleParenSet, isKeyPressedOnSelectedParens, isPillOrOperatorToBeDelete, includeLogicalOpAfterParens } from 'investigate-events/util/pill-deletion-helpers';
 import { DEFAULT_LANGUAGES, DEFAULT_ALIASES } from '../../helpers/redux-data-helper';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import {
   CloseParen,
-  OpenParen
+  OpenParen,
+  OperatorAnd
 } from 'investigate-events/util/grammar-types';
 
 const createPillsWithIds = (results) => {
@@ -21,13 +22,58 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     initialize(this.owner);
   });
 
-  test('should return true for focused parens ', function(assert) {
+  test('should return true when all pills are parens and at least one pill is focused', function(assert) {
     const closeParen = CloseParen.create();
-    closeParen.isFocused = true;
+    closeParen.isFocused = false;
     const openParen = OpenParen.create();
     openParen.isFocused = true;
     const pills = [openParen, closeParen];
-    assert.ok(isDeletingSingleFocusedParenSet(pills), 'Should allow deletion of focused parens');
+    assert.ok(allParensWithAtleastOneFocused(pills), 'Should return true when all are parens and at least one paren is focused');
+  });
+  test('should return false for no focused parens ', function(assert) {
+    const closeParen = CloseParen.create();
+    closeParen.isFocused = false;
+    const openParen = OpenParen.create();
+    openParen.isFocused = false;
+    const pills = [openParen, closeParen];
+    assert.notOk(allParensWithAtleastOneFocused(pills), 'Should return false when there are no focused parens');
+  });
+
+  test('should return false for not all pills are parens ', function(assert) {
+    const closeParen = CloseParen.create();
+    closeParen.isFocused = false;
+    const openParen = OpenParen.create();
+    openParen.isFocused = false;
+    const logicalOpAnd = OperatorAnd.create();
+    const pills = [openParen, closeParen, logicalOpAnd];
+    assert.notOk(allParensWithAtleastOneFocused(pills), 'Should return false when all pills are not parens');
+  });
+  test('should return false for selected parens', function(assert) {
+    const closeParen = CloseParen.create();
+    closeParen.isFocused = true;
+    closeParen.isSelected = true;
+    const openParen = OpenParen.create();
+    openParen.isFocused = false;
+    openParen.isSelected = true;
+    const pills = [openParen, closeParen];
+    assert.notOk(isNonSelectedSingleParenSet(pills), 'Should return false for selected Parens');
+  });
+
+  test('Should return false when there are more than one pair of parens', function(assert) {
+    const firstOpenParen = OpenParen.create();
+    firstOpenParen.isFocused = false;
+    firstOpenParen.isSelected = true;
+    const firstCloseParen = CloseParen.create();
+    firstCloseParen.isFocused = false;
+    firstCloseParen.isSelected = true;
+    const secondOpenParen = OpenParen.create();
+    secondOpenParen.isFocused = false;
+    secondOpenParen.isSelected = true;
+    const secondCloseParen = CloseParen.create();
+    secondCloseParen.isFocused = true;
+    secondCloseParen.isSelected = true;
+    const pills = [firstOpenParen, firstCloseParen, secondOpenParen, secondCloseParen];
+    assert.notOk(isNonSelectedSingleParenSet(pills), 'Should return false when there are more than one pair of parens');
   });
 
   test('should return false for selected parens when not using key board for deletion ', function(assert) {
@@ -38,7 +84,7 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     openParen.isFocused = true;
     closeParen.isSelected = true;
     const pills = [openParen, closeParen];
-    assert.notOk(isDeletingSingleFocusedParenSet(pills), 'Should not allow deletion of selected parens');
+    assert.notOk(isKeyPressedOnSelectedParens(pills), 'Should return false when keypress is not used');
   });
 
   test('should return true for selected parens when using key board for deletion ', function(assert) {
@@ -46,20 +92,48 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     closeParen.isFocused = true;
     closeParen.isSelected = true;
     const openParen = OpenParen.create();
-    openParen.isFocused = true;
-    closeParen.isSelected = true;
+    openParen.isFocused = false;
+    openParen.isSelected = true;
     const pills = [openParen, closeParen];
     const isKeyBoard = true;
-    assert.ok(isDeletingSingleFocusedParenSet(pills, isKeyBoard), 'Should not allow deletion of selected parens');
+    assert.ok(isKeyPressedOnSelectedParens(pills, isKeyBoard), 'Should return true when key pressed on selected parens');
+  });
+  test('should return true for multiple pairs of selected parens when using key board for deletion ', function(assert) {
+    const firstOpenParen = OpenParen.create();
+    firstOpenParen.isFocused = false;
+    firstOpenParen.isSelected = true;
+    const firstCloseParen = CloseParen.create();
+    firstCloseParen.isFocused = false;
+    firstCloseParen.isSelected = true;
+    const secondOpenParen = OpenParen.create();
+    secondOpenParen.isFocused = false;
+    secondOpenParen.isSelected = true;
+    const secondCloseParen = CloseParen.create();
+    secondCloseParen.isFocused = true;
+    secondCloseParen.isSelected = true;
+    const pills = [firstOpenParen, firstCloseParen, secondOpenParen, secondCloseParen];
+    const isKeyBoard = true;
+    assert.ok(isKeyPressedOnSelectedParens(pills, isKeyBoard), 'Should return true when key pressed on multiple selected parens');
   });
 
-
-  test('should return false for selected parens when having more than 2 pills for deletion ', function(assert) {
-    const text = '( medium = 3 )';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    const pills = createPillsWithIds(results);
-    assert.notOk(isDeletingSingleFocusedParenSet(pills), 'Should not allow deletion of selected parens');
+  test('should return false for multiple pairs of selected parens when using key board for deletion if all the parens are not selected', function(assert) {
+    const firstOpenParen = OpenParen.create();
+    firstOpenParen.isFocused = false;
+    firstOpenParen.isSelected = true;
+    const firstCloseParen = CloseParen.create();
+    firstCloseParen.isFocused = false;
+    firstCloseParen.isSelected = true;
+    const secondOpenParen = OpenParen.create();
+    secondOpenParen.isFocused = false;
+    secondOpenParen.isSelected = false;
+    const secondCloseParen = CloseParen.create();
+    secondCloseParen.isFocused = true;
+    secondCloseParen.isSelected = true;
+    const pills = [firstOpenParen, firstCloseParen, secondOpenParen, secondCloseParen];
+    const isKeyBoard = true;
+    assert.notOk(isKeyPressedOnSelectedParens(pills, isKeyBoard), 'Should return false when key pressed on multiple parens and not all are selected.');
   });
+
 
   test('should return true if the pill passed is in the delete list', function(assert) {
     const closeParen = CloseParen.create();

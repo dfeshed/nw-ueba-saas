@@ -5466,4 +5466,79 @@ module('Integration | Component | Query Pills', function(hooks) {
       });
     });
   });
+  test('Pressing backspace key to delete multiple selected parens , should remove the  parens alone', async function(assert) {
+    const text = '(medium = 1) AND ( ( medium = 32 ) AND medium = 21 ) AND medium = 2';
+    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    const pillsData = assignIdsAndTwinIdsToPills(results);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated(pillsData)
+      .build();
+
+    assert.expect(10);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true isPrimary=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    // verifying the initial state of the query.
+    assert.equal(findAll(PILL_SELECTORS.logicalOperator).length, 3, 'Three logical operators');
+    assert.equal(findAll(PILL_SELECTORS.openParen).length, 3, 'Three open Parens');
+    assert.equal(findAll(PILL_SELECTORS.closeParen).length, 3, 'Three close Parens');
+    assert.equal(findAll(PILL_SELECTORS.queryPillNotTemplate).length, 4, 'Four query pills');
+    // selecting two pairs of parens
+    const [firstOpenParen,, thirdOpenParen] = findAll(PILL_SELECTORS.openParen);
+    await click(firstOpenParen);
+    await click(thirdOpenParen);
+    assert.equal(findAll(PILL_SELECTORS.openParenSelected).length, 2, 'Two open parens selected');
+    assert.equal(findAll(PILL_SELECTORS.closeParenSelected).length, 2, 'Two close parens selected');
+    // deleting selected parens.
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
+    // ensuring only the selected parens are deleted .
+    assert.equal(findAll(PILL_SELECTORS.logicalOperator).length, 3, 'Three logical operators');
+    assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'One open Paren');
+    assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'One close Paren');
+    assert.equal(findAll(PILL_SELECTORS.queryPillNotTemplate).length, 4, 'Four query pills');
+  });
+
+  test('Pressing delete key to delete multiple selected parens , should remove the  parens alone', async function(assert) {
+    const text = '(medium = 1) AND ( ( medium = 32 ) AND medium = 21 ) AND medium = 2';
+    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    const pillsData = assignIdsAndTwinIdsToPills(results);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated(pillsData)
+      .build();
+
+    assert.expect(10);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true isPrimary=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    // verifying the initial state of the query.
+    assert.equal(findAll(PILL_SELECTORS.logicalOperator).length, 3, 'Three logical operators');
+    assert.equal(findAll(PILL_SELECTORS.openParen).length, 3, 'Three open Parens');
+    assert.equal(findAll(PILL_SELECTORS.closeParen).length, 3, 'Three close Parens');
+    assert.equal(findAll(PILL_SELECTORS.queryPillNotTemplate).length, 4, 'Four query pills');
+    // selecting two pairs of parens
+    const [firstOpenParen,, thirdOpenParen] = findAll(PILL_SELECTORS.openParen);
+    await click(firstOpenParen);
+    await click(thirdOpenParen);
+    assert.equal(findAll(PILL_SELECTORS.openParenSelected).length, 2, 'Two open parens selected');
+    assert.equal(findAll(PILL_SELECTORS.closeParenSelected).length, 2, 'Two close parens selected');
+    // deleting selected parens.
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+    // ensuring only the selected parens are deleted .
+    assert.equal(findAll(PILL_SELECTORS.logicalOperator).length, 3, 'Three logical operators');
+    assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'One open Paren');
+    assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'One close Paren');
+    assert.equal(findAll(PILL_SELECTORS.queryPillNotTemplate).length, 4, 'Four query pills');
+  });
 });
