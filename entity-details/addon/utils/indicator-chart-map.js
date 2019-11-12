@@ -80,6 +80,7 @@ export default {
       'user_password_reset',
       'nested_member_added_to_critical_enterprise_group',
       'member_added_to_critical_enterprise_group',
+      'ja3_abnormal_ja3_for_source_netname_outbound',
       'abnormal_destination_machine',
       'abnormal_source_machine',
       'abnormal_object_change_operation',

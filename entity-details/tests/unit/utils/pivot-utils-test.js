@@ -125,11 +125,11 @@ module('Unit | Utils | pivot-utils', (hooks) => {
   });
 
   test('it should be able to pivot given link with file schema filter', (assert) => {
-    const item = { linkField: 'https://localhost:4200/investigate/events', field: 'TestUser' };
-    const column = { linkField: 'user_link', field: 'username', additionalFilter: null };
+    const item = { linkField: 'https://localhost:4200/investigate/events', filename: '/sys/log/4/File.accdb' };
+    const column = { linkField: 'user_link', field: 'filename', additionalFilter: null };
     navigateToInvestigate('User', 'Name1', 'file', 1562192044531, item, column, 'brokerId');
     return waitUntil(() => currentUrl !== null).then(() => {
-      assert.ok(decodeURIComponent(currentUrl).indexOf("(obj.name = 'Name1' || filename = 'Name1') ") > 0);
+      assert.ok(decodeURIComponent(currentUrl).indexOf("(obj.name = '%2Fsys%2Flog%2F4%2FFile.accdb' || filename = '%2Fsys%2Flog%2F4%2FFile.accdb')") > 0);
       assert.ok(newTab);
     });
   });

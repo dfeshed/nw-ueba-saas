@@ -86,7 +86,7 @@ export default Component.extend(HasTableParent, {
    */
   didInsertElement() {
     this._super(...arguments);
-    this._row = document.querySelector('.js-header-row');
+    this._row = document.querySelector(`#${this.elementId} .js-header-row`);
     this._tableBodyScrollLeftDidChange();
   },
 

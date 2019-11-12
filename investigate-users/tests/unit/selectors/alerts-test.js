@@ -131,9 +131,10 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
   test('test dateTimeFilterOptionsForAlerts for custom range', function(assert) {
     let newState = state.setIn(['alerts', 'filter', 'showCustomDate'], true);
     newState = newState.setIn(['alerts', 'filter', 'alert_start_range'], '1534032000000,1534118400');
-    const { filterValue } = Alerts.dateTimeFilterOptionsForAlerts(newState);
+    const { filterValue, includeTimezone } = Alerts.dateTimeFilterOptionsForAlerts(newState);
     assert.equal(filterValue.value[0], 1534032000000);
     assert.equal(filterValue.value[1], 1534118400);
+    assert.equal(includeTimezone, true);
   });
 
   test('test getAlertsForTimeline for null', function(assert) {

@@ -157,6 +157,7 @@ export const dateTimeFilterOptionsForAlerts = createSelector(
     if (filter.showCustomDate === true) {
       const [startDate, endDate] = filter.alert_start_range.split(',');
       filterOptions.filterValue = { value: [parseInt(startDate, 10), parseInt(endDate, 10)] };
+      filterOptions.includeTimezone = true;
     }
     return filterOptions;
   });

@@ -148,6 +148,9 @@ const exportAlerts = () => {
     let filter = getFilter(getState());
     if (filter) {
       filter = filter.setIn(['fromPage'], 1);
+      if (filter.entityType === 'all') {
+        filter = _.omit(filter, 'entityType');
+      }
     }
     exportData('alertsExport', filter, `alerts_${new Date().toISOString()}.csv`).then(() => {});
   };
