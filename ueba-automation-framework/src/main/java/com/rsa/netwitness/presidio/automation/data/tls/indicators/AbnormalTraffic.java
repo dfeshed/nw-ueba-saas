@@ -4,7 +4,6 @@ import com.rsa.netwitness.presidio.automation.data.tls.events_gen.UncommonValues
 import com.rsa.netwitness.presidio.automation.data.tls.model.EntityType;
 import com.rsa.netwitness.presidio.automation.data.tls.model.TlsIndicator;
 import org.assertj.core.util.Lists;
-import presidio.data.generators.FixedValueGenerator;
 import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.common.list.RangeGenerator;
 import presidio.data.generators.common.random.GaussianLongGenerator;
@@ -115,6 +114,9 @@ public class AbnormalTraffic<T> {
 
 
 
+
+
+
     public TlsRangeEventsGen createNormalTrafficHistoryGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<T> destinationGen){
         // 1 ip with 3*regularTraffic per 1 hour
 
@@ -129,11 +131,11 @@ public class AbnormalTraffic<T> {
         eventsSupplier.setCommonValuesGen(initialGenCopy, 60);
 
         TlsRangeEventsGen initialGenCopy1 = initialGenCopy.copy();
-        initialGenCopy1.sslSubjectGen.setConstantValueGen(entity + " 1");
+        initialGenCopy1.sslSubjectGen.setConstantValueGen(entity + " a");
         initialGenCopy1.setNumOfBytesSentGenerator(trafficGenerator.apply(2d));
 
         TlsRangeEventsGen initialGenCopy2 = initialGenCopy.copy();
-        initialGenCopy2.sslSubjectGen.setConstantValueGen(entity + " 2");
+        initialGenCopy2.sslSubjectGen.setConstantValueGen(entity + " b");
         initialGenCopy2.setNumOfBytesSentGenerator(trafficGenerator.apply(3d));
 
         eventsSupplier.setCommonValuesGen(initialGenCopy1, 60);
@@ -153,11 +155,11 @@ public class AbnormalTraffic<T> {
         eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy, 20);
 
         TlsRangeEventsGen initialGenCopy1 = initialGenCopy.copy();
-        initialGenCopy1.sslSubjectGen.setConstantValueGen(entity + " 1");
+        initialGenCopy1.sslSubjectGen.setConstantValueGen(entity + " a");
         initialGenCopy1.setNumOfBytesSentGenerator(trafficGenerator.apply(2d));
 
         TlsRangeEventsGen initialGenCopy2 = initialGenCopy.copy();
-        initialGenCopy2.sslSubjectGen.setConstantValueGen(entity + " 2");
+        initialGenCopy2.sslSubjectGen.setConstantValueGen(entity + " b");
         initialGenCopy2.setNumOfBytesSentGenerator(trafficGenerator.apply(3d));
 
         eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy1, 20);
@@ -167,12 +169,7 @@ public class AbnormalTraffic<T> {
     }
 
 
-    public TlsRangeEventsGen addSslSubjectsToUncommonDomain(TlsRangeEventsGen initialGenCopy){
-        initialGenCopy.setNumOfBytesSentGenerator(new FixedValueGenerator<>(100L));
-        eventsSupplier.setCommonValuesGen(initialGenCopy, 60);
-        eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy, 60);
-        return initialGenCopy.copy();
-    }
+
 
 
 

@@ -359,10 +359,6 @@ public class SslSubjectTlsAlert {
         TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
         indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen, highTrafficAnomalyGen.hostnameGen);
 
-        TlsRangeEventsGen addSslSubjectsToUncommonDomain = eventsGenInit.copy();
-        addSslSubjectsToUncommonDomain.sslSubjectGen.nextRangeGenCyclic(5);
-        indicatorCreator.addSslSubjectsToUncommonDomain(addSslSubjectsToUncommonDomain);
-
         alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
