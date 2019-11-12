@@ -2737,7 +2737,8 @@ export default {
       save: 'Save',
       enable: 'Enable',
       saveSuccess: 'Saved successfully',
-      emptyMessage: 'No matching results'
+      emptyMessage: 'No matching results',
+      agentVersionNotSupported: 'Cannot view policy details for this agent. Consider upgrading the agent to 11.3 or above to view the policy details.'
     },
     errorPage: {
       serviceDown: 'Endpoint {{serviceType}}Server is offline',

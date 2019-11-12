@@ -22,13 +22,20 @@
     {{/each-in}}
     <hr class="divider">
   </vbox>
-  {{#rsa-content-accordion
-  isCollapsed=true
-  label=(t 'adminUsm.policyWizard.agentEndpoint')
-  animate=true
-  class="blue agent-accordion"}}
-    {{property-panel-policy/edr-policy}}
-  {{/rsa-content-accordion}}
+  {{#if agentVersionNotSupported}}
+    {{#rsa-content-warn-text-box
+      value=(t 'investigateHosts.common.agentVersionNotSupported')
+    }}
+    {{/rsa-content-warn-text-box}}
+  {{else}}
+    {{#rsa-content-accordion
+    isCollapsed=true
+    label=(t 'adminUsm.policyWizard.agentEndpoint')
+    animate=true
+    class="blue agent-accordion"}}
+      {{property-panel-policy/edr-policy}}
+    {{/rsa-content-accordion}}
+  {{/if}}
 
   {{#if sources.hasWindowsLogPolicy}}
     {{#rsa-content-accordion

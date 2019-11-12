@@ -46,4 +46,10 @@
   .center-zone, .right-zone {
     height: 100%;
   }
+  .right-zone .rsa-content-warn-text-box {
+    margin-top: rsa-whitespace(more);
+    .message {
+      color: rgba(var(--text-color-primary-lightest), var(--opacity-opaque));
+    }
+  }
 }

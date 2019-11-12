@@ -288,7 +288,15 @@ export const agentVersionSupported = createSelector(
   (selectedHostList) => {
     const { version } = selectedHostList.length ? selectedHostList[0] : { version: '0.0' };
     const versionParts = version.split('.');
-    return Number(versionParts[0]) > 10 && Number(versionParts[1]) > 3;
+    return Number(versionParts[0]) > 11 || (Number(versionParts[0]) === 11 && Number(versionParts[1]) > 3);
+  });
+
+export const agentVersionNotSupported = createSelector(
+  [_selectedHostList],
+  (selectedHostList) => {
+    const { version } = selectedHostList.length ? selectedHostList[0] : { version: '0.0' };
+    const versionParts = version.split('.');
+    return Number(versionParts[0]) < 11 || (Number(versionParts[0]) === 11 && Number(versionParts[1]) < 3);
   });
 
 export const mftDownloadButtonStatus = createSelector(

@@ -209,10 +209,28 @@ module('Integration | Component | property panel policy', function(hooks) {
   });
 
   const hostListNotSupported = [{ version: '11.3.0.0' }];
-  test('hostListNotSupported NOT supporting file-accordion', async function(assert) {
+  test('hostListNotSupported NOT supporting file-accordion and supporting edr', async function(assert) {
     new ReduxDataHelper(setState).selectedHostList(hostListNotSupported).policy(policyData).build();
     await render(hbs`{{property-panel-policy}}`);
     assert.equal(document.querySelectorAll('.file-accordion .liquid-container').length, 0, 'file-accordion did NOT render');
+    assert.equal(document.querySelectorAll('.agent-accordion .liquid-container').length, 1, 'agent-accordion-accordion did render');
+  });
+
+  const hostListSupported12 = [{ version: '12.1.0.0' }];
+  test('hostListSupported12 12.x supporting edr-and file-accordions', async function(assert) {
+    new ReduxDataHelper(setState).selectedHostList(hostListSupported12).policy(policyData).build();
+    await render(hbs`{{property-panel-policy}}`);
+    assert.equal(document.querySelectorAll('.agent-accordion .liquid-container').length, 1, 'agent-accordion-accordion render on 12.x');
+    assert.equal(document.querySelectorAll('.file-accordion .liquid-container').length, 1, 'file-accordion render on 12.x');
+  });
+
+  const hostListNotSupported11 = [{ version: '11.2.0.0' }];
+  test('hostListNotSupported11 NOT supporting edr-and-file-accordions', async function(assert) {
+    new ReduxDataHelper(setState).selectedHostList(hostListNotSupported11).policy(policyData).build();
+    await render(hbs`{{property-panel-policy}}`);
+    assert.equal(document.querySelectorAll('.agent-accordion .liquid-container').length, 0, 'agent-accordion-accordion did NOT render');
+    assert.equal(document.querySelectorAll('.rsa-content-warn-text-box').length, 1, 'rsa-content-warn-text-box did render');
+    assert.equal(document.querySelectorAll('.file-accordion .liquid-container').length, 0, 'test 2 file-accordion did NOT render');
   });
 
   const hostListNotSupported2 = [{ version: '10.4.0.0' }];
