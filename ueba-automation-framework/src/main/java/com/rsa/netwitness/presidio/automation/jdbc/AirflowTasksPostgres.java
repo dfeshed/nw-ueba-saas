@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static com.rsa.netwitness.presidio.automation.jdbc.model.AirflowTaskInstanceTable.TASK_INSTANCE_TABLE;
+import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.getOrNull;
 import static org.assertj.core.api.Assertions.fail;
 
 
@@ -89,9 +90,9 @@ public class AirflowTasksPostgres {
         while (rs.next()) {
             String dagId = rs.getString(AirflowTaskInstanceTable.DAG_ID);
             String taskId = rs.getString(AirflowTaskInstanceTable.TASK_ID);
-            Instant executionDate = rs.getTimestamp(AirflowTaskInstanceTable.EXECUTION_DATE).toInstant();
-            Instant startDate = rs.getTimestamp(AirflowTaskInstanceTable.START_DATE).toInstant();
-            Instant endDate = rs.getTimestamp(AirflowTaskInstanceTable.END_DATE).toInstant();
+            Instant executionDate = getOrNull(rs.getTimestamp(AirflowTaskInstanceTable.EXECUTION_DATE), Timestamp::toInstant);
+            Instant startDate = getOrNull(rs.getTimestamp(AirflowTaskInstanceTable.START_DATE), Timestamp::toInstant);
+            Instant endDate = getOrNull(rs.getTimestamp(AirflowTaskInstanceTable.END_DATE), Timestamp::toInstant);
             String state = rs.getString(AirflowTaskInstanceTable.STATE);
             int tryNumber = rs.getInt(AirflowTaskInstanceTable.TRY_NUMBER);
             int maxTries = rs.getInt(AirflowTaskInstanceTable.MAX_TRIES);
