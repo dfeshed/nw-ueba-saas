@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { getNetworkDownloadOptions, getDefaultDownloadFormat } from 'recon/reducers/packets/selectors';
+import { getNetworkDownloadOptions, getDefaultDownloadFormat, payloadProcessedPackets } from 'recon/reducers/packets/selectors';
 
 import summaryDataInput from '../../../data/subscriptions/reconstruction-summary/query/data';
 
@@ -23,6 +23,24 @@ const packets = [{
   side: 'request',
   timestamp: '1485792552870'
 }];
+
+test('payloadProcessedPackets will return an empty array when there are no bytes', function(assert) {
+  const result = payloadProcessedPackets(Immutable.from({
+    packets: {
+      isPayloadOnly: true,
+      packets: [{
+        bytes: '',
+        id: 4804965123532,
+        payloadSize: 6,
+        position: 2,
+        sequence: 102357698,
+        side: 'response',
+        timestamp: '1485792552869'
+      }]
+    }
+  }));
+  assert.equal(result.length, 0, 'Did not find an empty array');
+});
 
 test('getNetworkDownloadOptions', function(assert) {
   const result = getNetworkDownloadOptions(Immutable.from({

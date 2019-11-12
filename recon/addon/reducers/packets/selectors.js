@@ -33,7 +33,7 @@ export const hasRenderIds = createSelector(
  *
  * @private
  */
-const payloadProcessedPackets = createSelector(
+export const payloadProcessedPackets = createSelector(
   [packets, isPayloadOnly],
   processPacketPayloads
 );

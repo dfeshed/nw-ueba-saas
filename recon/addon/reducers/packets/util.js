@@ -27,7 +27,7 @@ export const processPacketPayloads = function(packets, isPayloadOnly) {
     const { bytes, payloadSize } = currentPacket;
     if (isPayloadOnly) {
       // if there are no bytes, eject
-      if (payloadSize === 0) {
+      if (payloadSize === 0 || bytes?.length === 0) {
         return acc;
       }
       // Filter out header/footer items from the current packet
