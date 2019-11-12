@@ -119,6 +119,10 @@ public class AbnormalTraffic<T> {
         eventsSupplier.setCommonValuesGen(initialGenCopy1, 60);
         eventsSupplier.setCommonValuesGen(initialGenCopy2, 60);
 
+        TlsRangeEventsGen sslSubjectGen = new TlsRangeEventsGen(1);
+        sslSubjectGen.sslSubjectGen.setConstantValueGen(entity + " b");
+        sslSubjectGen.setNumOfBytesSentGenerator(trafficGenerator.apply(10d));
+        eventsSupplier.setCommonValuesGen(sslSubjectGen, 60);
 
         return initialGenCopy.copy();
     }
