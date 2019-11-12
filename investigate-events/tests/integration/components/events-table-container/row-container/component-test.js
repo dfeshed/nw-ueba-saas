@@ -482,4 +482,34 @@ module('Integration | Component | Events Table Row', function(hooks) {
       assert.equal(japaneseMedium, `1 [${japaneseNetwork}]`, 'Expected medium to be translated given the locale is ja-jp');
     });
   });
+
+  test('will highlight search terms', async function(assert) {
+    assert.expect(1);
+
+    new ReduxDataHelper(setState)
+      .getColumns('SUMMARY', EventColumnGroups)
+      .visibleColumns()
+      .hasRequiredValuesToQuery(true)
+      .eventThreshold(100000)
+      .eventsPreferencesConfig()
+      .eventsQuerySort('time', 'Ascending')
+      .sortableColumns(['time', 'size'])
+      .language([
+        { format: 'TimeT', metaName: 'time', flags: -2147482605 }
+      ])
+      .eventCount(100000)
+      .searchTerm('un22fin22 un22fin22') // no prefs stubbed, the failed lookup result is fine for search match testing
+      .eventResults([{
+        'sessionId': 1
+      }])
+      .build();
+
+    await render(hbs`
+      {{#events-table-container/events-table}}
+        {{events-table-container/row-container dateFormat=dateFormat timeFormat=timeFormat timezone=timezone}}
+      {{/events-table-container/events-table}}
+    `);
+
+    assert.equal(findAll('.search-match-text').length, 1, 'Expected .search-match-text to be present');
+  });
 });

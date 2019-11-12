@@ -508,10 +508,7 @@ export const initializeInvestigate = function(
       }
     });
 
-    // 2) Initialize global preferences state
-    _initializeGlobalPreferences(dispatch);
-
-    // 3) Retrieve profiles, column groups, and meta groups
+    // 2) Retrieve profiles, column groups, and meta groups
     // it isn't important that this be syncronized with anything else,
     // so can just kick it off
     dispatch(_getProfiles());
@@ -519,11 +516,11 @@ export const initializeInvestigate = function(
     dispatch(_getMetaGroups());
     dispatch(isQueryExecutedByColumnGroup(false));
 
-    // 4) Get all the user's preferences
-    // 5) Get all the services available to the user. We have
+    // 3) Get all the user's preferences
+    // 4) Get all the services available to the user. We have
     //    to get services before we can do anything else. So
     //    all other requests have to wait until it comes back.
-    // 6) Retrieve event analysis settings. Returns us with
+    // 5) Retrieve event analysis settings. Returns us with
     //    a number of events to be displayed threshold based
     //    upon roles/default settings in admin.
     const initializationPromises = [
@@ -544,17 +541,21 @@ export const initializeInvestigate = function(
     const hasService = !!parsedQueryParams.serviceId;
     if (hasService) {
       // If we have a service then...
-      // 7) Include getting the dictionaries with other requests,
+      // 6) Include getting the dictionaries with other requests,
       //    and kick them all off
       initializationPromises.push(_initializeDictionaries(dispatch, getState));
       await RSVP.all(initializationPromises).catch(errorHandler);
     } else {
       // If we do not have a service then...
-      // 7) Get all the dictionaries after we have fetched services and
+      // 6) Get all the dictionaries after we have fetched services and
       //    automatically chosen the first service as the active service
       await RSVP.all(initializationPromises);
       await _initializeDictionaries(dispatch, getState).catch(errorHandler);
     }
+
+    // After _initializePreferences has resolved
+    // 7) Initialize global preferences state
+    _initializeGlobalPreferences(dispatch);
 
     // 8) Update sort state with sort params in URL
     // requires the completion of _initializePreferences for preference defaults

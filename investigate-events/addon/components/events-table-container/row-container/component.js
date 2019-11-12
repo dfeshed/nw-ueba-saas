@@ -38,12 +38,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
 
   @computed('item.sessionId', 'table.searchMatches', 'table.searchMatches.[]', 'table.searchTerm')
   isSearchMatch(id, matches) {
-    if (matches && matches.includes(id)) {
-      this._highlightSearchMatch();
-      return true;
-    } else {
-      return false;
-    }
+    return matches && matches.includes(id);
   },
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
@@ -111,9 +106,6 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
       once(this, this._renderCells);
       once(this, this._highlightEntities);
-      if (this.get('isSearchMatch')) {
-        once(this, this._highlightSearchMatch);
-      }
     }
   }),
 
@@ -125,6 +117,16 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   _columnWidthDidChange: observer('table.visibleColumns.@each.width', function() {
     if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
       once(this, this._repaintCellWidths);
+    }
+  }),
+
+  /**
+   * Ensures search matches are highlighted when row includes search match
+   * @private
+   */
+  _searchMatchesDidChange: observer('isSearchMatch', function() {
+    if (this && !this.get('isDestroyed') && !this.get('isDestroying')) {
+      this._highlightSearchMatch();
     }
   }),
 
@@ -167,9 +169,6 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   _afterRender() {
     this._renderCells();
     this._super(...arguments);
-    if (this.get('isSearchMatch')) {
-      this._highlightSearchMatch();
-    }
   },
 
   /**
@@ -217,6 +216,8 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     (this.get('table.visibleColumns') || []).forEach((column, columnIndex) => {
       this._renderCell($el, column, item, columnIndex);
     });
+
+    this._highlightSearchMatch();
   },
 
   /**
