@@ -3,7 +3,7 @@ import { lookup } from 'ember-dependency-lookup';
 import { addSortBy, addFilter } from 'admin-source-management/actions/api/utils/query-util';
 
 /**
- * Retrieves all matching groups from the server.
+ * Retrieves all matching policies from the server.
  * @returns Promise that will resolve with the server response.
  * @public
  */
@@ -21,6 +21,9 @@ function fetchPolicies(pageNumber, sort, expressionList) {
     method: 'fetchPolicies',
     query: {
       data: query
+    },
+    streamOptions: {
+      cancelPreviouslyExecuting: true
     }
   });
 }

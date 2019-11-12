@@ -21,6 +21,9 @@ function fetchGroups(pageNumber, sort, expressionList) {
     method: 'fetchGroups',
     query: {
       data: query
+    },
+    streamOptions: {
+      cancelPreviouslyExecuting: true
     }
   });
 }
