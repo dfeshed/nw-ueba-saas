@@ -1,7 +1,5 @@
 package presidio.output.processor.services.alert.indicator;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-import fortscale.common.general.CommonStrings;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
@@ -18,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 public class IndicatorsGeneratorForFeatureAggr implements IndicatorsGenerator {
-
     private final SupportingInformationConfig config;
 
     public IndicatorsGeneratorForFeatureAggr(SupportingInformationConfig config) {
@@ -30,7 +27,6 @@ public class IndicatorsGeneratorForFeatureAggr implements IndicatorsGenerator {
         AdeAggregationRecord adeAggregationRecord = smartAggregationRecord.getAggregationRecord();
         List<Indicator> indicators = new ArrayList<>();
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
-
         Indicator indicator = new Indicator(alert.getId(), alert.getEntityType());
         indicator.setName(indicatorConfig.getName());
         indicator.setStartDate(Date.from(adeAggregationRecord.getStartInstant()));
@@ -42,8 +38,8 @@ public class IndicatorsGeneratorForFeatureAggr implements IndicatorsGenerator {
         indicator.setScoreContribution(smartAggregationRecord.getContribution());
         Map<String, String> contexts = adeAggregationRecord.getContext();
         indicator.setContexts(contexts);
+        indicatorConfig.getEnrichers().forEach(enricher -> enricher.enrichIndicator(indicatorConfig, indicator));
         indicators.add(indicator);
-
         return indicators;
     }
 

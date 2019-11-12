@@ -1,16 +1,33 @@
 package presidio.output.processor.spring;
 
-import fortscale.utils.spring.ApplicationConfiguration;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.util.ResourceUtils;
 import presidio.output.processor.config.ClassificationPriorityConfig;
 import presidio.output.processor.config.DataConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
 import presidio.output.processor.services.alert.AlertClassificationService;
 import presidio.output.processor.services.alert.AlertClassificationServiceImpl;
+import presidio.output.processor.services.alert.indicator.enricher.IndicatorEnricher;
+import presidio.output.processor.services.alert.indicator.enricher.IndicatorEnricherJsonDeserializer;
 
+import java.io.File;
+import java.io.IOException;
 
-public class AlertClassificationPriorityConfig extends ApplicationConfiguration {
+public class AlertClassificationPriorityConfig {
+    @Value("${number.of.classifications}")
+    private int numberOfClassifications;
+
+    @Value("${supporting.information.config.resource.location:classpath:supporting_information_config.yml}")
+    private String supportingInformationConfigResourceLocation;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Bean
     public AlertClassificationService AlertClassificationService() {
@@ -29,11 +46,17 @@ public class AlertClassificationPriorityConfig extends ApplicationConfiguration 
 
     @Bean
     public DataConfig dataConfig() {
-        return bindPropertiesToTarget(DataConfig.class, "", "classpath:supporting_information_config.yml");
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+        objectMapper.registerModule(new SimpleModule().addDeserializer(
+                IndicatorEnricher.class,
+                new IndicatorEnricherJsonDeserializer(objectMapper, applicationContext)
+        ));
+
+        try {
+            File file = ResourceUtils.getFile(supportingInformationConfigResourceLocation);
+            return objectMapper.readValue(file, DataConfig.class);
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException);
+        }
     }
-
-    @Value("${number.of.classifications}")
-    private int numberOfClassifications;
-
-
 }
