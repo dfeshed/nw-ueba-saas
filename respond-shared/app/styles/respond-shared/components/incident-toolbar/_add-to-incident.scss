@@ -1,6 +1,10 @@
 $searchInputHeight: 75.5px;
 $alertSectionHeight: 100px;
 
+$invBorders: 42px; // 0.25rem + 0.75rem + 0.5rem + 1.5rem @ 16px
+$invAlertSectionHeight: 115px + 2px + $invBorders;
+$invSearchInputHeight: 47.5px;
+
 .rsa-add-to-incident {
   height: 100%;
 
@@ -13,7 +17,7 @@ $alertSectionHeight: 100px;
   }
 
   .from-investigate  {
-    height: calc(100% - #{$searchInputHeight} - #{$alertSectionHeight});
+    height: calc(100% - #{$invSearchInputHeight} - #{$invAlertSectionHeight});
   }
 
   .from-respond {
