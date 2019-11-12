@@ -17,7 +17,8 @@ const toggleMachineSelected = (host) => {
       managed: host.groupPolicy.managed,
       serviceId: host.serviceId,
       scanStatus: host.agentStatus.scanStatus,
-      agentStatus: host.agentStatus
+      agentStatus: host.agentStatus,
+      groupPolicy: host.groupPolicy
     }
   };
 
@@ -34,7 +35,8 @@ const setSelectedHost = (host) => ({
     managed: host.groupPolicy.managed,
     serviceId: host.serviceId,
     scanStatus: host.agentStatus.scanStatus,
-    agentStatus: host.agentStatus
+    agentStatus: host.agentStatus,
+    groupPolicy: host.groupPolicy
   }
 });
 
