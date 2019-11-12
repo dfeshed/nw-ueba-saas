@@ -62,7 +62,7 @@ public class AbnormalTraffic<T> {
         ubnormalIP2 = group2.srcIpGenerator.getGenerator().getAllValues().get(0);
 
         TlsRangeEventsGen group3 = initialGenCopy.copy();
-        group3.sslSubjectGen.setConstantValueGen(entity + " a");
+        group3.sslSubjectGen.setConstantValueGen(entity + " b");
         group3.setNumOfBytesSentGenerator(trafficGenerator.apply(3d));
         ubnormalIP3 = group3.srcIpGenerator.getGenerator().getAllValues().get(0);
 
@@ -76,6 +76,12 @@ public class AbnormalTraffic<T> {
 
         eventsSupplier.setUncommonValuesAnomalyGen(group2, 20);
         eventsSupplier.setUncommonValuesAnomalyGen(group3, 20);
+
+        TlsRangeEventsGen sslSubjectGen = new TlsRangeEventsGen(1);
+        sslSubjectGen.sslSubjectGen.setConstantValueGen(entity);
+        sslSubjectGen.srcIpGenerator.setConstantValueGen(ubnormalIP1);
+        sslSubjectGen.setNumOfBytesSentGenerator(trafficGenerator.apply(10d));
+        eventsSupplier.setCommonValuesGen(sslSubjectGen, 20);
 
         return group1.copy();
     }
