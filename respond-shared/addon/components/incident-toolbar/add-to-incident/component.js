@@ -93,11 +93,11 @@ const addToIncidentButton = Component.extend(Notifications, {
 
   /**
    * Represents the alert name/summary that will be set on all the alerts created from the selected events (internally)
-   * @property alertName
+   * @property alertSummary
    * @type {string}
    * @public
    */
-  alertName: null,
+  alertSummary: null,
 
 
   /**
@@ -181,7 +181,7 @@ const addToIncidentButton = Component.extend(Notifications, {
 
   didInsertElement() {
     this._super(...arguments);
-    this.set('alertName', this.get('i18n').t('respond.alerts.defaultAlertSummaryText').string);
+    this.set('alertSummary', this.get('i18n').t('respond.alerts.defaultAlertSummaryText').string);
   },
 
   actions: {
@@ -214,8 +214,8 @@ const addToIncidentButton = Component.extend(Notifications, {
       const selectedEventIds = this.get('selectedEventIds');
 
       if (selectedEventIds) {
-        const { endpointId, startTime, endTime, alertName, alertSeverity } =
-            this.getProperties('endpointId', 'startTime', 'endTime', 'alertName', 'alertSeverity');
+        const { endpointId, startTime, endTime, alertSummary, alertSeverity } =
+            this.getProperties('endpointId', 'startTime', 'endTime', 'alertSummary', 'alertSeverity');
         data = {
           eventIds: selectedEventIds,
           endpointId,
@@ -224,7 +224,7 @@ const addToIncidentButton = Component.extend(Notifications, {
             to: endTime
           },
           alertSeverity,
-          alertName,
+          alertSummary,
           id: selectedIncident.id
         };
       }
