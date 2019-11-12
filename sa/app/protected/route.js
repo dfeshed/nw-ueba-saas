@@ -254,8 +254,10 @@ export default Route.extend(AuthenticatedRouteMixin, {
     return RSVP.all(initializePromises).then((responses) => {
       // set the user preference timezone after timezones have been loaded, since the timezone service depends
       // on having the full list of timezone options for values to be properly set.
-      const [preferences] = responses;
-      this.set('timezone.selected', preferences.data.timeZone);
+      const preferences = responses.find((res) => !!res?.data?.timeZone);
+      if (preferences) {
+        this.set('timezone.selected', preferences.data.timeZone);
+      }
       return {};
     }).catch(() => {
       // eslint-disable-next-line no-console

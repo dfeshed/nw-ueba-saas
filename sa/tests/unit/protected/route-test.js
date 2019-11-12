@@ -86,4 +86,17 @@ module('Unit | Route | protected', function(hooks) {
     assert.ok(investigatePageService.get('legacyEventsEnabled'), 'legacy events enabled flag must be set');
   });
 
+  test('Model hook populates timeZone from preferences if available', async function(assert) {
+    assert.expect(2);
+    await this.owner.register('service:-routing', Service.extend({
+      currentRouteName: 'protected'
+    }));
+
+    const route = this.owner.lookup('route:protected');
+    const timeZone = this.owner.lookup('service:timezone');
+    assert.notOk(timeZone.selected, 'Should not find any timezone before the model hook is executed');
+    await route.model({ iframedIntoClassic: false });
+    assert.ok(timeZone.selected, 'Did not find timeZone set in service');
+  });
+
 });
