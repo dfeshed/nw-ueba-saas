@@ -53,7 +53,7 @@ public class SslSubjectHighBytesSentAlerts implements Supplier<Stream<TlsAlert>>
                 .high_number_of_bytes_sent_by_src_ip_to_ssl_subject_outbound()
                 .create();
 
-        TlsAlert ssl_subject_16 = new SslSubjectTlsAlert("samsung electronics co. ltd", dataPeriod, uncommonStartDay)
+        TlsAlert ssl_subject_16 = new SslSubjectTlsAlert("ipass inc.", dataPeriod, uncommonStartDay)
                 .high_number_of_bytes_sent_to_ssl_subject_outbound()
                 .create();
 
