@@ -84,8 +84,8 @@ public class AbnormalTraffic<T> {
         // 1 ip with 2*regularTraffic per 1 hour
         setEntity(heightTrafficAnomalyGen);
         heightTrafficAnomalyGen.srcIpGenerator.setConstantValueGen(ubnormalIP1);
-        heightTrafficAnomalyGen.setNumOfBytesSentGenerator(trafficGenerator.apply(2d));
-        eventsSupplier.setUncommonValuesAnomalyGen(heightTrafficAnomalyGen, 60);
+        heightTrafficAnomalyGen.setNumOfBytesSentGenerator(trafficGenerator.apply(4d));
+        eventsSupplier.setUncommonValuesAnomalyGen(heightTrafficAnomalyGen, 20);
         return heightTrafficAnomalyGen.copy();
     }
 

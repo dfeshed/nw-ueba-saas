@@ -322,6 +322,10 @@ public class SslSubjectTlsAlert {
 
         indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.srcIpGenerator,eventsGenInitCopy.dstOrgGen);
         TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
+
+        highTrafficAnomalyGen.hostnameGen.nextRangeGenCyclic(1);
+        highTrafficAnomalyGen.dstPortGen.nextRangeGenCyclic(1);
+
         indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen, highTrafficAnomalyGen.srcIpGenerator, highTrafficAnomalyGen.dstOrgGen);
 
         alert.indicators.add(indicatorCreator.getIndicator());
@@ -417,6 +421,10 @@ public class SslSubjectTlsAlert {
 
         indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.srcIpGenerator,eventsGenInitCopy.dstPortGen);
         TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
+
+        highTrafficAnomalyGen.hostnameGen.nextRangeGenCyclic(1);
+        highTrafficAnomalyGen.dstOrgGen.nextRangeGenCyclic(1);
+
         indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen, highTrafficAnomalyGen.srcIpGenerator, highTrafficAnomalyGen.dstPortGen);
 
         alert.indicators.add(indicatorCreator.getIndicator());
