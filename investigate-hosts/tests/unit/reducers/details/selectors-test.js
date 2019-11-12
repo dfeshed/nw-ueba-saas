@@ -201,6 +201,9 @@ test('isProcessDumpDownloadSupported is true when all conditions are met', funct
             machineOsType: 'windows',
             agentMode: 'advanced',
             agentVersion: '11.4.0.0'
+          },
+          agentStatus: {
+            lastSeen: 'EndpointServer'
           }
         }
       }
@@ -221,6 +224,29 @@ test('isProcessDumpDownloadSupported is false when conditions are met', function
             machineOsType: 'windows',
             agentMode: 'advanced',
             agentVersion: '11.3.0.0'
+          }
+        }
+      }
+    }
+  });
+  assert.equal(isProcessDumpDownloadSupported(state), false);
+});
+
+test('isProcessDumpDownloadSupported is false when conditions are met', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      detailsInput: {
+        isLatestSnapshot: true
+      },
+      overview: {
+        hostOverview: {
+          machineIdentity: {
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '11.3.0.0'
+          },
+          agentStatus: {
+            lastSeen: 'RelayServer'
           }
         }
       }

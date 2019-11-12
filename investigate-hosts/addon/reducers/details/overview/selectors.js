@@ -457,12 +457,12 @@ export const isAgentMigrated = createSelector(
 export const mftDownloadButtonStatusDetails = createSelector(
   [_hostOverview, isAgentMigrated],
   (hostOverview, isAgentMigrated) => {
-    const { machineIdentity = {}, agentStatus: { isolationStatus } } = hostOverview.agentStatus ? hostOverview : { agentStatus: {} };
+    const { machineIdentity = {}, agentStatus: { isolationStatus, lastSeen } } = hostOverview.agentStatus ? hostOverview : { agentStatus: {} };
     // Isolated Key is needed to check if machine has been isolated and exclusion list can be edited.
     const isIsolated = isolationStatus?.isolated;
     const { machineOsType, agentMode, agentVersion } = machineIdentity;
     let isMFTEnabled = false;
-    if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion)) {
+    if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion) && lastSeen !== 'RelayServer') {
       isMFTEnabled = true;
     }
     return { isDisplayed: isMFTEnabled, isAgentMigrated, isIsolated };

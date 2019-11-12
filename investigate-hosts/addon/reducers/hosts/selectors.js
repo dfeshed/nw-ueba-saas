@@ -283,27 +283,6 @@ export const actionsDisableMessage = createSelector(
   }
 );
 
-const _isMachineOSWindows = createSelector(
-  [_selectedHostList],
-  (selectedHostList) => {
-    const { machineIdentity = { machineOsType: '' } } = selectedHostList.length ? selectedHostList[0] : { machineIdentity: { machineOsType: '' } };
-    return isOSWindows(machineIdentity.machineOsType);
-  });
-
-const _agentMode = createSelector(
-  [_selectedHostList],
-  (selectedHostList) => {
-    const { machineIdentity = { agentMode: '' } } = selectedHostList.length ? selectedHostList[0] : { machineIdentity: { agentMode: '' } };
-    return isModeAdvance(machineIdentity.agentMode);
-  });
-
-const _agentVersion = createSelector(
-  [_selectedHostList],
-  (selectedHostList) => {
-    const { version } = selectedHostList.length ? selectedHostList[0] : { version: '' };
-    return isAgentVersionAdvanced(version);
-  });
-
 export const agentVersionSupported = createSelector(
   [_selectedHostList],
   (selectedHostList) => {
@@ -313,9 +292,9 @@ export const agentVersionSupported = createSelector(
   });
 
 export const mftDownloadButtonStatus = createSelector(
-  [_isMachineOSWindows, _agentMode, _agentVersion],
-  (isMachineOSWindows, agentMode, agentVersion) => {
-    return { isDisplayed: (isMachineOSWindows && agentMode && agentVersion) };
+  [_selectedHostList],
+  ([item = {}]) => {
+    return { isDisplayed: item.isMFTEnabled };
   });
 export const selectedHostDetails = createSelector(
   [_selectedHostList],
@@ -367,7 +346,7 @@ export const processedHostList = createSelector(
         canStartScan = scanStatus === 'idle' || scanStatus === 'cancelPending';
         isAgentRoaming = (lastSeen === 'RelayServer');
       }
-      if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion)) {
+      if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion) && !isAgentRoaming) {
         isMFTEnabled = true;
       }
       return {

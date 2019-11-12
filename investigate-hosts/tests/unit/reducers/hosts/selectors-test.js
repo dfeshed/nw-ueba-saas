@@ -809,6 +809,7 @@ test('mftDownloadButtonStatus', function(assert) {
             machineOsType: 'linux',
             agentMode: 'advanced'
           },
+          isMFTEnabled: false,
           version: '11.4.0.0',
           managed: true,
           serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
@@ -829,6 +830,7 @@ test('mftDownloadButtonStatus', function(assert) {
             machineOsType: 'windows',
             agentMode: 'advanced'
           },
+          isMFTEnabled: true,
           version: '11.3.0.0',
           managed: true,
           serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
@@ -837,7 +839,7 @@ test('mftDownloadButtonStatus', function(assert) {
     }
   });
   const result2 = mftDownloadButtonStatus(state2);
-  assert.deepEqual(result2, { isDisplayed: false });
+  assert.deepEqual(result2, { isDisplayed: true });
 
   const state3 = Immutable.from({
     endpoint: {
@@ -847,9 +849,10 @@ test('mftDownloadButtonStatus', function(assert) {
           machineIdentity: {
             machineName: 'RAR113-EPS',
             machineOsType: 'windows',
-            agentMode: 'insights'
+            agentMode: 'advanced'
           },
-          version: '11.4.0.0',
+          isMFTEnabled: false,
+          version: '11.3.0.0',
           managed: true,
           serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
         }]
@@ -858,46 +861,6 @@ test('mftDownloadButtonStatus', function(assert) {
   });
   const result3 = mftDownloadButtonStatus(state3);
   assert.deepEqual(result3, { isDisplayed: false });
-
-  const state4 = Immutable.from({
-    endpoint: {
-      machines: {
-        selectedHostList: [{
-          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
-          machineIdentity: {
-            machineName: 'RAR113-EPS',
-            machineOsType: 'windows',
-            agentMode: 'advanced'
-          },
-          version: '15.0.0.0',
-          managed: true,
-          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
-        }]
-      }
-    }
-  });
-  const result4 = mftDownloadButtonStatus(state4);
-  assert.deepEqual(result4, { isDisplayed: true });
-
-  const state5 = Immutable.from({
-    endpoint: {
-      machines: {
-        selectedHostList: [{
-          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
-          machineIdentity: {
-            machineName: 'RAR113-EPS',
-            machineOsType: 'windows',
-            agentMode: 'advanced'
-          },
-          version: '11.4.0.0',
-          managed: true,
-          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
-        }]
-      }
-    }
-  });
-  const result5 = mftDownloadButtonStatus(state5);
-  assert.deepEqual(result5, { isDisplayed: true });
 });
 
 test('agentVersionSupported', function(assert) {
@@ -1052,6 +1015,30 @@ test('processedHostList', function(assert) {
   });
   const result5 = processedHostList(state5);
   assert.equal(result5[0].isMFTEnabled, true);
+
+  const state6 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          agentStatus: {
+            lastSeen: 'RelayServer'
+          },
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '11.4.0.0'
+          },
+          version: '11.4.0.0',
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      }
+    }
+  });
+  const result6 = processedHostList(state6);
+  assert.equal(result6[0].isMFTEnabled, false);
 });
 
 test('isAgentMigrated is not broker', function(assert) {

@@ -101,10 +101,14 @@ export const updateConfig = (schema, savedConfig) => {
 
 export const isProcessDumpDownloadSupported = createSelector(
   [_hostOverview],
-  ({ machineIdentity }) => {
+  ({ machineIdentity, agentStatus = {} }) => {
     if (machineIdentity) {
+      const { lastSeen } = agentStatus;
       const { machineOsType, agentMode, agentVersion } = machineIdentity;
-      return isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion);
+      return isOSWindows(machineOsType) &&
+        isModeAdvance(agentMode) &&
+        isAgentVersionAdvanced(agentVersion) &&
+        lastSeen !== 'RelayServer';
     } else {
       return false;
     }

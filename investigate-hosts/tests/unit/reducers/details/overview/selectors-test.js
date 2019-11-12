@@ -903,7 +903,8 @@ module('Unit | Selectors | overview', function(hooks) {
             agentStatus: {
               isolationStatus: {
                 isolated: true
-              }
+              },
+              lastSeen: 'EndpointServer'
             },
             machineIdentity: {
               machineOsType: 'windows',
@@ -982,7 +983,28 @@ module('Unit | Selectors | overview', function(hooks) {
     }));
     assert.deepEqual(result, { isDisplayed: false, isIsolated: false, isAgentMigrated: true });
   });
-
+  test('mftDownloadButtonStatusDetails when lastseen RelayServer', function(assert) {
+    const result = mftDownloadButtonStatusDetails(Immutable.from({
+      endpoint: {
+        overview: {
+          hostOverview: {
+            agentStatus: {
+              lastSeen: 'RelayServer',
+              isolationStatus: {
+                isolated: false
+              }
+            },
+            machineIdentity: {
+              machineOsType: 'windows',
+              agentMode: 'insights',
+              agentVersion: '11.4.0.0'
+            }
+          }
+        }
+      }
+    }));
+    assert.deepEqual(result, { isDisplayed: false, isIsolated: false, isAgentMigrated: true });
+  });
   test('mftDownloadButtonStatusDetails when isolation is true', function(assert) {
     const result = mftDownloadButtonStatusDetails(Immutable.from({
       endpoint: {
