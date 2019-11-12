@@ -18,7 +18,8 @@ const toggleMachineSelected = (host) => {
       serviceId: host.serviceId,
       scanStatus: host.agentStatus.scanStatus,
       agentStatus: host.agentStatus,
-      isMFTEnabled: host.isMFTEnabled
+      isMFTEnabled: host.isMFTEnabled,
+      groupPolicy: host.groupPolicy
     }
   };
 
@@ -36,7 +37,8 @@ const setSelectedHost = (host) => ({
     serviceId: host.serviceId,
     scanStatus: host.agentStatus.scanStatus,
     agentStatus: host.agentStatus,
-    isMFTEnabled: host.isMFTEnabled
+    isMFTEnabled: host.isMFTEnabled,
+    groupPolicy: host.groupPolicy
   }
 });
 

@@ -50,7 +50,7 @@ const callBackOptions = (context) => ({
 });
 
 const processDumpCallBackOptions = (context) => ({
-  onSuccess: () => success('investigateHosts.flash.genericFileDownloadRequestSent'),
+  onSuccess: () => success('investigateHosts.hosts.download.details.success', { label: 'Process dump' }),
   onFailure: (message) => context.get('flashMessage').showErrorMessage(message)
 });
 
