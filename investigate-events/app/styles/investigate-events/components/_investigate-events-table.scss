@@ -309,6 +309,11 @@
       margin-top: 17px;
       margin-right: rsa-whitespace(less);
       color: text-color(primary, light);
+
+      span, i {
+        height: 1rem;
+      }
+      
       .rsa-icon {
         cursor: pointer;
         margin: 0 rsa-whitespace(least);
