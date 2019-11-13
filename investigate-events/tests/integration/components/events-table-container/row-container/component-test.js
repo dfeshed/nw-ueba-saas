@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -483,25 +483,27 @@ module('Integration | Component | Events Table Row', function(hooks) {
     });
   });
 
-  skip('will highlight search terms', async function(assert) {
+  test('will highlight search terms', async function(assert) {
     assert.expect(1);
 
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
-      .visibleColumns()
       .hasRequiredValuesToQuery(true)
       .eventThreshold(100000)
       .eventsPreferencesConfig()
       .eventsQuerySort('time', 'Ascending')
       .sortableColumns(['time', 'size'])
       .language([
-        { format: 'TimeT', metaName: 'time', flags: -2147482605 }
+        { format: 'Int', metaName: 'time', flags: -2147482605 },
+        { format: 'Int', metaName: 'foo', flags: -2147482605 },
+        { format: 'Int', metaName: 'bar', flags: -2147482605 },
+        { format: 'Int', metaName: 'has.alias', flags: -2147482605 },
+        { format: 'Int', metaName: 'medium', flags: -2147482605 }
       ])
       .eventCount(100000)
-      .searchTerm('un22fin22 un22fin22') // no prefs stubbed, the failed lookup result is fine for search match testing
-      .eventResults([{
-        'sessionId': 1
-      }])
+      .searchTerm('Network')
+      .visibleColumns(visibleColumns)
+      .eventResults([item])
       .build();
 
     await render(hbs`

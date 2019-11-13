@@ -138,7 +138,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   _highlightSearchMatch() {
     schedule('afterRender', () => {
       const el = this.get('element');
-      if (!el) {
+      if (!el || !this.get('table.searchTerm')) {
         return;
       }
 
