@@ -105,7 +105,8 @@ public class AbnormalTraffic<T> {
         // 1 ip with 3*regularTraffic per 1 hour
 
         setEntity(initialGenCopy);
-        initialGenCopy.setNumOfBytesSentGenerator(regularTrafficGenerator);
+
+        initialGenCopy.setNumOfBytesSentGenerator(trafficGenerator.apply(1.5d));
         uncommonIpGenerator = initialGenCopy.srcIpGenerator.nextRangeGenCyclic(3);
         abnormalIP = uncommonIpGenerator.getNext();
         initialGenCopy.srcIpGenerator.setConstantValueGen(abnormalIP);
@@ -116,17 +117,17 @@ public class AbnormalTraffic<T> {
 
         TlsRangeEventsGen initialGenCopy1 = initialGenCopy.copy();
         initialGenCopy1.sslSubjectGen.setConstantValueGen(entity + " a");
-        initialGenCopy1.setNumOfBytesSentGenerator(trafficGenerator.apply(2d));
+        initialGenCopy1.setNumOfBytesSentGenerator(trafficGenerator.apply(0.8d));
 
         TlsRangeEventsGen initialGenCopy2 = initialGenCopy.copy();
         initialGenCopy2.sslSubjectGen.setConstantValueGen(entity + " b");
-        initialGenCopy2.setNumOfBytesSentGenerator(trafficGenerator.apply(3d));
+        initialGenCopy2.setNumOfBytesSentGenerator(trafficGenerator.apply(0.4d));
 
         eventsSupplier.setCommonValuesGen(initialGenCopy1, 60);
         eventsSupplier.setCommonValuesGen(initialGenCopy2, 60);
 
         TlsRangeEventsGen sslSubjectGen = new TlsRangeEventsGen(1);
-        sslSubjectGen.sslSubjectGen.setConstantValueGen(entity + " b");
+        sslSubjectGen.sslSubjectGen.setConstantValueGen(entity);
         sslSubjectGen.setNumOfBytesSentGenerator(trafficGenerator.apply(10d));
         eventsSupplier.setCommonValuesGen(sslSubjectGen, 60);
 
@@ -139,19 +140,19 @@ public class AbnormalTraffic<T> {
         setEntity(initialGenCopy);
 
         initialGenCopy.srcIpGenerator.setGenerator(uncommonIpGenerator);
-        initialGenCopy.setNumOfBytesSentGenerator(trafficGenerator.apply(3d));
+        initialGenCopy.setNumOfBytesSentGenerator(trafficGenerator.apply(1.5d));
         eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy, 20);
 
         TlsRangeEventsGen initialGenCopy1 = initialGenCopy.copy();
         initialGenCopy1.sslSubjectGen.setConstantValueGen(entity + " a");
-        initialGenCopy1.setNumOfBytesSentGenerator(trafficGenerator.apply(1d));
+        initialGenCopy1.setNumOfBytesSentGenerator(trafficGenerator.apply(0.8d));
 
         TlsRangeEventsGen initialGenCopy2 = initialGenCopy.copy();
         initialGenCopy2.sslSubjectGen.setConstantValueGen(entity + " b");
-        initialGenCopy2.setNumOfBytesSentGenerator(trafficGenerator.apply(1d));
+        initialGenCopy2.setNumOfBytesSentGenerator(trafficGenerator.apply(0.4d));
 
-        eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy1, 20);
-        eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy2, 20);
+        eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy1, 60);
+        eventsSupplier.setUncommonValuesAnomalyGen(initialGenCopy2, 60);
 
         return initialGenCopy.copy();
     }
