@@ -97,16 +97,28 @@ export default class DataHelper {
   parserRulesWait(flag) {
     this._setBaseState();
     if (flag) {
-      _set(this.state, 'content.logParserRules.logParsersStatus', 'wait');
+      _set(this.state, 'content.logParserRules.logParsersStatus', 'completed');
+      _set(this.state, 'content.logParserRules.ruleFormatsStatus', 'completed');
+      _set(this.state, 'content.logParserRules.deviceTypesStatus', 'completed');
+      _set(this.state, 'content.logParserRules.deviceClassesStatus', 'completed');
+      _set(this.state, 'content.logParserRules.metasStatus', 'wait');
     } else {
       _set(this.state, 'content.logParserRules.logParsersStatus', 'completed');
+      _set(this.state, 'content.logParserRules.ruleFormatsStatus', 'completed');
+      _set(this.state, 'content.logParserRules.deviceTypesStatus', 'completed');
+      _set(this.state, 'content.logParserRules.deviceClassesStatus', 'completed');
+      _set(this.state, 'content.logParserRules.metasStatus', 'completed');
     }
     return this;
   }
 
   parserRulesError() {
     this._setBaseState();
-    _set(this.state, 'content.logParserRules.logParsersStatus', 'error');
+    _set(this.state, 'content.logParserRules.logParsersStatus', 'completed');
+    _set(this.state, 'content.logParserRules.ruleFormatsStatus', 'completed');
+    _set(this.state, 'content.logParserRules.deviceTypesStatus', 'completed');
+    _set(this.state, 'content.logParserRules.deviceClassesStatus', 'completed');
+    _set(this.state, 'content.logParserRules.metasStatus', 'error');
     return this;
   }
 

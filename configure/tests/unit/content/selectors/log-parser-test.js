@@ -17,7 +17,9 @@ import {
   isHighlighting,
   highlightedLogs,
   highlightedRuleNames,
-  metas
+  metas,
+  isLoadingLogParser,
+  isLoadingLogParserError
 } from 'configure/reducers/content/log-parser-rules/selectors';
 
 module('Unit | Selectors | log-parser-rules');
@@ -66,6 +68,38 @@ const state = (state = logParserRules) => ({
   }
 });
 
+const isLoadingLogParserDataTrue = {
+  logParsersStatus: 'wait',
+  ruleFormatsStatus: 'completed',
+  deviceTypesStatus: 'wait',
+  deviceClassesStatus: 'completed',
+  metasStatus: 'wait'
+};
+
+const isLoadingLogParserDataFalse = {
+  logParsersStatus: 'completed',
+  ruleFormatsStatus: 'completed',
+  deviceTypesStatus: 'completed',
+  deviceClassesStatus: 'completed',
+  metasStatus: 'completed'
+};
+
+const isLoadingLogParserErrorDataTrue = {
+  logParsersStatus: 'completed',
+  ruleFormatsStatus: 'completed',
+  deviceTypesStatus: 'completed',
+  deviceClassesStatus: 'completed',
+  metasStatus: 'error'
+};
+
+const isLoadingLogParserErrorDataFalse = {
+  logParsersStatus: 'completed',
+  ruleFormatsStatus: 'completed',
+  deviceTypesStatus: 'completed',
+  deviceClassesStatus: 'completed',
+  metasStatus: 'completed'
+};
+
 test('Basic selector expectations', function(assert) {
   assert.equal(logParsers(state()), logParserRules.logParsers, 'The logParsers selector returns the logParsers from state');
   assert.equal(deviceTypes(state()), logParserRules.deviceTypes, 'The deviceTypes selector returns the deviceTypes from state');
@@ -84,6 +118,11 @@ test('Basic selector expectations', function(assert) {
   assert.equal(isParserRuleOutOfBox(state({ parserRules: [{ outOfBox: true }], selectedLogParserIndex: 0 })), true);
   assert.equal(isParserRuleOutOfBox(state({ parserRules: [{ outOfBox: false }], selectedLogParserIndex: 0 })), false);
   assert.equal(metas(state()), logParserRules.metas);
+
+  assert.equal(isLoadingLogParser(state(isLoadingLogParserDataTrue)), true, 'isLoadingLogParserDataTrue');
+  assert.equal(isLoadingLogParser(state(isLoadingLogParserDataFalse)), false, 'isLoadingLogParserDataFalse');
+  assert.equal(isLoadingLogParserError(state(isLoadingLogParserErrorDataTrue)), true, 'isLoadingLogParserErrorDataTrue');
+  assert.equal(isLoadingLogParserError(state(isLoadingLogParserErrorDataFalse)), false, 'isLoadingLogParserErrorDataFalse');
 });
 
 test('The availableDeviceTypes selector filters out any entries in logParsers with the same name property', function(assert) {

@@ -97,7 +97,11 @@ export const isHighlighting = createSelector(
 
 export const isLoadingLogParser = createSelector(
   _parserRulesState,
-  (parserRulesState) => parserRulesState.logParsersStatus === 'wait'
+  (parserRulesState) => parserRulesState.logParsersStatus === 'wait' ||
+  parserRulesState.ruleFormatsStatus === 'wait' ||
+  parserRulesState.deviceTypesStatus === 'wait' ||
+  parserRulesState.deviceClassesStatus === 'wait' ||
+  parserRulesState.metasStatus === 'wait'
 );
 
 export const isLoadingParserRules = createSelector(
@@ -107,7 +111,11 @@ export const isLoadingParserRules = createSelector(
 
 export const isLoadingLogParserError = createSelector(
   _parserRulesState,
-  (parserRulesState) => parserRulesState.logParsersStatus === 'error'
+  (parserRulesState) => parserRulesState.logParsersStatus === 'error' ||
+  parserRulesState.ruleFormatsStatus === 'error' ||
+  parserRulesState.deviceTypesStatus === 'error' ||
+  parserRulesState.deviceClassesStatus === 'error' ||
+  parserRulesState.metasStatus === 'error'
 );
 
 export const isLoadingParserRulesError = createSelector(
