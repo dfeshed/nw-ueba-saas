@@ -1,3 +1,16 @@
+# [14.6.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.6.0)
+## Features
+* [ASOC-80044](https://bedfordjira.na.rsa.net/browse/ASOC-80044):&emsp;Edit Profile
+* [ASOC-80108](https://bedfordjira.na.rsa.net/browse/ASOC-80108):&emsp;Add Query Pills pre-query to Add Profile Form
+* [ASOC-80116](https://bedfordjira.na.rsa.net/browse/ASOC-80116):&emsp;Create New Profile
+* [ASOC-82284](https://bedfordjira.na.rsa.net/browse/ASOC-82284):&emsp;Add context-sensitive help URL that maps to investigation:eaColumnGroups
+* [ASOC-84921](https://bedfordjira.na.rsa.net/browse/ASOC-84921):&emsp;Misc Query Pill Updates/Fixes v3
+* [ASOC-85309](https://bedfordjira.na.rsa.net/browse/ASOC-85309):&emsp;Misc Query Pill Updates/Fixes v4
+* [ASOC-85405](https://bedfordjira.na.rsa.net/browse/ASOC-85405):&emsp;UX - Alter intra-session toggle label and tool tips
+* [ASOC-85543](https://bedfordjira.na.rsa.net/browse/ASOC-85543):&emsp;Multi analyst Qualification : Default deactivation of Classic Events view
+* [ASOC-85809](https://bedfordjira.na.rsa.net/browse/ASOC-85809):&emsp;Query Profile is not applied in events page when its applied in investigate
+
+
 # [14.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.5.0)
 ## Features
 * [ASOC-74231](https://bedfordjira.na.rsa.net/browse/ASOC-74231):&emsp;Pill Selection Paren Actions

@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -483,7 +483,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
     });
   });
 
-  test('will highlight search terms', async function(assert) {
+  skip('will highlight search terms', async function(assert) {
     assert.expect(1);
 
     new ReduxDataHelper(setState)
