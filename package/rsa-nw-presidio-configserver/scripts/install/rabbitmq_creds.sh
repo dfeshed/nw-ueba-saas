@@ -55,8 +55,6 @@ echo "spring.rabbitmq.host=$PARAM_HOSTNAME" >> $CONFIGURATION_FILE
 echo "spring.rabbitmq.port=$PARAM_PORT" >> $CONFIGURATION_FILE
 echo "spring.rabbitmq.template.exchange=$PARAM_EXCHANGE" >> $CONFIGURATION_FILE
 echo "spring.rabbitmq.virtual-host=$PARAM_VIRTUALHOST" >> $CONFIGURATION_FILE
-echo "spring.rabbitmq.password={cipher}$ENC_PASS" >> $CONFIGURATION_FILE
-echo "spring.rabbitmq.username=$PARAM_USERNAME" >> $CONFIGURATION_FILE
 
 chown presidio:presidio $CONFIGURATION_FILE
 
