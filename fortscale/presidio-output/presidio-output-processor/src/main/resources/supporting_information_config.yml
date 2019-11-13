@@ -1472,6 +1472,10 @@ indicators:
     historicalData:
       - type: hourly_aggregations
     classification: data_exfiltration
+    enrichers:
+      - class: .AddContextOfMaximumValueIndicatorEnricher
+        featureBucketConfName: numOfBytesSentBySrcIpSummationSslSubjectOutboundTlsHourly
+        aggregatedFeatureConfName: numOfBytesSentBySrcIpSummation
 
   - id: sumOfHighestSslSubjectSrcNetnameOutboundScoresSslSubjectTlsHourly
     type: SCORE_AGGREGATION
