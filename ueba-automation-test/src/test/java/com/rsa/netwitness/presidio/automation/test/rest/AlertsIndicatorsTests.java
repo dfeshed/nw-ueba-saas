@@ -33,7 +33,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo.ALL_MANDATORY_INDICATORS;
+import static com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo.*;
 import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
 import static java.util.Map.Entry.comparingByKey;
 import static java.util.stream.Collectors.*;
@@ -49,7 +49,6 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     private RestHelper restHelper = new RestHelper();
     private List<AlertsStoredRecord> allAlerts = Lists.newArrayList();
-    private List<String> indicatorsDistinctNames = Lists.newArrayList();
     private String testName;
 
     private Object[][] scoreAggregation;
@@ -62,20 +61,23 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     private Set<String> staticIndicatorIndicatorNames = Sets.newHashSet();
     private Set<String> featureAggregationIndicatorNames = Sets.newHashSet();
     private Set<String> distinctFeatureAggregationIndicatorNames = Sets.newHashSet();
-    private List<String> allActualIndicatorNames = Lists.newArrayList();
+    private Set<String> tlsActualIndicatorNames = Sets.newLinkedHashSet();
+    private Set<String> operationActualIndicatorNames = Sets.newLinkedHashSet();
+    private Set<String> allActualIndicatorNames = Sets.newLinkedHashSet();
 
     private Map<String, String[]> staticIndicatorMap = new HashMap<>();
     private Map<String, String[]> scoreAggregationMap = new HashMap<>();
     private Map<String, String[]> featureAggregationMap = new HashMap<>();
     private Map<String, String[]> distinctFeatureAggregationMap = new HashMap<>();
     private Map<String, String[]> allIndicatorsTypeNameSamples = new HashMap<>();
+    private PresidioUrl allAlertsUrl = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+
 
     @BeforeClass
     public void preconditionCheckAndPrepare() {
-        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
-        allAlerts = restHelper.alerts().request().getAlerts(url);
+        allAlerts = restHelper.alerts().request().getAlerts(allAlertsUrl);
         assertThat(allAlerts)
-                .as(url + "\nAlerts list is empty or unable to getOperationTypeToCategoryMap response from the output.")
+                .as(allAlertsUrl + "\nAlerts list is empty or unable to getOperationTypeToCategoryMap response from the output.")
                 .isNotNull()
                 .isNotEmpty();
 
@@ -83,33 +85,54 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void all_mandatory_indicators_from_static_list_are_present() {
-        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
-        List<String> expectedMinusActual = Lists.newArrayList(ALL_MANDATORY_INDICATORS);
-        expectedMinusActual.removeAll(allActualIndicatorNames);
+    public void tls_indicators_from_static_list_are_present() {
+        List<String> expectedMinusActual = Lists.newArrayList(TLS_MANDATORY_INDICATORS);
+        expectedMinusActual.removeAll(tlsActualIndicatorNames);
 
-        List<String> actualMinusExpected = Lists.newArrayList(allActualIndicatorNames);
-        actualMinusExpected.removeAll(ALL_MANDATORY_INDICATORS);
+        List<String> actualMinusExpected = Lists.newArrayList(tlsActualIndicatorNames);
+        actualMinusExpected.removeAll(TLS_MANDATORY_INDICATORS);
 
-        assertThat(allActualIndicatorNames)
-                .withFailMessage(url + "\nFollowing expected indicators are missing from alerts:\n"
+        assertThat(tlsActualIndicatorNames)
+                .withFailMessage(allAlertsUrl + "\nFollowing expected indicators are missing from alerts:\n"
                         + String.join("\n", expectedMinusActual))
                 .doesNotHaveDuplicates()
-                .containsAll(ALL_MANDATORY_INDICATORS);
+                .containsAll(TLS_MANDATORY_INDICATORS);
 
 
-        assertThat(ALL_MANDATORY_INDICATORS)
-                .withFailMessage(url + "\nFollowing indicators present in alerts, but missing from expected:\n"
+        assertThat(TLS_MANDATORY_INDICATORS)
+                .withFailMessage(allAlertsUrl + "\nFollowing indicators present in alerts, but missing from expected:\n"
                         + String.join("\n", actualMinusExpected))
                 .doesNotHaveDuplicates()
-                .containsAll(allActualIndicatorNames);
+                .containsAll(tlsActualIndicatorNames);
+    }
+
+    @Test
+    public void operation_indicators_from_static_list_are_present() {
+        List<String> expectedMinusActual = Lists.newArrayList(ALL_OPERATION_INDICATORS);
+        expectedMinusActual.removeAll(operationActualIndicatorNames);
+
+        List<String> actualMinusExpected = Lists.newArrayList(operationActualIndicatorNames);
+        actualMinusExpected.removeAll(ALL_OPERATION_INDICATORS);
+
+        assertThat(operationActualIndicatorNames)
+                .withFailMessage(allAlertsUrl + "\nFollowing expected indicators are missing from alerts:\n"
+                        + String.join("\n", expectedMinusActual))
+                .doesNotHaveDuplicates()
+                .containsAll(ALL_OPERATION_INDICATORS);
+
+
+        assertThat(ALL_OPERATION_INDICATORS)
+                .withFailMessage(allAlertsUrl + "\nFollowing indicators present in alerts, but missing from expected:\n"
+                        + String.join("\n", actualMinusExpected))
+                .doesNotHaveDuplicates()
+                .containsAll(operationActualIndicatorNames);
     }
 
     @Test
     public void alerts_count_result_filtered_by_indicator_name_is_correct() {
         SoftAssertions softly = new SoftAssertions();
 
-        for (String indicatorName : indicatorsDistinctNames) {
+        for (String indicatorName : allActualIndicatorNames) {
             PresidioUrl url = restHelper.alerts().url().withMaxSizeAndIndicatorNameParameters(indicatorName);
             List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
@@ -121,7 +144,6 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
             long countOfAlertsFilteredByIndicatorHaveGivenIndicatorName = alerts.stream()
                     .map(e -> Arrays.stream(e.getIndicatorsName()).collect(toList()))
-                    .filter(e -> e.contains(indicatorName))
                     .count();
 
             softly.assertThat(alerts.size())
@@ -154,11 +176,9 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                 try {
                     JSONArray indicatorsEventsList = indicatorEvents.getJSONArray("events");
 
-                    // todo: uncomment when fixed: ASOC-84920
-//                    softly..assertThat(indicatorsEventsList.length())
-//                            .as(url + "\nIndicator has empty events array.")
-//                            .isGreaterThan(0);
-
+                    softly.assertThat(indicatorsEventsList.length())
+                            .as(url + "\nIndicator has empty events array.")
+                            .isGreaterThan(0);
 
                     for (int i = 0; i < indicatorsEventsList.length(); i++) {
                         long time = Long.parseLong(indicatorsEventsList.getJSONObject(i).getJSONObject("eventDate").get("epochSecond").toString());
@@ -578,9 +598,11 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     @DataProvider(name = "allIndicatorsDataProvider")
     public Object[][] getAllActualIndicators() {
         allExistingIndicatorsObj = new Object[allActualIndicatorNames.size()][];
-        for (int i = 0; i < allActualIndicatorNames.size(); i++) {
-            String[] arr = {allActualIndicatorNames.get(i)};
-            allExistingIndicatorsObj[i] = arr;
+        int i = 0;
+
+        for (String indicatorName : allActualIndicatorNames) {
+            String[] arr = {indicatorName};
+            allExistingIndicatorsObj[i++] = arr;
         }
 
         return allExistingIndicatorsObj;
@@ -594,10 +616,6 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
 
     private void initTestingData() {
-        indicatorsDistinctNames = allAlerts.stream()
-                .flatMap(e -> Arrays.stream(e.getIndicatorsName()))
-                .distinct()
-                .collect(toList());
 
         for (AlertsStoredRecord alert : allAlerts) {
             List<AlertsStoredRecord.Indicator> indicatorsList = alert.getIndicatorsList();
@@ -624,10 +642,17 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         featureAggregationIndicatorNames = featureAggregationMap.keySet();
         distinctFeatureAggregationIndicatorNames = distinctFeatureAggregationMap.keySet();
 
-        allActualIndicatorNames.addAll(scoreAggregationIndicatorNames);
-        allActualIndicatorNames.addAll(staticIndicatorIndicatorNames);
-        allActualIndicatorNames.addAll(featureAggregationIndicatorNames);
-        allActualIndicatorNames.addAll(distinctFeatureAggregationIndicatorNames);
+        Function<Predicate<AlertsStoredRecord.Indicator>, Set<String>> getIndicatorNames = filter ->
+                allAlerts.parallelStream()
+                        .flatMap(e -> e.getIndicatorsList().stream())
+                        .filter(filter)
+                        .map(AlertsStoredRecord.Indicator::getName)
+                        .collect(toSet());
+
+        tlsActualIndicatorNames = getIndicatorNames.apply(e -> e.getSchema().equals("TLS"));
+        operationActualIndicatorNames = getIndicatorNames.apply(e -> !e.getSchema().equals("TLS"));
+        allActualIndicatorNames.addAll(tlsActualIndicatorNames);
+        allActualIndicatorNames.addAll(operationActualIndicatorNames);
 
         allIndicatorsTypeNameSamples.putAll(scoreAggregationMap);
         allIndicatorsTypeNameSamples.putAll(staticIndicatorMap);

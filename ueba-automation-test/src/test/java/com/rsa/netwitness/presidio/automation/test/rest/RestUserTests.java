@@ -195,7 +195,7 @@ public class RestUserTests extends AbstractTestNGSpringContextTests {
 
     }
 
-    //@Test
+    @Test
     public void maxMinScoreRangeTest() {
         //TODO: enable when issue fixed
         List<Integer> scores = getScoresList();

@@ -27,6 +27,13 @@ public class IndicatorsInfo {
             REGISTRY_MANDATORY_INDICATORS.stream()
     ).flatMap(e -> e).collect(Collectors.toList()));
 
+    public static final ImmutableList<String> ALL_OPERATION_INDICATORS =  copyOf(Stream.of(
+            AUTHENTICATION_MANDATORY_INDICATORS.stream(),
+            ACTIVE_DIRECTORY_MANDATORY_INDICATORS.stream(),
+            FILE_MANDATORY_INDICATORS.stream(),
+            PROCESS_MANDATORY_INDICATORS.stream(),
+            REGISTRY_MANDATORY_INDICATORS.stream()
+    ).flatMap(e -> e).collect(Collectors.toList()));
 
     public static Map<String, Schema> getIndicatorsToSchemaMap() {
         return IndicatorsInfoSupplier.indicatorToSchema.get();
