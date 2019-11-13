@@ -368,7 +368,9 @@ export const updateStreamKeyTree = (streamKeyTree, e, keyA, keyB, keyC, keyD) =>
 export const nestChildEvents = createSelector(
   [clientSortedData, _eventRelationshipsEnabled],
   (events, eventRelationshipsEnabled) => {
-    if (isEmpty(events)) {
+    // TODO: Turn this feature back on for 11.4.1
+    const temporarilyRemoveIntraSession = true;
+    if (isEmpty(events) || temporarilyRemoveIntraSession) {
       return events;
     } else {
       events = Immutable.asMutable(events, { deep: true });

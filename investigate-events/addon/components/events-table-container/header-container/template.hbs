@@ -29,17 +29,20 @@
             class="rsa-investigate-events-table__header__manageIncident"}}
         {{/if}}
 
-        <div class="toggle-wrapper" title={{ groupingToggleLabel }}>
-          {{#x-toggle
-            disabled=(not eventsHaveSplits)
-            showLabels=true
-            onLabel=(t 'investigate.enableEventRelationshipsLabel')
-            value=eventRelationshipsEnabled
-            onToggle=(action 'toggleEventRelationshipsWithTableFocus') as |toggle|}}
-            {{toggle.switch}}
-            {{toggle.onLabel value=(readonly (not eventRelationshipsEnabled))}}
-          {{/x-toggle}}
-        </div>
+        {{!-- TODO: Turn this feature back on for 11.4.1 --}}
+        {{#if false}}
+          <div class="toggle-wrapper" title={{ groupingToggleLabel }}>
+            {{#x-toggle
+              disabled=(not eventsHaveSplits)
+              showLabels=true
+              onLabel=(t 'investigate.enableEventRelationshipsLabel')
+              value=eventRelationshipsEnabled
+              onToggle=(action 'toggleEventRelationshipsWithTableFocus') as |toggle|}}
+              {{toggle.switch}}
+              {{toggle.onLabel value=(readonly (not eventRelationshipsEnabled))}}
+            {{/x-toggle}}
+          </div>
+        {{/if}}
       </div>
     </div>
   </div>

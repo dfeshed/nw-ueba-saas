@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -38,6 +38,7 @@ function makeClickAction(assert) {
   assert.ok(true, 'clickAction was invoked');
 }
 
+// TODO: unskip tests for 11.4.1 when intrasession events is turned back on
 module('Integration | Component | Events Table Row', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
@@ -52,7 +53,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
   });
 
   test('it renders a row of cells correctly', async function(assert) {
-    assert.expect(3 + 3 * visibleColumns.length);
+    assert.expect(2 + 3 * visibleColumns.length);
 
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
@@ -78,9 +79,9 @@ module('Integration | Component | Events Table Row', function(hooks) {
 
     // Check row is there.
     const rowSelector = '.rsa-investigate-events-table-row';
-    const childRowSelector = '.rsa-investigate-events-table-row.is-child';
+    // const childRowSelector = '.rsa-investigate-events-table-row.is-child';
     assert.equal(findAll(rowSelector).length, 1, 'Expected root DOM node with class name');
-    assert.equal(findAll(childRowSelector).length, 0, 'Expected no root DOM node with is-child class name');
+    // assert.equal(findAll(childRowSelector).length, 0, 'Expected no root DOM node with is-child class name');
 
     // Check cells are there.
     const cellsSelector = `${rowSelector} .rsa-data-table-body-cell`;
@@ -196,7 +197,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
     assert.equal(raw, value, 'Expected raw unaliased value in cell DOM');
   });
 
-  test('will not set is-child with split without tuple and with nesting enabled', async function(assert) {
+  skip('will not set is-child with split without tuple and with nesting enabled', async function(assert) {
     assert.expect(2);
 
     new ReduxDataHelper(setState)
@@ -219,7 +220,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
     assert.equal(findAll('i.grouped-with-split').length, 0, 'Expected i to be present');
   });
 
-  test('will not set is-child with split and with tuple but nesting disabled', async function(assert) {
+  skip('will not set is-child with split and with tuple but nesting disabled', async function(assert) {
     assert.expect(2);
 
     new ReduxDataHelper(setState)
@@ -246,7 +247,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
     assert.equal(findAll('i.grouped-with-split').length, 0, 'Expected i to be present');
   });
 
-  test('will not set is-child without split and with tuple and nesting enabled', async function(assert) {
+  skip('will not set is-child without split and with tuple and nesting enabled', async function(assert) {
     assert.expect(2);
 
     new ReduxDataHelper(setState)
@@ -272,7 +273,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
     assert.equal(findAll('i.grouped-with-split').length, 0, 'Expected i to be present');
   });
 
-  test('will not set is-child when grouped with tuple and nesting disabled', async function(assert) {
+  skip('will not set is-child when grouped with tuple and nesting disabled', async function(assert) {
     assert.expect(2);
 
     new ReduxDataHelper(setState)
@@ -306,7 +307,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
     assert.equal(findAll('i.grouped-with-split').length, 0, 'Expected i to be present');
   });
 
-  test('will set is-child with split with tuple and with nesting enabled', async function(assert) {
+  skip('will set is-child with split with tuple and with nesting enabled', async function(assert) {
     assert.expect(2);
 
     new ReduxDataHelper(setState)
@@ -341,7 +342,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
     assert.equal(findAll('i.grouped-with-split').length, 1, 'Expected i to be present');
   });
 
-  test('will set is-child when grouped and nesting enabled', async function(assert) {
+  skip('will set is-child when grouped and nesting enabled', async function(assert) {
     assert.expect(2);
 
     new ReduxDataHelper(setState)
@@ -375,7 +376,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
     assert.equal(findAll('i.grouped-without-split').length, 1, 'Expected i to be present');
   });
 
-  test('will set is-child and is-parent when grouped and nesting enabled', async function(assert) {
+  skip('will set is-child and is-parent when grouped and nesting enabled', async function(assert) {
     assert.expect(3);
 
     new ReduxDataHelper(setState)

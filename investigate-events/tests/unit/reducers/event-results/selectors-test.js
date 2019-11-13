@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { lookup } from 'ember-dependency-lookup';
 import {
   allExpectedDataLoaded,
@@ -33,6 +33,7 @@ import CONFIG from 'investigate-events/reducers/investigate/config';
 import EventColumnGroups from '../../../data/subscriptions/column-group';
 import { mapColumnGroupsForEventTable } from 'investigate-events/util/mapping';
 
+// TODO: unskip tests for 11.4.1 when intrasession events is turned back on
 module('Unit | Selectors | event-results', function(hooks) {
 
   let mappedColumnGroups;
@@ -1700,7 +1701,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].foo, state.investigate.eventResults.data[1].foo, '3');
   });
 
-  test('nestChildEvents should decorate events regardless of enablement', async function(assert) {
+  skip('nestChildEvents should decorate events regardless of enablement', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
@@ -1773,7 +1774,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].eventIndex, 1.000001570902856);
   });
 
-  test('nestChildEvents for tuple: ip.dst|ip.src|tcp.srcport|tcp.dstport', async function(assert) {
+  skip('nestChildEvents for tuple: ip.dst|ip.src|tcp.srcport|tcp.dstport', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
@@ -1844,7 +1845,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].sessionId, 1);
   });
 
-  test('nestChildEvents for tuple: ipv6.dst|ipv6.src|tcp.srcport|tcp.dstport', async function(assert) {
+  skip('nestChildEvents for tuple: ipv6.dst|ipv6.src|tcp.srcport|tcp.dstport', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
@@ -1915,7 +1916,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].sessionId, 1);
   });
 
-  test('nestChildEvents for tuple: ipv6.dst|ipv6.src|udp.srcport|udp.dstport', async function(assert) {
+  skip('nestChildEvents for tuple: ipv6.dst|ipv6.src|udp.srcport|udp.dstport', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
@@ -1986,7 +1987,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].sessionId, 1);
   });
 
-  test('nestChildEvents for tuple: ip.dst|ip.src|udp.srcport|udp.dstport', async function(assert) {
+  skip('nestChildEvents for tuple: ip.dst|ip.src|udp.srcport|udp.dstport', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
@@ -2057,7 +2058,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].sessionId, 1);
   });
 
-  test('nestChildEvents when nesting is disabled', async function(assert) {
+  skip('nestChildEvents when nesting is disabled', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
@@ -2128,7 +2129,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].sessionId, 3);
   });
 
-  test('nestChildEvents for tuple with multiple parents and different times', async function(assert) {
+  skip('nestChildEvents for tuple with multiple parents and different times', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
@@ -2200,7 +2201,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].sessionId, 1);
   });
 
-  test('eventsHaveSplits when true', async function(assert) {
+  skip('eventsHaveSplits when true', async function(assert) {
     const state = {
       investigate: {
         eventResults: {

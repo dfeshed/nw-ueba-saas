@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
@@ -29,6 +29,7 @@ const renderDefaultHeaderContainer = async(assert) => {
   assert.ok(find(headerContainerSelector), 'Header container rendered');
 };
 
+// TODO: unskip tests for 11.4.1 when intrasession events is turned back on
 module('Integration | Component | header-container', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
@@ -53,13 +54,13 @@ module('Integration | Component | header-container', function(hooks) {
     assert.ok(tooltip.includes('oldest'));
   });
 
-  test('does not render the relationship toggle when no split sessions', async function(assert) {
+  skip('does not render the relationship toggle when no split sessions', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').hasRequiredValuesToQuery(true).columnGroups(EventColumnGroups).eventCount(55).build();
     await render(hbs`{{events-table-container/header-container}}`);
     assert.equal(findAll('.x-toggle-component .x-toggle-container-disabled').length, 1, 'rendered toggle');
   });
 
-  test('render the relationship toggle when split sessions', async function(assert) {
+  skip('render the relationship toggle when split sessions', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').hasRequiredValuesToQuery(true).columnGroups(EventColumnGroups).enableRelationships().eventResults([{
       'session.split': 0,
       'ip.src': '127.0.0.1',
