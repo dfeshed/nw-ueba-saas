@@ -49,21 +49,23 @@ public class SslSubjectHighBytesSentAlerts implements Supplier<Stream<TlsAlert>>
                 .create();
 
 
-        TlsAlert ssl_subject_14 = new SslSubjectTlsAlert("outbrain inc.", dataPeriod, uncommonStartDay)
-                .high_number_of_bytes_sent_by_src_ip_to_ssl_subject_outbound()
-                .create();
-
-        TlsAlert ssl_subject_16 = new SslSubjectTlsAlert("samsung electronics co. ltd", dataPeriod, uncommonStartDay)
-                .high_number_of_bytes_sent_to_ssl_subject_outbound()
-                .create();
-
-
         TlsAlert ssl_subject_17 = new SslSubjectTlsAlert("*.opswat.com", dataPeriod, uncommonStartDay)
                 .high_number_of_bytes_sent_by_src_ip_to_dst_port_ssl_subject_outbound()
                 .create();
 
         TlsAlert ssl_subject_18 = new SslSubjectTlsAlert("samsung electronics co. ltd", dataPeriod, uncommonStartDay)
                 .high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound()
+                .create();
+
+
+
+
+        TlsAlert ssl_subject_14 = new SslSubjectTlsAlert("outbrain inc.", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_by_src_ip_to_ssl_subject_outbound()
+                .create();
+
+        TlsAlert ssl_subject_16 = new SslSubjectTlsAlert("ipass inc.", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_to_ssl_subject_outbound()
                 .create();
 
 
