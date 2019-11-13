@@ -62,13 +62,12 @@ module('Integration | Component | Column Groups', function(hooks) {
     assert.ok(find(`${columnGroupManagerSelector} .rsa-item-list`), 'Column group list found');
 
     const options = findAll(columnGroupItem).map((d) => d.textContent.trim());
-    assert.equal(options.join('').replace(/\s+/g, ''), 'Custom1Custom2SummaryListSummaryListSummaryListSummaryListEmailAnalysisMalwareAnalysisThreatAnalysisWebAnalysisEndpointAnalysis');
+    assert.equal(options.join('').replace(/\s+/g, ''), 'RSAEmailAnalysisRSAEndpointAnalysisRSAMalwareAnalysisRSAThreatAnalysisRSAWebAnalysisSummaryListCustom1Custom2');
 
     const ootbIcon = 'rsa-icon-lock-close-1';
     const nonOotbIcon = 'rsa-icon-settings-1';
-
-    assert.ok(findAll(`${columnGroupItem} i`)[0].classList.contains(nonOotbIcon), 'Custom1 is a custom column group');
-    assert.ok(findAll(`${columnGroupItem} i`)[6].classList.contains(ootbIcon), 'Email Analysis is an OOTB column group');
+    assert.ok(findAll(`${columnGroupItem} i.is-editable-indicator`)[6].classList.contains(nonOotbIcon), 'Custom1 is a custom column group');
+    assert.ok(findAll(`${columnGroupItem} i.is-editable-indicator`)[0].classList.contains(ootbIcon), 'Email Analysis is an OOTB column group');
   });
 
   test('persisted column group is preselected in the drop down and highlighted in the options', async function(assert) {
@@ -76,14 +75,14 @@ module('Integration | Component | Column Groups', function(hooks) {
     new ReduxDataHelper(setState).selectedColumnGroup('MALWARE').columnGroups(EventColumnGroups).build();
     await render(hbs`{{events-table-container/header-container/column-groups}}`);
 
-    assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: Malware Analysis', 'Expected Malware Analysis to be selected');
+    assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: RSA Malware Analysis', 'Expected Malware Analysis to be selected');
 
     assert.ok(find(dropdownSelector), 'dropdown buttons present');
     await click(dropdownSelector);
 
     const selectedOptions = findAll(`${columnGroupItem}.is-selected`);
     assert.equal(selectedOptions.length, 1, '1 option selected');
-    assert.equal(selectedOptions[0].textContent.trim(), 'Malware Analysis');
+    assert.equal(selectedOptions[0].textContent.trim(), 'RSA Malware Analysis');
 
   });
 
@@ -92,20 +91,20 @@ module('Integration | Component | Column Groups', function(hooks) {
     new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().build();
     await render(hbs`{{events-table-container/header-container/column-groups}}`);
 
-    assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: Email Analysis');
+    assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: RSA Email Analysis');
 
     assert.ok(find(dropdownSelector), 'dropdown buttons present');
     await click(dropdownSelector);
     assert.ok(find(`${columnGroupManagerSelector} .rsa-button-menu.expanded`), 'Column Group Menu expanded');
 
     const optionsToSelect = findAll(`${columnGroupItem} a`);
-    assert.equal(optionsToSelect.length, 11);
+    assert.equal(optionsToSelect.length, 8);
 
     // Prefer testing with top few options as they are already scrolled into view.
     assert.ok(find(optionsToSelect[1]), 'Option in view to select');
     await click(optionsToSelect[1]);
 
-    assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: Custom 2', 'Column group changed');
+    assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: RSA Endpoint Analysis', 'Column group changed');
 
     assert.ok(find(`${columnGroupManagerSelector} .rsa-button-menu.collapsed`), 'Column Group Menu collapsed');
   });
@@ -134,15 +133,15 @@ module('Integration | Component | Column Groups', function(hooks) {
     assert.ok(find(`${columnGroupManagerSelector} .list-filter .rsa-icon-filter-2`), 'filter icon present');
     assert.equal(find(`${columnGroupManagerSelector} .list-filter input`).getAttribute('placeholder'), 'Filter column groups');
     assert.notOk(find('.clear-filter'), 'clear button not available');
-    assert.equal(findAll(columnGroupItem).length, 11);
+    assert.equal(findAll(columnGroupItem).length, 8);
 
     await click(find(`${columnGroupManagerSelector} .list-filter input`));
     await typeInSearch('ma');
-    assert.equal(findAll(columnGroupItem).length, 6);
+    assert.equal(findAll(columnGroupItem).length, 3);
     assert.ok(find('.clear-filter'), 'clear button now available');
 
     await click(find('.clear-filter button'));
-    assert.equal(findAll(columnGroupItem).length, 11, 'filter is reset');
+    assert.equal(findAll(columnGroupItem).length, 8, 'filter is reset');
 
     await typeInSearch('mat');
     assert.equal(findAll(columnGroupItem).length, 0, 'all items filtered out');
@@ -150,7 +149,7 @@ module('Integration | Component | Column Groups', function(hooks) {
 
     await click('.other-div');
     await click(dropdownSelector);
-    assert.equal(findAll(columnGroupItem).length, 11, 'filter is reset when dropdown is closed and reopened');
+    assert.equal(findAll(columnGroupItem).length, 8, 'filter is reset when dropdown is closed and reopened');
 
   });
 
@@ -162,15 +161,15 @@ module('Integration | Component | Column Groups', function(hooks) {
     await click(dropdownSelector);
 
     // Go to column Group details
-    await click(findAll(`${columnGroupItem} .edit-icon button`)[8]);
-    assert.equal(find('.group-name .value').textContent.trim(), 'Threat Analysis');
-    assert.equal(findAll('.group-details ul.column-list li').length, 55, '55 columns for Threat Analysis rendered');
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[3]);
+    assert.equal(find('.group-name .value').textContent.trim(), 'RSA Threat Analysis');
+    assert.equal(findAll('.group-details ul.column-list li').length, 54, '54 columns for Threat Analysis rendered');
 
     // Go to list view
     await click(findAll('footer button')[0]);
 
     // Go to column Group details
-    await click(findAll(`${columnGroupItem} .edit-icon button`)[3]);
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[5]);
     assert.equal(find('.group-name .value').textContent.trim(), 'Summary List');
     assert.equal(findAll('.group-details ul.column-list li').length, 3, '3 columns for Summary List rendered');
 
@@ -183,7 +182,7 @@ module('Integration | Component | Column Groups', function(hooks) {
     await click(dropdownSelector);
 
     // Go to custom column group details
-    await click(findAll(`${columnGroupItem} .edit-icon button`)[1]);
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[6]);
 
     // simulate typeIn
     await fillIn(groupNameInput, 'A');
@@ -202,7 +201,7 @@ module('Integration | Component | Column Groups', function(hooks) {
     await click(dropdownSelector);
 
     // Go to custom column group details
-    await click(findAll(`${columnGroupItem} .edit-icon button`)[1]);
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[6]);
 
     // simulate typeIn
     await fillIn(groupNameInput, '');
@@ -220,7 +219,7 @@ module('Integration | Component | Column Groups', function(hooks) {
     await click(dropdownSelector);
 
     // Go to custom column group details
-    await click(findAll(`${columnGroupItem} .edit-icon button`)[1]);
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[7]);
 
     // simulate typeIn
     await fillIn(groupNameInput, 'Custom 1');
@@ -238,7 +237,7 @@ module('Integration | Component | Column Groups', function(hooks) {
     await click(dropdownSelector);
 
     // Go to custom column group details
-    await click(findAll(`${columnGroupItem} .edit-icon button`)[1]);
+    await click(findAll(`${columnGroupItem} .edit-icon button`)[6]);
 
     const availableOptions = findAll(`${AVAILABLE_META} button`);
     // add candidate meta

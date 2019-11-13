@@ -373,7 +373,7 @@ module('Unit | Selectors | data-selectors', function(hooks) {
     const selectedColumnGroup = getSelectedColumnGroup(state);
     assert.equal(selectedColumnGroup.name, 'Summary List');
     assert.equal(selectedColumnGroup.columns.length, 5);
-    assert.deepEqual(mappedColumnGroups[2], selectedColumnGroup);
+    assert.deepEqual(mappedColumnGroups[5], selectedColumnGroup);
   });
 
   test('Should fall back to Summary for wrong column group', function(assert) {
@@ -393,7 +393,7 @@ module('Unit | Selectors | data-selectors', function(hooks) {
     const selectedColumnGroup = getSelectedColumnGroup(state);
     assert.equal(selectedColumnGroup.name, 'Summary List');
     assert.equal(selectedColumnGroup.columns.length, 5);
-    assert.deepEqual(mappedColumnGroups[2], selectedColumnGroup);
+    assert.deepEqual(mappedColumnGroups[5], selectedColumnGroup);
   });
 
   test('Should get selected column groups', function(assert) {
@@ -411,9 +411,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
       }
     };
     const selectedColumnGroup = getSelectedColumnGroup(state);
-    assert.equal(selectedColumnGroup.name, 'Web Analysis');
+    assert.equal(selectedColumnGroup.name, 'RSA Web Analysis');
     assert.equal(selectedColumnGroup.columns.length, 53);
-    assert.deepEqual(mappedColumnGroups[9], selectedColumnGroup);
+    assert.deepEqual(mappedColumnGroups[4], selectedColumnGroup);
   });
 
   test('Should get mutable columns for data table', function(assert) {
@@ -502,23 +502,19 @@ module('Unit | Selectors | data-selectors', function(hooks) {
   });
 
   test('columns should not include meta-details column', function(assert) {
-    assert.expect(5);
+    assert.expect(4);
     const state = Immutable.from({
       investigate: {
         dictionaries: {
           language: [
             { metaName: 'time' },
             { metaName: 'medium' },
-            { metaName: 'custom.theme' },
-            { metaName: 'size' },
-            { metaName: 'nwe.callback_id' },
-            { metaName: 'sessionid' },
-            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
             { metaName: 'custom.meta-details' }
           ]
         },
         data: {
-          selectedColumnGroup: 'SUMMARY2'
+          selectedColumnGroup: 'CUSTOM2'
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
@@ -526,7 +522,7 @@ module('Unit | Selectors | data-selectors', function(hooks) {
       }
     });
     const columns = getColumns(state);
-    assert.equal(columns.length, 4);
+    assert.equal(columns.length, 3, 'only 3/4 columns are permitted');
     columns.forEach((col) => {
       assert.ok(![
         'custom.logdata',
@@ -580,7 +576,7 @@ module('Unit | Selectors | data-selectors', function(hooks) {
           language: DEFAULT_LANGUAGES
         },
         data: {
-          selectedColumnGroup: 'SUMMARY2'
+          selectedColumnGroup: 'CUSTOM2'
         },
         columnGroup: {
           columnGroups: mappedColumnGroups

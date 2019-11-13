@@ -25,8 +25,6 @@ const assertForInvestigateColumnAndColumnSelector = async function(assert, heade
 
   assert.equal(findAll('.rsa-data-table-header-cell').length, headerCount,
     `Should show visible columns in table for ${selectedOptionName}.`);
-  assert.ok(findAll('.rsa-data-table-header-cell').length, headerCount,
-    `Should show visible columns in table for ${selectedOptionName}.`);
 
   await click(columnGroupDropDownButton);
   assert.equal(find(`${columnGroupItemList}.is-selected`).textContent.trim(), selectedOptionName,
@@ -63,6 +61,10 @@ const renderDefaultEventTable = async function() {
       { format: 'Text', metaName: 'rbytes' },
       { format: 'Text', metaName: 'referer' },
       { format: 'Text', metaName: 'directory' },
+      { format: 'Text', metaName: 'directory.src' },
+      { format: 'Text', metaName: 'directory.dst' },
+      { format: 'Text', metaName: 'dir.path.src' },
+      { format: 'Text', metaName: 'param.src' },
       { format: 'Text', metaName: 'custom.theme' },
       { format: 'Text', metaName: 'size' },
       { format: 'Text', metaName: 'custom.meta-summary' },
@@ -92,6 +94,7 @@ const renderDefaultEventTable = async function() {
       { format: 'Text', metaName: 'policy.title' },
       { format: 'Text', metaName: 'lc.cid' },
       { format: 'Text', metaName: 'time' },
+      { format: 'Text', metaName: 'event.time' },
       { format: 'Text', metaName: 'medium' },
       { format: 'Text', metaName: 'service' },
       { format: 'Text', metaName: 'orig_ip' },
@@ -99,6 +102,7 @@ const renderDefaultEventTable = async function() {
       { format: 'Text', metaName: 'ip.dst' },
       { format: 'Text', metaName: 'tcp.dstport' },
       { format: 'Text', metaName: 'ip.dstport' },
+      { format: 'Text', metaName: 'forward.ip' },
       { format: 'Text', metaName: 'alias.ip' },
       { format: 'Text', metaName: 'alias.host' },
       { format: 'Text', metaName: 'country.src' },
@@ -130,9 +134,17 @@ const renderDefaultEventTable = async function() {
       { format: 'Text', metaName: 'crypto' },
       { format: 'Text', metaName: 'ssl.subject' },
       { format: 'Text', metaName: 'ssl.ca' },
+      { format: 'Text', metaName: 'ioc' },
+      { format: 'Text', metaName: 'boc' },
+      { format: 'Text', metaName: 'eoc' },
+      { format: 'Text', metaName: 'analysis.session' },
+      { format: 'Text', metaName: 'analysis.service' },
+      { format: 'Text', metaName: 'analysis.file' },
+      // -- old? ---
       { format: 'Text', metaName: 'risk.info' },
       { format: 'Text', metaName: 'risk.suspicious' },
       { format: 'Text', metaName: 'risk.warning' },
+      // -- end old? --
       { format: 'Text', metaName: 'threat.category' },
       { format: 'Text', metaName: 'threat.desc' },
       { format: 'Text', metaName: 'threat.source' },
@@ -175,28 +187,34 @@ module('Integration | Component | events-table-container', function(hooks) {
   // 16 columns including column for checkbox though checkbox itself might be hidden if no results are populated
   test('it should show columns for Email Analysis', async function(assert) {
     await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 16, 41, 'Email Analysis');
-  });
-
-  test('it should show columns for Malware Analysis', async function(assert) {
-    await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 16, 27, 'Malware Analysis');
-  });
-
-  test('it should show columns for Threat Analysis', async function(assert) {
-    await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 16, 57, 'Threat Analysis');
-  });
-
-  test('it should show columns for Web Analysis', async function(assert) {
-    await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 16, 53, 'Web Analysis');
+    assert.equal(EventColumnGroups[0].name, 'RSA Email Analysis');
+    await assertForInvestigateColumnAndColumnSelector(assert, 16, EventColumnGroups[0].columns.length, 'RSA Email Analysis');
   });
 
   test('it should show columns for Endpoint Analysis', async function(assert) {
     await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 16, 32, 'Endpoint Analysis');
+    assert.equal(EventColumnGroups[1].name, 'RSA Endpoint Analysis');
+    await assertForInvestigateColumnAndColumnSelector(assert, 16, EventColumnGroups[1].columns.length, 'RSA Endpoint Analysis');
   });
+
+  test('it should show columns for Malware Analysis', async function(assert) {
+    await renderDefaultEventTable();
+    assert.equal(EventColumnGroups[2].name, 'RSA Malware Analysis');
+    await assertForInvestigateColumnAndColumnSelector(assert, 16, EventColumnGroups[2].columns.length, 'RSA Malware Analysis');
+  });
+
+  test('it should show columns for Threat Analysis', async function(assert) {
+    await renderDefaultEventTable();
+    assert.equal(EventColumnGroups[3].name, 'RSA Threat Analysis');
+    await assertForInvestigateColumnAndColumnSelector(assert, 16, EventColumnGroups[3].columns.length, 'RSA Threat Analysis');
+  });
+
+  test('it should show columns for Web Analysis', async function(assert) {
+    await renderDefaultEventTable();
+    assert.equal(EventColumnGroups[4].name, 'RSA Web Analysis');
+    await assertForInvestigateColumnAndColumnSelector(assert, 16, EventColumnGroups[4].columns.length, 'RSA Web Analysis');
+  });
+
 
   test('it should show "no results" message only if there are zero results', async function(assert) {
     new ReduxDataHelper(setState)

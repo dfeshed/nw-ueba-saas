@@ -15,7 +15,19 @@ const _filterColumns = (columns, filterText) => {
   });
 };
 
+/* max limit for meta keys that can be added to the columnGroup
+ * excluding default meta keys time, medium
+ */
 const COLUMN_THRESHOLD = 75;
+
+/* max number of columns that should be visible by default
+ * excluding columns time and medium
+ */
+const VISIBILITY_THRESHOLD = 13;
+
+/* default width for columns
+ */
+const STANDARD_COLUMN_WIDTH = 100;
 
 const stateToComputed = (state) => ({
   columnGroups: columnGroups(state),
@@ -127,14 +139,14 @@ const ColumnGroupForm = Component.extend({
     delete columnGroup?.isEditable;
 
     if (columnGroup?.columns) {
-      columnGroup.columns = columnGroup.columns.map((col) => {
+      columnGroup.columns = columnGroup.columns.map((col, index) => {
         return {
           metaName: col.field,
           displayName: col.title,
           // TODO add back when needed and reliable. the columns selected by the user follow the default columns ( time and medium ) in position
           // position: index + 2,
-          visible: col.visible,
-          width: col.width
+          visible: index < VISIBILITY_THRESHOLD,
+          width: col.width || STANDARD_COLUMN_WIDTH
         };
       });
     }

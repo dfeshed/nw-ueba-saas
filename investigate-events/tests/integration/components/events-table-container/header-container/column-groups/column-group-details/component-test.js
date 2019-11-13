@@ -38,7 +38,7 @@ module('Integration | Component | Column Group Details', function(hooks) {
 
   test('renders read only columnGroup details when an ootb columnGroup is being viewed', async function(assert) {
 
-    this.set('columnGroup', mappedColumnGroups[3]);
+    this.set('columnGroup', mappedColumnGroups[5]);
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details columnGroup=columnGroup}}`);
 
     assert.ok(find('.column-group-view'), 'Column Group Details rendered correctly');
@@ -48,7 +48,7 @@ module('Integration | Component | Column Group Details', function(hooks) {
     assert.equal(findAll(DISPLAYED_COLUMNS).length, 3, '3/5 columns for Summary List rendered, time, medium not shown');
 
     const metaKeys = findAll(`${DISPLAYED_COLUMNS} span:first-of-type`);
-    assert.equal(getTextFromDOMArray(metaKeys), 'custom.themesizecustom.meta-details', 'Displayed meta keys');
+    assert.equal(getTextFromDOMArray(metaKeys), 'custom.themesizecustom.meta-summary', 'Displayed meta keys');
   });
 
   test('renders an edit form to create a new column group', async function(assert) {

@@ -111,7 +111,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
     assert.expect(1);
 
     new ReduxDataHelper(setState)
-      .getColumns('EMAIL1', EventColumnGroups)
+      .getColumns('CUSTOM2', EventColumnGroups)
       .hasRequiredValuesToQuery(true)
       .eventThreshold(100000)
       .eventsPreferencesConfig()

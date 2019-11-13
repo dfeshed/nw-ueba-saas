@@ -442,4 +442,43 @@ module('Integration | Component | Column Group form', function(hooks) {
     assert.equal(findAll(`${AVAILABLE_META} button[disabled]`).length, 0, 'Enabled available meta to add');
   });
 
+  test('columns beyond 13th are not visible', async function(assert) {
+    assert.expect(4);
+    // array of 13 columns created from metaKeyCache
+    const columns = _.cloneDeep(METAKEYS).splice(1, 13).map((meta) => {
+      return {
+        field: meta.metaName,
+        title: meta.displayName
+      };
+    });
+    const customColumnGroup = {
+      id: '2',
+      name: 'foo',
+      columns
+    };
+
+    this.set('columnGroup', customColumnGroup);
+    this.set('editColumnGroup', (group) => {
+      if (group.columns.length == 14) {
+        assert.ok(group.columns[12].visible);
+        assert.notOk(group.columns[13].visible);
+      }
+    });
+
+    new ReduxDataHelper(setState).metaKeyCache().columnGroups().build();
+    await render(hbs`
+      {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+        columnGroup=columnGroup
+        editColumnGroup=editColumnGroup
+      }}
+    `);
+
+    assert.equal(findAll(DISPLAYED_COLUMNS).length, 13);
+
+    const availableOptions = findAll(`${AVAILABLE_META} button:not(disabled)`);
+    // add candidate meta
+    await click(availableOptions[0]);
+    assert.equal(findAll(DISPLAYED_COLUMNS).length, 14);
+  });
+
 });

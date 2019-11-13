@@ -18,7 +18,7 @@ export default [
     columnGroupView: 'CUSTOM',
     columnGroup: {
       name: 'RSA Email Analysis',
-      id: 'EMAIL1'
+      id: 'EMAIL'
     },
     preQuery: 'service=24,25,109,110,995,143,220,993',
     contentType: 'OOTB'
@@ -87,8 +87,8 @@ export default [
     },
     columnGroupView: 'CUSTOM',
     columnGroup: {
-      name: 'RSA User & Entity Behavior Analysis',
-      id: 'USER_ENTITY_BEHAVIOR'
+      name: 'Custom 2',
+      id: 'CUSTOM2'
     },
     preQuery: 'user.dst exists || username exists',
     contentType: 'OOTB'
