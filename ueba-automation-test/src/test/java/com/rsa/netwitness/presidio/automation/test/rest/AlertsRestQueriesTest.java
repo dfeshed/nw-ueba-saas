@@ -174,7 +174,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
         assertThat(entityNamesActual)
                 .as(url.toString())
-                .containsOnly(entityNameExpected);
+                .startsWith(entityNameExpected);
     }
 
     @Test
