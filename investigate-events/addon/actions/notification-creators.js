@@ -49,7 +49,7 @@ export const initializeNotifications = () => {
 
               dispatch({
                 type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS,
-                payload: data
+                payload: { link: encodeURI(data.link) }
               });
             }
           } else {
