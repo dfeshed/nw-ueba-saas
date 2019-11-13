@@ -30,6 +30,9 @@ class InputPreProcessingDagFactory(AbstractDagFactory):
 
         dags = []
         schemas = dag_config.get(SCHEMAS_KEY)
+        if schemas == None:
+            return dags
+        
         for schema in schemas:
             schema_name = schema.get(SCHEMA_NAME_KEY)
             if schema_name not in SCHEMAS_REGISTERED:
