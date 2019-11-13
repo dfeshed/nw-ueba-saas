@@ -21,7 +21,7 @@ public class OutputForwarderConfigBeans {
     private String forwarderStrategyName;
 
     @Autowired
-    RabbitProperties rabbitProperties;
+    private RabbitProperties rabbitProperties;
 
     @Autowired
     public void setExternalSaslConfig(CachingConnectionFactory cachingConnectionFactory) {
