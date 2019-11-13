@@ -127,11 +127,11 @@ const initializeHostDetailsPage = ({ sid, id: agentId }) => {
   return async(dispatch, getState) => {
     const id = sid || getState().endpointQuery.serverId;
 
-    dispatch(getServiceId('MACHINE'));
-
     await dispatch(changeEndpointServer({ id }));
     // Wait for user preference to load
     await dispatch(initializeHostsPreferences());
+
+    dispatch(getServiceId('MACHINE'));
 
     // get the snapshot
     await dispatch(getScanSnapshots(agentId));
