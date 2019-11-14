@@ -73,7 +73,7 @@ def runMaven() {
     dir(env.REPOSITORY_NAME) {
         sh "mvn test -B --projects presidio-integration-performance-test --also-make " +
                 "-Dtls_alerts_probability=${params.tls_alerts_probability} -Dtls_groups_to_create=${params.tls_groups_to_create} " +
-                "-Dtls_events_per_day_per_group=${params.tls_events_per_day_per_group} ${params.MVN_TEST_OPTIONS}"
+                "-Dtls_events_per_day_per_group=${params.tls_events_per_day_per_group} ${params.MVN_OPTIONS}"
     }
 }
 
