@@ -15,5 +15,6 @@
 
 .timerange-selector-panel {
   max-height: 20rem;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden
 }

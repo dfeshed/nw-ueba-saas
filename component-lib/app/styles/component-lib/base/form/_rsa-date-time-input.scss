@@ -81,9 +81,10 @@ $datePickerSpacing: $datePickerFontSize * 0.15;
 }
 
 .timerange-selector-panel {
-  .dropdown-action-list {
+  .rsa-dropdown-action-list {
     li {
       white-space: nowrap;
+      min-width: 112px;
     }
   }
 }
