@@ -202,7 +202,7 @@ public class CategoryRarityModelScorerTest {
         Assert.assertFalse(scorer.canScore(new CategoryRarityModel(), Collections.emptyList(), feature));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void calculateScore_feature_with_null_name_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
@@ -222,14 +222,6 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         scorer.canScore(new CategoryRarityModel(), Collections.emptyList(), new Feature("     ", "host1"));
     }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void calculateScore_null__feature_value_test() {
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
-        CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.canScore(new CategoryRarityModel(), Collections.emptyList(), new Feature("source-machine", (String)null));
-    }
-
 
     //==================================================================================================================
     // CALCULATE SCORE ILLEGAL VALUES TESTS

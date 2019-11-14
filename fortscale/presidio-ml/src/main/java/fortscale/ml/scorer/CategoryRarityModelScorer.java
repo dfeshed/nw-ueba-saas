@@ -10,6 +10,7 @@ import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 
@@ -124,11 +125,8 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
             //todo: add metrics.
             return false;
         }
-        Assert.hasText(feature.getName(), String.format("Feature name cannot be null, empty or blank. scorer: %s", this.toString()));
+        Validate.notBlank(feature.getName(), "Feature name cannot be null, empty or blank. scorer: %s", this);
         Assert.isTrue((feature.getValue() instanceof FeatureStringValue) || (feature.getValue() instanceof FeatureNumericValue) , WRONG_FEATURE_VALUE_TYPE_ERROR_MSG);
-        Assert.notNull(feature.getValue().toString(), String.format("Feature value cannot be null. feature name: %s, scorer: %s", feature.getName(), this.toString()));
-
-
         return true;
     }
 
