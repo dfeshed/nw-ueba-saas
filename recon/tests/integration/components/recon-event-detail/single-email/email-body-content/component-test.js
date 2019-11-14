@@ -108,14 +108,6 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     assert.equal(find('iframe').contentDocument.body.innerText, email.bodyContent, 'Plain text email body must be well formatted');
   });
 
-  test('renders lazy loaded email body', async function(assert) {
-    const secureBody = '<html><div>lazy loaded body</div></html>';
-    this.set('email', EmberObject.create(emailData[5]));
-    this.set('lazyLoadedBody', secureBody);
-    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email lazyLoadedBody=lazyLoadedBody}}`);
-    assert.equal(find('iframe').contentDocument.body.innerText.trim(), 'lazy loaded body', 'body is rendered');
-  });
-
   test('adds hrefs to hyperlinks in the body', async function(assert) {
     this.set('email', EmberObject.create(emailData[2]));
     await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
@@ -143,5 +135,3 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     assert.equal(find('.email-recon-link-info-dialog .original-link').innerText.trim(), 'http://www.google2.com', 'original link included in the popup');
   });
 });
-
-

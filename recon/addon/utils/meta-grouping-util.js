@@ -9,9 +9,12 @@ import _ from 'lodash';
 const _sortedMetaItems = (metaItems) => {
   const modifiedMetaItems = _.cloneDeep(metaItems);
   return modifiedMetaItems.sort((a, b) => {
-    if (a[0] < b[0]) {
+    const first = a[0].toUpperCase();
+    const second = b[0].toUpperCase();
+
+    if (first < second) {
       return -1;
-    } else if (a[0] > b[0]) {
+    } else if (first > second) {
       return 1;
     }
     return 0;

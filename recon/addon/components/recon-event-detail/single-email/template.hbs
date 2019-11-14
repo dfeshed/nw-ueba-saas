@@ -16,7 +16,7 @@
 
   {{#if isEmailExpanded}}
     {{#if isBodyLoaded}}
-      {{recon-event-detail/single-email/email-body-content email=email lazyLoadedBody=lazyLoadedBody}}
+      {{recon-event-detail/single-email/email-body-content email=email}}
     {{else if lazyLoadError}}
       <div class="email-lazyload-error">{{t 'recon.emailView.noEmailBody'}}</div>
     {{else}}

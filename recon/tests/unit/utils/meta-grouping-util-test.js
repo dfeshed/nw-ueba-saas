@@ -14,11 +14,16 @@ const metaItems = [[ 'size', 62750 ],
 module('Unit | Utility | Meta Grouping Util');
 
 test('sortedMetaItems returns sorted meta items for non-empty meta items', function(assert) {
+  const metaItems = [[ 'size', 62750 ],
+    [ 'OS', 'windows' ],
+    [ 'eth.src', '70:56:81:9A:94:DD' ],
+    [ 'eth.dst', '10:0D:7F:75:C4:C8' ]
+  ];
   const sortedMetaItems = _sortedMetaItems(metaItems);
 
   const expectedSortedMetaItems = [[ 'eth.dst', '10:0D:7F:75:C4:C8' ],
     [ 'eth.src', '70:56:81:9A:94:DD' ],
-    [ 'payload', 56460 ],
+    [ 'OS', 'windows' ],
     [ 'size', 62750 ]
   ];
 

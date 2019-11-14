@@ -3,6 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, find, findAll, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import EmberObject from '@ember/object';
+import { patchFetch } from '../../../../helpers/patch-fetch';
 import emailData from '../../../../data/subscriptions/reconstruction-email-data/stream/data';
 
 const _first200 = (str) => str.trim().replace(/\s/g, '').substring(0, 200);
@@ -43,6 +44,33 @@ module('Integration | Component | recon-event-detail/single-email', function(hoo
       return !find('.rsa-loader');
     });
     assert.ok(find('iframe'), 'email body is rendered');
+  });
+
+  test('show more option should visible if lazy loaded email body content is more than 10K characters', async function(assert) {
+    const [, , , , , email] = emailData;
+    email.bodyUrl = '/investigate/recon/serve/email/body/message-id';
+    this.set('email', EmberObject.create(email));
+    this.set('emailCount', 1);
+    this.set('emailIndex', 1);
+
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          text() {
+            return emailData[0].bodyContent;
+          }
+        });
+      });
+    });
+
+    await render(hbs`{{recon-event-detail/single-email emailIndex=emailIndex emailCount=emailCount email=email}}`);
+    await waitUntil(() => {
+      return !find('.rsa-loader');
+    });
+    assert.ok(find('iframe'), 'email body is rendered');
+    assert.equal(find('.rendered-email-percent').textContent.trim(), 'Showing 75%', 'display rendered content with percentage');
+    assert.equal(find('.email-show-remaining').textContent.trim(), 'Show Remaining 25%', 'display show remaining button with percentage');
   });
 
   test('spinner is shown before secure email body is loaded', async function(assert) {

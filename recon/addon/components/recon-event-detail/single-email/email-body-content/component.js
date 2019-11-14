@@ -67,12 +67,7 @@ export default Component.extend({
     return email.realBodyContentLength > renderedContentLength;
   },
 
-  @computed('email.bodyContent', 'lazyLoadedBody')
-  emailBody(embeddedBodyContent, lazyLoadedBody) {
-    return embeddedBodyContent || lazyLoadedBody;
-  },
-
-  @computed('emailBody')
+  @computed('email.bodyContent')
   emailPortions(emailContent) {
     if (emailContent.length <= CHUNK_SIZE) {
       return [emailContent];
@@ -160,4 +155,3 @@ export default Component.extend({
     }
   }
 });
-

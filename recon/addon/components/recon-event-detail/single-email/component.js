@@ -3,6 +3,7 @@ import layout from './template';
 import computed from 'ember-computed-decorators';
 import fetch from 'component-lib/utils/fetch';
 import { inject as service } from '@ember/service';
+import _ from 'lodash';
 
 export default Component.extend({
   layout,
@@ -25,7 +26,11 @@ export default Component.extend({
     // "fetch" the body from the REST url specified in the "bodyUrl" property of the email.
     if (!this.get('isBodyLoaded')) {
       fetch(this.get('email.bodyUrl')).then((fetched) => fetched.text()).then((response) => {
-        this.set('lazyLoadedBody', response);
+        const email = this.get('email');
+        const modifiedEmail = _.cloneDeep(email);
+        modifiedEmail.bodyContent = response;
+        modifiedEmail.realBodyContentLength = response ? response.length : -1;
+        this.set('email', modifiedEmail);
       }).catch(() => {
         this.set('lazyLoadError', true);
       });
