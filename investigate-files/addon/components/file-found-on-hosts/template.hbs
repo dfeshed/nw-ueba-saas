@@ -24,15 +24,9 @@
           {{rsa-risk-score score=item.score size='small' radius=12}}
         </span>
         <span class='host_list_content divider'></span>
-        {{endpoint/pivot-to-investigate
-          itemList=itemList
-          serviceId=serviceId
-          metaName=metaName
-          metaValue=item.hostname
-          serviceList=serviceList
-          showOnlyIcons=showOnlyIcons
-          getAllServices=getAllServices
-          disabled=false}}
+        {{#rsa-form-button isIconOnly=true class='pivot-to-investigate' defaultAction=(action 'pivotToInvestigate' item.hostname)}}
+          {{rsa-icon name='expand-6' size='small' title=(t 'investigateShared.endpoint.fileActions.pivotToInvestigate')}}
+        {{/rsa-form-button}}
       {{/each}}
     {{else}}
       {{rsa-panel-message message=(t 'investigateFiles.message.noHostResultMessage') messageType='no-results-message'}}

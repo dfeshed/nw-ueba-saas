@@ -4,6 +4,7 @@ import { serviceList, hostList, hostListCount } from 'investigate-files/reducers
 import { getAllServices, fetchAgentId } from 'investigate-files/actions/data-creators';
 import { serviceId } from 'investigate-shared/selectors/investigate/selectors';
 import computed from 'ember-computed-decorators';
+import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({
   serviceList: serviceList(state),
@@ -26,11 +27,7 @@ const fileHosts = Component.extend({
 
   classNames: ['file-found-on-hosts'],
 
-  itemList: [],
-
-  showOnlyIcons: true,
-
-  metaName: 'machineIdentity.machineName',
+  pivot: service(),
 
   @computed('hostListCount')
   countLabelKey(count) {
@@ -43,9 +40,8 @@ const fileHosts = Component.extend({
 
   actions: {
 
-    pivotToInvestigate() {
-      this.send('getAllServices');
-      this.set('showServiceModal', true);
+    pivotToInvestigate(item) {
+      this.get('pivot').pivotToInvestigate('machineIdentity.machineName', { machineIdentity: { machineName: item } });
     },
 
     openHost(item) {

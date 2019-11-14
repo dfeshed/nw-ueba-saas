@@ -20,6 +20,7 @@ const hosts = {
   ]
 };
 module('Integration | Component | file found on machines', function(hooks) {
+
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-files')
   });
@@ -46,7 +47,7 @@ module('Integration | Component | file found on machines', function(hooks) {
       .build();
     await render(hbs`{{file-found-on-hosts}}`);
     assert.equal(findAll('.host_details_link').length, 4, '4 Machines are listed.');
-    assert.equal(findAll('.pivot-to-investigate-button .rsa-form-button').length, 4, 'Analyze Events button appears with each machine.');
+    assert.equal(findAll('.pivot-to-investigate .rsa-form-button').length, 4, 'Analyze Events button appears with each machine.');
   });
 
   test('on click of a machine, details open up', async function(assert) {
@@ -59,6 +60,8 @@ module('Integration | Component | file found on machines', function(hooks) {
     await click(findAll('.host_details_link a')[0]);
     await waitUntil(() => !this.owner.lookup('service:redux').getState().files.fileList.fetchMetaValueLoading, { timeout: Infinity });
     assert.ok(actionSpy.calledOnce, 'Window.open is called');
+    actionSpy.resetHistory();
+    actionSpy.restore();
   });
 
   test('when file, is not active on any host', async function(assert) {
@@ -102,5 +105,22 @@ module('Integration | Component | file found on machines', function(hooks) {
       .build();
     await render(hbs`{{file-found-on-hosts}}`);
     assert.equal(find('.count-info').textContent.trim(), 'Top 100 hosts with high risk scores are listed', 'Message displayed for host count More than 100.');
+  });
+
+  test('it should opens events page', async function(assert) {
+    new ReduxDataHelper(initState)
+      .hostNameList(hosts)
+      .coreServerId('123123123')
+      .hostListCount(4)
+      .build();
+
+    const actionSpy = sinon.spy(window, 'open');
+
+    await render(hbs`{{file-found-on-hosts}}`);
+    await click(findAll('.pivot-to-investigate button')[0]);
+    assert.ok(actionSpy.calledOnce, 'window open called');
+    assert.ok(actionSpy.args[0][0].includes('/investigate/events'));
+    actionSpy.resetHistory();
+    actionSpy.restore();
   });
 });
