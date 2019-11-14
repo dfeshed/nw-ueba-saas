@@ -33,6 +33,10 @@ import {
   setSort
 } from 'investigate-events/actions/interaction-creators';
 import { setVisibleColumns } from 'investigate-events/actions/data-creators';
+import {
+  currentQueryAliases,
+  currentQueryLanguage
+} from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const stateToComputed = (state) => {
   const { columns = [], notIndexedAtValue, notSingleton, notValid } = validEventSortColumns(state);
@@ -48,14 +52,14 @@ const stateToComputed = (state) => {
     selectedIndex: selectedIndex(state),
     items: nestChildEvents(state),
     itemsCount: dataCount(state),
-    aliases: state.investigate.dictionaries.aliases,
-    language: state.investigate.dictionaries.language,
+    aliases: currentQueryAliases(state),
+    language: currentQueryLanguage(state),
     columns: getColumns(state),
     endpointId: state.investigate.queryNode.serviceId,
     startTime: state.investigate.queryNode.startTime,
     endTime: state.investigate.queryNode.endTime,
     queryConditions: state.investigate.queryNode.metaFilter,
-    metaFormatMap: metaFormatMap(state.investigate.dictionaries.language),
+    metaFormatMap: metaFormatMap(currentQueryLanguage(state)),
     isCanceled: isCanceled(state),
     threshold: state.investigate.eventCount.threshold,
     searchMatches: searchMatches(state),

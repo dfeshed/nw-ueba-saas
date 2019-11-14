@@ -4,7 +4,9 @@ import {
   validMetaKeySuggestions,
   languageAndAliasesForParser,
   metaMapForColumns,
-  defaultMetaGroupEnriched
+  defaultMetaGroupEnriched,
+  currentQueryLanguage,
+  currentQueryAliases
 } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { setupTest } from 'ember-qunit';
@@ -253,4 +255,100 @@ module('Unit | Selectors | dictionaries', function(hooks) {
       assert.notOk(result[0].hasOwnProperty('displayName'));
     }
   );
+
+  test('currentQueryLanguage selector returns language for current query service', function(assert) {
+    const state = {
+      investigate: {
+        dictionaries: {
+          language: 'language',
+          languageCache: { '1': 'cached language' }
+        },
+        queryNode: {
+          previousQueryParams: {
+            serviceId: '1'
+          }
+        }
+      }
+    };
+    const result = currentQueryLanguage(state);
+    assert.equal(result, state.investigate.dictionaries.languageCache['1'], 'language was not pulled from cache');
+  });
+
+  test('currentQueryLanguage selector returns default language when there is not a current query service', function(assert) {
+    const state = {
+      investigate: {
+        dictionaries: {
+          language: 'language',
+          languageCache: { '1': 'cached language' }
+        },
+        queryNode: {
+          previousQueryParams: {}
+        }
+      }
+    };
+    const result = currentQueryLanguage(state);
+    assert.equal(result, state.investigate.dictionaries.language, 'default language was not returned');
+  });
+
+  test('currentQueryLanguage selector returns default language when there is not a previousQueryParams', function(assert) {
+    const state = {
+      investigate: {
+        dictionaries: {
+          language: 'language',
+          languageCache: { '1': 'cached language' }
+        },
+        queryNode: {}
+      }
+    };
+    const result = currentQueryLanguage(state);
+    assert.equal(result, state.investigate.dictionaries.language, 'default language was not returned');
+  });
+
+  test('currentQueryAliases selector returns aliases for current query service', function(assert) {
+    const state = {
+      investigate: {
+        dictionaries: {
+          aliases: 'aliases',
+          aliasesCache: { '1': 'cached aliases' }
+        },
+        queryNode: {
+          previousQueryParams: {
+            serviceId: '1'
+          }
+        }
+      }
+    };
+    const result = currentQueryAliases(state);
+    assert.equal(result, state.investigate.dictionaries.aliasesCache['1'], 'aliases was not pulled from cache');
+  });
+
+  test('currentQueryAliases selector returns default aliases when there is not a current query service', function(assert) {
+    const state = {
+      investigate: {
+        dictionaries: {
+          aliases: 'aliases',
+          aliasesCache: { '1': 'cached aliases' }
+        },
+        queryNode: {
+          previousQueryParams: {}
+        }
+      }
+    };
+    const result = currentQueryAliases(state);
+    assert.equal(result, state.investigate.dictionaries.aliases, 'default aliases was not returned');
+  });
+
+  test('currentQueryAliases selector returns default aliases when there is not a previousQueryParams', function(assert) {
+    const state = {
+      investigate: {
+        dictionaries: {
+          aliases: 'aliases',
+          aliasesCache: { '1': 'cached aliases' }
+        },
+        queryNode: {}
+      }
+    };
+    const result = currentQueryAliases(state);
+    assert.equal(result, state.investigate.dictionaries.aliases, 'default aliases was not returned');
+  });
 });

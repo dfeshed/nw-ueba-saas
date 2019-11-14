@@ -17,7 +17,7 @@ const columnGroupSelector = '.rsa-investigate-events-table__header__columnGroups
 const columnGroupDropDownButton = `${columnGroupSelector} .rsa-button-group button`;
 const columnGroupItemList = `${columnGroupSelector} ul.rsa-item-list > li`;
 
-const assertForInvestigateColumnAndColumnSelector = async function(assert, headerCount, count, selectedOptionName) {
+const assertForInvestigateColumnAndColumnSelector = async function(assert, headerCount, columnSelectorCount, selectedOptionName) {
   assert.ok(find(columnGroupDropDownButton), 'dropdown button shall be found');
   await click(columnGroupDropDownButton);
   const optionToChoose = findAll(`${columnGroupItemList} a`).find((d) => d.textContent.trim() === selectedOptionName);
@@ -31,7 +31,7 @@ const assertForInvestigateColumnAndColumnSelector = async function(assert, heade
     `Selected column group should be ${selectedOptionName}.`);
 
   await click('.rsa-icon-cog');
-  assert.equal(findAll('li .rsa-form-checkbox-label').length, count,
+  assert.equal(findAll('.rsa-data-table-column-selector-panel li .rsa-form-checkbox-label').length, columnSelectorCount,
     `Should show all columns for column selector for ${selectedOptionName}.`);
 };
 

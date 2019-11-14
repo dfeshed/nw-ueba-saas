@@ -180,7 +180,10 @@ module('Unit | Selectors | event-results', function(hooks) {
     const state = {
       investigate: {
         dictionaries: {
-          aliases: 'aliases'
+          language: [{ metaName: 'size', format: 'Int' }],
+          languageCache: {},
+          aliases: 'aliases',
+          aliasesCache: {}
         },
         data: {
           selectedColumnGroup: 'EMAIL'
@@ -207,6 +210,11 @@ module('Unit | Selectors | event-results', function(hooks) {
             { sessionId: 2, medium: 32, 'nwe.callback_id': true },
             { sessionId: 3 }
           ]
+        },
+        queryNode: {
+          previousQueryParams: {
+            serviceId: 1
+          }
         }
       }
     };
@@ -227,7 +235,10 @@ module('Unit | Selectors | event-results', function(hooks) {
           ]
         },
         dictionaries: {
-          aliases: 'aliases'
+          language: [{ metaName: 'size', format: 'Int' }],
+          languageCache: {},
+          aliases: 'aliases',
+          aliasesCache: {}
         },
         services: {
           serviceData: [{ version: 11.4 }]
@@ -244,6 +255,11 @@ module('Unit | Selectors | event-results', function(hooks) {
           data: 3
         },
         columnGroup: {
+        },
+        queryNode: {
+          previousQueryParams: {
+            serviceId: 1
+          }
         }
       }
     };
@@ -267,7 +283,10 @@ module('Unit | Selectors | event-results', function(hooks) {
           ]
         },
         dictionaries: {
-          aliases: 'aliases'
+          language: [{ metaName: 'size', format: 'Int' }],
+          languageCache: {},
+          aliases: 'aliases',
+          aliasesCache: {}
         },
         services: {
           serviceData: [{ version: 11.4 }]
@@ -286,6 +305,11 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {
+            serviceId: 1
+          }
         }
       }
     };
@@ -309,7 +333,10 @@ module('Unit | Selectors | event-results', function(hooks) {
           ]
         },
         dictionaries: {
-          aliases: 'aliases'
+          language: [{ metaName: 'size', format: 'Int' }],
+          languageCache: {},
+          aliases: 'aliases',
+          aliasesCache: {}
         },
         eventCount: {
           data: 3
@@ -328,6 +355,11 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {
+            serviceId: 1
+          }
         }
       }
     };
@@ -350,7 +382,10 @@ module('Unit | Selectors | event-results', function(hooks) {
           ]
         },
         dictionaries: {
-          aliases: 'aliases'
+          language: [{ metaName: 'size', format: 'Int' }],
+          languageCache: {},
+          aliases: 'aliases',
+          aliasesCache: {}
         },
         services: {
           serviceData: [{ version: 11.4 }]
@@ -369,6 +404,11 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {
+            serviceId: 1
+          }
         }
       }
     };
@@ -392,7 +432,10 @@ module('Unit | Selectors | event-results', function(hooks) {
           ]
         },
         dictionaries: {
-          aliases: 'aliases'
+          language: [{ metaName: 'size', format: 'Int' }],
+          languageCache: {},
+          aliases: 'aliases',
+          aliasesCache: {}
         },
         services: {
           serviceData: [{ version: 11.4 }]
@@ -411,6 +454,11 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {
+            serviceId: 1
+          }
         }
       }
     };
@@ -434,7 +482,10 @@ module('Unit | Selectors | event-results', function(hooks) {
           ]
         },
         dictionaries: {
-          aliases: 'aliases'
+          language: [{ metaName: 'size', format: 'Int' }],
+          languageCache: {},
+          aliases: 'aliases',
+          aliasesCache: {}
         },
         services: {
           serviceData: [{ version: 11.4 }]
@@ -453,6 +504,11 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {
+            serviceId: 1
+          }
         }
       }
     };
@@ -478,7 +534,10 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{ version: 11.4 }]
         },
         dictionaries: {
-          aliases: 'aliases'
+          language: [{ metaName: 'size', format: 'Int' }],
+          languageCache: {},
+          aliases: 'aliases',
+          aliasesCache: {}
         },
         eventCount: {
           data: 3
@@ -494,6 +553,11 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {
+            serviceId: 1
+          }
         }
       }
     };
@@ -506,7 +570,10 @@ module('Unit | Selectors | event-results', function(hooks) {
     const state = {
       investigate: {
         dictionaries: {
-          aliases: 'aliases'
+          language: [{ metaName: 'size', format: 'Int' }],
+          languageCache: {},
+          aliases: 'aliases',
+          aliasesCache: {}
         },
         data: {
           globalPreferences: {
@@ -599,7 +666,10 @@ module('Unit | Selectors | event-results', function(hooks) {
         dictionaries: {},
         services: {},
         data: preferenceData,
-        eventResults: withNetworkEvents
+        eventResults: withNetworkEvents,
+        queryNode: {
+          previousQueryParams: {}
+        }
       }
     };
     const result = getDownloadOptions(state);
@@ -645,7 +715,10 @@ module('Unit | Selectors | event-results', function(hooks) {
           globalPreferences: {
           }
         },
-        eventResults: withMixedEvents
+        eventResults: withMixedEvents,
+        queryNode: {
+          previousQueryParams: {}
+        }
       }
     };
     const result = getDownloadOptions(state);
@@ -1156,7 +1229,10 @@ module('Unit | Selectors | event-results', function(hooks) {
           }]
         },
         eventCount: {},
-        services: {}
+        services: {},
+        queryNode: {
+          previousQueryParams: {}
+        }
       }
     };
 
@@ -1178,7 +1254,10 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         eventCount: {},
         dictionaries: {},
-        services: {}
+        services: {},
+        queryNode: {
+          previousQueryParams: {}
+        }
       }
     };
 
@@ -1212,6 +1291,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1250,6 +1332,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1293,6 +1378,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1337,6 +1425,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1383,6 +1474,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1427,6 +1521,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1471,6 +1568,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1515,6 +1615,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1559,6 +1662,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1603,6 +1709,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1647,6 +1756,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1691,6 +1803,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1764,6 +1879,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1835,6 +1953,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1906,6 +2027,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -1977,6 +2101,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -2048,6 +2175,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -2119,6 +2249,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -2191,6 +2324,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -2262,6 +2398,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -2328,6 +2467,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           serviceData: [{
             version: '11.4'
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };

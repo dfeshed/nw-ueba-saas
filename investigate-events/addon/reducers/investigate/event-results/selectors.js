@@ -5,16 +5,17 @@ import { EVENT_TYPES } from 'component-lib/constants/event-types';
 import { EVENT_DOWNLOAD_TYPES, FILE_TYPES } from 'component-lib/constants/event-download-types';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
+import { currentQueryLanguage } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import formatUtil from 'investigate-events/components/events-table-container/row-container/format-util';
 import sort from 'fast-sort';
 import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
-const { createSelector } = reselect;
 import { isEmpty } from '@ember/utils';
+
+const { createSelector } = reselect;
 
 const DEFAULT_WIDTH = 100;
 
 // ACCESSOR FUNCTIONS
-const _languages = (state) => state.investigate.dictionaries.language;
 const _selectedColumnGroup = (state) => state.investigate.data.selectedColumnGroup;
 const _resultsData = (state) => state.investigate.eventResults.data;
 const _resultsDataCount = (state) => state.investigate.eventResults.data && state.investigate.eventResults.data.length;
@@ -228,7 +229,7 @@ export const clientSortedData = createSelector(
     _resultsData,
     _sortField,
     _sortDirection,
-    _languages,
+    currentQueryLanguage,
     eventTableFormattingOpts,
     requireServiceSorting,
     _resultsDataCount

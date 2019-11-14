@@ -13,18 +13,22 @@ import { getActiveQueryNode } from 'investigate-events/reducers/investigate/quer
 import { getServices } from 'investigate-events/actions/initialization-creators';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { hasFatalSummaryError } from 'investigate-events/reducers/investigate/services/selectors';
+import {
+  currentQueryAliases,
+  currentQueryLanguage
+} from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const stateToComputed = (state) => ({
   noEvents: noEvents(state),
   items: state.investigate.eventResults.data,
-  aliases: state.investigate.dictionaries.aliases,
+  aliases: currentQueryAliases(state),
   atLeastOneQueryIssued: state.investigate.queryNode.atLeastOneQueryIssued,
   eventResultsErrorMessage: eventResultsErrorMessage(state),
   eventType: eventType(state),
   hasFatalSummaryError: hasFatalSummaryError(state),
   hasIncommingQueryParams: state.investigate.queryNode.hasIncommingQueryParams,
   isServicesRetrieveError: state.investigate.services.isServicesRetrieveError,
-  language: state.investigate.dictionaries.language,
+  language: currentQueryLanguage(state),
   queryBodyClass: queryBodyClass(state),
   queryNode: getActiveQueryNode(state),
   reconSize: state.investigate.data.reconSize,

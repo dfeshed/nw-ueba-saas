@@ -237,6 +237,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
         .eventResults(eventResultsData)
         .withoutMinimumCoreServicesVersionForColumnSorting()
         .language()
+        .withPreviousQuery()
         .eventsQuerySort('medium', 'Descending')
         .selectedEventIds({
           0: 1,

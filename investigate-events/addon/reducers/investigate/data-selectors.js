@@ -8,6 +8,7 @@ import {
   LANGUAGE_KEY_SPECIAL_MASK
 } from 'investigate-events/reducers/investigate/dictionaries/utils';
 import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
+import { currentQueryLanguage } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const { createSelector } = reselect;
 
@@ -45,7 +46,6 @@ export const SUMMARY_COLUMN_KEYS = {
 };
 
 // ACCESSOR FUNCTIONS
-const _languages = (state) => state.investigate.dictionaries.language;
 const _reconSize = (state) => state.investigate.data.reconSize;
 const _visibleColumns = (state) => state.investigate.eventResults.visibleColumns;
 const _isReconOpen = (state) => state.investigate.data.isReconOpen;
@@ -79,7 +79,7 @@ export const isSummaryColumnVisible = createSelector(
 );
 
 export const validEventSortColumns = createSelector(
-  [_languages],
+  [currentQueryLanguage],
   (languages) => {
     if (!languages) {
       return {
@@ -162,7 +162,7 @@ export const getSelectedColumnGroup = createSelector(
 );
 
 export const getColumns = createSelector(
-  [getSelectedColumnGroup, _languages],
+  [getSelectedColumnGroup, currentQueryLanguage],
   (selectedColumns, languages) => {
     if (selectedColumns) {
       const mutableColumns = selectedColumns.columns.asMutable();

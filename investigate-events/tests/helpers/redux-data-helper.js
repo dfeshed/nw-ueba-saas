@@ -691,9 +691,6 @@ export default class DataHelper {
 
   language(language = DEFAULT_LANGUAGES) {
     _set(this.state, 'dictionaries.language', language);
-
-    // initialize language cache
-    _set(this.state, 'dictionaries.languageCache', {});
     return this;
   }
 
@@ -873,7 +870,9 @@ export default class DataHelper {
     metaFilter = DEFAULT_PILLS_DATA,
     serviceId = '123',
     startTime = 1505672580000,
-    endTime = 1505672580000
+    endTime = 1505672580000,
+    languageCache = DEFAULT_LANGUAGES,
+    aliasesCache = DEFAULT_ALIASES
   ) {
     _set(this.state, 'queryNode.previousQueryParams', {
       serviceId,
@@ -881,6 +880,12 @@ export default class DataHelper {
       endTime,
       metaFilter
     });
+    const aCache = {};
+    aCache[serviceId] = aliasesCache;
+    _set(this.state, 'dictionaries.aliasesCache', aCache);
+    const lCache = {};
+    lCache[serviceId] = languageCache;
+    _set(this.state, 'dictionaries.languageCache', lCache);
     return this;
   }
 

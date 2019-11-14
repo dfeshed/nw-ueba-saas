@@ -122,6 +122,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         eventCount: {
           data: 5,
           threshold: 5
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -158,6 +161,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         eventCount: {
           data: 5,
           threshold: 5
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -194,6 +200,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         eventCount: {
           data: 5,
           threshold: 5
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -230,6 +239,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         eventCount: {
           data: 5,
           threshold: 5
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -266,6 +278,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         eventCount: {
           data: 5,
           threshold: 5
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -301,6 +316,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         eventCount: {
           data: 4,
           threshold: 5
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     };
@@ -436,6 +454,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     });
@@ -464,6 +485,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
               { field: 'custom.meta-summary', title: 'Type' }
             ]
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     });
@@ -493,6 +517,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
               { field: 'medium', title: 'Type' }
             ]
           }]
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     });
@@ -518,6 +545,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     });
@@ -550,6 +580,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     });
@@ -580,6 +613,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     });
@@ -608,6 +644,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     });
@@ -631,6 +670,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     });
@@ -655,6 +697,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         },
         columnGroup: {
           columnGroups: mappedColumnGroups
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     });
@@ -700,6 +745,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         },
         columnGroup: {
           columnGroups
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     });
@@ -737,6 +785,9 @@ module('Unit | Selectors | data-selectors', function(hooks) {
         },
         columnGroup: {
           columnGroups
+        },
+        queryNode: {
+          previousQueryParams: {}
         }
       }
     });

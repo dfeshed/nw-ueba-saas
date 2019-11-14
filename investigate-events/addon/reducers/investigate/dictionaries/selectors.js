@@ -10,8 +10,11 @@ const VALUE = 'value';
 const indices = [NONE, KEY, VALUE];
 
 // ACCESSOR FUNCTIONS
-const _language = (state) => state.investigate.dictionaries.language;
 const _aliases = (state) => state.investigate.dictionaries.aliases;
+const _aliasesCache = (state) => state.investigate.dictionaries.aliasesCache;
+const _currentServiceId = (state) => state.investigate.queryNode.previousQueryParams?.serviceId;
+const _language = (state) => state.investigate.dictionaries.language;
+const _languageCache = (state) => state.investigate.dictionaries.languageCache;
 const _metaKeyCache = (state) => state.investigate.dictionaries.metaKeyCache;
 
 // UTILS
@@ -23,6 +26,46 @@ const _createMetaGroup = (obj) => ({
 });
 
 // SELECTOR FUNCTIONS
+
+/**
+ * Provides the language for the service that's currently being used by a query.
+ * Takes the serviceId from the queryNode's previousQueryParams object, and
+ * uses that to look for the language in the cache. If it does not find cached
+ * language, it falls back to the language associated with the currently
+ * selected service. Warning, this could provide a different language set
+ * because you can change the selected service without actually executing the
+ * query.
+ */
+export const currentQueryLanguage = createSelector(
+  [_currentServiceId, _language, _languageCache],
+  (currentServiceId, language, languageCache) => {
+    let currentQueryLanguage;
+    if (currentServiceId) {
+      currentQueryLanguage = languageCache[currentServiceId];
+    }
+    return currentQueryLanguage ? currentQueryLanguage : language;
+  }
+);
+
+/**
+ * Provides the aliases for the service that's currently being used by a query.
+ * Takes the serviceId from the queryNode's previousQueryParams object, and
+ * uses that to look for the aliases in the cache. If it does not find cached
+ * aliases, it falls back to the aliases associated with the currently
+ * selected service. Warning, this could provide a different aliases set
+ * because you can change the selected service without actually executing the
+ * query.
+ */
+export const currentQueryAliases = createSelector(
+  [_currentServiceId, _aliases, _aliasesCache],
+  (currentServiceId, aliases, aliasesCache) => {
+    let currentQueryAliases;
+    if (currentServiceId) {
+      currentQueryAliases = aliasesCache[currentServiceId];
+    }
+    return currentQueryAliases ? currentQueryAliases : aliases;
+  }
+);
 
 /**
  * add three new boolean properties to meta

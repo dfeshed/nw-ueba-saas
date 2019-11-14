@@ -283,9 +283,9 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table}}`);
     assert.notOk(find('h2[title=\'Collection Time\'] .js-move-handle')); // Collection time is not draggable
-    assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator .rsa-icon-arrow-up-7').length, 2);
-    assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-up-7').length, 1);
-    assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator:not(.active) .rsa-icon-arrow-up-7').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row .sort-indicator .rsa-icon-arrow-up-7').length, 2);
+    assert.equal(findAll('.rsa-data-table-header-row .sort-indicator.active .rsa-icon-arrow-up-7').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row .sort-indicator:not(.active) .rsa-icon-arrow-up-7').length, 1);
   });
 
   test('event table is displayed with expected ascending sort controls', async function(assert) {
@@ -303,7 +303,7 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table}}`);
     assert.ok(find('h2[title=\'Summary\'] .disabled-sort')); // Summary should always be disabled
-    assert.ok(find('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-up-7'));
+    assert.ok(find('.rsa-data-table-header-row .sort-indicator.active .rsa-icon-arrow-up-7'));
   });
 
   test('event table header has sort disabled while streaming', async function(assert) {
@@ -338,7 +338,7 @@ module('Integration | Component | events-table', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
-    assert.ok(find('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-down-7'));
+    assert.ok(find('.rsa-data-table-header-row .sort-indicator.active .rsa-icon-arrow-down-7'));
   });
 
   test('event table sort controls calls _toggleSort', async function(assert) {
@@ -365,7 +365,7 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table _toggleSort=_toggleSort}}`);
 
-    click('.rsa-data-table-header-row div > h2 .sort-indicator.active');
+    click('.rsa-data-table-header-row .sort-indicator.active');
   });
 
   test('event table sort controls doesnt call _toggleSort if already sorting', async function(assert) {
@@ -391,7 +391,7 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table _toggleSort=_toggleSort}}`);
 
-    click('.rsa-data-table-header-row div > h2 .sort-indicator.active');
+    click('.rsa-data-table-header-row .sort-indicator.active');
   });
 
   test('event table is displayed with expected column group\'s default header values', async function(assert) {
@@ -405,7 +405,7 @@ module('Integration | Component | events-table', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
-    const headerColumns = findAll('.rsa-data-table-header-row div > h2');
+    const headerColumns = findAll('.rsa-data-table-header-row h2');
     assert.equal('COLLECTION TIME', headerColumns[0].innerText.trim(), 'Expected 1st column');
     assert.equal('TYPE', headerColumns[1].innerText.trim(), 'Expected 2nd column');
   });
