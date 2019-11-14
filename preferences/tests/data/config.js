@@ -1,3 +1,8 @@
+const SORT_ORDER = {
+  DESC: 'Descending',
+  ASC: 'Ascending'
+};
+
 /**
  * This config will help preferences details to render required preferences.
  *
@@ -10,6 +15,10 @@
  * defaultPreferences: In case data is not pulled from server or first time preferences not available.
  * @public
  **/
+
+// *******
+// BEGIN - Copy/pasted config from investigate-events/addon/reducers/investigate/config.js to test preferences addon
+// *******
 export default {
   modelName: 'investigate-events-preferences',
   fieldPrefix: 'preferences.investigate-events',
@@ -75,17 +84,16 @@ export default {
     ],
     field: 'queryTimeFormat'
   },
-  // NewestFirst code commented out
-  /* {
+  {
     name: 'preferences.investigate-events.eventTimeSortOrder',
     info: true, // for preferences that need additional information
     type: 'radio',
     options: [
-      'Ascending',
-      'Descending'
+      SORT_ORDER.ASC,
+      SORT_ORDER.DESC
     ],
     field: 'eventAnalysisPreferences.eventTimeSortOrder'
-  }, */
+  },
   {
     name: 'preferences.investigate-events.autoDownloadExtractedFiles',
     type: 'checkbox',
@@ -104,11 +112,15 @@ export default {
       defaultPacketFormat: 'PCAP',
       defaultMetaFormat: 'TEXT',
       autoDownloadExtractedFiles: true,
-      autoUpdateSummary: false
-      // eventTimeSortOrder: 'Ascending' // NewestFirst code commented out
+      autoUpdateSummary: false,
+      eventTimeSortOrder: 'Ascending'
     },
     eventPreferences: {
       columnGroup: 'SUMMARY'
     }
   }
 };
+
+// *******
+// END - Copy/pasted config from investigate-events/addon/reducers/investigate/config.js to test preferences addon
+// *******

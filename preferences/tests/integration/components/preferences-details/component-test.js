@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { throwSocket } from '../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -43,7 +43,7 @@ const renderApplicationContent = async function(ctx, assert) {
     {{/rsa-application-content}}
   `);
   await click('.rsa-icon-settings-1');
-  await waitUntil(() => findAll('.rsa-preferences-field-content').length === 7, { timeout: 3000 });
+  await waitUntil(() => findAll('.rsa-preferences-field-content').length === 8, { timeout: 3000 });
   assert.ok(find('.is-expanded'), 'Preference Panel opened.');
 };
 
@@ -53,10 +53,11 @@ const getTextFromDOMArray = (arr) => {
 
 module('Integration | Component | Preferences Details', function(hooks) {
   setupRenderingTest(hooks);
-
+  let translation;
   hooks.beforeEach(function() {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    translation = this.owner.lookup('service:i18n');
   });
 
   test('Preferences panel opens correctly with all user selected preferences', async function(assert) {
@@ -73,26 +74,34 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.equal(str, 'Download Text');
     assert.ok(find('.rsa-form-radio-label.DB.checked'));
     assert.ok(find('.rsa-form-checkbox-label.checked'));
-
-    // NewestFirst code commented out
-    // assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
+    assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
   });
 
   test('Preferences panel should render title for DOWNLOAD EXTRACTED FILES AUTOMATICALLY', async function(assert) {
     await renderApplicationContent(this, assert);
-    assert.equal(findAll('.rsa-form-checkbox-label')[0].getAttribute('title'), 'If selected, the browser downloads files to the download folder and if a file type is mapped to a default program, automatically open it.');
+    assert.equal(findAll('.rsa-form-checkbox-label')[0].getAttribute('title'),
+      translation.t('preferences.investigate-events.autoDownloadExtractedFiles-tooltip'));
   });
 
   test('Preferences panel should render title for Update time window automatically', async function(assert) {
     await renderApplicationContent(this, assert);
-    assert.equal(findAll('.rsa-form-checkbox-label')[1].getAttribute('title'), 'Enables continuous update of the relative time window for the query. The time window updates when new data is stored (database time) or when a minute elapses (current time). In both cases the query icon activates, allowing you to refresh stale results.');
+    assert.equal(findAll('.rsa-form-checkbox-label')[1].getAttribute('title'),
+      translation.t('preferences.investigate-events.autoUpdateSummary-tooltip'));
+  });
+
+  test('Preferences panel should render title for default vent sort oeder', async function(assert) {
+    await renderApplicationContent(this, assert);
+    assert.equal(find('.rsa-preferences-field-content:nth-of-type(6) i').title,
+      translation.t('preferences.investigate-events.eventTimeSortOrder-tooltip'));
   });
 
   test('Preferences panel should show Time format Settings', async function(assert) {
     await renderApplicationContent(this, assert);
     assert.ok(find('.rsa-form-radio-label.DB.checked'));
-    assert.equal(find('.rsa-form-radio-label.DB').getAttribute('title'), 'Default selection. When selected, the end time is the last time data was stored in the service being queried.');
-    assert.equal(find('.rsa-form-radio-label.WALL').getAttribute('title'), 'When selected, the end time is the current time of day, with the preferred time zone, no matter when the most recent data was stored.');
+    assert.equal(find('.rsa-form-radio-label.DB').getAttribute('title'),
+      translation.t('preferences.investigate-events.DB-tooltip'));
+    assert.equal(find('.rsa-form-radio-label.WALL').getAttribute('title'),
+      translation.t('preferences.investigate-events.WALL-tooltip'));
   });
 
   test('Preferences panel comes with valid options for Analysis', async function(assert) {
@@ -162,8 +171,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.notOk(find('.rsa-form-radio-label.DB.checked'));
   });
 
-  // NewestFirst code commented out
-  skip('Preferences panel should change Sort Event Settings on click', async function(assert) {
+  test('Preferences panel should change Sort Event Settings on click', async function(assert) {
     await renderApplicationContent(this, assert);
     assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
     assert.notOk(find('.rsa-form-radio-label.Descending.checked'));
@@ -195,8 +203,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await waitUntil(() => checkboxForTimeWindow.className.trim() === 'rsa-form-checkbox-label checked', { timeout: 3000 });
   });
 
-  // NewestFirst code commented out
-  skip('renders info icon where information is needed', async function(assert) {
+  test('renders info icon where information is needed', async function(assert) {
     await renderApplicationContent(this, assert);
     await assertForPreferencesInfoIcon(assert, 0, false, 'No Info icon for Date Time Format');
     await assertForPreferencesInfoIcon(assert, 1, true, 'Event Sort Order has info icon');

@@ -1,4 +1,4 @@
-import { test, module, skip } from 'qunit';
+import { test, module } from 'qunit';
 import Immutable from 'seamless-immutable';
 import makePackAction from '../../../helpers/make-pack-action';
 import { LIFECYCLE } from 'redux-pack';
@@ -178,24 +178,6 @@ test('ACTION_TYPES.SET_EVENTS_PAGE will truncate the right side of the results',
   // the oldest data was the truncated data
   assert.equal(result.data[0].timeAsNumber, 7777, 'sorted ascending');
   assert.equal(result.data[1].timeAsNumber, 9999, 'sorted ascending');
-});
-
-// NewestFirst code commented out
-skip('ACTION_TYPES.SET_PREFERENCES will set correct preferences', function(assert) {
-  const initialState = Immutable.from({
-    eventTimeSortOrder: 'Ascending'
-  });
-
-  const action = {
-    type: ACTION_TYPES.SET_PREFERENCES,
-    payload: {
-      eventAnalysisPreferences: {
-        eventTimeSortOrder: 'Descending'
-      }
-    }
-  };
-  const result = reducer(initialState, action);
-  assert.equal(result.eventTimeSortOrder, 'Descending');
 });
 
 test('ACTION_TYPES.SET_LOG will merge log status into data', function(assert) {

@@ -199,3 +199,23 @@ test('SET_QUERY_EXECUTED_BY_COLUMN_GROUP_FLAG should set isQueryExecutedByColumn
   assert.notOk(newEndState.isQueryExecutedByColumnGroup, 'Contains the correct flag');
 
 });
+
+test('ACTION_TYPES.SET_PREFERENCES will set correct preferences', function(assert) {
+  const initialState = Immutable.from({
+    eventAnalysisPreferences: {
+      eventTimeSortOrder: 'Ascending'
+    }
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_PREFERENCES,
+    payload: {
+      eventAnalysisPreferences: {
+        eventTimeSortOrder: 'Descending'
+      }
+    }
+  };
+  const result = reducer(initialState, action);
+  assert.equal(result.eventAnalysisPreferences.eventTimeSortOrder, 'Descending');
+});
+

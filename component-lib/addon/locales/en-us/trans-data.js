@@ -2249,8 +2249,8 @@ export default {
       'autoDownloadExtractedFiles-tooltip': 'If selected, the browser downloads files to the download folder and if a file type is mapped to a default program, automatically open it.',
       autoUpdateSummary: 'Update time window automatically',
       'autoUpdateSummary-tooltip': 'Enables continuous update of the relative time window for the query. The time window updates when new data is stored (database time) or when a minute elapses (current time). In both cases the query icon activates, allowing you to refresh stale results.',
-      eventTimeSortOrder: 'Event Sort Order',
-      'eventTimeSortOrder-tooltip': 'Sort events in descending or ascending order based on collection time. If results exceed the events limit, not all events can be loaded. The portion of returned events (oldest or newest) that is loaded will match the sort order preference (Descending or Ascending respectively).',
+      eventTimeSortOrder: 'Default Event Sort Order',
+      'eventTimeSortOrder-tooltip': 'By default, sort events in descending or ascending order based on collection time. If results exceed the events limit, not all events can be loaded. The portion of returned events (oldest or newest) that is loaded will match the sort order preference (Descending or Ascending respectively).',
       Descending: 'Descending',
       Ascending: 'Ascending',
       sortOrderDefaultText: '(default)'
