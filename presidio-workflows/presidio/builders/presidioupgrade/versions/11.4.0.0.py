@@ -96,6 +96,7 @@ def update_alerts_hits(hits):
             'entityTags': item["_source"]["userTags"],
             'contributionToEntityScore': item["_source"]["contributionToUserScore"],
             'feedback': item["_source"]["feedback"],
+            'vendorEntityId': item["_source"]["vendorUserId"],
             'entityType': ENTITY_TYPE
 
         }
