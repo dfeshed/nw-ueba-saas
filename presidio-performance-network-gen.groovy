@@ -2,8 +2,8 @@ pipeline {
     parameters {
 
         string(name: 'BUILD_BRANCH', defaultValue: 'origin/master', description: '')
-        string(name: 'MVN_OPTIONS', defaultValue: '-Dmaven.test.failure.ignore=false \n' +
-                '-Duser.timezone=UTC -Dprobability_multiplier=0.001 -Dusers_multiplier=11', description: '')
+        string(name: 'MVN_OPTIONS', defaultValue: '-q -U -DsuiteXmlFile=src/test/resources/PerformanceStabilityLogGenTest.xml ' +
+                '-Dprobability_multiplier=0.001 -Dusers_multiplier=11', description: '')
 
         booleanParam(name: 'CLEAN_FILES', defaultValue: false, description: '')
         booleanParam(name: 'CREATE_FILES', defaultValue: false, description: '')
@@ -71,9 +71,10 @@ def runMaven() {
     println(env.REPOSITORY_NAME)
     sh "echo JAVA_HOME=${env.JAVA_HOME}"
     dir(env.REPOSITORY_NAME) {
-        sh "mvn test -B --projects presidio-integration-performance-test --also-make " +
+        sh "mvn test -B --projects presidio-integration-performance-test --also-make -Dschemas=${params.SCHEMAS} " +
                 "-Dtls_alerts_probability=${params.tls_alerts_probability} -Dtls_groups_to_create=${params.tls_groups_to_create} " +
-                "-Dtls_events_per_day_per_group=${params.tls_events_per_day_per_group} ${params.MVN_OPTIONS}"
+                "-Dtls_events_per_day_per_group=${params.tls_events_per_day_per_group} ${params.MVN_OPTIONS} " +
+                "-Dmaven.test.failure.ignore=false -Duser.timezone=UTC"
     }
 }
 
