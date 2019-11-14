@@ -85,7 +85,10 @@ def buildIntegrationTestProject(
         String userName = env.RSA_BUILD_CREDENTIALS_USR,
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
         String branchName = params.BUILD_BRANCH) {
+
+    String URL="https://${userName}:${userPassword}@github.rsa.lab.emc.com/feshed/ueba-automation-projects.git"
+
     sh "git config --global user.name \"${userName}\""
-    sh "[ ! -d '${env.REPOSITORY_NAME}' ] && git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/feshed/ueba-automation-projects.git"
+    sh "if [[ ! -d \"${env.REPOSITORY_NAME}\" ]] ; then git clone ${URL} ; else cd \"ueba-automation-projects\" && git pull $URL ; fi"
     dir(env.REPOSITORY_NAME) { sh "git checkout ${branchName}" }
 }
