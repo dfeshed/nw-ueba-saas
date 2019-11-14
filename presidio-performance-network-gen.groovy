@@ -51,7 +51,7 @@ pipeline {
                 expression { return params.SPLIT_FILES }
             }
             steps {
-                sh "${env.WORKSPACE}${env.SCRIPTS_DIR}split_files.sh"
+                sh "sh ${env.WORKSPACE}${env.SCRIPTS_DIR}split_files.sh"
             }
         }
         stage('Insert to Broker') {
@@ -59,7 +59,7 @@ pipeline {
                 expression { return params.UPLOAD_TO_BROKER }
             }
             steps {
-                sh "${env.WORKSPACE}${env.SCRIPTS_DIR}insert_data.sh"
+                sh "sh ${env.WORKSPACE}${env.SCRIPTS_DIR}insert_data.sh"
             }
         }
     }
