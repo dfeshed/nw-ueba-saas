@@ -1393,6 +1393,10 @@ indicators:
           - dstPort.name
         skipAnomaly: true
     classification: data_exfiltration
+    enrichers:
+      - class: .AddContextOfMaximumValueIndicatorEnricher
+        featureBucketConfName: numOfBytesSentBySrcIpSummationDstPortSslSubjectOutboundTlsHourly
+        aggregatedFeatureConfName: numOfBytesSentBySrcIpSummation
 
   - id: maxSumOfBytesSentBySrcIpToDstOrgScoresSumSslSubjectOutboundTlsHourly
     type: FEATURE_AGGREGATION
@@ -1419,6 +1423,10 @@ indicators:
           - dstOrg.name
         skipAnomaly: true
     classification: data_exfiltration
+    enrichers:
+      - class: .AddContextOfMaximumValueIndicatorEnricher
+        featureBucketConfName: numOfBytesSentBySrcIpSummationDstOrgSslSubjectOutboundTlsHourly
+        aggregatedFeatureConfName: numOfBytesSentBySrcIpSummation
 
   - id: maxSumOfBytesSentBySrcIpToDomainScoresSumSslSubjectOutboundTlsHourly
     type: FEATURE_AGGREGATION
@@ -1445,6 +1453,10 @@ indicators:
           - domain.name
         skipAnomaly: true
     classification: data_exfiltration
+    enrichers:
+      - class: .AddContextOfMaximumValueIndicatorEnricher
+        featureBucketConfName: numOfBytesSentBySrcIpSummationDomainSslSubjectOutboundTlsHourly
+        aggregatedFeatureConfName: numOfBytesSentBySrcIpSummation
 
   - id: maxSumOfBytesSentBySrcIpToSslSubjectOutboundTlsHourly
     type: FEATURE_AGGREGATION
@@ -1460,6 +1472,10 @@ indicators:
     historicalData:
       - type: hourly_aggregations
     classification: data_exfiltration
+    enrichers:
+      - class: .AddContextOfMaximumValueIndicatorEnricher
+        featureBucketConfName: numOfBytesSentBySrcIpSummationSslSubjectOutboundTlsHourly
+        aggregatedFeatureConfName: numOfBytesSentBySrcIpSummation
 
   - id: sumOfHighestSslSubjectSrcNetnameOutboundScoresSslSubjectTlsHourly
     type: SCORE_AGGREGATION

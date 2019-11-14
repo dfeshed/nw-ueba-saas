@@ -41,24 +41,20 @@ public class IndicatorsGeneratorForScoreAggr implements IndicatorsGenerator {
 
     public List<Indicator> generateIndicators(SmartAggregationRecord smartAggregationRecord, Alert alert) {
         List<Indicator> indicators = new ArrayList<>();
-
         AdeAggregationRecord adeAggregationRecord = smartAggregationRecord.getAggregationRecord();
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
-
-        List<String> splitFieldNames = indicatorConfig.getSplitFields() == null? new ArrayList<>(): new ArrayList<>(indicatorConfig.getSplitFields());
+        List<String> splitFieldNames = indicatorConfig.getSplitFields() == null ? new ArrayList<>() : new ArrayList<>(indicatorConfig.getSplitFields());
         splitFieldNames.replaceAll(this::translateOutputToAdeName);
-
         ScoreAggregationRecordContributors scoreAggregationRecordContributors = adeManagerSdk.splitScoreAggregationRecordToContributors(adeAggregationRecord, splitFieldNames);
 
         for (ScoreAggregationRecordContributors.Contributor scoreAggregationRecordContributor : scoreAggregationRecordContributors.getContributors()) {
-
-            Indicator indicator =
-                    AdeScoredEnrichedRecord.class.equals(scoreAggregationRecordContributors.getScoredRecordClass())?
-                            buildScoreAggrIndicator(smartAggregationRecord, alert, indicatorConfig, scoreAggregationRecordContributor):
-                            buildFeatureAggrIndicator(smartAggregationRecord, alert, indicatorConfig, scoreAggregationRecordContributor);
-
+            Indicator indicator = AdeScoredEnrichedRecord.class.equals(scoreAggregationRecordContributors.getScoredRecordClass()) ?
+                    buildScoreAggrIndicator(smartAggregationRecord, alert, indicatorConfig, scoreAggregationRecordContributor) :
+                    buildFeatureAggrIndicator(smartAggregationRecord, alert, indicatorConfig, scoreAggregationRecordContributor);
+            indicatorConfig.getEnrichers().forEach(enricher -> enricher.enrichIndicator(indicatorConfig, indicator));
             indicators.add(indicator);
         }
+
         return indicators;
     }
 

@@ -124,6 +124,7 @@
         <jedis.version>2.9.0</jedis.version>
         <spring-data-redis.version>2.1.0.RELEASE</spring-data-redis.version>
         <apache-tomcat.version>9.0.24</apache-tomcat.version>
+        <jackson-dataformat-yaml.version>2.9.9</jackson-dataformat-yaml.version>
     </properties>
 
     <dependencyManagement>
@@ -503,6 +504,11 @@
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-websocket</artifactId>
                 <version>${apache-tomcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>${jackson-dataformat-yaml.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

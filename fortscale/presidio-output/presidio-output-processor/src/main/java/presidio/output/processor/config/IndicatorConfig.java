@@ -1,14 +1,11 @@
 package presidio.output.processor.config;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
+import presidio.output.processor.services.alert.indicator.enricher.IndicatorEnricher;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,11 +21,11 @@ import java.util.List;
         "anomalyDescriptior",
         "historicalData",
         "classification",
-        "transformer"
+        "transformer",
+        "enrichers"
 })
 public class IndicatorConfig {
-
-    public IndicatorConfig() { }
+    public IndicatorConfig() {}
 
     @JsonProperty("id")
     private String id;
@@ -62,6 +59,9 @@ public class IndicatorConfig {
 
     @JsonProperty("transformer")
     private String transformer;
+
+    @JsonProperty("enrichers")
+    private List<IndicatorEnricher> enrichers = Collections.emptyList();
 
     @JsonProperty("id")
     public String getId() {
@@ -147,9 +147,20 @@ public class IndicatorConfig {
     public String getTransformer() {
         return transformer;
     }
+
     @JsonProperty("transformer")
     public void setTransformer(String transformer) {
         this.transformer = transformer;
+    }
+
+    @JsonProperty("enrichers")
+    public List<IndicatorEnricher> getEnrichers() {
+        return enrichers;
+    }
+
+    @JsonProperty("enrichers")
+    public void setEnrichers(List<IndicatorEnricher> enrichers) {
+        this.enrichers = enrichers == null ? Collections.emptyList() : enrichers;
     }
 
     @JsonProperty("modelContextFields")

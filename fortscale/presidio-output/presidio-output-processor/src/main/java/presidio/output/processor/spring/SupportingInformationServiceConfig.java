@@ -14,7 +14,6 @@ import fortscale.aggregation.feature.functions.AggrFeatureFuncServiceConfig;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
-import fortscale.utils.spring.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
@@ -54,7 +53,7 @@ import presidio.output.processor.services.alert.supportinginformation.transforme
         InMemoryFeatureBucketAggregatorConfig.class,
         EventPersistencyServiceConfig.class
 })
-public class SupportingInformationServiceConfig extends ApplicationConfiguration {
+public class SupportingInformationServiceConfig {
     private final AdeManagerSdk adeManagerSdk;
     private final HistoricalDataFetcher historicalDataFetcher;
     private final SupportingInformationConfig supportingInformationConfig;
@@ -116,7 +115,7 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
     }
 
     @Bean
-    public AggregationDataCountByTimeForLastDayPopulator aggregationDataCountByTimeForNewOccrurencesPopulator() {
+    public AggregationDataCountByTimeForLastDayPopulator aggregationDataCountByTimeForNewOccurrencesPopulator() {
         return new AggregationDataCountByTimeForLastDayPopulator(historicalDataFetcher);
     }
 
