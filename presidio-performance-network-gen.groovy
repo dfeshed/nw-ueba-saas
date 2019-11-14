@@ -17,7 +17,7 @@ pipeline {
         JAVA_HOME = "${env.JAVA_HOME}"
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "ueba-automation-projects"
-        SCRIPTS_DIR = '/ueba-automation-projects/presidio-integration-performance-test/src/main/resources/scripts/'
+        SCRIPTS_DIR = '/ueba-automation-projects/presidio-integration-performance-test/src/test/resources/scripts/'
     }
 
     stages {
