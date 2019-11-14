@@ -44,6 +44,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -74,6 +80,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -105,6 +117,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -135,6 +153,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -166,6 +190,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -196,6 +226,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -227,6 +263,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -257,6 +299,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -287,6 +335,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -320,6 +374,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -354,6 +414,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -387,6 +453,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -421,6 +493,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -454,6 +532,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
@@ -488,6 +572,12 @@
           "type": "regex",
           "fieldName": "direction",
           "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
         }
       ],
       "aggrFeatureConfs": [
