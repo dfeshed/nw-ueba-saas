@@ -269,9 +269,9 @@
               &:not(:disabled) {
                 border-width: thin;
                 border-style: solid;
-                border-color: $formButtonBorderColor;
+                border-color: text-color(primary, lighter);
                 &:hover {
-                  border-color: $formButtonHoverBorderColor;
+                  border-color: text-color(primary, lightest)!important;
                 }
               }
             }
