@@ -1,29 +1,26 @@
 #!/bin/bash
 
 DEFAULT_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/presidio-integration-performance-test/target/netwitness_events_gen/*/*
-DONE_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/presidio-integration-performance-test/target/done/
+DONE_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/presidio-integration-performance-test/target/netwitness_events_uploaded/
 
-echo >>  ./insert_data.log
-echo >>  ./insert_data.log
-echo "*****************************   Started  ************************************************" >> ./insert_data.log
-echo "path=$DEFAULT_PATH" >> ./insert_data.log
-echo >> ./insert_data.log
-echo >> ./insert_data.log
+echo "*****************************   UPLOAD TO BROKER Started  *****************************"
+mkdir -p $DONE_PATH
 
 for FILE in $DEFAULT_PATH; do
-     echo "$(date +%F_%T:%S) Processing:  $FILE" >> ./insert_data.log
+     echo "$(date +%F_%T:%S) Processing:  $FILE"
      RESULT=$(NwLogPlayer -f $FILE &)
-     echo ${RESULT} >> ./insert_data.log
 
      if [[ ${RESULT} == *"LogPlayer finished sending"* ]]
      then
-        mv $FILE $DONE_PATH & >> ./insert_data.log
-        echo "success"  >> ./insert_data.log
+        mv $FILE $DONE_PATH
+        echo "success"
      else
-       echo  >> ./insert_data.log
-       echo "$(date +%F_%T:%S) ERROR - failed processing $FILE" >> ./insert_data.log
-       echo  >> ./insert_data.log
+       echo
+       echo "$(date +%F_%T:%S) ERROR - failed processing $FILE"
+       echo
      fi
 
-     sleep 180
+     sleep 150
 done
+
+echo "*****************************   UPLOAD TO BROKER Finished  *****************************"
