@@ -21,7 +21,7 @@ for FILE in $DEFAULT_PATH; do
      echo "$(date +%F_%T:%S) Processing:  $FILE"
      RESULT=$(NwLogPlayer -f $FILE &)
 
-     if [[ ${RESULT} -eq *"LogPlayer finished sending"* ]]
+     if [[ ${RESULT} == *"LogPlayer finished sending"* ]]
      then
         mv $FILE $DONE_PATH
         echo "success"
