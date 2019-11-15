@@ -144,14 +144,15 @@
           align-items: flex-start;
           display: flex;
           flex-direction: column;
-          width: calc(100% - 150px);
+          height: 80%;
+          text-align: end;
           @include rsa-font(bold);
           color: text-color(secondary, light);
           padding: rsa-whitespace(less) rsa-whitespace();
           justify-content: space-evenly;
           > span {
             justify-content: flex-start;
-            padding: 0 rsa-whitespace(least);
+            padding: rsa-whitespace(least);
           }
           > span:nth-child(2) {
             padding: unset;
@@ -186,21 +187,7 @@
             
           }
         }
-        .Critical {
-          background-color: text-color(accentOne, dark);
-        }
-
-        .High {
-          background-color: text-color(accentThree, dark);
-        }
-
-        .Medium {
-          background-color: text-color(accentFour, dark);
-        }
-
-        .Low {
-          background-color: text-color(accentTwo, dark);
-        }
+        
         &_icon {
           align-items: center;
           display: flex;
@@ -276,6 +263,12 @@
               padding: rsa-whitespace(less);
               width: 80%;
               align-items: center;
+
+              &_severity {
+                display: flex;
+                width: 80px;
+                align-items: center;
+              }
   
               &_score {
                 height: 18px;
@@ -415,6 +408,24 @@
   }
 }
 
+.user-overview-tab_users_row_alert {
+  padding: rsa-whitespace(less);
+  width: 100px;
+  &_row {
+    display: flex;
+    flex-direction: row;
+    &_severity {
+      border-radius: 3px;
+      padding: 2px;
+    }
+    > div {
+      color: text-color(primary);
+      @include rsa-font(navigation);
+      margin: rsa-whitespace(least);
+    }
+  }
+}
+
 .show-trend {
   display: flex;
   padding: 0 2*rsa-whitespace();
@@ -425,7 +436,7 @@
   }
   &-dropdown {
     padding: 0 rsa-whitespace(less);
-    width: 120px;
+    width: 140px;
   }
 }
 
@@ -435,4 +446,20 @@
 .show-trend-help-icon-content {
   padding: rsa-whitespace();
   width: 200px;
+}
+
+.Critical {
+  background-color: text-color(accentOne, dark);
+}
+
+.High {
+  background-color: text-color(accentThree, dark);
+}
+
+.Medium {
+  background-color: text-color(accentFour, dark);
+}
+
+.Low {
+  background-color: text-color(accentTwo, dark);
 }

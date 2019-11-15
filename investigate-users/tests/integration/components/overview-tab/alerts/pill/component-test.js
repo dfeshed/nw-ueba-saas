@@ -15,6 +15,7 @@ module('Integration | Component | overview-tab/alerts/pill', function(hooks) {
     this.set('alert', alertOverview.data[0]);
     await render(hbs `{{overview-tab/alerts/pill alert=alert}}`);
     assert.equal(findAll('.user-overview-tab_alerts_alerts_container_pill_rating').length, 1);
+    assert.equal(findAll('.user-overview-tab_alerts_alerts_container_pill_rating_severity').length, 1);
   });
 
   test('it should open entity details', async function(assert) {

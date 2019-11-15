@@ -210,19 +210,19 @@ const registryColumns = [{
   disableSort: true
 }, {
   field: 'registryKeyGroup',
-  width: '3.5vw',
+  width: '5vw',
   title: 'Registry Key Group',
   visible: true,
   disableSort: true
 }, {
   field: 'registryKey',
-  width: '3.5vw',
+  width: '5vw',
   title: 'Registry Key',
   visible: true,
   disableSort: true
 }, {
   field: 'registryValueName',
-  width: '3.5vw',
+  width: '5vw',
   title: 'Registry Value Name',
   visible: true,
   disableSort: true

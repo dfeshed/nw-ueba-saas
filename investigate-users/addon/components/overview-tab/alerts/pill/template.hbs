@@ -1,8 +1,10 @@
 <div class='user-overview-tab_alerts_alerts_container_pill_rating' {{action 'initiateUser' (hash userId=alert.entityId alertId=alert.id)}}>
-  <div class='user-overview-tab_alerts_alerts_container_pill_rating_score {{alert.severity}}'>
-  </div>
-  <div class='user-overview-tab_alerts_alerts_container_pill_rating_text' title='Score: {{alert.score}}'>
-    {{alert.severity}}
+  <div class='user-overview-tab_alerts_alerts_container_pill_rating_severity'>
+    <div class='user-overview-tab_alerts_alerts_container_pill_rating_score {{alert.severity}}'>
+    </div>
+    <div class='user-overview-tab_alerts_alerts_container_pill_rating_text' title='Score: {{alert.score}}'>
+      {{alert.severity}}
+    </div>
   </div>
   <div class='user-overview-tab_alerts_alerts_container_pill_details'>
     <div class='user-overview-tab_alerts_alerts_container_pill_details_name'>
@@ -23,7 +25,7 @@
       <span>
         |
       </span>
-      <span class='user-overview-tab_alerts_alerts_container_pill_details_time_name'>
+      <span class='user-overview-tab_alerts_alerts_container_pill_details_time_name' title={{alert.entityName}}>
         {{alert.entityName}}
       </span>
     </div>

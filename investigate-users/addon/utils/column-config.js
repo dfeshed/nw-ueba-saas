@@ -38,7 +38,7 @@ export const columnConfigForUsers = [{
   disableSort: true
 }, {
   field: 'trendingScore.daily',
-  width: '7vw',
+  width: '10vw',
   disableSort: true
 }, {
   field: 'trendingScore.weekly',

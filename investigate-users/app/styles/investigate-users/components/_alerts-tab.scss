@@ -1,15 +1,13 @@
 .alerts-tab {
-  height: calc(100% - 48px);
+  height: calc(100% - 20px);
   display: flex;
-  background-color: background-color(primary, darker);
-  border: 1px solid text-color(primary);
 
   &_filter {
     width: 25%;
     border-right: 1px solid text-color(primary);
 
     &_filters {
-      height: calc(100% - 85px);
+      height: calc(100% - 90px);
       padding: rsa-whitespace();
       overflow-y: auto;
       overflow-x: hidden;
@@ -67,9 +65,10 @@
     height: 100%;
 
     &_header {
-      height: 40px;
+      height: 50px;
       display: flex;
       justify-content: space-between;
+      background-color: background-color(primary, dark);
 
       &_export {
         padding: rsa-whitespace(less);
@@ -109,7 +108,7 @@
           width: 100%;
           @include rsa-font(header, small);
           color: text-color(primary, lighter);
-          background-color: text-color(primary, darkest);
+          background-color: text-color(primary, darker);
 
           .severity {
             width: 15%;

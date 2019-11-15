@@ -15,8 +15,6 @@ export default (settings, { entityType, entityName, dataEntitiesIds }, brokerId)
   chart.data = settings.chartSettings.dataProvider;
   chart.colors.step = 10;
 
-  chart.legend = new Am4charts.Legend();
-  chart.legend.labels.template.fill = '#FFF';
   /* Create axes */
   const categoryAxis = chart.xAxes.push(new Am4charts.CategoryAxis());
   categoryAxis.dataFields.category = 'category';
@@ -35,7 +33,6 @@ export default (settings, { entityType, entityName, dataEntitiesIds }, brokerId)
 
   /* Create series */
   const lineSeries = chart.series.push(new Am4charts.LineSeries());
-  lineSeries.name = 'Value';
   lineSeries.dataFields.valueY = 'value';
   lineSeries.tooltipText = '{valueY}';
   lineSeries.dataFields.categoryX = 'category';
@@ -56,9 +53,14 @@ export default (settings, { entityType, entityName, dataEntitiesIds }, brokerId)
   circle.strokeWidth = 2;
 
   if (settings.hasBaselineData) {
+    lineSeries.name = 'This SSL Subject';
+
+    chart.legend = new Am4charts.Legend();
+    chart.legend.labels.template.fill = '#FFF';
+
     /* Create series */
     const lineSeriesGlobal = chart.series.push(new Am4charts.LineSeries());
-    lineSeriesGlobal.name = 'Baseline Value';
+    lineSeriesGlobal.name = 'All SSL Subjects';
     lineSeriesGlobal.dataFields.valueY = 'baselineData-value';
     lineSeriesGlobal.tooltipText = '{valueY}';
     lineSeriesGlobal.dataFields.categoryX = 'baselineData-category';
