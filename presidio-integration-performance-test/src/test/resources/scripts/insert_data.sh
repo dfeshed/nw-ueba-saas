@@ -5,23 +5,33 @@ DEFAULT_PATH=${PROJECT_PATH}/target/netwitness_events_gen/*/*
 DONE_PATH=${PROJECT_PATH}/target/netwitness_events_uploaded/
 
 echo "*****************************   UPLOAD TO BROKER Started  *****************************"
+
+ls $DEFAULT_PATH > /dev/null
+RESULT=$?
+
+if [[ $RESULT -ne 0 ]]
+then
+  echo "No data files found in $DEFAULT_PATH"
+  exit 1
+fi
+
 mkdir -p $DONE_PATH
 
 for FILE in $DEFAULT_PATH; do
      echo "$(date +%F_%T:%S) Processing:  $FILE"
      RESULT=$(NwLogPlayer -f $FILE &)
 
-     if [[ ${RESULT} == *"LogPlayer finished sending"* ]]
+     if [[ ${RESULT} -eq *"LogPlayer finished sending"* ]]
      then
         mv $FILE $DONE_PATH
         echo "success"
+        sleep 150
      else
        echo
        echo "$(date +%F_%T:%S) ERROR - failed processing $FILE"
        echo
+       sleep 30
      fi
-
-     sleep 150
 done
 
 echo "*****************************   UPLOAD TO BROKER Finished  *****************************"
