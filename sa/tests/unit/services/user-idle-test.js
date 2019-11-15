@@ -7,6 +7,7 @@ import { inject as service } from '@ember/service';
 import { render, settled, triggerEvent, waitUntil } from '@ember/test-helpers';
 import { Promise } from 'rsvp';
 import sinon from 'sinon';
+import { activityEvents } from 'sa/services/user-idle';
 
 const sessionKey = 'rsa-nw-last-session-access';
 const clearLocalStorage = () => {
@@ -35,6 +36,16 @@ module('Unit | Services | user-idle', function(hooks) {
 
   hooks.afterEach(function() {
     return clearLocalStorage();
+  });
+
+  test('the list of events to track is correct', async function(assert) {
+    assert.expect(5);
+
+    assert.equal(activityEvents.length, 4);
+    assert.ok(activityEvents.includes('keypress'));
+    assert.ok(activityEvents.includes('click'));
+    assert.ok(activityEvents.includes('mousemove'));
+    assert.ok(activityEvents.includes('scroll'));
   });
 
   test('when mousemove event listener fires the idle timeout is reset', async function(assert) {

@@ -4,6 +4,8 @@ import UserIdleService from 'ember-user-activity/services/user-idle';
 
 let keepAlive;
 
+export const activityEvents = ['mousemove', 'scroll', 'click', 'keypress'];
+
 export default UserIdleService.extend({
   IDLE_TIMEOUT: localStorage.getItem('rsa-x-idle-session-timeout') || 600000,
 
@@ -21,10 +23,10 @@ export default UserIdleService.extend({
       localStorage.setItem('rsa-nw-last-session-access', new Date().getTime());
     }, debounceDelay);
 
-    ['mousemove', 'scroll', 'click'].forEach((e) => window.addEventListener(e, keepAlive));
+    activityEvents.forEach((e) => window.addEventListener(e, keepAlive));
   },
   willDestroy() {
-    ['mousemove', 'scroll', 'click'].forEach((e) => window.removeEventListener(e, keepAlive));
+    activityEvents.forEach((e) => window.removeEventListener(e, keepAlive));
     this._super(...arguments);
   }
 });
