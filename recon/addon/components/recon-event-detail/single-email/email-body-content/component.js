@@ -17,9 +17,17 @@ export default Component.extend({
   resizeIframe: null,
   actualLink: null,
   disableContextMenu: null,
+  randomNumber: 1,
+  emailRenderId: '',
+
+  init() {
+    this._super(...arguments);
+    const randomNumber = Math.floor(Math.random() * 10000);
+    this.set('emailRenderId', `emailId-${randomNumber}`);
+  },
 
   didRender() {
-    this.set('frame', document.getElementById(this.emailRenderId));
+    this.set('frame', document.getElementById(this.get('emailRenderId')));
     this.get('frame').addEventListener('load', this.resizeIframe = () => {
       run.next(() => {
         const iframeDoc = this.get('frame').contentWindow.document;
@@ -54,11 +62,6 @@ export default Component.extend({
       link.removeEventListener('click', link.recon_show_ouri);
     }
     this.get('frame').removeEventListener('load', this.resizeIframe);
-  },
-
-  @computed('email')
-  emailRenderId(email) {
-    return 'emailId-'.concat(email.messageId);
   },
 
   @computed('portionsToRender', 'email')
