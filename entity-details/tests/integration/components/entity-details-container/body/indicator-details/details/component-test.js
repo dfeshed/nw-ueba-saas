@@ -31,5 +31,6 @@ module('Integration | Component | entity-details-container/body/indicator-detail
     assert.equal(findAll('.entity-details-container-body-indicator-details_details_params_names').length, 1);
     assert.equal(findAll('.entity-details-container-body-indicator-details_details_params_values').length, 1);
     assert.equal(findAll('.entity-details-container-body-indicator-details_details_desc').length, 1);
+    assert.equal(findAll('.entity-details-container-body-indicator-details_details_params_values_uppercase').length, 1);
   });
 });

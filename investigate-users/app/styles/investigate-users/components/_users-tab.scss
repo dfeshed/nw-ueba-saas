@@ -1,13 +1,11 @@
 .users-tab {
-  height: calc(100% - 48px);
-  background-color: background-color(primary, darker);
+  height: calc(100% - 25px);
   display: flex;
-  border: 1px solid text-color(primary);
   flex-direction: row;
 
   &_filter {
     width: 25%;
-    border: 1px solid text-color(primary);
+    border-right: 1px solid text-color(primary, dark);
     border-top: 0;
     height: 100%;
 
@@ -16,7 +14,7 @@
     }
 
     &_options {
-      height: calc(100% - 90px);
+      height: calc(100% - 110px);
       overflow-y: auto;
     }
 
@@ -71,6 +69,7 @@
     }
 
     &_favorites {
+      height: 65px;
       color: text-color(primary, lighter);
       @include rsa-font(default, medium);
       padding: 0 rsa-whitespace(less);
@@ -130,7 +129,11 @@
       &_title {
         @include rsa-font(header, large);
         padding: rsa-whitespace();
+        height: 35px;
         color: text-color(primary, lightest);
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid text-color(primary, dark);
         > i {
           padding-right: rsa-whitespace(less);
         }
@@ -197,11 +200,10 @@
   &_body {
     width: 75%;
     height: 100%;
-    border-bottom: 1px solid text-color(primary);
 
     &_header {
       height: 90px;
-      border-bottom: 1px solid text-color(primary, darkest);
+      border-bottom: 1px solid text-color(primary, dark);
 
       &_bar {
         display: flex;
@@ -299,7 +301,7 @@
       }
 
       .rsa-data-table-body-row:hover .rsa-data-table-body-cell {
-        background-color: background-color(primary, darkest);
+        background-color: background-color(primary, dark);
       }
 
       .rsa-data-table-body-cell {

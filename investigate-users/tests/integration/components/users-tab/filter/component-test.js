@@ -39,7 +39,7 @@ module('Integration | Component | users-tab/filter', function(hooks) {
       <div id='modalDestination'></div>
       {{users-tab/filter}}
     `);
-    await find('.users-tab_filter_controls button').click();
+    await find('.users-tab_filter_controls > div:nth-child(2) button').click();
     return waitUntil(() => findAll('.rsa-application-modal.is-open').length === 1).then(() => {
       assert.equal(find('.users-tab_filter_controls_save-as-favorites_name_label').textContent.replace(/\s/g, ''), 'FilterName:');
       find('.users-tab_filter_controls_save-as-favorites_save button').click();

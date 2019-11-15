@@ -6,6 +6,7 @@
   {{users-tab/filter/filter}}
 </div>
 <div class='users-tab_filter_controls'>
+  {{#rsa-form-button isFullWidth=true click=(action 'updateFilter' 'RESET')}}{{t 'investigateUsers.resetFilters'}}{{/rsa-form-button}}
   {{#rsa-application-modal
     label='Save As Favorites'
     eventId='saveAsFavorites'}}
@@ -31,5 +32,4 @@
       </div>
     </div>
   {{/rsa-application-modal}}
-  {{#rsa-form-button isFullWidth=true click=(action 'updateFilter' 'RESET')}}{{t 'investigateUsers.resetFilters'}}{{/rsa-form-button}}
 </div>

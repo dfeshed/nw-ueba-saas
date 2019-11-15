@@ -26,6 +26,7 @@ module('Integration | Component | show-trend', function(hooks) {
   test('it renders', async function(assert) {
     await render(hbs`{{show-trend}}`);
     assert.equal(findAll('.rsa-form-checkbox-label').length, 1);
+    assert.equal(findAll('.show-trend-dropdown').length, 1);
     assert.equal(findAll('.ember-power-select-selected-item').length, 1);
     assert.equal(findAll('.show-trend-help-icon').length, 1);
   });

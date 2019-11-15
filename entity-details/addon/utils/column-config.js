@@ -32,7 +32,7 @@ const baseColumnConfigForEvents = [{
   field: 'operationTypeCategories',
   width: '10vw',
   title: 'Operation Type Category',
-  visible: true,
+  visible: false,
   disableSort: true
 }];
 
@@ -42,12 +42,6 @@ const activeDirectoryColumns = [{
   title: 'Object Name',
   linkField: 'user_link',
   additionalFilter: 'obj.name',
-  visible: true,
-  disableSort: true
-}, {
-  field: 'scores.operationType',
-  width: '10vw',
-  title: 'Action Score',
   visible: true,
   disableSort: true
 }, {
@@ -170,12 +164,6 @@ const processColumns = [{
 }];
 
 const registryColumns = [{
-  field: 'machineId',
-  width: '3.5vw',
-  title: 'Machine Id',
-  visible: true,
-  disableSort: true
-}, {
   field: 'machineName',
   width: '3.5vw',
   title: 'Machine Name',
@@ -187,13 +175,13 @@ const registryColumns = [{
   field: 'machineOwner',
   width: '3.5vw',
   title: 'Machine Owner',
-  visible: true,
+  visible: false,
   disableSort: true
 }, {
   field: 'processDirectory',
   width: '3.5vw',
   title: 'Process Directory',
-  visible: true,
+  visible: false,
   disableSort: true
 }, {
   field: 'processFileName',
@@ -206,19 +194,19 @@ const registryColumns = [{
   field: 'processDirectoryGroups',
   width: '3.5vw',
   title: 'Process Directory Groups',
-  visible: true,
+  visible: false,
   disableSort: true
 }, {
   field: 'processCategories',
   width: '3.5vw',
   title: 'Process Categories',
-  visible: true,
+  visible: false,
   disableSort: true
 }, {
   field: 'processCertificateIssuer',
   width: '3.5vw',
   title: 'Process Certificate Issuer',
-  visible: true,
+  visible: false,
   disableSort: true
 }, {
   field: 'registryKeyGroup',
@@ -236,32 +224,6 @@ const registryColumns = [{
   field: 'registryValueName',
   width: '3.5vw',
   title: 'Registry Value Name',
-  visible: true,
-  disableSort: true
-}, {
-  field: 'userId',
-  width: '3.5vw',
-  title: 'User Id',
-  visible: true,
-  disableSort: true
-}, {
-  field: 'operationType',
-  width: '3.5vw',
-  title: 'Operation Type',
-  visible: true,
-  disableSort: true
-}, {
-  field: 'userName',
-  width: '3.5vw',
-  title: 'User Name',
-  visible: true,
-  linkField: 'user_sid_link',
-  disableSort: true
-}, {
-  field: 'userDisplayName',
-  width: '3.5vw',
-  title: ' User Display Name',
-  linkField: 'user_sid_link',
   visible: true,
   disableSort: true
 }];

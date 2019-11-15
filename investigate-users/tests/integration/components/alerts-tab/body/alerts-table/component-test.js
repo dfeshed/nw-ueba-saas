@@ -70,14 +70,14 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
     return waitUntil(() => document.querySelectorAll('.alerts-tab_body_body-table_body_row_alerts').length === 1, { timeout: 30000 }).then(async() => {
       await click('.alerts-tab_body_body-table_body_row_alerts_alert');
       later(() => {
-        assert.equal(findAll('.rsa-data-table-body-row').length, 4);
+        assert.equal(findAll('.rsa-data-table-body-row').length, 3);
         click('.rsa-data-table-body-row');
         const select = waitForReduxStateChange(redux, 'user.indicatorId');
         return select.then(() => {
           const state = redux.getState();
-          assert.equal(state.user.userId, 'c291d9ad-d056-42f9-9f0c-f3a40517a392');
-          assert.equal(state.user.alertId, '513c7308-b3f6-4a80-a3ba-27896fd79b9b');
-          assert.equal(state.user.indicatorId, 'ddc95b75-b55c-4116-abb2-5c0922205bec');
+          assert.equal(state.user.userId, '43335706-3c3e-492f-81f8-1301f8df247c');
+          assert.equal(state.user.alertId, '91e2967e-0a86-49b7-b855-86525f7b013c');
+          assert.equal(state.user.indicatorId, 'cfcaa9d8-e8a8-4186-a9d1-0e47a2e4e0b3');
           done();
         });
       }, 500);

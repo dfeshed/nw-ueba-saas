@@ -38,12 +38,13 @@ module('Integration | Component | overview-tab/user', function(hooks) {
 
   test('it renders', async function(assert) {
     await render(hbs `{{overview-tab/user}}`);
-    assert.equal(find('.user-overview-tab_title').textContent.trim(), 'High Risk USERS');
+    assert.equal(find('.user-overview-tab_title').textContent.trim(), 'TOP RISKY USERS');
   });
 
   test('it should show proper count', async function(assert) {
     new ReduxDataHelper(setState).build();
     await render(hbs `{{overview-tab/user}}`);
+    assert.equal(findAll('.user-overview-tab_title_title').length, 1);
     assert.equal(findAll('.user-overview-tab_users_row').length, 5);
     assert.equal(findAll('.user-overview-tab_users_row_alert-severity.Critical').length, 5);
     assert.equal(findAll('.user-overview-tab_users_row_alert-severity.High').length, 5);

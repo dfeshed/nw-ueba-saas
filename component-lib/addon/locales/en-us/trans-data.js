@@ -5384,10 +5384,10 @@ effects the simulated source.',
     sortByTrendData: 'Sort by Trending data ',
     sortByTrendDataHelp: 'Sort by trending will list entites based last day or last week alerts.',
     trendRange: {
-      lastDay: 'Last Day',
-      lastWeek: 'Last Week'
+      lastDay: 'Last 24 hours',
+      lastWeek: 'Last 7 days'
     },
-    resetFilters: 'Reset Filters',
+    resetFilters: 'Reset',
     addToFavorites: 'Save as...',
     filterName: 'Filter Name :',
     save: 'Save',
@@ -5436,7 +5436,7 @@ effects the simulated source.',
       title: 'Users',
       addAllToWatchedList: 'Add All To WatchList',
       removeAllFromWatchedList: 'Remove All From WatchedList',
-      highRisk: 'High Risk',
+      highRisk: 'TOP RISKY',
       all: 'Total',
       risky: 'Risky',
       watched: 'Watched',
@@ -5542,7 +5542,7 @@ effects the simulated source.',
         },
         data_exfiltration: {
           name: 'Data Exfiltration',
-          desc: 'Data exfiltration is the unauthorized copying, transfer, or retrieval of data from a computer or server. Data exfiltration is a malicious activity performed through various techniques, typically by cybercriminals over the Internet or other network. This activity can be associated with the <b>Excessive Number of File Delete Events, Excessive Number of Files Moved.<b>',
+          desc: 'Data exfiltration is the unauthorized copying, transfer, or retrieval of data from a computer or server. Data exfiltration is a malicious activity performed through various techniques, typically by cybercriminals over the Internet or other network. This activity can be associated with abnormal outbound traffic and with outbound traffic to abnormal external destinations (e.g. SSL subjects, domains, ports and organizations).',
           related: 'Related Threats: Scheduled Transfers - Data exfiltration may be performed only at certain times of day or at certain intervals. This could be done to blend traffic patterns with normal activity or availability.'
         },
         mass_file_rename: {
@@ -5597,8 +5597,8 @@ effects the simulated source.',
         },
         exfiltration: {
           name: 'Exfiltration',
-          desc: 'Data exfiltration is the unauthorized copying, transfer, or retrieval of data from a computer or server. Data exfiltration is a malicious activity performed through various techniques, typically by cybercriminals over the Internet or other network. This activity can be associated with the <b>Excessive Number of File Delete Events, Excessive Number of Files Moved.</b>',
-          related: 'Data exfiltration is the unauthorized copying, transfer, or retrieval of data from a computer or server. Data exfiltration is a malicious activity performed through various techniques, typically by cybercriminals over the Internet or other network. This activity can be associated with the <b>Excessive Number of File Delete Events, Excessive Number of Files Moved.'
+          desc: 'Data exfiltration is the unauthorized copying, transfer, or retrieval of data from a computer or server. Data exfiltration is a malicious activity performed through various techniques, typically by cybercriminals over the Internet or other network. This activity can be associated with abnormal outbound traffic and with outbound traffic to abnormal external destinations (e.g. SSL subjects, domains, ports and organizations).',
+          related: 'Related Threats: Scheduled Transfers - Data exfiltration may be performed only at certain times of day or at certain intervals. This could be done to blend traffic patterns with normal activity or availability.'
         },
         phishing: {
           name: 'Phishing',

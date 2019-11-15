@@ -11,7 +11,7 @@ const TABS = [
   { key: '/eventanalysis', label: 'eventAnalysis', route: 'protected.investigate.investigate-events' },
   { key: '/hosts', label: 'hosts', route: 'protected.investigate.investigate-hosts' },
   { key: '/files', label: 'files', route: 'protected.investigate.investigate-files' },
-  { key: '/users', label: 'users', route: 'protected.investigate.investigate-users' },
+  { key: '/entities', label: 'entities', route: 'protected.investigate.investigate-users' },
   { key: '/malware', label: 'malware', route: '/investigation/malware', isClassic: true }
 ];
 

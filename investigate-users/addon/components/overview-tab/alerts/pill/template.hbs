@@ -11,15 +11,21 @@
       </div>
     </div>
     <div class='user-overview-tab_alerts_alerts_container_pill_details_time'>
-      <div class='user-overview-tab_alerts_alerts_container_pill_details_time_name'>
-        {{rsa-content-datetime timestamp=(get alert 'startDate') displayMilliseconds=false}}
-      </div>
-      <div class='user-overview-tab_alerts_alerts_container_pill_details_time_name'>
-        | {{t (concat 'investigateUsers.entityTypes.' alert.entityType)}}
-      </div>
-      <div class='user-overview-tab_alerts_alerts_container_pill_details_time_name'>
-        | {{alert.entityName}}
-      </div>
+      <span>
+        {{rsa-content-datetime timestamp=(get alert 'startDate') displayMilliseconds=false}} 
+      </span>
+      <span>
+        |
+      </span>
+      <span>
+        {{t (concat 'investigateUsers.entityTypes.' alert.entityType)}}
+      </span>
+      <span>
+        |
+      </span>
+      <span class='user-overview-tab_alerts_alerts_container_pill_details_time_name'>
+        {{alert.entityName}}
+      </span>
     </div>
   </div>
 </div>

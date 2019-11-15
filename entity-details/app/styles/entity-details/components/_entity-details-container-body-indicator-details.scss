@@ -82,6 +82,9 @@
           @include rsa-font(default, smaller);
           padding: rsa-whitespace(least) 0;
         }
+        &_uppercase {
+          text-transform: uppercase;
+        }
       }
     }
 

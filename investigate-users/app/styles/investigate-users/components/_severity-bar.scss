@@ -1,8 +1,9 @@
 .severity-bar {
   color: text-color(primary, light);
+  background-color: text-color(primary, dark);
   display: flex;
   flex-direction: row;
-  padding-top: rsa-whitespace(less);
+  margin: rsa-whitespace(less);
 
   &_div {
     display: flex;

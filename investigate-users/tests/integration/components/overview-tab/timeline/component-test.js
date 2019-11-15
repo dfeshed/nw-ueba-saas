@@ -34,6 +34,7 @@ module('Integration | Component | overview-tab/timeline', function(hooks) {
   test('it renders', async function(assert) {
     await render(hbs`{{overview-tab/timeline}}`);
     assert.equal(find('.user-overview-tab_title').textContent.trim(), 'All Alerts');
+    assert.equal(findAll('.user-overview-tab_title_title').length, 1);
     assert.equal(find('.center').textContent.trim(), 'Loading', 'Should show loading till data is not there');
   });
 

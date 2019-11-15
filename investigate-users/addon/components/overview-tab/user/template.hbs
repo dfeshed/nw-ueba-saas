@@ -1,6 +1,8 @@
 {{overview-tab/user/entity-type-selector}}
 <div class='user-overview-tab_title'>
-  {{t 'investigateUsers.users.highRisk'}} {{t (concat 'investigateUsers.entityTypes.' entityType)}}
+  <div class='user-overview-tab_title_title'>
+    {{t 'investigateUsers.users.highRisk'}} {{t (concat 'investigateUsers.entityTypes.' entityType)}}
+  </div>
 </div>
 {{overview-tab/watched applyUserFilter=applyUserFilter}}
 {{show-trend}}
@@ -18,11 +20,19 @@
         <div class='user-overview-tab_users_row_name'>
           <span>{{user.displayName}}</span>
           <span>
-            <div class='user-overview-tab_users_row_alert-severity Critical'></div>{{user.alertGroup.Critical}} | 
-            <div class='user-overview-tab_users_row_alert-severity High'></div>{{user.alertGroup.High}} |
-            <div class='user-overview-tab_users_row_alert-severity Medium'></div>{{user.alertGroup.Medium}} |
-            <div class='user-overview-tab_users_row_alert-severity Low'></div>{{user.alertGroup.Low}}
-            {{t 'investigateUsers.alerts.title'}} 
+            <span class='user-overview-tab_users_row_alert-title'>
+              <span>{{t 'investigateUsers.alerts.title'}}</span>
+              <span>-</span>
+            </span>
+            <div class='user-overview-tab_users_row_alert-severity Critical'></div>
+            <div class='user-overview-tab_users_row_alert-score'>{{user.alertGroup.Critical}}</div>
+            <div class='user-overview-tab_users_row_alert-severity High'></div>
+            <div class='user-overview-tab_users_row_alert-score'>{{user.alertGroup.High}}</div>
+            <div class='user-overview-tab_users_row_alert-severity Medium'></div>
+            <div class='user-overview-tab_users_row_alert-score'>{{user.alertGroup.Medium}}</div>
+            <div class='user-overview-tab_users_row_alert-severity Low'></div>
+            <div class='user-overview-tab_users_row_alert-score'>{{user.alertGroup.Low}}</div>
+            
           </span>
         </div>
         <div class='user-overview-tab_users_row_icon' title='Watched Entity'>

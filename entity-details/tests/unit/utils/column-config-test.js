@@ -12,7 +12,7 @@ module('Unit | Utils | column-config', (hooks) => {
 
   test('it returns events table column for active_directory schema', (assert) => {
     const columnArray = columnConfig('active_directory');
-    assert.equal(columnArray.length, 8, 'should return active_directory columns along with base columns');
+    assert.equal(columnArray.length, 7, 'should return active_directory columns along with base columns');
   });
 
   test('it returns events table column for authentication schema', (assert) => {
@@ -27,7 +27,7 @@ module('Unit | Utils | column-config', (hooks) => {
 
   test('it returns events table column for registry schema', (assert) => {
     const columnArray = columnConfig('registry');
-    assert.equal(columnArray.length, 20, 'should return registry column along with base columns');
+    assert.equal(columnArray.length, 15, 'should return registry column along with base columns');
   });
 
   test('it returns events table column for network schema', (assert) => {
