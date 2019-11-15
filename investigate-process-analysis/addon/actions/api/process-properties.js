@@ -24,7 +24,7 @@ const getProcessDetails = (model, serverId) => {
   });
 };
 
-const getHostCount = (checksum) => {
+const getHostCount = (checksum, serverId) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getHostCount',
@@ -33,6 +33,9 @@ const getHostCount = (checksum) => {
       data: {
         checksumSha256: checksum
       }
+    },
+    streamOptions: {
+      socketUrlPostfix: serverId
     }
   });
 };

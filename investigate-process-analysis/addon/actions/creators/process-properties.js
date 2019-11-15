@@ -35,10 +35,10 @@ const _handleError = (response) => {
   };
 };
 
-const fetchHostNames = (checksum) => {
+const fetchHostNames = (checksum, selectedServerId) => {
   return {
     type: ACTION_TYPES.SET_HOST_CONTEXT,
-    promise: getHostCount(checksum)
+    promise: getHostCount(checksum, selectedServerId)
   };
 };
 

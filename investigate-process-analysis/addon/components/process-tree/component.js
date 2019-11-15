@@ -251,7 +251,7 @@ const TreeComponent = Component.extend({
         const hashes = [checksum];
         this.send('getRespondServerStatus');
         this.send('fetchProcessDetails', { hashes }, this.get('selectedServerId'));
-        this.send('fetchHostNames', checksum);
+        this.send('fetchHostNames', checksum, this.get('selectedServerId'));
         this.send('getRiskScoreContext', checksum, 'FILE');
         this.send('isNodeSelected', true);
 

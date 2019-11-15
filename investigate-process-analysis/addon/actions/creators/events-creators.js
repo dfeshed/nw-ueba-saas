@@ -204,7 +204,7 @@ export const onEventNodeSelected = (payload) => {
       dispatch(getRespondServerStatus());
       dispatch(resetRiskContext('FILE'));
       dispatch(fetchProcessDetails({ hashes }, selectedServerId));
-      dispatch(fetchHostNames(checksumDst));
+      dispatch(fetchHostNames(checksumDst, selectedServerId));
       dispatch(resetFilterValue(payload.processId));
       dispatch(getRiskScoreContext(checksumDst, 'FILE'));
     } else {
