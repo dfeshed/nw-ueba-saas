@@ -145,6 +145,21 @@
     padding-left: 1.5rem;
     position: absolute;
     max-width: 100%;
+
+    .header-data {
+      background-color: background-color(primary, darkest, transparent);
+      padding: 0 0;
+      margin-bottom: 3rem;
+      .tool-tip-value {
+        padding: rsa-whitespace();
+        width: 200px;
+        word-wrap: break-word
+      }
+      .header-item {
+        padding: rsa-whitespace() rsa-whitespace() rsa-whitespace() 0;
+      }
+    }
+
     .value hbox {
       max-width: 80%;
     }
@@ -221,20 +236,6 @@
         padding-left: 0.6rem;
       }
     }
-  }
-}
-
-.header-data {
-  background-color: background-color(primary, darkest, transparent);
-  padding: 0 0;
-  margin-bottom: 3rem;
-  .tool-tip-value {
-    padding: rsa-whitespace();
-    width: 200px;
-    word-wrap: break-word
-  }
-  .header-item {
-    padding: rsa-whitespace() rsa-whitespace() rsa-whitespace() 0;
   }
 }
 
