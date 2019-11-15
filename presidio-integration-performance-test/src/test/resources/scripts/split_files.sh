@@ -1,6 +1,7 @@
 #!/bin/bash
 
-DEFAULT_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/presidio-integration-performance-test/target/netwitness_events_gen/*/*
+PROJECT_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/ueba-automation-projects/presidio-integration-performance-test
+DEFAULT_PATH=${PROJECT_PATH}/target/netwitness_events_gen/*/*
 
 echo "*****************************   SPLIT FILES Started  *****************************"
 
