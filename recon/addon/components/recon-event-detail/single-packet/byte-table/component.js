@@ -188,14 +188,14 @@ const ByteTableComponent = Component.extend({
     // tooltip data has changed, so need to un-hover any
     // previously highlighted tooltips
     const d = this._lastTooltipData;
-    if (d && d.field) {
+    if (tds && d && d.field) {
       toggleHover(false, d.field.position, d.field.length);
     }
 
     // if tooltipData, and for this packet, need to light it up
     if (tooltipData && packetId === tooltipData.packetId) {
       // Highlight the table cells corresponding to the current hover data, if any.
-      if (tooltipData && tooltipData.field) {
+      if (tds && tooltipData && tooltipData.field) {
         toggleHover(true, tooltipData.field.position, tooltipData.field.length);
       }
 
