@@ -87,43 +87,45 @@
     text-decoration-style: dashed;
   }
   .events-list-generic-header .row .column.verbose {
-    flex: 1 0 5%;
+    flex: 0 0 5%;
   }
   .events-list-generic-header .row .column.hash {
-    flex: 1 1 26%;
+    flex: 0 1 26%;
   }
   .events-list-endpoint-header .row .column.verbose {
-    flex: 1 0 auto;
+    flex: 0 0 auto;
     min-width: 8%;
   }
   .events-list-endpoint-header .row .column.hash {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     max-width: 25%;
   }
   .events-list-ueba-header .row .column.verbose {
-    flex: 1 2 20%;
+    flex: 0 2 20%;
   }
   .events-list-ueba-header .row .column.thin {
-    flex: 1 1 10%;
+    flex: 0 1 10%;
   }
   .events-list-process-header .row .column.verbose {
-    flex: 1 2 20%;
+    flex: 0 2 20%;
   }
   .events-list-process-header .row .column.thin {
-    flex: 1 1 10%;
+    flex: 0 1 10%;
   }
   .events-list-endpoint-header, .events-list-generic-header, .events-list-ueba-header, .events-list-process-header {
-    padding: 10px;
     padding-left: 1.8em;
     padding-right: 1.8em;
+    padding-bottom: rsa-whitespace();
 
     .row {
       display: flex;
       flex-direction: row;
+      flex-wrap: wrap;
 
       .column {
         min-width: 0;
-        flex: 1 1 auto;
+        flex: 0 1 auto;
+        padding: rsa-whitespace() rsa-whitespace(more) 0 0;
 
         dd {
           line-height: 1.4;
