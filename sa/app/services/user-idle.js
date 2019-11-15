@@ -6,6 +6,7 @@ let keepAlive;
 
 export default UserIdleService.extend({
   IDLE_TIMEOUT: localStorage.getItem('rsa-x-idle-session-timeout') || 600000,
+
   init() {
     this._super(...arguments);
 
@@ -20,10 +21,10 @@ export default UserIdleService.extend({
       localStorage.setItem('rsa-nw-last-session-access', new Date().getTime());
     }, debounceDelay);
 
-    ['mousemove', 'scroll'].forEach((e) => window.addEventListener(e, keepAlive));
+    ['mousemove', 'scroll', 'click'].forEach((e) => window.addEventListener(e, keepAlive));
   },
   willDestroy() {
-    ['mousemove', 'scroll'].forEach((e) => window.removeEventListener(e, keepAlive));
+    ['mousemove', 'scroll', 'click'].forEach((e) => window.removeEventListener(e, keepAlive));
     this._super(...arguments);
   }
 });

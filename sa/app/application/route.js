@@ -133,6 +133,14 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     if (!testing) {
       // After configured idle timeout period, logout
       this.get('userIdle').on('idleChanged', (isIdle) => {
+        // get diff between now and last access
+        // compare to now, if diff is greater than idle timeout then logout
+        // this comparison ensures accuracy between tabs
+        const lastAccess = localStorage.getItem('rsa-nw-last-session-access');
+        const idleTimeout = localStorage.getItem('rsa-x-idle-session-timeout');
+        const timeSinceLastAccess = Date.now() - lastAccess;
+        isIdle = isIdle && timeSinceLastAccess >= idleTimeout;
+
         if (isIdle && this.get('session.persistedAccessToken')) {
           this._logout('Session Expired');
         }
