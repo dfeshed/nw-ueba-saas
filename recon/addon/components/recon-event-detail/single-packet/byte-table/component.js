@@ -169,40 +169,7 @@ const ByteTableComponent = Component.extend({
     const footer = byte.isFooter ? 'footer' : false;
     const known = byte.isKnown ? 'is-known' : false;
     return compact([cellClass, role, header, footer, known]).join(' ');
-  },
-
-  /**
-   * Handles changes in `tooltipData` by highlighting/unhighlighting the targeted field's bytes.
-   * @private
-   */
-  tooltipDataDidChange: observer('tooltipData', function() {
-    const { packet: { id: packetId }, tooltipData, headerCellClass } = this.getProperties('packet', 'tooltipData', 'headerCellClass');
-    const tds = this.element.querySelector(`.${headerCellClass}`);
-    const toggleHover = function(isHover, position, length) {
-      [].slice.apply(tds, [position, position + length])
-        .forEach((td) => {
-          td.setAttribute('data-is-hover', isHover);
-        });
-    };
-
-    // tooltip data has changed, so need to un-hover any
-    // previously highlighted tooltips
-    const d = this._lastTooltipData;
-    if (tds && d && d.field) {
-      toggleHover(false, d.field.position, d.field.length);
-    }
-
-    // if tooltipData, and for this packet, need to light it up
-    if (tooltipData && packetId === tooltipData.packetId) {
-      // Highlight the table cells corresponding to the current hover data, if any.
-      if (tds && tooltipData && tooltipData.field) {
-        toggleHover(true, tooltipData.field.position, tooltipData.field.length);
-      }
-
-      // Cache the current hover data for future reference (i.e., to unhighlight later).
-      this._lastTooltipData = tooltipData;
-    }
-  })
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(ByteTableComponent);

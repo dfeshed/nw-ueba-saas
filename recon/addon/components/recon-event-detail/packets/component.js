@@ -19,7 +19,7 @@ import { hidePacketTooltip } from 'recon/actions/interaction-creators';
 
 import layout from './template';
 
-const stateToComputed = ({ recon, recon: { data, packets } }) => ({
+const stateToComputed = ({ recon, recon: { data } }) => ({
   dataIndex: data.index,
   eventTotal: data.total,
   hasPackets: hasPackets(recon),
@@ -27,7 +27,6 @@ const stateToComputed = ({ recon, recon: { data, packets } }) => ({
   numberOfItems: numberOfPackets(recon), // total rendered, used by pager
   packetTotal: packetTotal(recon), // total number of packets, not just this page
   renderedPackets: renderedPackets(recon),
-  tooltipData: packets.packetTooltipData,
   hasRenderIds: hasRenderIds(recon)
 });
 
