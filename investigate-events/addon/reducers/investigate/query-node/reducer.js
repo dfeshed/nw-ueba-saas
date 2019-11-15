@@ -14,7 +14,7 @@ import {
   OPERATOR_AND,
   OPERATOR_OR
 } from 'investigate-events/constants/pill';
-import { LIST_VIEW, EDIT_VIEW } from 'rsa-list-manager/constants/list-manager';
+import { LIST_VIEW, DETAILS_VIEW } from 'rsa-list-manager/constants/list-manager';
 
 const { log } = console; // eslint-disable-line
 
@@ -943,7 +943,7 @@ export default handleActions({
       let newState;
       switch (payload) {
         // add new profile
-        case EDIT_VIEW: {
+        case DETAILS_VIEW: {
           newState = _stashPills(state);
           newState = _removeSelection(newState);
           break;

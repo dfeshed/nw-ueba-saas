@@ -27,7 +27,7 @@ import {
   shouldSelectedItemPersist,
   disabledListName
 } from 'rsa-list-manager/selectors/list-manager/selectors';
-import { LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
+import { LIST_VIEW, DETAILS_VIEW } from 'rsa-list-manager/constants/list-manager';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
 module('Unit | Selectors | list-manager');
@@ -57,7 +57,6 @@ const randomIndex = Math.floor(Math.random() * Math.floor(list1.length));
 
 const item1 = { id: 2, name: 'bar', subItems: [ 'e', 'b', 'c' ] };
 const viewName1 = 'list-view';
-const EDIT_VIEW = 'edit-view';
 
 test('highlightedIndex returns highlightedIndex for stateLocation', function(assert) {
   const state = new ReduxDataHelper()
@@ -445,7 +444,7 @@ test('isNewItem returns true if newItem in edit view', function(assert) {
     .stateLocation(stateLocation1)
     .list(list1)
     .listName(listName1)
-    .viewName(EDIT_VIEW)
+    .viewName(DETAILS_VIEW)
     .editItemId(null)
     .build();
   const result = isNewItem(state, stateLocation1);
@@ -457,7 +456,7 @@ test('isNewItem returns false if editItem exists in edit view', function(assert)
     .stateLocation(stateLocation1)
     .list(list1)
     .listName(listName1)
-    .viewName(EDIT_VIEW)
+    .viewName(DETAILS_VIEW)
     .editItemId(list1[randomIndex].id)
     .build();
   const result = isNewItem(state, stateLocation1);

@@ -39,7 +39,7 @@ module('Integration | Component | Profile query bar', function(hooks) {
       listManagers: {
         profiles: {
           isExpanded: true,
-          viewName: 'edit-view'
+          viewName: 'details-view'
         }
       }
     }));

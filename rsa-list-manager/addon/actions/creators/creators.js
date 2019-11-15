@@ -1,6 +1,6 @@
 import * as ACTION_TYPES from 'rsa-list-manager/actions/types';
 import { isExpanded, shouldSelectedItemPersist, list, viewName } from 'rsa-list-manager/selectors/list-manager/selectors';
-import { EDIT_VIEW } from 'rsa-list-manager/constants/list-manager';
+import { DETAILS_VIEW } from 'rsa-list-manager/constants/list-manager';
 
 const _setSelectedItemById = (id, stateLocation) => {
   return (dispatch, getState) => {
@@ -71,7 +71,7 @@ export const beginEditItem = (editItemId, stateLocation) => {
   };
 };
 
-export const beginCreateItem = (stateLocation) => viewChanged(EDIT_VIEW, stateLocation);
+export const beginCreateItem = (stateLocation) => viewChanged(DETAILS_VIEW, stateLocation);
 
 export const closeListManager = (stateLocation) => {
   return (dispatch, getState) => {
@@ -83,7 +83,7 @@ export const closeListManager = (stateLocation) => {
       // with the action as consumers of list-manager that care
       // about these actions may have state maintenance work to do
       const view = viewName(getState(), stateLocation);
-      const actionType = view === EDIT_VIEW ? 'close' : undefined;
+      const actionType = view === DETAILS_VIEW ? 'close' : undefined;
       dispatch({
         type: ACTION_TYPES.TOGGLE_LIST_VISIBILITY,
         payload: { actionType },

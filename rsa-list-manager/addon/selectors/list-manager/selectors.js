@@ -1,7 +1,7 @@
 import reselect from 'reselect';
 import {
   LIST_VIEW,
-  EDIT_VIEW
+  DETAILS_VIEW
 } from 'rsa-list-manager/constants/list-manager';
 
 const { createSelector } = reselect;
@@ -251,7 +251,7 @@ export const isEditable = createSelector(
 export const isNewItem = createSelector(
   [viewName, editItemId],
   (viewName, editItemId) => {
-    return viewName === EDIT_VIEW && !editItemId;
+    return viewName === DETAILS_VIEW && !editItemId;
   }
 );
 

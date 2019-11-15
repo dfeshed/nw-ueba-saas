@@ -5,8 +5,7 @@ import { handle } from 'redux-pack';
 import sort from 'fast-sort';
 import {
   LIST_VIEW,
-  // May want to call it DETAILS_VIEW to be fair to both EDIT and READ_ONLY VIEWS
-  EDIT_VIEW
+  DETAILS_VIEW
 } from 'rsa-list-manager/constants/list-manager';
 
 const listManagerInitialState = Immutable.from({
@@ -18,7 +17,7 @@ const listManagerInitialState = Immutable.from({
   filterText: undefined,
   highlightedIndex: -1,
   editItemId: undefined,
-  viewName: undefined, // View to be rendered through button actions (list-view, edit-view)
+  viewName: undefined, // View to be rendered through button actions (list-view, details-view)
   shouldSelectedItemPersist: true, // true if an item can be selected and persist, true by default
   selectedItemId: undefined, // id of object to identify an item as selected in the manager's button caption,
   helpId: undefined, // object for contextual help { moduleId: "investigation", topicId: "eaManageColumnGroups" }
@@ -63,7 +62,7 @@ const listManagerReducer = handleActions({
   [ACTION_TYPES.EDIT_ITEM]: (state, action) => {
     return state.merge({
       editItemId: action.payload.editItemId,
-      viewName: EDIT_VIEW
+      viewName: DETAILS_VIEW
     });
   },
   [ACTION_TYPES.ITEM_CREATE]: (state, action) => {

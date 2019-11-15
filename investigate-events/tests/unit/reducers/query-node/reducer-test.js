@@ -22,7 +22,7 @@ import {
   createOperator,
   transformTextToPillData
 } from 'investigate-events/util/query-parsing';
-import { LIST_VIEW, EDIT_VIEW } from 'rsa-list-manager/constants/list-manager';
+import { LIST_VIEW, DETAILS_VIEW } from 'rsa-list-manager/constants/list-manager';
 
 const { log } = console;//eslint-disable-line
 
@@ -1839,7 +1839,7 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     assert.equal(result.pillsData[4].type, CLOSE_PAREN, 'pillsData item 4 is the right type');
   });
 
-  // edit-view -> add new profile
+  // details-view -> add new profile
   test('RSA_LIST_MANAGER_SET_VIEW_NAME add scenario', async function(assert) {
     const initialState = Immutable.from({
       pillsData: [
@@ -1852,7 +1852,7 @@ module('Unit | Reducers | QueryNode', function(hooks) {
 
     const action = {
       type: ACTION_TYPES.RSA_LIST_MANAGER_SET_VIEW_NAME,
-      payload: EDIT_VIEW,
+      payload: DETAILS_VIEW,
       meta: { belongsTo: 'listManagers.profiles' }
     };
 

@@ -35,14 +35,14 @@ module('Integration | Component | item details - details footer', function(hooks
 
   const item = { id: '1', name: 'foo', isEditable: true };
   const stateLocation1 = 'listManager';
-  const EDIT_VIEW = 'edit-view';
+  const DETAILS_VIEW = 'details-view';
 
   test('renders close/disabled-save buttons when there is no editedItem to save a new item', async function(assert) {
     assert.expect(4);
     new ReduxDataHelper(setState)
       .stateLocation(stateLocation1)
       .listName('Foos')
-      .viewName(EDIT_VIEW)
+      .viewName(DETAILS_VIEW)
       .build();
 
     this.set('stateLocation', stateLocation1);
@@ -66,7 +66,7 @@ module('Integration | Component | item details - details footer', function(hooks
     new ReduxDataHelper(setState)
       .stateLocation(stateLocation1)
       .listName('Foos')
-      .viewName(EDIT_VIEW)
+      .viewName(DETAILS_VIEW)
       .build();
 
     this.set('stateLocation', stateLocation1);
@@ -96,7 +96,7 @@ module('Integration | Component | item details - details footer', function(hooks
     new ReduxDataHelper(setState)
       .stateLocation(stateLocation1)
       .listName('Foos')
-      .viewName(EDIT_VIEW)
+      .viewName(DETAILS_VIEW)
       .build();
 
     this.set('stateLocation', stateLocation1);
@@ -120,7 +120,7 @@ module('Integration | Component | item details - details footer', function(hooks
     new ReduxDataHelper(setState)
       .stateLocation(stateLocation1)
       .listName('Foos')
-      .viewName(EDIT_VIEW)
+      .viewName(DETAILS_VIEW)
       .build();
 
     this.set('stateLocation', stateLocation1);
@@ -150,7 +150,7 @@ module('Integration | Component | item details - details footer', function(hooks
     new ReduxDataHelper(setState)
       .stateLocation(stateLocation1)
       .listName('Foos')
-      .viewName(EDIT_VIEW)
+      .viewName(DETAILS_VIEW)
       .build();
 
     this.set('stateLocation', stateLocation1);
@@ -180,7 +180,7 @@ module('Integration | Component | item details - details footer', function(hooks
     new ReduxDataHelper(setState)
       .stateLocation(stateLocation1)
       .listName('Foos')
-      .viewName(EDIT_VIEW)
+      .viewName(DETAILS_VIEW)
       .build();
 
     this.set('stateLocation', stateLocation1);
@@ -246,7 +246,7 @@ module('Integration | Component | item details - details footer', function(hooks
     new ReduxDataHelper(setState)
       .stateLocation(stateLocation1)
       .listName('Foos')
-      .viewName(EDIT_VIEW)
+      .viewName(DETAILS_VIEW)
       .editItemId(item.id)
       .build();
 
@@ -271,7 +271,7 @@ module('Integration | Component | item details - details footer', function(hooks
     new ReduxDataHelper(setState)
       .stateLocation(stateLocation1)
       .listName('Foos')
-      .viewName(EDIT_VIEW)
+      .viewName(DETAILS_VIEW)
       .editItemId(originalItem.id)
       .build();
 
@@ -298,7 +298,7 @@ module('Integration | Component | item details - details footer', function(hooks
     new ReduxDataHelper(setState)
       .stateLocation(stateLocation1)
       .listName('Foos')
-      .viewName(EDIT_VIEW)
+      .viewName(DETAILS_VIEW)
       .editItemId(item.id)
       .build();
 
@@ -331,7 +331,7 @@ module('Integration | Component | item details - details footer', function(hooks
     new ReduxDataHelper(setState)
       .stateLocation(stateLocation1)
       .listName('Foos')
-      .viewName(EDIT_VIEW)
+      .viewName(DETAILS_VIEW)
       .editItemId(item.id)
       .build();
 
@@ -364,7 +364,7 @@ module('Integration | Component | item details - details footer', function(hooks
     new ReduxDataHelper(setState)
       .stateLocation(stateLocation1)
       .listName('Foos')
-      .viewName(EDIT_VIEW)
+      .viewName(DETAILS_VIEW)
       .editItemId(item.id)
       .build();
 

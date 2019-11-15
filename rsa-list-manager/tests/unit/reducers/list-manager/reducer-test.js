@@ -4,7 +4,7 @@ import makePackAction from '../../../helpers/make-pack-action';
 import { LIFECYCLE } from 'redux-pack';
 import * as ACTION_TYPES from 'rsa-list-manager/actions/types';
 import reducer from 'rsa-list-manager/reducers/list-manager/reducer';
-import { EDIT_VIEW, LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
+import { DETAILS_VIEW, LIST_VIEW } from 'rsa-list-manager/constants/list-manager';
 
 module('Unit | Reducers | list-manager');
 
@@ -146,7 +146,7 @@ test('ACTION_TYPES.EDIT_ITEM sets editItemId and viewName', function(assert) {
 
   const result = reducer(prevState, action);
   assert.equal(result.editItemId, randomId, 'editItemId shall be set correctly');
-  assert.equal(result.viewName, EDIT_VIEW, 'viewName shall be set to edit-view');
+  assert.equal(result.viewName, DETAILS_VIEW, 'viewName shall be set to details-view');
 });
 
 test('Should set relevant properties correctly at start of creating new item', function(assert) {
