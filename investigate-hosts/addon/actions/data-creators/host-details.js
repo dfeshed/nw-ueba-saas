@@ -1,4 +1,4 @@
-import { initializeHostsPreferences } from 'investigate-hosts/actions/data-creators/host';
+import { initializeHostsPreferences, getAllServices } from 'investigate-hosts/actions/data-creators/host';
 import { fetchDataForSelectedTab } from 'investigate-hosts/actions/data-creators/details';
 import { changeEndpointServer, setSelectedMachineServerId } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
@@ -126,6 +126,8 @@ const setDataForHostTab = (agentId, tabName, subTabName) => {
 const initializeHostDetailsPage = ({ sid, id: agentId }) => {
   return async(dispatch, getState) => {
     const id = sid || getState().endpointQuery.serverId;
+
+    dispatch(getAllServices());
 
     await dispatch(changeEndpointServer({ id }));
     // Wait for user preference to load
