@@ -62,5 +62,10 @@
         {{ remainingTextMessage }}
       {{/rsa-form-button}}
     </div>
+  {{else if showTruncatedMessage}}
+    <div class="text-truncated">
+      {{rsa-icon class="info-warning" name="report-problem-triangle"}}
+      {{t 'recon.textView.singleMessageTruncated'}}
+    </div>
   {{/if}}
 {{/unless}}

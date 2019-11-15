@@ -31,7 +31,8 @@ const stateToComputed = ({ recon }) => ({
   packetTotal: packetTotal(recon),
   numberOfItems: numberOfRenderableTextEntries(recon),
   renderedText: renderedText(recon),
-  hasRenderIds: hasRenderIds(recon)
+  hasRenderIds: hasRenderIds(recon),
+  isItemTooLarge: recon.text.itemTooLarge
 });
 
 const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, DelayBatchingMixin, ReconPanelHelp, {
@@ -44,6 +45,9 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
   stickySelector: '.scroll-box .rsa-text-entry',
   stickyHeaderSelector: '.is-sticky.recon-request-response-header',
   i18n: service(),
+
+  @alias('isItemTooLarge')
+  showTruncatedMessage: null,
 
   @computed('stickyContent.firstPacketId', 'showMoreFinishedTracker.[]')
   hideStickyShowMore: (id, trackedIds) => trackedIds.includes(id),

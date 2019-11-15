@@ -32,6 +32,7 @@ export default Component.extend(SelectionTooltip, {
   stickyRenderedPercent: null,
   tooltipHeading: null,
   supportsCopyPaste: SUPPORTS_COPY_PASTE,
+  showTruncatedMessage: null,
 
   // Tooltip has two views depending upon being in IF/ELSE conditional
   // The IF conditional shows the final encoded/decoded text that has the closeButton X

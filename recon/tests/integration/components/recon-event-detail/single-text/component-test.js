@@ -147,3 +147,70 @@ test('log text', function(assert) {
     assert.equal(this.$().text().trim().replace(/\s/g, ''), 'RawLogTestinglogtext');
   });
 });
+
+test('Should display text-truncated message if showTruncatedMessage is true', async function(assert) {
+  this.set('index', 0);
+  this.set('isLog', true);
+  this.set('packet', EmberObject.create({
+    'id': 574561,
+    'payloadSize': 618,
+    'sequence': 3946844195,
+    'side': 1,
+    'text': ['Testing log text'],
+    'timestamp': 1449631503277
+  }));
+
+  this.set('packetFields', [
+    {
+      'length': 6,
+      'name': 'eth.dst',
+      'position': 0
+    },
+    {
+      'length': 6,
+      'name': 'eth.src',
+      'position': 6
+    },
+    {
+      'length': 2,
+      'name': 'eth.type',
+      'position': 12
+    },
+    {
+      'length': 4,
+      'name': 'ip.src',
+      'position': 26
+    },
+    {
+      'length': 4,
+      'name': 'ip.dst',
+      'position': 30
+    },
+    {
+      'length': 1,
+      'name': 'ip.proto',
+      'position': 23
+    },
+    {
+      'length': 2,
+      'name': 'tcp.srcport',
+      'position': 34
+    },
+    {
+      'length': 2,
+      'name': 'tcp.dstport',
+      'position': 36
+    }
+  ]);
+
+  this.render(hbs`{{recon-event-detail/single-text
+    index=index
+    isLog=isLog
+    packet=packet
+    shouldShowPacket=true
+    showTruncatedMessage=true
+  }}`);
+  return wait().then(() => {
+    assert.ok(document.querySelectorAll('.text-truncated'));
+  });
+});

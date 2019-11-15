@@ -331,7 +331,7 @@ export default {
       downloadText: 'Download Text',
       downloadXml: 'Download XML',
       headerShowing: 'Showing',
-      singleMessageTruncated: ' (This message has been truncated)',
+      singleMessageTruncated: 'This transaction has been truncated. Please download to view entire transaction.',
       isDownloading: 'Downloading...',
       rawEndpointHeader: 'Large meta values',
       rawLogHeader: 'Raw Log',

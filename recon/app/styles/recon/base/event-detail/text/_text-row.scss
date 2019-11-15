@@ -21,4 +21,20 @@
     background-color: background-color(secondary);
     color: text-color(neutral);
   }
+  .text-truncated {
+    @include rsa-font(light, small);
+    font-weight: 500;
+    margin: rsa-whitespace(less) 0;
+    padding: rsa-whitespace(less);
+    display: flex;
+    flex-direction: row;
+    background-color: background-color(accentFour, dark, nearly-transparent);
+    color: text-color(primary, lightest);
+    border: 1px solid border-color(accentFour);
+    border-radius: 0.3rem;
+    .info-warning {
+      color: text-color(accentFour);
+      padding-right: rsa-whitespace(less);
+    }
+  }
 }

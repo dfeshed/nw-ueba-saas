@@ -11,6 +11,7 @@
           packet=text
           showMoreFinished=(action 'showMoreFinished')
           updatePercentRendered=(action 'updatePercentRendered')
+          showTruncatedMessage=showTruncatedMessage
         }}
       {{/each}}
     {{/if}}
@@ -26,6 +27,7 @@
           packet=stickyContent
           renderedAll=hideStickyShowMore
           stickyRenderedPercent=stickyRenderedPercent
+          showTruncatedMessage=showTruncatedMessage
         }}
       </div>
     {{/if}}
@@ -43,6 +45,7 @@
           packet=text
           showMoreFinished=(action 'showMoreFinished')
           updatePercentRendered=(action 'updatePercentRendered')
+          showTruncatedMessage=showTruncatedMessage
         }}
       {{/each}}
       {{#if hasMoreToDisplay}}
