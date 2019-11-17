@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.util.ResourceUtils;
+import org.springframework.core.io.Resource;
 import presidio.output.processor.config.ClassificationPriorityConfig;
 import presidio.output.processor.config.DataConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
@@ -16,15 +16,15 @@ import presidio.output.processor.services.alert.AlertClassificationServiceImpl;
 import presidio.output.processor.services.alert.indicator.enricher.IndicatorEnricher;
 import presidio.output.processor.services.alert.indicator.enricher.IndicatorEnricherJsonDeserializer;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class AlertClassificationPriorityConfig {
     @Value("${number.of.classifications}")
     private int numberOfClassifications;
 
-    @Value("${supporting.information.config.resource.location:classpath:supporting_information_config.yml}")
-    private String supportingInformationConfigResourceLocation;
+    @Value("${supporting.information.config.resource:classpath:supporting_information_config.yml}")
+    private Resource supportingInformationConfigResource;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -53,8 +53,8 @@ public class AlertClassificationPriorityConfig {
         ));
 
         try {
-            File file = ResourceUtils.getFile(supportingInformationConfigResourceLocation);
-            return objectMapper.readValue(file, DataConfig.class);
+            InputStream inputStream = supportingInformationConfigResource.getInputStream();
+            return objectMapper.readValue(inputStream, DataConfig.class);
         } catch (IOException ioException) {
             throw new RuntimeException(ioException);
         }
