@@ -224,7 +224,7 @@ public class AdapterTestManager {
         // sh /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h 10.4.61.136 -o broker -t 2018-07-18T00:00:00Z -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY'  -v
         String command = "sudo /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h "
                 + broker + " -o broker -t " + startTime.toString()
-                + " -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS'  -v ";
+                + " -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS' -e -v ";
 
         SshResponse p = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
         assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
