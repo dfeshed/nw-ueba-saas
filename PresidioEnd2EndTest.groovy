@@ -64,6 +64,7 @@ pipeline {
             steps {
                 script {
                     sh "echo ADMIN_SERVER_IP=${env.ADMIN_SERVER_IP}"
+                    sh "sshpass -p \"netwitness\" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null presidio-ui-update.sh root@${env.ADMIN_SERVER_IP}:/root"
                 }
             }
         }
@@ -100,7 +101,7 @@ pipeline {
 
     post {
         always {
-            junit '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
+            junit allowEmptyResults: true, testResults: '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
             archiveArtifacts allowEmptyArchive: true, artifacts: '**/ueba-automation-test/target/log/*.log, **/ueba-automation-test/target/environment.properties'
         }
     }
@@ -204,5 +205,6 @@ def startAirflowScheduler(){
 }
 def copyScripts() {
     sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/env_properties_manager.sh /home/presidio/"
+    sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/presidio-ui-update.sh /home/presidio/"
     sh "sudo bash /home/presidio/env_properties_manager.sh --create"
 }
