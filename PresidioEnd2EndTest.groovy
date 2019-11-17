@@ -5,6 +5,7 @@ pipeline {
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         string(name: 'SIDE_BRANCH_JOD_NUMBER', defaultValue: '', description: 'Write the "presidio-build-jars-and-packages" build number from which you want to install the PRMs')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
+        booleanParam(name: 'INSTALL_UEBA_UI_RPMS', defaultValue: false, description: '')
         booleanParam(name: 'ENV_CLEANUP', defaultValue: true, description: '')
         booleanParam(name: 'DATA_INJECTION', defaultValue: true, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
@@ -32,7 +33,6 @@ pipeline {
                 buildIntegrationTestProject()
                 setBaseUrl()
                 copyScripts()
-                getAdminServerHost()
             }
         }
         stage('Reset DBs LogHybrid and UEBA') {
@@ -53,6 +53,21 @@ pipeline {
                 }
             }
         }
+
+        stage('UEBA-UI RPMs Upgrade') {
+            environment {
+                ADMIN_SERVER_IP = sh (script: 'sh /home/presidio/env_properties_manager.sh --get admin-server', returnStdout: true).trim()
+            }
+            when {
+                expression { return params.INSTALL_UEBA_UI_RPMS }
+            }
+            steps {
+                script {
+                    sh "echo ADMIN_SERVER_IP=${env.ADMIN_SERVER_IP}"
+                }
+            }
+        }
+
 
         stage('Data Injection') {
             when {
@@ -190,10 +205,4 @@ def startAirflowScheduler(){
 def copyScripts() {
     sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/env_properties_manager.sh /home/presidio/"
     sh "sudo bash /home/presidio/env_properties_manager.sh --create"
-}
-
-def getAdminServerHost(){
-    admin_server= sh "bash /home/presidio/env_properties_manager.sh --get admin-server"
-    sh "echo $admin_server"
-    return admin_server
 }
