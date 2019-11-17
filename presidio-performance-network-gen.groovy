@@ -37,9 +37,9 @@ pipeline {
 
         stage('Project Clone') {
             steps {
-                cleanWs()
                 script { currentBuild.displayName="#${BUILD_NUMBER} ${NODE_NAME}" }
                 script { currentBuild.description = "${env.BUILD_BRANCH}" }
+                cleanWs()
                 buildIntegrationTestProject()
             }
         }
@@ -81,6 +81,7 @@ def runMaven() {
     sh "echo JAVA_HOME=${env.JAVA_HOME}"
     dir(env.REPOSITORY_NAME) {
         sh "mvn test -B --projects presidio-integration-performance-test --also-make -Dschemas=${params.SCHEMAS} " +
+                "-Dstart_time=${params.START_TIME} -Dend_time=${params.END_TIME} " +
                 "-Dtls_alerts_probability=${params.tls_alerts_probability} -Dtls_groups_to_create=${params.tls_groups_to_create} " +
                 "-Dtls_events_per_day_per_group=${params.tls_events_per_day_per_group} ${params.MVN_OPTIONS} " +
                 "-Dmaven.test.failure.ignore=false -Duser.timezone=UTC"
