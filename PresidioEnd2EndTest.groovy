@@ -21,7 +21,6 @@ pipeline {
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "ueba-automation-projects"
         OLD_UEBA_RPMS = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
-        ADMIN_SERVER_HOST = ""
     }
 
     stages {
@@ -33,8 +32,8 @@ pipeline {
                 buildIntegrationTestProject()
                 setBaseUrl()
                 copyScripts()
-                env.ADMIN_SERVER_HOST=getAdminServerHost()
-                sh "echo ${env.ADMIN_SERVER_HOST}"
+                ADMIN_SERVER_HOST=getAdminServerHost()
+                sh "echo ${ADMIN_SERVER_HOST}"
             }
         }
         stage('Reset DBs LogHybrid and UEBA') {
