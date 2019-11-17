@@ -1,8 +1,8 @@
 #!/bin/bash
 
 PROJECT_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/ueba-automation-projects/presidio-integration-performance-test
-DEFAULT_PATH=${PROJECT_PATH}/target/netwitness_events_gen/*/*
-DONE_PATH=${PROJECT_PATH}/target/netwitness_events_uploaded/
+DEFAULT_PATH="/var/netwitness/presidio/perf_data/generated/*/*"
+DONE_PATH="/var/netwitness/presidio/perf_data/inserted"
 
 echo "*****************************   UPLOAD TO BROKER Started  *****************************"
 
