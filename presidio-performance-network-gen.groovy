@@ -18,21 +18,26 @@ pipeline {
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "ueba-automation-projects"
         SCRIPTS_DIR = '/ueba-automation-projects/presidio-integration-performance-test/src/test/resources/scripts/'
+        PERF_GEN_TARGET_PATH="${env.WORKSPACE}/ueba-automation-projects/presidio-integration-performance-test/target/netwitness_events_gen/*"
+        PERF_GEN_DATA_PATH="/var/netwitness/presidio/perf_data"
+        PERF_GEN_GENERATED_PATH="/var/netwitness/presidio/perf_data/generated"
+        PERF_GEN_DONE_PATH="/var/netwitness/presidio/perf_data/inserted"
     }
 
     stages {
 
-        stage('Clean Workspace') {
+        stage('Clean Files') {
             when {
                 expression { return params.CLEAN_FILES }
             }
             steps {
-                cleanWs()
+                sh "rm -rf ${PERF_GEN_DATA_PATH}"
             }
         }
 
         stage('Project Clone') {
             steps {
+                cleanWs()
                 script { currentBuild.displayName="#${BUILD_NUMBER} ${NODE_NAME}" }
                 script { currentBuild.description = "${env.BUILD_BRANCH}" }
                 buildIntegrationTestProject()
@@ -44,6 +49,10 @@ pipeline {
             }
             steps {
                 runMaven()
+                sh "echo \"moving files to ${PERF_GEN_GENERATED_PATH}\""
+                sh "mkdir -p ${PERF_GEN_GENERATED_PATH}"
+                sh "mkdir -p ${PERF_GEN_DONE_PATH}"
+                sh "mv ${PERF_GEN_TARGET_PATH} ${PERF_GEN_GENERATED_PATH}"
             }
         }
         stage('Split files') {
