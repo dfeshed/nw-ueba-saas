@@ -32,8 +32,7 @@ pipeline {
                 buildIntegrationTestProject()
                 setBaseUrl()
                 copyScripts()
-                ADMIN_SERVER_HOST=getAdminServerHost()
-                sh "echo ${ADMIN_SERVER_HOST}"
+                getAdminServerHost()
             }
         }
         stage('Reset DBs LogHybrid and UEBA') {
