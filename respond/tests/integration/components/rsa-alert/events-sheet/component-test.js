@@ -48,7 +48,7 @@ module('Integration | Component | rsa-alert/events-sheet', function(hooks) {
 
     await render(hbs`{{rsa-alert/events-sheet}}`);
 
-    assert.ok(find('.rsa-event-details-body .related-link a').href.indexOf('/investigate/events?eid=150') > 0, 'event analysis link should be displayed');
+    assert.ok(find('.rsa-event-details-body .related-link a').href.indexOf('/investigate/recon?eventId=150') > 0, 'event analysis link should be displayed');
   });
 
   test('show legacy events link in event details if legacy events flag is enabled', async function(assert) {

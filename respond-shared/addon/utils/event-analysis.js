@@ -65,20 +65,13 @@ const createEventAnalysisLink = (item, services) => {
 
   let eventAnalysisLink;
 
-  const { startTime, endTime } = defaultQueryTimeRange();
-
-  const eventType = getEventType(item.type, item.device_type);
-
   if (eid) {
     const eventAnalysisQueryString = [
-      `eid=${eid}`,
-      `sid=${sid}`,
-      `st=${startTime}`,
-      `et=${endTime}`,
-      `eventType=${eventType}`
+      `eventId=${eid}`,
+      `endpointId=${sid}`
     ].join('&');
 
-    eventAnalysisLink = `/investigate/events?${eventAnalysisQueryString}`;
+    eventAnalysisLink = `/investigate/recon?${eventAnalysisQueryString}`;
   }
 
   return eventAnalysisLink;

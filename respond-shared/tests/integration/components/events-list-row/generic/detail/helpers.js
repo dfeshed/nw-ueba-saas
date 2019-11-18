@@ -59,7 +59,7 @@ export const assertEventAnalysisLink = (assert, { value }) => {
 
   assert.equal(find(selector).textContent.trim(), value);
   assert.ok(find(selector).getAttribute('href'));
-  assert.ok(find(selector).getAttribute('href').startsWith('/investigate/events'));
+  assert.ok(find(selector).getAttribute('href').startsWith('/investigate/recon'));
 };
 
 export const assertDetailRowParent = (assert, { column, row, label, value }) => {
