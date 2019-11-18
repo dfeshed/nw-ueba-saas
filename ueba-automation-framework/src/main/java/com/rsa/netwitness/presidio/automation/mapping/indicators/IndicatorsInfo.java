@@ -35,6 +35,16 @@ public class IndicatorsInfo {
             REGISTRY_MANDATORY_INDICATORS.stream()
     ).flatMap(e -> e).collect(Collectors.toList()));
 
+    public static final ImmutableList<String> MULTIPLE_GRAPHS_INDICATORS =  ImmutableList.of(
+            "high_number_of_bytes_sent_by_src_ip_to_domain_ssl_subject_outbound",
+            "high_number_of_bytes_sent_by_src_ip_to_dst_org_ssl_subject_outbound",
+            "high_number_of_bytes_sent_by_src_ip_to_dst_port_ssl_subject_outbound",
+            "high_number_of_bytes_sent_to_domain_ssl_subject_outbound",
+            "high_number_of_bytes_sent_to_dst_org_ssl_subject_outbound",
+            "high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound"
+    );
+
+
     public static Map<String, Schema> getIndicatorsToSchemaMap() {
         return IndicatorsInfoSupplier.indicatorToSchema.get();
     }

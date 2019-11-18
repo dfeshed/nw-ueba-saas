@@ -1,7 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.rest;
 
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -18,6 +17,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Ignore;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -31,21 +31,16 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import static com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo.*;
 import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
 import static java.util.Map.Entry.comparingByKey;
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.util.Lists.list;
 
 public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(AlertsIndicatorsTests.class.getName());
-
-    /**  There must be user story to handle this use case   */
-    private ImmutableList<String> indicatorsExcludedFromAnomalyValueTest = ImmutableList.copyOf(list("high_number_of_bytes_sent_by_src_ip_to_domain_ssl_subject_outbound"));
 
     private RestHelper restHelper = new RestHelper();
     private List<AlertsStoredRecord> allAlerts = Lists.newArrayList();
@@ -243,38 +238,91 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         }
     }
 
+    @Ignore
+    public void multiple_charts_baseline_values_should_be_above_or_equal_single_entity_context_values() {
+
+        List<AlertsStoredRecord> multiGraphsIndicatorsAlerts = allAlerts.parallelStream()
+                .filter(e -> Arrays.stream(e.getIndicatorsName()).anyMatch(MULTIPLE_GRAPHS_INDICATORS::contains))
+                .collect(toList());
+
+
+        for (AlertsStoredRecord multiGraphAlert : multiGraphsIndicatorsAlerts) {
+            List<AlertsStoredRecord.Indicator> multiGraphIndicators = multiGraphAlert.getIndicatorsList().parallelStream()
+                    .filter(object -> MULTIPLE_GRAPHS_INDICATORS.contains(object.getName()))
+                    .collect(toList());
+
+            for (AlertsStoredRecord.Indicator multiGraphIndicator : multiGraphIndicators) {
+                PresidioUrl url = restHelper.alerts().withId(multiGraphAlert.getId()).indicators().withId(multiGraphIndicator.getId()).url().withExpandedParameter();
+
+                IndicatorREST actualIndicator = getIndicatorWithHisoricalData(multiGraphAlert.getId(), multiGraphIndicator.getId());
+
+                Map<String, List<HistoricalData>> historicalDataArrayByContext = Objects.requireNonNull(actualIndicator.historicalData)
+                        .parallelStream().collect(groupingBy(HistoricalData::contextToString));
+
+                assertThat(historicalDataArrayByContext).as(url.toString() + "\nhistoricalData should contain 2 buckets only.").isNotNull().hasSize(2);
+
+                List<String> contextsByLength = historicalDataArrayByContext.keySet().stream().sorted(Comparator.comparingInt(String::length)).collect(toList());
+                System.out.println(contextsByLength.get(0) + " -- " + contextsByLength.get(1));
+
+                List<HistoricalDataBucket> allValuesBuckets = historicalDataArrayByContext.get(contextsByLength.get(0)).parallelStream().flatMap(e -> e.allBuckets.stream()).collect(toList());
+                List<HistoricalDataBucket> singleValueBuckets = historicalDataArrayByContext.get(contextsByLength.get(1)).parallelStream().flatMap(e -> e.allBuckets.stream()).collect(toList());
+
+                List<String> timestamps = allValuesBuckets.parallelStream().map(e -> e.key).collect(toList());
+
+
+                for (String time : timestamps) {
+                    Function<List<HistoricalDataBucket>, Optional<Double>> getSample = list ->
+                            list.parallelStream().filter(e -> e.key.equals(time)).map(e -> Double.valueOf(e.value)).findAny();
+
+                    Optional<Double> allValuesChartSample = getSample.apply(allValuesBuckets);
+                    Optional<Double> singleValueChartSample = getSample.apply(singleValueBuckets);
+
+                    assertThat(singleValueChartSample).as(url+ "\nSingle value chart sample is not found for timestamp = " + time
+                            + "\nall Values Chart Context: "  + contextsByLength.get(0)
+                            + "\nsingle Value Chart Context: "  + contextsByLength.get(1))
+                            .isPresent();
+
+                    assertThat(allValuesChartSample.get())
+                            .as(url+ "\nSingle value chart sample is greater then all values chart sample. Check timestamp = " + time
+                                    + "\nall Values Chart Context: "  + contextsByLength.get(0)
+                                    + "\nsingle Value Chart Context: "  + contextsByLength.get(1))
+                            .isGreaterThanOrEqualTo(singleValueChartSample.get());
+                }
+            }
+        }
+    }
+
 
     @Test(dataProvider = "allIndicatorsDataProvider")
-    public void anomaly_true_indicator_count_should_be_correct_in_historical_data(String indicator) {
-        if (indicatorsExcludedFromAnomalyValueTest.contains(indicator)) skipTest("Ignoring the indicator: " + indicator);
+    public void historical_data_anomaly_true_indicator_count_is_equal_to_1(String indicator) {
         String alertId = allIndicatorsTypeNameSamples.get(indicator)[0];
         String indicatorId = allIndicatorsTypeNameSamples.get(indicator)[1];
         PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
 
         try {
             IndicatorREST actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
-            Map<String, List<HistoricalData>> bucketsByContext = Objects.requireNonNull(actualIndicator.historicalData).parallelStream().collect(groupingBy(HistoricalData::contextToString));
-            assertThat(bucketsByContext).as(url.toString() +"Historical data array is empty").isNotEmpty();
 
+            Map<String, List<HistoricalData>> historicalDataListByContext = Objects.requireNonNull(actualIndicator.historicalData).parallelStream()
+                    .collect(groupingBy(HistoricalData::contextToString));
+            assertThat(historicalDataListByContext).as(url.toString() + "Historical data array is empty").isNotEmpty();
 
-            for (Map.Entry<String, List<HistoricalData>> entry : bucketsByContext.entrySet()) {
-                Stream<HistoricalDataBucket> anomalyBucketsForContext = entry.getValue().parallelStream().flatMap(e -> e.anomalyBuckets.stream());
-                assertThat(entry.getValue()).as(url.toString() + "Many historicalData elements for the same context=" + entry.getKey()).hasSize(1);
-                String historicalDataType = entry.getValue().get(0).type;
+            List<HistoricalData> historicalDataListForTest = new ArrayList<>();
 
-                if (historicalDataType.equals("TimeAggregation")) {
-                    assertThat(anomalyBucketsForContext.map(e -> e.anomaly))
-                            .as(url.toString() + "\nhistoricalDataType = " + historicalDataType)
-                            .hasSizeGreaterThanOrEqualTo(1)
-                            .containsOnly(true);
-                } else {
-                    assertThat(anomalyBucketsForContext.map(e -> e.anomaly))
-                            .as(url.toString() + "\nhistoricalDataType = " + historicalDataType)
-                            .hasSize(1)
-                            .containsOnly(true);
-                }
+            if (MULTIPLE_GRAPHS_INDICATORS.contains(actualIndicator.name)) {
+                assertThat(historicalDataListByContext).as(url.toString() + "\nmultiple context indicator should contain 2 historicalData buckets.").isNotNull().hasSize(2);
+                String singleValueContext = historicalDataListByContext.keySet().stream().sorted(Comparator.comparingInt(String::length)).collect(toList()).get(1);
+                historicalDataListForTest.addAll(historicalDataListByContext.get(singleValueContext));
+            } else {
+                assertThat(historicalDataListByContext).as(url.toString() + "\nsingle context indicator should contain 1 historicalData bucket.").isNotNull().hasSize(1);
+                historicalDataListForTest.addAll(historicalDataListByContext.values().stream().flatMap(Collection::stream).collect(toList()));
             }
 
+            for (HistoricalData histDataEntry : historicalDataListForTest) {
+                assertThat(histDataEntry.anomalyBuckets.stream().map(e -> e.anomaly))
+                        .as(url.toString() + "\nAnomaly 'true' count mismatch.")
+                        .hasSize(1)
+                        .containsOnly(true);
+            }
         } catch (JSONException e) {
             Assert.fail(url + "\nCannot getOperationTypeToCategoryMap the requested information from json object. \n" + e.getMessage());
         }
@@ -282,23 +330,31 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @Test(dataProvider = "indicatorTypeFeatureAggregation")
     public void feature_aggregation_anomaly_value_should_match_historical_data_and_events_num(String indicator) {
-        if (indicatorsExcludedFromAnomalyValueTest.contains(indicator)) skipTest("Ignoring the indicator: " + indicator);
         String alertId = featureAggregationMap.get(indicator)[0];
         String indicatorId = featureAggregationMap.get(indicator)[1];
         PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
 
         IndicatorREST actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
-        Map<String, List<HistoricalData>> bucketsByContext = Objects.requireNonNull(actualIndicator.historicalData).parallelStream().collect(groupingBy(HistoricalData::contextToString));
-        assertThat(bucketsByContext).as(url.toString() +"Historical data array is empty").isNotEmpty();
+        Map<String, List<HistoricalData>> historicalDataListByContext = Objects.requireNonNull(actualIndicator.historicalData).parallelStream()
+                .collect(groupingBy(HistoricalData::contextToString));
+        assertThat(historicalDataListByContext).as(url.toString() + "Historical data array is empty").isNotEmpty();
 
-        for (Map.Entry<String, List<HistoricalData>> entry : bucketsByContext.entrySet()) {
-            Stream<HistoricalDataBucket> anomalyBucketsForContext = entry.getValue().parallelStream().flatMap(e -> e.anomalyBuckets.stream());
-            assertThat(entry.getValue()).as(url.toString() + "Many historicalData elements for the same context=" + entry.getKey()).hasSize(1);
+        List<HistoricalData> historicalDataListForTest = new ArrayList<>();
 
-            List<String> historicalDataAnomalyValues = anomalyBucketsForContext.map(e -> e.value).collect(toList());
-            assertThat(historicalDataAnomalyValues).as(url + "\nhistoricalData anomaly value is missing").isNotEmpty();
+        if (MULTIPLE_GRAPHS_INDICATORS.contains(actualIndicator.name)) {
+            assertThat(historicalDataListByContext).as(url.toString() + "\nmultiple context indicator should contain 2 historicalData buckets.").isNotNull().hasSize(2);
+            String singleValueContext = historicalDataListByContext.keySet().stream().sorted(Comparator.comparingInt(String::length)).collect(toList()).get(1);
+            historicalDataListForTest.addAll(historicalDataListByContext.get(singleValueContext));
+        } else {
+            assertThat(historicalDataListByContext).as(url.toString() + "\nsingle context indicator should contain 1 historicalData bucket.").isNotNull().hasSize(1);
+            historicalDataListForTest.addAll(historicalDataListByContext.values().stream().flatMap(Collection::stream).collect(toList()));
+        }
 
-            boolean notInExclusionList = !(
+        for (HistoricalData entry : historicalDataListForTest) {
+
+            List<String> historicalDataAnomalyValues = entry.anomalyBuckets.stream().map(e -> e.value).collect(toList());
+
+            boolean notAggregationCountIndicator = !(
                     indicator.equals("high_number_of_file_move_operations_from_shared_drive")
                             || indicator.equals("high_number_of_successful_file_action_operations")
                             || actualIndicator.schema.equals("TLS")
@@ -307,7 +363,9 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
             Function<String, Long> toLong = st -> Double.valueOf(st).longValue();
 
 
-            if (actualIndicator.name.startsWith("high_number_of_") && notInExclusionList) {
+            if (actualIndicator.name.startsWith("high_number_of_") && notAggregationCountIndicator) {
+                assertThat(historicalDataAnomalyValues).as(url + "\nhistoricalData anomaly value is missing").isNotEmpty();
+
                 if (actualIndicator.eventsNum == 10000) {
                     assertThat(toLong.apply(actualIndicator.anomalyValue))
                             .as(url + "anomalyValue should be >= 10000")

@@ -6,10 +6,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Spliterator;
+import java.util.*;
 
 import static java.util.Map.Entry.comparingByKey;
 import static java.util.stream.Collectors.joining;
@@ -49,8 +46,8 @@ public class IndicatorREST {
         historicalData = new ArrayList<>();
 
         if (json.getAsJsonObject().has("historicalData")) {
-            Spliterator<JsonElement> historicalDataIt = json.getAsJsonObject().get("historicalData").getAsJsonArray().spliterator();
-            historicalDataIt.tryAdvance(e -> historicalData.add(new HistoricalData(e)));
+            Iterator<JsonElement> historicalDataIt = json.getAsJsonObject().get("historicalData").getAsJsonArray().iterator();
+            historicalDataIt.forEachRemaining(e -> historicalData.add(new HistoricalData(e)));
         }
 
     }

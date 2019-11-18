@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Map.Entry.comparingByKey;
 import static java.util.stream.Collectors.joining;
@@ -19,7 +20,8 @@ import static java.util.stream.Collectors.joining;
 public class HistoricalData {
     public final String type;
     public final Map<String, Object> contexts;
-    public final List<HistoricalDataBucket> anomalyBuckets = Lists.newArrayList();
+    public final List<HistoricalDataBucket> allBuckets = Lists.newArrayList();
+    public final List<HistoricalDataBucket> anomalyBuckets;
 
     HistoricalData(JsonElement json) {
         type = json.getAsJsonObject().get("type").getAsString();
@@ -32,15 +34,17 @@ public class HistoricalData {
 
         if (isValueArray) {
             buckets.forEach(bucket -> bucket.getAsJsonObject().get("value").getAsJsonArray().iterator()
-                    .forEachRemaining(value -> getAllAnomalyBuckets.apply(value.getAsJsonObject()).ifPresent(anomalyBuckets::add)));
+                    .forEachRemaining(value -> getAllBuckets.apply(value.getAsJsonObject()).ifPresent(allBuckets::add)));
         } else {
-            buckets.forEach(bucket -> getAllAnomalyBuckets.apply(bucket.getAsJsonObject()).ifPresent(anomalyBuckets::add));
+            buckets.forEach(bucket -> getAllBuckets.apply(bucket.getAsJsonObject()).ifPresent(allBuckets::add));
         }
+
+        anomalyBuckets = allBuckets.parallelStream().filter(e -> e.anomaly.equals(true)).collect(Collectors.toList());
     }
 
     public String contextToString() {
         return contexts.entrySet().parallelStream().sorted(comparingByKey())
-                .map(entry -> entry.getKey() + ":" + entry.getValue())
+                .map(entry -> entry.getKey() + "==" + entry.getValue())
                 .collect(joining("#"));
     }
 
@@ -54,6 +58,14 @@ public class HistoricalData {
         } else {
             return Optional.empty();
         }
+    };
+
+    private Function<JsonObject, Optional<HistoricalDataBucket>> getAllBuckets = obj -> {
+        HistoricalDataBucket bucket = new HistoricalDataBucket();
+        bucket.key = obj.get("key").getAsString();
+        bucket.value = obj.get("value").getAsString();
+        bucket.anomaly = obj.has("anomaly") && obj.get("anomaly").getAsBoolean();
+        return Optional.of(bucket);
     };
 
 }
