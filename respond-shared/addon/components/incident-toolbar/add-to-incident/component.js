@@ -201,6 +201,7 @@ const addToIncidentButton = Component.extend(Notifications, {
      * @private
      */
     handleCancel() {
+      this.send('clearResults');
       this.finish();
     },
     /**
@@ -233,6 +234,7 @@ const addToIncidentButton = Component.extend(Notifications, {
       this.send('addtoIncident', data, {
         // Close the modal and show success notification to the user, if the add-to-incident call has succeeded
         onSuccess: () => {
+          this.send('clearResults');
           this.finish();
           this.send('success', 'respond.incidents.actions.actionMessages.addAlertToIncidentSucceeded',
             { incidentId: selectedIncident.id, entity: this.get('selectedEventIds') ? 'events' : 'alerts' });

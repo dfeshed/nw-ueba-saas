@@ -145,7 +145,7 @@ module('Integration | Component | incident-toolbar/add-to-incident', function(ho
       incidentSearchResults: exampleIncidentSearchResults,
       selectedIncident: exampleIncidentSearchResults[0]
     });
-    assert.expect(5);
+    assert.expect(6);
     const done = assert.async();
 
     patchSocket((method, modelName) => {
@@ -165,6 +165,8 @@ module('Integration | Component | incident-toolbar/add-to-incident', function(ho
     });
     await render(hbs`{{incident-toolbar/add-to-incident finish=handleFinish}}`);
     await click('.apply button');
+
+    assert.notOk(findAll('.rsa-data-table .rsa-data-table-body-row').length, 'On click of apply button search results should get cleared');
   });
 
   test('Clicking on a the Apply button shows a failure flash message when the request fails', async function(assert) {
@@ -200,14 +202,17 @@ module('Integration | Component | incident-toolbar/add-to-incident', function(ho
   });
 
   test('Clicking the cancel button calls the finish action', async function(assert) {
-    setState({ ...initialState });
-    assert.expect(1);
+    setState({ ...initialState, incidentSearchResults: exampleIncidentSearchResults });
+    assert.expect(2);
 
     this.set('finish', () => {
       assert.ok(true);
     });
 
     await render(hbs`{{incident-toolbar/add-to-incident finish=(action finish)}}`);
+
     await click('.cancel button');
+
+    assert.notOk(findAll('.rsa-data-table .rsa-data-table-body-row').length, 'On click of cancel button search results should get cleared');
   });
 });

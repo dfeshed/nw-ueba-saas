@@ -1275,8 +1275,8 @@ export default {
           incidentCreationFailed: 'There was a problem creating an incident from the selected alerts',
           incidentCreatedFromEvents: 'You successfully created the incident {{incidentId}} from the selected events.',
           incidentCreationFromEventsFailed: 'There was a problem creating an incident from the selected events.',
-          createIncidentInstruction: 'An incident will be created from the selected {{alertCount}} alert(s). Please provide a name for the incident.',
-          createIncidentFromEventsInstruction: 'An incident will be created from the selected {{evenCount}} event(s). Please provide a name for the alert & the incident.',
+          createIncidentInstruction: 'An incident will be created from the selected {{alertCount}} alerts. Please provide a name for the incident.',
+          createIncidentFromEventsInstruction: 'An incident will be created from the selected {{evenCount}} events. Please provide a name for the alert & the incident.',
           addAlertToIncidentSucceeded: 'You successfully added the selected {{entity}} to {{incidentId}}.',
           addAlertToIncidentFailed: 'There was a problem adding the selected {{entity}} to this incident',
           confirmSendToArcherTitle: 'Confirm Send to Archer',
@@ -1322,7 +1322,7 @@ export default {
         searchInputLabel: 'Search Open Incidents',
         searchInputPlaceholder: 'Search by incident ID (e.g., INC-123) or incident name',
         noResults: 'No open Incidents found',
-        noQuery: 'Use the search box above to search for open incidents by name or ID. Your search must contain at least (3) characters.',
+        noQuery: 'Use the search box above to search for open incidents by name or ID. Your search must contain at least 3 characters.',
         error: 'There was a problem searching for incidents'
       },
       actions: {
