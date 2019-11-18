@@ -201,8 +201,8 @@ const Container = Component.extend({
 
       this.analyzeFile(checksumSha256, fileFormat, serviceId, callBackOptions);
     },
-    openFilterPanel(closeFilerPanel) {
-      closeFilerPanel();
+    openFilterPanel(closeFilterPanel) {
+      closeFilterPanel();
       this.send('toggleHostDetailsFilter', true);
     },
     applyFilters(expressionList, filterType) {

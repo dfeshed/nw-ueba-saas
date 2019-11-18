@@ -512,6 +512,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
 
   test('Right clicking already selected row, will keep row highlighted', async function(assert) {
     this.set('closePropertyPanel', () => {});
+    this.set('closeFilterPanel', () => {});
     this.set('openPropertyPanel', () => {});
     initState({
       endpoint: {
@@ -527,7 +528,12 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
           min-height: 1000px
         }
       </style>
-      {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig closePropertyPanel=closePropertyPanel openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
+      {{host-detail/utils/file-context-table 
+        storeName=storeName tabName=tabName 
+        columnsConfig=columnConfig 
+        closeFilterPanel=closeFilterPanel 
+        closePropertyPanel=closePropertyPanel 
+        openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
     await click(findAll('.rsa-data-table-body-row')[1]);
     assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 1, '1 row is selected');
     assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'One row highlighted');
@@ -545,6 +551,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     this.set('closePropertyPanel', function() {
       assert.ok('close property panel is called.');
     });
+    this.set('closeFilterPanel', () => {});
     this.set('openPropertyPanel', () => {});
     initState({
       endpoint: {
@@ -560,7 +567,12 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
           min-height: 1000px
         }
       </style>
-      {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig closePropertyPanel=closePropertyPanel openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
+      {{host-detail/utils/file-context-table 
+        storeName=storeName tabName=tabName 
+        columnsConfig=columnConfig 
+        closePropertyPanel=closePropertyPanel 
+        closeFilterPanel=closeFilterPanel
+        openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
 
     await click(findAll('.rsa-data-table-body-row')[1]);
     assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 1, 'One row is selected');
@@ -577,6 +589,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
 
   test('selecting an already check-boxed row, opens the right panel', async function(assert) {
     this.set('closePropertyPanel', () => {});
+    this.set('closeFilterPanel', () => {});
     this.set('openPropertyPanel', function() {
       assert.ok('open property panel is called.');
     });
@@ -603,7 +616,11 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
           min-height: 1000px
         }
       </style>
-      {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig closePropertyPanel=closePropertyPanel openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
+      {{host-detail/utils/file-context-table storeName=storeName
+        tabName=tabName columnsConfig=columnConfig 
+        closePropertyPanel=closePropertyPanel 
+        closeFilterPanel=closeFilterPanel
+        openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
     assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 0, 'No highlighted rows.');
     await click(findAll('.rsa-data-table-body-row')[1]);
     return settled().then(() => {
@@ -613,6 +630,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
 
   test('clicking on a non check-boxed row, will remove checkbox selection from other rows', async function(assert) {
     this.set('closePropertyPanel', () => {});
+    this.set('closeFilterPanel', () => {});
     this.set('openPropertyPanel', function() {
       assert.ok('open property panel is called.');
     });
@@ -655,7 +673,13 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
           min-height: 1000px
         }
       </style>
-      {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig closePropertyPanel=closePropertyPanel openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
+      {{host-detail/utils/file-context-table 
+        storeName=storeName 
+        tabName=tabName 
+        columnsConfig=columnConfig 
+        closePropertyPanel=closePropertyPanel 
+        closeFilterPanel=closeFilterPanel
+        openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
     const redux = this.owner.lookup('service:redux');
     await click(findAll('.rsa-data-table-body-row')[0]);
     return settled().then(() => {
@@ -679,13 +703,18 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     this.set('closePropertyPanel', () => {
       assert.ok(true);
     });
+    this.set('closeFilterPanel', () => {});
     await render(hbs`
       <style>
         box, section {
           min-height: 1000px
         }
       </style>
-    {{host-detail/utils/file-context-table storeName=storeName tabName=tabName closePropertyPanel=closePropertyPanel columnsConfig=columnConfig}}`);
+    {{host-detail/utils/file-context-table 
+      storeName=storeName tabName=tabName 
+      closePropertyPanel=closePropertyPanel 
+      closeFilterPanel=closeFilterPanel
+      columnsConfig=columnConfig}}`);
     const [, , draggedItem] = document.querySelectorAll('.rsa-data-table-header-cell-resizer.left');
     let done = false;
     patchSocket((method, modelName) => {
@@ -719,7 +748,12 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
           min-height: 1000px
         }
       </style>
-      {{host-detail/utils/file-context-table showResetScoreModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}
+      {{host-detail/utils/file-context-table
+        showResetScoreModal=true 
+        isPaginated=isPaginated 
+        storeName=storeName 
+        tabName=tabName 
+        columnsConfig=columnConfig}}
     `);
     await click('.rsa-icon-cog');
     return settled().then(() => {

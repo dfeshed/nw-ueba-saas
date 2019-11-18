@@ -442,7 +442,7 @@ const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat
     dispatch(fetchHostNames(checksum, sid));
 
     dispatch(_getSelectedFileProperties(checksum));
-
+    dispatch(getServiceId('FILE'));
     dispatch(getAllServices());
 
     if (tabName === 'ANALYSIS') {

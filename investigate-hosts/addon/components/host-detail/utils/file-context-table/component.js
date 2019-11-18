@@ -5,7 +5,7 @@ import { serviceList, isInsightsAgent } from 'investigate-hosts/reducers/hosts/s
 import { inject as service } from '@ember/service';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { observer } from '@ember/object';
-import { once } from '@ember/runloop';
+import { once, next } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import { saveColumnConfig } from 'investigate-hosts/actions/data-creators/host';
 import { savedColumnsConfig, updateConfig } from 'investigate-hosts/reducers/details/selectors';
@@ -163,7 +163,9 @@ const FileContextTable = Component.extend({
           }
           this.send('onHostFileSelection', tabName, storeName, item, index);
           if (this.openPropertyPanel) {
-            this.openPropertyPanel();
+            next(() => {
+              this.openPropertyPanel();
+            });
           }
         } else {
           this.send('toggleRowSelection', tabName, item);

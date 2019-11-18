@@ -491,6 +491,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     this.set('closePanel', function() {
       assert.ok(true, 'close panel is called');
     });
+    this.set('closeFilterPanel', function() {});
 
     new ReduxDataHelper(setState)
       .agentId(1)
@@ -510,12 +511,15 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 1000px
         }
       </style>
-      {{host-detail/process/process-tree openPropertyPanel=(action openPanel) closePropertyPanel=(action closePanel)}}
+      {{host-detail/process/process-tree 
+        openPropertyPanel=(action openPanel) 
+        closePropertyPanel=(action closePanel) 
+        closeFilterPanel=closeFilterPanel}}
     `);
 
     assert.equal(find(findAll('.rsa-data-table-body-row')[2]).classList.contains('is-selected'), false, '2nd row is not selected before click');
     await click(findAll('.rsa-data-table-body-row')[2]);
-    await render(hbs`{{host-detail/process/process-tree openPropertyPanel=(action openPanel) closePropertyPanel=(action closePanel)}}`);
+    await render(hbs`{{host-detail/process/process-tree openPropertyPanel=(action openPanel)  closeFilterPanel=closeFilterPanel closePropertyPanel=(action closePanel)}}`);
 
     assert.equal(find(findAll('.rsa-data-table-body-row')[0]).classList.contains('is-selected'), false, '2nd row is not selected before click');
     await click(findAll('.rsa-data-table-body-row')[0]);
@@ -569,6 +573,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
   test('It renders the context menu', async function(assert) {
     this.set('closePropertyPanel', () => {});
+    this.set('closeFilterPanel', () => {});
     this.set('showDownloadProcessDump', true);
     new ReduxDataHelper(setState)
       .processList(modifiedList)
@@ -586,7 +591,10 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree showDownloadProcessDump=showDownloadProcessDump closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
+      {{host-detail/process/process-tree 
+        showDownloadProcessDump=showDownloadProcessDump 
+        closeFilterPanel=closeFilterPanel
+        closePropertyPanel=closePropertyPanel }}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(() => {
@@ -618,13 +626,20 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     this.set('closePropertyPanel', function() {
       assert.ok('close property panel is called.');
     });
+    this.set('closeFilterPanel', () => {});
     await render(hbs`
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree showDownloadProcessDump=showDownloadProcessDump analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) closePropertyPanel=closePropertyPanel fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
+      {{host-detail/process/process-tree 
+        showDownloadProcessDump=showDownloadProcessDump 
+        analyzeFile=(action analyzeFile) 
+        downloadFiles=(action downloadFiles) 
+        closePropertyPanel=closePropertyPanel 
+        closeFilterPanel=closeFilterPanel
+        fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -698,13 +713,19 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     this.set('downloadFiles', function() {
       assert.ok('downloadFiles Called');
     });
+    this.set('closeFilterPanel', () => {});
     await render(hbs`
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) closePropertyPanel=closePropertyPanel downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
+      {{host-detail/process/process-tree 
+        analyzeFile=(action analyzeFile) 
+        closePropertyPanel=closePropertyPanel 
+        downloadFiles=(action downloadFiles) 
+        closeFilterPanel=closeFilterPanel
+        fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
@@ -755,13 +776,19 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     this.set('downloadFiles', function() {
       assert.ok('downloadFiles Called');
     });
+    this.set('closeFilterPanel', () => {});
     await render(hbs`
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) closePropertyPanel=closePropertyPanel downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
+      {{host-detail/process/process-tree 
+        analyzeFile=(action analyzeFile) 
+        closePropertyPanel=closePropertyPanel 
+        downloadFiles=(action downloadFiles) 
+        closeFilterPanel=closeFilterPanel
+        fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
@@ -903,13 +930,19 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       assert.ok('AnalyzeFiles Called');
     });
     this.set('downloadFiles', function() { });
+    this.set('closeFilterPanel', () => {});
     await render(hbs`
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) closePropertyPanel=closePropertyPanel downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
+      {{host-detail/process/process-tree 
+        analyzeFile=(action analyzeFile) 
+        closePropertyPanel=closePropertyPanel 
+        downloadFiles=(action downloadFiles) 
+        closeFilterPanel=(action closeFilterPanel)
+        fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -959,13 +992,19 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     this.set('downloadFiles', function() {
       assert.ok('downloadFiles Called');
     });
+    this.set('closeFilterPanel', () => {});
     await render(hbs`
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) closePropertyPanel=closePropertyPanel downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
+      {{host-detail/process/process-tree 
+        analyzeFile=(action analyzeFile) 
+        closePropertyPanel=closePropertyPanel 
+        downloadFiles=(action downloadFiles) 
+        closeFilterPanel=(action closeFilterPanel)
+        fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
@@ -1381,7 +1420,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('clicking on a non check-boxed row, will remove checkbox selection from other rows', async function(assert) {
-    this.set('closePropertyPanel', function() { });
+    this.set('closePropertyPanel', function() {});
+    this.set('closeFilterPanel', function() {});
     this.set('openPropertyPanel', function() {
       assert.ok('open property panel is called.');
     });
@@ -1477,7 +1517,10 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
+      {{host-detail/process/process-tree 
+        closePropertyPanel=closePropertyPanel
+        closeFilterPanel=closeFilterPanel 
+        openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
     const redux = this.owner.lookup('service:redux');
     await click(findAll('.rsa-data-table-body-row')[3]);
     return settled().then(() => {

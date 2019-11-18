@@ -1,4 +1,4 @@
-{{#rsa-page-layout showLeftZone=(not isShowOpenFilterButton) showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
+{{#rsa-page-layout showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
   {{#layout.left as |leftPanel|}}
     {{leftPanel.header iconName='filter-2' title=(t 'investigateHosts.downloads.filters.title')}}
     {{endpoint/filters-wrapper
@@ -73,6 +73,7 @@
         isAgentMigrated=isAgentMigrated
         openPropertyPanel=(action layout.open 'right')
         closePropertyPanel=(action layout.close 'right')
+        closeFilterPanel=(action layout.close 'left')
         downloadProcessDump=(action 'onDownloadProcessDump')
         downloadFiles=(action 'onDownloadFilesToServer')
         saveLocalCopy=(action 'onSaveLocalCopy')

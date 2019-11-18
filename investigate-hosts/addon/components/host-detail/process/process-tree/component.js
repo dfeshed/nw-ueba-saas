@@ -19,7 +19,7 @@ import { serviceList, isInsightsAgent } from 'investigate-hosts/reducers/hosts/s
 import { machineOsType, hostName, isAgentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
 import { fileStatus, isRemediationAllowed } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
-import { once } from '@ember/runloop';
+import { once, next } from '@ember/runloop';
 import { saveColumnConfig } from 'investigate-hosts/actions/data-creators/host';
 import {
   setRowIndex,
@@ -217,8 +217,11 @@ const TreeComponent = Component.extend({
             this.send('deSelectAllProcess');
             this.send('toggleProcessSelection', { ...item, machineName });
           }
+
           if (this.openPropertyPanel) {
-            this.openPropertyPanel();
+            next(() => {
+              this.openPropertyPanel();
+            });
           }
           this.send('onProcessSelection', pid, checksumSha256);
         } else {
