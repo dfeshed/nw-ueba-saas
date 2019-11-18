@@ -2059,7 +2059,7 @@ indicators:
   - id: sumOfHighestDstPortScoresJa3OutboundTlsHourly
     type: SCORE_AGGREGATION
     name: ja3_abnormal_dst_port_for_ja3_outbound
-    adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
+    adeEventType: scored_enriched.tls.dstPort.ja3Outbound.tls.score
     modelContextFields:
       - ja3.name
     schema: TLS
