@@ -9,8 +9,8 @@
     <mapping envisionName="asn.dst" nwName="asn.dst" flags="None" format="Text"/>
     <mapping envisionName="ja3" nwName="ja3" flags="None" format="Text"/>
     <mapping envisionName="ja3s" nwName="ja3s" flags="None" format="Text"/>
-    <mapping envisionName="payload.req" nwName="payload.req" flags="None" format="UInt32"/>
-    <mapping envisionName="payload.res" nwName="payload.res" flags="None" format="UInt32"/>
+    <mapping envisionName="payload.req" nwName="payload.req" flags="None" format="UInt64"/>
+    <mapping envisionName="payload.res" nwName="payload.res" flags="None" format="UInt64"/>
     <mapping envisionName="network" nwName="network" flags="None" format="Text"/>
     <mapping envisionName="session.split" nwName="session.split" flags="None" format="UInt16"/>
     <mapping envisionName="tcp.dstport" nwName="tcp.dstport" flags="None" format="UInt16"/>
