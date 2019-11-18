@@ -329,7 +329,7 @@ class Parser {
     let child = this._criteriaOrGroupOrTextFilterOrNot();
     while (child.type === GRAMMAR.COMPLEX_FILTER && child.tryAgain) {
       if (child.text !== '') {
-        result.children.push(child, { type: LEXEMES.AND, text: '&&' });
+        result.children.push(child, { type: LEXEMES.AND, text: 'AND' });
       }
       child = this._criteriaOrGroupOrTextFilterOrNot();
     }
@@ -352,6 +352,15 @@ class Parser {
         result.children.push(operator, nextCriteriaOrGroup);
       }
     }
+
+    // Change any OR to AND before a text filter
+    result.children = result.children.map((item, idx, arr) => {
+      const next = arr[idx + 1];
+      if (item.type === LEXEMES.OR && next?.type === LEXEMES.TEXT_FILTER) {
+        return { type: LEXEMES.AND, text: 'AND' };
+      }
+      return item;
+    });
 
     return result;
   }

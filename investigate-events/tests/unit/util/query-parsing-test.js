@@ -586,6 +586,20 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.notOk(result[0].isInvalid, 'pill should be valid');
   });
 
+  test('transformTextToPillData replaces OR with AND before a text pill', function(assert) {
+    const text = `medium = 1 OR ${SEARCH_TERM_MARKER}text filter${SEARCH_TERM_MARKER}`;
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 3);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '1', 'value should match');
+    assert.notOk(result[0].isInvalid, 'pill should be valid');
+    assert.equal(result[1].type, OPERATOR_AND, 'type should match');
+    assert.equal(result[2].type, TEXT_FILTER, 'type should match');
+    assert.equal(result[2].searchTerm, 'text filter', 'searchTerm should match');
+  });
+
   test('transformTextToPillData returns an invalid pill for more than one comma in a row', function(assert) {
     const text = 'medium = 1,,3';
     const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
