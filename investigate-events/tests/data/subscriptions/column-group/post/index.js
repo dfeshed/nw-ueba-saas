@@ -1,4 +1,5 @@
-import { columnGroups } from '..';
+import { columnGroups, BASE_COLUMNS } from '..';
+import _ from 'lodash';
 
 export default {
   delay: 100,
@@ -11,7 +12,8 @@ export default {
       'id': body.columnGroup.id ? body.columnGroup.id : `abc${num}`,
       'name': body.columnGroup.name,
       'contentType': 'USER',
-      'columns': body.columnGroup.columns
+      // simulate inclusion of time,medium in response for set columnGroup
+      'columns': _.uniqBy([...BASE_COLUMNS, ...body.columnGroup.columns ], 'metaName')
     };
 
     // Save off to columnGroup cache

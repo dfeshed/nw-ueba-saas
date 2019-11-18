@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed, { not } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
+import _ from 'lodash';
 
 import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
 import { profiles } from 'investigate-events/reducers/investigate/profile/selectors';
@@ -53,7 +54,8 @@ const ColumnGroups = Component.extend({
     },
 
     columnGroupResponseMapping(columnGroup) {
-      columnGroup.columns = [...BASE_COLUMNS, ...columnGroup.columns ];
+      // add base columns but avoid duplicates if base columns included in response for `set columnGroup` from server
+      columnGroup.columns = _.uniqBy([...BASE_COLUMNS, ...columnGroup.columns ], 'metaName');
       return mapColumnGroupsForEventTable([columnGroup])[0];
     },
 

@@ -1,4 +1,4 @@
-const BASE_COLUMNS = [
+export const BASE_COLUMNS = [
   { metaName: 'time', displayName: 'Collection Time', width: 175, position: 0, visible: true },
   { metaName: 'medium', displayName: 'Type', width: 100, position: 1, visible: true }
 ];

@@ -1,9 +1,11 @@
+import _ from 'lodash';
+
 /**
  * maps columns of a columnGroup for Events Table
  * @param {array[]} columns
  */
 export const mapColumnGroupsForEventTable = (eventColumnGroups) => {
-  const columnGroups = JSON.parse(JSON.stringify(eventColumnGroups));
+  const columnGroups = _.cloneDeep(eventColumnGroups);
 
   return columnGroups.map((cg) => {
     if (cg.contentType) {
