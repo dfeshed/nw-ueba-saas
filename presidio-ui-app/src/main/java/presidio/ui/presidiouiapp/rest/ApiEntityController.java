@@ -69,6 +69,7 @@ public class ApiEntityController extends BaseController {
 	private static final String ENTITY_WEEKLY_TRENDING_SCORE_COLUMN_NAME = "Weekly Trending Score";
 	private static final String ENTITY_DAILY_TRENDING_SCORE = "daily";
 	private static final String ENTITY_WEEKLY_TRENDING_SCORE = "weekly";
+	private static final String ENTITY_FILTER_NAME = "name";
 
 	private static final String ALL_WATCHED = "allWatched";
 	private static final String CSV_CONTENT_TYPE = "text/plain; charset=utf-8";
@@ -627,7 +628,7 @@ public class ApiEntityController extends BaseController {
 		Sort sortUserDesc;
 		Sort.Direction sortDir = Sort.Direction.ASC;
 		if (StringUtils.isNotBlank(sortField)) {
-			if (sortDirection != null) {
+			if (sortDirection != null && !sortField.equals(ENTITY_FILTER_NAME)) {
 				sortDir = Sort.Direction.valueOf(sortDirection);
 			}
 			sortUserDesc = new Sort(new Sort.Order(sortDir, sortField));
