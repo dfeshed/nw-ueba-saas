@@ -5378,6 +5378,7 @@ effects the simulated source.',
       all: 'All Entities',
       network: 'Network',
       userId: 'USERS',
+      user: 'USER',
       ja3: 'JA3',
       sslSubject: 'SSL'
     },

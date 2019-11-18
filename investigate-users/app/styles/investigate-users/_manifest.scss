@@ -6,12 +6,12 @@
 .users-container {
   background-color: background-color(primary, darker);
   @include rsa-col(justify,fill);
-  height: calc(100vh - 90px);
+  height: calc(100vh - 110px);
 }
 
 .investigate-engine:has(.license-banner.shown) {
   .users-container {
-    height: calc(100vh - 130px);
+    height: calc(100vh - 140px);
   }
 }
 

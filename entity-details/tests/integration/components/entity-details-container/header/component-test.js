@@ -47,7 +47,8 @@ module('Integration | Component | entity-details-container/header', function(hoo
 
     new ReduxDataHelper(setState).entityId({ entityId: 123, entityType: 'user' }).entityDetails(details.data[0]).build();
     await render(hbs`{{entity-details-container/header}}`);
-    assert.equal(find('.entity-details-container-header_name').textContent.trim(), 'file_qa_1_101', 'Should show entity name');
+    assert.equal(find('.entity-details-container-header_name').textContent.trim().indexOf('file_qa_1_101'), 0, 'Should show entity name');
+    assert.ok(find('.entity-details-container-header_name').textContent.trim().indexOf('USER') > 0, 'Should show entity Type');
     assert.equal(find('.score').textContent.trim(), 220, 'Should show entity score');
   });
 

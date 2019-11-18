@@ -1,20 +1,23 @@
 <div class='entity-details-container-header_leftArrow'>
 </div>
-<div class='entity-details-container-header_avtar'>
-  {{rsa-icon size='larger' name=enityIcon}}
-</div>
-<div class='entity-details-container-header_name'>
-  {{entityDisplayName}}
-</div>
 <div class='entity-details-container-header_score'>
   {{rsa-content-badge-score score=entityScore size='small' style=entitySeverity invertColor=true}}
 </div>
+<div class='entity-details-container-header_name'>
+  <div class='entity-details-container-header_name_title'>
+    {{entityDisplayName}}
+  </div>
+  <div class='entity-details-container-header_name_type'>
+    {{t (concat 'investigateUsers.entityTypes.' entityType)}}
+  </div>
+</div>
+
 <div class='entity-details-container-header_watch'>
   {{#rsa-form-button click=(action (if (eq isFollowed true) 'unfollowUser' 'followUser'))}}
     {{#if (eq isFollowed true)}}
-      {{rsa-icon size='medium' name='binoculars'}} {{t 'entityDetails.entity.removeWatch'}}
+      {{rsa-icon size='medium' name='view-1'}} {{t 'entityDetails.entity.removeWatch'}}
     {{else}}
-      {{rsa-icon size='medium' name='binoculars'}} {{t 'entityDetails.entity.addWatch'}}
+      {{rsa-icon size='medium' name='view-1'}} {{t 'entityDetails.entity.addWatch'}}
     {{/if}}
   {{/rsa-form-button}}
 </div>
