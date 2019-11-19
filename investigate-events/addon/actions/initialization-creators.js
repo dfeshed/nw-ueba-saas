@@ -150,8 +150,8 @@ const _initializePreferences = (dispatch, getState) => {
  * @return {function} A Redux thunk
  * @public
  */
-const _getColumnGroups = () => {
-  return (dispatch, getState) => {
+const _getColumnGroups = (dispatch, getState) => {
+  return new RSVP.Promise(function(resolve, reject) {
     const { columnGroups } = getState().investigate.columnGroup;
     if (!columnGroups) {
       dispatch({
@@ -160,11 +160,15 @@ const _getColumnGroups = () => {
         meta: {
           onFailure(response) {
             handleInvestigateErrorCode(response, 'GET_COLUMN_GROUPS');
+            reject();
+          },
+          onSuccess() {
+            resolve();
           }
         }
       });
     }
-  };
+  });
 };
 
 /**
@@ -508,11 +512,10 @@ export const initializeInvestigate = function(
       }
     });
 
-    // 2) Retrieve profiles, column groups, and meta groups
+    // 2) Retrieve profiles and meta groups
     // it isn't important that this be syncronized with anything else,
     // so can just kick it off
     dispatch(_getProfiles());
-    dispatch(_getColumnGroups());
     dispatch(_getMetaGroups());
     dispatch(isQueryExecutedByColumnGroup(false));
 
@@ -523,10 +526,14 @@ export const initializeInvestigate = function(
     // 5) Retrieve event analysis settings. Returns us with
     //    a number of events to be displayed threshold based
     //    upon roles/default settings in admin.
+    // 6) Get column groups
+    //    Ensure column groups are present otherwise querying without
+    //    can sometimes result in an error from the service or incomplete data
     const initializationPromises = [
       _initializePreferences(dispatch, getState),
       _initializeServices(dispatch, getState),
-      _fetchEventSettings(dispatch)
+      _fetchEventSettings(dispatch),
+      _getColumnGroups(dispatch, getState)
     ];
 
     // Will want to retrive recent queries for the first time we land
@@ -541,23 +548,23 @@ export const initializeInvestigate = function(
     const hasService = !!parsedQueryParams.serviceId;
     if (hasService) {
       // If we have a service then...
-      // 6) Include getting the dictionaries with other requests,
+      // 7) Include getting the dictionaries with other requests,
       //    and kick them all off
       initializationPromises.push(_initializeDictionaries(dispatch, getState));
       await RSVP.all(initializationPromises).catch(errorHandler);
     } else {
       // If we do not have a service then...
-      // 6) Get all the dictionaries after we have fetched services and
+      // 7) Get all the dictionaries after we have fetched services and
       //    automatically chosen the first service as the active service
       await RSVP.all(initializationPromises);
       await _initializeDictionaries(dispatch, getState).catch(errorHandler);
     }
 
     // After _initializePreferences has resolved
-    // 7) Initialize global preferences state
+    // 8) Initialize global preferences state
     _initializeGlobalPreferences(dispatch);
 
-    // 8) Update sort state with sort params in URL
+    // 9) Update sort state with sort params in URL
     // requires the completion of _initializePreferences for preference defaults
     // used for client sorting and core sorting
     // scrubbed from outgoing queries when not supported or needed
@@ -565,22 +572,22 @@ export const initializeInvestigate = function(
     dispatch(updateSort(sortField, sortDir));
 
     if (parsedQueryParams.pillData && parsedQueryParams.pillDataHashes) {
-      // 9) If there is a pdhash and mf in the query, fetch a hash for the mf
+      // 10) If there is a pdhash and mf in the query, fetch a hash for the mf
       //    and combine the returned hash into pdhash and redirect.
       await _handleSearchParamsAndHashInQueryParams(parsedQueryParams, hashNavigateCallback, dispatch, getState);
     } else if (parsedQueryParams.pillData) {
-      // 9) If there was no hash in the incoming params, do checking to
+      // 10) If there was no hash in the incoming params, do checking to
       //    see if we need to create one and update the URL with a new hash.
       //    No need to await since we already have everything required
       dispatch(_handleSearchParamsInQueryParams(parsedQueryParams, hashNavigateCallback, isInternalQuery));
     } else if (parsedQueryParams.pillDataHashes) {
-      // 9) Perform all the checks to see if we need to retrieve hash
+      // 10) Perform all the checks to see if we need to retrieve hash
       //    params, and if we do, wait for that retrieval to finish.
       //    This must be done after the previous promises because
       //    fetching/creating pills relies on languages being in place
       await _handleHashInQueryParams(parsedQueryParams, dispatch, hashNavigateCallback, getState);
     } else {
-      // 9) This callback is required to maintain browser history. There are
+      // 10) This callback is required to maintain browser history. There are
       //    two conditions where we have to callback this without params fn.
       //      a) When we have hash in parsedQueryParams. Calling it in _handleHashInQueryParams
       //      b) When parsedQueryParams neither has hash or pill data(mf)
@@ -589,10 +596,10 @@ export const initializeInvestigate = function(
       });
     }
 
-    // 10) Initialize the querying state so we can get going
+    // 11) Initialize the querying state so we can get going
     dispatch(_intializeQuerying(hardReset));
 
-    // 11) If we have the minimum required values for querying (service id,
+    // 12) If we have the minimum required values for querying (service id,
     // start time and end time) specified in the URL, then kick off the query.
     const { serviceId, startTime, endTime } = parsedQueryParams;
     if (serviceId && startTime && endTime) {

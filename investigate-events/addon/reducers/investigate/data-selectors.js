@@ -52,6 +52,7 @@ const _isReconOpen = (state) => state.investigate.data.isReconOpen;
 const _metaPanelSize = (state) => state.investigate.meta.metaPanelSize;
 const _data = (state) => state.investigate.eventTimeline.data;
 const _status = (state) => state.investigate.eventTimeline.status;
+const _sortField = (state) => state.investigate.data.sortField;
 export const selectedColumnGroup = (state) => state.investigate.data.selectedColumnGroup;
 export const getDefaultPreferences = (state) => state.investigate.data.eventsPreferencesConfig.defaultPreferences.asMutable();
 
@@ -207,13 +208,15 @@ export const hasMetaSummaryColumn = createSelector(
 // returns a list of this column names involved in the creation of the events
 // table. This includes flattening the `meta-summary` column.
 export const getFlattenedColumnList = createSelector(
-  [getColumns, hasMetaSummaryColumn],
-  (columns, hasMetaSummaryColumn) => {
+  [getColumns, hasMetaSummaryColumn, _sortField],
+  (columns, hasMetaSummaryColumn, sortField) => {
     if (columns) {
       columns = columns.map(({ field }) => field);
 
       columns = [
         ...columns,
+        'time', // time is used in every column columnGroup
+        sortField, // include sortField or risk query error if not present
         'sessionid', // always need sessionid
         'nwe.callback_id', // determines if a row is for endpoint.
         'medium', // tells us if it is log/network

@@ -576,6 +576,7 @@ module('Unit | Selectors | data-selectors', function(hooks) {
           ]
         },
         data: {
+          sortField: 'foo',
           selectedColumnGroup: 'SUMMARY'
         },
         columnGroup: {
@@ -588,6 +589,8 @@ module('Unit | Selectors | data-selectors', function(hooks) {
     });
     const columns = getFlattenedColumnList(state);
 
+    assert.ok(columns.includes('time'), 'must always include time');
+    assert.ok(columns.includes('foo'), 'must always include sortField');
     assert.ok(columns.includes('medium'), 'must always include medium');
     assert.ok(columns.includes('session.split'), 'must always include session.split');
     assert.ok(columns.includes('nwe.callback_id'), 'must always include callback id');
