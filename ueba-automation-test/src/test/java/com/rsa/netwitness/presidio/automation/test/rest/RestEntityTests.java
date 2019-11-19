@@ -31,15 +31,15 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
     public void preconditionCheck() {
         PresidioUrl url = restHelper.entities().url().withNoParameters();
         List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
-        assertThat(entities).as(url+ "Entities list is empty. Skipping next tests.").isNotNull().isNotEmpty();
+        assertThat(entities).as(url + "Entities list is empty. Skipping next tests.").isNotNull().isNotEmpty();
 
         url = restHelper.entities().url().withExpandedParameter();
         entities = restHelper.entities().request().getEntities(url);
-        assertThat(entities).as(url+ "Entities list is empty. Skipping next tests.").isNotNull().isNotEmpty();
+        assertThat(entities).as(url + "Entities list is empty. Skipping next tests.").isNotNull().isNotEmpty();
 
         allEntitiesUrl = restHelper.entities().url().withMaxSizeAndExpendedParameters();
         allEntities = restHelper.entities().request().getEntities(allEntitiesUrl);
-        assertThat(allEntities).as(allEntitiesUrl+ "Entities list is empty. Skipping next tests.").isNotNull().isNotEmpty();
+        assertThat(allEntities).as(allEntitiesUrl + "Entities list is empty. Skipping next tests.").isNotNull().isNotEmpty();
     }
 
     @BeforeMethod
@@ -53,12 +53,12 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
         PresidioUrl url = restHelper.entities().url().withMaxSizeAndSortedParameters("DESC", "SCORE");
         List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
 
-        for(int i=0 ; i<entities.size()-1 ; i++) {
+        for (int i = 0; i < entities.size() - 1; i++) {
             int current = Integer.parseInt(entities.get(i).getScore());
-            int next = Integer.parseInt(entities.get(i+1).getScore());
+            int next = Integer.parseInt(entities.get(i + 1).getScore());
 
-            if(current < next) {
-                Assert.fail(url + "\nScores are not sorted correctly. \ncurrent score is " + current + ", next score is " + next + "\nentity: " + entities.get(i).toString() );
+            if (current < next) {
+                Assert.fail(url + "\nScores are not sorted correctly. \ncurrent score is " + current + ", next score is " + next + "\nentity: " + entities.get(i).toString());
             }
         }
     }
@@ -68,12 +68,12 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
         PresidioUrl url = restHelper.entities().url().withMaxSizeAndSortedParameters("ASC", "SCORE");
         List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
 
-        for(int i=0 ; i < entities.size()-1 ; i++) {
+        for (int i = 0; i < entities.size() - 1; i++) {
             int current = Integer.parseInt(entities.get(i).getScore());
-            int next = Integer.parseInt(entities.get(i+1).getScore());
+            int next = Integer.parseInt(entities.get(i + 1).getScore());
 
-            if(current > next) {
-                Assert.fail(url + "\nScores are not sorted correctly. \ncurrent score is " + current + ", next score is " + next + "\nentity: " + entities.get(i).toString() );
+            if (current > next) {
+                Assert.fail(url + "\nScores are not sorted correctly. \ncurrent score is " + current + ", next score is " + next + "\nentity: " + entities.get(i).toString());
             }
         }
     }
@@ -95,7 +95,7 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
 
         assertThat(entities).as("Get entities by id should return 1 element").hasSize(1);
 
-        for(EntitiesStoredRecord e : entities) {
+        for (EntitiesStoredRecord e : entities) {
             Assert.assertEquals(e.getId(), entityId, entityIdUrl + "\nFilter by id return incorrect entity.");
             Assert.assertEquals(e.getEntityName(), entityId, entitiesStoredRecord.getEntityName() + "\nFilter by id return incorrect entity.");
             Assert.assertEquals(e.getEntityType(), entityId, entitiesStoredRecord.getEntityType() + "\nFilter by id return incorrect entity.");
@@ -105,7 +105,7 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void alerts_count_correctness_test() {
-        for(EntitiesStoredRecord entity : allEntities) {
+        for (EntitiesStoredRecord entity : allEntities) {
             int alertCount = entity.getAlertCount();
             int alertSize = entity.getAlerts().size();
 
@@ -134,11 +134,11 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
 
         int low = 0, medium = 0, high = 0, critical = 0;
 
-        for(EntitiesStoredRecord usr : entities) {
-            if(usr.getSeverity().equals("LOW")) low++;
-            if(usr.getSeverity().equals("MEDIUM")) medium++;
-            if(usr.getSeverity().equals("HIGH")) high++;
-            if(usr.getSeverity().equals("CRITICAL")) critical++;
+        for (EntitiesStoredRecord usr : entities) {
+            if (usr.getSeverity().equals("LOW")) low++;
+            if (usr.getSeverity().equals("MEDIUM")) medium++;
+            if (usr.getSeverity().equals("HIGH")) high++;
+            if (usr.getSeverity().equals("CRITICAL")) critical++;
         }
 
         int actualMinScore = entities.stream().mapToInt(e -> Integer.valueOf(e.getScore())).min().orElse(-1);
@@ -149,20 +149,17 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(severity, "severity keys are null");
 
         Iterator<String> keysItr = severity.keys();
-        while(keysItr.hasNext()) {
+        while (keysItr.hasNext()) {
             String key = keysItr.next();
             Object value = severity.get(key);
 
-            if(key.equals("LOW")){
+            if (key.equals("LOW")) {
                 Assert.assertEquals(low, (int) value, "low severity count is not match to actual entities severity");
-            }
-            else if(key.equals("MEDIUM")){
+            } else if (key.equals("MEDIUM")) {
                 Assert.assertEquals(medium, (int) value, "medium severity count is not match to actual entities severity");
-            }
-            else if(key.equals("HIGH")){
+            } else if (key.equals("HIGH")) {
                 Assert.assertEquals(high, (int) value, "high severity count is not match to actual entities severity");
-            }
-            else if(key.equals("CRITICAL")){
+            } else if (key.equals("CRITICAL")) {
                 Assert.assertEquals(critical, (int) value, "critical severity count is not match to actual entities severity");
             }
         }
@@ -179,10 +176,10 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
         List<EntitiesStoredRecord> entities = null;
 
         Iterator<String> keyItr = indicatorsAggregation.keys();
-        while(keyItr.hasNext()) {
+        while (keyItr.hasNext()) {
             String key = keyItr.next();
             Object value = indicatorsAggregation.get(key);
-            int aggregated = (int)value;
+            int aggregated = (int) value;
             PresidioUrl indicatorUrl = restHelper.entities().url().withMaxSizeAndIndicatorNameParameters(key);
             entities = restHelper.entities().request().getEntities(indicatorUrl);
 
@@ -197,12 +194,12 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
         assertThat(getDistinctScoresOrdered()).as("Expected for more distinct entity scores.\nScores=" + getDistinctScoresOrdered().toString()).hasSizeGreaterThan(3);
 
         int minScore = getDistinctScoresOrdered().get(1);
-        int maxScore = getDistinctScoresOrdered().get(getDistinctScoresOrdered().size()-2);
+        int maxScore = getDistinctScoresOrdered().get(getDistinctScoresOrdered().size() - 2);
         PresidioUrl url = restHelper.entities().url().withMaxSizeAndSortedAscAndMinMaxScoreParameters(minScore, maxScore);
         List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
 
         Assert.assertEquals(Integer.parseInt(entities.get(0).getScore()), minScore, "minScore is not the minScore that supposed to be.");
-        Assert.assertEquals(Integer.parseInt(entities.get(entities.size()-1).getScore()), maxScore, "maxScore is not the maxScore that supposed to be.");
+        Assert.assertEquals(Integer.parseInt(entities.get(entities.size() - 1).getScore()), maxScore, "maxScore is not the maxScore that supposed to be.");
     }
 
 
@@ -218,7 +215,7 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void search_by_second_word_finds_the_entity(){
+    public void search_by_second_word_finds_the_entity() {
         EntitiesStoredRecord doubleSlashName = allEntities.stream().filter(e -> e.getEntityName().contains("\\")).findAny().orElseThrow();
         String nameToSearch = doubleSlashName.getEntityName().split("\\\\")[1];
 
@@ -247,22 +244,21 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
     public void alert_document_entity_id_should_match_related_entity_id() {
         List<EntitiesStoredRecord> alertEntities = allEntities.stream().filter(e -> !e.getAlerts().isEmpty()).collect(toList());
 
-        for(EntitiesStoredRecord e : alertEntities) {
+        for (EntitiesStoredRecord e : alertEntities) {
             String entityId = e.getId();
             List<AlertsStoredRecord> alerts = e.getAlerts();
-            for(AlertsStoredRecord alert : alerts) {
+            for (AlertsStoredRecord alert : alerts) {
                 assertThat(entityId)
-                        .as( allEntitiesUrl + "\nalert's entityId is not matched to the it's entity Id.\n" +
+                        .as(allEntitiesUrl + "\nalert's entityId is not matched to the it's entity Id.\n" +
                                 "EntityId = " + entityId + "\n" +
                                 "AlertId = " + alert.getId() + "\n")
                         .isEqualTo(alert.getEntityDocumentId());
             }
         }
-
     }
 
 
-    private List<Integer> getDistinctScoresOrdered(){
+    private List<Integer> getDistinctScoresOrdered() {
         List<Integer> orderedScores = allEntities.stream()
                 .mapToInt(e -> Integer.valueOf(e.getScore()))
                 .distinct()
