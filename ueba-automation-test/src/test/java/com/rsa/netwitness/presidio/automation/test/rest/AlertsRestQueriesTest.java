@@ -164,7 +164,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
         String entityNameExpected = alerts.get(alerts.size()/2).getEntityName();
 
-        url = restHelper.alerts().url().withEntityNamesParameters(entityNameExpected);
+        url = restHelper.alerts().url().alertsWithEntityNamesParameters(entityNameExpected);
         alerts = restHelper.alerts().request().getAlerts(url);
 
         List<String> entityNamesActual = alerts.stream()
@@ -179,7 +179,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void filter_by_missing_entity_returns_null() {
-        PresidioUrl url = restHelper.alerts().url().withEntityNamesParameters("abcdefgNotExist");
+        PresidioUrl url = restHelper.alerts().url().alertsWithEntityNamesParameters("abcdefgNotExist");
         RestApiResponse restApiResponse = restHelper.alerts().request().getRestApiResponse(url);
         assertThat(restApiResponse)
                 .as(url + "should return null instead of an empty list")

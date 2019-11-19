@@ -16,4 +16,8 @@ public class EntitiesUrlBuilder extends UrlBase {
     public ParametersUrlHelper url() {
         return new ParametersUrlHelper(URL);
     }
+
+    public EntitiesWithIdUrlBuilder withId(String entityId) {
+        return new EntitiesWithIdUrlBuilder(this.URL.concat("/").concat(entityId));
+    }
 }

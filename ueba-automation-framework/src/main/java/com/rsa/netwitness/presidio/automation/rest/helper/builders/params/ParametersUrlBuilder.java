@@ -27,7 +27,8 @@ class ParametersUrlBuilder extends PresidioUrl {
         private final String SORT_FIELD_NAMES = "sortFieldNames";
         private final String MIN_SCORE = "minScore";
         private final String MAX_SCORE = "maxScore";
-        private final String ENTITY_NAMES = "entityNames";
+        private final String ENTITY_NAMES = "entityNames";   // for /alerts only
+        private final String ENTITY_NAME = "entityName";     // for /entities only
         private final String INDICATOR_NAME = "indicatorsName";
         private final String SEVERITY = "severity";
         private final String AGGREGATE_BY = "aggregateBy";
@@ -72,9 +73,20 @@ class ParametersUrlBuilder extends PresidioUrl {
             return this;
         }
 
+        // for /alerts only
         public Builder setEntityNames(String val) {
             try {
                 URL.append(ENTITY_NAMES).append("=").append(encode(val, "UTF-8")).append("&");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            return this;
+        }
+
+        // for /entities only
+        public Builder setEntityName(String val) {
+            try {
+                URL.append(ENTITY_NAME).append("=").append(encode(val, "UTF-8")).append("&");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

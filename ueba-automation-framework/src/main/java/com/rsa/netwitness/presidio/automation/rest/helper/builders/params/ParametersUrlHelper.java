@@ -91,16 +91,19 @@ public class ParametersUrlHelper {
                 .build();
     }
 
-    public PresidioUrl withEntityNamesParameters(String entityNames) {
+    // for /alerts only
+    public PresidioUrl alertsWithEntityNamesParameters(String entityNames) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setEntityNames(entityNames)
                 .build();
     }
 
-    public PresidioUrl withEntityNamesExpandedParameters(String entityNames) {
+    // for /entities only
+    public PresidioUrl entitiesWithEntityNameAndMaxSizeParameters(String entityName) {
         return new ParametersUrlBuilder.Builder(URL)
-                .setEntityNames(entityNames)
-                .setExpand(true)
+                .setEntityName(entityName)
+                .setPageSize(10000)
+                .setPageNumber(0)
                 .build();
     }
 
@@ -127,6 +130,51 @@ public class ParametersUrlHelper {
     public PresidioUrl withExpandedParameter() {
         return new ParametersUrlBuilder.Builder(URL)
                 .setExpand(true)
+                .build();
+    }
+
+    public PresidioUrl withMinScoreAndExpanded(int minScore) {
+        return new ParametersUrlBuilder.Builder(URL)
+                .setExpand(true)
+                .setMinScore(minScore)
+                .build();
+    }
+
+    public PresidioUrl withMaxSizeAndSortedAndAggregated(String sortDirection, String sortFieldNames, String aggregationFieldName) {
+        return new ParametersUrlBuilder.Builder(URL)
+                .setSortDirection(sortDirection)
+                .setSortFieldNames(sortFieldNames)
+                .setAggregateBy(aggregationFieldName)
+                .setPageSize(10000)
+                .setPageNumber(0)
+                .build();
+    }
+
+    public PresidioUrl withMaxSizeAndSortedAndAggregatedAndMinScore(String sortDirection, String sortFieldNames, String aggregationFieldName, int minScore) {
+        return new ParametersUrlBuilder.Builder(URL)
+                .setSortDirection(sortDirection)
+                .setSortFieldNames(sortFieldNames)
+                .setAggregateBy(aggregationFieldName)
+                .setMinScore(minScore)
+                .setPageSize(10000)
+                .setPageNumber(0)
+                .build();
+    }
+
+    public PresidioUrl withMaxSizeAndAggregated(String aggregationFieldName) {
+        return new ParametersUrlBuilder.Builder(URL)
+                .setAggregateBy(aggregationFieldName)
+                .setPageSize(10000)
+                .setPageNumber(0)
+                .build();
+    }
+
+    public PresidioUrl withMaxSizeAndAggregatedAndMinScore(String aggregationFieldName, int minScore) {
+        return new ParametersUrlBuilder.Builder(URL)
+                .setAggregateBy(aggregationFieldName)
+                .setMinScore(minScore)
+                .setPageSize(10000)
+                .setPageNumber(0)
                 .build();
     }
 

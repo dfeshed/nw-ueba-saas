@@ -1,48 +1,45 @@
 package com.rsa.netwitness.presidio.automation.test.rest;
 
-import com.rsa.netwitness.presidio.automation.config.AutomationConf;
-import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
-import com.rsa.netwitness.presidio.automation.test_managers.OutputTestManager;
-import org.json.JSONException;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
-@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
-@SpringBootTest(classes = {MongoConfig.class, OutputTestManager.class})
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
+
+
 public class RestEntityTests extends AbstractTestNGSpringContextTests {
-
-    @Autowired
-    private OutputTestManager testManager;
 
     private RestHelper restHelper = new RestHelper();
     private String testName;
-    private final boolean printRequest = true;
+    private List<EntitiesStoredRecord> allEntities;
+    private PresidioUrl allEntitiesUrl;
 
     @BeforeClass
     public void preconditionCheck() {
-        List<EntitiesStoredRecord> entities = testManager.getEntities(printRequest);
-        Assert.assertTrue(entities.size() > 0,"Unable to commit the test - Entities list is empty.");
+        PresidioUrl url = restHelper.entities().url().withNoParameters();
+        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
+        assertThat(entities).as(url+ "Entities list is empty. Skipping next tests.").isNotNull().isNotEmpty();
 
-        entities = testManager.getEntities("Expand=true");
-        Assert.assertTrue(entities.size() > 0, "Unable to commit the test - Entities list is empty while using expand=true.");
+        url = restHelper.entities().url().withExpandedParameter();
+        entities = restHelper.entities().request().getEntities(url);
+        assertThat(entities).as(url+ "Entities list is empty. Skipping next tests.").isNotNull().isNotEmpty();
+
+        allEntitiesUrl = restHelper.entities().url().withMaxSizeAndExpendedParameters();
+        allEntities = restHelper.entities().request().getEntities(allEntitiesUrl);
+        assertThat(allEntities).as(allEntitiesUrl+ "Entities list is empty. Skipping next tests.").isNotNull().isNotEmpty();
     }
 
     @BeforeMethod
@@ -52,81 +49,88 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void sortDecScoreTest() {
-        List<EntitiesStoredRecord> entities = testManager.getEntities("sortDirection=DESC&sortFieldNames=SCORE&pageSize=500&pageNumber=0");
+    public void entities_should_be_sorted_by_score_desc() {
+        PresidioUrl url = restHelper.entities().url().withMaxSizeAndSortedParameters("DESC", "SCORE");
+        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
 
         for(int i=0 ; i<entities.size()-1 ; i++) {
             int current = Integer.parseInt(entities.get(i).getScore());
             int next = Integer.parseInt(entities.get(i+1).getScore());
 
             if(current < next) {
-                Assert.fail("Scores are not sorted correctly. \ncurrent score is " + current + ", next score is " + next + "\nentity: " + entities.get(i).toString() );
+                Assert.fail(url + "\nScores are not sorted correctly. \ncurrent score is " + current + ", next score is " + next + "\nentity: " + entities.get(i).toString() );
             }
         }
     }
 
     @Test
-    public void sortAscScoreTest() {
-        List<EntitiesStoredRecord> entities = testManager.getEntities("sortDirection=ASC&sortFieldNames=SCORE&pageSize=500&pageNumber=0");
-
+    public void entities_should_be_sorted_by_score_asc() {
+        PresidioUrl url = restHelper.entities().url().withMaxSizeAndSortedParameters("ASC", "SCORE");
+        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
 
         for(int i=0 ; i < entities.size()-1 ; i++) {
             int current = Integer.parseInt(entities.get(i).getScore());
             int next = Integer.parseInt(entities.get(i+1).getScore());
 
             if(current > next) {
-                Assert.fail("Scores are not sorted correctly. \ncurrent score is " + current + ", next score is " + next + "\nentity: " + entities.get(i).toString() );
+                Assert.fail(url + "\nScores are not sorted correctly. \ncurrent score is " + current + ", next score is " + next + "\nentity: " + entities.get(i).toString() );
             }
         }
     }
 
     @Test
-    public void expandArgumentTest() {
-        List<EntitiesStoredRecord> entities = testManager.getEntities("expand=true&minScore=50");
-        Assert.assertTrue(entities.get(0).getAlerts() != null, "Alerts list did not appears with the Expand=true flag.");
+    public void expand_argument_should_return_non_empty_alerts_array() {
+        PresidioUrl url = restHelper.entities().url().withMinScoreAndExpanded(50);
+        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
+        assertThat(entities.stream().mapToInt(e -> e.getAlerts().size()).min().getAsInt()).as(url + "\nAlerts list did not appears with the Expand=true flag.").isGreaterThan(0);
     }
 
     @Test
-    public void getEntityByEntityIdTest() {
-        List<EntitiesStoredRecord> entities = testManager.getEntities(printRequest);
+    public void get_entity_by_entity_id_correctness_test() {
+        EntitiesStoredRecord entitiesStoredRecord = allEntities.get(ThreadLocalRandom.current().nextInt(allEntities.size()));
 
-        String entityId = entities.get(0).getId();
-        entities = testManager.getEntities("/" + entityId);
+        String entityId = entitiesStoredRecord.getId();
+        PresidioUrl entityIdUrl = restHelper.entities().withId(entityId).url().withNoParameters();
+        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(entityIdUrl);
 
-        for(EntitiesStoredRecord usr : entities) {
-            Assert.assertEquals(usr.getId(), entityId, "Filter by id return incorrect entity.");
+        assertThat(entities).as("Get entities by id should return 1 element").hasSize(1);
+
+        for(EntitiesStoredRecord e : entities) {
+            Assert.assertEquals(e.getId(), entityId, entityIdUrl + "\nFilter by id return incorrect entity.");
+            Assert.assertEquals(e.getEntityName(), entityId, entitiesStoredRecord.getEntityName() + "\nFilter by id return incorrect entity.");
+            Assert.assertEquals(e.getEntityType(), entityId, entitiesStoredRecord.getEntityType() + "\nFilter by id return incorrect entity.");
         }
     }
 
 
     @Test
-    public void alertsCountTest() {
-        List<EntitiesStoredRecord> entities = testManager.getEntities("Expand=true");
-
-        for(EntitiesStoredRecord entity : entities) {
+    public void alerts_count_correctness_test() {
+        for(EntitiesStoredRecord entity : allEntities) {
             int alertCount = entity.getAlertCount();
             int alertSize = entity.getAlerts().size();
 
-            Assert.assertEquals(alertCount, alertSize, "The alertCount and the size of the alert list are not equals for entityId " + entity.getId());
+            Assert.assertEquals(alertCount, alertSize, allEntitiesUrl + "\nThe alertCount and the size of the alert list are not equals for entityId " + entity.getId());
         }
     }
 
     @Test
-    public void aggregateBySeverityWithoutMinScoreTest() {
-        verifySeverityAggregation("");
+    public void aggregate_by_severity_without_min_score_correctness_test() {
+        PresidioUrl entitiesUrl = restHelper.entities().url().withMaxSizeAndSortedAndAggregated("ASC", "SCORE", "SEVERITY");
+        PresidioUrl aggregationDataUrl = restHelper.entities().url().withMaxSizeAndAggregated("SEVERITY");
+        verifySeverityAggregation(entitiesUrl, aggregationDataUrl, 0);
     }
 
     @Test
-    public void aggregateBySeverityWithMinScoreTest() {
-        verifySeverityAggregation("minScore=" + getSecondMinValue(null, true));
+    public void aggregate_by_severity_with_min_score_correctness_test() {
+        int secondMinScore = getDistinctScoresOrdered().get(1);
+        PresidioUrl entitiesUrl = restHelper.entities().url().withMaxSizeAndSortedAndAggregatedAndMinScore("ASC", "SCORE", "SEVERITY", secondMinScore);
+        PresidioUrl aggregationDataUrl = restHelper.entities().url().withMaxSizeAndAggregatedAndMinScore("SEVERITY", secondMinScore);
+        verifySeverityAggregation(entitiesUrl, aggregationDataUrl, secondMinScore);
     }
 
-    private void verifySeverityAggregation(String filter) {
-        if(!filter.isEmpty()){
-            filter = "&" + filter;
-        }
+    private void verifySeverityAggregation(PresidioUrl entitiesUrl, PresidioUrl aggregationDataUrl, int minScore) {
 
-        List<EntitiesStoredRecord> entities = testManager.getEntities("sortDirection=ASC&sortFieldNames=SCORE&aggregateBy=SEVERITY&Expand=false&pageSize=10000&pageNumber=0" + filter);
+        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(entitiesUrl);
 
         int low = 0, medium = 0, high = 0, critical = 0;
 
@@ -137,80 +141,65 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
             if(usr.getSeverity().equals("CRITICAL")) critical++;
         }
 
-        JSONObject agg = testManager.getAggregationData("SEVERITY" + filter + "&pageSize=10000&pageNumber=0", "entities", printRequest);
-        try {
-            JSONObject severity = agg.getJSONObject("SEVERITY");
-            Assert.assertNotNull(severity, "severity keys are null");
+        int actualMinScore = entities.stream().mapToInt(e -> Integer.valueOf(e.getScore())).min().orElse(-1);
+        assertThat(actualMinScore).as(entitiesUrl + "Min score filter doesn't work properly.").isGreaterThanOrEqualTo(minScore);
 
-            Iterator<String> keysItr = severity.keys();
-            while(keysItr.hasNext()) {
-                String key = keysItr.next();
-                Object value = severity.get(key);
+        JSONObject agg = restHelper.entities().request().getRestApiResponseAsJsonObj(aggregationDataUrl);
+        JSONObject severity = agg.getJSONObject("aggregationData").getJSONObject("SEVERITY");
+        Assert.assertNotNull(severity, "severity keys are null");
 
-                if(key.equals("LOW")){
-                    Assert.assertEquals(low, (int) value, "low severity count is not match to actual entities severity");
-                }
-                else if(key.equals("MEDIUM")){
-                    Assert.assertEquals(medium, (int) value, "medium severity count is not match to actual entities severity");
-                }
-                else if(key.equals("HIGH")){
-                    Assert.assertEquals(high, (int) value, "high severity count is not match to actual entities severity");
-                }
-                else if(key.equals("CRITICAL")){
-                    Assert.assertEquals(critical, (int) value, "critical severity count is not match to actual entities severity");
-                }
+        Iterator<String> keysItr = severity.keys();
+        while(keysItr.hasNext()) {
+            String key = keysItr.next();
+            Object value = severity.get(key);
+
+            if(key.equals("LOW")){
+                Assert.assertEquals(low, (int) value, "low severity count is not match to actual entities severity");
             }
-
-            if(filter.contains("minScore")){
-                int actualMinScore = getMinScore(entities);
-                int requestedMinScore = Integer.parseInt(filter.split("=")[1]);
-                Assert.assertTrue(actualMinScore >= requestedMinScore, "The minimum score filter did not worked properly");
+            else if(key.equals("MEDIUM")){
+                Assert.assertEquals(medium, (int) value, "medium severity count is not match to actual entities severity");
             }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void aggregatedByIndicatorsTest() {
-        JSONObject indicatorsAggregation = testManager.getAggregationData("INDICATORS", "entities", printRequest);
-        try{
-            indicatorsAggregation = indicatorsAggregation.getJSONObject("INDICATORS");
-            Assert.assertNotNull(indicatorsAggregation, "indicator's aggregation keys are null");
-
-            List<EntitiesStoredRecord> entities = null;
-
-            Iterator<String> keyItr = indicatorsAggregation.keys();
-            while(keyItr.hasNext()) {
-                String key = keyItr.next();
-                Object value = indicatorsAggregation.get(key);
-                int aggregated = (int)value;
-                entities = testManager.getEntities("indicatorsName=" + key + "&pageSize=1000&pageNumber=0");
-
-                Assert.assertEquals(entities.size(), aggregated,  "Indicator '" + key + "' aggregateBy count is not matched to 'indicatorName=" + key + " request. ");
+            else if(key.equals("HIGH")){
+                Assert.assertEquals(high, (int) value, "high severity count is not match to actual entities severity");
             }
-
-        } catch(Exception e){
-            e.printStackTrace();
+            else if(key.equals("CRITICAL")){
+                Assert.assertEquals(critical, (int) value, "critical severity count is not match to actual entities severity");
+            }
         }
 
     }
 
     @Test
-    public void maxMinScoreRangeTest() {
-        //TODO: enable when issue fixed
-        List<Integer> scores = getScoresList();
+    public void aggregated_by_indicators_correctness_test() {
+        PresidioUrl entitiesUrl = restHelper.entities().url().withAggregatedFieldParameter("INDICATORS");
+        JSONObject agg = restHelper.entities().request().getRestApiResponseAsJsonObj(entitiesUrl);
+        JSONObject indicatorsAggregation = agg.getJSONObject("aggregationData").getJSONObject("INDICATORS");
+        Assert.assertNotNull(indicatorsAggregation, "indicator's aggregation keys are null");
 
-        int minScore = getSecondMinValue(scores, true);
-        int maxScore;
-        if(scores.size() > 2){
-            maxScore = scores.get(scores.size()-2);
-        } else {
-            maxScore = scores.get(scores.size()-1);
+        List<EntitiesStoredRecord> entities = null;
+
+        Iterator<String> keyItr = indicatorsAggregation.keys();
+        while(keyItr.hasNext()) {
+            String key = keyItr.next();
+            Object value = indicatorsAggregation.get(key);
+            int aggregated = (int)value;
+            PresidioUrl indicatorUrl = restHelper.entities().url().withMaxSizeAndIndicatorNameParameters(key);
+            entities = restHelper.entities().request().getEntities(indicatorUrl);
+
+            assertThat(entities.size())
+                    .as("Indicator '" + key + "' aggregateBy count is not matched to 'indicatorName=" + key + " request.\n" + entitiesUrl + "\n" + indicatorUrl)
+                    .isEqualTo(aggregated);
         }
+    }
 
-        List<EntitiesStoredRecord> entities = testManager.getEntities("sortDirection=ASC&sortFieldNames=SCORE&minScore=" + minScore + "&maxScore=" + maxScore + "&pageSize=10000&pageNumber=0");
+    @Test
+    public void max_min_score_range_filter_correctness_test() {
+        assertThat(getDistinctScoresOrdered()).as("Expected for more distinct entity scores.\nScores=" + getDistinctScoresOrdered().toString()).hasSizeGreaterThan(3);
+
+        int minScore = getDistinctScoresOrdered().get(1);
+        int maxScore = getDistinctScoresOrdered().get(getDistinctScoresOrdered().size()-2);
+        PresidioUrl url = restHelper.entities().url().withMaxSizeAndSortedAscAndMinMaxScoreParameters(minScore, maxScore);
+        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
 
         Assert.assertEquals(Integer.parseInt(entities.get(0).getScore()), minScore, "minScore is not the minScore that supposed to be.");
         Assert.assertEquals(Integer.parseInt(entities.get(entities.size()-1).getScore()), maxScore, "maxScore is not the maxScore that supposed to be.");
@@ -218,137 +207,70 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
 
 
     @Test
-    public void searchEntityIgnoreCaseTest() throws UnsupportedEncodingException {
-        List<EntitiesStoredRecord> entities = testManager.getEntities(printRequest);
-        EntitiesStoredRecord testEntity = entities.get(entities.size()/2);
+    public void search_by_entity_should_be_case_insensitive() {
+        EntitiesStoredRecord testEntity = allEntities.get(ThreadLocalRandom.current().nextInt(allEntities.size()));
 
         String entityName = testEntity.getEntityName().toUpperCase();
-        String entityId = testEntity.getId();
+        PresidioUrl url = restHelper.entities().url().entitiesWithEntityNameAndMaxSizeParameters(entityName);
+        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
 
-        List<EntitiesStoredRecord> entity = testManager.getEntities("entityName=" + URLEncoder.encode(entityName, "UTF-8"));
-        Assert.assertTrue(entities.size() > 0,"Entities list is empty. unable to getOperationTypeToCategoryMap entityName=" + entityName);
-
-        Assert.assertEquals(entityId, entity.get(0).getId(), "Failed to getOperationTypeToCategoryMap the specific entityName with ignore case.\nrequested entity: " + entityName.toUpperCase() +
-            "\nentityId: " + entityId + "\nThe result is entityId: " + entity.get(0).getId() + "\nWith the entityName: " + entity.get(0).getEntityName());
-
+        assertThat(entities.stream().map(EntitiesStoredRecord::getId)).as(url + "Looking for entity in upper case: " + entityName).contains(testEntity.getId());
     }
 
     @Test
-    public void searchEntityUsingContainsSearch(){
-        List<EntitiesStoredRecord> entities = testManager.getEntities("pageSize=10000&pageNumber=0");
-        if(entities == null || entities.size() == 0){
-            Assert.fail("Cannot commit the test. Can't getOperationTypeToCategoryMap the entity list.");
-        }
-        String entityName = null;
-        String entityId = "";
-        for(EntitiesStoredRecord usr : entities) {
-            if(usr.getEntityName().contains("\\")){
-                entityName = usr.getEntityName();
-                entityId = usr.getId();
-                break;
-            }
-        }
+    public void search_by_second_word_finds_the_entity(){
+        EntitiesStoredRecord doubleSlashName = allEntities.stream().filter(e -> e.getEntityName().contains("\\")).findAny().orElseThrow();
+        String nameToSearch = doubleSlashName.getEntityName().split("\\\\")[1];
 
-        if(entityName != null){
-            entityName = entityName.split("\\\\")[1];
-        } else {
-            Assert.fail("cannot commit the test. entityName contains \\ is not exist.");
-        }
+        PresidioUrl url = restHelper.entities().url().entitiesWithEntityNameAndMaxSizeParameters(nameToSearch);
+        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
+        assertThat(entities.stream().map(EntitiesStoredRecord::getId))
+                .as(url + "\nLooking for partially entity string: " + nameToSearch + "\nFull name: " + doubleSlashName.getEntityName())
+                .contains(doubleSlashName.getId());
 
-        try{
-            entities = testManager.getEntities("entityName=" + URLEncoder.encode(entityName, "UTF-8"));
-            Assert.assertTrue(entities.size() > 0, "fail to getOperationTypeToCategoryMap entities by contains search. requested entityName = " + entityName);
-            boolean exist = false;
-            for(EntitiesStoredRecord usr : entities) {
-                if(usr.getId().equals(entityId)){
-                    exist = true;
-                    break;
-                }
-            }
+        List<EntitiesStoredRecord> multiWordEntities = allEntities.stream()
+                .filter(e -> e.getEntityName().trim().contains(" "))
+                .collect(toList());
 
-            Assert.assertTrue(exist, "Requested entity is not in the result entity list (verified by entity id).");
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        EntitiesStoredRecord entityToSearch = multiWordEntities.get(ThreadLocalRandom.current().nextInt(multiWordEntities.size()));
+        nameToSearch = entityToSearch.getEntityName().split("\\s")[1];
 
+        url = restHelper.entities().url().entitiesWithEntityNameAndMaxSizeParameters(nameToSearch);
+        entities = restHelper.entities().request().getEntities(url);
+        assertThat(entities.stream().map(EntitiesStoredRecord::getId))
+                .as(url + "\nLooking for partially entity string: " + nameToSearch + "\nFull name: " + entityToSearch.getEntityName())
+                .contains(entityToSearch.getId());
     }
 
 
     @Test
-    public void verifyMatchingOfEntitiesWithEntitiesAlerts() {
-        List<EntitiesStoredRecord> entities = testManager.getEntities("expand=true&pageSize=10000&pageNumber=0&minScore=1");
+    public void alert_document_entity_id_should_match_related_entity_id() {
+        List<EntitiesStoredRecord> alertEntities = allEntities.stream().filter(e -> !e.getAlerts().isEmpty()).collect(toList());
 
-        for(EntitiesStoredRecord usr : entities) {
-            String entityId = usr.getId();
-            List<AlertsStoredRecord> alerts = usr.getAlerts();
+        for(EntitiesStoredRecord e : alertEntities) {
+            String entityId = e.getId();
+            List<AlertsStoredRecord> alerts = e.getAlerts();
             for(AlertsStoredRecord alert : alerts) {
-                String msg = "alert's entityId is not matched to the it's entity Id.\n" +
-                        "EntityId = " + entityId + "\n" +
-                        "AlertId = " + alert.getId() + "\n" +
-                        "url --> http://" + AutomationConf.UEBA_HOST + "/presidio-output/entities/" + entityId + "?expand=true";
-                Assert.assertTrue(entityId.equals(alert.getEntityDocumentId()), msg);
+                assertThat(entityId)
+                        .as( allEntitiesUrl + "\nalert's entityId is not matched to the it's entity Id.\n" +
+                                "EntityId = " + entityId + "\n" +
+                                "AlertId = " + alert.getId() + "\n")
+                        .isEqualTo(alert.getEntityDocumentId());
             }
         }
 
     }
 
 
-        // find the minimum score exist in the entity list
-    private int getMinScore(List<EntitiesStoredRecord> entities) {
-        int min = Integer.MAX_VALUE;
+    private List<Integer> getDistinctScoresOrdered(){
+        List<Integer> orderedScores = allEntities.stream()
+                .mapToInt(e -> Integer.valueOf(e.getScore()))
+                .distinct()
+                .sorted()
+                .boxed()
+                .collect(toList());
 
-        for(EntitiesStoredRecord usr : entities) {
-            if(Integer.parseInt(usr.getScore()) < min){
-                min = Integer.parseInt(usr.getScore());
-            }
-        }
-
-        return min;
+        assertThat(orderedScores).as(allEntitiesUrl + "\nAll entities have the same score.").isNotNull().hasSizeGreaterThan(1);
+        return orderedScores;
     }
-
-
-
-    private int getSecondMinValue(List<Integer> values, boolean isSorted) {
-        List<Integer> scores;
-        if(values == null) {
-            scores = getScoresList();
-        }
-        else {
-            if(!isSorted){
-                Collections.sort(values);
-            }
-            scores = values;
-        }
-
-        int secondMin;
-        int count = scores.size();
-        if(count >= 2 ) {
-            secondMin = scores.get(1);
-        }
-        else {
-            secondMin = scores.get(0);
-        }
-
-        return secondMin;
-    }
-
-    private List<Integer> getScoresList() {
-        List<EntitiesStoredRecord> entities = testManager.getEntities("sortDirection=ASC&sortFieldNames=SCORE&pageSize=10000&pageNumber=0");
-
-        List<Integer> scores = new ArrayList<>();
-
-        int lastScore = Integer.parseInt(entities.get(0).getScore());
-        scores.add(lastScore);
-
-        for(EntitiesStoredRecord usr : entities){
-            if(Integer.parseInt(usr.getScore()) > lastScore) {
-                lastScore = Integer.parseInt(usr.getScore());
-                scores.add(lastScore);
-            }
-        }
-
-        return scores;
-    }
-
-
 }
