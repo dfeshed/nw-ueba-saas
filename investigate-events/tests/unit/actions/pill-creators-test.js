@@ -757,12 +757,45 @@ module('Unit | Actions | Pill Creators', function(hooks) {
   });
 
   test('addLogicalOperator action creator returns proper type and payload', function(assert) {
+    assert.expect(3);
+    const getState = () => {
+      return new ReduxDataHelper()
+        .pillsDataPopulated()
+        .build();
+    };
+
     const pillData = createOperator(OPERATOR_AND);
-    const position = 2;
+    const position = 4;
     const action = pillCreators.addLogicalOperator({ pillData, position });
-    assert.equal(action.type, ACTION_TYPES.INSERT_LOGICAL_OPERATOR, 'action has the correct type');
-    assert.deepEqual(action.payload.pillData, pillData, 'action pillData has the right value');
-    assert.deepEqual(action.payload.position, 2, 'action position has the right value');
+
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.INSERT_LOGICAL_OPERATOR, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData, pillData, 'action pillData has the right value');
+      assert.deepEqual(action.payload.position, position, 'action position has the right value');
+    };
+
+    action(dispatch, getState);
+  });
+
+  test('addLogicalOperator action creator replaces OR with AND when after text pill as first pill', function(assert) {
+    assert.expect(3);
+    const getState = () => {
+      return new ReduxDataHelper()
+        .pillsDataText()
+        .build();
+    };
+
+    const pillData = createOperator(OPERATOR_OR);
+    const position = 1;
+    const action = pillCreators.addLogicalOperator({ pillData, position });
+
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.INSERT_LOGICAL_OPERATOR, 'action has the correct type');
+      assert.strictEqual(action.payload.pillData.type, OPERATOR_AND, 'action pillData has the right value');
+      assert.deepEqual(action.payload.position, position, 'action position has the right value');
+    };
+
+    action(dispatch, getState);
   });
 
   test('replaceLogicalOperator action creator returns proper type and payload', function(assert) {
