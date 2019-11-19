@@ -70,6 +70,7 @@ Router.map(function() {
       this.route('radios');
       this.route('checkboxes');
       this.route('textareas');
+      this.route('textareas-oneway');
       this.route('inputs');
       this.route('inputs-oneway');
       this.route('sliders');
