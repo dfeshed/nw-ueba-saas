@@ -135,6 +135,23 @@ const findEmptyParensAtPosition = (pillsData, position) => {
   return emptyParenSets;
 };
 
+/**
+ * Find final position after empty paren sets within the query are removed. This is a recursive
+ * function, so if you have nested parens like ( ( ( ) ) ), it will iterate over all
+ * empty paren sets if you start from the inner empty paren set.
+ * @param {Object[]} pillsData Array of filters
+ * @param {number} position Index within `pillsData` to look for empty parens
+ */
+const findPositionAfterEmptyParensDeleted = (pillsData, position) => {
+  const pillsDataCopy = [...pillsData];
+  let currentPosition = position;
+  while (currentPosition >= 0 && _hasEmptyParensAt(pillsDataCopy, currentPosition)) {
+    pillsDataCopy.splice(currentPosition - 1, 2);
+    currentPosition--;
+  }
+  return currentPosition;
+};
+
 const isEmptyParenSetAt = (arr, i) => {
   const op = arr[i];
   const cp = arr[i + 1];
@@ -199,6 +216,7 @@ export {
   findMissingTwins,
   findSelectedPills,
   findEmptyParensAtPosition,
+  findPositionAfterEmptyParensDeleted,
   _hasEmptyParensAt, // exported for test
   selectPillsFromPosition,
   selectedPillIndexes

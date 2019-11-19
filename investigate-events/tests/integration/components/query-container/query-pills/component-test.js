@@ -5541,4 +5541,30 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'One close Paren');
     assert.equal(findAll(PILL_SELECTORS.queryPillNotTemplate).length, 4, 'Four query pills');
   });
+  test('Typing AND followed by data and backspacing it should delete the empty pill in the middle of pills and moves focus to the left', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills
+        isActive=true
+      }}
+    `);
+    await leaveNewPillTemplate();
+    assert.notOk(find(PILL_SELECTORS.focusedPill), 'should not have a pill focused');
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 3, 'correct number of triggers (3)');
+    await click(triggers[1]);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await focus(PILL_SELECTORS.recentQuerySelectInput);
+    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'AND s');
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', BACKSPACE_KEY);
+    // clicking backspace on the last meta will move the focus to the last pill
+    const focusedPill = find(PILL_SELECTORS.focusedPill);
+    assert.ok(focusedPill, 'should have a pill focused');
+    assert.equal(focusedPill.getAttribute('position'), 0, 'focused pill position is correct');
+  });
 });

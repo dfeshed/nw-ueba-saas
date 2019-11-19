@@ -64,8 +64,7 @@ import {
   TEXT_FILTER,
   QUERY_FILTER
 } from 'investigate-events/constants/pill';
-import { isValidToWrapWithParens, selectedPillIndexes } from 'investigate-events/actions/pill-utils';
-
+import { isValidToWrapWithParens, selectedPillIndexes, findPositionAfterEmptyParensDeleted } from 'investigate-events/actions/pill-utils';
 const { log } = console;// eslint-disable-line no-unused-vars
 
 const stateToComputed = (state, attrs = {}) => ({
@@ -639,19 +638,19 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   _moveFocusToRight(pillData, position) {
-    const { type } = pillData;
-    // if pill or open-paren is deleted, the position is assigned to the next pill.
-    // if the close-paren is deleted, open-paren is deleted too so the position has
-    // to be re-caliberated.
-    if (type === CLOSE_PAREN) {
-      position = position - 1;
-    }
     const pillsData = this.get('pillsData');
     // position could be greater than number of remaining pills, as logical operator is deleted along with the pill.
     if (position >= pillsData.length || pillsData.length === 0) {
       // if last pill open new pill trigger to the end
       this._openNewPillTriggerRight(pillsData.lastIndex);
     } else {
+      const type = pillData?.type;
+      // if pill or open-paren is deleted, the position is assigned to the next pill.
+      // if the close-paren is deleted, open-paren is deleted too so the position has
+      // to be re-caliberated.
+      if (type === CLOSE_PAREN) {
+        position = position - 1;
+      }
       // if not the last pill, then shift focus to the next pill on right
       this._addFocusToRightPill(position);
     }
@@ -680,17 +679,7 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   _moveFocusToLeft(pillData, position) {
-    const { type } = pillData;
-    // if pill or open-paren is deleted, the position is assigned to the next pill.
-    // if the close-paren is deleted, open-paren is deleted too so the position has
-    // to be re-caliberated.
-    if (type === CLOSE_PAREN) {
-      position = position - 1;
-    }
     const pillsData = this.get('pillsData');
-    const isFocusedParens = (type === CLOSE_PAREN || type === OPEN_PAREN) && pillData.isFocused && !pillData.isSelected;
-    const isLogicalOperatorDeleted = pillsData.length > 0 && position > 0 && !(isFocusedParens);
-    position = isLogicalOperatorDeleted ? position - 1 : position;
     if (pillsData.length === 0) {
       // when the last existing pill is removed and there are no pills we do not have new pill
       // triggers.we have new pill template which needs to be focused.
@@ -700,6 +689,18 @@ const QueryPills = RsaContextMenu.extend({
       // focus shifts to the first new pill trigger.
       this._openNewPillTriggerLeft(0);
     } else {
+      const type = pillData?.type;
+      // if pill or open-paren is deleted, the position is assigned to the next pill.
+      // if the close-paren is deleted, open-paren is deleted too so the position has
+      // to be re-caliberated.
+      if (type === CLOSE_PAREN) {
+        position = position - 1;
+      }
+      const isFocusedParens = (type === CLOSE_PAREN || type === OPEN_PAREN) && !!pillData && pillData.isFocused && !pillData.isSelected;
+      const prevPill = pillsData[position - 1];
+      const isEmptyPillWithoutPrevOperator = !type && !!prevPill && !_isLogicalOperator(prevPill);
+      const isLogicalOperatorDeleted = pillsData.length > 0 && position > 0 && !isFocusedParens && !isEmptyPillWithoutPrevOperator;
+      position = isLogicalOperatorDeleted ? position - 1 : position;
       // if not the first pill, then shift focus to the next pill on left
       this._addFocusToLeftPill(position);
     }
@@ -794,25 +795,29 @@ const QueryPills = RsaContextMenu.extend({
       // This delete or backspace event is generated from pill meta.
       const previousPillData = this.pillsData[position - 1];
       let calibratePosition = false;
+      let focusPosition = position;
       if (!!pillData && !!previousPillData && pillData.type === CLOSE_PAREN && previousPillData.type === OPEN_PAREN) {
-        // An empty paren is added and then delete or backspace is pressed. Along
+        // An empty paren or nested empty parens are added and then delete or backspace is pressed. Along
         // with the empty parens the added logical operator is also removed.
+        calibratePosition = true;
+        focusPosition = findPositionAfterEmptyParensDeleted(this.pillsData, position);
+      } else if (!pillData && !!previousPillData && _isLogicalOperator(previousPillData)) {
         calibratePosition = true;
       }
       this._pillAddCancelled(position);
       if (isDeleteEvent) {
         // deleting an empty pill would shift the focus to the pill on the right.
         if (calibratePosition) {
-          this._moveFocusToRight(pillData, position);
+          this._moveFocusToRight(null, focusPosition);
         } else {
-          this._addFocusToRightPill(position);
+          this._moveFocusToRight(null, position);
         }
       }
       if (isBackspaceEvent) {
         if (calibratePosition) {
-          this._moveFocusToLeft(pillData, position);
+          this._moveFocusToLeft(null, focusPosition);
         } else {
-          this._addFocusToLeftPill(position);
+          this._moveFocusToLeft(null, position);
         }
       }
     }

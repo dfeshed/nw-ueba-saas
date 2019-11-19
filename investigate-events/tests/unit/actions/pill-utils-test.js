@@ -311,4 +311,66 @@ module('Unit | Helper | Pill Actions Utils', function(hooks) {
     assert.equal(result.startIndex, 2, 'Index of first selected pill');
     assert.equal(result.endIndex, 9, 'Index of last selected pill');
   });
+
+  test('findPositionAfterEmptyParensDeleted properly detects the resultant position', function(assert) {
+    let position;
+    let pillsData = [];
+    position = pillUtils.findPositionAfterEmptyParensDeleted(pillsData, 0);
+    assert.equal(position, 0, 'no pills');
+
+    pillsData = [
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: CLOSE_PAREN, twinId: 1 }
+    ];
+    position = pillUtils.findPositionAfterEmptyParensDeleted(pillsData, 1);
+    assert.equal(position, 0, 'just parens');
+    position = pillUtils.findPositionAfterEmptyParensDeleted(pillsData, 2);
+    assert.equal(position, 2, 'just parens with out of bounds index');
+
+    pillsData = [
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: QUERY_FILTER },
+      { type: CLOSE_PAREN, twinId: 1 }
+    ];
+    position = pillUtils.findPositionAfterEmptyParensDeleted(pillsData, 1);
+    assert.equal(position, 1, 'query filter wrapped in parens');
+    position = pillUtils.findPositionAfterEmptyParensDeleted(pillsData, 2);
+    assert.equal(position, 2, 'query filter wrapped in parens with incorrect index');
+
+    pillsData = [
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: OPEN_PAREN, twinId: 2 },
+      { type: OPEN_PAREN, twinId: 3 },
+      { type: CLOSE_PAREN, twinId: 3 }, // <-- 3
+      { type: CLOSE_PAREN, twinId: 2 },
+      { type: CLOSE_PAREN, twinId: 1 }
+    ];
+    position = pillUtils.findPositionAfterEmptyParensDeleted(pillsData, 3);
+    assert.equal(position, 0, 'deeply nested parens');
+
+    pillsData = [
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: OPEN_PAREN, twinId: 2 },
+      { type: CLOSE_PAREN, twinId: 2 }, // <-- 2
+      { type: CLOSE_PAREN, twinId: 1 },
+      { type: OPEN_PAREN, twinId: 3 }, // <--4
+      { type: CLOSE_PAREN, twinId: 3 }
+    ];
+    position = pillUtils.findPositionAfterEmptyParensDeleted(pillsData, 2);
+    assert.equal(position, 0, 'nested parens with trailing empty parens');
+    position = pillUtils.findPositionAfterEmptyParensDeleted(pillsData, 4);
+    assert.equal(position, 4, 'empty parens with leading nested parens, index 4');
+    pillsData = [
+      { type: OPEN_PAREN, twinId: 1 },
+      { type: CLOSE_PAREN, twinId: 1 }, // <-- 1
+      { type: OPEN_PAREN, twinId: 2 },
+      { type: OPEN_PAREN, twinId: 3 },
+      { type: CLOSE_PAREN, twinId: 3 }, // <-- 4
+      { type: CLOSE_PAREN, twinId: 2 }
+    ];
+    position = pillUtils.findPositionAfterEmptyParensDeleted(pillsData, 1);
+    assert.equal(position, 0, 'empty parens with trailing nested parens, index 1');
+    position = pillUtils.findPositionAfterEmptyParensDeleted(pillsData, 4);
+    assert.equal(position, 2, 'nested parens with leading empty parens, index 1');
+  });
 });
