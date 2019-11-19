@@ -25,15 +25,25 @@ module('Integration | Component | Column Group form', function(hooks) {
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  const DISPLAYED_COLUMNS = '.displayed-details > ul.column-list li';
-  const AVAILABLE_META = '.add-details > ul.column-list li';
-  const groupNameInput = '.group-name .value input';
-
   const columnGroup = {
     id: '2',
     name: 'foo',
     columns: [{ field: 'action', title: 'Action Event' }]
   };
+
+  // selectors
+  const columnGroupForm = '.column-group-form';
+  const addDetails = 'section.add-details';
+  const displayedDetails = 'section.displayed-details';
+  const scrollBox = '.column-group-details.scroll-box';
+  const displayedColumns = `${displayedDetails} > ul.column-list li`;
+  const availableMeta = `${addDetails} > ul.column-list li`;
+  const groupName = '.item-name';
+  const groupNameInput = '.item-name .value input';
+  const allMetaAddedMessage = '.message.all-meta-added';
+  const metaFilteredMessage = '.message.meta-filtered';
+  const columnsFilteredMessage = '.columns-filtered-message';
+  const noColumnsMessage = '.no-columns-message';
 
   test('renders editable form for a new item', async function(assert) {
     assert.expect(4);
@@ -48,12 +58,11 @@ module('Integration | Component | Column Group form', function(hooks) {
       editColumnGroup=editColumnGroup}}`);
 
     assert.ok(find(groupNameInput), 'input for group name');
-
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 0, 'No columns present in displayed keys');
-    assert.equal(find('.group-details p.message').textContent.trim(), 'Add a meta key from the list below',
+    assert.equal(findAll(displayedColumns).length, 0, 'No columns present in displayed keys');
+    assert.equal(find(`${columnGroupForm} ${scrollBox} ${displayedDetails} ${noColumnsMessage}`).textContent.trim(), 'Add a meta key from the list below',
       'Message displayed when no columns present in displayed keys');
 
-    assert.equal(findAll(AVAILABLE_META).length, 93, '93/95 meta keys available');
+    assert.equal(findAll(availableMeta).length, 93, '93/95 meta keys available');
   });
 
   test('renders form populated with details of item being edited', async function(assert) {
@@ -71,9 +80,9 @@ module('Integration | Component | Column Group form', function(hooks) {
 
     assert.ok(find(groupNameInput), 'input for group name');
     assert.ok(findAll(groupNameInput)[0].value, columnGroup.name, 'columngroup name rendered correctly');
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
+    assert.equal(findAll(displayedColumns).length, 1, '1 column present in displayed keys');
 
-    assert.equal(findAll(AVAILABLE_META).length, 92, '92/95 meta keys available, 2 hidden, 1 chosen');
+    assert.equal(findAll(availableMeta).length, 92, '92/95 meta keys available, 2 hidden, 1 chosen');
   });
 
   test('it will add name', async function(assert) {
@@ -131,16 +140,16 @@ module('Integration | Component | Column Group form', function(hooks) {
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
 
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 0, 'No columns present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 93, '93 meta keys available');
+    assert.equal(findAll(displayedColumns).length, 0, 'No columns present in displayed keys');
+    assert.equal(findAll(availableMeta).length, 93, '93 meta keys available');
 
-    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    const availableOptions = findAll(`${availableMeta} button`);
     // add candidate meta
     await click(availableOptions[3]);
     await click(availableOptions[9]);
 
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 2, '2 columns present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 91, '91 meta keys available');
+    assert.equal(findAll(displayedColumns).length, 2, '2 columns present in displayed keys');
+    assert.equal(findAll(availableMeta).length, 91, '91 meta keys available');
   });
 
   test('it will update meta', async function(assert) {
@@ -156,15 +165,15 @@ module('Integration | Component | Column Group form', function(hooks) {
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
 
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, 'No columns present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 92, '93 meta keys available');
+    assert.equal(findAll(displayedColumns).length, 1, 'No columns present in displayed keys');
+    assert.equal(findAll(availableMeta).length, 92, '93 meta keys available');
 
-    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    const availableOptions = findAll(`${availableMeta} button`);
     // add candidate meta
     await click(availableOptions[3]);
 
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 2, '2 columns present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 91, '91 meta keys available');
+    assert.equal(findAll(displayedColumns).length, 2, '2 columns present in displayed keys');
+    assert.equal(findAll(availableMeta).length, 91, '91 meta keys available');
   });
 
   test('it will display a message if all meta are added', async function(assert) {
@@ -177,13 +186,13 @@ module('Integration | Component | Column Group form', function(hooks) {
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
 
-    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    const availableOptions = findAll(`${availableMeta} button`);
     // add candidate meta
     await click(availableOptions[0]);
 
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 0, 'No meta keys available');
-    assert.equal(find('.group-details p.message').textContent.trim(), 'All meta keys have been added',
+    assert.equal(findAll(displayedColumns).length, 1, '1 column present in displayed keys');
+    assert.equal(findAll(availableMeta).length, 0, 'No meta keys available');
+    assert.equal(find(`${addDetails} ${allMetaAddedMessage}`).textContent.trim(), 'All meta keys have been added',
       'Message displayed when all meta added');
   });
 
@@ -197,12 +206,12 @@ module('Integration | Component | Column Group form', function(hooks) {
       columnGroup=columnGroup
       editColumnGroup=editColumnGroup}}`);
 
-    const selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
+    const selectedOptions = findAll(`${displayedColumns} button`);
     // remove column
     await click(selectedOptions[0]);
 
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 0, '1 column present in displayed keys');
-    assert.equal(findAll(AVAILABLE_META).length, 93, '93 meta keys available');
+    assert.equal(findAll(displayedColumns).length, 0, '1 column present in displayed keys');
+    assert.equal(findAll(availableMeta).length, 93, '93 meta keys available');
   });
 
   test('will filter available meta', async function(assert) {
@@ -219,12 +228,12 @@ module('Integration | Component | Column Group form', function(hooks) {
       }}
     `);
 
-    let availableOptions = findAll(`${AVAILABLE_META} button`);
+    let availableOptions = findAll(`${availableMeta} button`);
     assert.ok(availableOptions.length > 0, 'have meta in available options list');
 
     await fillIn('.filter-group input', 'blahhhh');
 
-    availableOptions = findAll(`${AVAILABLE_META} button`);
+    availableOptions = findAll(`${availableMeta} button`);
     assert.ok(availableOptions.length === 0, 'meta filtered out');
   });
 
@@ -242,19 +251,19 @@ module('Integration | Component | Column Group form', function(hooks) {
       }}
     `);
 
-    let selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
+    let selectedOptions = findAll(`${displayedColumns} button`);
     assert.ok(selectedOptions.length === 0, 'no meta has been selected yet');
 
     // add selected meta
-    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    const availableOptions = findAll(`${availableMeta} button`);
     await click(availableOptions[0]); // time (TIME), meta from test data
 
-    selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
+    selectedOptions = findAll(`${displayedColumns} button`);
     assert.ok(selectedOptions.length === 1, 'one meta selected yet');
 
     await fillIn('.filter-group input', 'blahhhh');
 
-    selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
+    selectedOptions = findAll(`${displayedColumns} button`);
     assert.ok(selectedOptions.length === 0, 'one meta now filtered out');
   });
 
@@ -273,11 +282,11 @@ module('Integration | Component | Column Group form', function(hooks) {
     `);
 
     // add selected meta and filter it out
-    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    const availableOptions = findAll(`${availableMeta} button`);
     await click(availableOptions[0]); // time (TIME), meta from test data
     await fillIn('.filter-group input', 'blahhhh');
 
-    assert.ok(findAll('.columns-filtered').length === 1, 'proper message is displayed');
+    assert.ok(findAll(columnsFilteredMessage).length === 1, 'proper message is displayed');
   });
 
   test('will show proper message when all available meta filtered away', async function(assert) {
@@ -296,7 +305,7 @@ module('Integration | Component | Column Group form', function(hooks) {
 
     // filter out all available meta
     await fillIn('.filter-group input', 'blahhhh');
-    assert.ok(findAll('.meta-filtered').length === 1, 'proper message is displayed');
+    assert.ok(findAll(metaFilteredMessage).length === 1, 'proper message is displayed');
   });
 
   test('will show proper message filter applied but no meta selected', async function(assert) {
@@ -315,7 +324,7 @@ module('Integration | Component | Column Group form', function(hooks) {
 
     // add selected meta and filter it out
     await fillIn('.filter-group input', 'blahhhh');
-    assert.ok(findAll('.no-columns').length === 1, 'proper message is displayed');
+    assert.ok(findAll(noColumnsMessage).length === 1, 'proper message is displayed');
   });
 
   test('will show proper message when filter applied but all meta chosen', async function(assert) {
@@ -333,7 +342,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     `);
 
     // filter out all available meta
-    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    const availableOptions = findAll(`${availableMeta} button`);
     availableOptions.forEach(click);
     await fillIn('.filter-group input', 'blahhhh');
     assert.ok(findAll('.all-meta-added').length === 1, 'proper message is displayed');
@@ -355,7 +364,7 @@ module('Integration | Component | Column Group form', function(hooks) {
 
     await fillIn('.filter-group input', 'a');
 
-    const availableOptions = findAll(`${AVAILABLE_META} button`);
+    const availableOptions = findAll(`${availableMeta} button`);
     // add candidate meta
     await click(availableOptions[0]);
 
@@ -363,7 +372,7 @@ module('Integration | Component | Column Group form', function(hooks) {
     let lengthOfSelection = input.selectionEnd - input.selectionStart;
     assert.ok(lengthOfSelection === 1, 'text in box is selected');
 
-    const selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
+    const selectedOptions = findAll(`${displayedColumns} button`);
     // remove column
     await click(selectedOptions[0]);
 
@@ -373,10 +382,8 @@ module('Integration | Component | Column Group form', function(hooks) {
   });
 
   test('renders nameError if columnGroup name is not unique', async function(assert) {
-
     this.set('columnGroup', null);
     this.set('editColumnGroup', () => {});
-
     new ReduxDataHelper(setState).metaKeyCache().columnGroups().build();
     await render(hbs`
       {{events-table-container/header-container/column-groups/column-group-details/column-group-form
@@ -388,16 +395,15 @@ module('Integration | Component | Column Group form', function(hooks) {
     // simulate typeIn
     await fillIn(groupNameInput, 'Custom 1');
     await triggerEvent(groupNameInput, 'keyup');
-    assert.ok(find('.group-name .value.is-error'), 'element has error');
+    assert.ok(find(`${groupName} .value.is-error`), 'element has error');
 
     // simulate typeIn
     await fillIn(groupNameInput, 'Custom');
     await triggerEvent(groupNameInput, 'keyup');
-    assert.notOk(find('.group-name .value.is-error'), 'element does not have error');
+    assert.notOk(find(`${groupName} .value.is-error`), 'element does not have error');
   });
 
   test('limits number of meta keys user can add to a column group', async function(assert) {
-
     // array of 74 columns created from metaKeyCache
     const columns = _.cloneDeep(METAKEYS).splice(1, 74).map((meta) => {
       return {
@@ -424,22 +430,22 @@ module('Integration | Component | Column Group form', function(hooks) {
       }}
     `);
 
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 74);
-    assert.equal(findAll(AVAILABLE_META).length, 19);
+    assert.equal(findAll(displayedColumns).length, 74, 'shall find correct number of displayed columns');
+    assert.equal(findAll(availableMeta).length, 19);
 
-    const availableOptions = findAll(`${AVAILABLE_META} button:not(disabled)`);
+    const availableOptions = findAll(`${availableMeta} button:not(disabled)`);
     // add candidate meta
     await click(availableOptions[0]);
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 75);
-    assert.equal(findAll(AVAILABLE_META).length, 18);
-    assert.equal(findAll(`${AVAILABLE_META} button[disabled]`).length, 18, 'Meta available can not be added beyond 50');
-    assert.equal(findAll(`${AVAILABLE_META} .is-disabled`)[0].title, translation.t('investigate.events.columnGroups.selectionThresholdMessage'));
+    assert.equal(findAll(displayedColumns).length, 75, 'shall find correct number of displayed columns');
+    assert.equal(findAll(availableMeta).length, 18);
+    assert.equal(findAll(`${availableMeta} button[disabled]`).length, 18, 'Meta available can not be added beyond 50');
+    assert.equal(findAll(`${availableMeta} .is-disabled`)[0].title, translation.t('investigate.events.columnGroups.selectionThresholdMessage'));
 
-    const selectedOptions = findAll(`${DISPLAYED_COLUMNS} button`);
+    const selectedOptions = findAll(`${displayedColumns} button`);
     // remove a selected meta
     await click(selectedOptions[0]);
-    assert.equal(findAll(AVAILABLE_META).length, 19);
-    assert.equal(findAll(`${AVAILABLE_META} button[disabled]`).length, 0, 'Enabled available meta to add');
+    assert.equal(findAll(availableMeta).length, 19, 'shall find correct number of available meta');
+    assert.equal(findAll(`${availableMeta} button[disabled]`).length, 0, 'Enabled available meta to add');
   });
 
   test('columns beyond 13th are not visible', async function(assert) {
@@ -473,12 +479,11 @@ module('Integration | Component | Column Group form', function(hooks) {
       }}
     `);
 
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 13);
+    assert.equal(findAll(displayedColumns).length, 13, 'shall find correct number of displayed columns');
 
-    const availableOptions = findAll(`${AVAILABLE_META} button:not(disabled)`);
+    const availableOptions = findAll(`${availableMeta} button:not(disabled)`);
     // add candidate meta
     await click(availableOptions[0]);
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 14);
+    assert.equal(findAll(displayedColumns).length, 14, 'shall find correct number of displayed columns');
   });
-
 });

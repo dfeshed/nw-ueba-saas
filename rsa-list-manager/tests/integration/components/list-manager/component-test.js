@@ -4,6 +4,7 @@ import { render, find } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
+import SELECTORS from './selectors';
 
 let setState;
 
@@ -16,9 +17,13 @@ module('Integration | Component | list-manager', function(hooks) {
     };
   });
 
-  const listManagerSelector = '.list-manager';
-  const listManagerContainer = '.list-manager .list-manager-container';
-  const listManagerTrigger = '.list-manager .list-menu-trigger';
+  // selectors
+  const {
+    listManager,
+    listManagerContainerNested,
+    listManagerTrigger
+  } = SELECTORS;
+
   const stateLocation1 = 'listManager';
   const listName1 = 'Some Things';
 
@@ -42,8 +47,8 @@ module('Integration | Component | list-manager', function(hooks) {
     }}
     {{/list-manager}}`);
 
-    assert.ok(find(listManagerSelector), 'list manager shall be found');
-    assert.ok(find(listManagerContainer), 'list manager shall be found');
+    assert.ok(find(listManager), 'list manager shall be found');
+    assert.ok(find(listManagerContainerNested), 'list manager shall be found');
   });
 
   test('stateLocation exists', async function(assert) {
@@ -77,8 +82,8 @@ module('Integration | Component | list-manager', function(hooks) {
     }}
     {{/list-manager}}`);
 
-    assert.ok(find(listManagerSelector), 'list manager should be found');
-    assert.notOk(find(listManagerContainer), 'list manager container should not be found');
+    assert.ok(find(listManager), 'list manager should be found');
+    assert.notOk(find(listManagerContainerNested), 'list manager container should not be found');
     assert.ok(find(listManagerTrigger), 'list manager trigger should be found');
   });
 });

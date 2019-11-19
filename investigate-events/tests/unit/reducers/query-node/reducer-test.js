@@ -1966,7 +1966,7 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     });
 
     const action = {
-      type: ACTION_TYPES.RSA_LIST_MANAGER_TOGGLE_VISIBILITY,
+      type: ACTION_TYPES.RSA_LIST_MANAGER_LIST_VISIBILITY_TOGGLED,
       payload: { actionType: 'close' },
       meta: { belongsTo: 'listManagers.profiles' }
     };

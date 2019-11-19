@@ -62,7 +62,7 @@ test('ACTION_TYPES.SET_HIGHLIGHTED_INDEX sets highlightedIndex', function(assert
   assert.equal(result.highlightedIndex, randomIndex, 'highlightedIndex shall be set correctly');
 });
 
-test('ACTION_TYPES.TOGGLE_LIST_VISIBILITY toggles isExpanded and resets highlightedIndex and filterText',
+test('ACTION_TYPES.LIST_VISIBILITY_TOGGLED toggles isExpanded and resets highlightedIndex and filterText',
   function(assert) {
     const initialValue = false;
     const prevState = Immutable.from({
@@ -72,7 +72,7 @@ test('ACTION_TYPES.TOGGLE_LIST_VISIBILITY toggles isExpanded and resets highligh
     });
 
     const action = {
-      type: ACTION_TYPES.TOGGLE_LIST_VISIBILITY
+      type: ACTION_TYPES.LIST_VISIBILITY_TOGGLED
     };
 
     const result = reducer(prevState, action);

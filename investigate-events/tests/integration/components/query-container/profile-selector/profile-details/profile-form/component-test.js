@@ -17,15 +17,16 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  const profileFormSelector = '.profile-form';
-  const profileNameSelector = '.profile-name';
-  const profileNameInputSelector = `${profileNameSelector} input`;
-  const columnGroupNameSelector = '.column-group-name';
-  const columnGroupPowerSelectSelector = `${columnGroupNameSelector} label.power-select`;
-  const columnGroupSelectedSelector = `${columnGroupPowerSelectSelector} span.ember-power-select-selected-item`;
-  const selectColumnGroupSelector = 'label.rsa-form-label.power-select.select-column-group';
-  const prequeryConditionsSelector = '.prequery-conditions.scroll-box';
-  const nameSelector = '.name';
+  // selectors
+  const profileForm = '.profile-form';
+  const profileName = '.item-name';
+  const profileNameInput = `${profileName} input`;
+  const columnGroupName = '.column-group-name';
+  const columnGroupPowerSelect = `${columnGroupName} label.power-select`;
+  const selectedColumnGroup = `${columnGroupPowerSelect} span.ember-power-select-selected-item`;
+  const selectColumnGroup = 'label.rsa-form-label.power-select.select-column-group';
+  const prequeryConditions = '.prequery-conditions.scroll-box';
+  const name = '.name';
   const profile1 = { ...profiles[1] };
 
   test('shall render component correctly', async function(assert) {
@@ -35,22 +36,22 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
     this.set('columnGroups', []);
     await render(hbs`{{query-container/profile-selector/profile-details/profile-form profile=profile columnGroups=columnGroups metaGroups=metaGroups}}`);
 
-    assert.equal(findAll(profileFormSelector).length, 1, 'Shall render profile form');
-    assert.equal(findAll(profileNameSelector).length, 1, 'Shall render profile-name div with correct class');
-    assert.equal(findAll(`${profileNameSelector} ${nameSelector}`).length, 1, 'Shall render profile-name name div with correct class');
-    assert.equal(findAll(`${profileNameSelector} input`).length, 1, 'Shall render profile-name input div');
-    assert.equal(find(`${profileNameSelector} ${nameSelector}`).innerText.trim(),
+    assert.equal(findAll(profileForm).length, 1, 'Shall render profile form');
+    assert.equal(findAll(profileName).length, 1, 'Shall render profile-name div with correct class');
+    assert.equal(findAll(`${profileName} ${name}`).length, 1, 'Shall render profile-name name div with correct class');
+    assert.equal(findAll(`${profileName} input`).length, 1, 'Shall render profile-name input div');
+    assert.equal(find(`${profileName} ${name}`).innerText.trim(),
       translation.t('investigate.profile.profileName'), 'Shall render profile-name name div with correct text');
 
-    assert.equal(findAll(columnGroupNameSelector).length, 1, 'Shall render column-group-name div with correct class');
-    assert.equal(findAll(`${columnGroupNameSelector} ${nameSelector}`).length, 1, 'Shall render column-group-name name div with correct class');
-    assert.equal(findAll(`${columnGroupNameSelector} ${selectColumnGroupSelector}`).length, 1,
+    assert.equal(findAll(columnGroupName).length, 1, 'Shall render column-group-name div with correct class');
+    assert.equal(findAll(`${columnGroupName} ${name}`).length, 1, 'Shall render column-group-name name div with correct class');
+    assert.equal(findAll(`${columnGroupName} ${selectColumnGroup}`).length, 1,
       'Shall render dropdown to select column group with correct class');
-    assert.equal(find(`${columnGroupNameSelector} ${nameSelector}`).innerText.trim(),
+    assert.equal(find(`${columnGroupName} ${name}`).innerText.trim(),
       translation.t('investigate.profile.columnGroup'), 'Shall render column-group-name name div with correct text');
 
-    assert.equal(findAll(prequeryConditionsSelector).length, 1, 'Shall render prequery-conditions div with correct class');
-    assert.equal(findAll(`${prequeryConditionsSelector} ${nameSelector}`).length, 1,
+    assert.equal(findAll(prequeryConditions).length, 1, 'Shall render prequery-conditions div with correct class');
+    assert.equal(findAll(`${prequeryConditions} ${name}`).length, 1,
       'Shall render prequery-conditions name div with correct class');
   });
 
@@ -65,10 +66,10 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
     await render(hbs`{{query-container/profile-selector/profile-details/profile-form
       profile=profile}}`);
 
-    assert.ok(find(profileNameInputSelector), 'shall render input for profile name');
-    assert.equal(find(profileNameInputSelector).getAttribute('placeholder'), translation.t('investigate.profile.profileNamePlaceholder'),
+    assert.ok(find(profileNameInput), 'shall render input for profile name');
+    assert.equal(find(profileNameInput).getAttribute('placeholder'), translation.t('investigate.profile.profileNamePlaceholder'),
       'shall render correct placeholder for profile name input');
-    assert.ok(find(columnGroupNameSelector), 'shall render column group select dropdown');
+    assert.ok(find(columnGroupName), 'shall render column group select dropdown');
   });
 
   test('renders form to create new profile populated with column group of current page', async function(assert) {
@@ -90,10 +91,10 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
       metaGroups=metaGroups
       sendToBroadcast=sendToBroadcast}}`);
 
-    assert.ok(find(profileNameInputSelector), 'Shall render input for profile name');
-    assert.equal(find(profileNameInputSelector).value?.trim(), '', 'profile name empty');
-    assert.ok(find(columnGroupPowerSelectSelector), 'shall render profile column group dropdown');
-    assert.equal(find(columnGroupSelectedSelector).innerText?.trim(),
+    assert.ok(find(profileNameInput), 'Shall render input for profile name');
+    assert.equal(find(profileNameInput).value?.trim(), '', 'profile name empty');
+    assert.ok(find(columnGroupPowerSelect), 'shall render profile column group dropdown');
+    assert.equal(find(selectedColumnGroup).innerText?.trim(),
       columnGroupName, 'shall render profile column group name to be currently selected column group');
   });
 
@@ -114,10 +115,10 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
       metaGroups=metaGroups
       sendToBroadcast=sendToBroadcast}}`);
 
-    assert.ok(find(profileNameInputSelector), 'Shall render input for profile name');
-    assert.equal(find(profileNameInputSelector).value?.trim(), profile2.name, 'profile name rendered correctly');
-    assert.ok(find(columnGroupPowerSelectSelector), 'shall render profile column group dropdown');
-    assert.equal(find(columnGroupSelectedSelector).innerText?.trim(),
+    assert.ok(find(profileNameInput), 'Shall render input for profile name');
+    assert.equal(find(profileNameInput).value?.trim(), profile2.name, 'profile name rendered correctly');
+    assert.ok(find(columnGroupPowerSelect), 'shall render profile column group dropdown');
+    assert.equal(find(selectedColumnGroup).innerText?.trim(),
       columnGroupName, 'shall render profile column group name correctly');
   });
 
@@ -132,12 +133,12 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
       profile=profile
       sendToBroadcast=sendToBroadcast}}`);
 
-    assert.ok(find(profileNameInputSelector), 'shall render input for profile name');
+    assert.ok(find(profileNameInput), 'shall render input for profile name');
 
-    await fillIn(profileNameInputSelector, 'A');
-    await triggerEvent(profileNameInputSelector, 'keyup');
+    await fillIn(profileNameInput, 'A');
+    await triggerEvent(profileNameInput, 'keyup');
 
-    assert.equal(findAll(profileNameInputSelector)[0].value, 'A');
+    assert.equal(findAll(profileNameInput)[0].value, 'A');
   });
 
   test('shall update profile column group from user selection', async function(assert) {
@@ -155,11 +156,11 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
       columnGroups=columnGroups
       sendToBroadcast=sendToBroadcast}}`);
 
-    assert.ok(find(columnGroupPowerSelectSelector), 'shall render profile column group dropdown');
+    assert.ok(find(columnGroupPowerSelect), 'shall render profile column group dropdown');
 
-    await click(`${columnGroupPowerSelectSelector} .ember-power-select-trigger`);
+    await click(`${columnGroupPowerSelect} .ember-power-select-trigger`);
     await click('li:nth-of-type(2)');
-    assert.equal(find(columnGroupSelectedSelector).innerText?.trim(),
+    assert.equal(find(selectedColumnGroup).innerText?.trim(),
       newColumnGroupName, 'shall render profile column group name correctly');
   });
 
@@ -180,18 +181,18 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
       selectedColumnGroupId=selectedColumnGroupId
       sendToBroadcast=sendToBroadcast}}`);
 
-    assert.ok(find(columnGroupPowerSelectSelector), 'shall render profile column group dropdown');
+    assert.ok(find(columnGroupPowerSelect), 'shall render profile column group dropdown');
 
-    await click(`${columnGroupPowerSelectSelector} .ember-power-select-trigger`);
+    await click(`${columnGroupPowerSelect} .ember-power-select-trigger`);
     await click('li:nth-of-type(1)');
-    assert.equal(find(columnGroupSelectedSelector).innerText?.trim(),
+    assert.equal(find(selectedColumnGroup).innerText?.trim(),
       newColumnGroupName, 'shall render profile column group name correctly');
 
     // profile name changed
-    await fillIn(profileNameInputSelector, 'A');
-    await triggerEvent(profileNameInputSelector, 'keyup');
+    await fillIn(profileNameInput, 'A');
+    await triggerEvent(profileNameInput, 'keyup');
 
-    assert.equal(find(columnGroupSelectedSelector).innerText?.trim(),
+    assert.equal(find(selectedColumnGroup).innerText?.trim(),
       newColumnGroupName, 'shall render profile column group name correctly');
   });
 
@@ -208,10 +209,10 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
       selectedColumnGroupId=selectedColumnGroupId
       sendToBroadcast=sendToBroadcast}}`);
 
-    assert.ok(find(columnGroupPowerSelectSelector), 'shall render profile column group dropdown');
+    assert.ok(find(columnGroupPowerSelect), 'shall render profile column group dropdown');
 
-    await click(`${columnGroupPowerSelectSelector} .ember-power-select-trigger`);
-    assert.equal(find(`${columnGroupSelectedSelector} span`).title, columnGroups[3].name, 'selected column group name has a tooltip');
+    await click(`${columnGroupPowerSelect} .ember-power-select-trigger`);
+    assert.equal(find(`${selectedColumnGroup} span`).title, columnGroups[3].name, 'selected column group name has a tooltip');
 
     assert.equal(findAll('.ember-power-select-options li')[0].title, columnGroups[0].name, 'a column group option has a tooltip');
   });
@@ -227,11 +228,11 @@ module('Integration | Component | Profile Details - Profile Form', function(hook
       columnGroups=columnGroups
       sendToBroadcast=sendToBroadcast}}`);
 
-    await typeIn(profileNameInputSelector, profiles[0].name);
-    await triggerEvent(profileNameInputSelector, 'keyup');
-    assert.ok(find(`${profileNameSelector} .is-error`), 'profile name input shall indicate error');
-    await fillIn(profileNameInputSelector, 'Unique Name Entered');
-    await triggerEvent(profileNameInputSelector, 'keyup');
-    assert.notOk(find(`${profileNameSelector} .is-error`), 'profile name input shall not indicate error');
+    await typeIn(profileNameInput, profiles[0].name);
+    await triggerEvent(profileNameInput, 'keyup');
+    assert.ok(find(`${profileName} .is-error`), 'profile name input shall indicate error');
+    await fillIn(profileNameInput, 'Unique Name Entered');
+    await triggerEvent(profileNameInput, 'keyup');
+    assert.notOk(find(`${profileName} .is-error`), 'profile name input shall not indicate error');
   });
 });

@@ -84,14 +84,6 @@
         white-space: nowrap;
         margin-left: rsa-whitespace(less);
       }
-
-      .rsa-investigate-events-table__header__columnGroups {
-        position: relative;
-        left: 2px;
-        margin-right: rsa-whitespace(least);
-        margin-bottom: rsa-whitespace(least);
-      }
-
     }
 
     // below includes overwrite styles for global components
@@ -99,110 +91,61 @@
     // TODO: remove global component overwrites below and update the global component itself
     &__columnGroups {
       float: left;
-
-      .rsa-button-group {
-
-        &:hover i {
-          color: $formButtonIconHoverColor;
-          font-weight: bolder;
-        }
-
-        .rsa-form-button-wrapper {
-          &.is-standard {
-
-            &:first-of-type {
-              button.rsa-form-button {
-              text-align: left;
-              padding-left: rsa-whitespace(least);
-              font-size: .85rem;
-              width: 190px;
-              border-right: none;
-              overflow-x: hidden;
-              white-space: nowrap;
-              display: inline-block;
-              text-overflow: ellipsis;
-              }
-            }
-
-            &:last-of-type {
-              button.rsa-form-button {
-                border-left: none;
-                color: text-color(primary, light);
-                position: relative;
-                left: -1px;
-              }
-              i {
-                font-size: .65rem;
-              }
-            }
-
-            .rsa-form-button {
-              &:hover {
-                border-color: $formInputBorderColor;
-              }
-              &:focus {
-                border-color: $formInputBorderColor;
-              }
-            }
-            &:hover, &.is-active {
-              .rsa-form-button {
-                &:focus {
-                  border-color: $formInputBorderColor;
-                }
-              }
-            }
-          }
-        }
+      position: relative;
+      left: 2px;
+      margin-right: rsa-whitespace(least);
+      margin-bottom: rsa-whitespace(least);
+      .list-manager .rsa-content-tethered-panel-trigger .list-caption {
+        top: -1px;
       }
-
-      .rsa-button-menu {
-        span.option-name {
-          width: 160px;
-          vertical-align: middle;
-          overflow-x: hidden;
-          white-space: nowrap;
-          display: inline-block;
-          text-overflow: ellipsis;
-        }
-        ul.column-list {
-          li {
-            transition: all .125s;
+      .rsa-button-group div:first-child {
+        margin-right: -8px;
+      }
+      .rsa-button-group:hover button, .rsa-button-group .rsa-form-button-wrapper:hover button {
+        border-color: border-color(primary, lighter)!important;
+      }
+      .rsa-button-group:hover i, .rsa-button-group .rsa-form-button-wrapper:hover i  {
+        color: text-color(primary, lighter)!important;
+        font-weight:bolder;
+      }
+      .rsa-button-group .rsa-form-button-wrapper {
+        &.is-standard {
+          &:first-of-type button.rsa-form-button {
+            text-align: left;
+            padding-left: rsa-whitespace(least);
+            font-size: .85rem;
+            width: 190px;
+            border-right: none;
+            overflow-x: hidden;
+            white-space: nowrap;
+            display: inline-block;
+            text-overflow: ellipsis;
+          }
+          &:last-of-type button.rsa-form-button {
+            border-left: none;
+            color: text-color(primary, light);
             position: relative;
-            &.is-dragging {
-              transition-duration: 0s;
-              background-color: background-color(primary, darker);
-              z-index: 30001;
-            }
-            &.editable {
-              span {
-                width: 42%
-              }
-              .thumb {
-                width: 20px;
-                height: 20px;
-                cursor: move;
-                user-select: none;
-                i {
-                  margin: 0 2px;
-                }
-              }
-            }
-            span {
-              display: inline-table;
-              width: 48%
-            }
-            span.title {
-              vertical-align: middle;
-              overflow-x: hidden;
-              white-space: nowrap;
-              text-overflow: ellipsis;
-              display: inline-block;
-            }
+            left: -1px;
           }
-
+          &:last-of-type i {
+            font-size: .65rem;
+          }
+          .rsa-form-button:hover, .rsa-form-button:focus, &:hover, &.is-active .rsa-form-button:focus {
+            border-color: $formInputBorderColor;
+          }
+        }
+        button, button:hover {
+          border-color: border-color(primary, lighter)!important;
+        }
+        button {
+          padding-left: rsa-whitespace(less)!important;
+          i, i:hover, button:hover i {
+            color: text-color(primary, lighter)!important;
+            font-weight:bolder;
+          }
         }
       }
-    }
+    } // end of &__columnGroups
 
     // below includes overwrite styles for global components
     // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
@@ -587,22 +530,4 @@
 
 .rsa-form-button-wrapper.is-standard:not(.is-disabled):not(.is-icon-only) .rsa-form-button {
   border-color: border-color(primary, light);
-}
-
-.list-manager {
-  .column-group-column-filter {
-    padding-top: 0.5rem;
-    padding-left: 0;
-    padding-right: 0;
-    margin-bottom: 2px;
-  }
-  .is-name-error .group-details {
-    max-height: 160px;
-  }
-  .group-details {
-    max-height: 180px;
-    &.readonly {
-      max-height: 230px;
-    }
-  }
 }

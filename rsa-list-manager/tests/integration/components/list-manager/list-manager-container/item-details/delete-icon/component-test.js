@@ -4,8 +4,10 @@ import { render, find, findAll } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { lookup } from 'ember-dependency-lookup';
+
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
+import SELECTORS from '../../../selectors';
 
 let setState;
 
@@ -19,11 +21,15 @@ module('Integration | Component | item details - delete icon', function(hooks) {
     initialize(this.owner);
   });
 
-  const deleteIcon = '.list-delete-icon';
-  const disabledIcon = '.is-disabled';
   const listLocation1 = 'listManager';
   const list1 = [{ id: '123', name: 'foo', isEditable: true }];
   const list2 = [{ id: '456', name: 'foo', isEditable: false }];
+
+  // selectors
+  const {
+    deleteIcon,
+    isDisabled
+  } = SELECTORS;
 
   test('shall render delete icon if item is isEditable and not a new item', async function(assert) {
     new ReduxDataHelper(setState)
@@ -88,9 +94,9 @@ module('Integration | Component | item details - delete icon', function(hooks) {
       stateLocation=stateLocation
     }}`);
 
-    assert.equal(findAll(`${deleteIcon}${disabledIcon}`).length, 1,
+    assert.equal(findAll(`${deleteIcon}${isDisabled}`).length, 1,
       'shall render one delete icon with is-disabled class');
-    assert.equal(find(`${deleteIcon}${disabledIcon}`).getAttribute('title'), i18n.t('rsaListManager.iconMessage.disabled.delete'),
+    assert.equal(find(`${deleteIcon}${isDisabled}`).getAttribute('title'), i18n.t('rsaListManager.iconMessage.disabled.delete'),
       'disabled delete icon shall have correct title');
   });
 
@@ -115,7 +121,7 @@ module('Integration | Component | item details - delete icon', function(hooks) {
       }}
     `);
 
-    assert.equal(findAll(`${deleteIcon}${disabledIcon}`).length, 1,
+    assert.equal(findAll(`${deleteIcon}${isDisabled}`).length, 1,
       'shall render one delete icon with is-disabled class');
     assert.equal(find(deleteIcon).getAttribute('title'), 'foooooooo', 'disabled delete icon shall have correct title');
   });

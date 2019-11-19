@@ -975,7 +975,7 @@ export default handleActions({
     return state;
   },
 
-  [ACTION_TYPES.RSA_LIST_MANAGER_TOGGLE_VISIBILITY]: (state, { payload, meta }) => {
+  [ACTION_TYPES.RSA_LIST_MANAGER_LIST_VISIBILITY_TOGGLED]: (state, { payload, meta }) => {
     // Only care about this action if the source of the action is
     // the list manager instance responsible for maintaining profiles
     if (_isTriggeredByProfileListManager(meta) && payload?.actionType === 'close') {

@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import layout from './template';
 import { connect } from 'ember-redux';
 import {
-  toggleListVisibility
+  listVisibilityToggled
 } from 'rsa-list-manager/actions/creators/creators';
 import {
   caption,
@@ -17,7 +17,7 @@ const stateToComputed = (state, attrs) => ({
 });
 
 const dispatchToActions = {
-  toggleListVisibility
+  listVisibilityToggled
 };
 
 const ListMenuTrigger = Component.extend({
@@ -28,8 +28,7 @@ const ListMenuTrigger = Component.extend({
 
   actions: {
     triggerClicked() {
-      this.send('toggleListVisibility', this.get('stateLocation'));
-      this.get('listOpened')();
+      this.send('listVisibilityToggled', this.get('stateLocation'));
     }
   }
 });

@@ -13,24 +13,31 @@ let setState;
 
 const ARROW_DOWN_KEY = KEY_MAP.arrowDown.code;
 
+// selectors
+const columnSelectorIcon = '.rsa-icon-cog';
 const columnGroupSelector = '.rsa-investigate-events-table__header__columnGroups';
+const panel = '.panel-content.list-manager-panel';
 const columnGroupDropDownButton = `${columnGroupSelector} .rsa-button-group button`;
-const columnGroupItemList = `${columnGroupSelector} ul.rsa-item-list > li`;
+const panelTrigger = '.rsa-content-tethered-panel-trigger .list-menu-trigger button.rsa-form-button';
+const listItem = '.list-view-body ul.rsa-item-list > li';
 
 const assertForInvestigateColumnAndColumnSelector = async function(assert, headerCount, columnSelectorCount, selectedOptionName) {
   assert.ok(find(columnGroupDropDownButton), 'dropdown button shall be found');
-  await click(columnGroupDropDownButton);
-  const optionToChoose = findAll(`${columnGroupItemList} a`).find((d) => d.textContent.trim() === selectedOptionName);
-  await click(optionToChoose);
+
+  await click(panelTrigger); // open column group list
+  assert.ok(find(panel), 'shall find column group list tethered panel');
+  const optionToChoose = findAll(`${listItem} a`).find((d) => d.textContent.trim() === selectedOptionName);
+  await click(optionToChoose); // this should close column group list
 
   assert.equal(findAll('.rsa-data-table-header-cell').length, headerCount,
     `Should show visible columns in table for ${selectedOptionName}.`);
 
-  await click(columnGroupDropDownButton);
-  assert.equal(find(`${columnGroupItemList}.is-selected`).textContent.trim(), selectedOptionName,
+  await click(panelTrigger); // open column group list
+  assert.equal(find(`${listItem}.is-selected`).textContent.trim(), selectedOptionName,
     `Selected column group should be ${selectedOptionName}.`);
+  await click(panelTrigger); // close column group list
 
-  await click('.rsa-icon-cog');
+  await click(columnSelectorIcon);
   assert.equal(findAll('.rsa-data-table-column-selector-panel li .rsa-form-checkbox-label').length, columnSelectorCount,
     `Should show all columns for column selector for ${selectedOptionName}.`);
 };
@@ -187,7 +194,7 @@ module('Integration | Component | events-table-container', function(hooks) {
   // 16 columns including column for checkbox though checkbox itself might be hidden if no results are populated
   test('it should show columns for Email Analysis', async function(assert) {
     await renderDefaultEventTable();
-    assert.equal(EventColumnGroups[0].name, 'RSA Email Analysis');
+    assert.equal(EventColumnGroups[0].name, 'RSA Email Analysis', 'RSA Email Analysis');
     await assertForInvestigateColumnAndColumnSelector(assert, 16, EventColumnGroups[0].columns.length, 'RSA Email Analysis');
   });
 

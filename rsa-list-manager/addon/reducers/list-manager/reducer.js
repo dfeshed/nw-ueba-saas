@@ -31,7 +31,7 @@ const listManagerReducer = handleActions({
       filterText: ''
     });
   },
-  [ACTION_TYPES.TOGGLE_LIST_VISIBILITY]: (state) => {
+  [ACTION_TYPES.LIST_VISIBILITY_TOGGLED]: (state) => {
     return state.merge({
       isExpanded: !state.isExpanded,
       highlightedIndex: -1,

@@ -1,4 +1,4 @@
-<div class='group-name'>
+<div class='item-name'>
   <div class='name'>{{t 'investigate.events.columnGroups.groupName'}}</div>
   {{rsa-form-input
     class='value'
@@ -18,8 +18,8 @@
   shouldSelectTextForRemoval=shouldSelectFilterText
 }}
 
-<div class='group-details scroll-box'>
-  <section class ='displayed-details'>
+<div class='column-group-details scroll-box'>
+  <section class='displayed-details'>
     <div class='name'>{{t 'investigate.events.columnGroups.displayedMetaKeys'}}</div>
     {{#if filteredDisplayedColumns}}
       {{#sortable-group tagName='ul' class='column-list value editable' onChange=(action 'reorderColumns') as |group|}}
@@ -39,9 +39,9 @@
     {{else}}
       {{!-- why are there no columns? Because filtered or because there just aren't any --}}
       {{#if areDisplayedColumnsFiltered}}
-        <p class='message columns-filtered'>{{t 'investigate.events.columnGroups.allDisplayedFilteredAway'}}</p>
+        <p class='columns-filtered-message'>{{t 'investigate.events.columnGroups.allDisplayedFilteredAway'}}</p>
       {{else}}
-        <p class='message no-columns'>{{t 'investigate.events.columnGroups.noMetaKeysChosen'}}</p>
+        <p class='no-columns-message'>{{t 'investigate.events.columnGroups.noMetaKeysChosen'}}</p>
       {{/if}}
     {{/if}}
   </section>

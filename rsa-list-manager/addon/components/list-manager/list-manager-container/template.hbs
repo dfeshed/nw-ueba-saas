@@ -1,44 +1,47 @@
-<hbox>
-  {{#click-outside action=(action 'collapseManagerList')}}
+{{#rsa-content-tethered-panel-trigger
+  panel=panelId
+  triggerEvent='click'
+}}
+  {{list-manager/list-manager-container/list-menu-trigger
+    stateLocation=stateLocation
+  }}
+{{/rsa-content-tethered-panel-trigger}}
+{{#rsa-content-tethered-panel
+  displayCloseButton=false
+  panelId=panelId
+  position='bottom-right'
+  panelClass="list-manager-panel"
+  isPopover=true
+}}
+  {{#if isListView}}
+    <div class='list-view-body'>
+      {{yield (hash
+          filter=(component 'list-manager/list-manager-container/list-filter'
+            stateLocation=stateLocation
+          )
+        )
+      }}
+      {{yield (hash
+          itemList=(component 'list-manager/list-manager-container/item-list'
+            stateLocation=stateLocation
+            itemSelection=(action 'handleItemSelection')
+          )
+        )
+      }}
+    </div>
 
-    {{list-manager/list-manager-container/list-menu-trigger
+    {{list-manager/list-manager-container/list-footer
       stateLocation=stateLocation
-      listOpened=(action 'listOpened')
     }}
 
-    {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
-      {{#if isExpanded}}
-        {{#if isListView}}
-          <div class='list-body'>
-            {{yield (hash
-                filter=(component 'list-manager/list-manager-container/list-filter'
-                  stateLocation=stateLocation
-                )
-              )
-            }}
-            {{yield (hash
-                itemList=(component 'list-manager/list-manager-container/item-list'
-                  stateLocation=stateLocation
-                  itemSelection=(action 'handleItemSelection')
-                )
-              )
-            }}
-          </div>
-
-          {{list-manager/list-manager-container/list-footer
-            stateLocation=stateLocation
-          }}
-        {{else}}
-          {{yield (hash
-              details=(component 'list-manager/list-manager-container/item-details'
-                stateLocation=stateLocation
-                itemSelection=(action 'handleItemSelection')
-                itemUpdate=(action 'handleItemUpdate')
-              )
-            )
-          }}
-        {{/if}}
-      {{/if}}
-    {{/rsa-button-menu}}
-  {{/click-outside}}
-</hbox>
+  {{else}}
+    {{yield (hash
+        details=(component 'list-manager/list-manager-container/item-details'
+          stateLocation=stateLocation
+          itemSelection=(action 'handleItemSelection')
+          itemUpdate=(action 'handleItemUpdate')
+        )
+      )
+    }}
+  {{/if}}
+{{/rsa-content-tethered-panel}}

@@ -40,6 +40,9 @@ const ListManager = Component.extend({
   // flag to disable the list-manager
   isDisabled: false,
 
+  // function passed to list-manager-container
+  itemSelection: () => {},
+
   didInsertElement() {
     const initialProperties =
       this.getProperties(

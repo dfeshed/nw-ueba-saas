@@ -29,47 +29,64 @@ module('Integration | Component | Column Group Details', function(hooks) {
     initialize(this.owner);
   });
 
-  const DISPLAYED_COLUMNS = '.displayed-details > ul.column-list li';
-  const AVAILABLE_META = '.add-details > ul.column-list li';
+  // selectors
+  const columnGroupForm = '.column-group-form';
+  const columnGroupView = '.column-group-view';
+
+  // column-group-form selectors
+  const addDetails = 'section.add-details';
+  const displayedDetails = 'section.displayed-details';
+  const scrollBox = '.column-group-details.scroll-box';
+  const displayedColumns = `${displayedDetails} > ul.column-list li`;
+  const availableMeta = `${addDetails} > ul.column-list li`;
+  const editableGroupName = '.item-name';
+  const editableGroupNameName = `${editableGroupName} .name`;
+  const editableGroupNameValue = `${editableGroupName} .value`;
+  const editableGroupNameValueInput = `${editableGroupNameValue} input`;
+
+  // column-group-view selectors
+  const readonlyGroupName = '.column-group-name';
+  const readonlyGroupNameName = `${readonlyGroupName} .name`;
+  const readonlyGroupNameValue = `${readonlyGroupName} .value`;
+  const readonlyScrollBox = '.column-group-details.displayed-details.scroll-box.readonly';
+  const readonlyScrollBoxName = `${readonlyScrollBox} .name`;
+  const readonlyDisplayedColumns = `${readonlyScrollBox} > ul.column-list.value.readonly li`;
 
   const getTextFromDOMArray = (arr) => {
     return arr.reduce((a, c) => a + c.textContent.trim().replaceAll(' ', ''), '');
   };
 
   test('renders read only columnGroup details when an ootb columnGroup is being viewed', async function(assert) {
-
     this.set('columnGroup', mappedColumnGroups[5]);
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details columnGroup=columnGroup}}`);
 
-    assert.ok(find('.column-group-view'), 'Column Group Details rendered correctly');
-    assert.equal(find('.group-name .name').textContent.trim(), 'Group Name');
-    assert.equal(find('.group-name .value').textContent.trim(), 'Summary List');
-    assert.equal(find('.group-details .name').textContent.trim(), 'Displayed Meta Keys');
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 3, '3/5 columns for Summary List rendered, time, medium not shown');
+    assert.ok(find(columnGroupView), 'Column Group Details rendered correctly');
+    assert.equal(find(readonlyGroupNameName).textContent.trim(), 'Group Name', 'shall find correct text for group name title');
+    assert.equal(find(readonlyGroupNameValue).textContent.trim(), 'Summary List', 'shall find correct text for group name value');
+    assert.equal(find(readonlyScrollBoxName).textContent.trim(), 'Displayed Meta Keys', 'shall find correct text for scroll box name');
+    assert.equal(findAll(readonlyDisplayedColumns).length, 3, '3/5 columns for Summary List rendered, time, medium not shown');
 
-    const metaKeys = findAll(`${DISPLAYED_COLUMNS} span:first-of-type`);
+    const metaKeys = findAll(`${readonlyDisplayedColumns} span:first-of-type`);
     assert.equal(getTextFromDOMArray(metaKeys), 'custom.themesizecustom.meta-summary', 'Displayed meta keys');
   });
 
   test('renders an edit form to create a new column group', async function(assert) {
-
     this.set('columnGroup', null);
     this.set('editColumnGroup', () => {});
     new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details columnGroup=columnGroup editColumnGroup=editColumnGroup}}`);
 
-    assert.ok(find('.column-group-form'), 'Column Group Details rendered correctly');
-    assert.equal(find('.group-name .name').textContent.trim(), 'Group Name');
-    assert.ok(find('.group-name .value input'), 'input for group name');
-    assert.equal(find('.group-details .name').textContent.trim(), 'Displayed Meta Keys');
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 0, 'No columns present in displayed keys');
+    assert.ok(find(columnGroupForm), 'Column Group Details rendered correctly');
+    assert.equal(find(editableGroupNameName).textContent.trim(), 'Group Name');
+    assert.ok(find(editableGroupNameValueInput), 'input for group name');
+    assert.equal(find(`${scrollBox} .name`).textContent.trim(), 'Displayed Meta Keys');
+    assert.equal(findAll(displayedColumns).length, 0, 'No columns present in displayed keys');
     assert.equal(find('.add-details .name').textContent.trim(), 'Available Meta Keys');
-    assert.equal(findAll(AVAILABLE_META).length, 93, '93/95 meta keys available');
+    assert.equal(findAll(availableMeta).length, 93, '93/95 meta keys available');
 
   });
 
   test('renders an edit form to edit a custom column group', async function(assert) {
-
     const customColumnGroup = {
       id: 2,
       name: 'foo',
@@ -86,14 +103,13 @@ module('Integration | Component | Column Group Details', function(hooks) {
     new ReduxDataHelper(setState).metaKeyCache().build();
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details columnGroup=columnGroup editColumnGroup=editColumnGroup}}`);
 
-    assert.ok(find('.column-group-form'), 'Column Group Details rendered correctly');
-    assert.equal(find('.group-name .name').textContent.trim(), 'Group Name');
-    assert.ok(find('.group-name .value input'), 'input for group name');
-    assert.equal(findAll('.group-name .value input')[0].value, customColumnGroup.name, 'renders original group name');
-    assert.equal(find('.group-details .name').textContent.trim(), 'Displayed Meta Keys');
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 column present in displayed keys');
-    assert.equal(find('.add-details .name').textContent.trim(), 'Available Meta Keys');
-    assert.equal(findAll(AVAILABLE_META).length, 92, '92/95 meta keys available');
-
+    assert.ok(find(columnGroupForm), 'Column Group Details rendered correctly');
+    assert.equal(find(editableGroupNameName).textContent.trim(), 'Group Name');
+    assert.ok(find(editableGroupNameValueInput), 'input for group name');
+    assert.equal(findAll(editableGroupNameValueInput)[0].value, customColumnGroup.name, 'renders original group name');
+    assert.equal(find(`${scrollBox} .name`).textContent.trim(), 'Displayed Meta Keys');
+    assert.equal(findAll(displayedColumns).length, 1, '1 column present in displayed keys');
+    assert.equal(find(`${addDetails} .name`).textContent.trim(), 'Available Meta Keys');
+    assert.equal(findAll(availableMeta).length, 92, '92/95 meta keys available');
   });
 });

@@ -6,7 +6,6 @@ import {
 } from 'rsa-list-manager/actions/creators/creators';
 import {
   highlightedIndex,
-  isExpanded,
   filteredList,
   selectedItemId,
   selectedIndex,
@@ -17,7 +16,6 @@ import {
 
 const stateToComputed = (state, attrs) => ({
   filteredList: filteredList(state, attrs.stateLocation),
-  isExpanded: isExpanded(state, attrs.stateLocation),
   highlightedIndex: highlightedIndex(state, attrs.stateLocation),
   highlightedId: highlightedId(state, attrs.stateLocation),
   selectedItemId: selectedItemId(state, attrs.stateLocation),

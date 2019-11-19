@@ -5,6 +5,7 @@ import { typeInSearch } from 'ember-power-select/test-support/helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
+import SELECTORS from '../../selectors';
 
 let setState;
 
@@ -21,6 +22,13 @@ module('Integration | Component | list filter', function(hooks) {
   const stateLocation1 = 'listManager';
   const listName1 = 'List of Things';
 
+  // selectors
+  const {
+    filter,
+    filterInput,
+    filterIcon
+  } = SELECTORS;
+
   test('Filters list with default filtering', async function(assert) {
     new ReduxDataHelper(setState).stateLocation(stateLocation1).list(originalList).listName(listName1).build();
     this.set('stateLocation', stateLocation1);
@@ -29,17 +37,17 @@ module('Integration | Component | list filter', function(hooks) {
       stateLocation=stateLocation
     }}`);
 
-    assert.ok(find('.list-filter'), 'list filter component found');
-    assert.ok(find('.list-filter .rsa-icon-filter-2'), 'filter icon found');
-    assert.equal(find('.list-filter input').getAttribute('placeholder'), 'Filter list of things');
+    assert.ok(find(filter), 'list filter component found');
+    assert.ok(find(`${filter} ${filterIcon}`), 'filter icon found');
+    assert.equal(find(filterInput).getAttribute('placeholder'), 'Filter list of things');
 
-    await click(find('.list-filter input'));
+    await click(find(filterInput));
     await typeInSearch('b');
 
     const state1 = this.owner.lookup('service:redux').getState();
     assert.equal(state1.listManager.filterText, 'b', 'filterText is set correctly');
 
-    await click(find('.list-filter input'));
+    await click(find(filterInput));
     await typeInSearch('bo');
     const state2 = this.owner.lookup('service:redux').getState();
     assert.equal(state2.listManager.filterText, 'bo', 'filterText is set correctly');

@@ -5,6 +5,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
+import SELECTORS from '../../selectors';
 
 let setState;
 
@@ -18,20 +19,23 @@ module('Integration | Component | item details', function(hooks) {
     initialize(this.owner);
   });
 
-  const deleteIcon = '.list-delete-icon';
-  const helpIcon = '.list-help-icon';
   const listLocation1 = 'listManager';
   const helpId1 = { moduleId: 'foo', topicId: '123' };
   const helpId2 = { moduleId: 'bar' };
   const item = { id: '1', name: 'foo' };
   const list1 = [{ id: '1', name: 'foo', isEditable: true }];
   const list2 = [{ id: '1', name: 'foo', isEditable: false }];
-
   const stateLocation1 = 'listManager';
-  const itemDetails = '.item-details';
-  const title = `${itemDetails} .title`;
-  const body = `${itemDetails} .details-body`;
-  const loadingOverlay = `${itemDetails}-loading-overlay`;
+
+  // selectors
+  const {
+    deleteIcon,
+    helpIcon,
+    itemDetailsTitle,
+    itemDetailsDetailsBody,
+    itemDetailsLoadingOverlay,
+    detailsFooterButton
+  } = SELECTORS;
 
   test('renders list details with correct components', async function(assert) {
     const helpId1 = { topicId: 'foo', moduleId: 'bar' };
@@ -49,10 +53,10 @@ module('Integration | Component | item details', function(hooks) {
       itemSelection=itemSelection
     }}`);
 
-    assert.equal(find(title).textContent.trim().toUpperCase(), 'FOO DETAILS');
-    assert.ok(find(body), 'Renders Details body');
+    assert.equal(find(itemDetailsTitle).textContent.trim().toUpperCase(), 'FOO DETAILS');
+    assert.ok(find(itemDetailsDetailsBody), 'Renders Details body');
 
-    const buttons = findAll('footer.details-footer button');
+    const buttons = findAll(detailsFooterButton);
     assert.equal(buttons.length, 2);
   });
 
@@ -109,13 +113,13 @@ module('Integration | Component | item details', function(hooks) {
       itemSelection=itemSelection
     }}`);
 
-    assert.equal(find(title).textContent.trim().toUpperCase(), 'FOO DETAILS');
-    assert.ok(find(body), 'Renders Details body');
+    assert.equal(find(itemDetailsTitle).textContent.trim().toUpperCase(), 'FOO DETAILS');
+    assert.ok(find(itemDetailsDetailsBody), 'Renders Details body');
 
-    const buttons = findAll('footer.details-footer button');
+    const buttons = findAll(detailsFooterButton);
     assert.equal(buttons.length, 2);
 
-    assert.equal(findAll(loadingOverlay).length, 1, 'Shall render loading overlay');
+    assert.equal(findAll(itemDetailsLoadingOverlay).length, 1, 'Shall render loading overlay');
   });
 
   test('does not render loading indicator overlay if not isItemsLoading', async function(assert) {
@@ -135,13 +139,13 @@ module('Integration | Component | item details', function(hooks) {
       itemSelection=itemSelection
     }}`);
 
-    assert.equal(find(title).textContent.trim().toUpperCase(), 'FOO DETAILS');
-    assert.ok(find(body), 'Renders Details body');
+    assert.equal(find(itemDetailsTitle).textContent.trim().toUpperCase(), 'FOO DETAILS');
+    assert.ok(find(itemDetailsDetailsBody), 'Renders Details body');
 
-    const buttons = findAll('footer.details-footer button');
+    const buttons = findAll(detailsFooterButton);
     assert.equal(buttons.length, 2);
 
-    assert.equal(findAll(loadingOverlay).length, 0, 'Shall not render loading overlay');
+    assert.equal(findAll(itemDetailsLoadingOverlay).length, 0, 'Shall not render loading overlay');
   });
 
   test('will render contexutual delete component if it is editable', async function(assert) {

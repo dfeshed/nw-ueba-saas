@@ -1,41 +1,29 @@
 import Component from '@ember/component';
+import computed from 'ember-computed-decorators';
+import { inject as service } from '@ember/service';
 import layout from './template';
-import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
 import {
   setHighlightedIndex,
-  toggleListVisibility,
+  listVisibilityToggled,
   setSelectedItem,
-  viewChanged,
-  closeListManager
+  viewChanged
 } from 'rsa-list-manager/actions/creators/creators';
 import {
-  isExpanded,
   selectedItemId,
   isListView
 } from 'rsa-list-manager/selectors/list-manager/selectors';
 
 const stateToComputed = (state, attrs) => ({
-  isExpanded: isExpanded(state, attrs.stateLocation),
   selectedItemId: selectedItemId(state, attrs.stateLocation),
   isListView: isListView(state, attrs.stateLocation)
 });
 
 const dispatchToActions = {
   setHighlightedIndex,
-  toggleListVisibility,
+  listVisibilityToggled,
   setSelectedItem,
-  viewChanged,
-  closeListManager
-};
-
-const menuOffsetsStyle = (el) => {
-  if (el) {
-    const elRect = el.getBoundingClientRect();
-    return htmlSafe(`top: ${elRect.height - 1}px; left: 2px;  min-width: ${elRect.width - 2}px`);
-  } else {
-    return null;
-  }
+  viewChanged
 };
 
 export const queryTabClicked = (target) => {
@@ -51,35 +39,24 @@ export const afterOptionsClicked = (target) => {
 const ListManagerContainer = Component.extend({
   layout,
   classNames: ['list-manager-container'],
+  eventBus: service(),
   stateLocation: undefined,
+  itemSelection: () => {},
 
-  // style for the recon-button-menu derived from the buttonGroup style
-  offsetsStyle: null,
+  // for rsa-content-tethered-panel
+  @computed()
+  panelId() {
+    return `listManager-${this.get('elementId')}`;
+  },
 
   actions: {
-    collapseManagerList(e) {
-      // do not close list manager if user clicked on search input field of power select
-      if (e.target.classList.contains('ember-power-select-search-input')) {
-        if (e.target.type === 'search' && e.target.tagName === 'INPUT') {
-          return;
-        }
-      }
-      if (queryTabClicked(e.target) || afterOptionsClicked(e.target)) {
-        return;
-      }
-      this.send('closeListManager', this.get('stateLocation'));
-    },
-
-    listOpened() {
-      this.set('offsetsStyle', menuOffsetsStyle(this.get('element')));
-    },
-
     handleItemUpdate(item) {
       const selectedItemId = this.get('selectedItemId');
       // if a selectedItem was updated, itemSelection should re-execute to reflect the changes
       if (selectedItemId === item.id) {
         this.get('itemSelection')(item);
-        this.send('toggleListVisibility', this.get('stateLocation'));
+        this.get('eventBus').trigger(`rsa-content-tethered-panel-toggle-${this.get('panelId')}`);
+        this.send('listVisibilityToggled', this.get('stateLocation'));
       }
     },
 
@@ -91,7 +68,9 @@ const ListManagerContainer = Component.extend({
         this.get('itemSelection')(item);
         this.send('setSelectedItem', item, this.get('stateLocation'));
       }
-      this.send('toggleListVisibility', this.get('stateLocation'));
+      // close tethered panel
+      this.get('eventBus').trigger(`rsa-content-tethered-panel-toggle-${this.get('panelId')}`);
+      this.send('listVisibilityToggled', this.get('stateLocation'));
     }
   }
 });

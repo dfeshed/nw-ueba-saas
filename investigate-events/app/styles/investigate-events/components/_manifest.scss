@@ -41,65 +41,6 @@
   }
 }
 
-.rsa-investigate-query-container__profile-selector,
-.rsa-investigate-events-table__header__columnGroups {
-  .rsa-button-menu {
-    border-color: border-color(primary, lighter)!important;
-
-    .filter-group {
-      i {
-        position: relative;
-        top: 1px;
-      }
-    }
-
-    .option-name {
-      // position: relative;
-      // top: 2px;
-    }
-
-    .edit-icon {
-      position: relative;
-      left: 13px;
-    }
-
-    .rsa-item-list {
-      li {
-        font-size: 14px!important;
-      }
-    }
-    .rsa-list-item {
-      i {
-        position: relative;
-        top: 0;
-        color: text-color(primary, lighter);
-      }
-    }
-
-    .footer-buttons {
-      position: relative;
-      top: 2px;
-
-      button,
-      i {
-        font-size: 14px!important;
-      }
-
-      .create-item {
-        button {
-          position: relative;
-          top: -2px;
-
-          i {
-            position: relative;
-            top: 2px;
-          }
-        }
-      }
-    }
-  }
-}
-
 .panel-content {
   &.service-selector-panel,
   &.timerange-selector-panel {
@@ -122,67 +63,6 @@
   .power-select-tabs li {
     background-color: background-color(primary, darker)!important;
     border-color: border-color(primary, lighter)!important;
-  }
-}
-
-.rsa-investigate-events-table__header__columnGroups {
-  footer {
-    background-color: background-color(primary, darker)!important;
-  }
-
-  .rsa-button-group {
-    div:first-child {
-      margin-right: -8px;
-    }
-
-    &:hover {
-      button {
-        border-color: border-color(primary, lighter)!important;
-      }
-
-      i {
-        color: text-color(primary, lighter)!important;
-        font-weight:bolder;
-      }
-    }
-
-    .rsa-form-button-wrapper {
-      &:hover {
-        button {
-          border-color: border-color(primary, lighter)!important;
-        }
-
-
-        i {
-          color: text-color(primary, lighter)!important;
-          font-weight:bolder;
-        }
-      }
-
-      button {
-        padding-left: rsa-whitespace(less)!important;
-        border-color: border-color(primary, lighter)!important;
-
-        &:hover {
-          border-color: border-color(primary, lighter)!important;
-
-          i {
-            color: text-color(primary, lighter)!important;
-            font-weight:bolder;
-          }
-        }
-
-        i {
-          &:hover {
-            color: text-color(primary, lighter)!important;
-            font-weight:bolder;
-          }
-
-          color: text-color(primary, lighter)!important;
-          font-weight:bolder;
-        }
-      }
-    }
   }
 }
 

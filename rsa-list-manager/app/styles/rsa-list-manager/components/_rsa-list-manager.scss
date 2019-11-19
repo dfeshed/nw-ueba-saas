@@ -1,27 +1,108 @@
+// ************************************************************************ //
+//                         list manager generic style                       //
+// ************************************************************************ //
+
 .list-manager {
   display: inline-flex;
-  .list-manager-container .list-menu-trigger.rsa-button-group {
-    white-space: nowrap;
+}
+.list-manager list-manager-container .list-menu-trigger.rsa-button-group {
+  white-space: nowrap;
+}
+.list-manager rsa-form-button-wrapper:not(.is-icon-only) {
+  border: 0;
+  :hover i{
+    color: $formButtonIconHoverColor;
   }
-  .list-caption {
-    top: -1px;
-    right: -2px;
+}
+.list-manager ::placeholder {
+  font-weight: lighter;
+}
+.list-manager button {
+  padding: 0;
+}
+.list-manager i {
+  vertical-align: text-top;
+  color: text-color(primary, light);
+  font-size: 14px;
+}
+.clear-filter button.rsa-form-button{
+  border: none;
+  padding: 0;
+}
+.panel-content.list-manager-panel.standard .list-view-body ul.rsa-item-list li.no-results {
+  padding: rsa-whitespace(less);
+  font-size: 12px;
+  font-weight: lightest;
+  font-style: italic;
+  text-align: center;
+  color: text-color(primary, lighter);
+}
+.panel-content.list-manager-panel.standard .list-view-body {
+  background: background-color(primary, darker);
+  width: 218px;
+  button.rsa-form-button {
+    border: none;
+    padding: 0;
   }
-  .rsa-button-menu {
-    .rsa-form-button-wrapper:not(.is-icon-only) {
-      :hover i{
-          color: $formButtonIconHoverColor;
+
+  // BEGIN filter
+  .list-filter {
+    padding-left: rsa-whitespace(less);
+    padding-right: rsa-whitespace(less);
+  }
+  .list-filter .filter-group {
+    display: inline-flex;
+    width: 100%;
+    border-bottom: 1px solid border-color(primary,light);
+    padding-bottom: rsa-whitespace(less);
+    padding-top: rsa-whitespace(less);
+    button.rsa-form-button {
+      border: none;
+    }
+    i {
+      position: relative;
+      top: 1px;
+    }
+    .ember-power-select-search-input {
+      border: none;
+      font-weight: 300;
+    }
+    .clear-filter i {
+      margin-right: 0;
+      font-size: 11px;
+    }
+  } // END filter
+
+  // BEGIN list body; item-list component
+  ul.rsa-item-list {
+    height: 218px;
+    overflow-y: auto;
+    span.option-name {
+      width: 160px;
+      vertical-align: middle;
+      overflow-x: hidden;
+      white-space: nowrap;
+      display: inline-block;
+      text-overflow: ellipsis;
+    } 
+    &:not(.editable) {
+      overflow-y: auto;
+    }
+    li {
+      line-height: 1.5rem;
+      font-size: 14px;
+      &.editable .rsa-form-button-wrapper:not(.is-icon-only) i {
+        margin-left: 0;
+        font-weight: lighter;
+      }
+      &.editable .rsa-form-button-wrapper:not(.is-icon-only) &:hover:not(.is-disabled) i{
+        font-weight: 600;
+      }
+      &.editable .rsa-form-button-wrapper:not(.is-icon-only) &:hover.is-disabled i {
+        font-weight: lighter;
+        color: text-color(primary, light);
       }
     }
-
-    ::placeholder {
-      font-weight: lighter;
-    }
-
-    button {
-      padding: 0;
-    }
-
     li.rsa-list-item, button {
       font-size: 12px;
       font-weight: lighter;
@@ -29,276 +110,212 @@
         color: text-color(primary, lightest);
       }
     }
-
-    i {
-      vertical-align: text-top;
-      color: text-color(primary, light);
-      font-size: 14px;
-    }
-
-    .list-body, .list-footer {
-      button.rsa-form-button {
-        border: none;
+    li.rsa-list-item {
+      line-height: 2.1em;
+      display:inline-flex;
+      width: 100%;
+      i {
+        position: relative;
+        top: 0;
+        color: text-color(primary, lighter);
+      }
+      .edit-icon {
+        visibility: hidden;
+        i {
+          margin-left: 0.5rem;
+          left: 13px;
+        }
+      }
+      &.is-highlighted {
+        background: background-color(secondary, darker);
+        outline: none;
+        cursor: pointer;
+        .edit-icon {
+          visibility: visible;
+          &:active {
+            background: background-color(secondary, darker);
+          }
+        }
+      }
+      &:not(.is-highlighted) {
+        .edit-icon {
+          visibility: hidden;
+        }
+        // to override li a:hover style from component-lib
+        // /component-lib/app/styles/component-lib/base/form/_rsa-button-menu.scss
+        a:hover {
+          color: text-color(primary, lightest);
+          background: none;
+          outline: none;
+          cursor: pointer;
+        }
+      }
+      &.is-selected {
+        background: background-color(secondary, dark);
+        a:hover {
+          background: background-color(secondary, dark);
+        }
+        .edit-icon:hover:active {
+          background: background-color(secondary, dark);
+        }
+      }
+      a {
+        display: inline-flex;
+        width: 80%;
         padding: 0;
       }
-    }
-
-    .list-body {
-      height: 262px;
-      background: background-color(primary, darker);
-
-      // Manager's itemList component
-      ul.rsa-item-list {
-        height: 230px;
-        overflow-y: auto;
-        li.rsa-list-item {
-          line-height: 2.1em;
-          display:inline-flex;
-          width: 100%;
-          .edit-icon {
-            visibility: hidden;
-            i {
-              margin-left: 0.5rem;
-            }
-          }
-          &.is-highlighted {
-            .edit-icon {
-              visibility: visible;
-              &:active {
-                background: background-color(secondary, darker);
-              }
-            }
-
-            background: background-color(secondary, darker);
-            outline: none;
-            cursor: pointer;
-          }
-          &:not(.is-highlighted) {
-            .edit-icon {
-              visibility: hidden;
-            }
-            // to override li a:hover style from component-lib
-            // /component-lib/app/styles/component-lib/base/form/_rsa-button-menu.scss
-            a:hover {
-              color: text-color(primary, lightest);
-              background: none;
-              outline: none;
-              cursor: pointer;
-            }
-          }
-          &.is-selected {
-            background: background-color(secondary, dark);
-            a:hover {
-              background: background-color(secondary, dark);
-            }
-            .edit-icon:hover:active {
-              background: background-color(secondary, dark);
-            }
-          }
-          a {
-            display: inline-flex;
-            width: 80%;
-            padding: 0;
-            .is-editable-icon-wrapper {
-              padding-left: rsa-whitespace(less);
-              padding-right: rsa-whitespace(less);
-              i {
-                vertical-align: text-top;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    li.no-results, p.message {
-      padding: rsa-whitespace(less);
-      font-size: 12px;
-      font-weight: lightest;
-      font-style: italic;
-      text-align: center;
-      color: text-color(primary, lighter);
-    }
-
-    .item-details {
-      min-width: 400px;
-      .item-details-loading-overlay {
-        @include rsa-fill-abs();
-        z-index: 20002;
-        background-color: background-color(neutral,dark,translucent);
-        centered {
-          height: 100%;
-        }
-      }
-
-      // TODO list-body to something else
-      .list-body {
-        height: 302px;
-        padding:0.4rem;
-        > div {
-          padding: 0.4rem;
-        }
-        .details-header {
-          height: 1rem;
-          justify-content: space-between;
-          display: inline-flex;
-          width: 96%;
-          text-transform: uppercase;
-          .title {
-            font-size: 0.85rem;
-            font-weight: 800;
-            color: text-color(primary, lighter);
-            letter-spacing: 1px;
-          }
-          .details-header-icons {
-            .is-disabled:hover {
-              button, i {
-                color: text-color(primary, light);
-              }
-            }
-            i {
-              margin: 0 .25rem;
-              padding: 0 .25rem;
-            }
-          }
-        }
-
-        .details-body {
-          .group-details {
-            &.scroll-box {
-              overflow-y: auto;
-              position: relative;
-              .name {
-                background-color: background-color(primary, darker, opaque);
-                position: -webkit-sticky;
-                position: sticky;
-                top: 0;
-                z-index: 20001;
-                padding-top: 1rem;
-              }
-              .add-details {
-                .name {
-                  padding-top: 0.5rem;
-                }
-              }
-              .value, .message {
-                margin-bottom: 0.8rem;
-              }
-            }
-          }
-          .name {
-            letter-spacing: 0.75px;
-            color: text-color(primary, light);
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            font-weight: 800;
-            padding-bottom: 0.3rem;
-          }
-          .value, input {
-            @include rsa-input-placeholder($formInputPlaceholderColor);
-            color: text-color(primary, lightest);
-            font-size: 0.85rem;
-            font-weight: 400;
-            &.rsa-form-input > input {
-              margin-top: -0.8rem;
-            }
-          }
-          ul {
-            width: 100%;
-            &:not(.editable) {
-              overflow-y: auto;
-            }
-            li {
-              line-height: 1.5rem;
-              &.editable .rsa-form-button-wrapper:not(.is-icon-only) {
-                i {
-                  margin-left: 0;
-                  font-weight: lighter;
-                }
-                &:hover:not(.is-disabled) i {
-                  font-weight: 600;
-                }
-                &:hover.is-disabled i {
-                  font-weight: lighter;
-                  color: text-color(primary, light);
-                }
-                .rsa-icon-subtract-circle-1 {
-                  color: text-color(accentOne, dark);
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // Manager's create item controls component
-    footer {
-      border-top: 1px solid border-color(primary,light);
-
-      .footer-buttons {
-        margin-top: .6rem;
-        justify-content: space-evenly;
-        display: inline-flex;
-        width: 100%;
+      a .is-editable-icon-wrapper {
+        padding-left: rsa-whitespace(less);
+        padding-right: rsa-whitespace(less);
         i {
-          padding-left: rsa-whitespace(less);
-        }
-        .create-item {
-          width: 90%;
-          text-align: left;
-          i {
-            margin-left: auto;
-            margin-right: 0.3em;
-          }
+          vertical-align: text-top;
         }
       }
-
-      &.list-footer {
-        height: 35px;
-      }
-
-      &.details-footer {
-        height: 42px;
-        .footer-buttons {
-          .rsa-form-button-wrapper {
-            width: 46%;
-            button {
-              padding: 5px;
-              width: 100%;
-              &:not(:disabled) {
-                border-width: thin;
-                border-style: solid;
-                border-color: text-color(primary, lighter);
-                &:hover {
-                  border-color: text-color(primary, lightest)!important;
-                }
-              }
-            }
-          }
-        }
-      }
+    }
+  } // END list body
+}
+.panel-content.list-manager-panel.standard .item-details {
+  width: 400px;
+  background: background-color(primary, darker);
+  .item-details-loading-overlay {
+    @include rsa-fill-abs();
+    z-index: 20002;
+    background-color: background-color(neutral,dark,translucent);
+    centered {
+      height: 100%;
     }
   }
-
-
-  // Manager's filter component
-  .list-filter {
-    padding-left: rsa-whitespace(less);
-    padding-right: rsa-whitespace(less);
-    .filter-group {
+  .details-view-body {
+    padding: 0.6rem;
+    height: 302px;
+    .details-header {
+      height: 1rem;
+      justify-content: space-between;
       display: inline-flex;
-      width: 100%;
-      border-bottom: 1px solid border-color(primary,light);
-      padding-bottom: rsa-whitespace(less);
-      padding-top: rsa-whitespace(less);
-      .ember-power-select-search-input {
+      width: 96%;
+      text-transform: uppercase;
+    }
+    .details-header .title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: text-color(primary, lighter);
+      letter-spacing: 1px;
+    }
+    // delete, help icons
+    .details-header-icons {
+      margin-top: -0.6rem;
+      margin-right: -2rem;
+      button.rsa-form-button {
         border: none;
-        font-weight: 300;
+        margin-left: -2rem;
       }
-      .clear-filter i {
-        margin-right: 0;
-        font-size: 11px;
+      .is-disabled:hover button, .is-disabled:hover button i {
+        color: text-color(primary, light);
+      }
+      i {
+        margin: 0 .25rem;
+        padding: 0 .25rem;
+        font-size: inherit;
+        color: text-color(primary, light);
+      }
+    }
+    .details-body .name {
+      letter-spacing: 0.75px;
+      color: text-color(primary, light);
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding-bottom: 0.3rem;
+      padding-top: 1rem;
+    }
+    .details-body .value, input {
+      @include rsa-input-placeholder($formInputPlaceholderColor);
+      color: text-color(primary, lightest);
+      font-size: 0.85rem;
+      font-weight: 400;
+      &.rsa-form-input > input {
+        margin-top: -0.8rem;
+      }
+    }
+    .details-body .scroll-box {
+      overflow-y: auto;
+      position: relative;
+    }
+    .details-body .scroll-box .value, .details-body .scroll-box .message {
+      margin-bottom: 0.8rem;
+    }
+    .details-body .scroll-box .name {
+      background-color: background-color(primary, darker, opaque);
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      z-index: 20001;
+      padding-top: 1rem;
+    }
+    .details-body .scroll-box .add-details .name {
+      padding-top: 0.5rem;
+    }
+  }
+}
+.panel-content.list-manager-panel.standard footer {
+  border-top: 1px solid border-color(primary,light);
+  background-color: background-color(primary, darker);
+  .footer-buttons {
+    position: relative;
+    margin-top: .6rem;
+    justify-content: space-between;
+    display: inline-flex;
+    width: 100%;
+    font-size: 14px;
+
+    // "New (some item)"
+    .create-item {
+      text-align: left;
+      font-size: 12px;
+      button {
+        position: relative;
+        top: 2px;
+        font-weight: lighter;
+      }
+      // + icon
+      i {
+        font-size: inherit;
+        margin-left: 2px;
+        margin-right: 0.5rem;
+        padding-left: 0.5rem;
+        position: relative;
+        top: 0;
+      }
+    }
+    .list-help-icon button {
+      margin-right: 0.3rem;
+      font-size: 12px;
+    }
+  }
+}
+.panel-content.list-manager-panel.standard footer.list-footer {    
+  height: 35px;
+}
+.panel-content.list-manager-panel.standard footer.list-footer button.rsa-form-button {
+  border: none;
+  padding: 0;
+} 
+.panel-content.list-manager-panel.standard footer.details-footer {
+  height: 42px;
+  .footer-buttons .rsa-form-button-wrapper {
+    width: 46%;
+    margin-left: 0.6rem;
+    margin-right: 0.6rem;
+    button {
+      padding: 5px;
+      width: 100%;
+      &:not(:disabled) {
+        border-width: thin;
+        border-style: solid;
+        border-color: $formButtonBorderColor;
+      }
+      &:not(:disabled):hover{
+        border-color: $formButtonHoverBorderColor;
       }
     }
   }

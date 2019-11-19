@@ -5,6 +5,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
+import SELECTORS from '../../selectors';
 
 let setState;
 
@@ -23,6 +24,11 @@ module('Integration | Component | list footer', function(hooks) {
   const stateLocation1 = 'listManager';
   const listName1 = 'Meta Groups';
 
+  const {
+    listFooter,
+    helpIcon
+  } = SELECTORS;
+
   test('renders footer for list with correct components', async function(assert) {
     assert.expect(3);
     new ReduxDataHelper(setState)
@@ -36,10 +42,10 @@ module('Integration | Component | list footer', function(hooks) {
       stateLocation=stateLocation
       }}`);
 
-    assert.ok(find('footer.list-footer'));
-    assert.notOk(find('.list-help-icon'), 'Help Icon not available');
+    assert.ok(find(listFooter));
+    assert.notOk(find(helpIcon), 'Help Icon not available');
 
-    const buttons = findAll('footer.list-footer button');
+    const buttons = findAll(`${listFooter} button`);
     assert.equal(buttons[0].textContent.trim(), 'New Meta Group');
     await click(buttons[0]);
   });
@@ -59,10 +65,10 @@ module('Integration | Component | list footer', function(hooks) {
       stateLocation=stateLocation
       }}`);
 
-    assert.ok(find('footer.list-footer'));
-    assert.ok(find('.list-help-icon button'), 'Help Icon available');
+    assert.ok(find(listFooter));
+    assert.ok(find(`${helpIcon} button`), 'Help Icon available');
 
-    const buttons = findAll('footer.list-footer button');
+    const buttons = findAll(`${listFooter} button`);
     assert.equal(buttons[0].textContent.trim(), 'New Meta Group');
     await click(buttons[0]);
   });

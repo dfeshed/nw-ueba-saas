@@ -65,11 +65,20 @@
     }
   }
 
-  // below includes overwrite styles for global components
-  // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
-  // TODO: remove global component overwrites below and update the global component itself
   &__profile-selector {
     flex: 0 0 auto;
+    .list-caption {
+      top: 0;
+      .rsa-form-button {
+        border-right-width: 0px;
+      }
+    }
+    .rsa-split-dropdown {
+      .rsa-form-button {
+        border-left-width: 0px;
+        margin-left: -2px;
+      }
+    }
     .rsa-button-group:hover i {
       color: border-color(primary, lightest);
     }
@@ -88,214 +97,7 @@
           }
         }
       }
-    }
-    .list-manager {
-      .list-manager-container {
-        .list-menu-trigger.rsa-button-group {
-          @extend .list-menu-trigger-style
-        }
-        .rsa-button-menu {
-          .item-details {
-            width: 400px;
-            margin-top: 0.3rem;
-            display: flex;
-            position: relative;
-            flex-flow: row wrap;
-            overflow-x: hidden;
-            overflow-y: auto;
-            .meta-group-name {
-              margin-top: 0.5rem;
-            }
-            .column-group-name {
-              margin-top: 0.5rem;
-              .select-column-group {
-                .ember-power-select-selected-item {
-                  display: block;
-                  overflow-x: hidden;
-                  text-overflow: ellipsis;
-                  white-space: nowrap;
-                }
-              }
-              .ember-power-select-trigger,.ember-power-select-typeahead-input {
-                margin-top: -0.5rem;
-                margin-bottom: 1rem;
-              }
-            }
-            .prequery-conditions {
-              margin-top: 0.5rem;
-              &.scroll-box {
-              position: relative;
-              overflow-y: auto;
-              padding-right: 0.5rem;
-                .name {
-                  background-color: background-color(primary, darker, opaque);
-                  position: -webkit-sticky;
-                  position: sticky;
-                  top: 0;
-                  z-index: 20001;
-                }
-                .value {
-                  margin-bottom: 0.8rem;
-                }
-                ul {
-                  width: 100%;
-                  max-height: 8rem;
-                  padding-top: 0.2rem;
-                  &:not(.editable) {
-                    overflow-y: auto;
-                    overflow-x: hidden;
-                  }
-                  li {
-                    display: inline-block;
-                    width: inherit;
-                    max-width: fit-content;
-                    &.editable .rsa-form-button-wrapper:not(.is-icon-only) {
-                      i {
-                        margin-left: 0;
-                        font-weight: lighter;
-                      }
-                      &:hover i {
-                        font-weight: 600;
-                      }
-                      .rsa-icon-subtract-circle-1-filled {
-                        color: text-color(accentOne, dark);
-                      }
-                    }
-                  }
-                }
-                .prequery-pill {
-                  white-space: nowrap;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  display: inline-block;
-                  border-color: rgba(var(--border-color-primary-dark), var(--opacity-nearly-opaque));
-                  border-width: 1px;
-                  border-style: solid;
-                  border-radius: 0.25rem;
-                  background-color: rgba(var(--background-color-primary-dark), var(--opacity-translucent));
-                  flex: 0 1 auto;
-                  margin: 0 4px 4px 0;
-                  padding: 0.3rem;
-                  min-height: 2rem;
-                  line-height: 2rem;
-                  transition: border-color 0.5s;
-                  min-width: 0;
-                  width: auto;
-                  max-width: 96%;
-
-                  i {
-                    display: inline-flex;
-                    align-self: center;
-                    margin-right: 0.5rem;
-                  }
-                }
-                .prequery-pill-operator {
-                  white-space: nowrap;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  display: inline-block;
-                  border-width: 1px;
-                  border-style: none;
-                  border-radius: 0.25rem;
-                  flex: 0 1 auto;
-                  margin: 0 4px 4px 0;
-                  padding: 0.3rem;
-                  min-height: 2rem;
-                  line-height: 2rem;
-                  transition: border-color 0.5s;
-                  min-width: 0;
-                  width: auto;
-                  max-width: 96%;
-                }
-              }
-            }
-          }
-          .list-body {
-            padding-bottom: 1rem;
-            width: 100%;
-            .list-filter {
-              padding-left: 0.5rem;
-              padding-right: 0.5rem;
-              line-height: 1rem;
-              .filter-group {
-                display: inline-flex;
-                width: 100%;
-                border-bottom: 1px solid border-color(primary,light);
-                padding-bottom: rsa-whitespace(less);
-                padding-top: rsa-whitespace(less);
-                .ember-power-select-search-input {
-                  border: none;
-                }
-                .clear-filter {
-                  margin-right: 0.5rem;
-                  .rsa-form-button {
-                    height: inherit;
-                  }
-                }
-              }
-            }
-          .details-body {
-              .value {
-                padding-bottom: 1rem;
-              }
-            }
-            ul.rsa-item-list {
-              overflow-x: hidden;
-              width: 238px;
-              span.option-name {
-                vertical-align: middle;
-                overflow-x: hidden;
-                white-space: nowrap;
-                display: inline-block;
-                text-overflow: ellipsis;
-              }
-              li.rsa-list-item {
-                .rsa-form-button {
-                  height: inherit;
-                }
-                .edit-icon {
-                  .rsa-form-button {
-                    padding: 0.5rem;
-                  }
-                }
-              }
-            }
-          }
-          footer {
-            background-color: background-color(primary, darker);
-            width: inherit;
-            .footer-buttons {
-              .rsa-form-button {
-                height: inherit;
-                font-size: 12px;
-              }
-            }
-          }
-        }
-      }
-      .list-menu-trigger.rsa-button-group {
-         @extend .list-menu-trigger-style
-      }
-      .list-menu-trigger-style {
-        .list-caption {
-          top: 0;
-          .rsa-form-button {
-            border-right-width: 0px;
-          }
-        }
-        .list-help-icon {
-          i {
-            margin-right: 0px;
-          }
-        }
-        .rsa-split-dropdown {
-          .rsa-form-button {
-            border-left-width: 0px;
-            margin-left: -2px;
-          }
-        }
-      }
-    }
+    }        
   }
 
   .time-range-invalid {
@@ -1322,18 +1124,5 @@
       color: text-color(neutral, light);
       border-top: none;
     }
-
   }
-}
-
-.profile-query-bar {
-  background-color: background-color(primary, darkest);
-  width: 380px;
-  .rsa-investigate-query-container {
-
-    .query-pills {
-      width: 100%;
-    }
-  }
-
 }

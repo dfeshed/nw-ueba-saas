@@ -37,9 +37,9 @@ module('Unit | Actions | Creators', function(hooks) {
     assert.equal(type, ACTION_TYPES.SET_HIGHLIGHTED_INDEX, 'action has the correct type');
   });
 
-  test('toggleListVisibility action creator returns proper type', function(assert) {
-    const { type } = creators.toggleListVisibility(stateLocation1);
-    assert.equal(type, ACTION_TYPES.TOGGLE_LIST_VISIBILITY, 'action has the correct type');
+  test('listVisibilityToggled action creator returns proper type', function(assert) {
+    const { type } = creators.listVisibilityToggled(stateLocation1);
+    assert.equal(type, ACTION_TYPES.LIST_VISIBILITY_TOGGLED, 'action has the correct type');
   });
 
   test('setFilterText action creator returns proper type', function(assert) {
@@ -100,32 +100,5 @@ module('Unit | Actions | Creators', function(hooks) {
   test('beginCreateItem action creator returns proper type', function(assert) {
     const { type } = creators.beginCreateItem(stateLocation1);
     assert.equal(type, ACTION_TYPES.SET_VIEW_NAME, 'action has the correct type');
-  });
-
-  test('closeListManager action creator returns proper type if list is currently expanded', function(assert) {
-    assert.expect(1);
-    const getState = () => {
-      return new ReduxDataHelper().isExpanded(true).build();
-    };
-    const dispatchCloseListManager = (action) => {
-      assert.equal(action.type, ACTION_TYPES.TOGGLE_LIST_VISIBILITY, 'action has the correct type');
-    };
-
-    const thunk = creators.closeListManager(stateLocation1);
-    thunk(dispatchCloseListManager, getState);
-  });
-
-  test('closeListManager action creator does nothing if list is not expanded', function(assert) {
-    assert.expect(1);
-    const getState = () => {
-      return new ReduxDataHelper().isExpanded(false).build();
-    };
-    const dispatchCloseListManager = () => {
-      assert.notOk(true, 'Shall not dispatch if isExpanded is false');
-    };
-
-    const thunk = creators.closeListManager(stateLocation1);
-    thunk(dispatchCloseListManager, getState);
-    assert.ok(true, 'closeListManager shall not dispatch if list is not expanded');
   });
 });

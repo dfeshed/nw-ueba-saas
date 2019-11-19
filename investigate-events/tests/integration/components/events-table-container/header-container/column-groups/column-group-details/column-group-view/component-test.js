@@ -15,17 +15,20 @@ module('Integration | Component | Column Group View', function(hooks) {
     initialize(this.owner);
   });
 
-  const DISPLAYED_COLUMNS = '.group-details > ul.column-list li';
+  // selectors
+  const groupName = '.column-group-name';
+  const scrollBox = '.column-group-details.displayed-details.scroll-box.readonly';
+  const scrollBoxName = '.column-group-details.displayed-details.scroll-box.readonly .name';
+  const displayedColumns = `${scrollBox} > ul.column-list.value.readonly li`;
 
   test('columnGroup view renders read-only details', async function(assert) {
 
     this.set('columnGroup', { name: 'FOO', columns: [{ field: 'foo', title: 'bar' }] });
     await render(hbs`{{events-table-container/header-container/column-groups/column-group-details/column-group-view columnGroup=columnGroup}}`);
 
-    assert.equal(find('.group-name .name').textContent.trim(), 'Group Name');
-    assert.equal(find('.group-name .value').textContent.trim(), 'FOO');
-    assert.equal(find('.group-details .name').textContent.trim(), 'Displayed Meta Keys');
-    assert.equal(findAll(DISPLAYED_COLUMNS).length, 1, '1 columns for Summary List rendered');
-
+    assert.equal(find(`${groupName} .name`).textContent.trim(), 'Group Name', 'shall render correct text for column group name name');
+    assert.equal(find(`${groupName} .value`).textContent.trim(), 'FOO', 'shall render correct text for column group name value');
+    assert.equal(find(scrollBoxName).textContent.trim(), 'Displayed Meta Keys', 'shall render correct text for scroll box name');
+    assert.equal(findAll(displayedColumns).length, 1, '1 columns for Summary List rendered');
   });
 });

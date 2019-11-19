@@ -1,5 +1,5 @@
 import * as ACTION_TYPES from 'rsa-list-manager/actions/types';
-import { isExpanded, shouldSelectedItemPersist, list, viewName } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { shouldSelectedItemPersist, list } from 'rsa-list-manager/selectors/list-manager/selectors';
 import { DETAILS_VIEW } from 'rsa-list-manager/constants/list-manager';
 
 const _setSelectedItemById = (id, stateLocation) => {
@@ -33,11 +33,11 @@ export const setHighlightedIndex = (index, stateLocation) => ({
 });
 
 /**
- * toggles isExpanded and resets highlightedIndex, filterText
+ * resets highlightedIndex, filterText, viewName
  * @param {string} stateLocation e.g. 'listManagers.columnGroups'
  */
-export const toggleListVisibility = (stateLocation) => ({
-  type: ACTION_TYPES.TOGGLE_LIST_VISIBILITY,
+export const listVisibilityToggled = (stateLocation) => ({
+  type: ACTION_TYPES.LIST_VISIBILITY_TOGGLED,
   meta: { belongsTo: stateLocation }
 });
 
@@ -72,23 +72,3 @@ export const beginEditItem = (editItemId, stateLocation) => {
 };
 
 export const beginCreateItem = (stateLocation) => viewChanged(DETAILS_VIEW, stateLocation);
-
-export const closeListManager = (stateLocation) => {
-  return (dispatch, getState) => {
-    const currentlyExpanded = isExpanded(getState(), stateLocation);
-    // close list only if isExpanded
-    if (currentlyExpanded) {
-
-      // Include details about what view the manager was exiting
-      // with the action as consumers of list-manager that care
-      // about these actions may have state maintenance work to do
-      const view = viewName(getState(), stateLocation);
-      const actionType = view === DETAILS_VIEW ? 'close' : undefined;
-      dispatch({
-        type: ACTION_TYPES.TOGGLE_LIST_VISIBILITY,
-        payload: { actionType },
-        meta: { belongsTo: stateLocation }
-      });
-    }
-  };
-};

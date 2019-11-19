@@ -12,7 +12,7 @@
 </div>
 <div class='prequery-conditions scroll-box readonly'>
   <div class='name'>{{t 'investigate.profile.prequeryConditions.prequeryConditions'}}</div>
-  <ul class='value'>
+  <ul class='value prequery-pills readonly'>
     {{#each profile.preQueryPillsData as |item|}}
       {{#if item.complexFilterText}}
         <li class='prequery-pill'>
