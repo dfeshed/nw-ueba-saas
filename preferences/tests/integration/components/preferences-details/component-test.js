@@ -89,7 +89,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
       translation.t('preferences.investigate-events.autoUpdateSummary-tooltip'));
   });
 
-  test('Preferences panel should render title for default vent sort oeder', async function(assert) {
+  test('Preferences panel should render title for default event sort order', async function(assert) {
     await renderApplicationContent(this, assert);
     assert.equal(find('.rsa-preferences-field-content:nth-of-type(6) i').title,
       translation.t('preferences.investigate-events.eventTimeSortOrder-tooltip'));
