@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
-
+sleep 15
+# added the sleep in order to wait until the workflows-default.json will be created
 #Set Analytics Testing Configuration
 if [ ! -f /etc/netwitness/presidio/configserver/configurations/airflow/workflows-default.json ]; then
     echo "ERROR: workflows-default.json file not found. Exiting."
