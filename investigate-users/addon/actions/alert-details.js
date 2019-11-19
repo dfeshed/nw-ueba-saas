@@ -73,6 +73,10 @@ const getTopTenAlerts = (entityType, timeRange) => {
           type: ACTION_TYPES.TOP_ALERTS_ERROR,
           payload: result === 'error' ? 'topAlertsError' : 'noAlerts'
         });
+        dispatch({
+          type: ACTION_TYPES.GET_TOP_ALERTS,
+          payload: []
+        });
         return;
       }
       dispatch({

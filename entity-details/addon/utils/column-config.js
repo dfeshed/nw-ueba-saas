@@ -143,7 +143,7 @@ const processColumns = [{
   field: 'machineName',
   width: '3.5vw',
   title: 'Machine Name',
-  linkField: 'user_link',
+  linkField: 'machine_name_link',
   additionalFilter: 'host.all',
   visible: true,
   disableSort: true
@@ -167,7 +167,7 @@ const registryColumns = [{
   field: 'machineName',
   width: '3.5vw',
   title: 'Machine Name',
-  linkField: 'user_link',
+  linkField: 'machine_name_link',
   additionalFilter: 'host.all',
   visible: true,
   disableSort: true

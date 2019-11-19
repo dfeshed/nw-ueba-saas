@@ -72,10 +72,10 @@ module('Unit | Actions | Alert Details', (hooks) => {
         });
       });
     });
-    assert.expect(2);
+    assert.expect(3);
     const done = assert.async();
     const dispatch = ({ type, payload }) => {
-      assert.ok(type === 'INVESTIGATE_USER::TOP_ALERTS_ERROR' || type === 'INVESTIGATE_USER::TOP_ALERT_FILTER');
+      assert.ok(type === 'INVESTIGATE_USER::TOP_ALERTS_ERROR' || type === 'INVESTIGATE_USER::TOP_ALERT_FILTER' || type === 'INVESTIGATE_USER::GET_TOP_ALERTS');
       if (payload === 'topAlertsError') {
         done();
       }
@@ -101,9 +101,9 @@ module('Unit | Actions | Alert Details', (hooks) => {
         });
       });
     });
-    assert.expect(2);
+    assert.expect(3);
     const dispatch = ({ type }) => {
-      assert.ok(type === 'INVESTIGATE_USER::TOP_ALERTS_ERROR' || type === 'INVESTIGATE_USER::TOP_ALERT_FILTER');
+      assert.ok(type === 'INVESTIGATE_USER::TOP_ALERTS_ERROR' || type === 'INVESTIGATE_USER::TOP_ALERT_FILTER' || type === 'INVESTIGATE_USER::GET_TOP_ALERTS');
     };
     const getState = () => {
       return { alerts: { topAlertsEntity: 'all', topAlertsTimeFrame: {
