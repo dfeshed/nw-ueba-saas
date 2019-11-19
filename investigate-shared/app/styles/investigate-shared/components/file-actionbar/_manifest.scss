@@ -33,6 +33,9 @@
 
 .file-action-selector-panel {
   .rsa-dropdown-action-list {
+    li {
+      height: 18px;
+    }
     .disabled, li.disabled:hover {
       background: background-color(primary, darkest);
       color: text-color(primary);
@@ -42,6 +45,9 @@
     }
   }
   .rsa-content-tethered-panel-trigger {
+    width: 100%;
+    padding: 2px 13px 9px 0px;
+
     div {
       width: 140px;
       color: text-color(neutral);
@@ -50,6 +56,7 @@
         right: 5px;
       }
     }
+
   }
 }
 
