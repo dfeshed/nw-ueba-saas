@@ -564,6 +564,80 @@ module('Unit | Actions | Pill Creators', function(hooks) {
     action(addPillDispatch, getState);
   });
 
+  test('addTextFilter action creator returns second action if pill before is OR', function(assert) {
+    assert.expect(5);
+    const pillData = {
+      type: 'text',
+      isEditing: false,
+      isFocused: false,
+      isInvalid: false,
+      isSelected: false,
+      isValidationInProgress: false,
+      searchTerm: 'blahblahblah'
+    };
+    const thunk = pillCreators.addTextFilter({ pillData, position: 2 });
+
+    const getState = () => {
+      return new ReduxDataHelper()
+        .pillsDataEmpty()
+        .pillsDataWithOr()
+        .build();
+    };
+
+    const dispatch = (arr) => {
+      assert.ok(Array.isArray(arr));
+      assert.strictEqual(arr.length, 2);
+      assert.deepEqual(arr[0], {
+        type: ACTION_TYPES.ADD_PILL,
+        payload: {
+          pillData,
+          position: 2,
+          shouldAddFocusToNewPill: false
+        }
+      }, 'first action should be add pill');
+      assert.strictEqual(arr[1].type, ACTION_TYPES.REPLACE_LOGICAL_OPERATOR, 'second action should be replace logical operator');
+      assert.strictEqual(arr[1].payload.pillData.type, OPERATOR_AND, 'should replace with an AND');
+    };
+
+    thunk(dispatch, getState);
+  });
+
+  test('addTextFilter action creator returns only one action if pill before is AND', function(assert) {
+    assert.expect(3);
+    const pillData = {
+      type: 'text',
+      isEditing: false,
+      isFocused: false,
+      isInvalid: false,
+      isSelected: false,
+      isValidationInProgress: false,
+      searchTerm: 'blahblahblah'
+    };
+    const thunk = pillCreators.addTextFilter({ pillData, position: 2 });
+
+    const getState = () => {
+      return new ReduxDataHelper()
+        .pillsDataEmpty()
+        .pillsDataWithAnd()
+        .build();
+    };
+
+    const dispatch = (arr) => {
+      assert.ok(Array.isArray(arr));
+      assert.strictEqual(arr.length, 1);
+      assert.deepEqual(arr[0], {
+        type: ACTION_TYPES.ADD_PILL,
+        payload: {
+          pillData,
+          position: 2,
+          shouldAddFocusToNewPill: false
+        }
+      }, 'first action should be add pill');
+    };
+
+    thunk(dispatch, getState);
+  });
+
   test('updatedFreeFormText action creator returns proper type and payload', function(assert) {
     assert.expect(2);
     const thunk = pillCreators.updatedFreeFormText('medium = 50');

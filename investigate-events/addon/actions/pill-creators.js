@@ -308,14 +308,29 @@ export const addFreeFormFilter = ({ pillData, position = 0, shouldAddFocusToNewP
   };
 };
 
-export const addTextFilter = ({ pillData, position = 0, shouldAddFocusToNewPill = false }) => ({
-  type: ACTION_TYPES.ADD_PILL,
-  payload: {
-    pillData,
-    position,
-    shouldAddFocusToNewPill
-  }
-});
+export const addTextFilter = ({ pillData, position = 0, shouldAddFocusToNewPill = false }) => {
+  return (dispatch, getState) => {
+    const batch = [];
+    batch.push({
+      type: ACTION_TYPES.ADD_PILL,
+      payload: {
+        pillData,
+        position,
+        shouldAddFocusToNewPill
+      }
+    });
+    const prevPill = pillsData(getState())[position - 1];
+    if (prevPill?.type === OPERATOR_OR) {
+      // Text pills must always have an AND next to them, not an OR
+      const newPillData = {
+        ...prevPill,
+        type: OPERATOR_AND
+      };
+      batch.push(replaceLogicalOperator({ pillData: newPillData, position }));
+    }
+    dispatch(batch);
+  };
+};
 
 // Transform the text to what it would look like in pill form
 export const updatedFreeFormText = (freeFormText) => {

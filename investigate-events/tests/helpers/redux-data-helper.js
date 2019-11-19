@@ -243,6 +243,42 @@ const PILLS_WITH_EMPTY_PARENS = [{
   twinId: 'twinPill_11'
 }];
 
+const PILLS_WITH_AND = [{
+  id: '1',
+  meta: 'a',
+  operator: '=',
+  value: '\'x\'',
+  type: 'query',
+  isEditing: false,
+  isFocused: false,
+  isInvalid: false,
+  isSelected: false,
+  complexFilterText: undefined
+}, {
+  id: '2',
+  type: 'operator-and',
+  isFocused: false,
+  isSelected: false
+}];
+
+const PILLS_WITH_OR = [{
+  id: '1',
+  meta: 'a',
+  operator: '=',
+  value: '\'x\'',
+  type: 'query',
+  isEditing: false,
+  isFocused: false,
+  isInvalid: false,
+  isSelected: false,
+  complexFilterText: undefined
+}, {
+  id: '2',
+  type: 'operator-or',
+  isFocused: false,
+  isSelected: false
+}];
+
 
 const _optionsInitialState = {
   size: 20,
@@ -753,6 +789,16 @@ export default class DataHelper {
   }
 
   pillsDataWithEmptyParens(pD = PILLS_WITH_EMPTY_PARENS) {
+    _set(this.state, 'queryNode.pillsData', pD);
+    return this;
+  }
+
+  pillsDataWithAnd(pD = PILLS_WITH_AND) {
+    _set(this.state, 'queryNode.pillsData', pD);
+    return this;
+  }
+
+  pillsDataWithOr(pD = PILLS_WITH_OR) {
     _set(this.state, 'queryNode.pillsData', pD);
     return this;
   }
