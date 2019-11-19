@@ -159,7 +159,7 @@ module('Integration | Component | Respond Rule Builder Condition', function(hook
     timezone.set('selected', { zoneId: 'UTC', offset: 'GMT+00:00' });
 
     const actionSpy = sinon.spy(aggregationRuleCreators, 'updateCondition');
-    const conditions = { '0': { id: 0, property: 'alert.timestamp', operator: '=', value: null } };
+    const conditions = { '0': { id: 0, property: 'alert.timestamp', operator: '=', value: undefined } };
     const inputSelector = '.condition-control.value input[type=text]';
     setState({
       ...initialState,
