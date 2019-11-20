@@ -31,16 +31,13 @@ pipeline {
 
 
         stage('UEBA-UI RPMs Upgrade') {
-            environment {
-                ADMIN_SERVER_IP = params.ADMIN_SERVER_8
-            }
             when {
                 expression { return params.INSTALL_UEBA_UI_RPMS }
             }
             steps {
                 script {
-                    sh "echo ADMIN_SERVER_IP=${env.ADMIN_SERVER_IP}"
-                    sh "sshpass -p \"netwitness\" ssh root@${env.ADMIN_SERVER_IP} -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/scripts/presidio-ui-update.sh"
+                    sh "echo ADMIN_SERVER_IP=${params.ADMIN_SERVER_8}"
+                    sh "sshpass -p \"netwitness\" ssh root@${params.ADMIN_SERVER_8} -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/scripts/presidio-ui-update.sh"
                 }
             }
 
