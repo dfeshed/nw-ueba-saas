@@ -9,7 +9,7 @@
 
     <test name="E2E Tests REST"  preserve-order="true">
         <classes>
-            <class name="com.rsa.netwitness.presidio.automation.test.rest.RestUserTests"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.RestEntityTests"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsRestCorrectnessTest"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsIndicatorsTests"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.EntitySeverityTests"/>
