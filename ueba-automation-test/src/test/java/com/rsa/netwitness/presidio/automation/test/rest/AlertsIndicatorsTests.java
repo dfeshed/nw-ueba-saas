@@ -357,6 +357,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
             boolean notAggregationCountIndicator = !(
                     indicator.equals("high_number_of_file_move_operations_from_shared_drive")
                             || indicator.equals("high_number_of_successful_file_action_operations")
+                            || indicator.equals("high_number_of_deletions")
                             || actualIndicator.schema.equals("TLS")
             );
 
