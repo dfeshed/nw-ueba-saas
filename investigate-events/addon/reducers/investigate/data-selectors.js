@@ -219,18 +219,28 @@ export const getFlattenedColumnList = createSelector(
         sortField, // include sortField or risk query error if not present
         'sessionid', // always need sessionid
         'nwe.callback_id', // determines if a row is for endpoint.
-        'medium', // tells us if it is log/network
-        'session.split', // used to determine sibling order of split sessions
-        'ip.dst', // used to find parent event when session is split
-        'ip.src', // used to find parent event when session is split
-        'ipv6.src', // used to find parent event when session is split
-        'ipv6.dst', // used to find parent event when session is split
-        'ip.proto', // used to find parent event when session is split
-        'tcp.dstport', // used to find parent event when session is split
-        'tcp.srcport', // used to find parent event when session is split
-        'udp.dstport', // used to find parent event when session is split
-        'udp.srcport' // used to find parent event when session is split
+        'medium' // tells us if it is log/network
       ];
+
+      // TODO: uncomment when re-introducing intrasession
+      // columns = [
+      //   ...columns,
+      //   'time', // time is used in every column columnGroup
+      //   sortField, // include sortField or risk query error if not present
+      //   'sessionid', // always need sessionid
+      //   'nwe.callback_id', // determines if a row is for endpoint.
+      //   'medium', // tells us if it is log/network
+      //   'session.split', // used to determine sibling order of split sessions
+      //   'ip.dst', // used to find parent event when session is split
+      //   'ip.src', // used to find parent event when session is split
+      //   'ipv6.src', // used to find parent event when session is split
+      //   'ipv6.dst', // used to find parent event when session is split
+      //   'ip.proto', // used to find parent event when session is split
+      //   'tcp.dstport', // used to find parent event when session is split
+      //   'tcp.srcport', // used to find parent event when session is split
+      //   'udp.dstport', // used to find parent event when session is split
+      //   'udp.srcport' // used to find parent event when session is split
+      // ];
 
       // If we don't have a meta-summary column we are done
       if (!hasMetaSummaryColumn) {
