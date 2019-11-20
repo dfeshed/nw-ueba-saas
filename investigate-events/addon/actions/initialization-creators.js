@@ -167,8 +167,9 @@ const _getColumnGroups = (dispatch, getState) => {
           }
         }
       });
+    } else {
+      resolve();
     }
-    resolve();
   });
 };
 
