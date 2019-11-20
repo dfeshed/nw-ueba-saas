@@ -401,9 +401,9 @@ const initializeRecon = (reconInputs) => {
     // something relevant if user purposely manipulates it
     reconInputs.eventId = Number.parseInt(reconInputs.eventId, 10);
 
-    // If its the same eventId, there is nothing to do
-    // as previous state will be intact
-    if (dataState.eventId !== reconInputs.eventId) {
+    // If its the same eventId on the same service, there is nothing to do
+    // as previous state will be intact. But if either of eventId or endpointId changes, fetch.
+    if (dataState.eventId !== reconInputs.eventId || dataState.endpointId !== reconInputs.endpointId) {
 
       // first, dispatch the data provided to recon as input
       dispatch({
