@@ -37,6 +37,7 @@ pipeline {
 
         stage('Project Clone') {
             steps {
+                sh "pkill -9 maven"
                 script { currentBuild.displayName="#${BUILD_NUMBER} ${NODE_NAME}" }
                 script { currentBuild.description = "${env.BUILD_BRANCH}" }
                 cleanWs()
