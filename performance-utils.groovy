@@ -4,11 +4,11 @@ pipeline {
         string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         string(name: 'SIDE_BRANCH_JOD_NUMBER', defaultValue: '', description: 'Write the "presidio-build-jars-and-packages" build number from which you want to install the PRMs')
+        booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: false, description: '')
         booleanParam(name: 'RESET_LOG_HYBRID', defaultValue: false, description: '')
         booleanParam(name: 'RESET_NETWORK_HYBRID', defaultValue: false, description: '')
         booleanParam(name: 'START_BROKER', defaultValue: false, description: '')
         booleanParam(name: 'RESET_PRESIDIO', defaultValue: false, description: '')
-        booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: false, description: '')
     }
 
     agent { label env.NODE }
@@ -33,6 +33,17 @@ pipeline {
                 copyScripts()
             }
         }
+        stage('UEBA - RPMs Upgrade') {
+            when {
+                expression { return params.INSTALL_UEBA_RPMS }
+            }
+            steps {
+                script {
+                    setBaseUrl()
+                    uebaInstallRPMs()
+                }
+            }
+        }
         stage('Reset LogHybrid') {
             when {
                 expression { return params.RESET_LOG_HYBRID }
@@ -55,17 +66,6 @@ pipeline {
             }
             steps {
                 sh "bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh skip ${BROKER_HOST}"
-            }
-        }
-        stage('UEBA - RPMs Upgrade') {
-            when {
-                expression { return params.INSTALL_UEBA_RPMS }
-            }
-            steps {
-                script {
-                    setBaseUrl()
-                    uebaInstallRPMs()
-                }
             }
         }
        stage('UEBA - Reset Presidio') {
