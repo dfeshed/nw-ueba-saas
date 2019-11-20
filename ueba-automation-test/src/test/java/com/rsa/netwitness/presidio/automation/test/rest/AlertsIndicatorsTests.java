@@ -17,7 +17,6 @@ import org.assertj.core.api.SoftAssertions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Ignore;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -238,7 +237,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         }
     }
 
-    @Ignore
+    @Test
     public void multiple_charts_baseline_values_should_be_above_or_equal_single_entity_context_values() {
 
         List<AlertsStoredRecord> multiGraphsIndicatorsAlerts = allAlerts.parallelStream()
@@ -262,7 +261,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                 assertThat(historicalDataArrayByContext).as(url.toString() + "\nhistoricalData should contain 2 buckets only.").isNotNull().hasSize(2);
 
                 List<String> contextsByLength = historicalDataArrayByContext.keySet().stream().sorted(Comparator.comparingInt(String::length)).collect(toList());
-                System.out.println(contextsByLength.get(0) + " -- " + contextsByLength.get(1));
+                LOGGER.debug(contextsByLength.get(0) + " -- " + contextsByLength.get(1));
 
                 List<HistoricalDataBucket> allValuesBuckets = historicalDataArrayByContext.get(contextsByLength.get(0)).parallelStream().flatMap(e -> e.allBuckets.stream()).collect(toList());
                 List<HistoricalDataBucket> singleValueBuckets = historicalDataArrayByContext.get(contextsByLength.get(1)).parallelStream().flatMap(e -> e.allBuckets.stream()).collect(toList());
