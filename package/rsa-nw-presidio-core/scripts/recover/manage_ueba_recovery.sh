@@ -122,9 +122,10 @@ restore() {
     -X POST --data "$(create_snapshot)" "${REST_API_LOCATION}/${ARCHIVE_API_ENDPOINT}" ||
     exitError "snapshot creation failed"
 
-  # close open indexes
+  # Close all indexes
   ${CURL_COMMAND} \
-    -X POST "${REST_API_LOCATION}/_all/_close"
+    -X POST "${REST_API_LOCATION}/_all/_close?allow_no_indices" ||
+    exitError "Closing all indexes failed"
 
   # restore logic
   echoInfo "Restoring UEBA data"
@@ -132,10 +133,10 @@ restore() {
     -X POST "${REST_API_LOCATION}/${ARCHIVE_API_ENDPOINT}/snapshot_ueba/_restore?wait_for_completion=true" ||
     exitError "restore from snapshot failed"
 
-  # open indexes
+  # Open all indexes
   ${CURL_COMMAND} \
-    -X POST "${REST_API_LOCATION}/_all/_open" ||
-    exitError "open indexes failed"
+    -X POST "${REST_API_LOCATION}/_all/_open?allow_no_indices" ||
+    exitError "Opening all indexes failed"
 
   # Redistribute the configuration server parameters
   echoInfo "Redistributing the configuration server parameters"
