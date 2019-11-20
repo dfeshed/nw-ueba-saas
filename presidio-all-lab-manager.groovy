@@ -1,8 +1,6 @@
 def runParallel = true
 def buildStages
 
-def adminServers = "${params.ADMIN_SERVERS}"
-
 node('nw-hz-08-ueba') {
     parameters {
         booleanParam(name: 'INSTALL_UEBA_UI_RPMS', defaultValue: true, description: '')
@@ -32,12 +30,12 @@ node('nw-hz-08-ueba') {
 
 // Create List of build stages to suit
 def prepareBuildStages() {
-    echo adminServers
+    echo "${params.ADMIN_SERVERS}"
 
     def buildList = []
     def buildStages = [:]
 
-    for (name in adminServers ) {
+    for (name in "${params.ADMIN_SERVERS}" ) {
         def n = "${name}"
         buildStages.put(n, prepareOneBuildStage(n))
     }
