@@ -54,8 +54,8 @@ export default Route.extend({
     mf: { refreshModel: true }, // pillData
     mps: { refreshModel: false }, // metaPanelSize
     rs: { refreshModel: false }, // reconSize
-    sortField: { refreshModel: false },
-    sortDir: { refreshModel: false }
+    sortField: { refreshModel: true },
+    sortDir: { refreshModel: true }
   },
 
   /**
