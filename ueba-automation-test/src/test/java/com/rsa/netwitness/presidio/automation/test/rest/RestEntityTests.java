@@ -96,9 +96,9 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
         assertThat(entities).as("Get entities by id should return 1 element").hasSize(1);
 
         for (EntitiesStoredRecord e : entities) {
-            Assert.assertEquals(e.getId(), entityId, entityIdUrl + "\nFilter by id return incorrect entity.");
-            Assert.assertEquals(e.getEntityName(), entityId, entitiesStoredRecord.getEntityName() + "\nFilter by id return incorrect entity.");
-            Assert.assertEquals(e.getEntityType(), entityId, entitiesStoredRecord.getEntityType() + "\nFilter by id return incorrect entity.");
+            assertThat(e.getId()).as(entityIdUrl + "\nFilter by id return incorrect entity.").isEqualTo(entityId);
+            assertThat(e.getEntityName()).as(entityIdUrl + "\nFilter by id return incorrect entity.").isEqualTo(entitiesStoredRecord.getEntityName());
+            assertThat(e.getEntityType()).as(entityIdUrl + "\nFilter by id return incorrect entity.").isEqualTo(entitiesStoredRecord.getEntityType());
         }
     }
 
