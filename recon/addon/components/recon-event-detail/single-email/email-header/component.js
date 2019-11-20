@@ -45,6 +45,7 @@ const EmailReconComponent = Component.extend({
   @computed('email', 'isEmailExpanded')
   headerFields(email, isEmailExpanded) {
     const newHeaders = isEmailExpanded ? headers : collapsedHeaders;
+    this.set('isEmailHeadersExpanded', false);
     return _.pickBy(email, (emailValue, emailField) => !(_.isEmpty(emailValue)) & newHeaders.includes(emailField));
   },
 
