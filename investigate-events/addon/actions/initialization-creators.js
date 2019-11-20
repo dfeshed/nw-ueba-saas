@@ -168,6 +168,7 @@ const _getColumnGroups = (dispatch, getState) => {
         }
       });
     }
+    resolve();
   });
 };
 
