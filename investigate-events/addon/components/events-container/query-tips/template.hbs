@@ -1,6 +1,6 @@
 <p>{{t 'investigate.events.eventTips.noResults'}}</p>
 <hbox class="rsa-investigate-query-tips-header">
-  <vbox class="section-1" xs="6">
+  <vbox class="section-1" xs="8">
     <span class="header">{{t 'investigate.events.eventTips.head.headerOne'}}</span>
     <p>{{t 'investigate.events.eventTips.head.summaryOne'}}</p>
     <span class="text">
@@ -22,8 +22,10 @@
         <li>
           {{t 'investigate.events.eventTips.head.textOne.three'}}
           {{rsa-icon class="rsa-icon-arrow-right-7"}}
-          <span class="fakeand fakeparen open">(</span>
           <span class="fakepill"> category = 'task' {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+          <span class="fakeand">and</span>
+          <span class="fakeand fakeparen open">(</span>
+          <span class="fakepill"> extension = 'dll' {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
           <span class="fakeand">or</span>
           <span class="fakepill"> extension = 'exe' {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
           <span class="fakeand fakeparen close">)</span>
@@ -45,7 +47,7 @@
       </ul>
     </span>
   </vbox>
-  <vbox class="section-2" xs="6">
+  <vbox class="section-2" xs="4">
     <span class="header">{{t 'investigate.events.eventTips.head.headerTwo'}}</span>
     <p>{{t 'investigate.events.eventTips.head.summaryTwo'}}</p>
     <span class="text">

@@ -704,7 +704,7 @@ export default {
           textOne: {
             one: 'Find outbound HTTP or SSH events',
             two: 'Find failed login Windows events',
-            three: 'Find endpoint events with tasks having a jar file or file extension of exe',
+            three: 'Find endpoint tasks that include a file ending in exe or dll',
             four: 'Find failed login attempts using a text search',
             fourExample: 'failed login attempt',
             five: 'Find all events originating from the 10.10.0.0 subnet that use a common service'
