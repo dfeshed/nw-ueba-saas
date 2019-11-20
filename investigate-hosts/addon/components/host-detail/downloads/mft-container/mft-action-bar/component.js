@@ -33,6 +33,8 @@ const mftActionBar = Component.extend({
 
   accessControl: service(),
 
+  flashMessage: service(),
+
   callBackOptions,
 
   @alias('focusedHost')

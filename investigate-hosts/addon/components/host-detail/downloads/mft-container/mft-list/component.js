@@ -73,6 +73,8 @@ const DownloadedFileList = Component.extend({
 
   accessControl: service(),
 
+  flashMessage: service(),
+
   callBackOptions,
 
   currentSort: {
