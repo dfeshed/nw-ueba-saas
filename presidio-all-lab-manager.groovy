@@ -32,10 +32,12 @@ node('nw-hz-08-ueba') {
 def prepareBuildStages() {
     echo "${params.ADMIN_SERVERS}"
 
+    def adminServers = "${params.ADMIN_SERVERS}".split(',').collect{it as String}
+
     def buildList = []
     def buildStages = [:]
 
-    for (name in "${params.ADMIN_SERVERS}" ) {
+    for (name in adminServers ) {
         def n = "${name}"
         buildStages.put(n, prepareOneBuildStage(n))
     }
