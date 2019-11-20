@@ -238,6 +238,7 @@ public class AlertPersistencyServiceTest {
         alertPersistencyService.save(alert);
         Page<Indicator> testIndicator = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 1));
         assertEquals(1, testIndicator.getTotalElements());
+        assertEquals(1, testIndicator.getContent().get(0).getEvents().size());
         alertPersistencyService.deleteAlertAndIndicators(alert);
         elasticsearchTemplate.refresh(Alert.class);
         elasticsearchTemplate.refresh(Indicator.class);
