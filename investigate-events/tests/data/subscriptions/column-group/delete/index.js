@@ -6,16 +6,19 @@ export default {
   requestDestination: '/ws/investigate/column/groups/delete-by-id',
   message(frame) {
     const body = JSON.parse(frame.body);
+    const { columnGroup } = body;
+    const { id } = columnGroup;
 
     // Remove from columnGroup cache
-    const itemToRemove = columnGroups.find((d) => d.id === body.id);
+    const itemToRemove = columnGroups.find((d) => d.id === id);
     const index = columnGroups.indexOf(itemToRemove);
-    columnGroups.splice(index, 1);
+    const [ removedColumnGroup ] = columnGroups.splice(index, 1);
 
     return {
-      data: true,
+      data: removedColumnGroup,
       request: {
-        id: body.id
+        id: body.id,
+        columnGroup
       }
     };
   }

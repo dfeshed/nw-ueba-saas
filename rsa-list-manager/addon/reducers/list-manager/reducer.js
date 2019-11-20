@@ -145,7 +145,7 @@ const listManagerReducer = handleActions({
       }),
       success: (s) => {
         const { request } = action.payload;
-        const deletedId = request.profileRequest ? request.profileRequest.id : request.id;
+        const deletedId = request[s.modelName].id;
         // remove the deleted item from state
         const list = s.list.filter((item) => item.id !== deletedId);
         return s.merge({

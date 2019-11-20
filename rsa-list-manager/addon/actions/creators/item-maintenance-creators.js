@@ -5,7 +5,7 @@ import { modelName, editItemId, editItem } from 'rsa-list-manager/selectors/list
 
 /**
  * @param {*}
- * 1. itemPayload of item to delete,
+ * 1. itemPayload of item to create,
  * 2. list's stateLocation
  */
 export const createItem = (item, stateLocation, itemTransform) => {
@@ -65,12 +65,8 @@ export const deleteItem = (stateLocation) => {
     const id = editItemId(getState(), stateLocation);
     const apiModelName = modelName(getState(), stateLocation);
 
-    let payload = { id };
-    // TODO make payloads uniform for delete if and once MT changes in place
-    if (apiModelName === 'profileRequest') {
-      payload = {};
-      payload[apiModelName] = { id };
-    }
+    const payload = {};
+    payload[apiModelName] = { id };
 
     dispatch({
       type: ACTION_TYPES.ITEM_DELETE,

@@ -264,6 +264,7 @@ test('Should set relevant properties correctly at start of deleting item', funct
 test('Should set relevant properties correctly after successfully deleting item', function(assert) {
   const id = `TEST-${Date.now().toString().substring(6)}`;
   const previous = Immutable.from({
+    modelName: 'columnGroup',
     list: [
       {
         id,
@@ -301,7 +302,10 @@ test('Should set relevant properties correctly after successfully deleting item'
     payload: {
       data: true,
       request: {
-        id
+        id,
+        columnGroup: {
+          id
+        }
       }
     }
   });
