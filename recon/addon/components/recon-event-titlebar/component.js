@@ -82,6 +82,16 @@ const TitlebarComponent = Component.extend({
         // update stored default view for recon (defaultReconView)
         this.send('storeDefaultReconView', newView);
       }
+    },
+
+    onToggleReconHeader() {
+      // Toggle recon event header
+      this.send('toggleReconHeader');
+
+      // Enable hightlights entities on header items on click of show header
+      if (this.get('isHeaderOpen')) {
+        this.enable();
+      }
     }
   }
 

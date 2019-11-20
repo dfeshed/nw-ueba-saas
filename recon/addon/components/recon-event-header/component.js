@@ -49,6 +49,12 @@ const EventHeaderComponent = Component.extend(HighlightsEntities, {
       }
       return acc;
     }, [])).sortBy('so');
+  },
+
+  actions: {
+    enableHighlightEntities() {
+      next(this, 'highlightEntities');
+    }
   }
 });
 

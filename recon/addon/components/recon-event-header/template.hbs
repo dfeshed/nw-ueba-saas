@@ -1,5 +1,5 @@
 <vbox fit class="recon-event-header">
-  {{recon-event-titlebar}}
+  {{recon-event-titlebar enable=(action 'enableHighlightEntities')}}
   {{recon-event-actionbar}}
 
   {{#if (and headerError (not isLoading))}}
