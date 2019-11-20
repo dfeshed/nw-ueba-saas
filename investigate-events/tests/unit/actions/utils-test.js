@@ -22,6 +22,8 @@ module('Unit | Helper | Actions Utils', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
+    this.owner.inject('*', 'i18n', 'service:i18n');
+
     initialize(this.owner);
   });
 
@@ -74,6 +76,18 @@ module('Unit | Helper | Actions Utils', function(hooks) {
     const result = queryUtils.filterIsPresent(filters, freeFormText);
 
     assert.ok(result, 'Filter is present');
+  });
+
+  test('updateErrorMsgIfMaxMemory does not return with text appended without match', function(assert) {
+    assert.expect(1);
+    const result = queryUtils.updateErrorMsgIfMaxMemory('foo');
+    assert.equal(result, 'foo');
+  });
+
+  test('updateErrorMsgIfMaxMemory does return with text appended with match', function(assert) {
+    assert.expect(1);
+    const result = queryUtils.updateErrorMsgIfMaxMemory('max.query.memory warning.');
+    assert.equal(result, 'max.query.memory warning. To avoid this error try limiting your query by narrowing the time range, adding further filters, removing complex filter operations, or decreasing the number of columns in your column group.');
   });
 
 });

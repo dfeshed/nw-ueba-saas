@@ -9,6 +9,7 @@ import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/
 import { hasMinimumCoreServicesVersionForColumnSorting } from '../reducers/investigate/services/selectors';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { mergeMetaIntoEvent } from './events-creators-utils';
+import { updateErrorMsgIfMaxMemory } from './utils';
 
 export const _deriveSort = (field, sortDirection, state) => {
   const hasRequiredVersion = hasMinimumCoreServicesVersionForColumnSorting(state);
@@ -119,6 +120,8 @@ const _done = (errorCode, serverMessage) => {
     dispatch(queryIsRunning(false));
 
     if (errorCode) {
+      serverMessage = updateErrorMsgIfMaxMemory(serverMessage);
+
       dispatch({
         type: ACTION_TYPES.QUERY_STATS,
         payload: {

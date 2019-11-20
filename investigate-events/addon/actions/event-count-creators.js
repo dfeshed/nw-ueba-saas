@@ -2,6 +2,7 @@ import fetchCount from 'investigate-shared/actions/api/events/event-count';
 import * as ACTION_TYPES from './types';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { updateErrorMsgIfMaxMemory } from './utils';
 
 let _stopStreaming;
 
@@ -41,6 +42,9 @@ export default function getEventCount() {
           type: ACTION_TYPES.FAILED_GET_EVENT_COUNT,
           payload: response.code
         });
+
+        response.meta.message = updateErrorMsgIfMaxMemory(response.meta.message);
+
         dispatch({
           type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
           payload: {

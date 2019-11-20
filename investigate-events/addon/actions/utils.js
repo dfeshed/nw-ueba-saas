@@ -4,6 +4,7 @@ import { isBlank } from '@ember/utils';
 import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
 import { encodeMetaFilterConditions, addSessionIdFilter } from 'investigate-shared/actions/api/events/utils';
+import { lookup } from 'ember-dependency-lookup';
 
 /**
  * Creates (but does not start) a stream to fetch a given number of events.
@@ -159,7 +160,13 @@ function filterIsPresent(filters, freeFormText) {
   return currentFilters === freeFormText.trim();
 }
 
+function updateErrorMsgIfMaxMemory(msg) {
+  const toAppend = lookup('service:i18n').t('investigate.maxQueryMemoryError');
+  return msg.includes('max.query.memory') ? `${ msg } ${ toAppend }` : msg;
+}
+
 export {
+  updateErrorMsgIfMaxMemory,
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,
   filterIsPresent,
