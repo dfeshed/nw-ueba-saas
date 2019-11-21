@@ -33,6 +33,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -67,7 +68,8 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
                 .stream().filter(e -> e.state.equals("success"))
                 .map(e -> e.executionDate)
                 .max(Instant::compareTo)                // last execution of output for E2E automation
-                .orElse(Instant.now().truncatedTo(DAYS).minus(3, DAYS));  // for core automation
+                .orElse(Instant.now().truncatedTo(DAYS).minus(3, DAYS))  // for core automation
+                .minus(1, MINUTES);    // required to include the last hour
 
         List<EntitiesStoredRecord> entitiesWithoutAlerts = allActualEntitiesSortedByScore.parallelStream()
                 .filter(e -> e.getAlerts().isEmpty())
