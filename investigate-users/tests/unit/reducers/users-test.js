@@ -56,6 +56,8 @@ const resetState = Immutable.from({
   riskyUserCount: 0,
   watchedUserCount: 0,
   usersSeverity: initialUsersSeverity,
+  entityTypeForOverview: 'userId',
+  selectedFavorite: null,
   existAnomalyTypes: null,
   existAlertTypes: null,
   favorites: null,
@@ -127,6 +129,26 @@ module('Unit | Reducers | Users Reducer', (hooks) => {
     });
 
     assert.equal(result.riskyUserCount.data, 57);
+  });
+
+  test('test overview entity type', (assert) => {
+
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.UPDATE_ENTITY_TYPE_FOR_OVERVIEW,
+      payload: 'ja3'
+    });
+
+    assert.equal(result.entityTypeForOverview, 'ja3');
+  });
+
+  test('test selectedFavorite', (assert) => {
+
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.UPDATE_SELECTED_FAVORITE,
+      payload: 'some filter'
+    });
+
+    assert.equal(result.selectedFavorite, 'some filter');
   });
 
   test('test get favorites', (assert) => {

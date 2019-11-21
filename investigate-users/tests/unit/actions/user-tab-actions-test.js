@@ -5,7 +5,21 @@ import { patchFetch } from '../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
 import dataIndex from '../../data/presidio';
 import { patchFlash } from '../../helpers/patch-flash';
-import { followUsers, unfollowUsers, deleteFavorite, exportUsers, saveAsFavorite, getSeverityDetailsForUserTabs, getExistAlertTypess, getExistAnomalyTypes, getFavorites, resetUsers, updateFilter, getUsers } from 'investigate-users/actions/user-tab-actions';
+import {
+  followUsers,
+  unfollowUsers,
+  deleteFavorite,
+  exportUsers,
+  saveAsFavorite,
+  getSeverityDetailsForUserTabs,
+  getExistAlertTypess,
+  getExistAnomalyTypes,
+  getFavorites,
+  resetUsers,
+  updateFilter,
+  getUsers,
+  selectFavorite
+} from 'investigate-users/actions/user-tab-actions';
 
 export const initialFilterState = Immutable.from({
   addAlertsAndDevices: true,
@@ -167,6 +181,37 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
   });
 
   test('it can updateFilter', (assert) => {
+    assert.expect(9);
+    const actions = [
+      'INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS',
+      'INVESTIGATE_USER::RESET_USERS',
+      'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS',
+      'INVESTIGATE_USER::GET_WATCHED_USER_COUNT',
+      'INVESTIGATE_USER::GET_TOTAL_USER_COUNT',
+      'INVESTIGATE_USER::GET_RISKY_USER_COUNT',
+      'INVESTIGATE_USER::GET_USERS',
+      'INVESTIGATE_USER::UPDATE_SELECTED_FAVORITE'
+    ];
+    const getState = () => {
+      return Immutable.from({ users: { filter: { entityType: 'userId' } } });
+    };
+    const dispatch = (obj) => {
+      if (obj.type) {
+        assert.ok(actions.includes(obj.type));
+      }
+      if (obj.payload) {
+        assert.equal(obj.payload.sortField, 'score');
+      }
+      if (typeof obj === 'function') {
+        obj(({ type }) => {
+          assert.ok(actions.includes(type));
+        }, getState);
+      }
+    };
+    updateFilter(initialFilterState)(dispatch, getState);
+  });
+
+  test('it can updateFilter with out favorite change', (assert) => {
     assert.expect(8);
     const actions = [
       'INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS',
@@ -193,12 +238,18 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
         }, getState);
       }
     };
-    updateFilter(initialFilterState)(dispatch, getState);
+    updateFilter(initialFilterState, false, true)(dispatch, getState);
   });
 
   test('it should reset Filter', (assert) => {
-    assert.expect(2);
-    const actions = ['INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS', 'INVESTIGATE_USER::RESET_USERS', 'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS', 'INVESTIGATE_USER::GET_USERS'];
+    assert.expect(3);
+    const actions = [
+      'INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS',
+      'INVESTIGATE_USER::RESET_USERS',
+      'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS',
+      'INVESTIGATE_USER::GET_USERS',
+      'INVESTIGATE_USER::UPDATE_SELECTED_FAVORITE'
+    ];
     const getState = () => {
       return Immutable.from({ users: { filter: { entityType: 'userId' } } });
     };
@@ -219,8 +270,14 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
   });
 
   test('it can updateFilter without fetching user details', (assert) => {
-    assert.expect(3);
-    const actions = ['INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS', 'INVESTIGATE_USER::RESET_USERS', 'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS', 'INVESTIGATE_USER::GET_USERS'];
+    assert.expect(4);
+    const actions = [
+      'INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS',
+      'INVESTIGATE_USER::RESET_USERS',
+      'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS',
+      'INVESTIGATE_USER::GET_USERS',
+      'INVESTIGATE_USER::UPDATE_SELECTED_FAVORITE'
+    ];
     const getState = () => {
       return Immutable.from({ users: { filter: { entityType: 'userId' } } });
     };
@@ -270,6 +327,36 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
       done();
     };
     getUsers(initialFilterState)(dispatch);
+  });
+
+  test('it should be able to discpatch selected filter', (assert) => {
+    assert.expect(3);
+    const actions = [
+      'INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS',
+      'INVESTIGATE_USER::RESET_USERS',
+      'INVESTIGATE_USER::GET_USERS',
+      'INVESTIGATE_USER::UPDATE_SELECTED_FAVORITE'
+    ];
+    const getState = () => {
+      return Immutable.from({ users: { filter: { entityType: 'userId' } } });
+    };
+    const dispatch = (obj) => {
+      if (obj.type) {
+        assert.ok(actions.includes(obj.type));
+      }
+      if (obj.payload && obj.payload.sortField) {
+        assert.equal(obj.payload.sortField, 'score');
+      }
+      if (typeof obj === 'function') {
+        obj(({ type }) => {
+          if (type) {
+            assert.ok(actions.includes(type));
+          }
+        }, getState);
+      }
+    };
+    const filterObj = Immutable.from({ filter: initialFilterState });
+    selectFavorite(filterObj)(dispatch, getState);
   });
 
   test('it should dispatch error if no user data is present for getUsers', (assert) => {

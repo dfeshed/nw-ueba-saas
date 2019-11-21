@@ -1,16 +1,17 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getFavorites } from 'investigate-users/reducers/users/selectors';
-import { updateFilter, deleteFavorite } from 'investigate-users/actions/user-tab-actions';
+import { getFavorites, selectedFavorite } from 'investigate-users/reducers/users/selectors';
+import { selectFavorite, deleteFavorite } from 'investigate-users/actions/user-tab-actions';
 import { columnDataForFavorites } from 'investigate-users/utils/column-config';
 
 
 const stateToComputed = (state) => ({
-  favorites: getFavorites(state)
+  favorites: getFavorites(state),
+  selectedFavorite: selectedFavorite(state)
 });
 
 const dispatchToActions = {
-  updateFilter,
+  selectFavorite,
   deleteFavorite
 };
 
@@ -23,8 +24,7 @@ const UsersTabFilterFavoritesComponent = Component.extend({
       e.stopPropagation();
     },
     applyFilter(filterObj) {
-      this.set('selected', filterObj);
-      this.send('updateFilter', filterObj.filter);
+      this.send('selectFavorite', filterObj);
     }
   }
 });

@@ -16,7 +16,7 @@ export default Route.extend({
 
   model() {
     const redux = this.get('redux');
-    const filter = getUserFilter(redux.getState()).merge({ alertTypes: null });
+    const filter = getUserFilter(redux.getState());
     redux.dispatch(initTabs('users', filter));
   }
 });

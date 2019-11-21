@@ -1,10 +1,10 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { selectedEntityType } from 'investigate-users/reducers/users/selectors';
+import { entityTypeForOverview } from 'investigate-users/reducers/users/selectors';
 import { updateEntityType } from 'investigate-users/actions/user-details';
 
 const stateToComputed = (state) => ({
-  entityType: selectedEntityType(state)
+  entityType: entityTypeForOverview(state)
 });
 
 const dispatchToActions = {

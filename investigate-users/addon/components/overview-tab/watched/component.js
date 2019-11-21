@@ -1,13 +1,13 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { riskyUserCount, watchedUserCount, getUserFilter, selectedEntityType, totalEntitiesCount } from 'investigate-users/reducers/users/selectors';
+import { riskyUserCount, watchedUserCount, getUserFilter, entityTypeForOverview, totalEntitiesCount } from 'investigate-users/reducers/users/selectors';
 import { updateFilter } from 'investigate-users/actions/user-tab-actions';
 
 const stateToComputed = (state) => ({
   riskyUserCount: riskyUserCount(state),
   watchedUserCount: watchedUserCount(state),
   totalEntitiesCount: totalEntitiesCount(state),
-  entityType: selectedEntityType(state),
+  entityType: entityTypeForOverview(state),
   filter: getUserFilter(state)
 });
 

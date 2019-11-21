@@ -24,6 +24,7 @@ const state = Immutable.from({
     users: userList.data,
     usersError: null,
     favorites: favoriteFilter.data,
+    entityTypeForOverview: 'userId',
     trendRange: {
       key: 'daily',
       name: 'lastDay'
@@ -230,6 +231,24 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
       key: 'daily',
       name: 'lastDay'
     });
+  });
+
+  test('test entityTypeForOverview', (assert) => {
+    assert.equal(Users.entityTypeForOverview(state), 'userId');
+  });
+
+  test('test entityTypeForOverview  for ja3', (assert) => {
+    const newState = { users: { entityTypeForOverview: 'ja3' } };
+    assert.equal(Users.entityTypeForOverview(newState), 'ja3');
+  });
+
+  test('test selectedFavorite', (assert) => {
+    assert.equal(Users.selectedFavorite(state), null);
+  });
+
+  test('test selectedFavorite  for selcted filter', (assert) => {
+    const newState = { users: { selectedFavorite: 'some filter' } };
+    assert.equal(Users.selectedFavorite(newState), 'some filter');
   });
 
   test('test sortOnTrending', (assert) => {

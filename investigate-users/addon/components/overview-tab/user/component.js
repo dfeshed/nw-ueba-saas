@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getTopRiskyUsers, hasTopRiskyUsers, topUsersError, selectedEntityType } from 'investigate-users/reducers/users/selectors';
+import { getTopRiskyUsers, hasTopRiskyUsers, topUsersError, entityTypeForOverview } from 'investigate-users/reducers/users/selectors';
 import { severityMap } from 'investigate-users/utils/column-config';
 import { initiateUser } from 'investigate-users/actions/user-details';
 
@@ -8,7 +8,7 @@ const stateToComputed = (state) => ({
   topUsers: getTopRiskyUsers(state),
   topUsersError: topUsersError(state),
   hasTopRiskyUsers: hasTopRiskyUsers(state),
-  entityType: selectedEntityType(state)
+  entityType: entityTypeForOverview(state)
 
 });
 

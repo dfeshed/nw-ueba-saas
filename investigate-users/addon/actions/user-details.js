@@ -1,7 +1,6 @@
 import * as ACTION_TYPES from './types';
 import { fetchData } from './fetch/data';
 import { flashErrorMessage } from 'investigate-users/utils/flash-message';
-import { updateFilter } from 'investigate-users/actions/user-tab-actions';
 import { getUserFilter, trendRange, sortOnTrending } from 'investigate-users/reducers/users/selectors';
 
 const getRiskyUserCount = (entityType = 'userId') => {
@@ -74,9 +73,8 @@ const getUserOverview = (entityType = 'userId') => {
 };
 
 const updateEntityType = (entityType) => {
-  return (dispatch, getState) => {
-    const filter = getUserFilter(getState()).merge({ entityType });
-    dispatch(updateFilter(filter, true));
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.UPDATE_ENTITY_TYPE_FOR_OVERVIEW, payload: entityType });
     dispatch(getRiskyUserCount(entityType));
     dispatch(getWatchedUserCount(entityType));
     dispatch(getTotalCount(entityType));

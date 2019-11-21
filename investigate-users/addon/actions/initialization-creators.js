@@ -33,7 +33,7 @@ const _usersTabCreation = (filter) => {
     dispatch(resetUsers());
     dispatch(getRiskyUserCount());
     dispatch(getWatchedUserCount());
-    dispatch(updateFilter(filter));
+    dispatch(updateFilter(filter, false, true));
     dispatch(getExistAnomalyTypes());
     dispatch(getExistAlertTypess());
     dispatch(getFavorites());

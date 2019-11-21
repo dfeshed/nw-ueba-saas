@@ -45,14 +45,14 @@ module('Integration | Component | overview-tab/user/entity-type-selector', funct
     new ReduxDataHelper(setState).build();
     const redux = this.owner.lookup('service:redux');
     redux.dispatch(updateEntityType('userId'));
-    const select = waitForReduxStateChange(redux, 'users.filter.entityType');
+    const select = waitForReduxStateChange(redux, 'users.entityTypeForOverview');
     await render(hbs`{{overview-tab/user/entity-type-selector}}`);
     await click('.user-overview-tab_users_entities_network > div > button');
     assert.equal(findAll('.rsa-form-button-wrapper').length, 4);
     await click('.user-overview-tab_users_entities_network:nth-child(2) > div:nth-child(2) > button');
     return select.then(() => {
       const state = redux.getState();
-      assert.equal(state.users.filter.entityType, 'ja3');
+      assert.equal(state.users.entityTypeForOverview, 'ja3');
     });
   });
 
@@ -60,14 +60,14 @@ module('Integration | Component | overview-tab/user/entity-type-selector', funct
     new ReduxDataHelper(setState).build();
     const redux = this.owner.lookup('service:redux');
     redux.dispatch(updateEntityType('userId'));
-    const select = waitForReduxStateChange(redux, 'users.filter.entityType');
+    const select = waitForReduxStateChange(redux, 'users.entityTypeForOverview');
     await render(hbs`{{overview-tab/user/entity-type-selector}}`);
     await click('.user-overview-tab_users_entities_network > div > button');
     assert.equal(findAll('.rsa-form-button-wrapper').length, 4);
     await click('.user-overview-tab_users_entities_network:nth-child(2) > div:nth-child(3) > button');
     return select.then(() => {
       const state = redux.getState();
-      assert.equal(state.users.filter.entityType, 'sslSubject');
+      assert.equal(state.users.entityTypeForOverview, 'sslSubject');
     });
   });
 });

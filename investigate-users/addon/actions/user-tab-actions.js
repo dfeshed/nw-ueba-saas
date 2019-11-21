@@ -112,7 +112,7 @@ const getUsers = (filter) => {
   };
 };
 
-const updateFilter = (filter, needNotToPullUsers) => {
+const updateFilter = (filter, needNotToPullUsers, needNotToUpdateSelectedFavorite) => {
   return (dispatch, getState) => {
     filter = (filter === 'RESET') ? null : filter || getUserFilter(getState());
     let entityType = selectedEntityType(getState());
@@ -125,6 +125,12 @@ const updateFilter = (filter, needNotToPullUsers) => {
       type: ACTION_TYPES.UPDATE_FILTER_FOR_USERS,
       payload: filter
     });
+    if (true !== needNotToUpdateSelectedFavorite) {
+      dispatch({
+        type: ACTION_TYPES.UPDATE_SELECTED_FAVORITE,
+        payload: null
+      });
+    }
     if (true !== needNotToPullUsers) {
       dispatch(getSeverityDetailsForUserTabs(filter));
       dispatch(getWatchedUserCount(entityType));
@@ -182,6 +188,16 @@ const unfollowUsers = () => {
   };
 };
 
+const selectFavorite = (filterObj) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.UPDATE_SELECTED_FAVORITE,
+      payload: filterObj
+    });
+    dispatch(updateFilter(filterObj.filter, false, true));
+  };
+};
+
 const resetUsers = () => ({ type: ACTION_TYPES.RESET_USERS });
 
 export {
@@ -196,5 +212,6 @@ export {
   exportUsers,
   deleteFavorite,
   followUsers,
-  unfollowUsers
+  unfollowUsers,
+  selectFavorite
 };

@@ -29,6 +29,10 @@ export const topUsersError = (state) => state.users.topUsersError;
 
 export const allWatched = (state) => state.users.allWatched;
 
+export const entityTypeForOverview = (state) => state.users.entityTypeForOverview;
+
+export const selectedFavorite = (state) => state.users.selectedFavorite;
+
 export const getUsers = (state) => state.users.users;
 
 export const trendRange = (state) => state.users.trendRange;

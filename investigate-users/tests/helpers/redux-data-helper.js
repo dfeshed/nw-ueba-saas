@@ -60,6 +60,8 @@ export default class DataHelper {
         existAnomalyTypes: null,
         existAlertTypes: null,
         favorites: null,
+        entityTypeForOverview: 'userId',
+        selectedFavorite: null,
         currentUserCount: 30,
         totalUsers: 30,
         filter: {
@@ -242,6 +244,16 @@ export default class DataHelper {
 
   usersFilter(filter) {
     _set(this.state, 'users.filter', filter);
+    return this;
+  }
+
+  entityTypeForOverview(entityType) {
+    _set(this.state, 'users.entityTypeForOverview', entityType);
+    return this;
+  }
+
+  setFavorite(favorite) {
+    _set(this.state, 'users.selectedFavorite', favorite);
     return this;
   }
 

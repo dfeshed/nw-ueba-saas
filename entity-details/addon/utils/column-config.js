@@ -28,12 +28,6 @@ const baseColumnConfigForEvents = [{
   title: 'Operation Type',
   visible: true,
   disableSort: true
-}, {
-  field: 'operationTypeCategories',
-  width: '10vw',
-  title: 'Operation Type Category',
-  visible: false,
-  disableSort: true
 }];
 
 const activeDirectoryColumns = [{

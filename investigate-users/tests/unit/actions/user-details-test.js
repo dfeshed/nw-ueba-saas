@@ -257,14 +257,14 @@ module('Unit | Actions | User Details Actions', (hooks) => {
   });
 
   test('it can updateEntityType', (assert) => {
-    assert.expect(6);
+    assert.expect(5);
     const actions = [
-      'INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS',
       'INVESTIGATE_USER::RESET_USERS',
       'INVESTIGATE_USER::GET_RISKY_USER_COUNT',
       'INVESTIGATE_USER::GET_WATCHED_USER_COUNT',
       'INVESTIGATE_USER::GET_TOTAL_USER_COUNT',
-      'INVESTIGATE_USER::GET_TOP_RISKY_USER'
+      'INVESTIGATE_USER::GET_TOP_RISKY_USER',
+      'INVESTIGATE_USER::UPDATE_ENTITY_TYPE_FOR_OVERVIEW'
     ];
     const getState = () => {
       return Immutable.from({ users: { filter: { entityType: 'userId' } } });
@@ -273,7 +273,7 @@ module('Unit | Actions | User Details Actions', (hooks) => {
       if (obj.type) {
         assert.ok(actions.includes(obj.type));
       }
-      if (obj.payload) {
+      if (obj.payload?.sortField) {
         assert.equal(obj.payload.sortField, 'score');
       }
       if (typeof obj === 'function') {
