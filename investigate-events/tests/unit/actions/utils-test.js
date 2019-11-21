@@ -87,7 +87,7 @@ module('Unit | Helper | Actions Utils', function(hooks) {
   test('updateErrorMsgIfMaxMemory does return with text appended with match', function(assert) {
     assert.expect(1);
     const result = queryUtils.updateErrorMsgIfMaxMemory('max.query.memory warning.');
-    assert.equal(result, 'max.query.memory warning. To avoid this error try limiting your query by narrowing the time range, adding further filters, removing complex filter operations, or decreasing the number of columns in your column group.');
+    assert.equal(result, 'max.query.memory warning. To avoid this error, try limiting the query by narrowing the time range, adding filters, decreasing the number of columns in the column group, or ask an administrator to limit the number of events returned.');
   });
 
 });
