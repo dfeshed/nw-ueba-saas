@@ -215,6 +215,13 @@ export default Component.extend(SelectionTooltip, {
     // save/send notifications about the amount
     // of text that has been rendered so far
     next(this, function() {
+      // _renderChunk is called in a `later` loop  so that it is
+      // called over time. But if this component gets nuked obviously
+      // we do not want to keep going
+      if (this.isDestroyed || this.isDestroying) {
+        return;
+      }
+
       const packetText = this.get('packet.text');
       const firstPacketId = this.get('packet.firstPacketId');
 
