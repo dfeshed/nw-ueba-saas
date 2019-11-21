@@ -116,7 +116,7 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
 
   test('test getAlertsForTimeline', function(assert) {
     assert.equal(Alerts.getAlertsForTimeline(state).length, 5);
-    assert.deepEqual(Alerts.getAlertsForTimeline(state)[0], { Critical: 16, High: 0, Medium: 0, Low: 0, day: 1533686400000, total: 16 });
+    assert.deepEqual(Alerts.getAlertsForTimeline(state)[0], { Critical: 16, High: 0, Medium: 0, Low: 0, day: '08-Aug', originalTime: 1533686400000, total: 16 });
   });
 
   test('test dateTimeFilterOptionsForAlerts', function(assert) {

@@ -39,6 +39,7 @@
     "ember-cli-babel": "7.9.0",
     "ember-cli-htmlbars": "^2.0.1",
     "ember-cli-seamless-immutable-shim": "1.0.0",
+    "amcharts4-ember-hardcoded": "4.0.21-alpha.1",
     "ember-d3": "0.5.1",
     "ember-dependency-lookup": "2.0.0",
     "ember-lodash-shim": "4.0.0",

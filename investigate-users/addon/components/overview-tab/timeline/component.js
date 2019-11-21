@@ -1,59 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getAlertsForTimeline, getFilter, alertsForTimelineError } from 'investigate-users/reducers/alerts/selectors';
-import { select } from 'd3-selection';
-import { scaleBand, scaleLinear, scaleOrdinal } from 'd3-scale';
-import { max } from 'd3-array';
-import { stack } from 'd3-shape';
 import moment from 'moment';
-import { axisBottom } from 'd3-axis';
-import { timeFormat } from 'd3-time-format';
 import computed from 'ember-computed-decorators';
 import { next } from '@ember/runloop';
 import { updateFilter } from 'investigate-users/actions/alert-details';
+import * as Am4core from '@amcharts/amcharts4/core';
+import * as Am4charts from '@amcharts/amcharts4/charts';
+import { lookup } from 'ember-dependency-lookup';
 
-const createLegend = (g, keys, width, z) => {
-  const legend = g.append('g')
-    .attr('class', 'alertsCountAxis')
-    .attr('text-anchor', 'end')
-    .selectAll('g')
-    .data(keys.slice())
-    .enter().append('g')
-    .attr('transform', (d, i) => `translate(0,${i * 20})`);
-
-  legend.append('rect')
-    .attr('x', width - 19)
-    .attr('width', 19)
-    .attr('height', 19)
-    .attr('fill', z);
-
-  legend.append('text')
-    .attr('x', width - 24)
-    .attr('y', 9.5)
-    .attr('dy', '0.32em')
-    .text((d) => d);
-};
-
-
-const createTooltip = (svg) => {
-  const tooltip = svg.append('g')
-    .attr('class', 'tooltip')
-    .style('display', 'none');
-
-  tooltip.append('rect')
-    .attr('width', 240)
-    .attr('height', 20)
-    .attr('fill', 'white')
-    .style('opacity', 0.5);
-
-  tooltip.append('text')
-    .attr('x', '120')
-    .attr('dy', '1.2em')
-    .style('text-anchor', 'middle')
-    .attr('font-size', '12px')
-    .attr('font-weight', 'bold');
-  return tooltip;
-};
 const stateToComputed = (state) => ({
   filter: getFilter(state),
   alerts: getAlertsForTimeline(state),
@@ -64,68 +19,70 @@ const dispatchToActions = {
   updateFilter
 };
 
+
 const OverviewAlertTimelineComponent = Component.extend({
 
   classNames: 'user-overview-tab_alerts_timeline',
 
   _renderAlertsTimeLine(data) {
+    const i18n = lookup('service:i18n');
     const _that = this;
-    const svg = select('#alertTimeline');
-    const margin = { top: 10, right: 40, bottom: 20, left: 40 };
-    const width = +svg.node().getBoundingClientRect().width - margin.left - margin.right;
-    const height = +svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
-    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
-    const x = scaleBand().rangeRound([0, width]).paddingInner(0.05).align(0.1);
-    const y = scaleLinear().rangeRound([height, 0]);
-    const z = scaleOrdinal().range(['rgb(104, 159, 56)', 'rgb(255, 160, 0)', 'rgb(230, 74, 25)', 'rgb(201, 24, 24)']);
-    const keys = ['Low', 'Medium', 'High', 'Critical'];
-    x.domain(data.map((d) => d.day));
-    y.domain([0, max(data, (d) => d.total)]).nice();
-    z.domain(keys);
-    data = stack().keys(keys)(data);
-    data = data.map((d) => {
-      const mappedArray = d.map((x) => ({ ...x, name: d.key }));
-      mappedArray.key = d.key;
-      return mappedArray;
-    });
 
-    g.append('g')
-      .selectAll('g')
-      .data(data)
-      .enter().append('g')
-      .attr('fill', (d) => z(d.key))
-      .selectAll('rect')
-      .data((d) => d)
-      .enter().append('rect')
-      .attr('x', (d) => x(d.data.day) + x.bandwidth() / 2 - 10)
-      .attr('y', (d) => y(d[1]))
-      .attr('height', (d) => y(d[0]) - y(d[1]))
-      .attr('width', 20)
-      .on('mouseover', () => {
-        tooltip.style('display', null);
-      })
-      .on('mouseout', () => {
-        tooltip.style('display', 'none');
-      })
-      .on('mousemove', (d) => {
-        const xPosition = event.offsetX - 150;
-        const yPosition = event.offsetY - 25;
-        tooltip.attr('transform', `translate(${xPosition},${yPosition})`);
-        tooltip.select('text').text(`${d[1] - d[0]} ${d.name} alerts occurred on ${timeFormat('%b %d')(d.data.day)}`);
-      })
-      .on('click', (d) => {
-        _that.applyFilter(d.name, d.data.day);
+    // Create chart instance
+    // Themes end
+    const chart = Am4core.create('chartdivForAlerts', Am4charts.XYChart);
+    // Add data
+    chart.data = data;
+
+    const title = chart.titles.create();
+    title.text = `${i18n.t('investigateUsers.alerts.all')}`;
+    title.align = 'left';
+    // Create axes
+    const categoryAxis = chart.xAxes.push(new Am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = 'day';
+
+    const valueAxis = chart.yAxes.push(new Am4charts.ValueAxis());
+    valueAxis.renderer.labels.template.disabled = true;
+    valueAxis.min = 0;
+
+    // Create series
+    function createSeries(field, name, fillColor) {
+      // Set up series
+      const series = chart.series.push(new Am4charts.ColumnSeries());
+      series.name = name;
+      series.dataFields.valueY = field;
+      series.dataFields.categoryX = 'day';
+      series.sequencedInterpolation = true;
+
+      // Make it stacked
+      series.stacked = true;
+      // Configure columns
+      series.columns.template.width = Am4core.percent(10);
+      series.columns.template.fill = fillColor;
+      series.columns.template.tooltipText = '[bold white font-size:14px]{valueY} {name} Alerts raised on {categoryX.formatDate(\'dd-MMM\')}';
+      series.columns.template.events.on('hit', (ev) => {
+        const severity = ev.target.dataItem.component.dataFields.valueY;
+        const dateTime = ev.target.dataItem.dataContext.originalTime;
+        _that.applyFilter(severity, dateTime);
       });
+      return series;
+    }
 
-    g.append('g')
-      .attr('class', 'alertsDateAxis')
-      .attr('transform', `translate(0,${height})`)
-      .call(axisBottom(x).tickFormat(timeFormat('%b %d')));
-
-    createLegend(g, keys, width, z);
-    const tooltip = createTooltip(svg);
-
+    createSeries('Critical', 'Critical', '#C91818');
+    createSeries('High', 'High', '#E64A19');
+    createSeries('Medium', 'Medium', '#FFC107');
+    createSeries('Low', 'Low', '#689F38');
+    // Legend
+    chart.legend = new Am4charts.Legend();
+    chart.legend.position = 'top';
+    chart.legend.contentAlign = 'right';
+    const markerTemplate = chart.legend.markers.template;
+    markerTemplate.width = 15;
+    markerTemplate.height = 15;
+    markerTemplate.strokeOpacity = 0;
+    chart.paddingBottom = 15;
   },
+
   applyFilter(severity, dateTime) {
     this.send('updateFilter', null, true);
     this.get('applyAlertsFilter')(this.get('filter').merge({

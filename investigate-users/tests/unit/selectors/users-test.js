@@ -166,7 +166,7 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
   test('test Selected Alert Types', (assert) => {
     assert.deepEqual(Users.getSelectedAlertTypes(state), [{
       id: 'snooping_user',
-      displayLabel: 'Snooping User (14 Entities)'
+      displayLabel: 'Snooping User'
     }]);
   });
 

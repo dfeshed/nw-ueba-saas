@@ -1,18 +1,12 @@
-<div class='user-overview-tab_title'>
-  <div class='user-overview-tab_title_title'>
-    {{t 'investigateUsers.alerts.all'}}
-  </div>
-</div>
-<div class='user-overview-tab_alerts_timeline_graph'>
-  {{#if alertsTimeline}}
-    <svg width="100%" height="100%" id='alertTimeline'></svg>
-  {{else}}
-    <center class='center'>
-      {{#if alertsForTimelineError}}
-        {{t (concat 'investigateUsers.errorMessages.' alertsForTimelineError)}}
-      {{else}}
-        {{rsa-loader size="medium" label=(t 'investigate.loading')}}
-      {{/if}}
-    </center>
-  {{/if}}
-</div>
+{{#if alertsTimeline}}
+  <div class='user-overview-tab_alerts_timeline_graph' id='chartdivForAlerts'>
+  </div>      
+{{else}}
+  <center class='center'>
+    {{#if alertsForTimelineError}}
+      {{t (concat 'investigateUsers.errorMessages.' alertsForTimelineError)}}
+    {{else}}
+      {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+    {{/if}}
+  </center>
+{{/if}}

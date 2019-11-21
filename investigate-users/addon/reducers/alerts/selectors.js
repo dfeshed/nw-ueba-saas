@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import _ from 'lodash';
 import { lookup } from 'ember-dependency-lookup';
 import entityAnomalyMap from 'investigate-users/utils/entity-anomaly-map';
+import moment from 'moment';
 
 const _totalAlerts = (state) => state.alerts.totalAlerts;
 
@@ -168,8 +169,14 @@ export const getAlertsForTimeline = createSelector(
     if (!alertsForTimeline) {
       return null;
     }
+    const i18n = lookup('service:i18n');
+    const timezone = lookup('service:timezone');
     return alertsForTimeline.map((alert) => {
-      const alertObj = { day: alert.day };
+      const alertDay = moment(alert.day)
+        .locale(i18n.locale || 'en')
+        .tz(timezone.selected ? timezone.selected.zoneId : 'UTC')
+        .format('DD-MMM');
+      const alertObj = { day: alertDay, originalTime: alert.day };
       let total = 0;
       alert.severities.forEach((severityMap) => {
         alertObj[severityMap.severity] = severityMap.count;

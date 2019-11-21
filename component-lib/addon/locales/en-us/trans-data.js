@@ -5395,7 +5395,7 @@ effects the simulated source.',
       sslSubject: 'SSL'
     },
     sortByTrendData: 'Sort by Trending Data',
-    sortByTrendDataHelp: 'Use this checkbox to sort the entities by Trending Data (marked with +). The default value is set to Last 24 Hours.',
+    sortByTrendDataHelp: 'Trending Data (marked with +) represents the change in the User or Entity score for the selected timeframe.',
     trendRange: {
       lastDay: 'Last 24 Hours',
       lastWeek: 'Last 7 Days'
@@ -5469,7 +5469,7 @@ effects the simulated source.',
       noAlerts: 'No Alerts',
       notARisk: 'Not a Risk',
       risk: 'Risk',
-      all: 'All Alerts',
+      all: 'ALERTS SEVERITY',
       alertName: 'Alert Name',
       alertOverview: 'Alert Overview',
       entityName: 'Entity Name',
@@ -5504,7 +5504,7 @@ effects the simulated source.',
           related: 'Related Threats: PowerShell is a powerful interactive command-line interface and scripting environment included in the Windows operating system. Attackers can use PowerShell to perform a number of actions, including discovery of information and execution of code. Examples include the Start-Process cmdlet which can be used to run an executable and the Invoke-Command cmdlet which runs a command locally or on a remote computer. PowerShell may also be used to download and run executables from the Internet, which can be executed from disk or in memory without touching disk. Administrator permissions are required to use PowerShell to connect to remote systems.'
         },
         registry_run_keys: {
-          name: 'Registry Run Keys & Start Folder',
+          name: 'Registry Run Keys',
           desc: 'Adding an entry to the "run keys" in the Registry or startup folder will cause the program referenced to be executed when a user logs in. The program will be executed under the context of the user and will have the account\'s associated permissions level. Attackers can use these configuration locations to execute malware, such as remote access tools, to maintain persistence through system reboots. Attackers may also use Masquerading to make the Registry entries look as if they are associated with legitimate programs.',
           related: 'Related Threats: Adding an entry to the "run keys" in the Registry or startup folder will cause the program referenced to be executed when a user logs in. These programs will be executed under the context of the user and will have the account\'s associated permissions level.'
         },

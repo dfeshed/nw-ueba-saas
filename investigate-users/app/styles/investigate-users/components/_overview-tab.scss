@@ -367,35 +367,24 @@
       &_timeline {
         background-color: background-color(primary, darker);
         height: 30%;
-
         &_graph {
-          height: calc(100% - 80px);
-          padding: rsa-whitespace(least);
+          height: 100%;
+          padding: rsa-whitespace(less);
+          tspan {
+            fill: text-color(primary, light);
+          }
+          path {
+            stroke-opacity: 0.2;
+          }
+          svg > g > g:nth-child(2) > g:nth-child(2) > g > g:nth-child(3) {
+            display: none;
+          }
+          g[role="button"] {
+            display: none;
+          }
         }
       }
     }
-  }
-
-  .alertsCountAxis .domain {
-    display: none;
-  }
-
-  .alertsCountAxis line {
-    stroke: none;
-  }
-
-  .alertsCountAxis text {
-    fill: text-color(primary, light);
-  }
-
-  .alertsDateAxis line,
-  path {
-    stroke: text-color(primary, light);
-  }
-
-  .alertsDateAxis text {
-    @include rsa-font(default, smaller);
-    fill: text-color(primary, light);
   }
 }
 
