@@ -15,11 +15,25 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class AirflowTasksPostgres {
 
-
+    // by task execution time
     public List<AirflowTaskFailTable> fetchFailedTasks(Instant startTime, Instant endTime) {
         String SQL_QUERY = "select * from " + AirflowTaskFailTable.TASK_FAIL_TABLE +
                 " where " + AirflowTaskFailTable.START_DATE + " > '" + Timestamp.from(startTime) + "'" +
                 " and " + AirflowTaskFailTable.END_DATE + " < '" + Timestamp.from(endTime) + "'";
+
+        return fetchTaskFailTable(SQL_QUERY);
+    }
+
+    // by event time
+    public List<AirflowTaskFailTable> fetchFailedTasks(Instant execution_date) {
+        String SQL_QUERY = "select * from " + AirflowTaskFailTable.TASK_FAIL_TABLE +
+                " where " + AirflowTaskFailTable.EXECUTION_DATE + " < '" + Timestamp.from(execution_date) + "'";
+
+        return fetchTaskFailTable(SQL_QUERY);
+    }
+
+    private List<AirflowTaskFailTable> fetchTaskFailTable(String SQL_QUERY) {
+
         List<AirflowTaskFailTable> airflowTaskFailTables = Lists.newLinkedList();
 
         try (Connection con = PostgresAirflowConnection.getConnection();
