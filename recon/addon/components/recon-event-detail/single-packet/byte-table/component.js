@@ -1,15 +1,19 @@
 import Component from '@ember/component';
-import { observer } from '@ember/object';
-import { schedule } from '@ember/runloop';
 import { connect } from 'ember-redux';
 import { scaleQuantize } from 'd3-scale';
 import { event, select } from 'd3-selection';
-
 import {
   showPacketTooltip,
   hidePacketTooltip
 } from 'recon/actions/interaction-creators';
 import { offset } from 'component-lib/utils/jquery-replacement';
+import InViewportMixin from 'ember-in-viewport';
+import { setProperties } from '@ember/object';
+import { ROW_HEIGHT } from 'recon/components/recon-event-detail/single-packet/util';
+
+// Number of rows to use as a buffer for determining if this component is
+// in or near the viewport.
+const BUFFER_ROWS = 20;
 
 // A quantize scale will map a continuous domain to a discrete range
 const scale = scaleQuantize()
@@ -41,7 +45,7 @@ const dispatchToActions = {
   hidePacketTooltip
 };
 
-const ByteTableComponent = Component.extend({
+const ByteTableComponent = Component.extend(InViewportMixin, {
   tagName: 'section',
   classNames: 'rsa-byte-table',
   classNameBindings: ['byteFormat'],
@@ -50,30 +54,39 @@ const ByteTableComponent = Component.extend({
   byteFormat: null,
   packet: null,
 
+  init() {
+    this._super(...arguments);
+    const buffer = ROW_HEIGHT * BUFFER_ROWS;
+    // Configure InViewportMixin
+    setProperties(this, {
+      viewportTolerance: {
+        top: buffer,
+        bottom: buffer
+      }
+    });
+  },
+
   didInsertElement() {
-    this._scheduleAfterRenderTasks();
+    this._super(...arguments);
+    const { byteRows } = this.packet;
+    // Figure out what the height of this component will be so that
+    // didEnterViewport is not prematurely invoked because the height is 0
+    // (because we haven't rendered the table yet).
+    const heightInPx = `${byteRows.length * ROW_HEIGHT}px`;
+    this.element.style.height = heightInPx;
   },
 
-  willDestroyElement() {
-    this._cells = null;
-  },
-
-  _scheduleAfterRenderTasks: observer('packet.byteRows', function() {
-    schedule('afterRender', this, 'afterRender');
-  }),
-
-  afterRender() {
+  didEnterViewport() {
     this.renderTable();
   },
 
+  didExitViewport() {
+    this.removeTable();
+  },
+
   renderTable() {
-    const {
-      cellClass, headerCellClass, byteFormat
-    } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat');
+    const { cellClass, headerCellClass, byteFormat } = this;
     const el = select(this.element);
-
-    el.select('table').remove();
-
     const table = el.append('table');
     const cells = this._cells = [];
     const byteRows = this.get('packet.byteRows');
@@ -105,6 +118,17 @@ const ByteTableComponent = Component.extend({
         this._addFillCell(byteRow, byteFormat, tr);
       }
     });
+  },
+
+  removeTable() {
+    const { element } = this;
+    if (element) {
+      const table = element.querySelector('table');
+      if (table) {
+        table.remove();
+      }
+    }
+    this._cells = null;
   },
 
   /**

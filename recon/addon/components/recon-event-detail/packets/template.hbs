@@ -8,7 +8,7 @@
     </div>
   {{/if}}
   <div class="scroll-box">
-    {{#each renderedPackets key="id" as |packet index|}}
+    {{#each renderedPackets key='@index' as |packet index|}}
       {{recon-event-detail/single-packet
         index=index
         packet=packet
@@ -34,7 +34,6 @@
   --}}
   {{#if hasPackets}}
     {{!-- If all data has been hidden by the user, just leave component markup blank --}}
-
     {{#if isPacketRenderingUnderWay}}
       {{!--
         If the user has not hidden the data themselves, then the data

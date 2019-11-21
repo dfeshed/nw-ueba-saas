@@ -10,7 +10,7 @@ import DataHelper from '../../../../helpers/data-helper';
 
 
 let redux;
-module('Integration | Component | recon event detail packets', function(hooks) {
+module('Integration | Component | Recon Event Detail | Packets', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
@@ -25,7 +25,7 @@ module('Integration | Component | recon event detail packets', function(hooks) {
       .renderPackets();
     await render(hbs`
       {{#recon-event-detail/packets}}
-        {{recon-event-detail/single-packet shouldRenderBytes=true}}
+        {{recon-event-detail/single-packet}}
       {{/recon-event-detail/packets}}
     `);
 

@@ -1,17 +1,14 @@
 import Component from '@ember/component';
-import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
-import InViewportMixin from 'ember-in-viewport';
-
 import layout from './template';
+import { determineVisibleBytes } from 'recon/components/recon-event-detail/single-packet/util';
 
-const stateToComputed = ({ recon: { packets } }) => ({
-  hasSignaturesHighlighted: packets.hasSignaturesHighlighted,
-  hasStyledBytes: packets.hasStyledBytes
+const stateToComputed = (state) => ({
+  hasSignaturesHighlighted: state.recon.packets.hasSignaturesHighlighted,
+  hasStyledBytes: state.recon.packets.hasStyledBytes
 });
 
-const SinglePacketComponent = Component.extend(InViewportMixin, {
+const SinglePacketComponent = Component.extend({
   classNames: ['rsa-packet'],
   classNameBindings: [
     'packet.side',
@@ -21,39 +18,35 @@ const SinglePacketComponent = Component.extend(InViewportMixin, {
   ],
   layout,
   tagName: 'section',
-
   index: null,
   isPacketExpanded: true,
   packet: null,
   tooltipData: null,
-  shouldRenderBytes: false,
 
-  /**
-   * Returns the calculated height of a packet body (offset and byte-tables).
-   * This assumes a table row height of 17px.
-   *
-   * The reason we calculate this is because we originally relied upon the
-   * height of the rendered offset tables to tell Spaniel how big all of our
-   * packets are. Having all that extra DOM rendered for the offsets was causing
-   * performance problems, so we removed the `<table>` elements from offset.
-   * That then caused problems with browser zooming, so we have to add the
-   * `<table>` elements back. So we don't regress on performance, we no longer
-   * render out-of-view offset `<table>`s. Instead, we calculate the size that
-   * it _would_ take and apply that to the packet body so that Spaniel knows
-   * how large each packet is and can render an appropriate scroll bar.
-   * @param {Object} rows The number of packet rows.
-   * @return CSS style string to be used for `style` attribute.
-   * @public
-   */
-  @computed('packet.byteRows')
-  calculatedHeight: (rows = []) => htmlSafe(`min-height: ${rows.length * 17}px`),
+  init() {
+    this._super(...arguments);
+    this.packetByteCount = 0;
+    this.chunkedPacket = [];
+  },
 
-  didEnterViewport() {
-    if (!this.get('shouldRenderBytes')) {
-      if (!this.get('isDestroying') && !this.get('isDestroyed')) {
-        this.set('shouldRenderBytes', true);
-      }
-    }
+  didInsertElement() {
+    this._super(...arguments);
+    this.processPacketBytes();
+  },
+
+  didUpdateAttrs() {
+    this._super(...arguments);
+    this.processPacketBytes();
+  },
+
+  processPacketBytes() {
+    const height = this.element.parentNode.offsetHeight;
+    const {
+      chunkedPacket,
+      packetByteCount
+    } = determineVisibleBytes(height, this.packet, this.packetByteCount);
+
+    this.setProperties({ chunkedPacket, packetByteCount });
   },
 
   actions: {

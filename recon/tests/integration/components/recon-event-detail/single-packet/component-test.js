@@ -38,7 +38,7 @@ const packets = [{
 }];
 
 let redux;
-module('Integration | Component | recon event detail / single packet', function(hooks) {
+module('Integration | Component | Recon Event Detail | Single Packet', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
@@ -67,12 +67,10 @@ module('Integration | Component | recon event detail / single packet', function(
     packet.isContinuation = false;
     this.set('packet', packet);
 
-    // forcing shouldRenderBytes becaues phantom gets confused with viewport
     await render(hbs`{{recon-event-detail/single-packet
       index=index
       packet=packet
       packetFields=packetFields
-      shouldRenderBytes=true
     }}`);
 
     return wait().then(() => {
@@ -108,12 +106,10 @@ module('Integration | Component | recon event detail / single packet', function(
     packet.isContinuation = false;
     this.set('packet', packet);
 
-    // forcing shouldRenderBytes becaues phantom gets confused with viewport
     await render(hbs`{{recon-event-detail/single-packet
       index=index
       packet=packet
       packetFields=packetFields
-      shouldRenderBytes=true
     }}`);
 
     return wait().then(() => {
@@ -150,12 +146,10 @@ module('Integration | Component | recon event detail / single packet', function(
     packet.isContinuation = true;
     this.set('packet', packet);
 
-    // forcing shouldRenderBytes becaues phantom gets confused with viewport
     await render(hbs`{{recon-event-detail/single-packet
       index=index
       packet=packet
       packetFields=packetFields
-      shouldRenderBytes=true
     }}`);
 
     return wait().then(() => {
