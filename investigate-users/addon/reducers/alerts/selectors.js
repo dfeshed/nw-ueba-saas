@@ -28,14 +28,14 @@ const _findEntityTypeFromAnomalyKey = (entityType, key) => {
 
 export const timeframesForDateTimeFilter = [
   {
+    'name': 'IN_LAST_TWENTY_FOUR_HOURS',
+    'unit': 'Hours',
+    'value': 24
+  },
+  {
     'name': 'IN_LAST_SEVEN_DAYS',
     'unit': 'Days',
     'value': 7
-  },
-  {
-    'name': 'IN_LAST_TWO_WEEKS',
-    'unit': 'Weeks',
-    'value': 2
   },
   {
     'name': 'IN_LAST_ONE_MONTH',
@@ -46,11 +46,6 @@ export const timeframesForDateTimeFilter = [
     'name': 'IN_LAST_THREE_MONTH',
     'unit': 'Months',
     'value': 3
-  },
-  {
-    'name': 'IN_LAST_SIX_MONTH',
-    'unit': 'Months',
-    'value': 6
   }
 ];
 

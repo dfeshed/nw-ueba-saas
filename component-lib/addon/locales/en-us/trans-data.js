@@ -5469,7 +5469,7 @@ effects the simulated source.',
       noAlerts: 'No Alerts',
       notARisk: 'Not a Risk',
       risk: 'Risk',
-      all: 'ALERTS SEVERITY',
+      all: 'ALERTS SEVERITY  ( Last 3 Months )',
       alertName: 'Alert Name',
       alertOverview: 'Alert Overview',
       entityName: 'Entity Name',
@@ -6070,21 +6070,21 @@ effects the simulated source.',
             name: 'Abnormal Traffic Volume Sent from IP to Domain',
             desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.domainName}}',
             timeline: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.domainName}}',
-            chartTitle: 'Bytes Sent from IP to Domain Baseline (Last 30 Days)',
+            chartTitle: 'Bytes Sent from IP to Domain (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_by_src_ip_to_dst_org_ssl_subject_outbound: {
-            name: 'Abnormal Traffic Sent from IP to Organization',
+            name: 'Abnormal Traffic Volume Sent from IP to Organization',
             desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.dstOrgName}}',
             timeline: 'Abnormal number of bytes sent from{{contexts.srcIp}} to {{contexts.dstOrgName}}',
-            chartTitle: 'Bytes Sent from IP to Organization Baseline (Last 30 Days)',
+            chartTitle: 'Bytes Sent from IP to Organization (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_by_src_ip_to_dst_port_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent from IP to Port',
             desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.dstPortName}}',
             timeline: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.dstPortName}}',
-            chartTitle: 'Bytes Sent from IP to Port Baseline (Last 30 Days)',
+            chartTitle: 'Bytes Sent from IP to Port (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_to_ssl_subject_outbound: {
@@ -6098,21 +6098,21 @@ effects the simulated source.',
             name: 'Abnormal Traffic Volume Sent to Domain',
             desc: 'Abnormal number of bytes sent to {{contexts.domainName}}',
             timeline: 'Abnormal number of bytes sent to {{contexts.domainName}}',
-            chartTitle: 'Bytes Sent to Domain Baseline (Last 30 Days)',
+            chartTitle: 'Bytes Sent to Domain (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent to Port',
             desc: 'Abnormal number of bytes sent to {{contexts.dstPortName}}',
             timeline: 'Abnormal number of bytes sent to {{contexts.dstPortName}}',
-            chartTitle: 'Bytes Sent to Port Baseline (Last 30 Days)',
+            chartTitle: 'Bytes Sent to Port (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_to_dst_org_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent to Organization',
             desc: 'Abnormal number of bytes sent to {{contexts.dstOrgName}}',
             timeline: 'Abnormal number of bytes sent to {{contexts.dstOrgName}}',
-            chartTitle: 'Bytes Sent to Organization Baseline (Last 30 Days)',
+            chartTitle: 'Bytes Sent to Organization (Last 30 Days)',
             axisYtitle: 'Bytes Sent'
           },
           high_number_of_bytes_sent_by_ja3_outbound: {
