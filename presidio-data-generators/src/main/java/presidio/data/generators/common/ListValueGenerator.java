@@ -19,6 +19,7 @@ public class ListValueGenerator<T> implements IBaseGenerator<T> {
 
     public ListValueGenerator(List<T> listOfElements, boolean isRandomNext) {
         Objects.requireNonNull(listOfElements);
+        assert !listOfElements.isEmpty();
         LIST_OF_ELEMENTS = ImmutableList.copyOf(listOfElements);
         currentIndex = 0;
         this.isRandomNext = isRandomNext;
