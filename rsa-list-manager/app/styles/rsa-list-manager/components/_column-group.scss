@@ -25,7 +25,7 @@ p.columns-filtered-message, p.no-columns-message, p.message.meta-filtered {
     display: flex;
     transition: all .125s;
     position: relative;
-    line-height: 1.5rem;
+    max-height: 1.5rem;
     .rsa-form-button {
       border: none;
     }
@@ -38,6 +38,7 @@ p.columns-filtered-message, p.no-columns-message, p.message.meta-filtered {
     span.title {
       vertical-align: middle;
       overflow-x: hidden;
+      overflow-y: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
       display: inline-block;
@@ -45,6 +46,7 @@ p.columns-filtered-message, p.no-columns-message, p.message.meta-filtered {
     .thumb {
       width: 20px;
       height: 20px;
+      padding-left: 0.8rem;
       cursor: move;
       user-select: none;
     }

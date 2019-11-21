@@ -9,7 +9,7 @@ export default {
     const body = JSON.parse(frame.body);
     const num = Date.now();
     const newGroup = {
-      'id': body.columnGroup.id ? body.columnGroup.id : `abc${num}`,
+      'id': body.columnGroup.id ? body.columnGroup.id : num,
       'name': body.columnGroup.name,
       'contentType': 'USER',
       // simulate inclusion of time,medium in response for set columnGroup

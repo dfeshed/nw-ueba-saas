@@ -6,10 +6,6 @@ export default {
   requestDestination: '/ws/investigate/profile/set',
   message(frame) {
     const body = JSON.parse(frame.body);
-
-    // Save profile cache
-    profiles.push(body.profileRequest);
-
     const toReturn = {
       data: {
         ...body.profileRequest,
@@ -23,6 +19,14 @@ export default {
       const num = Date.now();
       toReturn.data.id = num;
     }
+
+    const editingExistingProfile = profiles.find((item) => item.id === toReturn.data.id);
+    // editing existing profile
+    if (editingExistingProfile) {
+      const groupIndex = profiles.indexOf((item) => item.id === toReturn.data.id);
+      profiles.splice(groupIndex, 1);
+    }
+    profiles.push(toReturn.data);
     return toReturn;
   }
 };
