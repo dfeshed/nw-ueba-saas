@@ -566,7 +566,7 @@ export default {
       notValid: 'This column is not sortable because it is not indexed by value or because the meta key has multiple unindexed values.',
       composed: 'This column is not sortable because the data is composed of multiple fields.'
     },
-    maxQueryMemoryError: 'To avoid this error try limiting your query by narrowing the time range, adding further filters, removing complex filter operations, or decreasing the number of columns in your column group.',
+    maxQueryMemoryError: 'To avoid this error, try limiting the query by narrowing the time range, adding filters, decreasing the number of columns in the column group, or ask an administrator to limit the number of events returned.',
     title: 'Investigate',
     loading: 'Loading',
     sorting: 'Events are being re-sorted.',
