@@ -418,7 +418,8 @@ class SpringBootJarOperator(BashOperator):
     def append_add_opens_jvm_options(self, bash_command):
         bash_command.extend(map(lambda add_opens_jvm_option: "--add-opens {}".format(add_opens_jvm_option), [
             "java.base/java.lang=ALL-UNNAMED",
-            "java.base/java.util=ALL-UNNAMED"
+            "java.base/java.util=ALL-UNNAMED",
+            "java.base/java.util.regex=ALL-UNNAMED"
             # Add additional "add opens" JVM options here.
         ]))
 
