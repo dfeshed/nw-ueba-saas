@@ -701,7 +701,7 @@ export default {
         noResults: 'No results yet. Please select a service, time range, and submit a query',
         head: {
           headerOne: 'GUIDED MODE QUERY FILTER EXAMPLES',
-          summaryOne: 'This mode includes interactive auto-suggestions, optimization of keyboard entry, expansion of pasted text, a recent query list, validation per filter.',
+          summaryOne: 'This mode includes interactive auto-suggestions, optimization of keyboard entry, expansion of pasted text, a recent query list, and validation per filter.',
           textOne: {
             one: 'Find outbound HTTP or SSH events',
             two: 'Find failed login Windows events',
@@ -727,11 +727,11 @@ export default {
           mouse: {
             header: 'MOUSE INTERACTIONS',
             textOne: 'Click before, after, or between filters to insert another filter.',
-            textTwo: 'Click a filter or parenthesis and right-click to show the action menu.',
+            textTwo: 'Click one or more filters, or a parenthesis, and right-click to open the Actions menu.',
             textThree: 'Double-click a filter to open it for editing.',
             textFour: 'Click multiple filters and press <span class="highlight">Delete</span> to remove selected filters.',
             textFive: 'Click the browser <span class="highlight">Back</span> button to go back to the previous state.',
-            textSix: 'Click the operator to switch between AND / OR operators.'
+            textSix: 'Click the operator to switch between <span class="highlight">AND</span> / <span class="highlight">OR</span> operators.'
 
 
           },
@@ -739,11 +739,11 @@ export default {
             header: 'KEYBOARD INTERACTIONS',
             textOne: 'Begin typing a meta key name or description in the query builder.',
             textTwo: 'Use <span class="highlight">up</span> and <span class="highlight">down arrows</span> in the drop-down menus, and press <span class="highlight">Enter</span> to select.',
-            textThree: 'Press <span class="highlight">Enter</span> or <span class="highlight">click magnifying glass icon/span> to execute a query.',
-            textFour: 'Press <span class="highlight">left</span> or <span class="highlight">right arrow</span> to move through the query to add more filters or press <span class="highlight">Enter</span> to edit existing ones.',
-            textFive: 'Press <span class="highlight">Shift + left</span> or <span class="highlight">right arrow</span> to select multiple filters to delete by pressing <span class="highlight">Backspace</span> or <span class="highlight">Delete</span.',
+            textThree: 'Press <span class="highlight">Enter</span> or click the submit query button (magnifying glass) to execute a query.',
+            textFour: 'Press <span class="highlight">left</span> or <span class="highlight">right arrow</span> to move through the query to add more filters, or press <span class="highlight">Enter</span> to edit existing ones.',
+            textFive: 'Press <span class="highlight">Shift + left</span> or <span class="highlight">right arrow</span> to select multiple filters, then press <span class="highlight">Backspace</span> or <span class="highlight">Delete</span> to delete.',
             textSix: 'Press <span class="highlight">Tab</span> to switch between the Meta tab and Recent Queries tab in the drop-down menu.',
-            textSeven: 'Press Home and End to jump to the beginning and end of the query.'
+            textSeven: 'Press <span class="highlight">Home</span> and <span class="highlight">End</span> to jump to the beginning and end of the query.'
 
           }
         }
