@@ -1758,6 +1758,7 @@ module('Integration | Component | Query Pills', function(hooks) {
                 id: '2',
                 isFocused: false,
                 isSelected: false,
+                isTextPillAttached: false,
                 meta: undefined,
                 operator: undefined,
                 type: 'operator-and'

@@ -251,7 +251,8 @@ export default {
       nonNumericRange: 'Ranges can only be used with numeric values.',
       tooManyPills: 'The text you entered seems like more than one filter. (Try removing spaces).',
       extraComma: 'You cannot enter more than one comma in a row.'
-    }
+    },
+    textFilterOperator: 'This operator must be AND because text filters are always ANDed to a query.'
   },
   ipConnections: {
     ipCount: '({{count}} IPs)',

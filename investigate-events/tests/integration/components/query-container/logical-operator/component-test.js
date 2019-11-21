@@ -23,6 +23,7 @@ module('Integration | Component | Logical Operator', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
     initialize(this.owner);
   });
 
@@ -41,6 +42,19 @@ module('Integration | Component | Logical Operator', function(hooks) {
       }}
     `);
     assert.ok(find(PILL_SELECTORS.logicalOperatorAND), 'renders as AND');
+  });
+
+  test('it renders as grayed out when isTextPillAttached', async function(assert) {
+    this.set('pillData', { ...createOperator(OPERATOR_AND), isTextPillAttached: true });
+    await render(hbs`
+      {{query-container/logical-operator
+        pillData=pillData
+      }}
+    `);
+    assert.ok(find(PILL_SELECTORS.logicalOperatorAttached), 'renders as grayed out');
+    const translation = this.owner.lookup('service:i18n');
+    const hoverText = translation.t('queryBuilder.textFilterOperator');
+    assert.equal(find(PILL_SELECTORS.logicalOperatorAttached).title, hoverText, 'has mouseover text');
   });
 
   test('it renders as an OR', async function(assert) {
@@ -177,6 +191,36 @@ module('Integration | Component | Logical Operator', function(hooks) {
     `);
 
     await click(PILL_SELECTORS.logicalOperatorAND);
+  });
+
+  test('it does not send a message when clicked if isTextPillAttached is true', async function(assert) {
+    assert.expect(1);
+    const done = assert.async();
+    const pillData = {
+      ...createOperator(OPERATOR_AND),
+      isFocused: false,
+      isTextPillAttached: true
+    };
+
+    this.set('sendMessage', () => {
+      assert.step('bad');
+    });
+    this.set('pillData', pillData);
+
+    await render(hbs`
+      {{query-container/logical-operator
+        pillData=pillData
+        sendMessage=sendMessage
+        position=2
+      }}
+    `);
+
+    await click(PILL_SELECTORS.logicalOperatorAND);
+
+    setTimeout(() => {
+      assert.verifySteps([], 'nothing happened');
+      done();
+    }, 500);
   });
 
   test('it sends a message when focused and enter pressed', async function(assert) {

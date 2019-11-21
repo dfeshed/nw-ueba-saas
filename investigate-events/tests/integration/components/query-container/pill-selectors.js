@@ -39,6 +39,7 @@ export default {
   logicalOperator: '.logical-operator',
   logicalOperatorAND: '.logical-operator.AND',
   logicalOperatorOR: '.logical-operator.OR',
+  logicalOperatorAttached: '.logical-operator.is-text-pill-attached',
   meta: '.pill-meta',
   metaInput: '.pill-meta input',
   metaInputFocused: '.pill-meta input:focus',

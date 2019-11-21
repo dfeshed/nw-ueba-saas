@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { alias } from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import * as MESSAGE_TYPES from '../message-types';
 import { OPERATOR_AND, OPERATOR_OR } from 'investigate-events/constants/pill';
 
@@ -8,8 +8,8 @@ const OR_LABEL = 'OR';
 
 export default Component.extend({
   classNames: ['pill', 'logical-operator'],
-  classNameBindings: ['isFocused', 'isSelected', 'operator'],
-  attributeBindings: ['position'],
+  classNameBindings: ['isFocused', 'isSelected', 'operator', 'isTextPillAttached'],
+  attributeBindings: ['position', 'title'],
 
   /**
    * The position of this pill relative to other pills.
@@ -39,6 +39,18 @@ export default Component.extend({
    */
   @alias('pillData.isSelected')
   isSelected: false,
+
+  /**
+   * Is this operator attached to a text pill?
+   * @public
+   */
+  @alias('pillData.isTextPillAttached')
+  isTextPillAttached: false,
+
+  @computed('pillData.isTextPillAttached')
+  title(isTextPillAttached) {
+    return isTextPillAttached ? this.get('i18n').t('queryBuilder.textFilterOperator') : '';
+  },
 
   /**
    * The text to display depending upon the type of logical operator
@@ -81,7 +93,9 @@ export default Component.extend({
   },
 
   click() {
-    this._operatorToggled();
+    if (!this.get('isTextPillAttached')) {
+      this._operatorToggled();
+    }
   },
 
   /**

@@ -5,6 +5,7 @@ import { TEXT_FILTER } from 'investigate-events/constants/pill';
 import { selectedService, hasSummaryData } from 'investigate-events/reducers/investigate/services/selectors';
 import { createQueryHash } from 'investigate-events/util/query-hash';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
+import { markTextPillAttachedOperators } from 'investigate-events/util/logical-operator-helper';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 import { validMetaKeySuggestions } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { isProfileExpanded } from 'investigate-events/reducers/investigate/profile/selectors';
@@ -43,7 +44,6 @@ const _transformPills = (pills, metaKeys) => {
     };
   });
 };
-
 
 // SELECTOR FUNCTIONS
 export const freeFormText = createSelector(
@@ -257,8 +257,8 @@ export const enrichedPillsData = createSelector(
   [validMetaKeySuggestions, _twinProcessedPills, _twinProcessedOGPills],
   (metaKeys, _pillsData, _originalPills) => {
     return {
-      pillsData: _transformPills(_pillsData, metaKeys),
-      originalPills: _transformPills(_originalPills, metaKeys)
+      pillsData: _transformPills(_pillsData, metaKeys) |> markTextPillAttachedOperators,
+      originalPills: _transformPills(_originalPills, metaKeys) |> markTextPillAttachedOperators
     };
   }
 );

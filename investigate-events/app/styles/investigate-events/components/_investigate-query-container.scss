@@ -771,6 +771,9 @@
     &.logical-operator {
       border: 1px solid transparent;
       background-color: opacity-value(transparent);
+      &.is-text-pill-attached {
+        color: text-color(primary);
+      }
     }
     &.is-focused {
       border-color: border-color(accentTwo);
