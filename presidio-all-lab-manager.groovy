@@ -1,7 +1,7 @@
 def runParallel = true
 def buildStages
 
-node('nw-hz-08-ueba') {
+node("${params.NODE}") {
 
     stage('Initialise') {
         // Set up List<Map<String,Closure>> describing the builds
@@ -27,8 +27,8 @@ node('nw-hz-08-ueba') {
 
 // Create List of build stages to suit
 def prepareBuildStages() {
-    println("Servers to execute scripts: ${params.REMOTE_SERVERS}")
-    println("Servers to execute scripts: ${params.SCRIPT_TO_EXECUTE}")
+    println("########## Script to execute: ${params.SCRIPT_TO_EXECUTE} ############")
+    println("########## Remote servers: ${params.REMOTE_SERVERS} ############")
 
     def remoteServers = "${params.REMOTE_SERVERS}".split(',').collect{it as String}
     def script = "${params.SCRIPT_TO_EXECUTE}"
@@ -48,7 +48,7 @@ def prepareOneBuildStage(String remoteServer, String script) {
     return {
         stage("Build stage:${remoteServer}") {
             println("UI RPMs upgrade on ${remoteServer}")
-            sh(script:"sleep 5 ; sshpass -p \"netwitness\" ssh root@${remoteServer} -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/scripts/${script}", returnStatus:true)
+            sh(script:"sshpass -p \"netwitness\" ssh root@${remoteServer} -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/scripts/${script}", returnStatus:true)
         }
     }
 }
