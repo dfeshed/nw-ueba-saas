@@ -201,23 +201,20 @@
       color: text-color(primary, lighter);
       letter-spacing: 1px;
     }
-    // delete, help icons
     .details-header-icons {
       margin-top: -0.6rem;
-      margin-right: -2rem;
-      button.rsa-form-button {
-        border: none;
-        margin-left: -2rem;
-      }
-      .is-disabled:hover button, .is-disabled:hover button i {
-        color: text-color(primary, light);
-      }
-      i {
-        margin: 0 .25rem;
-        padding: 0 .25rem;
-        font-size: inherit;
-        color: text-color(primary, light);
-      }
+      margin-right: -1rem;
+    }
+    .details-header-icons i {
+      font-size: inherit;
+      color: text-color(primary, light);
+    }
+    .details-header-icons .is-disabled:hover button, .is-disabled:hover button i {
+      color: text-color(primary, light);
+    }
+    .details-header-icons button.rsa-form-button {
+      border: none;
+      width: 10px;
     }
     .details-body .name {
       letter-spacing: 0.75px;
