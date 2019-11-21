@@ -2,9 +2,6 @@ def runParallel = true
 def buildStages
 
 node('nw-hz-08-ueba') {
-    parameters {
-        booleanParam(name: 'INSTALL_UEBA_UI_RPMS', defaultValue: true, description: '')
-    }
 
     stage('Initialise') {
         // Set up List<Map<String,Closure>> describing the builds
@@ -30,26 +27,28 @@ node('nw-hz-08-ueba') {
 
 // Create List of build stages to suit
 def prepareBuildStages() {
-    echo "${params.ADMIN_SERVERS}"
+    println("Servers to execute scripts: ${params.REMOTE_SERVERS}")
+    println("Servers to execute scripts: ${params.SCRIPT_TO_EXECUTE}")
 
-    def adminServers = "${params.ADMIN_SERVERS}".split(',').collect{it as String}
+    def remoteServers = "${params.REMOTE_SERVERS}".split(',').collect{it as String}
+    def script = "${params.SCRIPT_TO_EXECUTE}"
 
     def buildList = []
     def buildStages = [:]
 
-    for (name in adminServers ) {
-        def n = "${name}"
-        buildStages.put(n, prepareOneBuildStage(n))
+    for (remoteServer in remoteServers ) {
+        def server = "${remoteServer}"
+        buildStages.put(server, prepareOneBuildStage(server, script))
     }
     buildList.add(buildStages)
     return buildList
 }
 
-def prepareOneBuildStage(String name) {
+def prepareOneBuildStage(String remoteServer, String script) {
     return {
-        stage("Build stage:${name}") {
-            println("UI RPMs upgrade on ${name}")
-            sh(script:"sleep 5 ; sshpass -p \"netwitness\" ssh root@${name} -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/scripts/presidio-ui-update.sh", returnStatus:true)
+        stage("Build stage:${remoteServer}") {
+            println("UI RPMs upgrade on ${remoteServer}")
+            sh(script:"sleep 5 ; sshpass -p \"netwitness\" ssh root@${remoteServer} -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/scripts/${script}", returnStatus:true)
         }
     }
 }
