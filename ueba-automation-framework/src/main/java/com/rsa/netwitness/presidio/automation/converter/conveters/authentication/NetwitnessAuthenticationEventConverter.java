@@ -4,21 +4,17 @@ import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import org.assertj.core.util.Lists;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
-import presidio.data.generators.common.random.RandomListElementGenerator;
-
-import java.util.List;
+import presidio.data.generators.common.ListValueGenerator;
 
 
 public class NetwitnessAuthenticationEventConverter implements EventConverter<AuthenticationEvent> {
 
-    private static final List<String> successReferenceIds = Lists.newArrayList("4769", "4624", "4648", "rhlinux");
-    private static final List<String> failureReferenceIds = Lists.newArrayList("4769", "4625", "4648", "rhlinux");
+    private static ListValueGenerator<String> successReferenceIdsGen = new ListValueGenerator<>(Lists.list("4769", "4624", "4648", "rhlinux"));
+    private static ListValueGenerator<String> failureReferenceIdsGen = new ListValueGenerator<>(Lists.list("4769", "4625", "4648", "rhlinux"));
+
 
     @Override
     public NetwitnessEvent convert(AuthenticationEvent event) {
-        RandomListElementGenerator<String> successReferenceIdsGen = new RandomListElementGenerator<>(successReferenceIds);
-        RandomListElementGenerator<String> failureReferenceIdsGen = new RandomListElementGenerator<>(failureReferenceIds);
-
         NetwitnessWindowsAuthenticationEventBuilder builderWin = new NetwitnessWindowsAuthenticationEventBuilder(event);
         NetwitnessLinuxAuthenticationEventBuilder builderLin = new NetwitnessLinuxAuthenticationEventBuilder(event);
 

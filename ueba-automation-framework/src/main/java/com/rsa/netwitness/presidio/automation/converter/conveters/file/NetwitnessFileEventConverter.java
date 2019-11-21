@@ -4,40 +4,37 @@ import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import org.assertj.core.util.Lists;
 import presidio.data.domain.event.file.FileEvent;
-import presidio.data.generators.common.random.RandomListElementGenerator;
-
-import java.util.List;
+import presidio.data.generators.common.ListValueGenerator;
 
 
 public class NetwitnessFileEventConverter implements EventConverter<FileEvent> {
 
-    private static final List<String> refIds = Lists.newArrayList("4663", "5145");
+    private static ListValueGenerator<String> refIdGen = new ListValueGenerator<>(Lists.list("4663", "5145"));
 
     @Override
     public NetwitnessEvent convert(FileEvent event) {
-        RandomListElementGenerator<String> referenceIdsGen = new RandomListElementGenerator<>(refIds);
-
         NetwitnessFileEventBuilder builder = new NetwitnessFileEventBuilder(event);
+        String operationType = builder.getOperationType();
 
-        switch (builder.getOperationType()) {
-            case "FILE_OPENED":
-            case "FOLDER_OPENED":
-                if ("5145".equals(referenceIdsGen.getNext())) {
-                    return builder.getWin_5145();
-                }
+        if ("FILE_OPENED".equals(operationType) || "FOLDER_OPENED".equals(operationType)) {
+            String nextId = refIdGen.getNext();
 
-            case "FILE_DELETED":
-            case "FOLDER_DELETED":
-                return builder.getWin_4660();
-
-            case "FOLDER_ACCESS_RIGHTS_CHANGED":
-            case "FOLDER_CLASSIFICATION_CHANGED":
-            case "FILE_OWNERSHIP_CHANGED":
-                return builder.getWin_4670();
-
-            default:
+            if ("5145".equals(nextId)) {
+                return builder.getWin_5145();
+            }
+            if ("4663".equals(nextId)) {
                 return builder.getWin_4663();
+            }
+            throw new RuntimeException("No such ID: " + nextId);
+
+        } else if ("FILE_DELETED".equals(operationType) || "FOLDER_DELETED".equals(operationType)) {
+            return builder.getWin_4660();
+
+        } else if ("FOLDER_ACCESS_RIGHTS_CHANGED".equals(operationType) || "FOLDER_CLASSIFICATION_CHANGED".equals(operationType) || "FILE_OWNERSHIP_CHANGED".equals(operationType)) {
+            return builder.getWin_4670();
         }
+
+        return builder.getWin_4663();
     }
 
 
