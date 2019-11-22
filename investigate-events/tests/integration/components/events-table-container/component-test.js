@@ -240,6 +240,38 @@ module('Integration | Component | events-table-container', function(hooks) {
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'Your filter criteria did not match any records.');
   });
 
+  test('it should show "may take time" message when loading and at threshold', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventsPreferencesConfig()
+      .hasRequiredValuesToQuery()
+      .eventTimeSortOrder()
+      .eventThreshold(1)
+      .eventCount(1)
+      .selectedEventIds({})
+      .language()
+      .eventResults()
+      .build();
+
+    await render(hbs`{{events-table-container}}`);
+    assert.equal(find('.rsa-loader__text').textContent.trim(), 'Found more than 1 results. Busy converting bytes into pixels. Check the query console for more details.');
+  });
+
+  test('it should not show "may take time" message when loading and not at threshold', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventsPreferencesConfig()
+      .hasRequiredValuesToQuery()
+      .eventTimeSortOrder()
+      .eventThreshold(2)
+      .eventCount(1)
+      .selectedEventIds({})
+      .language()
+      .eventResults()
+      .build();
+
+    await render(hbs`{{events-table-container}}`);
+    assert.equal(find('.rsa-loader__text').textContent.trim(), 'Loading ...');
+  });
+
   test('it should not show "no results" message if there are results', async function(assert) {
     new ReduxDataHelper(setState)
       .selectedColumnGroup('SUMMARY')

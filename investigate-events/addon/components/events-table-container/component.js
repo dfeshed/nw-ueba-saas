@@ -7,13 +7,16 @@ import {
   areEventsStreaming
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { hasColumnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
-
+import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
+import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 const stateToComputed = (state) => ({
   areEventsStreaming: areEventsStreaming(state),
   hasColumnGroups: hasColumnGroups(state),
   percent: percentageOfEventsDataReturned(state),
-  status: state.investigate.files.fileExtractStatus
+  status: state.investigate.files.fileExtractStatus,
+  threshold: thousandFormat(state.investigate.eventCount.threshold),
+  isAtThreshold: resultCountAtThreshold(state)
 });
 
 const EventsTableContainer = Component.extend({

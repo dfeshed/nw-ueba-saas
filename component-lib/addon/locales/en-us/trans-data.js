@@ -570,6 +570,7 @@ export default {
     maxQueryMemoryError: 'To avoid this error, try limiting the query by narrowing the time range, adding filters, decreasing the number of columns in the column group, or ask an administrator to limit the number of events returned.',
     title: 'Investigate',
     loading: 'Loading',
+    loadingAtThreshold: 'Found more than {{threshold}} results. Busy converting bytes into pixels. Check the query console for more details.',
     sorting: 'Events are being re-sorted.',
     reExecutingQuery: 'Query is being re-executed to fetch new data.',
     loadMore: 'Load More',

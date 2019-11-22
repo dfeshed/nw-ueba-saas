@@ -17,6 +17,10 @@
   </footer>
 {{else}}
   <centered>
-    {{rsa-loader size='largest' label=(concat (t 'investigate.loading') ' ...')}}
+    {{#if isAtThreshold}}
+      {{rsa-loader size='largest' label=(t 'investigate.loadingAtThreshold' threshold=threshold)}}
+    {{else}}
+      {{rsa-loader size='largest' label=(concat (t 'investigate.loading') ' ...')}}
+    {{/if}}
   </centered>
 {{/if}}
