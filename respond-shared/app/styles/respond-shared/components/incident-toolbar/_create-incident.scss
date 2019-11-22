@@ -5,6 +5,9 @@
     padding: 0 rsa-whitespace();
     overflow-y: auto;
     height: calc(100% - #{$footerHeight});
+    .create-incident-categories {
+      padding-bottom: 64px;
+    }
   }
   p, label {
     padding: rsa-whitespace();
