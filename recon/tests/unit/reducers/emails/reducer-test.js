@@ -3,6 +3,7 @@ import reducer from 'recon/reducers/emails/reducer';
 import * as ACTION_TYPES from 'recon/actions/types';
 import Immutable from 'seamless-immutable';
 import emailData from '../../../data/subscriptions/reconstruction-email-data/stream/data';
+import _ from 'lodash';
 
 module('Unit | Reducers | Emails | Recon');
 
@@ -35,6 +36,49 @@ test('test EMAIL_RECEIVE_PAGE action handler', function(assert) {
   };
   const result = reducer(initialState, action);
   assert.ok(result.emails.length > 4, 'set email content to email state');
+});
+
+test('test EMAIL_RECEIVE_PAGE action handler - handle split email body', function(assert) {
+
+  let part1 = _.cloneDeep(emailData.slice(0, 4));
+  let splitEmail = part1[part1.length - 1];
+  splitEmail.bodyContent = splitEmail.bodyContent.substring(0, 2000);
+
+  let action = {
+    type: ACTION_TYPES.EMAIL_RECEIVE_PAGE,
+    payload: {
+      data: part1,
+      meta: {
+        'RECON-EMAIL-MESSAGE-SPLIT': true,
+        complete: false
+      }
+    }
+  };
+  const result1 = reducer(initialState, action);
+  assert.ok(result1.emails.length === 4, 'First batch of emails stored');
+  assert.equal(result1.emails[3].bodyContent.length, 2000, 'Email body is 2000 char');
+  assert.ok(result1.emails[3].partial, 'Last email marked partial');
+
+  part1 = _.cloneDeep(emailData.slice(0, 4));
+  splitEmail = part1[part1.length - 1];
+  const part2FirstMail = _.cloneDeep(part1[part1.length - 1]);
+  part2FirstMail.bodyContent = splitEmail.bodyContent.substring(2000, splitEmail.bodyContent.length);
+  const part2 = emailData.slice(4, emailData.length);
+
+  action = {
+    type: ACTION_TYPES.EMAIL_RECEIVE_PAGE,
+    payload: {
+      data: [part2FirstMail].concat(part2),
+      meta: {
+        complete: true
+      }
+    }
+  };
+
+  const result2 = reducer(result1, action);
+  assert.equal(result2.emails.length, 6, 'Next batch of emails stored');
+  assert.ok(result2.emails[3].bodyContent.length > 3000, 'Partial email body is updated with the complete content');
+  assert.equal(result2.emails[3].partial, false, 'Partial flag cleared');
 });
 
 test('test EMAIL_RENDER_NEXT action handler', function(assert) {
