@@ -47,8 +47,9 @@ def prepareBuildStages() {
 def prepareOneBuildStage(String remoteServer, String script) {
     return {
         stage("Build stage:${remoteServer}") {
-            println("UI RPMs upgrade on ${remoteServer}")
+            println("Started on ${remoteServer}")
             sh(script:"sshpass -p \"netwitness\" ssh root@${remoteServer} -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/scripts/${script}", returnStatus:true)
+            println("Finished on ${remoteServer}")
         }
     }
 }
