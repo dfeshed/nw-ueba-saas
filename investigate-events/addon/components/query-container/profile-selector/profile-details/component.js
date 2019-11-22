@@ -3,6 +3,7 @@ import computed from 'ember-computed-decorators';
 import _ from 'lodash';
 import layout from './template';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
+import { CONTENT_TYPE_PUBLIC } from 'investigate-events/constants/profiles';
 
 export default Component.extend({
   layout,
@@ -63,6 +64,12 @@ export default Component.extend({
     newProfile.columnGroupView = columnGroupView;
     newProfile.metaGroup = metaGroup;
     newProfile.preQuery = this._getPreQueryString();
+
+    // if profile is missing contentType property, set it to PUBLIC
+    if (!newProfile.hasOwnProperty('contentType')) {
+      newProfile.contentType = CONTENT_TYPE_PUBLIC;
+    }
+
     return newProfile;
   },
 
@@ -87,7 +94,6 @@ export default Component.extend({
         this.set('columnGroup', newProfile.columnGroup);
         this.set('columnGroupView', newProfile.columnGroupView);
       }
-
       // broadcast
       this.get('editProfile')(this._assembleNewProfile());
     }

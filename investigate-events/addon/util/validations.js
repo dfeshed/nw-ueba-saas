@@ -25,6 +25,7 @@ export const isProfileValid = (newProfile, profiles) => {
 
   return !isNameError && // no errors allowed
     // must have required fields
+    !!newProfile.contentType &&
     !!newProfile.name &&
     !!newProfile.columnGroup &&
     !!newProfile.metaGroup &&

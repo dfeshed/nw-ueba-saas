@@ -3,6 +3,7 @@ import * as ACTION_TYPES from '../types';
 import _ from 'lodash';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { modelName, editItemId, editItem } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { COLUMN_GROUP_MODELNAME } from 'rsa-list-manager/constants/list-manager';
 
 /**
  * for column groups only
@@ -29,10 +30,12 @@ export const createItem = (item, stateLocation, itemTransform) => {
     const payload = {};
     payload[apiModelName] = item;
 
-    // add 'position' to each element in columnGroup.columns
-    if (apiModelName === 'columnGroup') {
+
+    // when creating column group, add 'position' to each element in columnGroup.columns
+    if (apiModelName === COLUMN_GROUP_MODELNAME) {
       payload[apiModelName] = _enrichColumnGroupWithPosition(item);
     }
+
     dispatch({
       type: ACTION_TYPES.ITEM_CREATE,
       promise: apiCreateOrUpdateItem(payload, apiModelName),
@@ -57,10 +60,12 @@ export const updateItem = (item, stateLocation, itemTransform, itemUpdate) => {
     const apiModelName = modelName(getState(), stateLocation);
     const payload = {};
     payload[apiModelName] = item;
-    // add 'position' to each element in columnGroup.columns
-    if (apiModelName === 'columnGroup') {
+
+    // when creating column group, add 'position' to each element in columnGroup.columns
+    if (apiModelName === COLUMN_GROUP_MODELNAME) {
       payload[apiModelName] = _enrichColumnGroupWithPosition(item);
     }
+
     dispatch({
       type: ACTION_TYPES.ITEM_UPDATE,
       promise: apiCreateOrUpdateItem(payload, apiModelName),

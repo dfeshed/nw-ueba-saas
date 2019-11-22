@@ -18,6 +18,7 @@ module('Unit | Util | Validations', function(hooks) {
   const columnGroup = {};
   const metaGroup = {};
   const preQuery = 'PRE_QUERY';
+  const contentType = 'PUBLIC';
   const profilesList = [
     { name: 'jaz', id: 1, columnGroup, metaGroup, preQuery },
     { name: 'taz', id: 2, columnGroup, metaGroup, preQuery }
@@ -92,7 +93,8 @@ module('Unit | Util | Validations', function(hooks) {
       name: 'My Profile',
       columnGroup,
       metaGroup,
-      preQuery
+      preQuery,
+      contentType
     };
     const result = isProfileValid(profile, profilesList);
     assert.ok(result);
@@ -103,7 +105,8 @@ module('Unit | Util | Validations', function(hooks) {
       name: '',
       columnGroup,
       metaGroup,
-      preQuery
+      preQuery,
+      contentType
     };
     const result = isProfileValid(profile, profilesList);
     assert.notOk(result);
@@ -114,7 +117,8 @@ module('Unit | Util | Validations', function(hooks) {
       name: 'taz',
       columnGroup,
       metaGroup,
-      preQuery
+      preQuery,
+      contentType
     };
     const result = isProfileValid(profile, profilesList);
     assert.notOk(result);
@@ -124,7 +128,8 @@ module('Unit | Util | Validations', function(hooks) {
     const profile = {
       name: 'My Profile',
       metaGroup,
-      preQuery
+      preQuery,
+      contentType
     };
     const result = isProfileValid(profile, profilesList);
     assert.notOk(result);
@@ -144,7 +149,8 @@ module('Unit | Util | Validations', function(hooks) {
     const profile = {
       name: 'My Profile',
       columnGroup,
-      metaGroup
+      metaGroup,
+      contentType
     };
     const result = isProfileValid(profile, profilesList);
     assert.notOk(result);
@@ -155,9 +161,21 @@ module('Unit | Util | Validations', function(hooks) {
       name: 'My Profile',
       columnGroup,
       metaGroup,
-      preQuery: ''
+      preQuery: '',
+      contentType
     };
     const result = isProfileValid(profile, profilesList);
     assert.ok(result);
+  });
+
+  test('isProfileValid has correct result when editedItem does not have contentType', function(assert) {
+    const profile = {
+      name: 'My Profile',
+      columnGroup,
+      metaGroup,
+      preQuery
+    };
+    const result = isProfileValid(profile, profilesList);
+    assert.notOk(result), 'profile without contentType shall be invalid';
   });
 });
