@@ -77,7 +77,7 @@ const listManagerReducer = handleActions({
       failure: (s) => s.merge({
         isItemsLoading: false,
         createItemErrorCode: action.payload.code,
-        createItemErrorMessage: action.payload.meta.message
+        createItemErrorMessage: action.payload.meta?.message
       }),
       success: (s) => {
         let { payload: { data: createdItem } } = action;
@@ -110,7 +110,7 @@ const listManagerReducer = handleActions({
       failure: (s) => s.merge({
         isItemsLoading: false,
         updateItemErrorCode: action.payload.code,
-        updateItemErrorMessage: action.payload.meta ? action.payload.meta.message : undefined
+        updateItemErrorMessage: action.payload.meta?.message
       }),
       success: (s) => {
         let { payload: { data: updatedItem } } = action;
@@ -141,7 +141,7 @@ const listManagerReducer = handleActions({
       failure: (s) => s.merge({
         isItemsLoading: false,
         deleteItemErrorCode: action.payload.code,
-        deleteItemErrorMessage: action.payload.meta ? action.payload.meta.message : undefined
+        deleteItemErrorMessage: action.payload.meta?.message
       }),
       success: (s) => {
         const { request } = action.payload;
