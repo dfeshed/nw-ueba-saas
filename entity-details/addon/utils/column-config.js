@@ -17,7 +17,7 @@ const baseColumnConfigForEvents = [{
   disableSort: true
 }, {
   field: 'userId',
-  width: '4.5vw',
+  width: '5.5vw',
   title: 'Normalized user name',
   visible: true,
   linkField: 'user_link',
@@ -28,11 +28,11 @@ const baseColumnConfigForEvents = [{
   title: 'Operation Type',
   visible: true,
   disableSort: true
-}];
+} ];
 
 const activeDirectoryColumns = [{
   field: 'objectId',
-  width: '7.5vw',
+  width: 'auto',
   title: 'Object Name',
   linkField: 'user_link',
   additionalFilter: 'obj.name',
@@ -49,6 +49,7 @@ const activeDirectoryColumns = [{
 const authenticationColumns = [{
   field: 'srcMachineId',
   title: 'Source Host',
+  width: '5vw',
   visible: true,
   linkField: 'user_link',
   additionalFilter: 'host.all',
@@ -61,7 +62,7 @@ const authenticationColumns = [{
   disableSort: true
 }, {
   field: 'dstMachineId',
-  width: '3.5vw',
+  width: '6vw',
   linkField: 'user_link',
   additionalFilter: 'host.all',
   visible: true,
@@ -87,7 +88,7 @@ const authenticationColumns = [{
   disableSort: true
 }, {
   field: 'resultCode',
-  width: '3.5vw',
+  width: 'auto',
   title: 'Result Code',
   visible: true,
   disableSort: true
@@ -135,7 +136,7 @@ const fileColumns = [{
 
 const processColumns = [{
   field: 'machineName',
-  width: '3.5vw',
+  width: '6vw',
   title: 'Machine Name',
   linkField: 'machine_name_link',
   additionalFilter: 'host.all',
@@ -143,14 +144,14 @@ const processColumns = [{
   disableSort: true
 }, {
   field: 'srcProcessFileName',
-  width: '3.5vw',
+  width: '8vw',
   title: 'Source Process',
   visible: true,
   linkField: 'src_process_link',
   disableSort: true
 }, {
   field: 'dstProcessFileName',
-  width: '3.5vw',
+  width: 'auto',
   title: 'Destination Process',
   visible: true,
   linkField: 'dst_process_link',
@@ -179,7 +180,7 @@ const registryColumns = [{
   disableSort: true
 }, {
   field: 'processFileName',
-  width: '3.5vw',
+  width: '5.5vw',
   title: 'Process File Name',
   visible: true,
   linkField: 'process_name_link',
@@ -204,19 +205,19 @@ const registryColumns = [{
   disableSort: true
 }, {
   field: 'registryKeyGroup',
-  width: '5vw',
+  width: '6vw',
   title: 'Registry Key Group',
   visible: true,
   disableSort: true
 }, {
   field: 'registryKey',
-  width: '5vw',
+  width: '6vw',
   title: 'Registry Key',
   visible: true,
   disableSort: true
 }, {
   field: 'registryValueName',
-  width: '5vw',
+  width: '6vw',
   title: 'Registry Value Name',
   visible: true,
   disableSort: true

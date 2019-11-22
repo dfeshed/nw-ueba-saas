@@ -5938,9 +5938,9 @@ effects the simulated source.',
             axisYtitle: ''
           },
           abnormal_application_triggered_by_scripting_tool: {
-            name: 'Abnormal Application Triggered by Scripting Tool',
-            timeline: '{{entityName}} was created by {{contexts.srcProcessFileName}}',
-            chartTitle: 'Applications triggered by Scripting',
+            name: 'Scripting Tool Triggered an Abnormal Application',
+            timeline: '{{contexts.srcProcessFileName}} triggered {{anomalyValue}}',
+            chartTitle: 'Applications Triggered by the Scripting Tool',
             axisYtitle: ''
           },
           abnormal_process_opened_by_scripting_tool: {
@@ -5951,7 +5951,7 @@ effects the simulated source.',
           },
           high_number_of_distinct_reconnaissance_tools_executed: {
             name: 'Multiple Distinct Reconnaissance Tools Executed',
-            timeline: 'Reconnaissance tools were executed in this hour',
+            timeline: '{{anomalyValue}} reconnaissance tools were executed',
             chartTitle: 'Distinct Reconnaissance Tools (Last 30 Days)',
             axisYtitle: 'Count of Tools'
           },
@@ -5963,7 +5963,7 @@ effects the simulated source.',
           },
           high_number_of_reconnaissance_tools_executed_process: {
             name: 'Process Executed Multiple Times by a Reconnaissance Tool',
-            timeline: '{{contexts.dstProcessFileName}} was executed abnormally multiple times by a reconnaissance tool',
+            timeline: '{{contexts.dstProcessFileName}} was executed {{anomalyValue}} times by {{contexts.srcProcessFileName}}',
             chartTitle: 'Process Executions by Reconnaissance Tool (Last 30 Days)',
             axisYtitle: 'Count of Process Executions'
           },
@@ -5983,9 +5983,9 @@ effects the simulated source.',
             chartTitle: 'Processes Opened by Scripting'
           },
           user_abnormal_process_executed_a_scripting_tool: {
-            name: 'Abnormal User Application Executed by Scripting Tool',
-            timeline: '{{entityName}} executed by scripting tool.',
-            chartTitle: 'Processes Executed by Scripting'
+            name: 'User Ran a Scripting Tool that Triggered an Abnormal Application',
+            timeline: '{{entityName}} ran {{contexts.dstProcessFileName}} to trigger {{anomalyValue}}',
+            chartTitle: 'Applications Triggered by the Scripting Tool run by the User'
           },
           // logon anomalies
           multiple_failed_authentications: {
