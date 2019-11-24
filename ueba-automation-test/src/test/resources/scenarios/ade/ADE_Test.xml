@@ -1,0 +1,23 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="UEBA ADE Component Tests">
+
+    <test name="ADE Component Test">
+        <classes>
+            <class name="com.rsa.netwitness.presidio.automation.test.ade.ActiveDirectory_HighNumberOf_Test"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.ade.ActiveDirectory_Scored_Test"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.ade.Authentication_HighNumberOf_Test"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.ade.Authentication_Scored_Test"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.ade.File_HighNumberOf_Test"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.ade.File_Scored_Test"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.ade.Process_Scored_Test"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.ade.Registry_Scored_Test"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.ade.SMART_FsOnly_Test"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.ade.SMART_Ps_Test"/>
+            <!--<class name="com.rsa.netwitness.presidio.automation.test.ade.LogsErrors_Test"/>-->
+        </classes>
+    </test>
+
+</suite>
+
+
