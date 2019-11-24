@@ -38,8 +38,11 @@ pipeline {
         stage('Project Clone') {
             steps {
                 sh "ps -ef | grep 'maven' | grep -v grep | awk '{print \$2}' | xargs -r kill -9"
+                sh "ps -ef | grep 'NwLogPlayer' | grep -v grep | awk '{print \$2}' | xargs -r kill -9"
+
                 script { currentBuild.displayName="#${BUILD_NUMBER} ${NODE_NAME}" }
                 script { currentBuild.description = "${env.START_TIME} - ${env.END_TIME}" }
+
                 cleanWs()
                 buildIntegrationTestProject()
             }
