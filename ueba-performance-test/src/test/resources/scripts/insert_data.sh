@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROJECT_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/ueba-automation-projects/presidio-integration-performance-test
+PROJECT_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/ueba-automation-projects/ueba-performance-test
 DEFAULT_PATH="/var/netwitness/presidio/perf_data/generated/*/*"
 DONE_PATH="/var/netwitness/presidio/perf_data/inserted"
 
