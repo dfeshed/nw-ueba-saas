@@ -17,8 +17,8 @@ pipeline {
         JAVA_HOME = "${env.JAVA_HOME}"
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "ueba-automation-projects"
-        SCRIPTS_DIR = '/ueba-automation-projects/presidio-integration-performance-test/src/test/resources/scripts/'
-        PERF_GEN_TARGET_PATH="${env.WORKSPACE}/ueba-automation-projects/presidio-integration-performance-test/target/netwitness_events_gen/*"
+        SCRIPTS_DIR = '/ueba-automation-projects/ueba-performance-test/src/test/resources/scripts/'
+        PERF_GEN_TARGET_PATH="${env.WORKSPACE}/ueba-automation-projects/ueba-performance-test/target/netwitness_events_gen/*"
         PERF_GEN_DATA_PATH="/var/netwitness/presidio/perf_data"
         PERF_GEN_GENERATED_PATH="/var/netwitness/presidio/perf_data/generated"
         PERF_GEN_DONE_PATH="/var/netwitness/presidio/perf_data/inserted"
@@ -81,7 +81,7 @@ def runMaven() {
     println(env.REPOSITORY_NAME)
     sh "echo JAVA_HOME=${env.JAVA_HOME}"
     dir(env.REPOSITORY_NAME) {
-        sh "mvn test -B --projects presidio-integration-performance-test --also-make -Dschemas=${params.SCHEMAS} " +
+        sh "mvn test -B --projects ueba-performance-test --also-make -Dschemas=${params.SCHEMAS} " +
                 "-Dstart_time=${params.START_TIME} -Dend_time=${params.END_TIME} " +
                 "-Dtls_alerts_probability=${params.tls_alerts_probability} -Dtls_groups_to_create=${params.tls_groups_to_create} " +
                 "-Dtls_events_per_day_per_group=${params.tls_events_per_day_per_group} ${params.MVN_OPTIONS} " +
