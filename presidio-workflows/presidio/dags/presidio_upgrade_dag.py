@@ -3,6 +3,9 @@ import subprocess
 import sys
 
 PRESIDIO_UPGRADE_STATE_FILE_NAME = "/var/lib/netwitness/presidio/presidio_upgrade_state.txt"
+PRESIDIO_UPGRADE_VERSIONS_PATH = "{}/{}".format(
+    "/var/netwitness/presidio/airflow/venv/lib/python2.7/site-packages/presidio_workflows-1.0-py2.7.egg",
+    "presidio/upgrade/versions")
 PRESIDIO_VERSIONS_FILE_NAME = "/var/lib/netwitness/presidio/presidio_versions.txt"
 
 
@@ -119,15 +122,9 @@ def build_presidio_upgrade_dag(dag, from_version, to_version):
     from airflow.operators.python_operator import PythonOperator
     from datetime import timedelta
 
-    # The absolute path of this file
-    absolute_path = os.path.abspath(__file__)
-    # The absolute path of this file's parent directory
-    directory_name = os.path.dirname(absolute_path)
-    # The absolute path of the "versions" directory
-    directory_name = "%s/../upgrade/versions" % directory_name
     # A list of all the versions that have an upgrade script
     # A file named "11.2.0.5.py" is an upgrade script TO version 11.2.0.5
-    versions = [version[:-3] for version in os.listdir(directory_name)
+    versions = [version[:-3] for version in os.listdir(PRESIDIO_UPGRADE_VERSIONS_PATH)
                 if version.endswith(".py") and version != "__init__.py"]
     # A filtered and sorted list containing only the relevant versions
     versions = [version for version in versions
@@ -143,7 +140,7 @@ def build_presidio_upgrade_dag(dag, from_version, to_version):
                               dag=dag)
 
     for version in versions:
-        current = BashOperator(bash_command="python %s/%s.py" % (directory_name, version),
+        current = BashOperator(bash_command="python %s/%s.py" % (PRESIDIO_UPGRADE_VERSIONS_PATH, version),
                                dag=dag,
                                retries=99999,
                                retry_delay=timedelta(minutes=5),
