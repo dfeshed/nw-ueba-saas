@@ -1,21 +1,8 @@
 import os
-from airflow.models import Variable
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
-from airflow.utils.db import provide_session
 from datetime import timedelta
-
-PRESIDIO_UPGRADE_STATE_KEY = "presidio_upgrade_state"
-
-
-@provide_session
-def delete_presidio_upgrade_state(session=None):
-    session.query(Variable).filter(Variable.key == PRESIDIO_UPGRADE_STATE_KEY).delete()
-
-
-@provide_session
-def is_presidio_upgrade_state_present(session=None):
-    return session.query(Variable).filter(Variable.key == PRESIDIO_UPGRADE_STATE_KEY).first() is not None
+from presidio.dags import presidio_upgrade_dag
 
 
 def build(dag, from_version, to_version):
@@ -36,7 +23,8 @@ def build(dag, from_version, to_version):
     versions.sort(cmp=version_comparator)
 
     previous = PythonOperator(task_id="presidio_upgrade_start",
-                              python_callable=lambda argument: Variable.set(PRESIDIO_UPGRADE_STATE_KEY, "running"),
+                              python_callable=presidio_upgrade_dag.write_presidio_upgrade_state,
+                              op_kwargs={"state": "running"},
                               retries=99999,
                               retry_delay=timedelta(minutes=5),
                               dag=dag)
@@ -51,7 +39,8 @@ def build(dag, from_version, to_version):
         previous = current
 
     previous >> PythonOperator(task_id="presidio_upgrade_end",
-                               python_callable=delete_presidio_upgrade_state,
+                               python_callable=os.remove,
+                               op_kwargs={"path": presidio_upgrade_dag.PRESIDIO_UPGRADE_STATE_FILE_NAME},
                                retries=99999,
                                retry_delay=timedelta(minutes=5),
                                dag=dag)

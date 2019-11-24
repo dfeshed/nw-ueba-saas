@@ -17,7 +17,7 @@ from presidio.builders.adapter.adapter_properties_cleanup_operator_builder impor
 from presidio.builders.elasticsearch.elasticsearch_operator_builder import build_clean_elasticsearch_data_operator
 from presidio.builders.presidioconfiguration.presidio_configuration_operator_builder import \
     build_reset_presidio_configuration_operator
-from presidio.builders.presidioupgrade import presidio_upgrade_dag_builder
+from presidio.dags import presidio_upgrade_dag
 from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.utils.airflow.operators import spring_boot_jar_operator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
@@ -186,7 +186,7 @@ def cleanup_dags_from_postgres(dag_ids, session=None):
     sql = "DELETE FROM variable WHERE key LIKE \'{}%\'".format(spring_boot_jar_operator.RETRY_STATE_KEY_PREFIX)
     logging.info("executing: %s", sql)
     session.execute(sql)
-    presidio_upgrade_dag_builder.delete_presidio_upgrade_state()
+    os.remove(presidio_upgrade_dag.PRESIDIO_UPGRADE_STATE_FILE_NAME)
 
 
 def build_pause_dags_operator(cleanup_dag, dag_models):

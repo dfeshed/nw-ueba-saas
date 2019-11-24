@@ -1,11 +1,8 @@
 import os
 import subprocess
 import sys
-from airflow import DAG
-from airflow.models import Variable
-from datetime import datetime
-from presidio.builders.presidioupgrade import presidio_upgrade_dag_builder
 
+PRESIDIO_UPGRADE_STATE_FILE_NAME = "/var/lib/netwitness/presidio/presidio_upgrade_state.txt"
 PRESIDIO_VERSIONS_FILE_NAME = "/var/lib/netwitness/presidio/presidio_versions.txt"
 
 
@@ -69,6 +66,30 @@ def read_presidio_versions():
     return from_version, to_version
 
 
+def write_presidio_upgrade_state(state):
+    """
+    Write the current state of the Presidio upgrade to a predefined file
+    :param state: The current state of the Presidio upgrade
+    :type state: str
+    """
+    presidio_upgrade_state_file = open(PRESIDIO_UPGRADE_STATE_FILE_NAME, "w")
+    presidio_upgrade_state_file.write(state + "\n")
+    presidio_upgrade_state_file.close()
+    subprocess.call(["chown", "presidio:presidio", PRESIDIO_UPGRADE_STATE_FILE_NAME])
+
+
+def read_presidio_upgrade_state():
+    """
+    Read the current state of the Presidio upgrade from a predefined file
+    :return: The current state of the Presidio upgrade
+    :rtype: str
+    """
+    presidio_upgrade_state_file = open(PRESIDIO_UPGRADE_STATE_FILE_NAME, "r")
+    state = presidio_upgrade_state_file.readline().strip()
+    presidio_upgrade_state_file.close()
+    return state
+
+
 def handle_chef_execution(command_line_arguments):
     """
     Handle a Chef execution to trigger a Presidio upgrade DAG run
@@ -80,7 +101,7 @@ def handle_chef_execution(command_line_arguments):
     from_version = command_line_arguments[1]
     to_version = command_line_arguments[2]
     write_presidio_versions(from_version, to_version)
-    Variable.set(presidio_upgrade_dag_builder.PRESIDIO_UPGRADE_STATE_KEY, "pending")
+    write_presidio_upgrade_state("pending")
 
 
 def handle_airflow_execution():
@@ -91,6 +112,10 @@ def handle_airflow_execution():
     :rtype: DAG or NoneType
     """
     if os.path.isfile(PRESIDIO_VERSIONS_FILE_NAME):
+        from airflow import DAG
+        from datetime import datetime
+        from presidio.builders.presidioupgrade import presidio_upgrade_dag_builder
+
         from_version, to_version = read_presidio_versions()
         dag_id = "presidio_upgrade_dag_from_%s_to_%s" % (from_version, to_version)
         dag = DAG(dag_id=dag_id, schedule_interval=None, start_date=datetime(2019, 1, 1))
