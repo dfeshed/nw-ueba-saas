@@ -1,6 +1,10 @@
 import os
 import subprocess
 import sys
+from airflow import DAG
+from airflow.models import Variable
+from datetime import datetime
+from presidio.builders.presidioupgrade import presidio_upgrade_dag_builder
 
 PRESIDIO_VERSIONS_FILE_NAME = "/var/lib/netwitness/presidio/presidio_versions.txt"
 
@@ -76,6 +80,7 @@ def handle_chef_execution(command_line_arguments):
     from_version = command_line_arguments[1]
     to_version = command_line_arguments[2]
     write_presidio_versions(from_version, to_version)
+    Variable.set(presidio_upgrade_dag_builder.PRESIDIO_UPGRADE_STATE_KEY, "pending")
 
 
 def handle_airflow_execution():
@@ -86,10 +91,6 @@ def handle_airflow_execution():
     :rtype: DAG or NoneType
     """
     if os.path.isfile(PRESIDIO_VERSIONS_FILE_NAME):
-        from airflow import DAG
-        from datetime import datetime
-        from presidio.builders.presidioupgrade import presidio_upgrade_dag_builder
-
         from_version, to_version = read_presidio_versions()
         dag_id = "presidio_upgrade_dag_from_%s_to_%s" % (from_version, to_version)
         dag = DAG(dag_id=dag_id, schedule_interval=None, start_date=datetime(2019, 1, 1))
