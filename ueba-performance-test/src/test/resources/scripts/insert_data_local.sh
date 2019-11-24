@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DEFAULT_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/presidio-integration-performance-test/target/netwitness_events_gen/*/*
-DONE_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/presidio-integration-performance-test/target/done/
+DEFAULT_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/ueba-performance-test/target/netwitness_events_gen/*/*
+DONE_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/ueba-performance-test/target/done/
 
 echo >>  ./insert_data.log
 echo >>  ./insert_data.log
