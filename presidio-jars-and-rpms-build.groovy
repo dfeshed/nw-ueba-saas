@@ -165,7 +165,7 @@ pipeline {
             steps {
                 script {
                     if ((env.BRANCH_NAME == "origin/master" || env.BRANCH_NAME.startsWith("origin/release/")) && global_stability != "") {
-                        build job: 'presidio-integration-test-ADE-master', parameters: [
+                        build job: 'presidio-ade-test', parameters: [
                                 [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
                                 [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
                         ], wait: false
