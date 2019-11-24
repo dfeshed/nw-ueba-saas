@@ -36,8 +36,7 @@ public class ListValueGenerator<T> implements IBaseGenerator<T> {
     }
 
     private T getNextRandom() {
-        int i = ThreadLocalRandom.current().nextInt(LIST_OF_ELEMENTS.size());
-        return LIST_OF_ELEMENTS.get(i);
+        return LIST_OF_ELEMENTS.get(ThreadLocalRandom.current().nextInt(LIST_OF_ELEMENTS.size()));
     }
 
     private IntBinaryOperator accumulator = (current, size) -> current >= size ? 0 : current + 1;
