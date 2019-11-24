@@ -105,18 +105,6 @@ def write_presidio_upgrade_state(state):
     subprocess.call(["chown", "presidio:presidio", PRESIDIO_UPGRADE_STATE_FILE_NAME])
 
 
-def read_presidio_upgrade_state():
-    """
-    Read the current state of the Presidio upgrade from a predefined file
-    :return: The current state of the Presidio upgrade
-    :rtype: str
-    """
-    presidio_upgrade_state_file = open(PRESIDIO_UPGRADE_STATE_FILE_NAME, "r")
-    state = presidio_upgrade_state_file.readline().strip()
-    presidio_upgrade_state_file.close()
-    return state
-
-
 def build_presidio_upgrade_dag(dag, from_version, to_version):
     from airflow.operators.bash_operator import BashOperator
     from airflow.operators.python_operator import PythonOperator
