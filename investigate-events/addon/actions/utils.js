@@ -162,7 +162,7 @@ function filterIsPresent(filters, freeFormText) {
 
 function updateErrorMsgIfMaxMemory(msg) {
   const toAppend = lookup('service:i18n').t('investigate.maxQueryMemoryError');
-  return msg.includes('max.query.memory') ? `${ msg } ${ toAppend }` : msg;
+  return msg.includes('max.query.memory') ? `${ msg }. ${ toAppend }` : msg;
 }
 
 export {
