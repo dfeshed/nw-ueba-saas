@@ -19,7 +19,7 @@ const profiles1 = [
     },
     columnGroupView: 'CUSTOM',
     columnGroup: {
-      id: 'WEB2',
+      id: 'WEB',
       name: 'RSA Web Analysis'
     },
     preQuery: 'service=80,8080,443',
@@ -144,7 +144,7 @@ module('Unit | Selectors | profile', function(hooks) {
     };
     const result = enrichedProfiles(Immutable.from(state2));
     assert.ok(result, 'shall return enriched profiles');
-    result?.forEach((item) => {
+    result.forEach((item) => {
       assert.ok(item.hasOwnProperty('isEditable'), 'each profile shall have isEditable property');
     });
   });
@@ -166,7 +166,7 @@ module('Unit | Selectors | profile', function(hooks) {
     };
     const result = enrichedProfiles(Immutable.from(state2));
     assert.ok(result, 'shall return enriched profiles');
-    result?.forEach((item) => {
+    result.forEach((item) => {
       assert.ok(item.hasOwnProperty('isEditable'), 'each profile shall have isEditable property');
     });
 
@@ -192,8 +192,33 @@ module('Unit | Selectors | profile', function(hooks) {
     };
     const result = enrichedProfiles(Immutable.from(state2));
     assert.ok(result, 'shall return enriched profiles');
-    result?.forEach((item) => {
+    result.forEach((item) => {
       assert.ok(item.hasOwnProperty('preQueryPillsData'), 'each profile shall have preQueryPillsData property');
+    });
+  });
+
+  test('enrichedProfiles returns profiles with column group found from existing column groups', function(assert) {
+    assert.expect(1 + profiles1.length * 2);
+    const state2 = {
+      investigate: {
+        dictionaries: {
+          aliases: aliases1,
+          language: language1
+        },
+        columnGroup: {
+          columnGroups: EventColumnGroups
+        },
+        profile: {
+          profiles: profiles1
+        }
+      }
+    };
+    const result = enrichedProfiles(Immutable.from(state2));
+    assert.ok(result, 'shall return enriched profiles');
+    result.forEach((item) => {
+      assert.ok(item.hasOwnProperty('columnGroup'), 'each profile shall have columnGroup property');
+      assert.deepEqual(item.columnGroup, EventColumnGroups.find(({ id }) => id === item.columnGroup.id),
+        'profile has column group found from existing column groups');
     });
   });
 

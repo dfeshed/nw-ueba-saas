@@ -79,8 +79,8 @@ export const DEFAULT_PROFILES = [
     },
     columnGroupView: 'CUSTOM',
     columnGroup: {
-      id: 'USER_ENTITY_BEHAVIOR',
-      name: 'RSA User & Entity Behavior Analysis'
+      id: 'SUMMARY',
+      name: 'Summary List'
     },
     preQuery: 'user.dst exists OR username exists',
     contentType: 'OOTB'
