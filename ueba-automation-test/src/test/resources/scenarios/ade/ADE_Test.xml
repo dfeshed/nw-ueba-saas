@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="UEBA ADE Component Tests">
+<suite name="UEBA Component Test">
 
     <test name="ADE Component Test">
         <classes>
@@ -18,6 +18,11 @@
         </classes>
     </test>
 
+    <test name="Adapter Component Test">
+        <classes>
+            <class name="com.rsa.netwitness.presidio.automation.test.filtering.AdapterFilteringTest"/>
+        </classes>
+    </test>
 </suite>
 
 
