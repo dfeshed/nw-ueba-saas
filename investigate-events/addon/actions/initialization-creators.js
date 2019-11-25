@@ -514,10 +514,9 @@ export const initializeInvestigate = function(
       }
     });
 
-    // 2) Retrieve profiles and meta groups
+    // 2) Retrieve meta groups
     // it isn't important that this be syncronized with anything else,
     // so can just kick it off
-    dispatch(_getProfiles());
     dispatch(_getMetaGroups());
     dispatch(isQueryExecutedByColumnGroup(false));
 
@@ -564,7 +563,9 @@ export const initializeInvestigate = function(
 
     // After _initializePreferences has resolved
     // 8) Initialize global preferences state
+    //    fetch profiles after column groups are fetched above
     _initializeGlobalPreferences(dispatch);
+    dispatch(_getProfiles());
 
     // 9) Update sort state with sort params in URL
     // requires the completion of _initializePreferences for preference defaults

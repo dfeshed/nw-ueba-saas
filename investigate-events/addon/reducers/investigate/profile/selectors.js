@@ -32,8 +32,8 @@ export const enrichedProfile = (profile, languageAndAliases, columnGroups) => {
   } else {
     // updated profile's column group using id
     // in case column group has changed since profile was created
-    const profileColumnGroupId = enriched.columnGroup.id;
-    enriched.columnGroup = columnGroups?.find(({ id }) => id === profileColumnGroupId);
+    const profileColumnGroupId = enriched.columnGroup.id.trim();
+    enriched.columnGroup = columnGroups?.find(({ id }) => id.trim() === profileColumnGroupId);
   }
   return enriched;
 };

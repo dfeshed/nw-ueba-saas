@@ -14,6 +14,7 @@ export const DEFAULT_PROFILES = [
     },
     columnGroupView: 'CUSTOM',
     columnGroup: {
+      id: 'EMAIL',
       name: 'RSA Email Analysis'
     },
     preQuery: 'service=24,25,109,110,995,143,220,993',
@@ -26,6 +27,7 @@ export const DEFAULT_PROFILES = [
     },
     columnGroupView: 'CUSTOM',
     columnGroup: {
+      id: 'MALWARE',
       name: 'RSA Malware Analysis'
     },
     preQuery: 'filename exists OR extension exists OR filetype exists OR sourcefile exists  OR content = \'application/octet-stream\'',
@@ -38,6 +40,7 @@ export const DEFAULT_PROFILES = [
     },
     columnGroupView: 'CUSTOM',
     columnGroup: {
+      id: 'THREAT',
       name: 'RSA Threat Analysis'
     },
     preQuery: 'threat.desc exists OR threat.source exists OR threat.category exists OR boc exists OR ioc exists OR eoc exists OR alert exists',
@@ -50,6 +53,7 @@ export const DEFAULT_PROFILES = [
     },
     columnGroupView: 'CUSTOM',
     columnGroup: {
+      id: 'WEB',
       name: 'RSA Web Analysis'
     },
     preQuery: 'service=80,8080,443',
@@ -62,6 +66,7 @@ export const DEFAULT_PROFILES = [
     },
     columnGroupView: 'CUSTOM',
     columnGroup: {
+      id: 'ENDPOINT',
       name: 'RSA Endpoint Analysis'
     },
     preQuery: 'device.type=\'nwendpoint\'',
@@ -74,6 +79,7 @@ export const DEFAULT_PROFILES = [
     },
     columnGroupView: 'CUSTOM',
     columnGroup: {
+      id: 'USER_ENTITY_BEHAVIOR',
       name: 'RSA User & Entity Behavior Analysis'
     },
     preQuery: 'user.dst exists OR username exists',

@@ -19,6 +19,7 @@ const profiles1 = [
     },
     columnGroupView: 'CUSTOM',
     columnGroup: {
+      id: 'WEB2',
       name: 'RSA Web Analysis'
     },
     preQuery: 'service=80,8080,443',
