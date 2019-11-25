@@ -8,7 +8,6 @@ pipeline {
         booleanParam(name: 'INSTALL_UEBA_UI_RPMS', defaultValue: false, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
-        booleanParam(name: 'TRIGGER_CORE_AUTOMATION', defaultValue: true, description: '')
     }
     agent { label env.NODE_LABLE }
     //tools { jdk env.JDK }
@@ -67,27 +66,6 @@ pipeline {
             }
             steps {
                 runSuiteXmlFile('ade/ADE_Test.xml')
-            }
-        }
-        stage('Trigger Core Integration Test') {
-            when {
-                expression { return params.TRIGGER_CORE_AUTOMATION }
-            }
-            steps {
-                script {
-                    if ((env.BRANCH_NAME == "origin/master" || env.BRANCH_NAME.startsWith("origin/release/")) && global_stability != "") {
-                        build job: 'master-presidio-integration-test-core', parameters: [
-                                [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
-                                [$class: 'StringParameterValue', name: 'VERSION', value: global_version],
-                                [$class: 'BooleanParameterValue', name: 'INSTALL_UEBA_RPMS', value: false]
-                        ], wait: false
-                    } else {
-                        build job: 'presidio-integration-test-core', parameters: [
-                                [$class: 'StringParameterValue', name: 'SIDE_BRANCH_JOD_NUMBER', value: env.BUILD_NUMBER],
-                                [$class: 'BooleanParameterValue', name: 'INSTALL_UEBA_RPMS', value: false]
-                        ], wait: false
-                    }
-                }
             }
         }
     }
