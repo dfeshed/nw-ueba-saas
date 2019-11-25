@@ -8,6 +8,7 @@ pipeline {
         booleanParam(name: 'INSTALL_UEBA_UI_RPMS', defaultValue: false, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
+        booleanParam(name: 'TRIGGER_CORE_AUTOMATION', defaultValue: true, description: '')
     }
     agent { label env.NODE_LABLE }
     //tools { jdk env.JDK }
@@ -66,6 +67,18 @@ pipeline {
             }
             steps {
                 runSuiteXmlFile('ade/ADE_Test.xml')
+            }
+        }
+        stage('Trigger Core Integration Test') {
+            when {
+                expression { return params.TRIGGER_CORE_AUTOMATION }
+            }
+            steps {
+                script {
+                        build job: 'master-presidio-integration-test-core', parameters: [
+                                [$class: 'BooleanParameterValue', name: 'INSTALL_UEBA_RPMS', value: false]
+                        ], wait: false
+                }
             }
         }
     }
