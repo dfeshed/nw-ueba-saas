@@ -2,6 +2,11 @@ import os
 import subprocess
 import sys
 
+#################################################################################
+# Note: If any of these constants are changed, it should be done in two places: #
+#       1. In the Airflow DAGs folder.                                          #
+#       2. In the deployed Presidio .egg file.                                  #
+#################################################################################
 PRESIDIO_UPGRADE_STATE_FILE_NAME = "/var/lib/netwitness/presidio/presidio_upgrade_state.txt"
 PRESIDIO_UPGRADE_VERSIONS_PATH = "{}/{}".format(
     "/var/netwitness/presidio/airflow/venv/lib/python2.7/site-packages/presidio_workflows-1.0-py2.7.egg",
@@ -105,6 +110,22 @@ def write_presidio_upgrade_state(state):
     subprocess.call(["chown", "presidio:presidio", PRESIDIO_UPGRADE_STATE_FILE_NAME])
 
 
+def presidio_upgrade_state_exists():
+    """
+    :return: True if the predefined file of the Presidio upgrade state exists, False otherwise
+    :rtype: bool
+    """
+    return os.path.exists(PRESIDIO_UPGRADE_STATE_FILE_NAME)
+
+
+def remove_presidio_upgrade_state():
+    """
+    Remove the predefined file of the Presidio upgrade state if it exists
+    """
+    if presidio_upgrade_state_exists():
+        os.remove(PRESIDIO_UPGRADE_STATE_FILE_NAME)
+
+
 def build_presidio_upgrade_dag(dag, from_version, to_version):
     from airflow.operators.bash_operator import BashOperator
     from airflow.operators.python_operator import PythonOperator
@@ -137,8 +158,7 @@ def build_presidio_upgrade_dag(dag, from_version, to_version):
         previous = current
 
     previous >> PythonOperator(task_id="presidio_upgrade_end",
-                               python_callable=os.remove,
-                               op_kwargs={"path": PRESIDIO_UPGRADE_STATE_FILE_NAME},
+                               python_callable=remove_presidio_upgrade_state,
                                retries=99999,
                                retry_delay=timedelta(minutes=5),
                                dag=dag)
