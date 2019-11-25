@@ -6,19 +6,20 @@ import { isRequestShown, isResponseShown } from 'recon/reducers/visuals/selector
 import { packetTotal } from 'recon/reducers/header/selectors';
 
 const { createSelector } = reselect;
-const packets = (recon) => recon.packets.packets || [];
+const packets = (recon) => recon.packets.packets;
 const packetsPageSize = (recon) => recon.packets.packetsPageSize;
 const pageNumber = (recon) => recon.packets.pageNumber;
 const renderIds = (recon) => recon.packets.renderIds;
 const headerItems = (recon) => recon.header.headerItems;
 const isPayloadOnly = (recon) => recon.packets.isPayloadOnly;
 const defaultPacketFormat = (recon) => recon.visuals.defaultPacketFormat;
+const packetFields = (recon) => recon.packets.packetFields;
 
 // packets can at different times be null, an empty array
 // or a populated array. An empty array means the event has
 // no text content. If textContent is null, then it is still
 // being fetched.
-const packetsRetrieved = createSelector(
+export const packetsRetrieved = createSelector(
   [packets],
   (packets) => packets !== null
 );
@@ -34,7 +35,7 @@ export const hasRenderIds = createSelector(
  * @private
  */
 export const payloadProcessedPackets = createSelector(
-  [packets, isPayloadOnly],
+  [packets, isPayloadOnly, packetFields],
   processPacketPayloads
 );
 
@@ -98,12 +99,12 @@ const _headerHasPackets = createSelector(
 // if they have been retrieved and there are none, then nope
 export const hasPackets = createSelector(
   [packetsRetrieved, packets, _headerHasPackets],
-  (packetsRetrieved, packets, headerHasPackets) => headerHasPackets || (packetsRetrieved && packets.length !== 0)
+  (packetsRetrieved, packets, headerHasPackets) => headerHasPackets || (packetsRetrieved && packets?.length !== 0)
 );
 
 export const numberOfPackets = createSelector(
   [hasPackets, packets],
-  (hasPackets, packets) => (!hasPackets) ? 0 : packets.length
+  (hasPackets, packets) => (!hasPackets) ? 0 : packets?.length
 );
 
 const _rawNumberOfPages = createSelector(
@@ -127,8 +128,10 @@ export const cannotGoToPreviousPage = createSelector(
 );
 
 export const packetRenderingUnderWay = createSelector(
-  [toBeRenderedPackets, renderedPackets],
-  (toBeRenderedPackets, renderedPackets) => toBeRenderedPackets.length > renderedPackets.length
+  [toBeRenderedPackets, renderedPackets, packetFields, packetsRetrieved],
+  (toBeRenderedPackets, renderedPackets, packetFields, packetsRetrieved) => {
+    return !packetsRetrieved || packetFields === null || toBeRenderedPackets.length > renderedPackets.length;
+  }
 );
 
 export const hasPayload = createSelector(

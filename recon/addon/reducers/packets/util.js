@@ -20,48 +20,53 @@ export const BYTES_PER_ROW = 16;
  * @param {Boolean} isPayloadOnly Should we remove header/footer bytes
  * @public
  */
-export const processPacketPayloads = function(packets, isPayloadOnly) {
-  // reset continuation tracking
-  isContinuation(null, null);
-  return packets.reduce((acc, currentPacket) => {
-    const { bytes, payloadSize } = currentPacket;
-    if (isPayloadOnly) {
-      // if there are no bytes, eject
-      if (payloadSize === 0 || bytes?.length === 0) {
-        return acc;
-      }
-      // Filter out header/footer items from the current packet
-      const _bytes = bytes.filter((b) => !b.isHeader && !b.isFooter);
-      // Get the previous packet
-      const previousPacket = acc[acc.length - 1];
-      // If the current packet is a continuation of the previous,
-      // then the bytes need to be concated together
-      if (previousPacket && isContinuation(currentPacket.side, currentPacket.sequence)) {
-        previousPacket.bytes = previousPacket.bytes.concat(_bytes);
-        // Update the byteRows with the new bytes that were added
-        previousPacket.byteRows = bytesAsRows(previousPacket.bytes);
+export const processPacketPayloads = function(packets, isPayloadOnly, packetFields) {
+  if (packetFields !== null && packets !== null) {
+    // reset continuation tracking
+    isContinuation(null, null);
+    return packets.reduce((acc, currentPacket) => {
+      const { bytes, payloadSize } = currentPacket;
+      if (isPayloadOnly) {
+        // if there are no bytes, eject
+        // if (payloadSize === 0 || !!bytes || bytes.length === 0) {
+        // console.log('type of bytes', typeof bytes);
+        if (payloadSize === 0 || bytes?.length === 0) {
+          // console.log('returned');
+          return acc;
+        }
+        // Filter out header/footer items from the current packet
+        const _bytes = bytes.filter((b) => !b.isHeader && !b.isFooter);
+        // Get the previous packet
+        const previousPacket = acc[acc.length - 1];
+        // If the current packet is a continuation of the previous,
+        // then the bytes need to be concated together
+        if (previousPacket && isContinuation(currentPacket.side, currentPacket.sequence)) {
+          previousPacket.bytes = previousPacket.bytes.concat(_bytes);
+          // Update the byteRows with the new bytes that were added
+          previousPacket.byteRows = bytesAsRows(previousPacket.bytes);
+        } else {
+          // Set initial continuation tracking
+          isContinuation(currentPacket.side, currentPacket.sequence);
+          // Override isContinuation to mean that the current packet is the
+          // same side as the previous
+          acc.push({
+            ...currentPacket,
+            isContinuation: (previousPacket && currentPacket.side === previousPacket.side),
+            bytes: _bytes,
+            byteRows: bytesAsRows(_bytes)
+          });
+        }
       } else {
-        // Set initial continuation tracking
-        isContinuation(currentPacket.side, currentPacket.sequence);
-        // Override isContinuation to mean that the current packet is the
-        // same side as the previous
+        // This code path performs just like a map().
         acc.push({
           ...currentPacket,
-          isContinuation: (previousPacket && currentPacket.side === previousPacket.side),
-          bytes: _bytes,
-          byteRows: bytesAsRows(_bytes)
+          isContinuation: isContinuation(currentPacket.side, currentPacket.sequence),
+          byteRows: bytesAsRows(bytes)
         });
       }
-    } else {
-      // This code path performs just like a map().
-      acc.push({
-        ...currentPacket,
-        isContinuation: isContinuation(currentPacket.side, currentPacket.sequence),
-        byteRows: bytesAsRows(bytes)
-      });
-    }
-    return acc;
-  }, []);
+      return acc;
+    }, []);
+  }
 };
 
 /**

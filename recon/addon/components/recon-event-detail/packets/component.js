@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { debounce } from '@ember/runloop';
 import { connect } from 'ember-redux';
-import { alias, empty } from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import ReconPanelHelp from 'recon/mixins/recon-panel-help';
 
 import ReconPagerMixin from 'recon/mixins/recon-pager';
@@ -43,8 +43,17 @@ const PacketReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin
   @alias('contextualHelp.invPacketAnalysis')
   topic: null,
 
-  @empty('renderedPackets')
-  hasNoRenderedPayload: false,
+  @computed('renderedPackets', 'isPacketRenderingUnderWay')
+  hasNoRenderedPayload(renderedPackets, isPacketRenderingUnderWay) {
+    // If packet rendering is underway, we do not want no payload
+    // message showing up.
+    if (isPacketRenderingUnderWay) {
+      return false;
+    }
+    // Once we get back a response, if there are no packets,
+    // we should have an empty array
+    return renderedPackets?.length === 0;
+  },
 
   didInsertElement() {
     this._super(...arguments);
