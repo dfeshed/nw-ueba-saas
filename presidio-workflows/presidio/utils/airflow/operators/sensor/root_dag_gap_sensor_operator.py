@@ -3,6 +3,7 @@ from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
 from datetime import timedelta
+from presidio.dags.presidio_upgrade_dag import presidio_upgrade_state_exists
 
 
 class RootDagGapSensorOperator(BaseSensorOperator):
@@ -47,7 +48,7 @@ class RootDagGapSensorOperator(BaseSensorOperator):
             '{self._dag_ids} with time lt'
             'execution_date_lt ... '.format(**locals()))
 
-        return self._is_finished_wait_for_gapped_dag(execution_date_lt)
+        return (not presidio_upgrade_state_exists()) and self._is_finished_wait_for_gapped_dag(execution_date_lt)
 
     @provide_session
     def _is_finished_wait_for_gapped_dag(self, execution_date_lt, session=None):
