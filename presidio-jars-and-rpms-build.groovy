@@ -169,14 +169,18 @@ pipeline {
                                 [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
                                 [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
                         ], wait: false
-                        build job: 'master-presidio-integration-test-core', parameters: [
-                                [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
-                                [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
-                        ], wait: false
+//                        build job: 'master-presidio-integration-test-core', parameters: [
+//                                [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
+//                                [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
+//                        ], wait: false
                     } else {
-                        build job: 'presidio-integration-test-core', parameters: [
-                                [$class: 'StringParameterValue', name: 'SIDE_BRANCH_JOD_NUMBER', value: env.BUILD_NUMBER]
+                        build job: 'presidio-ade-test', parameters: [
+                                [$class: 'StringParameterValue', name: 'SIDE_BRANCH_JOD_NUMBER', value: env.BUILD_NUMBER],
+                                [$class: 'StringParameterValue', name: 'BRANCH_NAME', value: "${env.BRANCH_NAME}"]
                         ], wait: false
+//                        build job: 'presidio-integration-test-core', parameters: [
+//                                [$class: 'StringParameterValue', name: 'SIDE_BRANCH_JOD_NUMBER', value: env.BUILD_NUMBER]
+//                        ], wait: false
                     }
                 }
             }
