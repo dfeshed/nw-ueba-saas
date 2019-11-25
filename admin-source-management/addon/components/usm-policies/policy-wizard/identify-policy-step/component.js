@@ -18,8 +18,8 @@ import {
 const stateToComputed = (state) => ({
   sourceTypes: sourceTypes(state),
   selectedSourceType: selectedSourceType(state),
-  policyName: policy(state).name,
-  policyDescription: policy(state).description,
+  name: policy(state).name,
+  description: policy(state).description,
   createdOn: policy(state).createdOn,
   defaultPolicy: policy(state).defaultPolicy,
   nameValidator: nameValidator(state),
@@ -34,23 +34,6 @@ const dispatchToActions = {
 const IdentifyPolicyStep = Component.extend({
   tagName: 'vbox',
   classNames: ['identify-policy-step', 'scroll-box', 'rsa-wizard-step'],
-
-  // Computed properties for name and description
-  // This handles the issue with focus and loss of first key input
-  // Couldn't find any other binding type that worked correctly
-  @computed('policyName')
-  name(policyName) {
-    if (policyName) {
-      return policyName;
-    }
-  },
-
-  @computed('policyDescription')
-  description(policyDescription) {
-    if (policyDescription) {
-      return policyDescription;
-    }
-  },
 
   @computed('defaultPolicy', 'createdOn')
   cannotEditSourceType(defaultPolicy, createdOn) {

@@ -1,6 +1,6 @@
 <vbox>
   <hbox class="control">
-    {{rsa-form-input 
+    {{rsa-form-input-oneway
       class='group-name'
       tooltip=(t 'adminUsm.groupWizard.nameTooltip')
       tabIndex='1'
@@ -10,12 +10,12 @@
       maxLength=256
       isError=nameValidator.showError
       errorMessage=(t nameValidator.errorMessage)
-      focusOut=(action 'handleNameChange')
+      onFocusOut=(action 'handleNameChange' value='target.value')
     }}
   </hbox>
   <vbox>
     <hbox class="control-with-error">
-      {{rsa-form-textarea 
+      {{rsa-form-textarea-oneway
         class='group-description'
         tooltip=(t 'adminUsm.groupWizard.descTooltip')
         tabIndex='2'
@@ -24,7 +24,7 @@
         value=description
         maxLength=8000
         isError=descriptionValidator.showError
-        focusOut=(action 'handleDescriptionChange' value='target.value')
+        onFocusOut=(action 'handleDescriptionChange' value='target.value')
       }}
     </hbox>
     <div class="control-input-error group-description-error">

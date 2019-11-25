@@ -136,13 +136,13 @@
     {{/rsa-text-with-tooltip}}
   </h4>
   <div class="exclusion-filters">
-    {{rsa-form-textarea
+    {{rsa-form-textarea-oneway
       tabIndex='3'
       placeholder=(t 'adminUsm.policyWizard.filePolicy.exclusionFiltersPlaceholder')
-      value=(readonly exclusionFilters)
+      value=exclusionFilters
       maxLength=8000
       isError=(or (eq (get item.exclusionFilters exFilterInvalidIndex) exFilterInvalid) exFilterErr)
-      focusOut=(action 'handleExclusionFiltersChange' column.field bubbles=false)
+      onFocusOut=(action 'handleExclusionFiltersChange' column.field)
     }}
   </div>
   <div class="exclusion-filter-error">

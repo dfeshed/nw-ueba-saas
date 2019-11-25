@@ -45,7 +45,7 @@
   </hbox>
   <vbox>
     <hbox class="control-with-error">
-      {{rsa-form-textarea
+      {{rsa-form-textarea-oneway
         class='policy-description'
         tooltip=(t 'adminUsm.policyWizard.descTooltip')
         tabIndex='3'
@@ -55,7 +55,7 @@
         maxLength=8000
         isError=descriptionValidator.showError
         isDisabled=cannotEditPolicyIdentity
-        focusOut=(action 'handleDescriptionChange' value='target.value')
+        onFocusOut=(action 'handleDescriptionChange' value='target.value')
       }}
     </hbox>
     <div class="control-input-error policy-description-error">
