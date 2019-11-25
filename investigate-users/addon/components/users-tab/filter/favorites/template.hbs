@@ -10,7 +10,7 @@
       placeholder='Select'
       onchange=(action 'applyFilter') as |option|}}
       {{option.filterName}}
-      {{#if (and option.id (not-eq option.id selected.id))}}
+      {{#if (and option.id (not-eq option.id selectedFavorite.id))}}
         <span class='users-tab_filter_favorites_delete' onmouseup={{action "stopPropagation"}} onmousedown={{action "stopPropagation"}}>
           {{#rsa-form-button
             style='danger'

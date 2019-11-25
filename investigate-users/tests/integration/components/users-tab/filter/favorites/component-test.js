@@ -8,7 +8,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import favorite from '../../../../../data/presidio/favorite_filter';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchFetch } from '../../../../../helpers/patch-fetch';
-import { clickTrigger } from 'ember-power-select/test-support/helpers';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { Promise } from 'rsvp';
 import { later } from '@ember/runloop';
 
@@ -49,6 +49,17 @@ module('Integration | Component | users-tab/filter/favorites', function(hooks) {
     await render(hbs`{{users-tab/filter/favorites}}`);
     await clickTrigger('.users-tab_filter_filter_select');
     assert.equal(findAll('.ember-power-select-option').length, 3);
+  });
+
+  test('it should test selected favorites', async function(assert) {
+    new ReduxDataHelper(setState).usersFavorites(favorite.data).build();
+    await render(hbs`{{users-tab/filter/favorites}}`);
+    await clickTrigger('.users-tab_filter_filter_select');
+    assert.equal(findAll('.ember-power-select-option').length, 3);
+    assert.equal(findAll('.users-tab_filter_favorites_delete').length, 2);
+    await selectChoose('.users-tab_filter_filter_select', 'Test1');
+    await clickTrigger('.users-tab_filter_filter_select');
+    assert.equal(findAll('.users-tab_filter_favorites_delete').length, 1);
   });
 
   test('it should delete favorite', async function(assert) {
