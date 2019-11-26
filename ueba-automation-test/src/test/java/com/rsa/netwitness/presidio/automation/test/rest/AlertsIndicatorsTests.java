@@ -266,8 +266,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                 List<HistoricalDataBucket> allValuesBuckets = historicalDataArrayByContext.get(contextsByLength.get(0)).parallelStream().flatMap(e -> e.allBuckets.stream()).collect(toList());
                 List<HistoricalDataBucket> singleValueBuckets = historicalDataArrayByContext.get(contextsByLength.get(1)).parallelStream().flatMap(e -> e.allBuckets.stream()).collect(toList());
 
-                List<String> timestamps = allValuesBuckets.parallelStream().map(e -> e.key).collect(toList());
-
+                List<String> timestamps = singleValueBuckets.parallelStream().map(e -> e.key).collect(toList());
 
                 for (String time : timestamps) {
                     Function<List<HistoricalDataBucket>, Optional<Double>> getSample = list ->
@@ -276,7 +275,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                     Optional<Double> allValuesChartSample = getSample.apply(allValuesBuckets);
                     Optional<Double> singleValueChartSample = getSample.apply(singleValueBuckets);
 
-                    assertThat(singleValueChartSample).as(url+ "\nSingle value chart sample is not found for timestamp = " + time
+                    assertThat(allValuesChartSample).as(url+ "\nMultiple value chart sample is not found for timestamp = " + time
                             + "\nall Values Chart Context: "  + contextsByLength.get(0)
                             + "\nsingle Value Chart Context: "  + contextsByLength.get(1))
                             .isPresent();
