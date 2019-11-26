@@ -4,8 +4,9 @@ import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
+import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import com.rsa.netwitness.presidio.automation.utils.common.FileCommands;
-import com.rsa.netwitness.presidio.automation.test_managers.OutputTestManager;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +24,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
-@SpringBootTest(classes = {OutputTestManager.class, MongoConfig.class})
+@SpringBootTest(classes = {MongoConfig.class})
 public class E2EStatisticalInformation extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @Autowired
-    private OutputTestManager testManager;
-
     private List<String> scoreAggregationList;
     private List<String> staticIndicatorList;
     private List<String> featureAggregationList;
     private List<String> distinctFeatureAggregationList;
+    private RestHelper restHelper = new RestHelper();
 
     @Test
     public void prepareStatisticalInformation() throws IOException {
@@ -51,13 +52,19 @@ public class E2EStatisticalInformation extends AbstractTestNGSpringContextTests 
         FileCommands.writeToFile(Consts.COUNT_DOCUMENTS_COLLECTIONS_MONGODB, stringJoiner.toString());
 
         // Alerts: count of each severity alerts
-        JSONObject aggregationAlertsBySeverity = testManager.getAggregationData("SEVERITY","alerts", false);
-        String aggregationData = aggregationAlertsBySeverity.toString();
+        PresidioUrl url = restHelper.alerts().url().withAggregatedFieldParameter("SEVERITY");
+        JSONObject aggregatedBySeverity = restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
+        assertThat(aggregatedBySeverity.has("aggregationData"))
+                .as(url + "\nMissing field: 'aggregationData'.")
+                .isTrue();
 
+        String aggregationData = aggregatedBySeverity.getJSONObject("aggregationData").toString();
         FileCommands.writeToFile(Consts.COUNT_AGGREGATION_ALERTS_BY_SEVERITY, aggregationData);
 
         // Users: Risky users and all
-        List<EntitiesStoredRecord> users = testManager.getEntities("sortDirection=DESC&sortFieldNames=SCORE&pageSize=10000&pageNumber=0");
+        url = restHelper.entities().url().withMaxSizeAndSortedParameters("DESC", "SCORE");
+        List<EntitiesStoredRecord> users = restHelper.entities().request().getEntities(url);
+        assertThat(users).as(url + "\nempty response").isNotEmpty();
         StringJoiner stringJoinerUsers = new StringJoiner("\n");
         for (EntitiesStoredRecord user : users) {
             stringJoinerUsers.add(String.format("%6s : %s", user.getScore(), user.getEntityId()));
@@ -86,7 +93,8 @@ public class E2EStatisticalInformation extends AbstractTestNGSpringContextTests 
     }
 
     private void CountIndicatorsEachType() {
-        List<AlertsStoredRecord> alerts = testManager.getAlerts("pageSize=10000&pageNumber=0&expand=true", false);
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         Assert.assertTrue(alerts.size() > 0, "Unable commit the alert tests. Alerts list is empty or unable to getOperationTypeToCategoryMap response from the output.");
 
         scoreAggregationList = new ArrayList<>();

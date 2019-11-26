@@ -5,20 +5,16 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
 import com.rsa.netwitness.presidio.automation.jdbc.AirflowTasksPostgres;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
-import com.rsa.netwitness.presidio.automation.test_managers.OutputTestManager;
 import org.assertj.core.api.Fail;
 import org.assertj.core.api.SoftAssertions;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -37,8 +33,6 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
-@SpringBootTest(classes = {MongoConfig.class, OutputTestManager.class})
 public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(EntitySeverityTests.class);
 

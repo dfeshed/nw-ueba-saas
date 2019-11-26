@@ -6,7 +6,6 @@ import com.rsa.netwitness.presidio.automation.domain.output.SmartUserIdStoredRec
 import com.rsa.netwitness.presidio.automation.domain.repository.SmartUserIdHourlyRepository;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
-import com.rsa.netwitness.presidio.automation.test_managers.OutputTestManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -21,7 +20,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
-@SpringBootTest(classes = {OutputTestManager.class, MongoConfig.class})
+@SpringBootTest(classes = {MongoConfig.class})
 public class DailyMetricsTest extends AbstractTestNGSpringContextTests {
 
     @Autowired

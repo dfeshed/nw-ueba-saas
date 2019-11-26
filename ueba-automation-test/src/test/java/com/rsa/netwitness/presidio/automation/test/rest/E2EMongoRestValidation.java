@@ -9,7 +9,6 @@ import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.mongo.SmartHourlyEntitiesHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
-import com.rsa.netwitness.presidio.automation.test_managers.OutputTestManager;
 import org.assertj.core.api.SoftAssertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,13 +33,11 @@ import static org.assertj.core.util.Lists.list;
 
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
-@SpringBootTest(classes = {OutputTestManager.class, MongoConfig.class})
+@SpringBootTest(classes = {MongoConfig.class})
 public class E2EMongoRestValidation extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private MongoTemplate mongoTemplate;
-    @Autowired
-    private OutputTestManager testManager;
 
     @Autowired
     private SmartUserIdHourlyRepository smartUserIdHourlyRepository;
