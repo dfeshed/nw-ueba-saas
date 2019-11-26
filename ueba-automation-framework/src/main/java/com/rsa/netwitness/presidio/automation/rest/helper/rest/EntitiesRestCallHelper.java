@@ -117,7 +117,7 @@ public class EntitiesRestCallHelper implements IRestCallHelper{
 
                         alerts.add(new AlertsStoredRecord(
                                 tmpAlert.get("id").toString(), classification,
-                                tmpAlert.get("entityName").toString(),
+                                tmpAlert.get("entityName").toString(), tmpAlert.get("entityType").toString(),
                                 indicatorsName, Integer.parseInt(tmpAlert.get("indicatorsNum").toString()),
                                 tmpAlert.get("score").toString(), tmpAlert.get("feedback").toString(),
                                 tmpAlert.get("entityScoreContribution").toString(), tmpAlert.get("timeframe").toString(),

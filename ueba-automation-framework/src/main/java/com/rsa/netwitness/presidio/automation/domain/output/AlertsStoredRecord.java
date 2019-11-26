@@ -18,6 +18,8 @@ public class AlertsStoredRecord {
     @Expose
     private String entityName;
     @Expose
+    private String entityType;
+    @Expose
     private String[] indicatorsName;
     @Expose
     private Integer indicatorsNum;
@@ -43,10 +45,11 @@ public class AlertsStoredRecord {
     public AlertsStoredRecord() {
     }
 
-    public AlertsStoredRecord(String id, String[] classification, String entityName, String[] indicatorsName, Integer indicatorsNum, String score, String feedback, String entityScoreContribution, String timeframe, String severity, String entityDocumentId, Instant startDate, Instant endDate) {
+    public AlertsStoredRecord(String id, String[] classification, String entityName, String entityType, String[] indicatorsName, Integer indicatorsNum, String score, String feedback, String entityScoreContribution, String timeframe, String severity, String entityDocumentId, Instant startDate, Instant endDate) {
         this.id = id;
         this.classification = classification;
         this.entityName = entityName;
+        this.entityType = entityType;
         this.indicatorsName = indicatorsName;
         this.indicatorsNum = indicatorsNum;
         this.score = score;
@@ -59,10 +62,11 @@ public class AlertsStoredRecord {
         this.endDate = endDate;
     }
 
-    public AlertsStoredRecord(String id, String[] classification, String entityName, String[] indicatorsName, Integer indicatorsNum, String score, String feedback, String entityScoreContribution, String timeframe, String severity, String entityDocumentId, JSONArray indicators, Instant startDate, Instant endDate) {
+    public AlertsStoredRecord(String id, String[] classification, String entityName, String entityType, String[] indicatorsName, Integer indicatorsNum, String score, String feedback, String entityScoreContribution, String timeframe, String severity, String entityDocumentId, JSONArray indicators, Instant startDate, Instant endDate) {
         this.id = id;
         this.classification = classification;
         this.entityName = entityName;
+        this.entityType = entityType;
         this.indicatorsName = indicatorsName;
         this.indicatorsNum = indicatorsNum;
         this.score = score;
@@ -98,6 +102,14 @@ public class AlertsStoredRecord {
 
     public void setEntityName(String entityName) {
         this.entityName = entityName;
+    }
+
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 
     public String[] getIndicatorsName() {
@@ -180,6 +192,7 @@ public class AlertsStoredRecord {
                 indicator.setAnomalyValue(obj.get("anomalyValue").toString());
                 indicator.setSchema(obj.get("schema").toString());
                 indicator.setType(obj.get("type").toString());
+                indicator.setAlertEntityType(entityType);
                 indicator.setScore(obj.get("score").toString());
                 indicator.setEventNum(obj.get("eventsNum").toString());
                 indicator.setStartDate(obj.get("startDate").toString());
@@ -240,6 +253,7 @@ public class AlertsStoredRecord {
         private String anomalyValue;
         private String schema;
         private String type;
+        private String alertEntityType;
         private String score;
         private String eventNum;
         private String startDate;
@@ -285,6 +299,14 @@ public class AlertsStoredRecord {
 
         public void setType(String type) {
             this.type = type;
+        }
+
+        public String getAlertEntityType() {
+            return alertEntityType;
+        }
+
+        public void setAlertEntityType(String alertEntityType) {
+            this.alertEntityType = alertEntityType;
         }
 
         public String getScore() {
@@ -346,6 +368,7 @@ public class AlertsStoredRecord {
                     ", anomalyValue='" + anomalyValue + '\'' +
                     ", schema='" + schema + '\'' +
                     ", type='" + type + '\'' +
+                    ", alertEntityType='" + alertEntityType + '\'' +
                     ", score='" + score + '\'' +
                     ", eventNum='" + eventNum + '\'' +
                     ", startDate='" + startDate + '\'' +

@@ -59,6 +59,7 @@ public class AlertsRestCallHelper implements IRestCallHelper{
                 String[] classification = classificationSimpleString.split(",");
 
                 String username = tmp.get("entityName").toString();
+                String entityType = tmp.get("entityType").toString();
 
                 String indicatorsNameSimpleString = tmp.getJSONArray("indicatorsName").toString().replace("[", "");
                 indicatorsNameSimpleString = indicatorsNameSimpleString.replace("]", "");
@@ -79,10 +80,10 @@ public class AlertsRestCallHelper implements IRestCallHelper{
                 AlertsStoredRecord alert;
                 if (URL.toLowerCase().contains("expand=true")) {
                     JSONArray indicators = tmp.getJSONArray("indicators");
-                    alert = new AlertsStoredRecord(id, classification, username, indicatorsName, indicatorsNum, score,
+                    alert = new AlertsStoredRecord(id, classification, username, entityType, indicatorsName, indicatorsNum, score,
                             feedback, userScoreContribution, timeframe, severity, userId, indicators, startDate, endDate);
                 } else {
-                    alert = new AlertsStoredRecord(id, classification, username, indicatorsName, indicatorsNum, score,
+                    alert = new AlertsStoredRecord(id, classification, username, entityType, indicatorsName, indicatorsNum, score,
                             feedback, userScoreContribution, timeframe, severity, userId, startDate, endDate);
                 }
 
