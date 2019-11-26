@@ -3,9 +3,11 @@ import { connect } from 'ember-redux';
 import { run } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
+
 import { hasUniqueName } from 'investigate-events/util/validations';
 import { metaMapForColumns } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
+import { CONTENT_TYPE_PUBLIC } from 'investigate-events/constants/profiles';
 
 const _filterColumns = (columns, filterText) => {
   const filterTextLower = filterText.toLowerCase();
@@ -135,7 +137,7 @@ const ColumnGroupForm = Component.extend({
    */
   _prepareColumnGroup(columnGroup) {
 
-    columnGroup.contentType = 'USER';
+    columnGroup.contentType = CONTENT_TYPE_PUBLIC;
     delete columnGroup?.isEditable;
 
     if (columnGroup?.columns) {

@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { CONTENT_TYPE_PUBLIC, CONTENT_TYPE_USER } from 'investigate-events/constants/profiles';
+
 /**
  * maps columns of a columnGroup for Events Table
  * @param {array[]} columns
@@ -9,7 +11,7 @@ export const mapColumnGroupsForEventTable = (eventColumnGroups) => {
 
   return columnGroups.map((cg) => {
     if (cg.contentType) {
-      cg.isEditable = cg.contentType === 'USER';
+      cg.isEditable = cg.contentType === CONTENT_TYPE_USER || cg.contentType === CONTENT_TYPE_PUBLIC;
       delete cg.contentType;
     }
 

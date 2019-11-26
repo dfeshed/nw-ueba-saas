@@ -1723,6 +1723,27 @@ export const columnGroups = [
     createdOn: 1573492605270,
     lastModifiedBy: 'admin',
     lastModifiedOn: 1573492605270
+  }, {
+    id: 'PUBLIC1',
+    name: 'Public 1',
+    columns: [...BASE_COLUMNS, {
+      metaName: 'ip.src',
+      displayName: 'Source IP Address',
+      position: 0,
+      width: 100,
+      visible: true
+    }, {
+      metaName: 'custom.meta-details', // a restricted column
+      displayName: 'Details',
+      position: 0,
+      width: 100,
+      visible: true
+    }],
+    contentType: 'PUBLIC',
+    createdBy: 'somedude',
+    createdOn: 1573492605270,
+    lastModifiedBy: 'admin',
+    lastModifiedOn: 1573492605270
   }
 ];
 
