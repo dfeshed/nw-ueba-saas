@@ -1,3 +1,13 @@
+# [14.7.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.7.0)
+## Features
+* [ASOC-82697](https://bedfordjira.na.rsa.net/browse/ASOC-82697):&emsp;Unify the look and feel of the different drop-downs in Event Analysis
+* [ASOC-85317](https://bedfordjira.na.rsa.net/browse/ASOC-85317):&emsp;Eliminate UI Deprecations (Component-lib, Configure and Ngcoreui)
+* [ASOC-85784](https://bedfordjira.na.rsa.net/browse/ASOC-85784):&emsp;Create/Add new one-way binding textarea to component-lib
+* [ASOC-86058](https://bedfordjira.na.rsa.net/browse/ASOC-86058):&emsp;Feature flag intra-session feature for 11.4.0
+* [ASOC-86192](https://bedfordjira.na.rsa.net/browse/ASOC-86192):&emsp;Add message in UI to use recommended event limit and max number of columns in CG
+* [ASOC-86341](https://bedfordjira.na.rsa.net/browse/ASOC-86341):&emsp;Updating labeling/tooltip for Event Sort preference
+
+
 # [14.6.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.6.0)
 ## Features
 * [ASOC-80044](https://bedfordjira.na.rsa.net/browse/ASOC-80044):&emsp;Edit Profile
