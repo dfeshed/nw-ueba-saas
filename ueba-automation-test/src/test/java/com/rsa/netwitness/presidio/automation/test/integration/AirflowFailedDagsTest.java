@@ -58,7 +58,7 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
             LOGGER.warn("No failures since " + startTime);
         } else {
             assertThat(airflowTaskFailTables)
-                    .overridingErrorMessage("Found Airflow failed DAGs.\n" + airflowTaskFailTables.stream()
+                    .as("Found Airflow failed DAGs.\n" + airflowTaskFailTables.stream()
                             .map(AirflowTaskFailTable::toString)
                             .peek(e -> LOGGER.warn(e))
                             .collect(joining("\n")))
