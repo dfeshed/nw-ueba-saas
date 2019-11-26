@@ -202,7 +202,7 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
                     softly.assertThat(topCategoryLowestScore)
                             .as(allEntitiesUrl + "\nentityType=" + entityType +
                                     "\nExpected score distance is exceeded between severities: [" + severities.get(index) + " and " + severities.get(index + 1) + "]" +
-                                    "\nExpected distance between severities = " + distance +
+                                    "\nExpected distance between the severities = " + distance +
                                     "\nCalculation rule: higherCategoryLowestScore > lowerCategoryHighestScore * distance" +
                                     "\nCompared entities:\n" + printOut.apply(topCategoryEntity.get())  +
                                     "\n" + printOut.apply(bottomCategoryEntity.get()))
