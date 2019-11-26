@@ -55,6 +55,7 @@ public class EntityConverterHelper {
     public Entity convertFromResponseToUi(presidio.output.client.model.Entity responseEntity){
         Entity uiEntity = new Entity();
         uiEntity.setMockId(responseEntity.getId());
+        uiEntity.setEntityType(responseEntity.getEntityType());
         uiEntity.setUsername(responseEntity.getEntityName());
         uiEntity.setDisplayName(StringUtils.trimToNull(responseEntity.getEntityName()));
         uiEntity.setScore(responseEntity.getScore());
