@@ -1262,6 +1262,52 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 2, 'should be two complex pills');
   });
 
+  test('Pressing DELETE on a focused empty paren will delete it, consolidating extra logical operators', async function(assert) {
+    const [OP, CP] = createParens();
+    const AND = createOperator(OPERATOR_AND);
+    const FOO = createFilter(COMPLEX_FILTER, 'foo');
+    const BAR = createFilter(COMPLEX_FILTER, 'bar');
+    // Set up pills to emulate "P && ( ) && P"
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated([
+        {
+          id: 1, ...FOO
+        }, {
+          id: 2, ...AND
+        }, {
+          id: 3, ...OP, twinId: 8
+        }, {
+          id: 4, ...CP, twinId: 8
+        }, {
+          id: 5, ...AND
+        }, {
+          id: 6, ...BAR
+        }])
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    // first click to select/focus
+    await click(PILL_SELECTORS.closeParen);
+    // second click to focus
+    await click(PILL_SELECTORS.closeParen);
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'should be one focus holder');
+    assert.notOk(find(PILL_SELECTORS.selectedPill), 'should not have any selected pills');
+    // press DELETE key
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+    assert.notOk(find(PILL_SELECTORS.openParen), 'should not have an open paren');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'should not have a close paren');
+    assert.equal(findAll(PILL_SELECTORS.logicalOperatorAND).length, 1, 'should have one AND');
+    assert.equal(findAll(PILL_SELECTORS.complexPill).length, 2, 'should still have two complex pills');
+  });
+
   test('Pressing ENTER when there are no pills will submit a query', async function(assert) {
     new ReduxDataHelper(setState)
       .language()

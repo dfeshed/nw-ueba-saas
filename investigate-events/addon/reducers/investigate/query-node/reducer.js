@@ -3,13 +3,17 @@ import { handleActions } from 'redux-actions';
 import _ from 'lodash';
 import { handle } from 'redux-pack';
 import { isEmpty } from '@ember/utils';
-
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { createQueryHash } from 'investigate-events/util/query-hash';
 import { createOperator, createParens, reassignTwinIds } from 'investigate-events/util/query-parsing';
 import { pillBeingEdited, focusedPill } from './selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { allParensWithAtleastOneFocused, isNonSelectedSingleParenSet, isKeyPressedOnSelectedParens, isPillOrOperatorToBeDelete } from 'investigate-events/util/pill-deletion-helpers';
+import {
+  removePills,
+  removeContiguousOperators,
+  removeEmptyParens,
+  removeUnnecessaryOperators
+} from 'investigate-events/util/pill-deletion-helpers';
 import {
   OPERATOR_AND,
   OPERATOR_OR
@@ -233,7 +237,7 @@ const _handlePillFocus = (state, selectedOrDeselectedPills, shouldIgnoreFocus = 
     // If existing focus state needs to change based on select/deselect,
     // then remove old focus
     if (_shouldRemoveFocus(selectedOrDeselectedPills, focusedPillData)) {
-      newState = _removeFocus(state);
+      newState = state.set('pillsData', _removeFocus(state.pillsData));
     }
 
     // Continue adding focus to a pill if the array contains just 1 pill
@@ -245,9 +249,8 @@ const _handlePillFocus = (state, selectedOrDeselectedPills, shouldIgnoreFocus = 
   }
 };
 
-const _removeSelection = (state) => {
-  const { pillsData } = state;
-  const newPillsData = pillsData.map((pill) => {
+const _deselectPills = (pillsData) => {
+  return pillsData.map((pill) => {
     if (pill.isSelected) {
       return {
         ...pill,
@@ -257,12 +260,10 @@ const _removeSelection = (state) => {
     }
     return pill;
   });
-  return state.set('pillsData', newPillsData);
 };
 
-const _removeFocus = (state) => {
-  const { pillsData } = state;
-  const newPillsData = pillsData.map((pill) => {
+const _removeFocus = (pillsData) => {
+  return pillsData.map((pill) => {
     if (pill.isFocused) {
       return {
         ...pill,
@@ -272,7 +273,6 @@ const _removeFocus = (state) => {
     }
     return pill;
   });
-  return state.set('pillsData', newPillsData);
 };
 
 const _addFocus = (state, needsFocusPill, isSelected) => {
@@ -291,21 +291,18 @@ const _addFocus = (state, needsFocusPill, isSelected) => {
   return state.set('pillsData', newPillsData);
 };
 
-const _deletePills = (state, pillsToBeDeleted, isKeyPress = false) => {
+const _deletePills = (state, pillsToBeDeleted) => {
   // get ids for pills that need to be deleted
   const deleteIds = pillsToBeDeleted.map((pD) => pD.id);
-  const isParenSetOnly = allParensWithAtleastOneFocused(pillsToBeDeleted) &&
-    (isNonSelectedSingleParenSet(pillsToBeDeleted) || isKeyPressedOnSelectedParens(pillsToBeDeleted, isKeyPress)); // remove parens alone
-  const newPills = state.pillsData.filter((pill, idx, pillsData) => {
-    if (isParenSetOnly) {
-      // only look for parens that are on the delete list
-      return !deleteIds.includes(pill.id);
-    } else {
-      // look for delete items, and operators that may be left behind
-      return !isPillOrOperatorToBeDelete(deleteIds, pill, idx, pillsData);
-    }
-  });
-  return state.set('pillsData', newPills);
+  // removeContiguousOperators is called twice because we could have extra
+  // operators after removing empty parens. We may want to refactor this into
+  // some sort of recursive function, but let's sit on this for a while and
+  // see how it performs.
+  return removePills(state.pillsData, deleteIds)
+    |> removeContiguousOperators
+    |> removeEmptyParens
+    |> removeContiguousOperators
+    |> removeUnnecessaryOperators;
 };
 
 const _handlePillUpdate = (state, pillData) => {
@@ -665,8 +662,10 @@ export default handleActions({
 
   [ACTION_TYPES.DELETE_GUIDED_PILLS]: (state, { payload }) => {
     const { pillData } = payload;
-    const deletedPillsState = _deletePills(state, pillData, payload?.isKeyPress);
-    return _removeFocus(deletedPillsState);
+    const newPills = _deletePills(state, pillData)
+      |> _removeFocus
+      |> _deselectPills;
+    return state.set('pillsData', newPills);
   },
 
   [ACTION_TYPES.ADD_PILL_FOCUS]: (state, { payload }) => {
@@ -945,7 +944,8 @@ export default handleActions({
         // add new profile
         case DETAILS_VIEW: {
           newState = _stashPills(state);
-          newState = _removeSelection(newState);
+          const { pillsData } = newState;
+          newState = newState.set('pillsData', _deselectPills(pillsData));
           break;
         }
         // close profile drop-down

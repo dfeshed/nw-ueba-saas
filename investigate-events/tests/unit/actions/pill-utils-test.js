@@ -3,9 +3,17 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { setupTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
 import pillUtils from 'investigate-events/actions/pill-utils';
-import { CLOSE_PAREN, OPEN_PAREN, QUERY_FILTER, TEXT_FILTER, COMPLEX_FILTER } from 'investigate-events/constants/pill';
+import {
+  CLOSE_PAREN,
+  COMPLEX_FILTER,
+  OPEN_PAREN,
+  OPERATOR_AND,
+  OPERATOR_OR,
+  QUERY_FILTER,
+  TEXT_FILTER
+} from 'investigate-events/constants/pill';
 
-module('Unit | Helper | Pill Actions Utils', function(hooks) {
+module('Unit | Actions | Pill Utils', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
@@ -372,5 +380,116 @@ module('Unit | Helper | Pill Actions Utils', function(hooks) {
     assert.equal(position, 0, 'empty parens with trailing nested parens, index 1');
     position = pillUtils.findPositionAfterEmptyParensDeleted(pillsData, 4);
     assert.equal(position, 2, 'nested parens with leading empty parens, index 1');
+  });
+
+  test('findContiguousOperators properly identified contiguous logical operators', function(assert) {
+    let pillsData, result;
+
+    // Finds ANDs
+    pillsData = [
+      { type: QUERY_FILTER },
+      { type: OPERATOR_AND },
+      { type: OPERATOR_AND },
+      { type: QUERY_FILTER }
+    ];
+    result = pillUtils.findContiguousOperators(pillsData);
+    assert.equal(result.length, 1, 'Should return one set');
+    assert.equal(result[0].length, 2, 'Should be two pills in first set');
+
+    // Findes ORs
+    pillsData = [
+      { type: QUERY_FILTER },
+      { type: OPERATOR_OR },
+      { type: OPERATOR_OR },
+      { type: QUERY_FILTER }
+    ];
+    result = pillUtils.findContiguousOperators(pillsData);
+    assert.equal(result.length, 1, 'Should return one set');
+    assert.equal(result[0].length, 2, 'Should be two pills in first set');
+
+    // Findes mix
+    pillsData = [
+      { type: QUERY_FILTER },
+      { type: OPERATOR_AND },
+      { type: OPERATOR_OR },
+      { type: QUERY_FILTER }
+    ];
+    result = pillUtils.findContiguousOperators(pillsData);
+    assert.equal(result.length, 1, 'Should return one set');
+    assert.equal(result[0].length, 2, 'Should be two pills in first set');
+
+    // Findes multiple
+    pillsData = [
+      { type: QUERY_FILTER },
+      { type: OPERATOR_AND },
+      { type: OPERATOR_OR },
+      { type: OPERATOR_AND },
+      { type: QUERY_FILTER }
+    ];
+    result = pillUtils.findContiguousOperators(pillsData);
+    assert.equal(result.length, 1, 'Should return one set');
+    assert.equal(result[0].length, 3, 'Should be three pills in first set');
+
+    // Handles empty array
+    pillsData = [];
+    result = pillUtils.findContiguousOperators(pillsData);
+    assert.equal(result.length, 0, 'Should return empty set');
+
+    // Handles single item in array
+    pillsData = [
+      { type: QUERY_FILTER }
+    ];
+    result = pillUtils.findContiguousOperators(pillsData);
+    assert.equal(result.length, 0, 'Should return empty set');
+
+    // Handles single item in array, even if it's an operator
+    pillsData = [
+      { type: OPERATOR_AND }
+    ];
+    result = pillUtils.findContiguousOperators(pillsData);
+    assert.equal(result.length, 0, 'Should return empty set');
+  });
+
+  test('findContiguousOperators properly identified multiple contiguous logical operators', function(assert) {
+    let pillsData, result;
+
+    // Finds paired ANDs/ORs
+    pillsData = [
+      { type: QUERY_FILTER },
+      { type: OPERATOR_AND },
+      { type: OPERATOR_AND },
+      { type: QUERY_FILTER },
+      { type: OPERATOR_OR },
+      { type: OPERATOR_OR },
+      { type: QUERY_FILTER }
+    ];
+    result = pillUtils.findContiguousOperators(pillsData);
+    assert.equal(result.length, 2, 'Should return two sets');
+    assert.equal(result[0].length, 2, 'Should be two pills in first set');
+    assert.equal(result[1].length, 2, 'Should be two pills in second set');
+
+    // Findes multiple mix
+    pillsData = [
+      { type: QUERY_FILTER },
+      { type: OPERATOR_AND },
+      { type: OPERATOR_OR },
+      { type: QUERY_FILTER },
+      { type: OPERATOR_AND },
+      { type: OPERATOR_OR },
+      { type: OPERATOR_AND },
+      { type: QUERY_FILTER }
+    ];
+    result = pillUtils.findContiguousOperators(pillsData);
+    assert.equal(result.length, 2, 'Should return two sets');
+    assert.equal(result[0].length, 2, 'Should be two pills in first set');
+    assert.equal(result[1].length, 3, 'Should be three pills in second set');
+  });
+
+  test('isLogicalOperator properly detects an operator', function(assert) {
+    assert.ok(pillUtils.isLogicalOperator({ type: OPERATOR_AND }), 'handles AND case');
+    assert.ok(pillUtils.isLogicalOperator({ type: OPERATOR_OR }), 'handles OR case');
+    assert.notOk(pillUtils.isLogicalOperator({ type: QUERY_FILTER }), 'handles non-operator case');
+    assert.notOk(pillUtils.isLogicalOperator({}), 'handles missing props case');
+    assert.notOk(pillUtils.isLogicalOperator(), 'handles missing arg case');
   });
 });

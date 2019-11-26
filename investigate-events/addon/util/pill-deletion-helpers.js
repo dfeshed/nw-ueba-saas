@@ -1,84 +1,67 @@
 import {
-  CLOSE_PAREN,
-  OPEN_PAREN,
-  OPERATOR_AND,
-  OPERATOR_OR
-} from 'investigate-events/constants/pill';
+  findAllEmptyParens,
+  findContiguousOperators,
+  findUnnecessaryOperators
+} from 'investigate-events/actions/pill-utils';
 
-
-export const allParensWithAtleastOneFocused = (pills) => {
-  return pills.every((d) => d.type === OPEN_PAREN || d.type === CLOSE_PAREN) && // are parens
-    pills.some((d) => d.isFocused); // at least one pill is focused
-};
-export const isNonSelectedSingleParenSet = (pills) => {
-  return pills.length === 2 && pills.every((d) => !d.isSelected); // none are selected
-};
-
-export const isKeyPressedOnSelectedParens = (pills, isKeyPress = false) => {
+const isKeyPressedOnSelectedParens = (pills, isKeyPress = false) => {
   return isKeyPress && // used delete or backspace key on the parens
     pills.every((d) => d.isSelected); // all parens are selected
 };
 
-/**
- * Checks if a pill or operator has to be deleted
- *
- * @param {*} deleteIds array of  pill ids already marked to deleted.
- * @param {*} pill check where this pill is to be deleted
- * @param {*} idx index of the current pill
- * @param {*} pillsData array of all the pills
- * @returns boolean
- */
-
-export const isPillOrOperatorToBeDelete = (deleteIds, pill, idx, pillsData) => {
-  const shouldDeletePill = deleteIds.includes(pill.id);
-  if (shouldDeletePill) {
-    // quick exit
-    return true;
-  }
-  // When deleted pills are between two selected parens then the logical operator before open paren is deleted but the one after the close paren is retained to maintain proper syntax
-  if (includeLogicalOpAfterParens(deleteIds, pill, idx, pillsData)) {
-    return false;
-  }
-  const nextPill = pillsData[idx + 1];
-  const prevPill = pillsData[idx - 1];
-  const beforePrevPill = pillsData[idx - 2];
-  const shouldDeleteNextPill = nextPill && deleteIds.includes(nextPill.id);
-  const shouldDeletePrevPill = prevPill && deleteIds.includes(prevPill.id) && !_isLogicalOperator(beforePrevPill);
-  return (_isLogicalOperator(pill) && (shouldDeleteNextPill || shouldDeletePrevPill));
+const isNonSelectedSingleParenSet = (pills) => {
+  return pills.length === 2 && pills.every((d) => !d.isSelected); // none are selected
 };
 
-/**
- * Checks if the elements deleted are within in a set of selected parens.
- *
- * @param {*} deleteIds array of  pill ids already marked to deleted.
- * @param {*} pill check where this pill is to be deleted
- * @param {*} idx index of the current pill
- * @param {*} pillsData array of all the pills
- * @returns boolean
- */
-export const includeLogicalOpAfterParens = (deleteIds, pill, idx, pillsData) => {
-  const prevPill = pillsData[idx - 1];
-  // if the pill is not a logical operator or if the previous pill is not close paren
-  // then we can avoid all below computations.
-  if (!_isLogicalOperator(pill) || !prevPill || prevPill.type !== CLOSE_PAREN) {
-    return false;
+const removeContiguousOperators = (pillsData = []) => {
+  const contiguousOperatorSets = findContiguousOperators(pillsData);
+  if (contiguousOperatorSets.length > 0) {
+    let duplicatesToRemove = [];
+    contiguousOperatorSets.forEach((set) => {
+      // preserve first operator in each set of contiguous operators
+      duplicatesToRemove = [
+        ...duplicatesToRemove,
+        ...set.slice(1)
+      ];
+    });
+    const duplicateIdsToRemove = duplicatesToRemove.map((d) => d.id);
+    return removePills(pillsData, duplicateIdsToRemove);
+  } else {
+    return pillsData;
   }
-  const beforePrevPill = pillsData[idx - 2];
-  const [firstDeleteId] = deleteIds;
-  const firstPillDeleted = pillsData.find((pill) => pill.id === firstDeleteId);
-  const firstPillDeletedIndex = pillsData.indexOf(firstPillDeleted);
-  // making sure Multiple pills are being deleted, eg (),(pill), (pill ..)
-  const isRemovingMultiplePills = deleteIds.length > 1 && prevPill && beforePrevPill &&
-  deleteIds.includes(prevPill.id) && deleteIds.includes(beforePrevPill.id);
-  // checking if all the pills deleted are between two parens
-  const isFirstPillOpenParen = !!firstPillDeleted && firstPillDeleted.type === OPEN_PAREN && firstPillDeleted.twinId === prevPill.twinId;
-  // checking if both parens are selected.
-  const areBothParensSelected = !!firstPillDeleted && !!prevPill.isSelected && !!firstPillDeleted.isSelected;
-  // checking if just empty parens are deleted.
-  const isAfterEmptyParens = deleteIds.length === 2;
-  // pill at the beginning of the query or the first pill inside parens when deleted, the associated logical operator to the right should not be retained.
-  const isNotAtBeginning = firstPillDeletedIndex > 0 && pillsData[firstPillDeletedIndex - 1].type !== OPEN_PAREN;
-  return isRemovingMultiplePills && isFirstPillOpenParen && (areBothParensSelected || isAfterEmptyParens) && isNotAtBeginning;
 };
 
-const _isLogicalOperator = (pill) => pill && (pill.type === OPERATOR_AND || pill.type === OPERATOR_OR);
+const removeEmptyParens = (pillsData = []) => {
+  const emptyParens = findAllEmptyParens(pillsData);
+  if (emptyParens.length > 0) {
+    const pillIdsToDelete = emptyParens.map((pD) => pD.id);
+    return removePills(pillsData, pillIdsToDelete);
+  } else {
+    return pillsData;
+  }
+};
+
+const removePills = (pillsData, pillIdsToDelete) => {
+  return pillsData.filter((pill) => {
+    return !pillIdsToDelete.includes(pill.id);
+  });
+};
+
+const removeUnnecessaryOperators = (pillsData = []) => {
+  const unnecessaryOperators = findUnnecessaryOperators(pillsData);
+  if (unnecessaryOperators.length > 0) {
+    const pillIdsToDelete = unnecessaryOperators.map((pD) => pD.id);
+    return removePills(pillsData, pillIdsToDelete);
+  } else {
+    return pillsData;
+  }
+};
+
+export {
+  isKeyPressedOnSelectedParens,
+  isNonSelectedSingleParenSet,
+  removeContiguousOperators,
+  removeEmptyParens,
+  removePills,
+  removeUnnecessaryOperators
+};

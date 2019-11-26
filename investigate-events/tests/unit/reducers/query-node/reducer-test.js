@@ -43,6 +43,7 @@ const assignIdsAndTwinIdsToPills = (results) => {
   });
   return pills;
 };
+
 const urlParsedParamsState = Immutable.from({
   serviceId: '2',
   previouslySelectedTimeRanges: {}
@@ -51,7 +52,6 @@ const urlParsedParamsState = Immutable.from({
 const noParamsInState = Immutable.from({
   previouslySelectedTimeRanges: {}
 });
-
 
 const stateWithPills = new ReduxDataHelper()
   .pillsDataPopulated()
@@ -67,7 +67,6 @@ module('Unit | Reducers | QueryNode', function(hooks) {
   hooks.beforeEach(function() {
     initialize(this.owner);
   });
-
 
   test('ACTION_TYPES.REHYDRATE reducer when url has a serviceId and localStorage has a different serviceId', async function(assert) {
     const action = {
@@ -478,11 +477,10 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     const action = {
       type: ACTION_TYPES.DELETE_GUIDED_PILLS,
       payload: {
-        pillData: [{
-          id: '1'
-        }, {
-          id: '3'
-        }]
+        pillData: [
+          { id: '1' },
+          { id: '3' }
+        ]
       }
     };
     const result = reducer(stateWithPills, action);

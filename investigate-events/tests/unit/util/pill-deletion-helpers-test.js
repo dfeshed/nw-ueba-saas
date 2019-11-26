@@ -1,20 +1,26 @@
 import { module, test } from 'qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { setupTest } from 'ember-qunit';
-import { allParensWithAtleastOneFocused, isNonSelectedSingleParenSet, isKeyPressedOnSelectedParens, isPillOrOperatorToBeDelete, includeLogicalOpAfterParens } from 'investigate-events/util/pill-deletion-helpers';
-import { DEFAULT_LANGUAGES, DEFAULT_ALIASES } from '../../helpers/redux-data-helper';
-import { transformTextToPillData } from 'investigate-events/util/query-parsing';
+import {
+  isKeyPressedOnSelectedParens,
+  isNonSelectedSingleParenSet,
+  removeContiguousOperators,
+  removeEmptyParens,
+  removePills,
+  removeUnnecessaryOperators
+} from 'investigate-events/util/pill-deletion-helpers';
 import {
   CloseParen,
-  OpenParen,
-  OperatorAnd
+  OpenParen
 } from 'investigate-events/util/grammar-types';
+import {
+  CLOSE_PAREN,
+  OPEN_PAREN,
+  OPERATOR_AND,
+  OPERATOR_OR,
+  QUERY_FILTER
+} from 'investigate-events/constants/pill';
 
-const createPillsWithIds = (results) => {
-  const pills = [];
-  results.forEach((pill, idx) => pills.push({ ...pill, id: `pill${idx}` }));
-  return pills;
-};
 module('Unit | Util | Pill Deletion Helper', function(hooks) {
   setupTest(hooks);
 
@@ -22,32 +28,6 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     initialize(this.owner);
   });
 
-  test('should return true when all pills are parens and at least one pill is focused', function(assert) {
-    const closeParen = CloseParen.create();
-    closeParen.isFocused = false;
-    const openParen = OpenParen.create();
-    openParen.isFocused = true;
-    const pills = [openParen, closeParen];
-    assert.ok(allParensWithAtleastOneFocused(pills), 'Should return true when all are parens and at least one paren is focused');
-  });
-  test('should return false for no focused parens ', function(assert) {
-    const closeParen = CloseParen.create();
-    closeParen.isFocused = false;
-    const openParen = OpenParen.create();
-    openParen.isFocused = false;
-    const pills = [openParen, closeParen];
-    assert.notOk(allParensWithAtleastOneFocused(pills), 'Should return false when there are no focused parens');
-  });
-
-  test('should return false for not all pills are parens ', function(assert) {
-    const closeParen = CloseParen.create();
-    closeParen.isFocused = false;
-    const openParen = OpenParen.create();
-    openParen.isFocused = false;
-    const logicalOpAnd = OperatorAnd.create();
-    const pills = [openParen, closeParen, logicalOpAnd];
-    assert.notOk(allParensWithAtleastOneFocused(pills), 'Should return false when all pills are not parens');
-  });
   test('should return false for selected parens', function(assert) {
     const closeParen = CloseParen.create();
     closeParen.isFocused = true;
@@ -98,6 +78,7 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     const isKeyBoard = true;
     assert.ok(isKeyPressedOnSelectedParens(pills, isKeyBoard), 'Should return true when key pressed on selected parens');
   });
+
   test('should return true for multiple pairs of selected parens when using key board for deletion ', function(assert) {
     const firstOpenParen = OpenParen.create();
     firstOpenParen.isFocused = false;
@@ -134,171 +115,171 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     assert.notOk(isKeyPressedOnSelectedParens(pills, isKeyBoard), 'Should return false when key pressed on multiple parens and not all are selected.');
   });
 
+  test('removeContiguousOperators removes contiguous operators', function(assert) {
+    let pillsData, result;
 
-  test('should return true if the pill passed is in the delete list', function(assert) {
-    const closeParen = CloseParen.create();
-    closeParen.isFocused = true;
-    closeParen.isSelected = true;
-    const openParen = OpenParen.create();
-    openParen.isFocused = true;
-    closeParen.isSelected = true;
-    const pills = [openParen, closeParen];
-    const deletedIds = [openParen.id];
-    assert.ok(isPillOrOperatorToBeDelete(deletedIds, openParen, 0, pills), 'Should allow deletion of the pill');
+    // Test when there are contiguous operators
+    pillsData = [
+      { id: '1', type: QUERY_FILTER },
+      { id: '2', type: OPERATOR_AND },
+      { id: '3', type: OPERATOR_OR },
+      { id: '4', type: QUERY_FILTER },
+      { id: '5', type: OPERATOR_AND },
+      { id: '6', type: OPERATOR_OR },
+      { id: '7', type: OPERATOR_AND },
+      { id: '8', type: QUERY_FILTER }
+    ];
+    result = removeContiguousOperators(pillsData);
+    assert.equal(result.length, 5, 'Five pills remain');
+    assert.equal(result[0].type, QUERY_FILTER, 'pill 1 correct type');
+    assert.equal(result[1].type, OPERATOR_AND, 'pill 2 correct type');
+    assert.equal(result[2].type, QUERY_FILTER, 'pill 3 correct type');
+    assert.equal(result[3].type, OPERATOR_AND, 'pill 4 correct type');
+    assert.equal(result[4].type, QUERY_FILTER, 'pill 5 correct type');
+
+    // Test when there are no contiguous operators
+    pillsData = [
+      { id: '1', type: QUERY_FILTER },
+      { id: '2', type: OPERATOR_OR },
+      { id: '3', type: QUERY_FILTER },
+      { id: '4', type: OPERATOR_OR },
+      { id: '5', type: QUERY_FILTER }
+    ];
+    result = removeContiguousOperators(pillsData);
+    assert.equal(result.length, 5, 'Five pills remain');
+    assert.equal(result[0].type, QUERY_FILTER, 'pill 1 correct type');
+    assert.equal(result[1].type, OPERATOR_OR, 'pill 2 correct type');
+    assert.equal(result[2].type, QUERY_FILTER, 'pill 3 correct type');
+    assert.equal(result[3].type, OPERATOR_OR, 'pill 4 correct type');
+    assert.equal(result[4].type, QUERY_FILTER, 'pill 5 correct type');
   });
 
-  test('should return true if the pill passed is logical operator and the before pill is in the delete list', function(assert) {
-    const text = 'medium = 3 AND b = \'google.com\'';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    const pills = createPillsWithIds(results);
-    const [ , pill ] = pills;
-    const deletedIds = [pills[0].id];
-    assert.ok(isPillOrOperatorToBeDelete(deletedIds, pill, 1, pills), 'Should allow deletion of the pill');
+  test('removeEmptyParens properly removes empty parens', function(assert) {
+    let pillsData, result;
+
+    // Test when there are only empty parens
+    pillsData = [
+      { id: '1', type: OPEN_PAREN },
+      { id: '2', type: CLOSE_PAREN }
+    ];
+    result = removeEmptyParens(pillsData);
+    assert.equal(result.length, 0, 'No pills remain');
+
+    // Test when there are empty parens with other adjacent pills
+    pillsData = [
+      { id: '1', type: QUERY_FILTER },
+      { id: '2', type: OPEN_PAREN },
+      { id: '3', type: CLOSE_PAREN },
+      { id: '4', type: QUERY_FILTER }
+    ];
+    result = removeEmptyParens(pillsData);
+    assert.equal(result.length, 2, 'Two pills remain');
+    assert.equal(result[0].type, QUERY_FILTER, 'pill 1 correct type');
+    assert.equal(result[1].type, QUERY_FILTER, 'pill 2 correct type');
+
+    // Test when there are parens, but they are not empty
+    pillsData = [
+      { id: '1', type: OPEN_PAREN },
+      { id: '2', type: QUERY_FILTER },
+      { id: '4', type: CLOSE_PAREN }
+    ];
+    result = removeEmptyParens(pillsData);
+    assert.equal(result.length, 3, 'Three pills remain');
+    assert.equal(result[0].type, OPEN_PAREN, 'pill 1 correct type');
+    assert.equal(result[1].type, QUERY_FILTER, 'pill 2 correct type');
+    assert.equal(result[2].type, CLOSE_PAREN, 'pill 3 correct type');
+
+    // Test when there are empty parens and filled parens
+    pillsData = [
+      { id: '1', type: OPEN_PAREN },
+      { id: '2', type: QUERY_FILTER },
+      { id: '3', type: CLOSE_PAREN },
+      { id: '4', type: OPERATOR_OR },
+      { id: '5', type: OPEN_PAREN },
+      { id: '6', type: CLOSE_PAREN }
+    ];
+    result = removeEmptyParens(pillsData);
+    assert.equal(result.length, 4, 'Four pills remain');
+    assert.equal(result[0].type, OPEN_PAREN, 'pill 1 correct type');
+    assert.equal(result[1].type, QUERY_FILTER, 'pill 2 correct type');
+    assert.equal(result[2].type, CLOSE_PAREN, 'pill 3 correct type');
+    assert.equal(result[3].type, OPERATOR_OR, 'pill 4 correct type');
   });
 
-  test('should return true if the pill passed is logical operator and the after pill is in the delete list', function(assert) {
-    const text = 'medium = 3 AND b = \'google.com\'';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    const pills = createPillsWithIds(results);
-    const [ , pill ] = pills;
-    const deletedIds = [pills[2].id];
-    assert.ok(isPillOrOperatorToBeDelete(deletedIds, pill, 1, pills), 'Should allow deletion of the pill');
+  test('removeUnnecessaryOperators removes leading and trailing operators', function(assert) {
+    let pillsData, result;
+
+    // Removes leading operator
+    pillsData = [
+      { id: '1', type: OPERATOR_AND },
+      { id: '2', type: QUERY_FILTER }
+    ];
+    result = removeUnnecessaryOperators(pillsData);
+    assert.equal(result.length, 1, 'one pill remains');
+    assert.equal(result[0].type, QUERY_FILTER, 'pill 1 correct type');
+
+    // Removes trailing operator
+    pillsData = [
+      { id: '1', type: QUERY_FILTER },
+      { id: '2', type: OPERATOR_OR }
+    ];
+    result = removeUnnecessaryOperators(pillsData);
+    assert.equal(result.length, 1, 'one pill remains');
+    assert.equal(result[0].type, QUERY_FILTER, 'pill 1 correct type');
   });
 
-  test('should return false if the pill passed is logical operator and the after pill or before pill is not in the delete list', function(assert) {
-    const text = 'medium = 3 AND medium = 4 AND b = \'google.com\'';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    const pills = createPillsWithIds(results);
-    const [ , pill ] = pills;
-    const deletedIds = [pills[4].id];
-    assert.notOk(isPillOrOperatorToBeDelete(deletedIds, pill, 1, pills), 'Should not allow deletion of the pill');
+  test('removeUnnecessaryOperators removes operators near parens', function(assert) {
+    let pillsData, result;
+
+    // Removes operator following open paren
+    pillsData = [
+      { id: '1', type: OPEN_PAREN },
+      { id: '2', type: OPERATOR_AND }
+    ];
+    result = removeUnnecessaryOperators(pillsData);
+    assert.equal(result.length, 1, 'one pill remains');
+    assert.equal(result[0].type, OPEN_PAREN, 'should be an open paren');
+
+    // Removes operator preceding close paren
+    pillsData = [
+      { id: '1', type: OPERATOR_OR },
+      { id: '2', type: CLOSE_PAREN }
+    ];
+    result = removeUnnecessaryOperators(pillsData);
+    assert.equal(result.length, 1, 'no pills remain');
+    assert.equal(result[0].type, CLOSE_PAREN, 'should be a close paren');
   });
 
-  test('should return true if the pill passed is logical operator and previous pill is in the delete list and the before previous is not logical op', function(assert) {
-    const text = 'medium = 3 AND ( medium = 4 AND b = \'google.com\' )';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    const pills = createPillsWithIds(results);
-    const [,,,, pill ] = pills;
-    const deletedIds = [pills[4].id];
-    assert.ok(isPillOrOperatorToBeDelete(deletedIds, pill, 5, pills), 'Should allow deletion of the pill');
+  test('removeUnnecessaryOperators removes lone operator', function(assert) {
+    const pillsData = [
+      { id: '1', type: OPERATOR_AND }
+    ];
+    const result = removeUnnecessaryOperators(pillsData);
+    assert.equal(result.length, 0, 'no pills should remain');
   });
 
-  test('should return false if the pill passed is logical operator and previous pill is in the delete list and the before previous is logical op', function(assert) {
-    const text = 'medium = 3 AND medium = 4 AND b = \'google.com\'';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    const pills = createPillsWithIds(results);
-    const [,,, pill ] = pills;
-    const deletedIds = [pills[2].id];
-    assert.notOk(isPillOrOperatorToBeDelete(deletedIds, pill, 3, pills), 'Should not allow deletion of the pill');
-  });
-  test('should return false if the pill passed is logical operator and previous pill is selected paren and delete list has open paren to close paren and everything between', function(assert) {
-    const text = 'medium = 3 AND ( medium = 4 ) AND b = \'google.com\'';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    const pills = createPillsWithIds(results);
-    pills[2].isFocused = true;
-    pills[2].isSelected = true;
-    pills[4].isFocused = true;
-    pills[4].isSelected = true;
-    const [,,,,, pill ] = pills;
-    const deletedIds = [pills[2].id, pills[3].id, pills[4].id];
-    assert.notOk(isPillOrOperatorToBeDelete(deletedIds, pill, 5, pills), 'Should not allow deletion of the pill');
-  });
+  test('removePills removes specified pills', function(assert) {
+    const pillsData = [
+      { id: 'a' },
+      { id: 'b' },
+      { id: 'c' }
+    ];
+    let result;
 
-  test('should return true if the pill passed is logical operator and previous pill is selected paren and delete list has open paren to close paren and everything between', function(assert) {
-    const text = '( medium = 3 AND medium =4 ) AND  medium = 5  AND b = \'google.com\'';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    const pills = createPillsWithIds(results);
-    pills[0].isFocused = true;
-    pills[0].isSelected = true;
-    pills[4].isFocused = true;
-    pills[4].isSelected = true;
-    const [,,,,, pill ] = pills;
-    const deletedIds = [pills[0].id, pills[1].id, pills[2].id, pills[3].id, pills[4].id];
-    assert.ok(isPillOrOperatorToBeDelete(deletedIds, pill, 5, pills), 'Should allow deletion of the pill');
-  });
+    // Test removing a pill
+    result = removePills(pillsData, ['b']);
+    assert.equal(result.length, 2, 'removed one pill');
+    assert.equal(result[0].id, 'a', 'is "a" pill');
+    assert.equal(result[1].id, 'c', 'is "c" pill');
 
-  test('should return false if the pill passed is logical operator and previous pill is not selected paren and delete list has open paren to close paren and everything between', function(assert) {
-    const text = 'medium = 3 AND ( medium = 4 ) AND b = \'google.com\'';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    const pills = createPillsWithIds(results);
-    pills[2].isFocused = true;
-    pills[4].isFocused = true;
-    const [,,,,, pill ] = pills;
-    const deletedIds = [pills[2].id, pills[3].id, pills[4].id];
-    assert.notOk(includeLogicalOpAfterParens(deletedIds, pill, 5, pills), 'Should not allow deletion of the pill');
-  });
+    // Test removing multiple pills, plus gracefully handles trying to delete
+    // a pill that doesn't exist
+    result = removePills(pillsData, ['a', 'b', 'z']);
+    assert.equal(result.length, 1, 'removed two pills');
+    assert.equal(result[0].id, 'c', 'is "c" pill');
 
-  test('should return false if the pill passed is logical operator and selected parens with other pills outside parens in the delete list ', function(assert) {
-    const text = 'medium = 3 AND ( medium = 4 ) AND b = \'google.com\'';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    const pills = createPillsWithIds(results);
-    pills[2].isFocused = true;
-    pills[2].isSelected = true;
-    pills[4].isFocused = true;
-    pills[4].isSelected = true;
-    const [,,,,, pill ] = pills;
-    const deletedIds = [pills[0].id, pills[1].id, pills[2].id, pills[3].id, pills[4].id];
-    assert.notOk(includeLogicalOpAfterParens(deletedIds, pill, 5, pills), 'Should not allow deletion of the pill');
-  });
-
-  test('should return true if the pill passed is a logical operator after two empty parens, even if the parens are not selected', function(assert) {
-    const text = 'medium = 3 AND ( medium = 4 ) AND b = \'google.com\'';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    // Remove the pill inside the parens
-    results.splice(3, 1);
-    const pills = createPillsWithIds(results);
-    pills[2].isFocused = false;
-    pills[2].isSelected = false;
-    pills[3].isFocused = false;
-    pills[3].isSelected = false;
-    const [,,,, pill ] = pills;
-    const deletedIds = [ pills[2].id, pills[3].id ];
-    assert.ok(includeLogicalOpAfterParens(deletedIds, pill, 4, pills), 'Should not allow deletion of the pill');
-  });
-
-  test('should return false if the pill passed is a logical operator after two empty parens, at the beginning of the query, even if the parens are not selected', function(assert) {
-    const text = '( medium = 3 ) AND  medium = 4  AND b = \'google.com\'';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    // Remove the pill inside the parens
-    results.splice(1, 1);
-    const pills = createPillsWithIds(results);
-    pills[0].isFocused = false;
-    pills[0].isSelected = false;
-    pills[1].isFocused = false;
-    pills[1].isSelected = false;
-    const [,, pill ] = pills;
-    const deletedIds = [ pills[0].id, pills[1].id ];
-    assert.notOk(includeLogicalOpAfterParens(deletedIds, pill, 2, pills), 'Should allow deletion of the pill');
-  });
-
-  test('should return false if the pill passed is a logical operator after selected parens and the selected parens are the first block inside another parens', function(assert) {
-    const text = '( medium = 3 ) AND  ((medium = 4) AND medium = 5)  AND b = \'google.com\'';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    const pills = createPillsWithIds(results);
-    // parens to the right and left of medium = 4 pill are selected.
-    pills[5].isFocused = true;
-    pills[5].isSelected = true;
-    pills[7].isFocused = true;
-    pills[7].isSelected = true;
-    // the logical and pill after the closing parens [ (medium =4 ) AND ] is being checked to see if it needs to be retained.
-    const [,,,,,,,, logicalAndPill ] = pills;
-    // when user selects the nested parens around the pill medium = 4 and uses the right click delete option,
-    // the pill and the parens are all deleted in one call
-    const deletedIds = [ pills[5].id, pills[6].id, pills[7].id];
-    assert.notOk(includeLogicalOpAfterParens(deletedIds, logicalAndPill, pills.indexOf(logicalAndPill), pills), 'Should allow deletion of the pill');
-  });
-
-  test('should return false if the pill passed is a logical operator after two empty parens, and the empty parens are the first block inside another parens', function(assert) {
-    const text = '( medium = 3 ) AND  ((medium = 4) AND medium = 5)  AND b = \'google.com\'';
-    const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    // Remove the pill medium = 4 inside the nested parens
-    // this would happen when user deletes the single pill between parens using delete icon.
-    results.splice(6, 1);
-    const pills = createPillsWithIds(results);
-    // the logical and pill after the closing parens [ (medium =4 ) AND ] is being checked to see if it needs to be retained.
-    const [,,,,,,,, logicalAndPill] = pills;
-    // only the encompassing parens of pill medium = 4 are deleted in the second call as the pill alone is deleted first
-    const deletedIds = [ pills[5].id, pills[6].id];
-    assert.notOk(includeLogicalOpAfterParens(deletedIds, logicalAndPill, pills.indexOf(logicalAndPill), pills), 'Should allow deletion of the pill');
+    // Gracefully handles trying to delete a pill when there are no pills
+    result = removePills([], ['a']);
+    assert.equal(result.length, 0, 'removed no pills, didn\'t blow up');
   });
 });

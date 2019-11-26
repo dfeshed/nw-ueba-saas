@@ -1,7 +1,10 @@
+import Immutable from 'seamless-immutable';
 import {
   CLOSE_PAREN,
   COMPLEX_FILTER,
   OPEN_PAREN,
+  OPERATOR_AND,
+  OPERATOR_OR,
   QUERY_FILTER,
   TEXT_FILTER
 } from 'investigate-events/constants/pill';
@@ -40,6 +43,7 @@ const _hasEmptyParensAt = (arr, closeParenIndex) => {
   return op && op.type === OPEN_PAREN && cp && cp.type === CLOSE_PAREN;
 };
 
+const isLogicalOperator = (pill) => pill?.type === OPERATOR_AND || pill?.type === OPERATOR_OR;
 
 /**
  * Given an array of pills, pick the first and last selected applicable pill
@@ -158,17 +162,51 @@ const isEmptyParenSetAt = (arr, i) => {
   return op && op.type === OPEN_PAREN && cp && cp.type === CLOSE_PAREN;
 };
 
+/**
+ * Scans the list of incoming pills, looking for contiguous operators. Returns
+ * Array sets of contiguous operators. This allows the consuming function to
+ * deceide how to handle the duplicates. i.e. preserve first or last operator.
+ * @param {Object[]} pillsData - Array of pills
+ * @return {Object[]} Contiguous operators
+ */
+const findContiguousOperators = (pillsData = []) => {
+  const duplicates = [];
+  if (pillsData.length > 1) {
+    const contiguousSet = new Set();
+    const endIndex = pillsData.length - 1;
+    for (let i = 0; i < endIndex; i++) {
+      const currentPill = pillsData[i];
+      const nextPill = pillsData[i + 1];
+      if (isLogicalOperator(currentPill) && isLogicalOperator(nextPill)) {
+        // save off pills to mark as a contiguous set
+        contiguousSet.add(currentPill);
+        contiguousSet.add(nextPill);
+      } else if (contiguousSet.size > 0 && !isLogicalOperator(nextPill)) {
+        // our contiguous set of operators has ended. Save to master list and
+        // reset contiguousSet
+        duplicates.push(Array.from(contiguousSet));
+        contiguousSet.clear();
+      }
+    }
+  }
+  return duplicates;
+};
+
 const findAllEmptyParens = (pillsData) => {
+  // pillsData might be Immutable. Create mutable copy if needed so that
+  // splice can perform properly.
+  const _pillsData = (Immutable.isImmutable(pillsData)) ? pillsData.asMutable() : pillsData;
   const emptyParenSets = [];
-  let i = pillsData.length - 1;
+  let i = _pillsData.length - 1;
   for (i; i >= 0; i--) {
-    if (isEmptyParenSetAt(pillsData, i)) {
-      if (pillsData.length === 2) {
-        return pillsData;
+    if (isEmptyParenSetAt(_pillsData, i)) {
+      if (_pillsData.length === 2) {
+        return _pillsData;
       } else {
-        // remove empty paren set by mutating the pillsData array
-        emptyParenSets.push(...pillsData.splice(i, 2));
-        return emptyParenSets.concat(findAllEmptyParens(pillsData));
+        // remove empty paren set by mutating the pillsData array,
+        // then recurse to look for more empty paren sets.
+        emptyParenSets.push(..._pillsData.splice(i, 2));
+        return emptyParenSets.concat(findAllEmptyParens(_pillsData));
       }
     }
   }
@@ -208,16 +246,50 @@ const findSelectedPills = (pillsData) => {
   return selectedFilters;
 };
 
+/**
+ * What is an unnecessary operator? One that:
+ * 1) Immediately follows an open paren
+ * 2) Immediately precedes a close paren
+ * 3) Is leading or trailing the query
+ * 3) Is all by itself
+ * @param {Object[]} pillsData - Array of pills
+ * @return {Object[]} Unnecessary operators
+ */
+const findUnnecessaryOperators = (pillsData) => {
+  const len = pillsData.length;
+  // Quick test for single operator
+  if (len === 1 && isLogicalOperator(pillsData[0])) {
+    return pillsData;
+  } else if (len > 1) {
+    const unnecessaryPills = pillsData.filter((currentPill, idx, arr) => {
+      const previousPill = arr[idx - 1];
+      const nextPill = arr[idx + 1];
+      const currentPillIsOperator = isLogicalOperator(currentPill);
+      const isLeading = idx === 0 && currentPillIsOperator;
+      const isTrailing = idx === pillsData.length - 1 && currentPillIsOperator;
+      const isAfterAnOpenParen = !!previousPill && previousPill.type === OPEN_PAREN && currentPillIsOperator;
+      const isBeforeACloseParen = !!nextPill && nextPill.type === CLOSE_PAREN && currentPillIsOperator;
+      return isLeading || isAfterAnOpenParen || isBeforeACloseParen || isTrailing;
+    });
+    return unnecessaryPills;
+  } else {
+    return [];
+  }
+};
+
 export {
+  _hasEmptyParensAt, // exported for test
   contentBetweenParens,
-  isEmptyParenSetAt,
-  isValidToWrapWithParens,
   findAllEmptyParens,
+  findContiguousOperators,
+  findEmptyParensAtPosition,
   findMissingTwins,
   findSelectedPills,
-  findEmptyParensAtPosition,
   findPositionAfterEmptyParensDeleted,
-  _hasEmptyParensAt, // exported for test
+  findUnnecessaryOperators,
+  isEmptyParenSetAt,
+  isLogicalOperator,
+  isValidToWrapWithParens,
   selectPillsFromPosition,
   selectedPillIndexes
 };

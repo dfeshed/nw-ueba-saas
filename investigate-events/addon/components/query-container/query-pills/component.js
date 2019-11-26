@@ -64,7 +64,12 @@ import {
   TEXT_FILTER,
   QUERY_FILTER
 } from 'investigate-events/constants/pill';
-import { isValidToWrapWithParens, selectedPillIndexes, findPositionAfterEmptyParensDeleted } from 'investigate-events/actions/pill-utils';
+import {
+  findPositionAfterEmptyParensDeleted,
+  isLogicalOperator,
+  isValidToWrapWithParens,
+  selectedPillIndexes
+} from 'investigate-events/actions/pill-utils';
 const { log } = console;// eslint-disable-line no-unused-vars
 
 const stateToComputed = (state, attrs = {}) => ({
@@ -138,7 +143,7 @@ const _hasCloseParenToRight = (pd, i) => pd[i] && pd[i].type === CLOSE_PAREN;
 const _hasOperatorToTheLeft = (pd, i) => {
   // get pill to the left
   const pill = pd[i - 1];
-  return pill?.type === OPERATOR_AND || pill?.type === OPERATOR_OR;
+  return isLogicalOperator(pill);
 };
 
 /**

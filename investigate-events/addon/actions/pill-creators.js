@@ -6,12 +6,11 @@ import { selectedPills, focusedPill, pillsData } from 'investigate-events/reduce
 import { languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import validateQueryFragment from './fetch/query-validation';
 import {
-  findAllEmptyParens,
   findEmptyParensAtPosition,
   findSelectedPills,
-  findMissingTwins
+  findMissingTwins,
+  isLogicalOperator
 } from 'investigate-events/actions/pill-utils';
-import { deselectAllGuidedPills } from 'investigate-events/actions/pill-selection-creators';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { ValidatableFilter } from 'investigate-events/util/filter-types';
 import {
@@ -24,8 +23,6 @@ import {
 
 const { log } = console; // eslint-disable-line no-unused-vars
 
-const _isLogicalOperator = (pill) => pill?.type === OPERATOR_AND || pill?.type === OPERATOR_OR;
-
 const _isCloseParen = (pill) => pill?.type === CLOSE_PAREN;
 
 const _getAdjacentDeletableLogicalOperatorAt = (pills, idx) => {
@@ -36,11 +33,11 @@ const _getAdjacentDeletableLogicalOperatorAt = (pills, idx) => {
   const prevPill = pills[idx - 1];
   const nextPill = pills[idx];
   if (nextPill) {
-    // If there's a pill to the right, then we need it to be an close paren.
+    // If there's a pill to the right, then we need it to be a close paren.
     // Otherwise we're deleting operators that should exist.
-    return _isLogicalOperator(prevPill) && _isCloseParen(nextPill) ? prevPill : undefined;
+    return isLogicalOperator(prevPill) && _isCloseParen(nextPill) ? prevPill : undefined;
   } else {
-    return _isLogicalOperator(prevPill) ? prevPill : undefined;
+    return isLogicalOperator(prevPill) ? prevPill : undefined;
   }
 };
 
@@ -92,21 +89,6 @@ const _clientSideValidation = ({ pillData, position, isFromParser = false }) => 
     // The only pills left once we get here are invalid pills that were invalid
     // before being sent to this method. Those are already marked invalid in
     // state, so no work needs to be done.
-  };
-};
-
-const _removeAnyEmptyParens = () => {
-  return (dispatch, getState) => {
-    const pillsData = getState().investigate.queryNode.pillsData.asMutable();
-    const emptyParens = findAllEmptyParens(pillsData);
-    if (emptyParens.length > 0) {
-      dispatch({
-        type: ACTION_TYPES.DELETE_GUIDED_PILLS,
-        payload: {
-          pillData: emptyParens
-        }
-      });
-    }
   };
 };
 
@@ -220,10 +202,6 @@ export const deleteGuidedPill = ({ pillData }) => {
         pillData
       }
     });
-    // look for empty parens that may have resulted from the deletion of pills
-    dispatch(_removeAnyEmptyParens());
-    // Deselect any pills
-    dispatch(deselectAllGuidedPills());
   };
 };
 
@@ -247,12 +225,9 @@ export const deleteSelectedGuidedPills = (pillData, isKeyPress = false) => {
         dispatch({
           type: ACTION_TYPES.DELETE_GUIDED_PILLS,
           payload: {
-            pillData: selectedPD,
-            isKeyPress
+            pillData: selectedPD
           }
         });
-        // look for empty parens that may have resulted from the deletion of pills
-        dispatch(_removeAnyEmptyParens());
       }
     } else {
       dispatch(deleteGuidedPill({ pillData: [pillData] }));
