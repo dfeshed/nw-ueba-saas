@@ -2307,7 +2307,7 @@ export default {
     serviceName: 'Service Name<sup>*</sup>',
     serverSettings: 'Endpoint Server Settings',
     server: 'Endpoint Server',
-    serverEdit: 'Server Alias (Optional)',
+    serverEdit: 'Endpoint Server Forwarder (Optional)',
     port: 'HTTPS Port<sup>*</sup>',
     certificateValidation: 'Server Validation',
     certificatePassword: 'Certificate Password<sup>*</sup>',
