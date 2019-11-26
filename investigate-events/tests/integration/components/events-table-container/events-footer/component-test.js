@@ -89,6 +89,29 @@ module('Integration | Component | events-footer', function(hooks) {
     assert.equal(findAll('.rsa-data-table-load-more').textContent, undefined, 'No message in the footer');
   });
 
+  test('if events are streaming with no results and are at threshold', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventResultsStatus('streaming')
+      .eventCount(1)
+      .eventThreshold(1)
+      .streamLimit(1)
+      .eventResults([])
+      .build();
+
+
+    await render(hbs`{{events-table-container/events-footer}}`);
+    assert.equal(
+      find('.rsa-data-table-load-more').textContent.trim().length > 0,
+      true,
+      'a message is displayed when we get the max events'
+    );
+    assert.equal(
+      find('.rsa-data-table-load-more').textContent.trim(),
+      'Found more than 1 results. Busy converting bytes into pixels. Check the query console for more details.',
+      'Footer message when at threshold reached'
+    );
+  });
+
   test('if events are complete, but hit the limit, a message is displayed', async function(assert) {
     new ReduxDataHelper(setState)
       .eventResultsStatus('complete')

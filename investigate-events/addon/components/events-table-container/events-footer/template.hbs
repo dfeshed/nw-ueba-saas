@@ -9,7 +9,11 @@
       {{#if hasPartialResults}}
         {{t 'investigate.partialResults' totalCount=totalCount actualEventCount=actualEventCount}}
       {{else}}
-        {{rsa-loader size="large" label=(t 'investigate.loading')}}
+        {{#if isAtThreshold}}
+          {{rsa-loader size="small" label=(t 'investigate.loadingAtThreshold' threshold=threshold)}}
+        {{else}}
+          {{rsa-loader size="small" label=(t 'investigate.loading')}}
+        {{/if}}
       {{/if}}
     </div>
   {{else if (is-equal status 'sorting')}}

@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
+import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 import { classicEventsURL } from 'component-lib/utils/build-url';
@@ -32,7 +33,10 @@ const stateToComputed = (state) => ({
   queryNodeValuesForClassicUrl: queryNodeValuesForClassicUrl(state),
   totalCount: thousandFormat(state.investigate.eventCount.data),
   summaryValuesForClassicUrl: summaryValuesForClassicUrl(state),
-  status: state.investigate.eventResults.status
+  status: state.investigate.eventResults.status,
+  threshold: thousandFormat(state.investigate.eventCount.threshold),
+  isAtThreshold: resultCountAtThreshold(state)
+
 });
 
 const EventsFooter = Component.extend({
