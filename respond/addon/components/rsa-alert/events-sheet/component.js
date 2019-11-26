@@ -26,18 +26,17 @@ const AlertDatasheet = EventsSheet.extend({
 
     if (!legacyEventsEnabled && items) {
       return items.map((item) => {
-        if (!item || !item.related_links) {
-          return;
+        // eslint-disable-next-line camelcase
+        if (item?.related_links) {
+          const modifiedItem = _.cloneDeep(item);
+
+          // Create event analysis url and replaced it with legacy events url
+          modifiedItem.related_links[0].url = createEventAnalysisLink(item, services);
+
+          return modifiedItem;
+        } else {
+          return item;
         }
-
-        const modifiedItem = _.cloneDeep(item);
-
-        // Create event analysis url and replaced it with legacy events url
-        const eventAnalysisLink = createEventAnalysisLink(item, services);
-
-        modifiedItem.related_links[0].url = eventAnalysisLink;
-
-        return modifiedItem;
       });
     }
 

@@ -46,20 +46,20 @@ export default Component.extend(HighlightsEntities, {
   @computed('item', 'services', 'investigatePage.legacyEventsEnabled')
   customizedItem(item, services, legacyEventsEnabled) {
     const modifiedItem = _.cloneDeep(item);
+    // eslint-disable-next-line camelcase
+    if (modifiedItem?.related_links) {
+      // Create event analysis url and replaced it with legacy events url if legacy events flag is disabled
+      if (!legacyEventsEnabled) {
+        modifiedItem.related_links[0].url = createEventAnalysisLink(item, services);
+      }
 
-    // Create event analysis url and replaced it with legacy events url if legacy events flag is disable
-    if (!legacyEventsEnabled) {
-      const eventAnalysisLink = createEventAnalysisLink(item, services);
-      modifiedItem.related_links[0].url = eventAnalysisLink;
-    }
-
-    const processAnalysisLink = createProcessAnalysisLink(item, services);
-
-    if (processAnalysisLink) {
-      modifiedItem.related_links = modifiedItem.related_links.concat({
-        type: 'analyze_process',
-        url: processAnalysisLink
-      });
+      const processAnalysisLink = createProcessAnalysisLink(item, services);
+      if (processAnalysisLink) {
+        modifiedItem.related_links.push({
+          type: 'analyze_process',
+          url: processAnalysisLink
+        });
+      }
     }
     return modifiedItem;
   },

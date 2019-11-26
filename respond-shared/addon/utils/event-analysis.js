@@ -65,7 +65,7 @@ const createEventAnalysisLink = (item, services) => {
 
   let eventAnalysisLink;
 
-  if (eid) {
+  if (eid && sid) {
     const eventAnalysisQueryString = [
       `eventId=${eid}`,
       `endpointId=${sid}`

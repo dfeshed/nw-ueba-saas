@@ -7,6 +7,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { emptyNetworkEvent } from '../../empty-data';
 import { reRelatedLinkOne, networkRelatedLinkOne, reEventId, ecatEventId, networkEventId, getAllEvents, getServices } from '../../../events-list/data';
 import * as generic from './helpers';
+import _ from 'lodash';
 
 let investigatePageService;
 
@@ -840,7 +841,10 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
     const [ item ] = events.filter((e) => e.id === networkEventId);
 
     this.set('expandedId', networkEventId);
-    this.set('item', item);
+    const testItem = _.cloneDeep(item);
+    const [{ host, port }] = getServices();
+    testItem.event_source = `${host}:${port}`;
+    this.set('item', testItem);
     this.set('services', getServices());
     investigatePageService.set('legacyEventsEnabled', false);
 
