@@ -197,15 +197,16 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
                     int bottomCategoryHighestScore = Integer.valueOf(bottomCategoryEntity.get().getScore());
                     double distance = expectedScoreDistance.get(severities.get(index));
                     int expectedDistanceLimit = (int) (bottomCategoryHighestScore * distance);
+                    Function<EntitiesStoredRecord, String> printOut = e -> "[severity = " + e.getSeverity() + ", id=" + e.getId() + ", score = " + e.getScore() + "]";
 
                     softly.assertThat(topCategoryLowestScore)
                             .as(allEntitiesUrl + "\nentityType=" + entityType +
-                                    "\nExpected score distance is exceeded between severities: [" + severities.get(index) +
-                                    " and " + severities.get(index + 1) + "]" + "\nSeverity distance=" + distance +
-                                    "\nExpected: higherCategoryLowestScore > lowerCategoryHighestScore*distance" +
-                                    "\nCompared entities:" +
-                                    topCategoryEntity.toString() + "\n" + bottomCategoryEntity.toString())
-                            .isGreaterThan(expectedDistanceLimit);
+                                    "\nExpected score distance is exceeded between severities: [" + severities.get(index) + " and " + severities.get(index + 1) + "]" +
+                                    "\nExpected distance between severities = " + distance +
+                                    "\nCalculation rule: higherCategoryLowestScore > lowerCategoryHighestScore * distance" +
+                                    "\nCompared entities:\n" + printOut.apply(topCategoryEntity.get())  +
+                                    "\n" + printOut.apply(bottomCategoryEntity.get()))
+                            .isGreaterThanOrEqualTo(expectedDistanceLimit);
                 }
             }
         }
