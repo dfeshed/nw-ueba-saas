@@ -19,8 +19,8 @@ export default (anomalyTypeFieldName) => {
     dataAdapter: (dataItem, zoneId, localeId, keyPrefix = '') => {
       const timezoneDate = moment(parseInt(dataItem.keys[0], 10)).locale(localeId).tz(zoneId).format('DD MMM HH:mm');
       const chartItem = {};
-      chartItem[`${keyPrefix}category`] = timezoneDate;
-      chartItem[`${keyPrefix}originalCategory`] = dataItem.keys[0];
+      chartItem.category = timezoneDate;
+      chartItem.originalCategory = dataItem.keys[0];
       chartItem[`${keyPrefix}value`] = dataItem.value;
       chartItem[`${keyPrefix}radius`] = 1;
 

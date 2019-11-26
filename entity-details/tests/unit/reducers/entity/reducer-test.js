@@ -16,7 +16,7 @@ module('Unit | Reducers | Entity Reducer', (hooks) => {
     });
 
     assert.equal(result.entityId, 123);
-    assert.equal(result.entityType, 'user');
+    assert.notOk(result.entityType);
   });
 
   test('test reset entity', (assert) => {
@@ -27,7 +27,7 @@ module('Unit | Reducers | Entity Reducer', (hooks) => {
     });
 
     assert.equal(result.entityId, 123);
-    assert.equal(result.entityType, 'user');
+    assert.equal(result.entityType);
 
     result = reducer(Immutable.from({}), {
       type: ACTION_TYPES.RESET_ENTITY
@@ -43,7 +43,7 @@ module('Unit | Reducers | Entity Reducer', (hooks) => {
       type: ACTION_TYPES.GET_ENTITY_DETAILS,
       payload: entityDetails.data[0]
     });
-
+    assert.equal(result.entityType, 'sslSubject');
     assert.deepEqual(result.entityDetails, entityDetails.data[0]);
   });
 
@@ -55,7 +55,6 @@ module('Unit | Reducers | Entity Reducer', (hooks) => {
     });
 
     assert.equal(result.entityId, 123);
-    assert.equal(result.entityType, 'user');
     assert.equal(result.entityFetchError, false);
 
     result = reducer(Immutable.from({}), {

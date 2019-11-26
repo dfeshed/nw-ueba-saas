@@ -52,6 +52,15 @@ module('Integration | Component | entity-details-container/header', function(hoo
     assert.equal(find('.score').textContent.trim(), 220, 'Should show entity score');
   });
 
+  test('it should not show header if entity type is not set', async function(assert) {
+
+    new ReduxDataHelper(setState).entityId({ entityId: 123 }).entityType(null).entityDetails(details.data[0]).build();
+    await render(hbs`{{entity-details-container/header}}`);
+    assert.equal(find('.entity-details-container-header_name').textContent.trim().indexOf('file_qa_1_101'), 0, 'Should show entity name');
+    assert.ok(find('.entity-details-container-header_name').textContent.trim().indexOf('USER') === -1, 'Should not show entity Type');
+    assert.equal(find('.score').textContent.trim(), 220, 'Should show entity score');
+  });
+
   test('it should allow user to be watched', async function(assert) {
 
     new ReduxDataHelper(setState).entityId({ entityId: 123, entityType: 'user' }).entityDetails(details.data[0]).build();

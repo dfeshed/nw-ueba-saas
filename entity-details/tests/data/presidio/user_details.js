@@ -3,6 +3,7 @@ export default {
     'id': '052982ab-2042-426c-866d-9c6a82706015',
     'displayName': 'file_qa_1_101',
     'username': 'file_qa_1_101',
+    'entityType': 'sslSubject',
     'noDomainUsername': null,
     'followed': false,
     'alerts': [{

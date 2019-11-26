@@ -36,9 +36,9 @@ module('Unit | Utils | activity-time-anomaly-settings', (hooks) => {
     assert.equal(changedData.length, 262);
 
     assert.deepEqual(changedData[0], {
-      'globalData-category': '12 Nov 15:00',
+      'category': '12 Nov 15:00',
       'globalData-color': '#CC3300',
-      'globalData-originalCategory': '1542034800000',
+      'originalCategory': '1542034800000',
       'globalData-value': 2,
       'globalData-radius': 5
     });

@@ -8,7 +8,9 @@
     {{entityDisplayName}}
   </div>
   <div class='entity-details-container-header_name_type'>
-    {{t (concat 'investigateUsers.entityTypes.' entityType)}}
+    {{#if entityType}}
+      {{t (concat 'investigateUsers.entityTypes.' entityType)}}
+    {{/if}}
   </div>
 </div>
 

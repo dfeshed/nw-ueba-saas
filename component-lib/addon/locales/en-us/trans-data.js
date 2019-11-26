@@ -5964,7 +5964,7 @@ effects the simulated source.',
           },
           high_number_of_reconnaissance_tools_executed_process: {
             name: 'Process Executed Multiple Times by a Reconnaissance Tool',
-            timeline: '{{contexts.dstProcessFileName}} was executed {{anomalyValue}} times by {{contexts.srcProcessFileName}}',
+            timeline: '{{entityName}} executed {{contexts.dstProcessFileName}} {{anomalyValue}} times this hour',
             chartTitle: 'Process Executions by Reconnaissance Tool (Last 30 Days)',
             axisYtitle: 'Count of Process Executions'
           },

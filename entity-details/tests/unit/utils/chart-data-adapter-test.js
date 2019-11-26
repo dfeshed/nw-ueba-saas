@@ -3,6 +3,8 @@ import _ from 'lodash';
 
 import { setupTest } from 'ember-qunit';
 import chartDataAdapter from 'entity-details/utils/chart-data-adapter';
+import activityTimeAnomalySettings from 'entity-details/utils/chart-settings/activity-time-anomaly-settings';
+import distinctEventsByTimeData from '../../data/presidio/indicator-distinctEventsByTime';
 
 const chartData = [
   {
@@ -140,6 +142,19 @@ module('Unit | Utils | chart-data-adapter', (hooks) => {
       // Enriched data from dataAggregator function.
       color: 'red',
       value: 50
+    });
+  });
+
+  test('it chart data settings for baseline value', (assert) => {
+    const settings = activityTimeAnomalySettings('high_number_of_successful_object_change_operations');
+    const data = chartDataAdapter(settings, distinctEventsByTimeData.data[0].data, 'UTC', 'en_US', distinctEventsByTimeData.data[1].data);
+    assert.deepEqual(data.chartSettings.dataProvider[0], {
+      'baselineData-radius': 1,
+      'baselineData-value': 1,
+      category: '27 Oct 08:00',
+      originalCategory: '1540627200000',
+      radius: 1,
+      value: 1
     });
   });
 });

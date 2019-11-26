@@ -10,7 +10,6 @@ import { navigateToInvestigate } from 'entity-details/utils/pivot-utils';
 
 export default (settings, { entityType, entityName, dataEntitiesIds }, brokerId) => {
   const i18n = lookup('service:i18n');
-
   const chart = Am4core.create('chartComponentPlaceholder', Am4charts.XYChart);
   chart.data = settings.chartSettings.dataProvider;
   chart.colors.step = 10;
@@ -63,8 +62,8 @@ export default (settings, { entityType, entityName, dataEntitiesIds }, brokerId)
     lineSeriesGlobal.name = 'All SSL Subjects';
     lineSeriesGlobal.dataFields.valueY = 'baselineData-value';
     lineSeriesGlobal.tooltipText = '{valueY}';
-    lineSeriesGlobal.dataFields.categoryX = 'baselineData-category';
-    lineSeriesGlobal.dataFields.categoryXValue = 'baselineData-originalCategory';
+    lineSeriesGlobal.dataFields.categoryX = 'category';
+    lineSeriesGlobal.dataFields.categoryXValue = 'originalCategory';
     lineSeriesGlobal.tooltip.label.textAlign = 'middle';
     const bulletBase = lineSeriesGlobal.bullets.push(new Am4charts.Bullet());
     bulletBase.propertyFields.fill = 'baselineData-color'; // tooltips grab fill from parent by default
