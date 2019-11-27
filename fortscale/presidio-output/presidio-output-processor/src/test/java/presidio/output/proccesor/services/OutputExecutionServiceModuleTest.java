@@ -22,11 +22,10 @@ import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
+import presidio.ade.domain.record.enriched.file.AdeScoredFileRecord;
 import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataToCollectionNameTranslator;
-import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
-import presidio.monitoring.services.export.MetricsExporter;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
@@ -68,14 +67,6 @@ public class OutputExecutionServiceModuleTest {
     @Autowired
     private PresidioElasticsearchTemplate esTemplate;
 
-    @Autowired
-    private PresidioMetricPersistencyService metricPersistencyService;
-
-    @Autowired
-    private MetricsExporter metricsExporter;
-
-    private static String OUTPUT_DAILY_METRIC_NAME_PREFIX = "output-core.";
-
     @Before
     public void setup() {
         String smartUserIdHourlyCollectionName = SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX + "userId_hourly";
@@ -100,20 +91,23 @@ public class OutputExecutionServiceModuleTest {
         usersToScoreList.add(new Pair<>("userTest7", 45.0));
         usersToScoreList.add(new Pair<>("userTest8", 85.0));
 
-        AdeAggregationRecord aggregationRecord = new AdeAggregationRecord(Instant.now(), Instant.now(), "highestStartInstantScoreUserIdFileHourly",
-                10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", ENTITY_ID_TEST_ENTITY), AggregatedFeatureType.SCORE_AGGREGATION);
+        AdeAggregationRecord aggregationRecord = new AdeAggregationRecord(Instant.parse("2019-09-01T01:00:00Z"),
+                Instant.parse("2019-09-01T02:00:00Z"), "highestStartInstantScoreUserIdFileHourly", 10d,
+                "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
+                Collections.singletonMap("userId", ENTITY_ID_TEST_ENTITY), AggregatedFeatureType.SCORE_AGGREGATION);
         FileEnrichedEvent event = new FileEnrichedEvent(Instant.now(), Instant.now(), "eventId", Schema.FILE.toString(),
-                ENTITY_ID_TEST_ENTITY, "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
+                ENTITY_ID_TEST_ENTITY, "username", "userDisplayName", "dataSource", "oppType", new ArrayList<>(),
                 EventResult.FAILURE, "resultCode", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
-        FileEnrichedEvent event2 = new FileEnrichedEvent(Instant.now().minus(Duration.ofDays(5)), Instant.now().minus(Duration.ofDays(3)), "eventId", Schema.FILE.toString(),
-                ENTITY_ID_TEST_ENTITY, "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
-                EventResult.FAILURE, "resultCode", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
+        FileEnrichedEvent event2 = new FileEnrichedEvent(Instant.now().minus(Duration.ofDays(5)),
+                Instant.now().minus(Duration.ofDays(3)), "eventId", Schema.FILE.toString(), ENTITY_ID_TEST_ENTITY,
+                "username", "userDisplayName", "dataSource", "oppType", new ArrayList<>(), EventResult.FAILURE,
+                "resultCode", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
 
 
         EnrichedFileRecord enrichedFileRecord = new EnrichedFileRecord(event.getEventDate());
-        enrichedFileRecord.setUserId("userId");
+        enrichedFileRecord.setUserId(ENTITY_ID_TEST_ENTITY);
         enrichedFileRecord.setEventId(event.getEventId());
         enrichedFileRecord.setOperationType(event.getOperationType());
         enrichedFileRecord.setOperationTypeCategories(event.getOperationTypeCategories());
@@ -139,6 +133,13 @@ public class OutputExecutionServiceModuleTest {
         mongoTemplate.insert(event, outputFileEnrichedEventCollectionName);
         mongoTemplate.insert(event2, outputFileEnrichedEventCollectionName);
         mongoTemplate.insert(enrichedFileRecord, adeFileEnrichedEventCollectionName);
+
+        // Create one scored enriched file record for the feature bucket required by the splitter.
+        String scoredEnrichedFileRecordsCollectionName = "scored_enriched_file_startInstant_userId_file_score";
+        mongoTemplate.dropCollection(scoredEnrichedFileRecordsCollectionName);
+        AdeScoredFileRecord scoredEnrichedFileRecord = new AdeScoredFileRecord(Instant.parse("2019-09-01T01:30:00Z"),
+                "file.startInstant.userId.file.score", "file", 100.0, Collections.emptyList(), enrichedFileRecord);
+        mongoTemplate.insert(scoredEnrichedFileRecord, scoredEnrichedFileRecordsCollectionName);
     }
 
     @After
@@ -171,11 +172,11 @@ public class OutputExecutionServiceModuleTest {
             esTemplate.refresh(Entity.class);
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(1, Lists.newArrayList(entityPersistencyService.findAll()).size());
-            Page<Entity> entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, new PageRequest(0, 9999));
+            Page<Entity> entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, PageRequest.of(0, 9999));
             Assert.assertEquals(1, entities.getNumberOfElements());
             Entity entity = entities.iterator().next();
             Assert.assertEquals(8, entity.getAlertsCount());
-            Assert.assertEquals(55, new Double(entity.getScore()).intValue());
+            Assert.assertEquals(55d, entity.getScore(), 0);
             Assert.assertEquals(55d, entity.getTrendingScore(EntityEnums.Trends.weekly),0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,7 +186,9 @@ public class OutputExecutionServiceModuleTest {
 
     @Test
     public void createAlertForExistingEntity() {
-        Entity entity = new Entity(ENTITY_ID_TEST_ENTITY, "userName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, EntitySeverity.CRITICAL, 8, "userId");
+        Entity entity = new Entity(ENTITY_ID_TEST_ENTITY, "userName", 95d,
+                Collections.singletonList("non_standard_hours"), Collections.singletonList("abnormal_file_day_time"),
+                null, EntitySeverity.CRITICAL, 8, "userId");
         entityPersistencyService.save(entity);
         try {
             outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId_hourly", "userId");
@@ -193,13 +196,13 @@ public class OutputExecutionServiceModuleTest {
 
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(1, Lists.newArrayList(entityPersistencyService.findAll()).size());
-            Page<Entity> entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, new PageRequest(0, 9999));
+            Page<Entity> entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, PageRequest.of(0, 9999));
             Assert.assertEquals(1, entities.getNumberOfElements());
             Entity entity1 = entities.iterator().next();
             Assert.assertEquals(16, entity1.getAlertsCount());
             Assert.assertEquals(1, entity1.getAlertClassifications().size());
             Assert.assertEquals(1, entity1.getIndicators().size());
-            Assert.assertEquals(150, new Double(entity1.getScore()).intValue());
+            Assert.assertEquals(150d, entity1.getScore(), 0);
             Assert.assertEquals(55d, entity1.getTrendingScore(EntityEnums.Trends.weekly),0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -214,18 +217,18 @@ public class OutputExecutionServiceModuleTest {
             outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId_hourly","userId");
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(1, Lists.newArrayList(entityPersistencyService.findAll()).size());
-            Page<Entity> entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, new PageRequest(0, 9999));
+            Page<Entity> entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, PageRequest.of(0, 9999));
             Assert.assertEquals(1, entities.getNumberOfElements());
             Entity entity = entities.iterator().next();
             Assert.assertEquals(8, entity.getAlertsCount());
-            Assert.assertEquals(55, new Double(entity.getScore()).intValue());
+            Assert.assertEquals(55d, entity.getScore(), 0);
             outputExecutionService.cleanAlertsByTimeRangeAndEntityType(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId");
             // test alerts cleanup
             Assert.assertEquals(0, Lists.newArrayList(alertPersistencyService.findAll()).size());
-            entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, new PageRequest(0, 9999));
+            entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, PageRequest.of(0, 9999));
             entity = entities.iterator().next();
             // test entity score re-calculation
-            Assert.assertEquals(0, new Double(entity.getScore()).intValue());
+            Assert.assertEquals(0d, entity.getScore(), 0);
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
