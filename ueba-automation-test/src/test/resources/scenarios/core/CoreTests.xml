@@ -16,7 +16,7 @@
             <class name="com.rsa.netwitness.presidio.automation.test.rest.EntitySeverityTests"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.E2EMongoRestValidation"/>
             <class name="com.rsa.netwitness.presidio.automation.test.enrichment.TlsSessionSplitTest"/>
-            <class name="com.rsa.netwitness.presidio.automation.test.integration.OutputForwardingTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.integration.OutputForwardingCoreTest"/>
         </classes>
     </test>
 
