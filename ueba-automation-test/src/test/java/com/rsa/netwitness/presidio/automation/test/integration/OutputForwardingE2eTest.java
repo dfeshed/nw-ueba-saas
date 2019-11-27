@@ -55,12 +55,15 @@ public class OutputForwardingE2eTest extends AbstractTestNGSpringContextTests {
         List<RespondServerAlertCollectionHelper.RespondServerAlert> respondServerAlerts = alertCollection.getRespondServerAlerts(startTime, endTime, receivedTimeLimit);
         assertThat(respondServerAlerts).as("No alerts found on respond server from startDate=" + startTime + " to endDate=" + endTime).isNotEmpty();
         List<String> actualIndicatorIds = respondServerAlerts.parallelStream().map(alert -> alert.uebaIndicatorId).collect(Collectors.toList());
-
         List<String> expectedIndicatorIds = allIndicators.parallelStream().map(AlertsStoredRecord.Indicator::getId).collect(Collectors.toList());
 
-        assertThat(actualIndicatorIds)
-                .as(allAlertsUrl + "\nIndicator IDs mismatch between REST and respond server result.\nFrom startDate=" + startTime + " to endDate=" + endTime)
-                .containsAll(expectedIndicatorIds);
+        expectedIndicatorIds.removeAll(actualIndicatorIds);
+
+        assertThat(expectedIndicatorIds)
+                .as(allAlertsUrl + "\nIndicator IDs mismatch between REST and respond server result." +
+                        "\nFrom startDate=" + startTime + " to endDate=" + endTime +
+                        "\nREST indicator Ids missing from the Respond Server = {" + String.join(", ", expectedIndicatorIds) + "}")
+                .isEmpty();
     }
 
     private void skipAllTestsIfMissingEsapServer() {
