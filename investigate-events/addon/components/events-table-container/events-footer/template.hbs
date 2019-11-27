@@ -10,9 +10,9 @@
         {{t 'investigate.partialResults' totalCount=totalCount actualEventCount=actualEventCount}}
       {{else}}
         {{#if isAtThreshold}}
-          {{rsa-loader size="small" label=(t 'investigate.loadingAtThreshold' threshold=threshold)}}
+          {{rsa-loader size="largest" label=(t 'investigate.loadingAtThreshold' threshold=threshold)}}
         {{else}}
-          {{rsa-loader size="small" label=(t 'investigate.loading')}}
+          {{rsa-loader size="largest" label=(t 'investigate.loading')}}
         {{/if}}
       {{/if}}
     </div>
