@@ -57,13 +57,16 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void trending_score_equals_sum_of_entity_score_contributions() {
-        Instant lastExecutionDateOfOutput = new AirflowTasksPostgres()
-                .fetchTaskDetails("userId_hourly_ueba_flow", "userId_hourly", Instant.now().minus(3, DAYS))
-                .stream().filter(e -> e.state.equals("success"))
-                .map(e -> e.executionDate)
-                .max(Instant::compareTo)                // last execution of output for E2E automation
-                .orElse(Instant.now().truncatedTo(DAYS).minus(3, DAYS))  // for core automation
-                .minus(1, MINUTES);    // required to include the last hour
+        Instant lastExecutionDateUser = fetchLastExecutionDateOfOutputJob("userId_hourly_ueba_flow", "userId_hourly");
+        Instant lastExecutionDateSslSubject = fetchLastExecutionDateOfOutputJob("sslSubject_hourly_ueba_flow", "sslSubject_hourly");
+        Instant lastExecutionDateJa3 = fetchLastExecutionDateOfOutputJob("ja3_hourly_ueba_flow", "ja3_hourly");
+
+        ImmutableMap<String, Instant> lastExecutionDates = new ImmutableMap.Builder<String, Instant>()
+                .put("sslSubject", lastExecutionDateSslSubject)
+                .put("ja3", lastExecutionDateJa3)
+                .put("userId", lastExecutionDateUser)
+                .build();
+
 
         List<EntitiesStoredRecord> entitiesWithoutAlerts = allActualEntitiesSortedByScore.parallelStream()
                 .filter(e -> e.getAlerts().isEmpty())
@@ -90,6 +93,10 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
         for (EntitiesStoredRecord entity : entitiesWithAlerts) {
             int dailyTrend = entity.getTrendingScore().get("daily");
             int weeklyTrend = entity.getTrendingScore().get("weekly");
+
+            String entityType = entity.getEntityType();
+            assertThat(lastExecutionDates).as(allEntitiesUrl + "\nEntity type doesn't match. EntityId=" + entity.getId()).containsKey(entityType);
+            Instant lastExecutionDateOfOutput = lastExecutionDates.get(entityType);
 
             int dailySumOfScoreContributions = entity.getAlerts().parallelStream()
                     .filter(alert -> alert.getStartDate().isAfter(lastExecutionDateOfOutput.minus(1, DAYS)))
@@ -120,6 +127,16 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
                     .isEqualTo(weeklyTrend);
         }
 
+    }
+
+    private Instant fetchLastExecutionDateOfOutputJob(String dagId, String taskId) {
+        return new AirflowTasksPostgres()
+                .fetchTaskDetails(dagId, taskId, Instant.now().minus(3, DAYS))
+                .stream().filter(e -> e.state.equals("success"))
+                .map(e -> e.executionDate)
+                .max(Instant::compareTo)                // last execution of output for E2E automation
+                .orElse(Instant.now().truncatedTo(DAYS).minus(3, DAYS))  // for core automation
+                .minus(1, MINUTES);    // required to include the last hour
     }
 
 
