@@ -46,6 +46,9 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
   stickyHeaderSelector: '.is-sticky.recon-request-response-header',
   i18n: service(),
 
+  @computed('renderedText')
+  shouldDisplayNoContentMessage: (renderedText) => renderedText.length === 0,
+
   @alias('isItemTooLarge')
   showTruncatedMessage: null,
 

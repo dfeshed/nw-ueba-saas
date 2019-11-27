@@ -320,6 +320,7 @@ export default {
     textView: {
       compressToggleLabel: 'Display Compressed Payloads',
       compressToggleTitle: 'Display HTTP payloads as compressed or not',
+      contentHiddenMessage: 'Results are hidden by the Show/Hide Request or Response setting. To show results for the missing direction, Request or Response, click the direction icons.',
       downloadCsv: 'Download CSV',
       downloadEndpointEvent: 'Download Endpoint',
       pivotToEndpoint: 'Pivot to Endpoint Thick Client',

@@ -32,6 +32,12 @@
       </div>
     {{/if}}
     <div class="scroll-box">
+      {{#if shouldDisplayNoContentMessage}}
+        {{rsa-panel-message
+          class="content-hidden-message"
+          message=(t 'recon.textView.contentHiddenMessage')
+        }}
+      {{/if}}
       {{!--
         if we have content, but no visible text, show spinner,
         working on chewing on data

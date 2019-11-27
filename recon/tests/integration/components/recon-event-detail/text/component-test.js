@@ -91,7 +91,9 @@ module('Integration | Component | recon event detail text', function(hooks) {
     const pager = find('.recon-pager');
     pager.parentNode.removeChild(pager);
 
-    const str = find('.recon-event-detail-text').textContent;
-    assert.equal(_first200(str), '');
+    const translation = this.owner.lookup('service:i18n');
+
+    const noContentString = find('.rsa-panel-message').textContent.trim();
+    assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').string.trim(), 'Did not find no content message panel');
   });
 });
