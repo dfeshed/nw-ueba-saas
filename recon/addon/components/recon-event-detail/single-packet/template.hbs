@@ -5,25 +5,27 @@
 }}
 
 {{#if isPacketExpanded}}
-  <section class="rsa-packet__body">
-    {{recon-event-detail/single-packet/offset-table
-      byteRows=packet.byteRows
-    }}
-    <section class="rsa-packet__hex">
-      {{#each chunkedPacket key='byteRows' as |packet|}}
-        {{recon-event-detail/single-packet/byte-table
-          byteFormat="hex"
-          packet=packet
-        }}
-      {{/each}}
-    </section>
-    <section class="rsa-packet__ascii">
-      {{#each chunkedPacket key='byteRows' as |packet|}}
-        {{recon-event-detail/single-packet/byte-table
-          byteFormat="ascii"
-          packet=packet
-        }}
-      {{/each}}
-    </section>
+  <section class="rsa-packet__body" style={{calculatedHeight}}>
+    {{#if shouldRender}}
+      {{recon-event-detail/single-packet/offset-table
+        byteRows=packet.byteRows
+      }}
+      <section class="rsa-packet__hex">
+        {{#each chunkedPacket key='byteRows' as |packet|}}
+          {{recon-event-detail/single-packet/byte-table
+            byteFormat="hex"
+            packet=packet
+          }}
+        {{/each}}
+      </section>
+      <section class="rsa-packet__ascii">
+        {{#each chunkedPacket key='byteRows' as |packet|}}
+          {{recon-event-detail/single-packet/byte-table
+            byteFormat="ascii"
+            packet=packet
+          }}
+        {{/each}}
+      </section>
+    {{/if}}
   </section>
 {{/if}}
