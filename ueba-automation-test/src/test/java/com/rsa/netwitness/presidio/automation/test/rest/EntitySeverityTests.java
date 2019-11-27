@@ -110,6 +110,7 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
 
             assertThat(dailySumOfScoreContributions)
                     .as(allEntitiesUrl + "\nDaily trending value result mismatch for entityId: " + entity.getId()
+                            + "entityType=" + entity.getEntityType()
                             + "\nAlerts: " + entity.getAlerts().stream().map(e -> "[" + e.getId()
                             + ", StartDate=" + e.getStartDate() + ", EndDate=" + e.getEndDate() + ", EntityScoreContribution="
                             + e.getEntityScoreContribution() + "]").collect(joining(",\n"))
@@ -120,6 +121,7 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
             assertThat(weeklySumOfScoreContributions)
                     .as(allEntitiesUrl + "\nWeekly trending value result mismatch for entityId: " + entity.getId()
                             + "\nAlerts: " + entity.getAlerts().stream().map(e -> "[" + e.getId()
+                            + "entityType=" + entity.getEntityType()
                             + ", StartDate=" + e.getStartDate() + ", EndDate=" + e.getEndDate() + ", EntityScoreContribution="
                             + e.getEntityScoreContribution() + "]").collect(joining(",\n"))
                             + "\nlastExecutionDateOfOutput=" + lastExecutionDateOfOutput
