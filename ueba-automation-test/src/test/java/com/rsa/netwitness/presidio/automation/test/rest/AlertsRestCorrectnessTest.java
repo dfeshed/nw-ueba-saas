@@ -16,6 +16,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -362,19 +363,20 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
         for (AlertsStoredRecord alert : alerts) {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
 
-            long alertStart = alert.getStartDate().toEpochMilli();
-            long alertEnd = alert.getEndDate().toEpochMilli();
+            Instant alertStart = alert.getStartDate();
+            Instant alertEnd = alert.getEndDate();
 
             for (AlertsStoredRecord.Indicator ind : indicators) {
-                long indicatorStartDate = Long.parseLong(ind.getStartDate());
-                long indicatorEndDate = Long.parseLong(ind.getEndDate());
+                Instant indicatorStartDate = ind.getStartDate();
+                Instant indicatorEndDate = ind.getEndDate();
 
-                softly.assertThat(indicatorStartDate < alertStart || indicatorEndDate > alertEnd)
-                        .as("Indicator time is out of the alert time range." +
-                                "\n" + url +
-                                "\nAlert " + alert.getId() +
-                                "\nIndicator " + ind.getId())
-                        .isTrue();
+                softly.assertThat(indicatorStartDate)
+                        .as("Indicator startDate is before alert startDate." + "\n" + url + "\nAlert " + alert.getId() + "\nIndicator " + ind.getId())
+                        .isAfterOrEqualTo(alertStart);
+
+                softly.assertThat(indicatorEndDate)
+                        .as("Indicator endDate is after alert endDate." + "\n" + url + "\nAlert " + alert.getId() + "\nIndicator " + ind.getId())
+                        .isBeforeOrEqualTo(alertEnd);
             }
         }
         softly.assertAll();

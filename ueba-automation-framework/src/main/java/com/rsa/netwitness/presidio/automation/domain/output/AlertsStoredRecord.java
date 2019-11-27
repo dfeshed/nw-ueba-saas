@@ -195,11 +195,10 @@ public class AlertsStoredRecord {
                 indicator.setAlertEntityType(entityType);
                 indicator.setScore(obj.get("score").toString());
                 indicator.setEventNum(obj.get("eventsNum").toString());
-                indicator.setStartDate(obj.get("startDate").toString());
-                indicator.setEndDate(obj.get("endDate").toString());
+                indicator.setStartDate(Instant.ofEpochSecond(obj.getLong("startDate")));
+                indicator.setEndDate(Instant.ofEpochSecond(obj.getLong("endDate")));
                 indicator.setScoreContribution(obj.getDouble("scoreContribution"));
                 indicator.setContexts(obj);
-
                 indicatorsList.add(indicator);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -256,8 +255,8 @@ public class AlertsStoredRecord {
         private String alertEntityType;
         private String score;
         private String eventNum;
-        private String startDate;
-        private String endDate;
+        private Instant startDate;
+        private Instant endDate;
         private Double scoreContribution;
         private Map<String, Object> contexts = Maps.newHashMap();
 
@@ -325,19 +324,19 @@ public class AlertsStoredRecord {
             this.eventNum = eventNum;
         }
 
-        public String getStartDate() {
+        public Instant getStartDate() {
             return startDate;
         }
 
-        public void setStartDate(String startDate) {
+        public void setStartDate(Instant startDate) {
             this.startDate = startDate;
         }
 
-        public String getEndDate() {
+        public Instant getEndDate() {
             return endDate;
         }
 
-        public void setEndDate(String endDate) {
+        public void setEndDate(Instant endDate) {
             this.endDate = endDate;
         }
 
