@@ -20,7 +20,7 @@ const _filterColumns = (columns, filterText) => {
 /* max limit for meta keys that can be added to the columnGroup
  * excluding default meta keys time, medium
  */
-const COLUMN_THRESHOLD = 75;
+const COLUMN_THRESHOLD = 40;
 
 /* max number of columns that should be visible by default
  * excluding columns time and medium

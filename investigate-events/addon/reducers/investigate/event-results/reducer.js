@@ -5,7 +5,7 @@ import { handle } from 'redux-pack';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { SORT_ORDER } from './selectors';
 
-export const MAX_EVENTS_ALLOWED = 10000;
+export const MAX_EVENTS_ALLOWED = 5000;
 
 const _initialState = Immutable.from({
   // streaming, complete, stopped, between-streams

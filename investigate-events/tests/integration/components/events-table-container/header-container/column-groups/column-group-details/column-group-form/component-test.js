@@ -432,20 +432,31 @@ module('Integration | Component | Column Group form', function(hooks) {
 
     assert.equal(findAll(displayedColumns).length, 74, 'shall find correct number of displayed columns');
     assert.equal(findAll(availableMeta).length, 19);
-
-    const availableOptions = findAll(`${availableMeta} button:not(disabled)`);
-    // add candidate meta
-    await click(availableOptions[0]);
-    assert.equal(findAll(displayedColumns).length, 75, 'shall find correct number of displayed columns');
-    assert.equal(findAll(availableMeta).length, 18);
-    assert.equal(findAll(`${availableMeta} button[disabled]`).length, 18, 'Meta available can not be added beyond 50');
     assert.equal(findAll(`${availableMeta} .is-disabled`)[0].title, translation.t('investigate.events.columnGroups.selectionThresholdMessage'));
 
-    const selectedOptions = findAll(`${displayedColumns} button`);
-    // remove a selected meta
-    await click(selectedOptions[0]);
-    assert.equal(findAll(availableMeta).length, 19, 'shall find correct number of available meta');
-    assert.equal(findAll(`${availableMeta} button[disabled]`).length, 0, 'Enabled available meta to add');
+    const availableOptions = findAll(`${availableMeta} button:not(disabled)`);
+
+    // add candidate meta
+    await click(availableOptions[0]);
+
+    assert.equal(findAll(displayedColumns).length, 74, 'shall find correct number of displayed columns');
+    assert.equal(findAll(availableMeta).length, 19);
+    assert.equal(findAll(`${availableMeta} button[disabled]`).length, 19, 'Meta available can not be added beyond 50');
+    assert.equal(findAll(`${availableMeta} .is-disabled`)[0].title, translation.t('investigate.events.columnGroups.selectionThresholdMessage'));
+
+
+    for (let i = 0; i < 35; i++) {
+      const selectedOptions = findAll('ul:first-of-type button');
+      await click(selectedOptions[0]);
+    }
+
+    assert.equal(findAll(displayedColumns).length, 39, 'shall find correct number of displayed columns');
+    assert.equal(findAll(availableMeta).length, 54);
+
+    await click(availableOptions[0]);
+
+    assert.equal(findAll(displayedColumns).length, 40, 'shall find correct number of displayed columns');
+    assert.equal(findAll(availableMeta).length, 53);
   });
 
   test('columns beyond 13th are not visible', async function(assert) {
