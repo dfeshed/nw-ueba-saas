@@ -154,7 +154,8 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
     // No host parsed from 'destination.device', so try parsing host name from 'event.domain'.
     // Ironically, the 'event.domain' field is actually a misnomer. Normalization scripts populate it from the
     // 'alias.host' meta key, which is actually read from the HTTP HOST header in Network events.
-    destDeviceNode[NodeTypes.HOST] = checkNode(NodeTypes.HOST, evt.domain, nodeHash, evt);
+    const domain = Array.isArray(evt.domain) ? evt.domain.join(',') : evt.domain;
+    destDeviceNode[NodeTypes.HOST] = checkNode(NodeTypes.HOST, domain, nodeHash, evt);
   }
 
   // Generate nodes for the source & dest users, if any.
