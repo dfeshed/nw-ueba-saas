@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
-import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -43,26 +43,31 @@ public class OutputForwardingE2eTest extends AbstractTestNGSpringContextTests {
                 .collect(Collectors.toList());
 
         startTime = allIndicators.parallelStream().map(AlertsStoredRecord.Indicator::getStartDate).min(Instant::compareTo).orElseThrow();
-        endTime = allIndicators.parallelStream().map(AlertsStoredRecord.Indicator::getEndDate).max(Instant::compareTo).orElseThrow();
+        endTime = allIndicators.parallelStream().map(AlertsStoredRecord.Indicator::getEndDate).max(Instant::compareTo).orElseThrow()
+                .minus(61, MINUTES);  /** Last hour alerts are excluded due to manipulations with the Airflow **/
     }
 
 
     @Test
-    public void all_indicators_from_rest_response_exiting_on_respond_server() {
+    public void all_indicators_from_rest_response_successfully_forwarded_to_respond_server() {
         Instant receivedTimeLimit = Instant.now().minus(2, DAYS);
 
         RespondServerAlertCollectionHelper alertCollection = new RespondServerAlertCollectionHelper();
         List<RespondServerAlertCollectionHelper.RespondServerAlert> respondServerAlerts = alertCollection.getRespondServerAlerts(startTime, endTime, receivedTimeLimit);
         assertThat(respondServerAlerts).as("No alerts found on respond server from startDate=" + startTime + " to endDate=" + endTime).isNotEmpty();
+
         List<String> actualIndicatorIds = respondServerAlerts.parallelStream().map(alert -> alert.uebaIndicatorId).collect(Collectors.toList());
-        List<String> expectedIndicatorIds = allIndicators.parallelStream().map(AlertsStoredRecord.Indicator::getId).collect(Collectors.toList());
+
+        List<String> expectedIndicatorIds = allIndicators.parallelStream()
+                .filter(ind -> ind.getEndDate().isBefore(endTime))
+                .map(AlertsStoredRecord.Indicator::getId).collect(Collectors.toList());
 
         expectedIndicatorIds.removeAll(actualIndicatorIds);
 
         assertThat(expectedIndicatorIds)
-                .as(allAlertsUrl + "\nIndicator IDs mismatch between REST and respond server result." +
+                .overridingErrorMessage(allAlertsUrl + "\nIndicator IDs mismatch between REST and respond server result." +
                         "\nFrom startDate=" + startTime + " to endDate=" + endTime +
-                        "\nREST indicator Ids missing from the Respond Server = {" + String.join(", ", expectedIndicatorIds) + "}")
+                        "\nREST indicator Ids missing from the Respond Server = {" + String.join("\n", expectedIndicatorIds) + "}")
                 .isEmpty();
     }
 

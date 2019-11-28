@@ -43,7 +43,9 @@ public class RespondServerAlertCollectionHelper {
     }
 
     public void truncateCollection() {
-        LOGGER.warn("Going to drop respond-server alerts table.");
+        LOGGER.warn("**************************************************");
+        LOGGER.warn(" !!! Going to DROP respond-server alerts table.");
+        LOGGER.warn("**************************************************");
         collection.drop();
     }
 
