@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.data.processing;
 
+import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
@@ -7,6 +8,7 @@ import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.log_player.MongoCollectionsMonitor;
 import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
+import com.rsa.netwitness.presidio.automation.test_managers.DataProcessingManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,8 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringContextTests {
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(MonitorBrokerAdapterDataProcessing.class);
+
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
@@ -58,8 +62,7 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
     private Instant startDate = Instant.now();
     private Instant endDate = Instant.now();
 
-    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(MonitorBrokerAdapterDataProcessing.class.getName());
+    private DataProcessingManager dataProcessingManager = new DataProcessingManager();
 
     @Parameters({"historical_days_back", "anomaly_day"})
     @BeforeClass
@@ -92,6 +95,7 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
         monitor.shutdown();
         Assert.assertTrue(allCollectionsHaveSampleFromTheFinalDay, "Data processing has not reached the last day.");
         LOGGER.info("Going to stop airflow-scheduler.");
-        new SshHelper().uebaHostRootExec().run("systemctl stop airflow-scheduler");
+        dataProcessingManager.stopAirflowScheduler().output.forEach(System.out::println);
+        new SshHelper().uebaHostRootExec().run("date --utc +%FT%T.%3NZ > /home/presidio/e2e_processing_stop_time");
     }
 }
