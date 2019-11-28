@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,10 +20,11 @@ public class DataProcessingManager {
     private static final String airflowStartCmd = "systemctl start airflow-scheduler";
     private static final String airflowStopCmd = "systemctl stop airflow-scheduler";
     private static final String dataPreparationFinishTimeFile = "automation_data_preparation_finish_time";
+    private static final int FIVE_MINUTES = 300;
+    private static final int TEN_SECONDS = 10;
     private Lazy<Optional<Instant>> dataPreparationFinishTime = new Lazy<>();
-
     private Function<String, String> saveCurrentTimeToFileCmd = filename -> "date --utc +%FT%T.%3NZ > ".concat(contextFolder).concat(filename);
-    private Function<String, SshResponse> runCmd = CMD -> new SshHelper().uebaHostExec().withTimeout(5, TimeUnit.SECONDS).run(CMD);
+    private BiFunction<String, Integer, SshResponse> runCmd = (CMD, timeout) -> new SshHelper().uebaHostExec().withTimeout(timeout,TimeUnit.SECONDS).run(CMD);
 
 
     private Function<SshResponse, SshResponse> validate = result -> {
@@ -31,19 +33,19 @@ public class DataProcessingManager {
     };
 
     public SshResponse stopAirflowSchedulerAndValidateSuccess() {
-        return runCmd.andThen(validate).apply(airflowStopCmd);
+        return runCmd.andThen(validate).apply(airflowStopCmd, FIVE_MINUTES);
     }
 
     public SshResponse stopAirflowScheduler() {
-        return runCmd.apply(airflowStopCmd);
+        return runCmd.apply(airflowStopCmd, FIVE_MINUTES);
     }
 
     public SshResponse startAirflowSchedulerAndValidateSuccess() {
-        return runCmd.andThen(validate).apply(airflowStartCmd);
+        return runCmd.andThen(validate).apply(airflowStartCmd, FIVE_MINUTES);
     }
 
     public SshResponse startAirflowScheduler() {
-        return runCmd.apply(airflowStartCmd);
+        return runCmd.apply(airflowStartCmd, FIVE_MINUTES);
     }
 
     public SshResponse saveDataPreparationFinishTime() {
@@ -54,7 +56,7 @@ public class DataProcessingManager {
         return saveCurrentTimeToFileAndValidate(dataPreparationFinishTimeFile, validate);
     }
 
-    public  Optional<Instant> geteDataPreparationFinishTime() {
+    public  Optional<Instant> getDataPreparationFinishTime() {
         Optional<Instant> value = dataPreparationFinishTime.getOrCompute(() -> parseInstantFromFile(dataPreparationFinishTimeFile));
         return value.or(() -> parseInstantFromFile(dataPreparationFinishTimeFile));
     }
@@ -62,12 +64,12 @@ public class DataProcessingManager {
 
 
     private SshResponse saveCurrentTimeToFileAndValidate(String fileName, Function<SshResponse, SshResponse> validate) {
-        return runCmd.andThen(validate).compose(saveCurrentTimeToFileCmd).apply(fileName);
+        return runCmd.andThen(validate).apply(saveCurrentTimeToFileCmd.apply(fileName), TEN_SECONDS);
     }
 
     private Optional<Instant> parseInstantFromFile(String fileName) {
         String CMD = "cat ".concat(contextFolder).concat(fileName);
-        SshResponse response = runCmd.apply(CMD);
+        SshResponse response = runCmd.apply(CMD, TEN_SECONDS);
 
         String ts = response.output.get(0).trim();
         try {
