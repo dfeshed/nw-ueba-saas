@@ -45,22 +45,30 @@ public enum AirflowHelper {
     public synchronized void publishLogs(String dagId, String taskId, Instant executionDate) {
         if ( !IS_JENKINS_RUN ) return;
 
-        Path sourceDir = Paths.get("/var/log/netwitness/presidio/3p/airflow/logs/", dagId, taskId, toLogPathExecutionDate(executionDate));
-        Path dstDir = Paths.get(TARGET_DIR.toString(), "airflow_failures");
+        Path sourceDirPath = Paths.get("/var", "log", "netwitness", "presidio", "3p", "airflow", "logs",
+                dagId, taskId, toLogPathExecutionDate(executionDate));
 
-        if (sourceDir.toFile().exists()) {
-            LOGGER.info("Going to publish: " + sourceDir.toString());
-            String CMD = "cp -rf ".concat(sourceDir.toString()).concat(" ").concat(dstDir.toString());
+        String sourceDirString = sourceDirPath.toString().replaceAll(":", "\\\\:");
+
+        Path destDirRoot = Paths.get(TARGET_DIR.toString(), "airflow_failures");
+
+        if (sourceDirPath.toFile().exists()) {
+            LOGGER.info("Going to publish logs from: : " + sourceDirString);
+            Path destDir =  Paths.get(destDirRoot.toString(),dagId, taskId);
+
+            String CMD = "mkdir -p " + destDir.toString() + " ; "
+                    + "cp -rf ".concat(sourceDirString).concat(" ").concat(destDir.toString()).concat("/");
+
             runCmdRoot.withTimeout(15, SECONDS).run(CMD);
-            CMD = "chown -R presidio:presidio ".concat(dstDir.toString());
+            CMD = "chown -R presidio:presidio ".concat(destDirRoot.toString());
             runCmdRoot.withTimeout(15, SECONDS).run(CMD);
         } else {
-            LOGGER.error("Folder not found: " + sourceDir.toString());
+            LOGGER.error("Folder not found: " + sourceDirString);
         }
     }
 
     // expected: 2019-11-24T21:00:00+00:00
     private String toLogPathExecutionDate(Instant executionDate) {
-        return DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(UTC).format(executionDate);
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxx").withZone(UTC).format(executionDate);
     }
 }
