@@ -6,7 +6,6 @@ import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEven
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.log_player.MongoCollectionsMonitor;
-import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.test_managers.DataProcessingManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
@@ -95,7 +94,7 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
         monitor.shutdown();
         Assert.assertTrue(allCollectionsHaveSampleFromTheFinalDay, "Data processing has not reached the last day.");
         LOGGER.info("Going to stop airflow-scheduler.");
+        dataProcessingManager.saveDataPreparationFinishTime().output.forEach(System.out::println);
         dataProcessingManager.stopAirflowScheduler().output.forEach(System.out::println);
-        new SshHelper().uebaHostRootExec().run("date --utc +%FT%T.%3NZ > /home/presidio/e2e_processing_stop_time");
     }
 }

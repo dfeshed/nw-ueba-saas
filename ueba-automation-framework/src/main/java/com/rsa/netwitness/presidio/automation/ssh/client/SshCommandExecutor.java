@@ -12,8 +12,12 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -45,6 +49,18 @@ public class SshCommandExecutor {
         this.command = command;
         this.userDir = userDir;
         this.verbose = verbose;
+    }
+
+    SshResponse execute(long timeout, TimeUnit unit) {
+        SshResponse errorResponse = new SshResponse(-666, List.of("## RUN CMD ERROR RESPONSE ##"));
+        CompletableFuture<SshResponse> future = CompletableFuture.supplyAsync(this::execute).completeOnTimeout(errorResponse, timeout, unit);
+
+        try {
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return errorResponse;
     }
 
     SshResponse execute() {

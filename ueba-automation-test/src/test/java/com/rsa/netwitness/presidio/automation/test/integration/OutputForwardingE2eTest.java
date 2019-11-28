@@ -1,10 +1,12 @@
 package com.rsa.netwitness.presidio.automation.test.integration;
 
+import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.config.EnvironmentProperties;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.mongo.RespondServerAlertCollectionHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
+import com.rsa.netwitness.presidio.automation.test_managers.DataProcessingManager;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
@@ -15,18 +17,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
-import static java.time.temporal.ChronoUnit.*;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class OutputForwardingE2eTest extends AbstractTestNGSpringContextTests {
-    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(OutputForwardingE2eTest.class.getName());
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(OutputForwardingE2eTest.class);
 
     private String esapServer;
     private RestHelper restHelper = new RestHelper();
     private PresidioUrl allAlertsUrl = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
     private List<AlertsStoredRecord> allAlerts;
     private List<AlertsStoredRecord.Indicator> allIndicators;
+    private DataProcessingManager dataProcessingManager = new DataProcessingManager();
 
     private Instant startTime;
     private Instant endTime;
@@ -43,8 +47,11 @@ public class OutputForwardingE2eTest extends AbstractTestNGSpringContextTests {
                 .collect(Collectors.toList());
 
         startTime = allIndicators.parallelStream().map(AlertsStoredRecord.Indicator::getStartDate).min(Instant::compareTo).orElseThrow();
-        endTime = allIndicators.parallelStream().map(AlertsStoredRecord.Indicator::getEndDate).max(Instant::compareTo).orElseThrow()
-                .minus(61, MINUTES);  /** Last hour alerts are excluded due to manipulations with the Airflow **/
+        endTime = allIndicators.parallelStream().map(AlertsStoredRecord.Indicator::getEndDate).max(Instant::compareTo).orElseThrow();
+        LOGGER.info("++++++   minStartDate=" + startTime + " maxEndDate="+ endTime);
+        LOGGER.info("++++++   data preparation finish time = " + dataProcessingManager.geteDataPreparationFinishTime());
+        endTime = endTime.minus(61, MINUTES);  /** Last hour alerts are excluded due to manipulations with the Airflow **/
+        LOGGER.info("++++++   validation endDate=" + endTime);
     }
 
 
