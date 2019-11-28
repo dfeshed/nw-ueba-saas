@@ -79,19 +79,25 @@ public class AlertServiceImpl implements AlertService {
 
         for (SmartAggregationRecord smartAggregationRecord : smart.getSmartAggregationRecords()) {
             AdeAggregationRecord aggregationRecord = smartAggregationRecord.getAggregationRecord();
-            IndicatorsGenerator indicatorsGenerator = indicatorsGeneratorFactory.getIndicatorsGenerator(
-                    aggregationRecord.getAggregatedFeatureType().name());
-            List<Indicator> indicators = indicatorsGenerator.generateIndicators(smartAggregationRecord, alert);
 
-            if (CollectionUtils.isNotEmpty(indicators)) {
-                String indicatorsType = indicators.get(0).getType().name();
-                SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory
-                        .getSupportingInformationGenerator(indicatorsType);
-                supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(
-                        smartAggregationRecord, alert, indicators, eventsLimit, eventsPageSize));
-            } else {
-                logger.warn("Generated 0 indicators for ADE aggregation record with ID {} and feature name {}.",
-                        aggregationRecord.getId(), aggregationRecord.getFeatureName());
+            try {
+                IndicatorsGenerator indicatorsGenerator = indicatorsGeneratorFactory
+                        .getIndicatorsGenerator(aggregationRecord.getAggregatedFeatureType().name());
+                List<Indicator> indicators = indicatorsGenerator.generateIndicators(smartAggregationRecord, alert);
+
+                if (CollectionUtils.isNotEmpty(indicators)) {
+                    SupportingInformationGenerator supportingInfoGenerator = supportingInformationGeneratorFactory
+                            .getSupportingInformationGenerator(indicators.get(0).getType().name());
+                    supportingInfo.addAll(supportingInfoGenerator.generateSupportingInformation(
+                            smartAggregationRecord, alert, indicators, eventsLimit, eventsPageSize));
+                } else {
+                    logger.warn("Generated 0 indicators for ADE aggregation record with ID {} and feature name {}.",
+                            aggregationRecord.getId(), aggregationRecord.getFeatureName());
+                }
+            } catch (Exception exception) {
+                logger.warn("Failed to generate indicators / supporting information for ADE aggregation record with " +
+                        "ID {} and feature name {}.", aggregationRecord.getId(), aggregationRecord.getFeatureName(),
+                        exception);
             }
         }
 
