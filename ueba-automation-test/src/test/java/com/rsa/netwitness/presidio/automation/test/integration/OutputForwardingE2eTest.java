@@ -49,7 +49,7 @@ public class OutputForwardingE2eTest extends AbstractTestNGSpringContextTests {
         startTime = allIndicators.parallelStream().map(AlertsStoredRecord.Indicator::getStartDate).min(Instant::compareTo).orElseThrow();
         endTime = allIndicators.parallelStream().map(AlertsStoredRecord.Indicator::getEndDate).max(Instant::compareTo).orElseThrow();
         LOGGER.info("++++++   minStartDate=" + startTime + " maxEndDate="+ endTime);
-        LOGGER.info("++++++   data preparation finish time = " + dataProcessingManager.geteDataPreparationFinishTime());
+        LOGGER.info("++++++   data preparation finish time = " + dataProcessingManager.getDataPreparationFinishTime());
         endTime = endTime.minus(61, MINUTES);  /** Last hour alerts are excluded due to manipulations with the Airflow **/
         LOGGER.info("++++++   validation endDate=" + endTime);
     }

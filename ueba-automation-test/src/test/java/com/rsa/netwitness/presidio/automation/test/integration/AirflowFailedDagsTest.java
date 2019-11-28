@@ -26,7 +26,7 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
 
     @BeforeClass
     public void setup() {
-        endTime = dataProcessingManager.geteDataPreparationFinishTime().orElseThrow();
+        endTime = dataProcessingManager.getDataPreparationFinishTime().orElseThrow();
         startTime = endTime.minus(1, DAYS);
     }
 
