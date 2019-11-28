@@ -25,27 +25,28 @@ public class DataProcessingManager {
     private Lazy<Optional<Instant>> dataPreparationFinishTime = new Lazy<>();
     private Function<String, String> saveCurrentTimeToFileCmd = filename -> "date --utc +%FT%T.%3NZ > ".concat(contextFolder).concat(filename);
     private BiFunction<String, Integer, SshResponse> runCmd = (CMD, timeout) -> new SshHelper().uebaHostExec().withTimeout(timeout,TimeUnit.SECONDS).run(CMD);
-
-
+    private BiFunction<String, Integer, SshResponse> runCmdRoot = (CMD, timeout) -> new SshHelper().uebaHostRootExec().withTimeout(timeout,TimeUnit.SECONDS).run(CMD);
     private Function<SshResponse, SshResponse> validate = result -> {
         assertThat(result.exitCode).as("exit code != 0").isEqualTo(0);
         return result;
     };
 
+
+
     public SshResponse stopAirflowSchedulerAndValidateSuccess() {
-        return runCmd.andThen(validate).apply(airflowStopCmd, FIVE_MINUTES);
+        return runCmdRoot.andThen(validate).apply(airflowStopCmd, FIVE_MINUTES);
     }
 
     public SshResponse stopAirflowScheduler() {
-        return runCmd.apply(airflowStopCmd, FIVE_MINUTES);
+        return runCmdRoot.apply(airflowStopCmd, FIVE_MINUTES);
     }
 
     public SshResponse startAirflowSchedulerAndValidateSuccess() {
-        return runCmd.andThen(validate).apply(airflowStartCmd, FIVE_MINUTES);
+        return runCmdRoot.andThen(validate).apply(airflowStartCmd, FIVE_MINUTES);
     }
 
     public SshResponse startAirflowScheduler() {
-        return runCmd.apply(airflowStartCmd, FIVE_MINUTES);
+        return runCmdRoot.apply(airflowStartCmd, FIVE_MINUTES);
     }
 
     public SshResponse saveDataPreparationFinishTime() {
@@ -60,7 +61,6 @@ public class DataProcessingManager {
         Optional<Instant> value = dataPreparationFinishTime.getOrCompute(() -> parseInstantFromFile(dataPreparationFinishTimeFile));
         return value.or(() -> parseInstantFromFile(dataPreparationFinishTimeFile));
     }
-
 
 
     private SshResponse saveCurrentTimeToFileAndValidate(String fileName, Function<SshResponse, SshResponse> validate) {
