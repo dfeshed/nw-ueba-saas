@@ -229,14 +229,17 @@ public class RestEntityTests extends AbstractTestNGSpringContextTests {
                 .filter(e -> e.getEntityName().trim().contains(" "))
                 .collect(toList());
 
-        EntitiesStoredRecord entityToSearch = multiWordEntities.get(ThreadLocalRandom.current().nextInt(multiWordEntities.size()));
-        nameToSearch = entityToSearch.getEntityName().split("\\s")[1];
-
-        url = restHelper.entities().url().entitiesWithEntityNameAndMaxSizeParameters(nameToSearch);
-        entities = restHelper.entities().request().getEntities(url);
-        assertThat(entities.stream().map(EntitiesStoredRecord::getId))
-                .as(url + "\nLooking for partially entity string: " + nameToSearch + "\nFull name: " + entityToSearch.getEntityName())
-                .contains(entityToSearch.getId());
+        // search by second word after the first space
+        for (EntitiesStoredRecord entity : multiWordEntities) {
+            nameToSearch = entity.getEntityName().split("\\s")[1];
+            if (nameToSearch.length() > 2) {
+                url = restHelper.entities().url().entitiesWithEntityNameAndMaxSizeParameters(nameToSearch);
+                entities = restHelper.entities().request().getEntities(url);
+                assertThat(entities.stream().map(EntitiesStoredRecord::getId))
+                        .as(url + "\nLooking for partially entity string: " + nameToSearch + "\nFull name: " + entity.getEntityName())
+                        .contains(entity.getId());
+            }
+        }
     }
 
 
