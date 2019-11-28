@@ -121,10 +121,14 @@ function checkDeviceNodes(device, nodeHash, evt) {
 // Makes links among a given set of nodes for a device & user, if they are not already found in the given link hash.
 // Additionally, the given event POJO is added to the events array of each found/created link.
 function checkDeviceAndUserLinks(deviceNode, userNode, linkHash, evt) {
-  checkLink(LinkTypes.AS, deviceNode[NodeTypes.HOST], deviceNode[NodeTypes.IP], linkHash, evt);
-  checkLink(LinkTypes.BELONGS_TO, deviceNode[NodeTypes.MAC], deviceNode[NodeTypes.HOST] || deviceNode[NodeTypes.IP] || deviceNode[NodeTypes.DOMAIN], linkHash, evt);
-  checkLink(LinkTypes.BELONGS_TO, deviceNode[NodeTypes.HOST] || deviceNode[NodeTypes.IP], deviceNode[NodeTypes.DOMAIN], linkHash, evt);
-  checkLink(LinkTypes.USES, userNode, deviceNode[NodeTypes.HOST] || deviceNode[NodeTypes.IP] || deviceNode[NodeTypes.MAC] || deviceNode[NodeTypes.DOMAIN], linkHash, evt);
+  const hostArray = Array.isArray(deviceNode[NodeTypes.HOST]) ? deviceNode[NodeTypes.HOST] : [deviceNode[NodeTypes.HOST]];
+  hostArray.forEach((host) => {
+    checkLink(LinkTypes.AS, host, deviceNode[NodeTypes.IP], linkHash, evt);
+    checkLink(LinkTypes.BELONGS_TO, deviceNode[NodeTypes.MAC], host || deviceNode[NodeTypes.IP] || deviceNode[NodeTypes.DOMAIN], linkHash, evt);
+    checkLink(LinkTypes.BELONGS_TO, host || deviceNode[NodeTypes.IP], deviceNode[NodeTypes.DOMAIN], linkHash, evt);
+    checkLink(LinkTypes.USES, userNode, host || deviceNode[NodeTypes.IP] || deviceNode[NodeTypes.MAC] || deviceNode[NodeTypes.DOMAIN], linkHash, evt);
+  });
+
 }
 
 // Searches the given node & link hashes for nodes & links that represent the entities mentioned in the given event.
@@ -154,8 +158,13 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
     // No host parsed from 'destination.device', so try parsing host name from 'event.domain'.
     // Ironically, the 'event.domain' field is actually a misnomer. Normalization scripts populate it from the
     // 'alias.host' meta key, which is actually read from the HTTP HOST header in Network events.
-    const domain = Array.isArray(evt.domain) ? evt.domain.join(',') : evt.domain;
-    destDeviceNode[NodeTypes.HOST] = checkNode(NodeTypes.HOST, domain, nodeHash, evt);
+    if (Array.isArray(evt.domain)) {
+      destDeviceNode[NodeTypes.HOST] = [];
+      evt.domain.forEach((domain) => destDeviceNode[NodeTypes.HOST].push(checkNode(NodeTypes.HOST, domain, nodeHash, evt)));
+    } else {
+      destDeviceNode[NodeTypes.HOST] = checkNode(NodeTypes.HOST, evt.domain, nodeHash, evt);
+    }
+
   }
 
   // Generate nodes for the source & dest users, if any.
@@ -179,7 +188,9 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
     destDeviceNode[NodeTypes.HOST] ||
     destDeviceNode[NodeTypes.DOMAIN] ||
     destUserNode;
-  checkLink(LinkTypes.COMMUNICATES_WITH, sourceAnchorNode, destAnchorNode, linkHash, evt);
+  const destAnchorNodeArray = !Array.isArray(destAnchorNode) ? [destAnchorNode] : destAnchorNode;
+  destAnchorNodeArray.forEach((destAnchorNode) => checkLink(LinkTypes.COMMUNICATES_WITH, sourceAnchorNode, destAnchorNode, linkHash, evt));
+
 
   // Generate nodes & links for the filenames & hashes, if any.
   const fileNameNodes = [];
@@ -198,7 +209,10 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
     }
     // Link either filename or hash to source & dest "anchor" nodes, if any.
     checkLink(LinkTypes.HAS_FILE, sourceAnchorNode, fileHashNode || fileNameNode, linkHash, evt);
-    checkLink(LinkTypes.HAS_FILE, destAnchorNode, fileHashNode || fileNameNode, linkHash, evt);
+    destAnchorNodeArray.forEach((destAnchorNode) => {
+      checkLink(LinkTypes.HAS_FILE, destAnchorNode, fileHashNode || fileNameNode, linkHash, evt);
+    });
+
   };
 
   data.forEach(parseFilesAndHashes);
