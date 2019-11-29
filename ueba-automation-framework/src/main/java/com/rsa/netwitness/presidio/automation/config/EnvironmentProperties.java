@@ -87,14 +87,18 @@ public enum EnvironmentProperties {
 
         try {
             if (fileExist) {
+                LOGGER.info("Found properties file from the previous run.");
                 properties.load(new FileInputStream(ENV_PROPERTIES_PATH.toFile()));
+                String presidioAirflowIp = properties.getOrDefault(PRESIDIO_AIRFLOW, "").toString();
 
-                if (automationConfNotMatchResoledIP.test(adminServerIp())) {
+                if (automationConfNotMatchResoledIP.test(presidioAirflowIp)) {
+                    LOGGER.info("New presidio-server ip [" + presidioAirflowIp + "] doesn't match to existing [" +  AutomationConf.UEBA_IP + "]. Resolving...");
                     resolve();
                     properties.load(new FileInputStream(ENV_PROPERTIES_PATH.toFile()));
                 }
 
             } else {
+                LOGGER.info("File not found. Resolving...");
                 resolve();
                 properties.load(new FileInputStream(ENV_PROPERTIES_PATH.toFile()));
             }
