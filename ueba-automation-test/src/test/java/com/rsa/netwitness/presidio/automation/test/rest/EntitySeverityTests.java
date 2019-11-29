@@ -29,7 +29,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,6 +56,8 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void trending_score_equals_sum_of_entity_score_contributions() {
+        SoftAssertions softly = new SoftAssertions();
+
         Instant lastExecutionDateUser = fetchLastExecutionDateOfOutputJob("userId_hourly_ueba_flow", "userId_hourly");
         Instant lastExecutionDateSslSubject = fetchLastExecutionDateOfOutputJob("sslSubject_hourly_ueba_flow", "sslSubject_hourly");
         Instant lastExecutionDateJa3 = fetchLastExecutionDateOfOutputJob("ja3_hourly_ueba_flow", "ja3_hourly");
@@ -108,7 +109,7 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
                     .mapToInt(e -> Integer.valueOf(e.getEntityScoreContribution()))
                     .sum();
 
-            assertThat(dailySumOfScoreContributions)
+            softly.assertThat(dailySumOfScoreContributions)
                     .as(allEntitiesUrl + "\nDaily trending value result mismatch for entityId: " + entity.getId()
                             + "entityType=" + entity.getEntityType()
                             + "\nAlerts: " + entity.getAlerts().stream().map(e -> "[" + e.getId()
@@ -118,7 +119,7 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
                             + "\nstartDate should be after " + lastExecutionDateOfOutput.minus(1, DAYS))
                     .isEqualTo(dailyTrend);
 
-            assertThat(weeklySumOfScoreContributions)
+            softly.assertThat(weeklySumOfScoreContributions)
                     .as(allEntitiesUrl + "\nWeekly trending value result mismatch for entityId: " + entity.getId()
                             + "\nAlerts: " + entity.getAlerts().stream().map(e -> "[" + e.getId()
                             + "entityType=" + entity.getEntityType()
@@ -129,6 +130,7 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
                     .isEqualTo(weeklyTrend);
         }
 
+        softly.assertAll();
     }
 
     private Instant fetchLastExecutionDateOfOutputJob(String dagId, String taskId) {
@@ -137,8 +139,7 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
                 .stream().filter(e -> e.state.equals("success"))
                 .map(e -> e.executionDate)
                 .max(Instant::compareTo)                // last execution of output for E2E automation
-                .orElse(Instant.now().truncatedTo(DAYS).minus(3, DAYS))  // for core automation
-                .minus(1, MINUTES);    // required to include the last hour
+                .orElse(Instant.now().truncatedTo(DAYS).minus(3, DAYS));  // for core automation
     }
 
 
