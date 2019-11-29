@@ -57,7 +57,7 @@ public class OutputForwardingE2eTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void all_indicators_from_rest_response_successfully_forwarded_to_respond_server() {
-        Instant receivedTimeLimit = Instant.now().minus(2, DAYS);
+        Instant receivedTimeLimit = dataProcessingManager.getDataPreparationFinishTime().orElseThrow().minus(2, DAYS);
 
         RespondServerAlertCollectionHelper alertCollection = new RespondServerAlertCollectionHelper();
         List<RespondServerAlertCollectionHelper.RespondServerAlert> respondServerAlerts = alertCollection.getRespondServerAlerts(startTime, endTime, receivedTimeLimit);

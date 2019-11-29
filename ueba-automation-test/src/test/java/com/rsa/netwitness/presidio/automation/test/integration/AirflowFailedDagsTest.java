@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +27,7 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
 
     @BeforeClass
     public void setup() {
-        endTime = dataProcessingManager.getDataPreparationFinishTime().orElseThrow();
+        endTime = dataProcessingManager.getDataPreparationFinishTime().orElseThrow().truncatedTo(HOURS);
         startTime = endTime.minus(1, DAYS);
     }
 
@@ -35,12 +36,13 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
     public void airflow_failed_dags_for_the_last_day_test() {
         AirflowTasksPostgres airflowTasksPostgres = new AirflowTasksPostgres();
         List<AirflowTaskFailTable> airflowTaskFailTables = airflowTasksPostgres.fetchFailedTasks(startTime, endTime);
-        LOGGER.warn("Started on " + Instant.now());
+        LOGGER.warn("Execution time: " + Instant.now());
         LOGGER.warn("");
 
         if (airflowTaskFailTables.isEmpty()) {
-            LOGGER.warn("No failures since " + startTime);
+            LOGGER.warn("No failures since from: " + startTime + ", to " + endTime);
         } else {
+            LOGGER.warn("StartTime: " + startTime + ", EndTime " + endTime);
             assertThat(airflowTaskFailTables)
                     .as("Found Airflow failed DAGs.\n" + airflowTaskFailTables.stream()
                             .map(AirflowTaskFailTable::toString)
