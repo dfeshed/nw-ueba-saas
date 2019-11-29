@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class SshExecHelper extends SshCommandExecutorBuilder {
 
     private SshCommandExecutorBuilder sshBuilder;
-    private long timeout = -1;
-    private TimeUnit unit;
+    private long timeout = 1;
+    private TimeUnit unit = TimeUnit.HOURS;
 
     protected SshExecHelper(ServerDetails serverDetails) {
         sshBuilder = new SshCommandExecutorBuilder().setServerDetails(serverDetails);
@@ -53,11 +53,10 @@ public abstract class SshExecHelper extends SshCommandExecutorBuilder {
     }
 
     private SshResponse execute(SshCommandExecutor executor) {
-        if (timeout > 0) {
-            return executor.execute(timeout, unit);
-        } else {
-            return executor.execute();
-        }
+        SshResponse result = executor.execute(timeout, unit);
+        this.timeout = 1;
+        this.unit = TimeUnit.HOURS;
+        return result;
     }
 
     private String arrangeArgs(List<String> args, String command){

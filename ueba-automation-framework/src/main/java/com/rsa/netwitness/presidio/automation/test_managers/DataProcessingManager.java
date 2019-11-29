@@ -19,11 +19,13 @@ public class DataProcessingManager {
     private static final String contextFolder = "/home/presidio/";
     private static final String airflowStartCmd = "systemctl start airflow-scheduler";
     private static final String airflowStopCmd = "systemctl stop airflow-scheduler";
+    private Function<String, String> saveCurrentTimeToFileCmd = filename -> "date --utc +%FT%T.%3NZ > ".concat(contextFolder).concat(filename);
+
     private static final String dataPreparationFinishTimeFile = "automation_data_preparation_finish_time";
     private static final int FIVE_MINUTES = 300;
     private static final int TEN_SECONDS = 10;
     private Lazy<Optional<Instant>> dataPreparationFinishTime = new Lazy<>();
-    private Function<String, String> saveCurrentTimeToFileCmd = filename -> "date --utc +%FT%T.%3NZ > ".concat(contextFolder).concat(filename);
+
     private BiFunction<String, Integer, SshResponse> runCmd = (CMD, timeout) -> new SshHelper().uebaHostExec().withTimeout(timeout,TimeUnit.SECONDS).run(CMD);
     private BiFunction<String, Integer, SshResponse> runCmdRoot = (CMD, timeout) -> new SshHelper().uebaHostRootExec().withTimeout(timeout,TimeUnit.SECONDS).run(CMD);
     private Function<SshResponse, SshResponse> validate = result -> {
@@ -61,6 +63,7 @@ public class DataProcessingManager {
         Optional<Instant> value = dataPreparationFinishTime.getOrCompute(() -> parseInstantFromFile(dataPreparationFinishTimeFile));
         return value.or(() -> parseInstantFromFile(dataPreparationFinishTimeFile));
     }
+
 
 
     private SshResponse saveCurrentTimeToFileAndValidate(String fileName, Function<SshResponse, SshResponse> validate) {

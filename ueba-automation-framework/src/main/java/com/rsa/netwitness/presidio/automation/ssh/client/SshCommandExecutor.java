@@ -63,7 +63,7 @@ public class SshCommandExecutor {
         return errorResponse;
     }
 
-    SshResponse execute() {
+    private SshResponse execute() {
 
         Objects.requireNonNull(serverDetails, "serverDetails not set.");
         final String CMD = "cd ".concat(userDir).concat(" ; ") + command;
@@ -95,19 +95,21 @@ public class SshCommandExecutor {
             waitReady(bufferedReader);
 
             String line;
+            int linesCount = 0;
             Queue<String> sshOutput = new EvictingQueue<>(MAX_LINES_TO_COLLECT);
             while ((line = bufferedReader.readLine()) != null || channel.getExitStatus()!=0) {
-                if (verbose) LOGGER.info(line);
+                if (verbose || linesCount++ < 5) System.out.println(line);
                 if (line!=null) sshOutput.add(line);
                 waitReady(bufferedReader);
             }
 
             if (channel.getExitStatus()!=0) {
-                LOGGER.warn("Non zero exit code return [" + channel.getExitStatus() + "]");
+                LOGGER.warn("Run CMD finished with non zero exit code return [" + channel.getExitStatus() + "]. Duration: " + Duration.between(startTime, Instant.now()).toMillis());
                 printOut(sshOutput);
+            } else {
+                LOGGER.info("Run CMD finished in " + Duration.between(startTime, Instant.now()).toMillis() + " ms. [exit code = " + channel.getExitStatus() + "]");
             }
 
-            LOGGER.info("Run CMD finished in " + Duration.between(startTime, Instant.now()).toMillis() + " ms. [exit code = " + channel.getExitStatus() + "]");
             return new SshResponse(channel.getExitStatus(), Lists.newLinkedList(sshOutput));
 
 
