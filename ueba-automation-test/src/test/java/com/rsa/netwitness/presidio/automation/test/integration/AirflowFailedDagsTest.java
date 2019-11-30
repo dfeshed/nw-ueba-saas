@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.automation.test.integration;
 
 import ch.qos.logback.classic.Logger;
+import com.rsa.netwitness.presidio.automation.data.processing.airflow.AirflowHelper;
 import com.rsa.netwitness.presidio.automation.jdbc.AirflowTasksPostgres;
 import com.rsa.netwitness.presidio.automation.jdbc.model.AirflowTaskFailTable;
 import com.rsa.netwitness.presidio.automation.data.processing.DataProcessingHelper;
@@ -41,6 +42,7 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
         if (airflowTaskFailTables.isEmpty()) {
             LOGGER.warn("No failures since from: " + startTime + ", to " + endTime);
         } else {
+            airflowTaskFailTables.forEach(task -> AirflowHelper.INSTANCE.publishLogs(task.dagId, task.taskId, task.executionDate));
             LOGGER.warn("StartTime: " + startTime + ", EndTime " + endTime);
             assertThat(airflowTaskFailTables)
                     .as("Found Airflow failed DAGs.\n" + airflowTaskFailTables.stream()

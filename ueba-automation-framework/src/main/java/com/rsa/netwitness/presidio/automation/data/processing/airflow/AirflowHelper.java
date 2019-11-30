@@ -9,8 +9,11 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 
+import static com.rsa.netwitness.presidio.automation.config.AutomationConf.IS_JENKINS_RUN;
 import static com.rsa.netwitness.presidio.automation.config.AutomationConf.TARGET_DIR;
+import static java.time.ZoneOffset.UTC;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -39,14 +42,25 @@ public enum AirflowHelper {
         return runCmdRoot.withTimeout(TIMEOUT_MIN, MINUTES).run(airflowStartCmd);
     }
 
-    public synchronized void copyLogs(String dag_id, String task_id, Instant execution_date) {
-        Path sourceDir = Paths.get("/var/log/netwitness/presidio/3p/airflow/logs/", dag_id, task_id, execution_date.toString());
+    public synchronized void publishLogs(String dagId, String taskId, Instant executionDate) {
+        if ( !IS_JENKINS_RUN ) return;
+
+        Path sourceDir = Paths.get("/var/log/netwitness/presidio/3p/airflow/logs/", dagId, taskId, toLogPathExecutionDate(executionDate));
         Path dstDir = Paths.get(TARGET_DIR.toString(), "airflow_failures");
 
-        String CMD = "cp -rf ".concat(sourceDir.toString()).concat(" ").concat(dstDir.toString());
-        runCmdRoot.withTimeout(15, SECONDS).run(CMD);
+        if (sourceDir.toFile().exists()) {
+            LOGGER.info("Going to publish: " + sourceDir.toString());
+            String CMD = "cp -rf ".concat(sourceDir.toString()).concat(" ").concat(dstDir.toString());
+            runCmdRoot.withTimeout(15, SECONDS).run(CMD);
+            CMD = "chown -R presidio:presidio ".concat(dstDir.toString());
+            runCmdRoot.withTimeout(15, SECONDS).run(CMD);
+        } else {
+            LOGGER.error("Folder not found: " + sourceDir.toString());
+        }
+    }
 
-        CMD = "chown -R presidio:presidio ".concat(dstDir.toString());
-        runCmdRoot.withTimeout(15, SECONDS).run(CMD);
+    // expected: 2019-11-24T21:00:00+00:00
+    private String toLogPathExecutionDate(Instant executionDate) {
+        return DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(UTC).format(executionDate);
     }
 }
