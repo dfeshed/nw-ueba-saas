@@ -2,7 +2,7 @@ package com.rsa.netwitness.presidio.automation.test.enrichment;
 
 
 import ch.qos.logback.classic.Logger;
-import com.rsa.netwitness.presidio.automation.common.scenarios.tls.SessionSplitEnrichmentData;
+import com.rsa.netwitness.presidio.automation.data.preparation.tls.scenarios.SessionSplitEnrichmentData;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.TlsEnrichStoredDataRepository;
@@ -27,7 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.rsa.netwitness.presidio.automation.common.scenarios.tls.SessionSplitEnrichmentData.MARKER;
+import static com.rsa.netwitness.presidio.automation.data.preparation.tls.scenarios.SessionSplitEnrichmentData.MARKER;
 import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.getOrNull;
 import static org.assertj.core.api.Assertions.fail;
 

@@ -1,8 +1,8 @@
 package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
 import ch.qos.logback.classic.Logger;
-import com.rsa.netwitness.presidio.automation.common.scenarios.tls.*;
-import com.rsa.netwitness.presidio.automation.data.tls.model.TlsAlert;
+import com.rsa.netwitness.presidio.automation.data.preparation.tls.model.TlsAlert;
+import com.rsa.netwitness.presidio.automation.data.preparation.tls.scenarios.*;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;

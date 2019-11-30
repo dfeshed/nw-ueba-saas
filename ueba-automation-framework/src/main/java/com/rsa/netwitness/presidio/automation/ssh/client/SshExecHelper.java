@@ -6,11 +6,14 @@ import org.assertj.core.util.Lists;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public abstract class SshExecHelper extends SshCommandExecutorBuilder {
 
     private SshCommandExecutorBuilder sshBuilder;
     private long timeout = 1;
     private TimeUnit unit = TimeUnit.HOURS;
+    private boolean isValidateExitCode = false;
 
     protected SshExecHelper(ServerDetails serverDetails) {
         sshBuilder = new SshCommandExecutorBuilder().setServerDetails(serverDetails);
@@ -38,6 +41,10 @@ public abstract class SshExecHelper extends SshCommandExecutorBuilder {
         return this;
     }
 
+    public SshExecHelper withExitCodeValidation() {
+        isValidateExitCode = true;
+        return this;
+    }
 
     public SshResponse run(String command) {
          return execute(sshBuilder.setCommand(command).build());
@@ -54,9 +61,17 @@ public abstract class SshExecHelper extends SshCommandExecutorBuilder {
 
     private SshResponse execute(SshCommandExecutor executor) {
         SshResponse result = executor.execute(timeout, unit);
+        validateExitCode(result.exitCode);
         this.timeout = 1;
         this.unit = TimeUnit.HOURS;
+        this.isValidateExitCode = false;
         return result;
+    }
+
+    private void validateExitCode(int exitCode) {
+        if (isValidateExitCode) {
+            assertThat(exitCode).as("exit code != 0").isEqualTo(0);
+        }
     }
 
     private String arrangeArgs(List<String> args, String command){

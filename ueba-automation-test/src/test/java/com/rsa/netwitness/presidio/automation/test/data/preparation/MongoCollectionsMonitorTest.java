@@ -3,7 +3,7 @@ package com.rsa.netwitness.presidio.automation.test.data.preparation;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
-import com.rsa.netwitness.presidio.automation.log_player.MongoCollectionsMonitor;
+import com.rsa.netwitness.presidio.automation.data.processing.airflow.MongoCollectionsMonitor;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.rsa.netwitness.presidio.automation.test.data.processing;
 
 import com.rsa.netwitness.presidio.automation.config.AutomationConf;
-import com.rsa.netwitness.presidio.automation.test_managers.AdeDataProcessingManager;
+import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.AdeDataProcessingManager;
 import com.rsa.netwitness.presidio.automation.utils.common.TitlesPrinter;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;

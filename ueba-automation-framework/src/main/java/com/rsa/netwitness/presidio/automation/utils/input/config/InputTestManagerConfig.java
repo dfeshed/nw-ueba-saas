@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.input.sdk.impl.factory.PresidioInputPersistencyServiceFactory;
-import com.rsa.netwitness.presidio.automation.test_managers.InputTestManager;
+import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.InputTestManager;
 import com.rsa.netwitness.presidio.automation.utils.input.inserter.InputInserterFactory;
 
 @Configuration

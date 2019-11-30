@@ -4,8 +4,8 @@ import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
-import com.rsa.netwitness.presidio.automation.test_managers.DataProcessingManager;
-import com.rsa.netwitness.presidio.automation.test_managers.OutputDataProcessingManager;
+import com.rsa.netwitness.presidio.automation.data.processing.DataProcessingHelper;
+import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.OutputDataProcessingManager;
 import com.rsa.netwitness.presidio.automation.utils.common.TitlesPrinter;
 import org.json.JSONException;
 import org.slf4j.LoggerFactory;
@@ -28,12 +28,10 @@ import static presidio.data.generators.utils.TimeUtils.calcDaysBack;
 
 public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(OutputRunPrepareData.class.getName());
-    private static TitlesPrinter ART_GEN = new TitlesPrinter();
 
     private OutputDataProcessingManager dataProcessingHelper = new OutputDataProcessingManager();
     private Function<String, String> SMART_RECORD_CONF_NAMES = e -> e.concat("_hourly");
     private List<String> ENTITIES_TO_PROCESS = AutomationConf.CORE_ENTITIES_TO_PROCESS;
-    private DataProcessingManager dataProcessingManager = new DataProcessingManager();
 
     @Parameters("historical_days_back")
     @BeforeClass
@@ -62,7 +60,7 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
             assertThat(results).containsOnly(0);
         }
 
-        dataProcessingManager.saveDataPreparationFinishTime().output.forEach(System.out::println);
+        DataProcessingHelper.INSTANCE.saveDataPreparationFinishTime().output.forEach(System.out::println);
     }
 
     @BeforeMethod

@@ -6,7 +6,7 @@ import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.mongo.RespondServerAlertCollectionHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
-import com.rsa.netwitness.presidio.automation.test_managers.DataProcessingManager;
+import com.rsa.netwitness.presidio.automation.data.processing.DataProcessingHelper;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
@@ -30,7 +30,6 @@ public class OutputForwardingE2eTest extends AbstractTestNGSpringContextTests {
     private PresidioUrl allAlertsUrl = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
     private List<AlertsStoredRecord> allAlerts;
     private List<AlertsStoredRecord.Indicator> allIndicators;
-    private DataProcessingManager dataProcessingManager = new DataProcessingManager();
 
     private Instant startTime;
     private Instant endTime;
@@ -49,7 +48,7 @@ public class OutputForwardingE2eTest extends AbstractTestNGSpringContextTests {
         startTime = allIndicators.parallelStream().map(AlertsStoredRecord.Indicator::getStartDate).min(Instant::compareTo).orElseThrow();
         endTime = allIndicators.parallelStream().map(AlertsStoredRecord.Indicator::getEndDate).max(Instant::compareTo).orElseThrow();
         LOGGER.info("++++++   minStartDate=" + startTime + " maxEndDate="+ endTime);
-        LOGGER.info("++++++   data preparation finish time = " + dataProcessingManager.getDataPreparationFinishTime());
+        LOGGER.info("++++++   data preparation finish time = " + DataProcessingHelper.INSTANCE.getDataPreparationFinishTime());
         endTime = endTime.minus(61, MINUTES);  /** Last hour alerts are excluded due to manipulations with the Airflow **/
         LOGGER.info("++++++   validation endDate=" + endTime);
     }
@@ -57,7 +56,7 @@ public class OutputForwardingE2eTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void all_indicators_from_rest_response_successfully_forwarded_to_respond_server() {
-        Instant receivedTimeLimit = dataProcessingManager.getDataPreparationFinishTime().orElseThrow().minus(2, DAYS);
+        Instant receivedTimeLimit = DataProcessingHelper.INSTANCE.getDataPreparationFinishTime().orElseThrow().minus(2, DAYS);
 
         RespondServerAlertCollectionHelper alertCollection = new RespondServerAlertCollectionHelper();
         List<RespondServerAlertCollectionHelper.RespondServerAlert> respondServerAlerts = alertCollection.getRespondServerAlerts(startTime, endTime, receivedTimeLimit);

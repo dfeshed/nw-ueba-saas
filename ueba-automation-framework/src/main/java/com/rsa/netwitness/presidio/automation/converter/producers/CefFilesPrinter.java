@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.rsa.netwitness.presidio.automation.config.AutomationConf.LOG_GEN_OUTPUT;
-import static com.rsa.netwitness.presidio.automation.log_player.LogPlayerResultUtils.runLogPlayerAndGetRecordsCountResult;
+import static com.rsa.netwitness.presidio.automation.data.processing.broker.LogPlayerHelper.runLogPlayerAndGetRecordsCountResult;
 import static java.util.stream.Collectors.*;
 
 class CefFilesPrinter {

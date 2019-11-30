@@ -2,7 +2,7 @@ package com.rsa.netwitness.presidio.automation.test.data.processing;
 
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
-import com.rsa.netwitness.presidio.automation.test_managers.InputTestManager;
+import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.InputTestManager;
 import com.rsa.netwitness.presidio.automation.utils.common.TitlesPrinter;
 import com.rsa.netwitness.presidio.automation.utils.input.config.InputTestManagerConfig;
 import org.slf4j.LoggerFactory;

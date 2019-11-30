@@ -1,13 +1,14 @@
 package com.rsa.netwitness.presidio.automation.test.data.processing;
 
 import ch.qos.logback.classic.Logger;
+import com.rsa.netwitness.presidio.automation.data.processing.DataProcessingHelper;
+import com.rsa.netwitness.presidio.automation.data.processing.airflow.AirflowHelper;
+import com.rsa.netwitness.presidio.automation.data.processing.airflow.MongoCollectionsMonitor;
+import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
-import com.rsa.netwitness.presidio.automation.log_player.MongoCollectionsMonitor;
-import com.rsa.netwitness.presidio.automation.test_managers.AdapterTestManager;
-import com.rsa.netwitness.presidio.automation.test_managers.DataProcessingManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +62,6 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
     private Instant startDate = Instant.now();
     private Instant endDate = Instant.now();
 
-    private DataProcessingManager dataProcessingManager = new DataProcessingManager();
-
     @Parameters({"historical_days_back", "anomaly_day"})
     @BeforeClass
     public void setup(@Optional("30") int historicalDaysBack, @Optional("1") int anomalyDay) {
@@ -94,7 +93,7 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
         monitor.shutdown();
         Assert.assertTrue(allCollectionsHaveSampleFromTheFinalDay, "Data processing has not reached the last day.");
         LOGGER.info("Going to stop airflow-scheduler.");
-        dataProcessingManager.saveDataPreparationFinishTime().output.forEach(System.out::println);
-        dataProcessingManager.stopAirflowScheduler().output.forEach(System.out::println);
+        DataProcessingHelper.INSTANCE.saveDataPreparationFinishTime().output.forEach(System.out::println);
+        AirflowHelper.INSTANCE.stopAirflowScheduler().output.forEach(System.out::println);
     }
 }

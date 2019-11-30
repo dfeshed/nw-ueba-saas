@@ -8,7 +8,7 @@ import com.rsa.netwitness.presidio.automation.domain.ade.AdeRawEnrichedTestData;
 import com.rsa.netwitness.presidio.automation.domain.ade.AdeScoredTestData;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.ActiveDirectoryEnrichStoredDataRepository;
-import com.rsa.netwitness.presidio.automation.test_managers.ADETestManager;
+import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.ADETestManager;
 import com.rsa.netwitness.presidio.automation.utils.ade.config.ADETestManagerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

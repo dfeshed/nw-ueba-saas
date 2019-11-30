@@ -2,7 +2,7 @@ package com.rsa.netwitness.presidio.automation.test.ade;
 
 import com.rsa.netwitness.presidio.automation.common.helpers.DateTimeHelperUtils;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
-import com.rsa.netwitness.presidio.automation.test_managers.ADETestManager;
+import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.ADETestManager;
 import com.rsa.netwitness.presidio.automation.utils.ade.config.ADETestManagerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

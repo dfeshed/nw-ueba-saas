@@ -3,7 +3,7 @@ package com.rsa.netwitness.presidio.automation.test.integration;
 import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.jdbc.AirflowTasksPostgres;
 import com.rsa.netwitness.presidio.automation.jdbc.model.AirflowTaskFailTable;
-import com.rsa.netwitness.presidio.automation.test_managers.DataProcessingManager;
+import com.rsa.netwitness.presidio.automation.data.processing.DataProcessingHelper;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
@@ -23,11 +23,10 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
 
     private Instant endTime;
     private Instant startTime;
-    private DataProcessingManager dataProcessingManager = new DataProcessingManager();
 
     @BeforeClass
     public void setup() {
-        endTime = dataProcessingManager.getDataPreparationFinishTime().orElseThrow().truncatedTo(HOURS);
+        endTime = DataProcessingHelper.INSTANCE.getDataPreparationFinishTime().orElseThrow().truncatedTo(HOURS);
         startTime = endTime.minus(1, DAYS);
     }
 
