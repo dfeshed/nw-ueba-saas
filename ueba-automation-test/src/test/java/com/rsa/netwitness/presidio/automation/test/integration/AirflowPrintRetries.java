@@ -1,15 +1,10 @@
 package com.rsa.netwitness.presidio.automation.test.integration;
 
-import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
-import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
+import ch.qos.logback.classic.Logger;
+import com.rsa.netwitness.presidio.automation.data.processing.DataProcessingHelper;
 import com.rsa.netwitness.presidio.automation.jdbc.AirflowTasksPostgres;
 import com.rsa.netwitness.presidio.automation.jdbc.model.AirflowTaskInstanceTable;
-import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.AdapterTestManager;
-import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
@@ -28,15 +23,9 @@ import static java.util.Comparator.reverseOrder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
-@SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class AirflowPrintRetries extends AbstractTestNGSpringContextTests {
 
-    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(AirflowPrintRetries.class.getName());
-
-    @Autowired
-    private AdapterTestManager adapterTestManager;
-
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(AirflowPrintRetries.class.getName());
     private final int MIN_TRIES_TO_DISPLAY = 2;
 
     private Instant endTime = Instant.now();
@@ -47,12 +36,12 @@ public class AirflowPrintRetries extends AbstractTestNGSpringContextTests {
     @BeforeClass
     public void setup(@Optional("14") int historicalDaysBack, @Optional("1") int anomalyDay) {
 
-        LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack="
-                + historicalDaysBack + " anomalyDay=" + anomalyDay);
+        endTime = DataProcessingHelper.INSTANCE.getDataPreparationFinishTime().orElseThrow();
+        startTime = endTime.minus(1, DAYS);
 
         AirflowTasksPostgres airflowTasksPostgres = new AirflowTasksPostgres();
 
-        airflowTasksWithRetries = airflowTasksPostgres.fetchRetries(startTime)
+        airflowTasksWithRetries = airflowTasksPostgres.fetchRetries(startTime, endTime)
                 .parallelStream()
                 .filter(task -> task.tryNumber >= MIN_TRIES_TO_DISPLAY)
                 .collect(Collectors.toList());
@@ -63,6 +52,7 @@ public class AirflowPrintRetries extends AbstractTestNGSpringContextTests {
     public void print_retries() {
         LOGGER.warn("Started on " + Instant.now());
         LOGGER.warn("");
+        LOGGER.warn("StartTime: " + startTime + ", EndTime " + endTime);
 
         if (airflowTasksWithRetries.isEmpty()) {
             LOGGER.warn("Not found tasks with reties amount more then " + MIN_TRIES_TO_DISPLAY);
