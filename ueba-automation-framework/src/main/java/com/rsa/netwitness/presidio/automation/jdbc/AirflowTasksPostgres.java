@@ -67,9 +67,10 @@ public class AirflowTasksPostgres {
         return airflowTaskFailTables;
     }
 
-    public List<AirflowTaskInstanceTable> fetchRetries(Instant startTime) {
-        String SQL_QUERY = "select * from " + TASK_INSTANCE_TABLE
-                + " where " + AirflowTaskInstanceTable.START_DATE + " > '" + Timestamp.from(startTime) + "'";
+    public List<AirflowTaskInstanceTable> fetchRetries(Instant startTime, Instant endTime) {
+        String SQL_QUERY = "select * from " + TASK_INSTANCE_TABLE +
+        " where " + AirflowTaskFailTable.START_DATE + " > '" + Timestamp.from(startTime) + "'" +
+                " and " + AirflowTaskFailTable.END_DATE + " < '" + Timestamp.from(endTime) + "'";
 
         return fetch(SQL_QUERY);
     }
