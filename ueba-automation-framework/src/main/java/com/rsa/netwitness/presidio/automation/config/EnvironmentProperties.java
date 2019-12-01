@@ -15,7 +15,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.rsa.netwitness.presidio.automation.config.AutomationConf.USER_DIR;
@@ -36,9 +35,6 @@ public enum EnvironmentProperties {
     private static final String MONGO_PRESIDIO = "mongo-presidio";
 
     private Lazy<Properties> envPropertiesHolder = new Lazy<>();
-    private Supplier<Properties> propertiesSupplier = this::load;
-
-
 
     public String logDecoderIp() {
         return property(LOG_DECODER);
@@ -66,15 +62,17 @@ public enum EnvironmentProperties {
 
 
 
-
-
     private String property(String propertyName) {
-        Properties prop = envPropertiesHolder.getOrCompute(propertiesSupplier);
+        Properties prop = envPropertiesHolder.getOrCompute(this::load);
         if (prop.isEmpty()) {
-            LOGGER.error("Failed to load Properties.");
-            return null;
+            LOGGER.error("Failed to get env.properties file.");
+            return "";
         } else {
-            return prop.getOrDefault(propertyName, "").toString();
+            String p = prop.getOrDefault(propertyName, "").toString();
+            if (p.isBlank()) {
+                LOGGER.error("Missing env.property key: " + p);
+            }
+            return p;
         }
     }
 

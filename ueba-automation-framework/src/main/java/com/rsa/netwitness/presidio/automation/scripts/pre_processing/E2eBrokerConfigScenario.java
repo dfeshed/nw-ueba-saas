@@ -7,6 +7,7 @@ import com.rsa.netwitness.presidio.automation.mongo.RespondServerAlertCollection
 
 import java.time.Instant;
 
+import static com.rsa.netwitness.presidio.automation.config.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
 import static com.rsa.netwitness.presidio.automation.enums.ConfigurationScenario.E2E_BROKER;
 
 class E2eBrokerConfigScenario implements PreProcessingConfigScenario {
@@ -31,7 +32,9 @@ class E2eBrokerConfigScenario implements PreProcessingConfigScenario {
         adapterTestManager.setEngineConfigurationParametersToTestingValues();
         adapterTestManager.setBrokerConfigurationForAdapterAndTransformer();
         adapterTestManager.setBuildingModelsRange(7, 2, 2);
-        new RespondServerAlertCollectionHelper().truncateCollection();
+        if ( !ENVIRONMENT_PROPERTIES.esaAnalyticsServerIp().isBlank() ) {
+            new RespondServerAlertCollectionHelper().truncateCollection();
+        }
         AirflowHelper.INSTANCE.startAirflowScheduler().output.forEach(System.out::println);
     }
 }
