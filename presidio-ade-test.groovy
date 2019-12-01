@@ -4,11 +4,10 @@ pipeline {
         string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         string(name: 'SIDE_BRANCH_JOD_NUMBER', defaultValue: '', description: 'Write the "presidio-build-jars-and-packages" build number from which you want to install the PRMs')
-        booleanParam(name: 'RESET_UEBA_DBS', defaultValue: false, description: '')
+        booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_UEBA_UI_RPMS', defaultValue: false, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
-        booleanParam(name: 'TRIGGER_CORE_AUTOMATION', defaultValue: true, description: '')
     }
     agent { label env.NODE_LABLE }
     //tools { jdk env.JDK }
@@ -67,18 +66,6 @@ pipeline {
             }
             steps {
                 runSuiteXmlFile('ade/ADE_Test.xml')
-            }
-        }
-        stage('Trigger Core Integration Test') {
-            when {
-                expression { return params.TRIGGER_CORE_AUTOMATION }
-            }
-            steps {
-                script {
-                        build job: 'master-presidio-integration-test-core', parameters: [
-                                [$class: 'BooleanParameterValue', name: 'INSTALL_UEBA_RPMS', value: false]
-                        ], wait: false
-                }
             }
         }
     }
