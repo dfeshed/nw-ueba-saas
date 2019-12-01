@@ -20,7 +20,7 @@ public interface EnrichedDataReader {
      * @param contextType     type of context (e.g: NORMALIZED_USERNAME_FIELD, NORMALIZED_SRC_MACHINE_FIELD etc.)
      * @return list of ContextIdToNumOfItems
      */
-    List<ContextIdToNumOfItems> aggregateContextToNumOfEvents(EnrichedRecordsMetadata recordsMetadata, String contextType);
+    List<ContextIdToNumOfItems> aggregateContextToNumOfEvents(EnrichedRecordsMetadata recordsMetadata, String contextType, Boolean filterNullContext);
 
     /**
      * Read data.

@@ -11,6 +11,14 @@
             {
               "type": "time-model-scorer",
               "name": "startInstant.userId.process.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
               "additional-models": [],
               "model": {
                 "name": "startInstant.userId.process"
@@ -25,6 +33,12 @@
               "type": "conditional",
               "name": "dstProcessFileName.userId.process.score",
               "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                },
                 {
                   "type": "contained-in-list",
                   "fieldName": "dstProcessCategories",
@@ -266,6 +280,12 @@
               "name": "srcProcessFilePath.userIdScriptingDstProcessFileName.process.score",
               "predicates": [
                 {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
                   "type": "contained-in-list",
                   "fieldName": "dstProcessCategories",
                   "expectedValues": [
@@ -336,6 +356,12 @@
               "name": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process.score",
               "predicates": [
                 {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
                   "type": "contained-in-list",
                   "fieldName": "srcProcessCategories",
                   "expectedValues": [
@@ -405,6 +431,12 @@
               "type": "conditional",
               "name": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process.score",
               "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                },
                 {
                   "type": "contained-in-list",
                   "fieldName": "srcProcessCategories",

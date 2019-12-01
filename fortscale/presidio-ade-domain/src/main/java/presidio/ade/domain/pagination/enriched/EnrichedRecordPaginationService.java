@@ -21,24 +21,34 @@ public class EnrichedRecordPaginationService extends PaginationService<EnrichedR
 
     private EnrichedDataStore store;
     private String contextType;
+    private Boolean filterNullContext;
 
+
+    public EnrichedRecordPaginationService(EnrichedDataStore store, int pageSize, int maxGroupSize, String contextType, Boolean filterNullContext) {
+        super(pageSize, maxGroupSize);
+        this.store = store;
+        this.contextType = contextType;
+        this.filterNullContext = filterNullContext;
+    }
 
     public EnrichedRecordPaginationService(EnrichedDataStore store, int pageSize, int maxGroupSize, String contextType) {
         super(pageSize, maxGroupSize);
         this.store = store;
         this.contextType = contextType;
+        this.filterNullContext = true;
     }
 
     public EnrichedRecordPaginationService(EnrichedDataStore store, int pageSize, int maxGroupSize, String contextType, String sortBy) {
         super(pageSize, maxGroupSize, sortBy);
         this.store = store;
         this.contextType = contextType;
+        this.filterNullContext = true;
     }
 
     @Override
     protected List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String adeEventType, TimeRange timeRange) {
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(adeEventType, timeRange.getStart(), timeRange.getEnd());
-        return this.store.aggregateContextToNumOfEvents(enrichedRecordsMetadata, this.contextType);
+        return this.store.aggregateContextToNumOfEvents(enrichedRecordsMetadata, this.contextType, this.filterNullContext);
     }
 
     @Override

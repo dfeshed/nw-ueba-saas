@@ -133,7 +133,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
 
     @Override
     public List<ContextIdToNumOfItems> aggregateContextToNumOfEvents(
-            EnrichedRecordsMetadata recordsMetadata, String contextType) {
+            EnrichedRecordsMetadata recordsMetadata, String contextType, Boolean filterNullContext) {
 
         Date startDate = Date.from(recordsMetadata.getStartInstant());
         Date endDate = Date.from(recordsMetadata.getEndInstant());
@@ -143,7 +143,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
         String collectionName = translator.toCollectionName(recordsMetadata);
 
         try {
-            return aggregateContextIdToNumOfItems(startDate, endDate, fieldName, -1, 0, collectionName, false);
+            return aggregateContextIdToNumOfItems(startDate, endDate, fieldName, -1, 0, collectionName, false, filterNullContext);
         } catch (InvalidDataAccessApiUsageException e) {
             long nextPageIndex = 0;
             List<ContextIdToNumOfItems> subList;
@@ -151,7 +151,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
 
             do {
                 subList = aggregateContextIdToNumOfItems(startDate, endDate, fieldName,
-                        nextPageIndex * contextIdToNumOfItemsPageSize, contextIdToNumOfItemsPageSize, collectionName, true);
+                        nextPageIndex * contextIdToNumOfItemsPageSize, contextIdToNumOfItemsPageSize, collectionName, true, filterNullContext);
                 results.addAll(subList);
                 nextPageIndex++;
             } while (subList.size() == contextIdToNumOfItemsPageSize);
@@ -161,7 +161,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
     }
 
     private List<ContextIdToNumOfItems> aggregateContextIdToNumOfItems(
-            Date startDate, Date endDate, String fieldName, long skip, long limit, String collectionName, boolean allowDiskUse) {
+            Date startDate, Date endDate, String fieldName, long skip, long limit, String collectionName, boolean allowDiskUse, Boolean filterNullContext) {
 
         List<AggregationOperation> aggregationOperations = new LinkedList<>();
         aggregationOperations.add(match(where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate)));
@@ -179,9 +179,12 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
         Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
                 allowDiskUse(allowDiskUse).build());
 
-        return mongoTemplate
-                .aggregate(aggregation, collectionName, ContextIdToNumOfItems.class)
-                .getMappedResults().stream().filter(contextIdToNumOfItems -> contextIdToNumOfItems.getContextId() != null).collect(Collectors.toList());
+        if(filterNullContext){
+            return mongoTemplate.aggregate(aggregation, collectionName, ContextIdToNumOfItems.class)
+                    .getMappedResults().stream().filter(contextIdToNumOfItems -> contextIdToNumOfItems.getContextId() != null).collect(Collectors.toList());
+        }
+        
+        return mongoTemplate.aggregate(aggregation, collectionName, ContextIdToNumOfItems.class).getMappedResults();
     }
 
     /**
