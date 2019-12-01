@@ -3,6 +3,7 @@ package com.rsa.netwitness.presidio.automation.scripts.pre_processing;
 import com.rsa.netwitness.presidio.automation.data.processing.airflow.AirflowHelper;
 import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.enums.ConfigurationScenario;
+import com.rsa.netwitness.presidio.automation.mongo.RespondServerAlertCollectionHelper;
 
 import java.time.Instant;
 
@@ -30,6 +31,7 @@ class E2eBrokerConfigScenario implements PreProcessingConfigScenario {
         adapterTestManager.setEngineConfigurationParametersToTestingValues();
         adapterTestManager.setBrokerConfigurationForAdapterAndTransformer();
         adapterTestManager.setBuildingModelsRange(7, 2, 2);
+        new RespondServerAlertCollectionHelper().truncateCollection();
         AirflowHelper.INSTANCE.startAirflowScheduler().output.forEach(System.out::println);
     }
 }
