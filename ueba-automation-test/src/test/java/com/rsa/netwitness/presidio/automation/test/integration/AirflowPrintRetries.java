@@ -56,6 +56,7 @@ public class AirflowPrintRetries extends AbstractTestNGSpringContextTests {
 
         if (airflowTasksWithRetries.isEmpty()) {
             LOGGER.warn("Not found tasks with reties amount more then " + MIN_TRIES_TO_DISPLAY);
+            LOGGER.warn("From: " + startTime + ", to " + endTime);
         } else {
             Stream<AirflowTaskInstanceTable> sorted = airflowTasksWithRetries.stream()
                     .sorted(comparing(e -> e.executionDate, reverseOrder()));

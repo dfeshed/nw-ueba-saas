@@ -40,7 +40,7 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
         LOGGER.warn("");
 
         if (airflowTaskFailTables.isEmpty()) {
-            LOGGER.warn("No failures since from: " + startTime + ", to " + endTime);
+            LOGGER.warn("No failures found from: " + startTime + ", to " + endTime);
         } else {
             airflowTaskFailTables.forEach(task -> AirflowHelper.INSTANCE.publishLogs(task.dagId, task.taskId, task.executionDate));
             LOGGER.warn("StartTime: " + startTime + ", EndTime " + endTime);
