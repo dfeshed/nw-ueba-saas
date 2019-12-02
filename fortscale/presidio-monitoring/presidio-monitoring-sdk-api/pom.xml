@@ -7,9 +7,9 @@
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>presidio-monitoring</artifactId>
-        <version>11.4.0-0-SNAPSHOT</version>
+        <version>11.5.0-0-SNAPSHOT</version>
     </parent>
-    <version>11.4.0-0-SNAPSHOT</version>
+    <version>11.5.0-0-SNAPSHOT</version>
     <groupId>fortscale</groupId>
     <artifactId>presidio-monitoring-sdk-api</artifactId>
 
