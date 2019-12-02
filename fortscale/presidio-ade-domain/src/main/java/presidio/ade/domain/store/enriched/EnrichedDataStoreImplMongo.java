@@ -24,7 +24,6 @@ import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -165,6 +164,11 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
 
         List<AggregationOperation> aggregationOperations = new LinkedList<>();
         aggregationOperations.add(match(where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate)));
+
+        if(filterNullContext){
+            aggregationOperations.add(match(where(ContextIdToNumOfItems.CONTEXT_ID_FIELD).ne(null)));
+        }
+
         aggregationOperations.add(group(fieldName).count().as(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD));
         aggregationOperations.add(project(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD)
                 .and("_id").as(ContextIdToNumOfItems.CONTEXT_ID_FIELD)
@@ -180,9 +184,6 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
                 allowDiskUse(allowDiskUse).build());
 
         List<ContextIdToNumOfItems> contextIdToNumOfItems = mongoTemplate.aggregate(aggregation, collectionName, ContextIdToNumOfItems.class).getMappedResults();
-        if(filterNullContext){
-            contextIdToNumOfItems = contextIdToNumOfItems.stream().filter(contextIdToNumOfItem -> contextIdToNumOfItem.getContextId() != null).collect(Collectors.toList());
-        }
         
         return contextIdToNumOfItems;
     }
