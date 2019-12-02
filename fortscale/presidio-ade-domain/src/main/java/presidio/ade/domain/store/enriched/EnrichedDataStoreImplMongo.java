@@ -179,12 +179,12 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
         Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
                 allowDiskUse(allowDiskUse).build());
 
+        List<ContextIdToNumOfItems> contextIdToNumOfItems = mongoTemplate.aggregate(aggregation, collectionName, ContextIdToNumOfItems.class).getMappedResults();
         if(filterNullContext){
-            return mongoTemplate.aggregate(aggregation, collectionName, ContextIdToNumOfItems.class)
-                    .getMappedResults().stream().filter(contextIdToNumOfItems -> contextIdToNumOfItems.getContextId() != null).collect(Collectors.toList());
+            contextIdToNumOfItems = contextIdToNumOfItems.stream().filter(contextIdToNumOfItem -> contextIdToNumOfItem.getContextId() != null).collect(Collectors.toList());
         }
         
-        return mongoTemplate.aggregate(aggregation, collectionName, ContextIdToNumOfItems.class).getMappedResults();
+        return contextIdToNumOfItems;
     }
 
     /**

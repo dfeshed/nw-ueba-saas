@@ -405,12 +405,6 @@
                   "negate": true
                 },
                 {
-                  "type": "equals",
-                  "fieldName": "ja3.name",
-                  "expectedValue": null,
-                  "negate": true
-                },
-                {
                   "type": "regex",
                   "fieldName": "direction",
                   "pattern": "OUTBOUND"
@@ -456,12 +450,6 @@
                   "negate": true
                 },
                 {
-                  "type": "equals",
-                  "fieldName": "ja3.name",
-                  "expectedValue": null,
-                  "negate": true
-                },
-                {
                   "type": "regex",
                   "fieldName": "direction",
                   "pattern": "OUTBOUND"
@@ -500,12 +488,6 @@
               "type": "conditional",
               "name": "dstPort.ja3Outbound.tls.score",
               "predicates": [
-                {
-                  "type": "equals",
-                  "fieldName": "ja3.name",
-                  "expectedValue": null,
-                  "negate": true
-                },
                 {
                   "type": "equals",
                   "fieldName": "ja3.name",
