@@ -63,7 +63,7 @@ public class AddToWatchListTests extends AbstractTestNGSpringContextTests {
         final String entityType = "ja3";
 
         SoftAssertions softly = new SoftAssertions();
-        Map.Entry<String, List<EntitiesStoredRecord>> selectedJa3Bulk = notEmptyBulkByAnySeverity(entityType);
+        Map.Entry<String, List<EntitiesStoredRecord>> selectedJa3Bulk = largeBulkByAnySeverity(entityType);
 
         String selectedSeverity = selectedJa3Bulk.getKey();
         List<EntitiesStoredRecord> selectedEntities = selectedJa3Bulk.getValue();
@@ -86,7 +86,7 @@ public class AddToWatchListTests extends AbstractTestNGSpringContextTests {
         final String entityType = "userId";
 
         SoftAssertions softly = new SoftAssertions();
-        Map.Entry<String, List<EntitiesStoredRecord>> selectedJa3Bulk = notEmptyBulkByAnySeverity(entityType);
+        Map.Entry<String, List<EntitiesStoredRecord>> selectedJa3Bulk = largeBulkByAnySeverity(entityType);
 
         String selectedSeverity = selectedJa3Bulk.getKey();
         List<EntitiesStoredRecord> selectedEntities = selectedJa3Bulk.getValue();
@@ -147,13 +147,13 @@ public class AddToWatchListTests extends AbstractTestNGSpringContextTests {
                 .doesNotContain("watched");
     }
 
-    private Map.Entry<String, List<EntitiesStoredRecord>> notEmptyBulkByAnySeverity(String entityType) {
+    private Map.Entry<String, List<EntitiesStoredRecord>> largeBulkByAnySeverity(String entityType) {
         return allEntities.parallelStream()
                 .filter(e -> e.getEntityType().equals(entityType))
                 .collect(Collectors.groupingBy(EntitiesStoredRecord::getSeverity))
                 .entrySet().stream()
-                .filter(e -> !e.getValue().isEmpty())
-                .findAny().orElseThrow();
+                .filter(e -> e.getValue().size() > 10)
+                .findAny().orElseThrow(() -> new RuntimeException("Not found 10 entities for any severity for entityType=" + entityType));
     }
 
     private List<String> getIds(List<EntitiesStoredRecord> entities) {
