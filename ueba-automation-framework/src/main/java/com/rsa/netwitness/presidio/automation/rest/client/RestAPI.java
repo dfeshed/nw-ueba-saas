@@ -1,11 +1,11 @@
 package com.rsa.netwitness.presidio.automation.rest.client;
 
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import org.apache.commons.net.util.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.Assert;
-import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -38,6 +38,41 @@ public class RestAPI {
 
     public static String getMessageBodyConfiguration() {
         return messageBodyConfiguration;
+    }
+
+    public static RestApiResponse sendPatch(String urlAddress, String messageBody) {
+        RestApiResponse response = new RestApiResponse();
+        URL url;
+        HttpURLConnection conn;
+
+        try {
+            url = new URL(urlAddress);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(100000);
+            conn.setConnectTimeout(100000);
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+
+            OutputStream os = conn.getOutputStream();
+            os.write(messageBody.getBytes());
+            os.flush();
+            os.close();
+
+            response.setResponseCode(conn.getResponseCode());
+            response.setResponseMessage(conn.getResponseMessage());
+
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+            response.setResultBody(org.apache.commons.io.IOUtils.toString(in, "UTF-8"));
+
+            conn.disconnect();
+        }  catch (IOException e) {
+            response.setErrorMessage(e.getMessage());
+        }
+
+        return response;
     }
 
     public static RestApiResponse sendPost(String urlAddress, String messageBody) {

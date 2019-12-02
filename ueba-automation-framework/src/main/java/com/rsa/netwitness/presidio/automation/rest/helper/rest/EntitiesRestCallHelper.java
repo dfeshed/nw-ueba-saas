@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.rest.helper.rest;
 
+import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
@@ -12,23 +13,36 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.rsa.netwitness.presidio.automation.rest.client.HttpMethod.GET;
+import static com.rsa.netwitness.presidio.automation.rest.client.HttpMethod.PATCH;
 
 
-public class EntitiesRestCallHelper implements IRestCallHelper{
-    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(EntitiesRestCallHelper.class.getName());
+public class EntitiesRestCallHelper implements IRestCallHelper {
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(EntitiesRestCallHelper.class);
 
-    public List<EntitiesStoredRecord> getEntities(PresidioUrl parametersUrlBuilder) {
+    private RestApiResponse getResponse(PresidioUrl presidioUrl) {
+        if (presidioUrl.METHOD.equals(GET)) {
+            return RestAPI.sendGet(presidioUrl.URL);
+        } else if (presidioUrl.METHOD.equals(PATCH)) {
+            return RestAPI.sendPatch(presidioUrl.URL, presidioUrl.JSON_BODY);
+        } else {
+            throw new RuntimeException("No such method: " + presidioUrl.METHOD);
+        }
+    }
 
-        String URL = parametersUrlBuilder.toString();
+    public List<EntitiesStoredRecord> getEntities(PresidioUrl presidioUrl) {
 
-        LOGGER.debug("Sending request: " + URL);
-        RestApiResponse response = RestAPI.sendGet(URL);
+        LOGGER.debug("Sending request: " + presidioUrl);
+        RestApiResponse response = getResponse(presidioUrl);
 
         Assert.assertEquals(200, response.getResponseCode(),
                 "Error with response code: " + response.getResponseCode() +
-                        "\nURL: " + URL +
+                        "\nRequest: " + presidioUrl.print() +
                         "\nError message: " + response.getErrorMessage());
 
         LOGGER.debug(response.getResultBody());
@@ -81,7 +95,7 @@ public class EntitiesRestCallHelper implements IRestCallHelper{
                 trendingScore.put("weekly" , trendingScoreObj.getInt("weekly"));
 
                 List<AlertsStoredRecord> alerts = null;
-                if(URL.toLowerCase().contains("expand=true")) {
+                if(presidioUrl.URL.toLowerCase().contains("expand=true")) {
 
                     alerts = new ArrayList<>();
                     JSONArray alertsJson = tmp.getJSONArray("alerts");
