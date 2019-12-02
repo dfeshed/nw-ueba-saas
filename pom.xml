@@ -9,7 +9,7 @@
     </parent>
     <groupId>presidio.ui</groupId>
     <artifactId>presidio-ui</artifactId>
-    <version>11.4.0-0-SNAPSHOT</version>
+    <version>11.5.0-0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>presidio-ui</name>
 
@@ -20,7 +20,7 @@
         <logback-classic.version>1.2.3</logback-classic.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <presidio.core.version>11.4.0-0-SNAPSHOT</presidio.core.version>
+        <presidio.core.version>11.5.0-0-SNAPSHOT</presidio.core.version>
         <argparse4j.version>0.7.0</argparse4j.version>
         <cglib.version>3.2.1</cglib.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
