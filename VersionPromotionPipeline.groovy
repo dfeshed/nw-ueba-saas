@@ -38,7 +38,7 @@ pipeline {
                         new MavenExecution(
                                 pomFile: "pom.xml",
                                 properties: [],
-                                command: "mvn clean install deploy -B -U -f pom.xml"
+                                command: "mvn clean deploy -B -U -f pom.xml"
                         )
                 ])
             }
@@ -55,7 +55,7 @@ pipeline {
                         new MavenExecution(
                                 pomFile: "fortscale/pom.xml",
                                 properties: ["presidio.test.utils"],
-                                command: "mvn clean install deploy -B -U -f fortscale/pom.xml"
+                                command: "mvn clean deploy -B -U -f fortscale/pom.xml"
                         ),
                         new MavenExecution(
                                 pomFile: "package/pom.xml",
@@ -77,7 +77,7 @@ pipeline {
                         new MavenExecution(
                                 pomFile: "pom.xml",
                                 properties: ["presidio.test.utils", "presidio.core.version"],
-                                command: "mvn clean install deploy -B -U -f pom.xml"
+                                command: "mvn clean deploy -B -U -f pom.xml"
                         ),
                         new MavenExecution(
                                 pomFile: "package/pom.xml",
@@ -99,7 +99,7 @@ pipeline {
                         new MavenExecution(
                                 pomFile: "presidio-core-extension/pom.xml",
                                 properties: ["flume.version"],
-                                command: "mvn clean install deploy -B -U -f presidio-core-extension/pom.xml"
+                                command: "mvn clean deploy -B -U -f presidio-core-extension/pom.xml"
                         ),
                         new MavenExecution(
                                 pomFile: "package/pom.xml",
@@ -127,7 +127,7 @@ pipeline {
                                     export HTTPS_PROXY=http://rsa-eng-proxy1:82 &&
                                     export NODE_TLS_REJECT_UNAUTHORIZED=0 &&
                                     export NO_PROXY="localhost,127.0.0.1,.emc.com" &&
-                                    mvn clean install deploy -B -U -f pom.xml
+                                    mvn clean deploy -B -U -f pom.xml
                                 """
                         ),
                         new MavenExecution(
