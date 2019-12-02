@@ -19,15 +19,15 @@ const resetState = Immutable.from({
   currentAlertsCount: 0,
   topAlertsEntity: 'all',
   topAlertsTimeFrame: {
-    name: 'IN_LAST_SEVEN_DAYS',
-    unit: 'Days',
-    value: 7
+    name: 'IN_LAST_THREE_MONTH',
+    unit: 'Months',
+    value: 3
   },
   relativeDateFilter: {
     name: 'alertTimeRange',
     operator: 'LESS_THAN',
-    unit: 'Days',
-    value: [ 7 ]
+    unit: 'Months',
+    value: [ 3 ]
   },
   alertsSeverity: {
     total_severity_count: {
@@ -157,8 +157,8 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     assert.deepEqual(result.relativeDateFilter, {
       name: 'alertTimeRange',
       operator: 'LESS_THAN',
-      unit: 'Days',
-      value: [ 7 ]
+      unit: 'Months',
+      value: [ 3 ]
     });
 
   });
@@ -198,17 +198,17 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     const result = reducer(Immutable.from({}), {
       type: ACTION_TYPES.TOP_ALERT_FILTER,
       payload: { entityType: 'ja3', timeRange: {
-        name: 'IN_LAST_SEVEN_DAYS',
-        unit: 'Days',
-        value: 7
+        name: 'IN_LAST_THREE_MONTH',
+        unit: 'Months',
+        value: 3
       } }
     });
 
     assert.equal(result.topAlertsEntity, 'ja3');
     assert.deepEqual(result.topAlertsTimeFrame, {
-      name: 'IN_LAST_SEVEN_DAYS',
-      unit: 'Days',
-      value: 7
+      name: 'IN_LAST_THREE_MONTH',
+      unit: 'Months',
+      value: 3
     });
   });
 

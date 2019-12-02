@@ -292,13 +292,13 @@ const networkColumns = [{
 }, {
   field: 'srcNetname',
   width: '5vw',
-  title: 'Source Net Name',
+  title: 'Source Netname',
   visible: true,
   disableSort: true
 }, {
   field: 'dstNetname',
   width: '5vw',
-  title: 'Destination Net Name',
+  title: 'Destination Netname',
   visible: false,
   disableSort: true
 }, {

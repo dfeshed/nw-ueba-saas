@@ -21,9 +21,9 @@ const initialState = Immutable.from({
   topAlerts: [],
   topAlertsEntity: 'all',
   topAlertsTimeFrame: {
-    name: 'IN_LAST_SEVEN_DAYS',
-    unit: 'Days',
-    value: 7
+    name: 'IN_LAST_THREE_MONTH',
+    unit: 'Months',
+    value: 3
   },
   topAlertsError: null,
   alertList: {},
@@ -34,8 +34,8 @@ const initialState = Immutable.from({
   relativeDateFilter: {
     name: 'alertTimeRange',
     operator: 'LESS_THAN',
-    value: [ 7 ],
-    unit: 'Days'
+    value: [ 3 ],
+    unit: 'Months'
   },
   alertsSeverity: {
     total_severity_count: {
@@ -76,8 +76,8 @@ const tabs = handleActions({
     let newState = state.set('relativeDateFilter', {
       name: 'alertTimeRange',
       operator: 'LESS_THAN',
-      value: [ 7 ],
-      unit: 'Days'
+      value: [ 3 ],
+      unit: 'Months'
     });
     if (payload.filter) {
       filter = state.getIn(['filter']).merge(payload.filter);

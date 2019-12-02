@@ -5493,7 +5493,7 @@ effects the simulated source.',
       alertNames: {
         credential_dumping: {
           name: 'Credential Dumping',
-          desc: 'Credential dumping is the process of obtaining account login and password information, normally in the form of a hash or a clear text password, from the operating system and software. Credentials can then be used to perform Lateral Movement and access restricted information.',
+          desc: 'Credential dumping is the process of obtaining login information, normally in the form of a hash or a clear text password. Credentials can then be used to perform privilege escalations, lateral movement and access restricted information.',
           related: 'Related Threats: Common credential dumpers such as Mimikatz access the LSA Subsystem Service (LSASS) process by opening the process, locating the LSA secrets key, and decrypting the sections in memory where credential details are stored. Credential dumpers may also use methods for reflective Process Injection to reduce potential indicators of malicious activity.'
         },
         discovery_reconnaissance: {
@@ -5741,32 +5741,32 @@ effects the simulated source.',
             chartTitle: 'Active Directory Change Time Baseline'
           },
           admin_changed_his_own_password: {
-            name: 'Admin changed his own password',
+            name: 'Admin Changed his own Password',
             timeline: 'Admin {{entityName}}\'s has changed a password',
             chartTitle: 'Sensitive User Status Changes'
           },
           user_account_enabled: {
-            name: 'User account enabled',
+            name: 'User Account Enabled',
             timeline: '{{entityName}}\'s has enabled an account',
             chartTitle: 'Sensitive User Status Changes'
           },
           user_account_disabled: {
-            name: 'User account disabled',
+            name: 'User Account Disabled',
             timeline: '{{entityName}}\'s  has disabled an account',
             chartTitle: 'Sensitive User Status Changes'
           },
           user_account_unlocked: {
-            name: 'User account unlocked',
+            name: 'User Account Unlocked',
             timeline: '{{entityName}}\'s has unlocked an account',
             chartTitle: 'Sensitive User Status Changes'
           },
           user_account_type_changed: {
-            name: 'User Account type changed',
+            name: 'User Account Type Changed',
             timeline: '{{entityName}}\'s has changed an account\'s type',
             chartTitle: 'Sensitive User Status Changes'
           },
           user_account_locked: {
-            name: 'User Account locked',
+            name: 'User Account Locked',
             timeline: '{{entityName}}\'s account has been locked out',
             chartTitle: 'Sensitive User Status Changes'
           },
@@ -5886,8 +5886,8 @@ effects the simulated source.',
           },
           // Registry anomalies
           abnormal_process_modified_registry_key_group: {
-            name: 'Abnormal Process Modified a Registry Group',
-            timeline: '{{contexts.processFileName}} has modified {{contexts.registryKeyGroup}}',
+            name: 'Abnormal Process Modified a Registry Key Group',
+            timeline: '{{contexts.processFileName}} has modified a registry key from group {{contexts.registryKeyGroup}}',
             chartTitle: 'Key Registry Changing Processes',
             axisYtitle: 'Key Registry Changing Processes'
           },
@@ -5904,70 +5904,70 @@ effects the simulated source.',
           },
           // Process anomalies
           abnormal_process_injects_into_lsass: {
-            name: 'Abnormal process injected into LSASS',
-            timeline: '{{contexts.srcProcessFileName}} has created a remote thread in the LSASS process',
-            chartTitle: 'LSASS Process Injection',
+            name: 'Abnormal Process Created a Remote Thread in LSASS',
+            timeline: '{{anomalyValue}} has created a remote thread in LSASS',
+            chartTitle: 'Processes Creating Remote Threads in LSASS',
             axisYtitle: ''
           },
           abnormal_reconnaissance_tool_executed: {
-            name: 'Abnormal reconnaissance tool executed',
-            timeline: '{{contexts.dstProcessFileName}} has been created',
-            chartTitle: 'Reconnaissance Tools',
+            name: 'Abnormal Reconnaissance Tool Executed',
+            timeline: '{{anomalyValue}} has been executed',
+            chartTitle: 'Reconnaissance Tools Executed by the User',
             axisYtitle: ''
           },
           abnormal_process_executed_a_scripting_tool: {
             name: 'Abnormal Process Executed a Scripting Tool',
-            timeline: '{{contexts.srcProcessFileName}} has created {{contexts.dstProcessFileName}}',
-            chartTitle: 'Processes Executing Scripting',
+            timeline: '{{anomalyValue}} has executed {{contexts.dstProcessFileName}}',
+            chartTitle: 'Processes Executing the Scripting Tool',
             axisYtitle: ''
           },
           abnormal_process_injects_into_windows_process: {
-            name: 'Abnormal process injects into windows process',
+            name: 'Abnormal Process Injects into Windows Process',
             timeline: '{{contexts.dstProcessFileName}} has created a remote thread in {{contexts.srcProcessFileNam}} process',
             chartTitle: 'Processes injected to Windows Processes',
             axisYtitle: ''
           },
           uncommon_process_injects_into_windows_process: {
-            name: 'Abnormal Process Injects into Windows Process',
-            timeline: '{{contexts.dstProcessFileName}} was injected into a known windows process',
-            chartTitle: 'Processes injected to Windows Processes',
+            name: 'Abnormal Process Created a Remote Thread in a Windows Process',
+            timeline: '{{anomalyValue}} has created a remote thread in {{contexts.dstProcessFileName}}',
+            chartTitle: 'Processes Creating Remote Threads in the Windows Process',
             axisYtitle: ''
           },
           abnormal_process_executeed_a_scripting_tool: {
-            name: 'Abnormal process executed a Scripting Tool',
+            name: 'Abnormal Process Executed a Scripting Tool',
             timeline: '',
             chartTitle: '',
             axisYtitle: ''
           },
           abnormal_application_triggered_by_scripting_tool: {
             name: 'Scripting Tool Triggered an Abnormal Application',
-            timeline: '{{contexts.srcProcessFileName}} triggered {{anomalyValue}}',
+            timeline: '{{contexts.srcProcessFileName}} has triggered {{anomalyValue}}',
             chartTitle: 'Applications Triggered by the Scripting Tool',
             axisYtitle: ''
           },
           abnormal_process_opened_by_scripting_tool: {
-            name: 'Abnormal Process Opened by Scripting Tool',
-            timeline: '{{contexts.dstProcessFileName}} was opened by {{contexts.srcProcessFileName}}',
-            chartTitle: 'Processes Opened by Scripting',
+            name: 'Scripting Tool Opened an Abnormal Process',
+            timeline: '{{contexts.srcProcessFileName}} has opened {{anomalyValue}}',
+            chartTitle: 'Processes Opened by the Scripting Tool',
             axisYtitle: ''
           },
           high_number_of_distinct_reconnaissance_tools_executed: {
             name: 'Multiple Distinct Reconnaissance Tools Executed',
-            timeline: '{{anomalyValue}} reconnaissance tools were executed',
+            timeline: '{{anomalyValue}} reconnaissance tools have been executed in this hour',
             chartTitle: 'Distinct Reconnaissance Tools (Last 30 Days)',
-            axisYtitle: 'Count of Tools'
+            axisYtitle: 'Count of Distinct Reconnaissance Tools'
           },
           high_number_of_reconnaissance_tool_activities_executed: {
             name: 'Multiple Reconnaissance Tool Activities Executed',
-            timeline: 'Reconnaissance tool activities were executed in this hour',
+            timeline: '{{anomalyValue}} reconnaissance tool activities have been executed in this hour',
             chartTitle: 'Reconnaissance Tool Executions (Last 30 Days)',
-            axisYtitle: 'Count of Executions'
+            axisYtitle: 'Count of Reconnaissance Tool Executions'
           },
           high_number_of_reconnaissance_tools_executed_process: {
-            name: 'Process Executed Multiple Times by a Reconnaissance Tool',
-            timeline: '{{entityName}} executed {{contexts.dstProcessFileName}} {{anomalyValue}} times this hour',
-            chartTitle: 'Process Executions by Reconnaissance Tool (Last 30 Days)',
-            axisYtitle: 'Count of Process Executions'
+            name: 'User Executed a Reconnaissance Tool Multiple Times',
+            timeline: '{{entityName}} has executed {{contexts.dstProcessFileName}} {{anomalyValue}} times in this hour',
+            chartTitle: 'The Reconnaissance Tool\'s Executions (Last 30 Days)',
+            axisYtitle: 'Count of the Reconnaissance Tool\'s Executions'
           },
           abnormal_process_day_time: {
             name: 'Abnormal Process Execution Time',
@@ -5975,19 +5975,19 @@ effects the simulated source.',
             chartTitle: 'Process Access Time Baseline'
           },
           user_abnormal_application_triggered_by_scripting_tool: {
-            name: 'Abnormal User Application Triggered by Scripting Tool',
-            timeline: '{{entityName}} triggered by scripting tool',
-            chartTitle: 'Processes Triggered by Scripting'
+            name: 'User Ran a Scripting Tool that Triggered an Abnormal Application',
+            timeline: '{{entityName}} has run {{contexts.srcProcessFileName}} to trigger {{anomalyValue}}',
+            chartTitle: 'Applications Triggered by the Scripting Tool Run by the User'
           },
           user_abnormal_process_opened_by_scripting_tool: {
-            name: 'Abnormal User Application Opened by Scripting Tool',
-            timeline: '{{entityName}} opened by scripting tool',
-            chartTitle: 'Processes Opened by Scripting'
+            name: 'User Ran a Scripting Tool to Open an Abnormal Process',
+            timeline: '{{entityName}} has run {{contexts.srcProcessFileName}} to open {{anomalyValue}}',
+            chartTitle: 'Processes Opened by the Scripting Tool Run by the User'
           },
           user_abnormal_process_executed_a_scripting_tool: {
-            name: 'User Ran a Scripting Tool that Triggered an Abnormal Application',
-            timeline: '{{entityName}} ran {{contexts.dstProcessFileName}} to trigger {{anomalyValue}}',
-            chartTitle: 'Applications Triggered by the Scripting Tool run by the User'
+            name: 'User Ran an Abnormal Process to Execute a Scripting Tool',
+            timeline: '{{entityName}} has run {{anomalyValue}} to execute {{contexts.dstProcessFileName}}',
+            chartTitle: 'Processes Run by the User to Execute the Scripting Tool'
           },
           // logon anomalies
           multiple_failed_authentications: {
@@ -6018,7 +6018,7 @@ effects the simulated source.',
             axisYtitle: 'Account Management Events'
           },
           multiple_privileged_group_membership_changes: {
-            name: 'Multiple privileged Group Membership Changes',
+            name: 'Multiple Privileged Group Membership Changes',
             desc: 'A user has sucussfuly executed multiple changes to groups',
             timeline: 'Changed {{entityName}} Group Memberships',
             chartTitle: 'Number Of Group Update Events (Last 30 Days)',
@@ -6066,7 +6066,7 @@ effects the simulated source.',
             desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.sslSubjectName}}',
             timeline: 'Abnormal number of bytes sent from{{contexts.srcIp}} to {{contexts.sslSubjectName}}',
             chartTitle: 'Bytes Sent from IP to SSL Subject Baseline (Last 30 Days)',
-            axisYtitle: 'Bytes Sent'
+            axisYtitle: 'Number of Bytes'
 
           },
           high_number_of_bytes_sent_by_src_ip_to_domain_ssl_subject_outbound: {
@@ -6074,56 +6074,56 @@ effects the simulated source.',
             desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.domainName}}',
             timeline: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.domainName}}',
             chartTitle: 'Bytes Sent from IP to Domain (Last 30 Days)',
-            axisYtitle: 'Bytes Sent'
+            axisYtitle: 'Number of Bytes'
           },
           high_number_of_bytes_sent_by_src_ip_to_dst_org_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent from IP to Organization',
             desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.dstOrgName}}',
             timeline: 'Abnormal number of bytes sent from{{contexts.srcIp}} to {{contexts.dstOrgName}}',
             chartTitle: 'Bytes Sent from IP to Organization (Last 30 Days)',
-            axisYtitle: 'Bytes Sent'
+            axisYtitle: 'Number of Bytes'
           },
           high_number_of_bytes_sent_by_src_ip_to_dst_port_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent from IP to Port',
             desc: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.dstPortName}}',
             timeline: 'Abnormal number of bytes sent from {{contexts.srcIp}} to {{contexts.dstPortName}}',
             chartTitle: 'Bytes Sent from IP to Port (Last 30 Days)',
-            axisYtitle: 'Bytes Sent'
+            axisYtitle: 'Number of Bytes'
           },
           high_number_of_bytes_sent_to_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent to SSL Subject',
             desc: 'Abnormal number of bytes sent to {{contexts.sslSubjectName}}',
             timeline: 'Abnormal number of bytes sent to {{contexts.sslSubjectName}}',
             chartTitle: 'Bytes Sent Baseline (Last 30 Days)',
-            axisYtitle: 'Bytes Sent'
+            axisYtitle: 'Number of Bytes'
           },
           high_number_of_bytes_sent_to_domain_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent to Domain',
             desc: 'Abnormal number of bytes sent to {{contexts.domainName}}',
             timeline: 'Abnormal number of bytes sent to {{contexts.domainName}}',
             chartTitle: 'Bytes Sent to Domain (Last 30 Days)',
-            axisYtitle: 'Bytes Sent'
+            axisYtitle: 'Number of Bytes'
           },
           high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent to Port',
             desc: 'Abnormal number of bytes sent to {{contexts.dstPortName}}',
             timeline: 'Abnormal number of bytes sent to {{contexts.dstPortName}}',
             chartTitle: 'Bytes Sent to Port (Last 30 Days)',
-            axisYtitle: 'Bytes Sent'
+            axisYtitle: 'Number of Bytes'
           },
           high_number_of_bytes_sent_to_dst_org_ssl_subject_outbound: {
             name: 'Abnormal Traffic Volume Sent to Organization',
             desc: 'Abnormal number of bytes sent to {{contexts.dstOrgName}}',
             timeline: 'Abnormal number of bytes sent to {{contexts.dstOrgName}}',
             chartTitle: 'Bytes Sent to Organization (Last 30 Days)',
-            axisYtitle: 'Bytes Sent'
+            axisYtitle: 'Number of Bytes'
           },
           high_number_of_bytes_sent_by_ja3_outbound: {
             name: 'Abnormal Traffic Volume Sent from JA3',
             desc: 'Abnormal number of bytes sent from {{contexts.ja3Name}}',
             timeline: 'Abnormal number of bytes sent from {{contexts.ja3Name}}',
             chartTitle: 'Bytes Sent Baseline (Last 30 Days)',
-            axisYtitle: 'Bytes Sent'
+            axisYtitle: 'Number of Bytes'
           },
           high_number_of_distinct_src_ip_for_ja3_outbound: {
             name: 'High Number of IPs Use JA3',
