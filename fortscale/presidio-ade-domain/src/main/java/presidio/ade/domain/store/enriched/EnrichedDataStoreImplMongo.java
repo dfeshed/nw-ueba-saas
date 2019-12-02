@@ -24,6 +24,7 @@ import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -166,7 +167,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
         aggregationOperations.add(match(where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate)));
 
         if(filterNullContext){
-            aggregationOperations.add(match(where(ContextIdToNumOfItems.CONTEXT_ID_FIELD).ne(null)));
+            aggregationOperations.add(match(where(fieldName).ne(null)));
         }
 
         aggregationOperations.add(group(fieldName).count().as(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD));
