@@ -3610,6 +3610,40 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(find(PILL_SELECTORS.closeParen), 'Missing close paren');
   });
 
+  // TODO bug #8 of ASOC-85938
+  // opening paren after entering a logical operator
+  // shows two powerselect dropdowns for meta, one from inside parens and one from new pill trigger
+  // after bug is fixed, last assert should be updated
+  test('Entering an open paren after entering a logical operator shows two powerselect dropdowns for meta', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    // create a pill
+    await clickTrigger(PILL_SELECTORS.meta);
+    await selectChoose(PILL_SELECTORS.meta, 'medium');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, '32');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+
+    // enter logical operator
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('AND ');
+
+    // enter open paren
+    await clickTrigger(PILL_SELECTORS.meta);
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', '(');
+    assert.ok(find(PILL_SELECTORS.openParen), 'Missing open paren');
+    assert.ok(find(PILL_SELECTORS.closeParen), 'Missing close paren');
+    // this assert should be 1 after bug is fixed
+    assert.equal(findAll(PILL_SELECTORS.metaInput).length, 2, 'shall find two powerselect dropdowns for meta present');
+  });
+
   test('Can create a new pill inside a pair of parens', async function(assert) {
     const done = assert.async();
     new ReduxDataHelper(setState)
@@ -5364,7 +5398,7 @@ module('Integration | Component | Query Pills', function(hooks) {
       });
     });
   });
-  test('Pressing delete on the single pill inside parens at the start of the query, should remove the  parens and the pill along with operator', async function(assert) {
+  test('Pressing delete on the single pill inside parens at the start of the query, should remove the parens and the pill along with operator', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
