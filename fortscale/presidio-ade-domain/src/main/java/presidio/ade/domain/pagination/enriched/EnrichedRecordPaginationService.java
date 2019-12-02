@@ -21,7 +21,7 @@ public class EnrichedRecordPaginationService extends PaginationService<EnrichedR
 
     private EnrichedDataStore store;
     private String contextType;
-    private Boolean filterNullContext;
+    private boolean filterNullContext;
 
 
     public EnrichedRecordPaginationService(EnrichedDataStore store, int pageSize, int maxGroupSize, String contextType, Boolean filterNullContext) {

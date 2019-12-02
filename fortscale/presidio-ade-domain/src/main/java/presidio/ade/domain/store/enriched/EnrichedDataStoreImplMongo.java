@@ -132,7 +132,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
 
     @Override
     public List<ContextIdToNumOfItems> aggregateContextToNumOfEvents(
-            EnrichedRecordsMetadata recordsMetadata, String contextType, Boolean filterNullContext) {
+            EnrichedRecordsMetadata recordsMetadata, String contextType, boolean filterNullContext) {
 
         Date startDate = Date.from(recordsMetadata.getStartInstant());
         Date endDate = Date.from(recordsMetadata.getEndInstant());
@@ -160,7 +160,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
     }
 
     private List<ContextIdToNumOfItems> aggregateContextIdToNumOfItems(
-            Date startDate, Date endDate, String fieldName, long skip, long limit, String collectionName, boolean allowDiskUse, Boolean filterNullContext) {
+            Date startDate, Date endDate, String fieldName, long skip, long limit, String collectionName, boolean allowDiskUse, boolean filterNullContext) {
 
         List<AggregationOperation> aggregationOperations = new LinkedList<>();
         aggregationOperations.add(match(where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate)));
