@@ -1,11 +1,18 @@
 package com.rsa.netwitness.presidio.automation.rest.client;
 
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import org.apache.commons.net.util.Base64;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.Assert;
-import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -13,7 +20,10 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
@@ -38,6 +48,39 @@ public class RestAPI {
 
     public static String getMessageBodyConfiguration() {
         return messageBodyConfiguration;
+    }
+
+    public static RestApiResponse sendPatch(String urlAddress, String messageBody) {
+        RestApiResponse response = new RestApiResponse();
+
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        try {
+
+            StringEntity entity = new StringEntity(messageBody);
+            HttpPatch httpPatch = new HttpPatch(new URI(urlAddress));
+
+            httpPatch.setHeader("Content-Type", "application/json");
+            httpPatch.setHeader("Accept", "application/json");
+            httpPatch.setEntity(entity);
+
+            CloseableHttpResponse result = httpClient.execute(httpPatch);
+            response.setResponseCode(result.getStatusLine().getStatusCode());
+            response.setErrorMessage(result.getStatusLine().getReasonPhrase());
+            HttpEntity responseEntity = result.getEntity();
+            response.setResultBody(EntityUtils.toString(responseEntity, StandardCharsets.UTF_8));
+
+            return response;
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                    httpClient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 
     public static RestApiResponse sendPost(String urlAddress, String messageBody) {
