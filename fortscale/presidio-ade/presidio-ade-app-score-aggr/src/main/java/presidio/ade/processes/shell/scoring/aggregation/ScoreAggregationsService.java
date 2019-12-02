@@ -44,6 +44,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private final int pageSize;
     private final int maxGroupSize;
     private final MetricContainerFlusher metricsContainer;
+    private final Boolean filterNullContext;
 
     private Map<String, Set<TimeRange>> storedDataSourceToTimeRanges = new HashMap<>();
 
@@ -60,7 +61,8 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
             AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
             int pageSize,
             int maxGroupSize,
-            MetricContainerFlusher metricContainerFlusher) {
+            MetricContainerFlusher metricContainerFlusher,
+            Boolean filterNullContext) {
 
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
@@ -72,6 +74,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
         this.metricsContainer = metricContainerFlusher;
+        this.filterNullContext = filterNullContext;
     }
 
     @Override
@@ -87,8 +90,9 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         // If this line is deleted, the model cache will need to have some efficient refresh mechanism.
         enrichedEventsScoringService.resetModelCache();
         boolean isStoreScoredEnrichedRecords = isStoreScoredEnrichedRecords(timeRange, dataSource);
+
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(
-                enrichedDataStore, pageSize, maxGroupSize, contextType);
+                enrichedDataStore, pageSize, maxGroupSize, contextType, (filterNullContext || !isStoreScoredEnrichedRecords));
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
         FeatureBucketStrategyData featureBucketStrategyData = createFeatureBucketStrategyData(timeRange);
 

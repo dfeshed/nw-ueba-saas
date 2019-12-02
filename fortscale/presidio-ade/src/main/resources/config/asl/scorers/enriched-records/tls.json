@@ -13,6 +13,12 @@
               "name": "startInstant.sslSubjectOutbound.tls.score",
               "predicates": [
                 {
+                  "type": "equals",
+                  "fieldName": "sslSubject.name",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
                   "type": "regex",
                   "fieldName": "direction",
                   "pattern": "OUTBOUND"
@@ -67,6 +73,12 @@
               "name": "sslSubject.srcNetnameOutbound.tls.score",
               "predicates": [
                 {
+                  "type": "equals",
+                  "fieldName": "srcNetname",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
                   "type": "regex",
                   "fieldName": "direction",
                   "pattern": "OUTBOUND"
@@ -88,6 +100,12 @@
               "type": "conditional",
               "name": "domain.srcNetnameOutbound.tls.score",
               "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "srcNetname",
+                  "expectedValue": null,
+                  "negate": true
+                },
                 {
                   "type": "regex",
                   "fieldName": "direction",
@@ -111,6 +129,12 @@
               "name": "dstPort.srcNetnameOutbound.tls.score",
               "predicates": [
                 {
+                  "type": "equals",
+                  "fieldName": "srcNetname",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
                   "type": "regex",
                   "fieldName": "direction",
                   "pattern": "OUTBOUND"
@@ -133,6 +157,12 @@
               "name": "dstOrg.srcNetnameOutbound.tls.score",
               "predicates": [
                 {
+                  "type": "equals",
+                  "fieldName": "srcNetname",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
                   "type": "regex",
                   "fieldName": "direction",
                   "pattern": "OUTBOUND"
@@ -154,6 +184,12 @@
               "type": "conditional",
               "name": "country.sslSubjectOutbound.tls.score",
               "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "sslSubject.name",
+                  "expectedValue": null,
+                  "negate": true
+                },
                 {
                   "type": "regex",
                   "fieldName": "direction",
@@ -194,6 +230,12 @@
               "name": "dstPort.sslSubjectOutbound.tls.score",
               "predicates": [
                 {
+                  "type": "equals",
+                  "fieldName": "sslSubject.name",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
                   "type": "regex",
                   "fieldName": "direction",
                   "pattern": "OUTBOUND"
@@ -232,6 +274,12 @@
               "type": "conditional",
               "name": "dstPort.domainOutbound.tls.score",
               "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "domain.name",
+                  "expectedValue": null,
+                  "negate": true
+                },
                 {
                   "type": "regex",
                   "fieldName": "direction",
@@ -272,6 +320,12 @@
               "name": "dstPort.dstOrgOutbound.tls.score",
               "predicates": [
                 {
+                  "type": "equals",
+                  "fieldName": "dstOrg.name",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
                   "type": "regex",
                   "fieldName": "direction",
                   "pattern": "OUTBOUND"
@@ -310,6 +364,12 @@
               "type": "conditional",
               "name": "ja3.srcNetnameOutbound.tls.score",
               "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "srcNetname",
+                  "expectedValue": null,
+                  "negate": true
+                },
                 {
                   "type": "equals",
                   "fieldName": "ja3.name",

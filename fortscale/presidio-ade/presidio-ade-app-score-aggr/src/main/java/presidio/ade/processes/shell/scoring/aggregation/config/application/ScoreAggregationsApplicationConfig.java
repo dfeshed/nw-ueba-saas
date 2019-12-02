@@ -47,6 +47,8 @@ public class ScoreAggregationsApplicationConfig {
     private int pageSize;
     @Value("${score-aggregation.pageIterator.maxGroupSize}")
     private int maxGroupSize;
+    @Value("${score-aggregation.filterNullContext:false}")
+    private Boolean filterNullContext;
 
     @Autowired
     private EnrichedEventsScoringService enrichedEventsScoringService;
@@ -77,6 +79,7 @@ public class ScoreAggregationsApplicationConfig {
                 storeManager,
                 pageSize,
                 maxGroupSize,
-                metricContainerFlusher);
+                metricContainerFlusher,
+                filterNullContext);
     }
 }
