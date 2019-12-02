@@ -18,27 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.rsa.netwitness.presidio.automation.rest.client.HttpMethod.GET;
-import static com.rsa.netwitness.presidio.automation.rest.client.HttpMethod.PATCH;
-
 
 public class EntitiesRestCallHelper implements IRestCallHelper {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(EntitiesRestCallHelper.class);
 
-    private RestApiResponse getResponse(PresidioUrl presidioUrl) {
-        if (presidioUrl.METHOD.equals(GET)) {
-            return RestAPI.sendGet(presidioUrl.URL);
-        } else if (presidioUrl.METHOD.equals(PATCH)) {
-            return RestAPI.sendPatch(presidioUrl.URL, presidioUrl.JSON_BODY);
-        } else {
-            throw new RuntimeException("No such method: " + presidioUrl.METHOD);
-        }
-    }
-
     public List<EntitiesStoredRecord> getEntities(PresidioUrl presidioUrl) {
 
         LOGGER.debug("Sending request: " + presidioUrl);
-        RestApiResponse response = getResponse(presidioUrl);
+        RestApiResponse response = new RestAPI().send(presidioUrl);
 
         Assert.assertEquals(200, response.getResponseCode(),
                 "Error with response code: " + response.getResponseCode() +

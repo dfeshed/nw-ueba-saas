@@ -376,8 +376,7 @@ public class OutputTestsUtils {
     }
 
     private static JSONObject getOutputProcessorConfiguration() {
-        Map<String, Integer> severities = new HashMap<>();
-        RestApiResponse response = RestAPI.sendGet("http://" + AutomationConf.UEBA_HOST + ":8888/output-processor.json");
+        RestApiResponse response = new RestAPI().sendGet("http://" + AutomationConf.UEBA_HOST + ":8888/output-processor.json");
         Assert.assertEquals(200, response.getResponseCode());
         JSONObject body = null;
         try {

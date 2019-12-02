@@ -13,6 +13,10 @@ public class AlertsUrlBuilder extends UrlBase {
         return new AlertsWithIdUrlBuilder(this.URL.concat("/").concat(alertId));
     }
 
+    public AlertsUpdateFeedbackUrlBuilder updateFeedback() {
+        return new AlertsUpdateFeedbackUrlBuilder(this.URL.concat("/").concat("updateFeedback"));
+    }
+
     public AlertsRestCallHelper request() {
         return new AlertsRestCallHelper();
     }
