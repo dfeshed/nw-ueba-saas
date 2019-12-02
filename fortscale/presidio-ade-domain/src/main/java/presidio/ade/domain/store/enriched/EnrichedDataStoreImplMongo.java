@@ -183,9 +183,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
         Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
                 allowDiskUse(allowDiskUse).build());
 
-        List<ContextIdToNumOfItems> contextIdToNumOfItems = mongoTemplate.aggregate(aggregation, collectionName, ContextIdToNumOfItems.class).getMappedResults();
-        
-        return contextIdToNumOfItems;
+        return mongoTemplate.aggregate(aggregation, collectionName, ContextIdToNumOfItems.class).getMappedResults();
     }
 
     /**
