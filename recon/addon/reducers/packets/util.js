@@ -1,3 +1,5 @@
+import { lookup } from 'ember-dependency-lookup';
+
 /**
  * How many bytes to display per row.
  * @public
@@ -22,9 +24,11 @@ export const BYTES_PER_ROW = 16;
  */
 export const processPacketPayloads = function(packets, isPayloadOnly, packetFields) {
   if (packetFields !== null && packets !== null) {
+    const cacheService = lookup('service:processed-packet-cache');
+
     // reset continuation tracking
     isContinuation(null, null);
-    return packets.reduce((acc, currentPacket) => {
+    const newPackets = packets.reduce((acc, currentPacket) => {
       const { bytes, payloadSize } = currentPacket;
       if (isPayloadOnly) {
         // if there are no bytes, eject
@@ -57,15 +61,23 @@ export const processPacketPayloads = function(packets, isPayloadOnly, packetFiel
           });
         }
       } else {
-        // This code path performs just like a map().
-        acc.push({
-          ...currentPacket,
-          isContinuation: isContinuation(currentPacket.side, currentPacket.sequence),
-          byteRows: bytesAsRows(bytes)
-        });
+        const cachedPacket = cacheService.retrieve(currentPacket.id);
+        if (cachedPacket) {
+          acc.push(cachedPacket);
+        } else {
+          const newPacket = {
+            ...currentPacket,
+            isContinuation: isContinuation(currentPacket.side, currentPacket.sequence),
+            byteRows: bytesAsRows(bytes)
+          };
+          cacheService.add(newPacket);
+          acc.push(newPacket);
+        }
       }
       return acc;
     }, []);
+
+    return newPackets;
   }
 };
 

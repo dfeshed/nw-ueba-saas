@@ -42,6 +42,8 @@ module('Integration | Component | Recon Event Detail | Single Packet', function(
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
+    const cache = this.owner.lookup('service:processed-packet-cache');
+    cache.clear();
     redux = this.owner.lookup('service:redux');
   });
 

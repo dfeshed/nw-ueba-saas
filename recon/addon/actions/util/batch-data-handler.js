@@ -1,4 +1,4 @@
-import { join, later } from '@ember/runloop';
+import { next, join, later } from '@ember/runloop';
 
 const BATCH_CHARACTER_SIZE = 10;
 const WAIT = [0, 100];
@@ -178,7 +178,7 @@ const _sendBatch = function(batchType, batchSize, batchCallback) {
 
     // remove items from the queue, those are the next batch, ship em out,
     // need to grab first element from each item as it contains the data
-    // console.log('SENDING BATCH: size:', accum, ', count:', index + 1);
+    // console.log('sending batch to rendering: size:', accum, ', count:', index + 1);
     const nextBatch = dataQueue[batchType].splice(0, index + 1).map((r) => r[0]);
     join(this, batchCallback, nextBatch);
 
@@ -281,9 +281,11 @@ const _apiDataHandler = (selector, dispatchData) => {
       // If the server returned a response with no data, rather than do nothing
       // send an empty array in case there are side effects related to
       // no data vs has data
-      dispatchData({
-        data: data || [],
-        meta: response.meta
+      next(() => {
+        dispatchData({
+          data: data || [],
+          meta: response.meta
+        });
       });
 
       if (response.meta && response.meta.complete === true) {

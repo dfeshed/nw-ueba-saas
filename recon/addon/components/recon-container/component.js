@@ -5,6 +5,8 @@ import computed from 'ember-computed-decorators';
 import { observer } from '@ember/object';
 import { later, next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
+import { lookup } from 'ember-dependency-lookup';
+
 import { toggleReconExpanded } from 'recon/actions/visual-creators';
 import layout from './template';
 import {
@@ -179,6 +181,8 @@ const ReconContainer = Component.extend({
 
   closeRecon: observer('isReconOpen', function() {
     if (!this.get('isReconOpen')) {
+      const cacheService = lookup('service:processed-packet-cache');
+      cacheService.clear();
       this.get('closeAction')();
     }
   }),
@@ -206,6 +210,12 @@ const ReconContainer = Component.extend({
     // if same id and same service, no need to do anything
     // But if any of these two changes, initialize
     if (inputs.eventId !== _previousEventId || inputs.endpointId !== _previousEndpointId) {
+
+      // clear out the packet cache as this is a new event
+      // and the cache is invalid
+      const cacheService = lookup('service:processed-packet-cache');
+      cacheService.clear();
+
       this.set('_previousEventId', inputs.eventId);
       this.set('_previousEndpointId', inputs.endpointId);
       this.send('initializeRecon', inputs);

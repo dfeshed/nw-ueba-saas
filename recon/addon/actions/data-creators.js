@@ -695,6 +695,12 @@ const teardownNotifications = () => ({ type: ACTION_TYPES.NOTIFICATION_TEARDOWN_
 const _toggleActionCreator = createToggleActionCreator(ACTION_TYPES.TOGGLE_PACKET_PAYLOAD_ONLY);
 const togglePayloadOnly = (setTo) => {
   return (dispatch, getState) => {
+
+    // clear packet cache as packets have to be recalculated
+    // whenever payload only is clicked
+    const cacheService = lookup('service:processed-packet-cache');
+    cacheService.clear();
+
     dispatch(_toggleActionCreator(setTo));
 
     // delay batching the packet data,

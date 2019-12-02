@@ -6,8 +6,10 @@ import {
   BATCH_TYPES
 } from 'recon/actions/util/batch-data-handler';
 
-const BATCH_CHARACTER_SIZE = 5000;
-const TIME_BETWEEN_BATCHES = [3000, 500];
+// this will render approx 35 packets, but they are
+// lazy rendered, so cost is minimal
+const BATCH_CHARACTER_SIZE = 70000;
+const TIME_BETWEEN_BATCHES = [5000, 1250];
 
 // The data, once in memory, is much larger because it has already been processed
 // and enriched, so the BULK character size, to match the BATCH_CHARACTER_SIZE
@@ -22,7 +24,7 @@ export const fetchPacketData = (
 ) => {
   const request = lookup('service:request');
   const basicQuery = buildBaseQuery(endpointId, eventId);
-  const streamingQuery = addStreaming(basicQuery, packetsPageSize, undefined, undefined, packetsRowIndex);
+  const streamingQuery = addStreaming(basicQuery, packetsPageSize, 25, undefined, packetsRowIndex);
   request.streamRequest({
     method: 'stream',
     modelName: 'reconstruction-packet-data',

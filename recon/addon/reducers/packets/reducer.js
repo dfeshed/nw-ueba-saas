@@ -72,7 +72,7 @@ const packetReducer = handleActions({
     // arrive any packets we have accumulated will be enhanced
     // then all at once
     if (state.packetFields) {
-      const packetsRowIndex = ((state.pageNumber - 1) * state.packetsPageSize);
+      const packetsRowIndex = (state.pageNumber - 1) * state.packetsPageSize;
       newPackets = enhancePackets(newPackets, lastPosition, state.packetFields, packetsRowIndex);
     }
 
