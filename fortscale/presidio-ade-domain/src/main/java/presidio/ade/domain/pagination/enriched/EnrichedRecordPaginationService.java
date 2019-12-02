@@ -21,10 +21,10 @@ public class EnrichedRecordPaginationService extends PaginationService<EnrichedR
 
     private EnrichedDataStore store;
     private String contextType;
-    private Boolean filterNullContext;
+    private boolean filterNullContext;
 
 
-    public EnrichedRecordPaginationService(EnrichedDataStore store, int pageSize, int maxGroupSize, String contextType, Boolean filterNullContext) {
+    public EnrichedRecordPaginationService(EnrichedDataStore store, int pageSize, int maxGroupSize, String contextType, boolean filterNullContext) {
         super(pageSize, maxGroupSize);
         this.store = store;
         this.contextType = contextType;
@@ -32,10 +32,7 @@ public class EnrichedRecordPaginationService extends PaginationService<EnrichedR
     }
 
     public EnrichedRecordPaginationService(EnrichedDataStore store, int pageSize, int maxGroupSize, String contextType) {
-        super(pageSize, maxGroupSize);
-        this.store = store;
-        this.contextType = contextType;
-        this.filterNullContext = true;
+        this(store, pageSize, maxGroupSize, contextType, true);
     }
 
     public EnrichedRecordPaginationService(EnrichedDataStore store, int pageSize, int maxGroupSize, String contextType, String sortBy) {

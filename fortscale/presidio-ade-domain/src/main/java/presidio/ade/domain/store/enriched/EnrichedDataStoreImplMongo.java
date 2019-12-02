@@ -133,7 +133,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
 
     @Override
     public List<ContextIdToNumOfItems> aggregateContextToNumOfEvents(
-            EnrichedRecordsMetadata recordsMetadata, String contextType, Boolean filterNullContext) {
+            EnrichedRecordsMetadata recordsMetadata, String contextType, boolean filterNullContext) {
 
         Date startDate = Date.from(recordsMetadata.getStartInstant());
         Date endDate = Date.from(recordsMetadata.getEndInstant());
@@ -161,10 +161,15 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
     }
 
     private List<ContextIdToNumOfItems> aggregateContextIdToNumOfItems(
-            Date startDate, Date endDate, String fieldName, long skip, long limit, String collectionName, boolean allowDiskUse, Boolean filterNullContext) {
+            Date startDate, Date endDate, String fieldName, long skip, long limit, String collectionName, boolean allowDiskUse, boolean filterNullContext) {
 
         List<AggregationOperation> aggregationOperations = new LinkedList<>();
         aggregationOperations.add(match(where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate)));
+
+        if(filterNullContext){
+            aggregationOperations.add(match(where(fieldName).ne(null)));
+        }
+
         aggregationOperations.add(group(fieldName).count().as(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD));
         aggregationOperations.add(project(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD)
                 .and("_id").as(ContextIdToNumOfItems.CONTEXT_ID_FIELD)
@@ -179,12 +184,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
         Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
                 allowDiskUse(allowDiskUse).build());
 
-        List<ContextIdToNumOfItems> contextIdToNumOfItems = mongoTemplate.aggregate(aggregation, collectionName, ContextIdToNumOfItems.class).getMappedResults();
-        if(filterNullContext){
-            contextIdToNumOfItems = contextIdToNumOfItems.stream().filter(contextIdToNumOfItem -> contextIdToNumOfItem.getContextId() != null).collect(Collectors.toList());
-        }
-        
-        return contextIdToNumOfItems;
+        return mongoTemplate.aggregate(aggregation, collectionName, ContextIdToNumOfItems.class).getMappedResults();
     }
 
     /**

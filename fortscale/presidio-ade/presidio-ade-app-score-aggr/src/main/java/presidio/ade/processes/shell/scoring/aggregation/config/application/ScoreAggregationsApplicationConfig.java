@@ -48,7 +48,7 @@ public class ScoreAggregationsApplicationConfig {
     @Value("${score-aggregation.pageIterator.maxGroupSize}")
     private int maxGroupSize;
     @Value("${score-aggregation.filterNullContext:false}")
-    private Boolean filterNullContext;
+    private boolean filterNullContext;
 
     @Autowired
     private EnrichedEventsScoringService enrichedEventsScoringService;

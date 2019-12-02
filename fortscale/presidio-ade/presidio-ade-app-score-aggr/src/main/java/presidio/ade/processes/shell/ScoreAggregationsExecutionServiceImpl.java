@@ -32,7 +32,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
     private int pageSize;
     private int maxGroupSize;
     private MetricContainerFlusher metricContainerFlusher;
-    private Boolean filterNullContext;
+    private boolean filterNullContext;
 
     public ScoreAggregationsExecutionServiceImpl(
             EnrichedEventsScoringService enrichedEventsScoringService,
@@ -45,7 +45,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
             int pageSize,
             int maxGroupSize,
             MetricContainerFlusher metricContainerFlusher,
-            Boolean filterNullContext) {
+            boolean filterNullContext) {
 
         this.enrichedEventsScoringService = enrichedEventsScoringService;
         this.enrichedDataStore = enrichedDataStore;

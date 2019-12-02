@@ -44,7 +44,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private final int pageSize;
     private final int maxGroupSize;
     private final MetricContainerFlusher metricsContainer;
-    private final Boolean filterNullContext;
+    private final boolean filterNullContext;
 
     private Map<String, Set<TimeRange>> storedDataSourceToTimeRanges = new HashMap<>();
 
@@ -62,7 +62,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
             int pageSize,
             int maxGroupSize,
             MetricContainerFlusher metricContainerFlusher,
-            Boolean filterNullContext) {
+            boolean filterNullContext) {
 
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
@@ -92,7 +92,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         boolean isStoreScoredEnrichedRecords = isStoreScoredEnrichedRecords(timeRange, dataSource);
 
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(
-                enrichedDataStore, pageSize, maxGroupSize, contextType, (filterNullContext || !isStoreScoredEnrichedRecords));
+                enrichedDataStore, pageSize, maxGroupSize, contextType, filterNullContext || !isStoreScoredEnrichedRecords);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
         FeatureBucketStrategyData featureBucketStrategyData = createFeatureBucketStrategyData(timeRange);
 
