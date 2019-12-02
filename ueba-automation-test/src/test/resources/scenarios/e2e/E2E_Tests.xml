@@ -13,6 +13,7 @@
             <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsRestCorrectnessTest"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsIndicatorsTests"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.EntitySeverityTests"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.AddToWatchListTests"/>
         </classes>
     </test>
 
