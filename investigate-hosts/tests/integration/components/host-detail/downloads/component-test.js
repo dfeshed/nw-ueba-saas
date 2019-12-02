@@ -178,6 +178,7 @@ module('Integration | Component | downloads', function(hooks) {
   });
 
   test('Downloads Filter has loaded', async function(assert) {
+    new ReduxDataHelper(initState).host({ serviceId: '1d3ewr' }).build();
     await render(hbs`{{host-detail/downloads}}`);
     assert.equal(findAll('.files-content .filter-wrapper').length, 1, 'Filter has loaded');
     assert.equal(findAll('.files-content .filter-wrapper .filter-controls').length, 4, '4 Filter types present');

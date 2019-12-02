@@ -27,6 +27,7 @@ const callbacksDefault = { onSuccess() {}, onFailure() {} };
 const _fetchFiles = (type) => {
   return (dispatch, getState) => {
     const state = getState();
+    const { serviceId } = state.endpoint.overview.hostDetails;
     const { sortField, isSortDescending, pageNumber } = state.endpoint.hostDownloads.downloads;
     const { agentId } = state.endpoint.detailsInput;
     const { expressionList } = state.endpoint.hostDownloads.filter;
@@ -45,7 +46,7 @@ const _fetchFiles = (type) => {
 
     dispatch({
       type,
-      promise: Machines.getPageOfDownloadsApi(pageNumber, sortField, isSortDescending, updatedExpressionList),
+      promise: Machines.getPageOfDownloadsApi(pageNumber, sortField, isSortDescending, updatedExpressionList, serviceId),
       meta: {
         onSuccess: (response) => {
           const debugResponse = JSON.stringify(response);

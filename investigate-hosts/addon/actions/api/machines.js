@@ -69,7 +69,7 @@ const getPageOfMachines = (pageNumber, [{ key, descending } = {}], expressionLis
  * @returns Promise that will resolve with the server response.
  * @public
  */
-const getPageOfDownloadsApi = (pageNumber, key, descending, expressionList) => {
+const getPageOfDownloadsApi = (pageNumber, key, descending, expressionList, socketUrlPostfix) => {
   let data = {
     pageNumber: pageNumber || 0,
     pageSize: 100,
@@ -77,13 +77,19 @@ const getPageOfDownloadsApi = (pageNumber, key, descending, expressionList) => {
   };
 
   data = addFilter(data, expressionList);
+
   const request = lookup('service:request');
+  const streamSelector = lookup('service:stream-selector');
+  const modelName = 'endpoint';
+  const method = 'hostDownload';
+
   return request.promiseRequest({
-    method: 'hostDownload',
-    modelName: 'endpoint',
+    method,
+    modelName,
     query: {
       data
-    }
+    },
+    streamOptions: streamSelector.streamOptionSelector({ modelName, method, customOptions: { socketUrlPostfix } })
   });
 };
 

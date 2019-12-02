@@ -118,7 +118,7 @@ module('Integration | Component | downloads-list', function(hooks) {
   });
 
   test('1 sort enabled rendered as part of header', async function(assert) {
-    new ReduxDataHelper(initState).hostDownloads(hostDownloads).build();
+    new ReduxDataHelper(initState).host({ serviceId: '1d3ewr' }).hostDownloads(hostDownloads).build();
     this.set('disableActions', { isShowDeleteAction: true });
     await render(hbs`{{host-detail/downloads/downloads-list disableActions=disableActions}}`);
     assert.equal(findAll('.is-sorted.desc i').length, 1, '1 column sort enabled');
