@@ -7,13 +7,13 @@
     <name>presidio-input-pre-processing</name>
     <description>Presidio Input Pre-Processing</description>
     <artifactId>presidio-input-pre-processing</artifactId>
-    <version>11.4.0-0-SNAPSHOT</version>
+    <version>11.5.0-0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>presidio-input</artifactId>
-        <version>11.4.0-0-SNAPSHOT</version>
+        <version>11.5.0-0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
