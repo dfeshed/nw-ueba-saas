@@ -40,6 +40,8 @@ public class NetworkDataPreparation extends DataPreparationBase {
         networkEvents.addAll(new FutureEventsForMetrics(10).get().collect(toList()));
         /** Session split data **/
         networkEvents.addAll(new SessionSplitEnrichmentData().generateAll().collect(toList()));
+        /** Special cases alerts scenarios **/
+        networkEvents.addAll(new AlertsSpecialCases(historicalDaysBack, anomalyDay).generateAll().collect(toList()));
 
         return networkEvents;
     }
