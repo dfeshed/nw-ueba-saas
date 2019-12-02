@@ -131,7 +131,7 @@ public class AddToWatchListTests extends AbstractTestNGSpringContextTests {
     }
 
     private void removeSelectedFromTheWatchList(EntitiesStoredRecord selectedEntity) {
-        PresidioUrl watchlistUrl = restHelper.watchlist().url().singleEntityRemove(selectedEntity.getId());
+        PresidioUrl watchlistUrl = restHelper.watchlist().url().entityRemove(selectedEntity.getId());
         List<EntitiesStoredRecord> actualWatchlistRemovalResult = restHelper.watchlist().request().getEntities(watchlistUrl);
 
         assertThat(actualWatchlistRemovalResult)

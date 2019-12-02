@@ -16,7 +16,7 @@ public class EntitiesWatchListUrlHelper {
                 .build();
     }
 
-    public PresidioUrl singleEntityRemove(String entityId) {
+    public PresidioUrl entityRemove(String entityId) {
         return new EntitiesWatchListUrlBuilder.Builder(URL)
                 .appendID(entityId)
                 .setJsonPatchBodyNode("remove")
