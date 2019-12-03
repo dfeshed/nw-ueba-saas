@@ -37,10 +37,10 @@ pipeline {
             steps { branchOutFromBaseToSide("presidio-ui") }
             post { failure { cleanRemoteRepository("presidio-ui") } }
         }
-        stage('Branching in Presidio Integration Test') {
-            when { expression { return env.BRANCH_IN_PRESIDIO_INTEGRATION_TEST == 'true' } }
-            steps { branchOutFromBaseToSide("presidio-integration-test") }
-            post { failure { cleanRemoteRepository("presidio-integration-test") } }
+        stage('Branching in UEBA Automation Projects') {
+            when { expression { return env.BRANCH_IN_UEBA_AUTOMATION_PROJECTS == 'true' } }
+            steps { branchOutFromBaseToSide("ueba-automation-projects") }
+            post { failure { cleanRemoteRepository("ueba-automation-projects") } }
         }
     }
     post {

@@ -1,5 +1,4 @@
-rsaAsocGitHubAccount = "asoc"
-rsaAsocGitHubApiUrl = "https://github.rsa.lab.emc.com/api/v3/repos/${rsaAsocGitHubAccount}/"
+rsaAsocGitHubApiUrl = "https://github.rsa.lab.emc.com/api/v3/repos/asoc/"
 repositoryNameToPullRequestNumberMap = [:]
 
 pipeline {
@@ -147,10 +146,6 @@ pipeline {
         stage('UEBA Automation Projects Version Promotion') {
             when { expression { return env.PROMOTE_UEBA_AUTOMATION_PROJECTS == 'true' } }
             steps {
-                script {
-                    rsaAsocGitHubAccount = "feshed"
-                    rsaAsocGitHubApiUrl = "https://github.rsa.lab.emc.com/api/v3/repos/${rsaAsocGitHubAccount}/"
-                }
                 promoteProjectVersion("ueba-automation-projects", [
                         new MavenExecution(
                                 pomFile: "pom.xml",
@@ -266,7 +261,7 @@ def configGlobalUserEmail(String userEmail) {
 }
 
 def cloneAsocRepository(String userName, String userPassword, String repositoryName) {
-    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/${rsaAsocGitHubAccount}/${repositoryName}.git"
+    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/${repositoryName}.git"
 }
 
 def checkoutBranch(boolean newBranch, String branchName) {
