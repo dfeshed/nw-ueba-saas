@@ -1,4 +1,5 @@
-rsaAsocGitHubApiUrl = "https://github.rsa.lab.emc.com/api/v3/repos/asoc/"
+rsaAsocGitHubAccount = "asoc"
+rsaAsocGitHubApiUrl = "https://github.rsa.lab.emc.com/api/v3/repos/${rsaAsocGitHubAccount}/"
 repositoryNameToPullRequestNumberMap = [:]
 
 pipeline {
@@ -143,10 +144,14 @@ pipeline {
                 }
             }
         }
-        stage('Presidio Integration Test Version Promotion') {
-            when { expression { return env.PROMOTE_PRESIDIO_INTEGRATION_TEST == 'true' } }
+        stage('UEBA Automation Projects Version Promotion') {
+            when { expression { return env.PROMOTE_UEBA_AUTOMATION_PROJECTS == 'true' } }
             steps {
-                promoteProjectVersion("presidio-integration-test", [
+                script {
+                    rsaAsocGitHubAccount = "feshed"
+                    rsaAsocGitHubApiUrl = "https://github.rsa.lab.emc.com/api/v3/repos/${rsaAsocGitHubAccount}/"
+                }
+                promoteProjectVersion("ueba-automation-projects", [
                         new MavenExecution(
                                 pomFile: "pom.xml",
                                 properties: ["presidio.test.utils", "presidio.core.version", "flume.version"],
@@ -156,7 +161,7 @@ pipeline {
             }
             post {
                 failure {
-                    cleanRemoteRepository("presidio-integration-test")
+                    cleanRemoteRepository("ueba-automation-projects")
                 }
             }
         }
@@ -261,7 +266,7 @@ def configGlobalUserEmail(String userEmail) {
 }
 
 def cloneAsocRepository(String userName, String userPassword, String repositoryName) {
-    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/${repositoryName}.git"
+    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/${rsaAsocGitHubAccount}/${repositoryName}.git"
 }
 
 def checkoutBranch(boolean newBranch, String branchName) {
