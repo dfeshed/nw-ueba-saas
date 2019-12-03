@@ -41,6 +41,14 @@ public class ParametersUrlHelper {
                 .build();
     }
 
+    public PresidioUrl withSortedAndExpandedParameters(String sortDirection, String sortFieldNames) {
+        return new ParametersUrlBuilder.Builder(URL)
+                .setSortDirection(sortDirection)
+                .setSortFieldNames(sortFieldNames)
+                .setExpand(true)
+                .build();
+    }
+
     public PresidioUrl withMaxSizeAndSortedParameters(String sortDirection, String sortFieldNames) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setPageSize(10000)

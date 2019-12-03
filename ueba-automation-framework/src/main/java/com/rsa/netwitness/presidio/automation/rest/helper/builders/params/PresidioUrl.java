@@ -23,6 +23,6 @@ public abstract class PresidioUrl {
     }
 
     public String print() {
-        return METHOD + " \n" + URL + (JSON_BODY.isBlank() ? "" : " \nBody: " + JSON_BODY);
+        return METHOD + " " + URL + (JSON_BODY.isBlank() ? "" : " \nBody: " + JSON_BODY);
     }
 }

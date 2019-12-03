@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.automation.rest.helper.builders.url;
 
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlHelper;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.UpdateFeedbackUrlHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.rest.AlertsRestCallHelper;
 
 public class AlertsUrlBuilder extends UrlBase {
@@ -13,8 +14,8 @@ public class AlertsUrlBuilder extends UrlBase {
         return new AlertsWithIdUrlBuilder(this.URL.concat("/").concat(alertId));
     }
 
-    public AlertsUpdateFeedbackUrlBuilder updateFeedback() {
-        return new AlertsUpdateFeedbackUrlBuilder(this.URL.concat("/").concat("updateFeedback"));
+    public UpdateFeedbackUrlHelper updateFeedback() {
+        return new UpdateFeedbackUrlHelper(this.URL.concat("/").concat("updateFeedback"));
     }
 
     public AlertsRestCallHelper request() {

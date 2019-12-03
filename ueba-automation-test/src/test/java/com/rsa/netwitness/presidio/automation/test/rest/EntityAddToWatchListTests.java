@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AddToWatchListTests extends AbstractTestNGSpringContextTests {
-    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(AddToWatchListTests.class);
+public class EntityAddToWatchListTests extends AbstractTestNGSpringContextTests {
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(EntityAddToWatchListTests.class);
 
     private RestHelper restHelper = new RestHelper();
     private ImmutableList<EntitiesStoredRecord> allEntities;

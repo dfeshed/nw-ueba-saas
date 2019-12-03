@@ -122,7 +122,7 @@ public class RestAPI {
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("AuthorizationId", defaultAuthorizationID);
+            conn.setRequestProperty("Accept", "application/json");
 
             OutputStream os = conn.getOutputStream();
             os.write(messageBody.getBytes());
