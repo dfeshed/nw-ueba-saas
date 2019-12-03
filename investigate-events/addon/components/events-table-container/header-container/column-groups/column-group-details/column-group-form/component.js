@@ -8,6 +8,7 @@ import { hasUniqueName } from 'investigate-events/util/validations';
 import { metaMapForColumns } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
 import { CONTENT_TYPE_PUBLIC } from 'investigate-events/constants/profiles';
+import { COLUMN_THRESHOLD, COLUMN_VISIBILITY_THRESHOLD, STANDARD_COLUMN_WIDTH } from 'investigate-events/constants/columnGroups';
 
 const _filterColumns = (columns, filterText) => {
   const filterTextLower = filterText.toLowerCase();
@@ -16,20 +17,6 @@ const _filterColumns = (columns, filterText) => {
     return stringToSearch.includes(filterTextLower);
   });
 };
-
-/* max limit for meta keys that can be added to the columnGroup
- * excluding default meta keys time, medium
- */
-const COLUMN_THRESHOLD = 40;
-
-/* max number of columns that should be visible by default
- * excluding columns time and medium
- */
-const VISIBILITY_THRESHOLD = 13;
-
-/* default width for columns
- */
-const STANDARD_COLUMN_WIDTH = 100;
 
 const stateToComputed = (state) => ({
   columnGroups: columnGroups(state),
@@ -147,7 +134,7 @@ const ColumnGroupForm = Component.extend({
           displayName: col.title,
           // TODO add back when needed and reliable. the columns selected by the user follow the default columns ( time and medium ) in position
           // position: index + 2,
-          visible: index < VISIBILITY_THRESHOLD,
+          visible: index < COLUMN_VISIBILITY_THRESHOLD,
           width: col.width || STANDARD_COLUMN_WIDTH
         };
       });

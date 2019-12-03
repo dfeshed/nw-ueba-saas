@@ -1,6 +1,8 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { hasUniqueName, isColumnGroupValid, isProfileValid } from 'investigate-events/util/validations';
+import METAKEYS from '../../data/subscriptions/meta-key-cache/findAll/data';
+import _ from 'lodash';
 
 module('Unit | Util | Validations', function(hooks) {
   setupTest(hooks);
@@ -83,6 +85,23 @@ module('Unit | Util | Validations', function(hooks) {
         { field: 'a', title: 'a' },
         { field: 'b', title: 'b' }
       ]
+    };
+    const result = isColumnGroupValid(columnGroup, columnGroupsList);
+    assert.notOk(result);
+  });
+
+  test('isColumnGroupValid has correct result when editedItem has more than 42 columns', function(assert) {
+
+    // array of 74 columns created from metaKeyCache
+    const columnsExceedingThreshold = _.cloneDeep(METAKEYS).splice(1, 74).map((meta) => {
+      return {
+        field: meta.metaName,
+        title: meta.displayName
+      };
+    });
+    const columnGroup = {
+      name: 'baz',
+      columnsExceedingThreshold
     };
     const result = isColumnGroupValid(columnGroup, columnGroupsList);
     assert.notOk(result);
