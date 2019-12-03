@@ -35,7 +35,7 @@ const activeDirectoryColumns = [{
   width: 'auto',
   title: 'Object Name',
   linkField: 'user_link',
-  additionalFilter: 'obj.name',
+  additionalFilter: '(obj.name = ${objValue})',
   visible: true,
   disableSort: true
 }, {
@@ -52,7 +52,7 @@ const authenticationColumns = [{
   width: '5vw',
   visible: true,
   linkField: 'user_link',
-  additionalFilter: 'host.all',
+  additionalFilter: '(host.all = ${objValue})',
   disableSort: true
 }, {
   field: 'additionalInfo.Logon_Type',
@@ -64,7 +64,7 @@ const authenticationColumns = [{
   field: 'dstMachineId',
   width: '6vw',
   linkField: 'user_link',
-  additionalFilter: 'host.all',
+  additionalFilter: '(host.all = ${objValue})',
   visible: true,
   title: 'Destination Device',
   disableSort: true
@@ -124,6 +124,7 @@ const fileColumns = [{
   width: '10vw',
   title: 'Source File Path',
   linkField: 'user_link',
+  additionalFilter: '(obj.name = ${objValue} || filename = ${objValue})',
   visible: true,
   disableSort: true
 }, {
@@ -139,7 +140,7 @@ const processColumns = [{
   width: '6vw',
   title: 'Machine Name',
   linkField: 'machine_name_link',
-  additionalFilter: 'host.all',
+  additionalFilter: '(host.all = ${objValue})',
   visible: true,
   disableSort: true
 }, {
@@ -163,7 +164,7 @@ const registryColumns = [{
   width: '3.5vw',
   title: 'Machine Name',
   linkField: 'machine_name_link',
-  additionalFilter: 'host.all',
+  additionalFilter: '(host.all = ${objValue})',
   visible: true,
   disableSort: true
 }, {

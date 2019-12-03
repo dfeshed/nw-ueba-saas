@@ -126,7 +126,7 @@ module('Unit | Utils | pivot-utils', (hooks) => {
 
   test('it should be able to pivot given link with file schema filter', (assert) => {
     const item = { linkField: 'https://localhost:4200/investigate/events', filename: '/sys/log/4/File.accdb' };
-    const column = { linkField: 'user_link', field: 'filename', additionalFilter: null };
+    const column = { linkField: 'user_link', field: 'filename', additionalFilter: '(obj.name = ${objValue} || filename = ${objValue})' };
     navigateToInvestigate('User', 'Name1', 'file', 1562192044531, item, column, 'brokerId');
     return waitUntil(() => currentUrl !== null).then(() => {
       assert.ok(decodeURIComponent(currentUrl).indexOf("(obj.name = '%2Fsys%2Flog%2F4%2FFile.accdb' || filename = '%2Fsys%2Flog%2F4%2FFile.accdb')") > 0);
@@ -136,21 +136,21 @@ module('Unit | Utils | pivot-utils', (hooks) => {
 
   test('it should be able to pivot given link with schema filter if broker id is not passed and addition filter', (assert) => {
     const item = { user_link: 'https://localhost:4200/investigation/007f93ca-bf34-4aeb-805a-d039934842ae/events/somedata', username: 'TestUser' };
-    const column = { linkField: 'user_link', field: 'username', additionalFilter: 'obj.name' };
+    const column = { linkField: 'user_link', field: 'username', additionalFilter: '(obj.name = ${objValue})' };
     navigateToInvestigate('User', 'Name1', 'file', 1562192044531, item, column, null);
     return waitUntil(() => currentUrl !== null).then(() => {
       assert.ok(decodeURIComponent(currentUrl).indexOf("'4663','4660','4670','5145'") > 0);
       // Assert Broker id should be link one
       assert.ok(decodeURIComponent(currentUrl).indexOf('sid=007f93ca-bf34-4aeb-805a-d039934842ae') > 0);
       // Assert additional filter along with schema filter
-      assert.ok(decodeURIComponent(currentUrl).indexOf('&& obj.name = \'TestUser\'') > 0);
+      assert.ok(decodeURIComponent(currentUrl).indexOf('&& (obj.name = \'TestUser\')') > 0);
       assert.ok(newTab);
     });
   });
 
   test('it should be able to pivot investigate event with given layout', (assert) => {
     const item = { user_link: 'https://localhost:4200/investigation/007f93ca-bf34-4aeb-805a-d039934842ae/events/somedata', username: 'TestUser' };
-    const column = { linkField: 'user_link', field: 'username', additionalFilter: 'obj.name' };
+    const column = { linkField: 'user_link', field: 'username', additionalFilter: '(obj.name = ${objValue})' };
     navigateToInvestigate('User', 'Name1', 'file', 1562192044531, item, column, null);
     return waitUntil(() => currentUrl !== null).then(() => {
       assert.ok(decodeURIComponent(currentUrl).indexOf('mps=default&rs=max') > 0);
@@ -160,7 +160,7 @@ module('Unit | Utils | pivot-utils', (hooks) => {
 
   test('it should be able to pivot investigate event with three  hour window and event filter applied', (assert) => {
     const item = { user_link: 'https://localhost:4200/investigation/007f93ca-bf34-4aeb-805a-d039934842ae/events/somedata', username: 'TestUser' };
-    const column = { linkField: 'user_link', field: 'username', additionalFilter: 'obj.name' };
+    const column = { linkField: 'user_link', field: 'username', additionalFilter: '(obj.name = ${objValue})' };
     navigateToInvestigate('User', 'Name1', 'file', 1562192044531, item, column, null);
     return waitUntil(() => currentUrl !== null).then(() => {
       assert.ok(decodeURIComponent(currentUrl).indexOf('&st=1562192037300&et=1562192048131') > 0);

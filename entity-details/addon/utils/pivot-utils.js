@@ -3,11 +3,11 @@ import { windowProxy } from 'component-lib/utils/window-proxy';
 
 const processOrLinkFields = ['process_name_link', 'machine_name_link', 'dst_process_link', 'src_process_link'];
 
-const schemaFilter = (indicatorSchema, entityValue) => {
+const schemaFilter = (indicatorSchema) => {
   const SCHEMA_QUERY = {
     active_directory: "(reference.id = '4741','4742','4733','4734','4740','4794','5376','5377','5136','4764','4743','4739','4727','4728','4754','4756','4757','4758','4720','4722','4723','4724','4725','4726','4738','4767','4717','4729','4730','4731','4732')",
     authentication: "((reference.id = '4624','4625','4769','4648') || (device.type = 'rsaacesrv' && ec.activity = 'Logon') || device.type = 'rhlinux')",
-    file: `(reference.id = '4663','4660','4670','5145') && (obj.name = '${encodeURIComponent(entityValue)}' || filename = '${encodeURIComponent(entityValue)}')`,
+    file: '(reference.id = \'4663\',\'4660\',\'4670\',\'5145\')',
     process: "(category='Process Event' AND device.type='nwendpoint')",
     registry: "(category='Registry Event' AND device.type='nwendpoint')"
   };
@@ -51,11 +51,11 @@ const serializeQueryParams = (qp = {}) => {
  * Opens the investigate page with events query
  * @private
  */
-const navigateToInvestigateEventsAnalysis = (entityType, entityValue, indicatorSchema, eventTime, serviceId, additionalFilter, fieldValue) => {
+const navigateToInvestigateEventsAnalysis = (entityType, entityValue, indicatorSchema, eventTime, serviceId, additionalFilter) => {
   const { startTime, endTime, eventTimeWindow } = buildTimeRange(eventTime);
   const queryParams = {
     sid: serviceId, // Service Id
-    mf: encodeURIComponent(`${schemaFilter(indicatorSchema, fieldValue)} && (${entityFilter(entityType, entityValue)})${additionalFilter}${eventTimeWindow}`), // Meta filter
+    mf: encodeURIComponent(`${schemaFilter(indicatorSchema)} && (${entityFilter(entityType, entityValue)})${additionalFilter}${eventTimeWindow}`), // Meta filter
     st: startTime, // Stat time
     et: endTime, // End time
     mps: 'default', // Meta panel size
@@ -70,8 +70,8 @@ export const navigateToInvestigate = (entityType, entityValue, indicatorSchema, 
   if (processOrLinkFields.includes(linkField)) {
     windowProxy.openInNewTab(item[linkField]);
   } else {
-    const extraQueryParam = additionalFilter ? ` && ${additionalFilter} = '${encodeURIComponent(item[field])}'` : '';
+    const extraQueryParam = additionalFilter ? ` && ${additionalFilter.replaceAll('${objValue}', `'${encodeURIComponent(item[field])}'`)}` : '';
     const serviceId = brokerId || item[linkField].match(/investigation\/(.*)\/events/i)[1];
-    navigateToInvestigateEventsAnalysis(entityType, entityValue, indicatorSchema, eventTime, serviceId, extraQueryParam, item[field]);
+    navigateToInvestigateEventsAnalysis(entityType, entityValue, indicatorSchema, eventTime, serviceId, extraQueryParam);
   }
 };
