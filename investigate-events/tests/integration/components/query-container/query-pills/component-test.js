@@ -5648,4 +5648,25 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(focusedPill, 'should have a pill focused');
     assert.equal(focusedPill.getAttribute('position'), 0, 'focused pill position is correct');
   });
+
+  test('Typing AND and backspacing it should delete the empty pill and move focus to the left pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills
+        isActive=true
+      }}
+    `);
+    assert.notOk(find(PILL_SELECTORS.focusedPill), 'should not have a pill focused');
+    await typeIn(PILL_SELECTORS.metaSelectInput, 'AND');
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', BACKSPACE_KEY);
+    // clicking backspace on the last meta will move the focus to the last pill
+    const focusedPill = find(PILL_SELECTORS.focusedPill);
+    assert.ok(focusedPill, 'should have a pill focused');
+    assert.equal(focusedPill.getAttribute('position'), 2, 'focused pill position is correct');
+  });
 });

@@ -1177,6 +1177,14 @@ export default Component.extend({
     if (isFromRecentQuery) {
       this._resetToMoveOutOfRecentQuery();
     }
+
+    // when backspace or delete keys are pressed on pill meta,
+    // the empty pill is cancelled, so selectedMeta is set to null and
+    // isMetaAutoFocused set to false
+    const { isFocusedPill } = data;
+    if (!isFocusedPill) { // if the action is triggered on pill meta.
+      this._metaSelected();
+    }
     this._broadcast(MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED, data);
   },
 
