@@ -44,7 +44,7 @@ public class AlertsUpdateFeedbackTest extends AbstractTestNGSpringContextTests {
 
         assertThat(selectedEntities)
                 .as(allEntitiesUrl + "\nMinimum amount of entities meet the test requirements - not found.")
-                .hasSizeLessThanOrEqualTo(MINIMUM_REQUARED_ENTITIES);
+                .hasSizeGreaterThanOrEqualTo(MINIMUM_REQUARED_ENTITIES);
 
         unIgnoreEntity = selectedEntities.get(0);
         someAlertsToIgnoreEntity = selectedEntities.get(1);
