@@ -2,12 +2,13 @@ import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { waitUntil, settled, find, click, render, triggerKeyEvent } from '@ember/test-helpers';
-import { processEventId, normalizedUebaEventId, reEventId, networkEventId, endpointEventId, getAllEvents, getAllAlerts } from '../events-list/data';
+import { processEventId, normalizedUebaEventId, reEventId, networkEventId, endpointEventId, getAllEvents, getAllAlerts, malwareEventId, malwareRelatedLinkOne } from '../events-list/data';
 import { emptyNetworkEvent, emptyEndpointEvent } from './empty-data';
 import * as generic from './helpers/generic';
 import * as endpoint from './helpers/endpoint';
 import * as ueba from './helpers/ueba';
 import * as process from './helpers/process';
+import * as genericDetail from './generic/detail/helpers';
 
 const ENTER_KEY = 13;
 
@@ -204,6 +205,28 @@ module('Integration | Component | events-list-row', function(hooks) {
     endpoint.assertTableTargetContext(assert, {
       fileName: 'cmd.EXE',
       hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9'
+    });
+  });
+
+  test('renders malware details for malware event', async function(assert) {
+    const events = getAllEvents();
+    const [ item ] = events.filter((e) => e.id === malwareEventId);
+
+    this.set('expandedId', malwareEventId);
+    this.set('item', item);
+    this.set('alerts', getAllAlerts());
+
+    await render(hbs`{{events-list-row alerts=alerts item=item expandedId=expandedId expand=(action expand)}}`);
+
+    genericDetail.assertRelatedLinks(assert, {
+      column: 2,
+      row: 1,
+      values: [
+        'Investigate Malware'
+      ],
+      urls: [
+        malwareRelatedLinkOne
+      ]
     });
   });
 

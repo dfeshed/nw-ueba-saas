@@ -11,10 +11,12 @@ export const linuxEndpointEventId = '5b8554be0a32bd353ad3a167:2';
 export const ecatEventId = '5b7f06c10a32bd5a68baea84:0';
 export const normalizedUebaEventId = '11112222-3333-4444-5555-666677778888';
 export const processEventId = 'aaaabbbb-3333-4444-5555-666677778888';
+export const malwareEventId = '5b9bb59dbcde8d385474a70a:0';
 export const endpointRelatedLinkOne = '/investigation/host/10.63.0.117:56005/navigate/event/AUTO/857775';
 export const endpointRelatedLinkTwo = '/investigation/10.63.0.117:56005/navigate/query/alias.host%3D"INENMENONS4L2C"%2Fdate%2F2018-06-08T03%3A30%3A12.000Z%2F2018-06-08T03%3A40%3A12.000Z';
 export const networkRelatedLinkOne = '/investigation/host/10.4.61.36:56005/navigate/event/AUTO/217948';
 export const reRelatedLinkOne = '/investigation/host/10.25.51.157:50105/navigate/event/AUTO/47560522';
+export const malwareRelatedLinkOne = '/investigation/undefined/malware/event/3328608';
 
 const storyLineEvents = {
   respond: {
@@ -2298,7 +2300,7 @@ const storyLineEvents = {
               type: 'Resubmit',
               indicatorId: '5b9bb59dbcde8d385474a70a',
               eventIndex: 0,
-              id: '5b9bb59dbcde8d385474a70a:0'
+              id: malwareEventId
             }
           ]
         }

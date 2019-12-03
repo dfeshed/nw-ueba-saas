@@ -40,6 +40,7 @@ $footerHeight: 40px;
     box-sizing: border-box;
     position: relative;
     overflow-y: auto;
+    overflow-wrap: break-word;
 
     p {
       padding: rsa-whitespace();

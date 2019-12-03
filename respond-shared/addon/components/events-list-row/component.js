@@ -48,8 +48,10 @@ export default Component.extend(HighlightsEntities, {
     const modifiedItem = _.cloneDeep(item);
     // eslint-disable-next-line camelcase
     if (modifiedItem?.related_links) {
-      // Create event analysis url and replaced it with legacy events url if legacy events flag is disabled
-      if (!legacyEventsEnabled) {
+      // Check if investigate original event specific related link exists in given event
+      const isInvestigateEvent = modifiedItem.related_links.some((e) => e.type === 'investigate_original_event');
+      // Create event analysis url and replaced it with legacy events url for investigate event if legacy events flag is disabled
+      if (isInvestigateEvent && !legacyEventsEnabled) {
         modifiedItem.related_links[0].url = createEventAnalysisLink(item, services);
       }
 
