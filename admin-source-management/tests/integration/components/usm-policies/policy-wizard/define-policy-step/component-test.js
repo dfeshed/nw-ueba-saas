@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
+import { click, findAll, render, triggerKeyEvent, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
@@ -277,5 +277,14 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     assert.equal(findAll('.available-settings .primaryDestination').length, 1, 'Primary Destination component is shown in the available settings');
     assert.equal(findAll('.available-settings .secondaryDestination').length, 1, 'Secondary Destination component is shown in the available settings');
     assert.equal(findAll('.available-settings .protocol').length, 1, 'Protocol is shown in the available settings');
+  });
+
+  test('Tooltip for protocol is shown on mouseover', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    new ReduxDataHelper(setState).policyWiz('filePolicy').build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    const expectedToolTip = translation.t('adminUsm.policyWizard.filePolicy.protocolTooltip');
+    await triggerEvent(document.querySelectorAll('.tooltip-text')[5], 'mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(), expectedToolTip.string.trim(), 'Protocol Tooltip was activated on mouseover');
   });
 });
