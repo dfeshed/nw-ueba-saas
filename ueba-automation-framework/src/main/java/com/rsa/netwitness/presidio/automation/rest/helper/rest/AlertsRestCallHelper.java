@@ -27,7 +27,7 @@ public class AlertsRestCallHelper implements IRestCallHelper{
 
         try {
             LOGGER.debug("Sending request: " + URL);
-            response = RestAPI.sendGet(URL);
+            response = new RestAPI().send(alertsParametersUrlBuilder);
 
             Assert.assertEquals(200, response.getResponseCode(),
                     "Error with response code: " + response.getResponseCode() +

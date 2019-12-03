@@ -17,7 +17,7 @@ public interface IRestCallHelper {
     default RestApiResponse getRestApiResponse(PresidioUrl parametersUrlBuilder) {
         String URL = parametersUrlBuilder.toString();
         LOGGER.debug("Sending request: " + URL);
-        return RestAPI.sendGet(URL);
+        return new RestAPI().send(parametersUrlBuilder);
     }
 
     default JSONObject getRestApiResponseAsJsonObj(PresidioUrl url) {

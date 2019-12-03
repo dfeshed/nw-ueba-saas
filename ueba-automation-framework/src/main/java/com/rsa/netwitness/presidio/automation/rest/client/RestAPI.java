@@ -1,11 +1,12 @@
 package com.rsa.netwitness.presidio.automation.rest.client;
 
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import org.apache.commons.net.util.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.Assert;
-import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -20,6 +21,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+
+import static com.rsa.netwitness.presidio.automation.rest.client.HttpMethod.*;
 
 public class RestAPI {
     public static final String USERNAME = "presidio";
@@ -40,7 +43,73 @@ public class RestAPI {
         return messageBodyConfiguration;
     }
 
-    public static RestApiResponse sendPost(String urlAddress, String messageBody) {
+
+    public RestApiResponse send(PresidioUrl presidioUrl) {
+        if (presidioUrl.METHOD.equals(GET)) {
+            return sendGet(presidioUrl.URL);
+        } else if (presidioUrl.METHOD.equals(PATCH)) {
+            return sendPatch(presidioUrl.URL, presidioUrl.JSON_BODY);
+        } else if (presidioUrl.METHOD.equals(POST)) {
+            return sendPost(presidioUrl.URL, presidioUrl.JSON_BODY);
+        } else {
+            throw new RuntimeException("No such method: " + presidioUrl.METHOD);
+        }
+    }
+
+    @Deprecated
+    public RestApiResponse sendGet(String urlAddress) {
+        RestApiResponse response = null;
+        URL url;
+        HttpURLConnection conn;
+        try {
+            url = new URL(urlAddress);
+            conn = buildRestRequest(url, "GET", null);
+            response = createResponse(conn);
+            conn.disconnect();
+
+        } catch(IOException e){
+            System.err.println(e.getMessage());
+        }
+
+        return response;
+    }
+
+    private RestApiResponse sendPatch(String urlAddress, String messageBody) {
+        RestApiResponse response = new RestApiResponse();
+        URL url;
+        HttpURLConnection conn;
+
+        try {
+            url = new URL(urlAddress);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(100000);
+            conn.setConnectTimeout(100000);
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+
+            OutputStream os = conn.getOutputStream();
+            os.write(messageBody.getBytes());
+            os.flush();
+            os.close();
+
+            response.setResponseCode(conn.getResponseCode());
+            response.setResponseMessage(conn.getResponseMessage());
+
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+            response.setResultBody(org.apache.commons.io.IOUtils.toString(in, "UTF-8"));
+
+            conn.disconnect();
+        }  catch (IOException e) {
+            response.setErrorMessage(e.getMessage());
+        }
+
+        return response;
+    }
+
+    private RestApiResponse sendPost(String urlAddress, String messageBody) {
         RestApiResponse response = new RestApiResponse();
         URL url;
         HttpURLConnection conn;
@@ -74,7 +143,9 @@ public class RestAPI {
         return response;
     }
 
-    public static RestApiResponse sendPostElasticSearch(String urlAddress, String messageBody) {
+
+
+    private RestApiResponse sendPostElasticSearch(String urlAddress, String messageBody) {
         RestApiResponse response = new RestApiResponse();
         URL url;
         HttpURLConnection conn;
@@ -107,7 +178,7 @@ public class RestAPI {
         return response;
     }
 
-    public static RestApiResponse sendHttpsPost(String urlAddress, String messageBody) {
+    private RestApiResponse sendHttpsPost(String urlAddress, String messageBody) {
         RestApiResponse response = new RestApiResponse();
         URL url;
 
@@ -154,7 +225,7 @@ public class RestAPI {
         return response;
     }
 
-    private static void disableSSL() {
+    private void disableSSL() {
         TrustManager[] trustAllCerts = new TrustManager[]{ new X509TrustManager() {
             public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                 return null;
@@ -171,7 +242,7 @@ public class RestAPI {
         } catch (Exception e) { System.out.println("Warning: bypassing SSL. Error message: " + e.getMessage());}
     }
 
-    public static RestApiResponse sendHttpsPostCleanAndRun(String urlAddress) {
+    public RestApiResponse sendHttpsPostCleanAndRun(String urlAddress) {
         RestApiResponse response = new RestApiResponse();
         URL url;
 
@@ -213,29 +284,9 @@ public class RestAPI {
         return response;
     }
 
-    public static RestApiResponse sendGet(String urlAddress) {
-        RestApiResponse response = null;
-        URL url;
-        HttpURLConnection conn;
-//        System.out.println("Sending GET request: " + urlAddress);
-        try {
-            url = new URL(urlAddress);
-            conn = buildRestRequest(url, "GET", null);
-            response = createResponse(conn);
 
-            conn.disconnect();
 
-        } catch(IOException e){
-            if(response != null){
-                response.setErrorMessage(e.getMessage());
-            }
-            System.err.println(e.getMessage());
-        }
-
-        return response;
-    }
-
-    public static RestApiResponse sendHttpsGet(String urlAddress) {
+    public RestApiResponse sendHttpsGet(String urlAddress) {
         RestApiResponse response = null;
         URL url;
         HttpsURLConnection conn;
