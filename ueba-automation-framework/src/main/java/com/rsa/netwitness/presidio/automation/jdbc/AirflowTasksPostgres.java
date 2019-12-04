@@ -7,6 +7,7 @@ import com.rsa.netwitness.presidio.automation.jdbc.model.AirflowTaskInstanceTabl
 import java.sql.*;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import static com.rsa.netwitness.presidio.automation.jdbc.model.AirflowTaskInstanceTable.TASK_INSTANCE_TABLE;
 import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.getOrNull;
@@ -72,7 +73,7 @@ public class AirflowTasksPostgres {
         " where " + AirflowTaskFailTable.START_DATE + " > '" + Timestamp.from(startTime) + "'" +
                 " and " + AirflowTaskFailTable.END_DATE + " < '" + Timestamp.from(endTime) + "'";
 
-        return fetch(SQL_QUERY);
+        return fetchTasks(SQL_QUERY);
     }
 
     public List<AirflowTaskInstanceTable> fetchTaskDetails(String dagId, String taskId, Instant startTime) {
@@ -81,11 +82,23 @@ public class AirflowTasksPostgres {
                 + " and " + AirflowTaskInstanceTable.DAG_ID + "='" + dagId + "'"
                 + " and " + AirflowTaskInstanceTable.TASK_ID + "='" + taskId + "'";
 
-        return fetch(SQL_QUERY);
+        return fetchTasks(SQL_QUERY);
     }
 
 
-    private List<AirflowTaskInstanceTable> fetch(String SQL_QUERY) {
+    public Optional<Instant> getFirstSucceededExecutionDate(String dagId, String taskId) {
+        String SQL_QUERY = "select min(execution_date) as execution_date "
+                + " from " + TASK_INSTANCE_TABLE
+                + " where " + AirflowTaskInstanceTable.STATE + " = 'success'"
+                + " and " + AirflowTaskInstanceTable.DAG_ID + "='" + dagId + "'"
+                + " and " + AirflowTaskInstanceTable.TASK_ID + "='" + taskId + "'";
+
+        List<Timestamp> result = fetchColumn(SQL_QUERY, Timestamp.class);
+        if (result.isEmpty()) return Optional.empty();
+        return Optional.ofNullable(getOrNull(result.get(0), Timestamp::toInstant));
+    }
+
+    private List<AirflowTaskInstanceTable> fetchTasks(String SQL_QUERY) {
         List<AirflowTaskInstanceTable> tasks = Lists.newLinkedList();
 
         try (Connection con = PostgresAirflowConnection.getConnection();
@@ -97,6 +110,22 @@ public class AirflowTasksPostgres {
             fail("SQLException");
         }
         return tasks;
+    }
+
+    private <T>List<T> fetchColumn(String SQL_QUERY, Class<T> type){
+        List<T> result = Lists.newLinkedList();
+        try (Connection con = PostgresAirflowConnection.getConnection();
+             PreparedStatement pst = con.prepareStatement(SQL_QUERY);
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                result.add(rs.getObject(1, type));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("SQLException");
+        }
+        return result;
     }
 
     private List<AirflowTaskInstanceTable> buildTasks(ResultSet rs) throws SQLException {
