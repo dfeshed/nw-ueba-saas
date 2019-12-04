@@ -208,7 +208,7 @@ export default Component.extend({
   fetchPasswordPolicy() {
     this.updateLoginProperties(_STATUS.INIT, null, true);
     if (config.adminServerAvailable) {
-      fetch('/api/administration/security/password/policyMessages').then((response) => {
+      fetch('/api/administration/security/password/policyMessages').then((fetched) => fetched.json()).then((response) => {
         this.setProperties({
           displayPolicies: true,
           passwordPolicyMinChars: response.passwordPolicyMinChars,
