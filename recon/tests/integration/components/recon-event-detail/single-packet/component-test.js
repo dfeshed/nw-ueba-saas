@@ -6,7 +6,7 @@ import { module, test } from 'qunit';
 import { enhancePackets } from 'recon/reducers/packets/util';
 import { renderedPackets } from 'recon/reducers/packets/selectors';
 import DataHelper from '../../../../helpers/data-helper';
-import { find, findAll, render } from '@ember/test-helpers';
+import { find, findAll, render, waitUntil } from '@ember/test-helpers';
 
 const packetFields = [
   { length: 6, name: 'eth.dst', position: 0 },
@@ -99,9 +99,6 @@ module('Integration | Component | Recon Event Detail | Single Packet', function(
       }
     });
 
-    // Toggle the isPayloadOnly redux property
-    new DataHelper(redux).togglePayloadOnly();
-
     this.set('isPayloadOnly', true);
     this.set('index', 4);
     const [ packet ] = processedPackets;
@@ -116,7 +113,7 @@ module('Integration | Component | Recon Event Detail | Single Packet', function(
       }}
     `);
 
-    return wait().then(() => {
+    return waitUntil(() => find('.rsa-byte-table td')).then(() => {
       assert.equal(findAll('.rsa-icon-arrow-circle-right-2').length, 1, 'Request arrow shown');
       assert.equal(findAll('.rsa-packet.is-continuation').length, 0, 'Request is not marked as a continuation of the previous');
       assert.equal(findAll('.packet-details').length, 0, 'Packet details are not shown');
@@ -145,7 +142,6 @@ module('Integration | Component | Recon Event Detail | Single Packet', function(
     new DataHelper(redux).togglePayloadOnly();
 
     this.set('isPayloadOnly', true);
-    this.set('packetFields', packetFields);
     this.set('index', 4);
     const [ packet ] = processedPackets;
     packet.isContinuation = true;
@@ -155,12 +151,11 @@ module('Integration | Component | Recon Event Detail | Single Packet', function(
       {{recon-event-detail/single-packet
         index=index
         packet=packet
-        packetFields=packetFields
         isPayloadOnly=isPayloadOnly
       }}
     `);
 
-    return wait().then(() => {
+    return waitUntil(() => find('.rsa-byte-table td')).then(() => {
       assert.equal(findAll('.rsa-icon-arrow-circle-right-2').length, 1, 'Request arrow shown');
       assert.equal(findAll('.rsa-packet.is-continuation').length, 1, 'Request is marked as a continuation of the previous');
       assert.equal(findAll('.packet-details').length, 0, 'Packet details are not shown');

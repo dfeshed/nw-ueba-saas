@@ -35,11 +35,6 @@ const compact = (array) => {
   return result;
 };
 
-const stateToComputed = ({ recon: { packets } }) => ({
-  hasSignaturesHighlighted: packets.hasSignaturesHighlighted,
-  isPayloadOnly: packets.isPayloadOnly
-});
-
 const dispatchToActions = {
   showPacketTooltip,
   hidePacketTooltip
@@ -51,7 +46,10 @@ const ByteTableComponent = Component.extend(InViewportMixin, {
   classNameBindings: ['byteFormat'],
   cellClass: 'byte-cell',
   headerCellClass: 'header',
+
   byteFormat: null,
+  hasSignaturesHighlighted: false,
+  isPayloadOnly: false,
   packet: null,
 
   init() {
@@ -196,4 +194,4 @@ const ByteTableComponent = Component.extend(InViewportMixin, {
   }
 });
 
-export default connect(stateToComputed, dispatchToActions)(ByteTableComponent);
+export default connect(null, dispatchToActions)(ByteTableComponent);

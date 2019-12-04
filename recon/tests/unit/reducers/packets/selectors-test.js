@@ -5,7 +5,7 @@ import { setupTest } from 'ember-qunit';
 import {
   getNetworkDownloadOptions,
   getDefaultDownloadFormat,
-  payloadProcessedPackets,
+  _payloadProcessedPackets,
   packetsRetrieved,
   packetRenderingUnderWay
 } from 'recon/reducers/packets/selectors';
@@ -38,8 +38,8 @@ module('Unit | selector | packets', function(hooks) {
     cache.clear();
   });
 
-  test('payloadProcessedPackets will return an empty array when there are no bytes', function(assert) {
-    const result = payloadProcessedPackets(Immutable.from({
+  test('_payloadProcessedPackets will return an empty array when there are no bytes', function(assert) {
+    const result = _payloadProcessedPackets(Immutable.from({
       packets: {
         isPayloadOnly: true,
         packets: [{
@@ -56,9 +56,9 @@ module('Unit | selector | packets', function(hooks) {
     assert.equal(result.length, 0, 'Did not find an empty array');
   });
 
-  test('payloadProcessedPackets will return undefined if no packets or packetFields', function(assert) {
+  test('_payloadProcessedPackets will return undefined if no packets or packetFields', function(assert) {
     // no packetFields
-    let result = payloadProcessedPackets(Immutable.from({
+    let result = _payloadProcessedPackets(Immutable.from({
       packets: {
         isPayloadOnly: true,
         packetFields: null,
@@ -76,7 +76,7 @@ module('Unit | selector | packets', function(hooks) {
     assert.notOk(result, 'Did not find undefined');
 
     // no packets
-    result = payloadProcessedPackets(Immutable.from({
+    result = _payloadProcessedPackets(Immutable.from({
       packets: {
         isPayloadOnly: true,
         packetFields: [],

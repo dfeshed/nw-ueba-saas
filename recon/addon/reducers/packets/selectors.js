@@ -34,7 +34,7 @@ export const hasRenderIds = createSelector(
  *
  * @private
  */
-export const payloadProcessedPackets = createSelector(
+export const _payloadProcessedPackets = createSelector(
   [packets, isPayloadOnly, packetFields],
   processPacketPayloads
 );
@@ -44,8 +44,8 @@ export const payloadProcessedPackets = createSelector(
  *
  * @public
  */
-export const toBeRenderedPackets = createSelector(
-  [payloadProcessedPackets, isRequestShown, isResponseShown],
+const _toBeRenderedPackets = createSelector(
+  [_payloadProcessedPackets, isRequestShown, isResponseShown],
   (packets, isRequestShown, isResponseShown) => {
 
     // packets can be null, if so, get out
@@ -73,7 +73,7 @@ export const toBeRenderedPackets = createSelector(
  * @public
  */
 export const renderedPackets = createSelector(
-  [toBeRenderedPackets, renderIds],
+  [_toBeRenderedPackets, renderIds],
   (packets, renderIds) => {
     // packets can be null, if so, get out
     // can have no renderIds, if so, get out
@@ -128,7 +128,7 @@ export const cannotGoToPreviousPage = createSelector(
 );
 
 export const packetRenderingUnderWay = createSelector(
-  [toBeRenderedPackets, renderedPackets, packetFields, packetsRetrieved],
+  [_toBeRenderedPackets, renderedPackets, packetFields, packetsRetrieved],
   (toBeRenderedPackets, renderedPackets, packetFields, packetsRetrieved) => {
     return !packetsRetrieved || packetFields === null || toBeRenderedPackets.length > renderedPackets.length;
   }
