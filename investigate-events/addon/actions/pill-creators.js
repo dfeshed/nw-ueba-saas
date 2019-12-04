@@ -33,9 +33,9 @@ const _getAdjacentDeletableLogicalOperatorAt = (pills, idx) => {
   const prevPill = pills[idx - 1];
   const nextPill = pills[idx];
   if (nextPill) {
-    // If there's a pill to the right, then we need it to be a close paren.
+    // If there's a pill to the right, then we need it to be a close paren or another logical operator.
     // Otherwise we're deleting operators that should exist.
-    return isLogicalOperator(prevPill) && _isCloseParen(nextPill) ? prevPill : undefined;
+    return isLogicalOperator(prevPill) && (_isCloseParen(nextPill) || isLogicalOperator(nextPill)) ? prevPill : undefined;
   } else {
     return isLogicalOperator(prevPill) ? prevPill : undefined;
   }
