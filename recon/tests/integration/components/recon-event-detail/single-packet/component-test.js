@@ -102,17 +102,19 @@ module('Integration | Component | Recon Event Detail | Single Packet', function(
     // Toggle the isPayloadOnly redux property
     new DataHelper(redux).togglePayloadOnly();
 
-    this.set('packetFields', packetFields);
+    this.set('isPayloadOnly', true);
     this.set('index', 4);
     const [ packet ] = processedPackets;
     packet.isContinuation = false;
     this.set('packet', packet);
 
-    await render(hbs`{{recon-event-detail/single-packet
-      index=index
-      packet=packet
-      packetFields=packetFields
-    }}`);
+    await render(hbs`
+      {{recon-event-detail/single-packet
+        index=index
+        packet=packet
+        isPayloadOnly=isPayloadOnly
+      }}
+    `);
 
     return wait().then(() => {
       assert.equal(findAll('.rsa-icon-arrow-circle-right-2').length, 1, 'Request arrow shown');
@@ -142,17 +144,21 @@ module('Integration | Component | Recon Event Detail | Single Packet', function(
     // Toggle the isPayloadOnly redux property
     new DataHelper(redux).togglePayloadOnly();
 
+    this.set('isPayloadOnly', true);
     this.set('packetFields', packetFields);
     this.set('index', 4);
     const [ packet ] = processedPackets;
     packet.isContinuation = true;
     this.set('packet', packet);
 
-    await render(hbs`{{recon-event-detail/single-packet
-      index=index
-      packet=packet
-      packetFields=packetFields
-    }}`);
+    await render(hbs`
+      {{recon-event-detail/single-packet
+        index=index
+        packet=packet
+        packetFields=packetFields
+        isPayloadOnly=isPayloadOnly
+      }}
+    `);
 
     return wait().then(() => {
       assert.equal(findAll('.rsa-icon-arrow-circle-right-2').length, 1, 'Request arrow shown');

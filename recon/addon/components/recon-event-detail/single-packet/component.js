@@ -1,5 +1,4 @@
 import Component from '@ember/component';
-import { connect } from 'ember-redux';
 import layout from './template';
 import InViewportMixin from 'ember-in-viewport';
 import { setProperties } from '@ember/object';
@@ -8,12 +7,7 @@ import {
   determineVisibleBytes
 } from 'recon/components/recon-event-detail/single-packet/util';
 
-const stateToComputed = (state) => ({
-  hasSignaturesHighlighted: state.recon.packets.hasSignaturesHighlighted,
-  hasStyledBytes: state.recon.packets.hasStyledBytes
-});
-
-const SinglePacketComponent = Component.extend(InViewportMixin, {
+export default Component.extend(InViewportMixin, {
   classNames: ['rsa-packet'],
   classNameBindings: [
     'packet.side',
@@ -23,8 +17,12 @@ const SinglePacketComponent = Component.extend(InViewportMixin, {
   ],
   layout,
   tagName: 'section',
+
+  hasSignaturesHighlighted: false,
+  hasStyledBytes: false,
   index: null,
   isPacketExpanded: true,
+  isPayloadOnly: false,
   packet: null,
   tooltipData: null,
   shouldRender: false,
@@ -91,5 +89,3 @@ const SinglePacketComponent = Component.extend(InViewportMixin, {
     }
   }
 });
-
-export default connect(stateToComputed)(SinglePacketComponent);

@@ -20,10 +20,10 @@ import {
 } from 'recon/reducers/text/selectors';
 
 const stateToComputed = ({ recon }) => ({
-  allDataHidden: allDataHidden(recon),
   dataIndex: recon.data.index,
   eventTotal: recon.data.total,
   hasTextContent: hasTextContent(recon),
+  isAllDataHidden: allDataHidden(recon),
   isHttpEvent: isHttpData(recon),
   isLogEvent: isLogEvent(recon),
   isEndpointEvent: isEndpointEvent(recon),

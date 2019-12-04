@@ -2,6 +2,7 @@
   {{#if stickyContent}}
     <div class="recon-packet-stuck-header">
       {{recon-event-detail/single-packet/header
+        isPayloadOnly=isPayloadOnly
         isSticky=true
         packet=stickyContent
       }}
@@ -10,6 +11,9 @@
   <div class="scroll-box">
     {{#each renderedPackets key='@index' as |packet index|}}
       {{recon-event-detail/single-packet
+        hasSignaturesHighlighted=hasSignaturesHighlighted
+        hasStyledBytes=hasStyledBytes
+        isPayloadOnly=isPayloadOnly
         index=index
         packet=packet
       }}
