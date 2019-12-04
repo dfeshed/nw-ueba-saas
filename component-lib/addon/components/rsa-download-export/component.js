@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { debounce } from '@ember/runloop';
+import { debounce, later } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 
 export default Component.extend({
@@ -24,10 +24,14 @@ export default Component.extend({
   * Need this wrap this action in debouce as Firefox
   * has some issues with `next` loop. It fires the
   * action immediately, which cause the template
-  * to render null as iframeSrc.
+  * to render null as iframeSrc. Delay is added
+  * to ensure that action is not fired immediately
+  * for other browsers too.
   */
   debouncedAction() {
-    this.get('sendMessage')();
+    later(() => {
+      this.get('sendMessage')();
+    }, 500);
   },
 
   @computed('extractLink')
