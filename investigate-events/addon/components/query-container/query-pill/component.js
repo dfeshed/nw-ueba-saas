@@ -104,6 +104,13 @@ export default Component.extend({
   hasTextPill: null,
 
   /**
+   * An array with one more element than exist pills. Each position stores
+   * a boolean that is true if the element at that position (or that would
+   * be inserted at that position) is inside one or more sets of parentheses
+   */
+  pillsInsideParens: null,
+
+  /**
    * List of meta provided from above and simply
    * passed through to meta component
    * @type {Object}
@@ -242,6 +249,11 @@ export default Component.extend({
    */
   @computed('isExistingPill', 'isActive')
   isDeletable: (isExistingPill, isActive) => isExistingPill && !isActive,
+
+  @computed('pillsInsideParens')
+  isInsideParens(pillsInsideParens) {
+    return pillsInsideParens ? pillsInsideParens[this.get('position')] : false;
+  },
 
   /**
    * Update the component title with error message once validation returns

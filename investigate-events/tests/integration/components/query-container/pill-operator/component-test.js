@@ -9,7 +9,8 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
-  AFTER_OPTION_TEXT_DISABLED_LABEL,
+  AFTER_OPTION_TEXT_DISABLED_DUPLICATE_LABEL,
+  AFTER_OPTION_TEXT_DISABLED_PARENS_LABEL,
   AFTER_OPTION_TAB_META
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
@@ -572,7 +573,23 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await clickTrigger(PILL_SELECTORS.operator);
     // trigger Text Filter option
     const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
-    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_DISABLED_LABEL));
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_DISABLED_DUPLICATE_LABEL));
+    assert.ok(textFilter, 'unable to find Text Filter option');
+  });
+
+  test('it renders a disabled option for text filters when inside parens', async function(assert) {
+    this.set('meta', meta);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        isInsideParens=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.operator);
+    // trigger Text Filter option
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_DISABLED_PARENS_LABEL));
     assert.ok(textFilter, 'unable to find Text Filter option');
   });
 

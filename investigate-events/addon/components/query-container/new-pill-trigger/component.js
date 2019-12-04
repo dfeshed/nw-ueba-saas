@@ -55,6 +55,13 @@ export default Component.extend({
   hasTextPill: null,
 
   /**
+   * An array with one more element than exist pills. Each position stores
+   * a boolean that is true if the element at that position (or that would
+   * be inserted at that position) is inside one or more sets of parentheses
+   */
+  pillsInsideParens: null,
+
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public

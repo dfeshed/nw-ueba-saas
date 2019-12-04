@@ -20,6 +20,7 @@ import {
   enrichedPillsData,
   hasInvalidSelectedPill,
   hasTextPill,
+  pillsInsideParens,
   isPillValidationInProgress,
   selectedPills,
   shouldUseStashedPills
@@ -77,6 +78,7 @@ const stateToComputed = (state, attrs = {}) => ({
   deselectedPills: deselectedPills(state),
   hasInvalidSelectedPill: hasInvalidSelectedPill(state),
   hasTextPill: hasTextPill(state),
+  pillsInsideParens: pillsInsideParens(state),
   isPillValidationInProgress: isPillValidationInProgress(state),
   metaOptions: metaKeySuggestionsForQueryBuilder(state),
   languageAndAliasesForParser: languageAndAliasesForParser(state),

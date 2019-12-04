@@ -5,7 +5,8 @@ import * as MESSAGE_TYPES from '../message-types';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
-  AFTER_OPTION_TEXT_DISABLED_LABEL,
+  AFTER_OPTION_TEXT_DISABLED_DUPLICATE_LABEL,
+  AFTER_OPTION_TEXT_DISABLED_PARENS_LABEL,
   AFTER_OPTION_TEXT_UNAVAILABLE_LABEL,
   LOGICAL_OPERATORS,
   OPERATOR_AND,
@@ -41,8 +42,14 @@ const { log } = console;// eslint-disable-line
 const AND_OPERATOR_STRINGS = ['&&', 'AND'];
 const OR_OPERATOR_STRINGS = ['||', 'OR'];
 
-const DISABLED_TEXT_SEARCH = {
-  label: AFTER_OPTION_TEXT_DISABLED_LABEL,
+const DISABLED_TEXT_SEARCH_DUPLICATE = {
+  label: AFTER_OPTION_TEXT_DISABLED_DUPLICATE_LABEL,
+  disabled: true,
+  highlighted: false
+};
+
+const DISABLED_TEXT_SEARCH_PARENS = {
+  label: AFTER_OPTION_TEXT_DISABLED_PARENS_LABEL,
   disabled: true,
   highlighted: false
 };
@@ -109,6 +116,11 @@ export default Component.extend({
    * @public
    */
   hasTextPill: false,
+
+  /**
+   * Whether or not this pill is inside one or more pairs of parens
+   */
+  isInsideParens: false,
 
   /**
    * Does this component currently have focus?
@@ -214,14 +226,17 @@ export default Component.extend({
 
   i18n: service(),
 
-  @computed('hasTextPill', 'canPerformTextSearch')
-  _groomedAfterOptionsMenu(hasTextPill, canPerformTextSearch) {
+  @computed('hasTextPill', 'canPerformTextSearch', 'isInsideParens')
+  _groomedAfterOptionsMenu(hasTextPill, canPerformTextSearch, isInsideParens) {
     if (!canPerformTextSearch) {
       this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_LABEL, UNAVAILABLE_TEXT_SEARCH);
     } else if (hasTextPill) {
-      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_LABEL, DISABLED_TEXT_SEARCH);
+      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_LABEL, DISABLED_TEXT_SEARCH_DUPLICATE);
+    } else if (isInsideParens) {
+      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_LABEL, DISABLED_TEXT_SEARCH_PARENS);
     } else {
-      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_DISABLED_LABEL, ENABLED_TEXT_SEARCH);
+      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_DISABLED_DUPLICATE_LABEL, ENABLED_TEXT_SEARCH);
+      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_DISABLED_PARENS_LABEL, ENABLED_TEXT_SEARCH);
     }
     return this._afterOptionsMenu;
   },

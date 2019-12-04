@@ -1,7 +1,8 @@
 import reselect from 'reselect';
+import _ from 'lodash';
 
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { TEXT_FILTER } from 'investigate-events/constants/pill';
+import { CLOSE_PAREN, OPEN_PAREN, TEXT_FILTER } from 'investigate-events/constants/pill';
 import { selectedService, hasSummaryData } from 'investigate-events/reducers/investigate/services/selectors';
 import { createQueryHash } from 'investigate-events/util/query-hash';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
@@ -10,7 +11,13 @@ import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/event
 import { validMetaKeySuggestions } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { isProfileExpanded } from 'investigate-events/reducers/investigate/profile/selectors';
 
-const { createSelector } = reselect;
+const { createSelector, createSelectorCreator, defaultMemoize } = reselect;
+
+// See https://github.com/reduxjs/reselect#q-why-is-my-selector-recomputing-when-the-input-state-stays-the-same
+const createDeepEqualSelector = createSelectorCreator(
+  defaultMemoize,
+  _.isEqual
+);
 
 // ACCESSOR FUNCTIONS
 const _endTime = (state) => state.investigate.queryNode.endTime;
@@ -29,6 +36,16 @@ const _originalPills = (state) => state.investigate.queryNode.originalPills || [
 const _isPillsDataStashed = (state) => state.investigate.queryNode.isPillsDataStashed;
 
 export const pillsData = (state) => state.investigate.queryNode.pillsData;
+
+const _onlyParenInfo = createSelector(
+  [pillsData],
+  (_pillsData) => {
+    return _pillsData.map((pill) => ({
+      isOpenParen: pill.type === OPEN_PAREN,
+      isCloseParen: pill.type === CLOSE_PAREN
+    }));
+  }
+);
 
 // This transforms the meta/operator from state, which are just strings,
 // into the full operator/meta objects used by the components
@@ -286,6 +303,22 @@ export const deselectedPills = createSelector(
   [pillsData],
   (_pillsData) => {
     return _pillsData.filter((pD) => pD.isSelected === false);
+  }
+);
+
+export const pillsInsideParens = createDeepEqualSelector(
+  [_onlyParenInfo],
+  (_onlyParenInfo) => {
+    let parenDepth = 0;
+    return [ ..._onlyParenInfo.map((pill) => {
+      if (pill.isOpenParen) {
+        return parenDepth++ > 0;
+      } else if (pill.isCloseParen) {
+        return parenDepth-- > 0;
+      } else {
+        return parenDepth > 0;
+      }
+    }), false];
   }
 );
 

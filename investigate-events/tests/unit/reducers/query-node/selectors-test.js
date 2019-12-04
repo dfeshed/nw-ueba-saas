@@ -14,6 +14,7 @@ import {
   isPillBeingEdited,
   isPillValidationInProgress,
   pillBeingEdited,
+  pillsInsideParens,
   queryNodeValuesForClassicUrl,
   selectedPills,
   selectedTimeRange,
@@ -746,4 +747,33 @@ test('isDirty returns true if pills are modified and they are not stashed', func
   };
 
   assert.ok(isDirty(state), 'PillsData are different, state should be dirty');
+});
+
+test('pillsInsideParens shows which pills are inside parens', function(assert) {
+  // Marks if a pill created at a position would be inside parens. So the position
+  // of an open paren is marked as false, but a close paren is marked as true.
+  const state = new ReduxDataHelper()
+    .language()
+    .pillsDataWithParens()
+    .build();
+  const arr = pillsInsideParens(state);
+  assert.deepEqual([ false, true, true, false ], arr, 'The marked pill positions are inside parens');
+});
+
+test('pillsInsideParens marks correct empty paren positions', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .pillsDataWithEmptyParens()
+    .build();
+  const arr = pillsInsideParens(state);
+  assert.deepEqual([ false, true, false ], arr, 'The marked pill positions are inside parens');
+});
+
+test('pillsInsideParens does not mark anything without parens', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .build();
+  const arr = pillsInsideParens(state);
+  assert.deepEqual([ false, false, false, false ], arr, 'The marked pill positions are inside parens');
 });

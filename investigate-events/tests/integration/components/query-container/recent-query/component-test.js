@@ -13,7 +13,8 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
-  AFTER_OPTION_TEXT_DISABLED_LABEL
+  AFTER_OPTION_TEXT_DISABLED_DUPLICATE_LABEL,
+  AFTER_OPTION_TEXT_DISABLED_PARENS_LABEL
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -325,7 +326,21 @@ module('Integration | Component | Recent Query', function(hooks) {
     await clickTrigger(PILL_SELECTORS.recentQuery);
     // trigger Text Filter option
     const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
-    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_DISABLED_LABEL));
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_DISABLED_DUPLICATE_LABEL));
+    assert.ok(textFilter, 'unable to find Text Filter option');
+  });
+
+  test('it renders a disabled option for text filters when there is a text filter already in recent query tab', async function(assert) {
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        isInsideParens=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+    // trigger Text Filter option
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_DISABLED_PARENS_LABEL));
     assert.ok(textFilter, 'unable to find Text Filter option');
   });
 

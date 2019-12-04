@@ -8,7 +8,8 @@ import { isEmpty } from '@ember/utils';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
-  AFTER_OPTION_TEXT_DISABLED_LABEL,
+  AFTER_OPTION_TEXT_DISABLED_DUPLICATE_LABEL,
+  AFTER_OPTION_TEXT_DISABLED_PARENS_LABEL,
   AFTER_OPTION_TAB_RECENT_QUERIES,
   AFTER_OPTION_TAB_META,
   LOADING_SPINNER_SELECTOR,
@@ -35,8 +36,13 @@ import {
   removeNoResultsMessage
 } from '../query-pill/query-pill-util';
 
-const DISABLED_TEXT_SEARCH = {
-  label: AFTER_OPTION_TEXT_DISABLED_LABEL,
+const DISABLED_TEXT_SEARCH_DUPLICATE = {
+  label: AFTER_OPTION_TEXT_DISABLED_DUPLICATE_LABEL,
+  disabled: true,
+  highlighted: false
+};
+const DISABLED_TEXT_SEARCH_PARENS = {
+  label: AFTER_OPTION_TEXT_DISABLED_PARENS_LABEL,
   disabled: true,
   highlighted: false
 };
@@ -80,6 +86,11 @@ const RecentQueryComponent = Component.extend({
    * @public
    */
   hasTextPill: false,
+
+  /**
+   * Whether or not this pill is inside one or more pairs of parens
+   */
+  isInsideParens: false,
 
   /**
    * power-select's public API
@@ -164,12 +175,15 @@ const RecentQueryComponent = Component.extend({
     return isEditing ? undefined : AFTER_OPTIONS_COMPONENT;
   },
 
-  @computed('hasTextPill')
-  _groomedAfterOptionsMenu(hasTextPill) {
+  @computed('hasTextPill', 'isInsideParens')
+  _groomedAfterOptionsMenu(hasTextPill, isInsideParens) {
     if (hasTextPill) {
-      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_LABEL, DISABLED_TEXT_SEARCH);
+      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_LABEL, DISABLED_TEXT_SEARCH_DUPLICATE);
+    } else if (isInsideParens) {
+      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_LABEL, DISABLED_TEXT_SEARCH_PARENS);
     } else {
-      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_DISABLED_LABEL, ENABLED_TEXT_SEARCH);
+      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_DISABLED_DUPLICATE_LABEL, ENABLED_TEXT_SEARCH);
+      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_DISABLED_PARENS_LABEL, ENABLED_TEXT_SEARCH);
     }
     return this._afterOptionsMenu;
   },
