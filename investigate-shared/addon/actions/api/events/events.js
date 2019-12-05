@@ -5,7 +5,8 @@ import {
   searchTermFilter,
   serviceIdFilter,
   streamingRequest,
-  timeRangeFilter
+  timeRangeFilter,
+  metaRangeFilter
 } from './utils';
 
 /**
@@ -20,7 +21,7 @@ import {
  * @return {object} RSVP Promise
  * @public
  */
-export default function(queryNode, language, limit, batch, handlers, desiredMetas, sort, dedicatedSocketName) {
+export default function(queryNode, language, limit, batch, handlers, desiredMetas, sort, startMeta, endMeta, dedicatedSocketName) {
   // conditions is legacy
   const filters = queryNode.metaFilter.conditions || queryNode.metaFilter;
   const { metaFilters, searchTerm } = extractSearchTermFromFilters(filters);
@@ -43,6 +44,10 @@ export default function(queryNode, language, limit, batch, handlers, desiredMeta
       field: 'select',
       value: desiredMetas.join(',')
     });
+  }
+
+  if (startMeta && endMeta) {
+    query.filter.push(metaRangeFilter(startMeta, endMeta));
   }
 
   const streamOptions = {};

@@ -26,6 +26,7 @@ export default function getEventCount() {
     const { serviceId, startTime, endTime, metaFilter } = getActiveQueryNode(getState());
     const { language } = state.dictionaries;
     const { threshold } = state.eventCount;
+    const { startMeta, endMeta } = state.data;
     const handlers = {
       onInit(stopStream) {
         if (_stopStreaming) {
@@ -99,6 +100,6 @@ export default function getEventCount() {
       }
     };
 
-    fetchCount(serviceId, startTime, endTime, metaFilter, language, threshold, handlers);
+    fetchCount(serviceId, startTime, endTime, metaFilter, language, threshold, handlers, startMeta, endMeta);
   };
 }

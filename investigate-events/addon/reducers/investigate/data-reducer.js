@@ -21,6 +21,8 @@ const _initialState = Immutable.from({
   isQueryExecutedByColumnGroup: false,
   sortField: 'time',
   sortDirection: null,
+  startMeta: undefined,
+  endMeta: undefined,
   isQueryExecutedBySort: false
 });
 
@@ -85,6 +87,8 @@ export default handleActions({
     }
     return state.merge({
       isReconOpen,
+      startMeta: queryParams.sm,
+      endMeta: queryParams.em,
       // TODO: reconSize should have a default value from prefs being set above.
       // need to refactor this.
       reconSize: queryParams.reconSize || RECON_PANEL_SIZES.MAX

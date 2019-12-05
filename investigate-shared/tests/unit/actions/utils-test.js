@@ -5,7 +5,8 @@ import {
   encodeMetaFilterConditions,
   extractSearchTermFromFilters,
   mergeFilterStrings,
-  removeEmptyParens
+  removeEmptyParens,
+  metaRangeFilter
 } from 'investigate-shared/actions/api/events/utils';
 
 module('Unit | Helper | utils');
@@ -127,6 +128,15 @@ const textPillAtEnd = [
     'type': 'text'
   }
 ];
+
+test('metaRangeFilter correctly encodes conditions', function(assert) {
+  assert.expect(3);
+  const result = metaRangeFilter('1', '2');
+
+  assert.equal(result.field, 'metaRange');
+  assert.equal(result.range.to, '2');
+  assert.equal(result.range.from, '1');
+});
 
 test('encodeMetaFilterConditions correctly encodes conditions', function(assert) {
   assert.expect(1);

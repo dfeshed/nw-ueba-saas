@@ -52,6 +52,15 @@ export const mergeFilterStrings = (() => {
 })();
 
 /**
+ * Creates a metaFilter metaRange filter
+ * @param {string} from - A query string
+ * @param {string} to - A query string
+ * @return {object} A field/value object
+ * @public
+ */
+export const metaRangeFilter = (from, to) => ({ field: 'metaRange', range: { to, from } });
+
+/**
  * Creates a metaFilter conditions filter
  * @param {string} value - A query string
  * @return {object} A field/value object

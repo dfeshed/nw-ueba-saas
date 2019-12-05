@@ -13,6 +13,8 @@ const params = {
   rs: 'max',
   sid: 2,
   st: 3,
+  sm: '1',
+  em: '2',
   pdhash: 'foo,bar,baz',
   sortField: 'time',
   sortDir: 'Ascending'
@@ -28,7 +30,7 @@ module('Unit | Helper | Actions Utils', function(hooks) {
   });
 
   test('parseBasicQueryParams correctly parses URI', function(assert) {
-    assert.expect(9);
+    assert.expect(11);
     const result = queryUtils.parseBasicQueryParams(params, DEFAULT_LANGUAGES);
     assert.equal(result.endTime, params.et, '"et" was not parsed to "endTime"');
     assert.equal(result.sessionId, params.eid, '"eid" was not parsed to "sessionId"');
@@ -38,6 +40,8 @@ module('Unit | Helper | Actions Utils', function(hooks) {
     assert.equal(result.startTime, params.st, '"st" was not parsed to "startTime"');
     assert.equal(result.sortField, params.sortField, '"sortField" was not parsed to "sortField"');
     assert.equal(result.sortDir, params.sortDir, '"sortDir" was not parsed to "sortDir"');
+    assert.equal(result.sm, params.sm, '"sm" was not parsed to "sm"');
+    assert.equal(result.em, params.em, '"em" was not parsed to "em"');
     assert.deepEqual(result.pillDataHashes, ['foo', 'bar', 'baz'], '"pdhash" was not parsed to proper hashes');
   });
 

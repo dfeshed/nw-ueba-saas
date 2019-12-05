@@ -128,7 +128,6 @@ function executeMetaValuesRequest(request, inputs, values) {
  * @public
  */
 function parseBasicQueryParams(params, timeRangeType) {
-
   // hashes are comma-separated if there are many
   let pillDataHashes = params.pdhash;
   if (params.pdhash) {
@@ -151,7 +150,9 @@ function parseBasicQueryParams(params, timeRangeType) {
     startTime: params.st,
     sortField: params.sortField,
     sortDir: params.sortDir,
-    selectedTimeRangeId: timeRangeType
+    selectedTimeRangeId: timeRangeType,
+    sm: params.sm,
+    em: params.em
   };
 }
 

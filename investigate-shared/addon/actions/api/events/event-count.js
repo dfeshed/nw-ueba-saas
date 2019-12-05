@@ -6,7 +6,8 @@ import {
   serviceIdFilter,
   streamingRequest,
   thresholdFilter,
-  timeRangeFilter
+  timeRangeFilter,
+  metaRangeFilter
 } from './utils';
 
 /**
@@ -20,7 +21,7 @@ import {
  * @return {object} RSVP Promise
  * @public
  */
-export default function fetchCount(serviceId, startTime, endTime, filters, language, threshold, handlers) {
+export default function fetchCount(serviceId, startTime, endTime, filters, language, threshold, handlers, startMeta, endMeta) {
   const { metaFilters, searchTerm } = extractSearchTermFromFilters(filters);
   const query = {
     filter: [
@@ -31,6 +32,11 @@ export default function fetchCount(serviceId, startTime, endTime, filters, langu
       searchTermFilter(searchTerm)
     ]
   };
+
+  if (startMeta && endMeta) {
+    query.filter.push(metaRangeFilter(startMeta, endMeta));
+  }
+
   return streamingRequest(
     'core-event-count',
     query,

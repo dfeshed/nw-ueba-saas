@@ -53,6 +53,8 @@ export default Route.extend({
     et: { refreshModel: true }, // endTime
     mf: { refreshModel: true }, // pillData
     mps: { refreshModel: false }, // metaPanelSize
+    sm: { refreshModel: false }, // start meta
+    em: { refreshModel: false }, // end meta
     rs: { refreshModel: false }, // reconSize
     sortField: { refreshModel: true },
     sortDir: { refreshModel: true }
@@ -112,7 +114,6 @@ export default Route.extend({
     // then hardReset is set to true and initial state is set.
     const uniqParamValues = Object.values(params).uniq();
     const hardReset = uniqParamValues.length === 1 && uniqParamValues[0] === undefined;
-
     this.get('redux').dispatch(initializeInvestigate(params, this.transitionToPillHash.bind(this), hardReset, isInternalQuery));
   },
 

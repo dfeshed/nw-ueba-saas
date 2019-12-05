@@ -292,7 +292,7 @@ export const eventsStartOldest = () => {
     const queryNode = getActiveQueryNode(getState());
     const { language } = investigate.dictionaries;
     const { streamBatch } = investigate.eventResults;
-    const { sortField, sortDirection } = investigate.data;
+    const { sortField, sortDirection, startMeta, endMeta } = investigate.data;
 
     fetchStreamingEvents(
       queryNode,
@@ -302,6 +302,8 @@ export const eventsStartOldest = () => {
       handlers,
       currentStreamState.flattenedColumnList,
       _deriveSort(sortField, sortDirection, state),
+      startMeta,
+      endMeta,
       'investigate-events-event-stream'
     );
   };
