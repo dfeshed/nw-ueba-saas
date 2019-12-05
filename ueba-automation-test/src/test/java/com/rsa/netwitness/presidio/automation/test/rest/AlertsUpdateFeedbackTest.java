@@ -8,6 +8,7 @@ import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -159,6 +160,18 @@ public class AlertsUpdateFeedbackTest extends AbstractTestNGSpringContextTests {
                 .isEqualTo(expectedEntityScore);
     }
 
+
+    @AfterClass
+    public void revertChanges(){
+         List<EntitiesStoredRecord> testEntities = List.of(someAlertsToIgnoreEntity, allAlertsToIgnoreEntity, unIgnoreEntity);
+
+         for (EntitiesStoredRecord entity : testEntities) {
+             PresidioUrl actualEntityUrl = restHelper.entities().withId(entity.getId()).url().withExpandedParameter();
+             EntitiesStoredRecord actualEntity = restHelper.entities().request().getEntities(actualEntityUrl).get(0);
+             List<AlertsStoredRecord> actualNotARiskAlerts = actualEntity.getAlerts().stream().filter(alert -> alert.getFeedback().equals("NOT_RISK")).collect(toList());
+             removeNotA_Risk(actualNotARiskAlerts);
+         }
+    }
 
 
 
