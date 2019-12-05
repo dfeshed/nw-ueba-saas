@@ -55,7 +55,7 @@
         <strong class="device">{{device.serviceName}}</strong>
 
         {{#if (and actualEventCount streamingTimeElapsed)}}
-          {{t 'investigate.queryStats.summary' age=eventAge eventCount=formattedActualEventCount queryTimeElapsed=queryTimeElapsed streamingTimeElapsed=streamingTimeElapsed}}
+          {{t 'investigate.queryStats.summary' age=eventResultSetStartLabel eventCount=formattedActualEventCount queryTimeElapsed=queryTimeElapsed streamingTimeElapsed=streamingTimeElapsed}}
         {{else if actualEventCount}}
           {{t 'investigate.queryStats.summaryNoStreaming' age=eventAge eventCount=formattedActualEventCount queryTimeElapsed=queryTimeElapsed}}
         {{else}}

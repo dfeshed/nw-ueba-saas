@@ -54,6 +54,30 @@ module('Integration | Component | header-container', function(hooks) {
     assert.ok(tooltip.includes('oldest'));
   });
 
+  test('render the events header with data at threshold sorted Desc', async function(assert) {
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Descending').columnGroups(EventColumnGroups).hasRequiredValuesToQuery(true).eventCount(100000).build();
+    await render(hbs`{{events-table-container/header-container}}`);
+    assert.ok(find(eventLabelSelector).textContent.includes('newest 100,000 Events (Desc)'), 'rendered event header title');
+    const thresholdIconSelector = `${headerContainerSelector} .at-threshold`;
+    const tooltip = find(thresholdIconSelector).getAttribute('title').trim().split(' ');
+    assert.ok(tooltip.includes('newest'));
+  });
+
+  test('render the events header with data not at threshold', async function(assert) {
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).hasRequiredValuesToQuery(true).eventCount(1).build();
+    await render(hbs`{{events-table-container/header-container}}`);
+    assert.notOk(find(eventLabelSelector).textContent.includes('newest'), 'rendered event header title');
+  });
+
+  test('render the events header with data at threshold but not sorted on time', async function(assert) {
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('foo', 'Ascending').columnGroups(EventColumnGroups).hasRequiredValuesToQuery(true).eventCount(100000).build();
+    await render(hbs`{{events-table-container/header-container}}`);
+    assert.notOk(find(eventLabelSelector).textContent.includes('oldest 100,000 Events (Asc)'), 'rendered event header title');
+    const thresholdIconSelector = `${headerContainerSelector} .at-threshold`;
+    const tooltip = find(thresholdIconSelector).getAttribute('title').trim().split(' ');
+    assert.notOk(tooltip.includes('oldest'));
+  });
+
   skip('does not render the relationship toggle when no split sessions', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').hasRequiredValuesToQuery(true).columnGroups(EventColumnGroups).eventCount(55).build();
     await render(hbs`{{events-table-container/header-container}}`);

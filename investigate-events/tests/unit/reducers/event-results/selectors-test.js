@@ -25,7 +25,8 @@ import {
   hideEventsForReQuery,
   nestChildEvents,
   updateStreamKeyTree,
-  eventsHaveSplits
+  eventsHaveSplits,
+  eventResultSetStart
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -99,6 +100,61 @@ module('Unit | Selectors | event-results', function(hooks) {
         eventResults: {}
       }
     }), 0);
+  });
+
+  test('eventResultSetStart', async function(assert) {
+    assert.notOk(eventResultSetStart({
+      investigate: {
+        eventCount: {
+          data: 1,
+          threshold: 2
+        },
+        data: {
+          sortDirection: 'Ascending',
+          sortField: 'time'
+        }
+      }
+    }));
+
+    assert.notOk(eventResultSetStart({
+      investigate: {
+        eventCount: {
+          data: 1,
+          threshold: 2
+        },
+        data: {
+          sortDirection: 'Ascending',
+          sortField: 'foo'
+        }
+      }
+    }));
+
+    assert.equal('oldest', eventResultSetStart({
+      investigate: {
+        eventCount: {
+          data: 1,
+          threshold: 1
+        },
+        data: {
+          sortDirection: 'Ascending',
+          sortField: 'time'
+        }
+      }
+    }));
+
+    assert.equal('newest', eventResultSetStart({
+      investigate: {
+        eventCount: {
+          data: 1,
+          threshold: 1
+        },
+        data: {
+          sortDirection: 'Descending',
+          sortField: 'time'
+        }
+      }
+    }));
+
   });
 
   test('searchScrollDisplay', async function(assert) {

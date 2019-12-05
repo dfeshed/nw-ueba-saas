@@ -2,8 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
-import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
-import { actualEventCount, SORT_ORDER } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { actualEventCount, eventResultSetStart } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 import { filterElements, getHeight } from 'component-lib/utils/jquery-replacement';
 
@@ -35,9 +34,9 @@ const stateToComputed = (state) => ({
   eventCount: state.investigate.eventCount.data,
   formattedEventCount: thousandFormat(state.investigate.eventCount.data),
   eventTimeSortOrderPreferenceWhenQueried: state.investigate.eventResults.eventTimeSortOrderPreferenceWhenQueried,
-  resultCountAtThreshold: resultCountAtThreshold(state),
   formattedActualEventCount: thousandFormat(actualEventCount(state)),
-  actualEventCount: actualEventCount(state)
+  actualEventCount: actualEventCount(state),
+  eventResultSetStart: eventResultSetStart(state)
 });
 
 const DevicesStatus = Component.extend({
@@ -46,10 +45,10 @@ const DevicesStatus = Component.extend({
   isExpanded: false,
   height: 0,
 
-  @computed('resultCountAtThreshold', 'eventTimeSortOrderPreferenceWhenQueried')
-  eventAge: (resultCountAtThreshold, eventTimeSortOrder) => {
-    if (resultCountAtThreshold && eventTimeSortOrder) {
-      return (eventTimeSortOrder === SORT_ORDER.ASC) ? 'oldest' : 'newest';
+  @computed('eventResultSetStart', 'i18n')
+  eventResultSetStartLabel(eventResultSetStart, i18n) {
+    if (eventResultSetStart) {
+      return i18n.t(`investigate.events.${eventResultSetStart}`);
     }
   },
 

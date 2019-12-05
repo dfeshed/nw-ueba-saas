@@ -15,7 +15,8 @@ import {
   searchScrollDisplay,
   SORT_ORDER,
   areEventsStreaming,
-  eventsHaveSplits
+  eventsHaveSplits,
+  eventResultSetStart
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
@@ -43,7 +44,8 @@ const stateToComputed = (state) => ({
   canSort: hasMinimumCoreServicesVersionForColumnSorting(state),
   isSummaryColumnVisible: isSummaryColumnVisible(state),
   eventRelationshipsEnabled: state.investigate.eventResults.eventRelationshipsEnabled,
-  eventsHaveSplits: eventsHaveSplits(state)
+  eventsHaveSplits: eventsHaveSplits(state),
+  eventResultSetStart: eventResultSetStart(state)
 });
 
 const dispatchToActions = {
@@ -72,7 +74,6 @@ const HeaderContainer = Component.extend({
   permissionAllowsIncidentManagement(respondCanManageIncidents, investigateCanManageIncidents) {
     return investigateCanManageIncidents && respondCanManageIncidents;
   },
-
 
   @computed('isSummaryColumnVisible')
   searchDisabledMessage(isSummaryColumnVisible) {
@@ -109,10 +110,9 @@ const HeaderContainer = Component.extend({
     }
   },
 
-  @computed('sortDirection', 'i18n')
-  eventResultSetStart(sortDirection, i18n) {
-    if (sortDirection) {
-      const eventResultSetStart = sortDirection.toLowerCase() === SORT_ORDER.ASC.toLowerCase() ? 'oldest' : 'newest';
+  @computed('eventResultSetStart', 'i18n')
+  eventResultSetStartLabel(eventResultSetStart, i18n) {
+    if (eventResultSetStart) {
       return i18n.t(`investigate.events.${eventResultSetStart}`);
     }
   },

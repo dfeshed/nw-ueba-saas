@@ -73,6 +73,33 @@ module('Integration | Component | console-devices', function(hooks) {
     assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (~2s)  10 event(s).'));
   });
 
+  test('renders the summary of the top level device when at threshold and time sorted Desc', async function(assert) {
+    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsComplete().eventThreshold(10).eventCount(10).eventsQuerySort('time', 'Descending').build();
+    await render(hbs`
+      {{query-container/console-panel/devices}}
+    `);
+
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (~2s) and retrieved (~1s) newest 10 event(s).'));
+  });
+
+  test('renders the summary of the top level device when at threshold and time sorted Asc', async function(assert) {
+    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsComplete().eventThreshold(10).eventCount(10).eventsQuerySort('time', 'Ascending').build();
+    await render(hbs`
+      {{query-container/console-panel/devices}}
+    `);
+
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (~2s) and retrieved (~1s) oldest 10 event(s).'));
+  });
+
+  test('renders the summary of the top level device when at threshold and not time sorted Asc', async function(assert) {
+    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsComplete().eventThreshold(10).eventCount(10).eventsQuerySort('foo', 'Ascending').build();
+    await render(hbs`
+      {{query-container/console-panel/devices}}
+    `);
+
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (~2s) and retrieved (~1s)  10 event(s).'));
+  });
+
   test('renders the summary of the top level device when complete', async function(assert) {
     new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsComplete().eventCount(10).build();
     await render(hbs`

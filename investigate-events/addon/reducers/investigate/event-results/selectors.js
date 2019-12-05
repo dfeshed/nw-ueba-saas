@@ -45,6 +45,15 @@ export const SORT_ORDER = {
   ASC: 'Ascending'
 };
 
+export const eventResultSetStart = createSelector(
+  [resultCountAtThreshold, _sortDirection, _sortField],
+  (isAtThreshold, sortDirection, sortField) => {
+    if (isAtThreshold && sortDirection && sortField === 'time') {
+      return sortDirection.toLowerCase() === SORT_ORDER.ASC.toLowerCase() ? 'oldest' : 'newest';
+    }
+  }
+);
+
 export const streamLimit = (state) => state.investigate.eventResults.streamLimit;
 
 export const dataCount = createSelector(
