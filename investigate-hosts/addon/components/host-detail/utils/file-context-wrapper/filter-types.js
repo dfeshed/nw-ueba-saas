@@ -1,6 +1,6 @@
 const FILTER_TYPES = [
   {
-    'name': 'fileProperties.firstFileName',
+    'name': 'fileName',
     'label': 'investigateFiles.fields.firstFileName',
     'type': 'text',
     useI18N: true,

@@ -59,10 +59,20 @@ module('Unit | Selectors | process-filter', function() {
   test('isWindowsAgent when host details is absent', function(assert) {
     const state = Immutable.from({
       processAnalysis: {
-        processProperties: { }
+        processProperties: {
+          hostDetails: []
+        }
       }
     });
     const result = isWindowsAgent(state);
     assert.deepEqual(result, false);
+
+    const state2 = Immutable.from({
+      processAnalysis: {
+        processProperties: {}
+      }
+    });
+    const result2 = isWindowsAgent(state2);
+    assert.deepEqual(result2, false);
   });
 });

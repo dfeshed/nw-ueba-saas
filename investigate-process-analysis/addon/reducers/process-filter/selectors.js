@@ -5,7 +5,7 @@ const { createSelector } = reselect;
 const _selectedFilterItems = (state) => state.processAnalysis.processFilter.filter;
 
 
-const _machineOsType = (state) => state.processAnalysis.processProperties.hostDetails ?
+const _machineOsType = (state) => state.processAnalysis.processProperties.hostDetails?.length ?
   state.processAnalysis.processProperties.hostDetails[0].machineOsType : '';
 
 export const isWindowsAgent = createSelector(
