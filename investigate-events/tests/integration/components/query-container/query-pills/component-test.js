@@ -3610,10 +3610,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(find(PILL_SELECTORS.closeParen), 'Missing close paren');
   });
 
-  // TODO bug #8 of ASOC-85938
   // opening paren after entering a logical operator
-  // shows two powerselect dropdowns for meta, one from inside parens and one from new pill trigger
-  // after bug is fixed, last assert should be updated
   test('Entering an open paren after entering a logical operator shows two powerselect dropdowns for meta', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -3640,8 +3637,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', '(');
     assert.ok(find(PILL_SELECTORS.openParen), 'Missing open paren');
     assert.ok(find(PILL_SELECTORS.closeParen), 'Missing close paren');
-    // this assert should be 1 after bug is fixed
-    assert.equal(findAll(PILL_SELECTORS.metaInput).length, 2, 'shall find two powerselect dropdowns for meta present');
+    // shall find one powerselect dropdown for meta only, not two
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'shall find one powerselect dropdown');
   });
 
   test('Can create a new pill inside a pair of parens', async function(assert) {

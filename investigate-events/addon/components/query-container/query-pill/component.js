@@ -1251,6 +1251,16 @@ export default Component.extend({
    */
   _openParen() {
     this.set('shouldFocusOut', false);
+
+    // isMetaAutoFocused is eventually set to false but not in time
+    // resulting in two pill-meta having focus
+    // adding the isLastPill check here and setting it to false
+    // before pill-meta component scheduleOnce runs
+    // prevents focusing on the pill when it shouldn't
+    if (this.get('isLastPill')) {
+      this.set('isMetaAutoFocused', false);
+    }
+
     this._broadcast(MESSAGE_TYPES.PILL_OPEN_PAREN);
   },
 
