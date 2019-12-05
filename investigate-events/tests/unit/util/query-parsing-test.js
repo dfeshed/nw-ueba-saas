@@ -1475,6 +1475,54 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.deepEqual(valueList('  "   "  '), []);
   });
 
+  test('valueList differentiates between `\\` and an escape char', function(assert) {
+    // If we are not remving escapes, add another `\`, if it is not already present
+    assert.deepEqual(valueList('foo\\bar', { removeEscapes: false }), [
+      { value: 'foo\\\\bar', quoted: false }
+    ]);
+    // This value is for display only
+    assert.deepEqual(valueList('foo\\bar', { removeEscapes: true }), [
+      { value: 'foo\\bar', quoted: false }
+    ]);
+
+    // If there is already an escape char for `\`, do nothing
+    assert.deepEqual(valueList('foo\\\\bar', { removeEscapes: false }), [
+      { value: 'foo\\\\bar', quoted: false }
+    ]);
+
+    // `\\foo\\bar\\`
+    assert.deepEqual(valueList('\\foo\\bar\\', { removeEscapes: false }), [
+      { value: '\\\\foo\\\\bar\\\\', quoted: false }
+    ]);
+    assert.deepEqual(valueList('\\foo\\bar\\', { removeEscapes: true }), [
+      { value: '\\foo\\bar\\', quoted: false }
+    ]);
+
+    // `\\\'foo\\bar\\` one with a quote in the value at the start as well as a `\`
+    assert.deepEqual(valueList('\\\\\'foo\\bar\\', { removeEscapes: true }), [
+      { value: '\\\'foo\\bar\\', quoted: false }
+    ]);
+    assert.deepEqual(valueList('\\\\\'foo\\bar\\', { removeEscapes: false }), [
+      { value: '\\\\\\\'foo\\\\bar\\\\', quoted: false }
+    ]);
+
+    // one that has quotes in the middle -> `\\\'foo\'bar\\`
+    assert.deepEqual(valueList('\\\\\'foo\\\'bar\\', { removeEscapes: true }), [
+      { value: '\\\'foo\'bar\\', quoted: false }
+    ]);
+    assert.deepEqual(valueList('\\\\\'foo\\\'bar\\', { removeEscapes: false }), [
+      { value: '\\\\\\\'foo\\\'bar\\\\', quoted: false }
+    ]);
+
+    // one that has quotes in the end -> `\\\'foo\\bar\\\'`
+    assert.deepEqual(valueList('\\\\\'foo\\bar\\\\\'', { removeEscapes: true }), [
+      { value: '\\\'foo\\bar\\\'', quoted: false }
+    ]);
+    assert.deepEqual(valueList('\\\\\'foo\\bar\\\\\'', { removeEscapes: false }), [
+      { value: '\\\\\\\'foo\\\\bar\\\\\\\'', quoted: false }
+    ]);
+  });
+
   test('createOperator can create an AND operator', function(assert) {
     const result = createOperator(OPERATOR_AND);
     assert.equal(result.type, OPERATOR_AND, 'type should match');

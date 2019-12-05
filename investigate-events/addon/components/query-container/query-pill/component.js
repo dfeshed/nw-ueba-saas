@@ -906,14 +906,7 @@ export default Component.extend({
 
     if (shouldAutoQuote) {
       // When we add quotes, make sure to escape any existing quotes or backslashes
-      value = valueList(value).map((segment) => {
-        segment = segment.value
-          // Looks like it does nothing because the first string is also escaped
-          // for RegExp. Replaces backslashes with double backslashes.
-          .replace(new RegExp('\\\\', 'g'), '\\\\')
-          .replace(new RegExp('\'', 'g'), '\\\'');
-        return `'${segment}'`;
-      }).join(',');
+      value = valueList(value).map((segment) => `'${segment.value}'`).join(',');
     }
     value = `${this.get('selectedMeta').metaName} ${this.get('selectedOperator').displayName} ${value}`;
     // Reset the selected meta & selected operator and stop editing

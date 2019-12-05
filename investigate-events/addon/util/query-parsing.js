@@ -526,7 +526,19 @@ export const valueList = (string, options) => {
         inbetweenStrings = false;
       // If we see a non-whitespace character, capture it and start normal scanning
       } else if (!whitespaceRegex.test(char)) {
-        tempString += char;
+
+        // if value begins with `\` and it is not an escape char for a quote
+        if (char === '\\') {
+          const nextChar = string[pos + 1];
+          if (nextChar === '\\' && string[pos + 2] !== '\'') {
+            tempString += _computeBasedOnRemoveEscapes(removeEscapes, char);
+            pos += 1; // skip the next slash
+          } else if (nextChar !== '\'') {
+            tempString += _computeBasedOnRemoveEscapes(removeEscapes, char);
+          }
+        } else {
+          tempString += char;
+        }
         inbetweenStrings = false;
       }
       // If we see whitespace, do nothing here, which trims whitespace off the front
@@ -565,13 +577,16 @@ export const valueList = (string, options) => {
         inbetweenStrings = true;
         goodQuoted = false;
       } else if (char === '\\') {
-        // This is an escape, only add it if we are not removing escapes
-        if (!removeEscapes) {
-          tempString += char;
-        }
-        if (string[pos + 1] === '\'') {
+        const nextChar = string[pos + 1];
+
+        if (nextChar === '\\' && !_isQuotePartOfString(string, activeQuote, pos + 2, string[pos + 2])) {
+          tempString += _computeBasedOnRemoveEscapes(removeEscapes, char);
+          pos += 1; // skip the next slash
+        } else if (nextChar !== '\'') {
+          tempString += _computeBasedOnRemoveEscapes(removeEscapes, char);
+        } else if (nextChar === '\'') {
           // If this is an escaped quote, make sure to skip past it
-          tempString += '\'';
+          removeEscapes ? tempString += '\'' : tempString += '\\\'';
           pos += 1;
         }
       } else {
@@ -585,4 +600,42 @@ export const valueList = (string, options) => {
   }
   // Only return non-empty strings
   return result.filter((a) => a.value !== '');
+};
+
+/**
+ * If removeEscapes: true, this value is for `display only`, and
+ * so do not add escapes to the existing value.
+ * If false, we add another `\`. This is the value MT needs to query.
+ */
+const _computeBasedOnRemoveEscapes = (removeEscapes, char) => {
+  let str;
+  removeEscapes ? str = char : str = '\\\\';
+  return str;
+};
+
+/**
+ * In order to differentiate wrapping quotes from quotes within the string
+ */
+const _isQuotePartOfString = (string, activeQuote, currPos, charToCheck) => {
+  if (charToCheck === '\'') {
+    if (activeQuote) {
+      // If there is an active quote, then we need to further investigate if this
+      // is part of the value.
+      let commaIdx = string.indexOf(',', currPos);
+      if (commaIdx === -1) {
+        commaIdx = string.length;
+      }
+      // Because there can be multiple comma separated values, we break up the
+      // string until the next comma
+      const subStr = string.substring(currPos + 1, commaIdx);
+      // If there is another `'` after this curr position, then this
+      // def is part of the value.
+      return subStr.includes('\'');
+    } else {
+      // If there is no active quote registered, this is def part of the value
+      return true;
+    }
+  } else {
+    return false;
+  }
 };
