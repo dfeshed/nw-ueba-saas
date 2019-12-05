@@ -62,6 +62,13 @@ export const initializeNotifications = () => {
       // some job failed
       (response) => {
         handleInvestigateErrorCode(response, 'FETCH_NOTIFICATIONS');
+
+        // if the failed job was download related...
+        const extractStatus = getState().investigate.files?.fileExtractStatus;
+        if (extractStatus === 'wait') {
+          dispatch({ type: ACTION_TYPES.FILE_EXTRACT_FAILURE });
+          _displayDownloadError(response.errorMessage);
+        }
       }
     );
   };
