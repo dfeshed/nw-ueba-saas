@@ -67,50 +67,32 @@ public class AirflowTasksStartTimeTest extends AbstractTestNGSpringContextTests 
 
     @Test
     public void feature_aggregation_tasks_start_time_match_configuration() {
-        SoftAssertions softly = new SoftAssertions();
         final Instant expectedStartTime = executionStart.plus(featureAggregationModelsMinDays, DAYS);
         LOGGER.info("Feature aggregation reference start time =" + expectedStartTime);
-
-        for (ImmutablePair<String, String> task : featureAggregationTasks) {
-            String details = "\ndag_id=".concat(task.left).concat(", task_id=" + task.right);
-            Optional<Instant> firstSucceededExecutionDate = airflowTasksPostgres.getFirstSucceededExecutionDate(task.left, task.right);
-
-            softly.assertThat(firstSucceededExecutionDate).as("Unable to get first succeeded execution date for " + details).isPresent();
-
-            firstSucceededExecutionDate.ifPresent(date -> softly.assertThat(date)
-                    .as("First succeeded execution date is out of bounds." + details)
-                    .isBetween(expectedStartTime.minus(OFFSET), expectedStartTime.plus(OFFSET)));
-        }
-
-        softly.assertAll();
+        validateFirstSucceededTaskStartTime(expectedStartTime, featureAggregationTasks).assertAll();
     }
 
     @Test
     public void smart_tasks_start_time_match_configuration() {
-        SoftAssertions softly = new SoftAssertions();
         final Instant expectedStartTime = executionStart.plus(featureAggregationModelsMinDays, DAYS).plus(smartRecordsModelsMinDays, DAYS);
         LOGGER.info("Smarts task reference start time =" + expectedStartTime);
-
-        for (ImmutablePair<String, String> task : smartTasks) {
-            String details = "\ndag_id=".concat(task.left).concat(", task_id=" + task.right);
-            Optional<Instant> firstSucceededExecutionDate = airflowTasksPostgres.getFirstSucceededExecutionDate(task.left, task.right);
-
-            softly.assertThat(firstSucceededExecutionDate).as("Unable to get first succeeded execution date for " + details).isPresent();
-
-            firstSucceededExecutionDate.ifPresent(date -> softly.assertThat(date)
-                    .as("First succeeded execution date is out of bounds." + details)
-                    .isBetween(expectedStartTime.minus(OFFSET), expectedStartTime.plus(OFFSET)));
-        }
-
-        softly.assertAll();
+        validateFirstSucceededTaskStartTime(expectedStartTime, smartTasks).assertAll();
     }
 
     @Test
     public void enrich_tasks_start_time_match_configuration() {
-        SoftAssertions softly = new SoftAssertions();
         final Instant expectedStartTime = executionStart.plus(featureAggregationModelsMinDays, DAYS).plus(enrichedRecordsModelsMinDays, DAYS);
         LOGGER.info("Enrichment tasks reference start time =" + expectedStartTime);
+        validateFirstSucceededTaskStartTime(expectedStartTime, enrichTasks).assertAll();
+    }
 
+
+
+
+
+
+    private SoftAssertions validateFirstSucceededTaskStartTime(final Instant expectedStartTime, List<ImmutablePair<String, String>> enrichTasks) {
+        SoftAssertions softly = new SoftAssertions();
         for (ImmutablePair<String, String> task : enrichTasks) {
             String details = "\ndag_id=".concat(task.left).concat(", task_id=" + task.right);
             Optional<Instant> firstSucceededExecutionDate = airflowTasksPostgres.getFirstSucceededExecutionDate(task.left, task.right);
@@ -121,9 +103,10 @@ public class AirflowTasksStartTimeTest extends AbstractTestNGSpringContextTests 
                     .as("First succeeded execution date is out of bounds." + details)
                     .isBetween(expectedStartTime.minus(OFFSET), expectedStartTime.plus(OFFSET)));
         }
-
-        softly.assertAll();
+        return softly;
     }
+
+
 }
 
 
