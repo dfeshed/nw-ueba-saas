@@ -21,15 +21,21 @@ const ReconSizeToggle = Component.extend({
   // when we go full size, we want to keep track
   // of the previous size so that when the size
   // is toggled again, it can go back to that size
-  lastSize: null,
+  lastSize: RECON_PANEL_SIZES.MIN,
 
-  @computed('isReconFullSize', 'reconSize')
-  reconToggleGoToSize(isReconFullSize, reconSize) {
-    if (isReconFullSize) {
+  @computed('isReconFullSize')
+  reconToggleGoToSize(isFullSize) {
+    if (isFullSize) {
       return this.get('lastSize');
     } else {
-      this.set('lastSize', reconSize);
       return RECON_PANEL_SIZES.FULL;
+    }
+  },
+
+  actions: {
+    reconPanelToggle(reconToggleGoToSize) {
+      this.set('lastSize', this.get('reconSize'));
+      this.send('setReconPanelSize', reconToggleGoToSize);
     }
   }
 });
