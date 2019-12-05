@@ -95,10 +95,9 @@ public class SshCommandExecutor {
             waitReady(bufferedReader);
 
             String line;
-            int linesCount = 0;
             Queue<String> sshOutput = new EvictingQueue<>(MAX_LINES_TO_COLLECT);
             while ((line = bufferedReader.readLine()) != null || channel.getExitStatus()!=0) {
-                if (verbose || linesCount++ < 5) System.out.println(line);
+                if (verbose) System.out.println(line);
                 if (line!=null) sshOutput.add(line);
                 waitReady(bufferedReader);
             }
