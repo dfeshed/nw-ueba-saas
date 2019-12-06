@@ -12,7 +12,8 @@ import {
   removePills,
   removeContiguousOperators,
   removeEmptyParens,
-  removeUnnecessaryOperators
+  removeUnnecessaryOperators,
+  replaceOrAfterFirstTextPill
 } from 'investigate-events/util/pill-deletion-helpers';
 import {
   OPERATOR_AND,
@@ -302,7 +303,8 @@ const _deletePills = (state, pillsToBeDeleted) => {
     |> removeContiguousOperators
     |> removeEmptyParens
     |> removeContiguousOperators
-    |> removeUnnecessaryOperators;
+    |> removeUnnecessaryOperators
+    |> replaceOrAfterFirstTextPill;
 };
 
 const _handlePillUpdate = (state, pillData) => {

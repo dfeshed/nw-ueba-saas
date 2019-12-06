@@ -329,10 +329,13 @@ export const replaceAllGuidedPills = (pillData) => ({
 export const addLogicalOperator = ({ pillData, position }) => {
   return (dispatch, getState) => {
     const prevPill = pillsData(getState())[position - 1];
+    const nextPill = pillsData(getState())[position];
     // If the first pill is a text pill, any operator after must be an AND
     if ((position - 1) === 0 && prevPill?.type === TEXT_FILTER && pillData.type === OPERATOR_OR) {
       pillData.type = OPERATOR_AND;
       // TODO: Notify the user why this happened
+    } else if (nextPill?.type === TEXT_FILTER) {
+      pillData.type = OPERATOR_AND;
     }
     const action = {
       type: ACTION_TYPES.INSERT_LOGICAL_OPERATOR,

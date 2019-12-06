@@ -4,6 +4,12 @@ import {
   findUnnecessaryOperators
 } from 'investigate-events/actions/pill-utils';
 
+import {
+  OPERATOR_AND,
+  OPERATOR_OR,
+  TEXT_FILTER
+} from 'investigate-events/constants/pill';
+
 const isKeyPressedOnSelectedParens = (pills, isKeyPress = false) => {
   return isKeyPress && // used delete or backspace key on the parens
     pills.every((d) => d.isSelected); // all parens are selected
@@ -57,11 +63,26 @@ const removeUnnecessaryOperators = (pillsData = []) => {
   }
 };
 
+// Returns a pills array where an operator after the text pill is replaced
+// with an AND if the text pill is the first pill
+const replaceOrAfterFirstTextPill = (pillsData) => {
+  return pillsData.map((pill, idx, arr) => {
+    if (idx === 1 && arr[0].type === TEXT_FILTER && pill.type === OPERATOR_OR) {
+      return {
+        ...pill,
+        type: OPERATOR_AND
+      };
+    }
+    return pill;
+  });
+};
+
 export {
   isKeyPressedOnSelectedParens,
   isNonSelectedSingleParenSet,
   removeContiguousOperators,
   removeEmptyParens,
   removePills,
-  removeUnnecessaryOperators
+  removeUnnecessaryOperators,
+  replaceOrAfterFirstTextPill
 };

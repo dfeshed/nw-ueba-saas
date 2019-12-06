@@ -7,7 +7,8 @@ import {
   removeContiguousOperators,
   removeEmptyParens,
   removePills,
-  removeUnnecessaryOperators
+  removeUnnecessaryOperators,
+  replaceOrAfterFirstTextPill
 } from 'investigate-events/util/pill-deletion-helpers';
 import {
   CloseParen,
@@ -18,7 +19,8 @@ import {
   OPEN_PAREN,
   OPERATOR_AND,
   OPERATOR_OR,
-  QUERY_FILTER
+  QUERY_FILTER,
+  TEXT_FILTER
 } from 'investigate-events/constants/pill';
 
 module('Unit | Util | Pill Deletion Helper', function(hooks) {
@@ -256,6 +258,34 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     ];
     const result = removeUnnecessaryOperators(pillsData);
     assert.equal(result.length, 0, 'no pills should remain');
+  });
+
+  test('replaceOrAfterFirstTextPill replaces OR with AND', function(assert) {
+    const pillsData = [
+      { id: '1', type: TEXT_FILTER },
+      { id: '2', type: OPERATOR_OR },
+      { id: '3', type: QUERY_FILTER }
+    ];
+    const result = replaceOrAfterFirstTextPill(pillsData);
+    assert.deepEqual(result, [
+      { id: '1', type: TEXT_FILTER },
+      { id: '2', type: OPERATOR_AND },
+      { id: '3', type: QUERY_FILTER }
+    ], 'OR is replaced with AND');
+  });
+
+  test('replaceOrAfterFirstTextPill does not replace OR with AND', function(assert) {
+    const pillsData = [
+      { id: '1', type: QUERY_FILTER },
+      { id: '2', type: OPERATOR_OR },
+      { id: '3', type: QUERY_FILTER }
+    ];
+    const result = replaceOrAfterFirstTextPill(pillsData);
+    assert.deepEqual(result, [
+      { id: '1', type: QUERY_FILTER },
+      { id: '2', type: OPERATOR_OR },
+      { id: '3', type: QUERY_FILTER }
+    ], 'OR is left alone');
   });
 
   test('removePills removes specified pills', function(assert) {

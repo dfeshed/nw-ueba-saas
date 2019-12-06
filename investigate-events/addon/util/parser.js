@@ -335,7 +335,13 @@ class Parser {
     }
     result.children.push(child);
     while (this._nextTokenIsOfType([ LEXEMES.AND, LEXEMES.OR ])) {
-      const operator = this._advance();
+      let operator = this._advance();
+      // If a text pill is first, the following operator MUST be an AND
+      if (result.children.length === 1 &&
+        result.children[0].type === LEXEMES.TEXT_FILTER &&
+        operator.type === LEXEMES.OR) {
+        operator = { type: LEXEMES.AND, text: 'AND' };
+      }
       let nextCriteriaOrGroup = this._criteriaOrGroupOrTextFilterOrNot();
       while (nextCriteriaOrGroup.type === GRAMMAR.COMPLEX_FILTER && nextCriteriaOrGroup.tryAgain) {
         if (nextCriteriaOrGroup.text !== '') {
@@ -348,6 +354,10 @@ class Parser {
         // still expecting a meta. In this particular case, we read an AND or OR and then didn't
         // see anything after that.
         result.children.push(operator);
+      } else if (nextCriteriaOrGroup.type === LEXEMES.TEXT_FILTER) {
+        // Operators before a text filter must be an AND
+        operator = { type: LEXEMES.AND, text: 'AND' };
+        result.children.push(operator, nextCriteriaOrGroup);
       } else {
         result.children.push(operator, nextCriteriaOrGroup);
       }

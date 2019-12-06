@@ -703,6 +703,27 @@ module('Unit | Actions | Pill Creators', function(hooks) {
     action(dispatch, getState);
   });
 
+  test('addLogicalOperator action creator replaces OR with AND when before a text pill', function(assert) {
+    assert.expect(3);
+    const getState = () => {
+      return new ReduxDataHelper()
+        .pillsDataText()
+        .build();
+    };
+
+    const pillData = createOperator(OPERATOR_OR);
+    const position = 0;
+    const action = pillCreators.addLogicalOperator({ pillData, position });
+
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.INSERT_LOGICAL_OPERATOR, 'action has the correct type');
+      assert.strictEqual(action.payload.pillData.type, OPERATOR_AND, 'action pillData has the right value');
+      assert.deepEqual(action.payload.position, position, 'action position has the right value');
+    };
+
+    action(dispatch, getState);
+  });
+
   test('replaceLogicalOperator action creator returns proper type and payload', function(assert) {
     const pillData = createOperator(OPERATOR_OR);
     const position = 2;
