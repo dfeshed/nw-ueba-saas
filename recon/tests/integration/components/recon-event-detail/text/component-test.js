@@ -79,7 +79,7 @@ module('Integration | Component | recon event detail text', function(hooks) {
     assert.equal(str, 'Notextdatawasgeneratedduringcontentreconstruction.Thiscouldmeanthattheeventdatawascorruptorinvalid.Checktheotherreconstructionviews.');
   });
 
-  test('renders nothing when data present, but hidden by request/response', async function(assert) {
+  test('renders a message when data present, but hidden by request/response', async function(assert) {
     new DataHelper(this.get('redux'))
       .setViewToText()
       .populateTexts();
@@ -95,5 +95,67 @@ module('Integration | Component | recon event detail text', function(hooks) {
 
     const noContentString = find('.rsa-panel-message').textContent.trim();
     assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').string.trim(), 'Did not find no content message panel');
+  });
+
+  test('renders a message when data present, but hidden by request', async function(assert) {
+    new DataHelper(this.get('redux'))
+      .setViewToText()
+      .populateTextRequest();
+    this.get('redux').dispatch(VisualActions.toggleRequestData());
+
+    await render(hbs`{{recon-event-detail/text-content}}`);
+    // remove the pager so its text doesn't confuse test
+    const pager = find('.recon-pager');
+    pager.parentNode.removeChild(pager);
+
+    const translation = this.owner.lookup('service:i18n');
+
+    const noContentString = find('.rsa-panel-message').textContent.trim();
+    assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').string.trim(), 'Did not find no content message panel');
+  });
+
+  test('renders a message when data present, but hidden by response', async function(assert) {
+    new DataHelper(this.get('redux'))
+      .setViewToText()
+      .populateTextResponse();
+    this.get('redux').dispatch(VisualActions.toggleResponseData());
+
+    await render(hbs`{{recon-event-detail/text-content}}`);
+    // remove the pager so its text doesn't confuse test
+    const pager = find('.recon-pager');
+    pager.parentNode.removeChild(pager);
+
+    const translation = this.owner.lookup('service:i18n');
+
+    const noContentString = find('.rsa-panel-message').textContent.trim();
+    assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').string.trim(), 'Did not find no content message panel');
+  });
+
+  test('will not render noContent message if request is hidden but response has content', async function(assert) {
+    new DataHelper(this.get('redux'))
+      .setViewToText()
+      .populateTexts();
+    this.get('redux').dispatch(VisualActions.toggleRequestData());
+
+    await render(hbs`{{recon-event-detail/text-content}}`);
+    // remove the pager so its text doesn't confuse test
+    const pager = find('.recon-pager');
+    pager.parentNode.removeChild(pager);
+
+    assert.notOk(find('.rsa-panel-message'), 'Should not find no content message panel');
+  });
+
+  test('will not render noContent message if response is hidden but request has content', async function(assert) {
+    new DataHelper(this.get('redux'))
+      .setViewToText()
+      .populateTexts();
+    this.get('redux').dispatch(VisualActions.toggleResponseData());
+
+    await render(hbs`{{recon-event-detail/text-content}}`);
+    // remove the pager so its text doesn't confuse test
+    const pager = find('.recon-pager');
+    pager.parentNode.removeChild(pager);
+
+    assert.notOk(find('.rsa-panel-message'), 'Should not find no content message panel');
   });
 });

@@ -14,7 +14,9 @@ import {
   summaryData,
   summaryDataWithoutPayload,
   summaryDataWithoutPackets,
-  preferences
+  preferences,
+  requestTextData,
+  responseTextData
 } from './data';
 
 const DEFAULT_INITIALIZE = { eventId: 1, endpointId: 2, meta: [['medium', 1]] };
@@ -142,6 +144,30 @@ class DataHelper {
         payload: decode ? encodedTextData : decodedTextData
       });
     }
+    return this;
+  }
+
+  populateTextRequest() {
+    this.redux.dispatch({
+      type: ACTION_TYPES.TEXT_RECEIVE_PAGE,
+      payload: { data: requestTextData }
+    });
+    this.redux.dispatch({
+      type: ACTION_TYPES.TEXT_RENDER_NEXT,
+      payload: requestTextData
+    });
+    return this;
+  }
+
+  populateTextResponse() {
+    this.redux.dispatch({
+      type: ACTION_TYPES.TEXT_RECEIVE_PAGE,
+      payload: { data: responseTextData }
+    });
+    this.redux.dispatch({
+      type: ACTION_TYPES.TEXT_RENDER_NEXT,
+      payload: responseTextData
+    });
     return this;
   }
 
