@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import computed from 'ember-computed';
-import { htmlSafe } from '@ember/string';
 import { run } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 
@@ -198,24 +197,29 @@ export default Component.extend({
     this.set('_position', position);
   },
 
+  /**
+   * returns object to use for offset attribute of ember-tether
+   * for position
+   */
   horizontalModifier: computed('anchorWidth', 'anchorHeight', 'position', function() {
-    const anchorWidth = `${this.get('anchorWidth')}px`;
-    const anchorHeight = `${this.get('anchorHeight')}px`;
-    let styleString;
+    const position = this.get('position');
+    const anchorWidth = this.get('anchorWidth');
+    const anchorHeight = this.get('anchorHeight');
+    const horizontalModifierObject = { top: null, left: null };
 
     if (this.get('isPopover')) {
-      if (this.get('position').endsWith('top')) {
-        styleString = `top: ${anchorHeight}`;
-      } else if (this.get('position').endsWith('bottom')) {
-        styleString = `top: -${anchorHeight}`;
-      } else if (this.get('position').endsWith('left')) {
-        styleString = `left: ${anchorWidth}`;
-      } else if (this.get('position').endsWith('right')) {
-        styleString = `left: -${anchorWidth}`;
+      if (position.endsWith('top')) {
+        horizontalModifierObject.top = `-${anchorHeight}`;
+      } else if (position.endsWith('bottom')) {
+        horizontalModifierObject.top = anchorHeight;
+      } else if (position.endsWith('left')) {
+        horizontalModifierObject.left = `-${anchorWidth}`;
+      } else if (position.endsWith('right')) {
+        horizontalModifierObject.left = anchorWidth;
       }
 
-      if (styleString) {
-        return styleString;
+      if (horizontalModifierObject) {
+        return horizontalModifierObject;
       }
     }
   }),
@@ -237,10 +241,22 @@ export default Component.extend({
     }
   }),
 
-  styleModifiers: computed('horizontalModifier', 'verticalModifier', function() {
-    const horizontalModifier = this.get('horizontalModifier') || '';
-    const verticalModifier = this.get('verticalModifier') || '';
-    return htmlSafe(`${horizontalModifier}${verticalModifier}`);
+  /**
+   * to pass to ember-tether offset
+   * for position
+   */
+  offset: computed('horizontalModifier', function() {
+    const horizontalModifier = this.get('horizontalModifier');
+    return horizontalModifier ? `${horizontalModifier.top || '0'} ${horizontalModifier.left || '0'}` : '0 0';
+  }),
+
+  /**
+   * to pass to panel-content <div> inside ember-tether
+   * "auto" for correct position
+   */
+  panelContentStyle: computed('verticalModifier', function() {
+    const verticalModifier = this.get('verticalModifier');
+    return `left:auto;bottom:auto;${verticalModifier || ''}`;
   }),
 
   targetClass: computed('panelId', function() {

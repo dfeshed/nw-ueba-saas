@@ -156,7 +156,7 @@
   }
 
   &.bottom {
-    bottom: -1rem;
+    bottom: -1rem!important; // to override bottom:auto assigned in template
 
     svg {
       transform: rotate(180deg);
@@ -165,7 +165,7 @@
     }
 
     &-left {
-      bottom: -1rem;
+      bottom: -1rem!important; // to override bottom:auto assigned in template
       left: calc(-50% + 1rem + 7px);
 
       svg {
@@ -176,7 +176,7 @@
     }
 
     &-right {
-      bottom: -1rem;
+      bottom: -1rem!important; // to override bottom:auto assigned in template
       left: calc(50% - 1rem - 7px);
 
       svg {
@@ -186,9 +186,9 @@
       }
     }
   }
-
+  
   &.left {
-    left: -1rem;
+    left: -1rem!important; // !important to override left:auto assigned in template
 
     svg {
       transform: rotate(270deg);
@@ -197,7 +197,7 @@
     }
 
     &-top {
-      left: -1rem;
+      left: -1rem!important;
 
       svg {
         transform: rotate(270deg);
@@ -207,7 +207,7 @@
     }
 
     &-bottom {
-      left: -1rem;
+      left: -1rem!important;
 
       svg {
         transform: rotate(270deg);
@@ -219,7 +219,7 @@
 
 
   &.right {
-    left: 1rem;
+    left: 1rem!important; // to override left:auto assigned in template
 
     svg {
       transform: rotate(90deg);
@@ -228,7 +228,7 @@
     }
 
     &-top {
-      left: 1rem;
+      left: 1rem!important;
 
       svg {
         transform: rotate(90deg);
@@ -238,7 +238,7 @@
     }
 
     &-bottom {
-      left: 1rem;
+      left: 1rem!important;
 
       svg {
         transform: rotate(90deg);
