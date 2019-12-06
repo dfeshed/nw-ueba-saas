@@ -653,7 +653,6 @@ export default Component.extend({
     if (this._isPillDataEmpty()) {
       this._broadcast(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT);
     }
-
   },
 
   /**

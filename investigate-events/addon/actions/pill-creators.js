@@ -9,12 +9,11 @@ import {
   findEmptyParensAtPosition,
   findSelectedPills,
   findMissingTwins,
-  isLogicalOperator
+  getAdjacentDeletableLogicalOperatorAt
 } from 'investigate-events/actions/pill-utils';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { ValidatableFilter } from 'investigate-events/util/filter-types';
 import {
-  CLOSE_PAREN,
   COMPLEX_FILTER,
   TEXT_FILTER,
   OPERATOR_AND,
@@ -22,24 +21,6 @@ import {
 } from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
-
-const _isCloseParen = (pill) => pill?.type === CLOSE_PAREN;
-
-const _getAdjacentDeletableLogicalOperatorAt = (pills, idx) => {
-  // P & _ P      not deletable
-  // P & _ (      not deletable
-  // ( P & _ )    deletable
-  // P & _        deletable
-  const prevPill = pills[idx - 1];
-  const nextPill = pills[idx];
-  if (nextPill) {
-    // If there's a pill to the right, then we need it to be a close paren or another logical operator.
-    // Otherwise we're deleting operators that should exist.
-    return isLogicalOperator(prevPill) && (_isCloseParen(nextPill) || isLogicalOperator(nextPill)) ? prevPill : undefined;
-  } else {
-    return isLogicalOperator(prevPill) ? prevPill : undefined;
-  }
-};
 
 /**
  * Client side validation. Parser handles most validation, but if the pill has
@@ -158,7 +139,7 @@ export const cancelPillCreation = (position) => {
   return (dispatch, getState) => {
     const { investigate: { queryNode: { pillsData } } } = getState();
     const emptyParens = findEmptyParensAtPosition(pillsData, position);
-    const adjacentOperator = _getAdjacentDeletableLogicalOperatorAt(pillsData, position);
+    const adjacentOperator = getAdjacentDeletableLogicalOperatorAt(pillsData, position);
     let pillData;
     if (emptyParens.length > 0) {
       pillData = emptyParens;

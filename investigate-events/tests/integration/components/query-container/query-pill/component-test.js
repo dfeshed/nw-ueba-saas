@@ -1487,9 +1487,11 @@ module('Integration | Component | Query Pill', function(hooks) {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
-      assert.equal(messageType, MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT, 'Message sent to add focus on the relevant pill');
-      assert.equal(position, 0, 'Message sent contains correct pill position');
-      assert.notOk(data, 'Data should not be passed');
+      if (messageType === MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT) {
+        assert.equal(messageType, MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT, 'Message sent to add focus on the relevant pill');
+        assert.equal(position, 0, 'Message sent contains correct pill position');
+        assert.notOk(data, 'Data should not be passed');
+      }
     });
 
     await render(hbs`

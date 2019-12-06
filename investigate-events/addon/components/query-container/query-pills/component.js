@@ -69,7 +69,8 @@ import {
   findPositionAfterEmptyParensDeleted,
   isLogicalOperator,
   isValidToWrapWithParens,
-  selectedPillIndexes
+  selectedPillIndexes,
+  getAdjacentDeletableLogicalOperatorAt
 } from 'investigate-events/actions/pill-utils';
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -766,6 +767,13 @@ const QueryPills = RsaContextMenu.extend({
    * from. The index for a NPT always matches the index of the pill to its right.
    */
   _addFocusToRightPill(position) {
+    if (!this.isEditing) {
+      const focusPosition = findPositionAfterEmptyParensDeleted(this.pillsData, position);
+      const deleteLogicalOperator = getAdjacentDeletableLogicalOperatorAt(this.pillsData, position);
+      this._pillAddCancelled(position);
+      position = focusPosition;
+      position = deleteLogicalOperator ? position - 1 : position;
+    }
     if (position < this.pillsData.length) {
       this._pillsExited();
       const nextPill = this.pillsData[position];
@@ -785,6 +793,8 @@ const QueryPills = RsaContextMenu.extend({
         // Normal right movement
         this.send('addPillFocus', position);
       }
+    } else {
+      this._openNewPillTriggerRight(this.pillsData.lastIndex);
     }
   },
 
