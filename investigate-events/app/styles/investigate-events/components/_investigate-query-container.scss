@@ -746,7 +746,7 @@
 
   // base pill style
   .pill {
-    @include border(1px, solid, primary, dark, nearly-opaque);
+    @include border(1px, solid, primary, base, nearly-opaque);
     border-radius: rsa-whitespace(least);
     background-color: background-color(primary, dark, translucent);
     display: flex;
