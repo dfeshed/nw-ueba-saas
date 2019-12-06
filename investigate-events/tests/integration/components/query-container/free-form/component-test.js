@@ -121,7 +121,7 @@ module('Integration | Component | Free Form', function(hooks) {
     assert.equal(addFreeFormFilterSpy.callCount, 0, 'The add pill action creator was not called');
   });
 
-  test('it sends out an action to update the free for string', async function(assert) {
+  test('it sends out an action to update the freeform string', async function(assert) {
     assert.expect(2);
 
     new ReduxDataHelper(setState)

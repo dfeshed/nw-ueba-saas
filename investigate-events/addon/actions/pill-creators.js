@@ -309,15 +309,11 @@ export const addTextFilter = ({ pillData, position = 0, shouldAddFocusToNewPill 
 
 // Transform the text to what it would look like in pill form
 export const updatedFreeFormText = (freeFormText) => {
-  return (dispatch, getState) => {
-    const { language, aliases } = languageAndAliasesForParser(getState());
-    const pillData = transformTextToPillData(freeFormText, { language, aliases });
-    dispatch({
-      type: ACTION_TYPES.UPDATE_FREE_FORM_TEXT,
-      payload: {
-        pillData
-      }
-    });
+  return {
+    type: ACTION_TYPES.UPDATE_FREE_FORM_TEXT,
+    payload: {
+      freeFormText
+    }
   };
 };
 

@@ -66,7 +66,7 @@ const _initialState = Immutable.from({
 
   // stores updates to free form text that haven't
   // yet been converted into pill form (pillsData)
-  updatedFreeFormTextPill: undefined,
+  updatedFreeFormText: undefined,
 
   // pill data being used for a query gets saved server side
   // as a series of ids so that URLs do not grow unbounded
@@ -445,7 +445,7 @@ export default handleActions({
         sessionId: queryParams.sessionId && parseInt(queryParams.sessionId, 10) || undefined,
         startTime: queryParams.startTime && parseInt(queryParams.startTime, 10) || 0,
         queryView: previousView ? previousView : state.queryView,
-        updatedFreeFormTextPill: undefined,
+        updatedFreeFormText: undefined,
         pillDataHashes: queryParams.pillDataHashes
       }, { deep: true });
     }
@@ -716,7 +716,7 @@ export default handleActions({
   },
 
   [ACTION_TYPES.UPDATE_FREE_FORM_TEXT]: (state, { payload }) => {
-    return state.set('updatedFreeFormTextPill', payload.pillData);
+    return state.set('updatedFreeFormText', payload.freeFormText);
   },
 
   [ACTION_TYPES.RESET_GUIDED_PILL]: (state, { payload }) => {

@@ -30,7 +30,7 @@ const _startTime = (state) => state.investigate.queryNode.startTime;
 const _isTimeRangeInvalid = (state) => state.investigate.queryNode.timeRangeInvalid;
 const _queryView = (state) => state.investigate.queryNode.queryView;
 const _currentQueryHash = (state) => state.investigate.queryNode.currentQueryHash;
-const _updatedFreeFormTextPill = (state) => state.investigate.queryNode.updatedFreeFormTextPill;
+const _updatedFreeFormText = (state) => state.investigate.queryNode.updatedFreeFormText;
 const _pillDataHashes = (state) => state.investigate.queryNode.pillDataHashes;
 const _originalPills = (state) => state.investigate.queryNode.originalPills || [];
 const _isPillsDataStashed = (state) => state.investigate.queryNode.isPillsDataStashed;
@@ -92,13 +92,12 @@ export const queryNodeValuesForClassicUrl = createSelector(
 );
 
 const _isFreeFormTextUpdated = createSelector(
-  [_updatedFreeFormTextPill, freeFormText],
-  (updatedFreeFormTextPill, freeFormTextInState) => {
-    if (!updatedFreeFormTextPill) {
+  [_updatedFreeFormText, freeFormText],
+  (updatedFreeFormText, freeFormTextInState) => {
+    if (!updatedFreeFormText) {
       return false;
     }
-    const updatedFreeForm = encodeMetaFilterConditions([updatedFreeFormTextPill]).trim();
-    return updatedFreeForm !== freeFormTextInState;
+    return updatedFreeFormText !== freeFormTextInState;
   }
 );
 

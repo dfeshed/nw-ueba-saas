@@ -304,7 +304,7 @@ test('is dirty due to updated free form text', function(assert) {
         // note hash is the same as data
         currentQueryHash: '1-1-2-abc',
         pillsData: [{ type: QUERY_FILTER, meta: 'a', operator: 'b', value: 'c' }],
-        updatedFreeFormTextPill: { complexFilterText: 'boom' }
+        updatedFreeFormText: 'boom'
       },
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],

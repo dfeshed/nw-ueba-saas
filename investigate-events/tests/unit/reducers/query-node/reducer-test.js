@@ -998,7 +998,7 @@ module('Unit | Reducers | QueryNode', function(hooks) {
   test('INITIALIZE_INVESTIGATE clears free form text pill state', async function(assert) {
     const emptyState = new ReduxDataHelper()
       .hasRequiredValuesToQuery()
-      .updatedFreeFormTextPill()
+      .updatedFreeFormText()
       .pillsDataEmpty()
       .build()
       .investigate
@@ -1020,7 +1020,7 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     const result = reducer(emptyState, action);
 
     assert.equal(
-      result.updatedFreeFormTextPill,
+      result.updatedFreeFormText,
       undefined,
       'text pill data cleared out'
     );
@@ -1124,7 +1124,7 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     assert.equal(result.pillDataHashes[1], 'bar', 'hashes have changed');
   });
 
-  test('UPDATE_FREE_FORM_TEXT sets free form text pill', async function(assert) {
+  test('UPDATE_FREE_FORM_TEXT sets free form text', async function(assert) {
     const state = new ReduxDataHelper()
       .pillsDataPopulated()
       .build()
@@ -1135,7 +1135,7 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     const action = {
       type: ACTION_TYPES.UPDATE_FREE_FORM_TEXT,
       payload: {
-        pillData: state.pillsData[0]
+        freeFormText: 'medium = 1'
       }
     };
 
@@ -1143,7 +1143,7 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     const result = reducer(state, action);
 
     // should end up with two pills
-    assert.deepEqual(result.updatedFreeFormTextPill, state.pillsData[0], 'ids have changed');
+    assert.notEqual(result.updatedFreeFormText, state.updatedFreeFormText, 'text has changed');
   });
 
   test('RESET_GUIDED_PILL resets the pill', async function(assert) {

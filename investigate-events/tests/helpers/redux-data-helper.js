@@ -833,8 +833,8 @@ export default class DataHelper {
     return this;
   }
 
-  updatedFreeFormTextPill(text = 'foo') {
-    _set(this.state, 'queryNode.updatedFreeFormTextPill', text);
+  updatedFreeFormText(text = 'foo') {
+    _set(this.state, 'queryNode.updatedFreeFormText', text);
     return this;
   }
 

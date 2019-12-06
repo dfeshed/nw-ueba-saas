@@ -567,23 +567,10 @@ module('Unit | Actions | Pill Creators', function(hooks) {
 
   test('updatedFreeFormText action creator returns proper type and payload', function(assert) {
     assert.expect(2);
-    const thunk = pillCreators.updatedFreeFormText('medium = 50');
+    const action = pillCreators.updatedFreeFormText('medium = 50');
 
-    const getState = () => {
-      return new ReduxDataHelper().language().build();
-    };
-
-    const dispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.UPDATE_FREE_FORM_TEXT, 'action has the correct type');
-      assert.propEqual(action.payload.pillData, {
-        type: 'query',
-        meta: 'medium',
-        operator: '=',
-        value: '50'
-      }, 'action pillData has the right value');
-    };
-
-    thunk(dispatch, getState);
+    assert.strictEqual(action.type, ACTION_TYPES.UPDATE_FREE_FORM_TEXT);
+    assert.strictEqual(action.payload.freeFormText, 'medium = 50');
   });
 
   test('resetGuidedPill action creator returns proper type and payload', function(assert) {
