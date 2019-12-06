@@ -13,15 +13,20 @@ const _prepareMetaFormatMap = (language) => {
   }, {});
 };
 
-const _buildQuery = (conditions = [], metaFormatMap = {}) => {
+export const buildQuery = (conditions = [], metaFormatMap = {}) => {
   return conditions.map((condition) => {
     const metaFormat = metaFormatMap[condition.meta];
     const { meta, value, operator } = condition;
-    // if the metavalue already starts with a quote, don't add additional quotes
-    //  e.g 'a``j1.[]1restonvirginia.sys' already has quotes around it, so not adding any quotes
-    //  e.g a``j1.[]1restonvirginia.sys does not have outer quotes, so needs quotes or else classic blows up
-    const surroundInQuotes = String(metaFormat).toLowerCase() === 'text' && value.trim().search(/['"]/g) !== 0;
-    const valueEncoded = surroundInQuotes ? `'${String(value)}'` : value;
+    let valueEncoded = value;
+    if (String(metaFormat).toLowerCase() === 'text') {
+      // escape `\`. ex: metavalue NT Service\MSSQLSERVER to NT Service\\MSSQLSERVER.
+      const escapedValues = value.replace(/\\/g, '\\\\');
+      const surroundInQuotes = escapedValues.trim().search(/['"]/g) !== 0;
+      // if the metavalue already starts with a quote, don't add additional quotes
+      //  e.g 'a``j1.[]1restonvirginia.sys' already has quotes around it, so not adding any quotes
+      //  e.g a``j1.[]1restonvirginia.sys does not have outer quotes, so needs quotes or else classic blows up
+      surroundInQuotes ? valueEncoded = `'${String(escapedValues)}'` : valueEncoded = escapedValues;
+    }
     return `${meta} ${operator} ${valueEncoded}`;
   }).join(' && ');
 };
@@ -38,11 +43,11 @@ export const buildInvestigateUrl = (selected, queryOperator, contextDetails, dis
   const { endpointId, startTime, endTime, queryConditions, language } = contextDetails;
   const metaFormatMap = _prepareMetaFormatMap(language);
   // parentQuery is the already existing meta filters on the page
-  let parentQuery = discardParentQuery ? '' : _buildQuery(queryConditions, metaFormatMap);
+  let parentQuery = discardParentQuery ? '' : buildQuery(queryConditions, metaFormatMap);
   if (parentQuery !== '') {
     parentQuery = `(${parentQuery}) && `;
   }
-  const newQuery = _buildQuery([{ meta: metaName, value: metaValue, operator: queryOperator }], metaFormatMap);
+  const newQuery = buildQuery([{ meta: metaName, value: metaValue, operator: queryOperator }], metaFormatMap);
   // classic does decodeURI( decodeURIComponent(pillA) + ' && ' + decodeURIComponent(pillB)...)
   // so encode the query in that pattern
   const query = encodeURI(encodeURIComponent(parentQuery.concat(newQuery)));
@@ -53,7 +58,7 @@ export const buildInvestigateUrl = (selected, queryOperator, contextDetails, dis
 
 export const buildHostsUrl = (selected, contextDetails) => {
   const metaFormatMap = _prepareMetaFormatMap(contextDetails.language);
-  const query = _buildQuery([{ meta: selected.metaName, value: selected.metaValue, operator: '=' }], metaFormatMap);
+  const query = buildQuery([{ meta: selected.metaName, value: selected.metaValue, operator: '=' }], metaFormatMap);
   return `/investigate/hosts?query=${encodeURIComponent(query)}`;
 };
 
@@ -121,7 +126,7 @@ export const buildEventAnalysisUrl = (selected, queryOperator, contextDetails, r
   // Need to close recon for all scenario.
   let filteredParams = queryParamArray.filter((param) => !_.startsWith(param, 'eid=') && !_.startsWith(param, 'mf='));
   // queryParam = queryParam.replace(/eid=/, '');
-  const query = _buildQuery([{ meta: selected.metaName, value: selected.metaValue, operator: queryOperator }], metaFormatMap);
+  const query = buildQuery([{ meta: selected.metaName, value: selected.metaValue, operator: queryOperator }], metaFormatMap);
   const match = mf && mf.match(/mf=(.*)/);
   const metaFilter = match && match[1] ? match[1] : null;
   let mfToPass = null;
@@ -193,7 +198,7 @@ const serializeQueryParams = (qp = []) => {
  * engine/addon, like recon addon used in sa, respond.
  */
 const _buildUrlFromQueryInputs = (selected, queryOperator, contextDetails, metaFormatMap) => {
-  const query = _buildQuery([{ meta: selected.metaName, value: selected.metaValue, operator: queryOperator }], metaFormatMap);
+  const query = buildQuery([{ meta: selected.metaName, value: selected.metaValue, operator: queryOperator }], metaFormatMap);
   const investigateEventsUrl = '/investigate/events';
   const { serviceId, startTime, endTime } = contextDetails;
   const qp = {

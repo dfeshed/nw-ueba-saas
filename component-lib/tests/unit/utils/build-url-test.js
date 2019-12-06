@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { buildEventAnalysisUrl, classicEventsURL, extractHashWithoutTextHash } from 'component-lib/utils/build-url';
+import { buildEventAnalysisUrl, classicEventsURL, extractHashWithoutTextHash, buildQuery } from 'component-lib/utils/build-url';
 import { urlUtil } from 'component-lib/utils/window-proxy';
 
 module('Unit | Util | build-url');
@@ -222,4 +222,20 @@ test('extractHashWithoutTextHash outputs string hash without text hash', async f
   pillDataHashes = ['foo', '˸foobar˸', 'bar'];
   hashString = extractHashWithoutTextHash(pillDataHashes);
   assert.equal(hashString, 'foo,bar/', 'Should have a / added at the end');
+});
+
+test('buildQuery escapes \\ when one is encountered', function(assert) {
+  const filters = [
+    {
+      meta: 'user.dst',
+      operator: '=',
+      value: '\\foobar\\r\\'
+    }
+  ];
+  const metaFormatMap = {
+    'user.dst': 'Text'
+  };
+
+  const queryString = buildQuery(filters, metaFormatMap);
+  assert.equal(queryString, "user.dst = '\\\\foobar\\\\r\\\\'", 'Incorrect string found, not escaped');
 });
