@@ -3147,7 +3147,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('it dispatched the correct event when a logical AND operator is typed', async function(assert) {
     const done = assert.async();
     new ReduxDataHelper(setState)
-      .pillsDataEmpty()
+      .pillsDataPopulated()
       .language()
       .build();
     this.set('metaOptions', metaOptions);
@@ -3156,8 +3156,31 @@ module('Integration | Component | Query Pill', function(hooks) {
         const { operator, pillData } = data;
         assert.equal(operator.type, OPERATOR_AND, 'correct type of operator sent');
         assert.notOk(pillData, 'pillData should be undefined');
-        assert.equal(position, 0, 'correct position sent');
+        assert.equal(position, 1, 'correct position sent');
         done();
+      }
+    });
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+        position=1
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'AND');
+  });
+
+  test('it does not dispatch when a logical AND operator is typed in the first position', async function(assert) {
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (messageType) => {
+      if (messageType === MESSAGE_TYPES.PILL_LOGICAL_OPERATOR) {
+        assert.notOk(true, 'shall not dispatch message if logical operator entered at position 0');
       }
     });
     await render(hbs`
@@ -3168,8 +3191,10 @@ module('Integration | Component | Query Pill', function(hooks) {
         sendMessage=(action handleMessage)
       }}
     `);
+
     await clickTrigger(PILL_SELECTORS.meta);
     await typeIn(PILL_SELECTORS.metaInput, 'AND');
+    assert.notOk(find(PILL_SELECTORS.logicalOperatorAND), 'shall not find AND operator');
   });
 
   test('Delete on pill meta template broadcasts a message', async function(assert) {
@@ -3200,7 +3225,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('it dispatched the correct event when a logical OR operator is typed', async function(assert) {
     const done = assert.async();
     new ReduxDataHelper(setState)
-      .pillsDataEmpty()
+      .pillsDataPopulated()
       .language()
       .build();
     this.set('metaOptions', metaOptions);
@@ -3209,8 +3234,31 @@ module('Integration | Component | Query Pill', function(hooks) {
         const { operator, pillData } = data;
         assert.equal(operator.type, OPERATOR_OR, 'correct type of operator sent');
         assert.notOk(pillData, 'pillData should be undefined');
-        assert.equal(position, 0, 'correct position sent');
+        assert.equal(position, 1, 'correct position sent');
         done();
+      }
+    });
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+        position=1
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'OR');
+  });
+
+  test('it does not dispatch when a logical OR operator is typed in the first position', async function(assert) {
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (messageType) => {
+      if (messageType === MESSAGE_TYPES.PILL_LOGICAL_OPERATOR) {
+        assert.notOk(true, 'shall not dispatch message if logical operator entered at position 0');
       }
     });
     await render(hbs`
@@ -3221,7 +3269,9 @@ module('Integration | Component | Query Pill', function(hooks) {
         sendMessage=(action handleMessage)
       }}
     `);
+
     await clickTrigger(PILL_SELECTORS.meta);
     await typeIn(PILL_SELECTORS.metaInput, 'OR');
+    assert.notOk(find(PILL_SELECTORS.logicalOperatorOR), 'shall not find OR operator');
   });
 });

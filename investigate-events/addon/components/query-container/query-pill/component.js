@@ -1275,6 +1275,10 @@ export default Component.extend({
    * @param {string} type - Type of operator to create (AND/OR).
    */
   _logicalOperator(type) {
+    if (this.get('position') === 0) {
+      // do not create logical operator in the first position
+      return;
+    }
     const operator = createOperator(type);
     const pillData = this.get('pillData');
     this._broadcast(MESSAGE_TYPES.PILL_LOGICAL_OPERATOR, { operator, pillData });
