@@ -43,6 +43,13 @@
         <jsch.version>0.1.54</jsch.version>
     </properties>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>asoc-build-repo</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <repositories>
         <repository>
             <id>asoc-releases</id>
