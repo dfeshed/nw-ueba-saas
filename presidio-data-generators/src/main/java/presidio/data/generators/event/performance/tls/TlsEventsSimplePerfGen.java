@@ -121,7 +121,7 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
         Instant time;
         do {
             time = timeGenerator.getNext();
-        } while (tlsPerfUtils.needToSkipWeekendEvent(time, random, params.getWeekendSkipEventProbability()));
+        } while (timeGenerator.hasNext() !=null && tlsPerfUtils.needToSkipWeekendEvent(time, random, params.getWeekendSkipEventProbability()));
 
         Instant nextTime = isAnomaly.get() ? setAbnormalActivityTime(time) : time;
         TlsEvent tlsEvent = new TlsEvent(nextTime);
