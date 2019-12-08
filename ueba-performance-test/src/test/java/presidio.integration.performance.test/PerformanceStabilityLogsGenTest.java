@@ -34,7 +34,7 @@ import static com.rsa.netwitness.presidio.automation.enums.GeneratorFormat.CEF_H
 import static java.util.stream.Collectors.toList;
 
 public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContextTests {
-    private final int EVENTS_GENERATION_CHUNK = 100000;
+    private final int EVENTS_GENERATION_CHUNK = 50000;
     private static final int NUM_OF_NORMAL_USERS = 94500;
     private static final int NUM_OF_ADMIN_USERS = 5000;
     private static final int NUM_OF_SERVICE_ACCOUNT_USERS = 500;
@@ -95,14 +95,19 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
                     .map(IEventGenerator::generateToStream)
                     .flatMap(e -> e);
 
+            tlsStopWatch.start();
             UnmodifiableIterator<List<TlsEvent>> partition = Iterators.partition(tlsEventStream.iterator(), EVENTS_GENERATION_CHUNK);
 
-            tlsStopWatch.start();
+            while (partition.hasNext()) {
+                try {
+                    process(partition.next());
+                } catch (NoSuchElementException e) {
+                    System.out.println("NoSuchElementException");
+                }
+            }
 
-            partition.forEachRemaining(this::process);
-
-            System.out.println("TOTAL TLS: " + totalTls + ". Generation time: " + stopWatch.toString());
             tlsStopWatch.stop();
+            System.out.println("TOTAL TLS: " + totalTls + ". Generation time: " + stopWatch.toString());
         }
 
 
