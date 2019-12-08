@@ -97,15 +97,7 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
 
             tlsStopWatch.start();
             UnmodifiableIterator<List<TlsEvent>> partition = Iterators.partition(tlsEventStream.iterator(), EVENTS_GENERATION_CHUNK);
-
-            while (partition.hasNext()) {
-                try {
-                    process(partition.next());
-                } catch (NoSuchElementException e) {
-                    System.out.println("NoSuchElementException");
-                }
-            }
-
+            partition.forEachRemaining(this::process);
             tlsStopWatch.stop();
             System.out.println("TOTAL TLS: " + totalTls + ". Generation time: " + stopWatch.toString());
         }
