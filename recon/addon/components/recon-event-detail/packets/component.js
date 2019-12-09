@@ -16,6 +16,7 @@ import {
 } from 'recon/reducers/packets/selectors';
 import { packetTotal } from 'recon/reducers/header/selectors';
 import { hidePacketTooltip } from 'recon/actions/interaction-creators';
+import { allDataHidden as allVisualDataHidden } from 'recon/reducers/visuals/selectors';
 
 import layout from './template';
 
@@ -30,7 +31,10 @@ const stateToComputed = ({ recon, recon: { data } }) => ({
   numberOfItems: numberOfPackets(recon), // total rendered, used by pager
   packetTotal: packetTotal(recon), // total number of packets, not just this page
   renderedPackets: renderedPackets(recon),
-  hasRenderIds: hasRenderIds(recon)
+  hasRenderIds: hasRenderIds(recon),
+  allVisualDataHidden: allVisualDataHidden(recon),
+  isVisualRequestShown: recon.visuals.isRequestShown,
+  isVisualResponseShown: recon.visuals.isResponseShown
 });
 
 const dispatchToActions = { hidePacketTooltip };
@@ -42,6 +46,16 @@ const PacketReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin
   // For sticky header
   stickyContentKey: 'renderedPackets',
   stickySelector: '.rsa-packet__header:not(.is-sticky)',
+
+  @computed('hasNoRenderedPayload', 'allVisualDataHidden', 'isVisualRequestShown', 'isVisualResponseShown')
+  shouldDisplayNoContentMessage: (hasNoRenderedPayload, allVisualDataHidden, isVisualRequestShown, isVisualResponseShown) => {
+    if (allVisualDataHidden) {
+      return true;
+    } else if ((!isVisualRequestShown || !isVisualResponseShown) && hasNoRenderedPayload) {
+      return true;
+    }
+    return false;
+  },
 
   @alias('contextualHelp.invPacketAnalysis')
   topic: null,

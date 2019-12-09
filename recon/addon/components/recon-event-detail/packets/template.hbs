@@ -9,6 +9,14 @@
     </div>
   {{/if}}
   <div class="scroll-box">
+    {{#if shouldDisplayNoContentMessage}}
+      {{rsa-panel-message
+        class="content-hidden-message"
+        message=(t 'recon.textView.contentHiddenMessage')
+      }}
+    {{else if hasNoRenderedPayload}}
+      {{rsa-panel-message message=(t 'recon.packetView.noPayload')}}
+    {{/if}}
     {{#each renderedPackets key='@index' as |packet index|}}
       {{recon-event-detail/single-packet
         hasSignaturesHighlighted=hasSignaturesHighlighted
@@ -18,9 +26,6 @@
         packet=packet
       }}
     {{/each}}
-    {{#if hasNoRenderedPayload}}
-      {{rsa-panel-message message=(t 'recon.packetView.noPayload')}}
-    {{/if}}
 
     {{#if isPacketRenderingUnderWay}}
       <centered class='rendering-more'>

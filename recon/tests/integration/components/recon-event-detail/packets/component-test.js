@@ -84,7 +84,8 @@ module('Integration | Component | Recon Event Detail | Packets', function(hooks)
   test('renders nothing when data present, but hidden by request/response', async function(assert) {
     new DataHelper(redux)
       .setViewToPacket()
-      .initializeData();
+      .initializeData()
+      .renderPackets();
 
     redux.dispatch(VisualActions.toggleRequestData());
     redux.dispatch(VisualActions.toggleResponseData());
@@ -94,12 +95,14 @@ module('Integration | Component | Recon Event Detail | Packets', function(hooks)
       // remove the pager so its text doesn't confuse test
       find('.recon-pager').remove();
 
-      const str = find('.recon-event-detail-packets').textContent.trim().replace(/\s/g, '').substring(0, 200);
-      assert.equal(str, '');
+      const translation = this.owner.lookup('service:i18n');
+
+      const noContentString = find('.rsa-panel-message').textContent.trim();
+      assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').string.trim(), 'Did not find no content message panel');
     });
   });
 
-  test('renders message when data present, but hidden by payload only', async function(assert) {
+  test('renders message when data present, but hidden by payload only. Although message for noReq/noResp takes precedence', async function(assert) {
     new DataHelper(redux)
       .setViewToPacket()
       .initializeDataWithoutPayloads()
@@ -109,9 +112,15 @@ module('Integration | Component | Recon Event Detail | Packets', function(hooks)
     await render(hbs`{{recon-event-detail/packets}}`);
 
     return wait().then(() => {
-      const str = find('.message').textContent.trim().replace(/\s/g, '');
-      assert.equal(str, 'TheeventhasnopayloadandtheDisplayPayloadsOnlyoptionisselected.ToviewthePacketanalysisfortheevent,disabletheDisplayPayloadsOnlyoption.');
+      const translation = this.owner.lookup('service:i18n');
+      const payloadsOnlyNoContentMessage = find('.rsa-panel-message').textContent.trim();
+      assert.equal(payloadsOnlyNoContentMessage, translation.t('recon.packetView.noPayload').string.trim(), 'Did not find message for content hidden by payloads only');
+
+      redux.dispatch(VisualActions.toggleRequestData());
+      redux.dispatch(VisualActions.toggleResponseData());
+
+      const noContentString = find('.rsa-panel-message').textContent.trim();
+      assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').string.trim(), 'Did not find no content message panel');
     });
   });
-
 });
