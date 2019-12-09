@@ -35,7 +35,8 @@ export default Component.extend({
   position: 'right',
   style: 'standard', // ['standard', 'error', 'primary']
   target: null,
-  panelClass: null,
+  tetherClass: null, // additional className(s) added to {{#ember-tether}} element
+  panelClass: null, // additional className(s) added to nested panel-content element
 
   // attach a function to be executed when this tethered panel is open
   // example: focusing an input

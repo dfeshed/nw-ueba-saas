@@ -47,10 +47,12 @@ module('Integration | Component | rsa-form-select/default-option', function(hook
     await render(hbs `{{rsa-form-select/default-option disabled=disabled disabledTooltip=disabledTooltip optionLabel=optionLabel}}`);
     assert.equal(findAll('.tooltip-text').length, 1, 'rendered with rsa-text-with-tooltip');
     assert.equal(find('.tooltip-text .disabled-option-in-tootlip').innerText.trim(), expectedOptionLabel, `optionLabel is ${expectedOptionLabel}`);
-    // check tooltip
+    // check tooltip text value
     await triggerEvent('.tooltip-text', 'mouseover');
     const actualDisabledTooltip = document.querySelectorAll('.tool-tip-value')[0].innerText.trim();
     assert.equal(actualDisabledTooltip, expectedDisabledTooltip, `disabled option tooltip is ${expectedDisabledTooltip}`);
+    // check tooltip tether container to make sure it has .ember-power-select-option-tooltip
+    assert.equal(document.querySelectorAll('.ember-power-select-option-tooltip.ember-tether').length, 1, 'tooltip tether container has .ember-power-select-option-tooltip');
   });
 
   test('disabled option tooltip works when rendered in the power-select', async function(assert) {
@@ -86,9 +88,12 @@ module('Integration | Component | rsa-form-select/default-option', function(hook
     assert.equal(optionsDisabled.length, 1, '2 options enabled, and 1 option disabled');
     // the 2nd option should have a tooltip to show why it is disabled
     const expectedDisabledTooltip = options[1].disabledTooltip;
+    // check tooltip text value
     await triggerEvent('.ember-power-select-option[aria-disabled=true] .tooltip-text', 'mouseover');
     const actualDisabledTooltip = document.querySelectorAll('.tool-tip-value')[0].innerText.trim();
     assert.equal(actualDisabledTooltip, expectedDisabledTooltip, `disabled option tooltip is '${expectedDisabledTooltip}' as expected`);
+    // check tooltip tether container to make sure it has .ember-power-select-option-tooltip
+    assert.equal(document.querySelectorAll('.ember-power-select-option-tooltip.ember-tether').length, 1, 'tooltip tether container has .ember-power-select-option-tooltip');
   });
 
 });

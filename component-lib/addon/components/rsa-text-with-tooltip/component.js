@@ -25,6 +25,8 @@ export default Component.extend(ToolTip, {
 
   style: 'highlighted',
 
+  tetherClass: null, // extra css className(s) to pass to tethered-panel tetherClass prop
+
   alwaysShow: false,
 
   copyText: true,

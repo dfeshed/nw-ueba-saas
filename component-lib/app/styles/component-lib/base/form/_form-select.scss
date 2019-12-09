@@ -34,12 +34,21 @@ $ember-power-select-line-height: 2rem;
 }
 
 .ember-power-select-dropdown.ember-basic-dropdown-content--below, .ember-power-select-dropdown.ember-basic-dropdown-content--in-place {
-  z-index: 20002;
+  // needs to be +1 more than .ember-tether to nest a power-select in a rsa-content-tethered-panel
+  z-index: 1001;
+
   @include border(1px, solid, primary, lightest);
 
   &.is-error {
     @include border(1px, solid, accentOne);
   }
+}
+
+// this class must be added to power-select options that use rsa-text-with-tooltip,
+// look in components/rsa-form-select/default-option/template.hbs for an example
+.ember-power-select-option-tooltip {
+  // needs to be +1 more than the power-select dropdown's z-index ^above^ for option tooltips to display properly
+  z-index: 1002 !important;
 }
 
 .ember-power-select-dropdown {

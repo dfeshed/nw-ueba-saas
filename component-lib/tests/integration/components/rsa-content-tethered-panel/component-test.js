@@ -70,6 +70,13 @@ module('Integration | Component | rsa-content-tethered-panel', function(hooks) {
     assert.equal(findAll('.rsa-content-tethered-panel .panel-content.primary').length, 1);
   });
 
+  test('it includes the proper classes when tetherClass is passed', async function(assert) {
+    await render(
+      hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel isDisplayed=true style="primary" panelId="foo" tetherClass="someTetherClass"}}Label{{/rsa-content-tethered-panel}}`
+    );
+    assert.equal(findAll('.rsa-content-tethered-panel .someTetherClass.ember-tether').length, 1);
+  });
+
   test('it includes the proper classes when is position is top', async function(assert) {
     await render(
       hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel isDisplayed=true position="top" panelId="foo"}}Label{{/rsa-content-tethered-panel}}`

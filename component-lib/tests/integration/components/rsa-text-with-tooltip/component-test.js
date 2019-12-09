@@ -103,6 +103,23 @@ module('Integration | Component | rsa-text-with-tooltip', function(hooks) {
     await triggerEvent('.tooltip-text', 'mouseout');
     assert.equal(findAll('.ember-tether .tool-tip-value').length, 0, 'Tool tip is hidden');
   });
+
+  test('it adds any passed tetherClass to the nested tethered-panel container', async function(assert) {
+    assert.expect(3);
+    this.set('value', 'test value');
+    this.set('alwaysShow', 'true');
+    this.set('style', 'standard');
+    this.set('tipPosition', 'top');
+    this.set('tetherClass', 'someTetherClass');
+    await render(hbs`{{rsa-text-with-tooltip style=style
+      alwaysShow=alwaysShow value=value tipPosition=tipPosition tetherClass=tetherClass}}`);
+    await triggerEvent('.tooltip-text', 'mouseover');
+    assert.equal(findAll('.someTetherClass.ember-tether').length, 1, 'tethered-panel container rendered with passed tetherClass');
+    assert.equal(find('.someTetherClass.ember-tether .tool-tip-value').textContent.trim(), 'test value');
+    await triggerEvent('.tooltip-text', 'mouseout');
+    assert.equal(findAll('.someTetherClass.ember-tether .tool-tip-value').length, 0, 'Tool tip is hidden');
+  });
+
   test('it renders copy text icon by default', async function(assert) {
     assert.expect(1);
     this.set('value', 'Test text');
@@ -110,6 +127,7 @@ module('Integration | Component | rsa-text-with-tooltip', function(hooks) {
     await triggerEvent('.tooltip-text', 'mouseover');
     assert.equal(findAll('i.rsa-icon-copy-1').length, 1, 'Copy text icon rendered by default');
   });
+
   test('it does not render copy text icon when copyText is false', async function(assert) {
     assert.expect(1);
     this.set('value', 'Test text');
