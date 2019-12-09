@@ -5,6 +5,8 @@ import { patchFetch } from '../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
 import dataIndex from '../../data/presidio';
 import { patchFlash } from '../../helpers/patch-flash';
+import * as UserSelector from 'investigate-users/reducers/users/selectors';
+import sinon from 'sinon';
 import {
   getRiskyUserCount,
   getWatchedUserCount,
@@ -297,7 +299,8 @@ module('Unit | Actions | User Details Actions', (hooks) => {
   });
 
   test('it can updateSortTrend', (assert) => {
-    assert.expect(2);
+    const selectorSpy = sinon.spy(UserSelector, 'entityTypeForOverview');
+    assert.expect(3);
     const actions = [
       'INVESTIGATE_USER::GET_TOP_RISKY_USER',
       'INVESTIGATE_USER::SORT_ON_TREND'
@@ -316,10 +319,14 @@ module('Unit | Actions | User Details Actions', (hooks) => {
       }
     };
     updateSortTrend()(dispatch, getState);
+    assert.ok(selectorSpy.calledOnce, 'The entityTypeForOverview selector was called once');
+    selectorSpy.resetHistory();
+    selectorSpy.restore();
   });
 
   test('it can updateTrendRange', (assert) => {
-    assert.expect(2);
+    const selectorSpy = sinon.spy(UserSelector, 'entityTypeForOverview');
+    assert.expect(3);
     const actions = [
       'INVESTIGATE_USER::GET_TOP_RISKY_USER',
       'INVESTIGATE_USER::UPDATE_TREND_RANGE'
@@ -341,6 +348,9 @@ module('Unit | Actions | User Details Actions', (hooks) => {
       key: 'daily',
       name: 'lastDay'
     })(dispatch, getState);
+    assert.ok(selectorSpy.calledOnce, 'The entityTypeForOverview selector was called once');
+    selectorSpy.resetHistory();
+    selectorSpy.restore();
   });
 
 });

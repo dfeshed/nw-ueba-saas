@@ -1,7 +1,7 @@
 import * as ACTION_TYPES from './types';
 import { fetchData } from './fetch/data';
 import { flashErrorMessage } from 'investigate-users/utils/flash-message';
-import { getUserFilter, trendRange, sortOnTrending } from 'investigate-users/reducers/users/selectors';
+import { entityTypeForOverview, trendRange, sortOnTrending } from 'investigate-users/reducers/users/selectors';
 
 const getRiskyUserCount = (entityType = 'userId') => {
   return (dispatch) => {
@@ -84,7 +84,7 @@ const updateEntityType = (entityType) => {
 
 const updateSortTrend = () => {
   return (dispatch, getState) => {
-    const { entityType } = getUserFilter(getState());
+    const entityType = entityTypeForOverview(getState());
     dispatch({ type: ACTION_TYPES.SORT_ON_TREND });
     dispatch(getUserOverview(entityType));
   };
@@ -92,7 +92,7 @@ const updateSortTrend = () => {
 
 const updateTrendRange = (payload) => {
   return (dispatch, getState) => {
-    const { entityType } = getUserFilter(getState());
+    const entityType = entityTypeForOverview(getState());
     dispatch({ type: ACTION_TYPES.UPDATE_TREND_RANGE, payload });
     dispatch(getUserOverview(entityType));
   };
