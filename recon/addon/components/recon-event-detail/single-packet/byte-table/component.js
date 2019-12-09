@@ -87,7 +87,7 @@ const ByteTableComponent = Component.extend(InViewportMixin, {
     const el = select(this.element);
     const table = el.append('table');
     const cells = this._cells = [];
-    const byteRows = this.get('packet.byteRows');
+    const byteRows = this.packet?.byteRows ?? [];
 
     byteRows.forEach((byteRow) => {
       const tr = table.append('tr');

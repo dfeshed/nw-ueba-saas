@@ -97,7 +97,7 @@ module('Integration | Component | recon container', function(hooks) {
       }}
     `);
 
-    assert.equal(initializeReconSpy.callCount, 1, 'The delete pill action creator was called once');
+    assert.equal(initializeReconSpy.callCount, 1, 'The initialize recon action creator was called once');
   });
 
   test('initializeReconSpy will be called if sessionIds are same but endpoint is different', async function(assert) {
@@ -121,7 +121,7 @@ module('Integration | Component | recon container', function(hooks) {
       }}
     `);
 
-    assert.equal(initializeReconSpy.callCount, 1, 'The delete pill action creator was called once');
+    assert.equal(initializeReconSpy.callCount, 1, 'The initialize recon action creator was called once');
   });
 
   test('recon container with fatal error code - invalid session', async function(assert) {

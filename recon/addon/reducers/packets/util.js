@@ -6,6 +6,85 @@ import { lookup } from 'ember-dependency-lookup';
  */
 export const BYTES_PER_ROW = 16;
 
+const _enhanceEachPacket = (packets, previousPackets, cacheService) => {
+  // console.log('processPacketPayloads(): _enhancePackets, starting with', previousPackets.length, 'packets, processing', packets.length, 'new packets');// eslint-disable-line
+  const lastCachedPacket = cacheService.retrieveLast();
+  if (lastCachedPacket) {
+    // For a packet's `isContinuation` to be calculated properly, we
+    // need to know what the last processed packet was. Since we're
+    // pre-loading from cache, we may be side-stepping the call to
+    // isContinuation() which tracks the current side/sequence.
+    // In that case, call isContinuation() with the last known
+    // packet to set a baseline for continuity tracking.
+    isContinuation(lastCachedPacket.side, lastCachedPacket.sequence);
+  }
+  const len = packets.length;
+  const ppLen = previousPackets.length;
+  for (let i = 0; i < len; i++) {
+    const cur = packets[i];
+    previousPackets[i + ppLen] = cacheService.add({
+      ...cur,
+      isContinuation: isContinuation(cur.side, cur.sequence),
+      byteRows: bytesAsRows(cur.bytes)
+    });
+  }
+  return previousPackets;
+};
+
+const _enhancePayloadOnlyPackets = (packets, previousPackets, cacheService) => {
+  // console.log('processPacketPayloads(): _enhancePayloadOnlyPackets, starting with', previousPackets.length, 'packets, processing', packets.length, 'new packets');// eslint-disable-line
+  return packets.reduce((acc, cur, idx, src) => {
+    const { bytes } = cur;
+    const isLastIteration = src.length - 1 === idx;
+    // Only process if there are bytes
+    if (cur.payloadSize > 0 && bytes?.length > 0) {
+      // Filter out header/footer items from the current packet
+      const _bytes = bytes.filter((b) => !b.isHeader && !b.isFooter);
+      // Get the previous packet
+      const previousPacket = acc.lastItem;
+      // If the current packet is a continuation of the previous,
+      // then the bytes need to be concated together
+      if (isContinuation(cur.side, cur.sequence) && previousPacket) {
+        previousPacket.bytes = previousPacket.bytes.concat(_bytes);
+        // We've merged this packet into the previous one,
+        // so we can ignore it from now on
+        cacheService.add({ id: cur.id, ignore: true });
+        if (isLastIteration) {
+          previousPacket.byteRows = bytesAsRows(previousPacket.bytes);
+        }
+      } else {
+        // This is not a continuation of the previous packet, so we need to
+        // do two things:
+        // 1) Run bytesAsRows on the previous packet if it exists.
+        if (previousPacket) {
+          previousPacket.byteRows = bytesAsRows(previousPacket.bytes);
+        }
+        // 2) Save off the current packet. We'll override isContinuation to
+        // mean that the current packet is the same side as the previous
+        const newPacket = cacheService.add({
+          ...cur,
+          isContinuation: (!!previousPacket && previousPacket.side === cur.side),
+          bytes: _bytes
+        });
+        if (isLastIteration) {
+          newPacket.byteRows = bytesAsRows(newPacket.bytes);
+        }
+        acc.push(newPacket);
+      }
+    } else {
+      // No bytes, so cache it and ignore it
+      cacheService.add({ id: cur.id, ignore: true });
+      // The last packet could be a no-bytes packet, so let's check to see
+      // if we need to run bytesAsRows() on the previous packet.
+      if (isLastIteration && acc.length > 0) {
+        const previousPacket = acc.lastItem;
+        previousPacket.byteRows = bytesAsRows(previousPacket.bytes);
+      }
+    }
+    return acc;
+  }, previousPackets);
+};
+
 /**
  * Processes visible packets. There are several outcomes depending upon what is
  * desired to be shown to the user.
@@ -24,60 +103,44 @@ export const BYTES_PER_ROW = 16;
  */
 export const processPacketPayloads = function(packets, isPayloadOnly, packetFields) {
   if (packetFields !== null && packets !== null) {
+    // console.log('processPacketPayloads(): processing', packets.length, 'packets');// eslint-disable-line
+    // performance.mark('processPacketPayloads');
     const cacheService = lookup('service:processed-packet-cache');
+    let processedPackets;
+    let previousPackets = [];
 
-    // reset continuation tracking
+    // Reset continuation tracking
     isContinuation(null, null);
-    const newPackets = packets.reduce((acc, currentPacket) => {
-      const { bytes, payloadSize } = currentPacket;
-      if (isPayloadOnly) {
-        // if there are no bytes, eject
-        // if (payloadSize === 0 || !!bytes || bytes.length === 0) {
-        // console.log('type of bytes', typeof bytes);
-        if (payloadSize === 0 || bytes?.length === 0) {
-          // console.log('returned');
-          return acc;
-        }
-        // Filter out header/footer items from the current packet
-        const _bytes = bytes.filter((b) => !b.isHeader && !b.isFooter);
-        // Get the previous packet
-        const previousPacket = acc[acc.length - 1];
-        // If the current packet is a continuation of the previous,
-        // then the bytes need to be concated together
-        if (previousPacket && isContinuation(currentPacket.side, currentPacket.sequence)) {
-          previousPacket.bytes = previousPacket.bytes.concat(_bytes);
-          // Update the byteRows with the new bytes that were added
-          previousPacket.byteRows = bytesAsRows(previousPacket.bytes);
-        } else {
-          // Set initial continuation tracking
-          isContinuation(currentPacket.side, currentPacket.sequence);
-          // Override isContinuation to mean that the current packet is the
-          // same side as the previous
-          acc.push({
-            ...currentPacket,
-            isContinuation: (previousPacket && currentPacket.side === previousPacket.side),
-            bytes: _bytes,
-            byteRows: bytesAsRows(_bytes)
-          });
-        }
-      } else {
-        const cachedPacket = cacheService.retrieve(currentPacket.id);
-        if (cachedPacket) {
-          acc.push(cachedPacket);
-        } else {
-          const newPacket = {
-            ...currentPacket,
-            isContinuation: isContinuation(currentPacket.side, currentPacket.sequence),
-            byteRows: bytesAsRows(bytes)
-          };
-          cacheService.add(newPacket);
-          acc.push(newPacket);
-        }
-      }
-      return acc;
-    }, []);
 
-    return newPackets;
+    // What setup should we do if we're processing a list of packets we've
+    // already partially processed
+    if (cacheService.count > 0) {
+      // There's stuff in the cache, so we'll be pre-loading the reduce with
+      // that data. Some of the cached data are packets we've already merged
+      // which are marked as "ignore". Get the non-ignored packets from cache.
+      previousPackets = cacheService.retrieveAll();
+      // For the new packets coming in, chop off the ones we've already
+      // processed so we're only iterating over the new stuff
+      packets = packets.slice(cacheService.count);
+      // We need to set a baseline for isContinuation to work,
+      // so grab the last item from the cache and prime isContinuation.
+      const lastPacket = previousPackets.lastItem;
+      isContinuation(lastPacket.side, lastPacket.sequence);
+    }
+
+    if (isPayloadOnly) {
+      // Reduce packets, removing empty packets and header/footer of packets
+      processedPackets = _enhancePayloadOnlyPackets(packets, previousPackets, cacheService);
+    } else {
+      processedPackets = _enhanceEachPacket(packets, previousPackets, cacheService);
+    }
+
+    // performance.measure('Total time to run processPacketPayloads()', 'processPacketPayloads');
+    // const lastMeasure = performance.getEntriesByType('measure').lastItem;
+    // console.log(`processPacketPayloads() took ${parseInt(lastMeasure.duration, 10)}ms to process ${packets.length} packets\n\n`);// eslint-disable-line
+    return processedPackets;
+  } else {
+    return undefined;
   }
 };
 

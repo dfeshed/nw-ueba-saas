@@ -5,18 +5,34 @@ import Service from '@ember/service';
 
 export default Service.extend({
 
-  cache: {},
+  _cache: [],
+
+  count: 0,
 
   add(packet) {
-    this.cache[packet.id] = packet;
-  },
-
-  retrieve(id) {
-    return this.cache[id];
+    this._cache.push(packet);
+    this.count++;
+    return packet;
   },
 
   clear() {
-    this.cache = {};
+    this._cache = [];
+    this.count = 0;
+  },
+
+  retrieve(idx) {
+    return this._cache[idx];
+  },
+
+  /**
+   * Returns all non-ignored packets
+   */
+  retrieveAll() {
+    return this._cache.filter((d) => d.ignore !== true);
+  },
+
+  retrieveLast() {
+    return this._cache.lastItem;
   }
 
 });

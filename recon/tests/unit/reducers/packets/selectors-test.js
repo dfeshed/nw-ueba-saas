@@ -38,19 +38,12 @@ module('Unit | selector | packets', function(hooks) {
     cache.clear();
   });
 
-  test('_payloadProcessedPackets will return an empty array when there are no bytes', function(assert) {
+  test('_payloadProcessedPackets will return an empty array when there are no packets or packetfields', function(assert) {
     const result = _payloadProcessedPackets(Immutable.from({
       packets: {
-        isPayloadOnly: true,
-        packets: [{
-          bytes: '',
-          id: 4804965123532,
-          payloadSize: 6,
-          position: 2,
-          sequence: 102357698,
-          side: 'response',
-          timestamp: '1485792552869'
-        }]
+        isPayloadOnly: false,
+        packetFields: [],
+        packets: []
       }
     }));
     assert.equal(result.length, 0, 'Did not find an empty array');
@@ -60,7 +53,7 @@ module('Unit | selector | packets', function(hooks) {
     // no packetFields
     let result = _payloadProcessedPackets(Immutable.from({
       packets: {
-        isPayloadOnly: true,
+        isPayloadOnly: false,
         packetFields: null,
         packets: [{
           bytes: 'ABCD',
@@ -73,17 +66,17 @@ module('Unit | selector | packets', function(hooks) {
         }]
       }
     }));
-    assert.notOk(result, 'Did not find undefined');
+    assert.notOk(result, 'No packetFields, did not find undefined');
 
     // no packets
     result = _payloadProcessedPackets(Immutable.from({
       packets: {
-        isPayloadOnly: true,
+        isPayloadOnly: false,
         packetFields: [],
         packets: null
       }
     }));
-    assert.notOk(result, 'Did not find undefined');
+    assert.notOk(result, 'No packets, did not find undefined');
   });
 
   test('getNetworkDownloadOptions', function(assert) {
