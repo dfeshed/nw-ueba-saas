@@ -5722,4 +5722,34 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(focusedPill, 'should have a pill focused');
     assert.equal(focusedPill.getAttribute('position'), 2, 'focused pill position is correct');
   });
+
+  test('Typing OpenParen followed by logical operator should not be allowed whether one or multiple parens', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills
+        isActive=true
+      }}
+    `);
+    await leaveNewPillTemplate();
+    assert.notOk(find(PILL_SELECTORS.focusedPill), 'should not have a pill focused');
+    assert.equal(findAll(PILL_SELECTORS.logicalOperator).length, 1, 'Should have one logical operator');
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 3, 'correct number of triggers (3)');
+    await click(triggers[1]);
+    await typeIn(PILL_SELECTORS.metaSelectInput, '(');
+    assert.equal(findAll(PILL_SELECTORS.logicalOperator).length, 2, 'Should have two logical operators');
+    await typeIn(PILL_SELECTORS.metaSelectInput, 'AND');
+    assert.equal(findAll(PILL_SELECTORS.logicalOperator).length, 2, 'Should have two logical operators');
+    await typeIn(PILL_SELECTORS.metaSelectInput, '(');
+    await typeIn(PILL_SELECTORS.metaSelectInput, 'AND');
+    assert.equal(findAll(PILL_SELECTORS.logicalOperator).length, 2, 'Should have two logical operators');
+    await typeIn(PILL_SELECTORS.metaSelectInput, '(');
+    await typeIn(PILL_SELECTORS.metaSelectInput, 'AND');
+    assert.equal(findAll(PILL_SELECTORS.logicalOperator).length, 2, 'Should have two logical operators');
+  });
 });

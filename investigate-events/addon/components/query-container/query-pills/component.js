@@ -143,6 +143,7 @@ const isEventFromContextMenus = (event) => {
 
 const _hasCloseParenToRight = (pd, i) => pd[i] && pd[i].type === CLOSE_PAREN;
 
+
 const _hasOperatorToTheLeft = (pd, i) => {
   // get pill to the left
   const pill = pd[i - 1];
@@ -169,7 +170,6 @@ const _hasMoreOpenThanCloseParens = (pd, position) => {
 };
 
 const _isLogicalOperator = (filter = {}) => [OPERATOR_AND, OPERATOR_OR].includes(filter.type);
-
 const _shouldAddLogicalOperator = (filter = {}) => !_isLogicalOperator(filter) && filter.type !== OPEN_PAREN;
 
 const QueryPills = RsaContextMenu.extend({
@@ -262,16 +262,6 @@ const QueryPills = RsaContextMenu.extend({
 
   @computed('pillsData')
   lastIndex: (pillsData) => pillsData.length,
-
-  @computed('pillsData', 'cursorPosition')
-  _canInsertLogicalOperator: (pillsData, cursorPosition) => {
-    let ret = true;
-    if (pillsData.length > 0 && cursorPosition) {
-      // Return false if the preceding pill is an open paren
-      ret = !(pillsData[cursorPosition - 1].type === OPEN_PAREN);
-    }
-    return ret;
-  },
 
   init() {
     this._super(...arguments);
@@ -1071,17 +1061,24 @@ const QueryPills = RsaContextMenu.extend({
   _insertLogicalOperator(data, position) {
     const { operator, pillData } = data;
     const isEditing = pillData ? pillData.isEditing : false;
-    const { _canInsertLogicalOperator, pillsData } =
-      this.getProperties('_canInsertLogicalOperator', 'pillsData');
-    const previousPill = pillsData[position - 1];
+    const previousPill = this.pillsData[position - 1];
     if (_isLogicalOperator(previousPill)) {
       this.send('replaceLogicalOperator', { pillData: operator, position });
-    } else if (_canInsertLogicalOperator || isEditing) {
+    } else if (this._canInsertLogicalOperator(this.pillsData, position) || isEditing) {
       this.set('cursorPosition', position + 1);
       this._pillsExited(false);
       this.send('addLogicalOperator', { pillData: operator, position });
       this._openNewPillTriggerRight(position);
     }
+  },
+
+  _canInsertLogicalOperator: (pillsData, cursorPosition) => {
+    let ret = true;
+    if (pillsData.length > 0 && cursorPosition) {
+      // Return false if the preceding pill is an open paren
+      ret = !(pillsData[cursorPosition - 1].type === OPEN_PAREN);
+    }
+    return ret;
   },
 
   /**
