@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.rsa.netwitness.presidio.automation</groupId>
     <artifactId>ueba-automation-projects</artifactId>
-    <version>11.4.0-0</version>
+    <version>11.5.0-0-SNAPSHOT</version>
     <modules>
         <module>ueba-automation-test</module>
         <module>ueba-automation-framework</module>
@@ -34,9 +34,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <presidio.quest.ca.version>2.0.0-SNAPSHOT</presidio.quest.ca.version>
-        <presidio.core.version>11.4.0-0</presidio.core.version>
-        <flume.version>11.4.0-0</flume.version>
-        <presidio.test.utils>11.4.0-0</presidio.test.utils>
+        <presidio.core.version>${project.version}</presidio.core.version>
+        <flume.version>${project.version}</flume.version>
+        <presidio.test.utils>${project.version}</presidio.test.utils>
         <slf4j.version>1.7.26</slf4j.version>
         <springframework.version>2.1.0.RELEASE</springframework.version>
         <assertj.version>3.12.2</assertj.version>
