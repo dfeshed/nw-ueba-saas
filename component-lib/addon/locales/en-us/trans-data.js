@@ -225,6 +225,7 @@ export default {
     queryEvents: 'Query Events',
     querySelected: 'Query with selected filters',
     querySelectedNewTab: 'Query with selected filters in a new tab',
+    wrapInParensNotAllowed: 'Cannot wrap a text filter in parentheses',
     wrapParens: 'Wrap in parentheses',
     metaNoMatch: 'All meta keys filtered out',
     operatorNoMatch: 'All operators filtered out',

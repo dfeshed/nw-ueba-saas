@@ -87,6 +87,13 @@ const findMissingTwins = (pills, pillsFromState) => {
   return twins;
 };
 
+// Make a quick exit if any of the pills is a text filter.
+// We are not allowed to wrap them in parens.
+const doPillsContainTextPill = (pillsData, startIn, endIn) => {
+  const pills = pillsData.slice(startIn, endIn + 1);
+  return pills.some((pill) => pill.type === TEXT_FILTER);
+};
+
 /**
  * Given an array of pills, checks if the array is paren balanced
  */
@@ -302,6 +309,7 @@ const findUnnecessaryOperators = (pillsData) => {
 export {
   _hasEmptyParensAt, // exported for test
   contentBetweenParens,
+  doPillsContainTextPill,
   findAllEmptyParens,
   findContiguousOperators,
   findEmptyParensAtPosition,

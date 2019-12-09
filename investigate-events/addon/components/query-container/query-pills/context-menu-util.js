@@ -1,5 +1,6 @@
 import {
   isValidToWrapWithParens,
+  doPillsContainTextPill,
   findSelectedPills,
   selectedPillIndexes
 } from 'investigate-events/actions/pill-utils';
@@ -52,14 +53,15 @@ const deleteSelection = (context, i18n) => {
     }
   };
 };
-
-const wrapWithParens = (context, i18n) => {
+const wrapWithParens = (context, label) => {
   return {
-    label: i18n.t('queryBuilder.wrapParens'),
+    label,
     disabled() {
       const pills = context.get('pillsData');
       const { startIndex, endIndex } = selectedPillIndexes(pills);
-      return !isValidToWrapWithParens(pills, startIndex, endIndex) || context.get('hasInvalidSelectedPill');
+      return !isValidToWrapWithParens(pills, startIndex, endIndex) ||
+      context.get('hasInvalidSelectedPill') ||
+      doPillsContainTextPill(pills, startIndex, endIndex);
     },
     action() {
       const pills = context.get('pillsData');
@@ -74,12 +76,14 @@ const wrapWithParens = (context, i18n) => {
 function getContextItems(context, i18n) {
   const _this = context;
   return {
-    pills: [
-      queryWithSelected(_this, i18n),
-      queryWithSelectedNewTab(_this, i18n),
-      deleteSelection(_this, i18n),
-      wrapWithParens(_this, i18n)
-    ],
+    pills: (label) => {
+      return [
+        queryWithSelected(_this, i18n),
+        queryWithSelectedNewTab(_this, i18n),
+        deleteSelection(_this, i18n),
+        wrapWithParens(_this, label)
+      ];
+    },
     parens: [
       queryWithSelected(_this, i18n),
       queryWithSelectedNewTab(_this, i18n),

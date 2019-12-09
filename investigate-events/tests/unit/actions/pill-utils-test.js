@@ -492,4 +492,18 @@ module('Unit | Actions | Pill Utils', function(hooks) {
     assert.notOk(pillUtils.isLogicalOperator({}), 'handles missing props case');
     assert.notOk(pillUtils.isLogicalOperator(), 'handles missing arg case');
   });
+
+  test('doPillsContainTextPill return true when there is a text pill', function(assert) {
+    const pillsData = [
+      { type: TEXT_FILTER }
+    ];
+    assert.ok(pillUtils.doPillsContainTextPill(pillsData, 0, 1));
+  });
+
+  test('doPillsContainTextPill return false when there is no text pill', function(assert) {
+    const pillsData = [
+      { type: QUERY_FILTER }
+    ];
+    assert.notOk(pillUtils.doPillsContainTextPill(pillsData, 0, 1));
+  });
 });

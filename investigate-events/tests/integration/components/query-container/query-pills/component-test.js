@@ -2009,6 +2009,54 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(actionSelector.className.includes('context-menu__item--disabled'), 'Wrap in parens should be disabled');
   });
 
+  test('Right click wrap in parens option should be disabled if there is a text pill', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const wrapInParenNotAllowedMessage = translation.t('queryBuilder.wrapInParensNotAllowed').string.trim();
+    const wrapInParensMessage = translation.t('queryBuilder.wrapParens').string.trim();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataText()
+      .build();
+
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true isPrimary=true}}
+        {{context-menu}}
+      </div>
+    `);
+
+    // create one more pill
+    await selectChoose(PILL_SELECTORS.meta, 'medium');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, '32');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+
+    // Wait for implicit AND to magically appear
+    await waitForOperator(PILL_SELECTORS.logicalOperatorAND, 1);
+    await leaveNewPillTemplate();
+
+    // Select both pills. Wrap in parens option should be disabled
+    const selector = '.context-menu';
+    await click(PILL_SELECTORS.queryPill);
+    await click(PILL_SELECTORS.textPill);
+    await triggerEvent(find(PILL_SELECTORS.selectedPill), 'contextmenu', { clientX: 100, clientY: 100 });
+    let items = findAll(`${selector} > .context-menu__item`);
+    let actionSelector = items.find((op) => op.textContent.trim() === wrapInParenNotAllowedMessage);
+    assert.ok(actionSelector.className.includes('context-menu__item--disabled'), 'Wrap in parens should be disabled');
+
+    // Select just the query pill, should be enabled
+    await click(PILL_SELECTORS.textPill); // clicking on text pill will make is deselected, leaving QP selected
+    await triggerEvent(find(PILL_SELECTORS.selectedPill), 'contextmenu', { clientX: 100, clientY: 100 });
+    items = findAll(`${selector} > .context-menu__item`);
+    actionSelector = items.find((op) => op.textContent.trim() === wrapInParensMessage);
+    assert.notOk(actionSelector.className.includes('context-menu__item--disabled'), 'Wrap in parens should not be disabled');
+  });
+
   test('Right click deleting parens will remove all the selected parens and their contents', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -4960,6 +5008,30 @@ module('Integration | Component | Query Pills', function(hooks) {
     await settled();
 
     assert.equal(findAll(PILL_SELECTORS.openParen).length, 1, 'Should not find 2 open parens');
+  });
+
+  test('It will not wrap pills in parens if any of the pills being wrapped is a text pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataText()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    await click(PILL_SELECTORS.textPill); // selectedFocused pill
+    await settled();
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN_KEY);
+    await settled();
+
+    assert.notOk(find(PILL_SELECTORS.openParen), 'Should not find any parens');
   });
 
   test('It will not wrap pills in parens if there is an invalid selected pill', async function(assert) {

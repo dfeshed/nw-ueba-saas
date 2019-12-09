@@ -13,7 +13,7 @@ import {
 } from 'investigate-events/util/query-parsing';
 import { quoteComplexValues } from 'investigate-events/util/quote';
 import { isSubmitClicked } from '../query-pill/query-pill-util';
-import { getContextItems } from './right-click-util';
+import { getContextItems } from './context-menu-util';
 import {
   canQueryGuided,
   deselectedPills,
@@ -69,6 +69,7 @@ import {
   findPositionAfterEmptyParensDeleted,
   isLogicalOperator,
   isValidToWrapWithParens,
+  doPillsContainTextPill,
   selectedPillIndexes,
   getAdjacentDeletableLogicalOperatorAt
 } from 'investigate-events/actions/pill-utils';
@@ -246,7 +247,18 @@ const QueryPills = RsaContextMenu.extend({
       if (isParen) {
         this.set('contextItems', this.get('contextOptions').parens);
       } else {
-        this.set('contextItems', this.get('contextOptions').pills);
+        const pills = this.get('pillsData');
+        const { startIndex, endIndex } = selectedPillIndexes(pills);
+
+        // Special case: If there is a text filter, we want to compute
+        // a label at run time. Thus, we pass the label to wrapInParens fn.
+        let label;
+        if (doPillsContainTextPill(pills, startIndex, endIndex)) {
+          label = this.get('i18n').t('queryBuilder.wrapInParensNotAllowed');
+        } else {
+          label = this.get('i18n').t('queryBuilder.wrapParens');
+        }
+        this.set('contextItems', this.get('contextOptions').pills(label));
       }
       this.set('rightClickTarget', currentClass ? target : target.parentElement);
       this._super(...arguments);
@@ -1091,7 +1103,11 @@ const QueryPills = RsaContextMenu.extend({
   _wrapSelectedPillsWithParens() {
     const pills = this.get('pillsData');
     const { startIndex, endIndex } = selectedPillIndexes(pills);
-    if (isValidToWrapWithParens(pills, startIndex, endIndex) && !this.get('hasInvalidSelectedPill')) {
+    if (
+      isValidToWrapWithParens(pills, startIndex, endIndex) &&
+      !this.get('hasInvalidSelectedPill') &&
+      !doPillsContainTextPill(pills, startIndex, endIndex)
+    ) {
       this.send('wrapWithParens', { startIndex, endIndex });
       this.send('deselectAllGuidedPills');
     }
