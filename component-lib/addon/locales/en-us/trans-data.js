@@ -770,7 +770,7 @@ export default {
       between: 'Time:',
       metaFilter: 'Meta Filter:',
       textFilter: 'Text Filter',
-      textFilterWarning: 'A text filter matches only indexed meta keys, possibly limiting results loaded in the Events panel.',
+      textFilterWarning: 'A text filter matches only indexed meta keys, possibly limiting results in the Events panel. The position of the text filter in the list of filters has no effect on the query. The text filter always applies a text search to the results of all other filters.',
       progress: 'Progress:',
       complete: 'Complete',
       retrieving: 'Retrieving',

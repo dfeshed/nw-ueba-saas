@@ -204,7 +204,7 @@ module('Integration | Component | console-panel', function(hooks) {
     assert.equal(_trim(filters[0].textContent), 'MetaFilter:a="a"ANDbexists', 'incorrect DOM for meta filter');
     assert.equal(_trim(filters[1].textContent), 'TextFilter:blahblahblah', 'incorrect DOM for text filter');
     assert.ok(find('.console-panel .filters .label i'), 'warning icon was not shown');
-    assert.ok(find('.console-panel .filters .label[title="A text filter matches only indexed meta keys, possibly limiting results loaded in the Events panel."]'), 'warning title for hover not present');
+    assert.ok(find('.console-panel .filters .label[title="A text filter matches only indexed meta keys, possibly limiting results in the Events panel. The position of the text filter in the list of filters has no effect on the query. The text filter always applies a text search to the results of all other filters."]'), 'warning title for hover not present');
   });
 
   test('does not render meta and text filter DOM if no data', async function(assert) {
