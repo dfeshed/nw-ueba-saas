@@ -29,6 +29,7 @@ const DetailsFooter = Component.extend({
   originalItem: null,
   itemTransform: null, // function
   isItemEditedValid: false,
+  invalidReason: undefined,
   itemReset: null,
   didItemChange: false,
   isValidItem: null,
@@ -56,7 +57,9 @@ const DetailsFooter = Component.extend({
     // Use default list-manager validation unless custom validation action is provided
     // Custom validation would check for other parameters of the group unique to itemType
     if (typeof isValidItem == 'function') {
-      this.set('isItemEditedValid', isValidItem(editedItem));
+      const { isValid, invalidReason } = isValidItem(editedItem);
+      this.set('isItemEditedValid', isValid);
+      this.set('inValidReason', invalidReason);
     } else {
       const isValid = !!editedItem?.name;
       this.set('isItemEditedValid', isValid);

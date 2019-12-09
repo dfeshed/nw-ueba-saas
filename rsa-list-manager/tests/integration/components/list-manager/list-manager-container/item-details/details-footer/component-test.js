@@ -82,7 +82,7 @@ module('Integration | Component | item details - details footer', function(hooks
     this.set('stateLocation', stateLocation1);
     this.set('editedItem', editedItem);
     this.set('isValidItem', (editedItem) => {
-      return editedItem && editedItem.name && editedItem.otherParam?.length;
+      return { isValid: editedItem && editedItem.name && editedItem.otherParam?.length };
     });
 
     await render(hbs`{{list-manager/list-manager-container/item-details/details-footer
@@ -279,7 +279,7 @@ module('Integration | Component | item details - details footer', function(hooks
     this.set('stateLocation', stateLocation1);
     this.set('editedItem', editedItem);
     this.set('isValidItem', (editedItem) => {
-      return editedItem && editedItem.name && editedItem.otherParam?.length;
+      return { isValid: editedItem && editedItem.name && editedItem.otherParam?.length };
     });
 
     await render(hbs`{{list-manager/list-manager-container/item-details/details-footer
@@ -297,7 +297,6 @@ module('Integration | Component | item details - details footer', function(hooks
     assert.equal(findAll(`${detailsFooterButton}[disabled]`).length, 0, 'Save enabled');
   });
 
-  // TODO Nehal followup PR improve test to check if transformed item was indeed used for _didItemChange, validation
   test('itemTransform function if passed is called', async function(assert) {
     assert.expect(1);
 

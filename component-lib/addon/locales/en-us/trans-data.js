@@ -542,7 +542,8 @@ export default {
       columnGroup: 'Column Group',
       profileName: 'Query Profile Name',
       profileNamePlaceholder: 'Enter query profile name',
-      profileNameNotUnique: 'New query profile must have a unique name',
+      noProfileName: 'Query profile must have a unique name',
+      profileNameNotUnique: 'Query profile must have a unique name',
       prequeryConditions: {
         prequeryConditions: 'Pre-Query Conditions',
         or: 'OR',
@@ -659,12 +660,15 @@ export default {
         allAvailableFilteredAway: 'All available meta keys have been filtered',
         allDisplayedFilteredAway: 'All displayed meta keys have been filtered',
         noMetaKeysChosen: 'Add a meta key from the list below',
-        displayedMetaKeys: 'Displayed Meta Keys',
+        noColumnsAdded: 'Column Group must have atleast one column',
+        displayedMetaKeys: 'Displayed Meta Keys. (Maximum {{COLUMN_THRESHOLD}} keys)',
         availableMetaKeys: 'Available Meta Keys',
         allMetaKeysAdded: 'All meta keys have been added',
         groupNamePlaceholder: 'Enter column group name',
-        nameNotUnique: 'New groups must have a unique name',
+        noColumnGroupName: 'Column groups must have a name',
+        nameNotUnique: 'Column groups must have a unique name',
         selectionThresholdMessage: 'Reached the maximum number of meta keys allowed in the column group',
+        notWithinColumnThreshold: 'Column Group exceeds column threshold. Only upto {{COLUMN_THRESHOLD}} meta keys allowed',
         disabled: {
           delete: 'This column group cannot be deleted because it is part of the following query profiles: {{profileNames}}'
         }

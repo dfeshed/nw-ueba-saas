@@ -9,7 +9,7 @@
         Close
       {{/rsa-form-button}}
     {{/if}}
-    {{#rsa-form-button isDisabled=(not isItemEditedValid) class='save' defaultAction=(action 'saveItem')}}
+    {{#rsa-form-button isDisabled=(not isItemEditedValid) title=inValidReason class='save' defaultAction=(action 'saveItem')}}
       Save {{itemType}}
     {{/rsa-form-button}}
   {{else}}
@@ -17,7 +17,7 @@
       {{#rsa-form-button class='reset' defaultAction=(action itemReset)}}
         Reset
       {{/rsa-form-button}}
-      {{#rsa-form-button isDisabled=(not isItemEditedValid) class='update' defaultAction=(action 'saveItem')}}
+      {{#rsa-form-button isDisabled=(not isItemEditedValid) title=inValidReason class='update' defaultAction=(action 'saveItem')}}
         Update {{itemType}}
       {{/rsa-form-button}}
     {{else}}

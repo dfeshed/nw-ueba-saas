@@ -20,7 +20,7 @@
 
 <div class='column-group-details scroll-box'>
   <section class='displayed-details'>
-    <div class='name'>{{t 'investigate.events.columnGroups.displayedMetaKeys'}}</div>
+    <div class='name'>{{t 'investigate.events.columnGroups.displayedMetaKeys' COLUMN_THRESHOLD=COLUMN_THRESHOLD}}</div>
     {{#if filteredDisplayedColumns}}
       {{#sortable-group tagName='ul' class='column-list value editable' onChange=(action 'reorderColumns') as |group|}}
         {{#each filteredDisplayedColumns as |column|}}

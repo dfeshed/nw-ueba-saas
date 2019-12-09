@@ -79,7 +79,7 @@ module('Integration | Component | Column Group Details', function(hooks) {
     assert.ok(find(columnGroupForm), 'Column Group Details rendered correctly');
     assert.equal(find(editableGroupNameName).textContent.trim(), 'Group Name');
     assert.ok(find(editableGroupNameValueInput), 'input for group name');
-    assert.equal(find(`${scrollBox} .name`).textContent.trim(), 'Displayed Meta Keys');
+    assert.equal(find(`${scrollBox} .name`).textContent.trim(), 'Displayed Meta Keys. (Maximum 40 keys)');
     assert.equal(findAll(displayedColumns).length, 0, 'No columns present in displayed keys');
     assert.equal(find('.add-details .name').textContent.trim(), 'Available Meta Keys');
     assert.equal(findAll(availableMeta).length, 93, '93/95 meta keys available');
@@ -107,7 +107,7 @@ module('Integration | Component | Column Group Details', function(hooks) {
     assert.equal(find(editableGroupNameName).textContent.trim(), 'Group Name');
     assert.ok(find(editableGroupNameValueInput), 'input for group name');
     assert.equal(findAll(editableGroupNameValueInput)[0].value, customColumnGroup.name, 'renders original group name');
-    assert.equal(find(`${scrollBox} .name`).textContent.trim(), 'Displayed Meta Keys');
+    assert.equal(find(`${scrollBox} .name`).textContent.trim(), 'Displayed Meta Keys. (Maximum 40 keys)');
     assert.equal(findAll(displayedColumns).length, 1, '1 column present in displayed keys');
     assert.equal(find(`${addDetails} .name`).textContent.trim(), 'Available Meta Keys');
     assert.equal(findAll(availableMeta).length, 92, '92/95 meta keys available');

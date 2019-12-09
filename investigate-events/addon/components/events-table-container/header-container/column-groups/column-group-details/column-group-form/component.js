@@ -51,6 +51,8 @@ const ColumnGroupForm = Component.extend({
 
   nameInvalidMessage: null,
 
+  COLUMN_THRESHOLD,
+
   // initialize form data when a columnGroup has begun edit
   // reset form data when columnGroup is created, updated or reset
   didReceiveAttrs() {
