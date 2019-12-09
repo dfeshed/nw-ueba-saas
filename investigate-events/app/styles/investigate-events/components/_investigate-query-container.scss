@@ -706,13 +706,28 @@
     position: absolute;
     margin-left: -.30rem;
     margin-top: -.05rem;
-    width: .3rem;
+    width: .5rem;
     height: 2.3rem;
 
     &:hover {
       cursor: text;
       background-color: background-color(accentTwo, lightest, translucent);
-      position: fixed; // force a flow break so it renders above query-bar
+      position: absolute; // force a flow break so it renders above query-bar
+    }
+
+    &:hover:after {
+      position: absolute;
+      content: "";
+      width: 100%;
+      top: 0;
+      left: 0;  
+      /* Bottom is positioned to cover the area the hovered element is leaving */
+      bottom: -1em;
+  
+      /* We need to place the pseudo-element under everything else. Without 
+         specifying the placement, it will sit on top of the parent element
+         and block the user from selecting text or clicking links */
+      z-index: -1;
     }
   }
 
