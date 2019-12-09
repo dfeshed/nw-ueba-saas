@@ -72,10 +72,12 @@ export default Component.extend({
         divider: true
       }
     ];
-    if (this.get('isMFTEnabled').isDisplayed && (this.get('selectedHostList').length === 1) && this.get('accessControl.endpointCanManageFiles')) {
-      moreActionOptions.push(...mft, ...systemMemoryDump);
-      if (this.get('hostDetails').isolationAllowed) {
+    if ((this.get('selectedHostList').length === 1) && this.get('accessControl.endpointCanManageFiles')) {
+      if (this.get('hostDetails').isIsolationEnabled) {
         moreActionOptions.push(...networkIsolation);
+      }
+      if (this.get('isMFTEnabled').isDisplayed) {
+        moreActionOptions.push(...mft, ...systemMemoryDump);
       }
     }
     return moreActionOptions;

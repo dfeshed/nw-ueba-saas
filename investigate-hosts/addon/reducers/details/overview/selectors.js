@@ -456,16 +456,31 @@ export const isAgentMigrated = createSelector(
 
 export const mftDownloadButtonStatusDetails = createSelector(
   [_hostOverview, isAgentMigrated],
-  (hostOverview, isAgentMigrated) => {
-    const { machineIdentity = {}, agentStatus: { isolationStatus, lastSeen } } = hostOverview.agentStatus ? hostOverview : { agentStatus: {} };
-    // Isolated Key is needed to check if machine has been isolated and exclusion list can be edited.
-    const isIsolated = isolationStatus?.isolated;
+  (hostOverview) => {
+    const { machineIdentity = {}, agentStatus: { lastSeen } } = hostOverview.agentStatus ? hostOverview : { agentStatus: {} };
+
     const { machineOsType, agentMode, agentVersion } = machineIdentity;
     let isMFTEnabled = false;
     if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion) && lastSeen !== 'RelayServer') {
       isMFTEnabled = true;
     }
-    return { isDisplayed: isMFTEnabled, isAgentMigrated, isIsolated };
+    return { isDisplayed: isMFTEnabled };
+  }
+);
+
+export const isolationStatus = createSelector(
+  [_hostOverview, _policyDetails],
+  (hostOverview, policyDetails) => {
+    const { enabled = false } = policyDetails?.policy?.edrPolicy?.isolationConfig || {};
+    const { machineIdentity = {}, agentStatus: { isolationStatus } } = hostOverview.agentStatus ? hostOverview : { agentStatus: {} };
+    // Isolated Key is needed to check if machine has been isolated and exclusion list can be edited.
+    const isIsolated = isolationStatus?.isolated || false;
+    const { machineOsType, agentMode, agentVersion } = machineIdentity;
+    let isIsolationEnabled = false;
+    if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion)) {
+      isIsolationEnabled = true;
+    }
+    return { isIsolationEnabled: (enabled && isIsolationEnabled), isIsolated };
   }
 );
 

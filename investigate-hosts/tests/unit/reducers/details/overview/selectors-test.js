@@ -25,6 +25,7 @@ import {
   getRARStatus,
   hostOverviewServerId,
   isAgentMigrated,
+  isolationStatus,
   policyAdminUsm } from 'investigate-hosts/reducers/details/overview/selectors';
 
 let setState;
@@ -915,7 +916,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: true, isAgentMigrated: true, isIsolated: true });
+    assert.deepEqual(result, { isDisplayed: true });
   });
 
   test('mftDownloadButtonStatusDetails when agentVersion is wrong', function(assert) {
@@ -937,7 +938,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false, isIsolated: false, isAgentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: false });
   });
 
   test('mftDownloadButtonStatusDetails when machineOsType is wrong', function(assert) {
@@ -959,7 +960,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false, isIsolated: false, isAgentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: false });
   });
 
   test('mftDownloadButtonStatusDetails when agentMode is wrong', function(assert) {
@@ -981,7 +982,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false, isIsolated: false, isAgentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: false });
   });
   test('mftDownloadButtonStatusDetails when lastseen RelayServer', function(assert) {
     const result = mftDownloadButtonStatusDetails(Immutable.from({
@@ -1003,7 +1004,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false, isIsolated: false, isAgentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: false });
   });
   test('mftDownloadButtonStatusDetails when isolation is true', function(assert) {
     const result = mftDownloadButtonStatusDetails(Immutable.from({
@@ -1024,7 +1025,93 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false, isIsolated: true, isAgentMigrated: true });
+    assert.deepEqual(result, { isDisplayed: false });
+  });
+
+  test('isolationStatus', function(assert) {
+    const state1 = {
+      endpoint: {
+        overview: {
+          hostOverview: {
+            groupPolicy: {
+              policyStatus: 'Updated'
+            },
+            machineIdentity: { machineOsType: 'windows', agentMode: 'advanced', agentVersion: '11.4.0.0' },
+            agentStatus: { isolationStatus: { isolated: true } }
+          },
+          policyDetails: {
+            evaluatedTime: '2018-11-19T09:16:35.969+0000',
+            message: 'error message',
+            policy: {
+              'edrPolicy': {
+                'agentMode': 'INSIGHTS',
+                'isolationConfig': {
+                  'enabled': false
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    const result1 = isolationStatus(Immutable.from(state1));
+    assert.deepEqual(result1, { 'isIsolated': true, 'isIsolationEnabled': false });
+
+    const state2 = {
+      endpoint: {
+        overview: {
+          hostOverview: {
+            groupPolicy: {
+              policyStatus: 'Updated'
+            },
+            machineIdentity: { machineOsType: 'mac', agentMode: 'advanced', agentVersion: '11.4.0.0' },
+            agentStatus: { isolationStatus: { } }
+          },
+          policyDetails: {
+            evaluatedTime: '2018-11-19T09:16:35.969+0000',
+            message: 'error message',
+            policy: {
+              'edrPolicy': {
+                'agentMode': 'INSIGHTS',
+                'isolationConfig': {
+                  'enabled': false
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    const result2 = isolationStatus(Immutable.from(state2));
+    assert.deepEqual(result2, { 'isIsolated': false, 'isIsolationEnabled': false });
+
+    const state3 = {
+      endpoint: {
+        overview: {
+          hostOverview: {
+            groupPolicy: {
+              policyStatus: 'Updated'
+            },
+            machineIdentity: { machineOsType: 'windows', agentMode: 'advanced', agentVersion: '11.4.0.0' },
+            agentStatus: { isolationStatus: { } }
+          },
+          policyDetails: {
+            evaluatedTime: '2018-11-19T09:16:35.969+0000',
+            message: 'error message',
+            policy: {
+              'edrPolicy': {
+                'agentMode': 'INSIGHTS',
+                'isolationConfig': {
+                  'enabled': true
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    const result3 = isolationStatus(Immutable.from(state3));
+    assert.deepEqual(result3, { 'isIsolated': false, 'isIsolationEnabled': true });
   });
 
   test('getRARStatus', function(assert) {

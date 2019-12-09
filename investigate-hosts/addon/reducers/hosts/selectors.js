@@ -308,11 +308,15 @@ export const selectedHostDetails = createSelector(
   [_selectedHostList],
   (selectedHostList) => {
     if (selectedHostList.length > 0) {
-      const [{ id, serviceId, agentStatus = {}, groupPolicy = {} }] = selectedHostList;
+      let isIsolationEnabled = false;
+      const [{ id, serviceId, agentStatus = {}, groupPolicy = {}, machineIdentity: { machineOsType, agentMode }, version }] = selectedHostList;
       const { isolationStatus } = agentStatus;
-      const { isolationAllowed } = groupPolicy;
+      const { isolationAllowed = false } = groupPolicy;
       const isIsolated = isolationStatus ? isolationStatus.isolated : '';
-      return { id, serviceId, isIsolated, isolationAllowed };
+      if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(version)) {
+        isIsolationEnabled = isolationAllowed;
+      }
+      return { id, serviceId, isIsolated, isIsolationEnabled };
     }
     return {};
   });
@@ -347,6 +351,7 @@ export const processedHostList = createSelector(
       let canStartScan = false;
       let isMFTEnabled = false;
       let isAgentRoaming = false;
+      let isIsolationEnabled = false;
       const { machineOsType, agentMode, agentVersion } = machine.machineIdentity;
       if (machine.agentStatus) {
         const { scanStatus, lastSeen } = machine.agentStatus;
@@ -354,14 +359,18 @@ export const processedHostList = createSelector(
         canStartScan = scanStatus === 'idle' || scanStatus === 'cancelPending';
         isAgentRoaming = (lastSeen === 'RelayServer');
       }
-      if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion) && !isAgentRoaming) {
-        isMFTEnabled = true;
+      if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion)) {
+        isIsolationEnabled = true;
+        if (!isAgentRoaming) {
+          isMFTEnabled = true;
+        }
       }
       return {
         ...machine,
         canStartScan,
         hasScanStatus,
         isMFTEnabled,
+        isIsolationEnabled,
         isAgentRoaming
       };
     });

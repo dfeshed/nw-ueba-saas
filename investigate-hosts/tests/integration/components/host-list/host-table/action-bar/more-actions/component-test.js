@@ -49,7 +49,30 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
   });
 
   test('Clicking more button will give Reset Risk score and Delete options', async function(assert) {
-    new ReduxDataHelper(setState).scanCount(2).build();
+    const selectedData = [{
+      id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+      machineIdentity: {
+        machineName: 'RemDbgDrv',
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      },
+      version: '11.4.0.0',
+      managed: true,
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    },
+    {
+      id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+      machineIdentity: {
+        machineName: 'RemDbgDrv',
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      },
+      version: '11.4.0.0',
+      managed: true,
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    }];
+    new ReduxDataHelper(setState).selectedHostList(selectedData).build();
+
     this.set('showRiskScoreModal', () => {
       assert.ok(true);
     });
@@ -58,7 +81,13 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     });
     this.set('isMFTEnabled', { isDisplayed: false });
     this.set('hostDetails', { isIsolated: false });
-    await render(hbs`{{host-list/host-table/action-bar/more-actions showRiskScoreModal=showRiskScoreModal deleteAction=deleteAction isMFTEnabled=isMFTEnabled hostDetails=hostDetails}}`);
+    this.set('selectedHostList', selectedData);
+    await render(hbs`{{host-list/host-table/action-bar/more-actions
+      showRiskScoreModal=showRiskScoreModal
+      deleteAction=deleteAction
+      isMFTEnabled=isMFTEnabled
+      selectedHostList=selectedHostList
+      hostDetails=hostDetails}}`);
     assert.equal(document.querySelector('.host_more_actions button').textContent.trim(), 'More', 'action bar More button label');
     assert.equal(document.querySelectorAll('.host_more_actions .is-disabled').length, 0, 'action bar more button is enabled');
     await click('.host_more_actions button');
@@ -84,6 +113,17 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
 
 
   test('Clicking Delete options will call passed down action', async function(assert) {
+    const selectedData = [{
+      id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+      machineIdentity: {
+        machineName: 'RemDbgDrv',
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      },
+      version: '11.4.0.0',
+      managed: true,
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    }];
     new ReduxDataHelper(setState).scanCount(2).build();
     this.set('showRiskScoreModal', () => {
       assert.ok(true);
@@ -91,9 +131,15 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     this.set('deleteAction', () => {
       assert.ok(true, 'passed action is called');
     });
+    this.set('selectedHostList', selectedData);
     this.set('isMFTEnabled', { isDisplayed: false });
     this.set('hostDetails', { isIsolated: false });
-    await render(hbs`{{host-list/host-table/action-bar/more-actions showRiskScoreModal=showRiskScoreModal deleteAction=deleteAction isMFTEnabled=isMFTEnabled hostDetails=hostDetails}}`);
+    await render(hbs`{{host-list/host-table/action-bar/more-actions
+      showRiskScoreModal=showRiskScoreModal
+      deleteAction=deleteAction
+      isMFTEnabled=isMFTEnabled
+      selectedHostList=selectedHostList
+      hostDetails=hostDetails}}`);
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 2, '2 list options should render.');
     assert.equal(findAll('.rsa-dropdown-action-list li')[0].textContent.trim(), 'Reset Risk Score', 'Reset Risk Score option is rendered.');
@@ -144,6 +190,56 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     assert.equal(findAll('.rsa-dropdown-action-list li')[2].textContent.trim(), 'Download MFT to Server', 'Download MFT option is rendered.');
     await click(findAll('.rsa-dropdown-action-list li')[2]);
   });
+
+  test('Download mft option not added when agent is on RAR', async function(assert) {
+    const selectedData = {
+      id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+      agentStatus: {
+        lastSeen: 'RelayServer'
+      },
+      machineIdentity: {
+        machineName: 'RemDbgDrv',
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      },
+      version: '11.4.0.0',
+      managed: true,
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    };
+    new ReduxDataHelper(setState).scanCount(selectedData).build();
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true, 'passed action is called');
+    });
+    this.set('isMFTEnabled', { isDisplayed: false });
+    this.set('requestMFTDownload', () => {
+      assert.ok(true);
+    });
+    this.set('selectedHostList', [selectedData]);
+    this.set('isAgentMigrated', true);
+    this.set('hostDetails', { isIsolated: false, isolationAllowed: true, isIsolationEnabled: true });
+
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions
+      showRiskScoreModal=showRiskScoreModal
+      deleteAction=deleteAction
+      isMFTEnabled=isMFTEnabled
+      selectedHostList=selectedHostList
+      isAgentMigrated=isAgentMigrated
+      requestMFTDownload=requestMFTDownload
+      requestSystemDumpDownload=requestSystemDumpDownload
+      hostDetails=hostDetails}}`);
+
+    await click('.host_more_actions button');
+    assert.equal(findAll('.rsa-dropdown-action-list li.downloadMFT-button .is-disabled').length, 0, 'Download MFT option is not present on RAR mode.');
+    assert.equal(findAll('.rsa-dropdown-action-list li .host-network-isolation').length, 1, 'Isolation option is present on RAR.');
+  });
+
 
   test('Download mft option disabled when agent is migrated and not broker', async function(assert) {
     const selectedData = {
@@ -494,7 +590,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     });
     this.set('selectedHostList', [selectedData]);
     this.set('isAgentMigrated', true);
-    this.set('hostDetails', { agentId: '', isIsolated: false, isolationAllowed: true });
+    this.set('hostDetails', { agentId: '', isIsolated: false, isIsolationEnabled: true });
 
 
     await render(hbs`{{host-list/host-table/action-bar/more-actions
@@ -541,7 +637,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     });
     this.set('selectedHostList', [selectedData]);
     this.set('isAgentMigrated', false);
-    this.set('hostDetails', { agentId: '', isIsolated: false, isolationAllowed: false });
+    this.set('hostDetails', { agentId: '', isIsolated: false, isIsolationEnabled: false });
 
     this.set('showIsolationModal', (item) => {
       assert.equal(item, 'isolate');
@@ -591,7 +687,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     });
     this.set('selectedHostList', [selectedData]);
     this.set('isAgentMigrated', false);
-    this.set('hostDetails', { agentId: '', isIsolated: false, isolationAllowed: true });
+    this.set('hostDetails', { agentId: '', isIsolated: false, isIsolationEnabled: true });
 
     this.set('showIsolationModal', (item) => {
       assert.equal(item, 'isolate');
@@ -645,10 +741,10 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     });
     this.set('selectedHostList', [selectedData]);
     this.set('isAgentMigrated', false);
-    this.set('hostDetails', { agentId: '', isIsolated: true, isolationAllowed: true });
+    this.set('hostDetails', { agentId: '', isIsolated: false, isIsolationEnabled: true });
 
     this.set('showIsolationModal', (item) => {
-      assert.equal(item, 'release');
+      assert.equal(item, 'isolate');
     });
 
     await render(hbs`{{host-list/host-table/action-bar/more-actions
@@ -664,7 +760,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
 
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li.isolate-button').length, 1, 'host-network-isolation option is rendered.');
-    assert.equal(findAll('.rsa-dropdown-action-list li.isolate-button button')[0].disabled, false, 'Netowork isolation option enabled non migrated agents');
+    assert.equal(findAll('.rsa-dropdown-action-list li.isolate-button button')[0].disabled, false, 'Network isolation option enabled non migrated agents');
     await triggerEvent(findAll('.rsa-dropdown-action-list li.isolate-button button')[0], 'mouseover');
     assert.equal(findAll('.machine-isolation-selector button').length, 2, 'Network isolation sub menu options rendered');
     await click(findAll('.machine-isolation-selector button')[0]);
@@ -697,7 +793,7 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     });
     this.set('selectedHostList', [selectedData]);
     this.set('isAgentMigrated', false);
-    this.set('hostDetails', { agentId: '', isIsolated: true, isolationAllowed: true });
+    this.set('hostDetails', { agentId: '', isIsolated: true, isIsolationEnabled: true });
 
     this.set('showIsolationModal', (item) => {
       assert.equal(item, 'edit');

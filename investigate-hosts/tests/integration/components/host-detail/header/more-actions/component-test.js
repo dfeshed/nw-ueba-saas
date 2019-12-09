@@ -529,4 +529,21 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
 
   });
 
+  test('Test for More Actions when on RAR', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hostOverview(data)
+      .policy(policy)
+      .lastSeen('RelayServer')
+      .isJsonExportCompleted(true)
+      .build();
+    await render(hbs `{{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+    assert.equal(findAll('.host-details_dropdown-action-list li').length, 3, 'Number of actions present is 3 as MFT and system dump permission are not present');
+
+    assert.ok(find('.host-start-scan-button'), 'scan-command renders giving the start scan button');
+    assert.equal(findAll('.rsa-icon-check-shield').length, 0, 'Start scan icon not present');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(2)').textContent.trim(), 'Export Host details', 'Export Host details button renders');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(3)').textContent.trim(), 'Network Isolation', 'Network Isolation button renders');
+  });
+
 });

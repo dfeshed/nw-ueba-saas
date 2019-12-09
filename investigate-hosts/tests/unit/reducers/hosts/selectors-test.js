@@ -1290,6 +1290,10 @@ test('selectedHostDetails test', function(assert) {
               comment: 'test',
               excludedIps: ['0.0.0.0']
             }
+          },
+          machineIdentity: {
+            machineOsType: 'windows',
+            agentMode: 'advanced'
           }
         }]
       },

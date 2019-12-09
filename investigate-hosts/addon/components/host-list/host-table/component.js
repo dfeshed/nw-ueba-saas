@@ -157,20 +157,22 @@ const HostTable = Component.extend({
       c. number of items selected */
     beforeContextMenuShow(menu, event) {
       const { contextSelection: item, contextItems } = menu;
-      const { isMFTEnabled } = item;
-      const { groupPolicy = {} } = item;
-      const { isolationAllowed = false } = groupPolicy;
+      const { isMFTEnabled, isIsolationEnabled } = item;
       const selections = this.get('selections');
+
       // Need to store this locally set it back again to menu object
       if (contextItems.length) {
-        if (!this.get('updatedContextConfBackup') && isMFTEnabled && !isolationAllowed) {
-          this.set('updatedContextConfBackup', contextItems);
+        if (!this.get('mftContextConfBackup') && isMFTEnabled && !isIsolationEnabled) {
+          this.set('mftContextConfBackup', contextItems);
         }
-        if (!this.get('initialContextConfBackup') && !isMFTEnabled) {
+        if (!this.get('initialContextConfBackup') && !isMFTEnabled && !isIsolationEnabled) {
           this.set('initialContextConfBackup', contextItems);
         }
-        if (!this.get('isolatedContextConfBackup') && isMFTEnabled && isolationAllowed) {
-          this.set('isolatedContextConfBackup', contextItems);
+        if (!this.get('isolationAndMFTContextConfBackup') && isMFTEnabled && isIsolationEnabled) {
+          this.set('isolationAndMFTContextConfBackup', contextItems);
+        }
+        if (!this.get('isolationContextConfBackup') && !isMFTEnabled && isIsolationEnabled) {
+          this.set('isolationContextConfBackup', contextItems);
         }
       }
 
@@ -178,10 +180,12 @@ const HostTable = Component.extend({
       if (event.target.tagName.toLowerCase() === 'a') {
         menu.set('contextItems', []);
       } else {
-        if (!isolationAllowed && isMFTEnabled && (selections.length <= 1)) {
-          menu.set('contextItems', this.get('updatedContextConfBackup'));
-        } else if (isolationAllowed && isMFTEnabled && (selections.length <= 1)) {
-          menu.set('contextItems', this.get('isolatedContextConfBackup'));
+        if (!isIsolationEnabled && isMFTEnabled && (selections.length <= 1)) {
+          menu.set('contextItems', this.get('mftContextConfBackup'));
+        } else if (isIsolationEnabled && isMFTEnabled && (selections.length <= 1)) {
+          menu.set('contextItems', this.get('isolationAndMFTContextConfBackup'));
+        } else if (isIsolationEnabled && !isMFTEnabled && (selections.length <= 1)) {
+          menu.set('contextItems', this.get('isolationContextConfBackup'));
         } else {
           menu.set('contextItems', this.get('initialContextConfBackup'));
         }

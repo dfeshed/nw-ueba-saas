@@ -3,6 +3,7 @@ import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { hostWithStatus,
   mftDownloadButtonStatusDetails,
+  isolationStatus,
   isJsonExportCompleted,
   isSnapshotsAvailable,
   isAgentMigrated,
@@ -21,7 +22,7 @@ const stateToComputed = (state) => ({
   agentId: state.endpoint.detailsInput.agentId,
   isMFTEnabled: mftDownloadButtonStatusDetails(state),
   isAgentMigrated: isAgentMigrated(state),
-  isIsolationEnabled: state.endpoint.overview?.policyDetails?.policy?.edrPolicy?.isolationConfig?.enabled
+  isolationStatus: isolationStatus(state)
 });
 
 const dispatchToActions = {
@@ -47,8 +48,9 @@ const HostDetailsMoreActions = Component.extend({
     get() {
       let subNavItem = {};
       const isMFTEnabled = this.get('isMFTEnabled');
+      const isolationStatus = this.get('isolationStatus');
 
-      if (isMFTEnabled.isIsolated) {
+      if (isolationStatus.isIsolated) {
         subNavItem = {
           modalName: 'release',
           name: 'investigateHosts.networkIsolation.menu.releaseFromIsolation',
@@ -75,7 +77,7 @@ const HostDetailsMoreActions = Component.extend({
             modalName: 'edit',
             name: 'investigateHosts.networkIsolation.menu.edit',
             buttonId: 'isolation-button',
-            isDisabled: !isMFTEnabled.isIsolated
+            isDisabled: !isolationStatus.isIsolated
           }
         ]
       };
@@ -108,10 +110,11 @@ const HostDetailsMoreActions = Component.extend({
         }
       ];
 
-      if (isMFTEnabled.isDisplayed && this.get('accessControl.endpointCanManageFiles')) {
-        if (this.get('isIsolationEnabled')) {
-          moreActionOptions.push(networkIsolation, ...windowsOsActions);
-        } else {
+      if (this.get('accessControl.endpointCanManageFiles')) {
+        if (isolationStatus.isIsolationEnabled) {
+          moreActionOptions.push(networkIsolation);
+        }
+        if (isMFTEnabled.isDisplayed) {
           moreActionOptions.push(...windowsOsActions);
         }
       }

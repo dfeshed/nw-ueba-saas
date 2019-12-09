@@ -12,10 +12,6 @@ export default DataTableBodyRow.extend({
 
   classNameBindings: ['isRowChecked'],
 
-  updatedContextConfBackup: [],
-
-  initialContextConfBackup: [],
-
   accessControl: service(),
 
   @computed('item', 'selections')
@@ -195,10 +191,12 @@ export default DataTableBodyRow.extend({
         }
       }
     ];
-    if (this.get('item').isMFTEnabled && this.get('accessControl.endpointCanManageFiles')) {
-      contextConf.push(...mft, ...systemDump);
-      if (isolationAllowed) {
+    if (this.get('accessControl.endpointCanManageFiles')) {
+      if (isolationAllowed && this.get('item').isIsolationEnabled) {
         contextConf.push(...networkIsolation);
+      }
+      if (this.get('item').isMFTEnabled) {
+        contextConf.push(...mft, ...systemDump);
       }
     }
     return contextConf.sortBy('order');

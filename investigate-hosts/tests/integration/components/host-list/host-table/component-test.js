@@ -316,6 +316,69 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       assert.equal(items.length, 8, 'Context menu rendered with 8 items with Download MFT option');
     });
   });
+
+  test('Download MFT option not rendered when on RAR', async function(assert) {
+    const hosts = [{
+      id: '019A39C8-3E18-387F-EAD4-EA217519638A',
+      agentStatus: {
+        isolationStatus: {
+          isolated: false,
+          comment: 'abcd',
+          excludedIps: ['0.0.0.0']
+        },
+        lastSeen: 'RelayServer'
+      },
+      machineIdentity: {
+        id: '019A39C8-3E18-387F-EAD4-EA217519638A',
+        group: 'default',
+        agentVersion: '12.0.0.0',
+        machineOsType: 'windows',
+        machineName: 'server.local',
+        agentMode: 'advanced',
+        lastUpdatedTime: '2017-03-021T11:55:33.804Z'
+      },
+      machine: {
+        machineAgentId: '019A39C8-3E18-387F-EAD4-EA217519638A',
+        scanStartTime: '2017-03-08T11:52:06.680Z',
+        scanRequestTime: '2017-03-08T11:55:33.804Z'
+      },
+      groupPolicy: {
+        groups: [],
+        policyStatus: 'Updated',
+        managed: false,
+        serverName: 'Migrated',
+        isolationAllowed: true
+      }
+    }];
+
+    new ReduxDataHelper(initState)
+      .columns(endpoint.schema)
+      .hostList(hosts)
+      .hostSortField('machineIdentity.machineName')
+      .selectedHostList([{
+        agentStatus: { isolationStatus: {}, lastSeen: 'RelayServer' },
+        groupPolicy: { isolationAllowed: true },
+        machineIdentity: { machineOsType: 'windows', agentMode: 'advanced', version: '11.4.0.0' }
+      }])
+      .build();
+    this.set('hostDetails', { isIsolated: false, isolationAllowed: true, isIsolationEnabled: true });
+    await render(hbs`
+    <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+    {{host-list/host-table hostDetails=hostDetails}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 6, 'Context menu rendered with 6 items without the Download MFT option');
+      assert.equal(findAll('[test-id=networkIsolation]').length, 1, 'network isolation present');
+    });
+  });
+
   test('Network isolation option rendered when criteria is met', async function(assert) {
     new ReduxDataHelper(initState)
       .columns(endpoint.schema)

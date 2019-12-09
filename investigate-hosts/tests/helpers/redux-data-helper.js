@@ -235,6 +235,10 @@ export default class DataHelper {
     _set(this.state, 'overview.hostOverview.agentStatus.isolationStatus', value);
     return this;
   }
+  lastSeen(value) {
+    _set(this.state, 'overview.hostOverview.agentStatus.lastSeen', value);
+    return this;
+  }
   registryDiscrepancies(value) {
     _set(this.state, 'overview.hostDetails.machine', value);
     return this;

@@ -67,6 +67,10 @@ const endpointState =
                 scanStatus: 'idle',
                 agentStatus: {
                   isolationStatus: {}
+                },
+                machineIdentity: {
+                  machineOsType: 'windows',
+                  agentMode: 'advanced'
                 }
               }],
               hostColumnSort: 'machineIdentity.machineName',

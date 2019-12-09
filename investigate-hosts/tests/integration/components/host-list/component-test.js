@@ -99,7 +99,17 @@ const endpointState =
       schema: { schema: endpoint.schema },
       machines: {
         hostList: hostListState.machines.hostList,
-        selectedHostList: [ { version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'idle', agentStatus: { isolationStaus: {} } }],
+        selectedHostList: [ {
+          version: '11.3',
+          managed: true,
+          id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F',
+          scanStatus: 'idle',
+          agentStatus: { isolationStatus: {} },
+          machineIdentity: {
+            machineOsType: 'windows',
+            agentMode: 'advanced'
+          }
+        }],
         hostColumnSort: 'machineIdentity.machineName',
         focusedHost: null
       }
@@ -121,7 +131,16 @@ const endpointScanPending = {
        schema: { schema: endpoint.schema },
        machines: {
          hostList: hostListState.machines.hostList,
-         selectedHostList: [{ version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'pending', agentStatus: { isolationStatus: { isolate: true } } }],
+         selectedHostList: [{ version: '11.3',
+           managed: true,
+           id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F',
+           scanStatus: 'pending',
+           agentStatus: { isolationStatus: { isolate: true } },
+           machineIdentity: {
+             machineOsType: 'windows',
+             agentMode: 'advanced'
+           }
+         }],
          hostColumnSort: 'machineIdentity.machineName',
          focusedHost: null
        }
@@ -140,7 +159,14 @@ const endpointScanPending = {
 const dummySelectedHostList = new Array(101)
   .join().split(',')
   .map(function(item, index) {
-    return { index: { id: ++index, version: index, managed: true }, agentStatus: { isolationStatus: {} } };
+    return {
+      index: { id: ++index, version: index, managed: true },
+      agentStatus: { isolationStatus: {} },
+      machineIdentity: {
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      }
+    };
   });
 
 const selectedMoreHostsState =
@@ -149,7 +175,14 @@ const selectedMoreHostsState =
     {
       schema: { schema: endpoint.schema },
       machines: {
-        hostList: hostListState.machines.hostList, selectedHostList: dummySelectedHostList,
+        hostList: hostListState.machines.hostList,
+        selectedHostList: [{
+          agentStatus: { isolationStatus: {} },
+          machineIdentity: {
+            machineOsType: 'windows',
+            agentMode: 'advanced'
+          } },
+        ...dummySelectedHostList],
         hostColumnSort: 'machineIdentity.machineName',
         focusedHost: null
       }
