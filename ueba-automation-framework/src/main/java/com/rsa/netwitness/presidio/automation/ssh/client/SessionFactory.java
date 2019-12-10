@@ -1,9 +1,11 @@
 package com.rsa.netwitness.presidio.automation.ssh.client;
 
+import ch.qos.logback.classic.Logger;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.rsa.netwitness.presidio.automation.ssh.helper.ServerDetails;
 import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -11,6 +13,8 @@ import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
  *
  */
 class SessionFactory extends BaseKeyedPoolableObjectFactory<ServerDetails, Session> {
+    static Logger LOGGER = (Logger) LoggerFactory.getLogger(SessionFactory.class);
+
 
     /**
      * This creates a Session if not already present in the pool.
@@ -25,10 +29,18 @@ class SessionFactory extends BaseKeyedPoolableObjectFactory<ServerDetails, Sessi
             session.setPassword(serverDetails.password);
             session.setConfig("StrictHostKeyChecking", serverDetails.strictHostKeyChecking);
             session.connect(serverDetails.timeOut);
+            if (session.isConnected()) {
+                LOGGER.info("New ssh session is opened to " + serverDetails.user + "@" + serverDetails.host);
+            } else {
+                LOGGER.error("Failed to open ssh session to " + serverDetails.user + "@" + serverDetails.host);
+                session.connect(serverDetails.timeOut);
+                LOGGER.info("Session retry result: isConnected=" + session.isConnected());
+            }
 
         } catch (Exception e) {
             e.fillInStackTrace();
         }
+
         return session;
     }
 
