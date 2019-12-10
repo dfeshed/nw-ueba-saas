@@ -125,7 +125,7 @@ def uebaInstallRPMs() {
 }
 
 /**************************
- * Project Build Pipeline *  https://github.rsa.lab.emc.com/feshed/ueba-automation-projects.git
+ * Project Build Pipeline *  https://github.rsa.lab.emc.com/asoc/ueba-automation-projects.git
  **************************/
 def buildIntegrationTestProject(
         String repositoryName = "ueba-automation-projects",
@@ -133,7 +133,7 @@ def buildIntegrationTestProject(
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
         String branchName = env.INTEGRATION_TEST_BRANCH_NAME) {
     sh "git config --global user.name \"${userName}\""
-    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/feshed/ueba-automation-projects.git"
+    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/ueba-automation-projects.git"
     dir(env.REPOSITORY_NAME) {
         sh "git checkout ${branchName}"
     }

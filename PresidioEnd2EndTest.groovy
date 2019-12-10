@@ -170,7 +170,7 @@ def buildIntegrationTestProject(
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
         String branchName = params.INTEGRATION_TEST_BRANCH_NAME) {
     sh "git config --global user.name \"${userName}\""
-    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/feshed/ueba-automation-projects.git"
+    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/ueba-automation-projects.git"
     dir(env.REPOSITORY_NAME) {
         sh "git checkout ${branchName}"
     }
