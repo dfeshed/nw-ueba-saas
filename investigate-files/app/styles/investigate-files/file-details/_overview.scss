@@ -35,3 +35,10 @@
     }
   }
 }
+
+.license-banner.shown + .files-route .file-overview {
+  min-height: calc(100vh - 190px);
+  .file-detail-box {
+    height: calc(100vh - 190px);
+  }
+}

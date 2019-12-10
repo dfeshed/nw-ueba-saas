@@ -33,3 +33,7 @@
     }
   }
 }
+
+.license-banner.shown + .hosts-route box.host-detail-wrapper {
+  height: calc(100vh - 250px);
+}
