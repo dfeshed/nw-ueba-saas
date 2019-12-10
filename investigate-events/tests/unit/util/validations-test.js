@@ -56,6 +56,14 @@ module('Unit | Util | Validations', function(hooks) {
     assert.notOk(result);
   });
 
+  test('isColumnGroupValid has correct result at the beginning of new columnGroup creation', function(assert) {
+    const columnGroup = null;
+    const result = isColumnGroupValid(columnGroup, columnGroupsList);
+    assert.notOk(result.isValid);
+    // if more than one reasons apply, the first is given
+    assert.deepEqual(result.invalidReason, i18n.t('investigate.events.columnGroups.noColumnGroupName'));
+  });
+
   test('isColumnGroupValid has correct result when editedItem has unique name and 3 columns', function(assert) {
     const columnGroup = {
       name: 'baz',
