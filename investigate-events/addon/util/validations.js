@@ -23,7 +23,7 @@ export const isColumnGroupValid = (editedGroup, columnGroups) => {
   const hasMinColumns = editedGroup?.columns?.length >= 3;
 
   // column group can have limited number of columns
-  const withinColumnThreshold = editedGroup.columns.length <= COLUMN_THRESHOLD + 2;
+  const withinColumnThreshold = editedGroup?.columns?.length <= COLUMN_THRESHOLD + 2;
 
   const i18n = lookup('service:i18n');
   if (!editedGroup?.name) {
