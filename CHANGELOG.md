@@ -1,3 +1,10 @@
+# [14.8.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.8.0)
+## Features
+* [ASOC-85865](https://bedfordjira.na.rsa.net/browse/ASOC-85865):&emsp;Alter migration and API so all custom content is public instead of private
+* [ASOC-86396](https://bedfordjira.na.rsa.net/browse/ASOC-86396):&emsp;Increase reactive message limit
+* [ASOC-86564](https://bedfordjira.na.rsa.net/browse/ASOC-86564):&emsp;Add "this may take some time" messaging when event count returns max
+
+
 # [14.7.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.7.0)
 ## Features
 * [ASOC-82697](https://bedfordjira.na.rsa.net/browse/ASOC-82697):&emsp;Unify the look and feel of the different drop-downs in Event Analysis
