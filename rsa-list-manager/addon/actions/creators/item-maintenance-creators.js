@@ -1,8 +1,9 @@
 import { apiCreateOrUpdateItem, apiDeleteItem } from '../api/api-interactions';
+import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from '../types';
 import _ from 'lodash';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
-import { modelName, editItemId, editItem } from 'rsa-list-manager/selectors/list-manager/selectors';
+import { modelName, editItemId, editItem, itemType } from 'rsa-list-manager/selectors/list-manager/selectors';
 import { COLUMN_GROUP_MODELNAME } from 'rsa-list-manager/constants/list-manager';
 
 /**
@@ -17,6 +18,14 @@ const _enrichColumnGroupWithPosition = (item) => {
     }
   });
   return result;
+};
+
+const _displayErrorFlashMessage = (state, stateLocation, response, action) => {
+  const managerItemType = itemType(state, stateLocation);
+  const i18n = lookup('service:i18n');
+  const errorMessage = response?.data?.errorMessage || response?.errorMessage || i18n.t('investigate.error.message', { action, managerItemType });
+  const flashMessages = lookup('service:flashMessages');
+  flashMessages.error(errorMessage);
 };
 
 /**
@@ -44,6 +53,7 @@ export const createItem = (item, stateLocation, itemTransform) => {
         itemTransform,
         onFailure(response) {
           handleInvestigateErrorCode(response, `POST_${apiModelName.toUpperCase()}_ITEM`);
+          _displayErrorFlashMessage(getState(), stateLocation, response, 'create');
         }
       }
     });
@@ -74,6 +84,7 @@ export const updateItem = (item, stateLocation, itemTransform, itemUpdate) => {
         itemTransform,
         onFailure(response) {
           handleInvestigateErrorCode(response, `PUT_${apiModelName.toUpperCase()}_ITEM`);
+          _displayErrorFlashMessage(getState(), stateLocation, response, 'update');
         },
         onSuccess() {
           const updatedItem = editItem(getState(), stateLocation);
@@ -103,6 +114,7 @@ export const deleteItem = (stateLocation) => {
         belongsTo: stateLocation,
         onFailure(response) {
           handleInvestigateErrorCode(response, `DELETE_${apiModelName.toUpperCase()}_ITEM`);
+          _displayErrorFlashMessage(getState(), stateLocation, response, 'delete');
         }
       }
     });

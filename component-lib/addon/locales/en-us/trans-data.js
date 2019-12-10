@@ -622,7 +622,8 @@ export default {
     },
     error: {
       title: 'Unable to load data.',
-      description: 'An unexpected error occurred when attempting to fetch the data records.'
+      description: 'An unexpected error occurred when attempting to fetch the data records.',
+      message: 'An unexpected error has occurred while attempting to {{action}} the {{managerItemType}}. Please refresh the page and try again.'
     },
     meta: {
       title: 'Meta',
