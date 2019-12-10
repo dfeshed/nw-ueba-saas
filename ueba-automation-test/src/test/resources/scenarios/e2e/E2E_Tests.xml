@@ -33,6 +33,7 @@
             <class name="com.rsa.netwitness.presidio.automation.test.integration.AirflowFailedDagsTest"/>
             <class name="com.rsa.netwitness.presidio.automation.test.integration.AirflowPrintRetries"/>
             <class name="com.rsa.netwitness.presidio.automation.test.integration.OutputForwardingE2eTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.integration.AirflowTasksStartTimeTest"/>
             <!--<class name="presidio.integration.ade.test.LogsErrors_Test"/>-->
         </classes>
     </test>

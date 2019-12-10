@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class WorkflowsDefaultJson {
     private JsonObject adeModelsNode;
+    private JsonObject retentionNode;
 
     private WorkflowsDefaultJson() {
         resolve();
@@ -44,6 +45,9 @@ public class WorkflowsDefaultJson {
                 enrichedRecords.getAsJsonPrimitive("min_data_time_range_for_building_models_in_days").getAsInt());
     }
 
+    public int getRetentionIntervalInHours() {
+        return retentionNode.getAsJsonPrimitive("retention_interval_in_hours").getAsInt();
+    }
 
 
 
@@ -52,6 +56,7 @@ public class WorkflowsDefaultJson {
         String json = getJsonString();
         JsonObject rootObj = gson.fromJson(json, JsonObject.class);
         adeModelsNode = rootObj.getAsJsonObject("components").getAsJsonObject("ade").getAsJsonObject("models");
+        retentionNode = rootObj.getAsJsonObject("retention");
     }
 
 
