@@ -27,11 +27,13 @@ export default function forceLayoutLinkCoords(sourceX, sourceY, sourceR, targetX
   const y2 = Math.max(0, dr - targetR) * Math.sin(rad) || 0;
   const deg = radToDeg(rad);
   const lineLength = Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
+  const distBetweenCenters = Math.sqrt(Math.pow(targetY - sourceY, 2) + Math.pow(targetX - sourceX, 2));
   const textOffset = sourceR + lineLength / 2;
   const textIsUpsideDown = (deg > 90) || (deg < -90);
   const textTransform = `${svgRotation(deg)} ${svgTranslation(textOffset, 0)} ${textIsUpsideDown ? svgRotation(180) : ''}`;
   const arrowOffset = sourceR + lineLength;
   const arrowTransform = `${svgRotation(deg)} ${svgTranslation(arrowOffset, 0)}`;
+  const isOverlapping = distBetweenCenters < sourceR + targetR;
   return {
     sourceX,
     sourceY,
@@ -40,6 +42,7 @@ export default function forceLayoutLinkCoords(sourceX, sourceY, sourceR, targetX
     y1: y1.toFixed(1),
     y2: y2.toFixed(1),
     textTransform,
-    arrowTransform
+    arrowTransform,
+    isOverlapping
   };
 }

@@ -54,6 +54,7 @@ export default function() {
           arrowWidth
         );
       })
+      .attr('visibility', (d) => d.coords.isOverlapping ? 'hidden' : 'visible')
       .attr('transform', (d) => `translate(${d.source.x},${d.source.y})`)
       .select('.line')
       .attr('x1', (d) => d.coords.x1)
