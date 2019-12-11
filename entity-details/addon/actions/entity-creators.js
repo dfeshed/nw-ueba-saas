@@ -4,6 +4,7 @@ import { initializeAlert } from './alert-details';
 import { initializeIndicator } from './indicator-details';
 import { entityId } from 'entity-details/reducers/entity/selectors';
 import { lookup } from 'ember-dependency-lookup';
+import { isEmpty } from '@ember/utils';
 
 export const initializeEntityDetails = ({ entityId, entityType, alertId, indicatorId }) => {
   return (dispatch) => {
@@ -24,7 +25,7 @@ export const initializeEntityDetails = ({ entityId, entityType, alertId, indicat
       urlParameters: entityId
     };
     fetchData(fetchObj).then((result) => {
-      if (result === 'error') {
+      if (result === 'error' || isEmpty(result?.data)) {
         dispatch({
           type: ENTITY_ERROR
         });
