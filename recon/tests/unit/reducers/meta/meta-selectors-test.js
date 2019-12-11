@@ -20,7 +20,8 @@ import {
   user,
   endpointMeta,
   errorMessage,
-  isWebEmail
+  isWebEmail,
+  isNetworkEvent
 } from 'recon/reducers/meta/selectors';
 
 module('Unit | selector | meta', function(hooks) {
@@ -128,6 +129,38 @@ module('Unit | selector | meta', function(hooks) {
     assert.equal(tests.mediumIsLogAndIsEndpoint, false, 'isLogEvent should return false for log events that are endpoint events');
     assert.equal(tests.emptyMeta, false, 'isLogEvent should return false when no medium');
     assert.equal(tests.noMeta, false, 'isLogEvent should return false when no meta');
+  });
+
+  test('isNetworkEvent', function(assert) {
+    assert.expect(5);
+    const tests = {
+      hasEventType: isNetworkEvent(Immutable.from({
+        data: { eventType: 'NETWORK' },
+        meta: { meta: [] }
+      })),
+      mediumIsNotNetwork: isNetworkEvent(Immutable.from({
+        data: { eventType: null },
+        meta: { meta: [['medium', 32]] }
+      })),
+      mediumIsNetwork: isNetworkEvent(Immutable.from({
+        data: { eventType: null },
+        meta: { meta: [['medium', 1]] }
+      })),
+      emptyMeta: isNetworkEvent(Immutable.from({
+        data: { eventType: null },
+        meta: { meta: [] }
+      })),
+      noMeta: isNetworkEvent(Immutable.from({
+        data: { eventType: null },
+        meta: { meta: null }
+      }))
+    };
+
+    assert.ok(tests.hasEventType, 'isNetworkEvent should return true when eventType is "NETWORK"');
+    assert.ok(tests.mediumIsNetwork, 'isNetworkEvent should return true for network events');
+    assert.notOk(tests.mediumIsNotNetwork, 'isNetworkEvent should return false for non network events');
+    assert.ok(tests.emptyMeta, 'isNetworkEvent should return true when no medium as its the default view');
+    assert.ok(tests.noMeta, 'isNetworkEvent should return true when no meta as its the default view');
   });
 
   test('nweCallbackId', function(assert) {

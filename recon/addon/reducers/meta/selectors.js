@@ -107,6 +107,17 @@ export const isEndpointEvent = createSelector(
   }
 );
 
+export const isNetworkEvent = createSelector(
+  [_eventType, _meta],
+  (eventType, meta) => {
+    if (eventType) {
+      return eventType === EVENT_TYPES.NETWORK;
+    }
+    const type = _determineEventType(meta);
+    return type === EVENT_TYPES_BY_NAME.NETWORK;
+  }
+);
+
 export const nweCallbackId = createSelector(
   [isEndpointEvent, _meta],
   (isEndpointEvent, meta) => {

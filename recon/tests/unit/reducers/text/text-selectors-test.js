@@ -10,13 +10,21 @@ import {
   metaHighlightCount,
   canGoToPreviousPage,
   canGoToNextPage,
-  canGoToLastPage
+  canGoToLastPage,
+  _renderableText
 } from 'recon/reducers/text/selectors';
 import { augmentedTextData } from '../../../helpers/data/index';
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 
 const requests = augmentedTextData.filter((t) => t.side === 'request');
 const responses = augmentedTextData.filter((t) => t.side === 'response');
+
+const _stateConfig = {
+  meta: [],
+  data: {
+    eventType: 'NETWORK'
+  }
+};
 
 module('Unit | selector | text');
 
@@ -172,48 +180,56 @@ const textContentTests = (selector) => {
   return {
     noTextContentAndRRShown: selector(Immutable.from({
       text: {},
-      visuals
+      visuals,
+      ..._stateConfig
     })),
     textContentNullAndRRShown: selector(Immutable.from({
       text: {
         textContent: null
       },
-      visuals
+      visuals,
+      ..._stateConfig
     })),
     textContentEmptyAndRRShown: selector(Immutable.from({
       text: {
         textContent: []
       },
-      visuals
+      visuals,
+      ..._stateConfig
     })),
     hasTextContentAndRRShown: selector(Immutable.from({
       text,
-      visuals
+      visuals,
+      ..._stateConfig
     })),
     hasTextContentAndResponseHidden: selector(Immutable.from({
       text,
       visuals: {
         isRequestShown: true,
         isResponseShown: false
-      }
+      },
+      ..._stateConfig
     })),
     hasTextContentAndRequestHidden: selector(Immutable.from({
       text,
       visuals: {
         isRequestShown: false,
         isResponseShown: true
-      }
+      },
+      ..._stateConfig
     })),
     hasTextContentAndRRHidden: selector(Immutable.from({
       text,
       visuals: {
         isRequestShown: false,
         isResponseShown: false
-      }
+      },
+      ..._stateConfig
     })),
     hasTextContentAndRRMissing: selector(Immutable.from({
       text,
-      visuals: {}
+      visuals: {},
+      ..._stateConfig
     }))
   };
 };
@@ -262,42 +278,48 @@ const renderedTextContentTests = (selector) => {
         textContent: [],
         renderIds: []
       },
-      visuals
+      visuals,
+      ..._stateConfig
     })),
     hasTextNoRenderIds: selector(Immutable.from({
       text: {
         textContent: augmentedTextData,
         renderIds: []
       },
-      visuals
+      visuals,
+      ..._stateConfig
     })),
     noTextHasRenderIds: selector(Immutable.from({
       text: {
         textContent: [],
         renderIds: ['1', '2']
       },
-      visuals
+      visuals,
+      ..._stateConfig
     })),
     hasTextHasIdsDoNotMatch: selector(Immutable.from({
       text: {
         textContent: augmentedTextData,
         renderIds: ['1', '2']
       },
-      visuals
+      visuals,
+      ..._stateConfig
     })),
     hasTextHasRequestIdsMatch: selector(Immutable.from({
       text: {
         textContent: augmentedTextData,
         renderIds: requests.map((t) => t.firstPacketId)
       },
-      visuals
+      visuals,
+      ..._stateConfig
     })),
     hasTextAllIdsMatch: selector(Immutable.from({
       text: {
         textContent: augmentedTextData,
         renderIds: augmentedTextData.map((t) => t.firstPacketId)
       },
-      visuals
+      visuals,
+      ..._stateConfig
     })),
     hasTextAllIdsMatchRRHidden: selector(Immutable.from({
       text: {
@@ -307,7 +329,8 @@ const renderedTextContentTests = (selector) => {
       visuals: {
         isRequestShown: false,
         isResponseShown: false
-      }
+      },
+      ..._stateConfig
     }))
   };
 };
@@ -350,11 +373,82 @@ test('eventHasPayload', function(assert) {
     visuals: {
       isRequestShown: true,
       isResponseShown: true
-    }
+    },
+    ..._stateConfig
   }));
 
   assert.equal(noTextInEntries, false, 'eventHasPayload should return false when data present, and all renderable, but all has no text payload');
 
+});
+
+test('_renderableText will not generate data if req/response are hidden and it is a network event', function(assert) {
+  const state = Immutable.from({
+    visuals: {
+      isRequestShown: false,
+      isResponseShown: false
+    },
+    text: {
+      textContent: augmentedTextData,
+      renderIds: augmentedTextData.map((t) => t.firstPacketId)
+    },
+    ..._stateConfig
+  });
+
+  assert.equal(_renderableText(state).length, 0, 'All content should be filtered out');
+});
+
+test('_renderableText will generate data if req/response are not hidden and it is a network event', function(assert) {
+  const state = Immutable.from({
+    visuals: {
+      isRequestShown: true,
+      isResponseShown: true
+    },
+    text: {
+      textContent: augmentedTextData,
+      renderIds: augmentedTextData.map((t) => t.firstPacketId)
+    },
+    ..._stateConfig
+  });
+
+  assert.ok(_renderableText(state).length > 0, 'Did not find network content');
+});
+
+test('_renderableText will generate data if a log event, even though visual req/resp are hidden', function(assert) {
+  const state = Immutable.from({
+    visuals: {
+      isRequestShown: false,
+      isResponseShown: false
+    },
+    text: {
+      textContent: augmentedTextData,
+      renderIds: augmentedTextData.map((t) => t.firstPacketId)
+    },
+    meta: [],
+    data: {
+      eventType: 'LOG'
+    }
+  });
+
+  assert.ok(_renderableText(state).length > 0, 'Did not find Log event content');
+});
+
+test('_renderableText will generate data if a endpoint event, even though visual req/resp are hidden', function(assert) {
+  const state = Immutable.from({
+    visuals: {
+      isRequestShown: false,
+      isResponseShown: false
+    },
+    text: {
+      textContent: augmentedTextData,
+      renderIds: augmentedTextData.map((t) => t.firstPacketId)
+    },
+    meta: [],
+    data: {
+      eventType: 'ENDPOINT'
+    }
+  });
+
+  assert.ok(_renderableText(state).length > 0, 'Did not find endpoint event content');
 });
 
 test('metaHighlightCount', function(assert) {

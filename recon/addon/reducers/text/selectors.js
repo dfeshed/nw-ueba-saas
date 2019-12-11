@@ -6,7 +6,7 @@ import {
   isResponseShown,
   isTextView
 } from 'recon/reducers/visuals/selectors';
-import { eventType, isEndpointEvent } from 'recon/reducers/meta/selectors';
+import { eventType, isEndpointEvent, isNetworkEvent } from 'recon/reducers/meta/selectors';
 
 const _textContent = (recon) => recon.text.textContent;
 const _canNext = (recon) => recon.text.canNext;
@@ -54,16 +54,22 @@ export const hasRenderIds = createSelector(
 );
 /**
  * A selector that returns an array of those items that are renderable
- *
+ * Exporting it for testing purposes
  * @public
  */
-const _renderableText = createSelector(
-  [_textContent, isRequestShown, isResponseShown],
-  (textContent, isRequestShown = true, isResponseShown = true) => {
+export const _renderableText = createSelector(
+  [_textContent, isRequestShown, isResponseShown, isNetworkEvent],
+  (textContent, isRequestShown = true, isResponseShown = true, isNetworkEvent) => {
 
     // textContent can be null/empty, eject
     if (!textContent || textContent.length === 0) {
       return [];
+    }
+
+    // If it is not a network event, no need to filter content
+    // based on request/response
+    if (!isNetworkEvent) {
+      return textContent;
     }
 
     // if showing all textContent, just return them

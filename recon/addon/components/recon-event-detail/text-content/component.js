@@ -18,7 +18,6 @@ import {
   allDataHidden,
   hasRenderIds
 } from 'recon/reducers/text/selectors';
-import { allDataHidden as allVisualDataHidden } from 'recon/reducers/visuals/selectors';
 
 const stateToComputed = ({ recon }) => ({
   dataIndex: recon.data.index,
@@ -34,7 +33,6 @@ const stateToComputed = ({ recon }) => ({
   renderedText: renderedText(recon),
   hasRenderIds: hasRenderIds(recon),
   isItemTooLarge: recon.text.itemTooLarge,
-  allVisualDataHidden: allVisualDataHidden(recon),
   isVisualRequestShown: recon.visuals.isRequestShown,
   isVisualResponseShown: recon.visuals.isResponseShown
 });
@@ -50,11 +48,9 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
   stickyHeaderSelector: '.is-sticky.recon-request-response-header',
   i18n: service(),
 
-  @computed('renderedText', 'allVisualDataHidden', 'isVisualRequestShown', 'isVisualResponseShown')
-  shouldDisplayNoContentMessage: (renderedText, allVisualDataHidden, isVisualRequestShown, isVisualResponseShown) => {
-    if (allVisualDataHidden) {
-      return true;
-    } else if ((!isVisualRequestShown || !isVisualResponseShown) && renderedText.length === 0) {
+  @computed('renderedText', 'isVisualRequestShown', 'isVisualResponseShown')
+  shouldDisplayNoContentMessage: (renderedText, isVisualRequestShown, isVisualResponseShown) => {
+    if ((!isVisualRequestShown || !isVisualResponseShown) && renderedText.length === 0) {
       return true;
     }
     return false;
