@@ -66,6 +66,9 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
         LOGGER.info("   ++++++  Sent events count result:");
         generatorResultCount.forEach(
                 (schema, count) -> LOGGER.info(schema.toString().concat(" -> ").concat(String.valueOf(count))));
+
+        System.out.println("Exit code = 0");
+        System.exit(0);
     }
 
     private EventsProducer<List<NetwitnessEvent>> getProducer() {

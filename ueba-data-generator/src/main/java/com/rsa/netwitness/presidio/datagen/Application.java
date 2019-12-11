@@ -1,7 +1,6 @@
 package com.rsa.netwitness.presidio.datagen;
 
 import com.rsa.netwitness.presidio.datagen.scenarios.AlertsDataScenario;
-import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
 
 import java.io.IOException;
@@ -17,14 +16,13 @@ public class Application {
 
         // Add properties:
         APPLICATION_PROPERTIES = parsePropertiesString(propString);
-        System.out.println(" +++  Parameters:\n");
+        System.out.println(" +++++  Properties to set:  +++++");
         APPLICATION_PROPERTIES.forEach((key, value) -> System.out.println(key.toString().concat("=").concat(value.toString())));
         APPLICATION_PROPERTIES.forEach((key, value) -> System.setProperty(key.toString(), value.toString()));
 
         // Run scenario:
         TestNG testSuite = new TestNG();
         testSuite.setTestClasses(new Class[] { AlertsDataScenario.class });
-        testSuite.addListener(new TestListenerAdapter());
         testSuite.setDefaultSuiteName("My Test Suite");
         testSuite.setDefaultTestName("My Test");
         testSuite.run();
