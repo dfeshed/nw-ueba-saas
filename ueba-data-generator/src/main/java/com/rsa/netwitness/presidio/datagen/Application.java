@@ -14,10 +14,11 @@ public class Application {
     public static void main(String[] args) {
         System.out.println("*************************  STARTED  *************************");
         String propString = String.join("\n", args);
-        System.out.println("cmd parameters=[" + propString + "]");
 
         // Add properties:
         APPLICATION_PROPERTIES = parsePropertiesString(propString);
+        System.out.println(" +++  Parameters:\n");
+        APPLICATION_PROPERTIES.forEach((key, value) -> System.out.println(key.toString().concat("=").concat(value.toString())));
         APPLICATION_PROPERTIES.forEach((key, value) -> System.setProperty(key.toString(), value.toString()));
 
         // Run scenario:
