@@ -119,16 +119,21 @@ const dispatchToActions = {
   wrapWithParens
 };
 
-const isEventFiredFromQueryPill = (event) => {
+/**
+ *
+ * @param {*} event
+ * @param {string} typeOfPill 'query' or 'text' or 'complex'
+ */
+const isEventFiredFromPill = (event, typeOfPill) => {
   const { target: clickedElement } = event;
   const { parentElement } = clickedElement;
-  let includesQueryPillClass = true;
+  let includesPillClass = true;
   if (parentElement) {
     const parentClickedClass = parentElement.className;
     const classNameIsString = (typeof parentClickedClass === 'string');
-    includesQueryPillClass = parentClickedClass && classNameIsString && parentClickedClass.includes('query-pill');
+    includesPillClass = parentClickedClass && classNameIsString && parentClickedClass.includes(`${typeOfPill}-pill`);
   }
-  return includesQueryPillClass;
+  return includesPillClass;
 };
 
 const isEventFromContextMenus = (event) => {
@@ -950,7 +955,8 @@ const QueryPills = RsaContextMenu.extend({
 
   _clickListener(e) {
     // Events coming from context menus are technically originating from query pill
-    if (!isEventFiredFromQueryPill(e) && !isEventFromContextMenus(e)) {
+    // also text pill
+    if (!isEventFiredFromPill(e, 'query') && !isEventFiredFromPill(e, 'text') && !isEventFiredFromPill(e, 'complex') && !isEventFromContextMenus(e)) {
       this.send('removePillFocus');
     }
     if (isSubmitClicked(e.target)) {
@@ -961,7 +967,7 @@ const QueryPills = RsaContextMenu.extend({
   // Right clicking anywhere on the window should remove
   // focus from a pill
   _rightClickListener(e) {
-    if (!isEventFiredFromQueryPill(e)) {
+    if (!isEventFiredFromPill(e, 'query')) {
       this.send('removePillFocus');
     }
   },

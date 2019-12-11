@@ -2377,6 +2377,140 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
+  test('Clicking on a query pill toggles selected class while keeping focus', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{#rsa-application-content}}
+          <div class='outside'>
+            {{query-container/query-pills isActive=true}}
+          </div>
+        {{/rsa-application-content}}
+      </div>
+    `);
+
+    // create a query pill
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);
+    await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
+    await selectChoose(PILL_SELECTORS.operatorTrigger, 'exists');
+    await click('.outside');
+    await settled();
+
+    // pill is not selected or focused
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Shall not find any pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Shall not find any pill selected');
+    await leaveNewPillTemplate();
+
+    // click on query pill to select
+    await click(PILL_SELECTORS.meta);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Shall find one pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'Shall find one pill selected');
+
+    // click again to unselect
+    await click(PILL_SELECTORS.queryPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Shall find one pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Shall find no pill selected');
+
+    // click again to select
+    await click(PILL_SELECTORS.queryPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Shall find one pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'Shall find one pill selected');
+
+    // click again to unselect
+    await click(PILL_SELECTORS.queryPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Shall find one pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Shall find no pill selected');
+  });
+
+  test('Clicking on a text pill toggles selected class while keeping focus', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+
+    // create a text pill
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('some-text-pill');
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_LABEL));
+    await click(textFilter);
+    await settled();
+
+    // pill is not selected or focused
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Shall not find any pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Shall not find any pill selected');
+
+    // click on text pill to select
+    await click(PILL_SELECTORS.textPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Shall find one pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'Shall find one pill selected');
+
+    // click again to unselect
+    await click(PILL_SELECTORS.textPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Shall find one pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Shall find no pill selected');
+
+    // click again to select
+    await click(PILL_SELECTORS.textPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Shall find one pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'Shall find one pill selected');
+
+    // click again to unselect
+    await click(PILL_SELECTORS.textPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Shall find one pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Shall find no pill selected');
+  });
+
+  test('Clicking on a complex pill toggles selected class while keeping focus', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+
+    // create a complex pill
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('some-complex-pill');
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const freeForm = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_FREE_FORM_LABEL));
+    await click(freeForm);
+    await settled();
+
+    // pill is not selected or focused
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Shall not find any pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Shall not find any pill selected');
+
+    // click on complex pill to select
+    await click(PILL_SELECTORS.complexPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Shall find one pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'Shall find one pill selected');
+
+    // click again to unselect
+    await click(PILL_SELECTORS.complexPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Shall find one pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Shall find no pill selected');
+
+    // click again to select
+    await click(PILL_SELECTORS.complexPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Shall find one pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'Shall find one pill selected');
+
+    // click again to unselect
+    await click(PILL_SELECTORS.complexPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Shall find one pill focused');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Shall find no pill selected');
+  });
+
   test('If a pill is opened for edit and submitted, it should get focus', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState)
