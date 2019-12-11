@@ -1,7 +1,10 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
 
-
+application.properties
+configserver.properties
+mongo.properties
+mongo_caweb.properties
 
 ### STS ###
 .apt_generated
