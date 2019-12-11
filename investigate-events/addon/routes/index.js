@@ -99,7 +99,13 @@ export default Route.extend({
     } else {
       // Set nextQueryParams to the incoming params object so that we don't
       // run the query a second time after getting the pill hash
-      this.set('nextQueryParams', params);
+
+      // do not set nextQueryParams if missing sort params
+      // expecting a redirect with sort params after fetching prefs
+      if (params.sortField && params.sortDir) {
+        this.set('nextQueryParams', params);
+      }
+
       this.runInvestigateQuery(params, false);
     }
   },

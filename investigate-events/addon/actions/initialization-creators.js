@@ -599,14 +599,29 @@ export const initializeInvestigate = function(
       });
     }
 
-    // 11) Initialize the querying state so we can get going
-    dispatch(_intializeQuerying(hardReset));
+    // 11) Ensure presence of sort params
+    // prevents events reload due to setSort as sortField and sortDir refreshModel
+    if (!parsedQueryParams.sortField || !parsedQueryParams.sortDir) {
+      // 12) Redirect with default sort params if missing
+      const { router, currentPath } = lookup('service:-routing');
+      const { investigate: { data: { sortDirection, sortField } } } = getState();
+      router.transitionTo(currentPath, {
+        queryParams: {
+          ...parsedQueryParams,
+          sortField,
+          sortDir: sortDirection
+        }
+      });
+    } else {
+      // 12) Initialize the querying state so we can get going
+      dispatch(_intializeQuerying(hardReset));
 
-    // 12) If we have the minimum required values for querying (service id,
-    // start time and end time) specified in the URL, then kick off the query.
-    const { serviceId, startTime, endTime } = parsedQueryParams;
-    if (serviceId && startTime && endTime) {
-      dispatch(fetchInvestigateData());
+      // 13) If we have the minimum required values for querying (service id,
+      // start time and end time) specified in the URL, then kick off the query.
+      const { serviceId, startTime, endTime } = parsedQueryParams;
+      if (serviceId && startTime && endTime) {
+        dispatch(fetchInvestigateData());
+      }
     }
   };
 };

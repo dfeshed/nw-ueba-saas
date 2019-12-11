@@ -60,7 +60,9 @@ module('Unit | Route | investigate-events.index', function(hooks) {
     // setup reducer and route
     patchReducer(this, Immutable.from({}));
     const route = setupRoute.call(this);
-    const params = { pdhash: undefined };
+    const params = {
+      pdhash: undefined
+    };
 
     // execute model hook
     await route.model(params);
@@ -81,7 +83,10 @@ module('Unit | Route | investigate-events.index', function(hooks) {
     const route = setupRoute.call(this);
 
     // execute model hook
-    await route.model({});
+    await route.model({
+      sortDir: 'Ascending',
+      sortField: 'time'
+    });
     await settled();
     return waitUntil(() => {
       if (fetchInvestigateDataSpy.callCount > 0) {
@@ -105,7 +110,11 @@ module('Unit | Route | investigate-events.index', function(hooks) {
     // setup reducer and route
     patchReducer(this, Immutable.from({}));
     const route = setupRoute.call(this);
-    const params = { sid: '555d9a6fe4b0d37c827d402e' };
+    const params = {
+      sid: '555d9a6fe4b0d37c827d402e',
+      sortDir: 'Ascending',
+      sortField: 'time'
+    };
 
     // execute model hook
     await route.model(params);
@@ -145,7 +154,9 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       sid: '555d9a6fe4b0d37c827d402e',
       et: '10000',
       st: '1',
-      pdhash: ['d9ee', '934i', 's09e']
+      pdhash: ['d9ee', '934i', 's09e'],
+      sortField: 'time',
+      sortDir: 'Ascending'
     };
 
     // execute model hook
@@ -178,7 +189,9 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       sid: '555d9a6fe4b0d37c827d402e',
       et: '10000',
       st: '1',
-      pdhash: ['e880']
+      pdhash: ['e880'],
+      sortField: 'time',
+      sortDir: 'Ascending'
     };
 
     // execute model hook
@@ -211,7 +224,9 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       sid: '555d9a6fe4b0d37c827d402e',
       et: '10000',
       st: '1',
-      pdhash: ['d9ee', 'e880', '934i', 's09e']
+      pdhash: ['d9ee', 'e880', '934i', 's09e'],
+      sortField: 'time',
+      sortDir: 'Ascending'
     };
 
     // execute model hook
@@ -244,7 +259,9 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       sid: '555d9a6fe4b0d37c827d402e',
       et: '10000',
       st: '1',
-      mf: "action = 'foo'"
+      mf: "action = 'foo'",
+      sortField: 'time',
+      sortDir: 'Ascending'
     };
 
     await route.model(params);
@@ -281,7 +298,9 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       et: '10000',
       st: '1',
       mf: "action = 'foo'",
-      pdhash: 'd9ee'
+      pdhash: 'd9ee',
+      sortField: 'time',
+      sortDir: 'Ascending'
     };
 
     await route.model(params);
