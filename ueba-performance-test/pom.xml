@@ -31,6 +31,7 @@
         <tls_alerts_probability>0.001</tls_alerts_probability>
         <tls_groups_to_create>1</tls_groups_to_create>
         <tls_events_per_day_per_group>1000</tls_events_per_day_per_group>
+        <generator_format>MONGO_ADAPTER</generator_format>
     </properties>
 
     <dependencies>

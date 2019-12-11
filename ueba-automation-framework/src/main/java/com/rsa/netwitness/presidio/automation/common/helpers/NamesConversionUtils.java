@@ -29,6 +29,7 @@ public class NamesConversionUtils {
     }
     public static List<String> revertCategories(List<String> categoryInAdeFormat) {
         // Categories should be in LOWER_SPACE
+        if (categoryInAdeFormat == null) return null;
         List<String> converted = new ArrayList<>();
         for (String category : categoryInAdeFormat) {
             if (category == null) {
