@@ -2,12 +2,13 @@ import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { waitUntil, settled, find, click, render, triggerKeyEvent } from '@ember/test-helpers';
-import { processEventId, normalizedUebaEventId, reEventId, networkEventId, endpointEventId, getAllEvents, getAllAlerts, malwareEventId, malwareRelatedLinkOne } from '../events-list/data';
+import { tlsEventId, processEventId, normalizedUebaEventId, reEventId, networkEventId, endpointEventId, getAllEvents, getAllAlerts, malwareEventId, malwareRelatedLinkOne } from '../events-list/data';
 import { emptyNetworkEvent, emptyEndpointEvent } from './empty-data';
 import * as generic from './helpers/generic';
 import * as endpoint from './helpers/endpoint';
 import * as ueba from './helpers/ueba';
 import * as process from './helpers/process';
+import * as tls from './helpers/tls';
 import * as genericDetail from './generic/detail/helpers';
 
 const ENTER_KEY = 13;
@@ -243,7 +244,7 @@ module('Integration | Component | events-list-row', function(hooks) {
 
     ueba.assertRowAlertDetails(assert, {
       name: 'abnormal_object_change_operation',
-      summary: '(Event 2 of 4)',
+      summary: '(Event 2 of 5)',
       score: '4'
     });
 
@@ -274,7 +275,7 @@ module('Integration | Component | events-list-row', function(hooks) {
 
     process.assertRowAlertDetails(assert, {
       name: 'abnormal_object_change_operation',
-      summary: '(Event 3 of 4)',
+      summary: '(Event 3 of 5)',
       score: '4'
     });
 
@@ -323,6 +324,47 @@ module('Integration | Component | events-list-row', function(hooks) {
 
   });
 
+  test('renders tls row for ueba tls event', async function(assert) {
+    const events = getAllEvents();
+    const [ item ] = events.filter((e) => e.id === tlsEventId);
+
+    this.set('item', item);
+    this.set('alerts', getAllAlerts());
+
+    await render(hbs`{{events-list-row alerts=alerts item=item expandedId=expandedId expand=(action expand)}}`);
+
+    tls.assertRowPresent(assert);
+
+    tls.assertRowAlertDetails(assert, {
+      name: 'abnormal_object_change_operation',
+      summary: '(Event 5 of 5)',
+      score: '4'
+    });
+
+    tls.assertRowHeader(assert, {
+      eventType: 'UEBA',
+      category: 'TLS',
+      sslSubject: 'samsung electronics co. ltd',
+      sslCa: 'sysco corporation,zoetis inc. class a'
+    });
+
+    tls.assertTableColumns(assert);
+
+    tls.assertTableSource(assert, {
+      ip: '10.0.21.94',
+      port: '1848',
+      country: 'Afghanistan 248',
+      ja3: '10f2ee41f650425ea30cff27dd8328a2'
+    });
+
+    tls.assertTableTarget(assert, {
+      ip: '10.0.21.40',
+      port: '10153',
+      country: 'Algeria 248',
+      ja3: '3d32984af9ce49b69d98e557557f8c9f'
+    });
+  });
+
   test('event summary renders correctly with invalid eventIndex value', async function(assert) {
     const events = getAllEvents();
     const [ original ] = events.filter((e) => e.id === normalizedUebaEventId);
@@ -338,7 +380,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     await render(hbs`{{events-list-row alerts=alerts item=item expandedId=expandedId expand=(action expand)}}`);
 
     const score = '4';
-    const summary = '(Event 1 of 4)';
+    const summary = '(Event 1 of 5)';
     const name = 'abnormal_object_change_operation';
     generic.assertRowAlertDetails(assert, { name, summary, score });
 
@@ -363,7 +405,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     this.set('item', { ...original, eventIndex: '08' });
     generic.assertRowAlertDetails(assert, {
       name,
-      summary: '(Event 9 of 4)',
+      summary: '(Event 9 of 5)',
       score
     });
   });

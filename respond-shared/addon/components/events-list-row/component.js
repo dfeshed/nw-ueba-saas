@@ -12,6 +12,7 @@ const GENERIC = 'events-list-row/generic';
 const ENDPOINT = 'events-list-row/endpoint';
 const UEBA = 'events-list-row/ueba';
 const PROCESS = 'events-list-row/ueba/process';
+const TLS = 'events-list-row/ueba/tls';
 
 export default Component.extend(HighlightsEntities, {
   layout,
@@ -80,6 +81,9 @@ export default Component.extend(HighlightsEntities, {
       case 'ACTIVE_DIRECTORY':
       case 'REGISTRY':
         componentClass = UEBA;
+        break;
+      case 'TLS':
+        componentClass = TLS;
         break;
       case 'PROCESS':
         componentClass = PROCESS;

@@ -281,6 +281,93 @@ export default [].concat(
       'operationType': 'FILE_DELETED',
       'registryValueName': '',
       'dataSource': '4660'
+    },
+    {
+      'schema': 'TLS',
+      'processDirectory': '',
+      'country': '',
+      'resultsCode': '',
+      'data': [
+        {
+          'filename': ''
+        }
+      ],
+      'city': '',
+      'scores': {
+        'processFilePath': '',
+        'eventDate': ''
+      },
+      'destination': {
+        'folderPath': '',
+        'processDirectory': '',
+        'processChecksum': '',
+        'processDirectoryGroups': '',
+        'filePath': '',
+        'processCategories': '',
+        'processCertificateIssuer': '',
+        'machineNameRegexCluster': '',
+        'processFilePath': '',
+        'processFileName': '',
+        'device': {
+          'port': 10153.0,
+          'ip_address': '10.0.21.40'
+        }
+      },
+      'srcCountry': 'Afghanistan 248',
+      'updatedDate': '2019-11-26T05:45:24.617.000Z',
+      'source': {
+        'folderPath': '',
+        'processDirectory': '',
+        'processChecksum': '',
+        'processDirectoryGroups': '',
+        'filePath': '',
+        'processCategories': '',
+        'processCertificateIssuer': '',
+        'machineNameRegexCluster': '',
+        'processFilePath': '',
+        'user': {
+          'username': ''
+        },
+        'processFileName': '',
+        'device': {
+          'port': 1848.0,
+          'ip_address': '10.0.21.94'
+        }
+      },
+      'processFileName': '',
+      'machineName': '',
+      'result': '',
+      'processDirectoryGroups': '',
+      'dstCountry': {
+        'name': 'Algeria 248'
+      },
+      'eventTime': '2019-11-21T16:00:00.000.000Z',
+      'registryKeyGroup': '',
+      'sslSubject': {
+        'name': 'samsung electronics co. ltd'
+      },
+      'ja3': {
+        'name': '10f2ee41f650425ea30cff27dd8328a2'
+      },
+      'machineOwner': '',
+      'timestamp': 1574352000000,
+      'updatedBy': 'hourlyOutputProcessorRun2019-11-21T16:00:00Z',
+      'ja3s': '3d32984af9ce49b69d98e557557f8c9f',
+      'processCategories': '',
+      'processCertificateIssuer': '',
+      'sslCas': [
+        'sysco corporation',
+        'zoetis inc. class a'
+      ],
+      'processFilePath': '',
+      'registryKey': '',
+      'site': '',
+      'createdDate': '2019-11-26T05:45:24.617.000Z',
+      'fileSize': '',
+      'operationTypeCategories': null,
+      'operationType': '',
+      'registryValueName': '',
+      'dataSource': 'network'
     }
   ]
 );

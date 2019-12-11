@@ -1,0 +1,28 @@
+<table>
+  <caption class="sr-only" test-id="eventTableCaption">{{t 'respond.eventDetails.caption'}}</caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th scope="col" test-id="eventTableIpLabel">{{t 'respond.eventsList.ueba.tls.tableIP'}}</th>
+      <th scope="col" test-id="eventTablePortLabel">{{t 'respond.eventsList.ueba.tls.tablePORT'}}</th>
+      <th scope="col" test-id="eventTableCountryLabel">{{t 'respond.eventsList.ueba.tls.tableCOUNTRY'}}</th>
+      <th scope="col" test-id="eventTableJa3Label">{{t 'respond.eventsList.ueba.tls.tableJA3'}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row" test-id="eventSourceLabel">{{t 'respond.eventsList.ueba.tls.sourceLabel'}}</th>
+      {{properties-for/determine-value key="ip_address" value=item.source.device.ip_address tag="td" testId="eventSourceIpValue"}}
+      <td test-id="eventSourcePortValue">{{properties-for/determine-value value=item.source.device.port}}</td>
+      <td test-id="eventSourceCountryValue">{{properties-for/determine-value value=item.srcCountry}}</td>
+      <td test-id="eventSourceJa3Value">{{properties-for/determine-value value=item.ja3.name}}</td>
+    </tr>
+    <tr>
+      <th scope="row" test-id="eventTargetLabel">{{t 'respond.eventsList.ueba.tls.targetLabel'}}</th>
+      {{properties-for/determine-value key="ip_address" value=item.destination.device.ip_address tag="td" testId="eventTargetIpValue"}}
+      <td test-id="eventTargetPortValue">{{properties-for/determine-value value=item.destination.device.port}}</td>
+      <td test-id="eventTargetCountryValue">{{properties-for/determine-value value=item.dstCountry.name}}</td>
+      <td test-id="eventTargetJa3Value">{{properties-for/determine-value value=item.ja3s}}</td>
+    </tr>
+  </tbody>
+</table>

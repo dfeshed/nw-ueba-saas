@@ -1,0 +1,22 @@
+<div class="row">
+  <div class="column verbose">
+    <dt test-id="eventTimeLabel">{{t 'respond.eventsList.generic.time'}}</dt>
+    <dd class="datetime" test-id="eventTimeValue">{{rsa-content-datetime timestamp=item.timestamp}}</dd>
+  </div>
+  <div class="column thin">
+    <dt test-id="eventTypeLabel">{{t 'respond.eventsList.ueba.type'}}</dt>
+    <dd test-id="eventTypeValue">{{properties-for/determine-value value="UEBA"}}</dd>
+  </div>
+  <div class="column thin">
+    <dt test-id="eventCategoryLabel">{{t 'respond.eventsList.ueba.category'}}</dt>
+    <dd test-id="eventCategoryValue">{{properties-for/determine-value value=item.schema}}</dd>
+  </div>
+  <div class="column verbose">
+    <dt test-id="eventSslSubjectLabel">{{t 'respond.eventsList.ueba.tls.sslSubject'}}</dt>
+    <dd test-id="eventSslSubjectValue">{{properties-for/determine-value value=item.sslSubject.name}}</dd>
+  </div>
+  <div class="column verbose">
+    <dt test-id="eventSslCasLabel">{{t 'respond.eventsList.ueba.tls.sslCas'}}</dt>
+    <dd test-id="eventSslCasValue">{{properties-for/determine-value value=item.sslCas}}</dd>
+  </div>
+</div>

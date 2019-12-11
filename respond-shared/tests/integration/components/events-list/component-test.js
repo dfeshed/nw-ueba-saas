@@ -38,7 +38,7 @@ module('Integration | Component | events-list', function(hooks) {
       expandStorylineEvent=expandStorylineEvent}}`);
 
     assert.equal(findAll(selectors.list).length, 1);
-    assert.equal(findAll(selectors.row).length, 17);
+    assert.equal(findAll(selectors.row).length, 18);
     assert.equal(findAll(selectors.genericHeader).length, 9);
     assert.equal(findAll(selectors.uebaHeader).length, 3);
     assert.equal(findAll(selectors.endpointHeader).length, 4);
@@ -49,7 +49,7 @@ module('Integration | Component | events-list', function(hooks) {
     assert.equal(findAll(selectors.processDetail).length, 0);
     assert.equal(findAll(selectors.loader).length, 0);
     assert.equal(findAll(selectors.clear).length, 0);
-    assert.equal(find(selectors.count).textContent.trim(), '17');
+    assert.equal(find(selectors.count).textContent.trim(), '18');
     assert.equal(find(selectors.label).textContent.trim(), 'events');
   });
 
@@ -67,7 +67,7 @@ module('Integration | Component | events-list', function(hooks) {
       clearSelection=clearSelection
       expandStorylineEvent=expandStorylineEvent}}`);
 
-    assert.equal(findAll(selectors.row).length, 17);
+    assert.equal(findAll(selectors.row).length, 18);
     assert.equal(findAll(selectors.genericHeader).length, 9);
     assert.equal(findAll(selectors.genericFooter).length, 9);
     assert.equal(findAll(selectors.genericDetail).length, 0);
@@ -172,7 +172,7 @@ module('Integration | Component | events-list', function(hooks) {
       clearSelection=clearSelection
       expandStorylineEvent=expandStorylineEvent}}`);
 
-    assert.equal(findAll(selectors.row).length, 17);
+    assert.equal(findAll(selectors.row).length, 18);
     assert.equal(findAll(selectors.loader).length, 1);
   });
 

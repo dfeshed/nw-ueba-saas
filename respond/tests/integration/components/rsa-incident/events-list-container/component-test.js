@@ -26,7 +26,7 @@ module('Integration | Component | events-list', function(hooks) {
     await render(hbs`{{rsa-incident/events-list-container}}`);
 
     assert.equal(findAll(selectors.list).length, 1);
-    assert.equal(findAll(selectors.row).length, 17);
+    assert.equal(findAll(selectors.row).length, 18);
     assert.equal(findAll(selectors.genericHeader).length, 9);
     assert.equal(findAll(selectors.uebaHeader).length, 3);
     assert.equal(findAll(selectors.processHeader).length, 1);
@@ -37,7 +37,7 @@ module('Integration | Component | events-list', function(hooks) {
     assert.equal(findAll(selectors.endpointDetail).length, 0);
     assert.equal(findAll(selectors.loader).length, 0);
     assert.equal(findAll(selectors.clear).length, 0);
-    assert.equal(find(selectors.count).textContent.trim(), '17');
+    assert.equal(find(selectors.count).textContent.trim(), '18');
     assert.equal(find(selectors.label).textContent.trim(), 'events');
   });
 
@@ -46,7 +46,7 @@ module('Integration | Component | events-list', function(hooks) {
 
     await render(hbs`{{rsa-incident/events-list-container}}`);
 
-    assert.equal(findAll(selectors.row).length, 17);
+    assert.equal(findAll(selectors.row).length, 18);
     assert.equal(findAll(selectors.genericDetail).length, 0);
     assert.equal(findAll(selectors.endpointDetail).length, 0);
     assert.equal(findAll(selectors.uebaDetail).length, 0);
@@ -61,7 +61,7 @@ module('Integration | Component | events-list', function(hooks) {
     assert.equal(findAll(selectors.processDetail).length, 0);
 
 
-    await click(`${selectors.row}:nth-of-type(8) ${selectors.endpointHeader}`);
+    await click(`${selectors.row}:nth-of-type(9) ${selectors.endpointHeader}`);
     await waitUntil(() => findAll(selectors.genericDetail).length === 0);
     await waitUntil(() => findAll(selectors.endpointDetail).length === 1);
 
@@ -71,7 +71,7 @@ module('Integration | Component | events-list', function(hooks) {
     assert.equal(findAll(selectors.processDetail).length, 0);
 
 
-    await click(`${selectors.row}:nth-of-type(8) ${selectors.endpointDetail}`);
+    await click(`${selectors.row}:nth-of-type(9) ${selectors.endpointDetail}`);
 
     assert.equal(findAll(selectors.genericDetail).length, 0);
     assert.equal(findAll(selectors.endpointDetail).length, 1);
@@ -79,7 +79,7 @@ module('Integration | Component | events-list', function(hooks) {
     assert.equal(findAll(selectors.processDetail).length, 0);
 
 
-    await click(`${selectors.row}:nth-of-type(8) ${selectors.endpointHeader}`);
+    await click(`${selectors.row}:nth-of-type(9) ${selectors.endpointHeader}`);
     await waitUntil(() => findAll(selectors.endpointDetail).length === 0);
 
     assert.equal(findAll(selectors.endpointDetail).length, 0);
@@ -130,7 +130,7 @@ module('Integration | Component | events-list', function(hooks) {
 
     await render(hbs`{{rsa-incident/events-list-container}}`);
 
-    assert.equal(findAll(selectors.row).length, 17);
+    assert.equal(findAll(selectors.row).length, 18);
     assert.equal(findAll(selectors.loader).length, 1);
   });
 

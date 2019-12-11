@@ -11,6 +11,7 @@ export const linuxEndpointEventId = '5b8554be0a32bd353ad3a167:2';
 export const ecatEventId = '5b7f06c10a32bd5a68baea84:0';
 export const normalizedUebaEventId = '11112222-3333-4444-5555-666677778888';
 export const processEventId = 'aaaabbbb-3333-4444-5555-666677778888';
+export const tlsEventId = '44e26b83-346e-4d8e-a468-2a23315e4ae8';
 export const malwareEventId = '5b9bb59dbcde8d385474a70a:0';
 export const endpointRelatedLinkOne = '/investigation/host/10.63.0.117:56005/navigate/event/AUTO/857775';
 export const endpointRelatedLinkTwo = '/investigation/10.63.0.117:56005/navigate/query/alias.host%3D"INENMENONS4L2C"%2Fdate%2F2018-06-08T03%3A30%3A12.000Z%2F2018-06-08T03%3A40%3A12.000Z';
@@ -288,7 +289,7 @@ const storyLineEvents = {
             groupby_user_src: '',
             groupby_username: '',
             name: 'abnormal_object_change_operation',
-            numEvents: 4,
+            numEvents: 5,
             risk_score: 4,
             severity: 4,
             signature_id: 'UEBAIOC',
@@ -1245,8 +1246,97 @@ const storyLineEvents = {
               operationType: 'FILE_DELETED',
               registryValueName: '',
               dataSource: '4660'
+            },
+            {
+              id: tlsEventId,
+              eventIndex: 4,
+              indicatorId: '586ecfc0ecd25950034e1318',
+              schema: 'TLS',
+              processDirectory: '',
+              country: '',
+              resultsCode: '',
+              data: [
+                {
+                  filename: ''
+                }
+              ],
+              city: '',
+              scores: {
+                processFilePath: '',
+                eventDate: ''
+              },
+              destination: {
+                folderPath: '',
+                processDirectory: '',
+                processChecksum: '',
+                processDirectoryGroups: '',
+                filePath: '',
+                processCategories: '',
+                processCertificateIssuer: '',
+                machineNameRegexCluster: '',
+                processFilePath: '',
+                processFileName: '',
+                device: {
+                  port: 10153.0,
+                  ip_address: '10.0.21.40'
+                }
+              },
+              srcCountry: 'Afghanistan 248',
+              updatedDate: '2019-11-26T05:45:24.617.000Z',
+              source: {
+                folderPath: '',
+                processDirectory: '',
+                processChecksum: '',
+                processDirectoryGroups: '',
+                filePath: '',
+                processCategories: '',
+                processCertificateIssuer: '',
+                machineNameRegexCluster: '',
+                processFilePath: '',
+                user: {
+                  username: ''
+                },
+                processFileName: '',
+                device: {
+                  port: 1848.0,
+                  ip_address: '10.0.21.94'
+                }
+              },
+              processFileName: '',
+              machineName: '',
+              result: '',
+              processDirectoryGroups: '',
+              dstCountry: {
+                name: 'Algeria 248'
+              },
+              eventTime: '2019-11-21T16:00:00.000.000Z',
+              registryKeyGroup: '',
+              sslSubject: {
+                name: 'samsung electronics co. ltd'
+              },
+              ja3: {
+                name: '10f2ee41f650425ea30cff27dd8328a2'
+              },
+              machineOwner: '',
+              timestamp: 1574352000000,
+              updatedBy: 'hourlyOutputProcessorRun2019-11-21T16:00:00Z',
+              ja3s: '3d32984af9ce49b69d98e557557f8c9f',
+              processCategories: '',
+              processCertificateIssuer: '',
+              sslCas: [
+                'sysco corporation',
+                'zoetis inc. class a'
+              ],
+              processFilePath: '',
+              registryKey: '',
+              site: '',
+              createdDate: '2019-11-26T05:45:24.617.000Z',
+              fileSize: '',
+              operationTypeCategories: null,
+              operationType: '',
+              registryValueName: '',
+              dataSource: 'network'
             }
-
           ]
         },
         {

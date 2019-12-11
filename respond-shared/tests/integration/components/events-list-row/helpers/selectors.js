@@ -77,6 +77,33 @@ export const process = {
   eventTargetCategoriesValue: '[test-id=eventDestinationCategoriesValue]'
 };
 
+export const tls = {
+  eventTimeLabel: '[test-id=eventTimeLabel]',
+  eventTimeValue: '[test-id=eventTimeValue]',
+  eventTypeLabel: '[test-id=eventTypeLabel]',
+  eventTypeValue: '[test-id=eventTypeValue]',
+  eventCategoryLabel: '[test-id=eventCategoryLabel]',
+  eventCategoryValue: '[test-id=eventCategoryValue]',
+  eventSslSubjectLabel: '[test-id=eventSslSubjectLabel]',
+  eventSslSubjectValue: '[test-id=eventSslSubjectValue]',
+  eventSslCasLabel: '[test-id=eventSslCasLabel]',
+  eventSslCasValue: '[test-id=eventSslCasValue]',
+  eventTableIpLabel: '[test-id=eventTableIpLabel]',
+  eventTablePortLabel: '[test-id=eventTablePortLabel]',
+  eventTableCountryLabel: '[test-id=eventTableCountryLabel]',
+  eventTableJa3Label: '[test-id=eventTableJa3Label]',
+  eventSourceLabel: '[test-id=eventSourceLabel]',
+  eventSourceIpValue: '[test-id=eventSourceIpValue]',
+  eventSourcePortValue: '[test-id=eventSourcePortValue]',
+  eventSourceCountryValue: '[test-id=eventSourceCountryValue]',
+  eventSourceJa3Value: '[test-id=eventSourceJa3Value]',
+  eventTargetLabel: '[test-id=eventTargetLabel]',
+  eventTargetIpValue: '[test-id=eventTargetIpValue]',
+  eventTargetPortValue: '[test-id=eventTargetPortValue]',
+  eventTargetCountryValue: '[test-id=eventTargetCountryValue]',
+  eventTargetJa3Value: '[test-id=eventTargetJa3Value]'
+};
+
 export const endpoint = {
   eventTimeLabel: '[test-id=eventTimeLabel]',
   eventTimeValue: '[test-id=eventTimeValue]',
@@ -116,9 +143,11 @@ export const selectors = {
   endpointHeader: '[test-id=endpointEventHeader]',
   uebaHeader: '[test-id=uebaEventHeader]',
   processHeader: '[test-id=uebaProcessEventHeader]',
+  tlsHeader: '[test-id=uebaTlsEventHeader]',
   genericDetail: '[test-id=genericEventDetail]',
   uebaDetail: '[test-id=uebaEventDetail]',
   processDetail: '[test-id=uebaProcessEventDetail]',
+  tlsDetail: '[test-id=uebaTlsEventDetail]',
   caption: '[test-id=eventTableCaption]',
   alertName: '[test-id=eventsAlertName]',
   alertScore: '[test-id=eventsAlertScore]',

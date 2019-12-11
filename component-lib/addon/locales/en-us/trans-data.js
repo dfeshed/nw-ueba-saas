@@ -1728,6 +1728,16 @@ export default {
           tableDirectory: 'DIRECTORY',
           tableUsername: 'USERNAME',
           tableCategories: 'CATEGORIES'
+        },
+        tls: {
+          sslSubject: 'SSL SUBJECT',
+          sslCas: 'SSL CAs',
+          tableIP: 'IP',
+          tablePORT: 'PORT',
+          tableCOUNTRY: 'COUNTRY',
+          tableJA3: 'JA3/JA3S',
+          sourceLabel: 'SOURCE',
+          targetLabel: 'TARGET'
         }
       }
     },
