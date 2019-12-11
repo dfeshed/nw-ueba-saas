@@ -5,9 +5,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.stream.JsonReader;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -28,23 +29,25 @@ public class ActiveDirectoryOperationTypeMapping {
 
     private ActiveDirectoryOperationTypeMapping() {
         LOGGER.debug("Going to load resource: " + RESOURCE_NAME);
-        URL resource = this.getClass()
+        InputStream resourceAsStream = this.getClass()
                 .getClassLoader()
-                .getResource(RESOURCE_NAME);
+                .getResourceAsStream(RESOURCE_NAME);
 
-        assertThat(resource).isNotNull();
-
-        JsonReader reader = null;
-        try {
-            reader = new JsonReader(new FileReader(resource.getFile()));
-        } catch (FileNotFoundException e) {
-            LOGGER.error(e.getMessage());
-        }
+        assertThat(resourceAsStream).as("Unable to get resource " + RESOURCE_NAME).isNotNull();
+        Reader targetReader = new InputStreamReader(resourceAsStream);
+        JsonReader reader = new JsonReader(targetReader);
 
         root = gson.fromJson(Objects.requireNonNull(reader), HashMap.class);
         assertThat(root).isNotNull().isNotEmpty();
         setOperationTypeToCategoryMap();
         setOperationTypeToEventCodeMap();
+
+        try {
+            targetReader.close();
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static class SingletonHelper {
