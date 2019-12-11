@@ -22,17 +22,6 @@ import static java.util.stream.Collectors.toList;
 public class AlertsDataScenario extends DataPreparationBase {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(AlertsDataScenario.class);
 
-    private Lazy<AlertsScenario> alertsScenario = new Lazy<>();
-
-    private Supplier<AlertsScenario> supplier = () -> {
-        try {
-            return new AlertsScenario(historicalDaysBack, anomalyDay);
-        } catch (GeneratorException e) {
-            e.printStackTrace();
-        }
-        throw new RuntimeException("Cannot init alerts scenarios");
-    };
-
     @Override
     protected List<? extends Event> generate() {
         LOGGER.info("Going to generate events for Alert scenarios");
@@ -116,5 +105,17 @@ public class AlertsDataScenario extends DataPreparationBase {
             return Stream.empty();
         }
     }
+
+
+    private Lazy<AlertsScenario> alertsScenario = new Lazy<>();
+
+    private Supplier<AlertsScenario> supplier = () -> {
+        try {
+            return new AlertsScenario(historicalDaysBack, anomalyDay);
+        } catch (GeneratorException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException("Cannot init alerts scenarios");
+    };
 
 }
