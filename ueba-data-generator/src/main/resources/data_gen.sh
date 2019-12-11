@@ -11,17 +11,18 @@ schemasSelector=$(dialog --backtitle "Welcome to UEBA data generator" \
         "PROCESS" "" on \
         "REGISTRY" "" on>&1 2>&1 1>&3);
 
-schemaPARAM="schemas=${schemasSelector}"
+commaDelimited=${schemasSelector//" "/","}
+schemaPARAM="schemas=${commaDelimited}"
 
 
 start_time=$(dialog  --backtitle "Welcome to UEBA data generator" \
-   --inputbox "Events start time (days from today): " 8 40 2>&1 1>&3)
+   --inputbox "Events start time (days from today): " 8 60 2>&1 1>&3)
 
 startTimePARAM="historical_days_back=${start_time}"
 
 
 destinationSelector=$(dialog --backtitle "Welcome to UEBA data generator" \
-       --checklist "Select events destination:" 20 50 9 \
+       --radiolist "Select events destination:" 20 90 4 \
         "CEF_DAILY_FILE" "CEF files creation without sending" on \
         "CEF_DAILY_BROKER" "Creation and sending CEF files to Broker" on \
         "MONGO_ADAPTER" "Events injection through internal UEBA Mongo collections" on>&1 2>&1 1>&3);
@@ -35,4 +36,4 @@ CMD="java -jar ./ueba-data-generator.jar ${schemaPARAM} ${startTimePARAM} ${dest
 exec 3>&-
 
 echo "Execution command = ${CMD}"
-sh ${CMD}
+${CMD}
