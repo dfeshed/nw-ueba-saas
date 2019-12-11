@@ -1,10 +1,7 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
 
-application.properties
-configserver.properties
-mongo.properties
-mongo_caweb.properties
+
 
 ### STS ###
 .apt_generated
@@ -209,3 +206,6 @@ buildNumber.properties
 *.msm
 *.msp
 
+test-output/
+ueba-automation-test/test-output/
+ueba-data-generator/test-output/
