@@ -336,7 +336,7 @@ const setNewReconView = (newView) => {
     // without changing any content in current tab.
     if (newView.isClassicReconView) {
       const state = getState().recon.data;
-      const path = `/investigation/${state.endpointId}/navigate/event/${newView.name}/${state.eventId}`;
+      const path = `/investigation/${state.endpointId}/reconstruction/${state.eventId}/${newView.name}`;
       window.open(path, '_blank');
       return;
     }
