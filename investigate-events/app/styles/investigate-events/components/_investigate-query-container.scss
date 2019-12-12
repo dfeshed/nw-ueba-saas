@@ -711,7 +711,7 @@
 
     &:hover {
       cursor: text;
-      background-color: background-color(accentTwo, lightest, translucent);
+      background-color: background-color(secondary, base, translucent);
       position: absolute; // force a flow break so it renders above query-bar
     }
 
