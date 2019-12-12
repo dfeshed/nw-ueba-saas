@@ -9,14 +9,13 @@ import java.io.StringReader;
 import java.util.Properties;
 
 public class Application {
-    public static Properties APPLICATION_PROPERTIES;
 
     public static void main(String[] args) {
         System.out.println("*************************  STARTED  *************************");
         String propString = String.join("\n", args);
 
         // Add properties:
-        APPLICATION_PROPERTIES = parsePropertiesString(propString);
+        Properties APPLICATION_PROPERTIES = parsePropertiesString(propString);
         System.out.println(" +++++  Properties to set  +++++");
         APPLICATION_PROPERTIES.forEach((key, value) -> System.out.println(key.toString().concat("=").concat(value.toString())));
         APPLICATION_PROPERTIES.forEach((key, value) -> System.setProperty(key.toString(), value.toString()));
