@@ -209,3 +209,6 @@ buildNumber.properties
 *.msm
 *.msp
 
+test-output/
+ueba-automation-test/test-output/
+ueba-data-generator/test-output/
