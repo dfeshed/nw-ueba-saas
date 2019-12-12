@@ -30,8 +30,7 @@ export default {
     options: [
       'FILE',
       'PACKET',
-      'TEXT',
-      'MAIL'
+      'TEXT'
     ],
     additionalFieldPrefix: 'reconView',
     field: 'eventAnalysisPreferences.currentReconView'

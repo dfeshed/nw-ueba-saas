@@ -108,8 +108,8 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await renderApplicationContent(this, assert);
     await clickTrigger('.rsa-preferences-field-content:nth-child(1)');
     const options = findAll('.ember-power-select-option');
-    assert.equal(options.length, 4);
-    assert.equal(getTextFromDOMArray(options), 'FilePacketTextEmail');
+    assert.equal(options.length, 3);
+    assert.equal(getTextFromDOMArray(options), 'FilePacketText');
   });
 
   test('Preferences panel comes with valid options for log format', async function(assert) {
