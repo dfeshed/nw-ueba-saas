@@ -15,7 +15,7 @@
         </file>
 
         <file>
-            <source>src${file.separator}main${file.separator}resources${file.separator}data_gen.sh</source>
+            <source>src${file.separator}main${file.separator}resources${file.separator}ueba-data-gen.sh</source>
             <outputDirectory>${file.separator}</outputDirectory>
         </file>
 
