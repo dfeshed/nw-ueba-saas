@@ -29,11 +29,25 @@ destinationSelector=$(dialog --backtitle "Welcome to UEBA data generator" \
 
 destinationPARAM="generatorFormat=${destinationSelector}"
 
-
 CMD="java -jar ./ueba-data-generator.jar ${schemaPARAM} ${startTimePARAM} ${destinationPARAM}"
-
-# calendar=$(dialog --calendar "Events start time:" 8 40 2>&1 1>&3);
 exec 3>&-
+LOG=/tmp/data_gen_out.log
+echo "Execution command = ${CMD}" > $LOG
+$CMD &>> $LOG &
 
-echo "Execution command = ${CMD}"
-${CMD}
+exit_status=1
+
+while [ $exit_status -ne 0 ]
+  do
+    dialog \
+      --ok-label Close \
+      --tailbox "$LOG" 60 150
+
+    exit_status=$?
+
+    if [ $exit_status -eq 255 ]; then
+      dialog --textbox "$LOG" 21 80
+    fi
+  done
+
+kill -9 %%
