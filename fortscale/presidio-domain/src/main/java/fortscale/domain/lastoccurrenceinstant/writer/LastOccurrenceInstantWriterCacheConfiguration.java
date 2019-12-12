@@ -18,7 +18,7 @@ public class LastOccurrenceInstantWriterCacheConfiguration {
     @Autowired
     public LastOccurrenceInstantWriterCacheConfiguration(
             @Qualifier("lastOccurrenceInstantStoreRedis") LastOccurrenceInstantWriter lastOccurrenceInstantWriter,
-            @Value("${presidio.last.occurrence.instant.writer.maximum.size:10000}") int maximumSize,
+            @Value("${presidio.last.occurrence.instant.writer.maximum.size}") int maximumSize,
             @Value("${presidio.last.occurrence.instant.writer.entries.to.remove.percentage:10.0}") double entriesToRemovePercentage) {
 
         this.lastOccurrenceInstantWriter = lastOccurrenceInstantWriter;

@@ -87,5 +87,10 @@ public class DataServiceImpl implements DataService {
     public long count(Schema schema, Instant startDate, Instant endDate, Map<String, Object> filter, List<String> projectionFields) {
         return dataSourceRepository.count(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate, filter, projectionFields);
     }
+
+    @Override
+    public Map<String, Instant> aggregateKeysMaxTime(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, Schema schema, boolean allowDiskUse){
+        return dataSourceRepository.aggregateKeysMaxTime(startDate, endDate, fieldPath, skip, limit, toCollectionNameTranslator.toCollectionName(schema), allowDiskUse);
+    }
 }
 

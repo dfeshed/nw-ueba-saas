@@ -80,4 +80,9 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     public long count(Schema schema, Instant startDate, Instant endDate) {
         return dataService.count(schema, startDate, endDate);
     }
+
+    @Override
+    public Map<String, Instant> aggregateKeysMaxTime(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, Schema schema, boolean allowDiskUse){
+        return dataService.aggregateKeysMaxTime(startDate,endDate,fieldPath,skip,limit,schema,allowDiskUse);
+    }
 }
