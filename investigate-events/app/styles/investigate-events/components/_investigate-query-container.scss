@@ -970,6 +970,12 @@
 // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
 // TODO: remove global component overwrites below and update the global component itself
 // dropdown styles
+
+// refer to ASOC-87080 #8 need to override for the light theme
+// text color of enabled options in dropdown in query bar
+.light-theme .investigate-query-dropdown .ember-power-select-option:not([aria-disabled=true]) .description {
+  color: rsa-color(grey, base);
+}
 .investigate-query-dropdown {
   z-index: 20001;
   @include border(1px, solid, primary, lighter);
@@ -1050,6 +1056,7 @@
       top: 0.4rem;
     }
   }
+
   .ember-power-select-option {
     min-width: 300px;
     max-width: 600px;
