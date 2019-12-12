@@ -6,6 +6,7 @@
         <artifactId>ueba-automation-projects</artifactId>
         <groupId>com.rsa.netwitness.presidio.automation</groupId>
         <version>11.5.0-0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
 
