@@ -68,6 +68,7 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
                 (schema, count) -> LOGGER.info(schema.toString().concat(" -> ").concat(String.valueOf(count))));
 
         System.out.println("Exit code = 0");
+        System.out.println("Generator target directory: ./target");
         System.exit(0);
     }
 
