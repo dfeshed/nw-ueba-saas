@@ -12,7 +12,8 @@ import {
   reassignTwinIds,
   transformTextToPillData,
   metaFiltersAsString,
-  valueList
+  valueList,
+  injectLogicalOperatorIfMissing
 } from 'investigate-events/util/query-parsing';
 import { DEFAULT_LANGUAGES, DEFAULT_ALIASES } from '../../helpers/redux-data-helper';
 import {
@@ -1559,5 +1560,73 @@ module('Unit | Util | Query Parsing', function(hooks) {
   test('createOperator can create an OR operator', function(assert) {
     const result = createOperator(OPERATOR_OR);
     assert.equal(result.type, OPERATOR_OR, 'type should match');
+  });
+
+  test('injectLogicalOperatorIfMissing for selected pills', function(assert) {
+    const text = "ad.computer.src contains 'Down-sized' AND ad.computer.src != 'Human' AND ((ad.computer.src begins 'Officer' AND ad.computer.src begins 'visionary') AND (ad.computer.src contains 'Garden' AND ad.computer.src = 'backing up') AND ad.computer.src contains 'synthesize') AND ad.computer.src begins 'Rubber'";
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    // Three random pills are selected.
+    const selectedPills = [result[0], result[result.lastIndex], result[6]];
+    const injectedPillsData = injectLogicalOperatorIfMissing(selectedPills, OPERATOR_AND);
+    assert.equal(injectedPillsData.length, 5, 'Three pills and two injected logical AND operators');
+    assert.deepEqual(injectedPillsData[0], selectedPills[0], 'First Pill should be same');
+    assert.equal(injectedPillsData[1].type, OPERATOR_AND, 'type should match to operator and');
+    assert.deepEqual(injectedPillsData[2], selectedPills[1], 'Second Pill should be same');
+    assert.equal(injectedPillsData[3].type, OPERATOR_AND, 'type should match to operator and');
+    assert.deepEqual(injectedPillsData[4], selectedPills[2], 'Third Pill should be same');
+  });
+
+  test('injectLogicalOperatorIfMissing for selected pills inside Parens', function(assert) {
+    const text = "ad.computer.src contains 'Down-sized' AND ad.computer.src != 'Human' AND ((ad.computer.src begins 'Officer' AND ad.computer.src begins 'visionary') AND (ad.computer.src contains 'Garden' AND ad.computer.src = 'backing up') AND ad.computer.src contains 'synthesize') AND ad.computer.src begins 'Rubber'";
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    // First pill and Inners parens and all pills inside them are selected along with the last pill.
+    const selectedPills = [result[0], result[5], result[6], result[8], result[9], result[result.lastIndex]];
+    const injectedPillsData = injectLogicalOperatorIfMissing(selectedPills, OPERATOR_AND);
+    assert.equal(injectedPillsData.length, 9, 'Three pills and two injected logical AND operators');
+    assert.deepEqual(injectedPillsData[0], selectedPills[0], 'First Pill should be same');
+    assert.equal(injectedPillsData[1].type, OPERATOR_AND, 'type should match to operator and');
+    assert.deepEqual(injectedPillsData[2], selectedPills[1], 'Second Pill should be same');
+    assert.deepEqual(injectedPillsData[3], selectedPills[2], 'Third Pill should be same');
+    assert.equal(injectedPillsData[4].type, OPERATOR_AND, 'type should match to operator and');
+    assert.deepEqual(injectedPillsData[5], selectedPills[3], 'Fourth Pill should be same');
+    assert.deepEqual(injectedPillsData[6], selectedPills[4], 'Fifth Pill should be same');
+    assert.equal(injectedPillsData[7].type, OPERATOR_AND, 'type should match to operator and');
+    assert.deepEqual(injectedPillsData[8], selectedPills[5], 'Sixth Pill should be same');
+  });
+
+  test('injectLogicalOperatorIfMissing for selected pills inside Parens with open paren being first pill', function(assert) {
+    const text = "ad.computer.src contains 'Down-sized' AND ad.computer.src != 'Human' AND ((ad.computer.src begins 'Officer' AND ad.computer.src begins 'visionary') AND (ad.computer.src contains 'Garden' AND ad.computer.src = 'backing up') AND ad.computer.src contains 'synthesize') AND ad.computer.src begins 'Rubber'";
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    // Inners parens and all pills inside them are selected along with the last pill.
+    const selectedPills = [result[5], result[6], result[8], result[9], result[result.lastIndex]];
+    const injectedPillsData = injectLogicalOperatorIfMissing(selectedPills, OPERATOR_AND);
+    assert.equal(injectedPillsData.length, 7, 'Three pills and two injected logical AND operators');
+    assert.deepEqual(injectedPillsData[0], selectedPills[0], 'First Pill should be same');
+    assert.deepEqual(injectedPillsData[1], selectedPills[1], 'Second Pill should be same');
+    assert.equal(injectedPillsData[2].type, OPERATOR_AND, 'type should match to operator and');
+    assert.deepEqual(injectedPillsData[3], selectedPills[2], 'Third Pill should be same');
+    assert.deepEqual(injectedPillsData[4], selectedPills[3], 'Fourth Pill should be same');
+    assert.equal(injectedPillsData[5].type, OPERATOR_AND, 'type should match to operator and');
+    assert.deepEqual(injectedPillsData[6], selectedPills[4], 'Fifth Pill should be same');
+  });
+
+  test('injectLogicalOperatorIfMissing for selected pills inside nested Parens with open paren being first pill', function(assert) {
+    const text = "ad.computer.src contains 'Down-sized' AND ad.computer.src != 'Human' AND ((ad.computer.src begins 'Officer' AND ad.computer.src begins 'visionary') AND ad.computer.src contains 'synthesize') AND ad.computer.src begins 'Rubber'";
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    // Nested parens and all pills inside them are selected along with the last pill.
+    const selectedPills = [result[4], result[5], result[6], result[8], result[9], result[11], result[12], result[result.lastIndex]];
+    const injectedPillsData = injectLogicalOperatorIfMissing(selectedPills, OPERATOR_AND);
+    assert.equal(injectedPillsData.length, 11, 'Three pills and two injected logical AND operators');
+    assert.deepEqual(injectedPillsData[0], selectedPills[0], 'Open Paren should be same');
+    assert.deepEqual(injectedPillsData[1], selectedPills[1], 'Nested Open Paren should be same');
+    assert.deepEqual(injectedPillsData[2], selectedPills[2], 'First Pill should be same');
+    assert.equal(injectedPillsData[3].type, OPERATOR_AND, 'type should match to operator and');
+    assert.deepEqual(injectedPillsData[4], selectedPills[3], 'Second Pill should be same');
+    assert.deepEqual(injectedPillsData[5], selectedPills[4], 'Nested Close Paren should be same');
+    assert.equal(injectedPillsData[6].type, OPERATOR_AND, 'type should match to operator and');
+    assert.deepEqual(injectedPillsData[7], selectedPills[5], 'Third Pill should be same');
+    assert.deepEqual(injectedPillsData[8], selectedPills[6], 'Close Paren should be same');
+    assert.equal(injectedPillsData[9].type, OPERATOR_AND, 'type should match to operator and');
+    assert.deepEqual(injectedPillsData[10], selectedPills[7], 'Third Pill should be same');
   });
 });

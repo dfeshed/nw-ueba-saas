@@ -9,7 +9,7 @@ import {
   setReconOpen,
   setReconPanelSize
 } from 'investigate-events/actions/interaction-creators';
-import { isSearchTerm, metaFiltersAsString } from 'investigate-events/util/query-parsing';
+import { isSearchTerm, metaFiltersAsString, injectLogicalOperatorIfMissing } from 'investigate-events/util/query-parsing';
 import { serializeQueryParams } from 'investigate-shared/utils/pivot-util';
 import {
   META_PANEL_SIZES,
@@ -21,7 +21,7 @@ import { teardownNotifications, initializeNotifications } from '../actions/notif
 import { replaceAllGuidedPills } from 'investigate-events/actions/pill-creators';
 import { removeEmptyParens } from 'investigate-shared/actions/api/events/utils';
 import { findSelectedPills } from 'investigate-events/actions/pill-utils';
-
+import { OPERATOR_AND } from 'investigate-events/constants/pill';
 const SUMMARY_CALL_INTERVAL = 60000;
 let timerId;
 
@@ -226,7 +226,8 @@ export default Route.extend({
       }
 
       if (isExternalLink) {
-        const pills = findSelectedPills(pillsDataWithoutEmptyParens);
+        const pills = findSelectedPills(pillsDataWithoutEmptyParens)
+                      |> ((_) => injectLogicalOperatorIfMissing(_, OPERATOR_AND));
         if (pills.length > 0) { // if no selected pills in state, exit
           const pillString = metaFiltersAsString(pills);
           qp.mf = encodeURIComponent(pillString);

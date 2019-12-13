@@ -107,6 +107,9 @@ const _createOperatorAND = () => OperatorAnd.create();
  */
 const _createOperatorOR = () => OperatorOr.create();
 
+/** There arrays indicate which pill types might need logical operator injected */
+const injectTypes = [QUERY_FILTER, COMPLEX_FILTER, TEXT_FILTER];
+
 /**
  * Creates a filter for a given type.
  * @param {string} type The type of filter to create
@@ -638,4 +641,24 @@ const _isQuotePartOfString = (string, activeQuote, currPos, charToCheck) => {
   } else {
     return false;
   }
+};
+
+export const injectLogicalOperatorIfMissing = (pills, injectingOpType) => {
+  const result = [];
+  let isPreviousOpenParen = false;
+  pills.forEach((pill, index) => {
+    if (index > 0 && injectTypes.includes(pill.type) && !isPreviousOpenParen) {
+      result.push(createOperator(injectingOpType));
+      isPreviousOpenParen = false;
+    } else if (pill.type === OPEN_PAREN) {
+      if (index > 0 && !isPreviousOpenParen) {
+        result.push(createOperator(injectingOpType));
+      }
+      isPreviousOpenParen = true;
+    } else {
+      isPreviousOpenParen = false;
+    }
+    result.push(pill);
+  });
+  return result;
 };
