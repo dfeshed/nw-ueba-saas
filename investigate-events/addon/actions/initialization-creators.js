@@ -164,6 +164,23 @@ const _getColumnGroups = (dispatch, getState) => {
             reject();
           },
           onSuccess() {
+
+            const { selectedColumnGroup } = getState().investigate.data;
+            const { columnGroups } = getState().investigate.columnGroup;
+            const columnGroup = columnGroups.some((group) => group.id === selectedColumnGroup);
+
+            // if the selectedColumnGroup no longer exists in database, the column group selection
+            // should be reset to default and the user should be notified of the same
+            if (!columnGroup) {
+              dispatch({
+                type: ACTION_TYPES.SET_SELECTED_COLUMN_GROUP,
+                payload: 'SUMMARY'
+              });
+
+              const flashMessages = lookup('service:flashMessages');
+              const i18n = lookup('service:i18n');
+              flashMessages.info(i18n.t('investigate.error.selectedColumnGroupNotFound'));
+            }
             resolve();
           }
         }

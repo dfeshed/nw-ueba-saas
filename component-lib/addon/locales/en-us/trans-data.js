@@ -623,7 +623,8 @@ export default {
     error: {
       title: 'Unable to load data.',
       description: 'An unexpected error occurred when attempting to fetch the data records.',
-      message: 'An unexpected error has occurred while attempting to {{action}} the {{managerItemType}}. Please refresh the page and try again.'
+      message: 'An unexpected error has occurred while attempting to {{action}} the {{managerItemType}}. Please refresh the page and try again.',
+      selectedColumnGroupNotFound: 'The selected column group is no longer available. The default summary column group has been selected instead.'
     },
     meta: {
       title: 'Meta',
@@ -670,7 +671,7 @@ export default {
         noColumnGroupName: 'Column groups must have a name',
         nameNotUnique: 'Column groups must have a unique name',
         selectionThresholdMessage: 'Reached the maximum number of meta keys allowed in the column group',
-        notWithinColumnThreshold: 'Column Group exceeds column threshold. Only upto {{COLUMN_THRESHOLD}} meta keys allowed',
+        notWithinColumnThreshold: 'The number of columns in this column group exceeds the limit of {{COLUMN_THRESHOLD}} columns. You must remove the extra columns to enable the Update button.',
         disabled: {
           delete: 'This column group cannot be deleted because it is part of the following query profiles: {{profileNames}}'
         }

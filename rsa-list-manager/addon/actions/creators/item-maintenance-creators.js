@@ -21,7 +21,7 @@ const _enrichColumnGroupWithPosition = (item) => {
 };
 
 const _displayErrorFlashMessage = (state, stateLocation, response, action) => {
-  const managerItemType = itemType(state, stateLocation);
+  const managerItemType = itemType(state, stateLocation).toLowerCase();
   const i18n = lookup('service:i18n');
   const errorMessage = response?.data?.errorMessage || response?.errorMessage || i18n.t('investigate.error.message', { action, managerItemType });
   const flashMessages = lookup('service:flashMessages');
