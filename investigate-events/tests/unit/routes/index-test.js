@@ -11,6 +11,7 @@ import { patchReducer } from '../../helpers/vnext-patch';
 import InvestigateEventsIndex from 'investigate-events/routes/index';
 import initializationCreators from 'investigate-events/actions/initialization-creators';
 import dataCreators from 'investigate-events/actions/data-creators';
+import { CLOSE_PAREN, OPEN_PAREN } from 'investigate-events/constants/pill';
 
 let redux;
 
@@ -168,8 +169,52 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       const { queryNode } = redux.getState().investigate;
       const hashes = queryNode.pillDataHashes || [];
       const pillDataHashesPresent = hashes.length === 3 && hashes[0] === 'd9ee';
-      const pillsDataPopulated = queryNode.pillsData.length === 5;
+      const pillsDataPopulated = queryNode.pillsData.length === 11;
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
+        assert.ok(true, 'all the expected initial data was populated and query executed');
+        fetchInvestigateDataSpy.restore();
+        return true;
+      }
+      return false;
+    }, { timeout: 10000 });
+  });
+
+  test('When parsing multiple hashes, we will wrap each pill corresponding a hash with parens', async function(assert) {
+    assert.expect(1);
+    const fetchInvestigateDataSpy = sinon.stub(dataCreators, 'fetchInvestigateData');
+
+    // setup reducer and route
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
+    const params = {
+      sid: '555d9a6fe4b0d37c827d402e',
+      et: '10000',
+      st: '1',
+      pdhash: ['d9ee', '934i'],
+      sortField: 'time',
+      sortDir: 'Ascending'
+    };
+
+    // execute model hook
+    await route.model(params);
+    await settled();
+    return waitUntil(() => {
+      const baseComplete = isBaseInvestigateIntializationComplete();
+      const calledFetchData = fetchInvestigateDataSpy.callCount === 1;
+      const { queryNode } = redux.getState().investigate;
+      const hashes = queryNode.pillDataHashes || [];
+      const pillDataHashesPresent = hashes.length === 2;
+      const pillsDataPopulated = queryNode.pillsData.length === 7;
+      const openParens = queryNode.pillsData.filter((pill) => pill.type === OPEN_PAREN);
+      const closeParens = queryNode.pillsData.filter((pill) => pill.type === CLOSE_PAREN);
+      if (
+        baseComplete &&
+        calledFetchData &&
+        pillDataHashesPresent &&
+        pillsDataPopulated &&
+        openParens.length === 2 &&
+        closeParens.length === 2
+      ) {
         assert.ok(true, 'all the expected initial data was populated and query executed');
         fetchInvestigateDataSpy.restore();
         return true;
@@ -238,7 +283,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       const { queryNode } = redux.getState().investigate;
       const hashes = queryNode.pillDataHashes || [];
       const pillDataHashesPresent = hashes.length === 4 && hashes[0] === 'd9ee';
-      const pillsDataPopulated = queryNode.pillsData.length === 9;
+      const pillsDataPopulated = queryNode.pillsData.length === 17;
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
         assert.ok(true, 'all the expected initial data was populated and query executed');
         fetchInvestigateDataSpy.restore();

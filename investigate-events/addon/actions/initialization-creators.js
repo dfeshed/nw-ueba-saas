@@ -26,6 +26,7 @@ import { TextFilter } from 'investigate-events/util/filter-types';
 import { OPERATOR_AND } from 'investigate-events/constants/pill';
 import * as ACTION_TYPES from './types';
 import { getTimeRangeIdFromRange } from 'investigate-shared/utils/time-range-utils';
+import { wrapInParensIfMultipleHashes } from 'investigate-events/actions/pill-utils';
 
 
 const noop = () => {};
@@ -297,8 +298,11 @@ const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigate
           // fetch params for all hashes
           // this will return params for what was in pdhash and mf in the url
           getParamsForHashes(allHashIds).then(({ data: paramsObjectArray }) => {
-            const paramsArray = paramsObjectArray.map((pO) => pO.query);
+            let paramsArray = paramsObjectArray.map((pO) => pO.query);
             const { language, aliases } = languageAndAliasesForParser(getState());
+
+            // Will wrap parens if multiple hashes are present to make distinct queries
+            paramsArray = wrapInParensIfMultipleHashes(paramsArray);
             const newPillData = paramsArray.flatMap((singleParams) => {
               return [ transformTextToPillData(singleParams, { language, aliases }), OperatorAnd.create() ];
             });
@@ -424,8 +428,10 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
     return getParamsForHashes(pdHashesWithoutTextFilter)
       .then(({ data: paramsObjectArray }) => {
         // Pull the actual param values out of the returned params objects.
-        const paramsArray = paramsObjectArray.map((pO) => pO.query);
+        let paramsArray = paramsObjectArray.map((pO) => pO.query);
         const { language, aliases } = languageAndAliasesForParser(getState());
+
+        paramsArray = wrapInParensIfMultipleHashes(paramsArray);
         // Transform server param strings into arrays of pill data objects
         // and dispatch those to state. transformTextToPillData now returns
         // an array of pills so flatten after mapping.

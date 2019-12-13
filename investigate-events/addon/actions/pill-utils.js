@@ -306,6 +306,19 @@ const findUnnecessaryOperators = (pillsData) => {
   }
 };
 
+const wrapInParensIfMultipleHashes = (pillsStringArray) => {
+  if (pillsStringArray.length > 1) {
+    return pillsStringArray.map((paramString) => {
+      if (!(paramString.startsWith('(') && paramString.endsWith(')'))) {
+        return `(${paramString})`;
+      }
+      return paramString;
+    });
+  } else {
+    return pillsStringArray;
+  }
+};
+
 export {
   _hasEmptyParensAt, // exported for test
   contentBetweenParens,
@@ -322,5 +335,6 @@ export {
   isValidToWrapWithParens,
   selectPillsFromPosition,
   selectedPillIndexes,
-  getAdjacentDeletableLogicalOperatorAt
+  getAdjacentDeletableLogicalOperatorAt,
+  wrapInParensIfMultipleHashes
 };

@@ -20,6 +20,15 @@ module('Unit | Actions | Pill Utils', function(hooks) {
     initialize(this.owner);
   });
 
+  test('wrapInParensIfMultipleHashes wraps each string with parens if they are more than 1', function(assert) {
+    const pillsArray = ['medium = 1 OR medium = 21', 'service = 80'];
+    assert.deepEqual(pillUtils.wrapInParensIfMultipleHashes(pillsArray), ['(medium = 1 OR medium = 21)', '(service = 80)'], 'Expected string');
+  });
+  test('wrapInParensIfMultipleHashes does nothing if pills length is less than 2', function(assert) {
+    const pillsArray = ['medium = 1 OR medium = 21'];
+    assert.deepEqual(pillUtils.wrapInParensIfMultipleHashes(pillsArray), ['medium = 1 OR medium = 21'], 'Expected string');
+  });
+
   test('selectPillsFromPosition returns an array with pills selected in right direction, including itself', function(assert) {
     assert.expect(2);
     const pills = [{
