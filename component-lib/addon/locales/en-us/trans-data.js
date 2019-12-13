@@ -764,7 +764,7 @@ export default {
     },
     queryStats: {
       error: 'Error',
-      isMixedMode: 'For accurate service status details, all services queried must be on 11.3.',
+      isMixedMode: 'For accurate service status details, all services queried must be on 11.3 or higher.',
       summary: 'found ({{queryTimeElapsed}}s) and retrieved ({{streamingTimeElapsed}}s) {{age}} {{eventCount}} event(s).',
       summaryNoStreaming: 'found ({{queryTimeElapsed}}s) {{age}} {{eventCount}} event(s).',
       summaryNoEvents: 'found ({{queryTimeElapsed}}s) 0 event(s).',

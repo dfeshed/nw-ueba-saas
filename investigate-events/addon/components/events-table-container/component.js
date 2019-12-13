@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-
 import {
   percentageOfEventsDataReturned,
   areEventsStreaming
