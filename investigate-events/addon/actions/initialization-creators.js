@@ -599,9 +599,9 @@ export const initializeInvestigate = function(
       });
     }
 
-    // 11) Ensure presence of sort params
+    // 11) Ensure presence of sort params if in query
     // prevents events reload due to setSort as sortField and sortDir refreshModel
-    if (!parsedQueryParams.sortField || !parsedQueryParams.sortDir) {
+    if (parsedQueryParams.sid && (!parsedQueryParams.sortField || !parsedQueryParams.sortDir)) {
       // 12) Redirect with default sort params if missing
       const { router, currentPath } = lookup('service:-routing');
       const { investigate: { data: { sortDirection, sortField } } } = getState();
