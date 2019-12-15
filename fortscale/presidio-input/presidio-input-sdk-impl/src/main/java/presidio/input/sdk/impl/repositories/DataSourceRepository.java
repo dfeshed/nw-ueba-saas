@@ -1,5 +1,7 @@
 package presidio.input.sdk.impl.repositories;
 
+import fortscale.common.general.Schema;
+import fortscale.common.general.SchemaEntityCount;
 import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
@@ -20,7 +22,9 @@ public interface DataSourceRepository {
 
     <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);
 
-    <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter,  List<String> projectionFields);
+    <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter, List<String> projectionFields);
+
+    List<SchemaEntityCount> getMostCommonEntityIds(Instant startInstant, Instant endInstant, String entityType, long limit, Schema schema, String collectionName);
 
     long count(String collectionName, Instant startDate, Instant endDate);
 

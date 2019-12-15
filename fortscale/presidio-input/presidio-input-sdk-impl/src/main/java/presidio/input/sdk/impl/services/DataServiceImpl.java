@@ -2,6 +2,7 @@ package presidio.input.sdk.impl.services;
 
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
+import fortscale.common.general.SchemaEntityCount;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
@@ -89,8 +90,12 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public Map<String, Instant> aggregateKeysMaxInstant(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, Schema schema, boolean allowDiskUse){
+    public Map<String, Instant> aggregateKeysMaxInstant(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, Schema schema, boolean allowDiskUse) {
         return dataSourceRepository.aggregateKeysMaxInstant(startDate, endDate, fieldPath, skip, limit, toCollectionNameTranslator.toCollectionName(schema), allowDiskUse);
     }
-}
 
+    @Override
+    public List<SchemaEntityCount> getMostCommonEntityIds(Instant startInstant, Instant endInstant, String entityType, long limit, Schema schema) {
+        return dataSourceRepository.getMostCommonEntityIds(startInstant, endInstant, entityType, limit, schema, toCollectionNameTranslator.toCollectionName(schema));
+    }
+}
