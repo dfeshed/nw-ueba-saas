@@ -26,6 +26,7 @@ class SessionFactory extends BaseKeyedPoolableObjectFactory<ServerDetails, Sessi
             JSch jschSSHChannel = new JSch();
             jschSSHChannel.setKnownHosts(serverDetails.knownHostsFileName);
             session = jschSSHChannel.getSession(serverDetails.user, serverDetails.host, serverDetails.port);
+            session.setConfig("PreferredAuthentications", "password");
             session.setPassword(serverDetails.password);
             session.setConfig("StrictHostKeyChecking", serverDetails.strictHostKeyChecking);
             session.connect(serverDetails.timeOut);
@@ -38,9 +39,10 @@ class SessionFactory extends BaseKeyedPoolableObjectFactory<ServerDetails, Sessi
             }
 
         } catch (Exception e) {
-            e.fillInStackTrace();
+            LOGGER.error("Failed to open ssh session to " + serverDetails.user + ":" + serverDetails.password + "@" + serverDetails.host);
+            LOGGER.error("Message: " + e.getMessage());
+            e.printStackTrace();
         }
-
         return session;
     }
 

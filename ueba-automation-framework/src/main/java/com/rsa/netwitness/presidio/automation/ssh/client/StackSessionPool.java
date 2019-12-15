@@ -24,8 +24,7 @@ class StackSessionPool {
         return SingletonHolder.INSTANCE;
     }
 
-    private StackSessionPool()
-    {
+    private StackSessionPool() {
         startPool();
     }
 
@@ -42,6 +41,6 @@ class StackSessionPool {
      * @return the org.apache.commons.pool.KeyedObjectPool class
      */
     void startPool() {
-        pool = new StackKeyedObjectPool<ServerDetails, Session>(new SessionFactory(), MAX_SESSIONS);
+        pool = new StackKeyedObjectPool<>(new SessionFactory(), MAX_SESSIONS);
     }
 }
