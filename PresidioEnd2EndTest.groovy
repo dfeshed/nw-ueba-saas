@@ -12,8 +12,9 @@ pipeline {
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
         booleanParam(name: 'LIVE_STATE_ON', defaultValue: true, description: ' Leave the scheduler run at the end of the test.\\rThe UEBA will continue to collect data at the end of the test (on Live State)')
     }
-    //tools { jdk env.JDK }
-    agent { label env.NODE }
+
+    agent { label selectNodeLabel() }
+
     environment {
         JAVA_HOME = "${env.JAVA_HOME}"
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
@@ -27,7 +28,7 @@ pipeline {
     stages {
         stage('Project Clone') {
             steps {
-                script { currentBuild.displayName="#${BUILD_NUMBER} ${NODE_NAME}" }
+                script { currentBuild.displayName="#${BUILD_NUMBER} " + selectNodeLabel() }
                 script { currentBuild.description = "${env.INTEGRATION_TEST_BRANCH_NAME}" }
                 cleanWs()
                 buildIntegrationTestProject()
@@ -197,14 +198,35 @@ def runSuiteXmlFile(String suiteXmlFile) {
         sh "/usr/local/src/apache-maven/bin/mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
     }
 }
+
 def startAirflowScheduler(){
     if (params.LIVE_STATE_ON) {
         sh "sudo systemctl start airflow-scheduler"
     }
-
 }
+
 def copyScripts() {
     sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/env_properties_manager.sh /home/presidio/"
     sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/presidio-ui-update.sh /home/presidio/"
     sh "sudo bash /home/presidio/env_properties_manager.sh --create"
+}
+
+
+def selectNodeLabel() {
+    if (params.NODE) {
+        println("Executor node is defined by Jenkins parameter: NODE=${params.NODE}")
+        return "${params.NODE}"
+    } else {
+        println("NODE parameter is not defined. Node will be selected from DAILY_NODES according to execution day.")
+        selectNodeByExecutionDay()
+    }
+}
+
+def selectNodeByExecutionDay() {
+    def nodes = params.DAILY_NODES.split("\n")
+    def currentMillis = System.currentTimeMillis()
+    int days = currentMillis / (1000 * 60 * 60 *24)
+    int selectedIndex = days%nodes.size()
+    println("DAILY_NODES=[${params.DAILY_NODES}]. Selected element id=" + selectedIndex)
+    return nodes[selectedIndex].toString()
 }
