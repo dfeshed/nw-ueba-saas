@@ -24,7 +24,8 @@ public class AdeEnrichedScoredRecordBuilder {
         this.adeEnrichedRecordToAdeScoredEnrichedRecordResolver = adeEnrichedRecordToAdeScoredEnrichedRecordResolver;
     }
 
-    public void fill(List<AdeScoredEnrichedRecord> scoredRecordList, EnrichedRecord enrichedRecord, List<FeatureScore> featureScoreList){
+    public void fill(List<AdeScoredEnrichedRecord> scoredRecordList, EnrichedRecord enrichedRecord,
+                     List<FeatureScore> featureScoreList, boolean isFilterZeroScore){
 
         if(featureScoreList.size() == 0){
             //TODO: add metrics.
@@ -49,7 +50,7 @@ public class AdeEnrichedScoredRecordBuilder {
 
         for (FeatureScore featureScore : eventScore.getFeatureScores()) {
             AdeScoredEnrichedRecord scoredRecord = buildAdeEnrichedScoredRecord(enrichedRecord, featureScore);
-            if(scoredRecord != null) {
+            if(scoredRecord != null && (!isFilterZeroScore || scoredRecord.getScore() > 0)) {
                 scoredRecordList.add(scoredRecord);
             }
         }
