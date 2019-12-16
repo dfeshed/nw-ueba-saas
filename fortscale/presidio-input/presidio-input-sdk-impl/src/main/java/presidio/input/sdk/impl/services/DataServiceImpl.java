@@ -89,8 +89,8 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public Map<String, Instant> aggregateKeysMaxTime(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, Schema schema, boolean allowDiskUse){
-        return dataSourceRepository.aggregateKeysMaxTime(startDate, endDate, fieldPath, skip, limit, toCollectionNameTranslator.toCollectionName(schema), allowDiskUse);
+    public Map<String, Instant> aggregateKeysMaxInstant(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, Schema schema, boolean allowDiskUse){
+        return dataSourceRepository.aggregateKeysMaxInstant(startDate, endDate, fieldPath, skip, limit, toCollectionNameTranslator.toCollectionName(schema), allowDiskUse);
     }
 }
 

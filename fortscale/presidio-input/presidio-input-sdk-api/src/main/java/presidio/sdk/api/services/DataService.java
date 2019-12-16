@@ -32,5 +32,5 @@ public interface DataService {
 
     long count(Schema schema, Instant startDate, Instant endDate, Map<String, Object> filter, List<String> projectionFields);
 
-    Map<String, Instant> aggregateKeysMaxTime(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, Schema schema, boolean allowDiskUse);
+    Map<String, Instant> aggregateKeysMaxInstant(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, Schema schema, boolean allowDiskUse);
 }

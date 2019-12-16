@@ -26,5 +26,5 @@ public interface DataSourceRepository {
 
     long count(String collectionName, Instant startDate, Instant endDate, Map<String, Object> filter, List<String> projectionFields);
 
-    public Map<String, Instant> aggregateKeysMaxTime(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, String collectionName, boolean allowDiskUse);
+    Map<String, Instant> aggregateKeysMaxInstant(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, String collectionName, boolean allowDiskUse);
 }

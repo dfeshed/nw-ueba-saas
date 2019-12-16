@@ -82,7 +82,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public Map<String, Instant> aggregateKeysMaxTime(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, Schema schema, boolean allowDiskUse){
-        return dataService.aggregateKeysMaxTime(startDate,endDate,fieldPath,skip,limit,schema,allowDiskUse);
+    public Map<String, Instant> aggregateKeysMaxInstant(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, Schema schema, boolean allowDiskUse){
+        return dataService.aggregateKeysMaxInstant(startDate,endDate,fieldPath,skip,limit,schema,allowDiskUse);
     }
 }

@@ -92,7 +92,7 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
         return mongoTemplate.count(query, collectionName);
     }
 
-    public Map<String, Instant> aggregateKeysMaxTime(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, String collectionName, boolean allowDiskUse){
+    public Map<String, Instant> aggregateKeysMaxInstant(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, String collectionName, boolean allowDiskUse){
         List<AggregationOperation> aggregationOperations = new LinkedList<>();
         aggregationOperations.add(match(
                 new Criteria().andOperator(createDateCriteria(startDate, endDate), where(fieldPath).exists(true))));

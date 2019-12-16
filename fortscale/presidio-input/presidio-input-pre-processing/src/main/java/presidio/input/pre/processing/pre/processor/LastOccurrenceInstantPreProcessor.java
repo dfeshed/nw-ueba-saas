@@ -8,7 +8,6 @@ import org.apache.commons.lang3.Validate;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -42,16 +41,16 @@ public class LastOccurrenceInstantPreProcessor extends PreProcessor<LastOccurren
 
         for (String entityType: entityTypes){
             int skip = 0;
-            Map<String, Instant> entityTypeToLastOccurrenceInstantMap = Collections.emptyMap();
+            Map<String, Instant> entityIdToLastOccurrenceInstantMap;
             logger.info("start processing {}", entityType);
             do {
-                entityTypeToLastOccurrenceInstantMap = presidioInputPersistencyService.aggregateKeysMaxTime(
+                entityIdToLastOccurrenceInstantMap = presidioInputPersistencyService.aggregateKeysMaxInstant(
                         arguments.getStartInstant(),
                         arguments.getEndInstant(),
                         entityType, skip, aggregationPageSize, schema, true);
-                entityTypeToLastOccurrenceInstantMap.forEach((entityId, instant) -> lastOccurrenceInstantWriter.write(schema, entityType, entityId, instant));
+                lastOccurrenceInstantWriter.writeAll(schema, entityType, entityIdToLastOccurrenceInstantMap);
                 skip += aggregationPageSize;
-            } while (entityTypeToLastOccurrenceInstantMap.size() == aggregationPageSize);
+            } while (entityIdToLastOccurrenceInstantMap.size() == aggregationPageSize);
             logger.info("finished processing {}", entityType);
         }
 

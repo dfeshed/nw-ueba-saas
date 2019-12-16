@@ -18,7 +18,7 @@ dags:
     input_pre_processing:
       schedule_interval: None
       schemas:
-        - name : TLS
+        - name: TLS
           pre_processors:
             - name: domain_last_occurrence_instant
               static_arguments:
