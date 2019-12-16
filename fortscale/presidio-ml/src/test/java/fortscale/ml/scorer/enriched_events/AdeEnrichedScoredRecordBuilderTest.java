@@ -72,7 +72,7 @@ public class AdeEnrichedScoredRecordBuilderTest {
         Class<? extends AdeScoredEnrichedRecord> pojoClass = AdeScoredEnrichedTestingRecord.class;
         doReturn(pojoClass).when(adeEnrichedRecordToAdeScoredEnrichedRecordResolver).getClass(any());
 
-        enrichedScoredRecordBuilder.fill(scoredRecordList, enrichedRecord, rootFeatureScoreList);
+        enrichedScoredRecordBuilder.fill(scoredRecordList, enrichedRecord, rootFeatureScoreList, true);
 
         Assert.assertEquals("only one feature was scored", 1, scoredRecordList.size());
         AdeScoredEnrichedRecord adeScoredEnrichedRecord = scoredRecordList.get(0);

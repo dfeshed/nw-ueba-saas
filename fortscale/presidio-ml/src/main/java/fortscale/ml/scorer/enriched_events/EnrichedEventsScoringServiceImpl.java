@@ -26,17 +26,20 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
     private ScoringService scoringService;
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
     private AdeEnrichedScoredRecordBuilder adeEnrichedScoredRecordBuilder;
+    private boolean isFilterZeroScore;
 
     public EnrichedEventsScoringServiceImpl(
             RecordReaderFactoryService recordReaderFactoryService,
             ScoringService scoringService,
             ScoredEnrichedDataStore scoredEnrichedDataStore,
-            AdeEnrichedScoredRecordBuilder adeEnrichedScoredRecordBuilder) {
+            AdeEnrichedScoredRecordBuilder adeEnrichedScoredRecordBuilder,
+            boolean isFilterZeroScore) {
 
         this.recordReaderFactoryService = recordReaderFactoryService;
         this.scoringService = scoringService;
         this.scoredEnrichedDataStore = scoredEnrichedDataStore;
         this.adeEnrichedScoredRecordBuilder = adeEnrichedScoredRecordBuilder;
+        this.isFilterZeroScore = isFilterZeroScore;
     }
 
     public List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList, boolean isStore, TimeRange timeRange, StoreMetadataProperties storeMetadataProperties) {
@@ -50,7 +53,7 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
         for (EnrichedRecord enrichedRecord : enrichedRecordList) {
             AdeRecordReader adeRecordReader = (AdeRecordReader)recordReaderFactoryService.getRecordReader(enrichedRecord);
             List<FeatureScore> featureScoreList = scoringService.score(adeRecordReader,timeRange);
-            adeEnrichedScoredRecordBuilder.fill(scoredRecords, enrichedRecord, featureScoreList);
+            adeEnrichedScoredRecordBuilder.fill(scoredRecords, enrichedRecord, featureScoreList, isFilterZeroScore);
         }
 
         if(isStore) {

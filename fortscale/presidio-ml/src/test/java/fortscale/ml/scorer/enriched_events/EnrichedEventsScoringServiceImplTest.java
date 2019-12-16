@@ -45,7 +45,7 @@ public class EnrichedEventsScoringServiceImplTest {
                     recordReaderFactoryService,
                     scoringService,
                     scoredEnrichedDataStore,
-                    adeEnrichedScoredRecordBuilder);
+                    adeEnrichedScoredRecordBuilder, true);
         }
     }
 
@@ -68,7 +68,7 @@ public class EnrichedEventsScoringServiceImplTest {
         List<AdeScoredEnrichedRecord> ret = enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList, true, timeRange, new StoreMetadataProperties());
         Assert.assertEquals(0, ret.size());
         verify(scoringService, times(0)).score(any(), eq(timeRange));
-        verify(adeEnrichedScoredRecordBuilder, times(0)).fill(any(), any(), any());
+        verify(adeEnrichedScoredRecordBuilder, times(0)).fill(any(), any(), any(), any(Boolean.class));
         verify(scoredEnrichedDataStore, times(0)).store(any(), any());
     }
 
@@ -83,7 +83,7 @@ public class EnrichedEventsScoringServiceImplTest {
         when(scoringService.score(eq(mockedAdeRecordReader), eq(timeRange))).thenReturn(featureScoreList);
         enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList, true, timeRange, new StoreMetadataProperties());
         verify(scoringService, times(1)).score(eq(mockedAdeRecordReader), eq(timeRange));
-        verify(adeEnrichedScoredRecordBuilder, times(1)).fill(any(), eq(mockedEnrichedRecord), eq(featureScoreList));
+        verify(adeEnrichedScoredRecordBuilder, times(1)).fill(any(), eq(mockedEnrichedRecord), eq(featureScoreList), eq(true));
         verify(scoredEnrichedDataStore, times(1)).store(any(), any());
     }
 
@@ -111,11 +111,11 @@ public class EnrichedEventsScoringServiceImplTest {
 
         //verifying first enrich record processed
         verify(scoringService, times(1)).score(eq(mockedAdeRecordReader1), eq(timeRange));
-        verify(adeEnrichedScoredRecordBuilder, times(1)).fill(any(), eq(mockedEnrichedRecord1), eq(featureScoreList1));
+        verify(adeEnrichedScoredRecordBuilder, times(1)).fill(any(), eq(mockedEnrichedRecord1), eq(featureScoreList1), eq(true));
 
         //verifying first enrich record processed
         verify(scoringService, times(1)).score(eq(mockedAdeRecordReader2), eq(timeRange));
-        verify(adeEnrichedScoredRecordBuilder, times(1)).fill(any(), eq(mockedEnrichedRecord2), eq(featureScoreList2));
+        verify(adeEnrichedScoredRecordBuilder, times(1)).fill(any(), eq(mockedEnrichedRecord2), eq(featureScoreList2), eq(true));
 
         //verifying store was called.
         verify(scoredEnrichedDataStore, times(1)).store(any(),  any());

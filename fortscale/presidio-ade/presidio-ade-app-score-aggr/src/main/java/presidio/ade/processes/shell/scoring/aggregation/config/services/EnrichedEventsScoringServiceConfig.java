@@ -8,6 +8,7 @@ import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringServiceImpl;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -27,6 +28,10 @@ import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
         AdeEnrichedScoredRecordBuilderConfig.class
 })
 public class EnrichedEventsScoringServiceConfig {
+
+    @Value("${score-aggregation.filter.zero.score:true}")
+    private boolean isFilterZeroScore;
+
     @Autowired
     private RecordReaderFactoryService recordReaderFactoryService;
     @Autowired
@@ -43,6 +48,7 @@ public class EnrichedEventsScoringServiceConfig {
                 recordReaderFactoryService,
                 scoringService,
                 scoredEnrichedDataStore,
-                adeEnrichedScoredRecordBuilder);
+                adeEnrichedScoredRecordBuilder,
+                isFilterZeroScore);
     }
 }
