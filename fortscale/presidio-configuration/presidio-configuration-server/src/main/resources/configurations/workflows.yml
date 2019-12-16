@@ -17,6 +17,44 @@ dags:
       schedule_interval: None
     input_pre_processing:
       schedule_interval: None
+      schemas:
+        - name : TLS
+          pre_processors:
+            - name: domain_last_occurrence_instant
+              static_arguments:
+                entityTypes: [domain.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+            - name: ssl_subject_last_occurrence_instant
+              static_arguments:
+                entityTypes: [sslSubject.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+            - name: ja3_last_occurrence_instant
+              static_arguments:
+                entityTypes: [ja3.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+            - name: dst_org_last_occurrence_instant
+              static_arguments:
+                entityTypes: [dstOrg.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+            - name: dst_country_last_occurrence_instant
+              static_arguments:
+                entityTypes: [dstCountry.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+            - name: dst_port_last_occurrence_instant
+              static_arguments:
+                entityTypes: [dstPort.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+            - name: dst_asn_last_occurrence_instant
+              static_arguments:
+                entityTypes: [dstAsn.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
     smart:
       schedule_interval: timedelta(hours=1)
       smart_confs:
