@@ -1,5 +1,6 @@
 package presidio.input.core.services.transformation.transformer;
 
+import fortscale.common.general.Schema;
 import fortscale.domain.core.entityattributes.*;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReader;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
@@ -18,9 +19,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.spring.TransformerConfigTest;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
+import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +34,8 @@ public class NewOccurrenceTransformerTest extends TransformerJsonTest implements
     @Autowired
     private ApplicationContext applicationContext;
 
+    @MockBean
+    private PresidioInputPersistencyService presidioInputPersistencyService;
     @MockBean(name = "lastOccurrenceInstantReaderCache")
     private LastOccurrenceInstantReader lastOccurrenceInstantReader;
 
@@ -84,6 +89,9 @@ public class NewOccurrenceTransformerTest extends TransformerJsonTest implements
     }
 
     private List<NewOccurrenceTransformer> generateNewOccurrenceTransformers() throws IOException {
+        Mockito.when(presidioInputPersistencyService.getMostCommonEntityIds(Mockito.any(Instant.class),
+                Mockito.any(Instant.class), Mockito.anyString(), Mockito.anyLong(), Mockito.any(Schema.class)))
+                .thenReturn(Collections.emptyList());
         Mockito.when(lastOccurrenceInstantReader.read(Mockito.any(), Mockito.any(String.class), Mockito.any(String.class)))
                 .thenReturn(Instant.now());
         List<AbstractJsonObjectTransformer> abstractJsonObjectTransformers = loadTransformers("NewOccurrenceTransformers.json");

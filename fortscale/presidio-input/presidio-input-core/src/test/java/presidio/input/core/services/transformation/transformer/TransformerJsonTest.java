@@ -24,6 +24,7 @@ import java.util.Optional;
 public abstract class TransformerJsonTest extends TransformerSubtypeRegisterer {
 
     private static final String TRANSFORMERS_INPUT_PACKAGE_LOCATION = "presidio.input.core.services.transformation.transformer";
+    private static final String START_DATE = "startDate";
     private static final String END_DATE = "endDate";
 
     private ClassLoader classLoader = getClass().getClassLoader();
@@ -55,6 +56,7 @@ public abstract class TransformerJsonTest extends TransformerSubtypeRegisterer {
         objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
         objectMapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
         InjectableValues.Std injectableValues = new InjectableValues.Std();
+        injectableValues.addValue(START_DATE, Instant.now());
         injectableValues.addValue(END_DATE, Instant.now());
         objectMapper.setInjectableValues(injectableValues);
         registerSubtypes(objectMapper);

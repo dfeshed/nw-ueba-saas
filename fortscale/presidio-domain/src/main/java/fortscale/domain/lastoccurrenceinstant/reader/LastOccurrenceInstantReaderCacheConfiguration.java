@@ -18,8 +18,8 @@ public class LastOccurrenceInstantReaderCacheConfiguration {
     @Autowired
     public LastOccurrenceInstantReaderCacheConfiguration(
             @Qualifier("lastOccurrenceInstantStoreRedis") LastOccurrenceInstantReader lastOccurrenceInstantReader,
-            @Value("${presidio.last.occurrence.instant.reader.maximum.size:10000}") int maximumSize,
-            @Value("${presidio.last.occurrence.instant.reader.entries.to.remove.percentage:10.0}") double entriesToRemovePercentage) {
+            @Value("${presidio.last.occurrence.instant.reader.maximum.size}") int maximumSize,
+            @Value("${presidio.last.occurrence.instant.reader.entries.to.remove.percentage}") double entriesToRemovePercentage) {
 
         this.lastOccurrenceInstantReader = lastOccurrenceInstantReader;
         this.maximumSize = maximumSize;
