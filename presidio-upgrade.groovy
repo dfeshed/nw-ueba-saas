@@ -38,6 +38,8 @@ def upgradeOtherNodes() {
     def nodes = params.OTHER_IPS.split(",")
     println("Other nodes: ${nodes}")
     for(String node : nodes) {
+        println("  #############  Going to upgrade: ${node}  #############  ")
         sh"cd /tmp/ ; upgrade-cli-client -u --host-addr ${node} --version ${params.NW_VERSION} -v"
+        println("  #############  Done: ${node}  #############  ")
     }
 }
