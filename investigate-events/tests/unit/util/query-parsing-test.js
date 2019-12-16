@@ -1095,6 +1095,26 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.notOk(result[2].isInvalid, 'should not be invalid');
   });
 
+  test('transformTextToPillData transforms OR on either side of a text filter to AND', function(assert) {
+    const text = `medium = 1 OR ${SEARCH_TERM_MARKER}text filter${SEARCH_TERM_MARKER} OR medium = 2`;
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 5);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '1', 'operator should match');
+    assert.notOk(result[0].isInvalid, 'should not be invalid');
+    assert.equal(result[1].type, OPERATOR_AND);
+    assert.equal(result[2].type, TEXT_FILTER);
+    assert.equal(result[2].searchTerm, 'text filter');
+    assert.equal(result[3].type, OPERATOR_AND);
+    assert.equal(result[4].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[4].meta, 'medium', 'meta should match');
+    assert.equal(result[4].operator, '=', 'operator should match');
+    assert.equal(result[4].value, '2', 'operator should match');
+    assert.notOk(result[4].isInvalid, 'should not be invalid');
+  });
+
   test('parsePillDataFromUri correctly parses forward slashes and operators into pills', function(assert) {
     const result = parsePillDataFromUri(params.mf, DEFAULT_LANGUAGES);
     assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');

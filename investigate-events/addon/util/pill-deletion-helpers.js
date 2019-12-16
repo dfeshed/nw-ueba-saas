@@ -63,11 +63,13 @@ const removeUnnecessaryOperators = (pillsData = []) => {
   }
 };
 
-// Returns a pills array where an operator after the text pill is replaced
-// with an AND if the text pill is the first pill
-const replaceOrAfterFirstTextPill = (pillsData) => {
+// Returns a pills array where an operator adjacent to a text pill is replaced
+// with an AND if it is an OR
+const replaceOrNextToTextPill = (pillsData) => {
   return pillsData.map((pill, idx, arr) => {
-    if (idx === 1 && arr[0].type === TEXT_FILTER && pill.type === OPERATOR_OR) {
+    const prevPill = arr[idx - 1];
+    const nextPill = arr[idx + 1];
+    if ((prevPill?.type === TEXT_FILTER || nextPill?.type === TEXT_FILTER) && pill.type === OPERATOR_OR) {
       return {
         ...pill,
         type: OPERATOR_AND
@@ -84,5 +86,5 @@ export {
   removeEmptyParens,
   removePills,
   removeUnnecessaryOperators,
-  replaceOrAfterFirstTextPill
+  replaceOrNextToTextPill
 };

@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { settled } from '@ember/test-helpers';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import ReduxDataHelper from '../../helpers/redux-data-helper';
+import ReduxDataHelper, { TEXT_PILL_DATA } from '../../helpers/redux-data-helper';
 import { throwSocket } from '../../helpers/patch-socket';
 import { patchReducer } from '../../helpers/vnext-patch';
 import { invalidServerResponse } from './data';
@@ -506,7 +506,6 @@ module('Unit | Actions | Pill Creators', function(hooks) {
 
     const getState = () => {
       return new ReduxDataHelper()
-        .pillsDataEmpty()
         .pillsDataWithOr()
         .build();
     };
@@ -524,6 +523,51 @@ module('Unit | Actions | Pill Creators', function(hooks) {
       }, 'first action should be add pill');
       assert.strictEqual(arr[1].type, ACTION_TYPES.REPLACE_LOGICAL_OPERATOR, 'second action should be replace logical operator');
       assert.strictEqual(arr[1].payload.pillData.type, OPERATOR_AND, 'should replace with an AND');
+    };
+
+    thunk(dispatch, getState);
+  });
+
+  test('addTextFilter action creator returns three actions if pills before and after are OR', function(assert) {
+    assert.expect(7);
+    const pillData = {
+      type: 'text',
+      isEditing: false,
+      isFocused: false,
+      isInvalid: false,
+      isSelected: false,
+      isValidationInProgress: false,
+      searchTerm: 'blahblahblah'
+    };
+    const thunk = pillCreators.addTextFilter({ pillData, position: 2 });
+
+    const getState = () => {
+      return new ReduxDataHelper()
+        .pillsDataWithOr()
+        .insertPillAt({
+          id: '3',
+          type: 'operator-or',
+          isFocused: false,
+          isSelected: false
+        }, 2)
+        .build();
+    };
+
+    const dispatch = (arr) => {
+      assert.ok(Array.isArray(arr));
+      assert.strictEqual(arr.length, 3);
+      assert.deepEqual(arr[0], {
+        type: ACTION_TYPES.ADD_PILL,
+        payload: {
+          pillData,
+          position: 2,
+          shouldAddFocusToNewPill: false
+        }
+      }, 'first action should be add pill');
+      assert.strictEqual(arr[1].type, ACTION_TYPES.REPLACE_LOGICAL_OPERATOR, 'second action should be replace logical operator');
+      assert.strictEqual(arr[1].payload.pillData.type, OPERATOR_AND, 'should replace with an AND');
+      assert.strictEqual(arr[2].type, ACTION_TYPES.REPLACE_LOGICAL_OPERATOR, 'second action should be replace logical operator');
+      assert.strictEqual(arr[2].payload.pillData.type, OPERATOR_AND, 'should replace with an AND');
     };
 
     thunk(dispatch, getState);
@@ -703,16 +747,19 @@ module('Unit | Actions | Pill Creators', function(hooks) {
     action(dispatch, getState);
   });
 
-  test('addLogicalOperator action creator replaces OR with AND when before a text pill', function(assert) {
+  test('addLogicalOperator action creator replaces OR with AND after text pill when text pill is not first', function(assert) {
     assert.expect(3);
+    let [ textPill ] = TEXT_PILL_DATA;
+    textPill = { ...textPill, id: '3' };
     const getState = () => {
       return new ReduxDataHelper()
-        .pillsDataText()
+        .pillsDataWithAnd()
+        .insertPillAt(textPill, 2)
         .build();
     };
 
     const pillData = createOperator(OPERATOR_OR);
-    const position = 0;
+    const position = 3;
     const action = pillCreators.addLogicalOperator({ pillData, position });
 
     const dispatch = (action) => {

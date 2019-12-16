@@ -284,6 +284,15 @@ export const addTextFilter = ({ pillData, position = 0, shouldAddFocusToNewPill 
       };
       batch.push(replaceLogicalOperator({ pillData: newPillData, position }));
     }
+    const nextPill = pillsData(getState())[position];
+    if (nextPill?.type === OPERATOR_OR) {
+      // Text pills must always have an AND next to them, not an OR
+      const newPillData = {
+        ...nextPill,
+        type: OPERATOR_AND
+      };
+      batch.push(replaceLogicalOperator({ pillData: newPillData, position: position + 2 }));
+    }
     dispatch(batch);
   };
 };
@@ -330,11 +339,8 @@ export const addLogicalOperator = ({ pillData, position }) => {
   return (dispatch, getState) => {
     const prevPill = pillsData(getState())[position - 1];
     const nextPill = pillsData(getState())[position];
-    // If the first pill is a text pill, any operator after must be an AND
-    if ((position - 1) === 0 && prevPill?.type === TEXT_FILTER && pillData.type === OPERATOR_OR) {
-      pillData.type = OPERATOR_AND;
-      // TODO: Notify the user why this happened
-    } else if (nextPill?.type === TEXT_FILTER) {
+    // If adjacent to a text filter, must be an AND
+    if (prevPill?.type === TEXT_FILTER || nextPill?.type === TEXT_FILTER) {
       pillData.type = OPERATOR_AND;
     }
     const action = {

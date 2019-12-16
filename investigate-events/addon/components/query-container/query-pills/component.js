@@ -1081,7 +1081,10 @@ const QueryPills = RsaContextMenu.extend({
     const isEditing = pillData ? pillData.isEditing : false;
     const previousPill = this.pillsData[position - 1];
     if (_isLogicalOperator(previousPill)) {
-      this.send('replaceLogicalOperator', { pillData: operator, position });
+      // Do not allow a user to circumvent only allowing AND next to text pills
+      if (!previousPill.isTextPillAttached) {
+        this.send('replaceLogicalOperator', { pillData: operator, position });
+      }
     } else if (this._canInsertLogicalOperator(this.pillsData, position) || isEditing) {
       this.set('cursorPosition', position + 1);
       this._pillsExited(false);

@@ -336,12 +336,6 @@ class Parser {
     result.children.push(child);
     while (this._nextTokenIsOfType([ LEXEMES.AND, LEXEMES.OR ])) {
       let operator = this._advance();
-      // If a text pill is first, the following operator MUST be an AND
-      if (result.children.length === 1 &&
-        result.children[0].type === LEXEMES.TEXT_FILTER &&
-        operator.type === LEXEMES.OR) {
-        operator = { type: LEXEMES.AND, text: 'AND' };
-      }
       let nextCriteriaOrGroup = this._criteriaOrGroupOrTextFilterOrNot();
       while (nextCriteriaOrGroup.type === GRAMMAR.COMPLEX_FILTER && nextCriteriaOrGroup.tryAgain) {
         if (nextCriteriaOrGroup.text !== '') {
@@ -363,10 +357,11 @@ class Parser {
       }
     }
 
-    // Change any OR to AND before a text filter
+    // Change any OR to AND before or after a text filter
     result.children = result.children.map((item, idx, arr) => {
+      const prev = arr[idx - 1];
       const next = arr[idx + 1];
-      if (item.type === LEXEMES.OR && next?.type === LEXEMES.TEXT_FILTER) {
+      if (item.type === LEXEMES.OR && (prev?.type === LEXEMES.TEXT_FILTER || next?.type === LEXEMES.TEXT_FILTER)) {
         return { type: LEXEMES.AND, text: 'AND' };
       }
       return item;

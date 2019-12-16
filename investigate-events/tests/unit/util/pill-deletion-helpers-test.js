@@ -8,7 +8,7 @@ import {
   removeEmptyParens,
   removePills,
   removeUnnecessaryOperators,
-  replaceOrAfterFirstTextPill
+  replaceOrNextToTextPill
 } from 'investigate-events/util/pill-deletion-helpers';
 import {
   CloseParen,
@@ -260,13 +260,13 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     assert.equal(result.length, 0, 'no pills should remain');
   });
 
-  test('replaceOrAfterFirstTextPill replaces OR with AND', function(assert) {
+  test('replaceOrNextToTextPill replaces OR with AND', function(assert) {
     const pillsData = [
       { id: '1', type: TEXT_FILTER },
       { id: '2', type: OPERATOR_OR },
       { id: '3', type: QUERY_FILTER }
     ];
-    const result = replaceOrAfterFirstTextPill(pillsData);
+    const result = replaceOrNextToTextPill(pillsData);
     assert.deepEqual(result, [
       { id: '1', type: TEXT_FILTER },
       { id: '2', type: OPERATOR_AND },
@@ -274,13 +274,45 @@ module('Unit | Util | Pill Deletion Helper', function(hooks) {
     ], 'OR is replaced with AND');
   });
 
-  test('replaceOrAfterFirstTextPill does not replace OR with AND', function(assert) {
+  test('replaceOrNextToTextPill replaces OR with AND', function(assert) {
+    const pillsData = [
+      { id: '1', type: QUERY_FILTER },
+      { id: '2', type: OPERATOR_OR },
+      { id: '3', type: TEXT_FILTER }
+    ];
+    const result = replaceOrNextToTextPill(pillsData);
+    assert.deepEqual(result, [
+      { id: '1', type: QUERY_FILTER },
+      { id: '2', type: OPERATOR_AND },
+      { id: '3', type: TEXT_FILTER }
+    ], 'OR is replaced with AND');
+  });
+
+  test('replaceOrNextToTextPill replaces OR with AND', function(assert) {
+    const pillsData = [
+      { id: '1', type: QUERY_FILTER },
+      { id: '2', type: OPERATOR_OR },
+      { id: '3', type: TEXT_FILTER },
+      { id: '4', type: OPERATOR_OR },
+      { id: '5', type: QUERY_FILTER }
+    ];
+    const result = replaceOrNextToTextPill(pillsData);
+    assert.deepEqual(result, [
+      { id: '1', type: QUERY_FILTER },
+      { id: '2', type: OPERATOR_AND },
+      { id: '3', type: TEXT_FILTER },
+      { id: '4', type: OPERATOR_AND },
+      { id: '5', type: QUERY_FILTER }
+    ], 'OR is replaced with AND');
+  });
+
+  test('replaceOrNextToTextPill does not replace OR with AND', function(assert) {
     const pillsData = [
       { id: '1', type: QUERY_FILTER },
       { id: '2', type: OPERATOR_OR },
       { id: '3', type: QUERY_FILTER }
     ];
-    const result = replaceOrAfterFirstTextPill(pillsData);
+    const result = replaceOrNextToTextPill(pillsData);
     assert.deepEqual(result, [
       { id: '1', type: QUERY_FILTER },
       { id: '2', type: OPERATOR_OR },

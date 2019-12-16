@@ -35,12 +35,12 @@ module('Unit | Util | keys', function() {
     assert.notOk(result[3].isTextPillAttached, 'second operator is NOT attached to text filter');
   });
 
-  test('Marks an operator as attached before a text pill as the third pill', function(assert) {
+  test('Marks both operators around a text pill as attached', function(assert) {
     const result = markTextPillAttachedOperators(data2);
     assert.strictEqual(result[1].type, OPERATOR_AND, 'first operator is AND');
     assert.ok(result[1].isTextPillAttached, 'first operator is attached to text filter');
     assert.strictEqual(result[3].type, OPERATOR_OR, 'second operator is OR');
-    assert.notOk(result[3].isTextPillAttached, 'second operator is NOT attached to text filter');
+    assert.ok(result[3].isTextPillAttached, 'second operator is attached to text filter');
   });
 
   test('Marks an operator as attached before a text pill as the fifth pill', function(assert) {
