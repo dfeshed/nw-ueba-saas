@@ -13,7 +13,6 @@ node("${params.ADMIN_SERVER_NODE}") {
             sh "whoami"
             println(" ++++++++ Downloading upgrade scripts from the Git ++++++++ ")
             sh(script: "wget ${params.SCRIPTS_URL}${adminServerUpgradeScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
-            sh(script: "wget ${params.SCRIPTS_URL}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
             println(" ++++++++ finished ++++++++ ")
         }
 
@@ -40,6 +39,9 @@ node("${params.UEBA_NODE}") {
     if (params.UEBA_REPO_CONF_STAGE_ENABLED) {
         stage('UEBA repo configuration') {
             println(" ++++++++ Going to configure UEBA node repo ++++++++ ")
+            cleanWs()
+            sh "whoami"
+            sh(script: "wget ${params.SCRIPTS_URL}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
             sh(script: "sh ${WORKSPACE}/upgrade-repo-configuration.sh ${params.NW_VERSION} ${params.ASOC_URL}", returnStatus: true)
         }
     }
