@@ -4,6 +4,8 @@ set -e
 NW_VERSION=$1
 ASOC_URL=$2
 
+echo "  #############  Starting upgrade-admin-server.sh #############"
+
 echo "NW_VERSION=${NW_VERSION}"
 echo "ASOC_URL=${ASOC_URL}"
 echo -e "https://nw-node-zero/nwrpmrepo" > /etc/netwitness/platform/repobase
@@ -14,14 +16,12 @@ sed -i "s|baseurl=.*|baseurl=file:///var/netwitness/common/repo/${NW_VERSION}/RS
 yum clean all
 rm -rf /var/cache/yum
 
-
-#### Preparing to update ####
 mkdir -p /tmp/upgrade/${NW_VERSION}
 cd /tmp/
 
 echo "  #############  Starting download upgrade ZIP #############"
-wget -q --show-progress ${ASOC_URL}
-echo "  #############  upgrade ZIP Download finished #############"
+wget -q ${ASOC_URL}
+echo "  #############  ZIP Download finished #############"
 
 unzip netwitness-${NW_VERSION}.zip -d /tmp/upgrade/${NW_VERSION}/
 echo
@@ -37,5 +37,8 @@ echo "  #############  Done. #############"
 echo
 echo "  #############  Going to REBOOT in 10 seconds !!! #############"
 sleep 10 && reboot &
+
+echo "  #############  upgrade-admin-server.sh DONE #############"
+
 
 #https://wiki.na.rsa.net/display/PRES/Netwitness+Environment+Upgrade
