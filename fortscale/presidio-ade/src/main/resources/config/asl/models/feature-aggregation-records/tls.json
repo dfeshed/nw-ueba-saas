@@ -328,6 +328,424 @@
         "distanceBetweenSegmentCenters": 1,
         "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
       }
+    },
+    {
+      "name": "numberOfDistinctSrcIp.newSslSubjectOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcIpForNewSslSubjectOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIp.newDomainSslSubjectOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcIpForNewDomainSslSubjectOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIp.newDstOrgSslSubjectOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcIpForNewDstOrgSslSubjectOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIp.newDstPortSslSubjectOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcIpForNewDstPortSslSubjectOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIp.newSslSubjectOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "maxSumOfBytesSentBySrcIpToNewSslSubjectOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIp.newDomainSslSubjectOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "maxSumOfBytesSentBySrcIpToNewDomainSslSubjectOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIp.newDstOrgSslSubjectOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "maxSumOfBytesSentBySrcIpToNewDstOrgSslSubjectOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIp.newDstPortSslSubjectOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "maxSumOfBytesSentBySrcIpToNewDstPortSslSubjectOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "sumOfBytesSent.newSslSubjectOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToNewSslSubjectOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "sumOfBytesSent.newDomainSslSubjectOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToNewDomainSslSubjectOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "sumOfBytesSent.newDstOrgSslSubjectOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToNewDstOrgSslSubjectOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "sumOfBytesSent.newDstPortSslSubjectOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToNewDstPortSslSubjectOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "sumOfBytesSent.newJa3Outbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToNewJa3OutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "numberOfDistinctNewSslSubject.srcIpOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctNewSslSubjectForSrcIpOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "numberOfDistinctNewDomain.srcIpOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctNewDomainForSrcIpOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "numberOfDistinctNewDstOrg.srcIpOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctNewDstOrgForSrcIpOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "numberOfDistinctNewDstAsn.srcIpOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctNewDstAsnForSrcIpOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "numberOfDistinctNewDstCountry.srcIpOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctNewDstCountryForSrcIpOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIp.newDstAsnOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcIpForNewDstAsnOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIp.newDstCountryOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcIpForNewDstCountryOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "sumOfBytesSent.newDstAsnOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToNewDstAsnOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "sumOfBytesSent.newDstCountryOutbound.tls.hourly",
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_global_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToNewDstCountryOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400,
+        "numOfMaxValuesSamples": 1000,
+        "minNumOfMaxValuesSamples": 5,
+        "minResolution": 24
+      }
+    },
+    {
+      "name": "sumOfBytesSent.dstAsnOutbound.tls.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToDstAsnOutboundTlsHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToDstAsnOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "sumOfBytesSent.dstAsnOutbound.prior.tls.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "sumOfBytesSent.dstAsnOutbound.tls.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 10000000,
+        "distanceBetweenSegmentCenters": 10000000,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3,
+        "padding": 10000000
+      }
+    },
+    {
+      "name": "sumOfBytesSent.dstCountryOutbound.tls.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToDstCountryOutboundTlsHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToDstCountryOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "sumOfBytesSent.dstCountryOutbound.prior.tls.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "sumOfBytesSent.dstCountryOutbound.tls.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 10000000,
+        "distanceBetweenSegmentCenters": 10000000,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3,
+        "padding": 10000000
+      }
     }
   ]
 }

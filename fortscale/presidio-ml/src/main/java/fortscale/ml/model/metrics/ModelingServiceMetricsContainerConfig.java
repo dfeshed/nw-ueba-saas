@@ -24,6 +24,7 @@ import static java.util.stream.Collectors.toList;
         MaxContinuousModelRetrieverMetricsContainerConfig.class,
         GaussianPriorModelBuilderMetricsContainerConfig.class,
         WeightModeBuilderMetricsContainerConfig.class,
+        AccumulatedAggregatedFeatureValueGlobalRetrieverMetricsContainerConfig.class,
 })
 public class ModelingServiceMetricsContainerConfig {
     @Autowired

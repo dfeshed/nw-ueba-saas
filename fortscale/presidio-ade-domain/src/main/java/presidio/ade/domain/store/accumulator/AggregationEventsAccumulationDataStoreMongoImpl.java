@@ -76,8 +76,8 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
             Criteria startTimeCriteria = Criteria.where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
             Query query = new Query(startTimeCriteria);
             mongoTemplate.getCollection(collectionName)
-                         .distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD,query.getQueryObject(),String.class)
-                         .into(distinctContexts);
+                    .distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject(), String.class)
+                    .into(distinctContexts);
         } catch (Exception e) {
             long nextPageIndex = 0;
             Set<String> subList;
@@ -97,12 +97,13 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
 
     /**
      * Aggregate distinct contextIds
-     * @param startDate startDate
-     * @param endDate endDate
-     * @param skip skip
-     * @param limit limit
+     *
+     * @param startDate      startDate
+     * @param endDate        endDate
+     * @param skip           skip
+     * @param limit          limit
      * @param collectionName collectionName
-     * @param allowDiskUse allowDiskUse
+     * @param allowDiskUse   allowDiskUse
      * @return set of distinct contextIds
      */
     private Set<String> aggregateContextIds(
@@ -134,45 +135,47 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
     }
 
     @Override
-    public List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByStartTimeRange(
-            String aggregatedFeatureName,
-            Instant startTimeFrom,
-            Instant startTimeTo) {
-        logger.debug("getting accumulated events for featureName={}", aggregatedFeatureName);
-
-
-        AccumulatedRecordsMetaData metadata = new AccumulatedRecordsMetaData(aggregatedFeatureName);
-        String collectionName = getCollectionName(metadata);
-
-        Query query = new Query()
-                .addCriteria(where(AdeRecord.START_INSTANT_FIELD)
-                        .gte(startTimeFrom)
-                        .lt(startTimeTo));
-        List<AccumulatedAggregationFeatureRecord> accumulatedAggregatedFeatureEvents =
-                mongoTemplate.find(query, AccumulatedAggregationFeatureRecord.class, collectionName);
-
-        logger.debug("found {} accumulated events", accumulatedAggregatedFeatureEvents.size());
-        return accumulatedAggregatedFeatureEvents;
-    }
-
-    @Override
     public List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByContextIdAndStartTimeRange(
             String aggregatedFeatureName,
             String contextId,
             Instant startTimeFrom,
             Instant startTimeTo) {
+        Query query = new Query();
+        addContextIdCriteria(query, contextId);
+        addStartTimeRangeCriteria(query, startTimeFrom, startTimeTo);
+
+        return findAccumulatedEventsByQuery(aggregatedFeatureName, query);
+    }
+
+    @Override
+    public List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByStartTimeRange(
+            String aggregatedFeatureName,
+            Instant startTimeFrom,
+            Instant startTimeTo) {
+        Query query = new Query();
+        addStartTimeRangeCriteria(query, startTimeFrom, startTimeTo);
+
+        return findAccumulatedEventsByQuery(aggregatedFeatureName, query);
+    }
+
+    private void addContextIdCriteria(Query query, String contextId){
+        query.addCriteria(where(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD)
+                .is(contextId));
+    }
+
+    private void addStartTimeRangeCriteria(Query query, Instant startTimeFrom, Instant startTimeTo){
+        query.addCriteria(where(AdeRecord.START_INSTANT_FIELD)
+                .gte(startTimeFrom)
+                .lt(startTimeTo));
+    }
+
+    private List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByQuery(
+            String aggregatedFeatureName,
+            Query query){
         logger.debug("getting accumulated events for featureName={}", aggregatedFeatureName);
 
+        String collectionName = getCollectionName(new AccumulatedRecordsMetaData(aggregatedFeatureName));
 
-        AccumulatedRecordsMetaData metadata = new AccumulatedRecordsMetaData(aggregatedFeatureName);
-        String collectionName = getCollectionName(metadata);
-
-        Query query = new Query()
-                .addCriteria(where(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD)
-                        .is(contextId))
-                .addCriteria(where(AdeRecord.START_INSTANT_FIELD)
-                        .gte(startTimeFrom)
-                        .lt(startTimeTo));
         List<AccumulatedAggregationFeatureRecord> accumulatedAggregatedFeatureEvents =
                 mongoTemplate.find(query, AccumulatedAggregationFeatureRecord.class, collectionName);
 
@@ -199,7 +202,7 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
     }
 
     @Override
-    public void remove(String collectionName, Instant start, Instant end){
+    public void remove(String collectionName, Instant start, Instant end) {
         Query query = new Query()
                 .addCriteria(where(AdeRecord.START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
