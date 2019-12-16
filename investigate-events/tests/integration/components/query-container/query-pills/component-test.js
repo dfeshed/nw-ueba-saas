@@ -148,7 +148,11 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   test('Upon initialization, one active pill is created', async function(assert) {
-    await render(hbs`{{query-container/query-pills}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     assert.equal(findAll(PILL_SELECTORS.allPills).length, 1, 'There should only be one query-pill.');
   });
 
@@ -180,12 +184,12 @@ module('Integration | Component | Query Pills', function(hooks) {
     }));
 
     await render(hbs`
-    <div class='rsa-investigate-query-container'>
+      <div class='rsa-investigate-query-container'>
         {{query-container/query-pills
           isActive=true
           isPrimary=true
         }}
-    </div>
+      </div>
     `);
     assert.equal(findAll(PILL_SELECTORS.queryPillNotTemplate).length, 2, 'There should only 2 pills from DEFAULT_PILLS_DATA.');
   });
@@ -219,12 +223,12 @@ module('Integration | Component | Query Pills', function(hooks) {
     }));
 
     await render(hbs`
-    <div class='rsa-investigate-query-container'>
+      <div class='rsa-investigate-query-container'>
         {{query-container/query-pills
           isActive=true
           isPrimary=true
         }}
-    </div>
+      </div>
     `);
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 1, 'There should only 1 pill from COMPLEX_PILL_DATA.');
     assert.equal(find(PILL_SELECTORS.complexPill).title, 'foo = bar', 'Did not find the correct pill');
@@ -237,7 +241,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataEmpty()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await createBasicPill();
     assert.ok(newActionSpy.calledOnce, 'The addGuidedPill creator was not called once');
     assert.propEqual(newActionSpy.args[0][0],
@@ -252,7 +260,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await createBasicPill();
     await settled();
     assert.ok(newActionSpy.calledWithMatch({
@@ -268,7 +280,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 3, 'There should three new pill triggers.');
 
     await createBasicPill();
@@ -282,12 +298,13 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()// P & P
       .build();
     this.set('cursorPosition', undefined);
-
     await render(hbs`
-      {{query-container/query-pills
-        isActive=true
-        cursorPosition=cursorPosition
-      }}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills
+          isActive=true
+          cursorPosition=cursorPosition
+        }}
+      </div>
     `);
     await leaveNewPillTemplate();
     const triggers = findAll(PILL_SELECTORS.newPillTrigger);
@@ -313,12 +330,13 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
     this.set('cursorPosition', undefined);
-
     await render(hbs`
-      {{query-container/query-pills
-        isActive=true
-        cursorPosition=cursorPosition
-      }}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills
+          isActive=true
+          cursorPosition=cursorPosition
+        }}
+      </div>
     `);
     await leaveNewPillTemplate();
     const triggers = findAll(PILL_SELECTORS.newPillTrigger);
@@ -342,14 +360,10 @@ module('Integration | Component | Query Pills', function(hooks) {
       .canQueryGuided()
       .pillsDataPopulated()
       .build();
-
     await render(hbs`
+      <div class='outside'></div>
       <div class='rsa-investigate-query-container'>
-        {{#rsa-application-content}}
-          <div class='outside'>
-            {{query-container/query-pills isActive=true}}
-          </div>
-        {{/rsa-application-content}}
+        {{query-container/query-pills isActive=true}}
       </div>
     `);
     await leaveNewPillTemplate();
@@ -372,11 +386,10 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{#rsa-application-content}}
-          <div class='outside'>
-            {{query-container/query-pills isActive=true}}
-          </div>
-        {{/rsa-application-content}}
+        {{query-container/query-pills
+          isActive=true
+          cursorPosition=cursorPosition
+        }}
       </div>
     `);
     await leaveNewPillTemplate();
@@ -396,7 +409,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await leaveNewPillTemplate();
     await click(PILL_SELECTORS.newPillTrigger);
     await createBasicPill(true);
@@ -417,7 +434,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true }}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await leaveNewPillTemplate();
     await click(PILL_SELECTORS.deletePill);
 
@@ -439,7 +460,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await click(PILL_SELECTORS.deletePill);
 
     return settled().then(async() => {
@@ -455,7 +480,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     doubleClick(PILL_SELECTORS.queryPill, true);
 
     return settled().then(async() => {
@@ -470,7 +499,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await leaveNewPillTemplate();
     allPillsAreClosed(assert);
   });
@@ -482,7 +515,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 1, 'Class for pill open should be present.');
     assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 0, 'No classes for pills open for edit');
@@ -495,7 +532,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     // escape out of template first
     await leaveNewPillTemplate();
@@ -514,7 +555,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataEmpty()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     // creates a pill with MAC format with a text value 'x'
     // will create an invalid pill once redux updates the store
@@ -532,7 +577,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataEmpty()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     await createBasicPill(false, 'Text');
     // component class updates when store is updated
@@ -548,7 +597,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     await leaveNewPillTemplate();
 
@@ -572,7 +625,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     await leaveNewPillTemplate();
 
@@ -594,7 +651,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     await leaveNewPillTemplate();
 
@@ -620,7 +681,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     await leaveNewPillTemplate();
 
@@ -629,12 +694,13 @@ module('Integration | Component | Query Pills', function(hooks) {
     await click(`#${metas[1].id}`); // make it selected
 
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'Two selecteded pills.');
-    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus new-pill-template.');
 
     await click(PILL_SELECTORS.newPillTrigger);
+    await click(PILL_SELECTORS.metaInput);
 
-    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Pill no longer selected');
-    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 4, 'Should be two pills plus template plus triggered pill.');
+    assert.notOk(find(PILL_SELECTORS.selectedPill), 'Pill no longer selected');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus new-pill-template.');
   });
 
   test('If a pill is being edited, it is active', async function(assert) {
@@ -645,7 +711,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .markEditing(['1'])
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     assert.equal(findAll(PILL_SELECTORS.activePills).length, 2, 'Two active pills, one is the end of line template.');
   });
@@ -660,7 +730,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .investigate
       .queryNode;
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await click(PILL_SELECTORS.meta);
     await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
     assert.ok(resetGuidedPillSpy.calledOnce, 'The reset pill action creator was called once');
@@ -675,7 +749,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     await leaveNewPillTemplate();
 
@@ -701,9 +779,9 @@ module('Integration | Component | Query Pills', function(hooks) {
     const done = assert.async();
 
     await render(hbs`
-    <div class='rsa-investigate-query-container'>
+      <div class='rsa-investigate-query-container'>
         {{query-container/query-pills isActive=true}}
-    </div>
+      </div>
     `);
 
     await leaveNewPillTemplate();
@@ -761,7 +839,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     await leaveNewPillTemplate();
 
@@ -777,7 +859,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     assert.equal(findAll(PILL_SELECTORS.activePills).length, 1, 'One active pill, at the end of line template.');
 
@@ -833,7 +919,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataEmpty()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await createBasicPill(false, 'Text', 'contains');
     assert.equal(findAll(PILL_SELECTORS.expensivePill).length, 1, 'Class for expensive pill should be present');
   });
@@ -845,7 +935,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataComplex()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 1, 'A complex pill should be present');
   });
 
@@ -856,7 +950,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataComplex()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await leaveNewPillTemplate();
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 1, 'A complex pill should be present');
     await click(PILL_SELECTORS.complexPill);
@@ -883,7 +981,10 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true isPrimary=true}}
+        {{query-container/query-pills
+          isActive=true
+          isPrimary=true
+        }}
       </div>
     `);
 
@@ -920,7 +1021,10 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true isPrimary=true}}
+        {{query-container/query-pills
+          isActive=true
+          isPrimary=true
+        }}
         {{context-menu}}
       </div>
     `);
@@ -974,60 +1078,50 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   test('Pressing DELETE on a new pill trigger will move the focus to the next pill', async function(assert) {
+    assert.expect(3);
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
-    assert.expect(3);
-
     await render(hbs`
       <div class='rsa-investigate-query-container'>
         {{query-container/query-pills isActive=true}}
       </div>
     `);
-
+    await leaveNewPillTemplate();
     await click(PILL_SELECTORS.newPillTrigger);
-    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
-    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', DELETE_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', DELETE_KEY);
 
-    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'One focus holder should be present');
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Focus shifts to the next pill');
+    assert.ok(find(PILL_SELECTORS.focusedPill), 'Focus shifts to the next pill');
+    assert.ok(find(PILL_SELECTORS.focusHolderInput), 'Focus holder should be present');
 
   });
 
   test('Pressing DELETE on all keys should move the focus to the last empty pill template', async function(assert) {
+    assert.expect(3);
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
-    assert.expect(3);
-
     await render(hbs`
       <div class='rsa-investigate-query-container'>
         {{query-container/query-pills isActive=true}}
       </div>
     `);
-
+    await leaveNewPillTemplate();
     await click(PILL_SELECTORS.newPillTrigger);
-    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
-    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', DELETE_KEY);
-
-    await waitUntil(() => findAll(PILL_SELECTORS.focusHolderInput).length > 0, { timeout: 5000 });
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', DELETE_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
 
-    await waitUntil(() => findAll(PILL_SELECTORS.focusHolderInput).length > 0, { timeout: 5000 });
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
-
-    return settled().then(() => {
-      assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'Should be the empty template.');
-      assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1, 'The meta dropdown is open');
-      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'No Pill left to focus');
-    });
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'Should be the empty template.');
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1, 'The meta dropdown is open');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'No Pill left to focus');
   });
 
   test('Pressing BACKSPACE once a pill is focused will delete it and moves the focus to the next pill if present or else to the new pill template', async function(assert) {
@@ -1321,9 +1415,13 @@ module('Integration | Component | Query Pills', function(hooks) {
     this.set('executeQuery', () => {
       done();
     });
-
     await render(hbs`
-      {{query-container/query-pills executeQuery=executeQuery}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills
+          isActive=true
+          executeQuery=executeQuery
+        }}
+      </div>
     `);
 
     await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ENTER_KEY);
@@ -1344,7 +1442,12 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
 
     await render(hbs`
-      {{query-container/query-pills executeQuery=executeQuery}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills
+          isActive=true
+          executeQuery=executeQuery
+        }}
+      </div>
     `);
 
     await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ENTER_KEY);
@@ -1364,7 +1467,12 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
 
     await render(hbs`
-      {{query-container/query-pills executeQuery=executeQuery}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills
+          isActive=true
+          executeQuery=executeQuery
+        }}
+      </div>
     `);
 
     await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ENTER_KEY);
@@ -1598,7 +1706,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataComplex()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await leaveNewPillTemplate();
 
     let pills = findAll(PILL_SELECTORS.complexPill);
@@ -1629,7 +1741,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataComplex()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await leaveNewPillTemplate();
 
     let pills = findAll(PILL_SELECTORS.complexPill);
@@ -1659,7 +1775,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataComplex()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await leaveNewPillTemplate();
 
     let pills = findAll(PILL_SELECTORS.complexPill);
@@ -1696,7 +1816,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await leaveNewPillTemplate();
 
     let pills = findAll(PILL_SELECTORS.queryPill);
@@ -3092,7 +3216,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataEmpty()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     // enter non-meta value for pill and press ENTER
     await clickTrigger(PILL_SELECTORS.meta);
@@ -3115,7 +3243,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataEmpty()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     // enter non-meta value for pill and press ENTER
     await clickTrigger(PILL_SELECTORS.meta);
@@ -3320,7 +3452,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .canQueryGuided()
       .invalidPillsDataPopulated()
       .build();
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await leaveNewPillTemplate();
     assert.ok(find(PILL_SELECTORS.invalidPill), 'invalid pill was not created');
     await doubleClick(PILL_SELECTORS.queryPill, true);
@@ -3792,39 +3928,28 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(find(PILL_SELECTORS.closeParen), 'Missing close paren');
   });
 
-  // opening paren after entering a logical operator
-  test('Entering an open paren after entering a logical operator shows two powerselect dropdowns for meta', async function(assert) {
+  test('After creating nested parens, it shows only one powerselect dropdown', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
       .pillsDataEmpty()
       .build();
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
 
-    // create a pill
-    await clickTrigger(PILL_SELECTORS.meta);
-    await selectChoose(PILL_SELECTORS.meta, 'medium');
-    await selectChoose(PILL_SELECTORS.operator, '=');
-    await typeIn(PILL_SELECTORS.valueSelectInput, '32');
-    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
-
-    // enter logical operator
-    await clickTrigger(PILL_SELECTORS.meta);
-    await typeInSearch('AND ');
-
-    // enter open paren
+    // Create nested paren
     await clickTrigger(PILL_SELECTORS.meta);
     await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', '(');
-    assert.ok(find(PILL_SELECTORS.openParen), 'Missing open paren');
-    assert.ok(find(PILL_SELECTORS.closeParen), 'Missing close paren');
-    // shall find one powerselect dropdown for meta only, not two
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', '(');
+    assert.equal(findAll(PILL_SELECTORS.openParen).length, 2, 'Missing open paren');
+    assert.equal(findAll(PILL_SELECTORS.closeParen).length, 2, 'Missing close paren');
     assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'shall find one powerselect dropdown');
   });
 
   test('Can create a new pill inside a pair of parens', async function(assert) {
-    const done = assert.async();
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -3832,33 +3957,30 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
     this.set('cursorPosition', undefined);
     await render(hbs`
-      {{query-container/query-pills
-        isActive=true
-        cursorPosition=cursorPosition
-      }}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills
+          isActive=true
+          cursorPosition=cursorPosition
+        }}
+      </div>
     `);
-    await clickTrigger(PILL_SELECTORS.meta);
+    // Type a "(" to create a paren set)
     await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', '(');
-    assert.ok(find(PILL_SELECTORS.metaInput), 'Has active/open meta');
-    // Create a pill
+    // Create another pill
     await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);
     await selectChoose(PILL_SELECTORS.operatorTrigger, '=');
     await typeIn(PILL_SELECTORS.valueSelectInput, 'b');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
-    // Test that new pill is in between open and close parens, and is focused.
-    const items = document.querySelectorAll('.query-pills > div');
+    // Test that new pill is in between open and close parens like so:
     // NPT, OP, NPT, Pill, NPT(open), CP, NPT
+    const items = document.querySelectorAll('.query-pills > div');
     assert.equal(items.length, 7, 'Correct number of query items');
     assert.equal(trim(items[1].textContent), '(', 'Should be an open paren');
     assert.equal(trim(items[3].textContent), 'a=\'b\'', 'Should be correct pill text');
     assert.equal(trim(items[5].textContent), ')', 'Should be a close paren');
-    assert.equal(this.get('cursorPosition'), 2, 'cursor position correct');
-    // need to give the new-pill-trigger a second to open
-    await waitUntil(() => find(PILL_SELECTORS.pillOpen), { timeout: 2000 })
-      .then(async function() {
-        assert.ok(true, 'Should be a pill open for creation');
-        done();
-      });
+    assert.ok(find(PILL_SELECTORS.metaTrigger), 'Should be a pill open for creation');
+    // Test if cursorPosition is updated properly
+    assert.equal(this.cursorPosition, 2);
   });
 
   test('new pill triggers render appropriately when including parens', async function(assert) {
@@ -3868,7 +3990,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataWithParens()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 3, 'There should three new pill triggers.');
     assert.ok(findAll(PILL_SELECTORS.metaInputFocused), 1, 'found 1 new pill template focused');
   });
@@ -3942,7 +4068,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
 
     await leaveNewPillTemplate();
@@ -3964,7 +4092,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
 
@@ -3987,7 +4117,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
 
@@ -4014,7 +4146,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
     const triggers = findAll(PILL_SELECTORS.newPillTrigger);
@@ -4036,7 +4170,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
 
     await clickTrigger(PILL_SELECTORS.meta);
@@ -4060,7 +4196,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
 
     await clickTrigger(PILL_SELECTORS.meta);
@@ -4090,7 +4228,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
 
@@ -4116,7 +4256,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
 
@@ -4138,7 +4280,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
 
@@ -4161,7 +4305,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
 
@@ -4184,7 +4330,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
 
@@ -4213,7 +4361,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
 
@@ -4234,7 +4384,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
 
     await clickTrigger(PILL_SELECTORS.meta);
@@ -4260,7 +4412,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
 
     await clickTrigger(PILL_SELECTORS.meta);
@@ -4288,7 +4442,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
 
     await leaveNewPillTemplate();
@@ -4315,7 +4471,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
 
 
@@ -4353,12 +4511,17 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataWithEmptyParens() // op, cp
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true }}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
     const triggers = await findAll(PILL_SELECTORS.newPillTrigger);
     assert.equal(triggers.length, 2, 'correct number of triggers');
 
     await click(triggers[1]);
-    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ESCAPE_KEY);
     assert.ok(cancelPillCreationSpy.calledWith(1), 'called with position 1');
     assert.notOk(find(PILL_SELECTORS.openParen), 'all parens should be removed');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'all parens should be removed');
@@ -4373,7 +4536,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .insertPillAt(OR, 3) // P & P ||
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true }}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     assert.equal(findAll(PILL_SELECTORS.newPillTrigger).length, 4, 'correct number of triggers');
     // ESC out of pill creation
     await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
@@ -4391,7 +4558,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .insertPillAt(OR, 0) // OR ( )
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true }}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await leaveNewPillTemplate();
     const triggers = findAll(PILL_SELECTORS.newPillTrigger);
     assert.equal(triggers.length, 3, 'correct number of triggers');
@@ -4412,7 +4583,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataWithParens() // op, qp, cp
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true }}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await leaveNewPillTemplate();
     await click(PILL_SELECTORS.deletePill);
 
@@ -4478,7 +4653,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
 
     await leaveNewPillTemplate();
@@ -4511,7 +4688,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
 
     await leaveNewPillTemplate();
@@ -4544,7 +4723,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
 
     await leaveNewPillTemplate();
@@ -4577,7 +4758,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
 
     await leaveNewPillTemplate();
@@ -4670,7 +4853,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated([operatorAND])
       .build();
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     assert.ok(find(PILL_SELECTORS.logicalOperatorAND), 'Missing AND operator');
   });
@@ -4688,7 +4873,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated([operatorOR])
       .build();
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     assert.ok(find(PILL_SELECTORS.logicalOperatorOR), 'Missing OR operator');
   });
@@ -4700,7 +4887,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await clickTrigger(PILL_SELECTORS.meta);
     await typeInSearch('&&');
@@ -4716,7 +4905,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataEmpty()
       .build();
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await createBasicPill();
     await clickTrigger(PILL_SELECTORS.meta);
@@ -4733,7 +4924,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataEmpty()
       .build();
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await clickTrigger(PILL_SELECTORS.meta);
     await typeInSearch('AND');
@@ -4747,7 +4940,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataWithEmptyParens()
       .build();
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
     const triggers = findAll(PILL_SELECTORS.newPillTrigger);
@@ -4765,7 +4960,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataEmpty()
       .build();
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await createBasicPill();
     await createBasicPill();
@@ -4779,7 +4976,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataEmpty()
       .build();
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await createBasicPill();
     await clickTrigger(PILL_SELECTORS.meta);
@@ -4798,7 +4997,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()// Pill AND Pill
       .build();
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
     const pills = findAll(PILL_SELECTORS.queryPill);
@@ -4830,8 +5031,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
+    await leaveNewPillTemplate();
     // Get NPTs
     const triggers = findAll(PILL_SELECTORS.newPillTrigger);
     assert.equal(triggers.length, 5, 'correct number of triggers');
@@ -4859,7 +5063,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
     // Get Pills
@@ -4889,8 +5095,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
+    await leaveNewPillTemplate();
 
     // Test adding in middle, after the operator
     triggers = findAll(PILL_SELECTORS.newPillTrigger);
@@ -4937,8 +5146,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
+    await leaveNewPillTemplate();
 
     // Test adding after the operator
     const triggers = findAll(PILL_SELECTORS.newPillTrigger);
@@ -4963,16 +5175,18 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
-    await clickTrigger(PILL_SELECTORS.meta);
-    await toggleTab(PILL_SELECTORS.metaSelectInput);
-    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', END_KEY);
-    await settled();
-
-    assert.equal(findAll(PILL_SELECTORS.newPillTemplateRecentQuery).length, 1, 'Should open new pill template');
+    // click new-pill-template to show dropdown
+    await click(PILL_SELECTORS.metaSelectInput);
     await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', HOME_KEY);
-    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+    // click first new-pill-trigger to show dropdown
+    await click(PILL_SELECTORS.metaSelectInput);
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', END_KEY);
+    // check that we've moved to the end
+    assert.ok(find('.new-pill-template input'));
   });
 
   test('Pressing Delete key on a new pill trigger from recent queries tab will move the focus to the next pill', async function(assert) {
@@ -4989,6 +5203,7 @@ module('Integration | Component | Query Pills', function(hooks) {
         {{query-container/query-pills isActive=true}}
       </div>
     `);
+    await leaveNewPillTemplate();
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'No pill focused');
     await click(PILL_SELECTORS.newPillTrigger);
     await focus(PILL_SELECTORS.triggerMetaPowerSelect);
@@ -5032,7 +5247,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()// Pill AND Pill
       .build();
     await render(hbs`
-      {{query-container/query-pills isActive=true}}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
 
@@ -5257,8 +5474,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated() // P & P
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true }}`);
-
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     await click(PILL_SELECTORS.logicalOperator);
     assert.equal(findAll(PILL_SELECTORS.focusedLogicalOperator).length, 1, 'Logical Operator is focused');
     assert.equal(findAll(PILL_SELECTORS.focusedQueryPill).length, 0, 'Query Pill is not focused');
@@ -5279,7 +5499,11 @@ module('Integration | Component | Query Pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true }}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
 
     await click(PILL_SELECTORS.logicalOperator);
     assert.equal(findAll(PILL_SELECTORS.focusedLogicalOperator).length, 1, 'Logical Operator is focused');
@@ -5308,7 +5532,7 @@ module('Integration | Component | Query Pills', function(hooks) {
         {{query-container/query-pills isActive=true}}
       </div>
     `);
-
+    await leaveNewPillTemplate();
     // opening the second empty pill
     const [, newPillTrigger] = findAll(PILL_SELECTORS.newPillTrigger);
     await click(newPillTrigger);
@@ -5347,6 +5571,7 @@ module('Integration | Component | Query Pills', function(hooks) {
         {{query-container/query-pills isActive=true}}
       </div>
     `);
+    await leaveNewPillTemplate();
     // opening the third empty pill
     const [,, newPillTrigger] = findAll(PILL_SELECTORS.newPillTrigger);
     await click(newPillTrigger);
@@ -5370,6 +5595,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'One pill is focused after delete');
     assert.equal(find(PILL_SELECTORS.focusedPill).getAttribute('position'), 0, 'The focus is shift to the right pill after delete');
   });
+
   test('Pressing DELETE on the first new pill trigger within a newly created parens should delete the parens and logical operator and move the focus to the right pill', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -5384,6 +5610,7 @@ module('Integration | Component | Query Pills', function(hooks) {
         {{query-container/query-pills isActive=true}}
       </div>
     `);
+    await leaveNewPillTemplate();
     // opening the first empty pill
     const [newPillTrigger] = findAll(PILL_SELECTORS.newPillTrigger);
     await click(newPillTrigger);
@@ -5407,6 +5634,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'One pill is focused after delete');
     assert.equal(find(PILL_SELECTORS.focusedPill).getAttribute('position'), 0, 'The focus is shift to the right pill after delete');
   });
+
   test('Pressing BACKSPACE on the first new pill trigger within a newly created parens should delete the parens and logical operator and move the focus to the left pill', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -5421,6 +5649,7 @@ module('Integration | Component | Query Pills', function(hooks) {
         {{query-container/query-pills isActive=true}}
       </div>
     `);
+    await leaveNewPillTemplate();
     // opening the first empty pill
     const [newPillTrigger] = findAll(PILL_SELECTORS.newPillTrigger);
     await click(newPillTrigger);
@@ -5462,7 +5691,10 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true isPrimary=true}}
+        {{query-container/query-pills
+          isActive=true
+          isPrimary=true
+        }}
         {{context-menu}}
       </div>
     `);
@@ -5537,7 +5769,10 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true isPrimary=true}}
+        {{query-container/query-pills
+          isActive=true
+          isPrimary=true
+        }}
         {{context-menu}}
       </div>
     `);
@@ -5601,6 +5836,7 @@ module('Integration | Component | Query Pills', function(hooks) {
       });
     });
   });
+
   test('Pressing delete on the single pill inside parens at the start of the query, should remove the parens and the pill along with operator', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -5612,9 +5848,13 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true isPrimary=true}}
+        {{query-container/query-pills
+          isActive=true
+          isPrimary=true
+        }}
       </div>
     `);
+    await leaveNewPillTemplate();
     // opening the first empty pill
     const [newPillTrigger] = findAll(PILL_SELECTORS.newPillTrigger);
     await click(newPillTrigger);
@@ -5672,7 +5912,10 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true isPrimary=true}}
+        {{query-container/query-pills
+          isActive=true
+          isPrimary=true
+        }}
       </div>
     `);
     await leaveNewPillTemplate();
@@ -5713,7 +5956,10 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true isPrimary=true}}
+        {{query-container/query-pills
+          isActive=true
+          isPrimary=true
+        }}
         {{context-menu}}
       </div>
     `);
@@ -5750,6 +5996,7 @@ module('Integration | Component | Query Pills', function(hooks) {
       });
     });
   });
+
   test('Pressing backspace key to delete multiple selected parens , should remove the  parens alone', async function(assert) {
     const text = '(medium = 1) AND ( ( medium = 32 ) AND medium = 21 ) AND medium = 2';
     const results = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
@@ -5764,7 +6011,10 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true isPrimary=true}}
+        {{query-container/query-pills
+          isActive=true
+          isPrimary=true
+        }}
       </div>
     `);
     await leaveNewPillTemplate();
@@ -5802,7 +6052,10 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
-        {{query-container/query-pills isActive=true isPrimary=true}}
+        {{query-container/query-pills
+          isActive=true
+          isPrimary=true
+        }}
       </div>
     `);
     await leaveNewPillTemplate();
@@ -5825,6 +6078,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.closeParen).length, 1, 'One close Paren');
     assert.equal(findAll(PILL_SELECTORS.queryPillNotTemplate).length, 4, 'Four query pills');
   });
+
   test('Typing AND followed by data and backspacing it should delete the empty pill in the middle of pills and moves focus to the left', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -5833,9 +6087,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills
-        isActive=true
-      }}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
     assert.notOk(find(PILL_SELECTORS.focusedPill), 'should not have a pill focused');
@@ -5860,9 +6114,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills
-        isActive=true
-      }}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     assert.notOk(find(PILL_SELECTORS.focusedPill), 'should not have a pill focused');
     await typeIn(PILL_SELECTORS.metaSelectInput, 'AND');
@@ -5881,9 +6135,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills
-        isActive=true
-      }}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
     assert.notOk(find(PILL_SELECTORS.focusedPill), 'should not have a pill focused');
@@ -5909,9 +6163,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills
-        isActive=true
-      }}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
     assert.notOk(find(PILL_SELECTORS.focusedPill), 'should not have a pill focused');
@@ -5937,9 +6191,9 @@ module('Integration | Component | Query Pills', function(hooks) {
       .build();
 
     await render(hbs`
-      {{query-container/query-pills
-        isActive=true
-      }}
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
     `);
     await leaveNewPillTemplate();
     assert.notOk(find(PILL_SELECTORS.focusedPill), 'should not have a pill focused');

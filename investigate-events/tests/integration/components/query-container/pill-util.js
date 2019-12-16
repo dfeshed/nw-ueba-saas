@@ -1,4 +1,4 @@
-import { click, findAll, focus, settled, triggerKeyEvent, typeIn, waitUntil } from '@ember/test-helpers';
+import { click, findAll, settled, triggerKeyEvent, typeIn, waitUntil } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
@@ -126,9 +126,7 @@ export const elementIsVisible = (el) => {
 };
 
 export const leaveNewPillTemplate = async() => {
-  await click(PILL_SELECTORS.newPillTrigger);
-  await focus(PILL_SELECTORS.triggerMetaPowerSelect);
-  await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+  await triggerKeyEvent('.new-pill-template input', 'keydown', ESCAPE_KEY);
 };
 
 export const clickTextFilterOption = async() => {

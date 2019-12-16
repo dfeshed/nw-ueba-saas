@@ -612,7 +612,7 @@ const QueryPills = RsaContextMenu.extend({
     } else {
       this._pillsExited();
     }
-    this._openNewPillTriggerLeft(0);
+    next(this, this._openNewPillTriggerLeft, 0);
   },
 
   /**
