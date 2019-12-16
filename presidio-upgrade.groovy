@@ -20,7 +20,7 @@ node("${params.ADMIN_SERVER_NODE}") {
 node("${params.NODE}") {
     stage('Waiting for admin-server') {
         println("Waiting 10 min")
-        sleep 60
+        sleep 600
     }
 }
 
@@ -28,5 +28,16 @@ node("${params.NODE}") {
 node("${params.ADMIN_SERVER_NODE}") {
     stage('Proceeding to other hosts') {
         println("Proceeding to other hosts")
+        upgradeOtherNodes()
+        println("DONE")
+    }
+}
+
+
+def upgradeOtherNodes() {
+    def nodes = params.OTHER_IPS.split(",").trim()
+    println("Other nodes: ${nodes}")
+    for(String node : nodes) {
+        sh"cd /tmp/ ; upgrade-cli-client -u --host-addr ${node} --version ${params.NW_VERSION} -v"
     }
 }
