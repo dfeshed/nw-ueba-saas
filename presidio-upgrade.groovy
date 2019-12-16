@@ -35,7 +35,7 @@ node("${params.ADMIN_SERVER_NODE}") {
 
 
 def upgradeOtherNodes() {
-    def nodes = params.OTHER_IPS.split(",").trim()
+    def nodes = params.OTHER_IPS.split(",")
     println("Other nodes: ${nodes}")
     for(String node : nodes) {
         sh"cd /tmp/ ; upgrade-cli-client -u --host-addr ${node} --version ${params.NW_VERSION} -v"
