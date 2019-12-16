@@ -18,11 +18,7 @@ import presidio.output.processor.services.alert.indicator.IndicatorsGeneratorFac
 import presidio.output.processor.services.alert.indicator.IndicatorsGenerator;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -83,18 +79,25 @@ public class AlertServiceImpl implements AlertService {
 
         for (SmartAggregationRecord smartAggregationRecord : smart.getSmartAggregationRecords()) {
             AdeAggregationRecord aggregationRecord = smartAggregationRecord.getAggregationRecord();
+
             try {
-                IndicatorsGenerator indicatorsGenerator = indicatorsGeneratorFactory.getIndicatorsGenerator(aggregationRecord.getAggregatedFeatureType().name());
+                IndicatorsGenerator indicatorsGenerator = indicatorsGeneratorFactory
+                        .getIndicatorsGenerator(aggregationRecord.getAggregatedFeatureType().name());
                 List<Indicator> indicators = indicatorsGenerator.generateIndicators(smartAggregationRecord, alert);
+
                 if (CollectionUtils.isNotEmpty(indicators)) {
-                    String indicatorsType = indicators.get(0).getType().name();
-                    SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(indicatorsType);
-                    supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(smartAggregationRecord, alert, indicators, eventsLimit, eventsPageSize));
+                    SupportingInformationGenerator supportingInfoGenerator = supportingInformationGeneratorFactory
+                            .getSupportingInformationGenerator(indicators.get(0).getType().name());
+                    supportingInfo.addAll(supportingInfoGenerator.generateSupportingInformation(
+                            smartAggregationRecord, alert, indicators, eventsLimit, eventsPageSize));
                 } else {
-                    logger.warn("failed to generate indicators for adeAggregationRecord ID {}, feature {}", aggregationRecord.getId(), aggregationRecord.getFeatureName());
+                    logger.warn("Generated 0 indicators for ADE aggregation record with ID {} and feature name {}.",
+                            aggregationRecord.getId(), aggregationRecord.getFeatureName());
                 }
-            } catch (Exception ex) {
-                logger.warn("failed to generate alert for adeAggregationRecord ID {}, feature {}, exception: {}", aggregationRecord.getId(), aggregationRecord.getFeatureName(), ex);
+            } catch (Exception exception) {
+                logger.warn("Failed to generate indicators / supporting information for ADE aggregation record with " +
+                        "ID {} and feature name {}.", aggregationRecord.getId(), aggregationRecord.getFeatureName(),
+                        exception);
             }
         }
 

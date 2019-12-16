@@ -11,6 +11,14 @@
             {
               "type": "time-model-scorer",
               "name": "startInstant.userId.authentication.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
               "additional-models": [],
               "model": {
                 "name": "startInstant.userId.authentication"
@@ -24,6 +32,14 @@
             {
               "type": "reduction-scorer",
               "name": "srcMachine.userId.authentication.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
               "main-scorer": {
                 "type": "category-rarity-model-scorer",
                 "name": "srcMachineNameRegexCluster.userId.authentication.score",
@@ -56,6 +72,14 @@
             {
               "type": "reduction-scorer",
               "name": "dstMachine.userId.authentication.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
               "main-scorer": {
                 "type": "category-rarity-model-scorer",
                 "name": "dstMachineNameRegexCluster.userId.authentication.score",
@@ -88,6 +112,14 @@
             {
               "type": "reduction-scorer",
               "name": "site.userId.authentication.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
               "main-scorer": {
                 "type": "category-rarity-model-scorer",
                 "name": "site.userId.authentication.score",

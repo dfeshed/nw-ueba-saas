@@ -2,6 +2,7 @@ package presidio.output.processor.services.entity;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +15,7 @@ public class EntitiesAlertData {
     private int alertsCount;
     private Set<String> classifications;
     private Set<String> indicators;
+    private Date lastAlertDate;
 
 
     public EntitiesAlertData() {
@@ -21,11 +23,12 @@ public class EntitiesAlertData {
         indicators = new HashSet<String>();
     }
 
-    public EntitiesAlertData(double entityScore, int alertsCount, String classification, List<String> indicators) {
+    public EntitiesAlertData(double entityScore, int alertsCount, String classification, List<String> indicators, Date lastAlertDate) {
         this.entityScore = entityScore;
         this.alertsCount = alertsCount;
         this.classifications = new HashSet<String>();
         this.indicators = new HashSet<String>();
+        this.lastAlertDate = lastAlertDate;
         addClassification(classification);
         addIndicators(indicators);
     }
@@ -76,5 +79,15 @@ public class EntitiesAlertData {
 
     public void incrementAlertsCount() {
         this.alertsCount++;
+    }
+
+    public void setLastAlertDate(Date alertDate) {
+        if (lastAlertDate == null  || alertDate == null || lastAlertDate.before(alertDate)) {
+            lastAlertDate = alertDate;
+        }
+    }
+
+    public Date getLastAlertDate() {
+        return lastAlertDate;
     }
 }

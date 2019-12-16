@@ -84,7 +84,7 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
 
     @Override
     public void clearTrends(EntityEnums.Trends trend, Instant untilInstant) {
-        RangeQueryBuilder queryBuilder = QueryBuilders.rangeQuery(Entity.LAST_UPDATE_BY_LOGICAL_END_DATE_FIELD_NAME).lte(untilInstant.toEpochMilli());
+        RangeQueryBuilder queryBuilder = QueryBuilders.rangeQuery(Entity.LAST_ALERT_DATE_FIELD_NAME).lte(untilInstant.toEpochMilli());
         String field = Entity.TRENDING_SCORE_FIELD_NAME + "." + trend;
         entityRepository.updateEntitiesByQuery(new NativeSearchQuery(queryBuilder), field,0);
     }

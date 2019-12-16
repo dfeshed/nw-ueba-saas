@@ -109,7 +109,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                     Alert alertEntity = alertService.generateAlert(smart, entity, smartThresholdScoreForCreatingAlert);
                     if (alertEntity != null) {
-                        EntitiesAlertData entitiesAlertData = new EntitiesAlertData(alertEntity.getContributionToEntityScore(), 1, alertEntity.alertPrimaryClassification(), alertEntity.getIndicatorsNames());
+                        EntitiesAlertData entitiesAlertData = new EntitiesAlertData(alertEntity.getContributionToEntityScore(), 1, alertEntity.alertPrimaryClassification(), alertEntity.getIndicatorsNames(), alertEntity.getEndDate());
                         entityService.addEntityAlertData(entity, entitiesAlertData);
                         alerts.add(alertEntity);
                         indicatorsCountHourly += alertEntity.getIndicatorsNum();

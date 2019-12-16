@@ -11,6 +11,14 @@
             {
               "type": "time-model-scorer",
               "name": "startInstant.userId.registry.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
               "additional-models": [],
               "model": {
                 "name": "startInstant.userId.registry"
@@ -25,6 +33,12 @@
               "type": "conditional",
               "name": "processFilePath.registryKeyGroup.registry.score",
               "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "registryKeyGroup",
+                  "expectedValue": null,
+                  "negate": true
+                },
                 {
                   "type": "regex",
                   "fieldName": "operationType",

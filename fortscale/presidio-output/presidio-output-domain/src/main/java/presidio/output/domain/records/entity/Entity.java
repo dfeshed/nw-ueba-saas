@@ -31,6 +31,7 @@ public class Entity extends AbstractElasticDocument {
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
     public static final String LAST_UPDATE_BY_LOGICAL_START_DATE_FIELD_NAME = "lastUpdateLogicalStartDate";
     public static final String LAST_UPDATE_BY_LOGICAL_END_DATE_FIELD_NAME = "lastUpdateLogicalEndDate";
+    public static final String LAST_ALERT_DATE_FIELD_NAME = "lastAlertDate";
     public static final String ENTITY_TYPE_FIELD_NAME = "entityType";
     public static final String TRENDING_SCORE_FIELD_NAME = "trendingScore";
 
@@ -66,6 +67,9 @@ public class Entity extends AbstractElasticDocument {
 
     @JsonProperty(LAST_UPDATE_BY_LOGICAL_END_DATE_FIELD_NAME)
     private Date lastUpdateLogicalEndDate;
+
+    @JsonProperty(LAST_ALERT_DATE_FIELD_NAME)
+    private Date lastAlertDate;
 
     @JsonProperty(ENTITY_TYPE_FIELD_NAME)
     private String entityType;
@@ -203,6 +207,14 @@ public class Entity extends AbstractElasticDocument {
 
     public void setLastUpdateLogicalEndDate(Date lastUpdateLogicalEndDate) {
         this.lastUpdateLogicalEndDate = lastUpdateLogicalEndDate;
+    }
+
+    public Date getLastAlertDate() {
+        return lastAlertDate;
+    }
+
+    public void setLastAlertDate(Date lastAlertDate) {
+        this.lastAlertDate = lastAlertDate;
     }
 
     public void addAlertClassifications(List<String> alertClassifications) {

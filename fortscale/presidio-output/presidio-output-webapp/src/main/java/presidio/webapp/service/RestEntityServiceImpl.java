@@ -17,10 +17,12 @@ import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.webapp.model.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class RestEntityServiceImpl implements RestEntityService {
 
     private static final Logger logger = Logger.getLogger(RestEntityService.class);
+    private static final String NESTED_DELIMITER = ".keyword";
 
 
     private final RestAlertService restAlertService;
@@ -188,9 +190,14 @@ public class RestEntityServiceImpl implements RestEntityService {
             builder.filterByEntityTags(entityQuery.getTags());
         }
         if (CollectionUtils.isNotEmpty(entityQuery.getSortFieldNames()) && entityQuery.getSortDirection() != null) {
-            List<Sort.Order> orders = new ArrayList<>();
-            entityQuery.getSortFieldNames().forEach(s -> orders.add(new Sort.Order(entityQuery.getSortDirection(), s.toString())));
-            builder.sort(new Sort(orders));
+            List<String> properties = entityQuery.getSortFieldNames().stream().map(sortFieldName -> {
+                if (sortFieldName == EntityQueryEnums.EntityQuerySortFieldName.ENTITY_NAME) {
+                    return sortFieldName.toString() + NESTED_DELIMITER;
+                } else {
+                    return sortFieldName.toString();
+                }
+            }).collect(Collectors.toList());
+            builder.sort(new Sort(entityQuery.getSortDirection(), properties));
         }
         if (CollectionUtils.isNotEmpty(entityQuery.getAggregateBy())) {
             List<String> aggregateByFields = new ArrayList<>();
@@ -216,9 +223,7 @@ public class RestEntityServiceImpl implements RestEntityService {
             }
             if (MapUtils.isNotEmpty(entityAggregationsMap)) {
                 Map<String, String> aggregationNamesEnumMapping = new HashMap<>();
-                entityAggregationsMap.keySet().forEach(aggregationName -> {
-                    aggregationNamesEnumMapping.put(aggregationName, EntityQueryEnums.EntityQueryAggregationFieldName.fromValue(aggregationName).name());
-                });
+                entityAggregationsMap.keySet().forEach(aggregationName -> aggregationNamesEnumMapping.put(aggregationName, EntityQueryEnums.EntityQueryAggregationFieldName.fromValue(aggregationName).name()));
                 Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(entityAggregationsMap, aggregationNamesEnumMapping);
                 entitiesWrapper.setAggregationData(aggregations);
             }

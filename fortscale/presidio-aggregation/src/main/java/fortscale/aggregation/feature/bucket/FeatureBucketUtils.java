@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
@@ -25,12 +26,15 @@ public class FeatureBucketUtils {
 			}
 		});
 
-		List<String> listOfPairs = new ArrayList<>();
+		StringBuilder builder = null;
 		for (Map.Entry<String, String> entry : listOfEntries) {
-			listOfPairs.add(String.format("%s%s%s", entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()));
+			if (builder == null) {
+				builder = new StringBuilder(entry.getKey()).append(CONTEXT_ID_SEPARATOR).append(entry.getValue());
+			} else {
+				builder.append(CONTEXT_ID_SEPARATOR).append(entry.getKey()).append(CONTEXT_ID_SEPARATOR).append(entry.getValue());
+			}
 		}
-
-		return StringUtils.join(listOfPairs, CONTEXT_ID_SEPARATOR);
+		return builder.toString();
 	}
 
 	public static String extractContextFromContextId(String contextId, String contextFieldName){

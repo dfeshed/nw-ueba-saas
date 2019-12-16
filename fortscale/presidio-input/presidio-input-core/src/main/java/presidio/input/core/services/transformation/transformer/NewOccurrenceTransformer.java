@@ -35,7 +35,7 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
     @Value("#{T(java.time.Instant).parse('${dataPipeline.startTime}')}")
     private Instant workflowStartDate;
 
-    @Value("#{T(java.time.Duration).parse('${presidio.input.core.transformation.waiting.duration:P10D}')}")
+    @Value("#{T(java.time.Duration).parse('${presidio.input.core.transformation.waiting.duration:P1000D}')}")
     private Duration transformationWaitingDuration;
 
     @JacksonInject("endDate")

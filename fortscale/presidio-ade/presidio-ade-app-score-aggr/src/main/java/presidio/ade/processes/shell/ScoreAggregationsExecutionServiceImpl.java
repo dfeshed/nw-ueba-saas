@@ -32,6 +32,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
     private int pageSize;
     private int maxGroupSize;
     private MetricContainerFlusher metricContainerFlusher;
+    private boolean filterNullContext;
 
     public ScoreAggregationsExecutionServiceImpl(
             EnrichedEventsScoringService enrichedEventsScoringService,
@@ -43,7 +44,8 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
             StoreManager storeManager,
             int pageSize,
             int maxGroupSize,
-            MetricContainerFlusher metricContainerFlusher) {
+            MetricContainerFlusher metricContainerFlusher,
+            boolean filterNullContext) {
 
         this.enrichedEventsScoringService = enrichedEventsScoringService;
         this.enrichedDataStore = enrichedDataStore;
@@ -55,6 +57,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
         this.metricContainerFlusher = metricContainerFlusher;
+        this.filterNullContext = filterNullContext;
     }
 
     @Override
@@ -70,7 +73,8 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
                 aggregatedFeatureEventsConfService,
                 pageSize,
                 maxGroupSize,
-                metricContainerFlusher);
+                metricContainerFlusher,
+                filterNullContext);
         StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(schema, strategy);
         service.execute(new TimeRange(startInstant, endInstant), schema.getName(), storeMetadataProperties);
         storeManager.cleanupCollections(storeMetadataProperties, startInstant);

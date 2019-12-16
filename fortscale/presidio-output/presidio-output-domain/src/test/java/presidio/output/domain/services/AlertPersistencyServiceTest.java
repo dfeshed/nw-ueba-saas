@@ -167,12 +167,12 @@ public class AlertPersistencyServiceTest {
             alertPersistencyService.save(alert);
         }
 
-        Page<Alert> byName1 = alertPersistencyService.findByEntityName("entity1@fortscale.com", new PageRequest(0, 10));
+        Page<Alert> byName1 = alertPersistencyService.findByEntityName("entity1@fortscale.com", PageRequest.of(0, 10));
         assertThat(byName1.getTotalElements(), is(1L));
         assertEquals("entityId", byName1.getContent().get(0).getEntityDocumentId());
         assertEquals("smartId", byName1.getContent().get(0).getSmartId());
 
-        Page<Alert> byName2 = alertPersistencyService.findByEntityName("entity2", new PageRequest(0, 10));
+        Page<Alert> byName2 = alertPersistencyService.findByEntityName("entity2", PageRequest.of(0, 10));
         assertThat(byName2.getTotalElements(), is(1L));
     }
 
@@ -236,15 +236,16 @@ public class AlertPersistencyServiceTest {
         indicator.setEvents(Collections.singletonList(event));
         event.setEntityType("entityType");
         alertPersistencyService.save(alert);
-        Page<Indicator> testIndicator = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 1));
+        Page<Indicator> testIndicator = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), PageRequest.of(0, 1));
         assertEquals(1, testIndicator.getTotalElements());
+        assertEquals(1, testIndicator.getContent().get(0).getEvents().size());
         alertPersistencyService.deleteAlertAndIndicators(alert);
         elasticsearchTemplate.refresh(Alert.class);
         elasticsearchTemplate.refresh(Indicator.class);
         elasticsearchTemplate.refresh(IndicatorEvent.class);
         Optional<Alert> testAlert = alertPersistencyService.findOne(alert.getId());
-        assert(!testAlert.isPresent());
-        testIndicator = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 1));
+        assert(testAlert.isEmpty());
+        testIndicator = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), PageRequest.of(0, 1));
         assertEquals(0, testIndicator.getTotalElements());
     }
 
@@ -908,7 +909,7 @@ public class AlertPersistencyServiceTest {
         alertPersistencyService.save(indicator2);
         alertPersistencyService.save(indicator3);
         alertPersistencyService.save(indicator4);
-        PageRequest pageRequest = new PageRequest(0, 100);
+        PageRequest pageRequest = PageRequest.of(0, 100);
         Page<Indicator> returnIndicators = alertPersistencyService.findIndicatorsByAlertId(alert1.getId(), pageRequest);
         List<Indicator> returnedIndicators = returnIndicators.getContent();
         Assert.assertEquals(4, returnedIndicators.size(), 0);
@@ -990,7 +991,7 @@ public class AlertPersistencyServiceTest {
         indicator.setEvents(eventsList);
         alertPersistencyService.save(alert);
 
-        Page<IndicatorEvent> eventsResult = alertPersistencyService.findIndicatorEventsByIndicatorId(indicator.getId(), new PageRequest(0, 10));
+        Page<IndicatorEvent> eventsResult = alertPersistencyService.findIndicatorEventsByIndicatorId(indicator.getId(), PageRequest.of(0, 10));
         Assert.assertEquals(3, eventsResult.getTotalElements());
         Assert.assertEquals(event1, eventsResult.getContent().get(0));
         Assert.assertEquals(event3, eventsResult.getContent().get(1));

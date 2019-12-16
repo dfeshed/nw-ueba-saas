@@ -121,6 +121,7 @@ public class EntityServiceImpl implements EntityService {
         }
         entity.setAlertsCount(entitiesAlertData.getAlertsCount());
         entity.setScore(entitiesAlertData.getEntityScore());
+        entity.setLastAlertDate(entitiesAlertData.getLastAlertDate());
         EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false, entity.getEntityType()).getEntitySeverity(entity.getScore());
         entity.setSeverity(newSeverity);
     }
@@ -131,6 +132,7 @@ public class EntityServiceImpl implements EntityService {
         entity.setIndicators(null);
         entity.setAlertsCount(0);
         entity.setScore(0);
+        entity.setLastAlertDate(null);
         EntitySeverity newSeverity = EntitySeverity.LOW;
         entity.setSeverity(newSeverity);
     }
@@ -143,6 +145,9 @@ public class EntityServiceImpl implements EntityService {
         entity.setIndicators(indicatorsUnion);
         entity.incrementAlertsCountByNumber(entitiesAlertData.getAlertsCount());
         entity.incrementEntityScoreByNumber(entitiesAlertData.getEntityScore());
+        if (entity.getLastAlertDate() == null || entity.getLastAlertDate().before(entitiesAlertData.getLastAlertDate())) {
+            entity.setLastAlertDate(entitiesAlertData.getLastAlertDate());
+        }
         EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false, entity.getEntityType()).getEntitySeverity(entity.getScore());
         entity.setSeverity(newSeverity);
     }
@@ -265,6 +270,7 @@ public class EntityServiceImpl implements EntityService {
                     entitiesAlertData.addIndicators(alert.getIndicatorsNames());
                     entitiesAlertData.incrementAlertsCount();
                     entitiesAlertData.incrementEntityScore(alert.getContributionToEntityScore());
+                    entitiesAlertData.setLastAlertDate(alert.getEndDate());
                 }
 
             });

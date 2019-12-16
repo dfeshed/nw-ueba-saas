@@ -9,7 +9,6 @@ from airflow.bin import cli
 from airflow.models import DagRun, DAG, DagModel
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
-from airflow.utils import helpers
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
 

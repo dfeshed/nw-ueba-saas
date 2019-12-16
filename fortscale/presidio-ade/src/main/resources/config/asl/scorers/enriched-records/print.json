@@ -11,6 +11,14 @@
             {
               "type": "time-model-scorer",
               "name": "startInstant.userId.print.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
               "additional-models": [],
               "model": {
                 "name": "startInstant.userId.print"
@@ -24,6 +32,14 @@
             {
               "type": "reduction-scorer",
               "name": "srcMachineNameRegexCluster.userId.print.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
               "main-scorer": {
                 "type": "category-rarity-model-scorer",
                 "name": "srcMachineNameRegexCluster.userId.print.score",
@@ -56,6 +72,14 @@
             {
               "type": "reduction-scorer",
               "name": "dstMachineId.userId.print.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
               "main-scorer": {
                 "type": "category-rarity-model-scorer",
                 "name": "dstMachineId.userId.print.score",
@@ -88,6 +112,14 @@
             {
               "type": "reduction-scorer",
               "name": "dstMachineNameRegexCluster.userId.print.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
               "main-scorer": {
                 "type": "category-rarity-model-scorer",
                 "name": "dstMachineNameRegexCluster.userId.print.score",
@@ -120,6 +152,14 @@
             {
               "type": "low-values-score-reducer",
               "name": "numOfPages.userId.print.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
               "base-scorer": {
                 "type": "score-exponential-mapper",
                 "name": "numOfPages.userId.print.score",
@@ -157,6 +197,12 @@
               "type": "conditional",
               "name": "absoluteSharedFolderPath.userId.print.score",
               "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                },
                 {
                   "type": "boolean",
                   "fieldName": "driveShared",

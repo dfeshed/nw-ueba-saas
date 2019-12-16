@@ -115,7 +115,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
         List<EnrichedFileRecord> enrichedFileRecordList = Collections.singletonList(enrichedFileRecord);
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(ADE_EVENT_TYPE, startTime, startTime.plus(1, ChronoUnit.SECONDS));
         enrichedDataStore.store(enrichedRecordsMetadata, enrichedFileRecordList, new StoreMetadataProperties());
-        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata, "userId");
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata, "userId", true);
         Assert.assertEquals(1, contextIdToNumOfItemsList.size());
     }
 
