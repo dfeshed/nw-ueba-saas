@@ -379,6 +379,11 @@ const QueryPills = RsaContextMenu.extend({
   //                          PRIVATE FUNCTIONS                               //
   // ************************************************************************ //
 
+  _getLastPill() {
+    const pillsData = this.get('pillsData');
+    return pillsData.length ? pillsData[pillsData.length - 1] : null;
+  },
+
   _fetchRecentQueries(data) {
     this.send('getRecentQueries', data);
   },
@@ -410,8 +415,19 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   _pillAddCancelled(position) {
-    this.send('cancelPillCreation', position);
-    this._pillsExited();
+    const lastPillIsLogicalOperator = this._getLastPill()?.type === 'operator-and' || this._getLastPill()?.type === 'operator-or';
+
+    // if last pill is a logical operator (AND or OR)
+    // need to gain focus next to the first remaining pill
+    // after deleting the logical operator
+    if (lastPillIsLogicalOperator) {
+      this.send('deleteGuidedPill', { pillData: [this.pillsData[position - 1]] });
+      this._pillsExited();
+      this._addFocusToRightPill(0);
+    } else {
+      this.send('cancelPillCreation', position);
+      this._pillsExited();
+    }
   },
 
   /**

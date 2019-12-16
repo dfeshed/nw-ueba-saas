@@ -3050,6 +3050,42 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(pillText, 'a = \'x\'', 'The first pill is the focused pill');
   });
 
+  test('Focus moves to left pill if ARROW-LEFT is pressed from a new pill to the right of a logical operator with no other pills to the right', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>    
+    `);
+
+    // create a pill
+    await clickTrigger(PILL_SELECTORS.meta);
+    await selectChoose(PILL_SELECTORS.meta, 'medium');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, '32');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+
+    // enter logical operator
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('AND ');
+
+    // Left Arrow
+    await clickTrigger(PILL_SELECTORS.meta);
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ARROW_LEFT_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.logicalOperatorAND).length, 0, 'shall not find logical operator AND anymore');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'shall find 1 focused pill');
+    assert.equal(find(PILL_SELECTORS.meta).textContent.trim(), 'medium', 'correct focused pill meta');
+    assert.equal(find(PILL_SELECTORS.operator).textContent.trim(), '=', 'correct focused pill operator');
+    assert.equal(find(PILL_SELECTORS.value).textContent.trim(), '32', 'correct focused pill value');
+
+
+  });
+
   test('Nothing happens if ARROW-LEFT is pressed from a new pill(start of the list) with no meta/operator/value selected with no pill on the left', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
