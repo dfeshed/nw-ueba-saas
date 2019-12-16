@@ -4,6 +4,8 @@ def buildStages
 node("${params.NODE}") {
 
     stage('Initialise') {
+        cleanWs()
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout']], gitTool: 'Default EL7', submoduleCfg: [], userRemoteConfigs: [[credentialsId: '5ee6d182-da05-4a48-8a0c-ac411909a431', url: 'https://github.rsa.lab.emc.com/asoc/presidio-jenkins-job-dsl.git']]])
         // Set up List<Map<String,Closure>> describing the builds
         buildStages = prepareBuildStages()
         println("Initialised pipeline.")
@@ -48,7 +50,7 @@ def prepareOneBuildStage(String remoteServer, String script) {
     return {
         stage("Build stage:${remoteServer}") {
             println("Started on ${remoteServer}")
-            sh(script:"sshpass -p \"netwitness\" ssh root@${remoteServer} -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/scripts/${script}", returnStatus:true)
+            sh(script:"sshpass -p \"netwitness\" ssh root@${remoteServer} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/scripts/${script}", returnStatus:true)
             println("Finished on ${remoteServer}")
         }
     }
