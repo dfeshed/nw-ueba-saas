@@ -16,7 +16,7 @@ sed -i "s|baseurl=.*|baseurl=file:///var/netwitness/common/repo/${NW_VERSION}/RS
 
 yum clean all
 rm -rf /var/cache/yum
-
+rm -rf /tmp/upgrade/*
 mkdir -p /tmp/upgrade/${NW_VERSION}
 
 echo "  #############  Starting download upgrade ZIP #############"
