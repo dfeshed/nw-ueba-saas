@@ -2,6 +2,7 @@ package com.rsa.netwitness.presidio.automation.test.filtering;
 
 import com.rsa.netwitness.presidio.automation.common.validator.VerificationUtils;
 import com.rsa.netwitness.presidio.automation.converter.producers.MongoAdapterMapProducer;
+import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.domain.activedirectory.AdapterActiveDirectoryStoredData;
 import com.rsa.netwitness.presidio.automation.domain.authentication.AdapterAuthenticationStoredData;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
@@ -14,7 +15,6 @@ import com.rsa.netwitness.presidio.automation.domain.repository.AdapterAuthentic
 import com.rsa.netwitness.presidio.automation.domain.repository.AdapterFileStoredDataRepository;
 import com.rsa.netwitness.presidio.automation.domain.repository.AdapterProcessStoredDataRepository;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
-import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import fortscale.common.general.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,6 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Optional;
 import org.testng.annotations.*;
-import presidio.data.generators.common.GeneratorException;
 
 import java.lang.reflect.Method;
 import java.time.Instant;
@@ -70,12 +69,13 @@ public class AdapterFilteringTest extends AbstractTestNGSpringContextTests {
 
     @Parameters({"historical_days_back", "anomaly_day"})
     @BeforeClass
-    public void setup(@Optional("10") int historicalDaysBack, @Optional("1") int anomalyDay) throws GeneratorException {
+    public void setup(@Optional("10") int historicalDaysBack, @Optional("1") int anomalyDay) {
         this.endDate     = Instant.now().truncatedTo(ChronoUnit.DAYS);
         this.startDate   = Instant.now().minus(historicalDaysBack, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
         this.historicalDaysBack = historicalDaysBack;
         this.anomalyDay = anomalyDay;
 
+        adapterTestManager.runUebaServerConfigScript(startDate);
         adapterTestManager.clearAllCollections();
     }
 
