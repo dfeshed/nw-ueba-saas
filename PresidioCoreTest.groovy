@@ -61,7 +61,7 @@ pipeline {
             steps {
                 script {
                     sh "echo ADMIN_SERVER_IP=${env.ADMIN_SERVER_IP}"
-                    sh "sshpass -p \"netwitness\" ssh root@${env.ADMIN_SERVER_IP} -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null 'bash -s' < /home/presidio/presidio-ui-update.sh"
+                    sh "sshpass -p \"netwitness\" ssh root@${env.ADMIN_SERVER_IP} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < /home/presidio/presidio-ui-update.sh"
                 }
             }
         }

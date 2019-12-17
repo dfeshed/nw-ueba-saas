@@ -37,16 +37,16 @@ pipeline {
             }
         }
         stage('Reset DBs LogHybrid and UEBA') {
-            when {
-                expression { return params.ENV_CLEANUP }
+                when {
+                    expression { return params.ENV_CLEANUP }
+                }
+                steps {
+                    CleanEpHybridUebaDBs()
+                }
             }
-            steps {
-                CleanEpHybridUebaDBs()
-            }
-        }
-        stage('UEBA - RPMs Upgrade') {
-            when {
-                expression { return params.INSTALL_UEBA_RPMS }
+            stage('UEBA - RPMs Upgrade') {
+                when {
+                    expression { return params.INSTALL_UEBA_RPMS }
             }
             steps {
                 script {
@@ -65,7 +65,7 @@ pipeline {
             steps {
                 script {
                     sh "echo ADMIN_SERVER_IP=${env.ADMIN_SERVER_IP}"
-                    sh "sshpass -p \"netwitness\" ssh root@${env.ADMIN_SERVER_IP} -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null 'bash -s' < /home/presidio/presidio-ui-update.sh"
+                    sh "sshpass -p \"netwitness\" ssh root@${env.ADMIN_SERVER_IP} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < /home/presidio/presidio-ui-update.sh"
                 }
             }
         }
@@ -76,6 +76,7 @@ pipeline {
                 expression { return params.DATA_INJECTION }
             }
             steps {
+                sh "sudo systemctl start airflow-scheduler"
                 runSuiteXmlFile('e2e/E2E_DataInjection.xml')
             }
         }
