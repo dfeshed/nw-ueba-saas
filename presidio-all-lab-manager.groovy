@@ -1,15 +1,12 @@
 def runParallel = true
 def buildStages
 
-environment {
-    RPMS_BASE_URL = ""
-}
-
 node("${params.NODE}") {
 
     stage('Initialise') {
         cleanWs()
         checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout']], gitTool: 'Default EL7', submoduleCfg: [], userRemoteConfigs: [[credentialsId: '5ee6d182-da05-4a48-8a0c-ac411909a431', url: 'https://github.rsa.lab.emc.com/asoc/presidio-jenkins-job-dsl.git']]])
+        setBaseUrl()
         // Set up List<Map<String,Closure>> describing the builds
         buildStages = prepareBuildStages()
         println("Initialised pipeline.")
@@ -38,7 +35,6 @@ def prepareBuildStages() {
 
     def remoteServers = "${params.REMOTE_SERVERS}".split(',').collect{it as String}
     def script = "${params.SCRIPT_TO_EXECUTE}"
-
     def buildList = []
     def buildStages = [:]
 
@@ -54,7 +50,6 @@ def prepareOneBuildStage(String remoteServer, String script) {
     return {
         stage("Build stage:${remoteServer}") {
             println("Started on ${remoteServer}")
-            sh "sudo sed -i \"s|ADMIN_SERVER_RPM_BASE_URL=.*|ADMIN_SERVER_RPM_BASE_URL=${RPMS_BASE_URL}|g\" /${WORKSPACE}/scripts/${script}"
             sh(script:"sshpass -p \"netwitness\" ssh root@${remoteServer} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/scripts/${script}", returnStatus:true)
             println("Finished on ${remoteServer}")
         }
@@ -79,7 +74,7 @@ def setBaseUrl(
     baseUrlValidation = baseUrl.drop(8)
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
     if (baseUrlresponsecode == '200') {
-        $env.RPMS_BASE_URL = baseUrl
+        sh "sudo sed -i \"s|ADMIN_SERVER_RPM_BASE_URL=.*|ADMIN_SERVER_RPM_BASE_URL=${baseUrl}|g\" /${WORKSPACE}/scripts/${script}"
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
