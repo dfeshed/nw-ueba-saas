@@ -74,7 +74,7 @@ def setBaseUrl(
     baseUrlValidation = baseUrl.drop(8)
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
     if (baseUrlresponsecode == '200') {
-        sh "sudo sed -i \"s|ADMIN_SERVER_RPM_BASE_URL=.*|ADMIN_SERVER_RPM_BASE_URL=${baseUrl}|g\" /${WORKSPACE}/scripts/${script}"
+        sh "sudo sed -i \"s|ADMIN_SERVER_RPM_BASE_URL=.*|ADMIN_SERVER_RPM_BASE_URL=${baseUrl}|g\" /${WORKSPACE}/scripts/${params.SCRIPT_TO_EXECUTE}"
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
