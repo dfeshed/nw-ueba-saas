@@ -79,7 +79,7 @@ def setBaseUrl(
     baseUrlValidation = baseUrl.drop(8)
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
     if (baseUrlresponsecode == '200') {
-        RPMS_BASE_URL = baseUrl
+        $env.RPMS_BASE_URL = baseUrl
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
