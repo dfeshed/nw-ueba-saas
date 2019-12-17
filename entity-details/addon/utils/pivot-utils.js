@@ -32,9 +32,9 @@ const entityFilter = (entityType, entityValue) => {
  */
 const buildTimeRange = (eventTime) => {
   return {
-    endTime: moment(eventTime * 1000).add(1, 'hours').format('X'),
-    startTime: moment(eventTime * 1000).subtract(2, 'hours').startOf('minute').format('X'),
-    eventTimeWindow: ` && (event.time=${moment(eventTime * 1000).startOf('hour').format('X')}-${moment(eventTime * 1000).add(1, 'hour').startOf('hour').format('X')})`
+    endTime: moment().format('X'),
+    startTime: moment(eventTime * 1000).subtract(1, 'minute').startOf('minute').format('X'),
+    eventTimeWindow: ` && (event.time=${moment(eventTime * 1000).startOf('minute').format('X')}-${moment(eventTime * 1000).add(1, 'minute').startOf('minute').format('X')})`
   };
 };
 /**

@@ -158,16 +158,21 @@ module('Unit | Utils | pivot-utils', (hooks) => {
     });
   });
 
-  test('it should be able to pivot investigate event with three  hour window and event filter applied', (assert) => {
+  test('it should be able to pivot investigate event with a "starting one hour before" window and event filter applied', (assert) => {
     const item = { user_link: 'https://localhost:4200/investigation/007f93ca-bf34-4aeb-805a-d039934842ae/events/somedata', username: 'TestUser' };
     const column = { linkField: 'user_link', field: 'username', additionalFilter: '(obj.name = ${objValue})' };
-    navigateToInvestigate('User', 'Name1', 'file', 1562192044531, item, column, null);
+    const eventTime = 1562192044;
+    navigateToInvestigate('User', 'Name1', 'file', eventTime, item, column, null);
     return waitUntil(() => currentUrl !== null).then(() => {
-      assert.ok(decodeURIComponent(currentUrl).indexOf('&st=1562192037300&et=1562192048131') > 0);
-      const [ , startTime] = decodeURIComponent(currentUrl).match(/&st=(.*)&et/i);
-      const [ , endTime] = decodeURIComponent(currentUrl).match(/&et=(.*)&mps/i);
-      assert.equal(moment.unix(parseInt(endTime, 10) / 1000).diff(moment.unix(parseInt(startTime, 10) / 1000)), 10831);
-      assert.ok(decodeURIComponent(currentUrl).indexOf('event.time') > 0);
+      const decodedComponent = decodeURIComponent(currentUrl);
+      assert.ok(decodedComponent.includes('&st=1562191980&et='));
+      const [ , eventTimeRangeStart, eventTimeRangeEnd] = decodedComponent.match(/\(event\.time=(\d+?)-(\d+?)\)/i);
+      const startMoment = moment.unix(parseInt(eventTimeRangeStart, 10));
+      const endMoment = moment.unix(parseInt(eventTimeRangeEnd, 10));
+      assert.ok(startMoment.isBefore(moment.unix(eventTime)));
+      assert.ok(endMoment.isAfter(moment.unix(eventTime)));
+      assert.equal(endMoment.diff(startMoment), 60000); // timeWindow is 1 minute
+      assert.ok(decodedComponent.includes('(event.time='));
       assert.ok(newTab);
     });
   });
