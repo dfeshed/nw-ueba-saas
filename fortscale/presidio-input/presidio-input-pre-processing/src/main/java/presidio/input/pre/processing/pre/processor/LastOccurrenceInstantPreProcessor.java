@@ -2,34 +2,35 @@ package presidio.input.pre.processing.pre.processor;
 
 import fortscale.common.general.Schema;
 import fortscale.domain.lastoccurrenceinstant.writer.LastOccurrenceInstantWriter;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.apache.commons.lang3.Validate;
-import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.domain.RawEventsPageIterator;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 public class LastOccurrenceInstantPreProcessor extends PreProcessor<LastOccurrenceInstantPreProcessorArguments> {
+    private static final Logger logger = Logger.getLogger(LastOccurrenceInstantPreProcessor.class);
     private static PresidioReflectionUtils reflection = new PresidioReflectionUtils();
     private final PresidioInputPersistencyService presidioInputPersistencyService;
-    private final int rawEventsPageSize;
+    private final int aggregationPageSize;
     private final LastOccurrenceInstantWriter lastOccurrenceInstantWriter;
 
 
     public LastOccurrenceInstantPreProcessor(
             String name,
             PresidioInputPersistencyService presidioInputPersistencyService,
-            int rawEventsPageSize,
+            int aggregationPageSize,
             LastOccurrenceInstantWriter lastOccurrenceInstantWriter) {
 
         super(name, LastOccurrenceInstantPreProcessorArguments.class);
         Validate.notNull(presidioInputPersistencyService, "presidioInputPersistencyService cannot be null.");
-        Validate.isTrue(rawEventsPageSize > 0, "rawEventsPageSize must be greater than zero.");
+        Validate.isTrue(aggregationPageSize > 0, "aggregationPageSize must be greater than zero.");
         Validate.notNull(lastOccurrenceInstantWriter, "lastOccurrenceInstantWriter cannot be null.");
         this.presidioInputPersistencyService = presidioInputPersistencyService;
-        this.rawEventsPageSize = rawEventsPageSize;
+        this.aggregationPageSize = aggregationPageSize;
         this.lastOccurrenceInstantWriter = lastOccurrenceInstantWriter;
     }
 
@@ -37,26 +38,23 @@ public class LastOccurrenceInstantPreProcessor extends PreProcessor<LastOccurren
     void preProcess(LastOccurrenceInstantPreProcessorArguments arguments) {
         Schema schema = arguments.getSchema();
         List<String> entityTypes = arguments.getEntityTypes();
-        RawEventsPageIterator<AbstractInputDocument> rawEventsPageIterator = new RawEventsPageIterator<>(
-                arguments.getStartInstant(),
-                arguments.getEndInstant(),
-                presidioInputPersistencyService,
-                schema,
-                rawEventsPageSize);
 
-        while (rawEventsPageIterator.hasNext()) {
-            for (AbstractInputDocument rawEvent : rawEventsPageIterator.next()) {
-                Instant instant = rawEvent.getDateTime();
-
-                for (String entityType : entityTypes) {
-                    String entityId = (String) reflection.getFieldValue(rawEvent, entityType, null);
-                    if (entityId != null) {
-                        lastOccurrenceInstantWriter.write(schema, entityType, entityId, instant);
-                    }
-                }
-            }
+        for (String entityType: entityTypes){
+            int skip = 0;
+            Map<String, Instant> entityIdToLastOccurrenceInstantMap;
+            logger.info("start processing {}", entityType);
+            do {
+                entityIdToLastOccurrenceInstantMap = presidioInputPersistencyService.aggregateKeysMaxInstant(
+                        arguments.getStartInstant(),
+                        arguments.getEndInstant(),
+                        entityType, skip, aggregationPageSize, schema, true);
+                lastOccurrenceInstantWriter.writeAll(schema, entityType, entityIdToLastOccurrenceInstantMap);
+                skip += aggregationPageSize;
+            } while (entityIdToLastOccurrenceInstantMap.size() == aggregationPageSize);
+            logger.info("finished processing {}", entityType);
         }
 
+        logger.info("finished processing all entity types.");
         lastOccurrenceInstantWriter.close();
     }
 }

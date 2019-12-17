@@ -22,20 +22,20 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 })
 public class LastOccurrenceInstantPreProcessorConfiguration {
     private final PresidioInputPersistencyService presidioInputPersistencyService;
-    private final int rawEventsPageSize;
+    private final int lastOccurrenceInstantWriterMaxSize;
     private final LastOccurrenceInstantWriter lastOccurrenceInstantWriter;
 
     @Autowired
     public LastOccurrenceInstantPreProcessorConfiguration(
             PresidioInputPersistencyService presidioInputPersistencyService,
-            @Value("${presidio.input.pre.processing.raw.events.page.size:1000}") int rawEventsPageSize,
+            @Value("${presidio.last.occurrence.instant.writer.maximum.size}") int lastOccurrenceInstantWriterMaxSize,
             @Qualifier("lastOccurrenceInstantWriterCache") LastOccurrenceInstantWriter lastOccurrenceInstantWriter) {
 
         Validate.notNull(presidioInputPersistencyService, "presidioInputPersistencyService cannot be null.");
-        Validate.isTrue(rawEventsPageSize > 0, "rawEventsPageSize must be greater than zero.");
+        Validate.isTrue(lastOccurrenceInstantWriterMaxSize > 0, "lastOccurrenceInstantWriterMaxSize must be greater than zero.");
         Validate.notNull(lastOccurrenceInstantWriter, "lastOccurrenceInstantWriter cannot be null.");
         this.presidioInputPersistencyService = presidioInputPersistencyService;
-        this.rawEventsPageSize = rawEventsPageSize;
+        this.lastOccurrenceInstantWriterMaxSize = lastOccurrenceInstantWriterMaxSize;
         this.lastOccurrenceInstantWriter = lastOccurrenceInstantWriter;
     }
 
@@ -44,7 +44,7 @@ public class LastOccurrenceInstantPreProcessorConfiguration {
         return new LastOccurrenceInstantPreProcessor(
                 "last_occurrence_instant",
                 presidioInputPersistencyService,
-                rawEventsPageSize,
+                lastOccurrenceInstantWriterMaxSize,
                 lastOccurrenceInstantWriter);
     }
 }

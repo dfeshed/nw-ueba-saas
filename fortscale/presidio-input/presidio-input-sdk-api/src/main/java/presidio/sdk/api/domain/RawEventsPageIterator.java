@@ -23,6 +23,7 @@ public class RawEventsPageIterator<T extends AbstractInputDocument> implements P
     private int totalNumberOfPages;
     private int currentPage;
 
+
     /**
      * Constructor.
      *

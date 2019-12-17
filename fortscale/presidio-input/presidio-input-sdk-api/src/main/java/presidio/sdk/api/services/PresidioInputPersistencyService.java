@@ -28,4 +28,6 @@ public interface PresidioInputPersistencyService {
     long count(Schema schema, Instant startDate, Instant endDate, Map<String, Object> filter, List<String> projectionFields);
 
     long count(Schema schema, Instant startDate, Instant endDate);
+
+    Map<String, Instant> aggregateKeysMaxInstant(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, Schema schema, boolean allowDiskUse);
 }
