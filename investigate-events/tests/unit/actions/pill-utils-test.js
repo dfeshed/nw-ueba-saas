@@ -28,6 +28,19 @@ module('Unit | Actions | Pill Utils', function(hooks) {
     const pillsArray = ['medium = 1 OR medium = 21'];
     assert.deepEqual(pillUtils.wrapInParensIfMultipleHashes(pillsArray), ['medium = 1 OR medium = 21'], 'Expected string');
   });
+  test('wrapInParensIfMultipleHashes wraps even if two sets of parens', function(assert) {
+    const pillsArray = ['(medium = 1) OR (medium = 21)', 'service = 80'];
+    assert.deepEqual(pillUtils.wrapInParensIfMultipleHashes(pillsArray), ['((medium = 1) OR (medium = 21))', '(service = 80)'], 'Expected string');
+  });
+
+  test('_hasMultipleParenSets is false if only one set of parens', function(assert) {
+    const input = '(medium = 1)';
+    assert.strictEqual(pillUtils._hasMultipleParenSets(input), false, 'Expected result');
+  });
+  test('_hasMultipleParenSets is true if multiple sets of parens', function(assert) {
+    const input = '(medium = 1) OR (medium = 21)';
+    assert.strictEqual(pillUtils._hasMultipleParenSets(input), true, 'Expected result');
+  });
 
   test('selectPillsFromPosition returns an array with pills selected in right direction, including itself', function(assert) {
     assert.expect(2);

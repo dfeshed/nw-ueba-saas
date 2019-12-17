@@ -355,7 +355,7 @@ const findUnnecessaryOperators = (pillsData) => {
 const wrapInParensIfMultipleHashes = (pillsStringArray) => {
   if (pillsStringArray.length > 1) {
     return pillsStringArray.map((paramString) => {
-      if (!(paramString.startsWith('(') && paramString.endsWith(')'))) {
+      if (!(paramString.startsWith('(') && paramString.endsWith(')')) || _hasMultipleParenSets(paramString)) {
         return `(${paramString})`;
       }
       return paramString;
@@ -365,8 +365,13 @@ const wrapInParensIfMultipleHashes = (pillsStringArray) => {
   }
 };
 
+const _hasMultipleParenSets = (text) => {
+  return text.indexOf(')') !== text.lastIndexOf(')');
+};
+
 export {
   _hasEmptyParensAt, // exported for test
+  _hasMultipleParenSets, // exported for test
   contentBetweenParens,
   doPillsContainTextPill,
   findAllEmptyParens,
