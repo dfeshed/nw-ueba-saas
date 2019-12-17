@@ -88,14 +88,15 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
     public List<SchemaEntityCount> getMostCommonEntityIds(Instant startInstant, Instant endInstant, String entityType, long limit, Schema schema, String collectionName) {
         Aggregation aggregation = newAggregation(
                 match(Criteria.where(DATE_TIME_FIELD_NAME).gte(startInstant).lt(endInstant)),
+                match(Criteria.where(entityType).exists(true)),
                 group(entityType).count().as(COUNT_FIELD),
-                project()
+                project(COUNT_FIELD)
+                        .and(ID_FIELD).as(ENTITY_ID_FIELD).andExclude(ID_FIELD)
                         .and(schema.name()).asLiteral().as(SCHEMA_FIELD)
-                        .and(entityType).asLiteral().as(ENTITY_TYPE_FIELD)
-                        .and(ID_FIELD).as(ENTITY_ID_FIELD)
-                        .and(COUNT_FIELD),
+                        .and(entityType).asLiteral().as(ENTITY_TYPE_FIELD),
                 sort(Sort.Direction.DESC, COUNT_FIELD),
                 limit(limit));
+        aggregation = aggregation.withOptions(newAggregationOptions().allowDiskUse(true).build());
         return mongoTemplate.aggregate(aggregation, collectionName, SchemaEntityCount.class).getMappedResults();
     }
 

@@ -5,11 +5,9 @@ import fortscale.utils.data.LfuCache;
 import org.apache.commons.lang3.Validate;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
 
 public class LastOccurrenceInstantReaderCacheImpl implements LastOccurrenceInstantReader {
     private final LastOccurrenceInstantReader lastOccurrenceInstantReader;
@@ -51,7 +49,12 @@ public class LastOccurrenceInstantReaderCacheImpl implements LastOccurrenceInsta
 
     @Override
     public Map<String, Instant> readAll(Schema schema, String entityType, List<String> entityIds) {
-        return entityIds.stream().collect(toMap(identity(), entityId -> read(schema, entityType, entityId)));
+        Map<String, Instant> entityIdToLastOccurrenceInstantMap = new HashMap<>();
+        entityIds.forEach(entityId -> {
+            Instant lastOccurrenceInstant = read(schema, entityType, entityId);
+            entityIdToLastOccurrenceInstantMap.put(entityId, lastOccurrenceInstant);
+        });
+        return entityIdToLastOccurrenceInstantMap;
     }
 
     private static String getKey(Schema schema, String entityType, String entityId) {

@@ -78,7 +78,7 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
     }
 
     @PostConstruct
-    private void initialize() {
+    public void initialize() {
         validateInjectedDependencies();
         Instant transformationStartInstant = workflowStartInstant.plus(transformationWaitingDuration);
         isTransformationEnabled = startInstant.compareTo(transformationStartInstant) >= 0;
