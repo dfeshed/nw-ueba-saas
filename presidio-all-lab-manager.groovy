@@ -1,6 +1,10 @@
 def runParallel = true
 def buildStages
 
+environment {
+    RPMS_BASE_URL = ""
+}
+
 node("${params.NODE}") {
 
     stage('Initialise') {
@@ -50,8 +54,33 @@ def prepareOneBuildStage(String remoteServer, String script) {
     return {
         stage("Build stage:${remoteServer}") {
             println("Started on ${remoteServer}")
+            sh "sudo sed -i \"s|ADMIN_SERVER_RPM_BASE_URL=.*|ADMIN_SERVER_RPM_BASE_URL=${RPMS_BASE_URL}|g\" /${WORKSPACE}/scripts/${script}"
             sh(script:"sshpass -p \"netwitness\" ssh root@${remoteServer} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/scripts/${script}", returnStatus:true)
             println("Finished on ${remoteServer}")
         }
+    }
+}
+
+def setBaseUrl(
+        String rpmBuildPath = params.SPECIFIC_RPM_BUILD,
+        String rpmVeriosn = env.VERSION,
+        String stability = env.STABILITY
+) {
+    String baseUrl = "baseurl="
+    if (rpmBuildPath != '') {
+        baseUrl = baseUrl + rpmBuildPath
+        println(baseUrl)
+    } else {
+        String[] versionArray = rpmVeriosn.split("\\.")
+        FirstDir = versionArray[0] + "." + versionArray[1]
+        SecondDir = FirstDir + "." + versionArray[2]
+        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/" + FirstDir + "/" + SecondDir + "/" + rpmVeriosn + "-" + stability + "/"
+    }
+    baseUrlValidation = baseUrl.drop(8)
+    baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
+    if (baseUrlresponsecode == '200') {
+        RPMS_BASE_URL = baseUrl
+    } else {
+        error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
 }
