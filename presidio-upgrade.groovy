@@ -4,39 +4,16 @@ def uebaRepoconfigScript="upgrade-repo-configuration.sh"
 
 node("${params.ADMIN_SERVER_NODE}") {
 
-    if (params.ADMIN_SERVER_UPGRADE_STAGE_ENABLED) {
-
-        stage('Init workspace') {
-            println(" ++++++++ Init workspace ++++++++ ")
-            cleanWs()
-            sh "pwd"
-            sh "whoami"
-            println(" ++++++++ Downloading upgrade scripts from the Git ++++++++ ")
-            sh(script: "wget ${params.SCRIPTS_URL}${adminServerUpgradeScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
-            println(" ++++++++ finished ++++++++ ")
-        }
-
-        stage('Initialise and upgrade admin-server.') {
-            println(" ++++++++ Starting admin-server upgrade ++++++++ ")
-            ADMIN_UPGARDE_STATUS = sh (script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${params.NW_VERSION} ${params.ASOC_URL}", returnStatus: true) == 0
-            if (!ADMIN_UPGARDE_STATUS){
-                println("Admin server upgrade progress failed !!!!!!!")
-                System.exit(1)
-            }
-            println(" ++++++++ Finished admin-server upgrade ++++++++ ")
-        }
-    }
-}
-
-
-node("${params.UEBA_NODE}") {
-    if (params.WAITING_REBOOT_STAGE_ENABLED) {
         stage('Waiting for admin-server') {
-            println(" ++++++++ Waiting 10 min ++++++++ ")
-            sleep 600
+            println(" ++++++++ Waiting 10 min for the admin server to be up after reboot ++++++++ ")
+            sh "reboot"
+            retry(20){
+                sleep time: 30
+                unit: 'SECONDS'
+                sh "ssh -o ConnectTimeout=1 ${params.ADMIN_SERVER_NODE} exit"
+            }
         }
     }
-}
 
 
 node("${params.UEBA_NODE}") {
