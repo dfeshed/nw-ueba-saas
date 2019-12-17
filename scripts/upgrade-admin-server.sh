@@ -3,6 +3,7 @@ set -e
 
 NW_VERSION=$1
 ASOC_URL=$2
+TARGET_DIRCTORY=$3
 
 echo "  #############  Starting upgrade-admin-server.sh #############"
 
@@ -17,13 +18,12 @@ yum clean all
 rm -rf /var/cache/yum
 
 mkdir -p /tmp/upgrade/${NW_VERSION}
-cd /tmp/
 
 echo "  #############  Starting download upgrade ZIP #############"
-wget -q ${ASOC_URL}
+wget -q ${ASOC_URL} -P ${TARGET_DIRCTORY}
 echo "  #############  ZIP Download finished #############"
 
-unzip netwitness-${NW_VERSION}.zip -d /tmp/upgrade/${NW_VERSION}/
+unzip ${TARGET_DIRCTORY}/netwitness-${NW_VERSION}.zip -d /tmp/upgrade/${NW_VERSION}/
 echo
 echo "  #############  upgrade-cli-client init started #############"
 upgrade-cli-client --init --version ${NW_VERSION} --stage-dir /tmp/upgrade/
@@ -39,6 +39,3 @@ echo "  #############  Going to REBOOT in 10 seconds !!! #############"
 sleep 10 && reboot &
 
 echo "  #############  upgrade-admin-server.sh DONE #############"
-
-
-#https://wiki.na.rsa.net/display/PRES/Netwitness+Environment+Upgrade

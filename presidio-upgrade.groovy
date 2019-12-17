@@ -18,7 +18,7 @@ node("${params.ADMIN_SERVER_NODE}") {
 
         stage('Initialise and upgrade admin-server.') {
             println(" ++++++++ Starting admin-server upgrade ++++++++ ")
-            sh(script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${params.NW_VERSION} ${params.ASOC_URL}", returnStatus: true)
+            sh(script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${params.NW_VERSION} ${params.ASOC_URL} ${WORKSPACE}", returnStatus: true)
             println(" ++++++++ Finished admin-server upgrade ++++++++ ")
         }
     }
@@ -42,7 +42,7 @@ node("${params.UEBA_NODE}") {
             cleanWs()
             sh "whoami"
             sh(script: "wget ${params.SCRIPTS_URL}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
-            sh(script: "sh ${WORKSPACE}/upgrade-repo-configuration.sh ${params.NW_VERSION} ${params.ASOC_URL}", returnStatus: true)
+            sh(script: "sh ${WORKSPACE}/upgrade-repo-configuration.sh ${params.NW_VERSION}", returnStatus: true)
         }
     }
 }
