@@ -19,7 +19,10 @@ node("${params.ADMIN_SERVER_NODE}") {
         stage('Initialise and upgrade admin-server.') {
             println(" ++++++++ Starting admin-server upgrade ++++++++ ")
             ADMIN_UPGARDE_STATUS = sh (script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${params.NW_VERSION} ${params.ASOC_URL}", returnStatus: true) == 0
-            println("Admin server upgarde status : ${ADMIN_UPGARDE_STATUS}")
+            if (!ADMIN_UPGARDE_STATUS){
+                println("Admin server upgrade progress failed !!!!!!!")
+                System.exit(1)
+            }
             println(" ++++++++ Finished admin-server upgrade ++++++++ ")
         }
     }
