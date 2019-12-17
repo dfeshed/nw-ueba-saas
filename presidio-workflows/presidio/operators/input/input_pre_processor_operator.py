@@ -19,16 +19,19 @@ class InputPreProcessorOperator(SpringBootJarOperator):
     """
     Runs an input pre processor task (a JAR file) using a bash command.
     The c'tor accepts the task arguments that are constant throughout the
-    operator runs (e.g. name , schema_name and the static_arguments).
+    operator runs (e.g. type , schema_name and the static_arguments).
     Other arguments, such as the dynamic_arguments are evaluated before every run.
     """
 
     @apply_defaults
-    def __init__(self, name, schema_name, static_arguments, dynamic_arguments,
-                 command, task_id=None, *args, **kwargs):
+    def __init__(self, type, schema_name, static_arguments, dynamic_arguments,
+                 command, name=None, *args, **kwargs):
 
-        self.name = name
-        self.task_id = task_id or 'input_pre_processor_{}'.format(self.name)
+        self.type = type
+        if(name is None):
+            self.task_id = 'input_pre_processor_{}'.format(self.type)
+        else:
+            self.task_id = 'input_pre_processor_{}'.format(task_id)
         self.schema_name = schema_name
         self.static_arguments = static_arguments
         self.dynamic_arguments = dynamic_arguments
@@ -43,7 +46,7 @@ class InputPreProcessorOperator(SpringBootJarOperator):
         arguments = self._get_input_pre_processor_arguments(context)
 
         java_args = {
-            JAVA_ARGS_NAME_KEY: self.name,
+            JAVA_ARGS_NAME_KEY: self.type,
             JAVA_ARGS_ARGUMENTS_KEY: ("\\\"" + json.dumps(arguments).replace("\"", "\\\\\\\"") + "\\\"")
         }
 
