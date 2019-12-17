@@ -285,6 +285,41 @@ module('Unit | Actions | Pill Utils', function(hooks) {
       'Did not find the correct pills');
   });
 
+  test('findSelectedPillsWithLogicalOperators will fetch selected parens and their contents with any selected pill outside those parens', function(assert) {
+    const pillsData = [
+      { type: OPEN_PAREN, twinId: 1, id: 1 },
+      { type: QUERY_FILTER, id: 2 },
+      { type: OPERATOR_AND, id: 12 },
+      { type: QUERY_FILTER, id: 3, isSelected: true },
+      { type: OPERATOR_AND, id: 13 },
+      { type: OPEN_PAREN, twinId: 2, id: 4, isSelected: true },
+      { type: QUERY_FILTER, id: 5 },
+      { type: CLOSE_PAREN, twinId: 2, id: 6 },
+      { type: OPERATOR_AND, id: 14 },
+      { type: OPEN_PAREN, twinId: 3, id: 7 },
+      { type: QUERY_FILTER, id: 8, isSelected: true },
+      { type: CLOSE_PAREN, twinId: 3, id: 9 },
+      { type: CLOSE_PAREN, twinId: 1, id: 10 },
+      { type: OPERATOR_AND, id: 15 },
+      { type: QUERY_FILTER, id: 11, isSelected: true }
+    ];
+
+    const result = pillUtils.findSelectedPillsWithLogicalOperators(pillsData);
+    assert.deepEqual(result,
+      [
+        { type: QUERY_FILTER, id: 3, isSelected: true },
+        { type: OPERATOR_AND, id: 13 },
+        { type: OPEN_PAREN, twinId: 2, id: 4, isSelected: true },
+        { type: QUERY_FILTER, id: 5 },
+        { type: CLOSE_PAREN, twinId: 2, id: 6 },
+        { type: OPERATOR_AND, id: 14 },
+        { type: QUERY_FILTER, id: 8, isSelected: true },
+        { type: OPERATOR_AND, id: 15 },
+        { type: QUERY_FILTER, id: 11, isSelected: true }
+      ],
+      'Did not find the correct pills');
+  });
+
   test('isValidToWrapWithParens return true if parens are balanced', function(assert) {
     // ( pill pill ( pill ) ( pill )) pill
     const pillsData = [

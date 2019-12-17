@@ -274,6 +274,52 @@ const findSelectedPills = (pillsData) => {
   }
   return selectedFilters;
 };
+/**
+ * Given an array of selected pills and parens, it will return all
+ * contents within selected parens + any selected pills outside selected
+ * parens with the respective logical operators associated
+ */
+const findSelectedPillsWithLogicalOperators = (pillsData) => {
+  let count = 0;
+  let selectedFilters = [];
+  while (count < pillsData.length) {
+    const pill = pillsData[count];
+    if (pill.type === OPEN_PAREN && pill.isSelected) {
+      const { st, en } = _findParensIndexes(pill, pillsData);
+      selectedFilters.push(...pillsData.slice(st, en + 1));
+      // start next iteration after it's matching close paren
+      count = en + 1;
+    } else if (pill.type !== OPEN_PAREN && pill.isSelected) {
+      selectedFilters.push(pill);
+      count++;
+    } else {
+      count++;
+    }
+    // if a pill is selected then also push the corresponding logical operator.
+    if (pill.isSelected) {
+      let nextPill = pillsData[count];
+      // if the selected close paren is the last inner paren then the logical operator after the last
+      // outer most non selected paren is inserted, if present.
+      while (!!nextPill && !nextPill.isSelected && nextPill.type === CLOSE_PAREN) {
+        count++;
+        nextPill = pillsData[count];
+      }
+      if (!!nextPill && isLogicalOperator(nextPill)) {
+        selectedFilters.push(nextPill);
+        count++;
+      }
+    }
+  }
+  // if a logical operator is at the beginning or end of the selected filters trim them.
+  if (isLogicalOperator(selectedFilters[0])) {
+    selectedFilters = selectedFilters.slice(1);
+  }
+  if (isLogicalOperator(selectedFilters[selectedFilters.lastIndex])) {
+    selectedFilters.pop();
+  }
+
+  return selectedFilters;
+};
 
 /**
  * What is an unnecessary operator? One that:
@@ -328,6 +374,7 @@ export {
   findEmptyParensAtPosition,
   findMissingTwins,
   findSelectedPills,
+  findSelectedPillsWithLogicalOperators,
   findPositionAfterEmptyParensDeleted,
   findUnnecessaryOperators,
   isEmptyParenSetAt,

@@ -1,7 +1,7 @@
 import {
   isValidToWrapWithParens,
   doPillsContainTextPill,
-  findSelectedPills,
+  findSelectedPillsWithLogicalOperators,
   selectedPillIndexes
 } from 'investigate-events/actions/pill-utils';
 
@@ -14,7 +14,7 @@ const queryWithSelected = (context, i18n) => {
     action() {
       const pillsData = context.get('pillsData');
       const pillSet = new Set(pillsData);
-      const selectedPills = findSelectedPills(context.get('pillsData'));
+      const selectedPills = findSelectedPillsWithLogicalOperators(context.get('pillsData'));
       const pillsToDelete = [...pillSet.difference(new Set(selectedPills))];
       // This action will delete pills and deselect + remove focus
       context.send('deleteGuidedPill', { pillData: pillsToDelete });
