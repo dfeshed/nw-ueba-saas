@@ -14,16 +14,18 @@ echo -e "https://nw-node-zero/nwrpmrepo" > /etc/netwitness/platform/repobase
 sed -i "s|baseurl=.*|baseurl=file:///var/netwitness/common/repo/${NW_VERSION}/OS|g" /etc/yum.repos.d/nw-os-base.repo
 sed -i "s|baseurl=.*|baseurl=file:///var/netwitness/common/repo/${NW_VERSION}/RSA|g" /etc/yum.repos.d/nw-rsa-base.repo
 
-yum clean all
+OWB_ALLOW_NON_FIPS=on yum clean all
 rm -rf /var/cache/yum
 rm -rf /tmp/upgrade/*
+#rm -f /var/netwitness/netwitness-*.zip
 mkdir -p /tmp/upgrade/${NW_VERSION}
 
-echo "  #############  Starting download upgrade ZIP #############"
-wget -q ${ASOC_URL} -P ${TARGET_DIRCTORY}
-echo "  #############  ZIP Download finished #############"
 
-unzip ${TARGET_DIRCTORY}/netwitness-${NW_VERSION}.zip -d /tmp/upgrade/${NW_VERSION}/
+echo "  #############  Starting download upgrade ZIP #############"
+#wget -q ${ASOC_URL} -P /var/netwitness/
+echo "  #############  ZIP Download finished #############"
+unzip /var/netwitness/netwitness-${NW_VERSION}.zip -d /tmp/upgrade/${NW_VERSION}/
+#rm -f /var/netwitness/netwitness-${NW_VERSION}.zip
 echo
 echo "  #############  upgrade-cli-client init started #############"
 upgrade-cli-client --init --version ${NW_VERSION} --stage-dir /tmp/upgrade/
