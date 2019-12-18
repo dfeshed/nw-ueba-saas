@@ -29,7 +29,7 @@ node("${params.ADMIN_SERVER_NODE}") {
 }
 
 
-node("${env.SECONDARY_NODE}") {
+node(env.SECONDARY_NODE) {
     if (params.WAITING_REBOOT_STAGE_ENABLED) {
         stage('Waiting for admin-server') {
             println(" ++++++++ Waiting 10 min ++++++++ ")
