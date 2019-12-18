@@ -388,29 +388,12 @@ export const setSort = (sortField, sortDirection, isQueryExecutedBySort) => {
     dispatch(cancelQuery(false));
     dispatch(setReconClosed());
 
-    // manually update url as router is not handling this interaction
     if (sortField && sortDirection) {
-      if (window.location.search) {
-        const updateParameters = {
-          sortField,
-          sortDir: sortDirection
-        };
-
-        const params = updateUrl(window.location.search, updateParameters);
-
-        history.pushState(
-          null,
-          document.querySelector('title').innerHTML,
-          `${window.location.pathname}?${params}`
-        );
-      }
-
       const state = getState();
       if (hasMinimumCoreServicesVersionForColumnSorting(state) && resultCountAtThreshold(state)) {
         // there are more events that cannot be sorted in the client
-        // query for new events already sorted
+        // query executed by route update
         dispatch(updateSort(sortField, sortDirection, isQueryExecutedBySort));
-        dispatch(fetchInvestigateData());
       } else {
         // we have everything and can sort in the client
         // or sorting is not supported in core because of service version
@@ -429,6 +412,19 @@ export const setSort = (sortField, sortDirection, isQueryExecutedBySort) => {
             }
           });
         }, 750);
+      }
+
+      try {
+        const { router } = lookup('service:-routing');
+        router.transitionTo({
+          queryParams: {
+            eid: undefined,
+            sortField,
+            sortDir: sortDirection
+          }
+        });
+      } catch {
+        return;
       }
     }
   };

@@ -2,6 +2,7 @@ import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { later } from '@ember/runloop';
 import { initializeInvestigate, queryIsRunning } from 'investigate-events/actions/initialization-creators';
+import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { updateSummaryData } from 'investigate-events/actions/data-creators';
 import {
   setMetaPanelSize,
@@ -91,6 +92,9 @@ export default Route.extend({
   },
 
   model(params) {
+    const redux = this.get('redux');
+    const state = redux.getState();
+
     // If nextQueryParams is present, we got here via internal
     // querying and do not need to re-run the query. Do need to
     // clean up nextQueryParams though.
@@ -106,7 +110,16 @@ export default Route.extend({
         this.set('nextQueryParams', params);
       }
 
-      this.runInvestigateQuery(params, false);
+      const notSortQuery = !state.investigate.data.isQueryExecutedBySort;
+      const sortButQueryRequired = state.investigate.data.isQueryExecutedBySort && hasMinimumCoreServicesVersionForColumnSorting(state) && resultCountAtThreshold(state);
+      const noQueryYet = !params.sid;
+      if (
+        notSortQuery ||
+        sortButQueryRequired ||
+        noQueryYet
+      ) {
+        this.runInvestigateQuery(params, false);
+      }
     }
   },
 

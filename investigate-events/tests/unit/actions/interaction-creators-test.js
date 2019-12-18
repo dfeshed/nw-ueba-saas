@@ -131,7 +131,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
   });
 
   test('setSort dispatches five times when hasMinimumCoreServicesVersionForColumnSorting and resultCountAtThreshold', function(assert) {
-    assert.expect(5);
+    assert.expect(4);
     const getState = () => {
       return new ReduxDataHelper().hasSummaryData(true).eventCount(1).eventThreshold(1).build();
     };
