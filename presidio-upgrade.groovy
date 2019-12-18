@@ -1,9 +1,9 @@
 
 def adminServerUpgradeScript="upgrade-admin-server.sh"
 def uebaRepoconfigScript="upgrade-repo-configuration.sh"
+def scriptsUrl = "https://github.rsa.lab.emc.com/raw/asoc/presidio-jenkins-job-dsl/master/scripts/"
 environment {
     SECONDARY_NODE = 'ueba_pipeline_node'
-    SCRIPTS_URL = "https://github.rsa.lab.emc.com/raw/asoc/presidio-jenkins-job-dsl/master/scripts/"
 }
 
 node("${params.ADMIN_SERVER_NODE}") {
@@ -14,7 +14,7 @@ node("${params.ADMIN_SERVER_NODE}") {
             sh "pwd"
             sh "whoami"
             println(" ++++++++ Downloading upgrade scripts from the Git ++++++++ ")
-            sh(script: "wget ${params.SCRIPTS_URL}${adminServerUpgradeScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
+            sh(script: "wget ${scriptsUrl}${adminServerUpgradeScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
             println(" ++++++++ finished ++++++++ ")
         }
         stage('Initialise and upgrade admin-server.') {
@@ -44,7 +44,7 @@ node("${params.ADMIN_SERVER_NODE}") {
         stage('Upgrading UEBA Node') {
             println(" ++++++++ Going to configure UEBA node repo ++++++++ ")
             sh "whoami"
-            sh(script: "wget $env.SCRIPTS_URL${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
+            sh(script: "wget ${scriptsUrl}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
             sh(script:"sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/${uebaRepoconfigScript}", returnStatus:true)
         }
     }
