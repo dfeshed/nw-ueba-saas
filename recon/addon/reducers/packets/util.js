@@ -21,7 +21,8 @@ const _enhanceEachPacket = (packets, previousPackets, cacheService) => {
   const len = packets.length;
   const ppLen = previousPackets.length;
   for (let i = 0; i < len; i++) {
-    const cur = packets[i];
+    let cur = packets[i];
+    cur = cur.asMutable({ deep: true });
     previousPackets[i + ppLen] = cacheService.add({
       ...cur,
       isContinuation: isContinuation(cur.side, cur.sequence),
@@ -34,6 +35,7 @@ const _enhanceEachPacket = (packets, previousPackets, cacheService) => {
 const _enhancePayloadOnlyPackets = (packets, previousPackets, cacheService) => {
   // console.log('processPacketPayloads(): _enhancePayloadOnlyPackets, starting with', previousPackets.length, 'packets, processing', packets.length, 'new packets');// eslint-disable-line
   return packets.reduce((acc, cur, idx, src) => {
+    cur = cur.asMutable({ deep: true });
     const { bytes } = cur;
     const isLastIteration = src.length - 1 === idx;
     // Only process if there are bytes

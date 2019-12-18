@@ -5,8 +5,7 @@ import { setupTest } from 'ember-qunit';
 import {
   getNetworkDownloadOptions,
   getDefaultDownloadFormat,
-  _payloadProcessedPackets,
-  packetsRetrieved,
+  _packetsRetrieved,
   packetRenderingUnderWay
 } from 'recon/reducers/packets/selectors';
 
@@ -36,47 +35,6 @@ module('Unit | selector | packets', function(hooks) {
   hooks.beforeEach(function() {
     const cache = this.owner.lookup('service:processed-packet-cache');
     cache.clear();
-  });
-
-  test('_payloadProcessedPackets will return an empty array when there are no packets or packetfields', function(assert) {
-    const result = _payloadProcessedPackets(Immutable.from({
-      packets: {
-        isPayloadOnly: false,
-        packetFields: [],
-        packets: []
-      }
-    }));
-    assert.equal(result.length, 0, 'Did not find an empty array');
-  });
-
-  test('_payloadProcessedPackets will return undefined if no packets or packetFields', function(assert) {
-    // no packetFields
-    let result = _payloadProcessedPackets(Immutable.from({
-      packets: {
-        isPayloadOnly: false,
-        packetFields: null,
-        packets: [{
-          bytes: 'ABCD',
-          id: 4804965123532,
-          payloadSize: 6,
-          position: 2,
-          sequence: 102357698,
-          side: 'response',
-          timestamp: '1485792552869'
-        }]
-      }
-    }));
-    assert.notOk(result, 'No packetFields, did not find undefined');
-
-    // no packets
-    result = _payloadProcessedPackets(Immutable.from({
-      packets: {
-        isPayloadOnly: false,
-        packetFields: [],
-        packets: null
-      }
-    }));
-    assert.notOk(result, 'No packets, did not find undefined');
   });
 
   test('getNetworkDownloadOptions', function(assert) {
@@ -127,22 +85,22 @@ module('Unit | selector | packets', function(hooks) {
     assert.equal(typeof result.isEnabled, 'undefined');
   });
 
-  test('packetsRetrieved returns true when packets are not null', function(assert) {
-    const result = packetsRetrieved(Immutable.from({
+  test('_packetsRetrieved returns true when packets are not null', function(assert) {
+    const result = _packetsRetrieved(Immutable.from({
       packets: {
         packets: []
       }
     }));
-    assert.ok(result, 'packetsRetrieved should be true');
+    assert.ok(result, '_packetsRetrieved should be true');
   });
 
-  test('packetsRetrieved returns false when packets are null', function(assert) {
-    const result = packetsRetrieved(Immutable.from({
+  test('_packetsRetrieved returns false when packets are null', function(assert) {
+    const result = _packetsRetrieved(Immutable.from({
       packets: {
         packets: null
       }
     }));
-    assert.notOk(result, 'packetsRetrieved should be false');
+    assert.notOk(result, '_packetsRetrieved should be false');
   });
 
   test('packetRenderingUnderWay returns true if packets are null', function(assert) {

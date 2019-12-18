@@ -2,6 +2,7 @@ import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
+import Immutable from 'seamless-immutable';
 
 import { enhancePackets } from 'recon/reducers/packets/util';
 import { renderedPackets } from 'recon/reducers/packets/selectors';
@@ -58,7 +59,7 @@ module('Integration | Component | Recon Event Detail | Single Packet', function(
       },
       packets: {
         packetFields,
-        packets: enhancePackets([packets[0]], 0, packetFields, 1),
+        packets: Immutable.from(enhancePackets([packets[0]], 0, packetFields, 1)),
         renderIds: [packets[0].id]
       }
     });
@@ -94,7 +95,7 @@ module('Integration | Component | Recon Event Detail | Single Packet', function(
       },
       packets: {
         packetFields,
-        packets: enhancePackets([packets[1]], packetFields),
+        packets: Immutable.from(enhancePackets([packets[1]], packetFields)),
         renderIds: [packets[1].id]
       }
     });
@@ -133,7 +134,7 @@ module('Integration | Component | Recon Event Detail | Single Packet', function(
       },
       packets: {
         packetFields,
-        packets: enhancePackets([packets[1]], packetFields),
+        packets: Immutable.from(enhancePackets([packets[1]], packetFields)),
         renderIds: [packets[1].id]
       }
     });

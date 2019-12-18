@@ -2,8 +2,8 @@ import Component from '@ember/component';
 import { debounce } from '@ember/runloop';
 import { connect } from 'ember-redux';
 import computed, { alias } from 'ember-computed-decorators';
-import ReconPanelHelp from 'recon/mixins/recon-panel-help';
 
+import ReconPanelHelp from 'recon/mixins/recon-panel-help';
 import ReconPagerMixin from 'recon/mixins/recon-pager';
 import StickyHeaderMixin from 'recon/mixins/sticky-header-mixin';
 import DelayBatchingMixin from 'recon/mixins/delay-batching-mixin';
@@ -20,9 +20,9 @@ import { allDataHidden as allVisualDataHidden } from 'recon/reducers/visuals/sel
 
 import layout from './template';
 
-const stateToComputed = ({ recon, recon: { data } }) => ({
-  dataIndex: data.index,
-  eventTotal: data.total,
+const stateToComputed = ({ recon }) => ({
+  dataIndex: recon.data.index,
+  eventTotal: recon.data.total,
   hasPackets: hasPackets(recon),
   hasSignaturesHighlighted: recon.packets.hasSignaturesHighlighted,
   hasStyledBytes: recon.packets.hasStyledBytes,

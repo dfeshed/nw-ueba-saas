@@ -17,7 +17,7 @@
     {{else if hasNoRenderedPayload}}
       {{rsa-panel-message message=(t 'recon.packetView.noPayload')}}
     {{/if}}
-    {{#each renderedPackets key='@index' as |packet index|}}
+    {{#each renderedPackets key='id' as |packet index|}}
       {{recon-event-detail/single-packet
         hasSignaturesHighlighted=hasSignaturesHighlighted
         hasStyledBytes=hasStyledBytes

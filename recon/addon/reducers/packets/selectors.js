@@ -19,24 +19,15 @@ const packetFields = (recon) => recon.packets.packetFields;
 // or a populated array. An empty array means the event has
 // no text content. If textContent is null, then it is still
 // being fetched.
-export const packetsRetrieved = createSelector(
-  [packets],
-  (packets) => packets !== null
-);
+export const _packetsRetrieved = (recon) => packets(recon) !== null;
+export const numberOfPackets = (recon) => {
+  const _packets = packets(recon);
+  return _packets ? _packets.length : 0;
+};
 
 export const hasRenderIds = createSelector(
   [renderIds],
   (renderIds) => !!renderIds && renderIds.length > 0
-);
-
-/**
- * Selector, determines packet set based on whether payloads are included
- *
- * @private
- */
-export const _payloadProcessedPackets = createSelector(
-  [packets, isPayloadOnly, packetFields],
-  processPacketPayloads
 );
 
 /**
@@ -45,8 +36,8 @@ export const _payloadProcessedPackets = createSelector(
  * @public
  */
 const _toBeRenderedPackets = createSelector(
-  [_payloadProcessedPackets, isRequestShown, isResponseShown],
-  (packets, isRequestShown, isResponseShown) => {
+  [packets, isPayloadOnly, packetFields, isRequestShown, isResponseShown],
+  (packets, isPayloadOnly, packetFields, isRequestShown, isResponseShown) => {
 
     // packets can be null, if so, get out
     // can have no renderIds, if so, get out
@@ -56,14 +47,16 @@ const _toBeRenderedPackets = createSelector(
 
     // if showing all packets, just return them
     if (isRequestShown && isResponseShown) {
-      return packets;
+      return processPacketPayloads(packets, isPayloadOnly, packetFields);
     }
 
     // we're not showing req or res, so let's filter them out
-    return packets.filter((p) => {
+    packets = packets.filter((p) => {
       return (p.side === 'request' && isRequestShown) ||
         (p.side === 'response' && isResponseShown);
     });
+
+    return processPacketPayloads(packets, isPayloadOnly, packetFields);
   }
 );
 
@@ -98,13 +91,8 @@ const _headerHasPackets = createSelector(
 // Do we actually have packets?
 // if they have been retrieved and there are none, then nope
 export const hasPackets = createSelector(
-  [packetsRetrieved, packets, _headerHasPackets],
-  (packetsRetrieved, packets, headerHasPackets) => headerHasPackets || (packetsRetrieved && packets?.length !== 0)
-);
-
-export const numberOfPackets = createSelector(
-  [hasPackets, packets],
-  (hasPackets, packets) => (!hasPackets) ? 0 : packets?.length
+  [_packetsRetrieved, numberOfPackets, _headerHasPackets],
+  (packetsRetrieved, numberOfPackets, headerHasPackets) => headerHasPackets || (packetsRetrieved && numberOfPackets !== 0)
 );
 
 const _rawNumberOfPages = createSelector(
@@ -128,7 +116,7 @@ export const cannotGoToPreviousPage = createSelector(
 );
 
 export const packetRenderingUnderWay = createSelector(
-  [_toBeRenderedPackets, renderedPackets, packetFields, packetsRetrieved],
+  [_toBeRenderedPackets, renderedPackets, packetFields, _packetsRetrieved],
   (toBeRenderedPackets, renderedPackets, packetFields, packetsRetrieved) => {
     return !packetsRetrieved || packetFields === null || toBeRenderedPackets.length > renderedPackets.length;
   }
