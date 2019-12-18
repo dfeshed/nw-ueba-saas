@@ -7,10 +7,10 @@ environment {
 }
 
 node("${params.ADMIN_SERVER_NODE}") {
+    cleanWs()
     if (params.ADMIN_SERVER_UPGRADE_STAGE_ENABLED) {
         stage('Init workspace') {
             println(" ++++++++ Init workspace ++++++++ ")
-            cleanWs()
             println(" ++++++++ Downloading upgrade scripts from the Git ++++++++ ")
             sh(script: "wget ${scriptsUrl}${adminServerUpgradeScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
             println(" ++++++++ finished ++++++++ ")
