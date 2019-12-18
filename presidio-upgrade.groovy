@@ -44,7 +44,7 @@ node("${params.ADMIN_SERVER_NODE}") {
         stage('Upgrading UEBA Node') {
             println(" ++++++++ Going to configure UEBA node repo ++++++++ ")
             sh "whoami"
-            sh(script: "wget ${params.SCRIPTS_URL}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
+            sh(script: "wget ${env.SCRIPTS_URL}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
             sh(script:"sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/${uebaRepoconfigScript}", returnStatus:true)
         }
     }
