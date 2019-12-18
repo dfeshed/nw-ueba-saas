@@ -16,6 +16,11 @@
     <artifactId>ueba-data-generator</artifactId>
     <name>Standalone Data Generator</name>
 
+    <properties>
+        <maven.build.timestamp.format>ddMMyy_HHmm</maven.build.timestamp.format>
+        <buildNumber>${maven.build.timestamp}</buildNumber>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -72,8 +77,10 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
+                            <finalName>ueba-data-generator-${maven.build.timestamp}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>
-                                <descriptor>src/main/assembly/zip.xml</descriptor>
+                                <descriptor>src/main/assembly/assembly.xml</descriptor>
                             </descriptors>
                         </configuration>
                     </execution>
