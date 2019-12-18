@@ -82,7 +82,7 @@ pipeline {
 def setBaseUrl(String rpmBuildPath = params.SPECIFIC_RPM_BUILD, String rpmVeriosn = env.VERSION, String stability = env.STABILITY) {
 
     String baseUrl = "baseurl="
-    String osBaseUrl = 'baseurl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/latest/11.4.0.0/OS/'
+    String osBaseUrl = 'baseurl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/latest/11.5.0.0/OS/'
     if (rpmBuildPath != '') {
         baseUrl = baseUrl + rpmBuildPath
         println(baseUrl)

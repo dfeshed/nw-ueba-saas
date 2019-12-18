@@ -36,7 +36,7 @@ def setBaseUrl(
         String stability = env.STABILITY
 ) {
     String baseUrl = "baseurl="
-    String osBaseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/latest/11.4.0.0/OS/'
+    String osBaseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/latest/11.5.0.0/OS/'
     if (rpmBuildPath != '') {
         baseUrl = baseUrl + rpmBuildPath
         println(baseUrl)
