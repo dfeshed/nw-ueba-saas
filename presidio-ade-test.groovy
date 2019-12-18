@@ -5,8 +5,6 @@ pipeline {
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         string(name: 'SIDE_BRANCH_JOD_NUMBER', defaultValue: '', description: 'Write the "presidio-build-jars-and-packages" build number from which you want to install the PRMs')
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
-        booleanParam(name: 'INSTALL_UEBA_UI_RPMS', defaultValue: false, description: '')
-        booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
     }
     agent { label env.NODE_LABLE }
@@ -34,29 +32,6 @@ pipeline {
             }
             steps {
                 cleanUebaDBs()
-            }
-        }
-        stage('Install UEBA RPMs') {
-            when {
-                expression { return params.INSTALL_UEBA_RPMS }
-            }
-            steps {
-                setBaseUrl()
-                uebaInstallRPMs()
-            }
-        }
-        stage('UEBA-UI RPMs Upgrade') {
-            environment {
-                ADMIN_SERVER_IP = sh (script: 'sh /home/presidio/env_properties_manager.sh --get admin-server', returnStdout: true).trim()
-            }
-            when {
-                expression { return params.INSTALL_UEBA_UI_RPMS }
-            }
-            steps {
-                script {
-                    sh "echo ADMIN_SERVER_IP=${env.ADMIN_SERVER_IP}"
-                    sh "sshpass -p \"netwitness\" ssh root@${env.ADMIN_SERVER_IP} -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null 'bash -s' < /home/presidio/presidio-ui-update.sh"
-                }
             }
         }
 
@@ -112,16 +87,6 @@ def cleanUebaDBs() {
     if (params.INSTALL_UEBA_RPMS == false) {
         sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-services.sh $VERSION $env.OLD_UEBA_RPMS"
     }
-}
-
-def uebaInstallRPMs() {
-    if (params.SIDE_BRANCH_JOD_NUMBER == '') {
-        sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/install_upgrade_rpms.sh $VERSION $env.OLD_UEBA_RPMS"
-    }
-    else {
-        sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/install_side_branch_rpms.sh $params.SIDE_BRANCH_JOD_NUMBER"
-    }
-    sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-services.sh $VERSION $env.OLD_UEBA_RPMS"
 }
 
 /**************************
