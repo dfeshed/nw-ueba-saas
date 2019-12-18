@@ -39,7 +39,7 @@ node(env.SECONDARY_NODE) {
 node("${params.ADMIN_SERVER_NODE}") {
     if (params.UEBA_UPGRADE_STAGE_ENABLED) {
         stage('Upgrading UEBA Node') {
-            String uebaIp = sh(returnStdout: true, script: "getent hosts nw-01-ueba.hzlab.lab.emc.com | awk \'{ print \$1 }\'").trim()
+            String uebaIp = sh(returnStdout: true, script: "getent hosts ${params.UEBA_NODE} | awk \'{ print \$1 }\'").trim()
             println(" ++++++++ Going to configure UEBA node repos ++++++++ ")
             sh(script: "wget ${scriptsUrl}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
             sh(script:"sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/${uebaRepoconfigScript} ${params.NW_VERSION}", returnStatus:true)
