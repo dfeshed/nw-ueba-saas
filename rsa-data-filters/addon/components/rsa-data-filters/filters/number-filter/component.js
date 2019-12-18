@@ -10,26 +10,6 @@ export default Component.extend({
 
   classNames: ['number-filter'],
 
-  defaults: {
-    filterOnBlur: false,
-    isDecimalAllowed: true,
-    operators: [
-      { label: 'Equals', type: 'EQUAL' },
-      { label: 'Greater Than', type: 'GREATER_THAN' },
-      { label: 'Less Than', type: 'LESS_THAN' },
-      { label: 'Between', type: 'BETWEEN' }
-    ],
-    filterValue: {
-      operator: 'EQUAL',
-      value: []
-    }
-  },
-
-  oldValue: {
-    operator: 'EQUAL',
-    value: []
-  },
-
   @computed('options')
   filterValue: {
     get() {
@@ -62,6 +42,21 @@ export default Component.extend({
 
   init() {
     this._super(arguments);
+    this.defaults = this.defaults || {
+      filterOnBlur: false,
+      isDecimalAllowed: true,
+      operators: [
+        { label: 'Equals', type: 'EQUAL' },
+        { label: 'Greater Than', type: 'GREATER_THAN' },
+        { label: 'Less Than', type: 'LESS_THAN' },
+        { label: 'Between', type: 'BETWEEN' }
+      ],
+      filterValue: {
+        operator: 'EQUAL',
+        value: []
+      }
+    };
+    this.oldValue = this.oldValue || { operator: 'EQUAL', value: [] };
     const { operators, filterValue } = this.get('filterOptions');
     if (operators && !filterValue) {
       this.set('defaults.filterValue', { operator: operators[0].type, value: [] });

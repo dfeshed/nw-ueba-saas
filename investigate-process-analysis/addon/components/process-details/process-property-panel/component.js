@@ -42,7 +42,11 @@ export default Component.extend({
    * @type {object[]}
    * @public
    */
-  config: [],
+
+  init() {
+    this._super(...arguments);
+    this.config = this.config || [];
+  },
 
   /**
    * Data to display

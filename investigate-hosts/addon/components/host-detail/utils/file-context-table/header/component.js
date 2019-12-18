@@ -1,9 +1,10 @@
 import RSADataTableHeader from 'component-lib/components/rsa-data-table/header/component';
 
 export default RSADataTableHeader.extend({
-
-  CONFIG_FIXED_COLUMNS: ['checkbox', 'name', 'fileName', 'fileProperties.score', 'dllFileName', 'driverFileName'],
-
+  init() {
+    this._super(...arguments);
+    this.CONFIG_FIXED_COLUMNS = this.CONFIG_FIXED_COLUMNS || ['checkbox', 'name', 'fileName', 'fileProperties.score', 'dllFileName', 'driverFileName'];
+  },
   actions: {
     toggleColumn(column) {
       if (!this.CONFIG_FIXED_COLUMNS.includes(column.field)) {

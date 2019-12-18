@@ -33,13 +33,11 @@ const PivotToInvestigate = Component.extend({
   size: 'small',
 
   investigateText: null,
-
-  timeRange: {
-    value: 2,
-    unit: 'days'
-  },
-
   serviceId: null,
+  init() {
+    this._super(...arguments);
+    this.timeRange = this.timeRange || { value: 2, unit: 'days' };
+  },
 
 
   @computed

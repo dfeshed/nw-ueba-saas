@@ -15,14 +15,16 @@ const HostDetailsDataTable = Component.extend({
 
   customSort: null,
 
-  items: [],
-
   @alias('status')
   isDataLoading: true,
 
   @computed('items', 'totalItems')
   total(items, totalItems) {
     return totalItems ? totalItems : items.length;
+  },
+  init() {
+    this._super(...arguments);
+    this.items = this.items || [];
   },
 
   actions: {

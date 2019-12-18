@@ -59,10 +59,9 @@ const DownloadedFileList = Component.extend({
   selectedFiles: null,
 
   contextItems: null,
-
-  currentSort: {
-    field: 'downloadedTime',
-    direction: 'desc'
+  init() {
+    this._super(...arguments);
+    this.currentSort = this.currentSort || { field: 'downloadedTime', direction: 'desc' };
   },
 
   actions: {

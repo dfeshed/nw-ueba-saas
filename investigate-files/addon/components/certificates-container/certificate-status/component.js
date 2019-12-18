@@ -21,21 +21,23 @@ const CertificateStatus = Component.extend({
   classNames: ['certificates-status'],
 
   showModal: false,
-
-  radioButtons: [
-    {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist',
-      value: 'Blacklisted'
-    },
-    {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist',
-      value: 'Whitelisted'
-    },
-    {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.neutral',
-      value: 'Neutral'
-    }
-  ],
+  init() {
+    this._super(...arguments);
+    this.radioButtons = this.radioButtons || [
+      {
+        label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist',
+        value: 'Blacklisted'
+      },
+      {
+        label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist',
+        value: 'Whitelisted'
+      },
+      {
+        label: 'investigateFiles.editFileStatus.fileStatusOptions.neutral',
+        value: 'Neutral'
+      }
+    ];
+  },
 
   @computed('selections')
   isDisabled(selections) {

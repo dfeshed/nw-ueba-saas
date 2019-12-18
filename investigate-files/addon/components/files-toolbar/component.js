@@ -69,8 +69,6 @@ const ToolBar = Component.extend({
 
   contextualHelp: service(),
 
-  agentIds: [],
-
   @computed('fileStatusData')
   data(fileStatusData) {
     return { ...fileStatusData };
@@ -95,6 +93,10 @@ const ToolBar = Component.extend({
       const FILES_ARE_NOT_SIGNED_TOOLTIP = i18n.t('investigateFiles.certificate.unsigned.toolTipCertificateViewDisabled').toString();
       return selectedList.length > 1 ? MORE_THAN_TEN_FILES_SELECTED_TOOLTIP : FILES_ARE_NOT_SIGNED_TOOLTIP;
     }
+  },
+  init() {
+    this._super(...arguments);
+    this.agentIds = this.agentIds || [];
   },
   actions: {
     resetRiskScoreAction(itemsList) {

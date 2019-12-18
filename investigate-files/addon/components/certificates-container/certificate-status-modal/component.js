@@ -25,21 +25,23 @@ const CertificateStatus = Component.extend({
   showModal: false,
 
   isModelChange: false,
-
-  radioButtons: [
-    {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist',
-      value: 'Blacklisted'
-    },
-    {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist',
-      value: 'Whitelisted'
-    },
-    {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.neutral',
-      value: 'Neutral'
-    }
-  ],
+  init() {
+    this._super(...arguments);
+    this.radioButtons = this.radioButtons || [
+      {
+        label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist',
+        value: 'Blacklisted'
+      },
+      {
+        label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist',
+        value: 'Whitelisted'
+      },
+      {
+        label: 'investigateFiles.editFileStatus.fileStatusOptions.neutral',
+        value: 'Neutral'
+      }
+    ];
+  },
 
   @computed('data.comment', 'data.certificateStatus', 'statusData')
   isSaveButtonDisabled(comment, fileStatus, currentStatusData) {

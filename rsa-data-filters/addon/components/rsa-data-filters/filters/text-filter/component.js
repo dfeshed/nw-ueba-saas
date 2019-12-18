@@ -14,19 +14,6 @@ export default Component.extend({
 
   i18n: service(),
 
-  defaults: {
-    maxLength: 256,
-    filterOnBlur: false,
-    operators: [
-      { type: 'IN', label: 'dataFilters.label.equals' },
-      { type: 'LIKE', label: 'dataFilters.label.contains' }
-    ],
-    filterValue: {
-      operator: 'IN',
-      value: []
-    }
-  },
-
   isError: false,
 
   errorMessage: '',
@@ -50,6 +37,18 @@ export default Component.extend({
 
   init() {
     this._super(arguments);
+    this.defaults = this.defaults || {
+      maxLength: 256,
+      filterOnBlur: false,
+      operators: [
+        { type: 'IN', label: 'dataFilters.label.equals' },
+        { type: 'LIKE', label: 'dataFilters.label.contains' }
+      ],
+      filterValue: {
+        operator: 'IN',
+        value: []
+      }
+    };
     const options = assign({}, this.get('defaults'), this.get('filterOptions'));
     const { filterValue } = options;
     this.set('value', filterValue);

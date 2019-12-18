@@ -12,6 +12,12 @@ export default DataTableBodyRow.extend({
 
   classNameBindings: ['isRowChecked'],
 
+  init() {
+    this._super(...arguments);
+    this. updatedContextConfBackup = this.updatedContextConfBackup || [];
+    this. initialContextConfBackup = this.initialContextConfBackup || [];
+  },
+
   accessControl: service(),
 
   @computed('item', 'selections')

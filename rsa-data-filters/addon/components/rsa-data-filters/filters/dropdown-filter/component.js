@@ -8,12 +8,6 @@ export default Component.extend({
 
   classNames: ['dropdown-filter'],
 
-  defaults: {
-    multiSelect: false,
-    searchEnabled: false,
-    filterValue: []
-  },
-
   @alias('options.multiSelect')
   isMultiSelect: false,
 
@@ -42,6 +36,11 @@ export default Component.extend({
 
   init() {
     this._super(arguments);
+    this.defaults = this.defaults || {
+      multiSelect: false,
+      searchEnabled: false,
+      filterValue: []
+    };
     const options = assign({}, this.get('defaults'), this.get('filterOptions'));
     this.set('options', options);
   },

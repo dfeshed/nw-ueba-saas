@@ -63,6 +63,7 @@ const dispatchToActions = {
  */
 const DownloadedFileList = Component.extend({
 
+
   tagName: '',
 
   columnsConfig: FIXED_COLUMNS,
@@ -76,10 +77,9 @@ const DownloadedFileList = Component.extend({
   flashMessage: service(),
 
   callBackOptions,
-
-  currentSort: {
-    field: 'creationTime',
-    direction: 'desc'
+  init() {
+    this._super(...arguments);
+    this.currentSort = this.currentSort || { field: 'creationTime', direction: 'desc' };
   },
 
   @computed('selections', 'isAgentMigrated')

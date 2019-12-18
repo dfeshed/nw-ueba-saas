@@ -48,10 +48,9 @@ export default Component.extend({
   onRowSelection: null,
 
   nodeList: null,
-
-  currentSort: {
-    field: 'data.localScore',
-    direction: 'desc'
+  init() {
+    this._super(...arguments);
+    this.currentSort = this.currentSort || { field: 'data.localScore', direction: 'desc' };
   },
 
   @computed('nodeList')

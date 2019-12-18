@@ -116,8 +116,6 @@ const TreeComponent = Component.extend({
    */
   zoomMax: 2,
 
-  nodeSize: [CONST.LINK_WIDTH, CONST.LINK_HEIGHT],
-
   /**
    * Specify the gap between the two node
    * @property
@@ -137,6 +135,10 @@ const TreeComponent = Component.extend({
   process: null,
 
   selectedProcess: null,
+  init() {
+    this._super(...arguments);
+    this.nodeSize = this.nodeSize || [CONST.LINK_WIDTH, CONST.LINK_HEIGHT];
+  },
 
   _processDetailsVisible: observer('isProcessDetailsVisible', function() {
     if (this.get('isProcessDetailsVisible') && this.get('hasEvents')) {

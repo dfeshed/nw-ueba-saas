@@ -16,10 +16,6 @@ export default Component.extend({
 
   onFilterChange: null,
 
-  appliedFilters: [],
-
-  updatedFilters: [],
-
   clearFormOnReset: true,
 
   showSaveFilterButton: false,
@@ -29,6 +25,12 @@ export default Component.extend({
   showSaveAsFilterButton: true, // default'ing to true for backward compatibility
 
   isReset: false,
+  init() {
+    this._super(...arguments);
+    this.appliedFilters = this.appliedFilters || [];
+    this.updatedFilters = this.updatedFilters || [];
+  },
+
 
   @computed('config')
   updatedConfig(config) {

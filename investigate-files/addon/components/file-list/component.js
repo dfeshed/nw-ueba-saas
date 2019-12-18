@@ -96,20 +96,15 @@ const FileList = Component.extend({
 
   pivot: service(),
 
-  CONFIG_FIXED_COLUMNS: ['firstFileName', 'score'],
-
   showServiceModal: false,
 
   showFileStatusModal: false,
 
   showResetScoreModal: false,
 
-  itemList: [],
-
   selectedFiles: null,
 
   contextItems: null,
-
 
   @computed('isCertificateView')
   showColumnChooser(isCertificateView) {
@@ -128,9 +123,12 @@ const FileList = Component.extend({
 
   init() {
     this._super(arguments);
+    this.CONFIG_FIXED_COLUMNS = this.CONFIG_FIXED_COLUMNS || ['firstFileName', 'score'];
+    this.itemList = this.itemList || [];
     next(() => {
       if (!this.get('isDestroyed') && !this.get('isDestroying')) {
         this.send('getAllServices');
+
       }
     });
   },

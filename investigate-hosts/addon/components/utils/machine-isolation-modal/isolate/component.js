@@ -19,8 +19,6 @@ const callBackOptions = {
 const Isolate = Component.extend({
   isExclusionListEnabled: false,
 
-  exclusionList: [],
-
   isExclusionListError: false,
 
   isolationComment: '',
@@ -33,6 +31,10 @@ const Isolate = Component.extend({
       isCharacterLimitReached: isolationComment.length === 900,
       isIsolateHostDisabled: !isolationComment.length
     };
+  },
+  init() {
+    this._super(...arguments);
+    this.exclusionList = this.exclusionList || [];
   },
 
   actions: {

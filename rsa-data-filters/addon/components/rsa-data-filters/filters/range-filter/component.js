@@ -9,19 +9,6 @@ export default Component.extend({
 
   classNames: ['range-filter'],
 
-  defaults: {
-    filterValue: {
-
-    },
-    max: 100,
-    min: 0,
-    pips: {
-      mode: 'values',
-      values: [],
-      density: 10
-    }
-  },
-
   @computed('options')
   filterValue: {
     get() {
@@ -39,11 +26,20 @@ export default Component.extend({
     set(key, value) {
       return value;
     }
-
   },
 
   init() {
     this._super(arguments);
+    this.defaults = this.defaults || {
+      filterValue: { },
+      max: 100,
+      min: 0,
+      pips: {
+        mode: 'values',
+        values: [],
+        density: 10
+      }
+    };
     const options = assign({}, this.get('defaults'), this.get('filterOptions'));
     this.set('options', options);
   },

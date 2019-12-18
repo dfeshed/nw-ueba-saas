@@ -22,16 +22,6 @@ export default Component.extend({
 
   hasCustomDate: false,
 
-  defaults: {
-    showCustomDate: true,
-    includeTimezone: true, // By default, local timezone is applied to the datetime value
-
-    filterValue: {
-      value: [null, null],
-      unit: null
-    }
-  },
-
   customDateErrorMessage: null,
 
   startTime: null,
@@ -74,6 +64,14 @@ export default Component.extend({
 
   init() {
     this._super(arguments);
+    this.defaults = this.defaults || {
+      showCustomDate: true,
+      includeTimezone: true, // By default, local timezone is applied to the datetime value
+      filterValue: {
+        value: [null, null],
+        unit: null
+      }
+    };
     const options = assign({}, this.get('defaults'), this.get('filterOptions'));
     const { filterValue: { value } } = options;
     this.set('hasCustomDate', value.compact().length === 2);

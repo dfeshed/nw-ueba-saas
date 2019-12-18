@@ -17,7 +17,6 @@ const dispatchToActions = {
 
 const PopupFilter = Component.extend({
   classNames: ['process-filter-popup'],
-  selectedProcess: [],
 
   @computed('model.children', 'tabsDetails')
   tabs(nodes, tabsDetails) {
@@ -31,6 +30,10 @@ const PopupFilter = Component.extend({
         }
       }).length
     }));
+  },
+  init() {
+    this._super(...arguments);
+    this.selectedProcess = this.selectedProcess || [];
   },
 
   @computed('selectedProcess.@each.selected', 'model.children')
