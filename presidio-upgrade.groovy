@@ -11,8 +11,6 @@ node("${params.ADMIN_SERVER_NODE}") {
         stage('Init workspace') {
             println(" ++++++++ Init workspace ++++++++ ")
             cleanWs()
-            sh "pwd"
-            sh "whoami"
             println(" ++++++++ Downloading upgrade scripts from the Git ++++++++ ")
             sh(script: "wget ${scriptsUrl}${adminServerUpgradeScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
             println(" ++++++++ finished ++++++++ ")
@@ -42,10 +40,13 @@ node(env.SECONDARY_NODE) {
 node("${params.ADMIN_SERVER_NODE}") {
     if (params.UEBA_UPGRADE_STAGE_ENABLED) {
         stage('Upgrading UEBA Node') {
-            println(" ++++++++ Going to configure UEBA node repo ++++++++ ")
-            sh "whoami"
-            sh(script: "wget ${scriptsUrl}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
-            sh(script:"sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/${uebaRepoconfigScript} ${params.NW_VERSION}", returnStatus:true)
+            //println(" ++++++++ Going to configure UEBA node repos ++++++++ ")
+            //sh(script: "wget ${scriptsUrl}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
+            //sh(script:"sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/${uebaRepoconfigScript} ${params.NW_VERSION}", returnStatus:true)
+            //println(" ++++++++ Going to upgrade: UEBA node ${params.UEBA_NODE} ++++++++ ")
+            //sh "cd /tmp/ ; upgrade-cli-client -u --host-addr ${params.UEBA_NODE} --version ${params.NW_VERSION} -v"
+            //println(" ++++++++ UEBA Upgrade Complited ++++++++ ")
+            sh(script:"sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'reboot'", returnStatus:true)
         }
     }
 }
