@@ -1,7 +1,7 @@
 import { click, find, findAll, render, settled } from '@ember/test-helpers';
 import Service from '@ember/service';
 import Evented from '@ember/object/evented';
-import { module, skip, test } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -219,29 +219,31 @@ module('Integration | Component | rsa-content-tethered-panel', function(hooks) {
     });
   });
 
-  skip('it updates isDisplayed when esc is pressed', function(assert) {
+  test('it updates isDisplayed when esc is pressed', async function(assert) {
     this.set('isDisplayed', true);
-    this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel closeOnEsc=true isDisplayed=isDisplayed panelId="foo"}}Label{{/rsa-content-tethered-panel}}`);
-
+    this.set('closeOnEsc', true);
+    await render(
+      hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel isDisplayed=isDisplayed closeOnEsc=closeOnEsc panelId="foo"}}Label{{/rsa-content-tethered-panel}}`
+    );
     const event = new KeyboardEvent('keydown', {
       keyCode: 27
     });
     document.dispatchEvent(event);
-
     return settled().then(() => {
       assert.equal(this.get('isDisplayed'), false);
     });
   });
 
-  skip('it does not update isDisplayed when esc is pressed when turned off', function(assert) {
+  test('it does not update isDisplayed when esc is pressed when turned off', async function(assert) {
     this.set('isDisplayed', true);
-    this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel isDisplayed=isDisplayed panelId="foo"}}Label{{/rsa-content-tethered-panel}}`);
-
+    this.set('closeOnEsc', false);
+    await render(
+      hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel isDisplayed=isDisplayed closeOnEsc=closeOnEsc panelId="foo"}}Label{{/rsa-content-tethered-panel}}`
+    );
     const event = new KeyboardEvent('keydown', {
       keyCode: 27
     });
     document.dispatchEvent(event);
-
     return settled().then(() => {
       assert.equal(this.get('isDisplayed'), true);
     });

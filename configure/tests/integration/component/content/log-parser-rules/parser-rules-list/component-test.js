@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { render, find, click, settled } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
@@ -55,13 +55,19 @@ module('Integration | Component | rules-list', function(hooks) {
     });
   });
 
-  skip('Delete a rule', async function(assert) {
+  test('confirmation-modal button for delete a rule', async function(assert) {
     new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
-    await render(hbs`{{content/log-parser-rules/parser-rules-list}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{content/log-parser-rules/parser-rules-list}}
+    `);
     await click('.parser-rules-list .firstItem');
-    await click('.parser-rules-list .deleteRule button');
-    await click('.parser-rules-list .deleteRule .confirmation-modal .is-primary button');
-    assert.notOk(find('.parser-rules-list .active'), 'The rule was not deleted');
+    return settled().then(() => {
+      assert.ok(find('.parser-rules-list .active'), 'First item is not selected');
+      click('.parser-rules-list .deleteRule button');
+      return settled().then(() => {
+        assert.ok(find('.confirmation-modal .is-primary button'), 'confirmation-modal button not there');
+      });
+    });
   });
-
 });

@@ -1,10 +1,15 @@
-import { module, skip } from 'qunit';
+import { moduleFor, test } from 'ember-qunit';
 import { patchSocket } from '../../../helpers/patch-socket';
 import dictionaries from 'configure/actions/api/respond/dictionaries';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-module('Unit | Utility | Dictionary APIs');
+moduleFor('service:request', {
+  beforeEach() {
+    initialize(this);
+  }
+});
 
-skip('it creates the proper query for the getAllCategories API function', function(assert) {
+test('it creates the proper query for the getAllCategories API function', function(assert) {
   assert.expect(3);
   patchSocket((method, modelName, query) => {
     assert.equal(method, 'findAll');

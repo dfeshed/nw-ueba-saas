@@ -1,4 +1,4 @@
-import { module, skip, test } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -225,8 +225,7 @@ module('Integration | Component | Respond Incident Rule', function(hooks) {
     assert.equal(find(selectors.formWarning).textContent.trim(), warningMessage, 'A warning is displayed to users that they have no permissions to edit');
   });
 
-  // GTB SKIP
-  skip('If an error occurs during "Save", a general save error flash message is displayed to the user', async function(assert) {
+  test('If an error occurs during "Save", a general save error flash message is displayed to the user', async function(assert) {
     assert.expect(3);
     setState({ ...initialState });
     throwSocket();

@@ -1,5 +1,5 @@
 import { find, findAll, render } from '@ember/test-helpers';
-import { module, skip, test } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -52,13 +52,14 @@ module('Integration | Component | rsa-content-badge-score', function(hooks) {
     assert.equal(window.getComputedStyle(find('.progress-bar')).getPropertyValue('flex-grow'), '0.5', 'Progress bar has 50% length');
   });
 
-  skip('it renders the progress bar with the correct color based on the style', function(assert) {
-    this.render(hbs `{{rsa-content-badge-score isInline=true style='medium' score=50}}`);
+  test('it renders the progress bar with the correct class and style', async function(assert) {
+    this.set('isInline', true);
+    this.set('style', 'medium');
+    this.set('score', 50);
+    await render(hbs `{{rsa-content-badge-score isInline=isInline style=style score=score}}`);
     const badge = find('.rsa-content-badge-score');
     assert.ok(badge.classList.contains('progress-bar-length-50'), 'Progress bar has the expected class name with the expected length');
-
-    const progressBar = find('.progress-bar');
-    assert.equal(progressBar.style['background-image'], 'linear-gradient(90deg, rgba(255, 255, 255, 0), rgb(255, 160, 0))', 'Progress bar has medium color');
+    assert.ok(badge.classList.contains('is-medium'), 'Progress bar has the expected style');
   });
 
   test('it includes the proper classes in smaller mode', async function(assert) {

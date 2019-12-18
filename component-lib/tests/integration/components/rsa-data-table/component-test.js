@@ -2,7 +2,7 @@ import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import Service from '@ember/service';
 import Evented from '@ember/object/evented';
-import { moduleForComponent, test, skip } from 'ember-qunit';
+import { moduleForComponent, test } from 'ember-qunit';
 import { getOuterHeight, text } from 'component-lib/utils/jquery-replacement';
 
 const eventBusStub = Service.extend(Evented, {});
@@ -109,7 +109,7 @@ const renderDifferentColumns = function(_this, width = null, addCheckbox = false
   `);
 };
 
-moduleForComponent('rsa-data-table', 'Integration | Component | rsa data table', {
+moduleForComponent('rsa-data-table', 'Integration | Component | rsa-data-table', {
   integration: true,
 
   beforeEach() {
@@ -305,7 +305,7 @@ test('it renders imperatively (with an array config) the correct number of expec
   assert.equal(document.querySelectorAll('.rsa-data-table-header-cell').length, 2, 'Correct number of body-cell dom elements found.');
 });
 
-skip('it renders only a subset of the data when lazy rendering is enabled', function(assert) {
+test('it renders only a subset of the data when lazy rendering is enabled', function(assert) {
   this.setProperties({
     items: mockItems,
     columnsConfig: mockColumnsConfig
