@@ -45,7 +45,7 @@ node("${params.ADMIN_SERVER_NODE}") {
             println(" ++++++++ Going to configure UEBA node repo ++++++++ ")
             sh "whoami"
             sh(script: "wget ${scriptsUrl}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
-            sh(script:"sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/${uebaRepoconfigScript}", returnStatus:true)
+            sh(script:"sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/${uebaRepoconfigScript} ${params.NW_VERSION}", returnStatus:true)
         }
     }
 }
