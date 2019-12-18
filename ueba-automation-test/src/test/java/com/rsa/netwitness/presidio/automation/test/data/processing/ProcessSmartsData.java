@@ -42,11 +42,14 @@ public class ProcessSmartsData extends AbstractTestNGSpringContextTests {
         List<List<? extends Callable<Integer>>> parallelTasksToExecute = Stream.of(
 
                 processScoreAggr(truncateAndMinusDays(historicalDaysBack), truncateAndMinusDays(anomalyDay + 3), "hourly"),
+                processFeatureAggr(truncateAndMinusDays(historicalDaysBack), truncateAndMinusDays(anomalyDay + 3), "hourly"),
                 processSmart(truncateAndMinusDays(historicalDaysBack), truncateAndMinusDays(anomalyDay + 3)),
+
                 processAccumulateSmart(truncateAndMinusDays(historicalDaysBack), truncateAndMinusDays(anomalyDay + 3)),
                 processModeling("smart-record-models", "test-run", truncateAndMinusDays(anomalyDay + 3)),
 
                 processScoreAggr(truncateAndMinusDays(anomalyDay + 3), truncateAndMinusDays(anomalyDay + 2), "hourly"),
+                processFeatureAggr(truncateAndMinusDays(anomalyDay + 3), truncateAndMinusDays(anomalyDay + 2), "hourly"),
                 processSmart(truncateAndMinusDays(anomalyDay + 3), truncateAndMinusDays(anomalyDay + 2)),
 
                 processModelFeatureBuckets(truncateAndMinusDays(historicalDaysBack), truncateAndMinusDays(anomalyDay), "hourly"),
