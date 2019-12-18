@@ -3,6 +3,7 @@ def adminServerUpgradeScript="upgrade-admin-server.sh"
 def uebaRepoconfigScript="upgrade-repo-configuration.sh"
 environment {
     SECONDARY_NODE = 'ueba_pipeline_node'
+    SCRIPTS_URL = "https://github.rsa.lab.emc.com/raw/asoc/presidio-jenkins-job-dsl/master/scripts/"
 }
 
 node("${params.ADMIN_SERVER_NODE}") {
@@ -18,7 +19,7 @@ node("${params.ADMIN_SERVER_NODE}") {
         }
         stage('Initialise and upgrade admin-server.') {
             println(" ++++++++ Starting admin-server upgrade ++++++++ ")
-            ADMIN_UPGARDE_STATUS = sh (script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${params.NW_VERSION} ${params.ASOC_URL}", returnStatus: true) == 0
+            ADMIN_UPGARDE_STATUS = sh (script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${params.NW_VERSION} ${params.REPO_ASOC_URL}", returnStatus: true) == 0
             if (!ADMIN_UPGARDE_STATUS){
                 println("Admin server upgrade progress failed !!!!!!!")
                 System.exit(1)
@@ -28,25 +29,23 @@ node("${params.ADMIN_SERVER_NODE}") {
     }
 }
 
-
 node(env.SECONDARY_NODE) {
-    if (params.WAITING_REBOOT_STAGE_ENABLED) {
+    if (params.ADMIN_SERVER_UPGRADE_STAGE_ENABLED) {
         stage('Waiting for admin-server') {
-            println(" ++++++++ Waiting 10 min ++++++++ ")
-            sleep 60
+            println(" ++++++++ Waiting 10 min for the Admin Server to be start ++++++++ ")
+            sleep 600
         }
     }
 }
 
 
-node("${params.UEBA_NODE}") {
-    if (params.UEBA_REPO_CONF_STAGE_ENABLED) {
-        stage('UEBA repo configuration') {
+node("${params.ADMIN_SERVER_NODE}") {
+    if (params.UEBA_UPGRADE_STAGE_ENABLED) {
+        stage('Upgrading UEBA Node') {
             println(" ++++++++ Going to configure UEBA node repo ++++++++ ")
-            cleanWs()
             sh "whoami"
             sh(script: "wget ${params.SCRIPTS_URL}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
-            sh(script: "sh ${WORKSPACE}/upgrade-repo-configuration.sh ${params.NW_VERSION}", returnStatus: true)
+            sh(script:"sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/${uebaRepoconfigScript}", returnStatus:true)
         }
     }
 }
