@@ -62,7 +62,7 @@ public class AirflowPrintRetries extends AbstractTestNGSpringContextTests {
                     .sorted(comparing(e -> e.executionDate, reverseOrder()));
 
             LOGGER.warn("*************************************************");
-            LOGGER.warn("****** List of tasks with tries number > " + MIN_TRIES_TO_DISPLAY + " ******");
+            LOGGER.warn("****** List of tasks with tries number >= " + MIN_TRIES_TO_DISPLAY + " ******");
             LOGGER.warn("*************************************************");
 
             LOGGER.warn(String.format("%-22s%-65s%-11s%-6s", EXECUTION_DATE, TASK_ID, TRY_NUMBER, MAX_TRIES));
