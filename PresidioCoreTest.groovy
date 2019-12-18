@@ -61,7 +61,7 @@ pipeline {
             steps {
                 script {
                     sh "echo ADMIN_SERVER_IP=${env.ADMIN_SERVER_IP}"
-                    sh "sshpass -p \"netwitness\" ssh root@${env.ADMIN_SERVER_IP} -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null 'bash -s' < /home/presidio/presidio-ui-update.sh"
+                    sh "sshpass -p \"netwitness\" ssh root@${env.ADMIN_SERVER_IP} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < /home/presidio/presidio-ui-update.sh"
                 }
             }
         }
@@ -109,7 +109,7 @@ def setBaseUrl(
         String stability = env.STABILITY
 ) {
     String baseUrl = "baseurl="
-    String osBaseUrl = 'baseurl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/latest/11.4.0.0/OS/'
+    String osBaseUrl = 'baseurl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/latest/11.5.0.0/OS/'
     if (rpmBuildPath != '') {
         baseUrl = baseUrl + rpmBuildPath
         println(baseUrl)
@@ -127,7 +127,7 @@ def setBaseUrl(
         sh "sudo sed -i \"s|.*baseurl=.*|${osBaseUrl}|g\" /etc/yum.repos.d/tier2-mirrors.repo"
         sh "sudo sed -i \"s|enabled=.*|enabled=0|g\" /etc/yum.repos.d/*.repo"
         sh "sudo sed -i \"s|enabled=.*|enabled=1|g\" /etc/yum.repos.d/tier2-*.repo"
-        sh "sudo yum clean all"
+        sh "OWB_ALLOW_NON_FIPS=on sudo yum clean all"
         sh "sudo rm -rf /var/cache/yum"
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
