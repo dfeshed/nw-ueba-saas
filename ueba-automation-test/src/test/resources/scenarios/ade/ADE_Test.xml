@@ -14,13 +14,6 @@
             <class name="com.rsa.netwitness.presidio.automation.test.ade.Registry_Scored_Test"/>
             <class name="com.rsa.netwitness.presidio.automation.test.ade.SMART_FsOnly_Test"/>
             <class name="com.rsa.netwitness.presidio.automation.test.ade.SMART_Ps_Test"/>
-            <!--<class name="com.rsa.netwitness.presidio.automation.test.ade.LogsErrors_Test"/>-->
-        </classes>
-    </test>
-
-    <test name="Adapter Component Test">
-        <classes>
-            <class name="com.rsa.netwitness.presidio.automation.test.filtering.AdapterFilteringTest"/>
         </classes>
     </test>
 </suite>
