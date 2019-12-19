@@ -28,10 +28,8 @@ class InputPreProcessorOperator(SpringBootJarOperator):
                  command, name=None, *args, **kwargs):
 
         self.type = type
-        if(name is None):
-            self.task_id = 'input_pre_processor_{}'.format(self.type)
-        else:
-            self.task_id = 'input_pre_processor_{}'.format(task_id)
+        self.task_id = 'input_pre_processor_{}'.format(name or type)
+
         self.schema_name = schema_name
         self.static_arguments = static_arguments
         self.dynamic_arguments = dynamic_arguments
