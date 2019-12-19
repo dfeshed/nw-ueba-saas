@@ -91,7 +91,7 @@ public class ActiveDirectory_Scored_Test extends AbstractTestNGSpringContextTest
                 {new AdeScoredTestData("ade_testuser11", 69, 100, "scored_enriched_active_directory_startInstant_userId_activeDirectory_score", 9, unexpectedDocsCountMsg)},
 
                 // startInstant - 5% of normal events happen during all 24h
-                {new AdeScoredTestData("ade_testuser12", 0, 0, "scored_enriched_active_directory_startInstant_userId_activeDirectory_score", 16, unexpectedDocMsg)},
+                {new AdeScoredTestData("ade_testuser12", 0, 0, "scored_enriched_active_directory_startInstant_userId_activeDirectory_score", 0, unexpectedDocMsg)},
                 {new AdeScoredTestData("ade_testuser12", 1, 50, "scored_enriched_active_directory_startInstant_userId_activeDirectory_score", 3, unexpectedDocMsg)},
         };
     }
