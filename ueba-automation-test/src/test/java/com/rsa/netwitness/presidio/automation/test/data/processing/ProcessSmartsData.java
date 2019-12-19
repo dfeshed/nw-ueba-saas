@@ -80,7 +80,7 @@ public class ProcessSmartsData extends AbstractTestNGSpringContextTests {
             LOGGER.info("********************************");
 
             ExecutorService executor = Executors.newWorkStealingPool();
-            List<Future<Integer>> futures = executor.invokeAll(parallelTasks, 200, TimeUnit.MINUTES);
+            List<Future<Integer>> futures = executor.invokeAll(parallelTasks, 120, TimeUnit.MINUTES);
             List<Integer> results = futures.parallelStream().map(toIntResult).collect(toList());
             assertThat(results).containsOnly(0);
         }
