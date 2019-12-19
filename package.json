@@ -79,7 +79,7 @@
     "ember-flatpickr": "2.12.0",
     "ember-get-config": "0.2.3",
     "ember-i18n": "5.2.0",
-    "ember-in-viewport": "3.6.1",
+    "ember-in-viewport": "3.6.2",
     "ember-load": "0.0.17",
     "ember-load-initializers": "2.0.0",
     "ember-lodash-shim": "4.0.0",

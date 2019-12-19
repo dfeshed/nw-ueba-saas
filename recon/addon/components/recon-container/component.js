@@ -43,6 +43,8 @@ const ReconContainer = Component.extend({
   accessControl: service(),
   flashMessages: service(),
   i18n: service(),
+  inViewport: service(),
+
 
   // ************************** BEGIN Component API ************************* //
   /**
@@ -181,11 +183,29 @@ const ReconContainer = Component.extend({
 
   closeRecon: observer('isReconOpen', function() {
     if (!this.get('isReconOpen')) {
-      const cacheService = lookup('service:processed-packet-cache');
-      cacheService.clear();
+      this._cleanUp();
       this.get('closeAction')();
     }
   }),
+
+  _cleanUp() {
+    // clear out the packet cache as it is now invalid
+    const cacheService = lookup('service:processed-packet-cache');
+    cacheService.clear();
+
+    // have leaky memory issue deep inside ember-in-viewport.
+    // clean that ish up. Don't know why/how the leak is happening
+    // but this cleans it up.
+    // PRs/Tickets for context
+    // https://github.com/DockYard/ember-in-viewport/issues/216
+    // https://bedfordjira.na.rsa.net/browse/ASOC-86982
+    // https://github.rsa.lab.emc.com/asoc/sa-ui/pull/6278
+    const { observerAdmin } = this.get('inViewport');
+    if (observerAdmin) {
+      observerAdmin.instance.elementRegistry.destroyRegistry();
+      observerAdmin.instance.registry.destroyRegistry();
+    }
+  },
 
   didReceiveAttrs() {
     this._super(...arguments);
@@ -211,10 +231,8 @@ const ReconContainer = Component.extend({
     // But if any of these two changes, initialize
     if (inputs.eventId !== _previousEventId || inputs.endpointId !== _previousEndpointId) {
 
-      // clear out the packet cache as this is a new event
-      // and the cache is invalid
-      const cacheService = lookup('service:processed-packet-cache');
-      cacheService.clear();
+      // Clean up any potential leaks
+      this._cleanUp();
 
       this.set('_previousEventId', inputs.eventId);
       this.set('_previousEndpointId', inputs.endpointId);
