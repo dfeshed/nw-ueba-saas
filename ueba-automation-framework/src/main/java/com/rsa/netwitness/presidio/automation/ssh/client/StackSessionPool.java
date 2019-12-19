@@ -12,7 +12,7 @@ import org.apache.commons.pool.impl.StackKeyedObjectPool;
  */
 class StackSessionPool {
 
-    private final int MAX_SESSIONS = 10;
+    private final int MAX_SESSIONS = 15;
 
     private KeyedObjectPool<ServerDetails, Session> pool;
 

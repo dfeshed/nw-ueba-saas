@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.rsa.netwitness.presidio.automation.common.helpers.DateTimeHelperUtils.truncateAndMinusDays;
@@ -41,15 +42,21 @@ public class ProcessSmartsData extends AbstractTestNGSpringContextTests {
 
         List<List<? extends Callable<Integer>>> parallelTasksToExecute = Stream.of(
 
-                processScoreAggr(truncateAndMinusDays(historicalDaysBack), truncateAndMinusDays(anomalyDay + 3), "hourly"),
-                processFeatureAggr(truncateAndMinusDays(historicalDaysBack), truncateAndMinusDays(anomalyDay + 3), "hourly"),
+                Stream.of(
+                        processScoreAggr(truncateAndMinusDays(historicalDaysBack), truncateAndMinusDays(anomalyDay + 3), "hourly").stream(),
+                        processFeatureAggr(truncateAndMinusDays(historicalDaysBack), truncateAndMinusDays(anomalyDay + 3), "hourly").stream()
+                ).flatMap(e -> e).collect(Collectors.toList()),
+
                 processSmart(truncateAndMinusDays(historicalDaysBack), truncateAndMinusDays(anomalyDay + 3)),
 
                 processAccumulateSmart(truncateAndMinusDays(historicalDaysBack), truncateAndMinusDays(anomalyDay + 3)),
                 processModeling("smart-record-models", "test-run", truncateAndMinusDays(anomalyDay + 3)),
 
-                processScoreAggr(truncateAndMinusDays(anomalyDay + 3), truncateAndMinusDays(anomalyDay + 2), "hourly"),
-                processFeatureAggr(truncateAndMinusDays(anomalyDay + 3), truncateAndMinusDays(anomalyDay + 2), "hourly"),
+                Stream.of(
+                        processScoreAggr(truncateAndMinusDays(anomalyDay + 3), truncateAndMinusDays(anomalyDay + 2), "hourly").stream(),
+                        processFeatureAggr(truncateAndMinusDays(anomalyDay + 3), truncateAndMinusDays(anomalyDay + 2), "hourly").stream()
+                ).flatMap(e -> e).collect(Collectors.toList()),
+
                 processSmart(truncateAndMinusDays(anomalyDay + 3), truncateAndMinusDays(anomalyDay + 2)),
 
                 processModelFeatureBuckets(truncateAndMinusDays(historicalDaysBack), truncateAndMinusDays(anomalyDay), "hourly"),
