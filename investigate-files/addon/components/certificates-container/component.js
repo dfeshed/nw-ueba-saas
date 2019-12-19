@@ -1,7 +1,10 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { classNames, tagName } from '@ember-decorators/component';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { next } from '@ember/runloop';
-import { inject as service } from '@ember/service';
 
 import {
   applyFilters,
@@ -45,39 +48,38 @@ const dispatchToActions = {
   getAllServices
 };
 
-const Certificate = Component.extend({
+@classic
+@tagName('vbox')
+@classNames('rsa-investigate-files', 'certificates-container', 'main-zone')
+class Certificate extends Component {
+  filterTypes = FILTER_TYPES;
 
-  tagName: 'vbox',
+  @service
+  pivot;
 
-  classNames: ['rsa-investigate-files', 'certificates-container', 'main-zone'],
-
-  filterTypes: FILTER_TYPES,
-
-  pivot: service(),
-
-  contextualHelp: service(),
+  @service
+  contextualHelp;
 
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     next(() => {
       if (!this.get('isDestroyed') && !this.get('isDestroying')) {
         this.send('getFilter', () => {}, 'CERTIFICATE');
       }
     });
-  },
-
-  actions: {
-    pivotToInvestigate(item, category) {
-      this.get('pivot').pivotToInvestigate('thumbprint', item, category);
-    },
-
-    gotoFilesView(isCertificateView) {
-      const contextualTopic = isCertificateView ? this.get('contextualHelp.invFiles') : this.get('contextualHelp.invEndpointCertificates');
-      this.set('contextualHelp.topic', contextualTopic);
-    }
   }
 
-});
+  @action
+  pivotToInvestigate(item, category) {
+    this.get('pivot').pivotToInvestigate('thumbprint', item, category);
+  }
+
+  @action
+  gotoFilesView(isCertificateView) {
+    const contextualTopic = isCertificateView ? this.get('contextualHelp.invFiles') : this.get('contextualHelp.invEndpointCertificates');
+    this.set('contextualHelp.topic', contextualTopic);
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(Certificate);
 

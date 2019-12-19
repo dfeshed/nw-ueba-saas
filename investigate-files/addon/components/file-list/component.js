@@ -1,7 +1,10 @@
+import classic from 'ember-classic-decorator';
+import { tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { next } from '@ember/runloop';
-import { inject as service } from '@ember/service';
 import {
   serviceList,
   isAllSelected,
@@ -15,7 +18,6 @@ import {
   isCertificateViewDisabled
 } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
-import computed from 'ember-computed-decorators';
 import {
   sortBy,
   getPageOfFiles,
@@ -86,43 +88,41 @@ const dispatchToActions = {
  * File list component for displaying the list of files
  * @public
  */
-const FileList = Component.extend({
+@classic
+@tagName('')
+class FileList extends Component {
+  @service
+  accessControl;
 
-  tagName: '',
+  @service
+  timezone;
 
-  accessControl: service(),
+  @service
+  pivot;
 
-  timezone: service(),
-
-  pivot: service(),
-
-  showServiceModal: false,
-
-  showFileStatusModal: false,
-
-  showResetScoreModal: false,
-
-  selectedFiles: null,
-
-  contextItems: null,
+  showServiceModal = false;
+  showFileStatusModal = false;
+  showResetScoreModal = false;
+  selectedFiles = null;
+  contextItems = null;
 
   @computed('isCertificateView')
-  showColumnChooser(isCertificateView) {
-    return !isCertificateView;
-  },
+  get showColumnChooser() {
+    return !this.isCertificateView;
+  }
 
   @computed('fileStatusData')
-  data(fileStatusData) {
-    return { ...fileStatusData };
-  },
+  get data() {
+    return { ...this.fileStatusData };
+  }
 
   @computed('selectedFiles')
-  isMaxResetRiskScoreLimit(selectedFiles) {
-    return selectedFiles.length > 100;
-  },
+  get isMaxResetRiskScoreLimit() {
+    return this.selectedFiles.length > 100;
+  }
 
   init() {
-    this._super(arguments);
+    super.init(...arguments);
     this.CONFIG_FIXED_COLUMNS = this.CONFIG_FIXED_COLUMNS || ['firstFileName', 'score'];
     this.itemList = this.itemList || [];
     next(() => {
@@ -131,7 +131,7 @@ const FileList = Component.extend({
 
       }
     });
-  },
+  }
 
   isAlreadySelected(selections, item) {
     let selected = false;
@@ -139,160 +139,173 @@ const FileList = Component.extend({
       selected = selections.findBy('checksumSha256', item.checksumSha256);
     }
     return selected;
-  },
+  }
 
+  @action
+  sortData(field, sortDirection) {
+    if (this.closeRiskPanel) {
+      this.closeRiskPanel();
+    }
+    next(() => {
+      this.send('sortBy', field, sortDirection);
+    });
+  }
 
-  actions: {
-
-    sortData(field, sortDirection) {
-      if (this.closeRiskPanel) {
-        this.closeRiskPanel();
-      }
-      next(() => {
-        this.send('sortBy', field, sortDirection);
-      });
-    },
-
-    toggleSelectedRow(item, index, e, table) {
-      const { target: { classList } } = e;
-      if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
-        const isSameRowClicked = table.get('selectedIndex') === index;
-        const openRiskPanel = this.get('openRiskPanel');
-        this.send('setSelectedIndex', index);
-        if (!isSameRowClicked && openRiskPanel) {
-          // if clicked row is one among the checkbox selected list, row click will highlight that row keeping others
-          // checkbox selected.
-          // when a row not in the checkbox selected list is clicked, other checkboxes are cleared.
-          if (!this.isAlreadySelected(this.get('selections'), item)) {
-            this.send('deSelectAllFiles');
-            this.send('toggleFileSelection', item);
-          }
-          this.send('onFileSelection', item);
-          next(() => {
-            this.openRiskPanel();
-          });
-        } else {
-          this.send('toggleFileSelection', item);
-          this.closeRiskPanel();
-          this.send('setSelectedIndex', -1);
-        }
-      }
-    },
-
-    /**
-     * Abort the action if dragged column is file name, risk score and checkbox also abort if column in dropped to
-     * file name, risk score and checkbox.
-     *
-     */
-    onReorderColumns(columns, newColumns, column, fromIndex, toIndex) {
-      return !(column.dataType === 'checkbox' ||
-        column.field === 'firstFileName' ||
-        column.field === 'score' ||
-        toIndex === 0 ||
-        toIndex === 1 ||
-        toIndex === 2);
-    },
-
-    onColumnConfigChange(changedProperty, changedColumns) {
-      this.send('saveColumnConfig', changedProperty, changedColumns, 'files');
-    },
-
-    showRiskScoreModal(fileList) {
-      this.set('selectedFiles', fileList);
-      this.set('showResetScoreModal', true);
-    },
-
-    resetRiskScoreAction() {
-      const limitedFiles = this.get('selectedFiles').slice(0, 100);
-      const callBackOptions = {
-        onSuccess: (response) => {
-          const { data } = response;
-          if (data === limitedFiles.length) {
-            success('investigateFiles.riskScore.success');
-          } else {
-            warning('investigateFiles.riskScore.warning');
-          }
-        },
-        onFailure: () => failure('investigateFiles.riskScore.error')
-      };
-      this.set('showResetScoreModal', false);
-      this.send('resetRiskScore', limitedFiles, 'FILE', callBackOptions);
-      this.set('selectedFiles', null);
-    },
-
-    toggleItemSelection(item) {
-      this.send('toggleFileSelection', item);
-    },
-
-    toggleAllSelection() {
-      if (!this.get('isAllSelected')) {
-        this.send('selectAllFiles');
-      } else {
-        this.send('deSelectAllFiles');
-      }
-    },
-
-    showEditFileStatus(item) {
-      if (this.get('accessControl.endpointCanManageFiles')) {
-        this.set('itemList', [item]);
-        this.set('showFileStatusModal', true);
-      } else {
-        failure('investigateFiles.noManagePermissions');
-      }
-    },
-
-    pivotToInvestigate(item, category) {
-      this.get('pivot').pivotToInvestigate('checksumSha256', item, category);
-    },
-    certificateView(selections) {
-      let selectedThumbprint = '';
-      if (selections.length > 0) {
-        const [{ signature: { thumbprint } }] = selections;
-        selectedThumbprint = thumbprint;
-      }
-      this.get('navigateToCertificateView')(selectedThumbprint);
-    },
-    onCloseServiceModal() {
-      this.set('showServiceModal', false);
-    },
-
-    onCloseEditFileStatus() {
-      this.set('showFileStatusModal', false);
-    },
-
-    onResetScoreModalClose() {
-      this.set('showResetScoreModal', false);
-    },
-
-    beforeContextMenuShow(menu, event) {
-      const { contextSelection: item, contextItems } = menu;
-      if (!this.get('contextItems')) {
-        // Need to store this locally set it back again to menu object
-        this.set('contextItems', contextItems);
-      }
-      // For anchor tag hid the context menu and show browser default right click menu
-      if (event.target.tagName.toLowerCase() === 'a') {
-        menu.set('contextItems', []);
-      } else {
-        menu.set('contextItems', this.get('contextItems'));
-        // Highlight is removed and right panel is closed when right clicked on non-highlighted row
-        if (this.get('selectedFile').id !== item.id) {
-          this.send('setSelectedIndex', -1);
-          this.closeRiskPanel();
-        }
-        this.set('itemList', [item]);
+  @action
+  toggleSelectedRow(item, index, e, table) {
+    const { target: { classList } } = e;
+    if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
+      const isSameRowClicked = table.get('selectedIndex') === index;
+      const openRiskPanel = this.get('openRiskPanel');
+      this.send('setSelectedIndex', index);
+      if (!isSameRowClicked && openRiskPanel) {
+        // if clicked row is one among the checkbox selected list, row click will highlight that row keeping others
+        // checkbox selected.
+        // when a row not in the checkbox selected list is clicked, other checkboxes are cleared.
         if (!this.isAlreadySelected(this.get('selections'), item)) {
           this.send('deSelectAllFiles');
           this.send('toggleFileSelection', item);
         }
-        const selections = this.get('selections');
-        if (selections && selections.length === 1) {
-          this.send('getSavedFileStatus', selections);
-        }
+        this.send('onFileSelection', item);
+        next(() => {
+          this.openRiskPanel();
+        });
+      } else {
+        this.send('toggleFileSelection', item);
+        this.closeRiskPanel();
+        this.send('setSelectedIndex', -1);
       }
-
     }
   }
-});
+
+  /**
+   * Abort the action if dragged column is file name, risk score and checkbox also abort if column in dropped to
+   * file name, risk score and checkbox.
+   *
+   */
+  @action
+  onReorderColumns(columns, newColumns, column, fromIndex, toIndex) {
+    return !(column.dataType === 'checkbox' ||
+      column.field === 'firstFileName' ||
+      column.field === 'score' ||
+      toIndex === 0 ||
+      toIndex === 1 ||
+      toIndex === 2);
+  }
+
+  @action
+  onColumnConfigChange(changedProperty, changedColumns) {
+    this.send('saveColumnConfig', changedProperty, changedColumns, 'files');
+  }
+
+  @action
+  showRiskScoreModal(fileList) {
+    this.set('selectedFiles', fileList);
+    this.set('showResetScoreModal', true);
+  }
+
+  @action
+  resetRiskScoreAction() {
+    const limitedFiles = this.get('selectedFiles').slice(0, 100);
+    const callBackOptions = {
+      onSuccess: (response) => {
+        const { data } = response;
+        if (data === limitedFiles.length) {
+          success('investigateFiles.riskScore.success');
+        } else {
+          warning('investigateFiles.riskScore.warning');
+        }
+      },
+      onFailure: () => failure('investigateFiles.riskScore.error')
+    };
+    this.set('showResetScoreModal', false);
+    this.send('resetRiskScore', limitedFiles, 'FILE', callBackOptions);
+    this.set('selectedFiles', null);
+  }
+
+  @action
+  toggleItemSelection(item) {
+    this.send('toggleFileSelection', item);
+  }
+
+  @action
+  toggleAllSelection() {
+    if (!this.get('isAllSelected')) {
+      this.send('selectAllFiles');
+    } else {
+      this.send('deSelectAllFiles');
+    }
+  }
+
+  @action
+  showEditFileStatus(item) {
+    if (this.get('accessControl.endpointCanManageFiles')) {
+      this.set('itemList', [item]);
+      this.set('showFileStatusModal', true);
+    } else {
+      failure('investigateFiles.noManagePermissions');
+    }
+  }
+
+  @action
+  pivotToInvestigate(item, category) {
+    this.get('pivot').pivotToInvestigate('checksumSha256', item, category);
+  }
+
+  @action
+  certificateView(selections) {
+    let selectedThumbprint = '';
+    if (selections.length > 0) {
+      const [{ signature: { thumbprint } }] = selections;
+      selectedThumbprint = thumbprint;
+    }
+    this.get('navigateToCertificateView')(selectedThumbprint);
+  }
+
+  @action
+  onCloseServiceModal() {
+    this.set('showServiceModal', false);
+  }
+
+  @action
+  onCloseEditFileStatus() {
+    this.set('showFileStatusModal', false);
+  }
+
+  @action
+  onResetScoreModalClose() {
+    this.set('showResetScoreModal', false);
+  }
+
+  @action
+  beforeContextMenuShow(menu, event) {
+    const { contextSelection: item, contextItems } = menu;
+    if (!this.get('contextItems')) {
+      // Need to store this locally set it back again to menu object
+      this.set('contextItems', contextItems);
+    }
+    // For anchor tag hid the context menu and show browser default right click menu
+    if (event.target.tagName.toLowerCase() === 'a') {
+      menu.set('contextItems', []);
+    } else {
+      menu.set('contextItems', this.get('contextItems'));
+      // Highlight is removed and right panel is closed when right clicked on non-highlighted row
+      if (this.get('selectedFile').id !== item.id) {
+        this.send('setSelectedIndex', -1);
+        this.closeRiskPanel();
+      }
+      this.set('itemList', [item]);
+      if (!this.isAlreadySelected(this.get('selections'), item)) {
+        this.send('deSelectAllFiles');
+        this.send('toggleFileSelection', item);
+      }
+      const selections = this.get('selections');
+      if (selections && selections.length === 1) {
+        this.send('getSavedFileStatus', selections);
+      }
+    }
+
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(FileList);

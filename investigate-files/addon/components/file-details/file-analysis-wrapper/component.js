@@ -1,8 +1,9 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { componentConfig } from 'investigate-files/reducers/file-analysis/selectors';
-
-import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   componentConfig: componentConfig(state),
@@ -12,16 +13,16 @@ const stateToComputed = (state) => ({
 });
 
 
-const FileAnalysisWrapper = Component.extend({
-  classNames: ['global-files', 'file-analysis-wrapper'],
-  searchText: '',
-  tagName: 'box',
+@classic
+@classNames('global-files', 'file-analysis-wrapper')
+@tagName('box')
+class FileAnalysisWrapper extends Component {
+  searchText = '';
 
   @computed('componentConfig')
-  isStringsView({ format }) {
-    return format === 'string';
+  get isStringsView() {
+    return this.componentConfig.format === 'string';
   }
-
-});
+}
 
 export default connect(stateToComputed)(FileAnalysisWrapper);

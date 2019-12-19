@@ -1,3 +1,7 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { classNames, tagName } from '@ember-decorators/component';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
@@ -25,8 +29,6 @@ import {
 import {
   getUpdatedRiskScoreContext
 } from 'investigate-shared/actions/data-creators/risk-creators';
-
-import { inject as service } from '@ember/service';
 
 import { FILTER_TYPES } from './filter-type';
 
@@ -82,56 +84,56 @@ const dispatchToActions = {
  * Container component that is responsible for orchestrating Files layout and top-level components.
  * @public
  */
-const Files = Component.extend({
-  tagName: 'box',
+@classic
+@tagName('box')
+@classNames('rsa-investigate-files main-zone')
+class Files extends Component {
+  @service
+  features;
 
-  classNames: 'rsa-investigate-files main-zone',
-
-  features: service(),
-
-  filterTypes: FILTER_TYPES,
-
-  propertyConfig: CONFIG,
-
-  callBackOptions,
+  filterTypes = FILTER_TYPES;
+  propertyConfig = CONFIG;
+  callBackOptions = callBackOptions;
 
   willDestroyElement() {
     this.send('resetDownloadId');
-  },
+  }
 
-  actions: {
-    onPanelClose(side) {
-      if (side === 'right') {
-        this.send('setSelectedIndex', -1);
-      }
-    },
-
-    onDownloadFilesToServer() {
-      const [selectedDetailFile] = this.get('selections');
-      const callBackOptions = this.get('callBackOptions');
-      const [checksumSha256] = this.get('checksums');
-      this.send('downloadFilesToServer', checksumSha256, selectedDetailFile.serviceId, callBackOptions);
-    },
-
-    onAnalyzeFile() {
-      const [selectedDetailFile] = this.get('selections');
-      const { serviceId, downloadInfo: { serviceId: sourceSid } } = selectedDetailFile;
-      if (serviceId) {
-        const { format, checksumSha256 } = selectedDetailFile;
-        const fileFormat = componentSelectionForFileType(format).format || '';
-        window.open(`${window.location.origin}/investigate/files/${checksumSha256}?checksum=${checksumSha256}&sid=${serviceId}&sourceSid=${sourceSid}&fileFormat=${fileFormat}&tabName=ANALYSIS`, '_self');
-      }
-    },
-
-    onSaveLocalCopy() {
-      const [selectedDetailFile] = this.get('selections');
-      const callBackOptions = {
-        onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
-        onFailure: (message) => failure(message, null, false)
-      };
-      this.send('saveLocalFileCopy', selectedDetailFile, callBackOptions);
+  @action
+  onPanelClose(side) {
+    if (side === 'right') {
+      this.send('setSelectedIndex', -1);
     }
   }
-});
+
+  @action
+  onDownloadFilesToServer() {
+    const [selectedDetailFile] = this.get('selections');
+    const callBackOptions = this.get('callBackOptions');
+    const [checksumSha256] = this.get('checksums');
+    this.send('downloadFilesToServer', checksumSha256, selectedDetailFile.serviceId, callBackOptions);
+  }
+
+  @action
+  onAnalyzeFile() {
+    const [selectedDetailFile] = this.get('selections');
+    const { serviceId, downloadInfo: { serviceId: sourceSid } } = selectedDetailFile;
+    if (serviceId) {
+      const { format, checksumSha256 } = selectedDetailFile;
+      const fileFormat = componentSelectionForFileType(format).format || '';
+      window.open(`${window.location.origin}/investigate/files/${checksumSha256}?checksum=${checksumSha256}&sid=${serviceId}&sourceSid=${sourceSid}&fileFormat=${fileFormat}&tabName=ANALYSIS`, '_self');
+    }
+  }
+
+  @action
+  onSaveLocalCopy() {
+    const [selectedDetailFile] = this.get('selections');
+    const callBackOptions = {
+      onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
+      onFailure: (message) => failure(message, null, false)
+    };
+    this.send('saveLocalFileCopy', selectedDetailFile, callBackOptions);
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(Files);

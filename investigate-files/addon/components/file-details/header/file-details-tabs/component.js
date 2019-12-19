@@ -1,3 +1,6 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { classNames, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getFileDetailTabs } from 'investigate-files/reducers/visuals/selectors';
@@ -13,18 +16,17 @@ const dispatchToActions = {
   setNewFileTab
 };
 
-const FileDetailsTabs = Component.extend({
-  tagName: 'hbox',
-  classNames: ['file-details-tabs'],
-
-  actions: {
-    setFileTabAndFetchData(tabName) {
-      this.send('setNewFileTab', tabName);
-      const { format } = this.get('selectedDetailFile');
-      const fileFormat = componentSelectionForFileType(format).format || '';
-      this.get('switchToSelectedFileDetailsTab')(tabName, fileFormat);
-    }
+@classic
+@tagName('hbox')
+@classNames('file-details-tabs')
+class FileDetailsTabs extends Component {
+  @action
+  setFileTabAndFetchData(tabName) {
+    this.send('setNewFileTab', tabName);
+    const { format } = this.get('selectedDetailFile');
+    const fileFormat = componentSelectionForFileType(format).format || '';
+    this.get('switchToSelectedFileDetailsTab')(tabName, fileFormat);
   }
-});
+}
 
 export default connect(stateToComputed, dispatchToActions)(FileDetailsTabs);

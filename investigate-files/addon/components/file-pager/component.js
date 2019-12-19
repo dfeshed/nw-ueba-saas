@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { fileCount, fileTotalLabel } from 'investigate-files/reducers/file-list/selectors';
@@ -8,8 +10,9 @@ const stateToComputed = (state) => ({
   selectedFileCount: state.files.fileList.selectedFileList.length
 });
 
-const Pager = Component.extend({
-  tagName: 'section',
-  classNames: ['file-pager']
-});
+@classic
+@tagName('section')
+@classNames('file-pager')
+class Pager extends Component {}
+
 export default connect(stateToComputed)(Pager);

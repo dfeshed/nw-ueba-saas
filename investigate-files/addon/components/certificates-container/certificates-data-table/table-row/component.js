@@ -1,34 +1,35 @@
-import DataTableBodyRow from 'component-lib/components/rsa-data-table/body-row/component';
+import classic from 'ember-classic-decorator';
+import { classNameBindings } from '@ember-decorators/component';
+import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
-import computed from 'ember-computed-decorators';
+import DataTableBodyRow from 'component-lib/components/rsa-data-table/body-row/component';
 
-export default DataTableBodyRow.extend({
+@classic
+@classNameBindings('isRowChecked')
+export default class TableRow extends DataTableBodyRow {
+  @service
+  eventBus;
 
-  classNameBindings: ['isRowChecked'],
+  @service
+  accessControl;
 
-  eventBus: service(),
-
-  accessControl: service(),
-
-  showServiceModal: false,
-
-  serviceList: null,
-
-  selections: null,
-
-  showFileStatusModal: false,
+  showServiceModal = false;
+  serviceList = null;
+  selections = null;
+  showFileStatusModal = false;
 
   @computed('item', 'selections')
-  isRowChecked(item, selections = []) {
-    if (item) {
-      const isSelected = selections.findBy('thumbprint', item.thumbprint);
+  get isRowChecked() {
+    const selections = this.selections || [];
+    if (this.item) {
+      const isSelected = selections.findBy('thumbprint', this.item.thumbprint);
       return !!isSelected;
     }
     return false;
-  },
+  }
 
   @computed('item')
-  contextItems() {
+  get contextItems() {
     const contextConf = [
       {
         label: 'editCertificateStatus',
@@ -81,4 +82,4 @@ export default DataTableBodyRow.extend({
     ];
     return contextConf;
   }
-});
+}

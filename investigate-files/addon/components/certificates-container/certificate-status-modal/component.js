@@ -1,9 +1,11 @@
+import classic from 'ember-classic-decorator';
+import { classNames } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { saveCertificateStatus, getSavedCertificateStatus } from 'investigate-files/actions/certificate-data-creators';
-import computed from 'ember-computed-decorators';
 import { isEmpty } from '@ember/utils';
-import { inject as service } from '@ember/service';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 
 const stateToComputed = (state) => ({
@@ -16,17 +18,17 @@ const dispatchToActions = {
   getSavedCertificateStatus
 };
 
-const CertificateStatus = Component.extend({
+@classic
+@classNames('certificates-status')
+class CertificateStatus extends Component {
+  @service
+  flashMessages;
 
-  flashMessages: service(),
+  showModal = false;
+  isModelChange = false;
 
-  classNames: ['certificates-status'],
-
-  showModal: false,
-
-  isModelChange: false,
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this.radioButtons = this.radioButtons || [
       {
         label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist',
@@ -41,44 +43,46 @@ const CertificateStatus = Component.extend({
         value: 'Neutral'
       }
     ];
-  },
+  }
 
   @computed('data.comment', 'data.certificateStatus', 'statusData')
-  isSaveButtonDisabled(comment, fileStatus, currentStatusData) {
-    return isEmpty(comment) || isEmpty(fileStatus) || (comment === currentStatusData.comment && fileStatus === currentStatusData.certificateStatus);
-  },
+  get isSaveButtonDisabled() {
+    return isEmpty(this.data?.comment) || isEmpty(this.data?.certificateStatus) || (this.data?.comment === this.statusData?.comment && this.data?.certificateStatus === this.statusData.certificateStatus);
+  }
+
   @computed('data.comment')
-  isCharectarLimitReached(comment) {
-    return comment && comment.length >= 900;
-  },
+  get isCharectarLimitReached() {
+    return this.data?.comment && this.data?.comment.length >= 900;
+  }
 
   @computed('statusData', 'selections')
-  data(statusData, selections) {
+  get data() {
     const statusDataObject = {
       certificateStatus: null,
       category: null,
       comment: '',
       remediationAction: null
     };
-    if (statusData && selections.length === 1) {
-      return { ...statusDataObject, ...statusData };
+    if (this.statusData && this.selections.length === 1) {
+      return { ...statusDataObject, ...this.statusData };
     }
     return statusDataObject;
-  },
-
-  actions: {
-    closeModal() {
-      this.closeCertificateModal();
-    },
-    saveStatus() {
-      const callbackOptions = {
-        onSuccess: () => success('configure.endpoint.certificates.status.success'),
-        onFailure: () => failure('configure.endpoint.certificates.status.error')
-      };
-      this.send('saveCertificateStatus', this.get('selections').mapBy('thumbprint'), this.get('data'), callbackOptions);
-      this.closeCertificateModal();
-    }
   }
-});
+
+  @action
+  closeModal() {
+    this.closeCertificateModal();
+  }
+
+  @action
+  saveStatus() {
+    const callbackOptions = {
+      onSuccess: () => success('configure.endpoint.certificates.status.success'),
+      onFailure: () => failure('configure.endpoint.certificates.status.error')
+    };
+    this.send('saveCertificateStatus', this.get('selections').mapBy('thumbprint'), this.get('data'), callbackOptions);
+    this.closeCertificateModal();
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(CertificateStatus);

@@ -1,8 +1,10 @@
+import classic from 'ember-classic-decorator';
+import { classNames } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { saveCertificateStatus, getSavedCertificateStatus } from 'investigate-files/actions/certificate-data-creators';
-import computed from 'ember-computed-decorators';
-import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({
   selections: state.certificate.list.selectedCertificateList,
@@ -14,15 +16,16 @@ const dispatchToActions = {
   getSavedCertificateStatus
 };
 
-const CertificateStatus = Component.extend({
+@classic
+@classNames('certificates-status')
+class CertificateStatus extends Component {
+  @service
+  flashMessages;
 
-  flashMessages: service(),
+  showModal = false;
 
-  classNames: ['certificates-status'],
-
-  showModal: false,
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this.radioButtons = this.radioButtons || [
       {
         label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist',
@@ -37,25 +40,26 @@ const CertificateStatus = Component.extend({
         value: 'Neutral'
       }
     ];
-  },
+  }
 
   @computed('selections')
-  isDisabled(selections) {
-    return selections && !selections.length;
-  },
-
-  actions: {
-    showStatusModel() {
-      const selections = this.get('selections');
-      if (selections && selections.length === 1) {
-        this.send('getSavedCertificateStatus', selections.mapBy('thumbprint'));
-      }
-      this.set('showModal', true);
-    },
-    closeModal() {
-      this.set('showModal', false);
-    }
+  get isDisabled() {
+    return this.selections && !this.selections.length;
   }
-});
+
+  @action
+  showStatusModel() {
+    const selections = this.get('selections');
+    if (selections && selections.length === 1) {
+      this.send('getSavedCertificateStatus', selections.mapBy('thumbprint'));
+    }
+    this.set('showModal', true);
+  }
+
+  @action
+  closeModal() {
+    this.set('showModal', false);
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(CertificateStatus);

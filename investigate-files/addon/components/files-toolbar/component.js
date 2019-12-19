@@ -1,7 +1,9 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
-import { inject as service } from '@ember/service';
 import {
   serviceList,
   checksums,
@@ -56,71 +58,78 @@ const dispatchToActions = {
   resetRiskScore,
   changeEndpointServerSelection
 };
+
 /**
  * Toolbar that provides search filtering.
  * @public
  */
-const ToolBar = Component.extend({
-  tagName: 'hbox',
+@classic
+@tagName('hbox')
+@classNames('files-toolbar')
+class ToolBar extends Component {
+  @service
+  i18n;
 
-  classNames: 'files-toolbar',
-
-  i18n: service(),
-
-  contextualHelp: service(),
+  @service
+  contextualHelp;
 
   @computed('fileStatusData')
-  data(fileStatusData) {
-    return { ...fileStatusData };
-  },
+  get data() {
+    return { ...this.fileStatusData };
+  }
+
   @computed('itemList', 'isCertificateViewDisabled')
-  selectedThumbPrint(selectedList, isCertificateViewDisabled) {
+  get selectedThumbPrint() {
     let selectedThumb = 'all';
-    if (selectedList.length > 0 && !isCertificateViewDisabled) {
-      const [{ signature: { thumbprint } }] = selectedList;
+    if (this.itemList.length > 0 && !this.isCertificateViewDisabled) {
+      const [{ signature: { thumbprint } }] = this.itemList;
       selectedThumb = thumbprint;
     }
     return selectedThumb;
-  },
+  }
+
   @computed('itemList', 'isCertificateViewDisabled', 'selectedServiceWithStatus')
-  isCertificateViewDisabledTitle(selectedList, isCertificateViewDisabled, selectedServiceWithStatus) {
+  get isCertificateViewDisabledTitle() {
     const i18n = this.get('i18n');
-    if (isCertificateViewDisabled) {
-      if (!selectedServiceWithStatus.isServiceOnline) {
+    if (this.isCertificateViewDisabled) {
+      if (!this.selectedServiceWithStatus.isServiceOnline) {
         return i18n.t('investigateFiles.endpointServerOffline').toString();
       }
       const MORE_THAN_TEN_FILES_SELECTED_TOOLTIP = i18n.t('investigateFiles.certificate.toolTipCertificateViewDisabled', { count: 1 }).toString();
       const FILES_ARE_NOT_SIGNED_TOOLTIP = i18n.t('investigateFiles.certificate.unsigned.toolTipCertificateViewDisabled').toString();
-      return selectedList.length > 1 ? MORE_THAN_TEN_FILES_SELECTED_TOOLTIP : FILES_ARE_NOT_SIGNED_TOOLTIP;
+      return this.itemList.length > 1 ? MORE_THAN_TEN_FILES_SELECTED_TOOLTIP : FILES_ARE_NOT_SIGNED_TOOLTIP;
     }
-  },
-  init() {
-    this._super(...arguments);
-    this.agentIds = this.agentIds || [];
-  },
-  actions: {
-    resetRiskScoreAction(itemsList) {
-      const callBackOptions = {
-        onSuccess: (response) => {
-          const { data } = response;
-          if (data === itemsList.length) {
-            success('investigateFiles.riskScore.success');
-          } else {
-            warning('investigateFiles.riskScore.warning');
-          }
-        },
-        onFailure: () => failure('investigateFiles.riskScore.error')
-      };
-      this.send('resetRiskScore', itemsList, 'FILE', callBackOptions);
-    },
+    return '';
+  }
 
-    handleServiceSelection(service) {
-      this.send('changeEndpointServerSelection', service);
-      if (this.closeRiskPanel) {
-        this.closeRiskPanel();
-      }
+  init() {
+    super.init(...arguments);
+    this.agentIds = this.agentIds || [];
+  }
+
+  @action
+  resetRiskScoreAction(itemsList) {
+    const callBackOptions = {
+      onSuccess: (response) => {
+        const { data } = response;
+        if (data === itemsList.length) {
+          success('investigateFiles.riskScore.success');
+        } else {
+          warning('investigateFiles.riskScore.warning');
+        }
+      },
+      onFailure: () => failure('investigateFiles.riskScore.error')
+    };
+    this.send('resetRiskScore', itemsList, 'FILE', callBackOptions);
+  }
+
+  @action
+  handleServiceSelection(service) {
+    this.send('changeEndpointServerSelection', service);
+    if (this.closeRiskPanel) {
+      this.closeRiskPanel();
     }
   }
-});
+}
 
 export default connect(stateToComputed, dispatchToActions)(ToolBar);

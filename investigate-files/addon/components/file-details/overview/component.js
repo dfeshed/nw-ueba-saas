@@ -1,6 +1,8 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import CONFIG from '../base-property-config';
 import { toggleFilePropertyPanel } from 'investigate-files/actions/visual-creators';
 
@@ -31,25 +33,24 @@ const dispatchToActions = {
   toggleFilePropertyPanel
 };
 
-const Overview = Component.extend({
-  tagName: 'box',
-
-  classNames: ['file-overview'],
-
-  propertyConfig: CONFIG,
+@classic
+@tagName('box')
+@classNames('file-overview')
+class Overview extends Component {
+  propertyConfig = CONFIG;
 
   @computed('getDataSourceTab')
-  dataSourceTabs(tabs) {
-    return tabs.filter((tab) => tab.name !== 'RISK_PROPERTIES');
-  },
-  actions: {
-    expandEventAction(id) {
-      if (this.get('isFilePropertyPanelVisible')) {
-        this.send('toggleFilePropertyPanel');
-      }
-      this.send('expandEvent', id);
-    }
+  get dataSourceTabs() {
+    return this.getDataSourceTab.filter((tab) => tab.name !== 'RISK_PROPERTIES');
   }
-});
+
+  @action
+  expandEventAction(id) {
+    if (this.get('isFilePropertyPanelVisible')) {
+      this.send('toggleFilePropertyPanel');
+    }
+    this.send('expandEvent', id);
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(Overview);

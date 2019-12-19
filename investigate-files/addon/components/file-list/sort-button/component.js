@@ -1,36 +1,33 @@
+import classic from 'ember-classic-decorator';
+import { classNameBindings, tagName, layout as templateLayout } from '@ember-decorators/component';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 
 import layout from './template';
 
-export default Component.extend({
-  layout,
-
-  tagName: 'button',
-
-  classNameBindings: ['columnClass'],
-
-  sortField: null,
-
-  column: null,
-
-  sortBy: null,
-
-  isSortDescending: false,
+@classic
+@templateLayout(layout)
+@tagName('button')
+@classNameBindings('columnClass')
+export default class SortButton extends Component {
+  sortField = null;
+  column = null;
+  sortBy = null;
+  isSortDescending = false;
 
   @computed('sortField', 'column.field', 'column.sortField')
-  columnClass(sortField, field, columnSortField) {
+  get columnClass() {
     let columnClass = 'column-sort hideSort expand';
-    if (sortField === field || sortField === columnSortField) {
+    if (this.sortField === this.column?.field || this.sortField === this.column?.sortField) {
       columnClass = 'column-sort expand';
     }
     return columnClass;
-  },
+  }
 
   @computed('isSortDescending')
-  iconName(isSortDescending) {
-    return isSortDescending ? 'arrow-down-7' : 'arrow-up-7';
-  },
+  get iconName() {
+    return this.isSortDescending ? 'arrow-down-7' : 'arrow-up-7';
+  }
 
   click() {
     const { column, isSortDescending } = this.getProperties('column', 'isSortDescending');
@@ -38,4 +35,4 @@ export default Component.extend({
     const sortDirection = !isSortDescending;
     this.sortBy(field, sortDirection);
   }
-});
+}

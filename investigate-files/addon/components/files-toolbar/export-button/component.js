@@ -1,8 +1,10 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { computed } from '@ember/object';
 import { connect } from 'ember-redux';
 import Component from '@ember/component';
 import { fileExportLink, isExportButtonDisabled } from 'investigate-files/reducers/file-list/selectors';
 import { exportFileAsCSV } from 'investigate-files/actions/data-creators';
-import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   downloadStatus: state.files.fileList.downloadStatus,
@@ -13,14 +15,14 @@ const dispatchToActions = {
   exportFileAsCSV
 };
 
-const ExportButton = Component.extend({
-  tagName: '',
-  classNames: ['file-export-button'],
-
+@classic
+@tagName('')
+@classNames('file-export-button')
+class ExportButton extends Component {
   @computed('isExportButtonDisabled')
-  exportTitle(isExportButtonDisabled) {
-    return isExportButtonDisabled.isEndpointBroker ? 'investigateFiles.button.brokerExportToCSV' : 'investigateFiles.button.exportToCSV';
+  get exportTitle() {
+    return this.isExportButtonDisabled.isEndpointBroker ? 'investigateFiles.button.brokerExportToCSV' : 'investigateFiles.button.exportToCSV';
   }
-});
+}
 
 export default connect(stateToComputed, dispatchToActions)(ExportButton);
