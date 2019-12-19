@@ -284,6 +284,7 @@ public class ADETestManager {
     }
 
     public void processEnriched2Scored(Instant firstHistoricalEventTime, int anomalyDayBack, String schema) {
+        this.processFeatureAggr(firstHistoricalEventTime, DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack), "hourly", schema);
         this.processModelFeatureBuckets(firstHistoricalEventTime, DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack), "hourly", schema);
         this.processModeling("enriched-record-models", "test-run", DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack));
         this.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack - 1), "hourly", schema);
