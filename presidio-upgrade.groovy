@@ -46,7 +46,7 @@ node("${params.ADMIN_SERVER_NODE}") {
             println(" ++++++++ Updating UEBA yum repos ++++++++ ")
             sh(script:"sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/${uebaRepoconfigScript} ${params.NW_VERSION}", returnStatus:true)
             println(" ++++++++ Going to upgrade: UEBA node ${params.UEBA_NODE} ++++++++ ")
-            sh "cd /tmp/ ; upgrade-cli-client -u --host-addr ${uebaIp} --version ${params.NW_VERSION} -v"
+            sh(returnStdout: true, script: "upgrade-cli-client -u --host-addr ${uebaIp} --version ${params.NW_VERSION} -v").trim()
             println(" ++++++++ UEBA Upgrade Complited ++++++++ ")
             println(" ++++++++ Going to reboot ueba: ${params.UEBA_NODE}  ++++++++ ")
             sh(script:"sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'reboot'", returnStatus:true)
