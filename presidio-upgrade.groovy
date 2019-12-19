@@ -6,7 +6,6 @@ def nwVersion = ""
 environment {
     SECONDARY_NODE = 'ueba_pipeline_node'
 }
-timestamps ()
 
 node("${params.ADMIN_SERVER_NODE}") {
     cleanWs()
