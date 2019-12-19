@@ -11,8 +11,8 @@ node("${params.ADMIN_SERVER_NODE}") {
     if (params.ADMIN_SERVER_UPGRADE_STAGE_ENABLED) {
         stage('Init workspace') {
             println(" ++++++++ Init workspace ++++++++ ")
-            println(" ++++++++ Downloading upgrade scripts from the Git ++++++++ ")
-            sh(script: "wget ${scriptsUrl}${adminServerUpgradeScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
+            println(" ++++++++ Downloading  ${scriptsUrl}${adminServerUpgradeScript} script from the Git ++++++++ ")
+            sh(script: "wget -q ${scriptsUrl}${adminServerUpgradeScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
             println(" ++++++++ finished ++++++++ ")
         }
         stage('Initialise and upgrade admin-server.') {
@@ -40,8 +40,9 @@ node("${params.ADMIN_SERVER_NODE}") {
     if (params.UEBA_UPGRADE_STAGE_ENABLED) {
         stage('Upgrading UEBA Node') {
             String uebaIp = sh(returnStdout: true, script: "getent hosts ${params.UEBA_NODE} | awk \'{ print \$1 }\'").trim()
-            println(" ++++++++ Going to configure UEBA node repos ++++++++ ")
-            sh(script: "wget ${scriptsUrl}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
+            println(" ++++++++ Downloading  ${scriptsUrl}${uebaRepoconfigScript} script from the Git ++++++++ ")
+            sh(script: "wget -q ${scriptsUrl}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
+            println(" ++++++++ Updating UEBA yum repos ++++++++ ")
             sh(script:"sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/${uebaRepoconfigScript} ${params.NW_VERSION}", returnStatus:true)
             println(" ++++++++ Going to upgrade: UEBA node ${params.UEBA_NODE} ++++++++ ")
             sh "cd /tmp/ ; upgrade-cli-client -u --host-addr ${uebaIp} --version ${params.NW_VERSION} -v"

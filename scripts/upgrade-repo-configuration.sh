@@ -12,6 +12,7 @@ echo "  #############  Starting upgrade-repo-configuration.sh #############"
 	rm -rf /var/log/netwitness/presidio/3p/airflow/logs/scheduler/*
   systemctl restart airflow-webserver
   systemctl restart airflow-scheduler
+  sleep 60
   #####
 
 echo "NW_VERSION=${NW_VERSION}"
@@ -20,4 +21,4 @@ sed -i "s|baseurl=.*|baseurl=https://nw-node-zero/nwrpmrepo/${NW_VERSION}/RSA|g"
 OWB_ALLOW_NON_FIPS=on yum clean all
 rm -rf /var/cache/yum
 
-echo "  #############  upgrade-repo-configuration.sh DONE #############"
+echo " #############  upgrade-repo-configuration.sh DONE #############"
