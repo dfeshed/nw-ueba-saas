@@ -77,6 +77,6 @@ def upgradeOtherNodes() {
     }
 }
 def getNwVersion () {
-    String version = ${params.REPO_ASOC_URL}.split("netwitness-")
+    String version = params.REPO_ASOC_URL.split("netwitness-")
     nwVersion = version.substring(0, str.length() - 4)
 }
