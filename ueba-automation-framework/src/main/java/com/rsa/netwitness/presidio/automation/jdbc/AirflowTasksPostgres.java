@@ -17,7 +17,17 @@ import static org.assertj.core.api.Assertions.fail;
 public class AirflowTasksPostgres {
 
     // by task execution time
-    public List<AirflowTaskFailTable> fetchFailedTasks(Instant startTime, Instant endTime) {
+    public List<AirflowTaskInstanceTable> fetchFailedStateTasks(Instant startTime, Instant endTime) {
+        String SQL_QUERY = "select * from " + TASK_INSTANCE_TABLE +
+                " where " + AirflowTaskInstanceTable.START_DATE + " > '" + Timestamp.from(startTime) + "'" +
+                " and " + AirflowTaskInstanceTable.END_DATE + " < '" + Timestamp.from(endTime) + "'" +
+                " and " + AirflowTaskInstanceTable.STATE + " = 'failed'";
+
+        return fetchTasks(SQL_QUERY);
+    }
+
+    // by task execution time
+    public List<AirflowTaskFailTable> fetchAllFailedAttempts(Instant startTime, Instant endTime) {
         String SQL_QUERY = "select * from " + AirflowTaskFailTable.TASK_FAIL_TABLE +
                 " where " + AirflowTaskFailTable.START_DATE + " > '" + Timestamp.from(startTime) + "'" +
                 " and " + AirflowTaskFailTable.END_DATE + " < '" + Timestamp.from(endTime) + "'";
@@ -26,7 +36,7 @@ public class AirflowTasksPostgres {
     }
 
     // by event time
-    public List<AirflowTaskFailTable> fetchFailedTasks(Instant execution_date) {
+    public List<AirflowTaskFailTable> fetchAllFailedAttempts(Instant execution_date) {
         String SQL_QUERY = "select * from " + AirflowTaskFailTable.TASK_FAIL_TABLE +
                 " where " + AirflowTaskFailTable.EXECUTION_DATE + " < '" + Timestamp.from(execution_date) + "'";
 
