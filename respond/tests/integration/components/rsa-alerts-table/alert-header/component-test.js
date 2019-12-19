@@ -16,14 +16,8 @@ module('Integration | Component | rsa alerts table alert header', function(hooks
     alert: {}
   };
   const events = [{
-    id: 'event1'
-  }];
-  const enrichments = [{
-    isEnrichment: true,
-    key: 'foo',
-    i18nKey: 'i18nFoo',
-    value: 'bar',
-    allEnrichments: {}
+    id: 'event1',
+    enrichment: { 'http-packet': { c2: { smooth: { score: 60 } } } }
   }];
 
   hooks.beforeEach(function() {
@@ -32,14 +26,12 @@ module('Integration | Component | rsa alerts table alert header', function(hooks
     this.set('indicator', indicator);
     this.set('events', events);
     this.set('index', 1);
-    this.set('enrichments', enrichments);
   });
 
   test('it renders tabs, and highlights the appropriate tabs when they are clicked', async function(assert) {
     this.set('group', StoryPoint.create({
       indicator: this.get('indicator'),
       events: this.get('events'),
-      enrichments: this.get('enrichments'),
       showEnrichmentsAsItems: false,
       isOpen: false
     }));
@@ -70,8 +62,7 @@ module('Integration | Component | rsa alerts table alert header', function(hooks
   test('it omits the enrichments tab if there are no enrichments', async function(assert) {
     this.set('group', StoryPoint.create({
       indicator: this.get('indicator'),
-      events: this.get('events'),
-      enrichments: [],
+      events: [{ id: 'event1' }],
       showEnrichmentsAsItems: false,
       isOpen: false
     }));
@@ -87,7 +78,6 @@ module('Integration | Component | rsa alerts table alert header', function(hooks
     this.set('group', StoryPoint.create({
       indicator: this.get('indicator'),
       events: null,
-      enrichments: null,
       showEnrichmentsAsItems: false,
       isOpen: false
     }));
@@ -101,7 +91,6 @@ module('Integration | Component | rsa alerts table alert header', function(hooks
     this.set('group', StoryPoint.create({
       indicator: this.get('indicator'),
       events: this.get('events'),
-      enrichments: [],
       showEnrichmentsAsItems: false,
       isOpen: false
     }));

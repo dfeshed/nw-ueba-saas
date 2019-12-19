@@ -42,11 +42,10 @@ module('Integration | Component | Respond Incidents Toolbar Controls', function(
     assert.equal(findAll('.action-control').length, 4, 'The Incidents Toolbar component should be found in the DOM with 4 buttons/controls');
   });
 
-  test('The Incidents Toolbar buttons are disabled when no itemsSelected exist ', async function(assert) {
+  test('The Incidents Toolbar buttons are disabled when no hasNoSelections is true', async function(assert) {
     assert.expect(1);
     await setup();
-    this.set('itemsSelected', []);
-    await render(hbs`{{rsa-incidents/toolbar-controls itemsSelected=itemsSelected}}`);
+    await render(hbs`{{rsa-incidents/toolbar-controls hasNoSelections=true}}`);
     assert.equal(findAll('.action-control .rsa-form-button-wrapper.is-disabled').length, 4,
       'When itemsSelected is empty, the buttons are all disabled');
   });

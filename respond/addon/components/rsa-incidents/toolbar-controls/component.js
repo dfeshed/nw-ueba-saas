@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import computed, { empty, gt } from 'ember-computed-decorators';
+import computed, { gt } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import enhance from 'respond/utils/enhance-users';
 
@@ -13,8 +13,6 @@ export default Component.extend({
   riac: service(),
   accessControl: service(),
   i18n: service(),
-
-  @empty('itemsSelected') hasNoSelections: true,
 
   @gt('itemsSelected.length', 1) isBulkSelection: false,
 

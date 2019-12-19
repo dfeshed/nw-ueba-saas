@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { empty, gt } from 'ember-computed-decorators';
+import { gt } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 
 /**
@@ -11,8 +11,6 @@ import { inject as service } from '@ember/service';
 export default Component.extend({
   accessControl: service(),
   i18n: service(),
-
-  @empty('itemsSelected') hasNoSelections: true,
 
   @gt('itemsSelected.length', 1) isBulkSelection: false,
 
