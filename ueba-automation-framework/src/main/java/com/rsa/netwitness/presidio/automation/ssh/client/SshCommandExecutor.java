@@ -34,8 +34,8 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * </ol>
  **
  */
-public class SshCommandExecutor {
-    static Logger LOGGER = (Logger) LoggerFactory.getLogger(SshCommandExecutor.class);
+class SshCommandExecutor {
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(SshCommandExecutor.class);
 
 
     private static final int MAX_LINES_TO_COLLECT = 400;

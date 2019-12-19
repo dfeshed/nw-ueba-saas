@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class SshExecHelper extends SshCommandExecutorBuilder {
 
     private SshCommandExecutorBuilder sshBuilder;
-    private long timeout = 1;
+    private long timeout = 2;
     private TimeUnit unit = TimeUnit.HOURS;
     private boolean isValidateExitCode = false;
 
@@ -62,7 +62,7 @@ public abstract class SshExecHelper extends SshCommandExecutorBuilder {
     private SshResponse execute(SshCommandExecutor executor) {
         SshResponse result = executor.execute(timeout, unit);
         validateExitCode(result.exitCode);
-        this.timeout = 1;
+        this.timeout = 2;
         this.unit = TimeUnit.HOURS;
         this.isValidateExitCode = false;
         return result;
