@@ -173,8 +173,8 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
                 .collect(Collectors.toList());
 
         assertThat(entityNamesActual)
-                .as(url.toString())
-                .allMatch(name -> name.startsWith(entityNameExpected));
+                .as(url.toString() + "\nExpected entity: " + entityNameExpected)
+                .anyMatch(name -> name.startsWith(entityNameExpected));
     }
 
     @Test
