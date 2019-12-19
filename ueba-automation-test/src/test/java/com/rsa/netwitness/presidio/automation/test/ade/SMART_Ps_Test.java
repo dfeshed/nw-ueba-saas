@@ -1,6 +1,5 @@
 package com.rsa.netwitness.presidio.automation.test.ade;
 
-import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.common.scenarios.activedirectory.AdOperationTypeAnomalies;
 import com.rsa.netwitness.presidio.automation.common.scenarios.file.FileDateTimeAnomalies;
 import com.rsa.netwitness.presidio.automation.common.scenarios.file.FileOperationTypeAnomalies;
@@ -11,7 +10,6 @@ import com.rsa.netwitness.presidio.automation.domain.ade.AdeScoredTestData;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.FileEnrichStoredDataRepository;
 import com.rsa.netwitness.presidio.automation.utils.ade.config.ADETestManagerConfig;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -45,7 +43,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, ADETestManagerConfig.class})
 public class SMART_Ps_Test extends AbstractTestNGSpringContextTests {
-    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(SMART_Ps_Test.class);
 
     private static final String unexpectedDocsCountMsg = "Number of collection \"%s\" documents do not match expected for user %s (scores between %d-%d)\n";
     private static final String testUser1 = "ade_smart1";
@@ -58,6 +55,14 @@ public class SMART_Ps_Test extends AbstractTestNGSpringContextTests {
     private FileEnrichStoredDataRepository repository;
     @Autowired
     private MongoTemplate mongoTemplate;
+    private Function<Future<Integer>, Integer> toIntResult = future -> {
+        try {
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return -100;
+    };
 
     @DataProvider(name = "testParams")
     public Object[][] getData() {
@@ -128,7 +133,9 @@ public class SMART_Ps_Test extends AbstractTestNGSpringContextTests {
         runAde(allEvents, normalPeriodStart, abnormalPeriodStart, abnormalPeriodEnd);
     }
 
-    /** Process events by running ADE applications*/
+    /**
+     * Process events by running ADE applications
+     */
     private void runAde(List<List<? extends Event>> allEvents, Instant normalPeriodStart, Instant abnormalPeriodStart, Instant abnormalPeriodEnd) {
         List<String> SCHEMAS_TO_PROCESS = List.of("file", "active_directory", "process");
         AdeDataProcessingManager adeTestManagerPar = new AdeDataProcessingManager();
@@ -139,7 +146,7 @@ public class SMART_Ps_Test extends AbstractTestNGSpringContextTests {
                 SCHEMAS_TO_PROCESS.stream().map(schema -> adeTestManagerPar.processModelFeatureBuckets(normalPeriodStart, abnormalPeriodStart, "hourly", schema))
         ).flatMap(e -> e);
 
-        Stream<Callable<Integer>> cycle2 =  SCHEMAS_TO_PROCESS.stream().map(schema -> adeTestManagerPar.processScoreAggr(normalPeriodStart, abnormalPeriodStart, "hourly", schema));
+        Stream<Callable<Integer>> cycle2 = SCHEMAS_TO_PROCESS.stream().map(schema -> adeTestManagerPar.processScoreAggr(normalPeriodStart, abnormalPeriodStart, "hourly", schema));
 
         Stream<Callable<Integer>> cycle3 = SCHEMAS_TO_PROCESS.stream().map(schema -> adeTestManagerPar.processScoreAggr(abnormalPeriodStart, abnormalPeriodEnd, "hourly", schema));
 
@@ -162,11 +169,10 @@ public class SMART_Ps_Test extends AbstractTestNGSpringContextTests {
 
     @Test(dataProvider = "testParams")
     public void smartDataVerifications(AdeScoredTestData data) {
-        Assert.assertEquals(adeTestManager.getNumberOfSmartDocuments(data.getTestUser(),
-                data.getLowestScore(), data.getHighestScore(), data.getCollection()), data.getExpectedCount(),
+        Assert.assertEquals(adeTestManager.getNumberOfSmartDocuments(data.getTestUser(), data.getLowestScore(), data.getHighestScore(), data.getCollection()),
+                data.getExpectedCount(),
                 String.format(data.getTestFailedMessage(), data.getCollection(), data.getTestUser(), data.getLowestScore(), data.getHighestScore()));
     }
-
 
     private void runParallelTasks(Stream<Callable<Integer>> parallelTasks) {
         try {
@@ -178,14 +184,5 @@ public class SMART_Ps_Test extends AbstractTestNGSpringContextTests {
             e.printStackTrace();
         }
     }
-
-    private Function<Future<Integer>, Integer> toIntResult = future -> {
-        try {
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return -100;
-    };
 
 }
