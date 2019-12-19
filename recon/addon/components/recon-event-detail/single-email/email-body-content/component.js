@@ -17,7 +17,6 @@ export default Component.extend({
   resizeIframe: null,
   actualLink: null,
   disableContextMenu: null,
-  randomNumber: 1,
   emailRenderId: '',
 
   init() {

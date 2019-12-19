@@ -448,6 +448,10 @@ export default class DataHelper {
     _set(this.state, 'hostDownloads.mft.mftDirectory.selectedDirectoryForDetails', value);
     return this;
   }
+  openDirectories(value) {
+    _set(this.state, 'hostDownloads.mft.mftDirectory.openDirectories', value);
+    return this;
+  }
   mftFiles(data) {
     _set(this.state, 'hostDownloads.mft.mftDirectory.files', data);
     return this;

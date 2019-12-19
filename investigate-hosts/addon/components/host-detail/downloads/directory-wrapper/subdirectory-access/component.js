@@ -20,38 +20,47 @@ const SubdirectoryAccess = Component.extend({
   isLoading: false,
 
   @computed('close', 'openDirectories', 'data')
-  displaySubdirectory(close, openDirectories, data) {
+  displaySubdirectory: {
+    get() {
+      const { openDirectories, data } = this.getProperties('openDirectories', 'data');
+      let isClosed = this.get('close');
+      let arrowDirection = 'arrow-down-12';
 
-    let arrowDirection = 'arrow-down-12';
+      if (openDirectories.includes(data.recordNumber)) {
+        isClosed = false;
+      } else {
+        arrowDirection = isClosed ? 'arrow-right-12' : 'arrow-down-12';
+      }
 
-    if (openDirectories.includes(data.recordNumber)) {
-      close = false;
-      this.set('close', close);
-    } else {
-      arrowDirection = close ? 'arrow-right-12' : 'arrow-down-12';
+      return { arrowDirection, isClosed };
+    },
+    set(key, value) {
+      return value;
     }
-
-    return { arrowDirection, close };
   },
+
   actions: {
     toggleSubdirectories() {
       const { ancestors, recordNumber, children } = this.get('data');
       const fullPathName = this.get('fullPathName');
       const name = this.get('directoryName');
+      const openDirectories = this.get('openDirectories');
       // max number of folders is 65000 and fetch only directories is true for a fresh subdirectory fetch.
       let isDirectories = false;
       const inUse = true;
-      if (this.get('close')) {
+
+      if (!this.get('close') || openDirectories.includes(recordNumber)) {
+        this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors: [], close: true }, pageSize: 100, isDirectories, inUse, fullPathName, name });
+        this.set('close', true);
+      } else {
         if (!children) {
           this.set('isLoading', true);
           this.send('getSubDirectories');
           isDirectories = true;
         }
         this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors, close: false }, pageSize: 65000, isDirectories, inUse, fullPathName, name });
-      } else {
-        this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors: [], close: true }, pageSize: 100, isDirectories, inUse, fullPathName, name });
+        this.set('close', false);
       }
-      this.toggleProperty('close');
     }
   }
 });

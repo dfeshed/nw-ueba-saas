@@ -166,4 +166,32 @@ module('Integration | Component | directory-wrapper', function(hooks) {
     await click(find('.mft-directory_arrow .rsa-icon-arrow-right-12'));
     assert.equal(findAll('.mft-directory_arrow .rsa-icon-arrow-down-12').length, 1, 'loader has loaded on click');
   });
+
+  test('Toggling of arrows on click when there are no open directories', async function(assert) {
+    new ReduxDataHelper(initState)
+      .hostDownloads(hostDownloads)
+      .openDirectories([])
+      .build();
+    this.set('data', { mftId: '5d19c6c7c8811e3057c68fd8',
+      recordNumber: 389,
+      children: [{ mftId: '5d19c6c7c8811e3057c68fd8',
+        recordNumber: 400,
+        children: [],
+        ancestors: [
+          5, 389
+        ] }],
+      ancestors: [
+        5
+      ] });
+    this.set('isLoading', false);
+    this.set('close', true);
+
+    await render(hbs`{{#host-detail/downloads/directory-wrapper/subdirectory-access data=data isLoading=isLoading close=close}}
+      Test
+    {{/host-detail/downloads/directory-wrapper/subdirectory-access}}`);
+
+    assert.equal(findAll('.mft-directory_arrow .rsa-icon-arrow-right-12').length, 1, 'Close Arrow has loaded on click');
+    await click(find('.mft-directory_arrow .rsa-icon-arrow-right-12'));
+    assert.equal(findAll('.mft-directory_arrow .rsa-icon-arrow-down-12').length, 1, 'Open Arrow has loaded');
+  });
 });
