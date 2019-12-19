@@ -6,6 +6,7 @@ ASOC_URL=$2
 TARGET_DIRCTORY=$3
 
 echo "  #############  Starting upgrade-admin-server.sh #############"
+echo $(date "+%Y-%m-%d %H:%M:%S")
 
 echo "NW_VERSION=${NW_VERSION}"
 echo "ASOC_URL=${ASOC_URL}"

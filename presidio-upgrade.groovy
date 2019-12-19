@@ -5,6 +5,7 @@ def scriptsUrl = "https://github.rsa.lab.emc.com/raw/asoc/presidio-jenkins-job-d
 environment {
     SECONDARY_NODE = 'ueba_pipeline_node'
 }
+options { timestamps () }
 
 node("${params.ADMIN_SERVER_NODE}") {
     cleanWs()
