@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.data.processing;
 
+import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.AdeDataProcessingManager;
 import com.rsa.netwitness.presidio.automation.utils.common.TitlesPrinter;
@@ -24,8 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class ProcessSmartsData extends AbstractTestNGSpringContextTests {
-    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ProcessSmartsData.class.getName());
-    private static TitlesPrinter ART_GEN = new TitlesPrinter();
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(ProcessSmartsData.class);
 
     private AdeDataProcessingManager adeTestManagerPar = new AdeDataProcessingManager();
     private List<String> SCHEMAS_TO_PROCESS = AutomationConf.CORE_SCHEMAS_TO_PROCESS.stream().map(String::toLowerCase).collect(toList());
