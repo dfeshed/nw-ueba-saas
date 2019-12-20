@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { debounce } from '@ember/runloop';
+import { debounce, next } from '@ember/runloop';
 import { connect } from 'ember-redux';
 import computed, { alias } from 'ember-computed-decorators';
 
@@ -88,7 +88,13 @@ const PacketReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin
   },
 
   hideTooltip() {
-    this.send('hidePacketTooltip');
+    // Gets called via _handleScroll when element is on its way to being destroyed,
+    // need to protect against that
+    next(() => {
+      if (!this.isDestroying && !this.isDestroyed) {
+        this.send('hidePacketTooltip');
+      }
+    });
   },
 
   _handleScroll() {
