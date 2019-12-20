@@ -321,7 +321,7 @@ const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigate
             // Will wrap parens if multiple hashes are present to make distinct queries
             paramsArray = wrapInParensIfMultipleHashes(paramsArray);
             const newPillData = paramsArray.flatMap((singleParams) => {
-              return [ transformTextToPillData(singleParams, { language, aliases }), OperatorAnd.create() ];
+              return [ ...transformTextToPillData(singleParams, { language, aliases, returnMany: true }), OperatorAnd.create() ];
             });
             newPillData.splice(newPillData.lastIndex, 1);
 

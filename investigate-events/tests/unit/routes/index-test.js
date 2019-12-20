@@ -357,7 +357,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       const hashes = queryNode.pillDataHashes || [];
       const pillDataHashesPresent = hashes.length === 2 && hashes.includes('d9ee');
       const arePillsInOrder = (hashes.indexOf('d9ee') === 0);
-      const pillsDataPopulated = queryNode.pillsData.length === 3;
+      const pillsDataPopulated = queryNode.pillsData.length === 7;
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated && arePillsInOrder) {
         assert.ok(true, 'all the expected initial data was populated and query executed');
         fetchInvestigateDataSpy.restore();
