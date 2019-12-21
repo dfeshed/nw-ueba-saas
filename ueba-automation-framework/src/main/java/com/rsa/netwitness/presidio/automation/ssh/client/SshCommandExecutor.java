@@ -38,7 +38,7 @@ class SshCommandExecutor {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(SshCommandExecutor.class);
 
 
-    private static final int MAX_LINES_TO_COLLECT = 400;
+    private static final int MAX_LINES_TO_COLLECT = 1500;
     private final ServerDetails serverDetails;
     private final String command;
     private final String userDir;
