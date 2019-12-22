@@ -1,10 +1,8 @@
+def adminServerUpgradeScript = "upgrade-admin-server.sh"
+def uebaRepoconfigScript = "upgrade-repo-configuration.sh"
+def scriptsUrl = "https://github.rsa.lab.emc.com/raw/asoc/presidio-jenkins-job-dsl/master/scripts/"
+
 pipeline {
-
-    def adminServerUpgradeScript = "upgrade-admin-server.sh"
-    def uebaRepoconfigScript = "upgrade-repo-configuration.sh"
-    def scriptsUrl = "https://github.rsa.lab.emc.com/raw/asoc/presidio-jenkins-job-dsl/master/scripts/"
-
-
     environment {
         SECONDARY_NODE = 'ueba_pipeline_node'
         NW_VERSION = getNwVersion()
