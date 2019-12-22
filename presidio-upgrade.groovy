@@ -1,11 +1,10 @@
 def adminServerUpgradeScript = "upgrade-admin-server.sh"
 def uebaRepoconfigScript = "upgrade-repo-configuration.sh"
 def scriptsUrl = "https://github.rsa.lab.emc.com/raw/asoc/presidio-jenkins-job-dsl/master/scripts/"
+def NW_VERSION = getNwVersion()
 
-pipeline {
     environment {
         SECONDARY_NODE = 'ueba_pipeline_node'
-        NW_VERSION = getNwVersion()
     }
 
     node("${params.ADMIN_SERVER_NODE}") {
@@ -19,8 +18,8 @@ pipeline {
             }
             stage('Initialise and upgrade admin-server.') {
                 println(" ++++++++ Starting admin-server upgrade ++++++++ ")
-                echo " ${env.NW_VERSION}"
-                ADMIN_UPGARDE_STATUS = sh(script: "sh ${WORKSPACE}/upgrade-admin-server.sh $env.NW_VERSION ${params.REPO_ASOC_URL}", returnStatus: true) == 0
+                echo " ${NW_VERSION}"
+                ADMIN_UPGARDE_STATUS = sh(script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${NW_VERSION} ${params.REPO_ASOC_URL}", returnStatus: true) == 0
                 if (!ADMIN_UPGARDE_STATUS) {
                     error("Admin server upgrade progress failed !!!!!!!")
                 }
@@ -65,7 +64,6 @@ pipeline {
             }
         }
     }
-}
 
 def upgradeOtherNodes() {
     def nodes = params.OTHER_IPS.split(",")
