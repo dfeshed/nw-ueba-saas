@@ -23,7 +23,7 @@ node("${params.ADMIN_SERVER_NODE}") {
             println(" ++++++++ Starting admin-server upgrade ++++++++ ")
             println(" $env.NW_VERSION")
 
-             ADMIN_UPGARDE_STATUS = sh (script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${env.NW_VERSION} ${params.REPO_ASOC_URL}", returnStatus: true) == 0
+             ADMIN_UPGARDE_STATUS = sh (script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${NW_VERSION} ${params.REPO_ASOC_URL}", returnStatus: true) == 0
             if (!ADMIN_UPGARDE_STATUS){
                 error("Admin server upgrade progress failed !!!!!!!")
             }
