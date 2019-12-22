@@ -83,7 +83,7 @@ def getNwVersion () {
 }
 def validateRepoAsocUrl() {
     String asocUrl = params.REPO_ASOC_URL
-    Urlresponsecode = sh(returnStdout: true, script: "curl -o -q /dev/null -s -w \"%{http_code}\\n\" ${asocUrl}").trim()
+    Urlresponsecode = sh(returnStdout: true, script: "curl -o -s /dev/null -s -w \"%{http_code}\\n\" ${asocUrl}").trim()
     if (Urlresponsecode != '200') {
         error("Repo zip URL isn't valid getting error code - ${Urlresponsecode} \\r $asocUrl} ")
     }
