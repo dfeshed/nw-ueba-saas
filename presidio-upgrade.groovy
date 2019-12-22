@@ -6,8 +6,7 @@ def scriptsUrl = "https://github.rsa.lab.emc.com/raw/asoc/presidio-jenkins-job-d
 
 environment {
     SECONDARY_NODE = 'ueba_pipeline_node'
-    NW_VERSION = sh(script: "echo ${params.REPO_ASOC_URL} | awk -F netwitness- '{print \$2}' | awk -F .zip '{print \$1}' ", returnStdout: true).trim()
-
+    NW_VERSION = getNwVersion()
 }
 
 node("${params.ADMIN_SERVER_NODE}") {
@@ -79,4 +78,9 @@ def upgradeOtherNodes() {
         println(" ++++++++ Going to reboot: ${node} ++++++++ ")
         sh(script:"sshpass -p \"netwitness\" ssh root@${node} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'reboot'", returnStatus:true)
     }
+}
+
+def getNwVersion ( String asocUrl = params.REPO_ASOC_URL) {
+    NW_VERSION = ${asocUrl}.substring(${asocUrl}.length() - 13, ${asocUrl}.length() - 4)
+    return env.NW_VERSION
 }
