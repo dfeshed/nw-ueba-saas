@@ -17,7 +17,7 @@ node("${params.ADMIN_SERVER_NODE}") {
                 println(" ++++++++ finished ++++++++ ")
             }
             stage('Initialise and upgrade admin-server.') {
-                validateRepoAsocUrl()
+                //validateRepoAsocUrl()
                 println(" ++++++++ Starting admin-server upgrade ++++++++ ")
                 ADMIN_UPGARDE_STATUS = sh(script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${nwVersion} ${params.REPO_ASOC_URL}", returnStatus: true) == 0
                 if (!ADMIN_UPGARDE_STATUS) {
