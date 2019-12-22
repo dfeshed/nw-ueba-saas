@@ -23,8 +23,8 @@ node("${params.ADMIN_SERVER_NODE}") {
         stage('Initialise and upgrade admin-server.') {
             println(" ++++++++ Starting admin-server upgrade ++++++++ ")
 
-            println("${NW_VERSION}")
-            println("${env.NW_VERSION}")
+            echo "${NW_VERSION}"
+            echo "${env.NW_VERSION}"
 
             ADMIN_UPGARDE_STATUS = sh (script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${env.NW_VERSION} ${params.REPO_ASOC_URL}", returnStatus: true) == 0
             if (!ADMIN_UPGARDE_STATUS){
