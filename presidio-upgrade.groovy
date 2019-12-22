@@ -22,8 +22,7 @@ node("${params.ADMIN_SERVER_NODE}") {
         }
         stage('Initialise and upgrade admin-server.') {
             println(" ++++++++ Starting admin-server upgrade ++++++++ ")
-            println("$SECONDARY_NODE")
-            println("$NW_VERSION")
+
             println("${NW_VERSION}")
             println("${env.NW_VERSION}")
 
