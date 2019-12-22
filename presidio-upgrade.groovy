@@ -17,6 +17,7 @@ node("${params.ADMIN_SERVER_NODE}") {
                 println(" ++++++++ finished ++++++++ ")
             }
             stage('Initialise and upgrade admin-server.') {
+                validateRepoAsocUrl()
                 println(" ++++++++ Starting admin-server upgrade ++++++++ ")
                 ADMIN_UPGARDE_STATUS = sh(script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${nwVersion} ${params.REPO_ASOC_URL}", returnStatus: true) == 0
                 if (!ADMIN_UPGARDE_STATUS) {
@@ -79,4 +80,11 @@ def getNwVersion () {
     String asocUrl = params.REPO_ASOC_URL
     String nw_version = asocUrl.substring(asocUrl.length() - 12, asocUrl.length() - 4)
     return nw_version
+}
+def validateRepoAsocUrl() {
+    String asocUrl = params.REPO_ASOC_URL
+    Urlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${asocUrl}").trim()
+    if (Urlresponsecode != '200') {
+        error("Repo zip URL isn't valid - ${Urlresponsecode}")
+    }
 }
