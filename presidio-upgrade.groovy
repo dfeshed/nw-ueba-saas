@@ -13,7 +13,7 @@ node("${params.ADMIN_SERVER_NODE}") {
             stage('Init workspace') {
                 println(" ++++++++ Init workspace ++++++++ ")
                 println(" ++++++++ Downloading  ${scriptsUrl}${adminServerUpgradeScript} script from the Git ++++++++ ")
-                //sh(script: "wget -q ${scriptsUrl}${adminServerUpgradeScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
+                sh(script: "wget -q ${scriptsUrl}${adminServerUpgradeScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
                 println(" ++++++++ finished ++++++++ ")
             }
             stage('Initialise and upgrade admin-server.') {
