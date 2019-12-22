@@ -20,9 +20,8 @@ node("${params.ADMIN_SERVER_NODE}") {
         }
         stage('Initialise and upgrade admin-server.') {
             println(" ++++++++ Starting admin-server upgrade ++++++++ ")
-            println(" $env.NW_VERSION")
-            sh('printenv | sort')
-             ADMIN_UPGARDE_STATUS = sh (script: "sh ${WORKSPACE}/upgrade-admin-server.sh ${env.NW_VERSION} ${params.REPO_ASOC_URL}", returnStatus: true) == 0
+            echo " ${env.NW_VERSION}"
+             ADMIN_UPGARDE_STATUS = sh (script: "sh ${WORKSPACE}/upgrade-admin-server.sh $env.NW_VERSION ${params.REPO_ASOC_URL}", returnStatus: true) == 0
             if (!ADMIN_UPGARDE_STATUS){
                 error("Admin server upgrade progress failed !!!!!!!")
             }
@@ -81,6 +80,7 @@ def upgradeOtherNodes() {
 }
 
 def getNwVersion ( String asocUrl = params.REPO_ASOC_URL) {
-    NW_VERSION = ${asocUrl}.substring(${asocUrl}.length() - 13, ${asocUrl}.length() - 4)
-    return env.NW_VERSION
+    String nvVersion = ${asocUrl}.substring(${asocUrl}.length() - 13, ${asocUrl}.length() - 4)
+    print ("nvVersion : ${nvVersion}")
+    return nvVersion
 }
