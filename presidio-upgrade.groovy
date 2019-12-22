@@ -43,9 +43,9 @@ def NW_VERSION = getNwVersion()
                 println(" ++++++++ Downloading  ${scriptsUrl}${uebaRepoconfigScript} script from the Git ++++++++ ")
                 sh(script: "wget -q ${scriptsUrl}${uebaRepoconfigScript} --no-check-certificate -P ${WORKSPACE}", returnStatus: true)
                 println(" ++++++++ Updating UEBA yum repos ++++++++ ")
-                //sh(script: "sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/${uebaRepoconfigScript} ${env.NW_VERSION} ", returnStatus: true)
+                sh(script: "sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${WORKSPACE}/${uebaRepoconfigScript} ${env.NW_VERSION} ", returnStatus: true)
                 println(" ++++++++ Going to upgrade: UEBA node ${params.UEBA_NODE} ++++++++ ")
-                //sh(returnStdout: true, script: "upgrade-cli-client -u --host-addr ${uebaIp} --version ${env.NW_VERSION} -v").trim()
+                sh(returnStdout: true, script: "upgrade-cli-client -u --host-addr ${uebaIp} --version ${env.NW_VERSION} -v").trim()
                 println(" ++++++++ UEBA Upgrade Complited ++++++++ ")
                 println(" ++++++++ Going to reboot ueba: ${params.UEBA_NODE}  ++++++++ ")
                 sh(script: "sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'reboot'", returnStatus: true)
@@ -69,14 +69,15 @@ def upgradeOtherNodes() {
     println("Other nodes: ${nodes}")
     for (String node : nodes) {
         println(" ++++++++ Going to upgrade node: ${node} ++++++++ ")
-        //sh "cd /tmp/ ; upgrade-cli-client -u --host-addr ${node} --version ${env.NW_VERSION}  -v"
+        sh "cd /tmp/ ; upgrade-cli-client -u --host-addr ${node} --version ${env.NW_VERSION}  -v"
         println(" ++++++++ Going to reboot: ${node} ++++++++ ")
         sh(script:"sshpass -p \"netwitness\" ssh root@${node} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'reboot'", returnStatus:true)
     }
 }
 
-def getNwVersion ( String asocUrl = params.REPO_ASOC_URL) {
-    String nvVersion = ${asocUrl}.substring(${asocUrl}.length() - 13, ${asocUrl}.length() - 4)
+def getNwVersion () {
+    String asocUrl = params.REPO_ASOC_URL
+    String nvVersion = asocUrl.substring(asocUrl.length() - 13, asocUrl.length() - 4)
     print ("nvVersion : ${nvVersion}")
     return nvVersion
 }
