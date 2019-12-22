@@ -77,7 +77,7 @@ def upgradeOtherNodes() {
 
 def getNwVersion () {
     String asocUrl = params.REPO_ASOC_URL
-    String nvVersion = asocUrl.substring(asocUrl.length() - 13, asocUrl.length() - 4)
+    String nvVersion = asocUrl.substring(asocUrl.length() - 12, asocUrl.length() - 4)
     print ("nvVersion : ${nvVersion}")
     return nvVersion
 }
