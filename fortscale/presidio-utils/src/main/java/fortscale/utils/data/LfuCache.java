@@ -91,6 +91,30 @@ public class LfuCache<K, V> {
     }
 
     /**
+     * Removes from this {@link LfuCache} the specified number of mappings that were least frequently used. For example:
+     * If the cache contains 50 mappings, and number is 10, then the 10 mappings that were referenced the least number
+     * of times will be removed.
+     *
+     * @param number The number of mappings to remove.
+     * @return The least frequently used mappings, that were removed from the cache.
+     * @throws IllegalArgumentException If the specified number is illegal.
+     */
+    public Map<K, V> removeLfuEntries(int number) {
+        assertNumber(number);
+        Map<K, V> lfuEntries = new HashMap<>();
+        map.entrySet().stream()
+                // Sort according to the number of times each entry was referenced (in ascending order).
+                .sorted(Entry.comparingByValue())
+                // Truncate the stream and keep only the first specified number of entries.
+                .limit(number)
+                // Collect the entries to a map from keys to values (do not expose the counts).
+                .forEach(entry -> lfuEntries.put(entry.getKey(), entry.getValue().getElement()));
+        // Remove the entries from this LFU cache.
+        lfuEntries.keySet().forEach(map::remove);
+        return lfuEntries;
+    }
+
+    /**
      * Removes from this {@link LfuCache} the specified percentage of mappings that were least frequently used. For
      * example: If the cache contains 50 mappings, and percentage is 10.0, then the 5 mappings that were referenced the
      * least number of times will be removed. The number of mappings to remove is rounded up when calculated.
@@ -101,17 +125,7 @@ public class LfuCache<K, V> {
      */
     public Map<K, V> removeLfuEntries(double percentage) {
         assertPercentage(percentage);
-        Map<K, V> lfuEntries = new HashMap<>();
-        map.entrySet().stream()
-                // Sort according to the number of times each entry was referenced (in ascending order).
-                .sorted(Entry.comparingByValue())
-                // Truncate the stream and keep only the first specified percentage of entries.
-                .limit((long)Math.ceil(map.size() * percentage / 100.0))
-                // Collect the entries to a map from keys to values (do not expose the counts).
-                .forEach(entry -> lfuEntries.put(entry.getKey(), entry.getValue().getElement()));
-        // Remove the entries from this LFU cache.
-        lfuEntries.keySet().forEach(map::remove);
-        return lfuEntries;
+        return removeLfuEntries((int)Math.ceil(map.size() * percentage / 100.0));
     }
 
     /**
@@ -130,6 +144,23 @@ public class LfuCache<K, V> {
      */
     public boolean isFull() {
         return map.size() == maximumSize;
+    }
+
+    /**
+     * Calculates the number of new mappings that can be put in this {@link LfuCache} before it exceeds its maximum
+     * size. For example: If the maximum size is 10, and the cache contains 3 mappings, then this method will return 7.
+     *
+     * @return The amount of free space in the cache.
+     */
+    public int calculateFreeSpace() {
+        return maximumSize - map.size();
+    }
+
+    public static void assertNumber(int number) {
+        if (number <= 0) {
+            String s = String.format("number must be greater than 0 but is %d.", number);
+            throw new IllegalArgumentException(s);
+        }
     }
 
     public static void assertPercentage(double percentage) {

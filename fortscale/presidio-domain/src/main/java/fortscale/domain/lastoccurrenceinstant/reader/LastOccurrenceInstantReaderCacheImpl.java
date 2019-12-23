@@ -5,9 +5,11 @@ import fortscale.utils.data.LfuCache;
 import org.apache.commons.lang3.Validate;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class LastOccurrenceInstantReaderCacheImpl implements LastOccurrenceInstantReader {
     private final LastOccurrenceInstantReader lastOccurrenceInstantReader;
@@ -50,11 +52,34 @@ public class LastOccurrenceInstantReaderCacheImpl implements LastOccurrenceInsta
     @Override
     public Map<String, Instant> readAll(Schema schema, String entityType, List<String> entityIds) {
         Map<String, Instant> entityIdToLastOccurrenceInstantMap = new HashMap<>();
-        entityIds.forEach(entityId -> {
-            Instant lastOccurrenceInstant = read(schema, entityType, entityId);
-            entityIdToLastOccurrenceInstantMap.put(entityId, lastOccurrenceInstant);
-        });
+        // The missingEntityIds and missingKeys lists are guaranteed to have the same size.
+        // Using an ArrayList in both cases guarantees element access in O(1) complexity time.
+        List<String> missingEntityIds = new ArrayList<>();
+        List<String> missingKeys = new ArrayList<>();
+
+        for (String entityId : entityIds) {
+            String key = getKey(schema, entityType, entityId);
+
+            if (lfuCache.containsKey(key)) {
+                entityIdToLastOccurrenceInstantMap.put(entityId, lfuCache.get(key));
+            } else {
+                missingEntityIds.add(entityId);
+                missingKeys.add(key);
+            }
+        }
+
+        entityIdToLastOccurrenceInstantMap.putAll(readAllMissing(schema, entityType, missingEntityIds, missingKeys));
         return entityIdToLastOccurrenceInstantMap;
+    }
+
+    private Map<String, Instant> readAllMissing(
+            Schema schema, String entityType, List<String> missingEntityIds, List<String> missingKeys) {
+
+        Map<String, Instant> map = lastOccurrenceInstantReader.readAll(schema, entityType, missingEntityIds);
+        int difference = map.size() - lfuCache.calculateFreeSpace();
+        if (difference > 0) lfuCache.removeLfuEntries(difference);
+        IntStream.range(0, map.size()).forEach(i -> lfuCache.put(missingKeys.get(i), map.get(missingEntityIds.get(i))));
+        return map;
     }
 
     private static String getKey(Schema schema, String entityType, String entityId) {
