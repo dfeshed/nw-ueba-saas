@@ -49,7 +49,7 @@ node("${params.ADMIN_SERVER_NODE}") {
                 sh(returnStdout: true, script: "upgrade-cli-client -u --host-addr ${uebaIp} --version ${nwVersion} -v").trim()
                 println(" ++++++++ UEBA Upgrade Complited ++++++++ ")
                 println(" ++++++++ Going to reboot ueba: ${params.UEBA_NODE}  ++++++++ ")
-                sh(script: "sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'reboot'", returnStatus: true)
+                sh(script: "sshpass -p \"netwitness\" ssh root@${params.UEBA_NODE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null '/usr/sbin/reboot'", returnStatus: true)
 
             }
         }
@@ -72,7 +72,7 @@ def upgradeOtherNodes() {
         println(" ++++++++ Going to upgrade node: ${node} ++++++++ ")
         sh "cd /tmp/ ; upgrade-cli-client -u --host-addr ${node} --version ${nwVersion}  -v"
         println(" ++++++++ Going to reboot: ${node} ++++++++ ")
-        sh(script:"sshpass -p \"netwitness\" ssh root@${node} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'reboot'", returnStatus:true)
+        sh(script:"sshpass -p \"netwitness\" ssh root@${node} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null '/usr/sbin/reboot'", returnStatus:true)
     }
 }
 
