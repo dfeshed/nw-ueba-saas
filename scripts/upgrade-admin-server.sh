@@ -40,5 +40,5 @@ echo "  #############  Done. $(date "+%Y-%m-%d %H:%M:%S") #############"
 echo
 echo "  #############  Going to REBOOT in 10 seconds !!! #############"
 sleep 10
-/usr/sbin/reboot
+/usr/sbin/init 6
 echo "  #############  upgrade-admin-server.sh DONE #############"
