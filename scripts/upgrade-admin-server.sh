@@ -39,6 +39,6 @@ upgrade-cli-client -u --host-addr ${admin_server_ip} --version ${NW_VERSION} -v
 echo "  #############  Done. $(date "+%Y-%m-%d %H:%M:%S") #############"
 echo
 echo "  #############  Going to REBOOT in 10 seconds !!! #############"
-sleep 10 && reboot &
-
+sleep 10
+/usr/sbin/reboot
 echo "  #############  upgrade-admin-server.sh DONE #############"
