@@ -16,16 +16,16 @@ import org.springframework.data.mongodb.core.query.Query;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import static fortscale.common.general.SchemaEntityCount.*;
 import static fortscale.domain.core.AbstractAuditableDocument.DATE_TIME_FIELD_NAME;
 import static fortscale.domain.core.AbstractDocument.ID_FIELD;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class DataSourceRepositoryImpl implements DataSourceRepository {
     private static final String MAX_TIME_AGGREGATION_FIELD_NAME = "maxTime";
@@ -115,9 +115,7 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
 
     public Map<String, Instant> aggregateKeysMaxInstant(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, String collectionName, boolean allowDiskUse) {
         List<AggregationOperation> aggregationOperations = new LinkedList<>();
-        aggregationOperations.add(match(
-                new Criteria().andOperator(createDateCriteria(startDate, endDate), where(fieldPath).exists(true))));
-
+        aggregationOperations.add(match(new Criteria().andOperator(createDateCriteria(startDate, endDate), where(fieldPath).exists(true))));
         aggregationOperations.add(group(fieldPath).max(AbstractAuditableDocument.DATE_TIME_FIELD_NAME).as(MAX_TIME_AGGREGATION_FIELD_NAME));
 
         if (skip >= 0 && limit > 0) {
@@ -126,15 +124,17 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
             aggregationOperations.add(limit(limit));
         }
 
-        Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
-                allowDiskUse(allowDiskUse).build());
+        Aggregation aggregation = newAggregation(aggregationOperations)
+                .withOptions(Aggregation.newAggregationOptions().allowDiskUse(allowDiskUse).build());
 
         List<Document> aggrResult = mongoTemplate
                 .aggregate(aggregation, collectionName, Document.class)
                 .getMappedResults();
 
-        Map<String, Instant> ret = aggrResult.stream().collect(Collectors.toMap(document -> document.getString(AbstractDocument.ID_FIELD), document -> document.getDate(MAX_TIME_AGGREGATION_FIELD_NAME).toInstant()));
-        return ret;
+        return aggrResult.stream().collect(Collectors.toMap(
+                document -> document.getString(AbstractDocument.ID_FIELD),
+                document -> document.getDate(MAX_TIME_AGGREGATION_FIELD_NAME).toInstant()
+        ));
     }
 
     private Query getQuery(Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
