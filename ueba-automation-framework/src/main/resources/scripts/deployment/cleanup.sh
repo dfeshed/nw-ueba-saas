@@ -25,6 +25,12 @@ airflow resetdb -y
 python -c "from presidio.charts import deploy_charts; deploy_charts.deploy_charts()"
 }
 
+
+cleaningRedis(){
+echo "Going to clean Redis DB"
+redis-cli FLUSHALL
+}
+
 cleanningMongoCollections(){
 #echo "%%%%%%%%%%%% clean all mongo collections %%%%%%%%%%%%"
 CORE_ENC_PASS=$(cat /etc/netwitness/presidio/configserver/configurations/application.properties | sed -E -n 's/.*\mongo\.db\.password=(.*)$/\1/p' )
@@ -76,5 +82,6 @@ cleanningFlumePropetrieFiles
 cleanningAirflowState
 cleanningMongoCollections
 cleanningElasticSearch
+cleaningRedis
 
 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DBs & Logs Cleaning Completed Successfully %%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
