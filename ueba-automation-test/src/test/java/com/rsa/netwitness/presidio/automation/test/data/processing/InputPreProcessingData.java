@@ -36,8 +36,9 @@ public class InputPreProcessingData extends AbstractTestNGSpringContextTests {
     public void prepareTestData(@Optional("30") int historicalDaysBack, @Optional("1") int anomalyDay) throws InterruptedException {
         TitlesPrinter.printTitle(getClass().getSimpleName());
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay);
-        endDate = Instant.now().truncatedTo(ChronoUnit.DAYS);
-        startDate = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
+        startDate = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(historicalDaysBack, ChronoUnit.DAYS);
+        endDate = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(historicalDaysBack - 1, ChronoUnit.DAYS);
+
         LOGGER.info("startDate=" + startDate + " endDate=" + endDate);
         LOGGER.info("CORE_SCHEMAS_TO_PROCESS = ".concat(String.join(", ", CORE_SCHEMAS_TO_PROCESS)));
 
