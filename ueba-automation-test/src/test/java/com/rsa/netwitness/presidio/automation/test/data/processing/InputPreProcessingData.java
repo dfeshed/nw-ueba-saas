@@ -54,7 +54,7 @@ public class InputPreProcessingData extends AbstractTestNGSpringContextTests {
 
 
     @Test
-    public void tlsInputPreProcessor() {
+    public void tlsInputPreProcessing() {
         assertThat(tlsExitCode).as("Exit code").isEqualTo(0);
     }
 
