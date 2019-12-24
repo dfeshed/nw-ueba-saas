@@ -48,10 +48,10 @@ if grep -q 'enable.metrics.export' /etc/netwitness/presidio/configserver/configu
 fi
 
 # Setting time to enrich the data with new occurrences
-if grep -q 'presidio.input.core.transformation.waiting.duration' /etc/netwitness/presidio/configserver/configurations/presidio-input-pre-processing.properties
+if grep -q 'presidio.input.core.transformation.waiting.duration' /etc/netwitness/presidio/configserver/configurations/input-core.properties
 	then
-		sed -i 's!presidio.input.core.transformation.waiting.duration.*!presidio.input.core.transformation.waiting.duration=P1D!g' /etc/netwitness/presidio/configserver/configurations/presidio-input-pre-processing.properties
+		sed -i 's!presidio.input.core.transformation.waiting.duration.*!presidio.input.core.transformation.waiting.duration=P1D!g' /etc/netwitness/presidio/configserver/configurations/input-core.properties
 	else
-		echo "presidio.input.core.transformation.waiting.duration=P1D" >> /etc/netwitness/presidio/configserver/configurations/presidio-input-pre-processing.properties
+		echo "presidio.input.core.transformation.waiting.duration=P1D" >> /etc/netwitness/presidio/configserver/configurations/input-core.properties
 fi
 sudo systemctl start airflow-webserver
