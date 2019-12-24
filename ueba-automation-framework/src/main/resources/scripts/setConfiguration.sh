@@ -44,7 +44,7 @@ if grep -q 'enable.metrics.export' /etc/netwitness/presidio/configserver/configu
 	then
 		sed -i 's!enable.metrics.export.*!enable.metrics.export=false!g' /etc/netwitness/presidio/configserver/configurations/application.properties
 	else
-		echo "senable.metrics.export=false" >> /etc/netwitness/presidio/configserver/configurations/application.properties
+		echo "enable.metrics.export=false" >> /etc/netwitness/presidio/configserver/configurations/application.properties
 fi
 
 sudo systemctl start airflow-webserver
