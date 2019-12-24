@@ -12,6 +12,7 @@
         <classes>
             <class name="com.rsa.netwitness.presidio.automation.test.config.PreProcessingConfiguration"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.processing.AdapterProcessData"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.processing.InputPreProcessingData"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.processing.InputProcessData"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.processing.ProcessSmartsData"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.processing.OutputRunPrepareData"/>
