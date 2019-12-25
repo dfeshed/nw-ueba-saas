@@ -7,8 +7,8 @@ import presidio.data.generators.event.tls.TlsRangeEventsGen;
 
 public class HighNumberOfSrcIPs {
 
-    private final int DISTINCT_IPS_AMOUNT = 15;
-    private final int EVENTS_INTERVAL_MINUTES = 15;
+    private final int DISTINCT_IPS_AMOUNT = 20;
+    private final int EVENTS_INTERVAL_MINUTES = 10;
 
     private final String entity;
     private final EntityType entityType;
@@ -35,6 +35,15 @@ public class HighNumberOfSrcIPs {
         return initialGen.copy();
     }
 
+
+    public TlsRangeEventsGen createHighNumberOfDistinctSrcIpForNewEntityGen(TlsRangeEventsGen initialGen){
+        setEntity(initialGen);
+
+        initialGen.srcIpGenerator.nextRangeGenCyclic(DISTINCT_IPS_AMOUNT);
+        indicator.addNormalValues(initialGen.srcIpGenerator.getGenerator().getAllValues());
+        eventsSupplier.setUncommonValuesAnomalyGen(initialGen, EVENTS_INTERVAL_MINUTES);
+        return initialGen.copy();
+    }
 
 
     public TlsIndicator getIndicator() {
