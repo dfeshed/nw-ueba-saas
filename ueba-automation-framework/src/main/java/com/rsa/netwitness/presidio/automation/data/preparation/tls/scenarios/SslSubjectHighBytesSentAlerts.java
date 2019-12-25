@@ -65,6 +65,9 @@ public class SslSubjectHighBytesSentAlerts implements Supplier<Stream<TlsAlert>>
                 .high_number_of_bytes_sent_to_ssl_subject_outbound()
                 .create();
 
+        TlsAlert ssl_subject_22 = new SslSubjectTlsAlert("new occurrences history", dataPeriod, uncommonStartDay)
+                .new_occurrences_historical_data()
+                .create();
 
 
 
@@ -93,6 +96,7 @@ public class SslSubjectHighBytesSentAlerts implements Supplier<Stream<TlsAlert>>
         list.add(ssl_subject_19);
         list.add(ssl_subject_20);
         list.add(ssl_subject_21);
+        list.add(ssl_subject_22);
 
         return list;
     }

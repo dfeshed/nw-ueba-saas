@@ -21,12 +21,6 @@ public class SslSubjectTlsAlert {
         alert = new TlsAlert(entity, TYPE);
         this.dataPeriod = dataPeriod;
         this.uncommonStartDay = uncommonStartDay;
-
-        /**  New Occurrences historical data **/
-        AbnormalTrafficNewOccurrences<String> indicatorCreator =  new AbnormalTrafficNewOccurrences<>(alert.entity, TYPE, "new occurrences", dataPeriod, uncommonStartDay);
-        indicatorCreator.createNormalTrafficForNewOccurrencesGen();
-        alert.indicators.add(indicatorCreator.getIndicator());
-
     }
 
     public TlsAlert create() {
@@ -458,7 +452,7 @@ public class SslSubjectTlsAlert {
 
 
 
-    
+
     public SslSubjectTlsAlert high_number_of_bytes_sent_to_new_ssl_subject_outbound() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);
@@ -497,6 +491,19 @@ public class SslSubjectTlsAlert {
 
         TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
         indicatorCreator.createHighNumberOfDistinctSrcIpForNewEntityGen(eventsGenInit);
+        alert.indicators.add(indicatorCreator.getIndicator());
+        return this;
+    }
+
+
+    public SslSubjectTlsAlert new_occurrences_historical_data() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        /**  New Occurrences historical data **/
+        AbnormalTrafficNewOccurrences<String> indicatorCreator =  new AbnormalTrafficNewOccurrences<>(alert.entity, TYPE, "new occurrences", dataPeriod, uncommonStartDay);
+        indicatorCreator.createNormalTrafficForNewOccurrencesGen();
         alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
