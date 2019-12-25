@@ -57,7 +57,7 @@ public abstract class EventsGen {
 
 
     protected ITimeGenerator getCommonValuesTimeGenForNewOccurrences(int intervalMinutes) {
-        return getTimeGen(startHourOfDay + newOccurrencesOffset, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes);
+        return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom + newOccurrencesOffset, daysBackTo, intervalMinutes);
     }
 
     protected ITimeGenerator getEntityHistoricalDataTimeGen() {
