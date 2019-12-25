@@ -55,10 +55,16 @@ public class SslSubjectHighBytesSentAlerts implements Supplier<Stream<TlsAlert>>
 
         TlsAlert ssl_subject_18 = new SslSubjectTlsAlert("samsung electronics co. ltd", dataPeriod, uncommonStartDay)
                 .high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound()
+                .high_number_of_bytes_sent_to_new_dst_port_ssl_subject_outbound()
                 .create();
 
+        TlsAlert ssl_subject_19 = new SslSubjectTlsAlert("new ssl subj", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_to_new_ssl_subject_outbound()
+                .create();
 
-
+        TlsAlert ssl_subject_20 = new SslSubjectTlsAlert("new ssl subj 1", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_to_new_dst_port_ssl_subject_outbound()
+                .create();
 
         TlsAlert ssl_subject_14 = new SslSubjectTlsAlert("outbrain inc.", dataPeriod, uncommonStartDay)
                 .high_number_of_bytes_sent_by_src_ip_to_ssl_subject_outbound()
@@ -77,6 +83,8 @@ public class SslSubjectHighBytesSentAlerts implements Supplier<Stream<TlsAlert>>
         list.add(ssl_subject_16);
         list.add(ssl_subject_17);
         list.add(ssl_subject_18);
+        list.add(ssl_subject_19);
+        list.add(ssl_subject_20);
 
         return list;
     }

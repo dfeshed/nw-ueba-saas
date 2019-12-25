@@ -2,10 +2,7 @@ package com.rsa.netwitness.presidio.automation.data.preparation.tls.model;
 
 import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.data.preparation.tls.events_gen.UnregularHoursIndicatorEventsGen;
-import com.rsa.netwitness.presidio.automation.data.preparation.tls.indicators.AbnormalTraffic;
-import com.rsa.netwitness.presidio.automation.data.preparation.tls.indicators.UncommonEntityForContext;
-import com.rsa.netwitness.presidio.automation.data.preparation.tls.indicators.UncommonValueForContext;
-import com.rsa.netwitness.presidio.automation.data.preparation.tls.indicators.UncommonValueForEntity;
+import com.rsa.netwitness.presidio.automation.data.preparation.tls.indicators.*;
 import org.slf4j.LoggerFactory;
 import presidio.data.domain.Location;
 import presidio.data.generators.event.tls.TlsRangeEventsGen;
@@ -451,5 +448,47 @@ public class SslSubjectTlsAlert {
         alert.indicators.add(indicatorCreator.getIndicator());
         return this;
     }
+
+
+
+
+    public SslSubjectTlsAlert high_number_of_bytes_sent_to_new_ssl_subject_outbound() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        AbnormalTrafficNew<String> indicatorCreator = new AbnormalTrafficNew<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
+
+        TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
+        indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen);
+
+        alert.indicators.add(indicatorCreator.getIndicator());
+        return this;
+    }
+
+    public SslSubjectTlsAlert high_number_of_bytes_sent_to_new_dst_port_ssl_subject_outbound() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        AbnormalTrafficNew<Integer> indicatorCreator = new AbnormalTrafficNew<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
+        TlsRangeEventsGen eventsGenInitCopy = eventsGenInit.copy();
+
+        indicatorCreator.createNormalTrafficHistoryGen(eventsGenInitCopy, eventsGenInitCopy.dstPortGen);
+        TlsRangeEventsGen highTrafficAnomalyGen = eventsGenInit.copy();
+
+        highTrafficAnomalyGen.dstOrgGen.nextRangeGenCyclic(1);
+        highTrafficAnomalyGen.hostnameGen.nextRangeGenCyclic(1);
+        highTrafficAnomalyGen.dstPortGen.nextRangeGenCyclic(1);
+
+        indicatorCreator.createHighTrafficAnomalyGen(highTrafficAnomalyGen, highTrafficAnomalyGen.dstPortGen);
+
+        alert.indicators.add(indicatorCreator.getIndicator());
+        return this;
+    }
+
 
 }

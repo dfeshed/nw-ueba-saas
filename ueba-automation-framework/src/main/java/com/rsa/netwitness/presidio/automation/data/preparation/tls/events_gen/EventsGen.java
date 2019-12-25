@@ -40,6 +40,7 @@ public abstract class EventsGen {
 
     protected List<TlsRangeEventsGen> eventGenerators = Lists.newLinkedList();
 
+    private int newOccurrencesOffset = 2;
     protected int startHourOfDay = 8;
     protected int endHourOfDay = 17;
     protected int daysBackFrom = 30;
@@ -54,6 +55,10 @@ public abstract class EventsGen {
 
 
 
+
+    protected ITimeGenerator getCommonValuesTimeGenForNewOccurrences(int intervalMinutes) {
+        return getTimeGen(startHourOfDay + newOccurrencesOffset, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes);
+    }
 
     protected ITimeGenerator getEntityHistoricalDataTimeGen() {
         return getTimeGen(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes);
