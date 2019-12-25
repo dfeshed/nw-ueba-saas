@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
@@ -37,7 +38,9 @@ public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void airflow_failed_attempts_for_the_last_day_should_not_exceed_the_limit() {
-        List<AirflowTaskFailTable> airflowTaskFailTables = airflowTasksPostgres.fetchAllFailedAttempts(startTime, endTime);
+        List<AirflowTaskFailTable> airflowTaskFailTables = airflowTasksPostgres.fetchAllFailedAttempts(startTime, endTime).stream()
+                .filter(e -> ! e.dagId.startsWith("root_")).collect(Collectors.toList());
+
         LOGGER.warn("Execution time: " + Instant.now());
         LOGGER.warn("");
 
