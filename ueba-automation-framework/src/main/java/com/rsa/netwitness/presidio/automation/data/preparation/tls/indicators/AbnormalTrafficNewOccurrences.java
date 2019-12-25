@@ -5,6 +5,7 @@ import com.rsa.netwitness.presidio.automation.data.preparation.tls.model.EntityT
 import com.rsa.netwitness.presidio.automation.data.preparation.tls.model.TlsIndicator;
 import org.assertj.core.util.Lists;
 import presidio.data.generators.IBaseGenerator;
+import presidio.data.generators.common.list.random.RandomRangeMd5Gen;
 import presidio.data.generators.common.random.GaussianLongGenerator;
 import presidio.data.generators.event.tls.FieldRangeAllocator;
 import presidio.data.generators.event.tls.TlsRangeEventsGen;
@@ -44,7 +45,19 @@ public class AbnormalTrafficNewOccurrences<T> {
         final int limitOfDaysBack = 50;
         final int distinctSourceIp = 3;
 
-        TlsRangeEventsGen newOccurrencesGen = new TlsRangeEventsGen(limitOfDaysBack * distinctSourceIp);
+        RandomRangeMd5Gen sslSubjRandomGen = new RandomRangeMd5Gen(limitOfDaysBack * distinctSourceIp);
+        sslSubjRandomGen.formatter = e -> "new_ssl_subj_" + e;
+
+        RandomRangeMd5Gen dstOrgRandomGen = new RandomRangeMd5Gen(limitOfDaysBack * distinctSourceIp);
+        dstOrgRandomGen.formatter = e -> "new_dst_org_" + e;
+
+        TlsRangeEventsGen newOccurrencesGen = new TlsRangeEventsGen(1);
+        newOccurrencesGen.sslSubjectGen.setGenerator(sslSubjRandomGen);
+        newOccurrencesGen.ja3Gen.nextRangeGenCyclic(limitOfDaysBack * distinctSourceIp);
+        newOccurrencesGen.dstOrgGen.setGenerator(dstOrgRandomGen);
+        newOccurrencesGen.dstPortGen.nextRangeGenCyclic(limitOfDaysBack * distinctSourceIp);
+        newOccurrencesGen.hostnameGen.nextRangeGenCyclic(limitOfDaysBack * distinctSourceIp);
+
         newOccurrencesGen.srcIpGenerator.nextRangeGenCyclic(distinctSourceIp);
         newOccurrencesGen.setNumOfBytesSentGenerator(regularTrafficGenerator);
 
