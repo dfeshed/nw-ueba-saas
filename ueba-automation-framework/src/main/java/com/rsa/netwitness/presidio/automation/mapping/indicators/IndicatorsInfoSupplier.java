@@ -59,6 +59,10 @@ class IndicatorsInfoSupplier {
             getInstance().indicators.stream()
                     .collect(toMap(e -> e.get("name").toString(), e -> e.get("id").toString()));
 
+    static List<String> getIndicatorsBySchema(Schema schema) {
+        return indicatorToSchema.get().entrySet().stream().filter(e -> e.getValue().equals(schema)).map(Map.Entry::getKey).collect(Collectors.toList());
+    }
+
 
     private IndicatorsInfoSupplier() {
         Yaml yaml = new Yaml();
