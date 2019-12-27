@@ -45,7 +45,7 @@ const CreateListViewComponent = Component.extend({
       const newList = {
         enabled: true,
         id: null,
-        name: this.get('name'),
+        name: this.get('name').trim(),
         description: this.get('description')
       };
       if (isEmpty(newList.name) || newList.name.length > 255) {
