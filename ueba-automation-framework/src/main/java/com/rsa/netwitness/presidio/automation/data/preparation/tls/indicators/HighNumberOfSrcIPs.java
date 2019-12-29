@@ -43,9 +43,10 @@ public class HighNumberOfSrcIPs {
         indicator.addContext(initialGen.sslSubjectGen.getGenerator().getAllValues());
         eventsSupplier.setCommonValuesGen(initialGen, 30);
 
-        initialGen.srcIpGenerator.nextRangeGenCyclic(DISTINCT_IPS_AMOUNT);
-        indicator.addNormalValues(initialGen.srcIpGenerator.getGenerator().getAllValues());
-        eventsSupplier.setUncommonValuesAnomalyGen(initialGen, EVENTS_INTERVAL_MINUTES);
+        TlsRangeEventsGen abnormalGen = new TlsRangeEventsGen(1);
+        abnormalGen.sslSubjectGen.setGenerator(initialGen.sslSubjectGen.getGenerator());
+        abnormalGen.srcIpGenerator.nextRangeGenCyclic(DISTINCT_IPS_AMOUNT);
+        eventsSupplier.setUncommonValuesAnomalyGen(abnormalGen, EVENTS_INTERVAL_MINUTES);
         return initialGen.copy();
     }
 
