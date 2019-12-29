@@ -16,7 +16,6 @@ import static java.util.stream.Collectors.toMap;
 public class LastOccurrenceInstantWriterCacheImpl implements LastOccurrenceInstantWriter {
     private final LastOccurrenceInstantWriter lastOccurrenceInstantWriter;
     private final LfuCache<Triple<Schema, String, String>, Instant> lfuCache;
-    private final double entriesToRemovePercentage;
 
     /**
      * Constructor.
@@ -31,31 +30,27 @@ public class LastOccurrenceInstantWriterCacheImpl implements LastOccurrenceInsta
             int maximumSize, double entriesToRemovePercentage) {
 
         Validate.notNull(lastOccurrenceInstantWriter, "lastOccurrenceInstantWriter cannot be null.");
-        Validate.isTrue(maximumSize > 0, "maximumSize must be greater than zero but is %d.", maximumSize);
-        LfuCache.assertPercentage(entriesToRemovePercentage);
         this.lastOccurrenceInstantWriter = lastOccurrenceInstantWriter;
-        this.lfuCache = new LfuCache<>(maximumSize);
-        this.entriesToRemovePercentage = entriesToRemovePercentage;
+        this.lfuCache = new LfuCache<>(maximumSize, entriesToRemovePercentage);
     }
 
     @Override
     public void write(Schema schema, String entityType, String entityId, Instant lastOccurrenceInstant) {
         Triple<Schema, String, String> key = Triple.of(schema, entityType, entityId);
-        if (lfuCache.isFull() && !lfuCache.containsKey(key))
-            flush(lfuCache.removeLfuEntries(entriesToRemovePercentage));
-        lfuCache.put(key, lastOccurrenceInstant);
+        Map<Triple<Schema, String, String>, Instant> removedLfuEntries = lfuCache.put(key, lastOccurrenceInstant);
+        flush(removedLfuEntries);
     }
 
     @Override
     public void writeAll(Schema schema, String entityType, Map<String, Instant> entityIdToLastOccurrenceInstantMap) {
         entityIdToLastOccurrenceInstantMap.forEach((entityId, lastOccurrenceInstant) ->
-                write(schema, entityType, entityId, lastOccurrenceInstant)
-        );
+                write(schema, entityType, entityId, lastOccurrenceInstant));
     }
 
     @Override
     public void close() {
-        flush(lfuCache.removeAllLfuEntries());
+        Map<Triple<Schema, String, String>, Instant> removedLfuEntries = lfuCache.clear();
+        flush(removedLfuEntries);
         lastOccurrenceInstantWriter.close();
     }
 

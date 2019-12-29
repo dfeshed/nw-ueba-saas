@@ -19,11 +19,10 @@ import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.*;
 
 @JsonAutoDetect(
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
@@ -52,8 +51,8 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
 
     @Value("${presidio.last.occurrence.instant.reader.maximum.size}")
     private int maximumSize;
-    @Value("${presidio.last.occurrence.instant.reader.load.factor}")
-    private double loadFactor;
+    @Value("${presidio.last.occurrence.instant.reader.entries.to.remove.percentage}")
+    private double entriesToRemovePercentage;
     @Value("#{T(java.time.Duration).parse('${presidio.input.core.lat.occurrence.instant.expiration.delta:P182D}')}")
     private Duration expirationDelta; // Default is half a year.
 
@@ -83,7 +82,7 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
         Instant transformationStartInstant = workflowStartInstant.plus(transformationWaitingDuration);
         isTransformationEnabled = startInstant.compareTo(transformationStartInstant) >= 0;
         if (!isTransformationEnabled) return;
-        long limit = (long)Math.ceil(maximumSize * loadFactor);
+        long limit = (long)Math.ceil(maximumSize * (100.0 - entriesToRemovePercentage) / 100.0);
         Stream<SchemaEntityCount> overallMostCommonEntityIds = Stream.empty();
 
         for (String inputFieldName : inputFieldNameToBooleanFieldNameMap.keySet()) {
@@ -97,11 +96,8 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
         }
 
         overallMostCommonEntityIds
-                .collect(Collectors.toMap(
-                        SchemaEntityCount::getEntityType,
-                        NewOccurrenceTransformer::toMutableEntityIdSingletonList,
-                        NewOccurrenceTransformer::concatenateTwoMutableLists))
-                .forEach((entityType, entityIds) -> lastOccurrenceInstantReader.readAll(schema, entityType, entityIds));
+            .collect(groupingBy(SchemaEntityCount::getEntityType, mapping(SchemaEntityCount::getEntityId, toList())))
+            .forEach((entityType, entityIds) -> lastOccurrenceInstantReader.warmUp(schema, entityType, entityIds));
     }
 
     @Override
@@ -151,19 +147,9 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
         Validate.notNull(transformationWaitingDuration, "transformationWaitingDuration cannot be null.");
         Validate.notNull(startInstant, "startInstant cannot be null.");
         Validate.notNull(endInstant, "endInstant cannot be null.");
-        Validate.isTrue(maximumSize > 0, "maximumSize must be greater than zero.");
-        Validate.inclusiveBetween(0.0, 1.0, loadFactor, "loadFactor must be in the range [0, 1].");
+        Validate.isTrue(maximumSize > 0, "maximumSize must be greater than 0 but is %d.", maximumSize);
+        Validate.isTrue(entriesToRemovePercentage > 0.0 && entriesToRemovePercentage <= 100.0,
+            "entriesToRemovePercentage must be in the interval (0.0, 100.0] but is %f.", entriesToRemovePercentage);
         Validate.notNull(expirationDelta, "expirationDelta cannot be null.");
-    }
-
-    private static List<String> toMutableEntityIdSingletonList(SchemaEntityCount schemaEntityCount) {
-        List<String> mutableEntityIdSingletonList = new LinkedList<>();
-        mutableEntityIdSingletonList.add(schemaEntityCount.getEntityId());
-        return mutableEntityIdSingletonList;
-    }
-
-    private static List<String> concatenateTwoMutableLists(List<String> mutableList1, List<String> mutableList2) {
-        mutableList1.addAll(mutableList2);
-        return mutableList1;
     }
 }
