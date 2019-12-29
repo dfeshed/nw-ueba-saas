@@ -489,7 +489,7 @@ public class SslSubjectTlsAlert {
 
         HighNumberOfSrcIPs indicatorCreator = new HighNumberOfSrcIPs(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
 
-        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(2);
         indicatorCreator.createHighNumberOfDistinctSrcIpForNewEntityGen(eventsGenInit);
         alert.indicators.add(indicatorCreator.getIndicator());
         return this;

@@ -71,15 +71,15 @@ public class SslSubjectHighBytesSentAlerts implements Supplier<Stream<TlsAlert>>
 
 
 
-        TlsAlert ssl_subject_19 = new SslSubjectTlsAlert("19 new ssl subject", dataPeriod, uncommonStartDay)
+        TlsAlert ssl_subject_19 = new SslSubjectTlsAlert("bytes new ssl subject", dataPeriod, uncommonStartDay)
                 .high_number_of_bytes_sent_to_new_ssl_subject_outbound()
                 .create();
 
-        TlsAlert ssl_subject_20 = new SslSubjectTlsAlert("20 new ssl subject", dataPeriod, uncommonStartDay)
+        TlsAlert ssl_subject_20 = new SslSubjectTlsAlert("bytes src ip new ssl subject", dataPeriod, uncommonStartDay)
                 .high_number_of_bytes_sent_by_src_ip_to_new_ssl_subject_outbound()
                 .create();
 
-        TlsAlert ssl_subject_21 = new SslSubjectTlsAlert("21 new ssl subject", dataPeriod, uncommonStartDay)
+        TlsAlert ssl_subject_21 = new SslSubjectTlsAlert("distinct src ip new ssl subject", dataPeriod, uncommonStartDay)
                 .high_number_of_distinct_src_ip_for_new_entity()
                 .create();
 
