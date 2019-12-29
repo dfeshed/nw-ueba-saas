@@ -496,6 +496,17 @@ public class SslSubjectTlsAlert {
     }
 
 
+    public SslSubjectTlsAlert high_number_of_distinct_src_ip_for_new_ssl_subject() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        HighNumberOfSrcIPs indicatorCreator = new HighNumberOfSrcIPs(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+        indicatorCreator.createHighNumberOfDistinctSrcIpForNewSSlSubject();
+        alert.indicators.add(indicatorCreator.getIndicator());
+        return this;
+    }
+
     public SslSubjectTlsAlert new_occurrences_historical_data() {
         String name = new Object() {}.getClass().getEnclosingMethod().getName();
         LOGGER.info("Adding indicator: " + name);

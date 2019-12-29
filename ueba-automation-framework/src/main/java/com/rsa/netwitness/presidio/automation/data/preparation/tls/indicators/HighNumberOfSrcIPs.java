@@ -36,6 +36,18 @@ public class HighNumberOfSrcIPs {
     }
 
 
+    public TlsRangeEventsGen createHighNumberOfDistinctSrcIpForNewSSlSubject(){
+        TlsRangeEventsGen gen = new TlsRangeEventsGen(1);
+        setEntity(gen);
+
+        indicator.addContext(gen.sslSubjectGen.getGenerator().getAllValues());
+        gen.srcIpGenerator.nextRangeGenCyclic(DISTINCT_IPS_AMOUNT);
+        indicator.addAbnormalValues(gen.srcIpGenerator.getGenerator().getAllValues());
+        eventsSupplier.setUncommonValuesAnomalyGen(gen, EVENTS_INTERVAL_MINUTES);
+        return gen.copy();
+    }
+
+
     public TlsRangeEventsGen createHighNumberOfDistinctSrcIpForNewEntityGen(TlsRangeEventsGen initialGen){
         setEntity(initialGen);
 
@@ -46,6 +58,7 @@ public class HighNumberOfSrcIPs {
         TlsRangeEventsGen abnormalGen = new TlsRangeEventsGen(1);
         abnormalGen.sslSubjectGen.setGenerator(initialGen.sslSubjectGen.getGenerator());
         abnormalGen.srcIpGenerator.nextRangeGenCyclic(DISTINCT_IPS_AMOUNT);
+        indicator.addAbnormalValues(initialGen.srcIpGenerator.getGenerator().getAllValues());
         eventsSupplier.setUncommonValuesAnomalyGen(abnormalGen, EVENTS_INTERVAL_MINUTES);
         return initialGen.copy();
     }
