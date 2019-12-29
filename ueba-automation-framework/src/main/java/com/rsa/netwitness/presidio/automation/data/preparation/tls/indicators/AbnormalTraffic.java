@@ -102,7 +102,7 @@ public class AbnormalTraffic<T> {
 
 
     public TlsRangeEventsGen createNormalTrafficHistoryGen(TlsRangeEventsGen initialGenCopy, FieldRangeAllocator<T> destinationGen){
-        // 1 ip with 3*regularTraffic per 1 hour
+        // 1 ip with regularTraffic per 1 hour
 
         setEntity(initialGenCopy);
 
