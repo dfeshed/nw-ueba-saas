@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import static com.google.common.collect.ImmutableList.copyOf;
-import static fortscale.common.general.Schema.TLS;
 
 public class IndicatorsInfo {
 
-    public static final ImmutableList<String> TLS_MANDATORY_INDICATORS = copyOf(IndicatorsInfoSupplier.getIndicatorsBySchema(TLS));
+    public static final ImmutableList<String> TLS_MANDATORY_INDICATORS = copyOf(TlsIndicators.TLS_MANDATORY_INDICATORS);
     public static final ImmutableList<String> AUTHENTICATION_MANDATORY_INDICATORS = copyOf(OperationsIndicators.AUTHENTICATION_MANDATORY_INDICATORS);
     public static final ImmutableList<String> ACTIVE_DIRECTORY_MANDATORY_INDICATORS =  copyOf(OperationsIndicators.ACTIVE_DIRECTORY_MANDATORY_INDICATORS);
     public static final ImmutableList<String> FILE_MANDATORY_INDICATORS =  copyOf(OperationsIndicators.FILE_MANDATORY_INDICATORS);
@@ -42,7 +42,19 @@ public class IndicatorsInfo {
             "high_number_of_bytes_sent_by_src_ip_to_dst_port_ssl_subject_outbound",
             "high_number_of_bytes_sent_to_domain_ssl_subject_outbound",
             "high_number_of_bytes_sent_to_dst_org_ssl_subject_outbound",
-            "high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound"
+            "high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound",
+
+            "high_number_of_distinct_src_ip_for_new_domain_for_ssl_subject_outbound",
+            "high_number_of_bytes_sent_to_new_domain_ssl_subject_outbound",
+            "high_number_of_bytes_sent_by_src_ip_to_new_domain_ssl_subject_outbound",
+
+            "high_number_of_distinct_src_ip_for_new_dst_org_for_ssl_subject_outbound",
+            "high_number_of_bytes_sent_by_src_ip_to_new_dst_org_ssl_subject_outbound",
+            "high_number_of_bytes_sent_to_new_dst_org_ssl_subject_outbound",
+
+            "high_number_of_distinct_src_ip_for_new_dst_port_for_ssl_subject_outbound",
+            "high_number_of_bytes_sent_by_src_ip_to_new_dst_port_ssl_subject_outbound",
+            "high_number_of_bytes_sent_to_new_dst_port_ssl_subject_outbound"
     );
 
 
