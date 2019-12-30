@@ -66,26 +66,26 @@ public class SslSubjectHighBytesSentAlerts implements Supplier<Stream<TlsAlert>>
                 .create();
 
 
-//
-//        TlsAlert ssl_subject_19 = new SslSubjectTlsAlert("bytes new ssl subject", dataPeriod, uncommonStartDay)
-//                .high_number_of_bytes_sent_to_new_ssl_subject_outbound()
-//                .create();
-//
-//        TlsAlert ssl_subject_20 = new SslSubjectTlsAlert("bytes src ip new ssl subject", dataPeriod, uncommonStartDay)
-//                .high_number_of_bytes_sent_by_src_ip_to_new_ssl_subject_outbound()
-//                .create();
+
+        TlsAlert ssl_subject_19 = new SslSubjectTlsAlert("bytes new ssl subject", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_to_new_ssl_subject_outbound()
+                .create();
+
+        TlsAlert ssl_subject_20 = new SslSubjectTlsAlert("bytes src ip new ssl subject", dataPeriod, uncommonStartDay)
+                .high_number_of_bytes_sent_by_src_ip_to_new_ssl_subject_outbound()
+                .create();
 
         TlsAlert ssl_subject_21 = new SslSubjectTlsAlert("oracle corporation", dataPeriod, uncommonStartDay)
                 .high_number_of_distinct_src_ip_for_new_entity()
                 .create();
 
-//        TlsAlert ssl_subject_22 = new SslSubjectTlsAlert("new occurrences history", dataPeriod, uncommonStartDay)
-//                .new_occurrences_historical_data()
-//                .create();
-//
-//        TlsAlert ssl_subject_23 = new SslSubjectTlsAlert("distinct src ip new ssl subject", dataPeriod, uncommonStartDay)
-//                .high_number_of_distinct_src_ip_for_new_ssl_subject()
-//                .create();
+        TlsAlert ssl_subject_22 = new SslSubjectTlsAlert("new occurrences history", dataPeriod, uncommonStartDay)
+                .new_occurrences_historical_data()
+                .create();
+
+        TlsAlert ssl_subject_23 = new SslSubjectTlsAlert("distinct src ip new ssl subject", dataPeriod, uncommonStartDay)
+                .high_number_of_distinct_src_ip_for_new_ssl_subject()
+                .create();
 
         list.add(ssl_subject_10);
         list.add(ssl_subject_11);
@@ -96,6 +96,11 @@ public class SslSubjectHighBytesSentAlerts implements Supplier<Stream<TlsAlert>>
         list.add(ssl_subject_17);
         list.add(ssl_subject_18);
         list.add(ssl_subject_21);
+
+        list.add(ssl_subject_19);
+        list.add(ssl_subject_20);
+        list.add(ssl_subject_22);
+        list.add(ssl_subject_23);
         return list;
     }
 
