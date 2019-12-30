@@ -1,5 +1,7 @@
 package fortscale.utils.data;
 
+import org.apache.commons.lang3.Validate;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,17 +13,9 @@ public class LfuCache<K, V> {
     private final Map<K, Countable<V>> map;
 
     public LfuCache(int maximumSize, double entriesToRemovePercentage) {
-        if (maximumSize <= 0) {
-            String s = String.format("maximumSize must be greater than 0 but is %d.", maximumSize);
-            throw new IllegalArgumentException(s);
-        }
-
-        if (entriesToRemovePercentage <= 0.0 || entriesToRemovePercentage > 100.0) {
-            String s = String.format("entriesToRemovePercentage must be in the interval (0.0, 100.0] but is %f.",
-                    entriesToRemovePercentage);
-            throw new IllegalArgumentException(s);
-        }
-
+        Validate.isTrue(maximumSize > 0, "maximumSize must be greater than 0 but is %d.", maximumSize);
+        Validate.isTrue(entriesToRemovePercentage > 0.0 && entriesToRemovePercentage <= 100.0,
+            "entriesToRemovePercentage must be in the interval (0.0, 100.0] but is %f.", entriesToRemovePercentage);
         this.maximumSize = maximumSize;
         this.entriesToRemovePercentage = entriesToRemovePercentage;
         this.map = new HashMap<>();
