@@ -112,6 +112,7 @@ const packetReducer = handleActions({
 
   [ACTION_TYPES.CHANGE_PAGE_NUMBER]: (state, { payload }) => {
     return state.merge({
+      renderIds: [],
       packets: null,
       pageNumber: payload
     });

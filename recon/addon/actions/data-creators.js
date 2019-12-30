@@ -264,6 +264,9 @@ const jumpToPage = (newPage) => {
 
 const _changePageNumber = (pageNumber) => {
   return (dispatch, getState) => {
+    const cacheService = lookup('service:processed-packet-cache');
+    cacheService.clear();
+
     dispatch({
       type: ACTION_TYPES.CHANGE_PAGE_NUMBER,
       payload: pageNumber
