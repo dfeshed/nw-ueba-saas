@@ -137,7 +137,7 @@ module('Integration | Component | context-panel/data-table/body-cell', function(
   });
 
   test('for incident lookup incident created field is rendered', async function(assert) {
-    const oldDate = moment().subtract('years', 3);
+    const oldDate = moment().subtract(3, 'years');
     const column = {
       field: 'created.$date',
       title: 'context.incident.created',

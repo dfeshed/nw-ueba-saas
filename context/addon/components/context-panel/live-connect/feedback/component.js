@@ -24,18 +24,18 @@ const FeedbackComponent = Component.extend({
 
   selectedRiskLevel: null,
   selectedConfidenceLevel: null,
-  selectedTags: [],
 
   riskLevelTriggerClass: null,
   confidenceLevelTriggerClass: null,
 
   inProgress: false,
 
-  skillLevels: [1, 2, 3],
-
   init() {
     this._super(...arguments);
     this._fetchSkillLevel();
+    this.skillLevels = this.skillLevels || [1, 2, 3];
+    this.selectedTags = this.selectedTags || [];
+
   },
 
   @computed('activeTabName', 'model.contextData.liveConnectData')

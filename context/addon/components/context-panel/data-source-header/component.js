@@ -46,13 +46,23 @@ const DSHeaderComponent = Component.extend({
     const marketingText = this.get('i18n').t('context.marketingText');
     return dataSourceName + marketingText;
   },
+
   @computed('dataSources', 'activeTabName', 'dataSourceDetails')
-  isConfigured(dataSources, activeTabName, { dataSourceGroup }) {
-    if (!dataSources) {
-      return true;
+  isConfigured: {
+    get() {
+      const dataSources = this.get('datasources');
+      const activeTabName = this.get('activeTabName');
+      const { dataSourceGroup } = this.get('dataSourceDetails');
+      if (!dataSources) {
+        return true;
+      }
+      const dataSource = dataSources.find((dataSource) => dataSource.dataSourceType.indexOf(activeTabName) === 0);
+      return (dataSource.dataSourceType === 'Endpoint' ? dataSource.details[dataSourceGroup] : dataSource).isConfigured;
+    },
+
+    set(key, value) {
+      return value;
     }
-    const dataSource = dataSources.find((dataSource) => dataSource.dataSourceType.indexOf(activeTabName) === 0);
-    return (dataSource.dataSourceType === 'Endpoint' ? dataSource.details[dataSourceGroup] : dataSource).isConfigured;
   }
 });
 export default connect(stateToComputed)(DSHeaderComponent);

@@ -31,7 +31,11 @@ export default Component.extend({
   layout,
   classNames: 'rsa-context-panel__liveconnect',
 
-  fixedYDomain: [0, 100], // This is to show 0-100 on the Y-axes, irrespective of max y-value in the data.
+  init() {
+    this._super(...arguments);
+    // This is to show 0-100 on the Y-axes, irrespective of max y-value in the data.
+    this.fixedYDomain = this.fixedYDomain || [0, 100];
+  },
 
   @computed('liveConnectData.customerPercentageTrend')
   trendingCommunityActivity: (seenTrend) => [ContextHelper.filterLast30Days(seenTrend)],
