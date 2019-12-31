@@ -38,6 +38,9 @@ public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstan
     }
 
     @Override
+    public void warmUp(Schema schema, String entityType, List<String> entityIds) {}
+
+    @Override
     public Instant read(Schema schema, String entityType, String entityId) {
         return valueOperations.get(getRedisKey(schema, entityType, entityId));
     }

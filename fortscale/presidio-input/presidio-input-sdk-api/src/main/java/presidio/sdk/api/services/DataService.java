@@ -1,6 +1,7 @@
 package presidio.sdk.api.services;
 
 import fortscale.common.general.Schema;
+import fortscale.common.general.SchemaEntityCount;
 import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.validation.ValidationResults;
@@ -9,9 +10,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by maors on 6/7/2017.
- */
 public interface DataService {
 
     ValidationResults store(List<? extends AbstractAuditableDocument> documents, Schema schema);
@@ -33,4 +31,6 @@ public interface DataService {
     long count(Schema schema, Instant startDate, Instant endDate, Map<String, Object> filter, List<String> projectionFields);
 
     Map<String, Instant> aggregateKeysMaxInstant(Instant startDate, Instant endDate, String fieldPath, long skip, long limit, Schema schema, boolean allowDiskUse);
+
+    List<SchemaEntityCount> getMostCommonEntityIds(Instant startInstant, Instant endInstant, String entityType, long limit, Schema schema);
 }

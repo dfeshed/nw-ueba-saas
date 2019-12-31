@@ -2,6 +2,7 @@ package presidio.input.core.services.transformation.transformer;
 
 import com.fasterxml.jackson.annotation.*;
 import fortscale.common.general.Schema;
+import fortscale.common.general.SchemaEntityCount;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReader;
 import fortscale.utils.json.JacksonUtils;
@@ -12,91 +13,143 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import presidio.sdk.api.services.PresidioInputPersistencyService;
 
+import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.*;
 
 @JsonAutoDetect(
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
-        fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
-        setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+        fieldVisibility = JsonAutoDetect.Visibility.ANY,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("new-occurrence-transformer")
 public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
-
-    private static final long NUM_DAYS_HALF_YEAR = 182;
-    private static final Duration EXPIRATION_DELTA = Duration.ofDays(NUM_DAYS_HALF_YEAR);
-    private static final JacksonUtils jacksonUtil = new JacksonUtils();
-
-    private final Schema schema;
-    private final String inputFieldName;
-    private final String booleanFieldName;
-
-
-    @Value("#{T(java.time.Instant).parse('${dataPipeline.startTime}')}")
-    private Instant workflowStartDate;
-
-    @Value("#{T(java.time.Duration).parse('${presidio.input.core.transformation.waiting.duration:P10D}')}")
-    private Duration transformationWaitingDuration;
-
-    @JacksonInject("endDate")
-    private Instant endDate;
+    private static final JacksonUtils jacksonUtils = new JacksonUtils();
 
     @Autowired
-    @Qualifier("lastOccurrenceInstantReaderCache")
+    private PresidioInputPersistencyService presidioInputPersistencyService;
+    @Autowired @Qualifier("lastOccurrenceInstantReaderCache")
     private LastOccurrenceInstantReader lastOccurrenceInstantReader;
 
-    @JsonCreator
-    public NewOccurrenceTransformer(@JsonProperty("name") String name,
-                                    @JsonProperty("schema") String schema,
-                                    @JsonProperty("inputFieldName") String inputFieldName,
-                                    @JsonProperty("booleanFieldName") String booleanFieldName) {
-        super(name);
-        this.schema = Schema.valueOf(schema.toUpperCase());
-        Validate.notNull(this.schema, "schema cannot be null.");
-        Validate.notBlank(inputFieldName, "inputFieldName cannot be blank.");
-        Validate.notBlank(booleanFieldName, "booleanFieldName cannot be blank.");
+    @Value("#{T(java.time.Instant).parse('${dataPipeline.startTime}')}")
+    private Instant workflowStartInstant;
+    @Value("#{T(java.time.Duration).parse('${presidio.input.core.transformation.waiting.duration:P10D}')}")
+    private Duration transformationWaitingDuration;
+    @JacksonInject("startDate")
+    private Instant startInstant;
+    @JacksonInject("endDate")
+    private Instant endInstant;
+    private boolean isTransformationEnabled;
 
-        this.inputFieldName = inputFieldName;
-        this.booleanFieldName = booleanFieldName;
+    @Value("${presidio.last.occurrence.instant.reader.maximum.size}")
+    private int maximumSize;
+    @Value("${presidio.last.occurrence.instant.reader.entries.to.remove.percentage}")
+    private double entriesToRemovePercentage;
+    @Value("#{T(java.time.Duration).parse('${presidio.input.core.lat.occurrence.instant.expiration.delta:P182D}')}")
+    private Duration expirationDelta; // Default is half a year.
+
+    private final Schema schema;
+    private final Map<String, String> inputFieldNameToBooleanFieldNameMap;
+
+    @JsonCreator
+    public NewOccurrenceTransformer(
+            @JsonProperty("name") String name,
+            @JsonProperty("schema") String schema,
+            @JsonProperty("inputFieldNameToBooleanFieldNameMap") Map<String, String> inputFieldNameToBooleanFieldNameMap) {
+
+        super(name);
+        Validate.notBlank(schema, "schema cannot be blank.");
+        Validate.notEmpty(inputFieldNameToBooleanFieldNameMap, "inputFieldNameToBooleanFieldNameMap cannot be empty.");
+        inputFieldNameToBooleanFieldNameMap.forEach((inputFieldName, booleanFieldName) -> {
+            Validate.notBlank(inputFieldName, "inputFieldNameToBooleanFieldNameMap cannot contain blank keys.");
+            Validate.notBlank(booleanFieldName, "inputFieldNameToBooleanFieldNameMap cannot contain blank values.");
+        });
+        this.schema = Schema.valueOf(schema.toUpperCase());
+        this.inputFieldNameToBooleanFieldNameMap = inputFieldNameToBooleanFieldNameMap;
+    }
+
+    @PostConstruct
+    public void initialize() {
+        validateInjectedDependencies();
+        Instant transformationStartInstant = workflowStartInstant.plus(transformationWaitingDuration);
+        isTransformationEnabled = startInstant.compareTo(transformationStartInstant) >= 0;
+        if (!isTransformationEnabled) return;
+        long limit = (long)Math.ceil(maximumSize * (100.0 - entriesToRemovePercentage) / 100.0);
+        Stream<SchemaEntityCount> overallMostCommonEntityIds = Stream.empty();
+
+        for (String inputFieldName : inputFieldNameToBooleanFieldNameMap.keySet()) {
+            Stream<SchemaEntityCount> mostCommonEntityIds = presidioInputPersistencyService
+                    .getMostCommonEntityIds(startInstant, endInstant, inputFieldName, limit, schema)
+                    .stream();
+            overallMostCommonEntityIds = Stream
+                    .concat(overallMostCommonEntityIds, mostCommonEntityIds)
+                    .sorted(Comparator.comparing(SchemaEntityCount::getCount).reversed())
+                    .limit(limit);
+        }
+
+        overallMostCommonEntityIds
+            .collect(groupingBy(SchemaEntityCount::getEntityType, mapping(SchemaEntityCount::getEntityId, toList())))
+            .forEach((entityType, entityIds) -> lastOccurrenceInstantReader.warmUp(schema, entityType, entityIds));
     }
 
     @Override
     public JSONObject transform(JSONObject document) {
-        if (!shouldTransform()) {
-            return document;
+        if (isTransformationEnabled) {
+            for (Map.Entry<String, String> mapEntry : inputFieldNameToBooleanFieldNameMap.entrySet()) {
+                transform(document, mapEntry.getKey(), mapEntry.getValue());
+            }
         }
-        Boolean isNewOccurrence = false;
-        try {
-            String fieldValue = (String)jacksonUtil.getFieldValue(document, inputFieldName, null);
-            if (fieldValue == null) return document;
+
+        return document;
+    }
+
+    private void transform(JSONObject document, String inputFieldName, String booleanFieldName) {
+        String fieldValue = (String)jacksonUtils.getFieldValue(document, inputFieldName, null);
+
+        if (fieldValue != null) {
             Instant lastOccurrenceInstant = lastOccurrenceInstantReader.read(schema, inputFieldName, fieldValue);
+            Boolean isNewOccurrence;
 
             if (lastOccurrenceInstant == null) {
                 // If the entity does not appear in the past, it is a new occurrence.
                 isNewOccurrence = true;
             } else {
-                Instant logicalInstant = TimeUtils.parseInstant((String)document.get(AbstractAuditableDocument.DATE_TIME_FIELD_NAME));
-                // If the entity appears in the future, it is unknown whether it is a new occurrence or not.
-                if (lastOccurrenceInstant.isAfter(logicalInstant)) isNewOccurrence = null;
+                String dateTimeAsString = document.getString(AbstractAuditableDocument.DATE_TIME_FIELD_NAME);
+                Instant logicalInstant = TimeUtils.parseInstant(dateTimeAsString);
+
+                if (lastOccurrenceInstant.compareTo(logicalInstant) > 0) {
+                    // If the entity appears in the future, it is unknown whether it is a new occurrence or not.
+                    isNewOccurrence = null;
+                } else {
                     // If the entity appears too long ago in the past, it is a new occurrence.
                     // Otherwise (i.e. the entity appears in the recent past), it is not a new occurrence.
-                else isNewOccurrence = isLastOccurrenceInstantExpired(lastOccurrenceInstant, logicalInstant);
+                    Instant expirationInstant = logicalInstant.minus(expirationDelta);
+                    isNewOccurrence = lastOccurrenceInstant.compareTo(expirationInstant) <= 0;
+                }
             }
-            jacksonUtil.setFieldValue(document, booleanFieldName, isNewOccurrence);
-        } catch (Exception exception) {
-            String value = isNewOccurrence == null ? "null" : isNewOccurrence.toString();
-            String message = String.format("Exception while setting the value of %s to %s.", booleanFieldName, value);
-            throw new RuntimeException(message, exception);
+
+            jacksonUtils.setFieldValue(document, booleanFieldName, isNewOccurrence);
         }
-        return document;
     }
 
-    private boolean isLastOccurrenceInstantExpired(Instant lastOccurrenceInstant, Instant logicalInstant) {
-        Instant expirationInstant = logicalInstant.minus(EXPIRATION_DELTA);
-        return lastOccurrenceInstant.compareTo(expirationInstant) <= 0;
-    }
-
-    private boolean shouldTransform() {
-        return endDate.isAfter(workflowStartDate.plus(transformationWaitingDuration));
+    private void validateInjectedDependencies() {
+        Validate.notNull(presidioInputPersistencyService, "presidioInputPersistencyService cannot be null.");
+        Validate.notNull(lastOccurrenceInstantReader, "lastOccurrenceInstantReader cannot be null.");
+        Validate.notNull(workflowStartInstant, "workflowStartInstant cannot be null.");
+        Validate.notNull(transformationWaitingDuration, "transformationWaitingDuration cannot be null.");
+        Validate.notNull(startInstant, "startInstant cannot be null.");
+        Validate.notNull(endInstant, "endInstant cannot be null.");
+        Validate.isTrue(maximumSize > 0, "maximumSize must be greater than 0 but is %d.", maximumSize);
+        Validate.isTrue(entriesToRemovePercentage > 0.0 && entriesToRemovePercentage <= 100.0,
+            "entriesToRemovePercentage must be in the interval (0.0, 100.0] but is %f.", entriesToRemovePercentage);
+        Validate.notNull(expirationDelta, "expirationDelta cannot be null.");
     }
 }

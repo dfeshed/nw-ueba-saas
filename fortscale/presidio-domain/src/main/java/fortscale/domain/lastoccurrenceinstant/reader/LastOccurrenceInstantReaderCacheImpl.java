@@ -8,13 +8,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
-
 public class LastOccurrenceInstantReaderCacheImpl implements LastOccurrenceInstantReader {
     private final LastOccurrenceInstantReader lastOccurrenceInstantReader;
     private final LfuCache<String, Instant> lfuCache;
-    private final double entriesToRemovePercentage;
 
     /**
      * Constructor.
@@ -28,11 +24,14 @@ public class LastOccurrenceInstantReaderCacheImpl implements LastOccurrenceInsta
             int maximumSize, double entriesToRemovePercentage) {
 
         Validate.notNull(lastOccurrenceInstantReader, "lastOccurrenceInstantReader cannot be null.");
-        Validate.isTrue(maximumSize > 0, "maximumSize must be greater than zero but is %d.", maximumSize);
-        LfuCache.assertPercentage(entriesToRemovePercentage);
         this.lastOccurrenceInstantReader = lastOccurrenceInstantReader;
-        this.lfuCache = new LfuCache<>(maximumSize);
-        this.entriesToRemovePercentage = entriesToRemovePercentage;
+        this.lfuCache = new LfuCache<>(maximumSize, entriesToRemovePercentage);
+    }
+
+    @Override
+    public void warmUp(Schema schema, String entityType, List<String> entityIds) {
+        lastOccurrenceInstantReader.readAll(schema, entityType, entityIds).forEach((entityId, lastOccurrenceInstant) ->
+                lfuCache.put(getKey(schema, entityType, entityId), lastOccurrenceInstant));
     }
 
     @Override
@@ -42,7 +41,6 @@ public class LastOccurrenceInstantReaderCacheImpl implements LastOccurrenceInsta
         if (lfuCache.containsKey(key)) {
             return lfuCache.get(key);
         } else {
-            if (lfuCache.isFull()) lfuCache.removeLfuEntries(entriesToRemovePercentage);
             Instant lastOccurrenceInstant = lastOccurrenceInstantReader.read(schema, entityType, entityId);
             lfuCache.put(key, lastOccurrenceInstant);
             return lastOccurrenceInstant;
@@ -51,7 +49,8 @@ public class LastOccurrenceInstantReaderCacheImpl implements LastOccurrenceInsta
 
     @Override
     public Map<String, Instant> readAll(Schema schema, String entityType, List<String> entityIds) {
-        return entityIds.stream().collect(toMap(identity(), entityId -> read(schema, entityType, entityId)));
+        throw new UnsupportedOperationException(String.format("readAll is unsupported in %s.",
+                LastOccurrenceInstantReaderCacheImpl.class.getSimpleName()));
     }
 
     private static String getKey(Schema schema, String entityType, String entityId) {

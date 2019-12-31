@@ -8,6 +8,15 @@ import java.util.Map;
 
 public interface LastOccurrenceInstantReader {
     /**
+     * Load to the store the {@link Instant} of the last occurrence of each of the given entities.
+     *
+     * @param schema     The schema that the entities belong to (e.g. {@link Schema#TLS}).
+     * @param entityType The type of the entities (e.g. "domain").
+     * @param entityIds  The IDs of the entities (e.g. "amazon.com", "google.com", "apple.com").
+     */
+    void warmUp(Schema schema, String entityType, List<String> entityIds);
+
+    /**
      * Read from the store the {@link Instant} of the last occurrence of the given entity.
      *
      * @param schema     The schema that the entity belongs to (e.g. {@link Schema#TLS}).
