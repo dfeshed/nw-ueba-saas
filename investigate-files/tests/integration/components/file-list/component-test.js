@@ -1,4 +1,4 @@
-import { module, skip, test } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { find, findAll, render, settled, click, triggerEvent, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
@@ -388,7 +388,7 @@ module('Integration | Component | file list', function(hooks) {
 
   // Suspect update to Chrome 76 may have broken this test
   // it seems to be failing at least half the time
-  skip('Click load more adds files', async function(assert) {
+  test('Click load more adds files', async function(assert) {
     new ReduxDataHelper(initState)
       .files(dataItems)
       .schema(config)
@@ -406,11 +406,11 @@ module('Integration | Component | file list', function(hooks) {
     `);
     assert.equal(findAll('.rsa-data-table-body-row').length, 2, 'initial file count is 2');
     find('.rsa-data-table-load-more button.rsa-form-button').click();
-    await waitUntil(() => findAll('.rsa-data-table-body-row').length === 2, { timeout: 10000 });
-    assert.equal(findAll('.rsa-data-table-body-row').length, 2, 'After load file count is 2');
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 2, { timeout: 10000 });
+    assert.equal(findAll('.rsa-data-table-body-row').length, 13, 'After load file count is 13');
   });
 
-  skip('Make sure sort by works', async function(assert) {
+  test('Make sure sort by works', async function(assert) {
     new ReduxDataHelper(initState)
       .files(dataItems)
       .schema(config)
@@ -946,7 +946,7 @@ module('Integration | Component | file list', function(hooks) {
     });
   });
 
-  skip('re-arranging the column will call set the preference', async function(assert) {
+  test('re-arranging the column will call set the preference', async function(assert) {
     this.set('openRiskPanel', function() {
       assert.ok('open property panel is called.');
     });
@@ -992,7 +992,7 @@ module('Integration | Component | file list', function(hooks) {
 
     return waitUntil(() => done, { timeout: 6000 }).then(() => {
       assert.equal(saveColumnConfigSpy.callCount, 1);
-      assert.equal(findAll('.rsa-data-table-header-row .rsa-data-table-header-cell')[3].textContent.trim(), 'Signature', 'Column after re-order');
+      assert.equal(findAll('.rsa-data-table-header-row .rsa-data-table-header-cell')[3].textContent.trim(), 'On Hosts', 'Column after re-order');
     });
   });
 

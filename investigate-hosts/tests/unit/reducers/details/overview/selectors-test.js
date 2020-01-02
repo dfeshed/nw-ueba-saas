@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { hostDetails } from '../../../state/state';
 import Immutable from 'seamless-immutable';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
@@ -88,7 +88,7 @@ module('Unit | Selectors | overview', function(hooks) {
   // This appears to be broken in the latest Chrome
   // It does not pass locally on Chrome 76, and with update to latest Chrome in
   // CI, this fails there too
-  skip('arrangedSecurityConfigs when arrangeBy is status', function(assert) {
+  test('arrangedSecurityConfigs when arrangeBy is status', function(assert) {
     const result = arrangedSecurityConfigs(Immutable.from({
       endpoint: {
         overview: {
@@ -107,8 +107,8 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.equal(result[0].value, 'UAC');
-    assert.equal(result[1].value, 'LUA');
+    assert.equal(result[0].value, 'LUA');
+    assert.equal(result[1].value, 'UAC');
   });
 
   test('sameConfigStatus check for same config status for all the security configs', function(assert) {

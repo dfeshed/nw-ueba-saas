@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, find, findAll, click, waitUntil, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
@@ -1532,7 +1532,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
   });
 
-  skip('Clicking on a column in the column selector, toggles the visibility of the column in the table', async function(assert) {
+  test('Clicking on a column in the column selector, toggles the visibility of the column in the table', async function(assert) {
     new ReduxDataHelper(setState)
       .agentId(1)
       .scanTime(123456789)
@@ -1551,12 +1551,12 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       </style>
     {{host-detail/process/process-tree}}
     `);
-    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 7, '7 columns in header by default, including the checkbox');
+    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 6, '6 columns in header by default, including the checkbox');
     await click('.rsa-data-table-header__column-selector');
     return settled().then(async() => {
       await click(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[3]);
       return settled().then(() => {
-        assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 6, '6 columns in header, including the checkbox after togglinf from column selector');
+        assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 7, '7 columns in header, including the checkbox after togglinf from column selector');
       });
     });
   });
@@ -1662,7 +1662,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
     assert.equal(findAll('.content-context-menu .insights-host')[0].textContent.trim(), 'N/A', 'N/A is shown in column for insight agent');
   });
-  skip('Save config should  call on resizing the column', async function(assert) {
+  test('Save config should  call on resizing the column', async function(assert) {
     assert.expect(3);
     const focusedHost = {
       machineIdentity: {

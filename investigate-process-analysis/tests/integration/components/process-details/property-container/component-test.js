@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
@@ -8,7 +8,7 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 
-module('Integration | Component | process-details/process-property-panel', function(hooks) {
+module('Integration | Component | process-details/process-container', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-process-analysis')
   });
@@ -56,21 +56,7 @@ module('Integration | Component | process-details/process-property-panel', funct
     assert.equal(findAll('.list_items').length, 5, 'Expected to render 5 sections');
   });
 
-  // yet to handle the empty process execution details case in the property panel.
-
-  skip('it renders the empty process execution details panel with message', async function(assert) {
-    new ReduxDataHelper(setState)
-      .processProperties(processProperties)
-      .selectedProcess({
-        processId: 1
-      })
-      .queryInput(queryInput)
-      .build();
-    await render(hbs`{{process-details/property-container}}`);
-    assert.equal(find('.message').textContent.trim(), 'No matching results', 'No matching results message displayed');
-  });
-
-  test('process execution details panel should render details', async function(assert) {
+  test('Process execution details panel should render details', async function(assert) {
     new ReduxDataHelper(setState)
       .processProperties(processProperties)
       .selectedProcess({

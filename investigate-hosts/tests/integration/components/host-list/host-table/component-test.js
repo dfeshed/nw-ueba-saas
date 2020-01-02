@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { find, render, findAll, click, settled, triggerEvent, waitUntil } from '@ember/test-helpers';
@@ -8,9 +8,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import hostListState from '../../state/host.machines';
-import hostCreators from 'investigate-hosts/actions/data-creators/host';
 import { patchSocket } from '../../../../helpers/patch-socket';
-import sinon from 'sinon';
 
 import endpoint from '../../state/schema';
 
@@ -54,7 +52,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     }
   });
 
-  skip('it renders data table with column sorted by name', async function(assert) {
+  test('it renders data table with column sorted by name', async function(assert) {
     assert.expect(5);
     new ReduxDataHelper(initState)
       .columns(endpoint.schema)
@@ -426,9 +424,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       assert.equal(items.length, 5, 'Context menu rendered with 5 items with Download MFT option');
     });
   });
-
-  skip('re-arranging the column will call set the preference', async function(assert) {
-    const saveColumnConfigSpy = sinon.stub(hostCreators, 'saveColumnConfig');
+  test('re-arranging the column will call set the preference', async function(assert) {
     this.set('closeProperties', () => {});
     this.set('openProperties', function() {
       assert.ok('open property panel is called.');
@@ -464,7 +460,12 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     </style>
     {{host-list/host-table closeProperties=closeProperties openProperties=openProperties}}`);
     const [, , draggedItem] = document.querySelectorAll('.js-move-handle'); // 3 column
-    const done = true;
+    let done = false;
+    patchSocket((method, modelName) => {
+      done = true;
+      assert.equal(method, 'getPreferences');
+      assert.equal(modelName, 'endpoint-preferences');
+    });
     assert.equal(findAll('.rsa-data-table-header-row .rsa-data-table-header-cell')[3].textContent.trim(), 'Last Scan Time', 'Column before re-order');
     await triggerEvent(draggedItem, 'mousedown', { clientX: draggedItem.offsetLeft, clientY: draggedItem.offsetTop, which: 1 });
     await triggerEvent(draggedItem, 'mousemove', { clientX: 300, clientY: draggedItem.offsetTop, which: 1 });
@@ -472,10 +473,9 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     await triggerEvent(draggedItem, 'mouseup', { clientX: 310, clientY: draggedItem.offsetTop, which: 1 });
 
     return waitUntil(() => done, { timeout: 6000 }).then(() => {
-      assert.equal(saveColumnConfigSpy.callCount, 1);
+      assert.ok(true);
     });
   });
-
   test('re-sizing the column will call set the preference', async function(assert) {
 
     this.set('closeProperties', () => {});

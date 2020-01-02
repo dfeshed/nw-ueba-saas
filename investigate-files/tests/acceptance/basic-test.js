@@ -43,7 +43,7 @@ test('visiting /investigate-files/certificates', function(assert) {
   });
 });
 
-skip('visiting /investigate-files/1234', function(assert) {
+test('visiting /investigate-files/1234', function(assert) {
   assert.expect(1);
 
   const done = waitForSockets();

@@ -568,6 +568,7 @@ module('Integration | Component | host-list', function(hooks) {
     });
   });
 
+  // It is failing in Ember exam but executes with ember s. will re look into it.
   skip('on clicking delete hosts, and when socket throws error', async function(assert) {
     assert.expect(2);
     spys.forEach((s) => {
@@ -580,6 +581,10 @@ module('Integration | Component | host-list', function(hooks) {
     });
     this.set('openProperties', () => {
     });
+    patchFlash((flash) => {
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, 'Host is already deleted.');
+    });
     await render(hbs`
       <div id='modalDestination'></div>
       <style>
@@ -591,10 +596,6 @@ module('Integration | Component | host-list', function(hooks) {
         openProperties=openProperties
         closeProperties=closeProperties}}`);
     await click('.more-action-button button');
-    patchFlash((flash) => {
-      assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, 'Host is already deleted.');
-    });
     return settled().then(async() => {
       await click(findAll('.host-more-actions li')[1]);
       return settled().then(async() => {

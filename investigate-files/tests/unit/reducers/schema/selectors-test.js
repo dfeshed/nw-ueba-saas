@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
 
 import {
@@ -48,7 +48,7 @@ test('savedColumns', function(assert) {
   assert.equal(result.length, 1, 'should return saved column config');
 });
 
-skip('empty file preferences', function(assert) {
+test('empty file preferences', function(assert) {
   const schema = Immutable.from({
     files: { schema: { schema: [
       {
@@ -58,9 +58,7 @@ skip('empty file preferences', function(assert) {
     preferences: { preferences: { } }
   });
   const result = savedColumns(schema);
-  // length = total size + 1 checkbox column
-  assert.equal(result.length, 49, 'should return 48 columns + checkbox column');
-  assert.equal(result[0].visible, false, 'entropy field is not visible');
+  assert.equal(result.length, 0, 'should return 0 columns + checkbox column');
 });
 
 test('isSchemaLoaded', function(assert) {

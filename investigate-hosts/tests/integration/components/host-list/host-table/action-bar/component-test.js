@@ -1,17 +1,16 @@
-import { module, skip, test } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-import { patchFlash } from '../../../../../helpers/patch-flash';
 import Immutable from 'seamless-immutable';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
 
-module('Integration | Component | host table action bar', function(hooks) {
+module('Integration | Component | host-table/action-bar', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-hosts')
   });
@@ -137,27 +136,11 @@ module('Integration | Component | host table action bar', function(hooks) {
     await click('.service-selector-panel li');
   });
 
-  skip('it renders flash message when pivot to endpoint is clicked with not 4.4 host selected', function(assert) {
-    assert.expect(2);
-    const host = {
-      id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
-      'machine': {
-        'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
-        'agentVersion': '11.1'
-      }
-    };
-    new ReduxDataHelper(setState)
-      .host(host)
-      .build();
-
-    patchFlash((flash) => {
-      const translation = this.owner.lookup('service:i18n');
-      const expectedMsg = translation.t('investigateHosts.hosts.moreActions.notAnEcatAgent');
-      assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMsg);
-    });
-    this.render(hbs`{{host-list/host-table/action-bar}}`);
-    click('.host-table__toolbar-buttons div:nth-child(4) button');
+  test('Analyze button test for 4.4 hosts', async function(assert) {
+    new ReduxDataHelper(setState).selectedHostList([
+      { id: '123', version: '4.4', managed: true, scanStatus: 'idle' }]).build();
+    await render(hbs`{{host-list/host-table/action-bar}}`);
+    assert.equal(document.querySelectorAll('.host-table__toolbar .pivot-to-event-analysis .is-disabled').length, 0, 'analyze events button is enabled');
   });
 
   test('it render the more actions button', async function(assert) {

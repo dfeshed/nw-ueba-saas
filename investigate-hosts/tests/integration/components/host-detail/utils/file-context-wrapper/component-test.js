@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 
 import hbs from 'htmlbars-inline-precompile';
@@ -258,7 +258,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     assert.equal(findAll('.file-actionbar').length, 1, 'action bar rendered');
   });
 
-  skip('Download to server websocket called', async function(assert) {
+  test('Download to server websocket called', async function(assert) {
     const done = assert.async();
 
     patchSocket((method, modelName, query) => {

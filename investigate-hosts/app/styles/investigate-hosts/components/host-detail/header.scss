@@ -202,7 +202,7 @@
   .divider {
     margin: 0;
   }
-  .downloadMFT-button button, .isolate-button button{
+  .downloadMFT-button button, .isolate-button button {
     padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
     width: 100%;
     .network-isolation {
@@ -210,13 +210,23 @@
       width: 87%
     }
     i {
-      font-size: 1rem;
+      font-size: 1rem !important;
     }
   }
   .isolate-button {
     > span, > span > div {
       width: 100%;
+      button {
+        i {
+          font-size: 1rem;
+        }
+      }
     }
+    .rsa-form-button-wrapper {
+      padding-right: 8px;
+
+    }
+
   }
   .export-button{
     padding-bottom: 0.75rem;

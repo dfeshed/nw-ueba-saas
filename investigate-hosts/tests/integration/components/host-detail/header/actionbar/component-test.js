@@ -1,11 +1,11 @@
-import { module, skip, test } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
-import { click, find, findAll, render, waitUntil, settled } from '@ember/test-helpers';
+import { click, find, findAll, render, settled } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import HosDetailsCreators from 'investigate-hosts/actions/data-creators/host-details';
 import { snapShot } from '../../../../../data/data';
@@ -14,7 +14,7 @@ import sinon from 'sinon';
 let changeSnapShotSpy, setState;
 const spys = [];
 
-module('Integration | Component | host detail actionbar', function(hooks) {
+module('Integration | Component | host-detail/header/actionbar', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-hosts')
   });
@@ -72,25 +72,6 @@ module('Integration | Component | host detail actionbar', function(hooks) {
     assert.ok(find('.actionbar .ember-power-select-trigger'), 'should render the power-select trigger');
     assert.equal(findAll('.ember-power-select-option').length, 4, 'dropdown  rendered with available snapShots');
     assert.equal(find('.actionbar .rsa-button-group .ember-power-select-selected-item .datetime').textContent.trim().length, 22, 'Snapshot datetime is rendered properly,without miliseconds');
-  });
-
-
-  skip('with scan time earlier than snapshot time, snapshot transitions down', async function(assert) {
-    assert.expect(2);
-    const redux = this.owner.lookup('service:redux');
-    new ReduxDataHelper(setState)
-      .snapShot(snapShot)
-      .scanTime('2017-01-01T10:23:49.452Z')
-      .agentId(1345)
-      .build();
-    await render(hbs`{{host-detail/header/actionbar}}`);
-    await selectChoose('.actionbar', '.ember-power-select-option', 3);
-    await waitUntil(() => {
-      return redux.getState().endpoint.detailsInput.animation !== 'default';
-    });
-    const { endpoint: { detailsInput: { animation, agentId } } } = redux.getState();
-    assert.equal(animation, 'toDown');
-    assert.equal(agentId, 1345);
   });
 
   test('snapshot selection is disabled when process details is active', async function(assert) {
