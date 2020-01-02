@@ -17,6 +17,7 @@ public class PresidioReflectionUtils extends HierarchyLeafFinder<Object> {
             "'clazz' cannot be null.";
     private static final String FIELD_NOT_DECLARED_EXCEPTION_MESSAGE_FORMAT =
             "Class '%s' does not declare a field named '%s'.";
+    private static final String DEFAULT_FIELD_PATH_DELIMITER = "\\.";
 
     @Override
     public boolean isNull(Object object) {
@@ -53,5 +54,48 @@ public class PresidioReflectionUtils extends HierarchyLeafFinder<Object> {
         notNull(field, FIELD_NOT_DECLARED_EXCEPTION_MESSAGE_FORMAT, clazz.getName(), fieldName);
         field.setAccessible(true);
         return field;
+    }
+
+    /**
+     * Retrieves the type of the property with the given name of the given
+     * Class.<br>
+     * Supports nested properties following bean naming convention.
+     *
+     * "foo.bar.name"
+     *
+     * @param clazz
+     * @param fieldName
+     *
+     * @return Object if no property exists.
+     */
+    public static Class<?> getPropertyType(Class<?> clazz, String fieldName)
+    {
+        notNull(clazz, NULL_CLAZZ_EXCEPTION_MESSAGE);
+        notNull(fieldName, NULL_FIELD_NAME_EXCEPTION_MESSAGE);
+
+        final String[] path = fieldName.split(DEFAULT_FIELD_PATH_DELIMITER);
+
+        for (int i = 0; i < path.length; i++)
+        {
+            fieldName = path[i];
+            final List<Field> fields = getAllFields(clazz);
+            for (final Field field : fields)
+                if (field.getName().equals(fieldName))
+                {
+                    clazz = field.getType();
+                    if (i == path.length - 1)
+                        return clazz;
+                }
+        }
+
+        return Object.class;
+    }
+
+    private static List<Field> getAllFields(Class<?> type) {
+        List<Field> fields = new ArrayList<>();
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
+        return fields;
     }
 }
