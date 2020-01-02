@@ -55,7 +55,8 @@ module('Integration | Component | Preferences Panel Trigger', function(hooks) {
 
     await waitFor('.rsa-preferences-panel-trigger');
     await click('.rsa-icon-settings-1');
-    await waitFor('.ember-power-select-selected-item', { count: 4 });
+    // TODO add meta download back in 11.4.1
+    await waitFor('.ember-power-select-selected-item', { count: 3 });
     assert.equal(findAll('.is-expanded').length, 1, 'preference panel opened without publishing preferences');
   });
 
