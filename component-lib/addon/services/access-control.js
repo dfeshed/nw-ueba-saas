@@ -1,6 +1,7 @@
 import computed, { intersect, gt, or } from 'ember-computed-decorators';
 import config from 'ember-get-config';
 import Service from '@ember/service';
+import { isEmpty } from '@ember/utils';
 
 export default Service.extend({
   username: config.username,
@@ -83,25 +84,36 @@ export default Service.extend({
     'hasAdminSystemSettingsAccess',
     'hasAdminSASecurityAccess'
   )
-  hasAdminAccess(
-    hasAdminTopLevelAccess,
-    hasAdminViewAppliancesAccess,
-    hasAdminViewServicesAccess,
-    hasAdminViewEventSourcesAccess,
-    hasAdminViewUnifiedSourcesAccess,
-    hasAdminHealthWellnessAccess,
-    hasAdminSystemSettingsAccess,
-    hasAdminSASecurityAccess
-  ) {
-    return hasAdminTopLevelAccess && (
-      hasAdminViewAppliancesAccess ||
-      hasAdminViewServicesAccess ||
-      hasAdminViewEventSourcesAccess ||
-      hasAdminViewUnifiedSourcesAccess ||
-      hasAdminHealthWellnessAccess ||
-      hasAdminSystemSettingsAccess ||
-      hasAdminSASecurityAccess
-    );
+  hasAdminAccess: {
+    get() {
+      if (!isEmpty(this.get('_hasAdminAccess'))) {
+        return this.get('_hasAdminAccess');
+      }
+
+      const hasAdminTopLevelAccess = this.get('hasAdminTopLevelAccess');
+      const hasAdminViewAppliancesAccess = this.get('hasAdminViewAppliancesAccess');
+      const hasAdminViewServicesAccess = this.get('hasAdminViewServicesAccess');
+      const hasAdminViewEventSourcesAccess = this.get('hasAdminViewEventSourcesAccess');
+      const hasAdminViewUnifiedSourcesAccess = this.get('hasAdminViewUnifiedSourcesAccess');
+      const hasAdminHealthWellnessAccess = this.get('hasAdminHealthWellnessAccess');
+      const hasAdminSystemSettingsAccess = this.get('hasAdminSystemSettingsAccess');
+      const hasAdminSASecurityAccess = this.get('hasAdminSASecurityAccess');
+
+      return hasAdminTopLevelAccess && (
+        hasAdminViewAppliancesAccess ||
+        hasAdminViewServicesAccess ||
+        hasAdminViewEventSourcesAccess ||
+        hasAdminViewUnifiedSourcesAccess ||
+        hasAdminHealthWellnessAccess ||
+        hasAdminSystemSettingsAccess ||
+        hasAdminSASecurityAccess
+      );
+    },
+
+    set(key, value) {
+      this.set('_hasAdminAccess', value);
+      return value;
+    }
   },
 
   @computed('roles.[]')
