@@ -271,6 +271,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .isTreeView(true)
       .sortField('name')
       .isDescOrder(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
     await render(hbs`
@@ -299,6 +300,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .isTreeView(false)
       .isProcessTreeLoading(false)
       .searchResultProcessList([])
+      .selectedProcessList([])
       .scanTime(1234567890)
       .isDescOrder(false).build();
     await render(hbs`<style>
@@ -324,6 +326,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .searchResultProcessList([])
+      .selectedProcessList([])
       .build();
     this.set('closePropertyPanel', function() {
       assert.ok('close property panel is called.');
@@ -353,6 +356,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .machineOSType('windows')
       .sortField('name')
       .isTreeView(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .isDescOrder(true)
       .build();
@@ -410,6 +414,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
     await render(hbs`
@@ -438,6 +443,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
     await render(hbs`
@@ -466,6 +472,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
     await render(hbs`
@@ -502,6 +509,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .sortField('score')
       .isDescOrder(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
 
@@ -537,6 +545,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .scanTime(123456789)
       .processTree(processData.processTree)
       .searchResultProcessList([])
+      .selectedProcessList([])
       .selectedTab(null).build();
     await render(hbs`
       <style>
@@ -557,6 +566,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .scanTime(123456789)
       .selectedProcessList([])
       .processTree(processData.processTree)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .selectedTab(null).build();
     await render(hbs`
@@ -583,6 +593,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
     await render(hbs`
@@ -613,6 +624,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
@@ -660,6 +672,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
     await render(hbs`
@@ -703,6 +716,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
 
@@ -767,6 +781,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
@@ -924,6 +939,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .isDescOrder(true)
       .isTreeView(true)
       .searchResultProcessList([])
+      .selectedProcessList([])
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
     this.set('analyzeFile', function() {
@@ -984,6 +1000,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .isDescOrder(true)
       .isTreeView(true)
       .searchResultProcessList([])
+      .selectedProcessList([])
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
     this.set('analyzeFile', function() {
@@ -1066,6 +1083,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .isDescOrder(true)
       .isTreeView(true)
       .searchResultProcessList([])
+      .selectedProcessList([])
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
     this.set('downloadProcessDump', function() {
@@ -1126,6 +1144,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .selectedProcessList([])
       .build();
     await render(hbs`
        <style>
@@ -1204,6 +1223,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .isDescOrder(true)
       .isTreeView(true)
       .searchResultProcessList([])
+      .selectedProcessList([])
       .build();
 
     await render(hbs`
@@ -1264,6 +1284,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .isDescOrder(true)
       .isTreeView(true)
       .searchResultProcessList([])
+      .selectedProcessList([])
       .build();
 
     await render(hbs`
@@ -1328,6 +1349,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .isDescOrder(true)
       .isTreeView(true)
       .searchResultProcessList([])
+      .selectedProcessList([])
       .build();
 
     await render(hbs`
@@ -1542,6 +1564,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('score')
       .isDescOrder(true)
       .searchResultProcessList([])
+      .selectedProcessList([])
       .selectedTab(null).build();
     await render(hbs`
      <style>
@@ -1596,6 +1619,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
 
@@ -1650,6 +1674,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
 
@@ -1704,6 +1729,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .selectedProcessList([])
       .searchResultProcessList([])
       .build();
 
