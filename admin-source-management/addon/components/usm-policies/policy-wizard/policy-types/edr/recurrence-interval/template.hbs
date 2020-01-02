@@ -39,7 +39,7 @@
 {{#if isWeeklyInterval}}
   <hbox class="recurrence-run-interval__week-options">
     {{#each weekOptions as |option|}}
-      {{#rsa-form-button class='week-button' click=(action 'selectWeek' option.week) isPrimary=option.isActive }}
+      {{#rsa-form-button class='week-button' click=(action 'selectWeek' option.week) style=(if option.isActive 'primary')}}
         {{t option.label}}
       {{/rsa-form-button}}
     {{/each}}

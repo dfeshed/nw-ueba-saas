@@ -22,7 +22,7 @@ module('Integration | Component | os-selector', function(hooks) {
   });
   test('The component appears in the DOM', async function(assert) {
     new ReduxDataHelper(setState).groupWiz().build();
-    await render(hbs`{{usm-groups/group/group-attributes/attribute-inputs/os-selector selectedValues="" criteriaPath=",0"}}`);
+    await render(hbs`{{usm-groups/group/group-attributes/attribute-inputs/os-selector value="" criteriaPath=",0"}}`);
     assert.equal(findAll('.os-selector').length, 1, 'The os-selector component appears in the DOM');
   });
 

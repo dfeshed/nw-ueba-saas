@@ -143,13 +143,11 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/policy
     );
     assert.equal(findAll('.header .remove-setting.not-greyed-out').length, 1, 'expected to have remove-circle icon greyed out for a default policy');
 
-    // greyOutSetting === true
-    this.set('greyOutSetting', true);
+    this.set('selectedSettingId', 'invalidValue'); // this will set greyOutSetting computed prop to true
     await render(hbs`{{usm-policies/policy-wizard/policy-types/policy-setting
       removeFromSelectedSettings=(action removeFromSelectedSettings)
       settingComponent=settingComponent
       selectedSettingId=selectedSettingId
-      greyOutSetting=greyOutSetting
       policyType=policyType
       isDefaultPolicy=isDefaultPolicy
       label=label
