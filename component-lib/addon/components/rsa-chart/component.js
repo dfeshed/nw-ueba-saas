@@ -61,7 +61,15 @@ export default Component.extend({
   xDomain: (data, xProp, domainExtents) => computeExtent(data, (d) => d[xProp], domainExtents.x),
 
   @computed('data', 'yProp', 'domainExtents')
-  yDomain: (data, yProp, domainExtents) => computeExtent(data, (d) => d[yProp], domainExtents.y),
+  yDomain: {
+    get() {
+      return computeExtent(this.get('data'), (d) => d[this.get('yProp')], this.get('domainExtents').y);
+    },
+
+    set(key, value) {
+      return value;
+    }
+  },
 
   @computed('graphWidth')
   xRange: (graphWidth) => [0, graphWidth],
