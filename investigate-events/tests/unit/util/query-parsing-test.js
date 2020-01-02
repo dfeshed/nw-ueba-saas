@@ -1095,6 +1095,52 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.notOk(result[2].isInvalid, 'should not be invalid');
   });
 
+  test('transformTextToPillData pulls a text filter out to the first pill if it is used inside parens', function(assert) {
+    const text = `(${SEARCH_TERM_MARKER}text filter${SEARCH_TERM_MARKER} OR medium = 1)`;
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 5);
+    assert.equal(result[0].type, TEXT_FILTER);
+    assert.equal(result[0].searchTerm, 'text filter');
+    assert.equal(result[1].type, OPERATOR_AND);
+    assert.equal(result[2].type, OPEN_PAREN);
+    assert.equal(result[3].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[3].meta, 'medium', 'meta should match');
+    assert.equal(result[3].operator, '=', 'operator should match');
+    assert.equal(result[3].value, '1', 'operator should match');
+    assert.notOk(result[3].isInvalid, 'should not be invalid');
+    assert.equal(result[4].type, CLOSE_PAREN);
+  });
+
+  test('transformTextToPillData removes all text filters inside parens, and just uses the first', function(assert) {
+    const text = `(${SEARCH_TERM_MARKER}text filter${SEARCH_TERM_MARKER} OR medium = 1 AND ${SEARCH_TERM_MARKER}text filter 2${SEARCH_TERM_MARKER})`;
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 5);
+    assert.equal(result[0].type, TEXT_FILTER);
+    assert.equal(result[0].searchTerm, 'text filter');
+    assert.equal(result[1].type, OPERATOR_AND);
+    assert.equal(result[2].type, OPEN_PAREN);
+    assert.equal(result[3].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[3].meta, 'medium', 'meta should match');
+    assert.equal(result[3].operator, '=', 'operator should match');
+    assert.equal(result[3].value, '1', 'operator should match');
+    assert.notOk(result[3].isInvalid, 'should not be invalid');
+    assert.equal(result[4].type, CLOSE_PAREN);
+  });
+
+  test('transformTextToPillData removes all text filters inside parens, and does not leave empty parens', function(assert) {
+    const text = `(${SEARCH_TERM_MARKER}text filter${SEARCH_TERM_MARKER}) AND medium = 1`;
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 3);
+    assert.equal(result[0].type, TEXT_FILTER);
+    assert.equal(result[0].searchTerm, 'text filter');
+    assert.equal(result[1].type, OPERATOR_AND);
+    assert.equal(result[2].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[2].meta, 'medium', 'meta should match');
+    assert.equal(result[2].operator, '=', 'operator should match');
+    assert.equal(result[2].value, '1', 'operator should match');
+    assert.notOk(result[2].isInvalid, 'should not be invalid');
+  });
+
   test('transformTextToPillData transforms OR on either side of a text filter to AND', function(assert) {
     const text = `medium = 1 OR ${SEARCH_TERM_MARKER}text filter${SEARCH_TERM_MARKER} OR medium = 2`;
     const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });

@@ -281,6 +281,67 @@ class Parser {
   }
 
   /**
+   * Returns true if the provided GROUP (or NOT) is empty (a set of empty parens).
+   * @param {*} tree
+   */
+  _isEmptyGroup(tree) {
+    return (tree?.type === GRAMMAR.GROUP || tree?.type === GRAMMAR.NOT) && tree.group.children.length === 0;
+  }
+
+  /**
+   * Takes an item produced by the parser and returns a text filter if one
+   * exists inside parentheses. Otherwise, returns null. MUTATES the
+   * structure passed in to remove the text filter from where it originally was
+   * @param {*} tree
+   */
+  _moveTextFilterOutsideGroup(tree, isInsideGroup = false) {
+    let result = null;
+    switch (tree.type) {
+      // These two cases are parentheses, return whatever might be inside them
+      // while setting the flag to true
+      case GRAMMAR.GROUP:
+      case GRAMMAR.NOT:
+        return this._moveTextFilterOutsideGroup(tree.group, true);
+      // Iterate over each item, return the first text filter, but remove ALL
+      // text filters (if there are more than one) if isInsideGroup is true.
+      case GRAMMAR.WHERE_CRITERIA:
+        for (let i = 0; i < tree.children.length; i++) {
+          const child = tree.children[i];
+          const prev = tree.children[i - 1];
+          const next = tree.children[i + 1];
+          if (child.type === LEXEMES.TEXT_FILTER && isInsideGroup) {
+            // Remove the text filter and its operator (if one exists)
+            // Either remove the operator at position (i - 1) or (i + 1), and
+            // also decrement i if we remove the one in front so that i still
+            // points to our text filter
+            if (prev?.type === LEXEMES.AND || prev?.type === LEXEMES.OR) {
+              tree.children.splice(--i, 1);
+            } else if (next?.type === LEXEMES.AND || next?.type === LEXEMES.OR) {
+              tree.children.splice(i + 1, 1);
+            }
+            const [ splice ] = tree.children.splice(i--, 1);
+            result = result || splice;
+          } else {
+            const inside = this._moveTextFilterOutsideGroup(child, isInsideGroup);
+            if (this._isEmptyGroup(child)) {
+              // Remove the empty group and its operator from the list of children.
+              if (prev?.type === LEXEMES.AND || prev?.type === LEXEMES.OR) {
+                tree.children.splice(--i, 1);
+              } else if (next?.type === LEXEMES.AND || next?.type === LEXEMES.OR) {
+                tree.children.splice(i + 1, 1);
+              }
+              tree.children.splice(i--, 1);
+            }
+            result = result || inside;
+          }
+        }
+        return result;
+      default:
+        return null;
+    }
+  }
+
+  /**
    * Parses the list of tokens into a syntax tree.
    * @public
    */
@@ -306,7 +367,13 @@ class Parser {
         .map((t) => t.text)
         .join(' ');
       // Remaining tokens become one complex pill
-      result.children.push({ type: LEXEMES.AND, text: '&&' }, this._createComplexString(unexpectedTokensString));
+      result.children.push({ type: LEXEMES.AND, text: 'AND' }, this._createComplexString(unexpectedTokensString));
+    }
+    const textFilter = this._moveTextFilterOutsideGroup(result);
+    if (textFilter) {
+      // A text filter was used inside parens. This is not allowed, pull it out
+      // to the first pill and add an AND.
+      result.children = [ textFilter, { type: LEXEMES.AND, text: 'AND' }, ...result.children ];
     }
     return result;
   }
