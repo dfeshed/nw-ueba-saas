@@ -1020,7 +1020,7 @@
         },
         {
           "type": "boolean",
-          "fieldName": "dstOrg.isNewOccurrence",
+          "fieldName": "dstPort.isNewOccurrence",
           "expectedValue": true
         }
       ],
