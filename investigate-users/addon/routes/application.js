@@ -9,11 +9,6 @@ export default Route.extend({
   accessControl: service(),
   redux: service(),
 
-  beforeModel() {
-    if (!this.get('accessControl.hasInvestigateEventsAccess')) {
-      this.transitionTo('permission-denied');
-    }
-  },
   actions: {
     navigateTo(routeName) {
       this.transitionTo(routeName);

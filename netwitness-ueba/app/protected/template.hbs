@@ -1,0 +1,14 @@
+{{#if session.isAuthenticated}}
+  <page class="rsa-protected {{if (and entityId entityType) 'has-entity-info'}}">
+    <page class="rsa-protected__outlet">
+      {{outlet}}
+    </page>
+    <aside class="rsa-protected__aside">
+      {{#if (and entityId entityType)}}
+        {{context-panel entityId=entityId entityType=entityType closePanel=(action 'closeContextPanel')}}
+      {{/if}}
+    </aside>
+  </page>
+  {{context-tooltip clickDataAction=(action 'openContextPanel') endpointServices=listOfServices addToListAction=(action 'openContextAddToList')}}
+  {{context-panel/add-to-list entity=entityToAddToList}}
+{{/if}}

@@ -26,8 +26,8 @@ export default Service.extend({
 
     if (hasRespondAccess) {
       options.pushObject({
-        key: '/respond',
-        label: 'userPreferences.defaultLandingPage.respond'
+        key: '/investigate/entities',
+        label: 'userPreferences.defaultLandingPage.investigate'
       });
     }
 

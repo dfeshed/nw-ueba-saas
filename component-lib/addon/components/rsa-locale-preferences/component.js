@@ -1,8 +1,8 @@
 import layout from './template';
 import { connect } from 'ember-redux';
 import Component from '@ember/component';
-import { updateLocale } from 'sa/actions/creators/preferences';
-import { getLocale, getLocales } from 'sa/reducers/global/preferences/selectors';
+import { updateLocale } from 'netwitness-ueba/actions/creators/preferences';
+import { getLocale, getLocales } from 'netwitness-ueba/reducers/global/preferences/selectors';
 
 const stateToComputed = (state) => ({
   locale: getLocale(state),
