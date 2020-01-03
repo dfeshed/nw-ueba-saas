@@ -1,5 +1,5 @@
 import layout from './template';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import { connect } from 'ember-redux';
 import { isEmpty } from '@ember/utils';
 import Component from '@ember/component';
@@ -31,17 +31,17 @@ const Container = Component.extend({
   helpText,
   // download link for packager
   @computed('downloadLink')
-  iframeSrc(link) {
+  get iframeSrc() {
     let source = null;
-    if (!isEmpty(link)) {
+    if (!isEmpty(this.downloadLink)) {
       const time = Number(new Date());
-      source = link.includes('?') ? `${link}&${time}` : `${link}?${time}`;
+      source = this.downloadLink.includes('?') ? `${this.downloadLink}&${time}` : `${this.downloadLink}?${time}`;
     }
     return source;
   },
 
   @computed('error')
-  errorMessage() {
+  get errorMessage() {
     return this.get('i18n').t('packager.error.generic');
   },
 

@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import moment from 'moment';
 import { connect } from 'ember-redux';
@@ -75,32 +75,41 @@ const formComponent = Component.extend({
   editedHost: '',
 
   @computed('status')
-  enabled: (status) => status !== 'disabled',
+  get enabled() {
+    return this.get('status') !== 'disabled';
+  },
 
   @computed('selectedServerForEdit.port', 'isUpdating')
-  isDisabled(port, isUpdating) {
-    return isEmpty(port) || isUpdating;
+  get isDisabled() {
+    const selectedServerForEdit = this.get('selectedServerForEdit');
+    const isUpdating = this.get('isUpdating');
+    return isEmpty(selectedServerForEdit?.port) || isUpdating;
   },
 
   @computed('configData.packageConfig.driverDisplayName')
-  driverDisplayName(displayName) {
-    return displayName || this.get('defaultDriverDisplayName') || '';
+  get driverDisplayName() {
+    const configData = this.get('configData');
+    return configData?.packageConfig?.driverDisplayName || this.get('defaultDriverDisplayName') || '';
   },
 
   @computed('configData.packageConfig.driverServiceName')
-  driverServiceName(serviceName) {
-    return serviceName || this.get('defaultDriverServiceName') || '';
+  get driverServiceName() {
+    const configData = this.get('configData');
+    return configData?.packageConfig?.driverServiceName || this.get('defaultDriverServiceName') || '';
   },
 
   @computed('configData.packageConfig.driverDescription')
-  driverDescription(driverDescription) {
-    return driverDescription || this.get('defaultDriverDescription') || '';
+  get driverDescription() {
+    const configData = this.get('configData');
+    return configData?.packageConfig?.driverDescription || this.get('defaultDriverDescription') || '';
   },
 
-  @computed('selectedServerIP', 'configData.packageConfig')
-  selectedServerForEdit(selectedServerIP, packageConfig) {
+  @computed('configData.packageConfig')
+  get selectedServerForEdit() {
+    const configData = this.get('configData');
+    const selectedServerIP = this.get('selectedServerIP');
     const { host: selectedHost } = selectedServerIP;
-    const { serviceId, server: host, port } = packageConfig;
+    const { serviceId, server: host, port } = configData?.packageConfig;
     return (selectedServerIP.id === serviceId) ? { ...selectedServerIP, host, port } : { ...selectedServerIP, host: selectedHost, port: 443 };
   },
 

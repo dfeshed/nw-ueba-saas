@@ -7,9 +7,13 @@ import channels from './channels';
 export default DataTableBody.extend({
   layout,
 
-  filterOptions: ['Include', 'Exclude'],
-
   channelOptions: A(channels),
+
+  init() {
+    this._super(...arguments);
+    this.filterOptions = this.filterOptions || ['Include', 'Exclude'];
+  },
+
 
   actions: {
 
