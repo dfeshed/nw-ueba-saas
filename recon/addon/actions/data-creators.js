@@ -53,6 +53,26 @@ import _ from 'lodash';
 const cookieStore = CookieStore.create();
 const authCookie = {}; // cache this to minimize reading from cookie-store.
 
+const _cleanUpMemory = () => {
+  // clear packet cache as packets have to be recalculated
+  // whenever payload only is clicked
+  const cacheService = lookup('service:processed-packet-cache');
+  cacheService.clear();
+
+  // have leaky memory issue deep inside ember-in-viewport.
+  // clean that ish up. Don't know why/how the leak is happening
+  // but this cleans it up.
+  // PRs/Tickets for context
+  // https://github.com/DockYard/ember-in-viewport/issues/216
+  // https://bedfordjira.na.rsa.net/browse/ASOC-86982
+  // https://github.rsa.lab.emc.com/asoc/sa-ui/pull/6278
+  const inViewport = lookup('service:in-viewport');
+  if (inViewport.observerAdmin) {
+    inViewport.observerAdmin.instance.elementRegistry.destroyRegistry();
+    inViewport.observerAdmin.instance.registry.destroyRegistry();
+  }
+};
+
 /**
  * Will fetch and dispatch event meta
  * @param {object} dataState
@@ -264,9 +284,7 @@ const jumpToPage = (newPage) => {
 
 const _changePageNumber = (pageNumber) => {
   return (dispatch, getState) => {
-    const cacheService = lookup('service:processed-packet-cache');
-    cacheService.clear();
-
+    _cleanUpMemory();
     dispatch({
       type: ACTION_TYPES.CHANGE_PAGE_NUMBER,
       payload: pageNumber
@@ -277,6 +295,7 @@ const _changePageNumber = (pageNumber) => {
 
 const changePacketsPerPage = (packetsPerPage) => {
   return (dispatch) => {
+    _cleanUpMemory();
     dispatch({
       type: ACTION_TYPES.CHANGE_PACKETS_PER_PAGE,
       payload: packetsPerPage
@@ -343,6 +362,9 @@ const setNewReconView = (newView) => {
       window.open(path, '_blank');
       return;
     }
+
+    // clean up any rendering from previous view
+    _cleanUpMemory();
 
     // first dispatch the new view
     dispatch({
@@ -701,8 +723,7 @@ const togglePayloadOnly = (setTo) => {
 
     // clear packet cache as packets have to be recalculated
     // whenever payload only is clicked
-    const cacheService = lookup('service:processed-packet-cache');
-    cacheService.clear();
+    _cleanUpMemory();
 
     dispatch(_toggleActionCreator(setTo));
 
