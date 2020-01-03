@@ -42,7 +42,7 @@
       {{/rsa-form-button}}
       {{#rsa-form-button style='primary' testId='view-selected' class='viewSelected'
                          isDisabled=isViewSelectedDisabled
-                         click=(action 'onViewSelected' model hidePanel)}}
+                         click=(action 'handleViewSelected' model hidePanel)}}
         {{t 'investigateProcessAnalysis.buttons.viewSelected'}}
       {{/rsa-form-button}}
     </hbox>

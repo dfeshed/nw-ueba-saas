@@ -1566,7 +1566,7 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@babel/types@^7.3.2", "@babel/types@^7.3.4", "@babel/types@^7.7.4":
+"@babel/types@^7.3.2", "@babel/types@^7.3.4", "@babel/types@^7.4.0", "@babel/types@^7.7.4":
   version "7.7.4"
   resolved "https://registry.npmjs.org/@babel/types/-/types-7.7.4.tgz#516570d539e44ddf308c07569c258ff94fde9193"
   integrity sha512-cz5Ji23KCi4T+YIE/BolWosrJuSmoZeN1EFnRtBwF+KKLi8GG/Z2c2hOJJeCXPk4mwk4QFvTmwIodJowXgttRA==
@@ -1582,6 +1582,29 @@
   dependencies:
     exec-sh "^0.3.2"
     minimist "^1.2.0"
+
+"@ember-decorators/component@^6.1.0":
+  version "6.1.1"
+  resolved "https://registry.npmjs.org/@ember-decorators/component/-/component-6.1.1.tgz#b360dc4fa8e576ee1c840879399ef1745fd96e06"
+  integrity sha512-Cj8tY/c0MC/rsipqsiWLh3YVN72DK92edPYamD/HzvftwzC6oDwawWk8RmStiBnG9PG/vntAt41l3S7HSSA+1Q==
+  dependencies:
+    "@ember-decorators/utils" "^6.1.1"
+    ember-cli-babel "^7.1.3"
+
+"@ember-decorators/object@^6.1.0":
+  version "6.1.1"
+  resolved "https://registry.npmjs.org/@ember-decorators/object/-/object-6.1.1.tgz#50c922f5ac9af3ddd381cb6a43a031dfd9a70c7a"
+  integrity sha512-cb4CNR9sRoA31J3FCOFLDuR9ztM4wO9w1WlS4JeNRS7Z69SlB/XSXB/vplA3i9OOaXEy/zKWbu5ndZrHz0gvLw==
+  dependencies:
+    "@ember-decorators/utils" "^6.1.1"
+    ember-cli-babel "^7.1.3"
+
+"@ember-decorators/utils@^6.1.1":
+  version "6.1.1"
+  resolved "https://registry.npmjs.org/@ember-decorators/utils/-/utils-6.1.1.tgz#6b619814942b4fb3747cfa9f540c9f05283d7c5e"
+  integrity sha512-0KqnoeoLKb6AyoSU65TRF5T85wmS4uDn06oARddwNPxxf/lt5jQlh41uX3W7V/fWL9tPu8x1L1Vvpc80MN1+YA==
+  dependencies:
+    ember-cli-babel "^7.1.3"
 
 "@ember/jquery@0.6.0":
   version "0.6.0"
@@ -2724,6 +2747,14 @@ babel-plugin-ember-modules-api-polyfill@^2.6.0, babel-plugin-ember-modules-api-p
   integrity sha512-c03h50291phJ2gQxo/aIOvFQE2c6glql1A7uagE3XbPXpKVAJOUxtVDjvWG6UAB6BC5ynsJfMWvY0w4TPRKIHQ==
   dependencies:
     ember-rfc176-data "^0.3.9"
+
+babel-plugin-filter-imports@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/babel-plugin-filter-imports/-/babel-plugin-filter-imports-3.0.0.tgz#a849683837ad29960da17492fb32789ab6b09a11"
+  integrity sha512-p/chjzVTgCxUqyLM0q/pfWVZS7IJTwGQMwNg0LOvuQpKiTftQgZDtkGB8XvETnUw19rRcL7bJCTopSwibTN2tA==
+  dependencies:
+    "@babel/types" "^7.4.0"
+    lodash "^4.17.11"
 
 babel-plugin-htmlbars-inline-precompile@^1.0.0:
   version "1.0.0"
@@ -5703,6 +5734,14 @@ ember-changeset@1.5.0:
     ember-cli-babel "^6.8.2"
     ember-deep-set "^0.1.4"
 
+ember-classic-decorator@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/ember-classic-decorator/-/ember-classic-decorator-1.0.3.tgz#fe66f2708c63e041ac1518a234f0a285675a86a4"
+  integrity sha512-Tc3wtaeY+XxulI3qMJ/W3yphAGT+dFAgSLgjWRQw4Pjc37PVXye2Uq9IpqFLH9grX6oininP8GcTiZVnGctzNg==
+  dependencies:
+    babel-plugin-filter-imports "^3.0.0"
+    ember-cli-babel "^7.11.1"
+
 ember-cli-app-version@3.2.0:
   version "3.2.0"
   resolved "https://registry.npmjs.org/ember-cli-app-version/-/ember-cli-app-version-3.2.0.tgz#7b9ad0e1b63ae0518648356ee24c703e922bc26e"
@@ -6478,6 +6517,15 @@ ember-d3@0.5.1:
     d3 "^5.0.0"
     d3-selection-multi "^1.0.1"
     ember-cli-babel "^7.1.2"
+
+ember-decorators@6.1.0:
+  version "6.1.0"
+  resolved "https://registry.npmjs.org/ember-decorators/-/ember-decorators-6.1.0.tgz#7bfee7a06314618addfa4eb43d99700c5765bb50"
+  integrity sha512-8xV3Ldn9WbW20tPf6EuumXmDwSq7sfttLRmBku+7VPmwh8fnWHc/3apy5ic3bM2baszs1X012gvMTkrH9lUPTg==
+  dependencies:
+    "@ember-decorators/component" "^6.1.0"
+    "@ember-decorators/object" "^6.1.0"
+    ember-cli-babel "^7.7.3"
 
 ember-deep-set@^0.1.4:
   version "0.1.4"

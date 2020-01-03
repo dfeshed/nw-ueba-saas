@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { riskState } from 'investigate-process-analysis/reducers/process-visuals/selectors';
@@ -11,11 +13,9 @@ const dispatchToActions = {
   getUpdatedRiskScoreContext
 };
 
-const AlertsContainer = Component.extend({
-
-  tagName: 'vbox',
-
-  classNames: ['alerts-container']
-});
+@classic
+@tagName('vbox')
+@classNames('alerts-container')
+class AlertsContainer extends Component {}
 
 export default connect(stateToComputed, dispatchToActions)(AlertsContainer);

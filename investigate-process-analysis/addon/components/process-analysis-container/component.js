@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { classNames, classNameBindings, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
@@ -20,14 +22,10 @@ const stateToComputed = (state) => ({
   isProcessInfoVisible: state.processAnalysis.processVisuals.isProcessInfoVisible
 });
 
-const WrapperComponent = Component.extend({
-
-  tagName: 'box',
-
-  classNames: ['process-analysis-container', 'scrollable-panel-wrapper', 'col-xs-12'],
-
-  classNameBindings: ['isProcessDetailsVisible:show-process-details:hide-process-details']
-
-});
+@classic
+@tagName('box')
+@classNames('process-analysis-container', 'scrollable-panel-wrapper', 'col-xs-12')
+@classNameBindings('isProcessDetailsVisible:show-process-details:hide-process-details')
+class WrapperComponent extends Component {}
 
 export default connect(stateToComputed, dispatchToActions)(WrapperComponent);

@@ -1,6 +1,7 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
-import { set } from '@ember/object';
-import computed from 'ember-computed-decorators';
+import { set, action, computed } from '@ember/object';
 import _ from 'lodash';
 import { TAB_FILTER } from '../const';
 
@@ -37,57 +38,53 @@ const COLUMNS = [
     title: 'investigateProcessAnalysis.nodeList.eventTypes'
   }
 ];
-export default Component.extend({
+@classic
+@tagName('box')
+@classNames('process-node-list')
+export default class ProcessNodeList extends Component {
+  columnsConfig = COLUMNS;
+  onRowSelection = null;
+  nodeList = null;
 
-  tagName: 'box',
-
-  classNames: ['process-node-list'],
-
-  columnsConfig: COLUMNS,
-
-  onRowSelection: null,
-
-  nodeList: null,
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this.currentSort = this.currentSort || { field: 'data.localScore', direction: 'desc' };
-  },
+  }
 
   @computed('nodeList')
-  nodeListCopy(nodeList) {
-    return _.cloneDeep(nodeList).sort((node1, node2) => node2.data.localScore - node1.data.localScore);
-  },
+  get nodeListCopy() {
+    return _.cloneDeep(this.nodeList).sort((node1, node2) => node2.data.localScore - node1.data.localScore);
+  }
 
   @computed('nodeListCopy', 'activeTab')
-  filteredList(nodes, tab) {
-    let filteredNodes = nodes;
-    const filter = TAB_FILTER[tab];
+  get filteredList() {
+    let filteredNodes = this.nodeListCopy;
+    const filter = TAB_FILTER[this.activeTab];
     if (filter) {
-      filteredNodes = nodes.filter((node) => {
+      filteredNodes = this.nodeListCopy.filter((node) => {
         if (node.data.eventCategory) {
           return node.data.eventCategory[filter];
         }
       });
     }
     return filteredNodes;
-  },
+  }
 
   @computed('filteredList')
-  allItemsChecked: {
-    get() {
-      const filteredList = this.get('filteredList');
-      const selections = filteredList.filter((node) => node.selected);
-      return filteredList.length ? selections.length === filteredList.length : false;
-    },
-    set(value) {
-      return value;
-    }
-  },
+  get allItemsChecked() {
+    const filteredList = this.get('filteredList');
+    const selections = filteredList.filter((node) => node.selected);
+    return filteredList.length ? selections.length === filteredList.length : false;
+  }
+
+  set allItemsChecked(value) {
+    return value;
+  }
 
   @computed('filteredList.@each.selected')
-  selections(filteredList) {
-    return filteredList.filter((node) => node.selected).length;
-  },
+  get selections() {
+    return this.filteredList.filter((node) => node.selected).length;
+  }
 
   _toggleSelection(item) {
     set(item, 'selected', !item.selected);
@@ -99,52 +96,54 @@ export default Component.extend({
     if (this.onRowSelection) {
       this.onRowSelection(nodeList);
     }
-  },
-  actions: {
-    toggleSelection(item) {
-      this._toggleSelection(item);
-    },
-
-    toggleSelectedRow(item, index, e) {
-      const { target: { classList } } = e;
-      if (classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox')) {
-        return;
-      }
-      this._toggleSelection(item);
-    },
-
-    toggleAllSelection(items) {
-      const nodeList = this.get('nodeListCopy');
-      if (this.get('allItemsChecked')) {
-        items.setEach('selected', false);
-      } else {
-        items.setEach('selected', true);
-      }
-
-      this.toggleProperty('allItemsChecked');
-
-      if (this.onRowSelection) {
-        this.onRowSelection(nodeList);
-      }
-
-    },
-
-    sort(column) {
-      const field = column.get('field');
-      let direction = 'asc';
-      if ((this.get('currentSort.field') === column.get('field')) && (this.get('currentSort.direction') === 'desc')) {
-        direction = 'asc';
-      } else {
-        direction = 'desc';
-      }
-      this.set('currentSort', { field, direction });
-
-      const sorted = this.get('nodeListCopy').sortBy(this.get('currentSort.field'));
-      if (this.get('currentSort.direction') === 'asc') {
-        sorted.reverse();
-      }
-      this.set('nodeListCopy', sorted);
-    }
   }
 
-});
+  @action
+  toggleSelection(item) {
+    this._toggleSelection(item);
+  }
+
+  @action
+  toggleSelectedRow(item, index, e) {
+    const { target: { classList } } = e;
+    if (classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox')) {
+      return;
+    }
+    this._toggleSelection(item);
+  }
+
+  @action
+  toggleAllSelection(items) {
+    const nodeList = this.get('nodeListCopy');
+    if (this.get('allItemsChecked')) {
+      items.setEach('selected', false);
+    } else {
+      items.setEach('selected', true);
+    }
+
+    this.toggleProperty('allItemsChecked');
+
+    if (this.onRowSelection) {
+      this.onRowSelection(nodeList);
+    }
+
+  }
+
+  @action
+  sort(column) {
+    const field = column.get('field');
+    let direction = 'asc';
+    if ((this.get('currentSort.field') === column.get('field')) && (this.get('currentSort.direction') === 'desc')) {
+      direction = 'asc';
+    } else {
+      direction = 'desc';
+    }
+    this.set('currentSort', { field, direction });
+
+    const sorted = this.get('nodeListCopy').sortBy(this.get('currentSort.field'));
+    if (this.get('currentSort.direction') === 'asc') {
+      sorted.reverse();
+    }
+    this.set('nodeListCopy', sorted);
+  }
+}

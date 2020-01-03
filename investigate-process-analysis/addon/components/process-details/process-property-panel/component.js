@@ -1,13 +1,13 @@
+import classic from 'ember-classic-decorator';
+import { classNames, layout as templateLayout } from '@ember-decorators/component';
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
-import { set, get } from '@ember/object';
+import { set, get, computed } from '@ember/object';
 
-export default Component.extend({
-  layout,
-
-  classNames: ['process-property-panel'],
-
+@classic
+@templateLayout(layout)
+@classNames('process-property-panel')
+export default class ProcessPropertyPanel extends Component {
   /**
    * Namespace for the locale.
    * @type {string}
@@ -15,7 +15,7 @@ export default Component.extend({
    * @requires localeNameSpace
    * @public
    */
-  localeNameSpace: 'investigateProcessAnalysis.property.file',
+  localeNameSpace = 'investigateProcessAnalysis.property.file';
 
   /**
    * Title of the property panel
@@ -24,7 +24,7 @@ export default Component.extend({
    * @requires title
    * @public
    */
-  title: 'Property Panel',
+  title = 'Property Panel';
 
   /**
    * Required configuration that specifies properties to be displayed.
@@ -44,9 +44,9 @@ export default Component.extend({
    */
 
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this.config = this.config || [];
-  },
+  }
 
   /**
    * Data to display
@@ -54,20 +54,13 @@ export default Component.extend({
    * @requires data
    * @public
    */
-  data: null,
-
-  /**
-   * Prepares the property array setting the value to the each property reading it from the data.
-   * @param data
-   * @returns {Array}
-   * @public
-   */
+  data = null;
 
   @computed('data', 'config')
-  properties(data, config) {
-    if (data && config) {
+  get properties() {
+    if (this.data && this.config) {
       const i18n = this.get('i18n');
-      const clonedConfig = [...config];
+      const clonedConfig = [...this.config];
       // Loop through the list of property and set the value for each field
       const properties = clonedConfig.map((item) => {
         let { fieldPrefix } = item;
@@ -78,7 +71,7 @@ export default Component.extend({
           fieldPrefix = fieldItem.fieldPrefix || fieldPrefix;
           const label = `${this.get('localeNameSpace')}.${labelKey}`;
           // If field prefix combine that field to get the value
-          const value = fieldPrefix ? get(data, `${fieldPrefix}.${field}`) : get(data, field);
+          const value = fieldPrefix ? get(this.data, `${fieldPrefix}.${field}`) : get(this.data, field);
           set(fieldItem, 'value', value);
           set(fieldItem, 'displayName', i18n.t(label));
           return fieldItem;
@@ -90,4 +83,4 @@ export default Component.extend({
     }
     return [];
   }
-});
+}

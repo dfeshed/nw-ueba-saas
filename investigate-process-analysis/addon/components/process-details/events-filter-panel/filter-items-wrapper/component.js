@@ -1,6 +1,8 @@
+import classic from 'ember-classic-decorator';
+import { classNames, classNameBindings } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import { updateFilterValue, updateActionFilterItems } from 'investigate-process-analysis/actions/creators/process-filter';
 import { selectedFilterItemsArray, isWindowsAgent } from 'investigate-process-analysis/reducers/process-filter/selectors';
 
@@ -15,28 +17,24 @@ const dispatchToActions = {
   updateActionFilterItems
 };
 
-const filterItemsWrapper = Component.extend({
-
-  classNames: ['filterWrapper', 'filterItem'],
-
-  classNameBindings: ['isSelected'],
-
+@classic
+@classNames('filterWrapper', 'filterItem')
+@classNameBindings('isSelected')
+class filterItemsWrapper extends Component {
   @computed('listOfFiltersSelected', 'option')
-  isSelected: (listOfFiltersSelected, filterOption) => {
-    return listOfFiltersSelected.includes(filterOption);
-  },
-
-  actions: {
-    toggleSelection(filterName, optionSelected) {
-      const isSelected = !this.get('isSelected');
-      const selectedProcess = this.get('selectedProcess');
-      if (filterName === 'category') {
-        this.send('updateActionFilterItems', { isSelected, optionSelected, isWindowsAgent });
-      }
-      this.send('updateFilterValue', { filterName, optionSelected, isSelected, selectedProcess });
-    }
+  get isSelected() {
+    return this.listOfFiltersSelected.includes(this.option);
   }
 
-});
+  @action
+  toggleSelection(filterName, optionSelected) {
+    const isSelected = !this.get('isSelected');
+    const selectedProcess = this.get('selectedProcess');
+    if (filterName === 'category') {
+      this.send('updateActionFilterItems', { isSelected, optionSelected, isWindowsAgent });
+    }
+    this.send('updateFilterValue', { filterName, optionSelected, isSelected, selectedProcess });
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(filterItemsWrapper);

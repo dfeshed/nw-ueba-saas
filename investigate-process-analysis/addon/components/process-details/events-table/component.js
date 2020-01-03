@@ -1,3 +1,6 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { classNames, classNameBindings, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
@@ -10,20 +13,17 @@ const stateToComputed = (state) => ({
   errorMessage: errorMessage(state)
 });
 
-const EventsTableComponent = Component.extend({
+@classic
+@tagName('box')
+@classNames('process-events-details')
+@classNameBindings('isShowFilter')
+class EventsTableComponent extends Component {
+  isShowFilter = false;
 
-  tagName: 'box',
-
-  classNames: ['process-events-details'],
-
-  classNameBindings: ['isShowFilter'],
-
-  isShowFilter: false,
-
-  actions: {
-    toggleFilterPanel() {
-      this.toggleProperty('isShowFilter');
-    }
+  @action
+  toggleFilterPanel() {
+    this.toggleProperty('isShowFilter');
   }
-});
+}
+
 export default connect(stateToComputed)(EventsTableComponent);

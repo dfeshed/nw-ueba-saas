@@ -1,7 +1,9 @@
+import classic from 'ember-classic-decorator';
+import { tagName } from '@ember-decorators/component';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { selectedProcess } from 'investigate-process-analysis/reducers/process-tree/selectors';
-import computed from 'ember-computed-decorators';
 
 import {
   propertyConfig,
@@ -20,22 +22,19 @@ const stateToComputed = (state) => ({
   processDetails: processDetails(selectedProcess(state))
 });
 
-const PropertyContainer = Component.extend({
-
-  tagName: '',
-
-
-  executionLabelPrefix: 'investigateProcessAnalysis.processExecutionDetails.',
-
-  fileLabelPrefix: 'investigateProcessAnalysis.property.file.',
+@classic
+@tagName('')
+class PropertyContainer extends Component {
+  executionLabelPrefix = 'investigateProcessAnalysis.processExecutionDetails.';
+  fileLabelPrefix = 'investigateProcessAnalysis.property.file.';
 
   @computed('processDetails')
-  hasProcessDetails(processDetails) {
-    if (processDetails.checksum) {
+  get hasProcessDetails() {
+    if (this.processDetails.checksum) {
       return true;
     }
     return false;
   }
-});
+}
 
 export default connect(stateToComputed)(PropertyContainer);

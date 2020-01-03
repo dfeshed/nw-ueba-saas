@@ -1,12 +1,15 @@
+import classic from 'ember-classic-decorator';
+import { classNames, attributeBindings, classNameBindings, tagName } from '@ember-decorators/component';
+import { observes } from '@ember-decorators/object';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import { run } from '@ember/runloop';
 import { connect } from 'ember-redux';
 import _ from 'lodash';
 import { select, event, selectAll } from 'd3-selection';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
-import { set, observer } from '@ember/object';
+import { set, action, computed } from '@ember/object';
 import {
   addNodeContent,
   addSelectedClass,
@@ -20,7 +23,6 @@ import {
   prepareTreeData,
   documentTitle
 } from './helpers/content';
-import { inject as service } from '@ember/service';
 import { processDetails } from 'investigate-process-analysis/reducers/process-properties/selectors';
 import { fetchProcessDetails, fetchHostNames } from 'investigate-process-analysis/actions/creators/process-properties';
 import { resetFilterValue } from 'investigate-process-analysis/actions/creators/process-filter';
@@ -81,47 +83,43 @@ const idCounter = { id: 0 };
 let hideEvent = null;
 let displayEvent = null;
 
-const TreeComponent = Component.extend({
+@classic
+@tagName('box')
+@classNames('process-tree')
+@classNameBindings('isStreaming:show-nodes:hide-nodes')
+@attributeBindings('zoom:data-zoom')
+class TreeComponent extends Component {
+  zoomed = zoomed;
 
-  zoomed,
+  @service
+  eventBus;
 
-  tagName: 'box',
+  currentElement = null;
+  isStreaming = false;
+  hasEvents = true;
 
-  eventBus: service(),
-
-  currentElement: null,
-
-  classNames: 'process-tree',
-
-  classNameBindings: ['isStreaming:show-nodes:hide-nodes'],
-
-  attributeBindings: ['zoom:data-zoom'],
-
-  isStreaming: false,
-
-  hasEvents: true,
   /**
    * D3 tree minimum zoom
    * @property
    * @public
    */
-  zoomMin: 0.1,
+  zoomMin = 0.1;
 
-  zoom: 0.8,
+  zoom = 0.8;
 
   /**
    * D3 tree maximum zoom
    * @property
    * @public
    */
-  zoomMax: 2,
+  zoomMax = 2;
 
   /**
    * Specify the gap between the two node
    * @property
    * @public
    */
-  nodeSeparation: CONST.NODE_SEPARATION,
+  nodeSeparation = CONST.NODE_SEPARATION;
 
   /**
    * Icon to represent the collapse tree node. If you want to add the icon in D3 svg we use font-icon code. Here it's
@@ -130,35 +128,38 @@ const TreeComponent = Component.extend({
    * @public
    */
 
-  rootNode: null,
+  rootNode = null;
 
-  process: null,
+  process = null;
+  selectedProcess = null;
 
-  selectedProcess: null,
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this.nodeSize = this.nodeSize || [CONST.LINK_WIDTH, CONST.LINK_HEIGHT];
-  },
+  }
 
-  _processDetailsVisible: observer('isProcessDetailsVisible', function() {
-    if (this.get('isProcessDetailsVisible') && this.get('hasEvents')) {
+  @observes('isProcessDetailsVisible')
+  _processDetailsVisible() {
+    if (this.isProcessDetailsVisible && this.get('hasEvents')) {
       this._reCenterOnSideTabOpen(getSelectedProcess());
     }
-  }),
+  }
+
   @computed('nodeSize', 'nodeSeparation')
-  treeInstance(nodeSize, nodeSeparation) {
+  get treeInstance() {
     const treeInstance = tree()
-      .nodeSize(nodeSize)
+      .nodeSize(this.nodeSize)
       .separation(() => {
-        return nodeSeparation;
+        return this.nodeSeparation;
       });
     return treeInstance;
-  },
+  }
 
   @computed('fileProperty', 'process')
-  processData(fileProperty, process) {
+  get processData() {
     const properties = ['userAll', 'signature', 'reputationStatus', 'fileStatus', 'directoryDst', 'paramDst'];
     const displayProperties = {};
+    const { fileProperty } = this;
     properties.forEach(function(prop) {
       if (prop === 'signature') {
         const { signature } = fileProperty;
@@ -167,13 +168,13 @@ const TreeComponent = Component.extend({
         displayProperties[prop] = fileProperty[prop] || '';
       }
     });
-    displayProperties.directoryDst = process.directoryDst;
-    displayProperties.paramDst = process.paramDst;
-    displayProperties.userAll = process.userAll;
+    displayProperties.directoryDst = this.process.directoryDst;
+    displayProperties.paramDst = this.process.paramDst;
+    displayProperties.userAll = this.process.userAll;
     return displayProperties;
-  },
+  }
 
-  getSVG: (element) => {
+  getSVG = (element) => {
     if (element) {
       const height = element.clientHeight || 0;
       const el = select(element);
@@ -182,11 +183,11 @@ const TreeComponent = Component.extend({
       return treeSVG;
     }
     return null;
-  },
+  };
 
   @computed('element')
-  zoomBehaviour(element) {
-    const el = select(element);
+  get zoomBehaviour() {
+    const el = select(this.element);
     const zoomCallback = run.bind(this, 'zoomed');
 
     const zoomBehaviour = zoom()
@@ -202,10 +203,10 @@ const TreeComponent = Component.extend({
       })
       .on('zoom', zoomCallback);
     return zoomBehaviour;
-  },
+  }
 
   didReceiveAttrs() {
-    this._super(...arguments);
+    undefined;
 
     if (this.isDestroyed) {
       return;
@@ -260,7 +261,8 @@ const TreeComponent = Component.extend({
       };
       this.send('getParentAndChildEvents', this.get('selectedProcessId'), { onComplete });
     }
-  },
+  }
+
   /**
    * Initialize the required object for rendering the D3 tree chart.
    * @private
@@ -291,7 +293,7 @@ const TreeComponent = Component.extend({
       this._buildChart(rootNode);
       addSelectedClass(selectedProcessId);
     }
-  },
+  }
 
   /**
    * Build the chart for given source and root node
@@ -321,8 +323,7 @@ const TreeComponent = Component.extend({
       process.x0 = process.x;
       process.y0 = process.y;
     });
-  },
-
+  }
 
   /**
    *
@@ -336,7 +337,7 @@ const TreeComponent = Component.extend({
     const nodeEnter = this._onNodeEnter(node, source);
     onNodeUpdate(node, nodeEnter);
     onNodeExit(node, source);
-  },
+  }
 
   _showPopup(element, d) {
     this.set('currentElement', element);
@@ -350,7 +351,7 @@ const TreeComponent = Component.extend({
       }
       sendTetherEvent(element, 'process-filter', this.get('eventBus'), 'display', { node: d, children });
     }, 200);
-  },
+  }
 
   _appendExpandCollapseIcon(nodeEnter, counter) {
     const self = this;
@@ -400,7 +401,7 @@ const TreeComponent = Component.extend({
         self.collapseProcess(d);
       });
     appendExpandCollapseIcon(expandWrapper, collapseWrapper);
-  },
+  }
 
   _onMouseOver(d, element, self) {
     const eventBus = self.get('eventBus');
@@ -424,7 +425,7 @@ const TreeComponent = Component.extend({
       sendTetherEvent(element, 'panel1', eventBus, 'display', processDetails(d.data));
     }, 1000);
     displayEvent = event;
-  },
+  }
 
   _onMouseLeave(d, element, self) {
     const eventBus = self.get('eventBus');
@@ -438,7 +439,7 @@ const TreeComponent = Component.extend({
       }
     }, 200);
     hideEvent = event;
-  },
+  }
 
   _onNodeEnter(node, source) {
     const self = this;
@@ -469,7 +470,7 @@ const TreeComponent = Component.extend({
     const completeNode = addNodeContent(processNode, nodeEnter, self, idCounter, { mouseOver: self._onMouseOver, mouseLeave: self._onMouseLeave });
 
     return completeNode;
-  },
+  }
 
   _getChildProcess(d, element) {
     const onComplete = () => {
@@ -481,7 +482,7 @@ const TreeComponent = Component.extend({
       this._showPopup(element, d);
     };
     this.send('getChildEvents', d.data.processId, { onComplete });
-  },
+  }
 
   expandProcess(node, children) {
     node.children = children.filter((node) => node.selected);
@@ -489,7 +490,7 @@ const TreeComponent = Component.extend({
     node.data._children = null;
 
     this._buildChart(node);
-  },
+  }
 
   expandAllProcess(node, children) {
     children.forEach((node) => {
@@ -502,10 +503,10 @@ const TreeComponent = Component.extend({
     node._children = null;
 
     this._buildChart(node);
-  },
+  }
 
   _reCenterOnSideTabOpen(d) {
-    if (d.transform.animVal[0]) {
+    if (d?.transform?.animVal[0]) {
       const boundary = getProcessTreeBoundary();
       const [ { matrix } ] = d.transform.animVal;
       const transform = zoomIdentity
@@ -515,7 +516,7 @@ const TreeComponent = Component.extend({
         .duration(CONST.DURATION)
         .call(this.get('zoomBehaviour').transform, transform);
     }
-  },
+  }
 
   _recenter(d) {
     const boundary = getProcessTreeBoundary();
@@ -525,7 +526,8 @@ const TreeComponent = Component.extend({
     this.parent.transition()
       .duration(CONST.DURATION)
       .call(this.get('zoomBehaviour').transform, transform);
-  },
+  }
+
   _onNodeClick(d) {
     this._recenter(d);
 
@@ -540,7 +542,7 @@ const TreeComponent = Component.extend({
       this.send('onEventNodeSelected');
     }
     document.title = documentTitle(d.data.processName, this.get('queryInput'));
-  },
+  }
 
   collapseProcess(d) {
     event.stopImmediatePropagation();
@@ -561,39 +563,40 @@ const TreeComponent = Component.extend({
     this._buildChart(d);
     select(`*[data-id='${ d.data.processId }']`).select('text.text-icon').text(ICON.EXPAND);
     select(`*[data-id='${ d.data.processId }']`).select('text.collapse-icon').text('');
-  },
+  }
 
   willDestroyElement() {
     freeIdCounter = 0;
     nodeIdCounter = 0;
     idCounter.id = 0;
-  },
+  }
 
-  actions: {
-    copyLaunchArgument(launchArguments) {
-      copyToClipboard(launchArguments);
-    },
+  @action
+  copyLaunchArgument(launchArguments) {
+    copyToClipboard(launchArguments);
+  }
 
-    appendNodes({ node, children }) {
-      node.data.expanded = true;
-      if (node.data.childCount) {
-        this.expandAllProcess(node, children);
+  @action
+  appendNodes({ node, children }) {
+    node.data.expanded = true;
+    if (node.data.childCount) {
+      this.expandAllProcess(node, children);
 
-        select(`*[data-id='${ node.data.processId }']`).select('text.text-icon').text(ICON.FILTER);
-        select(`*[data-id='${ node.data.processId }']`).select('text.collapse-icon').text(ICON.COLLAPSE);
-      }
-    },
-
-    filterNodes({ node, children }) {
-      node.data.expanded = true;
-      if (node.data.childCount) {
-        this.expandProcess(node, children);
-
-        select(`*[data-id='${ node.data.processId }']`).select('text.text-icon').text(ICON.FILTER);
-        select(`*[data-id='${ node.data.processId }']`).select('text.collapse-icon').text(ICON.COLLAPSE);
-      }
+      select(`*[data-id='${ node.data.processId }']`).select('text.text-icon').text(ICON.FILTER);
+      select(`*[data-id='${ node.data.processId }']`).select('text.collapse-icon').text(ICON.COLLAPSE);
     }
   }
-});
+
+  @action
+  filterNodes({ node, children }) {
+    node.data.expanded = true;
+    if (node.data.childCount) {
+      this.expandProcess(node, children);
+
+      select(`*[data-id='${ node.data.processId }']`).select('text.text-icon').text(ICON.FILTER);
+      select(`*[data-id='${ node.data.processId }']`).select('text.collapse-icon').text(ICON.COLLAPSE);
+    }
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(TreeComponent);

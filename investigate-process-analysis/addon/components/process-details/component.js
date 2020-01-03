@@ -1,5 +1,8 @@
+import classic from 'ember-classic-decorator';
+import { classNames, classNameBindings } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
+import { alias } from '@ember/object/computed';
 import Component from '@ember/component';
-import computed, { alias } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { setDetailsTab, toggleEventPanelExpanded, toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
 import { selectedTab, isEventsSelected } from 'investigate-process-analysis/reducers/process-visuals/selectors';
@@ -17,36 +20,33 @@ const dispatchToActions = {
   toggleProcessDetailsVisibility
 };
 
-const processDetails = Component.extend({
-
-  classNames: ['process-details'],
-
-  classNameBindings: ['cssClassName'],
-
-  isEventExpanded: false,
+@classic
+@classNames('process-details')
+@classNameBindings('cssClassName')
+class processDetails extends Component {
+  isEventExpanded = false;
 
   @alias('activeTab.component')
-  tabComponent: '',
-
+  tabComponent;
 
   @computed('isEventsSelected', 'isEventPanelExpanded')
-  cssClassName(isEventsSelected, isEventPanelExpanded) {
-    if (isEventsSelected) {
-      return isEventPanelExpanded ? 'expand' : 'collapse';
+  get cssClassName() {
+    if (this.isEventsSelected) {
+      return this.isEventPanelExpanded ? 'expand' : 'collapse';
     }
     return null;
-  },
+  }
 
   @computed('isEventExpanded')
-  toggleEventsClass: (isEventExpanded) => isEventExpanded ? 'shrink-diagonal-2' : 'expand-diagonal-4',
-
-  actions: {
-    toggleDetailsExpanded() {
-      this.toggleProperty('isEventExpanded');
-      this.send('toggleEventPanelExpanded');
-    }
-
+  get toggleEventsClass() {
+    return this.isEventExpanded ? 'shrink-diagonal-2' : 'expand-diagonal-4';
   }
-});
+
+  @action
+  toggleDetailsExpanded() {
+    this.toggleProperty('isEventExpanded');
+    this.send('toggleEventPanelExpanded');
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(processDetails);

@@ -1,3 +1,6 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { classNames, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
@@ -18,18 +21,16 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   setSortField
 };
-const processEventsTable = Component.extend({
 
-  classNames: ['process-events-table'],
-
-  tagName: 'box',
-
-  actions: {
-    sort(column) {
-      column.set('isDescending', !column.isDescending);
-      this.send('setSortField', { field: column.field, isDescending: column.isDescending });
-    }
+@classic
+@classNames('process-events-table')
+@tagName('box')
+class processEventsTable extends Component {
+  @action
+  sort(column) {
+    column.set('isDescending', !column.isDescending);
+    this.send('setSortField', { field: column.field, isDescending: column.isDescending });
   }
+}
 
-});
 export default connect(stateToComputed, dispatchToActions)(processEventsTable);
