@@ -3,66 +3,13 @@
 /* Imports all styles from component-lib addon. */
 @import 'component-lib/manifest';
 
-@import 'rsa-data-filters/manifest';
-
-@import 'rsa-list-manager/manifest';
-
-/* Import context styles from addon */
-@import 'context/manifest';
-
-/* Import recon styles from addon */
-@import 'recon/manifest';
-
-/* Import respond-shared styles from addon */
-@import 'respond-shared/manifest';
-
-/* Imports all styles from respond engine */
-@import 'respond/manifest';
-
-/* Imports all styles from configure engine */
-@import 'configure/manifest';
-
-/* Imports all styles from settings addon */
-@import 'preferences/manifest';
-
-/* Import investigate hosts styles from engine */
-@import 'investigate/manifest';
-
-/* Import investigate hosts styles from engine */
-@import 'investigate-events/manifest';
-
-/* Import investigate files styles from engine */
-@import 'investigate-files/manifest';
-
-/* Import investigate hosts styles from engine */
-@import 'investigate-hosts/manifest';
-
-/* Import packager styles */
-@import 'packager/manifest';
-
-/* Import endpoint-rar styles */
-@import 'endpoint-rar/manifest';
-
-/* Import license styles */
-@import 'license/manifest';
-
 /* putting the engines styles */
 @import "entity-details/manifest";
-
-/* Imports styles from investigate-shared. */
-@import 'investigate-shared/manifest';
 
 /* Imports styles from investigate-users. */
 @import 'investigate-users/manifest';
 
-/** Import process analysis-shared */
-@import "investigate-process-analysis/manifest";
-
-/* Imports styles specific to rsa-context-menu. */
-@import 'rsa-context-menu/manifest';
-
 /* Imports styles specific for this sa app. */
-@import 'sa/manifest';
+@import 'netwitness-ueba/manifest';
 
 @import 'admin/manifest';
-@import 'admin-source-management/manifest';

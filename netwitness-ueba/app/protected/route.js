@@ -201,8 +201,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
           controller.set('listOfServices', response.data);
         });
       }
-      debugger;
-      this._checkAccessAndTransition(key, transition.targetName);
+      this.transitionTo(transition.targetName);
     }
   },
 
@@ -264,37 +263,5 @@ export default Route.extend(AuthenticatedRouteMixin, {
       // eslint-disable-next-line no-console
       console.error('There was an issue loading your profile. Please try again.');
     });
-  },
-
-  _checkAccessAndTransition(key, transitionName) {
-    if ( // known transition into ember with perms
-      (transitionName && transitionName.includes('configure')) ||
-      (transitionName && transitionName.includes('respond') && this.get('accessControl.hasRespondAccess')) ||
-      (transitionName && transitionName.includes('packager')) ||
-      (transitionName && transitionName.includes('rarconfig')) ||
-      (transitionName && transitionName.includes('investigate') && this.get('accessControl.hasInvestigateAccess')) ||
-      (transitionName && transitionName.includes('admin') && this.get('accessControl.hasAdminAccess'))
-    ) {
-      return this.transitionTo(transitionName);
-    } else if ( // classic default landing page transition with perms
-      (transitionName && !transitionName.includes('respond') && !transitionName.includes('investigate')) &&
-      ((key === this.get('accessControl.adminUrl')) && this.get('accessControl.hasAdminAccess')) ||
-      ((key === this.get('accessControl.configUrl')) && this.get('accessControl.hasConfigAccess')) ||
-      ((key === '/investigation') && this.get('accessControl.hasInvestigateAccess')) ||
-      ((key === '/unified') && this.get('accessControl.hasMonitorAccess'))
-    ) {
-      return window.location.href = key;
-    } else if ( // ember default landing page transition with perms
-      (key && key.includes('respond') && this.get('accessControl.hasRespondAccess')) ||
-      (key && key.includes('investigate') && this.get('accessControl.hasInvestigateAccess'))
-    ) {
-      return this.transitionTo(key);
-    } else { // neither transition nor default landing page found
-      if ((config.landingPageDefault === '/respond') && this.get('accessControl.hasRespondAccess')) {
-        return this.transitionTo('protected.respond');
-      } else {
-        return window.location.href = '/unified';
-      }
-    }
   }
 });

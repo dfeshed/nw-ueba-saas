@@ -30,3 +30,4 @@ export default UserIdleService.extend({
     this._super(...arguments);
   }
 });
+  
