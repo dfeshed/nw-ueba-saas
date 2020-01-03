@@ -53,7 +53,7 @@ module('Integration | Component | events-list', function(hooks) {
     assert.equal(find(selectors.label).textContent.trim(), 'events');
   });
 
-  skip('onclick the table row main will expand the event showing any details for the given type', async function(assert) {
+  test('onclick the table row main will expand the event showing any details for the given type', async function(assert) {
     this.set('items', getAllEvents());
     this.set('selection', getSelection());
 
@@ -100,7 +100,7 @@ module('Integration | Component | events-list', function(hooks) {
     assert.equal(findAll(selectors.processDetail).length, 0);
 
 
-    await click(`${selectors.row}:nth-of-type(8) ${selectors.endpointHeader}`);
+    await click(`${selectors.row}:nth-of-type(9) ${selectors.endpointHeader}`);
     await waitUntil(() => findAll(selectors.endpointFooter).length === 3);
     await settled();
 
