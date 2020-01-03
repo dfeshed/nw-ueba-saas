@@ -7,10 +7,10 @@
   isAgentMigrated=isAgentMigrated
   showRiskScoreModal=(action 'showRiskScoreModal')
   pivotToInvestigate=(action 'pivotToInvestigate')
-  showConfirmationModal=(action 'showConfirmationModal')
+  showConfirmationModal=(action 'onshowConfirmationModal')
   showScanModal=(action 'showScanModal')
   requestMFTDownload=(action 'requestMFTDownload')
-  showIsolationModal=(action 'showIsolationModal')
+  showIsolationModal=(action 'onshowIsolationModal')
 }}
 {{#if selectedServiceData.isServiceOnline}}
   {{host-list/host-table
@@ -20,12 +20,12 @@
     isMFTEnabled=isMFTEnabled
     isAgentMigrated=isAgentMigrated
     pivotToInvestigate=(action 'pivotToInvestigate')
-    showConfirmationModal=(action 'showConfirmationModal')
+    showConfirmationModal=(action 'onshowConfirmationModal')
     showRiskScoreModal=(action 'showRiskScoreModal')
     showScanModal=(action 'showScanModal')
     requestSystemDumpDownload=(action 'requestSystemDumpDownload')
     requestMFTDownload=(action 'requestMFTDownload')
-    showIsolationModal=(action 'showIsolationModal')
+    showIsolationModal=(action 'onshowIsolationModal')
     hostDetails=hostDetails
   }}
 {{else}}

@@ -1,29 +1,30 @@
-import computed from 'ember-computed-decorators';
+import classic from 'ember-classic-decorator';
+import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import config from './overview-property-config';
 import PropertyPanel from 'investigate-shared/components/endpoint/base-property-panel/component';
-import { get } from '@ember/object';
+import { get, computed } from '@ember/object';
 import _ from 'lodash';
-import { inject as service } from '@ember/service';
 
 /**
  * Overide the the `endpoint/base-property-panel` to accommodate different json structure
  * @public
  */
-export default PropertyPanel.extend({
+@classic
+export default class _PropertyPanel extends PropertyPanel {
+  config = config;
 
-  config,
-
-  features: service(),
+  @service
+  features;
 
   @computed('data', 'config')
-  properties(data, config) {
-    assert('Cannot instantiate Summary panel without configuration.', config);
-    config = this.updateConfig(data, config);
-    if (data) {
+  get properties() {
+    assert('Cannot instantiate Summary panel without configuration.', this.config);
+    this.config = this.updateConfig(this.data, this.config);
+    if (this.data) {
       const i18n = this.get('i18n');
       // Loop through the list of property and set the value for each field
-      const properties = config.map((item) => {
+      const properties = this.config.map((item) => {
         // Loop through all the fields and set the value and display name
         const fields = item.fields.map((fieldItem) => {
           const { fieldPrefix, field, labelKey, isStandardString } = fieldItem;
@@ -33,7 +34,7 @@ export default PropertyPanel.extend({
           if (isStandardString) {
             value = field;
           } else {
-            value = (fieldPrefix ? get(data, `${fieldPrefix}.${field}`) : get(data, field));
+            value = (fieldPrefix ? get(this.data, `${fieldPrefix}.${field}`) : get(this.data, field));
           }
           if (value && field === 'groupPolicy.groups') {
             value = value.map((v) => {
@@ -51,7 +52,8 @@ export default PropertyPanel.extend({
       return properties;
     }
     return [];
-  },
+  }
+
   /**
    * Host has array of property values, currently common property panel does not support array. Need to override the
    * property panel to handle this. That multioption set in the config
@@ -96,4 +98,4 @@ export default PropertyPanel.extend({
     }
     return _.flatten(newConfigList);
   }
-});
+}

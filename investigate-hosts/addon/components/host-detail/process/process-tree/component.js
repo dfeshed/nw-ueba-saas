@@ -1,6 +1,9 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { observes } from '@ember-decorators/object';
+import { action, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
-import { observer } from '@ember/object';
 import { connect } from 'ember-redux';
 import { updateRowVisibility } from './utils';
 import {
@@ -12,7 +15,6 @@ import {
   schema,
   savedProcessColumns
 } from 'investigate-hosts/reducers/details/process/selectors';
-import { inject as service } from '@ember/service';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { failure } from 'investigate-shared/utils/flash-messages';
 import { serviceList, isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
@@ -82,58 +84,53 @@ const stateToComputed = (state) => ({
 });
 
 
-const TreeComponent = Component.extend({
+@classic
+@tagName('box')
+@classNames('rsa-process-tree')
+class TreeComponent extends Component {
+  @service
+  accessControl;
 
-  tagName: 'box',
+  @service
+  pivot;
 
-  classNames: ['rsa-process-tree'],
+  @service
+  timezone;
 
-  accessControl: service(),
+  showServiceModal = false;
+  showResetScoreModal = false;
+  showFileStatusModal = false;
+  contextItems = null;
 
-  pivot: service(),
-
-  timezone: service(),
-
-  showServiceModal: false,
-
-  showResetScoreModal: false,
-
-  showFileStatusModal: false,
-
-  contextItems: null,
-
-  /**
-   * Filtering the the items based on visible property, hiding the virtual child element based the parent expanded or not
-   * @param items
-   * @public
-   */
   @computed('treeAsList.@each.visible', 'isTreeView', 'processList')
-  visibleItems(items, isTreeView, processList) {
-    if (isTreeView) {
+  get visibleItems() {
+    if (this.isTreeView) {
       return this.get('treeAsList').filterBy('visible', true);
     } else {
-      return processList;
+      return this.processList;
     }
-  },
+  }
 
   @computed('defaultSchema', 'savedProcessColumns')
-  columns(schema, savedColumns) {
-    return updateProcessColumns(savedColumns, schema);
-  },
+  get columns() {
+    return updateProcessColumns(this.savedProcessColumns, this.defaultSchema);
+  }
+
   /**
    * We are using observer here because we need to close the property panel when snapshot changes, snapshot is outside
    * of the this component
    */
-  _loadingStatus: observer('isProcessTreeLoading', 'sortField', 'visibleItems.[]', function() {
+  @observes('isProcessTreeLoading', 'sortField', 'visibleItems.[]')
+  _loadingStatus() {
     once(this, 'closePanel');
-  }),
+  }
 
   closePanel() {
     if (!this.get('isDestroyed') && !this.get('isDestroying') && this.closePropertyPanel) {
       this.send('deSelectAllProcess');
       this.closePropertyPanel();
     }
-  },
+  }
 
   /**
    * Observer to dispatch getProcessdetails action when navigate to Process tab using explore
@@ -141,12 +138,13 @@ const TreeComponent = Component.extend({
    * @public
    */
 
-  loadExploredProcessDetails: observer('treeAsList', function() {
+  @observes('treeAsList')
+  loadExploredProcessDetails() {
     const treeList = this.get('treeAsList') || [];
     if (treeList.length) {
       this.send('getProcessDetails', treeList[0].pid);
     }
-  }),
+  }
 
   _isAlreadySelected(selections, item) {
     let selected = false;
@@ -154,165 +152,175 @@ const TreeComponent = Component.extend({
       selected = selections.findBy('pid', item.pid);
     }
     return selected;
-  },
+  }
 
+  @action
+  navigateToProcessAnalysis(item) {
+    const { zoneId } = this.get('timezone.selected');
+    const {
+      agentId,
+      osType,
+      hostName,
+      timeRange,
+      serviceId,
+      serverId
+    } = this.getProperties('agentId', 'osType', 'hostName', 'timeRange', 'serviceId', 'serverId');
+    const { name, checksumSha256, vpid } = item;
+    const { value, unit } = timeRange;
+    const range = buildTimeRange(value, unit, zoneId);
+    const timeStr = `st=${range.startTime}&et=${range.endTime}`;
+    const osTypeParam = `osType=${osType}&vid=${vpid}`;
+    const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&hn=${hostName}&pn=${name}&${timeStr}&${osTypeParam}&serverId=${serverId}`;
+    window.open(`${window.location.origin}/investigate/process-analysis?${queryParams}`, '_blank', 'width=1440,height=900');
+  }
 
-  actions: {
+  @action
+  sort(column) {
+    const { field: sortField, isDescending: isDescOrder } = column;
+    this.send('sortBy', sortField, !isDescOrder);
+    column.set('isDescending', !isDescOrder);
+  }
 
-    navigateToProcessAnalysis(item) {
-      const { zoneId } = this.get('timezone.selected');
-      const {
-        agentId,
-        osType,
-        hostName,
-        timeRange,
-        serviceId,
-        serverId
-      } = this.getProperties('agentId', 'osType', 'hostName', 'timeRange', 'serviceId', 'serverId');
-      const { name, checksumSha256, vpid } = item;
-      const { value, unit } = timeRange;
-      const range = buildTimeRange(value, unit, zoneId);
-      const timeStr = `st=${range.startTime}&et=${range.endTime}`;
-      const osTypeParam = `osType=${osType}&vid=${vpid}`;
-      const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&hn=${hostName}&pn=${name}&${timeStr}&${osTypeParam}&serverId=${serverId}`;
-      window.open(`${window.location.origin}/investigate/process-analysis?${queryParams}`, '_blank', 'width=1440,height=900');
-    },
+  @action
+  handleToggleExpand(index, level, item) {
+    const rows = this.get('treeAsList');
+    const { pid, expanded } = item;
+    updateRowVisibility(rows, pid, expanded);
+  }
 
-
-    sort(column) {
-      const { field: sortField, isDescending: isDescOrder } = column;
-      this.send('sortBy', sortField, !isDescOrder);
-      column.set('isDescending', !isDescOrder);
-    },
-
-
-    handleToggleExpand(index, level, item) {
-      const rows = this.get('treeAsList');
-      const { pid, expanded } = item;
-      updateRowVisibility(rows, pid, expanded);
-    },
-
-    /**
-     * Handle for the row click action
-     * @param item
-     * @param index
-     * @public
-     */
-    handleRowClickAction(item, index, e) {
-      const { pid, checksumSha256 } = item;
-      const { target: { classList } } = e;
-      const machineName = this.get('hostName');
-      // If it's machine name click don't select the row
-      if (e.target.tagName.toLowerCase() === 'a' || e.target.parentElement.tagName.toLowerCase() === 'a') {
-        return;
-      }
-      // do not select row when checkbox is clicked
-      if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
-        if (this.get('selectedRowIndex') !== index) {
-          this.send('setRowIndex', index);
-          // if clicked row is one among the checkbox selected list, row click will highlight that row keeping others
-          // checkbox selected.
-          // when a row not in the checkbox selected list is clicked, other checkboxes are cleared.
-          if (!this._isAlreadySelected(this.get('selectedProcessList'), item)) {
-            this.send('deSelectAllProcess');
-            this.send('toggleProcessSelection', { ...item, machineName });
-          }
-
-          if (this.openPropertyPanel) {
-            next(() => {
-              this.openPropertyPanel();
-            });
-          }
-          this.send('onProcessSelection', pid, checksumSha256);
-        } else {
-          this.send('toggleProcessSelection', { ...item, machineName }); // Adding machine name to item, as it's not there
-          this.send('setRowIndex', null);
-          if (this.closePropertyPanel) {
-            this.closePropertyPanel();
-          }
-        }
-      }
-    },
-
-    beforeContextMenuShow(menu, event) {
-      const { contextSelection: item, contextItems } = menu;
-      const machineName = this.get('hostName');
-
-      if (contextItems.length) {
-        // Need to store this locally set it back again to menu object
-        this.set('contextItems', contextItems);
-      }
-      // For anchor tag hide the context menu and show browser default right click menu
-      if (event.target.tagName.toLowerCase() === 'a' || event.target.parentElement.tagName.toLowerCase() === 'a') {
-        menu.set('contextItems', []);
-      } else {
-        menu.set('contextItems', this.get('contextItems'));
-
-        // Highlight is removed and right panel is closed when right clicked on non-highlighted row
-        if (this.get('selectedProcessId') !== item.pid) {
-          this.closePropertyPanel();
-          this.send('setRowIndex', null);
-        }
-        this.set('itemList', [item]);
+  /**
+   * Handle for the row click action
+   * @param item
+   * @param index
+   * @public
+   */
+  @action
+  handleRowClickAction(item, index, e) {
+    const { pid, checksumSha256 } = item;
+    const { target: { classList } } = e;
+    const machineName = this.get('hostName');
+    // If it's machine name click don't select the row
+    if (e.target.tagName.toLowerCase() === 'a' || e.target.parentElement.tagName.toLowerCase() === 'a') {
+      return;
+    }
+    // do not select row when checkbox is clicked
+    if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
+      if (this.get('selectedRowIndex') !== index) {
+        this.send('setRowIndex', index);
+        // if clicked row is one among the checkbox selected list, row click will highlight that row keeping others
+        // checkbox selected.
+        // when a row not in the checkbox selected list is clicked, other checkboxes are cleared.
         if (!this._isAlreadySelected(this.get('selectedProcessList'), item)) {
           this.send('deSelectAllProcess');
           this.send('toggleProcessSelection', { ...item, machineName });
         }
-        const selections = this.get('selectedProcessList');
-        if (selections && selections.length === 1) {
-          this.send('getFileContextFileStatus', 'PROCESS', selections);
+
+        if (this.openPropertyPanel) {
+          next(() => {
+            this.openPropertyPanel();
+          });
+        }
+        this.send('onProcessSelection', pid, checksumSha256);
+      } else {
+        this.send('toggleProcessSelection', { ...item, machineName }); // Adding machine name to item, as it's not there
+        this.send('setRowIndex', null);
+        if (this.closePropertyPanel) {
+          this.closePropertyPanel();
         }
       }
-    },
-
-    pivotToInvestigate(item, category) {
-      const machineName = this.get('hostName');
-      this.get('pivot').pivotToInvestigate('checksumSha256', { ...item, machineName }, category);
-    },
-
-    onCloseServiceModal() {
-      this.set('showServiceModal', false);
-    },
-
-    showEditFileStatus(item) {
-      this.set('itemList', [item]);
-      if (this.get('accessControl.endpointCanManageFiles')) {
-        this.set('showFileStatusModal', true);
-      } else {
-        failure('investigateFiles.noManagePermissions');
-      }
-    },
-
-    onCloseEditFileStatus() {
-      this.set('showFileStatusModal', false);
-    },
-
-    showRiskScoreModal(fileList) {
-      this.set('selectedFiles', fileList);
-      this.set('showResetScoreModal', true);
-    },
-
-    onResetScoreModalClose() {
-      this.set('showResetScoreModal', false);
-    },
-    /**
-     * Abort the action if dragged column is machine name, risk score and checkbox also abort if column in dropped to
-     * machine name, risk score and checkbox.
-     *
-     */
-    onReorderColumns(columns, newColumns, column, fromIndex, toIndex) {
-      return !(column.dataType === 'checkbox' ||
-        column.field === 'name' ||
-        column.field === 'machineFileScore' ||
-        column.field === 'fileProperties.score' ||
-        toIndex === 0 ||
-        toIndex === 1 ||
-        toIndex === 2);
-
-    },
-    onColumnConfigChange(changedProperty, changedColumns) {
-      this.send('saveColumnConfig', 'hosts-process-tree', changedProperty, changedColumns);
     }
   }
-});
+
+  @action
+  beforeContextMenuShow(menu, event) {
+    const { contextSelection: item, contextItems } = menu;
+    const machineName = this.get('hostName');
+
+    if (contextItems.length) {
+      // Need to store this locally set it back again to menu object
+      this.set('contextItems', contextItems);
+    }
+    // For anchor tag hide the context menu and show browser default right click menu
+    if (event.target.tagName.toLowerCase() === 'a' || event.target.parentElement.tagName.toLowerCase() === 'a') {
+      menu.set('contextItems', []);
+    } else {
+      menu.set('contextItems', this.get('contextItems'));
+
+      // Highlight is removed and right panel is closed when right clicked on non-highlighted row
+      if (this.get('selectedProcessId') !== item.pid) {
+        this.closePropertyPanel();
+        this.send('setRowIndex', null);
+      }
+      this.set('itemList', [item]);
+      if (!this._isAlreadySelected(this.get('selectedProcessList'), item)) {
+        this.send('deSelectAllProcess');
+        this.send('toggleProcessSelection', { ...item, machineName });
+      }
+      const selections = this.get('selectedProcessList');
+      if (selections && selections.length === 1) {
+        this.send('getFileContextFileStatus', 'PROCESS', selections);
+      }
+    }
+  }
+
+  @action
+  pivotToInvestigate(item, category) {
+    const machineName = this.get('hostName');
+    this.get('pivot').pivotToInvestigate('checksumSha256', { ...item, machineName }, category);
+  }
+
+  @action
+  onCloseServiceModal() {
+    this.set('showServiceModal', false);
+  }
+
+  @action
+  showEditFileStatus(item) {
+    this.set('itemList', [item]);
+    if (this.get('accessControl.endpointCanManageFiles')) {
+      this.set('showFileStatusModal', true);
+    } else {
+      failure('investigateFiles.noManagePermissions');
+    }
+  }
+
+  @action
+  onCloseEditFileStatus() {
+    this.set('showFileStatusModal', false);
+  }
+
+  @action
+  showRiskScoreModal(fileList) {
+    this.set('selectedFiles', fileList);
+    this.set('showResetScoreModal', true);
+  }
+
+  @action
+  onResetScoreModalClose() {
+    this.set('showResetScoreModal', false);
+  }
+
+  /**
+   * Abort the action if dragged column is machine name, risk score and checkbox also abort if column in dropped to
+   * machine name, risk score and checkbox.
+   *
+   */
+  @action
+  onReorderColumns(columns, newColumns, column, fromIndex, toIndex) {
+    return !(column.dataType === 'checkbox' ||
+      column.field === 'name' ||
+      column.field === 'machineFileScore' ||
+      column.field === 'fileProperties.score' ||
+      toIndex === 0 ||
+      toIndex === 1 ||
+      toIndex === 2);
+
+  }
+
+  @action
+  onColumnConfigChange(changedProperty, changedColumns) {
+    this.send('saveColumnConfig', 'hosts-process-tree', changedProperty, changedColumns);
+  }
+}
+
 export default connect(stateToComputed, dispatchToActions)(TreeComponent);

@@ -1,19 +1,22 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
 import RSADataTableHeader from 'component-lib/components/rsa-data-table/header/component';
 
-export default RSADataTableHeader.extend({
+@classic
+export default class Header extends RSADataTableHeader {
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this.CONFIG_FIXED_COLUMNS = this.CONFIG_FIXED_COLUMNS || ['checkbox', 'name', 'fileName', 'fileProperties.score', 'dllFileName', 'driverFileName'];
-  },
-  actions: {
-    toggleColumn(column) {
-      if (!this.CONFIG_FIXED_COLUMNS.includes(column.field)) {
-        column.toggleProperty('selected');
-        const columns = this.get('table.visibleColumns');
-        if (this.onToggleColumn) {
-          this.onToggleColumn(columns);
-        }
+  }
+
+  @action
+  toggleColumn(column) {
+    if (!this.CONFIG_FIXED_COLUMNS.includes(column.field)) {
+      column.toggleProperty('selected');
+      const columns = this.get('table.visibleColumns');
+      if (this.onToggleColumn) {
+        this.onToggleColumn(columns);
       }
     }
   }
-});
+}

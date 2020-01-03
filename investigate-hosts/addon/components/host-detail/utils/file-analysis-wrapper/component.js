@@ -1,8 +1,9 @@
+import classic from 'ember-classic-decorator';
+import { classNames } from '@ember-decorators/component';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { componentConfig } from 'investigate-hosts/reducers/details/file-analysis/selectors';
-
-import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   componentConfig: componentConfig(state),
@@ -13,20 +14,21 @@ const stateToComputed = (state) => ({
   agentId: state.endpoint.detailsInput.agentId
 });
 
-const FileAnalysisWrapper = Component.extend({
-  classNames: ['file-analysis-wrapper'],
-  searchText: '',
+@classic
+@classNames('file-analysis-wrapper')
+class FileAnalysisWrapper extends Component {
+  searchText = '';
 
   @computed('componentConfig')
-  isStringsView({ format }) {
-    return format === 'string';
-  },
+  get isStringsView() {
+    return this.componentConfig.format === 'string';
+  }
 
   @computed('activeHostDetailTab')
-  backToActiveHostDatailTab(activeHostDetailTab) {
-    const activeTabName = activeHostDetailTab.toLowerCase();
+  get backToActiveHostDatailTab() {
+    const activeTabName = this.activeHostDetailTab.toLowerCase();
     return `investigateHosts.tabs.${activeTabName}`;
   }
-});
+}
 
 export default connect(stateToComputed)(FileAnalysisWrapper);

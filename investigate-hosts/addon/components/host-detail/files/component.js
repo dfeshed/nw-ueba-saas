@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import PROPERTY_CONFIG from 'investigate-hosts/components/host-detail/base-property-config';
@@ -9,12 +11,10 @@ const stateToComputed = (state) => ({
 });
 
 
-const Files = Component.extend({
-
-  tagName: '',
-
-  filePropertyConfig: PROPERTY_CONFIG
-
-});
+@classic
+@tagName('')
+class Files extends Component {
+  filePropertyConfig = PROPERTY_CONFIG;
+}
 
 export default connect(stateToComputed)(Files);

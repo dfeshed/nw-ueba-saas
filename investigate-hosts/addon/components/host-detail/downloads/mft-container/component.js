@@ -1,5 +1,8 @@
-import Component from '@ember/component';
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { classNames, tagName } from '@ember-decorators/component';
 import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
   applyFilters,
@@ -38,24 +41,26 @@ const dispatchToActions = {
   setSelectDirectoryForDetails
 };
 
-const mftContainer = Component.extend({
-  tagName: 'box',
-  classNames: ['mft-container'],
-  accessControl: service(),
-  filterTypes: FILTER_TYPES,
+@classic
+@tagName('box')
+@classNames('mft-container')
+class mftContainer extends Component {
+  @service
+  accessControl;
+
+  filterTypes = FILTER_TYPES;
 
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this.send('resetFilters', 'MFTDIRECTORY');
-  },
+  }
 
-  actions: {
-    onOpen(side) {
-      if (side === 'left') {
-        this.send('mftFilterVisible', false);
-      }
+  @action
+  onOpen(side) {
+    if (side === 'left') {
+      this.send('mftFilterVisible', false);
     }
   }
-});
+}
 
 export default connect(stateToComputed, dispatchToActions)(mftContainer);

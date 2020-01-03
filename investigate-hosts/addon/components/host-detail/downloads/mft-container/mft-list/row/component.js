@@ -1,22 +1,24 @@
+import classic from 'ember-classic-decorator';
+import { classNameBindings } from '@ember-decorators/component';
+import { computed } from '@ember/object';
 import DataTableBodyRow from 'component-lib/components/rsa-data-table/body-row/component';
-import computed from 'ember-computed-decorators';
 
 /**
  * Extension of the Data Table default row class for supporting focus on the row
  * @public
  */
-export default DataTableBodyRow.extend({
-
-  classNameBindings: ['isRowChecked'],
-
+@classic
+@classNameBindings('isRowChecked')
+export default class Row extends DataTableBodyRow {
   @computed('item', 'selections')
-  isRowChecked(item, selections = []) {
-    const isSelected = selections.findBy('id', item.id);
-    return !!isSelected && !item.directory;
-  },
+  get isRowChecked() {
+    const selections = this.selections || [];
+    const isSelected = selections.findBy('id', this.item.id);
+    return !!isSelected && !this.item.directory;
+  }
 
   @computed('item')
-  contextItems() {
+  get contextItems() {
     const contextConf = [];
     if (this.get('disableActions').hasManageAccess) {
       contextConf.push({
@@ -34,5 +36,4 @@ export default DataTableBodyRow.extend({
     }
     return contextConf.sortBy('order');
   }
-
-});
+}

@@ -20,13 +20,13 @@
       <box class="downloaded-files-body">
         {{host-detail/downloads/action-bar
           disableActions=disableActions
-          deleteFiles=(action 'showConfirmationModal')
+          deleteFiles=(action 'onShowConfirmationModal')
           saveLocalCopy=(action 'onSaveLocalCopy')
           openFilterPanel=(action layout.open 'left')}}
 
         {{host-detail/downloads/downloads-list
           disableActions=disableActions
-          deleteFiles=(action 'showConfirmationModal')
+          deleteFiles=(action 'onShowConfirmationModal')
           saveLocalCopy=(action 'onSaveLocalCopy')}}
       </box>
       <box class="downloaded-files-footer">

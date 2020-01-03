@@ -1,7 +1,10 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import CONFIG from './process-property-config';
-import { inject as service } from '@ember/service';
 import { next } from '@ember/runloop';
 import {
   getProcessData,
@@ -10,7 +13,6 @@ import {
   selectedFileChecksums,
   selectedFileHostCount,
   selectedProcessName } from 'investigate-hosts/reducers/details/process/selectors';
-import computed from 'ember-computed-decorators';
 import { toggleProcessView, setRowIndex } from 'investigate-hosts/actions/data-creators/process';
 import { setHostDetailPropertyTab, applyDetailsFilter } from 'investigate-hosts/actions/data-creators/details';
 import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
@@ -108,118 +110,125 @@ const dispatchToActions = {
   applyDetailsFilter
 };
 
-const Container = Component.extend({
+@classic
+@tagName('box')
+@classNames('host-process-info', 'host-process-wrapper')
+class Container extends Component {
+  @service
+  accessControl;
 
-  tagName: 'box',
+  propertyConfig = CONFIG;
+  tabName = 'PROCESS';
 
-  classNames: ['host-process-info', 'host-process-wrapper'],
+  @service
+  flashMessage;
 
-  accessControl: service(),
+  @service
+  pivot;
 
-  propertyConfig: CONFIG,
-
-  tabName: 'PROCESS',
-
-  flashMessage: service(),
-
-  pivot: service(),
-
-  callBackOptions,
-
-  processDumpCallBackOptions,
-
-  filterTypes: FILTER_TYPES,
+  callBackOptions = callBackOptions;
+  processDumpCallBackOptions = processDumpCallBackOptions;
+  filterTypes = FILTER_TYPES;
 
   @computed('isProcessDumpDownloadSupported')
-  showDownloadProcessDump(isProcessDumpDownloadSupported) {
-    return (this.get('accessControl.endpointCanManageFiles') && isProcessDumpDownloadSupported);
-  },
+  get showDownloadProcessDump() {
+    return this.get('accessControl.endpointCanManageFiles') && this.isProcessDumpDownloadSupported;
+  }
 
   @computed('process')
-  loadedDLLNote({ machineOsType }) {
-    if (machineOsType && machineOsType !== 'linux') {
+  get loadedDLLNote() {
+    if (this.process.machineOsType && this.process.machineOsType !== 'linux') {
       const i18n = this.get('i18n');
-      return i18n.t(`investigateHosts.process.dll.note.${machineOsType}`);
+      return i18n.t(`investigateHosts.process.dll.note.${this.process.machineOsType}`);
     } else {
       return '';
     }
-  },
+  }
 
   @computed('selectedProcessList')
-  selectedFileCount(selectedProcessList) {
-    return selectedProcessList && selectedProcessList.length ? selectedProcessList.length : 0;
-  },
+  get selectedFileCount() {
+    return this.selectedProcessList && this.selectedProcessList.length ? this.selectedProcessList.length : 0;
+  }
 
   @computed('isTreeView')
-  treeIconTooltip(isTreeView) {
-    const toolTipLabel = isTreeView ? 'listView' : 'treeView';
+  get treeIconTooltip() {
+    const toolTipLabel = this.isTreeView ? 'listView' : 'treeView';
     const i18n = this.get('i18n');
     return i18n.t(`investigateHosts.process.toolTip.${toolTipLabel}`);
-  },
+  }
 
-  actions: {
-    toggleView(closePanel) {
-      closePanel();
-      this.send('toggleProcessView');
-    },
+  @action
+  toggleView(closePanel) {
+    closePanel();
+    this.send('toggleProcessView');
+  }
 
-    onPropertyPanelClose(side) {
-      if (side === 'right') {
-        this.send('setRowIndex', null);
-      }
-      if (side === 'left') {
-        this.send('toggleHostDetailsFilter', false);
-      }
-    },
-
-    onDownloadProcessDump() {
-      const selectedProcessList = this.get('selectedProcessList');
-      const callBackOptions = this.get('processDumpCallBackOptions')(this);
-      const agentId = this.get('agentId');
-      this.send('downloadProcessDump', agentId, selectedProcessList, callBackOptions);
-    },
-
-    onDownloadFilesToServer() {
-      const callBackOptions = this.get('callBackOptions')(this);
-      const agentId = this.get('agentId');
-      const selectedProcessList = this.get('selectedProcessList');
-
-      this.send('downloadFilesToServer', agentId, selectedProcessList, callBackOptions);
-    },
-
-    onSaveLocalCopy() {
-      const callBackOptions = this.get('callBackOptions')(this);
-      this.send('saveLocalFileCopy', this.get('selectedProcessList')[0], callBackOptions);
-    },
-
-    onAnalyzeFile() {
-      const callBackOptions = this.get('callBackOptions')(this);
-      // Open analyze file.
-      const selectedProcessList = this.get('selectedProcessList');
-      const [{ checksumSha256, format = '', downloadInfo: { serviceId } }] = selectedProcessList;
-      const fileFormat = componentSelectionForFileType(format).format;
-
-      this.analyzeFile(checksumSha256, fileFormat, serviceId, callBackOptions);
-    },
-    openFilterPanel(closeFilterPanel) {
-      closeFilterPanel();
-      this.send('toggleHostDetailsFilter', true);
-    },
-    applyFilters(expressionList, filterType) {
-      next(() => {
-        this.send('applyDetailsFilter', expressionList, filterType);
-      });
-    },
-    onHostNameClick(target, item) {
-      if ('HOST_NAME' === target) {
-        const serverId = this.get('serverId');
-        window.open(`${window.location.origin}/investigate/hosts/${item.agentId.toUpperCase()}/OVERVIEW?sid=${serverId}`);
-      } else if ('PIVOT_ICON' === target) {
-        this.get('pivot').pivotToInvestigate('machineIdentity.machineName', { machineIdentity: { machineName: item } });
-      }
+  @action
+  onPropertyPanelClose(side) {
+    if (side === 'right') {
+      this.send('setRowIndex', null);
+    }
+    if (side === 'left') {
+      this.send('toggleHostDetailsFilter', false);
     }
   }
 
-});
+  @action
+  onDownloadProcessDump() {
+    const selectedProcessList = this.get('selectedProcessList');
+    const callBackOptions = this.get('processDumpCallBackOptions')(this);
+    const agentId = this.get('agentId');
+    this.send('downloadProcessDump', agentId, selectedProcessList, callBackOptions);
+  }
+
+  @action
+  onDownloadFilesToServer() {
+    const callBackOptions = this.get('callBackOptions')(this);
+    const agentId = this.get('agentId');
+    const selectedProcessList = this.get('selectedProcessList');
+
+    this.send('downloadFilesToServer', agentId, selectedProcessList, callBackOptions);
+  }
+
+  @action
+  onSaveLocalCopy() {
+    const callBackOptions = this.get('callBackOptions')(this);
+    this.send('saveLocalFileCopy', this.get('selectedProcessList')[0], callBackOptions);
+  }
+
+  @action
+  onAnalyzeFile() {
+    const callBackOptions = this.get('callBackOptions')(this);
+    // Open analyze file.
+    const selectedProcessList = this.get('selectedProcessList');
+    const [{ checksumSha256, format = '', downloadInfo: { serviceId } }] = selectedProcessList;
+    const fileFormat = componentSelectionForFileType(format).format;
+
+    this.analyzeFile(checksumSha256, fileFormat, serviceId, callBackOptions);
+  }
+
+  @action
+  openFilterPanel(closeFilterPanel) {
+    closeFilterPanel();
+    this.send('toggleHostDetailsFilter', true);
+  }
+
+  @action
+  applyFilters(expressionList, filterType) {
+    next(() => {
+      this.send('applyDetailsFilter', expressionList, filterType);
+    });
+  }
+
+  @action
+  onHostNameClick(target, item) {
+    if ('HOST_NAME' === target) {
+      const serverId = this.get('serverId');
+      window.open(`${window.location.origin}/investigate/hosts/${item.agentId.toUpperCase()}/OVERVIEW?sid=${serverId}`);
+    } else if ('PIVOT_ICON' === target) {
+      this.get('pivot').pivotToInvestigate('machineIdentity.machineName', { machineIdentity: { machineName: item } });
+    }
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(Container);

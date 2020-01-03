@@ -1,6 +1,8 @@
+import classic from 'ember-classic-decorator';
+import { classNames } from '@ember-decorators/component';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import { assert } from '@ember/debug';
 import _ from 'lodash';
 
@@ -8,39 +10,32 @@ import _ from 'lodash';
 const stateToComputed = (state) => ({
   sid: state.endpointQuery.selectedMachineServerId
 });
+
 /**
  * Component for displaying the Process Summary items
  * @public
  */
-const SummaryItemsComponent = Component.extend({
+@classic
+@classNames('header-data')
+class SummaryItemsComponent extends Component {
+  propertyComponent = 'host-detail/process/summary-items/property';
+  config = null;
+  data = null;
 
-  classNames: ['header-data'],
-
-  propertyComponent: 'host-detail/process/summary-items/property',
-
-  config: null,
-
-  data: null,
-
-  /**
-   * Update the configuration with data
-   * @param data
-   * @returns {Array}
-   * @public
-   */
   @computed('data', 'config')
-  summaryData(data, config) {
-    assert('Cannot instantiate Summary panel without configuration.', config);
-    if (data) {
-      const items = config.map((item) => {
-        const value = _.get(data, item.field) || '--';
-        const checksum = _.get(data, 'fileProperties.checksumSha256') || null;
-        const sourceSid = _.get(data, 'fileProperties.downloadInfo.serviceId') || null;
+  get summaryData() {
+    assert('Cannot instantiate Summary panel without configuration.', this.config);
+    if (this.data) {
+      const items = this.config.map((item) => {
+        const value = _.get(this.data, item.field) || '--';
+        const checksum = _.get(this.data, 'fileProperties.checksumSha256') || null;
+        const sourceSid = _.get(this.data, 'fileProperties.downloadInfo.serviceId') || null;
         return { ...item, value, checksum, sourceSid };
       });
       return items;
     }
     return [];
   }
-});
+}
+
 export default connect(stateToComputed)(SummaryItemsComponent);

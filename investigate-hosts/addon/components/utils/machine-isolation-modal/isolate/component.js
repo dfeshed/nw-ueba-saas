@@ -1,6 +1,7 @@
+import classic from 'ember-classic-decorator';
+import { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 import { isolateHostRequest } from 'investigate-hosts/actions/data-creators/host';
 import { isolateMachineValidation } from 'investigate-hosts/util/util';
@@ -16,78 +17,79 @@ const callBackOptions = {
   onFailure: (message) => failure(message, null, false)
 };
 
-const Isolate = Component.extend({
-  isExclusionListEnabled: false,
-
-  isExclusionListError: false,
-
-  isolationComment: '',
-
-  isIsolationCommentEmpty: false,
+@classic
+class Isolate extends Component {
+  isExclusionListEnabled = false;
+  isExclusionListError = false;
+  isolationComment = '';
+  isIsolationCommentEmpty = false;
 
   @computed('isolationComment')
-  isolationCommentInfo(isolationComment) {
+  get isolationCommentInfo() {
     return {
-      isCharacterLimitReached: isolationComment.length === 900,
-      isIsolateHostDisabled: !isolationComment.length
+      isCharacterLimitReached: this.isolationComment.length === 900,
+      isIsolateHostDisabled: !this.isolationComment.length
     };
-  },
+  }
+
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this.exclusionList = this.exclusionList || [];
-  },
+  }
 
-  actions: {
-    confirmIsolation() {
-      const { isolationComment,
-        isExclusionListError,
+  @action
+  confirmIsolation() {
+    const { isolationComment,
+      isExclusionListError,
+      agentId,
+      serverId,
+      exclusionList } = this.getProperties('isolationComment', 'isExclusionListError', 'agentId', 'serverId', 'exclusionList');
+    let data = {};
+    const isIsolationCommentEmpty = isolationComment.trim() === '';
+    this.set('isIsolationCommentEmpty', isIsolationCommentEmpty);
+
+    if (!isExclusionListError && !isIsolationCommentEmpty) {
+      data = {
         agentId,
-        serverId,
-        exclusionList } = this.getProperties('isolationComment', 'isExclusionListError', 'agentId', 'serverId', 'exclusionList');
-      let data = {};
-      const isIsolationCommentEmpty = isolationComment.trim() === '';
-      this.set('isIsolationCommentEmpty', isIsolationCommentEmpty);
-
-      if (!isExclusionListError && !isIsolationCommentEmpty) {
-        data = {
-          agentId,
-          exclusionList,
-          comment: isolationComment
-        };
-        this.send('isolateHostRequest', data, serverId, callBackOptions);
-        this.closeConfirmModal();
-      }
-    },
-
-    toggleExclusionListEnabled() {
-      this.toggleProperty('isExclusionListEnabled');
-    },
-
-    validate(exclusionList) {
-      const { listOfIPs, isInvalidIPFormatPresent = false } = isolateMachineValidation(exclusionList);
-      let isExclusionListLengthError = false;
-      let errorString = 'invalidIp';
-
-      if (!isInvalidIPFormatPresent && (listOfIPs.length > 100)) {
-        isExclusionListLengthError = true;
-        errorString = 'ipListLimit';
-      }
-      this.set('exclusionList', listOfIPs);
-      this.set('isExclusionListError', isInvalidIPFormatPresent || isExclusionListLengthError);
-      this.set('errorString', `investigateHosts.networkIsolation.isolate.${errorString}`);
-    },
-
-    onFocusOutValidateComment(isolationComment) {
-      this.set('isIsolationCommentEmpty', !isolationComment.length);
-    },
-
-    onKeyUpValidateComment(isolationComment) {
-      if (isolationComment.length > 0) {
-        this.set('isIsolationCommentEmpty', false);
-      }
+        exclusionList,
+        comment: isolationComment
+      };
+      this.send('isolateHostRequest', data, serverId, callBackOptions);
+      this.closeConfirmModal();
     }
   }
 
-});
+  @action
+  toggleExclusionListEnabled() {
+    this.toggleProperty('isExclusionListEnabled');
+  }
+
+  @action
+  validate(exclusionList) {
+    const { listOfIPs, isInvalidIPFormatPresent = false } = isolateMachineValidation(exclusionList);
+    let isExclusionListLengthError = false;
+    let errorString = 'invalidIp';
+
+    if (!isInvalidIPFormatPresent && (listOfIPs.length > 100)) {
+      isExclusionListLengthError = true;
+      errorString = 'ipListLimit';
+    }
+    this.set('exclusionList', listOfIPs);
+    this.set('isExclusionListError', isInvalidIPFormatPresent || isExclusionListLengthError);
+    this.set('errorString', `investigateHosts.networkIsolation.isolate.${errorString}`);
+  }
+
+  @action
+  onFocusOutValidateComment(isolationComment) {
+    this.set('isIsolationCommentEmpty', !isolationComment.length);
+  }
+
+  @action
+  onKeyUpValidateComment(isolationComment) {
+    if (isolationComment.length > 0) {
+      this.set('isIsolationCommentEmpty', false);
+    }
+  }
+}
 
 export default connect(undefined, dispatchToActions)(Isolate);

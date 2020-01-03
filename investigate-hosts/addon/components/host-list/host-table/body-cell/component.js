@@ -1,17 +1,21 @@
-import BodyCell from 'component-lib/components/rsa-data-table/body-cell/component';
+import classic from 'ember-classic-decorator';
+import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
-import computed from 'ember-computed-decorators';
+import BodyCell from 'component-lib/components/rsa-data-table/body-cell/component';
 
-export default BodyCell.extend({
+@classic
+export default class _BodyCell extends BodyCell {
+  @service
+  dateFormat;
 
-  dateFormat: service(),
+  @service
+  timeFormat;
 
-  timeFormat: service(),
-
-  timezone: service(),
+  @service
+  timezone;
 
   @computed('item')
-  isIsolated(item) {
-    return item?.agentStatus?.isolationStatus?.isolated;
+  get isIsolated() {
+    return this.item?.agentStatus?.isolationStatus?.isolated;
   }
-});
+}

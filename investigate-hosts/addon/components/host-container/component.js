@@ -1,7 +1,10 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { classNames, classNameBindings, tagName } from '@ember-decorators/component';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { hasMachineId, hostListPropertyTabs, isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
-import { inject as service } from '@ember/service';
 import { getPageOfMachines, setHostListPropertyTab, setFocusedHostIndex } from 'investigate-hosts/actions/data-creators/host';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 import {
@@ -46,31 +49,28 @@ const dispatchToActions = {
   setFocusedHostIndex
 };
 
-const Container = Component.extend({
+@classic
+@tagName('hbox')
+@classNames('host-engine host-container')
+@classNameBindings('hasMachineId')
+class Container extends Component {
+  @service
+  eventBus;
 
-  eventBus: service(),
-
-  tagName: 'hbox',
-
-  classNames: 'host-engine host-container',
-
-  classNameBindings: ['hasMachineId'],
-
-  filterTypes: FILTER_TYPES,
-
-  hostDetailsConfig,
+  filterTypes = FILTER_TYPES;
+  hostDetailsConfig = hostDetailsConfig;
 
   click(event) {
     // this trigger is required to open start/stop scan modal window
     this.get('eventBus').trigger('rsa-application-click', event.target);
-  },
-  actions: {
-    onPanelClose(side) {
-      if (side === 'right') {
-        this.send('setFocusedHostIndex', -1);
-      }
+  }
+
+  @action
+  onPanelClose(side) {
+    if (side === 'right') {
+      this.send('setFocusedHostIndex', -1);
     }
   }
-});
+}
 
 export default connect(stateToComputed, dispatchToActions)(Container);

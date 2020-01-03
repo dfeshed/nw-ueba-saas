@@ -1,6 +1,8 @@
-import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getAllServices } from 'investigate-hosts/actions/data-creators/host';
 import { navigateToInvestigateEventsAnalysis, navigateToInvestigateNavigate } from 'investigate-shared/utils/pivot-util';
@@ -10,38 +12,30 @@ const dispatchToActions = {
 };
 
 
-const PivotToInvestigate = Component.extend({
+@classic
+@tagName('span')
+@classNames('pivot-to-investigate')
+class PivotToInvestigate extends Component {
+  @service
+  timezone;
 
-  tagName: 'span',
+  showAsRightClick = false;
+  showServiceModal = false;
+  metaName = null;
+  metaValue = null;
+  serviceList = null;
+  item = null;
+  size = 'small';
+  investigateText = null;
+  serviceId = null;
 
-  classNames: 'pivot-to-investigate',
-
-  timezone: service(),
-
-  showAsRightClick: false,
-
-  showServiceModal: false,
-
-  metaName: null,
-
-  metaValue: null,
-
-  serviceList: null,
-
-  item: null,
-
-  size: 'small',
-
-  investigateText: null,
-  serviceId: null,
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this.timeRange = this.timeRange || { value: 2, unit: 'days' };
-  },
-
+  }
 
   @computed
-  contextItems() {
+  get contextItems() {
     const cntx = this;
     return [
       {
@@ -52,40 +46,16 @@ const PivotToInvestigate = Component.extend({
         }
       }
     ];
-  },
+  }
 
   _closeModal() {
     this.set('showServiceModal', false);
-  },
+  }
 
-  actions: {
-
-    pivotToInvestigate() {
-      const serviceId = this.get('serviceId');
-      if (serviceId && serviceId !== '-1') {
-        const {
-          metaName,
-          metaValue,
-          item,
-          timeRange
-        } = this.getProperties('metaName', 'metaValue', 'item', 'timeRange');
-
-        const { zoneId } = this.get('timezone.selected');
-        navigateToInvestigateEventsAnalysis({ metaName, metaValue, itemList: [item] }, serviceId, timeRange, zoneId);
-      } else {
-        const serviceList = this.get('serviceList');
-        if (!(serviceList && serviceList.length)) {
-          this.send('getAllServices');
-        }
-        this.set('showServiceModal', true);
-      }
-    },
-
-    onCancel() {
-      this._closeModal();
-    },
-
-    pivotToInvestigateEventAnalysis(serviceId) {
+  @action
+  pivotToInvestigate() {
+    const serviceId = this.get('serviceId');
+    if (serviceId && serviceId !== '-1') {
       const {
         metaName,
         metaValue,
@@ -94,27 +64,53 @@ const PivotToInvestigate = Component.extend({
       } = this.getProperties('metaName', 'metaValue', 'item', 'timeRange');
 
       const { zoneId } = this.get('timezone.selected');
-      this._closeModal();
       navigateToInvestigateEventsAnalysis({ metaName, metaValue, itemList: [item] }, serviceId, timeRange, zoneId);
-    },
-
-    pivotToInvestigateNavigate(serviceId) {
-      const {
-        metaName,
-        metaValue,
-        item,
-        timeRange
-      } = this.getProperties('metaName', 'metaValue', 'item', 'timeRange');
-
-      const { zoneId } = this.get('timezone.selected');
-      this._closeModal();
-      navigateToInvestigateNavigate({ metaName, metaValue, itemList: [item] }, serviceId, timeRange, zoneId);
-    },
-
-    onModalClose() {
-      this.set('showServiceModal', false);
+    } else {
+      const serviceList = this.get('serviceList');
+      if (!(serviceList && serviceList.length)) {
+        this.send('getAllServices');
+      }
+      this.set('showServiceModal', true);
     }
   }
-});
+
+  @action
+  onCancel() {
+    this._closeModal();
+  }
+
+  @action
+  pivotToInvestigateEventAnalysis(serviceId) {
+    const {
+      metaName,
+      metaValue,
+      item,
+      timeRange
+    } = this.getProperties('metaName', 'metaValue', 'item', 'timeRange');
+
+    const { zoneId } = this.get('timezone.selected');
+    this._closeModal();
+    navigateToInvestigateEventsAnalysis({ metaName, metaValue, itemList: [item] }, serviceId, timeRange, zoneId);
+  }
+
+  @action
+  pivotToInvestigateNavigate(serviceId) {
+    const {
+      metaName,
+      metaValue,
+      item,
+      timeRange
+    } = this.getProperties('metaName', 'metaValue', 'item', 'timeRange');
+
+    const { zoneId } = this.get('timezone.selected');
+    this._closeModal();
+    navigateToInvestigateNavigate({ metaName, metaValue, itemList: [item] }, serviceId, timeRange, zoneId);
+  }
+
+  @action
+  onModalClose() {
+    this.set('showServiceModal', false);
+  }
+}
 
 export default connect(undefined, dispatchToActions)(PivotToInvestigate);

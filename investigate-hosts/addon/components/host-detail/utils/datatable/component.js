@@ -1,63 +1,69 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
+import { alias } from '@ember/object/computed';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed, { alias } from 'ember-computed-decorators';
 import { setHostDetailsDataTableSortConfig } from 'investigate-hosts/actions/data-creators/details';
 
 const dispatchToActions = {
   setHostDetailsDataTableSortConfig
 };
 
-const HostDetailsDataTable = Component.extend({
-
-  tagName: 'box',
-
-  classNames: ['host-detail__datatable'],
-
-  customSort: null,
+@classic
+@tagName('box')
+@classNames('host-detail__datatable')
+class HostDetailsDataTable extends Component {
+  customSort = null;
 
   @alias('status')
-  isDataLoading: true,
+  isDataLoading;
 
   @computed('items', 'totalItems')
-  total(items, totalItems) {
-    return totalItems ? totalItems : items.length;
-  },
+  get total() {
+    return this.totalItems ? this.totalItems : this.items.length;
+  }
+
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this.items = this.items || [];
-  },
+  }
 
-  actions: {
-    sort(column) {
-      column.set('isDescending', !column.isDescending);
-      const customSort = this.get('customSort');
-      if (customSort) {
-        this.customSort(column);
-      } else {
-        this.send('setHostDetailsDataTableSortConfig', {
-          isDescending: column.isDescending,
-          field: column.field
-        });
-      }
-    },
-
-    toggleSelectedRow(item, index, e, table) {
-
-      if (this.get('selectRowAction')) {
-        table.set('selectedIndex', index);
-        this.selectRowAction(item);
-      } else {
-        table.set('selectedIndex', -1);
-      }
-
-    },
-    onCloseServiceModal() {
-      this.set('showServiceModal', false);
-    },
-    onCloseEditFileStatus() {
-      this.set('showFileStatusModal', false);
+  @action
+  sort(column) {
+    column.set('isDescending', !column.isDescending);
+    const customSort = this.get('customSort');
+    if (customSort) {
+      this.customSort(column);
+    } else {
+      this.send('setHostDetailsDataTableSortConfig', {
+        isDescending: column.isDescending,
+        field: column.field
+      });
     }
   }
-});
+
+  @action
+  toggleSelectedRow(item, index, e, table) {
+
+    if (this.get('selectRowAction')) {
+      table.set('selectedIndex', index);
+      this.selectRowAction(item);
+    } else {
+      table.set('selectedIndex', -1);
+    }
+
+  }
+
+  @action
+  onCloseServiceModal() {
+    this.set('showServiceModal', false);
+  }
+
+  @action
+  onCloseEditFileStatus() {
+    this.set('showFileStatusModal', false);
+  }
+}
 
 export default connect(null, dispatchToActions)(HostDetailsDataTable);

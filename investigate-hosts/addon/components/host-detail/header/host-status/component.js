@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { isInsightsAgent, serviceList } from 'investigate-hosts/reducers/hosts/selectors';
@@ -24,12 +26,9 @@ const dispatchToActions = {
   downloadMFT
 };
 
-const HostStatus = Component.extend({
-
-  tagName: 'hbox',
-
-  classNames: ['host-overview', 'host-item', 'flexi-fit', 'col-xs-12']
-
-});
+@classic
+@tagName('hbox')
+@classNames('host-overview', 'host-item', 'flexi-fit', 'col-xs-12')
+class HostStatus extends Component {}
 
 export default connect(stateToComputed, dispatchToActions)(HostStatus);

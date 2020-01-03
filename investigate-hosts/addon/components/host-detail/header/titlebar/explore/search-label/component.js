@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { resetExploreSearch } from 'investigate-hosts/actions/data-creators/explore';
@@ -15,9 +17,9 @@ const dispatchToActions = {
   toggleExploreSearchResults
 };
 
-const SearchLabel = Component.extend({
-  tagName: ''
-});
+@classic
+@tagName('')
+class SearchLabel extends Component {}
 
 export default connect(stateToComputed, dispatchToActions)(SearchLabel);
 

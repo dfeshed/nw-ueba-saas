@@ -1,20 +1,21 @@
-import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import { failure } from 'investigate-shared/utils/flash-messages';
 
-export default Component.extend({
-  classNames: ['simple-detail-display-wrapper'],
+@classic
+@classNames('simple-detail-display-wrapper')
+@tagName('hbox')
+export default class SimpleDetailDisplay extends Component {
+  selections = null;
+  showFileStatusModel = false;
 
-  tagName: 'hbox',
+  @service
+  accessControl;
 
-  selections: null,
-
-  showFileStatusModel: false,
-
-  accessControl: service(),
-
-  rowItem: null,
+  rowItem = null;
 
   isAlreadySelected(selections, item) {
     let selected = false;
@@ -22,7 +23,7 @@ export default Component.extend({
       selected = selections.findBy('checksumSha256', item.checksumSha256);
     }
     return selected;
-  },
+  }
 
   /*
    * A hash of inputs coming from consumers of this component.
@@ -36,37 +37,41 @@ export default Component.extend({
    *   propertyConfig
    *   propertyData
    */
-  detailDisplayInputs: null,
+  detailDisplayInputs = null;
 
-  /* Sets the class as col-xs-9 only if the property panal is present for the selected host details tab */
   @computed('detailDisplayInputs')
-  datatableWidth(detailDisplayInputs) {
-    return (detailDisplayInputs && detailDisplayInputs.propertyConfig) ? 'col-xs-9' : 'col-xs-12';
-  },
+  get datatableWidth() {
+    return (this.detailDisplayInputs && this.detailDisplayInputs.propertyConfig) ? 'col-xs-9' : 'col-xs-12';
+  }
 
-  actions: {
-    beforeContextMenuShow({ contextSelection: item }) {
-      if (!this.isAlreadySelected(this.get('detailDisplayInputs.selectedFiles'), item)) {
-        this.detailDisplayInputs.toggleOneItemSelectionAction(item);
-      }
-      const selections = this.get('selections');
-      if (selections && selections.length === 1) {
-        this.detailDisplayInputs.getSavedFileStatus();
-      }
-    },
-    showEditFileStatus(item) {
-      if (this.get('accessControl.endpointCanManageFiles')) {
-        this.set('rowItem', item);
-        this.set('showFileStatusModal', true);
-      } else {
-        failure('investigateFiles.noManagePermissions');
-      }
-    },
-    onCloseEditFileStatus() {
-      this.set('showFileStatusModal', false);
-    },
-    resetRiskScoreAction() {
-      // Placeholder for the next PR.
+  @action
+  beforeContextMenuShow({ contextSelection: item }) {
+    if (!this.isAlreadySelected(this.get('detailDisplayInputs.selectedFiles'), item)) {
+      this.detailDisplayInputs.toggleOneItemSelectionAction(item);
+    }
+    const selections = this.get('selections');
+    if (selections && selections.length === 1) {
+      this.detailDisplayInputs.getSavedFileStatus();
     }
   }
-});
+
+  @action
+  showEditFileStatus(item) {
+    if (this.get('accessControl.endpointCanManageFiles')) {
+      this.set('rowItem', item);
+      this.set('showFileStatusModal', true);
+    } else {
+      failure('investigateFiles.noManagePermissions');
+    }
+  }
+
+  @action
+  onCloseEditFileStatus() {
+    this.set('showFileStatusModal', false);
+  }
+
+  @action
+  resetRiskScoreAction() {
+    // Placeholder for the next PR.
+  }
+}

@@ -1,3 +1,6 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { classNames, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { imageHooksData } from 'investigate-hosts/reducers/details/process/selectors';
@@ -16,20 +19,17 @@ const stateToComputed = (state) => ({
   sid: state.endpointQuery.serverId
 });
 
-const imageHooksList = Component.extend({
-
-  tagName: 'box',
-
-  classNames: ['process-image-hooks-list'],
-
-  actions: {
-    toggleSelectedRow(item, index, e) {
-      this.send('toggleSelectedProcessDllRow', item);
-      this.openPropertyPanel();
-      this.send('setDllRowSelectedId', index);
-      e.stopPropagation();
-    }
+@classic
+@tagName('box')
+@classNames('process-image-hooks-list')
+class imageHooksList extends Component {
+  @action
+  toggleSelectedRow(item, index, e) {
+    this.send('toggleSelectedProcessDllRow', item);
+    this.openPropertyPanel();
+    this.send('setDllRowSelectedId', index);
+    e.stopPropagation();
   }
-});
+}
 
 export default connect(stateToComputed, dispatchToActions)(imageHooksList);

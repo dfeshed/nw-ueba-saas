@@ -1,3 +1,6 @@
+import classic from 'ember-classic-decorator';
+import { tagName } from '@ember-decorators/component';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { machineOsType } from 'investigate-hosts/reducers/details/overview/selectors';
@@ -5,7 +8,6 @@ import { machineOsType } from 'investigate-hosts/reducers/details/overview/selec
 import columnsConfig from './services-columns';
 import servicesPropertyConfig from './services-property-config';
 import defaultPropertyConfig from 'investigate-hosts/components/host-detail/base-property-config';
-import computed from 'ember-computed-decorators';
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import { getAutorunTabs } from 'investigate-hosts/reducers/visuals/selectors';
 
@@ -15,14 +17,13 @@ const stateToComputed = (state) => ({
   autorunTabs: getAutorunTabs(state)
 });
 
-const Services = Component.extend({
-
-  tagName: '',
-
+@classic
+@tagName('')
+class Services extends Component {
   @computed('machineOsType')
-  propertyConfig(machineOsType) {
-    return [...defaultPropertyConfig, ...servicesPropertyConfig[machineOsType]];
+  get propertyConfig() {
+    return [...defaultPropertyConfig, ...servicesPropertyConfig[this.machineOsType]];
   }
-});
+}
 
 export default connect(stateToComputed)(Services);

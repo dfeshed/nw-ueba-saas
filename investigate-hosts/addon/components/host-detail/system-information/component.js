@@ -1,6 +1,8 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import TABS from './tabsConfig';
 import {
   machineOsType,
@@ -24,60 +26,56 @@ const dispatchToActions = {
   setSystemInformationTab,
   setBashHistoryFilteredData
 };
-const SystemInformation = Component.extend({
 
-  tagName: 'box',
-
-  classNames: ['system-information'],
-
-  selectedUser: 'ALL',
+@classic
+@tagName('box')
+@classNames('system-information')
+class SystemInformation extends Component {
+  selectedUser = 'ALL';
 
   @computed('bashHistories')
-  userList(history) {
-    return ['ALL', ...history.mapBy('userName').uniq()];
-  },
+  get userList() {
+    return ['ALL', ...this.bashHistories.mapBy('userName').uniq()];
+  }
 
-  /**
-   * list of all the tabs for system information
-   * @public
-   *
-   */
   @computed('selectedTab', 'machineOsType')
-  tabList(selectedTab, machineOsType) {
+  get tabList() {
     return TABS.map((tab) => {
       return {
         ...tab,
-        hidden: tab.hiddenFor ? tab.hiddenFor.includes(machineOsType) : false,
-        selected: tab.name === selectedTab
+        hidden: tab.hiddenFor ? tab.hiddenFor.includes(this.machineOsType) : false,
+        selected: tab.name === this.selectedTab
       };
     });
-  },
-  /**
-   * Table data for display, data will be calculated based on tab selection
-   * @param selectedTab
-   * @public
-   */
-  @computed('systemInformationData', 'isBashHistorySelected', 'selectedUser', 'isSelectedTabSecurityConfig')
-  tableData(systemInformationData, isBashHistorySelected, selectedUser, isSelectedTabSecurityConfig) {
-    if (!isSelectedTabSecurityConfig) {
-      const { columns, data = [] } = { ...systemInformationData };
-      if (isBashHistorySelected) {
-        const filteredData = selectedUser === 'ALL' ? data : data.filterBy('userName', selectedUser);
+  }
+
+  @computed(
+    'systemInformationData',
+    'isBashHistorySelected',
+    'selectedUser',
+    'isSelectedTabSecurityConfig'
+  )
+  get tableData() {
+    if (!this.isSelectedTabSecurityConfig) {
+      const { columns, data = [] } = { ...this.systemInformationData };
+      if (this.isBashHistorySelected) {
+        const filteredData = this.selectedUser === 'ALL' ? data : data.filterBy('userName', this.selectedUser);
         return { columns, data: filteredData };
       }
       return { columns, data };
     }
     return null;
-  },
+  }
 
   @computed('selectedTab')
-  isBashHistorySelected(tab) {
-    return 'BASH_HISTORY' === tab;
-  },
-  actions: {
-    onSelection(value) {
-      this.set('selectedUser', value);
-    }
+  get isBashHistorySelected() {
+    return 'BASH_HISTORY' === this.selectedTab;
   }
-});
+
+  @action
+  onSelection(value) {
+    this.set('selectedUser', value);
+  }
+}
+
 export default connect(stateToComputed, dispatchToActions)(SystemInformation);

@@ -1,6 +1,8 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import { mftFilterVisible } from 'investigate-hosts/actions/data-creators/downloads';
 
 
@@ -14,24 +16,27 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   mftFilterVisible
 };
-const MftFilePath = Component.extend({
-  tagName: 'section',
-  classNames: ['mft-file-path'],
-  @computed('fullPathName', 'directoryName')
-  location(fullPathName, directoryName) {
-    return directoryName ? `${fullPathName}${directoryName}` : '/';
-  },
-  @computed('expressionList')
-  filterCountLabel(expressionList) {
-    const NO_FILTERS = this.get('i18n').t('investigateHosts.downloads.mftViewer.no');
-    return expressionList.length ? expressionList.length : NO_FILTERS;
-  },
-  actions: {
-    filterAction() {
-      this.send('mftFilterVisible', true);
-      this.openFilterPanel();
-    }
 
+@classic
+@tagName('section')
+@classNames('mft-file-path')
+class MftFilePath extends Component {
+  @computed('fullPathName', 'directoryName')
+  get location() {
+    return this.directoryName ? `${this.fullPathName}${this.directoryName}` : '/';
   }
-});
+
+  @computed('expressionList')
+  get filterCountLabel() {
+    const NO_FILTERS = this.get('i18n').t('investigateHosts.downloads.mftViewer.no');
+    return this.expressionList.length ? this.expressionList.length : NO_FILTERS;
+  }
+
+  @action
+  filterAction() {
+    this.send('mftFilterVisible', true);
+    this.openFilterPanel();
+  }
+}
+
 export default connect(stateToComputed, dispatchToActions)(MftFilePath);

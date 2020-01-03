@@ -1,6 +1,8 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { run } from '@ember/runloop';
-import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
 
@@ -13,18 +15,18 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   toggleExploreSearchResults
 };
-const Explore = Component.extend({
 
-  tagName: 'hbox',
-
-  classNames: 'host-explore',
-
-  eventBus: service(),
+@classic
+@tagName('hbox')
+@classNames('host-explore')
+class Explore extends Component {
+  @service
+  eventBus;
 
   willDestroyElement() {
-    this._super(...arguments);
+    super.willDestroyElement(...arguments);
     this.get('eventBus').off('rsa-application-click', this, 'onApplicationClick');
-  },
+  }
 
   onApplicationClick(target) {
     const result = this.get('fileSearchResults');
@@ -38,11 +40,12 @@ const Explore = Component.extend({
     } else if (result && result.length) {
       this.send('toggleExploreSearchResults', true);
     }
-  },
+  }
 
   didInsertElement() {
-    this._super(...arguments);
+    super.didInsertElement(...arguments);
     this.get('eventBus').on('rsa-application-click', this, 'onApplicationClick');
   }
-});
+}
+
 export default connect(stateToComputed, dispatchToActions)(Explore);

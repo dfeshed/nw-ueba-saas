@@ -1,27 +1,30 @@
-import BodyCell from 'component-lib/components/rsa-data-table/body-cell/component';
+import classic from 'ember-classic-decorator';
+import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
+import BodyCell from 'component-lib/components/rsa-data-table/body-cell/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   selectedMftFile: state.endpoint.hostDownloads.downloads.selectedMftFile,
   focusedHost: state.endpoint.detailsInput.agentId
 });
 
-const BodyCellComponent = BodyCell.extend({
+@classic
+class BodyCellComponent extends BodyCell {
+  @service
+  dateFormat;
 
-  dateFormat: service(),
+  @service
+  timeFormat;
 
-  timeFormat: service(),
-
-  timezone: service(),
+  @service
+  timezone;
 
   @computed('item')
-  downloadInfo(item) {
-    const { status, error, fileType } = item;
+  get downloadInfo() {
+    const { status, error, fileType } = this.item;
     return { status, error, fileType };
   }
+}
 
-
-});
 export default connect(stateToComputed, undefined)(BodyCellComponent);

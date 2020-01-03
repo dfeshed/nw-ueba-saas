@@ -1,5 +1,7 @@
+import classic from 'ember-classic-decorator';
+import { observes } from '@ember-decorators/object';
 import { run } from '@ember/runloop';
-import { observer } from '@ember/object';
+import '@ember/object';
 import DataTableBody from 'component-lib/components/rsa-data-table/body/component';
 import { connect } from 'ember-redux';
 import { fetchMachineCount } from 'investigate-hosts/actions/data-creators/file-context';
@@ -7,12 +9,15 @@ import { fetchMachineCount } from 'investigate-hosts/actions/data-creators/file-
 const dispatchToActions = {
   fetchMachineCount
 };
-const FilesContextTableBody = DataTableBody.extend({
-  insertCheckbox: true,
+
+@classic
+class FilesContextTableBody extends DataTableBody {
+  insertCheckbox = true;
 
   // Responds to a change in the viewport by fetching log data for any visible log records that need it.
   // Debounces fetch call, because scrolling may fire this handler at rapid rates.
-  _visibleItemsDidChange: observer('_visibleItems', function() {
+  @observes('_visibleItems')
+  _visibleItemsDidChange() {
     // If active on column in not visible do get the count
     const visibleColumns = this.get('table.visibleColumns');
     const machineCountColumn = visibleColumns.filter((column) => {
@@ -21,7 +26,7 @@ const FilesContextTableBody = DataTableBody.extend({
     if (machineCountColumn.length) {
       run.debounce(this, this._fetchMachineCount, 100);
     }
-  }),
+  }
 
   _fetchMachineCount() {
     if (this.get('isDestroyed') || this.get('isDestroying')) {
@@ -46,6 +51,6 @@ const FilesContextTableBody = DataTableBody.extend({
       this.send('fetchMachineCount', items, this.get('table.tabName'));
     }
   }
-});
+}
 
 export default connect(null, dispatchToActions)(FilesContextTableBody);

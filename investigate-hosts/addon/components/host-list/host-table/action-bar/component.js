@@ -1,6 +1,9 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { classNames, tagName } from '@ember-decorators/component';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { inject as service } from '@ember/service';
 import { noHostsSelected, isScanStartButtonDisabled, actionsDisableMessage, isScanStopButtonDisabled } from 'investigate-hosts/reducers/hosts/selectors';
 import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
@@ -30,41 +33,39 @@ const dispatchToActions = {
   changeEndpointServerSelection
 };
 
-const ActionBar = Component.extend({
+@classic
+@tagName('section')
+@classNames('host-table__toolbar')
+class ActionBar extends Component {
+  @service
+  flashMessage;
 
-  tagName: 'section',
+  @service
+  i18n;
 
-  classNames: 'host-table__toolbar',
+  pivotToInvestigate = noop;
+  openFilterPanel = noop;
+  showConfirmationModal = noop;
+  showScanModal = noop;
 
-  flashMessage: service(),
+  @action
+  handleDeleteHosts() {
+    const callBackOptions = {
+      onSuccess: () => {
+        this.get('flashMessage').showFlashMessage('investigateHosts.hosts.deleteHosts.success');
+      },
+      onFailure: ({ meta: message }) => this.get('flashMessage').showErrorMessage(message.message)
+    };
+    this.send('deleteHosts', callBackOptions);
+  }
 
-  i18n: service(),
-
-  pivotToInvestigate: noop,
-
-  openFilterPanel: noop,
-
-  showConfirmationModal: noop,
-
-  showScanModal: noop,
-
-  actions: {
-    handleDeleteHosts() {
-      const callBackOptions = {
-        onSuccess: () => {
-          this.get('flashMessage').showFlashMessage('investigateHosts.hosts.deleteHosts.success');
-        },
-        onFailure: ({ meta: message }) => this.get('flashMessage').showErrorMessage(message.message)
-      };
-      this.send('deleteHosts', callBackOptions);
-    },
-
-    handleServiceSelection(service) {
-      this.send('changeEndpointServerSelection', service);
-      if (this.closeProperties) {
-        this.closeProperties();
-      }
+  @action
+  handleServiceSelection(service) {
+    this.send('changeEndpointServerSelection', service);
+    if (this.closeProperties) {
+      this.closeProperties();
     }
   }
-});
+}
+
 export default connect(stateToComputed, dispatchToActions)(ActionBar);

@@ -1,7 +1,9 @@
-import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
-import { connect } from 'ember-redux';
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { connect } from 'ember-redux';
 import { riskState, getPropertyPanelTabs } from 'investigate-hosts/reducers/visuals/selectors';
 import { setSelectedAlert, getUpdatedRiskScoreContext, expandEvent } from 'investigate-shared/actions/data-creators/risk-creators';
 import { getPropertyData,
@@ -44,28 +46,27 @@ const stateToComputed = (state) => ({
   hostName: hostName(state)
 });
 
-const HostOverview = Component.extend({
+@classic
+@tagName('box')
+@classNames('host-overview')
+class HostOverview extends Component {
+  domIsReady = false;
+  hostDetailsConfig = hostDetailsConfig;
 
-  tagName: 'box',
+  @service
+  accessControl;
 
-  classNames: ['host-overview'],
-
-  domIsReady: false,
-
-  hostDetailsConfig,
-
-  accessControl: service(),
-
-  i18n: service(),
+  @service
+  i18n;
 
   @computed('showWindowsLogPolicy', 'channelFiltersConfig')
-  policiesConfig(showWindowsLogPolicy, channelFiltersConfig) {
-    return getPoliciesPropertyConfig(showWindowsLogPolicy, channelFiltersConfig);
-  },
+  get policiesConfig() {
+    return getPoliciesPropertyConfig(this.showWindowsLogPolicy, this.channelFiltersConfig);
+  }
 
   @computed('activePropertyPanelTab')
-  propertyPanelData(tab) {
-    if (tab === 'POLICIES') {
+  get propertyPanelData() {
+    if (this.activePropertyPanelTab === 'POLICIES') {
       return {
         propertyData: this.get('policiesPropertyData'),
         localeNameSpace: 'adminUsm',
@@ -77,13 +78,13 @@ const HostOverview = Component.extend({
       localeNameSpace: 'investigateHosts.hosts.properties',
       config: this.get('hostDetailsConfig')
     };
-  },
+  }
 
   @computed('policiesUnavailableMessage')
-  propertyPanelErrorMessage(message) {
+  get propertyPanelErrorMessage() {
     const i18n = this.get('i18n');
-    return this.get('accessControl.hasPolicyReadPermission') ? message : i18n.t('investigateHosts.hosts.properties.message.policyReadPermission');
-  },
+    return this.get('accessControl.hasPolicyReadPermission') ? this.policiesUnavailableMessage : i18n.t('investigateHosts.hosts.properties.message.policyReadPermission');
+  }
 
   didRender() {
     // Delay rendering the property panel
@@ -92,15 +93,15 @@ const HostOverview = Component.extend({
         this.set('domIsReady', true);
       }
     }, 250);
-  },
-  actions: {
-    expandEventAction(id) {
-      if (this.get('isDetailRightPanelVisible')) {
-        this.send('toggleDetailRightPanel');
-      }
-      this.send('expandEvent', id);
-    }
   }
-});
+
+  @action
+  expandEventAction(id) {
+    if (this.get('isDetailRightPanelVisible')) {
+      this.send('toggleDetailRightPanel');
+    }
+    this.send('expandEvent', id);
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(HostOverview);

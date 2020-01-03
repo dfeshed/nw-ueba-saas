@@ -1,3 +1,6 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { classNames, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getHostTableColumns } from 'investigate-hosts/reducers/schema/selectors';
@@ -71,20 +74,18 @@ const dispatchToActions = {
   saveColumnConfig
 };
 
-const HostTable = Component.extend({
-
-  tagName: 'box',
-
-  classNames: 'machine-zone',
-
-  isHostIsolated: false,
+@classic
+@tagName('box')
+@classNames('machine-zone')
+class HostTable extends Component {
+  isHostIsolated = false;
 
   _sortList(columnList) {
     const i18n = this.get('i18n');
     return _.sortBy(columnList, [(column) => {
       return i18n.t(column.title).toString();
     }]);
-  },
+  }
 
   isAlreadySelected(selections, item) {
     let selected = false;
@@ -92,135 +93,142 @@ const HostTable = Component.extend({
       selected = selections.findBy('id', item.id);
     }
     return selected;
-  },
+  }
 
-  actions: {
-    onRowSelection(item) {
-      const entity = {
-        entityType: 'HOST',
-        entityId: item.machineIdentity.machineName
-      };
-      this.send('handleRowSelection', entity);
-    },
+  @action
+  onRowSelection(item) {
+    const entity = {
+      entityType: 'HOST',
+      entityId: item.machineIdentity.machineName
+    };
+    this.send('handleRowSelection', entity);
+  }
 
-    /**
-     * Abort the action if dragged column is machine name, risk score and checkbox also abort if column in dropped to
-     * machine name, risk score and checkbox.
-     *
-     */
-    onReorderColumns(columns, newColumns, column, fromIndex, toIndex) {
+  /**
+   * Abort the action if dragged column is machine name, risk score and checkbox also abort if column in dropped to
+   * machine name, risk score and checkbox.
+   *
+   */
+  @action
+  onReorderColumns(columns, newColumns, column, fromIndex, toIndex) {
 
-      return !(column.dataType === 'checkbox' ||
-        column.field === 'machineIdentity.machineName' ||
-        column.field === 'score' ||
-        toIndex === 0 ||
-        toIndex === 1 ||
-        toIndex === 2);
+    return !(column.dataType === 'checkbox' ||
+      column.field === 'machineIdentity.machineName' ||
+      column.field === 'score' ||
+      toIndex === 0 ||
+      toIndex === 1 ||
+      toIndex === 2);
 
-    },
+  }
 
-    toggleSelectedRow(item, index, e, table) {
-      const { target: { classList } } = e;
-      // If it's machine name click don't select the row
-      if (e.target.tagName.toLowerCase() === 'a') {
-        return;
-      }
-      // do not select row when checkbox is clicked
-      if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
-        const isSameRowClicked = table.get('selectedIndex') === index;
-        const openProperties = this.get('openProperties');
-        this.send('setFocusedHostIndex', index);
+  @action
+  toggleSelectedRow(item, index, e, table) {
+    const { target: { classList } } = e;
+    // If it's machine name click don't select the row
+    if (e.target.tagName.toLowerCase() === 'a') {
+      return;
+    }
+    // do not select row when checkbox is clicked
+    if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
+      const isSameRowClicked = table.get('selectedIndex') === index;
+      const openProperties = this.get('openProperties');
+      this.send('setFocusedHostIndex', index);
 
-        if (!isSameRowClicked && openProperties) {
-          // if clicked row is one among the checkbox selected list, row click will highlight that row keeping others
-          // checkbox selected.
-          // when a row not in the checkbox selected list is clicked, other checkboxes are cleared.
-          if (!this.isAlreadySelected(this.get('selections'), item)) {
-            this.send('deSelectAllHosts');
-            this.send('toggleMachineSelected', item);
-          }
-          this.send('onHostSelection', item);
-          next(() => {
-            this.openProperties();
-          });
-        } else {
-          this.send('toggleMachineSelected', item);
-          this.closeProperties();
-          this.send('setFocusedHostIndex', -1);
-        }
-      }
-    },
-    /* beforeContextMenuShow executes before the context menu is rendered.
-      it alters the list of context menu items based on conditions like;
-      a. Is MFT enabled
-      b. Is the target element an anchor tag
-      c. number of items selected */
-    beforeContextMenuShow(menu, event) {
-      const { contextSelection: item, contextItems } = menu;
-      const { isMFTEnabled, isIsolationEnabled } = item;
-      const selections = this.get('selections');
-
-      // Need to store this locally set it back again to menu object
-      if (contextItems.length) {
-        if (!this.get('mftContextConfBackup') && isMFTEnabled && !isIsolationEnabled) {
-          this.set('mftContextConfBackup', contextItems);
-        }
-        if (!this.get('initialContextConfBackup') && !isMFTEnabled && !isIsolationEnabled) {
-          this.set('initialContextConfBackup', contextItems);
-        }
-        if (!this.get('isolationAndMFTContextConfBackup') && isMFTEnabled && isIsolationEnabled) {
-          this.set('isolationAndMFTContextConfBackup', contextItems);
-        }
-        if (!this.get('isolationContextConfBackup') && !isMFTEnabled && isIsolationEnabled) {
-          this.set('isolationContextConfBackup', contextItems);
-        }
-      }
-
-      // For anchor tag hid the context menu and show browser default right click menu
-      if (event.target.tagName.toLowerCase() === 'a') {
-        menu.set('contextItems', []);
-      } else {
-        if (!isIsolationEnabled && isMFTEnabled && (selections.length <= 1)) {
-          menu.set('contextItems', this.get('mftContextConfBackup'));
-        } else if (isIsolationEnabled && isMFTEnabled && (selections.length <= 1)) {
-          menu.set('contextItems', this.get('isolationAndMFTContextConfBackup'));
-        } else if (isIsolationEnabled && !isMFTEnabled && (selections.length <= 1)) {
-          menu.set('contextItems', this.get('isolationContextConfBackup'));
-        } else {
-          menu.set('contextItems', this.get('initialContextConfBackup'));
-        }
-
-        // Highlight is removed and right panel is closed when right clicked on non-highlighted row
-        if (this.get('focusedHost') && this.get('focusedHost').id !== item.id) {
-          this.send('setFocusedHostIndex', -1);
-          this.closeProperties();
-        }
-        if (!this.isAlreadySelected(selections, item)) {
+      if (!isSameRowClicked && openProperties) {
+        // if clicked row is one among the checkbox selected list, row click will highlight that row keeping others
+        // checkbox selected.
+        // when a row not in the checkbox selected list is clicked, other checkboxes are cleared.
+        if (!this.isAlreadySelected(this.get('selections'), item)) {
           this.send('deSelectAllHosts');
           this.send('toggleMachineSelected', item);
         }
-      }
-    },
-    toggleAllSelection() {
-      if (!this.get('isAllHostSelected')) {
-        this.send('selectAllHosts');
+        this.send('onHostSelection', item);
+        next(() => {
+          this.openProperties();
+        });
       } else {
-        this.send('deSelectAllHosts');
-      }
-    },
-    sort(columnSort) {
-      if (this.closeProperties) {
+        this.send('toggleMachineSelected', item);
         this.closeProperties();
+        this.send('setFocusedHostIndex', -1);
       }
-      this.send('setHostColumnSort', columnSort);
-    },
-
-    onColumnConfigChange(changedProperty, changedColumns) {
-      this.send('saveColumnConfig', 'hosts', changedProperty, changedColumns);
-    },
-    onToggleColumn(column, columns) {
-      this.send('saveColumnConfig', 'hosts', 'display', columns);
     }
   }
-});
+
+  /* beforeContextMenuShow executes before the context menu is rendered.
+    it alters the list of context menu items based on conditions like;
+    a. Is MFT enabled
+    b. Is the target element an anchor tag
+    c. number of items selected */
+  @action
+  beforeContextMenuShow(menu, event) {
+    const { contextSelection: item, contextItems } = menu;
+    const { isMFTEnabled } = item;
+    const { groupPolicy = {} } = item;
+    const { isolationAllowed = false } = groupPolicy;
+    const selections = this.get('selections');
+    // Need to store this locally set it back again to menu object
+    if (contextItems.length) {
+      if (!this.get('updatedContextConfBackup') && isMFTEnabled && !isolationAllowed) {
+        this.set('updatedContextConfBackup', contextItems);
+      }
+      if (!this.get('initialContextConfBackup') && !isMFTEnabled) {
+        this.set('initialContextConfBackup', contextItems);
+      }
+      if (!this.get('isolatedContextConfBackup') && isMFTEnabled && isolationAllowed) {
+        this.set('isolatedContextConfBackup', contextItems);
+      }
+    }
+
+    // For anchor tag hid the context menu and show browser default right click menu
+    if (event.target.tagName.toLowerCase() === 'a') {
+      menu.set('contextItems', []);
+    } else {
+      if (!isolationAllowed && isMFTEnabled && (selections.length <= 1)) {
+        menu.set('contextItems', this.get('updatedContextConfBackup'));
+      } else if (isolationAllowed && isMFTEnabled && (selections.length <= 1)) {
+        menu.set('contextItems', this.get('isolatedContextConfBackup'));
+      } else {
+        menu.set('contextItems', this.get('initialContextConfBackup'));
+      }
+
+      // Highlight is removed and right panel is closed when right clicked on non-highlighted row
+      if (this.get('focusedHost') && this.get('focusedHost').id !== item.id) {
+        this.send('setFocusedHostIndex', -1);
+        this.closeProperties();
+      }
+      if (!this.isAlreadySelected(selections, item)) {
+        this.send('deSelectAllHosts');
+        this.send('toggleMachineSelected', item);
+      }
+    }
+  }
+
+  @action
+  toggleAllSelection() {
+    if (!this.get('isAllHostSelected')) {
+      this.send('selectAllHosts');
+    } else {
+      this.send('deSelectAllHosts');
+    }
+  }
+
+  @action
+  sort(columnSort) {
+    if (this.closeProperties) {
+      this.closeProperties();
+    }
+    this.send('setHostColumnSort', columnSort);
+  }
+
+  @action
+  onColumnConfigChange(changedProperty, changedColumns) {
+    this.send('saveColumnConfig', 'hosts', changedProperty, changedColumns);
+  }
+
+  @action
+  onToggleColumn(column, columns) {
+    this.send('saveColumnConfig', 'hosts', 'display', columns);
+  }
+}
+
 export default connect(stateToComputed, dispatchToActions)(HostTable);

@@ -1,6 +1,8 @@
+import classic from 'ember-classic-decorator';
+import { tagName } from '@ember-decorators/component';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 
 import {
   isScanStartButtonDisabled,
@@ -21,25 +23,25 @@ const stateToComputed = (state) => ({
   actionsDisableMessage: actionsDisableMessage(state),
   serverIdForScanCommand: hostOverviewServerId(state)
 });
-const ScanCommand = Component.extend({
-  tagName: '',
 
-  command: null,
-
-  isStartScanIconDisplayed: true,
+@classic
+@tagName('')
+class ScanCommand extends Component {
+  command = null;
+  isStartScanIconDisplayed = true;
 
   @computed('command', 'modalTitle', 'scanCount')
-  title(command, modalTitle, scanCount) {
-    if (modalTitle) {
-      return modalTitle;
+  get title() {
+    if (this.modalTitle) {
+      return this.modalTitle;
     }
     let key = 'investigateHosts.hosts.initiateScan.modal.title';
 
-    if (command === 'STOP_SCAN') {
+    if (this.command === 'STOP_SCAN') {
       key = 'investigateHosts.hosts.cancelScan.modal.title';
     }
-    return this.get('i18n').t(key, { count: scanCount });
+    return this.get('i18n').t(key, { count: this.scanCount });
   }
-});
+}
 
 export default connect(stateToComputed)(ScanCommand);

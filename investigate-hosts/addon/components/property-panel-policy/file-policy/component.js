@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { classNames } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
@@ -12,8 +14,8 @@ const stateToComputed = (state) => ({
   selectedFilePolicy: selectedFilePolicy(state)
 });
 
-const UsmPoliciesFileInspector = Component.extend({
-  classNames: ['file-policies']
-});
+@classic
+@classNames('file-policies')
+class UsmPoliciesFileInspector extends Component {}
 
 export default connect(stateToComputed, dispatchToActions)(UsmPoliciesFileInspector);

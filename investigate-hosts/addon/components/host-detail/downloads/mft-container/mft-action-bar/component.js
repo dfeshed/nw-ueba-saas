@@ -1,8 +1,11 @@
-import Component from '@ember/component';
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
+import { alias } from '@ember/object/computed';
+import Component from '@ember/component';
 import { toggleMftView } from 'investigate-hosts/actions/data-creators/downloads';
 import { connect } from 'ember-redux';
-import computed, { alias } from 'ember-computed-decorators';
 import { success } from 'investigate-shared/utils/flash-messages';
 import { downloadFilesToServer } from 'investigate-hosts/actions/data-creators/file-context';
 import { isAgentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
@@ -26,37 +29,37 @@ const dispatchToActions = {
   downloadFilesToServer
 };
 
-const mftActionBar = Component.extend({
-  tagName: 'box',
+@classic
+@tagName('box')
+@classNames('mft-action-bar')
+class mftActionBar extends Component {
+  @service
+  accessControl;
 
-  classNames: ['mft-action-bar'],
-
-  accessControl: service(),
-
-  flashMessage: service(),
-
-  callBackOptions,
+  callBackOptions = callBackOptions;
 
   @alias('focusedHost')
-  machineId: null,
+  machineId;
 
   @computed('selections', 'isAgentMigrated')
-  isDownloadToServerDisabled(selections, isAgentMigrated) {
-    return isAgentMigrated || !selections.length;
-  },
-  @computed('selectedDirectory')
-  isShowActions(selectedDirectory) {
-    const canManage = this.get('accessControl.endpointCanManageFiles');
-    return selectedDirectory && canManage;
-  },
-  actions: {
-    onDownloadFilesToServer() {
-      const callBackOptions = this.get('callBackOptions')(this);
-      const agentId = this.get('agentId');
-      const fileSelections = this.get('selections');
-
-      this.send('downloadFilesToServer', agentId, fileSelections, callBackOptions);
-    }
+  get isDownloadToServerDisabled() {
+    return this.isAgentMigrated || !this.selections.length;
   }
-});
+
+  @computed('selectedDirectory')
+  get isShowActions() {
+    const canManage = this.get('accessControl.endpointCanManageFiles');
+    return this.selectedDirectory && canManage;
+  }
+
+  @action
+  onDownloadFilesToServer() {
+    const callBackOptions = this.get('callBackOptions')(this);
+    const agentId = this.get('agentId');
+    const fileSelections = this.get('selections');
+
+    this.send('downloadFilesToServer', agentId, fileSelections, callBackOptions);
+  }
+}
+
 export default connect(stateToComputed, dispatchToActions)(mftActionBar);

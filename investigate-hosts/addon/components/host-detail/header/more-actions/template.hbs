@@ -70,7 +70,7 @@
               {{#each moreOption.subItems as |subItem|}}
                 <li class='{{if subItem.isDisabled "editDisabled"}}'>
                   {{#rsa-form-button
-                    defaultAction=(action 'showIsolationModal' subItem.modalName)
+                    defaultAction=(action 'onshowIsolationModal' subItem.modalName)
                     isDisabled=subItem.isDisabled}}
                     {{t subItem.name}}
                   {{/rsa-form-button}}

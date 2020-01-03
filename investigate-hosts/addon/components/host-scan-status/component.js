@@ -1,6 +1,8 @@
-import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
+import classic from 'ember-classic-decorator';
+import { classNames } from '@ember-decorators/component';
+import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
 const statusMapping = {
   scanning: 'Scanning',
@@ -9,17 +11,17 @@ const statusMapping = {
   idle: 'Idle'
 };
 
-export default Component.extend({
-
-  eventBus: service(),
-
-  classNames: ['rsa-agent-scan-status'],
+@classic
+@classNames('rsa-agent-scan-status')
+export default class HostScanStatus extends Component {
+  @service
+  eventBus;
 
   @computed('agent.agentStatus.scanStatus', 'agent.machineIdentity.agentVersion')
-  status: (scanStatus, agentVersion) => {
-    if (agentVersion && agentVersion.startsWith('4.4')) {
+  get status() {
+    if (this.agent?.machineIdentity?.agentVersion && this.agent?.machineIdentity?.agentVersion.startsWith('4.4')) {
       return 'N/A';
     }
-    return statusMapping[scanStatus] || 'N/A';
+    return statusMapping[this.agent?.agentStatus?.scanStatus] || 'N/A';
   }
-});
+}

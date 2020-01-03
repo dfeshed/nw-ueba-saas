@@ -1,9 +1,8 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 
-export default Component.extend({
-
-  tagName: 'hbox',
-
-  classNames: ['info-message', 'alert-info']
-
-});
+@classic
+@tagName('hbox')
+@classNames('info-message', 'alert-info')
+export default class InfoMessage extends Component {}

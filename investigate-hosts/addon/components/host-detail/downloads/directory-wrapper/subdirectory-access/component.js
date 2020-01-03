@@ -1,5 +1,7 @@
+import classic from 'ember-classic-decorator';
+import { tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { setSelectedParentDirectory, getSubDirectories } from 'investigate-hosts/actions/data-creators/downloads';
 
@@ -14,55 +16,47 @@ const dispatchToActions = {
   getSubDirectories
 };
 
-const SubdirectoryAccess = Component.extend({
-  tagName: '',
-  close: true,
-  isLoading: false,
+@classic
+@tagName('')
+class SubdirectoryAccess extends Component {
+  close = true;
+  isLoading = false;
 
   @computed('close', 'openDirectories', 'data')
-  displaySubdirectory: {
-    get() {
-      const { openDirectories, data } = this.getProperties('openDirectories', 'data');
-      let isClosed = this.get('close');
-      let arrowDirection = 'arrow-down-12';
+  get displaySubdirectory() {
 
-      if (openDirectories.includes(data.recordNumber)) {
-        isClosed = false;
-      } else {
-        arrowDirection = isClosed ? 'arrow-right-12' : 'arrow-down-12';
-      }
+    let arrowDirection = 'arrow-down-12';
 
-      return { arrowDirection, isClosed };
-    },
-    set(key, value) {
-      return value;
+    if (this.openDirectories.includes(this.data.recordNumber)) {
+      this.close = false;
+      this.set('close', this.close);
+    } else {
+      arrowDirection = this.close ? 'arrow-right-12' : 'arrow-down-12';
     }
-  },
 
-  actions: {
-    toggleSubdirectories() {
-      const { ancestors, recordNumber, children } = this.get('data');
-      const fullPathName = this.get('fullPathName');
-      const name = this.get('directoryName');
-      const openDirectories = this.get('openDirectories');
-      // max number of folders is 65000 and fetch only directories is true for a fresh subdirectory fetch.
-      let isDirectories = false;
-      const inUse = true;
-
-      if (!this.get('close') || openDirectories.includes(recordNumber)) {
-        this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors: [], close: true }, pageSize: 100, isDirectories, inUse, fullPathName, name });
-        this.set('close', true);
-      } else {
-        if (!children) {
-          this.set('isLoading', true);
-          this.send('getSubDirectories');
-          isDirectories = true;
-        }
-        this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors, close: false }, pageSize: 65000, isDirectories, inUse, fullPathName, name });
-        this.set('close', false);
-      }
-    }
+    return { arrowDirection, close: this.close };
   }
-});
+
+  @action
+  toggleSubdirectories() {
+    const { ancestors, recordNumber, children } = this.get('data');
+    const fullPathName = this.get('fullPathName');
+    const name = this.get('directoryName');
+    // max number of folders is 65000 and fetch only directories is true for a fresh subdirectory fetch.
+    let isDirectories = false;
+    const inUse = true;
+    if (this.get('close')) {
+      if (!children) {
+        this.set('isLoading', true);
+        this.send('getSubDirectories');
+        isDirectories = true;
+      }
+      this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors, close: false }, pageSize: 65000, isDirectories, inUse, fullPathName, name });
+    } else {
+      this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors: [], close: true }, pageSize: 100, isDirectories, inUse, fullPathName, name });
+    }
+    this.toggleProperty('close');
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(SubdirectoryAccess);

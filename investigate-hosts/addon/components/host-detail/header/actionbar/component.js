@@ -1,6 +1,9 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { classNames, tagName } from '@ember-decorators/component';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { inject as service } from '@ember/service';
 import {
   downloadLink,
   hostName,
@@ -35,33 +38,36 @@ const dispatchToActions = {
   toggleDetailRightPanel
 };
 
-const ActionBar = Component.extend({
+@classic
+@tagName('hbox')
+@classNames('actionbar', 'controls')
+class ActionBar extends Component {
+  @service
+  eventBus;
 
-  tagName: 'hbox',
+  @service
+  i18n;
 
-  classNames: ['actionbar', 'controls'],
+  @service
+  flashMessage;
 
-  eventBus: service(),
+  @action
+  setSelect(option) {
+    this.send('changeSnapshotTime', { agentId: this.get('agentId'), scanTime: option });
+  }
 
-  i18n: service(),
-
-  flashMessage: service(),
-
-  actions: {
-    setSelect(option) {
-      this.send('changeSnapshotTime', { agentId: this.get('agentId'), scanTime: option });
-    },
-    openInAction() {
-      const host = this.get('host');
-      const { machineIdentity: { agentVersion } } = host;
-      const url = `ecatui:///machines/${host.id}`;
-      const i18n = this.get('i18n');
-      if (agentVersion && agentVersion.startsWith('4.4')) {
-        window.open(url);
-      } else {
-        this.get('flashMessage').showErrorMessage(i18n.t('investigateHosts.hosts.moreActions.notAnEcatAgent'));
-      }
+  @action
+  openInAction() {
+    const host = this.get('host');
+    const { machineIdentity: { agentVersion } } = host;
+    const url = `ecatui:///machines/${host.id}`;
+    const i18n = this.get('i18n');
+    if (agentVersion && agentVersion.startsWith('4.4')) {
+      window.open(url);
+    } else {
+      this.get('flashMessage').showErrorMessage(i18n.t('investigateHosts.hosts.moreActions.notAnEcatAgent'));
     }
   }
-});
+}
+
 export default connect(stateToComputed, dispatchToActions)(ActionBar);

@@ -1,40 +1,30 @@
+import classic from 'ember-classic-decorator';
+import { classNames } from '@ember-decorators/component';
+import { alias } from '@ember/object/computed';
 import Component from '@ember/component';
-import { get, set } from '@ember/object';
-import computed, { alias } from 'ember-computed-decorators';
+import { get, set, action, computed } from '@ember/object';
 import { htmlSafe } from '@ember/string';
 
 const BASE_PADDING = 30;
 
-const ProcessName = Component.extend({
-
-  classNames: ['process-name-column'],
-
-  /**
-   * To show the icon in th UI
-   * @public
-   */
+@classic
+@classNames('process-name-column')
+class ProcessName extends Component {
   @alias('item.expanded')
-  isExpanded: false,
+  isExpanded;
 
-  /**
-   * Calculate the padding for the row based on the `level` property. Using this to achieve tree structure in the UI.
-   * For each row `level` property set which indicates the depth of tree node.
-   * @param item
-   * @returns {*}
-   * @public
-   */
   @computed('item')
-  style(item) {
-    const left = BASE_PADDING * item.level;
+  get style() {
+    const left = BASE_PADDING * this.item.level;
     return htmlSafe(`padding-left: ${left}px;`);
-  },
-
-  actions: {
-    toggleExpand() {
-      const { item, index } = this.getProperties('item', 'index');
-      set(item, 'expanded', !get(item, 'expanded'));
-      this.onToggleExpand(index, item.level, item);
-    }
   }
-});
+
+  @action
+  toggleExpand() {
+    const { item, index } = this.getProperties('item', 'index');
+    set(item, 'expanded', !get(item, 'expanded'));
+    this.onToggleExpand(index, item.level, item);
+  }
+}
+
 export default ProcessName;

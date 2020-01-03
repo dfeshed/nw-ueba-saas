@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { classNames } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { arrangedSecurityConfigs } from 'investigate-hosts/reducers/details/overview/selectors';
@@ -12,12 +14,10 @@ const dispatchToActions = {
   arrangeSecurityConfigs
 };
 
-const SecurityConfiguration = Component.extend({
-
-  classNames: ['security-configuration'],
-
-  value: null
-
-});
+@classic
+@classNames('security-configuration')
+class SecurityConfiguration extends Component {
+  value = null;
+}
 
 export default connect(stateToComputed, dispatchToActions)(SecurityConfiguration);

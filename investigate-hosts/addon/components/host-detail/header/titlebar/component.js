@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getHostDetailTabs, isOnOverviewTab, isActiveTabDownloads } from 'investigate-hosts/reducers/visuals/selectors';
@@ -13,12 +15,9 @@ const stateToComputed = (state) => ({
   hideSnapshotAndExploreSearch: isActiveTabDownloads(state)
 });
 
-const TitleBarComponent = Component.extend({
-
-  tagName: 'hbox',
-
-  classNames: ['titlebar']
-
-});
+@classic
+@tagName('hbox')
+@classNames('titlebar')
+class TitleBarComponent extends Component {}
 
 export default connect(stateToComputed)(TitleBarComponent);

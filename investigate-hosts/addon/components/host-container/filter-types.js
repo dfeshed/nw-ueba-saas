@@ -47,7 +47,7 @@ const FILTER_TYPES = [
         validator: (value) => {
           const groupNames = value.split('||');
           const isValidGroupNames = groupNames.map((agentVersion) => {
-            return (/^([!-~\s])*$/.test(agentVersion.trim()));
+            return /^([!-~\s])*$/.test(agentVersion.trim());
           });
           return isValidGroupNames.includes(false);
         },
@@ -65,7 +65,7 @@ const FILTER_TYPES = [
         validator: (value) => {
           const macAddress = value.split('||');
           const isValidMacAddress = macAddress.map((mac) => {
-            return (/^(?:[0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/.test(mac.trim()));
+            return /^(?:[0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/.test(mac.trim());
           });
           return isValidMacAddress.includes(false);
         },
@@ -84,7 +84,7 @@ const FILTER_TYPES = [
         validator: (value) => {
           const ips = value.split('||');
           const isValidIps = ips.map((ip) => {
-            return (/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip.trim()));
+            return /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip.trim());
           });
           return isValidIps.includes(false);
         },
@@ -197,7 +197,7 @@ const FILTER_TYPES = [
         validator: (value) => {
           const ids = value.split('||');
           const isValidIds = ids.map((id) => {
-            return (/^[A-Za-z0-9-]*$/.test(id.trim()));
+            return /^[A-Za-z0-9-]*$/.test(id.trim());
           });
           return isValidIds.includes(false);
         },
@@ -215,7 +215,7 @@ const FILTER_TYPES = [
         validator: (value) => {
           const agentVersions = value.split('||');
           const isValidAgentVersions = agentVersions.map((agentVersion) => {
-            return (/^[0-9.]*$/.test(agentVersion.trim()));
+            return /^[0-9.]*$/.test(agentVersion.trim());
           });
           return isValidAgentVersions.includes(false);
         },

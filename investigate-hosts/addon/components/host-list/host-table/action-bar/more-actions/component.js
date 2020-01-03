@@ -1,17 +1,18 @@
-import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
-export default Component.extend({
-
-  tagName: 'section',
-
-  classNames: 'host_more_actions',
-
-  accessControl: service(),
+@classic
+@tagName('section')
+@classNames('host_more_actions')
+export default class MoreActions extends Component {
+  @service
+  accessControl;
 
   @computed('isMFTEnabled', 'selectedHostList', 'accessControl', 'hostDetails')
-  moreOptions() {
+  get moreOptions() {
     let subNavItem = {};
     const systemMemoryDump = [
       {
@@ -81,11 +82,11 @@ export default Component.extend({
       }
     }
     return moreActionOptions;
-  },
-  actions: {
-    displayIsolationModal(item) {
-      this.showIsolationModal(item);
-    }
   }
-});
+
+  @action
+  displayIsolationModal(item) {
+    this.showIsolationModal(item);
+  }
+}
 

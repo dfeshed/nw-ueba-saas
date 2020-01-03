@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getAnomaliesTabs, selectedAnomaliesTab } from 'investigate-hosts/reducers/visuals/selectors';
@@ -7,9 +9,9 @@ const stateToComputed = (state) => ({
   selectedAnomaliesTab: selectedAnomaliesTab(state)
 });
 
-const HostAnomalies = Component.extend({
-  tagName: 'box',
-  classNames: ['host-anomalies']
-});
+@classic
+@tagName('box')
+@classNames('host-anomalies')
+class HostAnomalies extends Component {}
 
 export default connect(stateToComputed)(HostAnomalies);

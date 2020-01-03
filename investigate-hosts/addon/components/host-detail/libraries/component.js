@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import propertyConfig from './library-property-config';
@@ -9,9 +11,10 @@ const stateToComputed = (state) => ({
 });
 
 
-const Libraries = Component.extend({
-  tagName: '',
-  propertyConfig
-});
+@classic
+@tagName('')
+class Libraries extends Component {
+  propertyConfig = propertyConfig;
+}
 
 export default connect(stateToComputed)(Libraries);

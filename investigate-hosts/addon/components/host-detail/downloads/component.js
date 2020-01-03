@@ -1,6 +1,9 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { inject as service } from '@ember/service';
 import {
   applyFilters,
   createCustomSearch,
@@ -14,7 +17,6 @@ import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endp
 import { FILTER_TYPES } from './filter-types';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 import { toggleHostDetailsFilter } from 'investigate-hosts/actions/ui-state-creators';
-import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   filter: state.endpoint.hostDownloads.filter,
@@ -38,67 +40,71 @@ const dispatchToActions = {
   toggleHostDetailsFilter
 };
 
-const HostDownloads = Component.extend({
-  tagName: 'box',
-  classNames: ['host-downloads'],
+@classic
+@tagName('box')
+@classNames('host-downloads')
+class HostDownloads extends Component {
+  filterTypes = FILTER_TYPES;
+  showConfirmationModal = false;
 
-  filterTypes: FILTER_TYPES,
-
-  showConfirmationModal: false,
-
-  accessControl: service(),
+  @service
+  accessControl;
 
   @computed('selectedFileList')
-  disableActions(selectedFileList) {
-    const isErrorFiles = selectedFileList.some((item) => {
+  get disableActions() {
+    const isErrorFiles = this.selectedFileList.some((item) => {
       return item.status === 'Processing' || item.status === 'Error';
     });
     const hasManageAccess = this.get('accessControl.endpointCanManageFiles');
     return {
       hasManageAccess,
-      deleteFile: !selectedFileList.length,
-      saveLocalCopy: selectedFileList.length !== 1 || !!isErrorFiles
+      deleteFile: !this.selectedFileList.length,
+      saveLocalCopy: this.selectedFileList.length !== 1 || !!isErrorFiles
     };
-  },
+  }
 
-  actions: {
-    onDeleteFilesFromServer() {
-      const callbacks = {
-        onSuccess: () => success('investigateHosts.downloads.deleteDownloadedFiles.success'),
-        onFailure: (message) => failure(message, null, false)
-      };
-      const selectedFileList = this.get('selectedFileList');
-      this.send('deleteSelectedFiles', selectedFileList, callbacks);
-      this.set('showConfirmationModal', false);
-    },
+  @action
+  onDeleteFilesFromServer() {
+    const callbacks = {
+      onSuccess: () => success('investigateHosts.downloads.deleteDownloadedFiles.success'),
+      onFailure: (message) => failure(message, null, false)
+    };
+    const selectedFileList = this.get('selectedFileList');
+    this.send('deleteSelectedFiles', selectedFileList, callbacks);
+    this.set('showConfirmationModal', false);
+  }
 
-    onSaveLocalCopy() {
-      const callbacks = {
-        onFailure: (message) => failure(message, null, false)
-      };
-      const selectedFileList = this.get('selectedFileList') || [];
-      const [selectedFile] = selectedFileList;
-      const { serviceId, fileType } = selectedFile;
-      if (fileType === 'File') {
-        this.send('saveLocalFileCopy', selectedFile, callbacks);
-      } else {
-        this.send('saveLocalMFTCopy', selectedFile, callbacks, serviceId);
-      }
-    },
-
-    showConfirmationModal() {
-      this.set('showConfirmationModal', true);
-    },
-
-    hideConfirmationModal() {
-      this.set('showConfirmationModal', false);
-    },
-    onCloseSidePanel(side) {
-      if (side === 'left') {
-        this.send('toggleHostDetailsFilter', false);
-      }
+  @action
+  onSaveLocalCopy() {
+    const callbacks = {
+      onFailure: (message) => failure(message, null, false)
+    };
+    const selectedFileList = this.get('selectedFileList') || [];
+    const [selectedFile] = selectedFileList;
+    const { serviceId, fileType } = selectedFile;
+    if (fileType === 'File') {
+      this.send('saveLocalFileCopy', selectedFile, callbacks);
+    } else {
+      this.send('saveLocalMFTCopy', selectedFile, callbacks, serviceId);
     }
   }
-});
+
+  @action
+  onShowConfirmationModal() {
+    this.set('showConfirmationModal', true);
+  }
+
+  @action
+  hideConfirmationModal() {
+    this.set('showConfirmationModal', false);
+  }
+
+  @action
+  onCloseSidePanel(side) {
+    if (side === 'left') {
+      this.send('toggleHostDetailsFilter', false);
+    }
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(HostDownloads);

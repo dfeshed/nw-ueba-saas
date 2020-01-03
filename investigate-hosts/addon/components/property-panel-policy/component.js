@@ -1,3 +1,6 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { classNames, tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { general, sources } from 'investigate-hosts/reducers/details/policy-details/edr-policy/edr-selectors';
@@ -14,15 +17,16 @@ const stateToComputed = (state) => ({
   agentVersionNotSupported: agentVersionNotSupported(state)
 });
 
-const PropertyPanelPolicy = Component.extend({
-  tagName: 'vbox',
-  classNames: ['host-property-panel'],
-  showNonEmptyProperty: false,
-  actions: {
-    toggleIsIncludeEmptyValue(val) {
-      this.set('showNonEmptyProperty', !val);
-    }
+@classic
+@tagName('vbox')
+@classNames('host-property-panel')
+class PropertyPanelPolicy extends Component {
+  showNonEmptyProperty = false;
+
+  @action
+  toggleIsIncludeEmptyValue(val) {
+    this.set('showNonEmptyProperty', !val);
   }
-});
+}
 
 export default connect(stateToComputed, dispatchToActions)(PropertyPanelPolicy);

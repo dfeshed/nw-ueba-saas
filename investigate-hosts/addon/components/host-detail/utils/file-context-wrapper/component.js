@@ -1,8 +1,10 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { serviceList, isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
-import { inject as service } from '@ember/service';
-import computed from 'ember-computed-decorators';
 import { next } from '@ember/runloop';
 import {
   resetFilters
@@ -105,105 +107,110 @@ const dispatchToActions = {
 };
 
 
-const ContextWrapper = Component.extend({
-  tagName: 'box',
+@classic
+@tagName('box')
+@classNames('file-context-wrapper')
+class ContextWrapper extends Component {
+  isPaginated = false;
+  storeName = '';
+  columnsConfig = null;
+  propertyConfig = null;
+  tabName = '';
 
-  classNames: ['file-context-wrapper'],
+  @service
+  accessControl;
 
-  isPaginated: false,
+  @service
+  flashMessage;
 
-  storeName: '',
+  filterTypes = FILTER_TYPES;
 
-  columnsConfig: null,
+  @service
+  pivot;
 
-  propertyConfig: null,
-
-  tabName: '',
-
-  accessControl: service(),
-
-  flashMessage: service(),
-
-  filterTypes: FILTER_TYPES,
-
-  pivot: service(),
-
-  callBackOptions,
-
-  processDumpCallBackOptions,
+  callBackOptions = callBackOptions;
+  processDumpCallBackOptions = processDumpCallBackOptions;
 
   @computed('tabName')
-  isDisplayTabLabel(tabName) {
+  get isDisplayTabLabel() {
     const tabsToDisplayLabels = ['FILE', 'DRIVER', 'LIBRARY'];
     return tabsToDisplayLabels.some((tab) => {
-      return tab === tabName;
+      return tab === this.tabName;
     });
-  },
+  }
 
   @computed('tabName', 'isProcessDumpDownloadSupported')
-  showDownloadProcessDump(tabName, isProcessDumpDownloadSupported) {
+  get showDownloadProcessDump() {
     const tabsWithDownloadProcessDump = ['LIBRARY', 'IMAGEHOOK', 'THREAD'];
-    return this.get('accessControl.endpointCanManageFiles') && tabsWithDownloadProcessDump.includes(tabName) && isProcessDumpDownloadSupported;
-  },
+    return this.get('accessControl.endpointCanManageFiles') && tabsWithDownloadProcessDump.includes(this.tabName) && this.isProcessDumpDownloadSupported;
+  }
 
-  actions: {
-
-    onPropertyPanelClose(side) {
-      if (side === 'right') {
-        this.send('setRowSelection', this.get('tabName'), null, null);
-      }
-      if (side === 'left') {
-        this.send('toggleHostDetailsFilter', false);
-      }
-    },
-
-    onDownloadProcessDump() {
-      const fileContextSelections = this.get('fileContextSelections');
-      const callBackOptions = this.get('processDumpCallBackOptions')(this);
-      const agentId = this.get('agentId');
-      this.send('downloadProcessDump', agentId, fileContextSelections, callBackOptions);
-    },
-
-    onDownloadFilesToServer() {
-      const callBackOptions = this.get('callBackOptions')(this);
-      const agentId = this.get('agentId');
-      const fileContextSelections = this.get('fileContextSelections');
-
-      this.send('downloadFilesToServer', agentId, fileContextSelections, callBackOptions);
-    },
-    onSaveLocalCopy() {
-      const callBackOptions = this.get('callBackOptions')(this);
-      this.send('saveLocalFileCopy', this.get('selectedFileList')[0], callBackOptions);
-    },
-    onAnalyzeFile() {
-      const callBackOptions = this.get('callBackOptions')(this);
-      // Open analyze file.
-      const fileContextSelections = this.get('fileContextSelections');
-      const [{ checksumSha256, format = '', downloadInfo: { serviceId } }] = fileContextSelections;
-      const fileFormat = componentSelectionForFileType(format).format;
-
-      this.analyzeFile(checksumSha256, fileFormat, serviceId, callBackOptions);
-    },
-    openFilterPanel(openFilterPanel) {
-      openFilterPanel();
-      this.send('toggleHostDetailsFilter', true);
-    },
-
-    applyFilters(expressionList, filterType) {
-      next(() => {
-        this.send('applyDetailsFilter', expressionList, filterType);
-      });
-    },
-    onHostNameClick(target, item) {
-      if ('HOST_NAME' === target) {
-        const serverId = this.get('serverId');
-        window.open(`${window.location.origin}/investigate/hosts/${item.agentId.toUpperCase()}/OVERVIEW?sid=${serverId}`);
-      } else if ('PIVOT_ICON' === target) {
-        this.get('pivot').pivotToInvestigate('machineIdentity.machineName', { machineIdentity: { machineName: item } });
-      }
+  @action
+  onPropertyPanelClose(side) {
+    if (side === 'right') {
+      this.send('setRowSelection', this.get('tabName'), null, null);
+    }
+    if (side === 'left') {
+      this.send('toggleHostDetailsFilter', false);
     }
   }
 
-});
+  @action
+  onDownloadProcessDump() {
+    const fileContextSelections = this.get('fileContextSelections');
+    const callBackOptions = this.get('processDumpCallBackOptions')(this);
+    const agentId = this.get('agentId');
+    this.send('downloadProcessDump', agentId, fileContextSelections, callBackOptions);
+  }
+
+  @action
+  onDownloadFilesToServer() {
+    const callBackOptions = this.get('callBackOptions')(this);
+    const agentId = this.get('agentId');
+    const fileContextSelections = this.get('fileContextSelections');
+
+    this.send('downloadFilesToServer', agentId, fileContextSelections, callBackOptions);
+  }
+
+  @action
+  onSaveLocalCopy() {
+    const callBackOptions = this.get('callBackOptions')(this);
+    this.send('saveLocalFileCopy', this.get('selectedFileList')[0], callBackOptions);
+  }
+
+  @action
+  onAnalyzeFile() {
+    const callBackOptions = this.get('callBackOptions')(this);
+    // Open analyze file.
+    const fileContextSelections = this.get('fileContextSelections');
+    const [{ checksumSha256, format = '', downloadInfo: { serviceId } }] = fileContextSelections;
+    const fileFormat = componentSelectionForFileType(format).format;
+
+    this.analyzeFile(checksumSha256, fileFormat, serviceId, callBackOptions);
+  }
+
+  @action
+  openFilterPanel(openFilterPanel) {
+    openFilterPanel();
+    this.send('toggleHostDetailsFilter', true);
+  }
+
+  @action
+  applyFilters(expressionList, filterType) {
+    next(() => {
+      this.send('applyDetailsFilter', expressionList, filterType);
+    });
+  }
+
+  @action
+  onHostNameClick(target, item) {
+    if ('HOST_NAME' === target) {
+      const serverId = this.get('serverId');
+      window.open(`${window.location.origin}/investigate/hosts/${item.agentId.toUpperCase()}/OVERVIEW?sid=${serverId}`);
+    } else if ('PIVOT_ICON' === target) {
+      this.get('pivot').pivotToInvestigate('machineIdentity.machineName', { machineIdentity: { machineName: item } });
+    }
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(ContextWrapper);

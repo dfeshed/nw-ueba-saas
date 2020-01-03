@@ -1,3 +1,6 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import CONFIG from '../process-property-config';
@@ -8,7 +11,6 @@ import {
   enrichedDllData,
   imageHooksData,
   suspiciousThreadsData } from 'investigate-hosts/reducers/details/process/selectors';
-import computed from 'ember-computed-decorators';
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import { isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
 import summaryItems from '../summary-item-config';
@@ -30,38 +32,38 @@ const stateToComputed = (state) => ({
   threadList: suspiciousThreadsData(state)
 });
 
-const ProcessDetails = Component.extend({
-
-  tagName: 'hbox',
-
-  classNames: 'host-process-details',
-
-  propertyConfig: CONFIG,
-
-  selectedAccordion: '',
+@classic
+@tagName('hbox')
+@classNames('host-process-details')
+class ProcessDetails extends Component {
+  propertyConfig = CONFIG;
+  selectedAccordion = '';
 
   @computed('isMachineWindows', 'selectedAccordion')
-  selectedAccordionName(isMachineWindows, selectedAccordion) {
-    return selectedAccordion === '' && !isMachineWindows ? 'dll' : selectedAccordion;
-  },
+  get selectedAccordionName() {
+    return this.selectedAccordion === '' && !this.isMachineWindows ? 'dll' : this.selectedAccordion;
+  }
+
   @computed('process')
-  loadedDLLNote({ machineOsType }) {
-    if (machineOsType && machineOsType !== 'linux') {
+  get loadedDLLNote() {
+    if (this.process.machineOsType && this.process.machineOsType !== 'linux') {
       const i18n = this.get('i18n');
-      return i18n.t(`investigateHosts.process.dll.note.${machineOsType}`);
+      return i18n.t(`investigateHosts.process.dll.note.${this.process.machineOsType}`);
     } else {
       return '';
     }
-  },
-  actions: {
-    selectAccordion(accordion) {
-      this.set('selectedAccordion', accordion);
-      this.send('setDllRowSelectedId', -1);
-    },
-    onPropertyPanelClose() {
-      this.send('setDllRowSelectedId', -1);
-    }
   }
-});
+
+  @action
+  selectAccordion(accordion) {
+    this.set('selectedAccordion', accordion);
+    this.send('setDllRowSelectedId', -1);
+  }
+
+  @action
+  onPropertyPanelClose() {
+    this.send('setDllRowSelectedId', -1);
+  }
+}
 
 export default connect(stateToComputed, dispatchToActions)(ProcessDetails);

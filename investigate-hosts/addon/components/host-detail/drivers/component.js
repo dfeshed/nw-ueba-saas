@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import propertyConfig from './drivers-property-config';
@@ -8,10 +10,10 @@ const stateToComputed = (state) => ({
   columnsConfig: getColumnsConfig(state, columnsConfig, 'DRIVER')
 });
 
-const Drivers = Component.extend({
-  tagName: '',
-
-  propertyConfig
-});
+@classic
+@tagName('')
+class Drivers extends Component {
+  propertyConfig = propertyConfig;
+}
 
 export default connect(stateToComputed)(Drivers);
