@@ -11,10 +11,14 @@ import Component from '@ember/component';
 const { log } = console;// eslint-disable-line no-unused-vars
 
 export default Component.extend({
-  bindClassNames: ['has-selection:select'],
   tagName: '',
   value: '',
   text: '',
+
+  init() {
+    this._super(arguments);
+    this.bindClassNames = this.bindClassNames || ['has-selection:select'];
+  },
 
   /**
    * Lifecycle Hook

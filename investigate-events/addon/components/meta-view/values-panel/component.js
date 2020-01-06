@@ -48,12 +48,14 @@ export default Component.extend({
    */
   isEmptyMetaGroupVisible: true,
 
-  /**
-   * Group that stores meta which does not have any values
-   * @type {object}
-   */
-  emptyMetaGroup: {
-    name: 'Meta keys with no values'
+  init() {
+    this._super(arguments);
+
+    /**
+     * Group that stores meta which does not have any values
+     * @type {object}
+     */
+    this.emptyMetaGroup = this.emptyMetaGroup || { name: 'Meta keys with no values' };
   },
 
   actions: {

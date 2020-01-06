@@ -35,9 +35,6 @@ const ColumnGroupForm = Component.extend({
   // name of the columnGroup being created/edited
   columnGroupName: null,
 
-  // columns selected for the columnGroup
-  displayedColumns: [],
-
   // list-manager function that accepts validated edited item
   editColumnGroup: () => {},
 
@@ -52,6 +49,13 @@ const ColumnGroupForm = Component.extend({
   nameInvalidMessage: null,
 
   COLUMN_THRESHOLD,
+
+  init() {
+    this._super(arguments);
+
+    // columns selected for the columnGroup
+    this.displayedColumns = this.displayedColumns || [];
+  },
 
   // initialize form data when a columnGroup has begun edit
   // reset form data when columnGroup is created, updated or reset

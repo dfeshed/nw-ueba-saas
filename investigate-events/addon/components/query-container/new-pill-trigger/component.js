@@ -68,16 +68,19 @@ export default Component.extend({
    */
   sendMessage: () => {},
 
-
-  /**
-   * Possible suggestions for pill-value
-   */
-  valueSuggestions: [],
-
   /**
    * Is value suggestions API call in progress
    */
   isValueSuggestionsCallInProgress: false,
+
+  init() {
+    this._super(arguments);
+
+    /**
+     * Possible suggestions for pill-value
+     */
+    this.valueSuggestions = this.valueSuggestions || [];
+  },
 
   didReceiveAttrs() {
     this._super(...arguments);

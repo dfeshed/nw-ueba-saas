@@ -9,10 +9,14 @@ const SortTooltip = Component.extend({
 
   field: null,
   disableSort: true,
-  notIndexedAtValue: [],
-  notSingleton: [],
-  notValid: [],
-  status: null
+  status: null,
+
+  init() {
+    this._super(arguments);
+    this.notIndexedAtValue = this.notIndexedAtValue || [];
+    this.notSingleton = this.notSingleton || [];
+    this.notValid = this.notValid || [];
+  }
 });
 
 export default SortTooltip;

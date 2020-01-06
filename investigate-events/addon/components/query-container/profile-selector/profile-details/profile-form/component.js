@@ -16,22 +16,9 @@ export default Component.extend({
 
   // INPUTS
 
-  // A profile contains a column group, this list
-  // is used to select one
-  columnGroups: [],
-
-  // A profile contains a column group, this list
-  // is used to select one, for now the first one
-  // is automatically selected
-  metaGroups: [],
-
   // Either an empty profile or the profile we want
   // to edit
   profile: null,
-
-  // Existing list of profiles, used for doing name
-  // uniqueness check
-  profiles: [],
 
   // id of currently selected column group
   selectedColumnGroupId: null,
@@ -39,7 +26,6 @@ export default Component.extend({
   // action in profile-details component
   // send new profile object and trigger broadcast
   sendToBroadcast: () => {},
-
   // END INPUTS
 
 
@@ -53,6 +39,23 @@ export default Component.extend({
   columnGroup: null, // object
   columnGroupView: null, // string 'SUMMARY_VIEW' or 'CUSTOM'
   metaGroup: null, // object
+
+  init() {
+    this._super(arguments);
+
+    // A profile contains a column group, this list
+    // is used to select one
+    this.columnGroups = this.columnGroups || [];
+
+    // A profile contains a column group, this list
+    // is used to select one, for now the first one
+    // is automatically selected
+    this.metaGroups = this.metaGroups || [];
+
+    // Existing list of profiles, used for doing name
+    // uniqueness check
+    this.profiles = this.profiles || [];
+  },
 
   // set up or reset form
   didReceiveAttrs() {

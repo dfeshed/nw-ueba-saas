@@ -31,10 +31,16 @@ const TimelineComponent = Component.extend({
    */
   data: undefined,
   dateFormat: service(),
-  detailChartMargin: { top: 5, bottom: 30, left: 35, right: 10 },
+
+  init() {
+    this._super(arguments);
+    this.detailChartMargin = this.detailChartMargin || { top: 5, bottom: 30, left: 35, right: 10 };
+    this.masterChartMargin = this.masterChartMargin || { top: 8, bottom: 0, left: 5, right: 5 };
+  },
+
   hoverIndex: null,
   isExpanded: false,
-  masterChartMargin: { top: 8, bottom: 0, left: 5, right: 5 },
+
   /**
    * The status of the request to fetch the timeline `data`.
    * Either undefined (promise hasn't been executed yet), 'wait' (promise is in progress), 'resolved' or 'rejected'.

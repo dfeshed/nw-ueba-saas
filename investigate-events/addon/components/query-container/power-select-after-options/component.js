@@ -41,14 +41,18 @@ export default Component.extend({
    */
   sendMessage: () => {},
 
-  /**
-   * List of options to display
-   * @type {Array}
-   * @public
-   */
-  options: [],
-
   _previouslyHighlightedIndex: null,
+
+  init() {
+    this._super(arguments);
+
+    /**
+     * List of options to display
+     * @type {Array}
+     * @public
+     */
+    this.options = this.options || [];
+  },
 
   didReceiveAttrs() {
     this._super(...arguments);

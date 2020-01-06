@@ -129,11 +129,6 @@ export default Component.extend({
   pillPlaceholder: null,
 
   /**
-   * Possible suggestions for pill-value
-   */
-  valueSuggestions: [],
-
-  /**
    * Is value suggestions API call in progress
    */
   isValueSuggestionsCallInProgress: false,
@@ -308,6 +303,10 @@ export default Component.extend({
 
   init() {
     this._super(arguments);
+
+    // Possible suggestions for pill-value
+    this.valueSuggestions = this.valueSuggestions || [];
+
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.META_ARROW_LEFT_KEY]: () => this._metaArrowLeft(),
       [MESSAGE_TYPES.META_ARROW_RIGHT_KEY]: () => this._metaArrowRight(),

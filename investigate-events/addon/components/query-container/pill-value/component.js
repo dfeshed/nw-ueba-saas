@@ -167,11 +167,6 @@ export default Component.extend({
   valueString: null,
 
   /**
-   * List of value suggestions, to be displayed in the drop-down.
-   */
-  valueSuggestions: [],
-
-  /**
    * Is value suggestions API call in progress
    */
   isValueSuggestionsCallInProgress: false,
@@ -292,6 +287,10 @@ export default Component.extend({
 
   init() {
     this._super(...arguments);
+
+    // List of value suggestions, to be displayed in the drop-down.
+    this.valueSuggestions = this.valueSuggestions || [];
+
     this._afterOptionsMenu = BoundedList.create({ list: AFTER_OPTIONS_MENU });
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.AFTER_OPTIONS_SELECTED]: (d) => this._createPillFromAdvancedOption(d),
