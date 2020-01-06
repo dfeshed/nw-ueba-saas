@@ -2,7 +2,6 @@ package fortscale.utils.reflection;
 
 import fortscale.utils.hierarchy.HierarchyIterator;
 import fortscale.utils.hierarchy.HierarchyLeafFinder;
-import fortscale.utils.logging.Logger;
 import org.reflections.Reflections;
 
 import javax.validation.constraints.NotNull;
@@ -18,7 +17,6 @@ public class PresidioReflectionUtils extends HierarchyLeafFinder<Object> {
             "'clazz' cannot be null.";
     private static final String FIELD_NOT_DECLARED_EXCEPTION_MESSAGE_FORMAT =
             "Class '%s' does not declare a field named '%s'.";
-    private static Logger logger = Logger.getLogger(PresidioReflectionUtils.class);
 
 
     @Override
@@ -65,24 +63,18 @@ public class PresidioReflectionUtils extends HierarchyLeafFinder<Object> {
      *
      * "foo.bar.name"
      *
+     * In case the fieldName path is incorrect a null pointer exception will be thrown
+     *
      * @param clazz
      * @param fieldName
      *
-     * @return Object if no property exists.
+     * @return fieldName type.
      */
     public static Class<?> getPropertyType(Class<?> clazz, String fieldName) {
         notNull(clazz, NULL_CLAZZ_EXCEPTION_MESSAGE);
         notNull(fieldName, NULL_FIELD_NAME_EXCEPTION_MESSAGE);
 
-        List<Field> fields;
-
-        try {
-            fields = findNestedFields(clazz, fieldName);
-        } catch (Exception e) {
-            logger.error("Failed to find field name {} in {} Class", fieldName, clazz, e);
-            return Object.class;
-        }
-
+        List<Field> fields = findNestedFields(clazz, fieldName);
         return fields.get(fields.size() - 1).getType();
     }
 }
