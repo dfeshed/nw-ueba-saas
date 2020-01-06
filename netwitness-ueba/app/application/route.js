@@ -2,8 +2,7 @@ import Ember from 'ember';
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
 import csrfToken from 'component-lib/mixins/csrf-token';
 import Route from '@ember/routing/route';
-import * as ACTION_TYPES from 'netwitness-ueba/actions/types';
-import { get, computed } from '@ember/object';
+import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import fetch from 'component-lib/utils/fetch';
 import { windowProxy } from 'component-lib/utils/window-proxy';
@@ -12,8 +11,11 @@ const {
   testing
 } = Ember;
 
+export const DEFAULT_THEME = 'dark';
+export const DEFAULT_LOCALE = { id: 'en_US', key: 'en-us', label: 'english' };
+export const DEFAULT_LOCALES = [DEFAULT_LOCALE];
+
 export default Route.extend(ApplicationRouteMixin, csrfToken, {
-  redux: service(),
   fatalErrors: service(),
   session: service(),
   userActivity: service(),
@@ -56,13 +58,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   },
 
   getLocales() {
-    const redux = get(this, 'redux');
-    return fetch('/locales/').then((fetched) => fetched.json()).then((locales) => {
-      redux.dispatch({ type: ACTION_TYPES.ADD_PREFERENCES_LOCALES, locales });
-    }).catch(() => {
-      // eslint-disable-next-line no-console
-      console.log('fetching dynamic locales failed');
-    });
+    return DEFAULT_LOCALES;
   },
 
   model({ next }) {

@@ -7,12 +7,8 @@ import Ember from 'ember';
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 import { get } from '@ember/object';
-import { bindActionCreators } from 'redux';
 import { inject as service } from '@ember/service';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
-import { updateLocaleByKey } from 'netwitness-ueba/actions/creators/preferences';
-import * as ACTION_TYPES from 'netwitness-ueba/actions/types';
-import config from '../config/environment';
 import { jwt_decode as jwtDecode } from 'ember-cli-jwt-decode';
 import { warn } from '@ember/debug';
 import computed from 'ember-computed-decorators';
@@ -29,7 +25,6 @@ const {
  */
 export default Route.extend(AuthenticatedRouteMixin, {
 
-  redux: service(),
   accessControl: service(),
   dateFormat: service(),
   landingPage: service(),
@@ -112,7 +107,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
   },
 
   getPreferences() {
-    const redux = get(this, 'redux');
     const request = get(this, 'request');
     return new RSVP.Promise((resolve, reject) => {
       request.promiseRequest({
@@ -121,8 +115,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
         query: {}
       }).then((response) => {
         const {
-          userLocale,
-          themeType,
           dateFormat,
           timeFormat,
           defaultComponentUrl,
@@ -134,11 +126,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
           'dateFormat.selected': dateFormat,
           'timeFormat.selected': timeFormat
         });
-
-        const updateLocale = bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux));
-        updateLocale(userLocale);
-
-        redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_THEME, theme: themeType });
 
         if (defaultComponentUrl) {
           this.get('landingPage').setDefaultLandingPage(defaultComponentUrl);
@@ -185,7 +172,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
     this._super(...arguments);
     this.checkLegacyEvents();
 
-    const key = this.get('landingPage.selected.key');
     const classicRedirect = localStorage.getItem('rsa-post-auth-redirect');
 
     if (classicRedirect && !testing) {

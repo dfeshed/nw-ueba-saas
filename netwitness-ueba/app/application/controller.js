@@ -3,11 +3,13 @@ import { get } from '@ember/object';
 import computed from 'ember-computed-decorators';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
-import { getLocale, getTheme } from 'netwitness-ueba/reducers/global/preferences/selectors';
+
+export const DEFAULT_THEME = 'dark';
+export const DEFAULT_LOCALE = { id: 'en_US', key: 'en-us', label: 'english' };
+export const DEFAULT_LOCALES = [DEFAULT_LOCALE];
 
 export default Controller.extend({
   moment: service(),
-  redux: service(),
   flashMessages: service(),
   fatalErrors: service(),
   session: service(),
@@ -88,35 +90,14 @@ export default Controller.extend({
   init() {
     this._super(...arguments);
 
-    const redux = get(this, 'redux');
-
     this.themeName = () => {
-      const state = redux.getState();
-      const theme = getTheme(state);
-      return theme && theme.toLowerCase();
+      return DEFAULT_THEME;
     };
 
     this.localeSelection = () => {
-      const state = redux.getState();
-      return getLocale(state);
+      return DEFAULT_LOCALE;
     };
 
-    let activeTheme, activeLocaleId;
-    redux.subscribe(() => {
-      const themeName = this.themeName();
-      if (themeName !== activeTheme) {
-        activeTheme = themeName;
-        this._updateBodyClass(themeName);
-        this._updateThemeCookie(themeName);
-      }
-
-      const locale = this.localeSelection();
-      const { id, key, langCode, fileName } = locale;
-      if (id !== activeLocaleId) {
-        activeLocaleId = id;
-        this._addDynamicLocale(key, langCode, fileName);
-      }
-    });
   },
 
   actions: {

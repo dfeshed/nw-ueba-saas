@@ -1,7 +1,1 @@
-{{#if session.isAuthenticated}}
-  <page class="rsa-protected {{if (and entityId entityType) 'has-entity-info'}}">
-    <page class="rsa-protected__outlet">
-      {{outlet}}
-    </page>
-  </page>
-{{/if}}
+{{outlet}}
