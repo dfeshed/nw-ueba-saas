@@ -30,12 +30,15 @@ module('Integration | Component | rsa-eula', function(hooks) {
 
     patchFetch(() => {
       return new Promise(function(resolve) {
-        resolve({
-          ok: true,
-          text() {
-            return '<h1>eula</h1>';
-          }
-        });
+        // Introducing the delay to avoid test failure
+        setTimeout(() => {
+          resolve({
+            ok: true,
+            text() {
+              return '<h1>eula</h1>';
+            }
+          });
+        }, 500);
       });
     });
 
