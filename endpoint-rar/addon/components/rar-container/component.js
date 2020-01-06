@@ -1,3 +1,5 @@
+import classic from 'ember-classic-decorator';
+import { classNames, tagName, layout as templateLayout } from '@ember-decorators/component';
 import layout from './template';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
@@ -30,23 +32,27 @@ const dispatchToActions = {
   getRarStatus
 };
 
-const RARContainer = Component.extend({
-  layout,
-  tagName: 'box',
-  classNames: ['rar-container'],
-  serverId: null,
-  helpText,
-  accessControl: service(),
-  enableRarPage: false,
+@classic
+@templateLayout(layout)
+@tagName('box')
+@classNames('rar-container')
+class RARContainer extends Component {
+
+  @service
+  accessControl;
+
+  serverId = null;
+  helpText = helpText;
+  enableRarPage = false;
 
   didReceiveAttrs() {
-    this._super(...arguments);
+    super.didReceiveAttrs(...arguments);
     const serverId = this.get('serverId');
     this.send('setServerId', serverId);
-  },
+  }
 
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     next(() => {
       if (this.get('accessControl.hasEndpointRarReadPermission')) {
         this.set('enableRarPage', true);
@@ -56,6 +62,6 @@ const RARContainer = Component.extend({
       }
     });
   }
-});
+}
 
 export default connect(stateToComputed, dispatchToActions)(RARContainer);

@@ -1,6 +1,9 @@
+import classic from 'ember-classic-decorator';
+import { classNames, layout as templateLayout } from '@ember-decorators/component';
 import Component from '@ember/component';
 import layout from './template';
-import computed, { alias } from 'ember-computed-decorators';
+import { computed, action } from '@ember/object';
+import { alias } from '@ember/object/computed';
 import { isEmpty } from '@ember/utils';
 import { connect } from 'ember-redux';
 import _ from 'lodash';
@@ -33,28 +36,32 @@ const dispatchToActions = {
   saveRarStatus
 };
 
-const RARConfig = Component.extend({
-  layout,
+@classic
+@templateLayout(layout)
+@classNames('rar-config', 'rar-configuration')
+class RARConfig extends Component {
 
-  classNames: ['rar-config', 'rar-configuration'],
-
-  accessControl: service(),
+  @service
+  accessControl;
 
   @computed('configData.rarConfig.esh',
     'configData.rarConfig.httpsPort',
     'configData.rarConfig.httpsBeaconIntervalInSeconds',
     'configData.rarConfig.address')
-  isSaveDisabled(esh, httpsPort, httpsBeaconIntervalInSeconds, address) {
+  get isSaveDisabled() {
+    const rarConfig = this.get('configData.rarConfig') || { rarConfig: {} };
+    const { esh, httpsPort, httpsBeaconIntervalInSeconds, address } = rarConfig;
     return isEmpty(esh) || isEmpty(httpsPort) || isEmpty(httpsBeaconIntervalInSeconds) || isEmpty(address);
-  },
-
-  @alias('isEnabled')
-  isRarEnabled: false,
+  }
 
   @computed('isEnabled')
-  isRarDisabled(enabled) {
-    return !enabled;
-  },
+  get isRarDisabled() {
+    const isEnabled = this.get('isEnabled');
+    return !isEnabled;
+  }
+
+  @alias('isEnabled')
+  isRarEnabled = false;
 
   resetErrorProperties() {
     this.setProperties({
@@ -67,7 +74,7 @@ const RARConfig = Component.extend({
       invalidHostNameMessage: null,
       invalidBeaconIntervalMessage: null
     });
-  },
+  }
 
   _getCallbackFunction(successMsg, failureMsg) {
     return {
@@ -79,47 +86,47 @@ const RARConfig = Component.extend({
         failure(`endpointRAR.rarConfig.${message}`);
       }
     };
-  },
+  }
 
-  actions: {
-
-    toggleIsChecked() {
-      const toggleRarStatus = !this.get('isRarEnabled');
-      const successMessage = toggleRarStatus ? 'enableRar' : 'disableRar';
-      if (this.get('accessControl.hasEndpointRarPermission')) {
-        this.send('saveRarStatus', toggleRarStatus, this._getCallbackFunction(successMessage, 'failureMessage'));
-      } else {
-        failure('endpointRAR.rarConfig.permissionDeniedForEnable');
-      }
-    },
-
-    generateAgent(isTestConfig = false) {
-      this.resetErrorProperties();
-
-      const error = validateConfig(this.get('configData.rarConfig'));
-      this.setProperties(error);
-
-      if (!error) {
-        this.send('saveUIState', this.get('configData'));
-        if (isTestConfig) {
-          this.send('testRARConfig', { ...this.get('configData.rarConfig') }, this._getCallbackFunction('testConfigSuccess', 'testConfigFailure'));
-        } else {
-          if (this.get('accessControl.hasEndpointRarPermission')) {
-            this.set('configData.rarConfig.enabled', true);
-            this.send('saveRARConfig', { ...this.get('configData.rarConfig') }, this._getCallbackFunction('successMessage', 'failureMessage'));
-          } else {
-            failure('endpointRAR.rarConfig.permissionDenied');
-          }
-        }
-      }
-    },
-
-    reset() {
-      this.resetErrorProperties();
-      this.send('resetRARConfig');
+  @action
+  toggleIsChecked() {
+    const toggleRarStatus = !this.get('isRarEnabled');
+    const successMessage = toggleRarStatus ? 'enableRar' : 'disableRar';
+    if (this.get('accessControl.hasEndpointRarPermission')) {
+      this.send('saveRarStatus', toggleRarStatus, this._getCallbackFunction(successMessage, 'failureMessage'));
+    } else {
+      failure('endpointRAR.rarConfig.permissionDeniedForEnable');
     }
   }
 
-});
+  @action
+  generateAgent(isTestConfig = false) {
+    this.resetErrorProperties();
+
+    const error = validateConfig(this.get('configData.rarConfig'));
+    this.setProperties(error);
+
+    if (!error) {
+      this.send('saveUIState', this.get('configData'));
+      if (isTestConfig) {
+        this.send('testRARConfig', { ...this.get('configData.rarConfig') }, this._getCallbackFunction('testConfigSuccess', 'testConfigFailure'));
+      } else {
+        if (this.get('accessControl.hasEndpointRarPermission')) {
+          this.set('configData.rarConfig.enabled', true);
+          this.send('saveRARConfig', { ...this.get('configData.rarConfig') }, this._getCallbackFunction('successMessage', 'failureMessage'));
+        } else {
+          failure('endpointRAR.rarConfig.permissionDenied');
+        }
+      }
+    }
+  }
+
+  @action
+  reset() {
+    this.resetErrorProperties();
+    this.send('resetRARConfig');
+  }
+
+}
 
 export default connect(stateToComputed, dispatchToActions)(RARConfig);
