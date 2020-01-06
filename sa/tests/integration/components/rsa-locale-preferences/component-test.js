@@ -1,4 +1,5 @@
 import { module, test } from 'qunit';
+import classic from 'ember-classic-decorator';
 import Component from '@ember/component';
 import hbs from 'htmlbars-inline-precompile';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
@@ -104,6 +105,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
   test('datetime will reflect proper locale after change occurs', async function(assert) {
     assert.expect(2);
 
+    @classic
     class FakeClazz extends Component {
       get layout() {
         return hbs`<div onclick={{action go}} class="time">{{moment-format (moment "1991-01-01 6:00 AM" "HH:mm A") "A"}}</div>`;

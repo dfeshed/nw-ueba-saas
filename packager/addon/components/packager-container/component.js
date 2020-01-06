@@ -1,5 +1,7 @@
-import layout from './template';
+import classic from 'ember-classic-decorator';
+import { classNames, tagName, layout as templateLayout } from '@ember-decorators/component';
 import { computed } from '@ember/object';
+import layout from './template';
 import { connect } from 'ember-redux';
 import { isEmpty } from '@ember/utils';
 import Component from '@ember/component';
@@ -23,12 +25,18 @@ const dispatchToActions = {
 };
 
 
-const Container = Component.extend({
-  layout,
-  tagName: 'box',
-  classNames: ['packager-container', 'rsa-application-layout-panel-content', 'input-content'],
-  serverId: null,
-  helpText,
+@classic
+@templateLayout(layout)
+@tagName('box')
+@classNames(
+  'packager-container',
+  'rsa-application-layout-panel-content',
+  'input-content'
+)
+class Container extends Component {
+  serverId = null;
+  helpText = helpText;
+
   // download link for packager
   @computed('downloadLink')
   get iframeSrc() {
@@ -38,22 +46,21 @@ const Container = Component.extend({
       source = this.downloadLink.includes('?') ? `${this.downloadLink}&${time}` : `${this.downloadLink}?${time}`;
     }
     return source;
-  },
+  }
 
   @computed('error')
   get errorMessage() {
     return this.get('i18n').t('packager.error.generic');
-  },
+  }
 
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     next(() => {
       if (!this.get('isDestroyed') && !this.get('isDestroying')) {
         this.send('getEndpointServerList', this.get('serverId'));
       }
     });
   }
-
-});
+}
 
 export default connect(stateToComputed, dispatchToActions)(Container);
