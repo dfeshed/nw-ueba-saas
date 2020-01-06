@@ -18,6 +18,7 @@ public class PresidioReflectionUtils extends HierarchyLeafFinder<Object> {
     private static final String FIELD_NOT_DECLARED_EXCEPTION_MESSAGE_FORMAT =
             "Class '%s' does not declare a field named '%s'.";
 
+
     @Override
     public boolean isNull(Object object) {
         return object == null;
@@ -53,5 +54,27 @@ public class PresidioReflectionUtils extends HierarchyLeafFinder<Object> {
         notNull(field, FIELD_NOT_DECLARED_EXCEPTION_MESSAGE_FORMAT, clazz.getName(), fieldName);
         field.setAccessible(true);
         return field;
+    }
+
+    /**
+     * Retrieves the type of the property with the given name of the given
+     * Class.<br>
+     * Supports nested properties following bean naming convention.
+     *
+     * "foo.bar.name"
+     *
+     * In case the fieldName path is incorrect a null pointer exception will be thrown
+     *
+     * @param clazz
+     * @param fieldName
+     *
+     * @return fieldName type.
+     */
+    public static Class<?> getPropertyType(Class<?> clazz, String fieldName) {
+        notNull(clazz, NULL_CLAZZ_EXCEPTION_MESSAGE);
+        notNull(fieldName, NULL_FIELD_NAME_EXCEPTION_MESSAGE);
+
+        List<Field> fields = findNestedFields(clazz, fieldName);
+        return fields.get(fields.size() - 1).getType();
     }
 }

@@ -2,6 +2,7 @@ package presidio.output.domain.services.event;
 
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.reflection.PresidioReflectionUtils;
 import fortscale.utils.time.TimeRange;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.Pair;
@@ -101,7 +102,7 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
         Class<?> featureType = Object.class;
         try {
             Class<?> clazz = ClassUtils.forName(eventClassName, this.getClass().getClassLoader());
-            featureType = BeanUtils.findPropertyType(feature, clazz);
+            featureType = PresidioReflectionUtils.getPropertyType(clazz, feature);
 
         } catch (Exception ex) {
             // swallow and continue
