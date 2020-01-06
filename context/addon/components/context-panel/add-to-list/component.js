@@ -8,7 +8,12 @@ const stateToComputed = ({ context: { list: { isListView } } }) => ({
 
 const AddToListComponent = Component.extend({
   layout,
-  classNames: 'rsa-context-tree-table'
+  classNames: 'rsa-context-tree-table',
+
+  helpId: {
+    moduleId: 'respond',
+    topicId: 'respAddToList'
+  }
 });
 
 export default connect(stateToComputed)(AddToListComponent);
