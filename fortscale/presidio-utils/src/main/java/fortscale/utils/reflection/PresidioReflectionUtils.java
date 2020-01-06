@@ -2,8 +2,8 @@ package fortscale.utils.reflection;
 
 import fortscale.utils.hierarchy.HierarchyIterator;
 import fortscale.utils.hierarchy.HierarchyLeafFinder;
+import fortscale.utils.logging.Logger;
 import org.reflections.Reflections;
-import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
@@ -18,7 +18,8 @@ public class PresidioReflectionUtils extends HierarchyLeafFinder<Object> {
             "'clazz' cannot be null.";
     private static final String FIELD_NOT_DECLARED_EXCEPTION_MESSAGE_FORMAT =
             "Class '%s' does not declare a field named '%s'.";
-    private static final String DEFAULT_FIELD_PATH_DELIMITER = "\\.";
+    private static Logger logger = Logger.getLogger(PresidioReflectionUtils.class);
+
 
     @Override
     public boolean isNull(Object object) {
@@ -73,17 +74,15 @@ public class PresidioReflectionUtils extends HierarchyLeafFinder<Object> {
         notNull(clazz, NULL_CLAZZ_EXCEPTION_MESSAGE);
         notNull(fieldName, NULL_FIELD_NAME_EXCEPTION_MESSAGE);
 
-        String[] fieldNames = fieldName.split("\\.");
-        String nestedFieldName = fieldNames[fieldNames.length - 1];
+        List<Field> fields;
 
-        Field resultField = findNestedFields(clazz, fieldName).stream()
-                .filter(field -> field.getName().equals(nestedFieldName))
-                .findAny()
-                .orElse(null);
-
-        if (resultField == null)
+        try {
+            fields = findNestedFields(clazz, fieldName);
+        } catch (Exception e) {
+            logger.error("Failed to find field name {} in {} Class", fieldName, clazz, e);
             return Object.class;
+        }
 
-        return resultField.getType();
+        return fields.get(fields.size() - 1).getType();
     }
 }
