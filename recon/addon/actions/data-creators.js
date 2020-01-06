@@ -47,6 +47,12 @@ import {
   cursorLast
 } from './fetch';
 import { packetTotal } from 'recon/reducers/header/selectors';
+import {
+  getNetworkDownloadOptions,
+  hasPackets,
+  renderedPackets,
+  packetRenderingUnderWay
+} from 'recon/reducers/packets/selectors';
 import CookieStore from 'component-lib/session-stores/application';
 import _ from 'lodash';
 
@@ -740,7 +746,23 @@ const togglePayloadOnly = (setTo) => {
   };
 };
 
+// selectors hold onto memory for memoization,
+// clear out the major offenders
+const clearSelectorMemory = () => {
+  return (dispatch, getState) => {
+    const packetMemoClearState = getState().recon;
+    if (packetMemoClearState.packets.packets?.length > 0) {
+      packetMemoClearState.packets = packetMemoClearState.packets.set('packets', []);
+      renderedPackets(packetMemoClearState);
+      packetRenderingUnderWay(packetMemoClearState);
+      hasPackets(packetMemoClearState);
+      getNetworkDownloadOptions(packetMemoClearState);
+    }
+  };
+};
+
 export {
+  clearSelectorMemory,
   decodeText,
   initializeNotifications,
   initializeRecon,

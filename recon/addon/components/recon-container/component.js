@@ -10,6 +10,7 @@ import { lookup } from 'ember-dependency-lookup';
 import { toggleReconExpanded } from 'recon/actions/visual-creators';
 import layout from './template';
 import {
+  clearSelectorMemory,
   initializeRecon,
   initializeNotifications,
   setIndexAndTotal,
@@ -27,6 +28,7 @@ const stateToComputed = ({ recon, recon: { files, visuals, notifications } }) =>
 });
 
 const dispatchToActions = {
+  clearSelectorMemory,
   initializeRecon,
   initializeNotifications,
   setIndexAndTotal,
@@ -184,7 +186,9 @@ const ReconContainer = Component.extend({
   closeRecon: observer('isReconOpen', function() {
     if (!this.get('isReconOpen')) {
       this._cleanUp();
-      this.get('closeAction')();
+      next(() => {
+        this.get('closeAction')();
+      });
     }
   }),
 
@@ -205,6 +209,9 @@ const ReconContainer = Component.extend({
       observerAdmin.instance.elementRegistry.destroyRegistry();
       observerAdmin.instance.registry.destroyRegistry();
     }
+
+    // clear memoization out
+    this.send('clearSelectorMemory');
   },
 
   didReceiveAttrs() {
