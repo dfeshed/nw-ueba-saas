@@ -3,6 +3,7 @@ package fortscale.utils.reflection;
 import fortscale.utils.hierarchy.HierarchyIterator;
 import fortscale.utils.hierarchy.HierarchyLeafFinder;
 import org.reflections.Reflections;
+import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
@@ -68,34 +69,21 @@ public class PresidioReflectionUtils extends HierarchyLeafFinder<Object> {
      *
      * @return Object if no property exists.
      */
-    public static Class<?> getPropertyType(Class<?> clazz, String fieldName)
-    {
+    public static Class<?> getPropertyType(Class<?> clazz, String fieldName) {
         notNull(clazz, NULL_CLAZZ_EXCEPTION_MESSAGE);
         notNull(fieldName, NULL_FIELD_NAME_EXCEPTION_MESSAGE);
 
-        final String[] path = fieldName.split(DEFAULT_FIELD_PATH_DELIMITER);
+        String[] fieldNames = fieldName.split("\\.");
+        String nestedFieldName = fieldNames[fieldNames.length - 1];
 
-        for (int i = 0; i < path.length; i++)
-        {
-            fieldName = path[i];
-            final List<Field> fields = getAllFields(clazz);
-            for (final Field field : fields)
-                if (field.getName().equals(fieldName))
-                {
-                    clazz = field.getType();
-                    if (i == path.length - 1)
-                        return clazz;
-                }
-        }
+        Field resultField = findNestedFields(clazz, fieldName).stream()
+                .filter(field -> field.getName().equals(nestedFieldName))
+                .findAny()
+                .orElse(null);
 
-        return Object.class;
-    }
+        if (resultField == null)
+            return Object.class;
 
-    private static List<Field> getAllFields(Class<?> type) {
-        List<Field> fields = new ArrayList<>();
-        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
-            fields.addAll(Arrays.asList(c.getDeclaredFields()));
-        }
-        return fields;
+        return resultField.getType();
     }
 }
