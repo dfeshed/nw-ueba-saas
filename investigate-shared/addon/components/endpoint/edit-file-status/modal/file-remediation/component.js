@@ -5,27 +5,6 @@ import computed from 'ember-computed-decorators';
 export default Component.extend({
   layout,
 
-  remediationRadioButtons: [
-    {
-      label: 'investigateFiles.editFileStatus.remediationActionOptions.blockFile',
-      value: 'Block',
-      selected: true
-    },
-    {
-      label: 'investigateFiles.editFileStatus.remediationActionOptions.blockQuarantineFile',
-      value: 'BlockAndQuarantine',
-      selected: false
-    }
-  ],
-
-  fileCategories: [
-    'Apt',
-    'AttackerTool',
-    'GenericMalware',
-    'Ransomware',
-    'Unidentified'
-  ],
-
   _isSizeExceeded(size) {
     return size > 104857600;
   },
@@ -58,6 +37,30 @@ export default Component.extend({
   @computed('data.remediationAction')
   isChecked(remediationAction) {
     return remediationAction === 'Block';
+  },
+
+  init() {
+    this._super(...arguments);
+    this.remediationRadioButtons = this.remediationRadioButtons || [
+      {
+        label: 'investigateFiles.editFileStatus.remediationActionOptions.blockFile',
+        value: 'Block',
+        selected: true
+      },
+      {
+        label: 'investigateFiles.editFileStatus.remediationActionOptions.blockQuarantineFile',
+        value: 'BlockAndQuarantine',
+        selected: false
+      }
+    ];
+
+    this.fileCategories = this.fileCategories || [
+      'Apt',
+      'AttackerTool',
+      'GenericMalware',
+      'Ransomware',
+      'Unidentified'
+    ];
   },
 
   actions: {

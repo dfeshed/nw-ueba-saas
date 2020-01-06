@@ -12,19 +12,19 @@ export default Component.extend({
 
   buttonType: 'button',
 
-  selectedList: [],
+  selectedList: undefined,
 
   riskType: 'HOST',
 
   resetRiskScore: null,
 
   @computed('selectedList')
-  isMaxResetRiskScoreLimit(selectedList) {
+  isMaxResetRiskScoreLimit(selectedList = []) {
     return selectedList.length > 100;
   },
 
   @computed('selectedList')
-  disableButton(selectedList) {
+  disableButton(selectedList = []) {
     return !(selectedList.length > 0);
   },
 

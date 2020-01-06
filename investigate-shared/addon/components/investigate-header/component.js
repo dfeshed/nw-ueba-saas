@@ -56,8 +56,6 @@ export default Component.extend({
   investigatePage: service(),
 
   activeTab: 'investigate.investigate-events',
-  iconBar: { isIconBar: true },
-  main: { isMain: true },
 
   @computed('activeTab', 'accessControl.hasUEBAAccess', 'investigatePage.legacyEventsEnabled')
   tabs(activeTab, hasUEBAAccess, legacyEventsEnabled) {
@@ -76,5 +74,10 @@ export default Component.extend({
     }
 
     return tabs;
+  },
+  init() {
+    this._super(...arguments);
+    this.iconBar = this.iconBar || { isIconBar: true };
+    this.main = this.main || { isMain: true };
   }
 });

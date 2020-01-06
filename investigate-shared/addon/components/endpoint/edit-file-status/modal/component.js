@@ -13,32 +13,6 @@ const STATUS_WITH_REMEDIATION = ['Blacklist', 'Graylist'];
 export default Component.extend({
   layout,
 
-  data: {
-    fileStatus: null,
-    category: null,
-    comment: '',
-    remediationAction: null
-  },
-
-  radioButtons: [
-    {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist',
-      value: 'Blacklist'
-    },
-    {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.graylist',
-      value: 'Graylist'
-    },
-    {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist',
-      value: 'Whitelist'
-    },
-    {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.neutral',
-      value: 'Neutral'
-    }
-  ],
-
   _closeModal() {
     const closeModal = this.get('closeModal');
     this.set('formData', {});
@@ -78,6 +52,36 @@ export default Component.extend({
   @computed('itemList')
   isMaxFileEditStatusLimit(itemList) {
     return itemList && itemList.length > 100;
+  },
+
+  init() {
+    this._super(...arguments);
+
+    this.data = this.data || {
+      fileStatus: null,
+      category: null,
+      comment: '',
+      remediationAction: null
+    };
+
+    this.radioButtons = this.radioButtons || [
+      {
+        label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist',
+        value: 'Blacklist'
+      },
+      {
+        label: 'investigateFiles.editFileStatus.fileStatusOptions.graylist',
+        value: 'Graylist'
+      },
+      {
+        label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist',
+        value: 'Whitelist'
+      },
+      {
+        label: 'investigateFiles.editFileStatus.fileStatusOptions.neutral',
+        value: 'Neutral'
+      }
+    ];
   },
 
   actions: {

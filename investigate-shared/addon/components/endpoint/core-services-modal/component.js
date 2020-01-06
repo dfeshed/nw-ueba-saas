@@ -21,19 +21,6 @@ export default Component.extend({
    */
   serviceList: null,
 
-  columnsConfig: [
-    {
-      field: 'displayName',
-      title: 'Service Name',
-      width: '50%'
-    },
-    {
-      field: 'name',
-      title: 'Service Type',
-      width: '43%'
-    }
-  ],
-
   @computed('selectedService')
   isDisabled(selectedService) {
     return !selectedService;
@@ -44,6 +31,21 @@ export default Component.extend({
     return !serviceList;
   },
 
+  init() {
+    this._super(...arguments);
+    this.columnsConfig = this.columnsConfig || [
+      {
+        field: 'displayName',
+        title: 'Service Name',
+        width: '50%'
+      },
+      {
+        field: 'name',
+        title: 'Service Type',
+        width: '43%'
+      }
+    ];
+  },
 
   actions: {
 

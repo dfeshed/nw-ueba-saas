@@ -4,6 +4,8 @@ import computed from 'ember-computed-decorators';
 import { assert } from '@ember/debug';
 import { isEmpty } from '@ember/utils';
 import { set, get } from '@ember/object';
+import { inject as service } from '@ember/service';
+
 /**
  * Property panel to to display the key and value within given section
  * @public
@@ -14,6 +16,8 @@ export default Component.extend({
   tagName: 'vbox',
 
   classNames: ['host-property-panel'],
+
+  i18n: service(),
 
   /**
    * Namespace for the locale.
@@ -51,7 +55,7 @@ export default Component.extend({
    * @requires data
    * @public
    */
-  data: { },
+  data: undefined,
 
   /**
    * Required configuration that specifies properties to be displayed.
@@ -69,7 +73,7 @@ export default Component.extend({
    * @type {object[]}
    * @public
    */
-  config: [],
+  config: undefined,
 
   errorMessage: null,
   /**
@@ -146,6 +150,13 @@ export default Component.extend({
     });
     return props.filter((item) => item.fields.length); // Don' include the section if empty fields
   },
+
+  init() {
+    this._super(...arguments);
+    this.config = this.config || [];
+    this.data = this.data || {};
+  },
+
   actions: {
     toggleIsIncludeEmptyValue() {
       this.toggleProperty('showNonEmptyProperty');

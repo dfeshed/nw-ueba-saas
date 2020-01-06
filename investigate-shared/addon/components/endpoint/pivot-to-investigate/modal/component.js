@@ -22,11 +22,6 @@ export default Component.extend({
 
   investigateText: null,
 
-  timeRange: {
-    value: 2,
-    unit: 'days'
-  },
-
   onClose: null,
 
   _closeModal() {
@@ -34,6 +29,14 @@ export default Component.extend({
     if (closeModal) {
       closeModal();
     }
+  },
+
+  init() {
+    this._super(...arguments);
+    this.timeRange = this.timeRange || {
+      value: 2,
+      unit: 'days'
+    };
   },
 
   actions: {

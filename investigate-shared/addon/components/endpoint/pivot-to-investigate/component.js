@@ -20,11 +20,6 @@ export default Component.extend({
 
   getAllServices: null,
 
-  timeRange: {
-    value: 7,
-    unit: 'days'
-  },
-
   selectedService: null,
 
   showOnlyIcons: false,
@@ -39,6 +34,14 @@ export default Component.extend({
   @computed('serviceList')
   isLoadingServices(serviceList) {
     return !serviceList;
+  },
+
+  init() {
+    this._super(...arguments);
+    this.timeRange = this.timeRange || {
+      value: 7,
+      unit: 'days'
+    };
   },
 
   actions: {
