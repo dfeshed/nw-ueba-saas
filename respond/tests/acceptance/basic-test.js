@@ -1,111 +1,47 @@
-import { test, skip } from 'qunit';
-import wait from 'ember-test-helpers/wait';
-import moduleForAcceptance from '../helpers/module-for-acceptance';
-import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import teardownSockets from '../helpers/teardown-sockets';
-import { waitForSockets } from '../helpers/wait-for-sockets';
 
-moduleForAcceptance('Acceptance | basic', {
-  resolver: engineResolverFor('respond'),
-  afterEach() {
-    teardownSockets.apply(this);
-  }
-});
+import { module, test } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
+import { visit, currentURL } from '@ember/test-helpers';
 
-skip('visiting an unknown route redirects to /respond/incidents', function(assert) {
-  assert.expect(1);
+module('Acceptance | basic', function(hooks) {
+  setupApplicationTest(hooks);
 
-  const waitUntil = -1;
-  const done = waitForSockets(['stream'], waitUntil);
+  test('visiting an unknown route redirects to /respond/incidents', async function(assert) {
+    assert.expect(1);
+    await visit('/respond/blahblah');
+    assert.equal(currentURL(), '/respond/incidents', 'The base /respond endpoint should redirect to respond/incidents');
 
-  visit('/respond/blahblah');
+  });
 
-  andThen(function() {
+  test('visiting /respond redirects to /respond/incidents', async function(assert) {
+    assert.expect(1);
+    await visit('/respond');
     assert.equal(currentURL(), '/respond/incidents', 'The base /respond endpoint should redirect to respond/incidents');
   });
 
-  andThen(function() {
-    return wait().then(() => done());
-  });
-});
-
-skip('visiting /respond redirects to /respond/incidents', function(assert) {
-  assert.expect(1);
-
-  const waitUntil = -1;
-  const done = waitForSockets(['stream'], waitUntil);
-
-  visit('/respond');
-
-  andThen(function() {
-    assert.equal(currentURL(), '/respond/incidents', 'The base /respond endpoint should redirect to respond/incidents');
-  });
-
-  andThen(function() {
-    return wait().then(() => done());
-  });
-});
-
-test('visiting /respond/incident/INC-123', function(assert) {
-  assert.expect(1);
-
-  const done = waitForSockets();
-
-  visit('/respond/incident/INC-123');
-
-  andThen(function() {
+  test('visiting /respond/incident/INC-123', async function(assert) {
+    assert.expect(1);
+    await visit('/respond/incident/INC-123');
     assert.equal(currentURL(), '/respond/incident/INC-123', 'The route loads and we are not redirected');
+
   });
 
-  andThen(function() {
-    return wait().then(() => done());
-  });
-});
+  test('visiting /respond/alerts', async function(assert) {
+    assert.expect(1);
 
-test('visiting /respond/alerts', function(assert) {
-  assert.expect(1);
-
-  const done = waitForSockets();
-
-  visit('/respond/alerts');
-
-  andThen(function() {
+    await visit('/respond/alerts');
     assert.equal(currentURL(), '/respond/alerts', 'The route loads and we are not redirected');
   });
 
-  andThen(function() {
-    return wait().then(() => done());
-  });
-});
-
-test('visiting /respond/alert/12345', function(assert) {
-  assert.expect(1);
-
-  const done = waitForSockets();
-
-  visit('/respond/alert/12345');
-
-  andThen(function() {
+  test('visiting /respond/alert/12345', async function(assert) {
+    assert.expect(1);
+    await visit('/respond/alert/12345');
     assert.equal(currentURL(), '/respond/alert/12345', 'The route loads and we are not redirected');
   });
 
-  andThen(function() {
-    return wait().then(() => done());
-  });
-});
-
-test('visiting /respond/tasks', function(assert) {
-  assert.expect(1);
-
-  const done = waitForSockets();
-
-  visit('/respond/tasks');
-
-  andThen(function() {
+  test('visiting /respond/tasks', async function(assert) {
+    assert.expect(1);
+    await visit('/respond/tasks');
     assert.equal(currentURL(), '/respond/tasks', 'The route loads and we are not redirected');
-  });
-
-  andThen(function() {
-    return wait().then(() => done());
   });
 });

@@ -1,13 +1,13 @@
 import EmberObject from '@ember/object';
 import HasScrollAttr from 'respond/mixins/dom/has-scroll-attr';
-import { module, skip } from 'qunit';
+import { module, test } from 'qunit';
 import wait from 'ember-test-helpers/wait';
 
 module('Unit | Mixin | dom/has scroll attr');
 
 const MockClass = EmberObject.extend(HasScrollAttr);
 
-skip('it works with default selector', function(assert) {
+test('it works with default selector', function(assert) {
   assert.expect(5);
 
   const element = document.createElement('div');

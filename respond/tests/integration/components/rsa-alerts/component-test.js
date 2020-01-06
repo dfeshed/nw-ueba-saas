@@ -1,5 +1,5 @@
 import { setupRenderingTest } from 'ember-qunit';
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { settled, waitUntil, click, findAll, find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -47,7 +47,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     noResultsMessage: '.rsa-explorer-table .no-results-message .message'
   };
 
-  skip('The rsa-alerts component renders to the DOM', async function(assert) {
+  test('The rsa-alerts component renders to the DOM', async function(assert) {
     const done = assert.async();
     setState();
     this.set('autoHighlightEntities', false);
@@ -143,7 +143,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     await waitForReduxStateChange(redux, 'respond.dictionaries.alertNames');
   });
 
-  skip('The reset filters button returns the filters to the original state', async function(assert) {
+  test('The reset filters button returns the filters to the original state', async function(assert) {
     const done = assert.async();
     await render(hbs`{{rsa-alerts}}`);
     setState();
@@ -200,7 +200,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     assert.equal(find(selectors.noResultsMessage).textContent.trim(), noResultsMessage, 'There are no more results and the no results message displays');
   });
 
-  skip('Clicking on a table header cell toggles the sort', async function(assert) {
+  test('Clicking on a table header cell toggles the sort', async function(assert) {
     assert.expect(4);
     let socketSuccessOne = false;
     let socketSuccessTwo = false;
