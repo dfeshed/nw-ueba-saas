@@ -51,6 +51,21 @@ module('Integration | Component | host list/host table/body cell', function(hook
     assert.equal(find('.rsa-risk-score').textContent.trim(), 0, 'Expected to render risk score of 0 for host');
   });
 
+  test('it should render null scan start time for host', async function(assert) {
+    this.set('column', { field: 'machine.scanStartTime' });
+
+    await render(hbs`{{host-list/host-table/body-cell column=column}}`);
+    assert.equal(findAll('.scanStartTime').length, 1, 'Expected to render scanStartTime component');
+    assert.equal(find('.scanStartTime').textContent.trim(), '--', 'Expected to render scanStartTime of null for host');
+  });
+
+  test('it should render scan start time for host', async function(assert) {
+    this.set('column', { field: 'machine.scanStartTime' });
+    this.set('item', { machine: { scanStartTime: '2019-04-04T08:51:14.734+0000' }, id: 1 });
+    await render(hbs`{{host-list/host-table/body-cell column=column item=item}}`);
+    assert.equal(findAll('.rsa-content-datetime').length, 1, 'Expected to render scanStartTime component');
+  });
+
   test('it should render the anchor tag for machine name', async function(assert) {
     this.set('column', { field: 'machineIdentity.machineName' });
     this.set('item', { machine: { machineName: 'Test' }, id: 1 });

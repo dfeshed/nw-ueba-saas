@@ -44,7 +44,11 @@
   </div>
 {{else if (eq column.field 'machine.scanStartTime')}}
   <div mouseEnter={{onMouseEnter}} mouseLeave={{onMouseLeave}} class="{{unless item.groupPolicy.managed "host-disable-text"}}">
-    {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
+    {{#if (get item column.field)}}
+      {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
+    {{else}}
+      <span class="scanStartTime" title="--">--</span>
+    {{/if}}
   </div>
 {{else if (eq column.field 'machineIdentity.hardware.totalPhysicalMemory')}}
   <div class="{{unless item.groupPolicy.managed "host-disable-text"}}">
