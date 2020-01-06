@@ -80,8 +80,8 @@ public class SMARTValuesModelScorer extends AbstractScorer {
         List<ModelDAO> mainModelDAOs = getMainModel(adeRecordReader);
         List<ModelDAO> globalModelDAOs = getGlobalModel(adeRecordReader);
         SMARTValuesModel mainModel = null;
-        Model globalModel = null;
-        Instant weightModelEndTime = null;
+        Model globalModel = globalModelDAOs.get(0).getModel();
+        Instant weightModelEndTime = ((SMARTValuesPriorModel)globalModel).getWeightsModelEndTime();
 
         for (ModelDAO globalModelDAO : globalModelDAOs) {
             SMARTValuesPriorModel smartValuesPriorModel = (SMARTValuesPriorModel) globalModelDAO.getModel();
@@ -110,6 +110,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
                 break;
             }
         }
+
         FeatureScore featureScore = calculateScore(mainModel, globalModel, adeRecordReader, weightModelEndTime);
         if (featureScore == null) {
             return new CertaintyFeatureScore(getName(), 0d, 0d);
@@ -132,7 +133,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
                                                 Model globalModel,
                                                 AdeRecordReader adeRecordReader,
                                                 Instant weightModelEndTime){
-        if (model == null || globalModel == null) {
+        if (globalModel == null) {
             FeatureScore baseScore = smartWeightsModelScorer.calculateScore(adeRecordReader);
             List<FeatureScore> baseFeatureScores = Collections.singletonList(baseScore);
             return new CertaintyFeatureScore(getName(), 0.0, baseFeatureScores, 0.0);
@@ -148,7 +149,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
     private FeatureScore calculateScore(double baseScore,
                                           Model model,
                                           Model globalModel) {
-        if (!(model instanceof SMARTValuesModel)) {
+        if (model != null && !(model instanceof SMARTValuesModel)) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
                     ".calculateScore expects to get a model of type " + SMARTValuesModel.class.getSimpleName());
         }
