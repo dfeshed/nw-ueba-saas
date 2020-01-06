@@ -1004,7 +1004,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  test('Right clicking on a selected pill will open a context menu with 4 options', async function(assert) {
+  test('Right clicking on a selected pill will open a context menu with options', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1038,7 +1038,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 4);
+      assert.equal(items.length, 5);
       assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present');
       assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'One selecteded pill.');
     });
@@ -2295,7 +2295,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 3, 'Incorrect number of options for parens');
+      assert.equal(items.length, 4, 'Incorrect number of options for parens');
       const actionSelector = items.find((op) => op.textContent.includes('Delete selection'));
       await click(`#${actionSelector.id}`); // delete parens and contents option
       return settled().then(() => {
@@ -2351,7 +2351,7 @@ module('Integration | Component | Query Pills', function(hooks) {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
       const actionSelector = items.find((op) => op.textContent.includes('selected filters'));
-      assert.equal(items.length, 3, 'Incorrect number of options for parens');
+      assert.equal(items.length, 4, 'Incorrect number of options for parens');
       await click(`#${actionSelector.id}`); // query with contents
       return settled().then(() => {
         assert.equal(deleteActionSpy.callCount, 1, 'The delete selected pill action creator was called once');
@@ -2407,7 +2407,7 @@ module('Integration | Component | Query Pills', function(hooks) {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
       const actionSelector = items.find((op) => op.textContent.includes('new tab'));
-      assert.equal(items.length, 3, 'Incorrect number of options for parens');
+      assert.equal(items.length, 4, 'Incorrect number of options for parens');
       await click(`#${actionSelector.id}`); // query with contents
       return settled().then(() => {
         assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'zero focused pills');
@@ -2458,7 +2458,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await triggerEvent(find(PILL_SELECTORS.openParenSelected), 'contextmenu', { clientX: 100, clientY: 100 });
     const selector = '.context-menu';
     const items = findAll(`${selector} > .context-menu__item`);
-    assert.equal(items.length, 3, 'Incorrect number of options for parens');
+    assert.equal(items.length, 4, 'Incorrect number of options for parens');
     const actionSelector = items.find((op) => op.textContent.includes('selected filters'));
     await click(`#${actionSelector.id}`);
 

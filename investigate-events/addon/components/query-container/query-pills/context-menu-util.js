@@ -4,6 +4,8 @@ import {
   findSelectedPillsWithLogicalOperators,
   selectedPillIndexes
 } from 'investigate-events/actions/pill-utils';
+import copyToClipboard from 'component-lib/utils/copy-to-clipboard';
+import { metaFiltersAsString } from 'investigate-events/util/query-parsing';
 
 const queryWithSelected = (context, i18n) => {
   return {
@@ -72,6 +74,17 @@ const wrapWithParens = (context, label) => {
   };
 };
 
+const copyEntireQuery = (context, i18n) => {
+  return {
+    label: i18n.t('queryBuilder.copyEnitreString'),
+    action() {
+      const pills = context.get('pillsNotEnriched');
+      const queryString = metaFiltersAsString(pills, false);
+      copyToClipboard(queryString);
+    }
+  };
+};
+
 // Prepare an object that contains all possible list of options
 function getContextItems(context, i18n) {
   const _this = context;
@@ -81,13 +94,15 @@ function getContextItems(context, i18n) {
         queryWithSelected(_this, i18n),
         queryWithSelectedNewTab(_this, i18n),
         deleteSelection(_this, i18n),
-        wrapWithParens(_this, label)
+        wrapWithParens(_this, label),
+        copyEntireQuery(_this, i18n)
       ];
     },
     parens: [
       queryWithSelected(_this, i18n),
       queryWithSelectedNewTab(_this, i18n),
-      deleteSelection(_this, i18n)
+      deleteSelection(_this, i18n),
+      copyEntireQuery(_this, i18n)
     ]
   };
 }

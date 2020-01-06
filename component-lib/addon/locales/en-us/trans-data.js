@@ -227,6 +227,7 @@ export default {
     querySelectedNewTab: 'Query with selected filters in a new tab',
     wrapInParensNotAllowed: 'Cannot wrap a text filter in parentheses',
     wrapParens: 'Wrap in parentheses',
+    copyEnitreString: 'Copy entire query',
     metaNoMatch: 'All meta keys filtered out',
     operatorNoMatch: 'All operators filtered out',
     recentQueriesNoMatch: 'No recent queries found',

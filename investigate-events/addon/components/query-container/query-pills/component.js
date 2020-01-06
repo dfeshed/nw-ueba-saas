@@ -85,6 +85,7 @@ const stateToComputed = (state, attrs = {}) => ({
   metaOptions: metaKeySuggestionsForQueryBuilder(state),
   languageAndAliasesForParser: languageAndAliasesForParser(state),
   pillsData: shouldUseStashedPills(state) && attrs.isPrimary ? enrichedPillsData(state).originalPills : enrichedPillsData(state).pillsData,
+  pillsNotEnriched: state.investigate.queryNode.pillsData,
   selectedPills: selectedPills(state),
   canPerformTextSearch: hasMinimumCoreServicesVersionForTextSearch(state),
   valueSuggestions: state.investigate.queryNode.valueSuggestions || [],
