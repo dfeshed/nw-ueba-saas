@@ -2,7 +2,7 @@ package presidio.input.core.services.transformation.transformer;
 
 import fortscale.utils.reflection.ReflectionUtils;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
-import presidio.input.core.services.transformation.transformer.test.TestJsonObjectTransformer;
+import presidio.input.core.services.transformation.dummies.TestJsonObjectTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,7 +15,7 @@ public class InputTransformerSubTypesTest {
     public void test_input_transformer_sub_types() {
         Set<Class<?>> expected = Collections.singleton(TestJsonObjectTransformer.class);
         Set<Class<?>> actual = ReflectionUtils.getSubTypesOf(
-                Collections.singletonList("presidio.input.core.services.transformation.transformer.test"),
+                Collections.singletonList("presidio.input.core.services.transformation.dummies"),
                 AbstractJsonObjectTransformer.class);
         Assert.assertEquals(expected, actual);
     }

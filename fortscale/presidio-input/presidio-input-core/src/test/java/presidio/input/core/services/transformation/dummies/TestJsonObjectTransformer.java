@@ -1,4 +1,4 @@
-package presidio.input.core.services.transformation.transformer.test;
+package presidio.input.core.services.transformation.dummies;
 
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import org.json.JSONObject;
