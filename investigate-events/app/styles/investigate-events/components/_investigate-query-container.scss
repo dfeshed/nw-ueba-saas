@@ -777,9 +777,6 @@
       flex: 1 1 auto;
       min-width: 80px;
     }
-    &.is-editing {
-      flex: 1 1 100%;
-    }
     &.is-selected {
       background-color: background-color(secondary);
       border-color: border-color(secondary);
@@ -800,6 +797,10 @@
   }
 
   .query-pill {
+    &.is-editing {
+      flex: 1 1 auto;
+      max-width:fit-content;
+    }
     &.meta-tab {
       .recent-query {
         display: none;
@@ -857,6 +858,7 @@
       text-overflow: ellipsis;
     }
     &.is-active {
+      flex: 1 1 100%;
       label {
         width: 100%;
         .rsa-form-label {
@@ -879,6 +881,7 @@
       text-overflow: ellipsis;
     }
     &.is-active {
+      flex: 1 1 100%;
       label {
         width: 100%;
         .rsa-form-label {
