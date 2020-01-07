@@ -3,33 +3,38 @@ import Controller from '@ember/controller';
 export default Controller.extend({
   allItemsChecked: false,
   noResultsMessage: 'No events found. Your filter criteria did not match any records.',
-  // Table of contents entries
-  toc: [
-    {
-      selector: '#basic-table',
-      title: 'Basic Table'
-    },
-    {
-      selector: '#no-results',
-      title: 'No Results'
-    },
-    {
-      selector: '#row-select',
-      title: 'Selecting Rows'
-    },
-    {
-      selector: '#column-reorder-resize',
-      title: 'Reordering/Resizing Columns'
-    },
-    {
-      selector: '#error-handling',
-      title: 'Error Handling'
-    },
-    {
-      selector: '#sorting',
-      title: 'Sorting'
-    }
-  ],
+
+  init() {
+    this._super(arguments);
+
+    // Table of contents entries
+    this.toc = this.toc || [
+      {
+        selector: '#basic-table',
+        title: 'Basic Table'
+      },
+      {
+        selector: '#no-results',
+        title: 'No Results'
+      },
+      {
+        selector: '#row-select',
+        title: 'Selecting Rows'
+      },
+      {
+        selector: '#column-reorder-resize',
+        title: 'Reordering/Resizing Columns'
+      },
+      {
+        selector: '#error-handling',
+        title: 'Error Handling'
+      },
+      {
+        selector: '#sorting',
+        title: 'Sorting'
+      }
+    ];
+  },
 
   actions: {
     toggleSelectedRow(item, index, e, table) {
@@ -62,7 +67,6 @@ export default Controller.extend({
         sorted.reverse();
       }
       this.set('model.sortableItems', sorted);
-
     }
   }
 });

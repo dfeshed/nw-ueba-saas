@@ -13,20 +13,6 @@ export default Component.extend({
 
   playState: 'pause',
 
-  resolutions: [{
-    width: 1920,
-    height: 1080
-  }, {
-    width: 1680,
-    height: 1050
-  }, {
-    width: 1440,
-    height: 900
-  }, {
-    width: 1024,
-    height: 768
-  }],
-
   runs: null,
 
   showDiffs: false,
@@ -82,6 +68,24 @@ export default Component.extend({
 
     return images;
   }),
+
+  init() {
+    this._super(arguments);
+
+    this.resolutions = this.resolutions || [{
+      width: 1920,
+      height: 1080
+    }, {
+      width: 1680,
+      height: 1050
+    }, {
+      width: 1440,
+      height: 900
+    }, {
+      width: 1024,
+      height: 768
+    }];
+  },
 
   didInsertElement() {
     this.set('activeResolution', this.get('resolutions.firstObject'));
