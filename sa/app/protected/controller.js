@@ -13,7 +13,10 @@ export default Controller.extend({
 
   request: service(),
 
-  listOfServices: [],
+  init() {
+    this._super(arguments);
+    this.listOfServices = this.listOfServices || [];
+  },
 
   actions: {
     openContextPanel(entity) {
