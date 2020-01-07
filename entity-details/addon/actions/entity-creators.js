@@ -1,7 +1,7 @@
 import { INITIATE_ENTITY, GET_ENTITY_DETAILS, UPDATE_FOLLOW, ENTITY_ERROR, ALERT_ERROR } from './types';
 import { fetchData } from './fetch/data';
 import { initializeAlert } from './alert-details';
-import { initializeIndicator } from './indicator-details';
+import { initializeIndicator, getHistoricalData } from './indicator-details';
 import { entityId } from 'entity-details/reducers/entity/selectors';
 import { lookup } from 'ember-dependency-lookup';
 import { isEmpty } from '@ember/utils';
@@ -13,10 +13,11 @@ export const initializeEntityDetails = ({ entityId, entityType, alertId, indicat
       payload: { entityId, entityType }
     });
     if (alertId) {
-      dispatch(initializeAlert(alertId));
-    }
-    if (indicatorId) {
-      dispatch(initializeIndicator(indicatorId));
+      dispatch(initializeAlert(alertId)).then(() => {
+        if (indicatorId) {
+          dispatch(initializeIndicator(indicatorId));
+        }
+      });
     }
     const fetchObj = {
       restEndpointLocation: 'userDetails',
@@ -37,7 +38,11 @@ export const initializeEntityDetails = ({ entityId, entityType, alertId, indicat
         });
         if (!alertId && userDetails) {
           if (userDetails.alerts && userDetails.alerts[0]) {
-            dispatch(initializeAlert(userDetails.alerts[0].id));
+            dispatch(initializeAlert(userDetails.alerts[0].id)).then(() => {
+              if (indicatorId) {
+                dispatch(getHistoricalData(indicatorId));
+              }
+            });
           } else {
             dispatch({
               type: ALERT_ERROR,

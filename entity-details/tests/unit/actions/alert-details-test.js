@@ -7,6 +7,7 @@ import userAlerts from '../../data/presidio/user_alerts';
 import indicatorEvents from '../../data/presidio/indicator-events';
 import indicatorCount from '../../data/presidio/indicator-count';
 import { patchFlash } from '../../helpers/patch-flash';
+import { resolve } from 'rsvp';
 
 const state = {
   entity: {
@@ -97,8 +98,10 @@ module('Unit | Actions | alert-details Actions', (hooks) => {
         obj(() => {
           // Due to async just checking that dispatch is called.
           assert.ok(true);
+          return resolve();
         });
       }
+      return resolve();
     };
     const getState = () => state;
     alertIsNotARisk({ entityId: '123' })(dispatch, getState);

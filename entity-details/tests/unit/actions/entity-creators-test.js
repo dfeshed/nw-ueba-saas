@@ -8,6 +8,7 @@ import userAlerts from '../../data/presidio/user_alerts';
 import indicatorEvents from '../../data/presidio/indicator-events';
 import indicatorCount from '../../data/presidio/indicator-count';
 import { patchFlash } from '../../helpers/patch-flash';
+import { resolve } from 'rsvp';
 
 const state = {
   entity: {
@@ -56,6 +57,7 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
           assert.deepEqual(payload, entityDetails.data[0]);
         }
       }
+      return resolve();
     };
     initializeEntityDetails({ entityId: '123' })(dispatch);
   });
@@ -89,6 +91,7 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
       if (type) {
         assert.ok(types.includes(type));
       }
+      return resolve();
     };
     initializeEntityDetails({ entityId: '123' })(dispatch);
   });
@@ -109,6 +112,7 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
       if (type) {
         assert.ok(types.includes(type));
       }
+      return resolve();
     };
     initializeEntityDetails({ entityId: '123' })(dispatch);
   });
@@ -131,6 +135,7 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
           }
         });
       }
+      return resolve();
     };
     const getState = () => state;
     initializeEntityDetails({ entityId: '123' })(dispatch, getState);
@@ -154,6 +159,7 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
           }
         });
       }
+      return resolve();
     };
     initializeEntityDetails({ entityId: '123', alertId: '234' })(dispatch);
   });
@@ -177,6 +183,7 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
           }
         });
       }
+      return resolve();
     };
     initializeEntityDetails({ entityId: '123', alertId: '234', indicatorId: 'inc-1' })(dispatch);
   });

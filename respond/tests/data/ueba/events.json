@@ -1,0 +1,1602 @@
+{
+  "data": [
+    {
+      "schema": null,
+      "dstProcessFileName": "qprocess.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_3",
+      "srcProcessFileName": "CourClientSvr.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f92a9",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184503",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\DIRECTCP\\CourClientSvr.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_3",
+      "srcProcessDirectory": "C:\\DIRECTCP",
+      "dstProcessFilePath": "C:\\Windows\\System32\\qprocess.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081740
+      },
+      "time_detected": 1576081740000,
+      "src_process": "CourClientSvr.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "qprocess.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_3",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "quser.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_2",
+      "srcProcessFileName": "conhost.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f92a4",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184498",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Windows\\System32\\conhost.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_2",
+      "srcProcessDirectory": "C:\\Windows\\System32",
+      "dstProcessFilePath": "C:\\Windows\\System32\\quser.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081680
+      },
+      "time_detected": 1576081680000,
+      "src_process": "conhost.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "quser.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_2",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "ping.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_1",
+      "srcProcessFileName": "chrome.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f929f",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184493",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_1",
+      "srcProcessDirectory": "C:\\Program Files (x86)\\Google\\Chrome\\Application",
+      "dstProcessFilePath": "C:\\Windows\\System32\\ping.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081620
+      },
+      "time_detected": 1576081620000,
+      "src_process": "chrome.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "ping.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_1",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "ping",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_3",
+      "srcProcessFileName": "CcmExec.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f9296",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184484",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Windows\\CCM\\CcmExec.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_3",
+      "srcProcessDirectory": "C:\\Windows\\CCM",
+      "dstProcessFilePath": "C:\\Windows\\System32\\ping",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081560
+      },
+      "time_detected": 1576081560000,
+      "src_process": "CcmExec.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "ping",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_3",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "nltest.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_2",
+      "srcProcessFileName": "avagent.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f9291",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184479",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files\\avs\\bin\\avagent.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_2",
+      "srcProcessDirectory": "C:\\Program Files\\avs\\bin",
+      "dstProcessFilePath": "C:\\Windows\\System32\\nltest.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081500
+      },
+      "time_detected": 1576081500000,
+      "src_process": "avagent.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "nltest.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_2",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "nbtstat.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_1",
+      "srcProcessFileName": "ApplicationFrameHost.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f9288",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184470",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Windows\\System32\\ApplicationFrameHost.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_1",
+      "srcProcessDirectory": "C:\\Windows\\System32",
+      "dstProcessFilePath": "C:\\Windows\\System32\\nbtstat.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081440
+      },
+      "time_detected": 1576081440000,
+      "src_process": "ApplicationFrameHost.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "nbtstat.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_1",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "netstat.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_3",
+      "srcProcessFileName": "Apoint.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f927f",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184461",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files\\DellTPad\\Apoint.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_3",
+      "srcProcessDirectory": "C:\\Program Files\\DellTPad",
+      "dstProcessFilePath": "C:\\Windows\\System32\\netstat.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081380
+      },
+      "time_detected": 1576081380000,
+      "src_process": "Apoint.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "netstat.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_3",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "netstat",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_2",
+      "srcProcessFileName": "ApntEx.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f927a",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184456",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files\\DellTPad\\ApntEx.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_2",
+      "srcProcessDirectory": "C:\\Program Files\\DellTPad",
+      "dstProcessFilePath": "C:\\Windows\\System32\\netstat",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081320
+      },
+      "time_detected": 1576081320000,
+      "src_process": "ApntEx.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "netstat",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_2",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "netsh.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_1",
+      "srcProcessFileName": "BabylonHelper64.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f9275",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184451",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files (x86)\\Babylon\\Babylon-Pro\\BabylonHelper64.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_1",
+      "srcProcessDirectory": "C:\\Program Files (x86)\\Babylon\\Babylon-Pro",
+      "dstProcessFilePath": "C:\\Windows\\System32\\netsh.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081260
+      },
+      "time_detected": 1576081260000,
+      "src_process": "BabylonHelper64.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "netsh.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_1",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "netsh",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_3",
+      "srcProcessFileName": "Babylon.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f926c",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184442",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files (x86)\\Babylon\\Babylon-Pro\\Babylon.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_3",
+      "srcProcessDirectory": "C:\\Program Files (x86)\\Babylon\\Babylon-Pro",
+      "dstProcessFilePath": "C:\\Windows\\System32\\netsh",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081200
+      },
+      "time_detected": 1576081200000,
+      "src_process": "Babylon.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "netsh",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_3",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "netdom.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_2",
+      "srcProcessFileName": "cmd.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f9253",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184417",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "D:\\Windows\\System32\\cmd.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_2",
+      "srcProcessDirectory": "D:\\Windows\\System32",
+      "dstProcessFilePath": "C:\\Windows\\System32\\netdom.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081140
+      },
+      "time_detected": 1576081140000,
+      "src_process": "cmd.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "netdom.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_2",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "net.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_1",
+      "srcProcessFileName": "cmd.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f924e",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184412",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Windows\\System32\\cmd.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_1",
+      "srcProcessDirectory": "C:\\Windows\\System32",
+      "dstProcessFilePath": "C:\\Windows\\System32\\net.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081080
+      },
+      "time_detected": 1576081080000,
+      "src_process": "cmd.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "net.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_1",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "net",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_3",
+      "srcProcessFileName": "regedit.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f9245",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184403",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Windows\\regedit.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_3",
+      "srcProcessDirectory": "C:\\Windows",
+      "dstProcessFilePath": "C:\\Windows\\System32\\net",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576081020
+      },
+      "time_detected": 1576081020000,
+      "src_process": "regedit.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "net",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_3",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "ipconfig.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_2",
+      "srcProcessFileName": "robo3t.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f9240",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184398",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files\\Robo 3T 1.2.1\\robo3t.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_2",
+      "srcProcessDirectory": "C:\\Program Files\\Robo 3T 1.2.1",
+      "dstProcessFilePath": "C:\\Windows\\System32\\ipconfig.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080960
+      },
+      "time_detected": 1576080960000,
+      "src_process": "robo3t.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "ipconfig.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_2",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "hostname.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_1",
+      "srcProcessFileName": "OUTLOOK.EXE",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f923b",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184393",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files\\Microsoft Office oot\\Office16\\OUTLOOK.EXE",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_1",
+      "srcProcessDirectory": "C:\\Program Files\\Microsoft Office oot\\Office16",
+      "dstProcessFilePath": "C:\\Windows\\System32\\hostname.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080900
+      },
+      "time_detected": 1576080900000,
+      "src_process": "OUTLOOK.EXE",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "hostname.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_1",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "hostname",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_3",
+      "srcProcessFileName": "MoTTY.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f922e",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184380",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Users\\paskaa\\AppData\\Local\\Temp\\Mxt105\\bin\\MoTTY.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_3",
+      "srcProcessDirectory": "C:\\Users\\paskaa\\AppData\\Local\\Temp\\Mxt105\\bin",
+      "dstProcessFilePath": "C:\\Windows\\System32\\hostname",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080840
+      },
+      "time_detected": 1576080840000,
+      "src_process": "MoTTY.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "hostname",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_3",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "fsutil.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_2",
+      "srcProcessFileName": "vmware-tray.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f9229",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184375",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files (x86)\\VMware\\VMware Workstation\\vmware-tray.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_2",
+      "srcProcessDirectory": "C:\\Program Files (x86)\\VMware\\VMware Workstation",
+      "dstProcessFilePath": "C:\\Windows\\System32\\fsutil.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080780
+      },
+      "time_detected": 1576080780000,
+      "src_process": "vmware-tray.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "fsutil.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_2",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "forfiles.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_1",
+      "srcProcessFileName": "svchost.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f9224",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184370",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": [
+        "WINDOWS_PROCESS"
+      ],
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Windows\\System32\\svchost.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_1",
+      "srcProcessDirectory": "C:\\Windows\\System32",
+      "dstProcessFilePath": "C:\\Windows\\System32\\forfiles.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080720
+      },
+      "time_detected": 1576080720000,
+      "src_process": "svchost.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "forfiles.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_1",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "dsquery.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_3",
+      "srcProcessFileName": "masvc.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f921b",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184361",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files\\McAfee\\Agent\\masvc.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_3",
+      "srcProcessDirectory": "C:\\Program Files\\McAfee\\Agent",
+      "dstProcessFilePath": "C:\\Windows\\System32\\dsquery.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080660
+      },
+      "time_detected": 1576080660000,
+      "src_process": "masvc.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "dsquery.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_3",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "dsget.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_2",
+      "srcProcessFileName": "macompatsvc.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f9216",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184356",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files\\McAfee\\Agent\\x86\\macompatsvc.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_2",
+      "srcProcessDirectory": "C:\\Program Files\\McAfee\\Agent\\x86",
+      "dstProcessFilePath": "C:\\Windows\\System32\\dsget.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080600
+      },
+      "time_detected": 1576080600000,
+      "src_process": "macompatsvc.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "dsget.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_2",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "arp.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_1",
+      "srcProcessFileName": "macmnsvc.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f91ef",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184317",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files\\McAfee\\Agent\\macmnsvc.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_1",
+      "srcProcessDirectory": "C:\\Program Files\\McAfee\\Agent",
+      "dstProcessFilePath": "C:\\Windows\\System32\\arp.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080540
+      },
+      "time_detected": 1576080540000,
+      "src_process": "macmnsvc.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "arp.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_1",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "arp",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_3",
+      "srcProcessFileName": "lync.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f91e6",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184308",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files\\Microsoft Office oot\\Office16\\lync.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_3",
+      "srcProcessDirectory": "C:\\Program Files\\Microsoft Office oot\\Office16",
+      "dstProcessFilePath": "C:\\Windows\\System32\\arp",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080480
+      },
+      "time_detected": 1576080480000,
+      "src_process": "lync.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "arp",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_3",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "wmic.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_2",
+      "srcProcessFileName": "explorer.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f91e1",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184303",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": [
+        "WINDOWS_PROCESS"
+      ],
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Windows\\explorer.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_2",
+      "srcProcessDirectory": "C:\\Windows",
+      "dstProcessFilePath": "C:\\Windows\\System32\\wmic.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080420
+      },
+      "time_detected": 1576080420000,
+      "src_process": "explorer.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "wmic.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_2",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "whoami.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_1",
+      "srcProcessFileName": "dwm.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f91dc",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184298",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Windows\\System32\\dwm.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_1",
+      "srcProcessDirectory": "C:\\Windows\\System32",
+      "dstProcessFilePath": "C:\\Windows\\System32\\whoami.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080360
+      },
+      "time_detected": 1576080360000,
+      "src_process": "dwm.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "whoami.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_1",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "whoami",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_3",
+      "srcProcessFileName": "dptf_helper.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f91d3",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184289",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Windows\\System32\\Intel\\DPTF\\dptf_helper.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_3",
+      "srcProcessDirectory": "C:\\Windows\\System32\\Intel\\DPTF",
+      "dstProcessFilePath": "C:\\Windows\\System32\\whoami",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080300
+      },
+      "time_detected": 1576080300000,
+      "src_process": "dptf_helper.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "whoami",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_3",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "tree.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_2",
+      "srcProcessFileName": "dllhost.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f91ca",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184280",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Windows\\System32\\dllhost.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_2",
+      "srcProcessDirectory": "C:\\Windows\\System32",
+      "dstProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080240
+      },
+      "time_detected": 1576080240000,
+      "src_process": "dllhost.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "tree.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_2",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "tree",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_1",
+      "srcProcessFileName": "CourClientSvr.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f91c5",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184275",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\DIRECTCP\\CourClientSvr.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_1",
+      "srcProcessDirectory": "C:\\DIRECTCP",
+      "dstProcessFilePath": "C:\\Windows\\System32\\tree",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080180
+      },
+      "time_detected": 1576080180000,
+      "src_process": "CourClientSvr.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "tree",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_1",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "tasklist.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_3",
+      "srcProcessFileName": "conhost.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f91bc",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184266",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Windows\\System32\\conhost.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_3",
+      "srcProcessDirectory": "C:\\Windows\\System32",
+      "dstProcessFilePath": "C:\\Windows\\System32\\tasklist.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080120
+      },
+      "time_detected": 1576080120000,
+      "src_process": "conhost.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "tasklist.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_3",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "systeminfo.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_2",
+      "srcProcessFileName": "chrome.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f91b7",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184261",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_2",
+      "srcProcessDirectory": "C:\\Program Files (x86)\\Google\\Chrome\\Application",
+      "dstProcessFilePath": "C:\\Windows\\System32\\systeminfo.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080060
+      },
+      "time_detected": 1576080060000,
+      "src_process": "chrome.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "systeminfo.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_2",
+      "operation_type_score": ""
+    },
+    {
+      "schema": null,
+      "dstProcessFileName": "sc.exe",
+      "dstProcessCertificateIssuer": null,
+      "dstProcessCategories": [
+        "RECONNAISSANCE_TOOL"
+      ],
+      "srcProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "machineName": "host_1",
+      "srcProcessFileName": "CcmExec.exe",
+      "additionalInfo": {
+        "agentId": "807E600E-FBBB-E21B-FB17-7E44BFB6186B",
+        "dstChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57",
+        "osType": "Windows Server 2016 Datacenter",
+        "srcChecksumId": "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57"
+      },
+      "id": "5df3ef6cd4b68a4a081f91b2",
+      "srcProcessCertificateIssuer": null,
+      "machineOwner": null,
+      "eventId": "10.237.169.81:56005:184256",
+      "dstProcessDirectoryGroups": [
+        "WINDOWS_SYSTEM32",
+        "WINDOWS"
+      ],
+      "srcProcessCategories": null,
+      "userDisplayName": "Lily Anderson",
+      "srcProcessFilePath": "C:\\Windows\\CCM\\CcmExec.exe",
+      "userName": "Lily Anderson",
+      "userId": "lily anderson",
+      "dstProcessDirectory": "C:\\Windows\\System32",
+      "machineId": "host_1",
+      "srcProcessDirectory": "C:\\Windows\\CCM",
+      "dstProcessFilePath": "C:\\Windows\\System32\\sc.exe",
+      "operationType": "CREATE_PROCESS",
+      "dataSource": "nwendpoint",
+      "eventDate": {
+        "nano": 0,
+        "epochSecond": 1576080000
+      },
+      "time_detected": 1576080000000,
+      "src_process": "CcmExec.exe",
+      "user": "Lily Anderson",
+      "user_link": "https://10.237.169.91/investigation/2e4cdfb4-bd4d-459d-a333-cfb274c9448e/events/date/2019-12-11T00:00:00z/2019-12-12T00:00:00z?lastCollectionDate=1576108800000&startCollectionDate=1576022400000&search=Lily%20Anderson",
+      "time_detected_score": "",
+      "dst_process": "sc.exe",
+      "user_sid": "lily anderson",
+      "operation_type": "Create Process",
+      "machine_name": "host_1",
+      "operation_type_score": ""
+    }
+  ],
+  "total": 30,
+  "offset": 0,
+  "warning": null,
+  "info": null
+}

@@ -31,6 +31,7 @@ export const getEvents = (indicatorId) => {
 
 export const getHistoricalData = (indicatorId) => {
   return (dispatch, getState) => {
+    // indicatorMapSettings selector depends indirectly on the async GET_ALERT fetch and reducer chain to complete.
     if (!indicatorMapSettings(getState())) {
       return;
     }

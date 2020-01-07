@@ -4,6 +4,7 @@ import { entityId, entityType } from 'entity-details/reducers/entity/selectors';
 import { initializeEntityDetails } from './entity-creators';
 import { selectedAlertId } from 'entity-details/reducers/alerts/selectors';
 import { lookup } from 'ember-dependency-lookup';
+import { reject } from 'rsvp';
 
 export const resetAlerts = () => ({ type: RESET_ALERT });
 
@@ -15,7 +16,7 @@ export const initializeAlert = (alertId) => {
     });
     // Entity ID as query parameter
     if (!getState) {
-      return;
+      return reject();
     }
     const queryparam = {
       entity_id: entityId(getState()),
@@ -27,7 +28,7 @@ export const initializeAlert = (alertId) => {
       method: 'GET',
       urlParameters: alertId
     };
-    fetchData(fetchObj).then((result) => {
+    return fetchData(fetchObj).then((result) => {
       if (result === 'error') {
         dispatch({
           type: ALERT_ERROR
