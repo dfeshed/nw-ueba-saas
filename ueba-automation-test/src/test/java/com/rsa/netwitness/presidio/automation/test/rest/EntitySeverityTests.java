@@ -109,25 +109,26 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
                     .mapToInt(e -> Integer.valueOf(e.getEntityScoreContribution()))
                     .sum();
 
-            softly.assertThat(dailySumOfScoreContributions)
+            softly.assertThat(dailyTrend)
                     .as(allEntitiesUrl + "\nDaily trending value result mismatch for entityId: " + entity.getId()
-                            + "entityType=" + entity.getEntityType()
-                            + "\nAlerts: " + entity.getAlerts().stream().map(e -> "[" + e.getId()
+                            + " entityType=" + entity.getEntityType()
+                            + "\nAlerts:\n" + entity.getAlerts().stream().map(e -> "[" + e.getId()
+                            + ", entityType=" + e.getEntityType()
                             + ", StartDate=" + e.getStartDate() + ", EndDate=" + e.getEndDate() + ", EntityScoreContribution="
                             + e.getEntityScoreContribution() + "]").collect(joining(",\n"))
                             + "\nlastExecutionDateOfOutput=" + lastExecutionDateOfOutput
                             + "\nstartDate should be after " + lastExecutionDateOfOutput.minus(1, DAYS))
-                    .isEqualTo(dailyTrend);
+                    .isEqualTo(dailySumOfScoreContributions);
 
-            softly.assertThat(weeklySumOfScoreContributions)
+            softly.assertThat(weeklyTrend)
                     .as(allEntitiesUrl + "\nWeekly trending value result mismatch for entityId: " + entity.getId()
-                            + "\nAlerts: " + entity.getAlerts().stream().map(e -> "[" + e.getId()
-                            + "entityType=" + entity.getEntityType()
+                            + "\nAlerts:\n" + entity.getAlerts().stream().map(e -> "[" + e.getId()
+                            + ", entityType=" + e.getEntityType()
                             + ", StartDate=" + e.getStartDate() + ", EndDate=" + e.getEndDate() + ", EntityScoreContribution="
                             + e.getEntityScoreContribution() + "]").collect(joining(",\n"))
                             + "\nlastExecutionDateOfOutput=" + lastExecutionDateOfOutput
                             + "\nstartDate should be after " + lastExecutionDateOfOutput.minus(7, DAYS))
-                    .isEqualTo(weeklyTrend);
+                    .isEqualTo(weeklySumOfScoreContributions);
         }
 
         softly.assertAll();
