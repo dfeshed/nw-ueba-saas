@@ -121,8 +121,6 @@ class formComponent extends Component {
 
   resetDefaultProperties() {
     this.setProperties({
-      testLog: true,
-      selectedProtocol: 'TCP',
       status: 'enabled',
       editedHost: ''
     });

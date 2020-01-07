@@ -1,5 +1,4 @@
-import { Promise } from 'rsvp';
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { revertPatch } from '../../../helpers/patch-reducer';
@@ -157,29 +156,6 @@ module('Integration | Component | packager-form', function(hooks) {
     assert.equal(afterIsErrorEl.length, 1, 'is-error class is rendered');
     assert.equal(findAll('.agentConfiguration.is-collapsed').length, 0, 'Accordion is open, as error is within the accordion');
 
-  });
-  // i am looking into it, some problem with stub usage in ember 3
-  skip('Event Id server validation for out of range case when generate agent button clicked', async function(assert) {
-    const channelFiltersWithInvalidData = {
-      'packageConfig': {
-        'id': '59894c9984518a5cfb8fbec2',
-        'server': '10.101.34.245',
-        'port': 443,
-        'certificatePassword': 'test'
-      }
-    };
-    new ReduxDataHelper(setState)
-      .defaultConfig(channelFiltersWithInvalidData)
-      .setDevices(devices)
-      .build();
-    this.set('selectedProtocol', 'UDP');
-    await render(hbs`{{packager-form selectedProtocol=selectedProtocol}}`);
-    const error = { meta: { reason: 'EVENT_ID_INVALID', identifier: 1 } };
-    const beforeIsErrorEl = findAll('.packager-form .is-error');
-    assert.equal(beforeIsErrorEl.length, 0, 'is-error class is not present');
-    setPackagerConfigMethodStub.returns(Promise.reject(error));
-    const afterIsErrorEl = findAll('.packager-form .is-error');
-    assert.equal(afterIsErrorEl.length, 1, 'is-error class is rendered');
   });
 
   test('validates the packager config and sets the error field', async function(assert) {
