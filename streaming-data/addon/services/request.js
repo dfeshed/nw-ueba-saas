@@ -16,13 +16,13 @@ export default Service.extend({
     this._super();
     // register observer on route changes to allow for stream cleanup
     this.get('router').addObserver('currentRouteName', this, '_routeCleanup');
-  },
 
-  /**
-   * @public
-   * stores the socketurl prefix
-  */
-  persistentStreamOptions: {},
+    /**
+     * @public
+     * stores the socketurl prefix
+    */
+    this.persistentStreamOptions = this.persistentStreamOptions || {};
+  },
 
   /**
    * @public
@@ -137,5 +137,4 @@ export default Service.extend({
   disconnectNamed(name) {
     Socket.disconnectNamed(name);
   }
-
 });

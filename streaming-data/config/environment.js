@@ -98,7 +98,7 @@ module.exports = function(environment) {
         },
         'stream/_11': {
           subscriptionDestination: '/test/subscription/stream/_11',
-          requestDestination: '/test/request/stream/_11',
+          requestDestination: '/test/request/stream/_11'
         },
         'stream/_12': {
           subscriptionDestination: '/test/subscription/stream/_12',
