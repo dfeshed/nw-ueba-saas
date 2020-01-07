@@ -26,7 +26,8 @@ export default {
         {
           field: 'pe.sectionNames',
           format: 'ACCORDION',
-          label: 'investigateShared.endpoint.fileAnalysis.pe.sectionNames'
+          label: 'investigateShared.endpoint.fileAnalysis.pe.sectionNames',
+          accordionLabel: 'investigateShared.endpoint.fileAnalysis.pe.sectionNamesAccordion'
         },
         {
           field: 'pe.subSystem'
