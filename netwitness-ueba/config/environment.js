@@ -20,8 +20,8 @@ module.exports = function(environment) {
     adminServerAvailable: true,
     timeFormatDefault: 'HR24',
     timezoneDefault: 'UTC',
-    landingPageDefault: '/unified',
-    investigatePageDefault: '/navigate',
+    landingPageDefault: '/investigate/entities',
+    investigatePageDefault: '/investigate/entities',
     i18n: {
       defaultLocale: 'en-us',
       defaultFallback: true,
