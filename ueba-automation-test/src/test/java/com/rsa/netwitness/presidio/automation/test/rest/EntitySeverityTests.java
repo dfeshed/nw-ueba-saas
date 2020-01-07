@@ -58,9 +58,9 @@ public class EntitySeverityTests extends AbstractTestNGSpringContextTests {
     public void trending_score_equals_sum_of_entity_score_contributions() {
         SoftAssertions softly = new SoftAssertions();
 
-        Instant lastExecutionDateUser = fetchLastExecutionDateOfOutputJob("userId_hourly_ueba_flow", "userId_hourly");
-        Instant lastExecutionDateSslSubject = fetchLastExecutionDateOfOutputJob("sslSubject_hourly_ueba_flow", "sslSubject_hourly");
-        Instant lastExecutionDateJa3 = fetchLastExecutionDateOfOutputJob("ja3_hourly_ueba_flow", "ja3_hourly");
+        Instant lastExecutionDateUser = fetchLastExecutionDateOfOutputJob("userId_hourly_ueba_flow", "hourly_output_processor");
+        Instant lastExecutionDateSslSubject = fetchLastExecutionDateOfOutputJob("sslSubject_hourly_ueba_flow", "hourly_output_processor");
+        Instant lastExecutionDateJa3 = fetchLastExecutionDateOfOutputJob("ja3_hourly_ueba_flow", "hourly_output_processor");
 
         ImmutableMap<String, Instant> lastExecutionDates = new ImmutableMap.Builder<String, Instant>()
                 .put("sslSubject", lastExecutionDateSslSubject)
