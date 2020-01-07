@@ -5,7 +5,7 @@ import fortscale.common.general.Schema;
 import fortscale.common.general.SchemaEntityCount;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReader;
-import fortscale.utils.json.JacksonUtils;
+import fortscale.utils.json.JsonUtils;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import org.apache.commons.lang3.Validate;
@@ -32,8 +32,6 @@ import static java.util.stream.Collectors.*;
         setterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("new-occurrence-transformer")
 public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
-    private static final JacksonUtils jacksonUtils = new JacksonUtils();
-
     @Autowired
     private PresidioInputPersistencyService presidioInputPersistencyService;
     @Autowired @Qualifier("lastOccurrenceInstantReaderCache")
@@ -112,7 +110,7 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
     }
 
     private void transform(JSONObject document, String inputFieldName, String booleanFieldName) {
-        String fieldValue = (String)jacksonUtils.getFieldValue(document, inputFieldName, null);
+        String fieldValue = JsonUtils.get(document, inputFieldName, null);
 
         if (fieldValue != null) {
             Instant lastOccurrenceInstant = lastOccurrenceInstantReader.read(schema, inputFieldName, fieldValue);
@@ -136,7 +134,7 @@ public class NewOccurrenceTransformer extends AbstractJsonObjectTransformer {
                 }
             }
 
-            jacksonUtils.setFieldValue(document, booleanFieldName, isNewOccurrence);
+            JsonUtils.set(document, booleanFieldName, isNewOccurrence);
         }
     }
 

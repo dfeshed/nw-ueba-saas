@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fortscale.utils.json.JacksonUtils;
+import fortscale.utils.json.JsonUtils;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -43,7 +43,7 @@ public class OperationTypeCategoriesHierarchyTransformer extends AbstractJsonObj
             try {
                 Object operationTypeCategoriesObj = document.get(inputFieldName);
                 if (operationTypeCategoriesObj != JSONObject.NULL) {
-                    List<String> operationTypeCategories = JacksonUtils.jsonArrayToList((JSONArray) operationTypeCategoriesObj);
+                    List<String> operationTypeCategories = JsonUtils.toList((JSONArray)operationTypeCategoriesObj);
                     if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
                         Set<String> additionalCategories = new HashSet<>();
                         operationTypeCategories.forEach(s -> additionalCategories.addAll(getAdditionalCategories(s)));

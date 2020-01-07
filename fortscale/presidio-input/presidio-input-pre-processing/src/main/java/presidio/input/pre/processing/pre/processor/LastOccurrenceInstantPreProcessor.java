@@ -3,7 +3,6 @@ package presidio.input.pre.processing.pre.processor;
 import fortscale.common.general.Schema;
 import fortscale.domain.lastoccurrenceinstant.writer.LastOccurrenceInstantWriter;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.apache.commons.lang3.Validate;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
@@ -13,7 +12,6 @@ import java.util.Map;
 
 public class LastOccurrenceInstantPreProcessor extends PreProcessor<LastOccurrenceInstantPreProcessorArguments> {
     private static final Logger logger = Logger.getLogger(LastOccurrenceInstantPreProcessor.class);
-    private static PresidioReflectionUtils reflection = new PresidioReflectionUtils();
     private final PresidioInputPersistencyService presidioInputPersistencyService;
     private final int aggregationPageSize;
     private final LastOccurrenceInstantWriter lastOccurrenceInstantWriter;

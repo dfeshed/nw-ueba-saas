@@ -3,7 +3,7 @@ package fortscale.utils.transform;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fortscale.utils.json.JacksonUtils;
+import fortscale.utils.json.JsonUtils;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -50,7 +50,7 @@ public class OperationTypeToCategoriesTransformer extends AbstractJsonObjectTran
                         Set<String> additionalCategories = new HashSet<>(operationTypeCategories);
                         Object operationalTypeCategories = document.get(inputOperationTypeCategoriesFieldName);
                         if (operationalTypeCategories != JSONObject.NULL) {
-                            List<String> existingOperationTypeCategories = JacksonUtils.jsonArrayToList((JSONArray) operationalTypeCategories);
+                            List<String> existingOperationTypeCategories = JsonUtils.toList((JSONArray)operationalTypeCategories);
                             if (CollectionUtils.isNotEmpty(existingOperationTypeCategories)) {
                                 additionalCategories.addAll(existingOperationTypeCategories);
                             }

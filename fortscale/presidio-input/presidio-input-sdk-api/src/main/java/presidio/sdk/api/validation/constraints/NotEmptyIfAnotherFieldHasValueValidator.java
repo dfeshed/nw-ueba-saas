@@ -2,7 +2,7 @@ package presidio.sdk.api.validation.constraints;
 
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.PresidioReflectionUtils;
+import fortscale.utils.reflection.ReflectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import presidio.sdk.api.validation.NotEmptyIfAnotherFieldHasValue;
@@ -13,7 +13,6 @@ import javax.validation.ConstraintValidatorContext;
 public class NotEmptyIfAnotherFieldHasValueValidator implements ConstraintValidator<NotEmptyIfAnotherFieldHasValue, Object> {
 
     private static final Logger logger = Logger.getLogger(NotEmptyIfAnotherFieldHasValueValidator.class);
-    private static final PresidioReflectionUtils reflection = new PresidioReflectionUtils();
 
     private String fieldName;
     private String[] fieldValues;
@@ -33,8 +32,8 @@ public class NotEmptyIfAnotherFieldHasValueValidator implements ConstraintValida
             return false;
         }
 
-        Object fieldValue = reflection.getFieldValue(value, fieldName);
-        Object dependFieldValue = reflection.getFieldValue(value, dependFieldName);
+        Object fieldValue = ReflectionUtils.get(value, fieldName);
+        Object dependFieldValue = ReflectionUtils.get(value, dependFieldName);
 
         if (ArrayUtils.contains(fieldValues, fieldValue) && (dependFieldValue == null || StringUtils.isEmpty(dependFieldValue.toString()))) {
             constraintValidatorContext.disableDefaultConstraintViolation();
