@@ -1,13 +1,13 @@
 package fortscale.utils.mongodb.util;
 
-import fortscale.utils.reflection.PresidioReflectionUtils;
+import fortscale.utils.reflection.ReflectionUtils;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.lang.reflect.Field;
 import java.util.stream.Collectors;
 
 public class MongoReflectionUtils {
+    private static final String HIERARCHY_FIELDS_DELIMITER = ".";
 
-    private static final String NESTED_OBJECT_DELIMITER = ".";
     /**
      * Finds the field name recursively.
      * If an annotation exists returns the field name of the annotation, otherwise returns the original field name.
@@ -26,18 +26,15 @@ public class MongoReflectionUtils {
      * @param clazz the class on which to find the field name
      * @param requestedFieldName the field path to look for
      */
-    public static String findFieldNameRecursively(Class clazz, String requestedFieldName) {
-        return PresidioReflectionUtils.findNestedFields(clazz, requestedFieldName)
-                .stream()
-                .map(MongoReflectionUtils::getConfiguredFieldName)
-                .collect(Collectors.joining(NESTED_OBJECT_DELIMITER));
-    }
-
-    private static String getConfiguredFieldName(Field field) {
-        String fieldName = field.getName();
-        if (field.isAnnotationPresent(org.springframework.data.mongodb.core.mapping.Field.class)) {
-            fieldName = field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class).value();
-        }
-        return fieldName;
+    public static String findFieldNameRecursively(Class<?> clazz, String requestedFieldName) {
+        return ReflectionUtils.findHierarchyFields(clazz, requestedFieldName).stream()
+                .map(field -> {
+                    if (field.isAnnotationPresent(Field.class)) {
+                        return field.getAnnotation(Field.class).value();
+                    } else {
+                        return field.getName();
+                    }
+                })
+                .collect(Collectors.joining(HIERARCHY_FIELDS_DELIMITER));
     }
 }
