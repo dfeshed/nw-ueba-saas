@@ -20,13 +20,6 @@ export default Component.extend({
   classNames: ['rsa-items-sheet'],
 
   /**
-   * The list of POJOs to be displayed, possibly empty.
-   * @type {Object[]}
-   * @public
-   */
-  items: [],
-
-  /**
    * Total number of expected `items`.
    * The total count of items is used to determine the default view (Item Details should be the default only when
    * total count is exactly one; otherwise the Table view is the default).
@@ -62,6 +55,16 @@ export default Component.extend({
    * @public
    */
   columnsConfig: null,
+
+  init() {
+    this._super(arguments);
+    /**
+     * The list of POJOs to be displayed, possibly empty.
+     * @type {Object[]}
+     * @public
+     */
+    this.items = this.items || [];
+  },
 
   // Clear `itemSelected` every time `items` is reset.
   // Without this, the UI won't return back to the Table view if `items` gets reset after the user

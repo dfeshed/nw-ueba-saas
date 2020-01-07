@@ -50,7 +50,6 @@ const stateToComputed = (state) => {
  */
 const IncidentFilters = Component.extend({
   tagName: '',
-  sentToArcherTypes: [true, false],
   accessControl: service(),
 
   @computed('idFilter')
@@ -89,6 +88,11 @@ const IncidentFilters = Component.extend({
   assigneeMatcher({ name, id }, searchTerm) {
     const userName = name || id;
     return userName.toLowerCase().indexOf(searchTerm.toLowerCase());
+  },
+
+  init() {
+    this._super(arguments);
+    this.sentToArcherTypes = this.sentToArcherTypes || [true, false];
   },
 
   didInsertElement() {

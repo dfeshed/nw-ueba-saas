@@ -21,10 +21,13 @@ export default Component.extend({
   // Either 'streaming', 'complete', 'error' or 'stopped'
   itemsStatus: null,
 
-  // Columns configuration for the rsa-data-table that displays the search results
-  columnsConfig: [{
-    field: 'summary',
-    width: '100%'
-  }]
-});
+  init() {
+    this._super(arguments);
 
+    // Columns configuration for the rsa-data-table that displays the search results
+    this.columnsConfig = this.columnsConfig || [{
+      field: 'summary',
+      width: '100%'
+    }];
+  }
+});

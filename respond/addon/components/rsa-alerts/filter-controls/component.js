@@ -36,15 +36,19 @@ const stateToComputed = (state) => {
  */
 const AlertFilters = Component.extend({
   tagName: '',
-  partOfIncidentTypes: [true, false],
-  alertNamesTableColumns: [{
-    field: 'name',
-    width: '100%'
-  }],
 
   @computed('alertNameFilters')
   selectedNames(alertNameFilters) {
     return [...alertNameFilters];
+  },
+
+  init() {
+    this._super(arguments);
+    this.partOfIncidentTypes = this.partOfIncidentTypes || [true, false];
+    this.alertNamesTableColumns = this.alertNamesTableColumns || [{
+      field: 'name',
+      width: '100%'
+    }];
   },
 
   actions: {

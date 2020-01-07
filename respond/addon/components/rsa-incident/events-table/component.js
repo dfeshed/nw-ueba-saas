@@ -40,17 +40,6 @@ const StoryEvents = Component.extend({
   },
 
   /**
-   * Column configurations for data table. @see: component-lib/components/rsa-data-table
-   *
-   * @type {object[]}
-   * @public
-   */
-  columnsConfig: [{
-    field: 'custom',
-    width: '100%'
-  }],
-
-  /**
    * The `panelId` for the Event Details modal dialog, to be launched by clicking on the individual
    * event rows in the events table.
    * @type {string}
@@ -64,6 +53,21 @@ const StoryEvents = Component.extend({
    * @private
    */
   eventDetailsModel: null,
+
+  init() {
+    this._super(arguments);
+
+    /**
+     * Column configurations for data table. @see: component-lib/components/rsa-data-table
+     *
+     * @type {object[]}
+     * @public
+     */
+    this.columnsConfig = this.columnsConfig || [{
+      field: 'custom',
+      width: '100%'
+    }];
+  },
 
   actions: {
     // Shows the modal dialog with the details of the given alert event object.

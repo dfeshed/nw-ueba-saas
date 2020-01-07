@@ -15,10 +15,16 @@ export default Component.extend({
   // Passed down to child group table component.
   groups: null,
   selections: null,
-  columnsConfig: [{
-    field: 'summary',
-    width: '100%'
-  }],
+
+  init() {
+    this._super(arguments);
+
+    // Passed down to child group table component.
+    this.columnsConfig = this.columnsConfig || [{
+      field: 'summary',
+      width: '100%'
+    }];
+  },
 
   // Configurable stubs for actions.
   actions: {
