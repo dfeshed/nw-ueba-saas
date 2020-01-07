@@ -60,6 +60,11 @@ public class ReflectionUtils {
                 .collect(toSet());
     }
 
+    public static Class<?> getPropertyType(Class<?> clazz, String key) {
+        List<Field> hierarchyFields = findHierarchyFields(clazz, key);
+        return hierarchyFields.get(hierarchyFields.size() - 1).getType();
+    }
+
     private static Pair<Object, String> getLeafParentAndName(Object root, String key) {
         Object object = notNull(root, NULL_ROOT_EXCEPTION_MESSAGE);
         String[] subkeys = notNull(key, NULL_KEY_EXCEPTION_MESSAGE).split(DELIMITING_REGEX);

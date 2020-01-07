@@ -2,9 +2,8 @@ package presidio.output.domain.services.event;
 
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.PresidioReflectionUtils;
+import fortscale.utils.reflection.ReflectionUtils;
 import fortscale.utils.time.TimeRange;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.Pair;
 import org.springframework.util.ClassUtils;
 import presidio.output.domain.records.events.EnrichedEvent;
@@ -102,8 +101,7 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
         Class<?> featureType = Object.class;
         try {
             Class<?> clazz = ClassUtils.forName(eventClassName, this.getClass().getClassLoader());
-            featureType = PresidioReflectionUtils.getPropertyType(clazz, feature);
-
+            featureType = ReflectionUtils.getPropertyType(clazz, feature);
         } catch (Exception ex) {
             // swallow and continue
             logger.error("Cannot find feature {} in schema {}", feature, schema);
