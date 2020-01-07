@@ -187,7 +187,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
           controller.set('listOfServices', response.data);
         });
       }
-      if(transition.targetName === 'protected.index') {
+      if (transition.targetName === 'protected.index') {
         this.transitionTo('protected.investigate-users.index');
       } else {
         this.transitionTo(transition.targetName);
