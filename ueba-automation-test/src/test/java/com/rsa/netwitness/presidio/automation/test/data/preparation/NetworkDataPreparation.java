@@ -9,39 +9,35 @@ import org.testng.annotations.Test;
 import presidio.data.domain.event.Event;
 import presidio.data.domain.event.network.TlsEvent;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 
 public class NetworkDataPreparation extends DataPreparationBase {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(NetworkDataPreparation.class);
 
     @Override
-    public List<? extends Event> generate() {
-        List<TlsEvent> networkEvents = new LinkedList<>();
-
+    public Stream<? extends Event> generate() {
         /** TLS alerts generators **/
-        List<TlsAlert> tlsAlerts = Stream.of(
+        Stream<TlsAlert> tlsAlerts = Stream.of(
                 new Ja3UncommonAlerts(historicalDaysBack, anomalyDay).get(),
                 new Ja3HighBytesSentAlerts(historicalDaysBack, anomalyDay).get(),
                 new SslSubjectUncommonAlerts(historicalDaysBack, anomalyDay).get(),
                 new SslSubjectHighBytesSentAlerts(historicalDaysBack, anomalyDay).get()
+        ).flatMap(e -> e);
 
-        ).flatMap(e -> e).collect(toList());
 
-        for (TlsAlert alert : tlsAlerts) {
-            networkEvents.addAll(alert.getIndicators().stream().flatMap(e -> e.generateEvents().stream()).collect(toList()));
-        }
+        Stream<TlsEvent> networkEvents = Stream.of(
+                /** alerts **/
+                tlsAlerts.parallel().map(alert -> alert.getIndicators().stream().map(ind -> ind.generateEvents().stream()).flatMap(e -> e)).flatMap(e -> e),
 
-        /** future time events **/
-        networkEvents.addAll(new FutureEventsForMetrics(10).get().collect(toList()));
-        /** Session split data **/
-        networkEvents.addAll(new SessionSplitEnrichmentData().generateAll().collect(toList()));
-        /** Special cases alerts scenarios **/
-        networkEvents.addAll(new AlertsSpecialCases(historicalDaysBack, anomalyDay).generateAll().collect(toList()));
+                /** future time events **/
+                new FutureEventsForMetrics(10).get(),
+                /** Session split data **/
+                new SessionSplitEnrichmentData().generateAll(),
+                /** Special cases alerts scenarios **/
+                new AlertsSpecialCases(historicalDaysBack, anomalyDay).generateAll()
+        ).flatMap(e -> e);
+
 
         return networkEvents;
     }

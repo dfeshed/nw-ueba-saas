@@ -653,8 +653,8 @@ public class AdapterFilteringTest extends AbstractTestNGSpringContextTests {
         List<Map<String, Object>> invalidFileEvents = getInvalidFileEvents();
 
         MongoAdapterMapProducer producer = new MongoAdapterMapProducer(netwitnessEventStore, Schema.FILE);
-        producer.send(validFileEvents);
-        producer.send(invalidFileEvents);
+        producer.send(validFileEvents.stream());
+        producer.send(invalidFileEvents.stream());
 
         // process the data
         adapterTestManager.process(startDate, endDate, "hourly", "FILE");
@@ -697,8 +697,8 @@ public class AdapterFilteringTest extends AbstractTestNGSpringContextTests {
         invalidEvents.forEach(e-> e.remove("action"));
 
         MongoAdapterMapProducer producer = new MongoAdapterMapProducer(netwitnessEventStore, Schema.AUTHENTICATION);
-        producer.send(validEvents);
-        producer.send(invalidEvents);
+        producer.send(validEvents.stream());
+        producer.send(invalidEvents.stream());
 
         // process the data
         adapterTestManager.process(startDate, endDate, "hourly", "AUTHENTICATION");
@@ -735,8 +735,8 @@ public class AdapterFilteringTest extends AbstractTestNGSpringContextTests {
         List<Map<String, Object>> invalidEvents = getInvalidActiveDirectoryEvents();
 
         MongoAdapterMapProducer producer = new MongoAdapterMapProducer(netwitnessEventStore, Schema.ACTIVE_DIRECTORY);
-        producer.send(validEvents);
-        producer.send(invalidEvents);
+        producer.send(validEvents.stream());
+        producer.send(invalidEvents.stream());
 
         // process the data
         adapterTestManager.process(startDate, endDate, "hourly", "ACTIVE_DIRECTORY");
@@ -754,7 +754,7 @@ public class AdapterFilteringTest extends AbstractTestNGSpringContextTests {
         List<Map<String, Object>> validEvents = getValidProcessEvents();
 
         MongoAdapterMapProducer producer = new MongoAdapterMapProducer(netwitnessEventStore, Schema.PROCESS);
-        producer.send(validEvents);
+        producer.send(validEvents.stream());
 
         // process the data
         adapterTestManager.process(startDate, endDate, "hourly", "PROCESS");
@@ -772,7 +772,7 @@ public class AdapterFilteringTest extends AbstractTestNGSpringContextTests {
         List<Map<String, Object>> validEvents = getValidRegistryEvents();
 
         MongoAdapterMapProducer producer = new MongoAdapterMapProducer(netwitnessEventStore, Schema.REGISTRY);
-        producer.send(validEvents);
+        producer.send(validEvents.stream());
 
         // process the data
         adapterTestManager.process(startDate, endDate, "hourly", "REGISTRY");

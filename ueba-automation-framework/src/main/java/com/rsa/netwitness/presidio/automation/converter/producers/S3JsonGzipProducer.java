@@ -22,18 +22,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 
 import static java.util.stream.Collectors.groupingBy;
 
-public class S3JsonGzipProducer implements EventsProducer<List<NetwitnessEvent>> {
+public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
     private static String bucketName = "ueba-qa-data";
     private Map<Schema, String> folders = Maps.newHashMap();
     private static final long GEN_START_TIME = System.currentTimeMillis();
 
 
     @Override
-    public Map<Schema, Long> send(List<NetwitnessEvent> eventsList) {
+    public Map<Schema, Long> send(Stream<NetwitnessEvent> eventsList) {
 
         S3_Bucket bucket = new S3_Bucket(bucketName);
         bucket.truncate();
@@ -44,7 +45,7 @@ public class S3JsonGzipProducer implements EventsProducer<List<NetwitnessEvent>>
 
 
         // add destination file path
-        Map<String, List<NetwitnessEvent>> eventsByKey = eventsList.parallelStream()
+        Map<String, List<NetwitnessEvent>> eventsByKey = eventsList.parallel()
                 .collect(groupingBy(e -> eventFilePath(e, ChronoUnit.DAYS)));
 
 

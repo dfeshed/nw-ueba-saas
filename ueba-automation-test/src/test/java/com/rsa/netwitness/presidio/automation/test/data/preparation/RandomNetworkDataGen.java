@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
+import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter;
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverterFactory;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
@@ -29,13 +30,12 @@ import presidio.data.generators.event.tls.TlsRangeEventsGen;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})
 public class RandomNetworkDataGen extends AbstractTestNGSpringContextTests {
-    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(RandomNetworkDataGen.class.getName());
+    private static  Logger LOGGER = (Logger) LoggerFactory.getLogger(RandomNetworkDataGen.class);
 
     @Autowired
     private NetwitnessEventStore netwitnessEventStore;
@@ -85,10 +85,7 @@ public class RandomNetworkDataGen extends AbstractTestNGSpringContextTests {
             }
 
 
-            List<NetwitnessEvent> converted = precidioEvents.parallelStream()
-                    .map(getConverter()::convert)
-                    .collect(Collectors.toList());
-
+            Stream<NetwitnessEvent> converted = precidioEvents.parallelStream().map(getConverter()::convert);
             LOGGER.info("  ++++++ Going to send.");
             generatorResultCount = getProducer().send(converted);
         }
@@ -133,7 +130,7 @@ public class RandomNetworkDataGen extends AbstractTestNGSpringContextTests {
         return null;
     }
 
-    private EventsProducer<List<NetwitnessEvent>> getProducer() {
+    private EventsProducer<NetwitnessEvent> getProducer() {
         return new EventsProducerFactory(netwitnessEventStore).get(generatorFormat);
     }
 

@@ -7,11 +7,12 @@ import presidio.nw.flume.domain.test.NetwitnessStoredData;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-public class MongoAdapterMapProducer implements EventsProducer<List<Map<String, Object>>> {
+public class MongoAdapterMapProducer implements EventsProducer<Map<String, Object>> {
 
     private NetwitnessEventStore netwitnessEventStore;
     private final Schema schema;
@@ -22,9 +23,9 @@ public class MongoAdapterMapProducer implements EventsProducer<List<Map<String, 
     }
 
     @Override
-    public Map<Schema, Long> send(List<Map<String, Object>> eventsList) {
+    public Map<Schema, Long> send(Stream<Map<String, Object>> eventsList) {
 
-        List<NetwitnessStoredData> converted = eventsList.parallelStream()
+        List<NetwitnessStoredData> converted = eventsList.parallel()
                 .map(NetwitnessStoredData::new)
                 .collect(toList());
 

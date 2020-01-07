@@ -1,7 +1,5 @@
 package presidio.integration.performance.test;
 
-import com.google.common.collect.Iterators;
-import com.google.common.collect.UnmodifiableIterator;
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter;
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverterFactory;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
@@ -17,7 +15,6 @@ import presidio.data.domain.MachineEntity;
 import presidio.data.domain.event.Event;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.domain.event.file.FileEvent;
-import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
@@ -31,7 +28,6 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static com.rsa.netwitness.presidio.automation.enums.GeneratorFormat.CEF_HOURLY_FILE;
-import static java.util.stream.Collectors.toList;
 
 public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContextTests {
     private final int EVENTS_GENERATION_CHUNK = 50000;
@@ -52,11 +48,10 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
     private final String LOCAL_SERVER_MACHINES_CLUSTER_PREFIX = "local_srv_";
     private final int NUM_OF_LOCAL_SERVER_MACHINES_PER_CLUSTER = 5;
 
-    private int totalTls = 0;
     private StopWatch stopWatch = new StopWatch();
     private StopWatch tlsStopWatch = new StopWatch();
 
-    private EventsProducer<List<NetwitnessEvent>> eventsProducer = new EventsProducerFactory(null).get(CEF_HOURLY_FILE);
+    private EventsProducer<NetwitnessEvent> eventsProducer = new EventsProducerFactory(null).get(CEF_HOURLY_FILE);
     public final EventConverter<Event> eventEventConverter = new EventConverterFactory().get();
 
 
@@ -91,15 +86,14 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
         if (schemas.contains("TLS")) {
             TlsPerformanceStabilityScenario scenario = new TlsPerformanceStabilityScenario(startInstant, endInstant, tlsAlertsProbability, groupsToCreate, tlsEventsPerDayPerGroup);
 
-            Stream<TlsEvent> tlsEventStream = scenario.tlsEventsGenerators.stream()
+            Stream<NetwitnessEvent> tlsEventStream = scenario.tlsEventsGenerators.stream()
                     .map(IEventGenerator::generateToStream)
-                    .flatMap(e -> e);
+                    .flatMap(e -> e).map(eventEventConverter::convert);
 
             tlsStopWatch.start();
-            UnmodifiableIterator<List<TlsEvent>> partition = Iterators.partition(tlsEventStream.iterator(), EVENTS_GENERATION_CHUNK);
-            partition.forEachRemaining(this::process);
+            Map<Schema, Long> send = eventsProducer.send(tlsEventStream);
             tlsStopWatch.stop();
-            System.out.println("TOTAL TLS: " + totalTls + ". Generation time: " + stopWatch.toString());
+            System.out.println("TOTAL TLS: " + send.getOrDefault(Schema.TLS, -1L) + ". Generation time: " + stopWatch.toString());
         }
 
 
@@ -146,22 +140,6 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
         stopWatch.split();
         System.out.println(stopWatch.toSplitString());
     }
-
-
-    private void process(List<TlsEvent> bucket){
-        List<NetwitnessEvent> convertedEvents = bucket.parallelStream()
-                .map(eventEventConverter::convert).collect(toList());
-
-        Map<Schema, Long> sent = eventsProducer.send(convertedEvents);
-        totalTls += sent.get(Schema.TLS).intValue();
-        tlsStopWatch.split();
-        if (Instant.ofEpochMilli(tlsStopWatch.getSplitTime()).minusSeconds(30).toEpochMilli() > 0) {
-            System.out.println("TLS EVENTS COUNT -> " + totalTls + ". Took " + tlsStopWatch.getSplitTime() + " msec.");
-            tlsStopWatch.reset();
-            tlsStopWatch.start();
-        }
-    }
-
 
     private void printDaysOfProcessEvents(ProcessPerformanceStabilityScenario scenario) throws GeneratorException {
         System.out.println("$$$$ Starts Generating Process Events $$$$");
