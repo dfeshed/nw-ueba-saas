@@ -172,7 +172,7 @@ const _getColumnGroups = (dispatch, getState) => {
 
             // if the selectedColumnGroup no longer exists in database, the column group selection
             // should be reset to default and the user should be notified of the same
-            if (!columnGroup) {
+            if (!columnGroup && !!selectedColumnGroup && selectedColumnGroup !== 'SUMMARY' && columnGroups?.length) {
               dispatch({
                 type: ACTION_TYPES.SET_SELECTED_COLUMN_GROUP,
                 payload: 'SUMMARY'
