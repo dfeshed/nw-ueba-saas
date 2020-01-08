@@ -19,10 +19,13 @@ public class SMARTValuesModelScorerAlgorithmTest {
                              double prior,
                              List<Double> oldValues,
                              double valueToScore) {
-        SMARTValuesModel model = new SMARTValuesModel();
-        long numOfZeroValues = oldValues.stream().filter(value -> value == 0).count();
-        double sumOfValues = oldValues.stream().mapToDouble(Double::valueOf).sum();
-        model.init(numOfZeroValues, oldValues.size() - numOfZeroValues, sumOfValues, 0, Instant.now());
+        SMARTValuesModel model = null;
+        if(oldValues != null && !oldValues.isEmpty()) {
+            model = new SMARTValuesModel();
+            long numOfZeroValues = oldValues.stream().filter(value -> value == 0).count();
+            double sumOfValues = oldValues.stream().mapToDouble(Double::valueOf).sum();
+            model.init(numOfZeroValues, oldValues.size() - numOfZeroValues, sumOfValues, 0, Instant.now());
+        }
         SMARTValuesModelScorerAlgorithm scorerAlgorithm = new SMARTValuesModelScorerAlgorithm(globalInfluence);
 
         SMARTValuesPriorModel priorModel = new SMARTValuesPriorModel();
@@ -68,13 +71,37 @@ public class SMARTValuesModelScorerAlgorithmTest {
     }
 
     @Test
+    public void shouldScore100GivenNoMainModelAndZeroPrior() {
+        double value = 0.1;
+        int globalInfluence = 5;
+        Assert.assertEquals(100.0, calcScore(globalInfluence, 0, null, value), 0);
+    }
+
+    @Test
+    public void shouldScorePositiveWhenNoMainModelAndPositiveValue() {
+        double value = 0.1;
+        int globalInfluence = 5;
+        Assert.assertTrue(calcScore(globalInfluence, 0.1, null, value) > 0);
+    }
+
+    @Test
     public void shouldScore100ToReallyBigValueIfItIsTheFirstPositiveValue() {
-        Assert.assertEquals(100, calcScore(1, 0, Collections.emptyList(), 1), 0.0001);
+        Assert.assertEquals(100, calcScore(5, 0.01, Collections.emptyList(), 1), 0.0001);
+    }
+
+    @Test
+    public void shouldScore100ToReallyBigValueEvenIfMainModelDoesNotExist() {
+        Assert.assertEquals(100, calcScore(5, 0.01, null, 1), 0.0001);
     }
 
     @Test
     public void shouldScoreLowToReallyBigValueIfItHasBeenAlreadySeen() {
         assertScoreRange(1, 0, Collections.singletonList(1D), 1, 0, 80);
+    }
+
+    @Test
+    public void shouldScoreLowToReallyBigValueWhenPriorIsBigAsWellAndNoMainModelExist() {
+        assertScoreRange(5, 1, null, 1, 0, 60);
     }
 
     @Test

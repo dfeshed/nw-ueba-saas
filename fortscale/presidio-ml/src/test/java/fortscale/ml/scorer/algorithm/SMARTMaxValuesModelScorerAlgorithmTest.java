@@ -24,13 +24,18 @@ public class SMARTMaxValuesModelScorerAlgorithmTest {
                              double valueToScore,
                              Instant weightsModelEndTime,
                              long modelNumOfPartition) {
-        SMARTMaxValuesModel model = new SMARTMaxValuesModel();
-        model.init(startInstantToMaxSmartValue,  modelNumOfPartition, weightsModelEndTime);
+        SMARTMaxValuesModel model = null;
+        if(startInstantToMaxSmartValue != null){
+            model = new SMARTMaxValuesModel();
+            model.init(startInstantToMaxSmartValue,  modelNumOfPartition, weightsModelEndTime);
+        }
         SMARTMaxValuesModelScorerAlgorithm scorerAlgorithm = new SMARTMaxValuesModelScorerAlgorithm(globalInfluence,  maxUserInfluence, numOfPartitionUserInfluence, minNumOfUserValues);
         SMARTValuesPriorModel priorModel = new SMARTValuesPriorModel();
+        priorModel.setNumOfPartitions(globalInfluence);
         priorModel.init(prior);
 
-        return scorerAlgorithm.calculateScore(valueToScore, model, priorModel);
+        double score = scorerAlgorithm.calculateScore(valueToScore, model, priorModel);
+        return score;
     }
 
     private void assertScoreRange(int globalInfluence,
@@ -84,8 +89,23 @@ public class SMARTMaxValuesModelScorerAlgorithmTest {
     }
 
     @Test
+    public void shouldScorePositiveWhenNoMainModelAndPositiveValue() {
+        Assert.assertTrue(calcScore(1, 10, 5, 5, 0.1, null, 0.1, Instant.now(), 0) > 0);
+    }
+
+    @Test
+    public void shouldScore100GivenNoMainModelAndZeroPrior() {
+        Assert.assertEquals(100, calcScore(5, 10, 5, 5, 0, null, 1, Instant.now(), 0), 0.0001);
+    }
+
+    @Test
     public void shouldScore100ToReallyBigValueIfItIsTheFirstPositiveValue() {
         Assert.assertEquals(100, calcScore(1, 10, 5, 5, 0, Collections.emptyMap(), 1, Instant.now(), 0), 0.0001);
+    }
+
+    @Test
+    public void shouldScore100ToReallyBigValueEvenIfMainModelDoesNotExist() {
+        Assert.assertEquals(100, calcScore(5, 10, 5, 5, 0.01, null, 1, Instant.now(), 0), 0.0001);
     }
 
     @Test

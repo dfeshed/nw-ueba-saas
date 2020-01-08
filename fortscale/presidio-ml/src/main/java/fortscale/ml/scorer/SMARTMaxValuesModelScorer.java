@@ -90,6 +90,10 @@ public class SMARTMaxValuesModelScorer extends AbstractScorer {
             if (smartValuesPriorModel == null) {
                 continue;
             }
+            if(globalModel == null){
+                globalModel = smartValuesPriorModel;
+                weightModelEndTime = smartValuesPriorModel.getWeightsModelEndTime();
+            }
             Instant smartValuePriorWightsModelEndTime = smartValuesPriorModel.getWeightsModelEndTime();
             boolean foundMatchingModels = false;
             for (ModelDAO mainModelDAO : mainModelDAOs) {
@@ -134,7 +138,7 @@ public class SMARTMaxValuesModelScorer extends AbstractScorer {
                                                 Model globalModel,
                                                 AdeRecordReader adeRecordReader,
                                                 Instant weightModelEndTime){
-        if (model == null || globalModel == null) {
+        if (globalModel == null) {
             FeatureScore baseScore = smartWeightsModelScorer.calculateScore(adeRecordReader);
             List<FeatureScore> baseFeatureScores = Collections.singletonList(baseScore);
             return new CertaintyFeatureScore(getName(), 0.0, baseFeatureScores, 0.0);
@@ -150,7 +154,7 @@ public class SMARTMaxValuesModelScorer extends AbstractScorer {
     private FeatureScore calculateScore(double baseScore,
                                           Model model,
                                           Model globalModel) {
-        if (!(model instanceof SMARTMaxValuesModel)) {
+        if (model != null && !(model instanceof SMARTMaxValuesModel)) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
                     ".calculateScore expects to get a model of type " + SMARTMaxValuesModel.class.getSimpleName());
         }
