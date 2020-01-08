@@ -3,6 +3,7 @@ import { lookup } from 'ember-dependency-lookup';
 import { run } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 
+import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
 import { fetchAliases, fetchLanguage, fetchMetaKeyCache } from './fetch/dictionaries';
 import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
 import fetchRecentQueries from './fetch/recent-queries';
@@ -523,7 +524,6 @@ export const initializeInvestigate = function(
   isInternalQuery
 ) {
   return async function(dispatch, getState) {
-
     const timeRangeType = _determineTimeRangeType(isInternalQuery, getState(), queryParams);
     const parsedQueryParams = parseBasicQueryParams(queryParams, timeRangeType);
     const errorHandler = _handleInitializationError(dispatch);
@@ -624,13 +624,13 @@ export const initializeInvestigate = function(
 
     // 11) Ensure presence of sort params if in query
     // prevents events reload due to setSort as sortField and sortDir refreshModel
-    if (parsedQueryParams.serviceId && (!parsedQueryParams.sortField || !parsedQueryParams.sortDir)) {
+    if (hasMinimumCoreServicesVersionForColumnSorting(getState()) && parsedQueryParams.serviceId && (!parsedQueryParams.sortField || !parsedQueryParams.sortDir)) {
       // 12) Redirect with default sort params if missing
       const { router, currentPath } = lookup('service:-routing');
       const { investigate: { data: { sortDirection, sortField } } } = getState();
       router.transitionTo(currentPath, {
         queryParams: {
-          ...parsedQueryParams,
+          ...queryParams,
           sortField,
           sortDir: sortDirection
         }
