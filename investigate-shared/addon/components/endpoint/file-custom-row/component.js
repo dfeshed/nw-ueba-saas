@@ -26,8 +26,6 @@ export default DataTableBodyRow.extend({
 
   item: null,
 
-  selections: [],
-
   isRowChecked: computed('item', 'selections', {
     get() {
       const isSelected = this.selections.findBy('id', this.item.id);
@@ -264,5 +262,10 @@ export default DataTableBodyRow.extend({
     set(key, value) {
       this._contextItems = value;
     }
-  })
+  }),
+
+  init() {
+    this._super(arguments);
+    this.selections = this.selections || [];
+  }
 });

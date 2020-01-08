@@ -161,7 +161,7 @@ const TimeSelector = Component.extend({
       this.get('onTimeRangeError')(error, start, end);
     },
     // called from the dropdown that has the options "Last 5 mins, Last 1 hr, All Data etc".
-    onEntireTimeRangeSelection(range) {
+    entireTimeRangeSelection(range) {
       this.get('onEntireTimeRangeSelection')(range);
     }
   }

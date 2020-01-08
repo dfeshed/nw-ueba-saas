@@ -32,7 +32,7 @@
   <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
     {{#each timeRanges as |range|}}
       {{#unless range.hidden}}
-        <li {{action 'onEntireTimeRangeSelection' range}}>{{range.name}}</li>
+        <li {{action 'entireTimeRangeSelection' range}}>{{range.name}}</li>
       {{/unless}}
     {{/each}}
   </ul>
