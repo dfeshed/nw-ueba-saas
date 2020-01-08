@@ -60,6 +60,16 @@ public class ReflectionUtils {
                 .collect(toSet());
     }
 
+    /**
+     * Get the type of the property of the given {@link Class}, that is represented by the given key. The key can be
+     * hierarchical, meaning that all the properties in the hierarchy are traversed, from the {@link Class} (i.e. the
+     * root) to the last property (i.e. the leaf), and the type of the last property is returned. If the key does not
+     * represent a valid property of the {@link Class} (or a valid hierarchy of properties), an exception is thrown.
+     *
+     * @param clazz The {@link Class}.
+     * @param key   The key.
+     * @return The type of the property.
+     */
     public static Class<?> getPropertyType(Class<?> clazz, String key) {
         List<Field> hierarchyFields = findHierarchyFields(clazz, key);
         return hierarchyFields.get(hierarchyFields.size() - 1).getType();

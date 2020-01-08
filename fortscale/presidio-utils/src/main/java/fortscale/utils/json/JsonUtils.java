@@ -26,18 +26,21 @@ public class JsonUtils {
      * @throws BrokenHierarchyException If the {@link JSONObject} does not contain the key.
      */
     public static <T> T get(JSONObject root, String key) {
-        JSONObject jsonObject = notNull(root, NULL_ROOT_EXCEPTION_MESSAGE);
-        String[] subkeys = notNull(key, NULL_KEY_EXCEPTION_MESSAGE).split(DELIMITING_REGEX);
-        int lastIndex = subkeys.length - 1;
+        return get(root, key, true, null);
+    }
 
-        for (int i = 0; i < lastIndex; ++i) {
-            jsonObject = jsonObject.optJSONObject(subkeys[i]);
-            if (jsonObject == null) throw new BrokenHierarchyException(root, key, subkeys[i], i);
-        }
-
-        Object value = jsonObject.opt(subkeys[lastIndex]);
-        // noinspection unchecked - Class cast exception might be thrown.
-        return value == JSONObject.NULL ? null : (T)value;
+    /**
+     * Get from the given {@link JSONObject} the value associated with the given key,
+     * or the given default value if the {@link JSONObject} does not contain the key.
+     *
+     * @param root         The {@link JSONObject} from which the value should be retrieved.
+     * @param key          The key whose value should be retrieved.
+     * @param defaultValue The default value.
+     * @param <T>          The type of the value.
+     * @return The value.
+     */
+    public static <T> T get(JSONObject root, String key, T defaultValue) {
+        return get(root, key, false, defaultValue);
     }
 
     /**
@@ -62,31 +65,6 @@ public class JsonUtils {
     }
 
     /**
-     * Get from the given {@link JSONObject} the value associated with the given key,
-     * or the given default value if the {@link JSONObject} does not contain the key.
-     *
-     * @param root         The {@link JSONObject} from which the value should be retrieved.
-     * @param key          The key whose value should be retrieved.
-     * @param defaultValue The default value.
-     * @param <T>          The type of the value.
-     * @return The value.
-     */
-    public static <T> T get(JSONObject root, String key, T defaultValue) {
-        JSONObject jsonObject = notNull(root, NULL_ROOT_EXCEPTION_MESSAGE);
-        String[] subkeys = notNull(key, NULL_KEY_EXCEPTION_MESSAGE).split(DELIMITING_REGEX);
-        int lastIndex = subkeys.length - 1;
-
-        for (int i = 0; i < lastIndex; ++i) {
-            jsonObject = jsonObject.optJSONObject(subkeys[i]);
-            if (jsonObject == null) return defaultValue;
-        }
-
-        Object value = jsonObject.opt(subkeys[lastIndex]);
-        // noinspection unchecked - Class cast exception might be thrown.
-        return value == JSONObject.NULL ? null : (T)value;
-    }
-
-    /**
      * Get a new {@link List} containing the elements in the given {@link JSONArray}.
      * If the {@link JSONArray} is null, an empty {@link List} is returned.
      *
@@ -102,6 +80,26 @@ public class JsonUtils {
                     return element == JSONObject.NULL ? null : (T)element;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private static <T> T get(JSONObject root, String key, boolean validateCompleteHierarchy, T defaultValue) {
+        JSONObject jsonObject = notNull(root, NULL_ROOT_EXCEPTION_MESSAGE);
+        String[] subkeys = notNull(key, NULL_KEY_EXCEPTION_MESSAGE).split(DELIMITING_REGEX);
+        int lastIndex = subkeys.length - 1;
+
+        for (int i = 0; i < lastIndex; ++i) {
+            if ((jsonObject = jsonObject.optJSONObject(subkeys[i])) == null) {
+                if (validateCompleteHierarchy) {
+                    throw new BrokenHierarchyException(root, key, subkeys[i], i);
+                } else {
+                    return defaultValue;
+                }
+            }
+        }
+
+        Object value = jsonObject.opt(subkeys[lastIndex]);
+        // noinspection unchecked - Class cast exception might be thrown.
+        return value == JSONObject.NULL ? null : (T)value;
     }
 
     private static JSONObject computeIfAbsent(JSONObject jsonObject, String key) {
