@@ -81,7 +81,7 @@ class CefFilesPrinter {
 
             tlsStopWatch.split();
             if (Instant.ofEpochMilli(tlsStopWatch.getSplitTime()).minusSeconds(30).toEpochMilli() > 0) {
-                LOGGER.info("  >>>>>>> Intermidiate result <<<<<<<");
+                LOGGER.info("  >>>>>>> Intermediate result <<<<<<<");
                 totalResult.forEach((k, v) -> System.out.println(k + ": " + v));
                 LOGGER.info("  >>>>>>>>>>>>>>>>  <<<<<<<<<<<<<<<<<");
                 tlsStopWatch.reset();

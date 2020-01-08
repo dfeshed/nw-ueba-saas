@@ -44,7 +44,7 @@ class MongoAdapterNetwitnessEventProducer implements EventsProducer<NetwitnessEv
             LOGGER.debug("Next bucket is collected");
 
             LOGGER.debug("Going to group bucket by schema and add file path");
-            Map<Schema, List<NetwitnessEvent>> eventsPerSchema = eventsList.collect(groupingBy(e -> e.schema));
+            Map<Schema, List<NetwitnessEvent>> eventsPerSchema = nextBucket.parallelStream().collect(groupingBy(e -> e.schema));
             LOGGER.debug("Done grouping bucket by schema");
             Set<Schema> schemas = eventsPerSchema.keySet();
 
@@ -64,7 +64,7 @@ class MongoAdapterNetwitnessEventProducer implements EventsProducer<NetwitnessEv
 
             tlsStopWatch.split();
             if (Instant.ofEpochMilli(tlsStopWatch.getSplitTime()).minusSeconds(30).toEpochMilli() > 0) {
-                LOGGER.info("  >>>>>>> Intermidiate result <<<<<<<");
+                LOGGER.info("  >>>>>>> Intermediate result <<<<<<<");
                 totalResult.forEach((k, v) -> System.out.println(k + ": " + v));
                 LOGGER.info("  >>>>>>>>>>>>>>>>  <<<<<<<<<<<<<<<<<");
                 tlsStopWatch.reset();

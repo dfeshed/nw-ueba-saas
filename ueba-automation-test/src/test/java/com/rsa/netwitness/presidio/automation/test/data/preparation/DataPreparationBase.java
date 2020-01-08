@@ -45,7 +45,7 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
     @BeforeClass
     public void setup(@Optional("15") int historicalDaysBack,
                       @Optional("1") int anomalyDay,
-                      @Optional("CEF_DAILY_FILE") GeneratorFormat generatorFormat) throws GeneratorException {
+                      @Optional("MONGO_ADAPTER") GeneratorFormat generatorFormat) throws GeneratorException {
 
         setParams(historicalDaysBack, anomalyDay, generatorFormat);
         LOGGER.info("  ++++++ Going to generate.");
