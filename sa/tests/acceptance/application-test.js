@@ -52,7 +52,7 @@ module('Acceptance | application', function(hooks) {
     await settled().then(() => done());
   });
 
-  test('Admin tab redirects to classic monitoring page when hasAdminAccess is true and isNwUIPrimary is false', async function(assert) {
+  test('Admin tab redirects to classic system page when hasAdminAccess is true and isNwUIPrimary is false', async function(assert) {
     assert.expect(3);
     this.owner.lookup('service:accessControl').set('hasAdminAccess', true);
     this.owner.lookup('service:session').set('isNwUIPrimary', false);
@@ -69,12 +69,12 @@ module('Acceptance | application', function(hooks) {
     await waitUntil(() => currentURL() === '/respond/incidents', { timeout: 6000 });
     assert.equal(currentURL(), '/respond/incidents');
 
-    assert.equal(findAll('.rsa-application-header .rsa-header-nav-admin')[0].pathname, '/admin/monitoring', 'Admin tab redirects to monitoring page when hasAdminAccess is true and isNwUIPrimary is set to false');
+    assert.equal(findAll('.rsa-application-header .rsa-header-nav-admin')[0].pathname, '/admin/system', 'Admin tab redirects to system page when hasAdminAccess is true and isNwUIPrimary is set to false');
 
     await settled().then(() => done());
   });
 
-  test('Admin tab does not redirect to classic monitoring page when hasAdminAccess is true and isNwUIPrimary is true', async function(assert) {
+  test('Admin tab does not redirect to classic system page when hasAdminAccess is true and isNwUIPrimary is true', async function(assert) {
     assert.expect(3);
     this.owner.lookup('service:accessControl').set('hasAdminAccess', true);
     this.owner.lookup('service:session').set('isNwUIPrimary', true);
@@ -91,7 +91,7 @@ module('Acceptance | application', function(hooks) {
     await waitUntil(() => currentURL() === '/respond/incidents', { timeout: 6000 });
     assert.equal(currentURL(), '/respond/incidents');
 
-    assert.notEqual(findAll('.rsa-application-header .rsa-header-nav-admin')[0].pathname, '/admin/monitoring', 'Admin tab does not redirect to monitoring page when both hasAdminAccess and isNwUIPrimary is true');
+    assert.notEqual(findAll('.rsa-application-header .rsa-header-nav-admin')[0].pathname, '/admin/system', 'Admin tab does not redirect to system page when both hasAdminAccess and isNwUIPrimary is true');
 
     await settled().then(() => done());
   });
