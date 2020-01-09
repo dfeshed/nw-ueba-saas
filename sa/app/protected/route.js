@@ -6,7 +6,7 @@
 import Ember from 'ember';
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
-import { get } from '@ember/object';
+import { get, computed } from '@ember/object';
 import { bindActionCreators } from 'redux';
 import { inject as service } from '@ember/service';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
@@ -15,7 +15,6 @@ import * as ACTION_TYPES from 'sa/actions/types';
 import config from '../config/environment';
 import { jwt_decode as jwtDecode } from 'ember-cli-jwt-decode';
 import { warn } from '@ember/debug';
-import computed from 'ember-computed-decorators';
 
 const {
   testing
@@ -28,7 +27,6 @@ const {
  * @public
  */
 export default Route.extend(AuthenticatedRouteMixin, {
-
   redux: service(),
   accessControl: service(),
   dateFormat: service(),
@@ -158,21 +156,19 @@ export default Route.extend(AuthenticatedRouteMixin, {
   },
 
   // Resolves the user's roles/authorities from the token
-  @computed('session.persistedAccessToken')
-  authorities(persistedAccessToken) {
-    if (persistedAccessToken) {
-      const decodedToken = jwtDecode(persistedAccessToken);
+  authorities: computed('session.persistedAccessToken', function() {
+    if (this.session?.persistedAccessToken) {
+      const decodedToken = jwtDecode(this.session?.persistedAccessToken);
       return decodedToken.authorities;
     }
-  },
+  }),
 
-  @computed('session.persistedAccessToken')
-  username(persistedAccessToken) {
-    if (persistedAccessToken) {
-      const decodedToken = jwtDecode(persistedAccessToken);
+  username: computed('session.persistedAccessToken', function() {
+    if (this.session?.persistedAccessToken) {
+      const decodedToken = jwtDecode(this.session?.persistedAccessToken);
       return decodedToken.user_name;
     }
-  },
+  }),
 
   checkLegacyEvents() {
     if (this.get('accessControl.hasInvestigateEventsAccess')) {

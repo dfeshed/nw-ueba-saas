@@ -1,6 +1,5 @@
 import fetch from 'component-lib/utils/fetch';
-import { get } from '@ember/object';
-import computed from 'ember-computed-decorators';
+import { get, computed } from '@ember/object';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import { getLocale, getTheme } from 'sa/reducers/global/preferences/selectors';
@@ -14,29 +13,26 @@ export default Controller.extend({
   accessControl: service(),
   router: service(),
 
-  @computed('session.isAuthenticated', 'router.currentRouteName')
-  authenticatedAndPageFound(isAuthenticated, path) {
-    if (!isAuthenticated || path === 'not-found' || path === 'internal-error') {
+  authenticatedAndPageFound: computed('session.isAuthenticated', 'router.currentRouteName', function() {
+    if (!this.session?.isAuthenticated || this.router?.currentRouteName === 'not-found' || this.router?.currentRouteName === 'internal-error') {
       return false;
     } else {
       return true;
     }
-  },
+  }),
 
   // The Configure nav tab currently points to a series of Classic pages and is not a {{link-to}}, which means
   // that it will not appear active when the user is in the Configure engine in Ember. For now we'll check if the
   // path points to the configure engine so that we can ensure the tab is active on those pages. When the Classic
   // pages have been emberified, we can remove this check and replace with the standard link-to.
-  @computed('router.currentRouteName')
-  isConfigureRoute(path) {
-    return path.indexOf('protected.configure.') === 0;
-  },
+  isConfigureRoute: computed('router.currentRouteName', function() {
+    return this.router?.currentRouteName.indexOf('protected.configure.') === 0;
+  }),
 
   // The Admin nav tab is the same setup as the Configure nav tab above...
-  @computed('router.currentRouteName')
-  isAdminRoute(path) {
-    return path.indexOf('protected.admin.') === 0;
-  },
+  isAdminRoute: computed('router.currentRouteName', function() {
+    return this.router?.currentRouteName.indexOf('protected.admin.') === 0;
+  }),
 
   _updateBodyClass(themeName) {
     // remove class having theme on it
