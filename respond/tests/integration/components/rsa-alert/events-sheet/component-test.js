@@ -5,7 +5,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
-import { eventData } from './data';
+import { investigateEvent, malwareEvent } from './data';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState, investigatePageService;
@@ -33,7 +33,7 @@ module('Integration | Component | rsa-alert/events-sheet', function(hooks) {
     setState({
       respond: {
         alert: {
-          events: eventData,
+          events: investigateEvent,
           info: {
             alert: {
               numEvents: 1
@@ -55,7 +55,7 @@ module('Integration | Component | rsa-alert/events-sheet', function(hooks) {
     setState({
       respond: {
         alert: {
-          events: eventData,
+          events: investigateEvent,
           info: {
             alert: {
               numEvents: 1
@@ -71,6 +71,36 @@ module('Integration | Component | rsa-alert/events-sheet', function(hooks) {
     await render(hbs`{{rsa-alert/events-sheet}}`);
 
     assert.ok(find('.rsa-event-details-body .related-link a').href.indexOf('/investigation/host/10.4.61.36:56005/navigate/event/AUTO/217948') > 0, 'legacy link should be displayed');
+  });
+
+  test('show investigate malware link with pivot to malware page irrespective of status of legacy events flag for malware event', async function(assert) {
+    setState({
+      respond: {
+        alert: {
+          events: malwareEvent,
+          info: {
+            alert: {
+              numEvents: 1
+            }
+          }
+        },
+        recon: {
+          serviceData: services
+        }
+      }
+    });
+
+    await render(hbs`{{rsa-alert/events-sheet}}`);
+
+    assert.ok(find('.rsa-event-details-body .related-link a').href.indexOf('/investigation/undefined/malware/event/3328608') > 0,
+      'investigate malware link with pivot to malware page should be displayed');
+
+    investigatePageService.set('legacyEventsEnabled', false);
+
+    await render(hbs`{{rsa-alert/events-sheet}}`);
+
+    assert.ok(find('.rsa-event-details-body .related-link a').href.indexOf('/investigation/undefined/malware/event/3328608') > 0,
+      'investigate malware link with pivot to malware page should be displayed');
   });
 
 });

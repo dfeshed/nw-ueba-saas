@@ -30,8 +30,12 @@ const AlertDatasheet = EventsSheet.extend({
         if (item?.related_links) {
           const modifiedItem = _.cloneDeep(item);
 
-          // Create event analysis url and replaced it with legacy events url
-          modifiedItem.related_links[0].url = createEventAnalysisLink(item, services);
+          // Check if investigate original event specific related link exists in given event
+          const isInvestigateEvent = modifiedItem.related_links.some((e) => e.type === 'investigate_original_event');
+          if (isInvestigateEvent) {
+            // Create event analysis url and replace it with legacy events url
+            modifiedItem.related_links[0].url = createEventAnalysisLink(item, services);
+          }
 
           return modifiedItem;
         } else {
