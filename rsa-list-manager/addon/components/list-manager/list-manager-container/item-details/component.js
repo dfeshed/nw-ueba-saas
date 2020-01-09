@@ -1,8 +1,8 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import _ from 'lodash';
 import { run } from '@ember/runloop';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 
 import layout from './template';
@@ -40,19 +40,17 @@ const ItemDetails = Component.extend({
    * 1. item is updated, or
    * 2. form is reset in which case item needs to be force updated via cloning
    */
-  @computed('item', 'didReset')
-  originalItem(item, didReset) {
-    return didReset ? _.cloneDeep(item) : item;
-  },
+  originalItem: computed('item', 'didReset', function() {
+    return this.didReset ? _.cloneDeep(this.item) : this.item;
+  }),
 
-  @computed('originalItem', 'itemType')
-  heading(originalItem, itemType) {
-    if (originalItem) {
-      return `${itemType} Details`;
+  heading: computed('originalItem', 'itemType', function() {
+    if (this.originalItem) {
+      return `${this.itemType} Details`;
     } else {
-      return `Create ${itemType}`;
+      return `Create ${this.itemType}`;
     }
-  },
+  }),
 
   actions: {
     itemEdited(editedItem) {
@@ -79,7 +77,6 @@ const ItemDetails = Component.extend({
       this.get('contextualHelp').goToHelp(moduleId, topicId);
     }
   }
-
 });
 
 export default connect(stateToComputed, dispatchToActions)(ItemDetails);

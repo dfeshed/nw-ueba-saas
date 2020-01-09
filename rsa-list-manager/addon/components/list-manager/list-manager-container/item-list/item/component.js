@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { beginEditItem } from 'rsa-list-manager/actions/creators/creators';
 
@@ -21,26 +21,23 @@ const Item = Component.extend({
   highlightedId: null,
 
   // Item that may be currently applied
-  @computed('selectedItemId', 'item')
-  isSelected(selectedItemId, item) {
-    return selectedItemId && item ? selectedItemId === item.id : false;
-  },
+  isSelected: computed('selectedItemId', 'item', function() {
+    return this.selectedItemId && this.item ? this.selectedItemId === this.item.id : false;
+  }),
 
-  @computed('highlightedId', 'item')
-  isHighlighted(highlightedId, item) {
-    return item && highlightedId ? highlightedId === item.id : false;
-  },
+  isHighlighted: computed('highlightedId', 'item', function() {
+    return this.item && this.highlightedId ? this.highlightedId === this.item.id : false;
+  }),
 
-  @computed('item')
-  contentType(item) {
-    const contentType = item.isEditable ? 'user-created' : 'built-in';
+  contentType: computed('item', function() {
+    const contentType = this.item.isEditable ? 'user-created' : 'built-in';
     const i18n = this.get('i18n');
 
     const toolTip = i18n.t(`contentType.${contentType}.tooltip`);
     const typeIcon = i18n.t(`contentType.${contentType}.icon`);
     const detailsIcon = i18n.t(`contentType.${contentType}.detailsIcon`);
     return { toolTip, typeIcon, detailsIcon };
-  },
+  }),
 
   actions: {
     editDetails() {

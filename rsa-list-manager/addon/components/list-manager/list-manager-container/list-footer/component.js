@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import { beginCreateItem } from 'rsa-list-manager/actions/creators/creators';
@@ -24,10 +24,9 @@ const ListFooter = Component.extend({
   stateLocation: undefined,
   contextualHelp: service(),
 
-  @computed('newItemButtonTitle')
-  newItemIconTooltip(newItemButtonTitle) {
-    return `Create a ${newItemButtonTitle.toLowerCase()}`;
-  },
+  newItemIconTooltip: computed('newItemButtonTitle', function() {
+    return `Create a ${this.newItemButtonTitle.toLowerCase()}`;
+  }),
 
   actions: {
     goToHelp() {

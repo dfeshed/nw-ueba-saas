@@ -1,5 +1,5 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import layout from './template';
 import { connect } from 'ember-redux';
@@ -44,10 +44,9 @@ const ListManagerContainer = Component.extend({
   itemSelection: () => {},
 
   // for rsa-content-tethered-panel
-  @computed()
-  panelId() {
+  panelId: computed(function() {
     return `listManager-${this.get('elementId')}`;
-  },
+  }),
 
   actions: {
     handleItemUpdate(item) {

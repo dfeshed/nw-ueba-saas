@@ -1,7 +1,7 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import {
   isEditable,
   isNewItem,
@@ -30,24 +30,22 @@ const DeleteIcon = Component.extend({
   // message used for tooltip when disabled is forced
   disabledOverrideMessage: undefined,
 
-  @computed('isEditable', 'isNewItem')
-  showDeleteIcon(isEditable, isNewItem) {
-    return isEditable && !isNewItem;
-  },
+  showDeleteIcon: computed('isEditable', 'isNewItem', function() {
+    return this.isEditable && !this.isNewItem;
+  }),
 
-  @computed('isSelected', 'disabledOverride')
-  disabledDetails(isSelected, disabledOverride) {
+  disabledDetails: computed('isSelected', 'disabledOverride', function() {
 
     // if is disabled by caller, provide that callers message
-    if (disabledOverride?.disableDelete === true) {
+    if (this.disabledOverride?.disableDelete === true) {
       return {
         disabled: true,
-        message: disabledOverride.reason
+        message: this.disabledOverride.reason
       };
     }
 
     // if is disabled because it is selected, provide message
-    if (isSelected) {
+    if (this.isSelected) {
       return {
         disabled: true,
         message: this.i18n.t('rsaListManager.iconMessage.disabled.delete')
@@ -59,7 +57,7 @@ const DeleteIcon = Component.extend({
       disabled: false,
       message: ''
     };
-  },
+  }),
 
   actions: {
     delete() {
