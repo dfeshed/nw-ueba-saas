@@ -1,13 +1,14 @@
+import { computed } from '@ember/object';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
-import computed from 'ember-computed-decorators';
 
 export default Controller.extend({
 
   flashMessages: service(),
 
-  @computed('flashMessages')
-  scope: (flashMessages) => ({ flashMessages }),
+  scope: computed('flashMessages', function() {
+    return { flashMessages: this.flashMessages };
+  }),
 
   init() {
     this._super(arguments);
