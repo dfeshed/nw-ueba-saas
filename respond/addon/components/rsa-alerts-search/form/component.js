@@ -1,6 +1,7 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
-import computed, { equal } from 'ember-computed-decorators';
+import { equal } from '@ember/object/computed';
 import { SINCE_WHEN_TYPES } from 'respond/utils/since-when-types';
 import SEARCHABLE_ENTITY_TYPES from './searchable-entity-types';
 import safeCallback from 'component-lib/utils/safe-callback';
@@ -17,10 +18,9 @@ export default Component.extend({
   selectedTimeFrameName: null,
 
   // the time frame option from the common-ranges dropdown that is to be selected
-  @computed('selectedTimeFrameName', 'timeFrameOptions')
-  selectedTimeFrameOption(name, options) {
-    return options && name && options.findBy('name', name);
-  },
+  selectedTimeFrameOption: computed('selectedTimeFrameName', 'timeFrameOptions', function() {
+    return this.timeFrameOptions && this.selectedTimeFrameName && this.timeFrameOptions.findBy('name', this.selectedTimeFrameName);
+  }),
 
   // list of available entity type options
   entityTypeOptions: SEARCHABLE_ENTITY_TYPES,
@@ -29,10 +29,9 @@ export default Component.extend({
   selectedEntityTypeName: null,
 
   // the entity type option from the dropdown that is to be selected
-  @computed('selectedEntityTypeName', 'entityTypeOptions')
-  selectedEntityTypeOption(name, options) {
-    return options && name && options.findBy('name', name);
-  },
+  selectedEntityTypeOption: computed('selectedEntityTypeName', 'entityTypeOptions', function() {
+    return this.entityTypeOptions && this.selectedEntityTypeName && this.entityTypeOptions.findBy('name', this.selectedEntityTypeName);
+  }),
 
   // inputted text value (e.g., "10.20.30.40") currently shown in the input text box
   inputText: '',
@@ -41,10 +40,14 @@ export default Component.extend({
   isSearchUnderway: false,
 
   // indicates whether the Submit button should be disabled
-  @computed('inputText', 'selectedEntityTypeOption', 'selectedTimeFrameOption')
-  isSubmitDisabled(inputText, typeOption, timeFrameOption) {
-    return isEmpty(inputText) || !typeOption || !timeFrameOption;
-  },
+  isSubmitDisabled: computed(
+    'inputText',
+    'selectedEntityTypeOption',
+    'selectedTimeFrameOption',
+    function() {
+      return isEmpty(this.inputText) || !this.selectedEntityTypeOption || !this.selectedTimeFrameOption;
+    }
+  ),
 
   // Handles user selection in time range dropdown
   onChangeEntityType() {},
@@ -58,8 +61,7 @@ export default Component.extend({
   // Handles user click on Cancel button
   onCancel() {},
 
-  @equal('selectedEntityTypeName', 'HOST')
-  showDomainOption: null,
+  showDomainOption: equal('selectedEntityTypeName', 'HOST'),
 
   actions: {
     changeEntityType() {

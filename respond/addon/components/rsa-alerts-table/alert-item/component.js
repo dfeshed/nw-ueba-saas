@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import GroupItem from 'respond/components/rsa-group-table/group-item/component';
 import HighlightsEntities from 'context/mixins/highlights-entities';
-import computed from 'ember-computed-decorators';
 import { isEmpty } from '@ember/utils';
 
 function getDeviceFieldValuePairs(device) {
@@ -23,17 +23,16 @@ export default GroupItem.extend(HighlightsEntities, {
   // Configuration for wiring up entities to context lookups.
   // @see context/mixins/highlights-entities
   entityEndpointId: 'IM',
+
   autoHighlightEntities: true,
 
-  @computed('item')
-  fromDeviceValues(item) {
-    const { source = {}, detector } = item || {};
+  fromDeviceValues: computed('item', function() {
+    const { source = {}, detector } = this.item || {};
     return getDeviceFieldValuePairs(source.device || detector);
-  },
+  }),
 
-  @computed('item')
-  toDeviceValues(item) {
-    const { domain, destination } = item || {};
+  toDeviceValues: computed('item', function() {
+    const { domain, destination } = this.item || {};
     const device = (destination && destination.device) ? destination.device : {};
     const devicePairs = getDeviceFieldValuePairs(device);
 
@@ -42,11 +41,10 @@ export default GroupItem.extend(HighlightsEntities, {
       devicePairs.pushObject({ field: 'domain', value: domain });
     }
     return devicePairs;
-  },
+  }),
 
-  @computed('item')
-  fromUserValues(item) {
-    const { source } = item || {};
+  fromUserValues: computed('item', function() {
+    const { source } = this.item || {};
     const user = (source) ? source.user : {};
     const username = (user && user.username) ? user.username : undefined;
 
@@ -55,11 +53,10 @@ export default GroupItem.extend(HighlightsEntities, {
     } else {
       return [];
     }
-  },
+  }),
 
-  @computed('item')
-  toUserValues(item) {
-    const { destination } = item || {};
+  toUserValues: computed('item', function() {
+    const { destination } = this.item || {};
     const user = (destination) ? destination.user : {};
     const username = (user && user.username) ? user.username : undefined;
     if (!isEmpty(username)) {
@@ -67,11 +64,10 @@ export default GroupItem.extend(HighlightsEntities, {
     } else {
       return [];
     }
-  },
+  }),
 
-  @computed('item')
-  fileValues(item) {
-    const { data = [] } = item || {};
+  fileValues: computed('item', function() {
+    const { data = [] } = this.item || {};
     const out = [];
     data.forEach(({ filename, hash }) => {
       if (filename) {
@@ -82,14 +78,20 @@ export default GroupItem.extend(HighlightsEntities, {
       }
     });
     return out;
-  },
+  }),
 
   // Determines whether to show an arrow between the "from*" values and the "to*" + "file*" values.
   // It is shown only if we have values to show on both sides of the arrow.
-  @computed('fromDeviceValues.length', 'fromUserValues.length', 'toDeviceValues.length', 'toUserValues.length', 'fileValues.length')
-  shouldShowArrow(fromDeviceLength, fromUserLength, toDeviceLength, toUserLength, fileLength) {
-    const fromCount = fromDeviceLength + fromUserLength;
-    const toCount = toDeviceLength + toUserLength + fileLength;
-    return fromCount && toCount;
-  }
+  shouldShowArrow: computed(
+    'fromDeviceValues.length',
+    'fromUserValues.length',
+    'toDeviceValues.length',
+    'toUserValues.length',
+    'fileValues.length',
+    function() {
+      const fromCount = this.fromDeviceValues?.length + this.fromUserValues?.length;
+      const toCount = this.toDeviceValues?.length + this.toUserValues?.length + this.fileValues?.length;
+      return fromCount && toCount;
+    }
+  )
 });

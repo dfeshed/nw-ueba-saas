@@ -1,7 +1,7 @@
 import GroupHeader from 'respond/components/rsa-group-table/group-header/component';
 import layout from './template';
-import computed, { and, equal } from 'ember-computed-decorators';
-import { set, setProperties } from '@ember/object';
+import { and, equal } from '@ember/object/computed';
+import { set, setProperties, computed } from '@ember/object';
 
 /**
  * @class Alerts Table Alert header component
@@ -24,30 +24,30 @@ export default GroupHeader.extend({
   attributeBindings: ['testId:test-id'],
 
   // True if this group is the first group in the entire table's `groups` array.
-  @equal('index', 0)
-  isFirst: false,
+  isFirst: equal('index', 0),
 
   // True if this group is the last group in the entire table's `groups` array.
-  @computed('group', 'table.groups.lastObject')
-  isLast(group, lastGroup) {
-    return group === lastGroup;
-  },
+  isLast: computed('group', 'table.groups.lastObject', function() {
+    return this.group === this.table?.groups?.lastObject;
+  }),
 
   // Computes whether or not the Enrichments tab should be active.
-  @and('group.isOpen', 'group.showEnrichmentsAsItems')
-  isEnrichmentsTabActive: false,
+  isEnrichmentsTabActive: and('group.isOpen', 'group.showEnrichmentsAsItems'),
 
   // Computes whether or not the Events tab should be active.
-  @computed('group.isOpen', 'group.showEnrichmentsAsItems')
-  isEventsTabActive(isOpen, showEnrichments) {
-    return isOpen && !showEnrichments;
-  },
+  isEventsTabActive: computed('group.isOpen', 'group.showEnrichmentsAsItems', function() {
+    return this.group?.isOpen && !this.group?.showEnrichmentsAsItems;
+  }),
 
   // Determines if this group is selected by searching for the group's id in the parent table's selections hash.
-  @computed('group.id', 'table.{selections.areGroups,selectionsHash}')
-  isSelected(id, areGroups, hash) {
-    return !!areGroups && !!hash && (id in hash);
-  },
+  isSelected: computed(
+    'group.id',
+    'table.selections.areGroups',
+    'table.selectionsHash',
+    function() {
+      return !!this.table?.selections?.areGroups && !!this.table?.selectionsHash && (this.group?.id in this.table?.selectionsHash);
+    }
+  ),
 
   actions: {
 

@@ -1,5 +1,5 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 
 export default Component.extend({
@@ -8,21 +8,20 @@ export default Component.extend({
   attributeBindings: ['testId:test-id'],
   classNames: ['respond-ueba-link'],
 
-  @computed('accessControl.hasUEBAAccess')
-  hasPermissions(hasUEBAAccess) {
-    return hasUEBAAccess;
-  },
+  hasPermissions: computed('accessControl.hasUEBAAccess', function() {
+    return this.accessControl?.hasUEBAAccess;
+  }),
 
-  @computed('alert.entity_id', 'alert.classifier_id', 'alert.id')
-  ueba(entityId, classifierId, id) {
-    if (entityId && classifierId) {
-      const url = `/user/${entityId}/alert/${classifierId}`;
-      return id ? `${url}/indicator/${id}` : url;
+  ueba: computed('alert.entity_id', 'alert.classifier_id', 'alert.id', function() {
+    // eslint-disable-next-line camelcase
+    if (this.alert?.entity_id && this.alert?.classifier_id) {
+      // eslint-disable-next-line camelcase
+      const url = `/user/${this.alert?.entity_id}/alert/${this.alert?.classifier_id}`;
+      return this.alert?.id ? `${url}/indicator/${this.alert?.id}` : url;
     }
-  },
+  }),
 
-  @computed('ueba', 'hasPermissions')
-  show(ueba, hasPermissions) {
-    return ueba && hasPermissions;
-  }
+  show: computed('ueba', 'hasPermissions', function() {
+    return this.ueba && this.hasPermissions;
+  })
 });

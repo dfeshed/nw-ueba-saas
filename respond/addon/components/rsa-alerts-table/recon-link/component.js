@@ -1,7 +1,8 @@
+import { computed } from '@ember/object';
 import _ from 'lodash';
 import { connect } from 'ember-redux';
 import Component from '@ember/component';
-import computed, { alias } from 'ember-computed-decorators';
+import { alias } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import { lookupCoreDevice } from 'respond-shared/utils/event-analysis';
 import { coreServiceNotUpdated } from 'component-lib/utils/core-services';
@@ -18,45 +19,42 @@ const ReconLink = Component.extend({
   testId: 'respondReconLink',
   attributeBindings: ['testId:test-id'],
 
-  @computed('accessControl.hasReconAccess')
-  hasPermissions(hasReconAccess) {
-    return hasReconAccess;
-  },
+  hasPermissions: computed('accessControl.hasReconAccess', function() {
+    return this.accessControl?.hasReconAccess;
+  }),
 
-  @alias('item.event_source_id') eventId: null,
-  @computed('services', 'item.event_source')
-  endpointId(services, eventSource) {
-    return lookupCoreDevice(services, eventSource);
-  },
+  eventId: alias('item.event_source_id'),
 
-  @computed('services', 'endpointId', 'appVersion.minServiceVersion')
-  mixedMode(services, eventSource, minVersion) {
-    return _.filter(services, ({ id, version }) => coreServiceNotUpdated(version, minVersion) && id === eventSource).length > 0;
-  },
+  endpointId: computed('services', 'item.event_source', function() {
+    // eslint-disable-next-line camelcase
+    return lookupCoreDevice(this.services, this.item?.event_source);
+  }),
 
-  @computed('item.type', 'item.device_type')
-  eventType(type, deviceType) {
-    if (deviceType === 'nwendpoint') {
+  mixedMode: computed('services', 'endpointId', 'appVersion.minServiceVersion', function() {
+    return _.filter(this.services, ({ id, version }) => coreServiceNotUpdated(version, this.appVersion?.minServiceVersion) && id === this.endpointId).length > 0;
+  }),
+
+  eventType: computed('item.type', 'item.device_type', function() {
+    // eslint-disable-next-line camelcase
+    if (this.item?.device_type === 'nwendpoint') {
       return EVENT_TYPES.ENDPOINT;
-    } else if (type === 'Network') {
+    } else if (this.item?.type === 'Network') {
       return EVENT_TYPES.NETWORK;
     } else {
       return EVENT_TYPES.LOG;
     }
-  },
+  }),
 
   /*
    * Displays the event type label as the recon link.
    */
-  @computed('eventType')
-  eventTypeLabel(eventType) {
-    return EVENT_TYPES_LABELS[eventType];
-  },
+  eventTypeLabel: computed('eventType', function() {
+    return EVENT_TYPES_LABELS[this.eventType];
+  }),
 
-  @computed('eventId', 'endpointId', 'hasPermissions', 'mixedMode')
-  show(eventId, endpointId, hasPermissions, mixedMode) {
-    return eventId && endpointId && hasPermissions && !mixedMode;
-  }
+  show: computed('eventId', 'endpointId', 'hasPermissions', 'mixedMode', function() {
+    return this.eventId && this.endpointId && this.hasPermissions && !this.mixedMode;
+  })
 });
 
 export default connect(stateToComputed)(ReconLink);

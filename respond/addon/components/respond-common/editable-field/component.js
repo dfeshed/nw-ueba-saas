@@ -1,5 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import computed, { oneWay } from 'ember-computed-decorators';
+import { oneWay } from '@ember/object/computed';
 import { isEmpty } from '@ember/utils';
 
 export default Component.extend({
@@ -21,7 +22,7 @@ export default Component.extend({
    * @property
    * @public
    */
-  @oneWay('value') text: null,
+  text: oneWay('value'),
 
   /**
    * The value of the input is cached as originalValue as soon as the component enters editing mode. This property
@@ -76,10 +77,9 @@ export default Component.extend({
    * @returns {boolean}
    * @public
    */
-  @computed('text', 'allowEmptyValue')
-  isInvalid(text, allowEmptyValue) {
-    return !allowEmptyValue && isEmpty(text.trim());
-  },
+  isInvalid: computed('text', 'allowEmptyValue', function() {
+    return !this.allowEmptyValue && isEmpty(this.text.trim());
+  }),
 
   /**
    * The hasChanges property represents whether or not the user has modified the original value while in editing mode.
@@ -90,10 +90,9 @@ export default Component.extend({
    * @returns {boolean}
    * @private
    */
-  @computed('text', 'originalValue')
-  hasChanges(text, originalValue) {
-    return text !== originalValue;
-  },
+  hasChanges: computed('text', 'originalValue', function() {
+    return this.text !== this.originalValue;
+  }),
 
   /**
    * When the component is rendered, we focus on the input (if it exists) so that the cursor is immediately ready

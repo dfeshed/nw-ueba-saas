@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
 import { resizeAlertInspector } from 'respond/actions/creators/alert-creators';
@@ -26,10 +26,9 @@ const AlertContainer = Component.extend({
   classNames: ['rsa-alert-container'],
   inspectorWidth: 400,
 
-  @computed('inspectorWidth')
-  inspectorContainerStyle(width) {
-    return htmlSafe(`width: ${width}px;`);
-  }
+  inspectorContainerStyle: computed('inspectorWidth', function() {
+    return htmlSafe(`width: ${this.inspectorWidth}px;`);
+  })
 });
 
 export default connect(stateToComputed, dispatchToActions)(AlertContainer);

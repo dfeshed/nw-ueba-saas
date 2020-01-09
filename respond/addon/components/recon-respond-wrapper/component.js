@@ -1,9 +1,8 @@
-import { get } from '@ember/object';
+import { get, computed } from '@ember/object';
 import { connect } from 'ember-redux';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { htmlSafe } from '@ember/string';
-import computed from 'ember-computed-decorators';
 import { getInspectorWidth } from 'respond/selectors/incidents';
 import { loadingRecon, getLanguage, getAliases } from 'respond/reducers/respond/recon/selectors';
 import moment from 'moment';
@@ -21,22 +20,20 @@ const ReconWrapper = Component.extend({
   classNames: ['recon-standalone-container'],
   contextualHelp: service(),
 
-  @computed('width')
-  resolvedWidth(width) {
-    return htmlSafe(`width: calc(100% - ${width}px);`);
-  },
+  resolvedWidth: computed('width', function() {
+    return htmlSafe(`width: calc(100% - ${this.width}px);`);
+  }),
 
-  @computed('endpointId')
-  queryInputs(endpointId) {
+  queryInputs: computed('endpointId', function() {
     const now = moment();
     // Default to a time range of last 7 days since
     const queryInputs = {
       endTime: now.unix(),
-      serviceId: endpointId,
+      serviceId: this.endpointId,
       startTime: now.subtract(7, 'days').unix()
     };
     return queryInputs;
-  },
+  }),
 
   actions: {
     close() {
