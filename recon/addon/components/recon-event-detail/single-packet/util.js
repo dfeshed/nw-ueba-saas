@@ -1,4 +1,4 @@
-const ROW_HEIGHT = 17;
+const ROW_HEIGHT = 18; // 12px + 1px padding(2px) + 1px border(2px) + 1px margin(2px)
 
 /**
  * This function is used to determine if all of the bytes within the packet
