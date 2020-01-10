@@ -1,9 +1,12 @@
 {{#if isActive}}
-  {{rsa-form-input
-    value=(readonly pillData.searchTerm)
-    spellcheck=false
-    onKeyDown=(action 'onKeyDown')
-  }}
+  <span class="shadow-text">{{text}}</span>
+  <input
+    autocomplete="off"
+    oninput={{action "handleInput"}}
+    onkeydown={{action "onKeyDown"}}
+    role="input"
+    type="text"
+    value={{text}}>
 {{else}}
   {{rsa-icon
     name='search'

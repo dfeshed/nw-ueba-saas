@@ -17,6 +17,7 @@ export default Component.extend({
   i18n: service(),
 
   pillData: undefined,
+  text: undefined,
 
   /**
    * An action to call when sending messages and data to the parent component.
@@ -88,7 +89,12 @@ export default Component.extend({
       this.element.querySelector('input').focus();
     }
   },
-
+  didReceiveAttrs() {
+    this._super(...arguments);
+    if (!this.text) {
+      this.text = this.pillData?.searchTerm;
+    }
+  },
   click(e) {
     // If event was triggered through delete-pill, no need
     // to propogate actions related to selection/focus as
@@ -116,6 +122,9 @@ export default Component.extend({
 
   _pillOpenForEdit() {
     const pillData = this.get('pillData');
+    if (!this.text) {
+      this.text = pillData.complexFilterText;
+    }
     this._broadcast(MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, pillData);
   },
 
@@ -167,7 +176,7 @@ export default Component.extend({
       }
     },
 
-    onKeyDown(value, event) {
+    onKeyDown(event) {
       if (isEnter(event) && event.target.value.trim().length > 0) {
         this._editPill(event.target.value);
       } else if (isEscape(event)) {
@@ -176,6 +185,12 @@ export default Component.extend({
         this._homeButtonPressed();
       } else if (isEnd(event) && event.target.value.trim().length === 0) {
         this._endButtonPressed();
+      }
+    },
+
+    handleInput(event) {
+      if (!this.isDestroyed && !this.isDestroying) {
+        this.set('text', event.target.value);
       }
     }
   },

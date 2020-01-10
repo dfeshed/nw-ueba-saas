@@ -30,6 +30,8 @@ export default Component.extend({
   // Whether or not a double click has fired
   doubleClickFired: false,
 
+  text: undefined,
+
   /**
    * Is this pill currently being edited
    * @type {boolean}
@@ -100,7 +102,12 @@ export default Component.extend({
       this.element.querySelector('input').focus();
     }
   },
-
+  didReceiveAttrs() {
+    this._super(...arguments);
+    if (!this.text) {
+      this.text = this.pillData?.complexFilterText;
+    }
+  },
   click(e) {
 
     // If event was triggered through delete-pill, no need
@@ -129,6 +136,9 @@ export default Component.extend({
 
   _pillOpenForEdit() {
     const pillData = this.get('pillData');
+    if (!this.text) {
+      this.text = pillData.complexFilterText;
+    }
     this._broadcast(MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, pillData);
   },
 
@@ -181,7 +191,7 @@ export default Component.extend({
       }
     },
 
-    onKeyDown(value, event) {
+    onKeyDown(event) {
       if (isEnter(event) && event.target.value.trim().length > 0) {
         this._editPill(event.target.value);
       } else if (isEscape(event)) {
@@ -190,6 +200,12 @@ export default Component.extend({
         this._homeButtonPressed();
       } else if (isEnd(event) && event.target.value.trim().length === 0) {
         this._endButtonPressed();
+      }
+    },
+
+    handleInput(event) {
+      if (!this.isDestroyed && !this.isDestroying) {
+        this.set('text', event.target.value);
       }
     }
   },

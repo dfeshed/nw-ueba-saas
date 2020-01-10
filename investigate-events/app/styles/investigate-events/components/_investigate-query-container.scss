@@ -849,7 +849,17 @@
       }
     }
   }
-
+  @mixin resizeable-input {
+    border: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0;
+    border-radius: 0;
+    width: 100%;
+    font-size: inherit;
+    line-height: inherit;
+  }
   .complex-pill {
     font-family: 'Courier New', Courier, monospace;
     .text-wrapper {
@@ -858,17 +868,26 @@
       text-overflow: ellipsis;
     }
     &.is-active {
-      flex: 1 1 100%;
+      flex: 1 1 auto;
+      max-width:fit-content;
       label {
         width: 100%;
         .rsa-form-label {
           display: none;
         }
       }
+    }
+    &.is-editing {
+      position: relative;
+      text-overflow: unset;
+      .shadow-text {
+        visibility: hidden;
+        white-space: pre;
+        padding: 0 2px;// helps prevent subpixel difference between span and input
+      }
       input {
         font-family: 'Courier New', Courier, monospace;
-        border-bottom: none;
-        padding: 0;
+        @include resizeable-input
       }
     }
   }
@@ -881,7 +900,8 @@
       text-overflow: ellipsis;
     }
     &.is-active {
-      flex: 1 1 100%;
+      flex: 1 1 auto;
+      max-width:fit-content;
       label {
         width: 100%;
         .rsa-form-label {
@@ -891,6 +911,18 @@
       input {
         border-bottom: none;
         padding: 0;
+      }
+    }
+    &.is-editing {
+      position: relative;
+      text-overflow: unset;
+      .shadow-text {
+        visibility: hidden;
+        white-space: pre;
+        padding: 0 2px;// helps prevent subpixel difference between span and input
+      }
+      input {
+        @include resizeable-input
       }
     }
     // icon to indicate text pill
