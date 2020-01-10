@@ -36,34 +36,27 @@ module('Unit | Util | Parser', function(hooks) {
   test('correctly parses NOT', function(assert) {
     const tokens = [
       { type: LEXEMES.NOT, text: 'NOT' },
-      { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
-      { type: LEXEMES.INTEGER, text: '3' },
-      { type: LEXEMES.RIGHT_PAREN, text: ')' }
+      { type: LEXEMES.INTEGER, text: '3' }
     ];
     const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is WHERE_CRITERIA');
     assert.deepEqual(result.children, [
       {
-        type: GRAMMAR.NOT,
-        group: {
-          type: GRAMMAR.WHERE_CRITERIA,
-          children: [
-            {
-              type: GRAMMAR.CRITERIA,
-              meta: { type: LEXEMES.META, text: 'medium' },
-              operator: { type: LEXEMES.OPERATOR_EQ, text: '=' },
-              valueRanges: [
-                {
-                  type: GRAMMAR.META_VALUE,
-                  value: { type: LEXEMES.INTEGER, text: '3' }
-                }
-              ]
-            }
-          ]
-        }
+        type: GRAMMAR.NOT
+      },
+      {
+        type: GRAMMAR.CRITERIA,
+        meta: { type: LEXEMES.META, text: 'medium' },
+        operator: { type: LEXEMES.OPERATOR_EQ, text: '=' },
+        valueRanges: [
+          {
+            type: GRAMMAR.META_VALUE,
+            value: { type: LEXEMES.INTEGER, text: '3' }
+          }
+        ]
       }
     ]);
   });

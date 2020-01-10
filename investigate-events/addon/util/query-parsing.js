@@ -322,7 +322,7 @@ const _treeToPills = (tree) => {
   const pills = [];
   // We can only add one text pill, so don't allow more than the first we see
   let textPillAdded = false;
-  // tree.children holds parsed items (groups, criteria, AND, OR)
+  // tree.children holds parsed items (groups, criteria, AND, OR, NOT)
   while (tree.children.length > 0) {
     const item = tree.children.shift();
     if (item.type === LEXEMES.TEXT_FILTER) {
@@ -346,7 +346,16 @@ const _treeToPills = (tree) => {
       pills.push(...groupWithParens);
     } else if (item.type === GRAMMAR.NOT) {
       // TODO: Change once NOT pills are created in the UI
-      pills.push(_createComplexQueryFilter(`NOT(${Parser.transformToString(item.group)})`));
+      const [ next ] = tree.children;
+      if (next?.type === GRAMMAR.CRITERIA || next?.type === GRAMMAR.COMPLEX_FILTER) {
+        tree.children.shift();
+        pills.push(_createComplexQueryFilter(`NOT(${Parser.transformToString(next)})`));
+      } else if (next?.type === GRAMMAR.GROUP) {
+        tree.children.shift();
+        pills.push(_createComplexQueryFilter(`NOT${Parser.transformToString(next)}`));
+      } else {
+        pills.push(_createOperatorAND(), _createComplexQueryFilter('NOT'));
+      }
     } else if (item.type === GRAMMAR.COMPLEX_FILTER) {
       pills.push(_createComplexQueryFilter(`${Parser.transformToString(item)}`));
     } else {

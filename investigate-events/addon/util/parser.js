@@ -285,7 +285,7 @@ class Parser {
    * @param {*} tree
    */
   _isEmptyGroup(tree) {
-    return (tree?.type === GRAMMAR.GROUP || tree?.type === GRAMMAR.NOT) && tree.group.children.length === 0;
+    return (tree?.type === GRAMMAR.GROUP) && tree.group.children.length === 0;
   }
 
   /**
@@ -300,7 +300,6 @@ class Parser {
       // These two cases are parentheses, return whatever might be inside them
       // while setting the flag to true
       case GRAMMAR.GROUP:
-      case GRAMMAR.NOT:
         return this._moveTextFilterOutsideGroup(tree.group, true);
       // Iterate over each item, return the first text filter, but remove ALL
       // text filters (if there are more than one) if isInsideGroup is true.
@@ -394,33 +393,39 @@ class Parser {
       children: []
     };
     let child = this._criteriaOrGroupOrTextFilterOrNot();
-    while (child.type === GRAMMAR.COMPLEX_FILTER && child.tryAgain) {
-      if (child.text !== '') {
+    while ((child.type === GRAMMAR.COMPLEX_FILTER && child.tryAgain) || child.type === GRAMMAR.NOT) {
+      // If we encounter a NOT, don't look for an AND/OR just yet, find another pill-like object first
+      if (child.type === GRAMMAR.NOT) {
+        result.children.push(child);
+      } else if (child.text !== '') {
         result.children.push(child, { type: LEXEMES.AND, text: 'AND' });
       }
       child = this._criteriaOrGroupOrTextFilterOrNot();
     }
     result.children.push(child);
     while (this._nextTokenIsOfType([ LEXEMES.AND, LEXEMES.OR ])) {
-      let operator = this._advance();
-      let nextCriteriaOrGroup = this._criteriaOrGroupOrTextFilterOrNot();
-      while (nextCriteriaOrGroup.type === GRAMMAR.COMPLEX_FILTER && nextCriteriaOrGroup.tryAgain) {
-        if (nextCriteriaOrGroup.text !== '') {
-          result.children.push(operator, nextCriteriaOrGroup);
+      const operator = this._advance();
+      let next = this._criteriaOrGroupOrTextFilterOrNot();
+      result.children.push(operator);
+      while ((next.type === GRAMMAR.COMPLEX_FILTER && next.tryAgain) || next.type === GRAMMAR.NOT) {
+        // If we encounter a NOT, don't look for an AND/OR just yet, find another pill-like object first
+        if (next.type === GRAMMAR.NOT) {
+          result.children.push(next);
+        } else if (next.text !== '') {
+          result.children.push(next, { type: LEXEMES.AND, text: 'AND' });
         }
-        nextCriteriaOrGroup = this._criteriaOrGroupOrTextFilterOrNot();
+        next = this._criteriaOrGroupOrTextFilterOrNot();
       }
-      if (nextCriteriaOrGroup.type === GRAMMAR.COMPLEX_FILTER && nextCriteriaOrGroup.text === '') {
+      if (next.type === GRAMMAR.COMPLEX_FILTER && next.text === '') {
         // The empty complex pill signifies that we reached the end of the input while
         // still expecting a meta. In this particular case, we read an AND or OR and then didn't
-        // see anything after that.
-        result.children.push(operator);
-      } else if (nextCriteriaOrGroup.type === LEXEMES.TEXT_FILTER) {
-        // Operators before a text filter must be an AND
-        operator = { type: LEXEMES.AND, text: 'AND' };
-        result.children.push(operator, nextCriteriaOrGroup);
+        // see anything after that. The operator has already been pushed, do nothing.
+      } else if (next.type === LEXEMES.TEXT_FILTER) {
+        // Operators before a text filter must be an AND. Modify pushed operator.
+        result.children[result.children.lastIndex] = { type: LEXEMES.AND, text: 'AND' };
+        result.children.push(next);
       } else {
-        result.children.push(operator, nextCriteriaOrGroup);
+        result.children.push(next);
       }
     }
 
@@ -480,40 +485,14 @@ class Parser {
   }
 
   /**
-   * Functionally similar to a group, but has a NOT token in the front and
-   * negates the criteria inside
+   * Used to negate things. Similar to a pill in that it's used by itself.
+   * Does not contain anything, just the word NOT.
    * @private
    */
   _not() {
     this._consume([ LEXEMES.NOT ]);
-    // If we don't see a starting paren, read in what we can
-    // then don't read a close paren either. When the pill is
-    // created, it will have parens.
-    let hadStartingParen = false;
-    if (this._nextTokenIsOfType([ LEXEMES.LEFT_PAREN ])) {
-      hadStartingParen = true;
-      this._consume([ LEXEMES.LEFT_PAREN ]);
-    }
-    const inside = this._whereCriteria();
-    if (inside.type === GRAMMAR.COMPLEX_FILTER && inside.text === '') {
-      // This is an end-of-input error. Make the NOT and left paren a complex pill
-      return this._createComplexString(`NOT${hadStartingParen ? '(' : ''}`);
-    }
-    if (!this._nextTokenIsOfType([ LEXEMES.RIGHT_PAREN ])) {
-      // If there is not a closing paren where we expect it, read in EVERYTHING to the right
-      // and create the parens ourselves.
-      const unexpectedTokensString = this.tokens
-        .slice(this.current)
-        .map((t) => t.text)
-        .join(' ');
-      this.current = this.tokens.length;
-      return this._createComplexString(`NOT(${Parser.transformToString(inside)}${unexpectedTokensString ? ` ${unexpectedTokensString}` : ''})`);
-    } else {
-      this._consume([ LEXEMES.RIGHT_PAREN ]);
-    }
     return {
-      type: GRAMMAR.NOT,
-      group: inside
+      type: GRAMMAR.NOT
     };
   }
 
@@ -891,7 +870,7 @@ class Parser {
       case GRAMMAR.GROUP:
         return `(${ts(tree.group)})`;
       case GRAMMAR.NOT:
-        return `NOT(${ts(tree.group)})`;
+        return 'NOT';
       case GRAMMAR.META_VALUE:
         return ts(tree.value);
       case GRAMMAR.META_VALUE_RANGE:
