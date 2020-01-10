@@ -2,6 +2,7 @@ import RSVP from 'rsvp';
 import { lookup } from 'ember-dependency-lookup';
 import { run } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
+import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
 
 import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
 import { fetchAliases, fetchLanguage, fetchMetaKeyCache } from './fetch/dictionaries';
@@ -165,7 +166,6 @@ const _getColumnGroups = (dispatch, getState) => {
             reject();
           },
           onSuccess() {
-
             const { selectedColumnGroup } = getState().investigate.data;
             const { columnGroups } = getState().investigate.columnGroup;
             const columnGroup = columnGroups.some((group) => group.id === selectedColumnGroup);
@@ -173,10 +173,10 @@ const _getColumnGroups = (dispatch, getState) => {
             // if the selectedColumnGroup no longer exists in database, the column group selection
             // should be reset to default and the user should be notified of the same
             if (!columnGroup) {
-              dispatch({
-                type: ACTION_TYPES.SET_SELECTED_COLUMN_GROUP,
-                payload: 'SUMMARY'
-              });
+              const summaryGroup = columnGroups.find((group) => group.id === 'SUMMARY');
+
+              // setColumnGroup sets SUMMARY group as selected column group and save to preferences
+              dispatch(setColumnGroup(summaryGroup));
 
               const flashMessages = lookup('service:flashMessages');
               const i18n = lookup('service:i18n');

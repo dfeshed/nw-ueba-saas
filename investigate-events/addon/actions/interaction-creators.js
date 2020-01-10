@@ -279,10 +279,18 @@ export const setColumnGroup = (selectedGroup) => {
       // time is the default sort meta, and has it's own default in preferences
       _resetSortState(dispatch, prefs);
     }
-    dispatch(cancelQuery(false));
-    dispatch(setReconClosed());
-    dispatch(isQueryExecutedByColumnGroup(true));
-    dispatch(fetchInvestigateData());
+
+    // column group can also be set as a part of `reset to 'SUMMARY'` when the user's
+    // selected column group is no longer available in database.
+    // we would not want setColumnGroup to execute query, etc unless the events table
+    // was alreay rendered when the column group was set
+    const { status } = getState().investigate.eventResults;
+    if (status) {
+      dispatch(cancelQuery(false));
+      dispatch(setReconClosed());
+      dispatch(isQueryExecutedByColumnGroup(true));
+      dispatch(fetchInvestigateData());
+    }
   };
 };
 

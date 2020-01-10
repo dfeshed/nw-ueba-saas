@@ -159,6 +159,7 @@ const renderDefaultEventTable = async function() {
       { format: 'Text', metaName: 'sourcefile' },
       { format: 'Text', metaName: 'did' }
     ])
+    .eventResultsStatus('foo')
     .reconSize('max')
     .eventsPreferencesConfig()
     .eventTimeSortOrder()
