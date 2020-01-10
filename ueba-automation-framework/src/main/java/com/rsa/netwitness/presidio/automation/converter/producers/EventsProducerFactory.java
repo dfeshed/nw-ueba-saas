@@ -2,7 +2,9 @@ package com.rsa.netwitness.presidio.automation.converter.producers;
 
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import com.rsa.netwitness.presidio.automation.converter.formatters.BrokerCefFormatter;
-import com.rsa.netwitness.presidio.automation.converter.formatters.MongoAdapterFormatter;
+import com.rsa.netwitness.presidio.automation.converter.formatters.JsonLineFormatter;
+import com.rsa.netwitness.presidio.automation.converter.formatters.MongoKeyValueFormatter;
+import com.rsa.netwitness.presidio.automation.converter.formatters.NetwitnessStoredDataFormatter;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.enums.GeneratorFormat;
 
@@ -21,10 +23,10 @@ public class EventsProducerFactory {
         producers.putIfAbsent(CEF_HOURLY_FILE, new HourlyCefFileProducer(new BrokerCefFormatter()));
         producers.putIfAbsent(CEF_DAILY_BROKER, new DailyBrokerCefProducer(new BrokerCefFormatter()));
         producers.putIfAbsent(CEF_HOURLY_BROKER, new HourlyBrokerCefProducer(new BrokerCefFormatter()));
-        producers.putIfAbsent(S3_JSON_GZIP, new S3JsonGzipProducer());
 
         if (netwitnessEventStore != null) {
-            producers.putIfAbsent(MONGO_ADAPTER, new MongoAdapterNetwitnessEventProducer(new MongoAdapterFormatter(), netwitnessEventStore));
+            producers.putIfAbsent(MONGO_ADAPTER, new MongoAdapterNetwitnessEventProducer(new MongoKeyValueFormatter(), netwitnessEventStore));
+            producers.putIfAbsent(S3_JSON_GZIP, new S3JsonGzipProducer(new JsonLineFormatter<>(new NetwitnessStoredDataFormatter(netwitnessEventStore))));
         }
     }
 

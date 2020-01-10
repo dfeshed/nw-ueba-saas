@@ -10,7 +10,7 @@ import java.util.Map;
 import static java.util.Map.Entry.comparingByKey;
 import static java.util.stream.Collectors.toMap;
 
-public class MongoAdapterFormatter implements EventFormatter<NetwitnessEvent, Map<String, Object>> {
+public class MongoKeyValueFormatter implements EventFormatter<NetwitnessEvent, Map<String, Object>> {
 
     public Map<String, Object> format(NetwitnessEvent converted) {
         Map<String, Object> event = converted.getEvent()

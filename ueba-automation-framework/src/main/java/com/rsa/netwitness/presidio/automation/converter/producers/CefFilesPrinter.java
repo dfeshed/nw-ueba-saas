@@ -29,7 +29,7 @@ import static com.rsa.netwitness.presidio.automation.data.processing.broker.LogP
 import static java.util.stream.Collectors.*;
 
 class CefFilesPrinter {
-    private static  Logger LOGGER = (Logger) LoggerFactory.getLogger(CefFilesPrinter.class);
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(CefFilesPrinter.class);
 
     private static final long GEN_START_TIME = System.currentTimeMillis();
     private Map<Schema, String> logPlayerFolders = Maps.newHashMap();

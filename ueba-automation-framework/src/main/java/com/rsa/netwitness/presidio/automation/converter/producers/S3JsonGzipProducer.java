@@ -4,130 +4,152 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
-import com.amazonaws.services.s3.transfer.model.UploadResult;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
+import com.rsa.netwitness.presidio.automation.converter.formatters.EventFormatter;
 import com.rsa.netwitness.presidio.automation.s3.S3_Bucket;
 import com.rsa.netwitness.presidio.automation.s3.S3_Client;
 import fortscale.common.general.Schema;
-import org.testng.collections.Maps;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 
-import static java.util.stream.Collectors.groupingBy;
+import static fortscale.common.general.Schema.*;
+import static java.time.ZoneOffset.UTC;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.*;
 
 public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
-    private static String bucketName = "ueba-qa-data";
-    private Map<Schema, String> folders = Maps.newHashMap();
-    private static final long GEN_START_TIME = System.currentTimeMillis();
+    private static String bucket = "ueba-qa-data";
+    private static String tenant = "acme";
+    private static String account = "123456789012";
+    private static String region = "us-east-1";
+
+    private static ImmutableMap<Schema, String> application =  new ImmutableMap.Builder<Schema, String>()
+            .put(TLS, "NetworkTraffic")
+            .put(ACTIVE_DIRECTORY, "ActiveDirectory")
+            .put(AUTHENTICATION, "Authentication")
+            .put(FILE, "File")
+            .put(PROCESS, "Process")
+            .put(REGISTRY, "Registry")
+            .build();
+
+    private TransferManager xfer_mgr = TransferManagerBuilder.standard()
+            .withS3Client(S3_Client.s3Client)
+            .build();
+
+    private final EventFormatter<NetwitnessEvent,String> formatter;
+
+    S3JsonGzipProducer(EventFormatter<NetwitnessEvent, String> formatter){
+        requireNonNull(formatter);
+        this.formatter = formatter;
+    }
 
 
     @Override
     public Map<Schema, Long> send(Stream<NetwitnessEvent> eventsList) {
+        new S3_Bucket(bucket).truncate();
 
-        S3_Bucket bucket = new S3_Bucket(bucketName);
-        bucket.truncate();
+        List<NetwitnessEvent> events = eventsList.parallel().collect(toList());
 
-        TransferManager xfer_mgr = TransferManagerBuilder.standard()
-                .withS3Client(S3_Client.s3Client)
-                .build();
+        Map<String, List<NetwitnessEvent>> eventsByKey = events.parallelStream()
+                .collect(groupingBy(keys));
 
+        eventsByKey.entrySet().parallelStream()
+                .forEach(entry -> upload(eventsByKey.get(entry.getKey()), entry.getKey()));
 
-        // add destination file path
-        Map<String, List<NetwitnessEvent>> eventsByKey = eventsList.parallel()
-                .collect(groupingBy(e -> eventFilePath(e, ChronoUnit.DAYS)));
+        return events.parallelStream().collect(groupingBy(e -> e.schema, counting()));
+    }
 
+    private void upload(List<NetwitnessEvent> eventsByKey, String key) {
+        Stream<String> stringStream = eventsByKey.parallelStream().map(formatter::format);
+        byte[] zippedBytes = gzipSerializer(stringStream);
+        upload(key, zippedBytes);
+        System.out.println(eventsByKey.size() + " " + key);
+    }
 
-        for (String key : eventsByKey.keySet()) {
-            byte[] bytesToWrite;
+    private Upload upload(String key, byte[] zippedBytes) {
+        ObjectMetadata omd = new ObjectMetadata();
+        omd.setContentLength(zippedBytes.length);
+        omd.setContentType("application/octet-stream");
 
-            ObjectMapper objectMapper = new ObjectMapper();
+        return xfer_mgr.upload(S3JsonGzipProducer.bucket,
+                key,
+                new ByteArrayInputStream(zippedBytes),
+                omd);
+    }
 
-            String lines = eventsByKey.get(key).stream()
-                    .map(e -> {
-                        try {
-                            return objectMapper.writeValueAsString(e);
-                        } catch (JsonProcessingException ex) {
-                            ex.printStackTrace();
-                        }
-                        return null;
-                    }).collect(Collectors.joining("\n"));
+    private byte[] gzipSerializer(Stream<String> lines) {
+        byte[] bytesToWrite;
+        bytesToWrite = lines.collect(joining()).getBytes();
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        GZIPOutputStream gzipOut;
 
-            bytesToWrite = lines.getBytes();
+        try {
+            gzipOut = new GZIPOutputStream(byteOut);
+            gzipOut.write(bytesToWrite, 0, bytesToWrite.length);
+            gzipOut.flush();
+            gzipOut.close();
 
-            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-            GZIPOutputStream gzipOut;
-
-            try {
-                gzipOut = new GZIPOutputStream(byteOut);
-                gzipOut.write(bytesToWrite, 0, bytesToWrite.length);
-                gzipOut.flush();
-                gzipOut.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            byte[] zippedBytes = byteOut.toByteArray();
-
-            ObjectMetadata omd = new ObjectMetadata();
-            omd.setContentLength(zippedBytes.length);
-            omd.setContentType("application/octet-stream");
-
-            Upload upload = xfer_mgr.upload(bucketName,
-                    key,
-                    new ByteArrayInputStream(zippedBytes),
-                    omd);
-
-            try {
-                UploadResult uploadResult = upload.waitForUploadResult();
-                System.out.println(eventsByKey.get(key).size());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-
-
-
-
-        return null;
+        return byteOut.toByteArray();
     }
 
 
+    private Function<NetwitnessEvent, String> keys = e -> toPath(e).concat(toFileName(e));
 
+    //  bucket/acme/NetWitness/123456789012/NetworkTraffic/us-east-1/2019/12/10/
+    //  <bucket>/<tenant>/NetWitness/<Account>/<Application>/<Region>/year/month/day/<Filename>
+    private String toPath(NetwitnessEvent event) {
+        Instant eventTime = event.eventTimeEpoch;
+        LocalDateTime time = LocalDateTime.ofInstant(eventTime, UTC);
 
-    private Instant getEventTime(NetwitnessEvent event, ChronoUnit truncatedTo) {
-        return event.eventTimeEpoch.truncatedTo(truncatedTo);
+        return tenant.concat("/")
+                .concat("NetWitness").concat("/")
+                .concat(account).concat("/")
+                .concat(application.getOrDefault(event.schema, "unknown")).concat("/")
+                .concat(region).concat("/")
+                .concat(String.valueOf(time.getYear())).concat("/")
+                .concat(String.valueOf(time.getMonthValue())).concat("/")
+                .concat(String.valueOf(time.getDayOfMonth())).concat("/");
     }
 
-
-
-    private String eventFilePath(NetwitnessEvent event, ChronoUnit truncatedTo) {
-        String eventFolder = eventFolderName.apply(event);
-        folders.putIfAbsent(event.schema, eventFolder);
-        String fileName = event.schema + "_" + instantToString(getEventTime(event, truncatedTo));
-        return eventFolder + "/" + fileName;
+    // <Account>_<Region>_<Application>_<Timestamp>_<Unique>.json.gz
+    // 123456789012_us-east-1_NetworkTraffic_20180620T1620Z_fe123456.json.gz
+    private String toFileName(NetwitnessEvent event) {
+        return account.concat("_")
+                .concat(region).concat("_")
+                .concat(application.getOrDefault(event.schema, "unknown")).concat("_")
+                .concat(toFileTimestamp(event.eventTimeEpoch)).concat("_")
+                .concat(generateUnique()).concat("_")
+                .concat(".json.gz");
     }
 
-    private String instantToString(Instant instant){
-        return instant.toString().replaceAll(":","_");
+    //  is the minute after the latest record in the file
+    private String toFileTimestamp(Instant eventTime) {
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("YYYYMMDD'T'HHmm'Z'").withZone(UTC);
+        LocalDateTime time = LocalDateTime.ofInstant(eventTime, UTC);
+        int nearestMinute = (int) Math.ceil(time.plusNanos(1).getMinute() / 5d) * 5;
+        nearestMinute = (nearestMinute == 60) ? 0 : nearestMinute;
+        LocalDateTime timestamp = time.withMinute(nearestMinute);
+        return DATE_TIME_FORMATTER.format(timestamp);
     }
 
-    private Function<NetwitnessEvent, String> eventFolderName = event ->
-            event.schema.getName().concat("_").concat(instantToString(Instant.ofEpochMilli(GEN_START_TIME)));
+    private String generateUnique() {
+        return "00000000";
+    }
 
 
 }
