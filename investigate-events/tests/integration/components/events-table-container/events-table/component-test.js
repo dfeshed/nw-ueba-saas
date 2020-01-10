@@ -1,4 +1,4 @@
-import { module, skip, test } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
@@ -229,7 +229,7 @@ module('Integration | Component | events-table', function(hooks) {
     );
   });
 
-  skip('when a row is clicked selectEvent fired', async function(assert) {
+  test('when a row is clicked selectEvent fired', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState)
       .eventCount(1)
@@ -245,7 +245,8 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table selectEvent=selectEvent}}`);
     assert.ok(findAll('.rsa-data-table-body-row').length > 0, 'a row is rendered');
-    await click('.rsa-data-table-body-row');
+    // click anywhere in the row except checkbox to select event
+    await click('.rsa-data-table-body-row .column-index-1');
   });
 
   test('when a group label is clicked selectEvent is not fired', async function(assert) {

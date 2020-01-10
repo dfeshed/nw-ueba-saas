@@ -3059,7 +3059,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await render(hbs`
       <div class='rsa-investigate-query-container'>
         {{query-container/query-pills isActive=true}}
-      </div>    
+      </div>
     `);
 
     // create a pill
@@ -3720,10 +3720,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   });
 
-  // TODO - The UI is still showing (3) even though the list has obviously
-  // down-selected to just one EPS option. Neelesh volunteered to look into
-  // this.
-  skip('Typing text in pill-meta will reflect a count change in tabs', async function(assert) {
+  test('Typing text in pill-meta will reflect a count change in tabs', async function(assert) {
     const done = assert.async();
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -3749,10 +3746,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     }, 10000);
   });
 
-  // TODO - The UI is still showing (3) even though the list has obviously
-  // down-selected to just one EPS option. Neelesh volunteered to look into
-  // this. Note: this only fails in the test env.
-  skip('Typing text in pill-operator will reflect a count change in tabs', async function(assert) {
+  test('Typing text in pill-operator will reflect a count change in tabs', async function(assert) {
     const done = assert.async();
 
     new ReduxDataHelper(setState)
@@ -3785,10 +3779,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     }, 10000);
   });
 
-  // TODO - The UI is still showing (3) even though the list has obviously
-  // down-selected to just one EPS option. Neelesh volunteered to look into
-  // this. Note: this only fails in the test env.
-  skip('Typing text in pill-value will reflect a count change in tabs', async function(assert) {
+  test('Typing text in pill-value will reflect a count change in tabs', async function(assert) {
     const done = assert.async();
 
     new ReduxDataHelper(setState)
@@ -3823,10 +3814,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     }, 10000);
   });
 
-  // TODO - The UI is still showing (3) even though the list has obviously
-  // down-selected to just one EPS option. Neelesh volunteered to look into
-  // this. Note: this only fails in the test env.
-  skip('Typing text in recent-query will reflect a count change in tabs', async function(assert) {
+  test('Typing text in recent-query will reflect a count change in tabs', async function(assert) {
     const done = assert.async();
 
     new ReduxDataHelper(setState)
@@ -5460,7 +5448,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     assert.expect(3);
 
-    await render(hbs` 
+    await render(hbs`
       <div class='rsa-investigate-query-container'>
         {{query-container/query-pills isActive=true}}
       </div>
@@ -5483,7 +5471,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     assert.expect(3);
 
-    await render(hbs` 
+    await render(hbs`
       <div class='rsa-investigate-query-container'>
         {{query-container/query-pills isActive=true}}
       </div>
