@@ -26,6 +26,8 @@ public class AutomationConf {
     public static final String OUTPUT_REST_URL = "http://".concat(UEBA_IP).concat(":").concat(OUTPUT_REST_PORT);
 
     public static final boolean IS_JENKINS_RUN = System.getenv().containsKey("JENKINS_HOME");
+    public static final boolean LOCAL_MONGO_CONF_FLAG = System.getenv().containsKey("LOCAL_MONGO_CONF");
+
     public static final ImmutableList<String> CORE_SCHEMAS_TO_PROCESS = ImmutableList.copyOf(
             System.getenv().getOrDefault("SCHEMAS_TO_PROCESS", "ACTIVE_DIRECTORY,AUTHENTICATION,FILE,PROCESS,REGISTRY,TLS").split("\\s*,\\s*"));
 
