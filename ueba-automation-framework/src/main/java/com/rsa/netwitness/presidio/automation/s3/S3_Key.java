@@ -48,21 +48,14 @@ public class S3_Key {
 
     public Function<NetwitnessEvent, String> application = e -> getApplicationLabel(e.schema);
 
-    public String key(Instant eventTime, Schema schema) {
-        return toPath(eventTime, schema).concat(toFileName(eventTime, schema));
-    }
 
     public Set<String> getAllS3_Keys(Instant from, Instant to, Schema schema) {
-        LocalDateTime time = LocalDateTime.ofInstant(from.minus(UPLOAD_INTERVAL_MINUTES.intValue(), MINUTES), UTC);
-        int nearestMinute = getNearestMinute(time);
-        Instant firstInterval = time.withMinute(nearestMinute).toInstant(UTC);
-
-        long between = MINUTES.between(firstInterval, to.plus(UPLOAD_INTERVAL_MINUTES.intValue(), MINUTES));
+        long between = MINUTES.between(getRelatedTimeInterval(from), getRelatedTimeInterval(to));
         long numOfIntervals = between / UPLOAD_INTERVAL_MINUTES.longValue();
 
         Stream<Instant> localDateTimeStream = LongStream.rangeClosed(0, numOfIntervals).parallel()
                 .boxed()
-                .map(i -> firstInterval.plus(UPLOAD_INTERVAL_MINUTES.longValue() * i, MINUTES));
+                .map(i -> from.plus(UPLOAD_INTERVAL_MINUTES.longValue() * i, MINUTES));
 
         return localDateTimeStream.parallel().map(e -> key(e, schema)).collect(Collectors.toSet());
     }
@@ -72,7 +65,9 @@ public class S3_Key {
         return applicationLabel.getOrDefault(schema, "ֹֹUNKNOWN_APPLICATION");
     }
 
-
+    private String key(Instant eventTime, Schema schema) {
+        return toPath(eventTime, schema).concat(toFileName(eventTime, schema));
+    }
 
     /********************************************************************************************
      * bucket/acme/NetWitness/123456789012/NetworkTraffic/us-east-1/2019/12/10/
@@ -80,16 +75,16 @@ public class S3_Key {
      ********************************************************************************************/
 
     private String toPath(Instant eventTime, Schema schema) {
-        LocalDateTime time = LocalDateTime.ofInstant(eventTime, UTC);
+        LocalDateTime nearestMinute = getRelatedTimeInterval(eventTime);
 
         return tenant.concat("/")
                 .concat("NetWitness").concat("/")
                 .concat(account).concat("/")
                 .concat(getApplicationLabel(schema)).concat("/")
                 .concat(region).concat("/")
-                .concat(String.valueOf(time.getYear())).concat("/")
-                .concat(String.valueOf(String.format("%02d" , time.getMonthValue()))).concat("/")
-                .concat(String.valueOf(String.format("%02d" , time.getDayOfMonth()))).concat("/");
+                .concat(String.valueOf(nearestMinute.getYear())).concat("/")
+                .concat(String.valueOf(String.format("%02d" , nearestMinute.getMonthValue()))).concat("/")
+                .concat(String.valueOf(String.format("%02d" , nearestMinute.getDayOfMonth()))).concat("/");
     }
 
 
@@ -110,18 +105,17 @@ public class S3_Key {
 
     //  is the minute after the latest record in the file
     private String toFileTimestamp(Instant eventTime) {
+        LocalDateTime nearestMinute = getRelatedTimeInterval(eventTime);
         DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("YYYYMMDD'T'HHmm'Z'").withZone(UTC);
-        LocalDateTime time = LocalDateTime.ofInstant(eventTime, UTC);
-        int nearestMinute = getNearestMinute(time);
-        LocalDateTime timestamp = time.withMinute(nearestMinute);
-        return DATE_TIME_FORMATTER.format(timestamp);
+        return DATE_TIME_FORMATTER.format(nearestMinute);
     }
 
-    private int getNearestMinute(LocalDateTime time) {
+    private LocalDateTime getRelatedTimeInterval(Instant toConvert) {
+        LocalDateTime time = LocalDateTime.ofInstant(toConvert, UTC).plusMinutes(UPLOAD_INTERVAL_MINUTES.intValue());
+
         /* plusMinutes(1) is required put minutes equal to (UPLOAD_INTERVAL_MINUTES * n) into the next chunk */
-        int nearestMinute = (int) Math.ceil(time.plusMinutes(1).getMinute() / UPLOAD_INTERVAL_MINUTES.doubleValue()) * UPLOAD_INTERVAL_MINUTES.intValue();
-        nearestMinute = (nearestMinute == 60) ? 0 : nearestMinute;
-        return nearestMinute;
+        int nearestMinute = (int) Math.floor(time.getMinute() / UPLOAD_INTERVAL_MINUTES.doubleValue()) * UPLOAD_INTERVAL_MINUTES.intValue();
+        return (nearestMinute == 60) ? time.plusHours(1).withSecond(0).withMinute(0) : time.withSecond(0).withMinute(nearestMinute);
     }
 
     private String generateUnique() {

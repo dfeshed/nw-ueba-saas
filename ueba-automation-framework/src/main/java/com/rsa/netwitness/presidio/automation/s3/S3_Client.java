@@ -14,8 +14,8 @@ public class S3_Client {
 
     private static Lazy<AmazonS3> amazonS3Lazy = new Lazy<>();
     public static String region = "us-east-1";
-    public static String accessKey = "AKIAXACTRC6PVMMUA2R2";
-    public static String secretKey = "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";
+    public static String accessKey = "";
+    public static String secretKey = "";
     public static AmazonS3 s3Client = amazonS3Lazy.getOrCompute(S3_Client::connectToS3);
 
     private static AmazonS3 connectToS3() {
