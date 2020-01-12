@@ -2,10 +2,10 @@ package presidio.nw.flume.sdk;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.rsa.netwitness.cba.api.S3DataIterator;
 import fortscale.common.general.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import presidio.nw.flume.utils.S3DataIterator;
 
 import java.time.Instant;
 import java.util.Iterator;
@@ -60,7 +60,9 @@ public class CBAEventsStream extends AbstractNetwitnessEventsStream {
      */
     private void validateConfiguration(Map<String, String> config) {
         requireNonNull(config.get("bucket"), "'bucket' is missing in configuration");
+        requireNonNull(config.get("tenant"), "'tenant' is missing in configuration");
+        requireNonNull(config.get("account"), "'account' is missing in configuration");
         requireNonNull(config.get("schema"), "'schema' is missing in configuration");
-        requireNonNull(config.get("customerId"), "'customerId' is missing in configuration");
+        requireNonNull(config.get("region"), "'region' is missing in configuration");
     }
 }
