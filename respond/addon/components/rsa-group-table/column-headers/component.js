@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
 import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
@@ -30,22 +30,19 @@ export default Component.extend({
   table: null,
 
   // Applies the scrollbox's width to the wrapper element to ensure horizontal alignment with scrollbox columns.
-  @computed('table.scrollerSize.innerWidth')
-  scrollerStyle(width) {
-    const styleText = isNumeric(width) ? `width: ${width}px` : '';
+  scrollerStyle: computed('table.scrollerSize.innerWidth', function() {
+    const styleText = isNumeric(this.table?.scrollerSize?.innerWidth) ? `width: ${this.table?.scrollerSize?.innerWidth}px` : '';
     return htmlSafe(styleText);
-  },
+  }),
 
   // Computes a width that ensures the header cells spread as wide horizontally as the body cells.
-  @computed('table.totalColumnsWidth')
-  placeholderStyle(width) {
-    return htmlSafe(`width:${width}`);
-  },
+  placeholderStyle: computed('table.totalColumnsWidth', function() {
+    return htmlSafe(`width:${this.table?.totalColumnsWidth}`);
+  }),
 
   // Computes a transform that will ensure the header cells stay horiz aligned with the table body's scrollLeft.
-  @computed('table.scrollerPos.left')
-  tableStyle(scrollLeft) {
-    const px = isNumeric(scrollLeft) ? scrollLeft : 0;
+  tableStyle: computed('table.scrollerPos.left', function() {
+    const px = isNumeric(this.table?.scrollerPos?.left) ? this.table?.scrollerPos?.left : 0;
     return htmlSafe(`left: -${px}px`);
-  }
+  })
 });

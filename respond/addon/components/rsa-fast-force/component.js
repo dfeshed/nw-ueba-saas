@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import layout from './template';
-import { set } from '@ember/object';
-import computed, { alias } from 'ember-computed-decorators';
+import { set, computed } from '@ember/object';
+import { alias } from '@ember/object/computed';
 import {
   forceSimulation,
   forceLink,
@@ -37,10 +37,10 @@ import NodeTypes from 'respond/utils/entity/node-types';
  * @public
  */
 export default Component.extend({
-
   // Wrap the SVG canvas in a div. The div can be set to any size, while the SVG element by default fills the div
   // with its width & height set to 100%.
   tagName: 'div',
+
   layout,
   classNames: 'rsa-force-layout',
   classNameBindings: ['shouldShowNodes:show-nodes:hide-nodes', 'shouldShowLinks:show-links:hide-links', 'shouldShowLinkText:show-link-text:hide-link-text', 'isDragging'],
@@ -49,8 +49,12 @@ export default Component.extend({
   // d3 force layout configuration properties.
   // For details, see d3 API docs: https://github.com/mbostock/d3/wiki/Force-Layout
   cluster: 50,
+
   clusterDistanceMax: 1000,
-  collideStrength: 0.7, // strength of force that prevents node collisions (d3's default = 0.7)
+
+  // strength of force that prevents node collisions (d3's default = 0.7)
+  collideStrength: 0.7,
+
   repelStrength: -400,
   repelDistanceMax: -400,
   alphaInitial: 0.5,
@@ -107,9 +111,7 @@ export default Component.extend({
   alphaResumeMin: 0.05,
 
   shouldShowNodes: true,
-
   shouldShowLinks: true,
-
   shouldShowLinkText: false,
 
   /**
@@ -157,24 +159,23 @@ export default Component.extend({
    * @type {d3.scaleLinear}
    * @private
    */
-  @computed('nodeMinRadius', 'nodeMaxRadius', 'data', 'radialAccessor')
-  radialScale(minRadius, maxRadius, data, radialAccessor) {
-    const { nodes } = data || {};
+  radialScale: computed('nodeMinRadius', 'nodeMaxRadius', 'data', 'radialAccessor', function() {
+    const { nodes } = this.data || {};
     const minDomainValue = 1;
-    let maxDomainValue = max(nodes || [], radialAccessor);
+    let maxDomainValue = max(nodes || [], this.radialAccessor);
     maxDomainValue = Math.max(minDomainValue, maxDomainValue);
     // If the max domain value is below the max radius, you'll map tiny domain value to huge circles.
-    maxDomainValue = Math.max(maxDomainValue, maxRadius);
+    maxDomainValue = Math.max(maxDomainValue, this.nodeMaxRadius);
     return scaleLinear()
       .domain([
         minDomainValue,
         maxDomainValue
       ])
       .range([
-        minRadius,
-        maxRadius
+        this.nodeMinRadius,
+        this.nodeMaxRadius
       ]);
-  },
+  }),
 
   /**
    * Configurable maximum stroke width of the node circles.
@@ -218,24 +219,23 @@ export default Component.extend({
    * @type {d3.scaleLinear}
    * @private
    */
-  @computed('linkMinWidth', 'linkMaxWidth', 'data', 'linkWidthAccessor')
-  linkWidthScale(linkMinWidth, linkMaxWidth, data, linkWidthAccessor) {
-    const { links } = data || {};
+  linkWidthScale: computed('linkMinWidth', 'linkMaxWidth', 'data', 'linkWidthAccessor', function() {
+    const { links } = this.data || {};
     const minDomainValue = 1;
-    let maxDomainValue = max(links || [], linkWidthAccessor);
+    let maxDomainValue = max(links || [], this.linkWidthAccessor);
     maxDomainValue = Math.max(minDomainValue, maxDomainValue);
     // If the max domain value is below the max width, you'll map tiny domain value to thick lines.
-    maxDomainValue = Math.max(maxDomainValue, linkMaxWidth);
+    maxDomainValue = Math.max(maxDomainValue, this.linkMaxWidth);
     return scaleLinear()
       .domain([
         minDomainValue,
         maxDomainValue
       ])
       .range([
-        linkMinWidth,
-        linkMaxWidth
+        this.linkMinWidth,
+        this.linkMaxWidth
       ]);
-  },
+  }),
 
   /**
    * Configurable width of the arrow markers that are rendered at the ends of links.
@@ -243,11 +243,10 @@ export default Component.extend({
    * @type number
    * @public
    */
-  @computed('linkMaxWidth')
-  arrowWidth(linkMaxWidth) {
-    const width = isNumeric(linkMaxWidth) ? linkMaxWidth : 0;
+  arrowWidth: computed('linkMaxWidth', function() {
+    const width = isNumeric(this.linkMaxWidth) ? this.linkMaxWidth : 0;
     return Math.max(10, width + 2);
-  },
+  }),
 
   /**
    * Configurable height of the arrow markers that are rendered at the ends of links.
@@ -255,8 +254,7 @@ export default Component.extend({
    * @type number
    * @public
    */
-  @alias('arrowWidth')
-  arrowHeight: null,
+  arrowHeight: alias('arrowWidth'),
 
   /**
    * Configurable lower limit on zoom scale.
@@ -340,12 +338,11 @@ export default Component.extend({
    * @type { { nodeIds: string[], linkIds: string[] } }
    * @public
    */
-  @computed
-  filter: {
+  filter: computed({
     get() {
       return this._filter;
     },
-    set(value) {
+    set(key, value) {
       const was = this._filter;
       this._filter = value;
 
@@ -357,7 +354,7 @@ export default Component.extend({
       }
       return this._filter;
     }
-  },
+  }),
 
   /**
    * An object with `nodes` & `links` properties, which hold an array (possibly empty) of nodes & links (respectively)
@@ -374,12 +371,11 @@ export default Component.extend({
    * @type {{ nodes: object[], links: object[] }}
    * @public
    */
-  @computed
-  data: {
+  data: computed({
     get() {
       return this._data || { nodes: [], links: [] };
     },
-    set(value = {}) {
+    set(key, value = {}) {
       const was = this._data;
       if (was === value) {
         return was;
@@ -403,7 +399,7 @@ export default Component.extend({
 
       return this._data;
     }
-  },
+  }),
 
   /**
    * Configurable function responsible for removing DOM for exiting data, building DOM for entering data, and

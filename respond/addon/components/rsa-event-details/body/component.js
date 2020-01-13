@@ -3,9 +3,8 @@ import layout from './template';
 import HighlightsEntities from 'context/mixins/highlights-entities';
 import { inject as service } from '@ember/service';
 import { next } from '@ember/runloop';
-import computed from 'ember-computed-decorators';
 import { underscore, capitalize } from '@ember/string';
-import { get } from '@ember/object';
+import { get, computed } from '@ember/object';
 
 // Checks if a given i18n lookup result is "empty". This is done by looking for the special text "Missing translation".
 function is18nValueMissing(safeStr) {
@@ -39,17 +38,17 @@ export default Component.extend(HighlightsEntities, {
   model: null,
 
   // Shortcut to the c2 POJO, which may be in 1 of 2 paths under the enrichment POJO.
-  @computed('model')
-  c2data: (model) => {
-    if (!model) {
+  c2data: computed('model', function() {
+    if (!this.model) {
       return null;
     }
-    return get(model, 'enrichment.http-packet.c2') || get(model, 'enrichment.http-log.c2');
-  },
+    return get(this.model, 'enrichment.http-packet.c2') || get(this.model, 'enrichment.http-log.c2');
+  }),
 
   // Configuration for wiring up entities to context tooltip.
   // @see context/addon/mixins/highlights-entities
   autoHighlightEntities: true,
+
   entityEndpointId: 'IM',
 
   // Re-triggers the highlighting of entities whenever model changes.
@@ -64,8 +63,7 @@ export default Component.extend(HighlightsEntities, {
   },
 
   // Formatter to convert normalized event's property names into user-friendly display names.
-  @computed('i18n.locale')
-  propertyNameFormatter() {
+  propertyNameFormatter: computed('i18n.locale', function() {
     const i18n = this.get('i18n');
     const prefix = 'respond.eventDetails.labels.';
 
@@ -87,5 +85,5 @@ export default Component.extend(HighlightsEntities, {
       }
       return result;
     };
-  }
+  })
 });

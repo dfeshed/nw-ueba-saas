@@ -2,8 +2,8 @@ import Component from '@ember/component';
 import HasSizeAttr from 'respond/mixins/dom/has-size-attr';
 import Clickable from 'respond/mixins/dom/clickable';
 import layout from './template';
-import computed, { alias } from 'ember-computed-decorators';
-import { set } from '@ember/object';
+import { alias } from '@ember/object/computed';
+import { set, computed } from '@ember/object';
 
 /**
  * @class GroupTable GroupHeader Component
@@ -30,8 +30,7 @@ export default Component.extend(HasSizeAttr, Clickable, {
 
   // Enable size attrs only if this component will be measured.
   // @see respond/mixins/dom/has-size-attrs
-  @alias('isSample')
-  autoEnableSizeAttr: false,
+  autoEnableSizeAttr: alias('isSample'),
 
   // Set target attr for size measurements.
   // @see respond/mixins/dom/has-size-attrs
@@ -39,35 +38,30 @@ export default Component.extend(HasSizeAttr, Clickable, {
 
   // Configure the payload that will be sent to click handlers.
   // @see respond/mixins/dom/clickable
-  @computed('group')
-  clickData(group) {
-    return { group };
-  },
+  clickData: computed('group', function() {
+    return { group: this.group };
+  }),
 
   // Delegate click handler to the table parent component.
   // @see respond/mixins/dom/clickable
-  @alias('table.groupClickAction')
-  clickAction: null,
-
-  // Delegate shift+click handler to the table parent component.
-  // @see respond/mixins/dom/clickable
-  @alias('table.groupCtrlClickAction')
-  ctrlClickAction: null,
+  clickAction: alias('table.groupClickAction'),
 
   // Delegate ctrl+click handler to the table parent component.
   // @see respond/mixins/dom/clickable
-  @alias('table.groupShiftClickAction')
-  shiftClickAction: null,
+  ctrlClickAction: alias('table.groupCtrlClickAction'),
+
+  // Delegate shift+click handler to the table parent component.
+  // @see respond/mixins/dom/clickable
+  shiftClickAction: alias('table.groupShiftClickAction'),
 
   // Indicates whether this group's bottom is near the top of the non-buffered viewport (i.e., within the height
   // of the header). Used for CSS bindings.
   // This information is used to implement sticky headers. When a group is leaving, we apply special CSS rules that
   // will give the appearance that the group's header is being "pushed" up as the user scroll down.
-  @computed('group', 'table.groupAtTop')
-  isLeaving(myGroup, groupAtTop) {
-    const { group, isLeaving } = groupAtTop || {};
-    return (myGroup === group) && !!isLeaving;
-  },
+  isLeaving: computed('group', 'table.groupAtTop', function() {
+    const { group, isLeaving } = this.table?.groupAtTop || {};
+    return (this.group === group) && !!isLeaving;
+  }),
 
   actions: {
     toggleIsOpen() {

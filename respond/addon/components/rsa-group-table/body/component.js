@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import HasSizeAttr from 'respond/mixins/dom/has-size-attr';
 import HasScrollAttr from 'respond/mixins/dom/has-scroll-attr';
 import { htmlSafe } from '@ember/string';
@@ -67,31 +67,27 @@ export default Component.extend(HasSizeAttr, HasScrollAttr, {
    * @type {String}
    * @private
    */
-  @computed('table.{totalColumnsWidth,totalRowsHeight}')
-  placeholderStyle(width, height) {
-    return htmlSafe(`width: ${width}; height: ${height};`);
-  },
+  placeholderStyle: computed('table.totalColumnsWidth', 'table.totalRowsHeight', function() {
+    return htmlSafe(`width: ${this.table?.totalColumnsWidth}; height: ${this.table?.totalRowsHeight};`);
+  }),
 
-  @computed('table.scrollerSize.innerWidth')
-  stickyHeaderContainerStyle(width) {
-    const styleText = isNumeric(width) ? `width:${width}px;` : '';
+  stickyHeaderContainerStyle: computed('table.scrollerSize.innerWidth', function() {
+    const styleText = isNumeric(this.table?.scrollerSize?.innerWidth) ? `width:${this.table?.scrollerSize?.innerWidth}px;` : '';
     return htmlSafe(`${styleText}`);
-  },
+  }),
 
-  @computed('table.{totalColumnsWidth,scrollerPos.left}')
-  stickyHeaderScrollerStyle(width, scrollLeft) {
-    const px = isNumeric(scrollLeft) ? scrollLeft : 0;
-    return htmlSafe(`width:${width}; left: -${px}px`);
-  },
+  stickyHeaderScrollerStyle: computed('table.totalColumnsWidth', 'table.scrollerPos.left', function() {
+    const px = isNumeric(this.table?.scrollerPos?.left) ? this.table?.scrollerPos?.left : 0;
+    return htmlSafe(`width:${this.table?.totalColumnsWidth}; left: -${px}px`);
+  }),
 
   // Returns the first group (if any) that has items; otherwise the first group, if any.
   // This group will be rendered invisibly and used to measure the DOM.
-  @computed('table.groups.@each.items')
-  sampleGroup(groups) {
-    groups = groups || [];
+  sampleGroup: computed('table.groups.@each.items', function() {
+    const groups = this.table?.groups || [];
     const found = groups.findBy('items.length');
     return found || groups[0];
-  },
+  }),
 
   /**
    * A click on a non-link storypoint or event cell closes any open open recon/ueba overlay.
