@@ -57,6 +57,13 @@ public class IndicatorsInfo {
             "high_number_of_bytes_sent_to_new_dst_port_ssl_subject_outbound"
     );
 
+    public static final ImmutableList<String> EMPTY_CONTEXT_MULTIPLE_GRAPHS_INDICATORS =  ImmutableList.of(
+            "high_number_of_bytes_sent_to_new_ja3_outbound",
+            "high_number_of_bytes_sent_to_new_ssl_subject_outbound",
+            "high_number_of_bytes_sent_by_src_ip_to_new_ssl_subject_outbound",
+            "high_number_of_distinct_src_ip_for_new_ssl_subject_outbound"
+    );
+
 
     public static Map<String, Schema> getIndicatorsToSchemaMap() {
         return IndicatorsInfoSupplier.indicatorToSchema.get();
