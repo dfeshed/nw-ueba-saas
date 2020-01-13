@@ -5,6 +5,7 @@ application.properties
 configserver.properties
 mongo.properties
 mongo_caweb.properties
+aws_key.properties
 
 ### STS ###
 .apt_generated

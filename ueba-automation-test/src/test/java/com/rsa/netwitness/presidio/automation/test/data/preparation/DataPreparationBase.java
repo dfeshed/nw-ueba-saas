@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
+import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter;
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverterFactory;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
@@ -21,15 +22,13 @@ import org.testng.annotations.Parameters;
 import presidio.data.domain.event.Event;
 import presidio.data.generators.common.GeneratorException;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})
 public abstract class DataPreparationBase extends AbstractTestNGSpringContextTests {
-    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(DataPreparationBase.class.getName());
+    private static  Logger LOGGER = (Logger) LoggerFactory.getLogger(DataPreparationBase.class);
 
     @Autowired
     private NetwitnessEventStore netwitnessEventStore;
@@ -39,23 +38,21 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
     protected int anomalyDay;
     protected Map<Schema, Long> generatorResultCount;
 
-    protected abstract List<? extends Event> generate() throws GeneratorException;
+    protected abstract Stream<? extends Event> generate() throws GeneratorException;
 
 
     @Parameters({"historical_days_back", "anomaly_day", "generator_format"})
     @BeforeClass
     public void setup(@Optional("15") int historicalDaysBack,
                       @Optional("1") int anomalyDay,
-                      @Optional("CEF_DAILY_FILE") GeneratorFormat generatorFormat) throws GeneratorException {
+                      @Optional("MONGO_ADAPTER") GeneratorFormat generatorFormat) throws GeneratorException {
 
         setParams(historicalDaysBack, anomalyDay, generatorFormat);
         LOGGER.info("  ++++++ Going to generate.");
-        List<? extends Event> precidioEvents = generate();
+        Stream<? extends Event> precidioEvents = generate();
 
         LOGGER.info("  ++++++ Going to convert.");
-        List<NetwitnessEvent> converted = precidioEvents.parallelStream()
-                .map(getConverter()::convert)
-                .collect(Collectors.toList());
+        Stream<NetwitnessEvent> converted = precidioEvents.parallel().map(getConverter()::convert);
 
         LOGGER.info("  ++++++ Going to send.");
         generatorResultCount = getProducer().send(converted);
@@ -65,7 +62,7 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
                 (schema, count) -> LOGGER.info(schema.toString().concat(" -> ").concat(String.valueOf(count))));
     }
 
-    private EventsProducer<List<NetwitnessEvent>> getProducer() {
+    private EventsProducer<NetwitnessEvent> getProducer() {
         return new EventsProducerFactory(netwitnessEventStore).get(generatorFormat);
     }
 

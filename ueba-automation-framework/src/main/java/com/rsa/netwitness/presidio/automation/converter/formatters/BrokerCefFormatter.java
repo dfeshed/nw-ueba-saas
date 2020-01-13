@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.not;
 import static java.util.Map.Entry.comparingByKey;
 
-public class BrokerCefFormatter implements EventFormatter<String> {
+public class BrokerCefFormatter implements EventFormatter<NetwitnessEvent, String> {
 
     public String format(NetwitnessEvent converted) {
         StringBuilder eventBuilder = new StringBuilder(headerToString(converted.cefHeader));

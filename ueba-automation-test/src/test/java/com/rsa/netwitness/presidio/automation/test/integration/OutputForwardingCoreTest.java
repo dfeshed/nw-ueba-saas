@@ -1,5 +1,7 @@
 package com.rsa.netwitness.presidio.automation.test.integration;
 
+import ch.qos.logback.classic.Logger;
+import com.google.common.collect.ImmutableList;
 import com.rsa.netwitness.presidio.automation.config.EnvironmentProperties;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.mongo.RespondServerAlertCollectionHelper;
@@ -14,9 +16,11 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -29,7 +33,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 
 public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
-    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(OutputForwardingCoreTest.class);
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(OutputForwardingCoreTest.class);
 
     private final int TIME_OFFSET = 3;
     private String esapServer;
@@ -75,95 +79,55 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void ja3_forwarded_indicators_count_equals_to_rest_result() {
-        String entityType = "ja3";
-
-        respondServerAlertCollectionHelper.truncateCollection();
-
-        List<String> expectedIndicatorIds = indicatorIdsByType.get(entityType);
-        assertThat(expectedIndicatorIds).as("Empty Respond Server result for " + entityType).isNotEmpty();
-
-        String cmd = getForwarderCmd(entityType, startTime, endTime);
-        SshResponse response = sshHelper.uebaHostExec().run(cmd);
-        testScriptFinishedSuccessfully(cmd, response);
-
-        int actual = actualIndicatorsFromCmdResponse(response);
-        assertThat(actual).as("REST count doesn't match log response.").isEqualTo(expectedIndicatorIds.size());
-
-        RespondServerAlertCollectionHelper alertCollection = new RespondServerAlertCollectionHelper();
-        List<RespondServerAlertCollectionHelper.RespondServerAlert> respondServerAlerts = alertCollection.getRespondServerAlertsForLastWeek(startTime, endTime);
-
-        List<String> actualIndicatorIds = respondServerAlerts.parallelStream().map(alert -> alert.uebaIndicatorId).collect(toList());
-        assertThat(actualIndicatorIds).as("No alerts found on respond server from startDate=" + startTime + " to endDate=" + endTime).isNotEmpty();
-
-
-        assertThat(actualIndicatorIds)
-                .as(allAlertsUrl + "\nIndicator IDs mismatch between REST and respond server result.\nFrom startDate=" + startTime + " to endDate=" + endTime)
-                .hasSameSizeAs(expectedIndicatorIds)
-                .containsExactlyInAnyOrderElementsOf(expectedIndicatorIds);
+        test("ja3");
     }
-
 
     @Test
     public void user_id_forwarded_indicators_count_equals_to_rest_result() {
-        String entityType = "userId";
-
-        respondServerAlertCollectionHelper.truncateCollection();
-
-        List<String> expectedIndicatorIds = indicatorIdsByType.get(entityType);
-        assertThat(expectedIndicatorIds).as("Empty Respond Server result for " + entityType).isNotEmpty();
-
-        String cmd = getForwarderCmd(entityType, startTime, endTime);
-        SshResponse response = sshHelper.uebaHostExec().run(cmd);
-        testScriptFinishedSuccessfully(cmd, response);
-
-        int actual = actualIndicatorsFromCmdResponse(response);
-        assertThat(actual).as("REST count doesn't match log response.").isEqualTo(expectedIndicatorIds.size());
-
-        RespondServerAlertCollectionHelper alertCollection = new RespondServerAlertCollectionHelper();
-        List<RespondServerAlertCollectionHelper.RespondServerAlert> respondServerAlerts = alertCollection.getRespondServerAlertsForLastWeek(startTime, endTime);
-
-        List<String> actualIndicatorIds = respondServerAlerts.parallelStream().map(alert -> alert.uebaIndicatorId).collect(toList());
-        assertThat(actualIndicatorIds).as("No alerts found on respond server from startDate=" + startTime + " to endDate=" + endTime).isNotEmpty();
-
-
-        assertThat(actualIndicatorIds)
-                .as(allAlertsUrl + "\nIndicator IDs mismatch between REST and respond server result.\nFrom startDate=" + startTime + " to endDate=" + endTime)
-                .hasSameSizeAs(expectedIndicatorIds)
-                .containsExactlyInAnyOrderElementsOf(expectedIndicatorIds);
+        test("userId");
     }
 
     @Test
     public void ssl_subject_forwarded_indicators_count_equals_to_rest_result() {
-        String entityType = "sslSubject";
+        test("sslSubject");
+    }
 
+
+    private void test(String entityType) {
         respondServerAlertCollectionHelper.truncateCollection();
 
-        List<String> expectedIndicatorIds = indicatorIdsByType.get(entityType);
-        assertThat(expectedIndicatorIds).as("Empty Respond Server result for " + entityType).isNotEmpty();
-
+        ImmutableList<String> expectedIndicatorIdsFromRest = ImmutableList.copyOf(indicatorIdsByType.get(entityType));
+        assertThat(expectedIndicatorIdsFromRest).as("Empty Respond Server result for " + entityType).isNotEmpty();
 
         String cmd = getForwarderCmd(entityType, startTime, endTime);
         SshResponse response = sshHelper.uebaHostExec().run(cmd);
         testScriptFinishedSuccessfully(cmd, response);
 
         int actual = actualIndicatorsFromCmdResponse(response);
-        assertThat(actual).as("REST count doesn't match log response.").isEqualTo(expectedIndicatorIds.size());
+        assertThat(actual).as("REST count doesn't match log response.").isEqualTo(expectedIndicatorIdsFromRest.size());
 
         RespondServerAlertCollectionHelper alertCollection = new RespondServerAlertCollectionHelper();
         List<RespondServerAlertCollectionHelper.RespondServerAlert> respondServerAlerts = alertCollection.getRespondServerAlertsForLastWeek(startTime, endTime);
 
-        List<String> actualIndicatorIds = respondServerAlerts.parallelStream().map(alert -> alert.uebaIndicatorId).collect(toList());
-        assertThat(actualIndicatorIds).as("No alerts found on respond server from startDate=" + startTime + " to endDate=" + endTime).isNotEmpty();
+        ImmutableList<String> actualIndicatorIdsFromRespondServer = ImmutableList.copyOf(respondServerAlerts.parallelStream().map(alert -> alert.uebaIndicatorId).collect(toList()));
+        assertThat(actualIndicatorIdsFromRespondServer).as("No alerts found on respond server from startDate=" + startTime + " to endDate=" + endTime).isNotEmpty();
 
+        List<String> missingFromRespondServer = new ArrayList<>(expectedIndicatorIdsFromRest);
+        List<String> missingFromRest = new ArrayList<>(actualIndicatorIdsFromRespondServer);
+        missingFromRespondServer.removeAll(actualIndicatorIdsFromRespondServer);
+        missingFromRest.removeAll(expectedIndicatorIdsFromRest);
 
-        assertThat(actualIndicatorIds)
-                .as(allAlertsUrl + "\nIndicator IDs mismatch between REST and respond server result.\nFrom startDate=" + startTime + " to endDate=" + endTime)
-                .hasSameSizeAs(expectedIndicatorIds)
-                .containsExactlyInAnyOrderElementsOf(expectedIndicatorIds);
+        Supplier<String> failureMessage = () -> allAlertsUrl +
+                "\nIndicator IDs mismatch between REST and respond server result." +
+                "\nFrom startDate=" + startTime + " to endDate=" + endTime +
+                "\n  -----  REST response Indicator Ids are missing from Respond Server: \n" + String.join("\n", missingFromRespondServer) +
+                "\n  -----  Respond Server Indicator Ids are missing from REST response: \n" + String.join("\n", missingFromRest);
+
+        assertThat(actualIndicatorIdsFromRespondServer)
+                .withFailMessage(failureMessage.get())
+                .hasSameSizeAs(expectedIndicatorIdsFromRest)
+                .containsExactlyInAnyOrderElementsOf(expectedIndicatorIdsFromRest);
     }
-
-
-
 
 
 

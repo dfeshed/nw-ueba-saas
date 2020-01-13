@@ -8,8 +8,6 @@ import org.testng.annotations.Test;
 import presidio.data.domain.event.Event;
 import presidio.data.generators.common.GeneratorException;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class AlertsScenarioDataPreparation extends DataPreparationBase {
@@ -17,7 +15,7 @@ public class AlertsScenarioDataPreparation extends DataPreparationBase {
             LoggerFactory.getLogger(AlertsScenarioDataPreparation.class.getName());
 
     @Override
-    protected List<? extends Event> generate() throws GeneratorException {
+    protected Stream<? extends Event> generate() throws GeneratorException {
         LOGGER.info("Going to generate events for Alert scenarios");
 
         AlertsScenario alertsScenario = new AlertsScenario(historicalDaysBack, anomalyDay);
@@ -30,7 +28,7 @@ public class AlertsScenarioDataPreparation extends DataPreparationBase {
                 alertsScenario.getSortedProcessEvents().stream(),
                 alertsScenario.getSortedRegistryEvents().stream(),
                 enrichmentExtraData.fileOperationTypes()
-        ).flatMap(i -> i).collect(Collectors.toList());
+        ).flatMap(i -> i);
     }
 
     @Test
