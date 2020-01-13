@@ -211,4 +211,7 @@ export default class Row extends DataTableBodyRow {
     }
     return contextConf.sortBy('order');
   }
+  set contextItems(value) {
+    return value;
+  }
 }

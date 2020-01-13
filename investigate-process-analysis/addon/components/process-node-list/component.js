@@ -56,6 +56,10 @@ export default class ProcessNodeList extends Component {
     return _.cloneDeep(this.nodeList).sort((node1, node2) => node2.data.localScore - node1.data.localScore);
   }
 
+  set nodeListCopy(value) {
+    return value;
+  }
+
   @computed('nodeListCopy', 'activeTab')
   get filteredList() {
     let filteredNodes = this.nodeListCopy;
