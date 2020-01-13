@@ -36,13 +36,20 @@ public class IndicatorsInfo {
             REGISTRY_MANDATORY_INDICATORS.stream()
     ).flatMap(e -> e).collect(Collectors.toList()));
 
-    public static final ImmutableList<String> MULTIPLE_GRAPHS_INDICATORS =  ImmutableList.of(
+    public static final ImmutableList<String> MULTIPLE_GRAPHS_NOT_NEW_INDICATORS =  ImmutableList.of(
             "high_number_of_bytes_sent_by_src_ip_to_domain_ssl_subject_outbound",
             "high_number_of_bytes_sent_by_src_ip_to_dst_org_ssl_subject_outbound",
             "high_number_of_bytes_sent_by_src_ip_to_dst_port_ssl_subject_outbound",
             "high_number_of_bytes_sent_to_domain_ssl_subject_outbound",
             "high_number_of_bytes_sent_to_dst_org_ssl_subject_outbound",
-            "high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound",
+            "high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound"
+    );
+
+    public static final ImmutableList<String> MULTIPLE_GRAPHS_NEW_INDICATORS =  ImmutableList.of(
+            "high_number_of_bytes_sent_to_new_ja3_outbound",
+            "high_number_of_bytes_sent_to_new_ssl_subject_outbound",
+            "high_number_of_bytes_sent_by_src_ip_to_new_ssl_subject_outbound",
+            "high_number_of_distinct_src_ip_for_new_ssl_subject_outbound",
 
             "high_number_of_distinct_src_ip_for_new_domain_for_ssl_subject_outbound",
             "high_number_of_bytes_sent_to_new_domain_ssl_subject_outbound",
@@ -57,12 +64,8 @@ public class IndicatorsInfo {
             "high_number_of_bytes_sent_to_new_dst_port_ssl_subject_outbound"
     );
 
-    public static final ImmutableList<String> EMPTY_CONTEXT_MULTIPLE_GRAPHS_INDICATORS =  ImmutableList.of(
-            "high_number_of_bytes_sent_to_new_ja3_outbound",
-            "high_number_of_bytes_sent_to_new_ssl_subject_outbound",
-            "high_number_of_bytes_sent_by_src_ip_to_new_ssl_subject_outbound",
-            "high_number_of_distinct_src_ip_for_new_ssl_subject_outbound"
-    );
+    public static final ImmutableList<String> MULTIPLE_GRAPHS_ALL_INDICATORS = ImmutableList.<String>builder()
+            .addAll(MULTIPLE_GRAPHS_NOT_NEW_INDICATORS).addAll(MULTIPLE_GRAPHS_NEW_INDICATORS).build();
 
 
     public static Map<String, Schema> getIndicatorsToSchemaMap() {
