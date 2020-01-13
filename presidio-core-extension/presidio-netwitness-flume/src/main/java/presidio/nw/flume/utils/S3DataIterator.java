@@ -30,6 +30,7 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 import static java.util.Objects.requireNonNull;
 
@@ -232,12 +233,12 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
      * Instantiates a list containing the paths from which to pull the events in the given time-range.
      */
     private void initPathIterator() {
-        List<String> hours = new ArrayList<>();
+        List<String> days = new ArrayList<>();
         logger.info("Fetching events from inclusive {} to exclusive {}.", startTime, endTime);
-        for (Instant time = startTime; time.isBefore(endTime); time = time.plusSeconds(3600)) {
-            hours.add(streamPrefix + generateDaySuffix(time));
+        for (Instant time = startTime; time.isBefore(endTime); time = time.plus(1, DAYS).truncatedTo(DAYS)) {
+            days.add(streamPrefix + generateDaySuffix(time));
         }
-        folderIterator = hours.iterator();
+        folderIterator = days.iterator();
     }
 
     /**
