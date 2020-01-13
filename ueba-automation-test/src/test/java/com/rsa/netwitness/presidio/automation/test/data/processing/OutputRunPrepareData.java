@@ -55,7 +55,7 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
         for (List<? extends Callable<Integer>> parallelTasks : parallelTasksToExecute) {
             LOGGER.info("********** Next cycle **********");
             ExecutorService executor = Executors.newWorkStealingPool();
-            List<Future<Integer>> futures = executor.invokeAll(parallelTasks, 5, TimeUnit.MINUTES);
+            List<Future<Integer>> futures = executor.invokeAll(parallelTasks, 10, TimeUnit.MINUTES);
             List<Integer> results = futures.parallelStream().map(toIntResult).collect(toList());
             assertThat(results).containsOnly(0);
         }
