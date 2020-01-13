@@ -14,6 +14,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class AlertsRestCallHelper implements IRestCallHelper{
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
@@ -29,6 +31,7 @@ public class AlertsRestCallHelper implements IRestCallHelper{
             LOGGER.debug("Sending request: " + URL);
             response = new RestAPI().send(alertsParametersUrlBuilder);
 
+            assertThat(response).as(URL + "\nNull REST response").isNotNull();
             Assert.assertEquals(200, response.getResponseCode(),
                     "Error with response code: " + response.getResponseCode() +
                             "\nURL: " + URL +
