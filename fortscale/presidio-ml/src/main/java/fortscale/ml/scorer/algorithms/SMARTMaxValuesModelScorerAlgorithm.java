@@ -1,14 +1,10 @@
 package fortscale.ml.scorer.algorithms;
 
 import fortscale.ml.model.SMARTMaxValuesModel;
-import fortscale.ml.model.SMARTValuesModel;
 import fortscale.ml.model.SMARTValuesPriorModel;
 import org.springframework.util.Assert;
 
-import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 public class SMARTMaxValuesModelScorerAlgorithm {
     private int globalInfluence;
@@ -47,21 +43,45 @@ public class SMARTMaxValuesModelScorerAlgorithm {
             return 0;
         }
 
+        if(model == null){
+            return calculateScoreByPriorOnly(value, priorModel);
+        }
+
         double userInfluence = Math.min(maxUserInfluence, Math.ceil((double) model.getNumOfPartitions() / numOfPartitionUserInfluence));
 
         Map<Long, Double> startInstantToMaxSmartValues = model.getStartInstantToMaxSmartValue();
-        Double sumOfMaxValues = startInstantToMaxSmartValues.values().stream().sorted(Comparator.reverseOrder()).limit((long) userInfluence).mapToDouble(d -> d).sum();
+        double sumOfMaxValues = startInstantToMaxSmartValues.values().stream().sorted(Comparator.reverseOrder()).limit((long) userInfluence).mapToDouble(d -> d).sum();
 
         double sumOfMaxValuesWithoutPrior = calcSumOfMaxValueWithoutPrior(startInstantToMaxSmartValues, sumOfMaxValues, userInfluence);
         double probOfNewValueGreaterThanValue = sumOfMaxValuesWithoutPrior > 0 ? Math.pow(sumOfMaxValuesWithoutPrior / (value + sumOfMaxValuesWithoutPrior), Math.max(userInfluence, minNumOfUserValues)) : 0;
 
-        if (globalInfluence >= 5) {
+        if (globalInfluence >= 1) {
             double sumOfValuesWithPrior = sumOfMaxValues + globalInfluence * priorModel.getPrior();
-            double probOfNewValueGreaterThanValueWithPrior = sumOfValuesWithPrior > 0 ? Math.pow(sumOfValuesWithPrior / (value + sumOfValuesWithPrior), userInfluence + globalInfluence) : 0;
+            if(sumOfValuesWithPrior == 0){
+                return 100;
+            }
+            double probOfNewValueGreaterThanValueWithPrior = Math.pow(sumOfValuesWithPrior / (value + sumOfValuesWithPrior), userInfluence + globalInfluence);
             return 100 * (1 - Math.max(probOfNewValueGreaterThanValue, probOfNewValueGreaterThanValueWithPrior));
         }
 
         return 100 * (1 - probOfNewValueGreaterThanValue);
+    }
+
+    private double calculateScoreByPriorOnly(double value, SMARTValuesPriorModel priorModel) {
+        if (value == 0) {
+            return 0;
+        }
+
+        if(globalInfluence == 0 || priorModel.getNumOfPartitions() == 0){
+            return 0;
+        }
+
+        double sumOfValues = priorModel.getNumOfPartitions() * priorModel.getPrior();
+        if (sumOfValues == 0){
+            return 100;
+        }
+        double probOfNewValueGreaterThanValueWithPrior = Math.pow(sumOfValues / (value + sumOfValues), priorModel.getNumOfPartitions());
+        return 100 * (1 - probOfNewValueGreaterThanValueWithPrior);
     }
 
     /**

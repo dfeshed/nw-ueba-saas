@@ -211,7 +211,7 @@ public class SmartApplicationTest extends BaseAppTest {
      * Expected: smartScore = 0, smartValue > 0.
      */
     @Test
-    public void NoSmartValuesModeTest() throws GeneratorException {
+    public void NoSmartValuesModelsExistButPriorDoesExistTest() throws GeneratorException {
         int daysBackFrom = 30;
         // Duration that covers all 42 features 3 times: 2 days 01:00 - 22:00.
         int durationOfProcess = 2;
@@ -230,8 +230,7 @@ public class SmartApplicationTest extends BaseAppTest {
         String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
         executeAndAssertCommandSuccess(command);
         List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
-        Double expectedScore = 0.0;
-        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() > 0.0));
+        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore() > 0.0 && smart.getSmartValue() > 0.0));
         Assert.assertEquals(smartRecords.size(), contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
     }
 
@@ -561,6 +560,7 @@ public class SmartApplicationTest extends BaseAppTest {
         SMARTValuesPriorModel smartValuesPriorModel = new SMARTValuesPriorModel();
         smartValuesPriorModel.init(prior);
         smartValuesPriorModel.setWeightsModelEndTime(end);
+        smartValuesPriorModel.setNumOfPartitions(30);
         ModelDAO modelDao = new ModelDAO("test-session-id", null, smartValuesPriorModel, end.minus(Duration.ofDays(90)), end, null);
         mongoTemplate.insert(modelDao, "model_smart.global.prior.userId.hourly");
     }

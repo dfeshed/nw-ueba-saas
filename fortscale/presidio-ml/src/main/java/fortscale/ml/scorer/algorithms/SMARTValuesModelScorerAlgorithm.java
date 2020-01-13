@@ -23,6 +23,10 @@ public class SMARTValuesModelScorerAlgorithm {
             return 0;
         }
 
+        if(model == null){
+            return calculateScoreByPriorModelOnly(value, priorModel);
+        }
+
         double sumOfValues = model.getSumOfValues() + globalInfluence * priorModel.getPrior();
         if (sumOfValues == 0) {
             return 100;
@@ -35,5 +39,16 @@ public class SMARTValuesModelScorerAlgorithm {
                 model.getNumOfPositiveValues() + globalInfluence);
 
         return 100 * (1 - Math.max(probOfNewValueGreaterThanValue, probOfNewValueGreaterThanValueWithPrior));
+    }
+
+    private double calculateScoreByPriorModelOnly(double value, SMARTValuesPriorModel priorModel) {
+        double sumOfValues = globalInfluence * priorModel.getPrior();
+        if (sumOfValues == 0) {
+            return 100;
+        }
+
+        double probOfNewValueGreaterThanValue = Math.pow(sumOfValues / (value + sumOfValues), globalInfluence);
+
+        return 100 * (1 - probOfNewValueGreaterThanValue);
     }
 }
