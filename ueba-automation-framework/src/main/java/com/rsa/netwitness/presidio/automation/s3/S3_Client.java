@@ -9,13 +9,15 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.rsa.netwitness.presidio.automation.utils.common.Lazy;
 import org.slf4j.LoggerFactory;
 
+import static com.rsa.netwitness.presidio.automation.config.AWS_Config.S3_CONFIG;
+
 public class S3_Client {
     private static  Logger LOGGER = (Logger) LoggerFactory.getLogger(S3_Client.class);
 
     private static Lazy<AmazonS3> amazonS3Lazy = new Lazy<>();
     public static String region = "us-east-1";
-    public static String accessKey = "";
-    public static String secretKey = "";
+    public static String accessKey = S3_CONFIG.accessKey;
+    public static String secretKey = S3_CONFIG.secretKey;
     public static AmazonS3 s3Client = amazonS3Lazy.getOrCompute(S3_Client::connectToS3);
 
     private static AmazonS3 connectToS3() {
