@@ -6,17 +6,16 @@ import fortscale.domain.core.entityattributes.SslSubject;
 import fortscale.domain.sessionsplit.records.SessionSplitTransformerKey;
 import fortscale.domain.sessionsplit.records.SessionSplitTransformerValue;
 import fortscale.domain.sessionsplit.cache.ISessionSplitStoreCache;
-import fortscale.utils.json.JacksonUtils;
+import fortscale.utils.json.JsonUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import presidio.sdk.api.domain.transformedevents.TlsTransformedEvent;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.List;
 
 /**
  * SessionSplitTransformer enriched session events with sessionSplit > 0.
@@ -44,7 +43,6 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
     private static final String DOCUMENT_ID_FIELD = "id";
     private static final String NAME_FIELD_SUFFIX = ".name";
     private static final int zeroSessionSplit = 0;
-    private static final JacksonUtils jacksonUtils = new JacksonUtils();
 
     @JsonIgnore
     @Autowired
@@ -67,12 +65,12 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
         String eventSrcIp = (String) document.get(TlsTransformedEvent.SOURCE_IP_FIELD_NAME);
         String eventDstIp = (String) document.get(TlsTransformedEvent.DESTINATION_IP_FIELD_NAME);
         String eventSrcPort = (String) document.get(TlsTransformedEvent.SOURCE_PORT_FIELD_NAME);
-        String eventDstPort = (String) jacksonUtils.getFieldValue(document, namePath(TlsTransformedEvent.DESTINATION_PORT_FIELD_NAME), null);
+        String eventDstPort = JsonUtils.get(document, namePath(TlsTransformedEvent.DESTINATION_PORT_FIELD_NAME), null);
         SessionSplitTransformerKey key = new SessionSplitTransformerKey(eventSrcIp, eventDstIp, eventDstPort, eventSrcPort);
 
         if (eventSessionSplit == zeroSessionSplit) {
-            String sslSubjectName = (String) jacksonUtils.getFieldValue(document, namePath(TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME), null);
-            String ja3Name = (String) jacksonUtils.getFieldValue(document, namePath(TlsTransformedEvent.JA3_FIELD_NAME), null);
+            String sslSubjectName = JsonUtils.get(document, namePath(TlsTransformedEvent.SSL_SUBJECT_FIELD_NAME), null);
+            String ja3Name = JsonUtils.get(document, namePath(TlsTransformedEvent.JA3_FIELD_NAME), null);
 
             String ja3s = null;
             if(!document.isNull(TlsTransformedEvent.JA3S_FIELD_NAME)){
@@ -81,7 +79,7 @@ public class SessionSplitTransformer extends AbstractJsonObjectTransformer {
 
             List<String> sslCas = null;
             if(!document.isNull(TlsTransformedEvent.SSL_CAS_FIELD_NAME)){
-                sslCas = JacksonUtils.jsonArrayToList((JSONArray) document.get(TlsTransformedEvent.SSL_CAS_FIELD_NAME));
+                sslCas = JsonUtils.toList(document.getJSONArray(TlsTransformedEvent.SSL_CAS_FIELD_NAME));
             }
 
             SessionSplitTransformerValue value = new SessionSplitTransformerValue(zeroSessionSplit, sslSubjectName, sslCas, ja3Name, ja3s);

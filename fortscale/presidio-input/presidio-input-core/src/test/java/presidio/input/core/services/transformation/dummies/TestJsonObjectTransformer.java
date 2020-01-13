@@ -1,11 +1,10 @@
-package fortscale.utils.reflection;
+package presidio.input.core.services.transformation.dummies;
 
 import fortscale.utils.transform.AbstractJsonObjectTransformer;
 import org.json.JSONObject;
 
-public class TestObject extends AbstractJsonObjectTransformer {
-
-    public TestObject(String name) {
+public class TestJsonObjectTransformer extends AbstractJsonObjectTransformer {
+    public TestJsonObjectTransformer(String name) {
         super(name);
     }
 
