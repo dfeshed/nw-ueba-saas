@@ -339,7 +339,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
         List<HistoricalData> historicalDataListForTest = new ArrayList<>();
 
-        if (MULTIPLE_GRAPHS_INDICATORS.contains(actualIndicator.name)) {
+        if (MULTIPLE_GRAPHS_INDICATORS.contains(actualIndicator.name) || EMPTY_CONTEXT_MULTIPLE_GRAPHS_INDICATORS.contains(actualIndicator.name)) {
             assertThat(historicalDataListByContext).as(url.toString() + "\nmultiple context indicator should contain 2 historicalData buckets.").isNotNull().hasSize(2);
             String singleValueContext = historicalDataListByContext.keySet().stream().sorted(Comparator.comparingInt(String::length)).collect(toList()).get(1);
             historicalDataListForTest.addAll(historicalDataListByContext.get(singleValueContext));
