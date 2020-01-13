@@ -1,5 +1,8 @@
 package presidio.nw.flume.sdk;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import fortscale.common.general.Schema;
@@ -35,13 +38,23 @@ public class CBAEventsStream extends AbstractNetwitnessEventsStream {
      * @param schema    the data schema
      * @param startDate the start date of events to fetch
      * @param endDate   the end date of events to fetch
-     * @param config    configuration paramters like bucket name, path of the event files etc.
+     * @param config    configuration parameters like bucket name, path of the event files etc.
      */
     @Override
     public Iterator<Map<String, Object>> iterator(Schema schema, Instant startDate, Instant endDate,
             Map<String, String> config) {
+
         validateConfiguration(config);
-        AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
+        String accessKey = config.get("accessKey");
+        String secretKey = config.get("secretKey");
+        String region = config.get("region");
+
+        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
+        AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+                .withRegion(region)
+                .build();
+
         S3DataIterator iterator;
         try {
             iterator = new S3DataIterator(s3, config, startDate, endDate);
@@ -59,6 +72,8 @@ public class CBAEventsStream extends AbstractNetwitnessEventsStream {
      * @param config the flume config map
      */
     private void validateConfiguration(Map<String, String> config) {
+        requireNonNull(config.get("accessKey"), "'accessKey' is missing in configuration");
+        requireNonNull(config.get("secretKey"), "'secretKey' is missing in configuration");
         requireNonNull(config.get("bucket"), "'bucket' is missing in configuration");
         requireNonNull(config.get("tenant"), "'tenant' is missing in configuration");
         requireNonNull(config.get("account"), "'account' is missing in configuration");
