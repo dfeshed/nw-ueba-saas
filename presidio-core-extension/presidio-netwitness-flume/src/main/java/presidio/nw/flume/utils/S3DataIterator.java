@@ -150,33 +150,21 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
      * recurse to the next non-empty file, stepping through folders as necessary.
      */
     private void nextFile() {
-        try {
-            // remaining files in the current folder
-            if (fileIterator.hasNext()) {
-                // close the current file's connection and read the next one
-                lineIterator.close();
-                lineIterator = readS3File(fileIterator.next().getKey());
-                // if this file is empty, recurse !
-                if (!lineIterator.hasNext()) {
-                    nextFile();
-                }
-            }
-            // current folder is finished
-            else {
-                // but others folders are left, so go to next folder and then read files
-                if (folderIterator.hasNext()) {
-                    nextFolder();
-                    nextFile();
-                }
-                else {
-                    // no more files or folders left, close the last file
-                    lineIterator.close();
-                }
+        // remaining files in the current folder
+        if (fileIterator.hasNext()) {
+            lineIterator = readS3File(fileIterator.next().getKey());
+            // if this file is empty, recurse !
+            if (!lineIterator.hasNext()) {
+                nextFile();
             }
         }
-        catch (IOException e) {
-            logger.warn(e.getMessage());
-            logger.debug(e.getMessage(), e);
+        // current folder is finished
+        else {
+            // but others folders are left, so go to next folder and then read files
+            if (folderIterator.hasNext()) {
+                nextFolder();
+                nextFile();
+            }
         }
     }
 
@@ -278,6 +266,14 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
             if (reader != null) {
                 this.iter = reader.lines().iterator();
                 this.reader = reader;
+                if(!iter.hasNext()){
+                    try {
+                        close();
+                    }
+                    catch (IOException e) {
+                        logger.error("Could not close iterator", e);
+                    }
+                }
             }
             else {
                 iter = Collections.emptyIterator();
@@ -303,7 +299,16 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
         @Override
         public String next() {
-            return iter.next();
+            String next = iter.next();
+            if(iter.hasNext()){
+                try {
+                    close();
+                }
+                catch (IOException e) {
+                    logger.error("Could not close iterator", e);
+                }
+            }
+            return next;
         }
     }
 }
