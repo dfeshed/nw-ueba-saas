@@ -19,14 +19,17 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
 import static java.time.temporal.ChronoUnit.HOURS;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -69,6 +72,9 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
                 .flatMap(alert -> alert.getIndicatorsList().stream())
                 .collect(Collectors.groupingBy(AlertsStoredRecord.Indicator::getAlertEntityType));
 
+        LOGGER.info("REST response indicators count from " + startTime + " to " + endTime);
+        indicatorsInTimeRangeByEntityType.forEach((k,v) -> System.out.println(k + ": " + v.size()));
+
         indicatorIdsByType = indicatorsInTimeRangeByEntityType.entrySet().stream()
                 .collect(Collectors.toMap(
                         e -> e.getKey(),
@@ -94,6 +100,7 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
 
 
     private void test(String entityType) {
+        LOGGER.info(" --- Forwarding validation started for " + entityType);
         respondServerAlertCollectionHelper.truncateCollection();
 
         ImmutableList<String> expectedIndicatorIdsFromRest = ImmutableList.copyOf(indicatorIdsByType.get(entityType));
@@ -108,6 +115,7 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
 
         RespondServerAlertCollectionHelper alertCollection = new RespondServerAlertCollectionHelper();
         List<RespondServerAlertCollectionHelper.RespondServerAlert> respondServerAlerts = alertCollection.getRespondServerAlertsForLastWeek(startTime, endTime);
+        LOGGER.info("<" + entityType + "> " + respondServerAlerts.size() + " alerts found on the respond server.");
 
         ImmutableList<String> actualIndicatorIdsFromRespondServer = ImmutableList.copyOf(respondServerAlerts.parallelStream().map(alert -> alert.uebaIndicatorId).collect(toList()));
         assertThat(actualIndicatorIdsFromRespondServer).as("No alerts found on respond server from startDate=" + startTime + " to endDate=" + endTime).isNotEmpty();
@@ -123,10 +131,24 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
                 "\n  -----  REST response Indicator Ids are missing from Respond Server: \n" + String.join("\n", missingFromRespondServer) +
                 "\n  -----  Respond Server Indicator Ids are missing from REST response: \n" + String.join("\n", missingFromRest);
 
-        assertThat(actualIndicatorIdsFromRespondServer)
-                .withFailMessage(failureMessage.get())
-                .hasSameSizeAs(expectedIndicatorIdsFromRest)
-                .containsExactlyInAnyOrderElementsOf(expectedIndicatorIdsFromRest);
+        LOGGER.info(" --- Forwarding validation before test " + entityType);
+
+        Stream<AlertsStoredRecord.Indicator> indicators = allAlerts.parallelStream().flatMap(alert -> alert.getIndicatorsList().stream());
+
+        Function<List<String>, String> printDetails = missingIds ->
+                indicators.filter(e -> missingIds.stream().anyMatch(missingId -> missingId.equals(e.getId())))
+                        .map(e -> e.getId().concat(" ").concat(e.getAlertEntityType()).concat(" ").concat(e.getStartDate().toString()).concat(" ").concat(e.getEndDate().toString()))
+                        .collect(joining("\n"));
+
+        assertThat(missingFromRespondServer)
+                .overridingErrorMessage(allAlertsUrl + "\n-----  REST response Indicators missing from Respond Server: \n" + printDetails.apply(missingFromRespondServer))
+                .isEmpty();
+
+        assertThat(missingFromRest)
+                .as(allAlertsUrl + "\n ---- Respond server Indicators missing from from REST." + "\n" + printDetails.apply(missingFromRest))
+                .isEmpty();
+
+        LOGGER.info(" --- Forwarding validation after test " + entityType);
     }
 
 
