@@ -300,7 +300,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
         @Override
         public String next() {
             String next = iter.next();
-            if (iter.hasNext()) {
+            if (!iter.hasNext()) {
                 close();
             }
             return next;
