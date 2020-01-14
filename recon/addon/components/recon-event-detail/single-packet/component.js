@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import layout from './template';
 import InViewportMixin from 'ember-in-viewport';
-import { setProperties } from '@ember/object';
+import { htmlSafe } from '@ember/template';
 import {
   ROW_HEIGHT,
   determineVisibleBytes
@@ -17,7 +17,6 @@ export default Component.extend(InViewportMixin, {
   ],
   layout,
   tagName: 'section',
-
   hasSignaturesHighlighted: false,
   hasStyledBytes: false,
   index: null,
@@ -26,24 +25,20 @@ export default Component.extend(InViewportMixin, {
   packet: null,
   tooltipData: null,
   shouldRender: false,
-  calculatedHeight: 0,
+  calculatedStyle: undefined,
+  packetByteCount: 0,
 
   init() {
     this._super(...arguments);
-    this.packetByteCount = 0;
-    this.chunkedPacket = [];
+    this.set('chunkedPacket', []);
     // Configure InViewportMixin
-    setProperties(this, {
-      viewportTolerance: {
-        top: 300,
-        bottom: 300
-      }
-    });
+    this.set('viewportSpy', true);
   },
 
   didInsertElement() {
     this._super(...arguments);
     this.processPacketBytes();
+    this.calculateHeight();
   },
 
   didUpdateAttrs() {
@@ -69,8 +64,10 @@ export default Component.extend(InViewportMixin, {
     // Figure out what the height of this component will be so that
     // didEnterViewport is not prematurely invoked because the height is 0
     // (because we haven't rendered the table yet).
-    const heightInPx = `min-height: ${byteRows.length * ROW_HEIGHT}px`;
-    this.set('calculatedHeight', heightInPx);
+    if (Array.isArray(byteRows)) {
+      const minHeight = htmlSafe(`min-height: ${byteRows.length * ROW_HEIGHT}px`);
+      this.set('calculatedStyle', minHeight);
+    }
   },
 
   processPacketBytes() {

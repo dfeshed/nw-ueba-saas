@@ -8,12 +8,7 @@ import {
 } from 'recon/actions/interaction-creators';
 import { offset } from 'component-lib/utils/jquery-replacement';
 import InViewportMixin from 'ember-in-viewport';
-import { setProperties } from '@ember/object';
 import { ROW_HEIGHT } from 'recon/components/recon-event-detail/single-packet/util';
-
-// Number of rows to use as a buffer for determining if this component is
-// in or near the viewport.
-const BUFFER_ROWS = 20;
 
 // A quantize scale will map a continuous domain to a discrete range
 const scale = scaleQuantize()
@@ -54,14 +49,8 @@ const ByteTableComponent = Component.extend(InViewportMixin, {
 
   init() {
     this._super(...arguments);
-    const buffer = ROW_HEIGHT * BUFFER_ROWS;
     // Configure InViewportMixin
-    setProperties(this, {
-      viewportTolerance: {
-        top: buffer,
-        bottom: buffer
-      }
-    });
+    this.set('viewportSpy', true);
   },
 
   didInsertElement() {
