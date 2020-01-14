@@ -32,18 +32,17 @@ import java.util.zip.GZIPInputStream;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
-import static java.util.Objects.requireNonNull;
 
 /**
  * An iterator that steps through events in a given time range. It makes the following assumptions.
  *
  * <ul>
  * <li>The files are gzipped new-line delimited JSON files</li>
- * <li>the S3 keys are in the following format: streamPrefix/YYYY/MM/DD/HH/foobar.json.gz</li>
+ * <li>the S3 keys are in the following format:
+ * <tenant>/NetWitness/<account>/<schema>/<region>/year/month/day/<Account>_<Region>_<Application>_<Timestamp>_<Unique>.json.gz</li>
  * </ul>
  *
- * @author Abhinav Iyappan
- * @since 0.3
+ * @author Yael Berger
  */
 public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable {
 
@@ -96,43 +95,10 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
         this.startTime = startTime.truncatedTo(HOURS);
         this.endTime = endTime.minusNanos(1).plusSeconds(3600).truncatedTo(HOURS);
 
-        initPathIterator();
+        initFolderIterator();
         lineIterator = CloseableIterator.empty();
         fileIterator = Collections.emptyIterator();
         nextFile();
-    }
-
-    /**
-     * Default constructor.
-     *
-     * @param s3        an AmazonS3Client that is set up with access to the bucket paths provided.
-     * @param params    map that should contain bucket, customerId and schema parameters.
-     * @param startTime the start time of the events to stream.
-     * @param endTime   the end time of the events to stream.
-     */
-    public S3DataIterator(AmazonS3 s3, Map<String, String> params, Instant startTime,
-                          Instant endTime) {
-        this(
-                s3,
-                requireNonNull(params.get("bucket"), "Bucket name is missing"),
-                formStreamPrefix(params),
-                startTime,
-                endTime
-        );
-    }
-
-    /**
-     * Generates the streamPrefix string from tenant, schema and region value in the parameter map.
-     *
-     * @param params the parameter config map
-     * @return the streamPrefix.
-     */
-    private static String formStreamPrefix(Map<String, String> params) {
-        String tenant = requireNonNull(params.get("tenant"), "tenant is missing");
-        String account = requireNonNull(params.get("account"), "account is missing");
-        String schema = requireNonNull(params.get("schema"), "schema is missing");
-        String region = requireNonNull(params.get("region"), "region is missing");
-        return tenant + "/NetWitness/" + account + "/" +  schema + "/" + region + "/";
     }
 
     /**
@@ -230,9 +196,9 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
     }
 
     /**
-     * Instantiates a list containing the paths from which to pull the events in the given time-range.
+     * Instantiates a list containing the folders from which to pull the events in the given time-range.
      */
-    private void initPathIterator() {
+    private void initFolderIterator() {
         List<String> days = new ArrayList<>();
         logger.info("Fetching events from inclusive {} to exclusive {}.", startTime, endTime);
         for (Instant time = startTime; time.isBefore(endTime); time = time.plus(1, DAYS).truncatedTo(DAYS)) {
