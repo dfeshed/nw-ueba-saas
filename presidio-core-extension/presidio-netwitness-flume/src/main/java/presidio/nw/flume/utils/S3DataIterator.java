@@ -267,12 +267,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
                 this.iter = reader.lines().iterator();
                 this.reader = reader;
                 if(!iter.hasNext()){
-                    try {
-                        close();
-                    }
-                    catch (IOException e) {
-                        logger.error("Could not close iterator", e);
-                    }
+                    close();
                 }
             }
             else {
@@ -285,10 +280,15 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             iter = Collections.emptyIterator();
             if (reader != null) {
-                reader.close();
+                try {
+                    reader.close();
+                }
+                catch (IOException e) {
+                    logger.error("Could not close iterator", e);
+                }
             }
         }
 
@@ -300,13 +300,8 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
         @Override
         public String next() {
             String next = iter.next();
-            if(iter.hasNext()){
-                try {
-                    close();
-                }
-                catch (IOException e) {
-                    logger.error("Could not close iterator", e);
-                }
+            if (iter.hasNext()) {
+                close();
             }
             return next;
         }
