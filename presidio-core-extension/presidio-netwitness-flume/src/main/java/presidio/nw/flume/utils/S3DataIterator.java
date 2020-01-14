@@ -67,7 +67,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
     // STATEFUL FIELDS
     private Iterator<String> folderIterator;
 
-    private CloseableIterator lineIterator;
+    private BufferReaderIterator lineIterator;
 
     private Iterator<S3ObjectSummary> fileIterator;
 
@@ -96,7 +96,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
         this.endTime = endTime.minusNanos(1).plusSeconds(3600).truncatedTo(HOURS);
 
         initFolderIterator();
-        lineIterator = CloseableIterator.empty();
+        lineIterator = BufferReaderIterator.empty();
         fileIterator = Collections.emptyIterator();
         nextFile();
     }
@@ -213,16 +213,16 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
      * @param filePath the key of the file to read
      * @return An iterator to a List containing the lines of the file as {@link String}s
      */
-    private CloseableIterator readS3File(String filePath) {
+    private BufferReaderIterator readS3File(String filePath) {
         try {
             GZIPInputStream gzip = new GZIPInputStream(s3.getObject(bucket, filePath).getObjectContent());
             BufferedReader reader = new BufferedReader(new InputStreamReader(gzip));
-            return new CloseableIterator(reader);
+            return new BufferReaderIterator(reader);
         }
         catch (IOException e) {
             logger.warn(e.getMessage());
             logger.debug(e.getMessage(), e);
-            return CloseableIterator.empty();
+            return BufferReaderIterator.empty();
         }
     }
 
@@ -257,12 +257,12 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
     /**
      * This class iterates through lines of a BufferedReader and allows the reader to be closed on completion.
      */
-    private static final class CloseableIterator implements Iterator<String>, Closeable {
+    private static final class BufferReaderIterator implements Iterator<String>, Closeable {
 
         private Iterator<String> iter;
         private BufferedReader reader;
 
-        private CloseableIterator(BufferedReader reader) {
+        private BufferReaderIterator(BufferedReader reader) {
             if (reader != null) {
                 this.iter = reader.lines().iterator();
                 this.reader = reader;
@@ -275,8 +275,8 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
             }
         }
 
-        private static CloseableIterator empty() {
-            return new CloseableIterator(null);
+        private static BufferReaderIterator empty() {
+            return new BufferReaderIterator(null);
         }
 
         @Override
