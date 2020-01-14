@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -127,14 +126,7 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
         missingFromRespondServer.removeAll(actualIndicatorIdsFromRespondServer);
         missingFromRest.removeAll(expectedIndicatorIdsFromRest);
 
-        Supplier<String> failureMessage = () -> allAlertsUrl +
-                "\nIndicator IDs mismatch between REST and respond server result." +
-                "\nFrom startDate=" + startTime + " to endDate=" + endTime +
-                "\n  -----  REST response Indicator Ids are missing from Respond Server: \n" + String.join("\n", missingFromRespondServer) +
-                "\n  -----  Respond Server Indicator Ids are missing from REST response: \n" + String.join("\n", missingFromRest);
-
         LOGGER.info(" --- Forwarding validation before test " + entityType);
-
 
         Function<List<String>, String> printDetails = missingIds ->
                 allIndicators.parallelStream().filter(e -> missingIds.stream().anyMatch(missingId -> missingId.equals(e.getId())))
