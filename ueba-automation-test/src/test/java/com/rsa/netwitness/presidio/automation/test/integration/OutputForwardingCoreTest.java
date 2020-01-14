@@ -25,7 +25,6 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
 import static java.time.temporal.ChronoUnit.HOURS;
@@ -46,6 +45,7 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
 
     private final PresidioUrl allAlertsUrl = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
     private List<AlertsStoredRecord> allAlerts;
+    List<AlertsStoredRecord.Indicator> allIndicators;
     private Map<String, List<AlertsStoredRecord.Indicator>> indicatorsInTimeRangeByEntityType;
     private Map<String, List<String>> indicatorIdsByType;
 
@@ -61,6 +61,8 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
 
         allAlerts = restHelper.alerts().request().getAlerts(allAlertsUrl);
         assertThat(allAlerts).as(allAlertsUrl + "\nEmpty alerts response").isNotNull().isNotEmpty();
+
+        allIndicators = allAlerts.parallelStream().flatMap(alert -> alert.getIndicatorsList().stream()).collect(toList());
 
         Instant firstStartDate = allAlerts.parallelStream().map(AlertsStoredRecord::getStartDate).min(Instant::compareTo).orElseThrow();
         Instant lastEndDate = allAlerts.parallelStream().map(AlertsStoredRecord::getEndDate).max(Instant::compareTo).orElseThrow();
@@ -133,10 +135,9 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
 
         LOGGER.info(" --- Forwarding validation before test " + entityType);
 
-        Stream<AlertsStoredRecord.Indicator> indicators = allAlerts.parallelStream().flatMap(alert -> alert.getIndicatorsList().stream());
 
         Function<List<String>, String> printDetails = missingIds ->
-                indicators.filter(e -> missingIds.stream().anyMatch(missingId -> missingId.equals(e.getId())))
+                allIndicators.parallelStream().filter(e -> missingIds.stream().anyMatch(missingId -> missingId.equals(e.getId())))
                         .map(e -> e.getId().concat(" ").concat(e.getAlertEntityType()).concat(" ").concat(e.getStartDate().toString()).concat(" ").concat(e.getEndDate().toString()))
                         .collect(joining("\n"));
 
