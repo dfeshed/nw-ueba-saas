@@ -275,7 +275,7 @@ buildEmberApp configure false true true 1024
 buildEmberApp investigate-process-analysis false true true 1024
 buildEmberApp admin-source-management false true true 1024
 buildEmberApp admin false true true 1024
-buildEmberApp sa true true true 4096
+buildEmberApp sa true true true 8192
 
 success "All apps built successfully"
 
