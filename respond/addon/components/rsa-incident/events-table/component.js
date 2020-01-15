@@ -1,8 +1,7 @@
-import { get } from '@ember/object';
+import { get, computed } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { storyEvents, storyEventSelections } from 'respond/selectors/storyline';
 import { singleSelectEvent } from 'respond/actions/creators/incidents-creators';
@@ -29,15 +28,14 @@ const StoryEvents = Component.extend({
   // This quantity will be passed down the `rsa-data-table` child, which (for now) only supports a
   // single selected index. In the future, once the data table is enhanced to support multiple selected indices,
   // then we will redefine this computed property so it computes multiple selected indices instead of just one.
-  @computed('items.[]', 'selections.[]')
-  selectedIndex(items, selections) {
-    const [ firstId ] = selections || [];
+  selectedIndex: computed('items.[]', 'selections.[]', function() {
+    const [ firstId ] = this.selections || [];
     if (isEmpty(firstId)) {
       return -1;
     } else {
-      return indexOfBy(items, 'id', firstId);
+      return indexOfBy(this.items, 'id', firstId);
     }
-  },
+  }),
 
   /**
    * The `panelId` for the Event Details modal dialog, to be launched by clicking on the individual

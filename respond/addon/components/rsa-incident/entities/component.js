@@ -1,5 +1,5 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import eventsToNodesAndLinks from 'respond/utils/entity/events-to-nodes-links';
 import selectionToFilter from 'respond/utils/entity/selection-to-filter';
 import arrayFromHash from 'respond/utils/array/from-hash';
@@ -38,55 +38,50 @@ const IncidentEntities = Component.extend(CanThrottleAttr, {
   nodeLimit: 500,
 
   // Generates a set of nodes & links from a list of events.
-  @computed('eventsThrottled', 'nodeLimit')
-  data(events, nodeLimit) {
-    return eventsToNodesAndLinks(events || [], { nodeLimit });
-  },
+  data: computed('eventsThrottled', 'nodeLimit', function() {
+    return eventsToNodesAndLinks(this.eventsThrottled || [], { nodeLimit: this.nodeLimit });
+  }),
 
   // False only if both of the following conditions are true:
   // (1) the data exceeded node count limit, and
   // (2) the current selection includes an event/alert id that was truncated.
-  @computed('data', 'selection')
-  selectionCanBeRendered(data, selection) {
-    const { hasExceededNodeLimit, indicatorIdsNotRendered, eventIdsNotRendered } = data || {};
-    if (hasExceededNodeLimit && selection) {
-      const { type, ids = [] } = selection;
+  selectionCanBeRendered: computed('data', 'selection', function() {
+    const { hasExceededNodeLimit, indicatorIdsNotRendered, eventIdsNotRendered } = this.data || {};
+    if (hasExceededNodeLimit && this.selection) {
+      const { type, ids = [] } = this.selection;
       const hash = (type === 'event') ? eventIdsNotRendered : indicatorIdsNotRendered;
       if (ids.any((id) => hash.hasOwnProperty(id))) {
         return false;
       }
     }
     return true;
-  },
+  }),
 
   // Generates a filter for the nodes & links from the current selection (if any).
-  @computed('data', 'selection', 'selectionCanBeRendered')
-  filter(data, selection, selectionCanBeRendered) {
-    return selectionToFilter(data, selectionCanBeRendered ? selection : null);
-  },
+  filter: computed('data', 'selection', 'selectionCanBeRendered', function() {
+    return selectionToFilter(this.data, this.selectionCanBeRendered ? this.selection : null);
+  }),
 
   // Computes the counts of data nodes, grouped by node type.
-  @computed('data.nodes')
-  nodeCounts(nodes) {
+  nodeCounts: computed('data.nodes', function() {
     return arrayFromHash(
-      countNodesByType(nodes)
+      countNodesByType(this.data?.nodes)
     );
-  },
+  }),
 
   // Computes the counts of data nodes that pass the current `filter`, grouped by node type.
   // If there is no current `filter`, counts all of the data nodes.
-  @computed('nodeCounts', 'filter')
-  filteredNodeCounts(counts, filter) {
-    if (!filter) {
-      return counts;
+  filteredNodeCounts: computed('nodeCounts', 'filter', function() {
+    if (!this.filter) {
+      return this.nodeCounts;
     } else {
-      const { nodeIds = [] } = filter;
+      const { nodeIds = [] } = this.filter;
       const nodes = nodeIds.map(parseNodeId);
       return arrayFromHash(
         countNodesByType(nodes)
       );
     }
-  }
+  })
 });
 
 export default connect(stateToComputed, dispatchToActions)(IncidentEntities);

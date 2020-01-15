@@ -1,7 +1,7 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import { getStatusTypes } from 'respond/selectors/dictionaries';
 import {
   getPriorityTypes,
@@ -34,35 +34,30 @@ const IncidentOverview = Component.extend({
    */
   info: null,
 
-  @computed(
-    'riac.canChangeAssignee',
-    'info.status'
-  )
-  canChangeAssignee(canChangeAssignee, status) {
-    const isClosed = isIncidentClosed(status);
-    return !isClosed && canChangeAssignee;
-  },
+  canChangeAssignee: computed('riac.canChangeAssignee', 'info.status', function() {
+    const isClosed = isIncidentClosed(this.info?.status);
+    return !isClosed && this.riac?.canChangeAssignee;
+  }),
 
-  @computed('i18n.locale')
-  unassignedLabel() {
+  unassignedLabel: computed('i18n.locale', function() {
     const i18n = this.get('i18n');
     return i18n.t('respond.assignee.none');
-  },
+  }),
 
-  @computed('info.assignee', 'unassignedLabel')
-  assigneeName(assignee, unassignedLabel) {
+  assigneeName: computed('info.assignee', 'unassignedLabel', function() {
     // if there's no assignee, return the unassigned label, otherwise the name or ID of the assignee
-    return !assignee ? unassignedLabel : (assignee.name || assignee.id);
-  },
+    return !this.info?.assignee ? this.unassignedLabel : (this.info?.assignee.name || this.info?.assignee.id);
+  }),
 
-  @computed('info.assignee', 'users')
-  selectedUserOption(assignee, users = []) {
+  selectedUserOption: computed('info.assignee', 'users', function() {
+    const users = this.users || [];
     // if the user is null/undefined, return the unassign user option (first option), otherwise lookup by id
-    return !assignee ? users[0] : users.findBy('id', assignee.id);
-  },
+    return !this.info?.assignee ? users[0] : users.findBy('id', this.info?.assignee.id);
+  }),
 
-  @computed('users', 'accessControl.username')
-  assigneeOptions: enhance,
+  assigneeOptions: computed('users', 'accessControl.username', function() {
+    return enhance(this.users, this.accessControl?.username);
+  }),
 
   actions: {
     /**

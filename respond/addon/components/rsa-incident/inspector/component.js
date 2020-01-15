@@ -1,6 +1,7 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed, { alias } from 'ember-computed-decorators';
+import { alias } from '@ember/object/computed';
 import {
   updateItem,
   setViewMode,
@@ -74,25 +75,27 @@ const IncidentInspector = Component.extend(Notifications, {
   mouseDownAction: null,
 
   // Same as `width`, but enforces minimum.
-  @computed('width')
-  resolvedWidth(width) {
-    return resolveWidth(width);
-  },
+  resolvedWidth: computed('width', function() {
+    return resolveWidth(this.width);
+  }),
 
-  @computed('resolvedWidth')
-  style(width) {
-    return htmlSafe(`width: ${width}px;`);
-  },
+  style: computed('resolvedWidth', function() {
+    return htmlSafe(`width: ${this.resolvedWidth}px;`);
+  }),
 
-  @alias('info.alertCount')
-  storyPointCountExpected: null,
+  storyPointCountExpected: alias('info.alertCount'),
 
-  @computed('storylineStatus', 'infoStatus', 'storyPointCount', 'storyPointCountExpected')
-  isStorylineCutoff(storylineStatus, infoStatus, storyPointCount, storyPointCountExpected) {
-    return (storylineStatus === 'completed') &&
-      (infoStatus == 'completed') &&
-      (storyPointCount < storyPointCountExpected);
-  },
+  isStorylineCutoff: computed(
+    'storylineStatus',
+    'infoStatus',
+    'storyPointCount',
+    'storyPointCountExpected',
+    function() {
+      return (this.storylineStatus === 'completed') &&
+        (this.infoStatus == 'completed') &&
+        (this.storyPointCount < this.storyPointCountExpected);
+    }
+  ),
 
   // Wire up a drag behavior on resizer DOM node to invoke the "resizeAction".
   didInsertElement() {

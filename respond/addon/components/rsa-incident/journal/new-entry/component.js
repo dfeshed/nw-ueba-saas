@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { createJournalEntry } from 'respond/actions/creators/journal-creators';
-import { empty } from 'ember-computed-decorators';
+import { empty } from '@ember/object/computed';
 import Notifications from 'component-lib/mixins/notifications';
 
 const stateToComputed = ({ respond: { dictionaries: { milestoneTypes } } }) => ({
@@ -29,7 +29,7 @@ const Journal = Component.extend(Notifications, {
   notes: null,
   milestone: null,
 
-  @empty('notes') isInvalid: true,
+  isInvalid: empty('notes'),
 
   actions: {
     handleSubmit() {

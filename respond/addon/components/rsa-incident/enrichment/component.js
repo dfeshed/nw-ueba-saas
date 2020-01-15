@@ -1,7 +1,6 @@
 import Component from '@ember/component';
-import { get } from '@ember/object';
+import { get, computed } from '@ember/object';
 import { isEmpty } from '@ember/utils';
-import computed from 'ember-computed-decorators';
 import KeysToi18n from './keys-to-i18n';
 
 /**
@@ -89,18 +88,17 @@ export default Component.extend({
    * @type {string}
    * @private
    */
-  @computed('dataKey', 'data')
-  i18nKey(dataKey, data) {
-    if (String(dataKey).indexOf('domain_is_whitelisted') > -1) {
+  i18nKey: computed('dataKey', 'data', function() {
+    if (String(this.dataKey).indexOf('domain_is_whitelisted') > -1) {
 
       // For 'domain_is_whitelisted', if the value is `false`, use the i18n key for 'domain_is_not_whitelisted'.
-      const value = get(data || {}, dataKey);
+      const value = get(this.data || {}, this.dataKey);
       if (!value) {
-        dataKey = dataKey.replace('domain_is_whitelisted', 'domain_is_not_whitelisted');
+        this.dataKey = this.dataKey.replace('domain_is_whitelisted', 'domain_is_not_whitelisted');
       }
     }
-    return KeysToi18n[dataKey];
-  },
+    return KeysToi18n[this.dataKey];
+  }),
 
   /**
    * Computes whether or not the score for the given `dataKey` in `data` meets the given `threshold` minimum.
@@ -108,13 +106,12 @@ export default Component.extend({
    * @type {boolean}
    * @private
    */
-  @computed('dataKey', 'data', 'threshold')
-  shouldDisplay(dataKey, data, threshold) {
-    data = data || {};
-    const dataValue = get(data, dataKey || '');
+  shouldDisplay: computed('dataKey', 'data', 'threshold', function() {
+    this.data = this.data || {};
+    const dataValue = get(this.data, this.dataKey || '');
     if (isEmpty(dataValue)) {
       return false;
     }
-    return !threshold ? true : dataValue > threshold;
-  }
+    return !this.threshold ? true : dataValue > this.threshold;
+  })
 });

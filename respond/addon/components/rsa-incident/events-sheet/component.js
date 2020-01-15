@@ -1,3 +1,4 @@
+import { computed } from '@ember/object';
 import EventsSheet from 'respond/components/rsa-events-sheet/component';
 import layout from './template';
 import { connect } from 'ember-redux';
@@ -6,7 +7,6 @@ import {
   storyDatasheet,
   selectedStoryEventCountExpected
 } from 'respond/selectors/storyline';
-import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   items: storyDatasheet(state),
@@ -25,15 +25,14 @@ const IncidentDatasheet = EventsSheet.extend({
   totalCount: null,
   throttleInterval: null,
 
-  @computed('selection.{type,ids}', 'storyline.[]')
-  selectedIndicatorName(type, ids, storyline) {
-    if (type === 'storyPoint') {
-      const indicator = storyline.findBy('id', ids[0]);
+  selectedIndicatorName: computed('selection.type', 'selection.ids', 'storyline.[]', function() {
+    if (this.selection?.type === 'storyPoint') {
+      const indicator = this.storyline.findBy('id', this.selection?.ids[0]);
       return indicator && indicator.alert && indicator.alert.name;
     } else {
       return '';
     }
-  }
+  })
 });
 
 export default connect(stateToComputed, undefined)(IncidentDatasheet);

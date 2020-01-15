@@ -1,10 +1,10 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import * as incidentCreators from 'respond/actions/creators/incidents-creators';
 import { isIncidentClosed } from 'respond/helpers/is-incident-closed';
 import Notifications from 'component-lib/mixins/notifications';
-import computed from 'ember-computed-decorators';
 
 const dispatchToActions = (dispatch) => {
   return {
@@ -42,10 +42,10 @@ const IncidentInspectorHeader = Component.extend(Notifications, {
    */
   isSendToArcherAvailable: false,
 
-  @computed('info.status', 'accessControl.respondCanManageIncidents')
-  isSendToArcherDisabled(status, canManageIncidents) {
-    return isIncidentClosed(status) || canManageIncidents === false;
-  },
+  isSendToArcherDisabled: computed('info.status', 'accessControl.respondCanManageIncidents', function() {
+    return isIncidentClosed(this.info?.status) || this.accessControl?.respondCanManageIncidents === false;
+  }),
+
   actions: {
     updateName(entityId, fieldName, updatedValue, originalValue, revertCallback) {
       this.get('updateItem')(entityId, fieldName, updatedValue, revertCallback);

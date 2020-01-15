@@ -1,5 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import computed, { notEmpty } from 'ember-computed-decorators';
+import { notEmpty } from '@ember/object/computed';
 import { dasherize } from '@ember/string';
 import safeCallback from 'component-lib/utils/safe-callback';
 import { connect } from 'ember-redux';
@@ -46,31 +47,28 @@ const EntitiesLegend = Component.extend({
    */
   showAllAction: null,
 
-  @notEmpty('data')
-  hasData: null,
+  hasData: notEmpty('data'),
 
-  @computed('selection')
-  resolvedSelection(selection) {
-    if (!selection || !selection.ids.length) {
+  resolvedSelection: computed('selection', function() {
+    if (!this.selection || !this.selection.ids.length) {
       return null;
-    } else if (String(selection.type).match(/node|link/)) {
+    } else if (String(this.selection.type).match(/node|link/)) {
       return null;
     } else {
-      return selection;
+      return this.selection;
     }
-  },
+  }),
 
   // Same key-value pairs as in `data`, but with strings added for UI display.
   // @private
-  @computed('data')
-  resolvedData(data) {
-    return (data || []).map(({ key, value }) => ({
+  resolvedData: computed('data', function() {
+    return (this.data || []).map(({ key, value }) => ({
       key,
       cssClass: dasherize(String(key)),
       i18nKey: `respond.entity.legend.${key}`,
       value
     }));
-  },
+  }),
 
   actions: {
     safeCallback

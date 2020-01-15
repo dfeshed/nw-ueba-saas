@@ -1,7 +1,7 @@
+import { computed } from '@ember/object';
 import FastForce from 'respond/components/rsa-fast-force/component';
 import HighlightsEntities from 'context/mixins/highlights-entities';
 import { next } from '@ember/runloop';
-import computed from 'ember-computed-decorators';
 import _ from 'lodash';
 import { connect } from 'ember-redux';
 import { getVisibleEntityTypes } from 'respond/selectors/incidents';
@@ -34,10 +34,9 @@ const EntitiesForceLayout = FastForce.extend(HighlightsEntities, {
    * @param visibleEntityTypes
    * @returns {*}
    */
-  @computed('visibleEntityTypes')
-  invisibleEntities(visibleEntityTypes) {
-    return _.difference(ALL_KNOWN_ENTITIES, visibleEntityTypes).map((invisibleEntity) => `${invisibleEntity}-hidden`).join(' ');
-  },
+  invisibleEntities: computed('visibleEntityTypes', function() {
+    return _.difference(ALL_KNOWN_ENTITIES, this.visibleEntityTypes).map((invisibleEntity) => `${invisibleEntity}-hidden`).join(' ');
+  }),
 
   /**
    * Extends the inherited `dataJoin` by setting HTML attributes on entity DOM nodes. These HTML attributes are

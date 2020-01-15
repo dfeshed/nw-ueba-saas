@@ -1,5 +1,5 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { clearSelection, expandStorylineEvent } from 'respond/actions/creators/incidents-creators';
 import { getAlertsWithIndicatorId, storyDatasheet, expandedStorylineEventId, storylineEventsStatus, incidentSelection } from 'respond/selectors/storyline';
@@ -19,10 +19,9 @@ const dispatchToActions = {
 };
 
 const EventsList = Component.extend({
-  @computed('selection')
-  selectionExists({ ids }) {
-    return ids || ids.length;
-  }
+  selectionExists: computed('selection', function() {
+    return this.selection.ids || this.selection.ids.length;
+  })
 });
 
 export default connect(stateToComputed, dispatchToActions)(EventsList);

@@ -1,10 +1,11 @@
+import { computed } from '@ember/object';
 import { connect } from 'ember-redux';
 import {
   toggleTasksAndJournalPanel,
   setTasksJournalMode
 } from 'respond/actions/creators/incidents-creators';
 import Component from '@ember/component';
-import computed, { alias } from 'ember-computed-decorators';
+import { alias } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import { isIncidentClosed } from 'respond/helpers/is-incident-closed';
 
@@ -33,22 +34,20 @@ const IncidentTasksJournalPanel = Component.extend({
   attributeBindings: ['style'],
   tagName: 'article',
   classNames: ['rsa-journal-and-tasks'],
-  accessControl: service(),
 
+  accessControl: service(),
   isAddingNewTask: false,
 
-  @computed('info.status')
-  isIncidentClosed(status) {
-    return isIncidentClosed(status);
-  },
+  isIncidentClosed: computed('info.status', function() {
+    return isIncidentClosed(this.info?.status);
+  }),
 
   // The incident's notes can be undefined/null, in which case default to zero
-  @computed('info.notes.length')
-  journalEntryCount(notesCount) {
-    return notesCount || 0;
-  },
+  journalEntryCount: computed('info.notes.length', function() {
+    return this.info?.notes?.length || 0;
+  }),
 
-  @alias('tasks.length') taskCount: 0,
+  taskCount: alias('tasks.length'),
 
   actions: {
     addNewTask() {
