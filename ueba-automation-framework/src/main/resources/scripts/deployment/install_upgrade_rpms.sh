@@ -19,7 +19,6 @@ if [[ $(systemctl is-active airflow-scheduler) == 'active' ]]||[[ $(systemctl is
     sudo systemctl stop airflow-scheduler
 fi
 
-
 sudo systemctl stop iptables
 echo "old_rpms_version=" $OLD_RPM_VERSION"; new_rpms_version=" $NEW_RPM_VERSION ";"
 OLD_RPM_VERSION=`echo $OLD_RPM_VERSION | sed 's/[\.]//g'`
