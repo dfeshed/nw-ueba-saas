@@ -53,8 +53,8 @@ function runEmberTestWithMockServer {
 
   # now run the tests
   info "Running 'ember exam' for $1 on port $testemPort"
-  info "COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort"
-  COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort
+  info "COVERAGE=false NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort"
+  COVERAGE=false NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort
   local status=$?
 
   # kill mock server
@@ -92,8 +92,8 @@ function runEmberTestNoMockServer {
   fi
 
   info "Running 'ember exam' for $1 on port $testemPort"
-  info "COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort"
-  COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort
+  info "COVERAGE=false NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort"
+  COVERAGE=false NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort
   checkError "Ember exam/test failed for $1"
   success "'ember exam' for $1 was successful"
   # Push the newly generated coverage directory to the mount '/mnt/libhq-SA/SAStyle/sa-ui-coverage/<submodule>/coverage/*';
