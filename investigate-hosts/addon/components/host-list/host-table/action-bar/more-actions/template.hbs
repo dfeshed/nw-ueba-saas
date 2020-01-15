@@ -73,7 +73,7 @@
             }}
               <ul class="rsa-dropdown-action-list">
                 {{#each moreOption.subItems as |subItem|}}
-                  <li>
+                  <li class="{{if subItem.isDisabled 'disabled'}}">
                     {{#rsa-form-button
                        defaultAction=(action 'displayIsolationModal' subItem.modalName)
                        isDisabled=subItem.isDisabled}}

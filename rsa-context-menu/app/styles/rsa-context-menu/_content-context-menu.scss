@@ -27,6 +27,9 @@
         font-family: 'nw-icon-library-all-1';
         content: $rsa-icon-arrow-right-12;
         top: rsa-whitespace(less);
+        font-size: small;
+        padding-top: 6px;
+        padding-bottom: 6px;
         right: rsa-whitespace(least);
         color: text-color(primary, lighter);
       }
@@ -39,6 +42,7 @@
 
     .context-menu__item {
       padding: rsa-whitespace(less);
+      padding-bottom: 5px;
       &--parent {
         .context-menu__item__label {
           padding-left: rsa-whitespace();

@@ -190,7 +190,7 @@
     &:first-child {
       padding-top: rsa-whitespace(less);
     }
-    &:hover {
+    &:not(.disabled):hover {
       background-color: background-color(secondary, darker);
     }
     button.rsa-form-button {

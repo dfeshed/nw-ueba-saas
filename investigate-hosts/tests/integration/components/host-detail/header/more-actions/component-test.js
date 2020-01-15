@@ -65,6 +65,7 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     await render(hbs `{{host-detail/header/more-actions}}`);
     await click('.host_more_actions .host-details-more-actions');
     assert.equal(findAll('.host-details_dropdown-action-list li').length, 5, 'Number of actions present is 5 as MFT and system dump permission added');
+    assert.equal(findAll('.host-details_dropdown-action-list li.disabled').length, 2, 'export host detail is disabled');
 
     assert.ok(find('.host-start-scan-button'), 'scan-command renders giving the start scan button');
     assert.equal(findAll('.rsa-icon-check-shield').length, 0, 'Start scan icon not present');
@@ -83,6 +84,7 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     await render(hbs `{{host-detail/header/more-actions}}`);
     await click('.host_more_actions .host-details-more-actions');
     assert.equal(findAll('.host-details_dropdown-action-list li').length, 2, 'Number of actions present is 2 as No MFT permission added');
+    assert.equal(findAll('.host-details_dropdown-action-list li.disabled').length, 2, 'export host detail is disabled');
   });
 
   test('test for download warning modal rendering and for Requesting MFT', async function(assert) {
@@ -208,7 +210,7 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     await click(findAll('.download-warning-modal .modal-content .close-modal.continue')[0]);
   });
 
-  test('Test for download system dumo button disabled', async function(assert) {
+  test('Test for download system dump button disabled', async function(assert) {
     const state = {
       serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0',
       agentStatus: {

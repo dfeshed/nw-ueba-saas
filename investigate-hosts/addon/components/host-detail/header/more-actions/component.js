@@ -14,6 +14,7 @@ import { hostWithStatus,
 import { exportFileContext } from 'investigate-hosts/actions/data-creators/details';
 import { downloadMFT, downloadSystemDump } from 'investigate-hosts/actions/data-creators/host';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
+import { isScanStartButtonDisabled } from 'investigate-hosts/reducers/hosts/selectors';
 
 const stateToComputed = (state) => ({
   hostDetails: hostWithStatus(state),
@@ -22,6 +23,7 @@ const stateToComputed = (state) => ({
   isExportDisabled: !isSnapshotsAvailable(state),
   scanTime: state.endpoint.detailsInput.scanTime,
   agentId: state.endpoint.detailsInput.agentId,
+  isScanStartButtonDisabled: isScanStartButtonDisabled(state),
   isMFTEnabled: mftDownloadButtonStatusDetails(state),
   isAgentMigrated: isAgentMigrated(state),
   isolationStatus: isolationStatus(state)

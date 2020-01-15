@@ -20,14 +20,14 @@
   <ul class='host-details_dropdown-action-list'>
     {{#each moreOptions as |moreOption|}}
       {{#if (eq moreOption.buttonId 'startScan-button')}}
-        <li>
+        <li class="{{if isScanStartButtonDisabled 'disabled'}}">
           {{host-scan/scan-command
       modalTitle=(t 'investigateHosts.hosts.initiateScan.modal.modalTitle' name=hostName)
       command='START_SCAN'
-      isStartScanIconDisplayed=false}}
+      isStartScanIconDisplayed=false }}
         </li>
       {{else if (eq moreOption.buttonId 'export-button')}}
-        <li class="export-button">
+        <li class="export-button {{if isExportDisabled 'disabled'}}">
           {{#if isJsonExportCompleted}}
             <span title='{{t 'investigateHosts.hosts.button.exportTooltip'}}'>
               {{#rsa-form-button
@@ -68,7 +68,7 @@
           }}
             <ul class="rsa-dropdown-action-list">
               {{#each moreOption.subItems as |subItem|}}
-                <li class='{{if subItem.isDisabled "editDisabled"}}'>
+                <li class='{{if subItem.isDisabled "disabled"}}'>
                   {{#rsa-form-button
                     defaultAction=(action 'onshowIsolationModal' subItem.modalName)
                     isDisabled=subItem.isDisabled}}
@@ -80,7 +80,7 @@
           {{/rsa-content-tethered-panel}}
         </li>
       {{else if (eq moreOption.buttonId 'downloadMFT-button')}}
-        <li class="downloadMFT-button{{if moreOption.divider ' divider'}}" >
+        <li class="downloadMFT-button{{if moreOption.divider ' divider'}}">
           {{#rsa-form-button
             defaultAction=(action 'requestMFTDownload')
             isDisabled=isAgentMigrated}}
@@ -88,7 +88,7 @@
           {{/rsa-form-button}}
         </li>
       {{else if (eq moreOption.buttonId 'downloadSystemDump-button')}}
-        <li class="download-sys-dump-button">
+        <li class="download-sys-dump-button " >
           {{#rsa-form-button
             defaultAction=(action 'requestSystemDumpDownload')
             isDisabled=isAgentMigrated}}

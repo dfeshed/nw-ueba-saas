@@ -22,6 +22,7 @@
     cursor: pointer;
   }
   .rsa-data-table-body-row {
+    height: 35px;
     &.is-selected {
       .host-name a{
         color: text-color(secondary,lightest);

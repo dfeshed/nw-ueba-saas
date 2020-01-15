@@ -817,6 +817,58 @@ module('Integration | Component | host-table/action-bar/more-actions', function(
     assert.equal(findAll('.machine-isolation-selector button').length, 2, 'Network isolation sub menu options rendered');
     await click(findAll('.machine-isolation-selector button')[1]);
   });
+
+  test('Network isolation options test in more actions Edit Exclusion list is disabled if machine is not isolated', async function(assert) {
+    const selectedData = {
+      id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+      machineIdentity: {
+        machineName: 'RemDbgDrv',
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      },
+      version: '11.4.0.0',
+      managed: true,
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    };
+    new ReduxDataHelper(setState).scanCount(selectedData).build();
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true, 'passed action is called');
+    });
+    this.set('isMFTEnabled', { isDisplayed: true });
+    this.set('requestMFTDownload', () => {
+      assert.ok(true);
+    });
+    this.set('selectedHostList', [selectedData]);
+    this.set('isAgentMigrated', false);
+    this.set('hostDetails', { agentId: '', isIsolated: false, isIsolationEnabled: true });
+
+    this.set('showIsolationModal', (item) => {
+      assert.equal(item, 'edit');
+    });
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions
+      showRiskScoreModal=showRiskScoreModal
+      deleteAction=deleteAction
+      isMFTEnabled=isMFTEnabled
+      selectedHostList=selectedHostList
+      isAgentMigrated=isAgentMigrated
+      requestMFTDownload=requestMFTDownload
+      requestSystemDumpDownload=requestSystemDumpDownload
+      hostDetails=hostDetails
+      showIsolationModal=showIsolationModal}}`);
+
+    await click('.host_more_actions button');
+    assert.equal(findAll('.rsa-dropdown-action-list li.isolate-button').length, 1, 'host-network-isolation option is rendered.');
+    await triggerEvent(findAll('.rsa-dropdown-action-list li.isolate-button button')[0], 'mouseover');
+    assert.equal(findAll('.machine-isolation-selector button').length, 2, 'Network isolation sub menu options rendered');
+    assert.equal(findAll('.machine-isolation-selector .rsa-dropdown-action-list li.disabled').length, 1, 'Network isolation sub menu options rendered but edit exclusion list option is disabled if machine is not isolated ');
+  });
 });
 
 

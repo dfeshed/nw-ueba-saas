@@ -330,7 +330,7 @@
         border-bottom: none!important;
       }
 
-      &:hover {
+      &:not(.disabled):hover {
         color: text-color(primary, lightest);
         background-color: background-color(secondary, darker);
         cursor: pointer;

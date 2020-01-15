@@ -94,8 +94,11 @@ $footerHeight: 43px;
     &:last-child {
       padding-bottom: rsa-whitespace(less);
     }
+    &:nth-child(n) {
+      padding-bottom: 6px;
+    }
     &.divider {
-      margin: 0.75rem 0 0 0;
+      margin: 0 0 0 0;
     }
   }
   li.downloadMFT-button {
@@ -115,10 +118,12 @@ $footerHeight: 43px;
     button {
       border: none;
       padding-top: 13px;
+      .rsa-icon {
+        font-size: small;
+        padding-left: rsa-whitespace(less);
+      }
       span {
-
         margin-right: 70px;
-
       }
     }
   }
