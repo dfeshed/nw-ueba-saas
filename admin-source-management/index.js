@@ -22,7 +22,7 @@ module.exports = EngineAddon.extend({
     this.options = this.options || {};
     this.options = {
       ...this.options,
-      ...basicOptions
+      ...basicOptions()
     };
   },
 

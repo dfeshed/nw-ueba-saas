@@ -6,7 +6,7 @@ const projectName = 'context';
 
 module.exports = {
   name: projectName,
-  options: basicOptions,
+  options: basicOptions(),
   isDevelopingAddon: isDevelopingAddon(projectName),
   socketRouteGenerator: require('./config/socketRoutes'),
   mockDestinations: path.join(__dirname, 'tests', 'data', 'subscriptions')

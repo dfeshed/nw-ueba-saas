@@ -53,8 +53,8 @@ function runEmberTestWithMockServer {
 
   # now run the tests
   info "Running 'ember exam' for $1 on port $testemPort"
-  info "COVERAGE=false NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort"
-  COVERAGE=false NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort
+  info "COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort"
+  COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort
   local status=$?
 
   # kill mock server
@@ -92,8 +92,8 @@ function runEmberTestNoMockServer {
   fi
 
   info "Running 'ember exam' for $1 on port $testemPort"
-  info "COVERAGE=false NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort"
-  COVERAGE=false NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort
+  info "COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort"
+  COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF node --max_old_space_size=$3 ./node_modules/.bin/ember exam --split=4 --parallel --test-port $testemPort
   checkError "Ember exam/test failed for $1"
   success "'ember exam' for $1 was successful"
   # Push the newly generated coverage directory to the mount '/mnt/libhq-SA/SAStyle/sa-ui-coverage/<submodule>/coverage/*';
@@ -250,7 +250,7 @@ yarn link mock-server
 . ./scripts/jenkins/ngcoreui.sh
 buildEmberApp streaming-data false true true 512
 buildEmberApp component-lib false false true 512
-buildEmberApp packager false true true 512
+buildEmberApp packager false true true 1024
 buildEmberApp endpoint-rar false true true 512
 buildEmberApp entity-details false true true 512
 buildEmberApp rsa-dashboard false true true 512
@@ -264,18 +264,18 @@ buildEmberApp preferences false true true 512
 buildEmberApp test-helpers false false false 512
 buildEmberApp style-guide true false false 512
 buildEmberApp investigate-events false true true 1024
-buildEmberApp investigate-hosts false true true 512
-buildEmberApp investigate-files false true true 512
-buildEmberApp investigate-users false true true 512
-buildEmberApp investigate false true true 2048
+buildEmberApp investigate-hosts false true true 1024
+buildEmberApp investigate-files false true true 1024
+buildEmberApp investigate-users false true true 1024
+buildEmberApp investigate false true true 4096
 buildEmberApp respond-shared false true true 512
 buildEmberApp rsa-list-manager false false true 512
-buildEmberApp respond false true true 512
+buildEmberApp respond false true true 1024
 buildEmberApp configure false true true 1024
 buildEmberApp investigate-process-analysis false true true 1024
-buildEmberApp admin-source-management false true true 512
+buildEmberApp admin-source-management false true true 1024
 buildEmberApp admin false true true 1024
-buildEmberApp sa true true true 2048
+buildEmberApp sa true true true 4096
 
 success "All apps built successfully"
 

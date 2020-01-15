@@ -6,7 +6,7 @@ const projectName = 'respond-shared';
 
 module.exports = {
   name: projectName,
-  options: basicOptions,
+  options: basicOptions(),
   socketRouteGenerator: require('./config/socketRoutes'),
   mockDestinations: path.join(__dirname, 'tests', 'data', 'subscriptions'),
   isDevelopingAddon: isDevelopingAddon(projectName)

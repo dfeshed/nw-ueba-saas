@@ -5,6 +5,6 @@ const projectName = 'rsa-context-menu';
 
 module.exports = {
   name: projectName,
-  options: basicOptions,
+  options: basicOptions(),
   isDevelopingAddon: isDevelopingAddon(projectName)
 };

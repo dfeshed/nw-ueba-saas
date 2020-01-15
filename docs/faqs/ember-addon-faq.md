@@ -33,7 +33,7 @@ A few issues to be aware of:
 
 ```json
   "dependencies": {
-    "ember-cli-htmlbars": "0.7.9"
+    "ember-cli-htmlbars": "4.0.5"
   }
 ```
 

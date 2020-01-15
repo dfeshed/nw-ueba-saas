@@ -5,6 +5,6 @@ const projectName = 'investigate-shared';
 
 module.exports = {
   name: projectName,
-  options: basicOptions,
+  options: basicOptions(),
   isDevelopingAddon: isDevelopingAddon(projectName)
 };

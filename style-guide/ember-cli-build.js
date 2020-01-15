@@ -19,7 +19,7 @@ module.exports = function(defaults) {
       ]
       // onlyIncluded: false
     },
-    ...basicOptions
+    ...basicOptions()
   });
 
   return app.toTree();

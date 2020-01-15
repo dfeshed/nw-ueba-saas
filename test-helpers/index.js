@@ -7,7 +7,7 @@ const projectName = 'test-helpers';
 module.exports = {
   name: projectName,
 
-  // options: basicOptions,
+  // options: basicOptions(),
 
   // See ../common.js for details on this function
   isDevelopingAddon: isDevelopingAddon(projectName)

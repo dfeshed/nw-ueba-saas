@@ -251,18 +251,20 @@ const babelPlugins = [
   '@babel/plugin-syntax-import-meta'
 ];
 
-const basicOptions = {
-  'ember-cli-babel': {
-    includePolyfill: false,
+const basicOptions = function() {
+  return {
+    'ember-cli-babel': {
+      includePolyfill: false,
 
-    // Cannot set this to true until this is fixed
-    // https://github.com/kategengler/ember-cli-code-coverage/issues/217
-    throwUnlessParallelizable: false
-  },
-  babel: {
-    plugins: babelPlugins
-  }
-};
+      // Cannot set this to true until this is fixed
+      // https://github.com/kategengler/ember-cli-code-coverage/issues/217
+      throwUnlessParallelizable: false
+    },
+    babel: {
+      plugins: [...babelPlugins]
+    }
+  };
+}
 
 const commonBuildOptions = function(projectDir) {
   const templateTrees = [
@@ -275,7 +277,7 @@ const commonBuildOptions = function(projectDir) {
   }).filter((aTree) => !!aTree);
 
   return {
-    ...basicOptions,
+    ...basicOptions(),
     'ember-cli-template-lint': {
       testGenerator: 'qunit' // or 'mocha', etc.
     },

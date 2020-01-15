@@ -7,6 +7,6 @@ const projectName = 'rsa-list-manager';
 
 module.exports = {
   name: projectName,
-  options: basicOptions,
+  options: basicOptions(),
   isDevelopingAddon: isDevelopingAddon(projectName)
 };
