@@ -30,8 +30,6 @@ public class SslSubjectHighBytesSentAlerts implements Supplier<Stream<TlsAlert>>
 
         TlsAlert ssl_subject_10 = new SslSubjectTlsAlert("adobe systems incorporated", dataPeriod, uncommonStartDay)
                 .high_number_of_bytes_sent_by_src_ip_to_domain_ssl_subject_outbound()
-                .ssl_subject_abnormal_ja3_day_time()
-                .ssl_subject_abnormal_ssl_subject_day_time()
                 .create();
 
 
@@ -73,6 +71,10 @@ public class SslSubjectHighBytesSentAlerts implements Supplier<Stream<TlsAlert>>
 
         TlsAlert ssl_subject_20 = new SslSubjectTlsAlert("bytes src ip new ssl subject", dataPeriod, uncommonStartDay)
                 .high_number_of_bytes_sent_by_src_ip_to_new_ssl_subject_outbound()
+                .ssl_subject_abnormal_dst_port_for_dst_org_outbound()
+                .ssl_subject_abnormal_domain_for_ja3_outbound()
+                .ssl_subject_abnormal_ja3_day_time()
+                .ssl_subject_abnormal_ssl_subject_day_time()
                 .create();
 
         TlsAlert ssl_subject_21 = new SslSubjectTlsAlert("oracle corporation", dataPeriod, uncommonStartDay)
