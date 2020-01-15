@@ -1,15 +1,13 @@
+import classic from 'ember-classic-decorator';
+import { attributeBindings, classNameBindings, layout as templateLayout } from '@ember-decorators/component';
 import Component from '@ember/component';
 import layout from './template';
 
-export default Component.extend({
-  layout,
-
-  classNameBindings: ['style'],
-
-  attributeBindings: ['testId:test-id'],
-
-  style: 'widget-title',
-
-  testId: 'widget-title'
-
-});
+@classic
+@templateLayout(layout)
+@classNameBindings('style')
+@attributeBindings('testId:test-id')
+export default class WidgetTitle extends Component {
+  style = 'widget-title';
+  testId = 'widget-title';
+}

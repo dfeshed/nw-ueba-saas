@@ -1,16 +1,17 @@
+import classic from 'ember-classic-decorator';
+import { classNames, layout as templateLayout } from '@ember-decorators/component';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 
-export default Component.extend({
-  layout,
-
-  classNames: ['rsa-dashboard'],
-
-  config: null,
+@classic
+@templateLayout(layout)
+@classNames('rsa-dashboard')
+export default class RsaDashboard extends Component {
+  config = null;
 
   @computed('layoutStyle')
-  layoutComponent(layout) {
-    return `layout.${layout}-layout`;
+  get layoutComponent() {
+    return `layout.${this.layoutStyle}-layout`;
   }
-});
+}

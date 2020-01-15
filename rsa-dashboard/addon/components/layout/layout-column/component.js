@@ -1,16 +1,22 @@
+import classic from 'ember-classic-decorator';
+
+import {
+  classNames,
+  attributeBindings,
+  classNameBindings,
+  tagName,
+  layout as templateLayout
+} from '@ember-decorators/component';
+
 import Component from '@ember/component';
 import layout from './template';
 
-export default Component.extend({
-  layout,
-
-  tagName: 'box',
-
-  classNames: ['layout-column'],
-
-  classNameBindings: ['columnClass'],
-
-  attributeBindings: ['columnClass:test-id'],
-
-  columnClass: null
-});
+@classic
+@templateLayout(layout)
+@tagName('box')
+@classNames('layout-column')
+@classNameBindings('columnClass')
+@attributeBindings('columnClass:test-id')
+export default class LayoutColumn extends Component {
+  columnClass = null;
+}
