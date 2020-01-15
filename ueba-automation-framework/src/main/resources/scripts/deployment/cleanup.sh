@@ -25,7 +25,6 @@ airflow resetdb -y
 python -c "from presidio.charts import deploy_charts; deploy_charts.deploy_charts()"
 }
 
-
 cleaningRedis(){
 echo "Going to clean Redis DB"
 redis-cli FLUSHALL
