@@ -35,6 +35,7 @@ import {
   addNoResultsMessage,
   removeNoResultsMessage
 } from '../query-pill/query-pill-util';
+import { hasComplexText } from 'investigate-events/util/query-parsing';
 
 const DISABLED_TEXT_SEARCH_DUPLICATE = {
   label: AFTER_OPTION_TEXT_DISABLED_DUPLICATE_LABEL,
@@ -317,8 +318,14 @@ const RecentQueryComponent = Component.extend({
       if (this.get('prepopulatedRecentQueryText') !== undefined) {
         powerSelectAPI.actions.search(this.get('prepopulatedRecentQueryText'));
         if (powerSelectAPI.resultsCount === 0) {
-          const hasTextPill = this.get('hasTextPill');
-          this._afterOptionsMenu.highlightIndex = hasTextPill ? 0 : 1;
+          // Force free-form pill highlight if the search text has complex operators or a
+          // text pill already exists
+          if (hasComplexText(this.get('prepopulatedRecentQueryText')) || this.get('hasTextPill')) {
+            this._afterOptionsMenu.highlightIndex = 0; // Free-form
+          // Otherwise, set it to text pill
+          } else {
+            this._afterOptionsMenu.highlightIndex = 1; // Text pill
+          }
         }
       }
       powerSelectAPI.actions.open();

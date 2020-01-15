@@ -2852,6 +2852,60 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   });
 
+  test('Typing text in meta tab from pill-meta and toggling over to recent-query tab will highlight freeform option if text is complex', async function(assert) {
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+    this.set('metaOptions', metaOptions);
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'ab(');
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await settled();
+
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
+    assert.ok(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim().includes(AFTER_OPTION_FREE_FORM_LABEL),
+      'first Advanced Option was not highlighted');
+  });
+
+  test('Typing text in recenty query and tabbing to meta will highlight freeform option if text is complex', async function(assert) {
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+    this.set('metaOptions', metaOptions);
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+      }}
+    `);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await fillIn(PILL_SELECTORS.recentQuerySelectInput, 'ab(');
+    await toggleTab(PILL_SELECTORS.recentQuerySelectInput);
+    await settled();
+
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
+    assert.ok(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim().includes(AFTER_OPTION_FREE_FORM_LABEL),
+      'first Advanced Option was not highlighted');
+  });
+
   test('When no text is present, unfiltered List is displayed in recent-query', async function(assert) {
     const state = new ReduxDataHelper(setState)
       .pillsDataEmpty()

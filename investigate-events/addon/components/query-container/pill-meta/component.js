@@ -34,8 +34,9 @@ import KEY_MAP, {
 import BoundedList from 'investigate-events/util/bounded-list';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
-import { searcher } from '../query-pill/query-pill-util';
+import { searcher, resultsCount } from 'investigate-events/components/query-container/query-pill/query-pill-util';
 import { filterValidMeta, lastValidMeta } from 'investigate-events/util/meta';
+import { hasComplexText } from 'investigate-events/util/query-parsing';
 
 const { log } = console;// eslint-disable-line
 
@@ -393,6 +394,7 @@ export default Component.extend({
     onFocus(powerSelectAPI, event) {
       const selection = this.get('selection');
       const targetValue = event.target.value;
+      const prepopulatedMetaText = this.get('prepopulatedMetaText');
 
       // If we gain focus and `lastSearchText` exists, power-select will use
       // that to down-select the list of metaOptions. This can happen if the
@@ -413,10 +415,20 @@ export default Component.extend({
         } else {
           this.set('selection', null);
         }
-      } else if (this.get('prepopulatedMetaText') !== undefined) {
+      } else if (prepopulatedMetaText !== undefined) {
         // Tab has been switched from recent queries to meta
         // Some text has been prepopulated and focused in to be searched.
-        powerSelectAPI.actions.search(this.get('prepopulatedMetaText'));
+        powerSelectAPI.actions.search(prepopulatedMetaText);
+        if (resultsCount(this.get('metaOptions'), prepopulatedMetaText) === 0) {
+          // Force free-form pill highlight if the search text has complex operators or a
+          // text pill already exists
+          if (hasComplexText(prepopulatedMetaText) || this.get('hasTextPill')) {
+            this._afterOptionsMenu.highlightIndex = 0; // Free-form
+          // Otherwise, set it to text pill
+          } else {
+            this._afterOptionsMenu.highlightIndex = 1; // Text pill
+          }
+        }
       }
       powerSelectAPI.actions.open();
     },

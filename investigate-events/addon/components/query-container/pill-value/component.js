@@ -32,7 +32,7 @@ import {
   addAndRemoveElements,
   addNoResultsMessage,
   removeNoResultsMessage
-} from '../query-pill/query-pill-util';
+} from 'investigate-events/components/query-container/query-pill/query-pill-util';
 
 const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
 
@@ -405,6 +405,11 @@ export default Component.extend({
           this.set('_searchString', trimmedValueString);
         }
         actions.search(trimmedValueString);
+        if (hasComplexText(trimmedValueString)) {
+          // If the search text is complex/contains operators, only allow freeform selection
+          this._afterOptionsMenu.highlightIndex = 0; // Free-form
+          powerSelectAPI.actions.highlight(null);
+        }
       }
       actions.open();
     },

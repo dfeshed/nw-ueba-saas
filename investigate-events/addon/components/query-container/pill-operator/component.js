@@ -26,6 +26,7 @@ import KEY_MAP, {
 } from 'investigate-events/util/keys';
 import BoundedList from 'investigate-events/util/bounded-list';
 import { assert } from '@ember/debug';
+import { hasComplexText } from 'investigate-events/util/query-parsing';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -316,6 +317,7 @@ export default Component.extend({
     onFocus(powerSelectAPI, event) {
       const selection = this.get('selection');
       const targetValue = event.target.value;
+      const prepopulatedOperatorText = this.get('prepopulatedOperatorText');
       // If we gain focus and `lastSearchText` exists, power-select will use
       // that to down-select the list of options. This can happen if the user
       // enters some text, focuses away, then come back. What they previously
@@ -335,10 +337,25 @@ export default Component.extend({
         } else {
           this.set('selection', null);
         }
-      } else if (this.get('prepopulatedOperatorText') !== undefined) {
+      } else if (prepopulatedOperatorText !== undefined) {
         // Tab has been switched from recent queries to meta
         // Some text has been prepopulated and focused in to be searched.
-        powerSelectAPI.actions.search(this.get('prepopulatedOperatorText'));
+        powerSelectAPI.actions.search(prepopulatedOperatorText);
+        const options = this.get('options');
+        const operatorResultsCount = options.reduce((acc, option) => {
+          // Add one to acc if prepopulatedOperatorText is a match for our option
+          return this._matcher(option, prepopulatedOperatorText) === 0 ? acc + 1 : acc;
+        }, 0);
+        if (operatorResultsCount === 0) {
+          // Force free-form pill highlight if the search text has complex operators or a
+          // text pill already exists
+          if (hasComplexText(prepopulatedOperatorText) || this.get('hasTextPill')) {
+            this._afterOptionsMenu.highlightIndex = 0; // Free-form
+          // Otherwise, set it to text pill
+          } else {
+            this._afterOptionsMenu.highlightIndex = 1; // Text pill
+          }
+        }
       }
       powerSelectAPI.actions.open();
     },
