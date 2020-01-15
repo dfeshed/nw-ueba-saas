@@ -28,8 +28,6 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
     /**
      * Instantiate the iterator for streaming. The config map MUST contain the following properties:
      * <ul>
-     * <li>accessKey: the access key for AWS</li>
-     * <li>secretKey: the secret key for AWS</li>
      * <li>bucket: the name of the Amazon S3 bucket to read from</li>
      * <li>tenant: S3 object key prefix that separates records between tenants</li>
      * <li>account: aws account number</li>
@@ -64,7 +62,7 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
     }
 
     /**
-     * Check if accessKey, secretKey, bucket, tenant, account, schema and region config values are available.
+     * Check if bucket, tenant, account, schema and region config values are available.
      *
      * @param config the flume config map
      */
