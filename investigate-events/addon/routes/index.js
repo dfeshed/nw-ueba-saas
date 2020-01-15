@@ -106,7 +106,9 @@ export default Route.extend({
 
       // do not set nextQueryParams if missing sort params
       // expecting a redirect with sort params after fetching prefs
-      if (params.sortField && params.sortDir) {
+      // also check if mixed mode with version less than 11.4
+      // to prevent call to runInvestigateQuery below a second time
+      if ((params.sortField && params.sortDir) || !hasMinimumCoreServicesVersionForColumnSorting(state)) {
         this.set('nextQueryParams', params);
       }
 
