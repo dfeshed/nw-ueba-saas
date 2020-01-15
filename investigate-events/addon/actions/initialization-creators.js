@@ -580,8 +580,9 @@ export const initializeInvestigate = function(
       // If we do not have a service then...
       // 7) Get all the dictionaries after we have fetched services and
       //    automatically chosen the first service as the active service
-      await RSVP.all(initializationPromises);
-      await _initializeDictionaries(dispatch, getState).catch(errorHandler);
+      await RSVP.all(initializationPromises)
+        .then(() => _initializeDictionaries(dispatch, getState))
+        .catch(errorHandler);
     }
 
     // After _initializePreferences has resolved
