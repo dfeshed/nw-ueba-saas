@@ -48,16 +48,9 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
             Map<String, String> config) {
 
         validateConfiguration(config);
-        String accessKey = config.get("accessKey");
-        String secretKey = config.get("secretKey");
-        String region = config.get("region");
         String bucket = config.get("bucket");
 
-        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
-        AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-                .withRegion(region)
-                .build();
+        AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
 
         S3DataIterator iterator;
         try {
@@ -76,8 +69,6 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
      * @param config the flume config map
      */
     private void validateConfiguration(Map<String, String> config) {
-        requireNonNull(config.get("accessKey"), "'accessKey' is missing in configuration");
-        requireNonNull(config.get("secretKey"), "'secretKey' is missing in configuration");
         requireNonNull(config.get("bucket"), "'bucket' is missing in configuration");
         requireNonNull(config.get("tenant"), "'tenant' is missing in configuration");
         requireNonNull(config.get("account"), "'account' is missing in configuration");
