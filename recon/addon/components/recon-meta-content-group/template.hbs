@@ -1,5 +1,5 @@
 {{#each groupedMetaItems as |metaItem|}}
-  {{#if (eq groupType 'alphabet')}}
+  {{#if (eq groupType "alphabet")}}
     <div class="meta-content-section">
       <hbox fit class="section-name">{{metaItem.group}}</hbox>
       {{#each metaItem.children as |item|}}

@@ -8,7 +8,7 @@
     {{yield item index column}}
   {{else}}
     {{!no block was given, so render default content, i.e. the field value from the data item}}
-    <span title="{{get item column.field}}">
+    <span title={{get item column.field}}>
       {{get item column.field}}
     </span>
   {{/if}}

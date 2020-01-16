@@ -1,42 +1,42 @@
 <section class="filter-option id-filter">
   <label class="rsa-form-input">
     <span class="rsa-form-label">
-      {{ t 'respond.incidents.filters.incidentId'}}
+      {{ t "respond.incidents.filters.incidentId"}}
     </span>
     <span class="id-prefix-wrapper">
       <span class="id-prefix">INC-</span>
-      {{input value=(readonly idFilterNumber) placeholder=(t 'respond.incidents.filters.idFilterPlaceholder') input=(action 'idFilterChanged'value='target.value') min="1" step="1"}}
+      {{input value=(readonly idFilterNumber) placeholder=(t "respond.incidents.filters.idFilterPlaceholder") input=(action "idFilterChanged"value="target.value") min="1" step="1"}}
     </span>
   </label>
 </section>
 <section class="filter-option priority-filter">
-  <h2>{{ t 'respond.incident.priority'}}</h2>
+  <h2>{{ t "respond.incident.priority"}}</h2>
   {{#each priorityTypes as |priorityType|}}
     <div>
-      <label class="rsa-form-checkbox-label {{if (contains priorityType priorityFilters) 'checked'}}">
+      <label class="rsa-form-checkbox-label {{if (contains priorityType priorityFilters) "checked"}}">
         {{rsa-form-checkbox
           checked=(contains priorityType priorityFilters )
-          change=(action 'togglePriorityFilter' priorityType)}}
-        <span>{{t (concat 'respond.priority.' priorityType)}}</span>
+          change=(action "togglePriorityFilter" priorityType)}}
+        <span>{{t (concat "respond.priority." priorityType)}}</span>
       </label>
     </div>
   {{/each}}
 </section>
 <section class="filter-option status-filter">
-  <h2>{{ t 'respond.incident.status'}}</h2>
+  <h2>{{ t "respond.incident.status"}}</h2>
   {{#each statusTypes as |statusType|}}
     <div>
-      <label class="rsa-form-checkbox-label {{if (contains statusType statusFilters) 'checked'}}">
+      <label class="rsa-form-checkbox-label {{if (contains statusType statusFilters) "checked"}}">
         {{rsa-form-checkbox
           checked=(contains statusType statusFilters )
-          change=(action 'toggleStatusFilter' statusType)}}
-        <span>{{t (concat 'respond.status.' statusType)}}</span>
+          change=(action "toggleStatusFilter" statusType)}}
+        <span>{{t (concat "respond.status." statusType)}}</span>
       </label>
     </div>
   {{/each}}
 </section>
 <section class="filter-option assignee-filter">
-  <h2>{{ t 'respond.incident.assignee'}}</h2>
+  <h2>{{ t "respond.incident.assignee"}}</h2>
   {{#power-select-multiple
     options=(readonly assigneeOptions)
     matcher=assigneeMatcher
@@ -47,17 +47,17 @@
     {{or user.name user.id}}
   {{/power-select-multiple}}
   <label class="rsa-form-checkbox-label show-only-unassigned
-    {{if (eq isUnassignedFilter true) 'checked'}}
-    {{if hasAssigneeFilter 'disabled'}}">
+    {{if (eq isUnassignedFilter true) "checked"}}
+    {{if hasAssigneeFilter "disabled"}}">
     {{rsa-form-checkbox
       checked=(eq isUnassignedFilter true)
       disabled=hasAssigneeFilter
-      change=(action 'toggleIsUnassignedFilter')}}
-    <span>{{t 'respond.incidents.filters.showOnlyUnassigned'}}</span>
+      change=(action "toggleIsUnassignedFilter")}}
+    <span>{{t "respond.incidents.filters.showOnlyUnassigned"}}</span>
   </label>
 </section>
 <section class="filter-option category-filter">
-  <h2>{{ t 'respond.incident.categories'}}</h2>
+  <h2>{{ t "respond.incident.categories"}}</h2>
   {{#power-select-multiple
     options=categoryTags
     searchEnabled=false
@@ -68,14 +68,14 @@
 </section>
 {{#if isSendToArcherAvailable}}
   <section class="filter-option sent-to-archer-filter">
-    <h2>{{ t 'respond.incident.sentToArcher'}}</h2>
+    <h2>{{ t "respond.incident.sentToArcher"}}</h2>
     {{#each sentToArcherTypes as |sentToArcherType|}}
       <div>
-        <label class="rsa-form-checkbox-label {{if (contains sentToArcherType sentToArcherFilters) 'checked'}}">
+        <label class="rsa-form-checkbox-label {{if (contains sentToArcherType sentToArcherFilters) "checked"}}">
           {{rsa-form-checkbox
             checked=(contains sentToArcherType sentToArcherFilters )
-            change=(action 'toggleSentToArcherStatusFilter' sentToArcherType)}}
-          <span>{{t (concat 'respond.common.' sentToArcherType)}}</span>
+            change=(action "toggleSentToArcherStatusFilter" sentToArcherType)}}
+          <span>{{t (concat "respond.common." sentToArcherType)}}</span>
         </label>
       </div>
     {{/each}}

@@ -13,7 +13,7 @@
       {{#each section.props as |prop|}}
         <hbox fit class="col-xs-12">
           <hbox class="title col-xs-6 col-md-5">{{t prop.name}}</hbox>
-          {{#if (eq prop.name 'adminUsm.policyWizard.windowsLogPolicy.customConfig') }}
+          {{#if (eq prop.name "adminUsm.policyWizard.windowsLogPolicy.customConfig") }}
             <hbox class="value col-xs-6 col-md-7">
               {{#rsa-text-with-tooltip value=prop.value
                 style="standard"}}

@@ -1,26 +1,26 @@
-<a href="#" onclick={{action 'updateSortTrend' option}} onkeypress={{action 'updateSortTrend' option}} class="rsa-form-checkbox-label {{if sortOnTrending 'checked'}} list-filter-option">
+<a href="#" onclick={{action "updateSortTrend" option}} onkeypress={{action "updateSortTrend" option}} class="rsa-form-checkbox-label {{if sortOnTrending "checked"}} list-filter-option">
   {{rsa-form-checkbox
     checked=sortOnTrending
-    change=(action 'updateSortTrend' option)}}
-  {{t 'investigateUsers.sortByTrendData'}}
+    change=(action "updateSortTrend" option)}}
+  {{t "investigateUsers.sortByTrendData"}}
 </a>
-<div class='show-trend-dropdown'>
+<div class="show-trend-dropdown">
   {{#power-select
     options=trendOptions
     selected=trendRange
     searchEnabled=false
-    onchange=(action 'updateTrendRange') as |option|}}
-    {{t (concat 'investigateUsers.trendRange.' option.name)}}
+    onchange=(action "updateTrendRange") as |option|}}
+    {{t (concat "investigateUsers.trendRange." option.name)}}
   {{/power-select}}
 </div>
-<div class='show-trend-help-icon'>
+<div class="show-trend-help-icon">
   {{#rsa-content-tethered-panel-trigger
-    panel='showTrendSortHelp'
-    triggerEvent='hover'
+    panel="showTrendSortHelp"
+    triggerEvent="hover"
   }}
     {{rsa-icon name="help-circle"}}
   {{/rsa-content-tethered-panel-trigger}}
-  {{#rsa-content-tethered-panel displayCloseButton=false position='top' panelId='showTrendSortHelp' panelClass='show-trend-help-icon-content'}}
-    {{t 'investigateUsers.sortByTrendDataHelp'}}
+  {{#rsa-content-tethered-panel displayCloseButton=false position="top" panelId="showTrendSortHelp" panelClass="show-trend-help-icon-content"}}
+    {{t "investigateUsers.sortByTrendDataHelp"}}
   {{/rsa-content-tethered-panel}}
 </div>

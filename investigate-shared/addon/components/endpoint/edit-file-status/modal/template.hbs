@@ -1,54 +1,54 @@
 {{#rsa-application-modal
-  style='standard file-status-modal'
-  eventId='file-status'
+  style="standard file-status-modal"
+  eventId="file-status"
   onClose=closeModal
   contextualHelpRequired=true
-  module='investigation'
-  topic='invChangeFileStatus'
+  module="investigation"
+  topic="invChangeFileStatus"
   autoOpen=true
-  label=(t 'investigateFiles.editFileStatus.title')}}
+  label=(t "investigateFiles.editFileStatus.title")}}
   <div class="modal-content">
-    <box class='radio-controls rsa-form-radio-group' fit>
+    <box class="radio-controls rsa-form-radio-group" fit>
       {{#if isMaxFileEditStatusLimit}}
-        <span class='whitelist-alert info max-limit-info'>
-          {{rsa-icon class='rsa-icon-information-circle'}}
+        <span class="whitelist-alert info max-limit-info">
+          {{rsa-icon class="rsa-icon-information-circle"}}
           <p>
-            {{t 'investigateFiles.editFileStatus.whiteListAlert.limitInfo'}}
+            {{t "investigateFiles.editFileStatus.whiteListAlert.limitInfo"}}
           </p>
         </span>
       {{/if}}
-      <h4 class='rsa-form-radio-group-label file-status-title'>{{t 'investigateFiles.editFileStatus.fileStatusTitle'}}</h4>
+      <h4 class="rsa-form-radio-group-label file-status-title">{{t "investigateFiles.editFileStatus.fileStatusTitle"}}</h4>
       {{#each radioButtons as |radio|}}
-        <label class='rsa-form-radio-label file-status-radio {{if (and (eq radio.value 'Whitelist') disableRadio) 'disabled'}} {{if (eq radio.value formData.fileStatus) 'checked'}}'>
+        <label class="rsa-form-radio-label file-status-radio {{if (and (eq radio.value "Whitelist") disableRadio) "disabled"}} {{if (eq radio.value formData.fileStatus) "checked"}}">
           {{radio-button
-            radioClass='status-type'
+            radioClass="status-type"
             value=radio.value
-            disabled=(if (and (eq radio.value 'Whitelist') disableRadio) true)
+            disabled=(if (and (eq radio.value "Whitelist") disableRadio) true)
             groupValue=formData.fileStatus}}
           {{t radio.label}}
         </label>
-        {{#if (eq radio.value 'Whitelist')}}
+        {{#if (eq radio.value "Whitelist")}}
           {{#if showWhiteListWarning}}
-            {{#if (eq formData.fileStatus 'Whitelist')}}
-              <span class='whitelist-alert info'>
-                {{rsa-icon class='rsa-icon-information-circle'}}
+            {{#if (eq formData.fileStatus "Whitelist")}}
+              <span class="whitelist-alert info">
+                {{rsa-icon class="rsa-icon-information-circle"}}
                 <p>
-                  {{t 'investigateFiles.editFileStatus.whiteListAlert.info'}}
+                  {{t "investigateFiles.editFileStatus.whiteListAlert.info"}}
                 </p>
               </span>
             {{else if disableRadio}}
-              <span class='whitelist-alert'>
-                {{rsa-icon class='rsa-icon-report-problem-triangle'}}
+              <span class="whitelist-alert">
+                {{rsa-icon class="rsa-icon-report-problem-triangle"}}
                 <p>
-                  {{t 'investigateFiles.editFileStatus.whiteListAlert.warningMessage'}}
+                  {{t "investigateFiles.editFileStatus.whiteListAlert.warningMessage"}}
                 </p>
               </span>
             {{/if}}
           {{/if}}
 
         {{/if}}
-        {{#if (eq radio.value 'Blacklist')}}
-          {{#if (eq formData.fileStatus 'Blacklist')}}
+        {{#if (eq radio.value "Blacklist")}}
+          {{#if (eq formData.fileStatus "Blacklist")}}
             {{endpoint/edit-file-status/modal/file-remediation
               data=formData
               itemList=itemList
@@ -56,8 +56,8 @@
               isFloatingOrMemoryDll=isFloatingOrMemoryDll}}
           {{/if}}
         {{/if}}
-        {{#if (eq radio.value 'Graylist')}}
-          {{#if (eq formData.fileStatus 'Graylist')}}
+        {{#if (eq radio.value "Graylist")}}
+          {{#if (eq formData.fileStatus "Graylist")}}
             {{endpoint/edit-file-status/modal/file-remediation
               data=formData
               itemList=itemList
@@ -70,28 +70,28 @@
 
     <box class="comment-box">
       <label class="comment-box-label">
-        {{t 'investigateFiles.editFileStatus.commentTitle'}}
+        {{t "investigateFiles.editFileStatus.commentTitle"}}
         <span>*</span>
       </label>
       {{rsa-form-textarea
         value=formData.comment
         maxlength=900
-        placeholder=(t 'investigateFiles.editFileStatus.placeholder')
+        placeholder=(t "investigateFiles.editFileStatus.placeholder")
       }}
       {{#if isCharacterLimitReached}}
-        <span class='limit-reached'>
-          {{t 'investigateFiles.editFileStatus.commentLimitError'}}
+        <span class="limit-reached">
+          {{t "investigateFiles.editFileStatus.commentLimitError"}}
         </span>
       {{/if}}
     </box>
   </div>
   <footer>
     <hbox class="modal-footer-buttons">
-      {{#rsa-form-button class='close-edit-modal' defaultAction=(action 'onCancel')}}
-        {{t 'investigateFiles.editFileStatus.cancelBtn'}}
+      {{#rsa-form-button class="close-edit-modal" defaultAction=(action "onCancel")}}
+        {{t "investigateFiles.editFileStatus.cancelBtn"}}
       {{/rsa-form-button}}
-      {{#rsa-form-button style='primary' isDisabled=isSaveButtonDisabled class='save-file-status' defaultAction=(action 'saveFileStatus')}}
-        {{t 'investigateFiles.editFileStatus.saveBtn'}}
+      {{#rsa-form-button style="primary" isDisabled=isSaveButtonDisabled class="save-file-status" defaultAction=(action "saveFileStatus")}}
+        {{t "investigateFiles.editFileStatus.saveBtn"}}
       {{/rsa-form-button}}
     </hbox>
   </footer>

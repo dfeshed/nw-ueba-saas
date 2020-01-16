@@ -1,44 +1,44 @@
 <h2 class="title-header">
-  {{#rsa-form-button class='close-zone' click=openFilterPanel }}
-    {{rsa-icon name='filter-2' size='small'}}
-    <span>{{t 'investigateFiles.filter.filter'}}</span>
+  {{#rsa-form-button class="close-zone" click=openFilterPanel }}
+    {{rsa-icon name="filter-2" size="small"}}
+    <span>{{t "investigateFiles.filter.filter"}}</span>
   {{/rsa-form-button}}
 </h2>
 <div class="toolbar-actions">
-  {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'handleServiceSelection')}}
-  {{#link-to 'files.certificates' selectedThumbPrint}}
+  {{service-selector services=servers serviceId=serverId onServiceSelection=(action "handleServiceSelection")}}
+  {{#link-to "files.certificates" selectedThumbPrint}}
     {{#rsa-form-button
       isDisabled=isCertificateViewDisabled
       title=isCertificateViewDisabledTitle
       class="view-certificate-button"}}
-      {{#if (and (eq certificateLoadStatus 'wait') (not-eq servers.isSummaryRetrieveError true))}}
-        {{rsa-loader size='small'}}
+      {{#if (and (eq certificateLoadStatus "wait") (not-eq servers.isSummaryRetrieveError true))}}
+        {{rsa-loader size="small"}}
       {{/if}}
-      {{t 'investigateFiles.button.viewCertificates'}}
+      {{t "investigateFiles.button.viewCertificates"}}
     {{/rsa-form-button}}
   {{/link-to}}
   <div class="divider"/>
   {{endpoint/file-actionbar
-    onSaveFileStatus = (action 'saveFileStatus' checksums)
-    getSavedFileStatus = (action 'getSavedFileStatus')
-    resetRiskScore = (action 'resetRiskScoreAction')
+    onSaveFileStatus = (action "saveFileStatus" checksums)
+    getSavedFileStatus = (action "getSavedFileStatus")
+    resetRiskScore = (action "resetRiskScoreAction")
     serviceList=serviceList
-    metaName='checksumSha256'
+    metaName="checksumSha256"
     itemList=itemList
     serviceId=serviceId
     timeRange=timeRange
     fileStatusData=data
     showResetRiskScore=true
     selectedFileCount=selectedFileCount
-    getAllServices=(action 'getAllServices')
+    getAllServices=(action "getAllServices")
     restrictedFileList=restrictedFileList
     isRemediationAllowed=remediationStatus
     isFloatingOrMemoryDll=isFloatingOrMemoryDll
-    retrieveRemediationStatus=(action 'retrieveRemediationStatus')
+    retrieveRemediationStatus=(action "retrieveRemediationStatus")
     fileDownloadButtonStatus=fileDownloadButtonStatus
     downloadFiles=downloadFiles
     saveLocalCopy=saveLocalCopy
     analyzeFile=analyzeFile
-    downloadDisabledTooltip=(t 'investigateShared.endpoint.fileActions.tooltips.files.downloadToServer')}}
+    downloadDisabledTooltip=(t "investigateShared.endpoint.fileActions.tooltips.files.downloadToServer")}}
   {{files-toolbar/export-button}}
 </div>

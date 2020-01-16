@@ -2,10 +2,10 @@
 {{#if (or displayEula displaySecurityBanner)}}
   <div class="login-wrapper">
     <header>
-      {{rsa-logo title=(t 'appTitle') displayEula=displayEula legacyRsaLogo=false}}
+      {{rsa-logo title=(t "appTitle") displayEula=displayEula legacyRsaLogo=false}}
 
       {{#if displayEula}}
-        <h3 title={{t 'login.eula.title'}} test-id="securityBannerTitle">{{t 'login.eula.title'}}</h3>
+        <h3 title={{t "login.eula.title"}} test-id="securityBannerTitle">{{t "login.eula.title"}}</h3>
       {{else if displaySecurityBanner}}
         <h3 title={{securityBannerTitle}} test-id="securityBannerTitle">{{{securityBannerTitle}}}</h3>
       {{/if}}
@@ -23,7 +23,7 @@
           isFullWidth=true
           testId="btnAcceptEula"
           isDisabled=eulaContentPending}}
-          {{t 'login.eula.agree'}}
+          {{t "login.eula.agree"}}
         {{/rsa-form-button}}
       </form>
     {{else if displaySecurityBanner}}
@@ -36,7 +36,7 @@
           type="submit"
           style="primary"
           isFullWidth=true}}
-          {{t 'login.eula.agree'}}
+          {{t "login.eula.agree"}}
         {{/rsa-form-button}}
       </form>
     {{/if}}

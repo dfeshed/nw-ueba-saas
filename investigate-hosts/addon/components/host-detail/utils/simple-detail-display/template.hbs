@@ -1,14 +1,14 @@
-<box class="{{datatableWidth}}">
+<box class={{datatableWidth}}>
   {{endpoint/file-actionbar
     onSaveFileStatus = detailDisplayInputs.saveFileStatus
     getSavedFileStatus = detailDisplayInputs.getSavedFileStatus
-    resetRiskScore = (action 'resetRiskScoreAction')
+    resetRiskScore = (action "resetRiskScoreAction")
     serviceList=serviceList
-    metaName='checksumSha256'
+    metaName="checksumSha256"
     itemList=detailDisplayInputs.selectedFiles
     fileStatusData=detailDisplayInputs.fileStatusData
     selectedFileCount=detailDisplayInputs.selectedFileCount
-    downloadDisabledTooltip=(t 'investigateShared.endpoint.fileActions.tooltips.files.downloadToServer')}}
+    downloadDisabledTooltip=(t "investigateShared.endpoint.fileActions.tooltips.files.downloadToServer")}}
 
   {{host-detail/utils/datatable
     status=detailDisplayInputs.status
@@ -25,26 +25,25 @@
     isAllSelected=detailDisplayInputs.isAllSelected
     toggleAllItemSelectionAction=detailDisplayInputs.toggleAllItemSelectionAction
     toggleOneItemSelectionAction=detailDisplayInputs.toggleOneItemSelectionAction
-    getPagedItems=detailDisplayInputs.getPagedItems
     onSaveFileStatus=detailDisplayInputs.saveFileStatus
     serviceList=detailDisplayInputs.serviceList
     showFileStatusModal=showFileStatusModal
     selectedItemList=detailDisplayInputs.selectedFiles
-    onCloseEditFileStatus=(action 'onCloseEditFileStatus')
+    onCloseEditFileStatus=(action "onCloseEditFileStatus")
     statusData=detailsDispllayInputs.fileStatusData
     fileStatusData=detailDisplayInputs.fileStatusData
     rowComponentClass=(
-      component 'endpoint/file-custom-row'
+      component "endpoint/file-custom-row"
       serviceList=detailDisplayInputs.serviceList
       selections=detailDisplayInputs.selectedFiles
-      beforeContextMenuShow=(action 'beforeContextMenuShow')
-      editFileStatus=(action 'showEditFileStatus')
+      beforeContextMenuShow=(action "beforeContextMenuShow")
+      editFileStatus=(action "showEditFileStatus")
       showPivotToInvestigate=detailDisplayInputs.showPivotToInvestigate
       onSaveFileStatus = detailDisplayInputs.saveFileStatus
     )}}
 </box>
 {{#if detailDisplayInputs.propertyConfig}}
-  <box xs='3'>
+  <box xs="3">
     {{endpoint/file-property-panel
       title=detailDisplayInputs.propertyPanelTitle
       localeNameSpace=detailDisplayInputs.localeNameSpace

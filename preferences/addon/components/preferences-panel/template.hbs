@@ -1,14 +1,14 @@
 {{#if fieldPrefix}}
-  {{#rsa-content-section-header label='Section Heading' class='preference-panel-js'}}
+  {{#rsa-content-section-header label="Section Heading" class="preference-panel-js"}}
     {{title}}
     {{t (concat fieldPrefix ".panelTitle")}}
     <div class="controls">
       {{#rsa-form-button
-        isIconOnly=true title= (t 'context.header.help.title')
-        defaultAction=(action 'goToHelp')}}
+        isIconOnly=true title= (t "context.header.help.title")
+        defaultAction=(action "goToHelp")}}
         {{rsa-icon name="help-circle"}}
       {{/rsa-form-button}}
-      {{#rsa-form-button isIconOnly=true defaultAction=(action 'closePreferencesPanel')}}
+      {{#rsa-form-button isIconOnly=true defaultAction=(action "closePreferencesPanel")}}
         {{rsa-icon name="close" size="small"}}
       {{/rsa-form-button}}
     </div>

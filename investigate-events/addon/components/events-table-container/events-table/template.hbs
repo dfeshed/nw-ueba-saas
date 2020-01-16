@@ -7,8 +7,8 @@
   columnsConfig=extendedColumns
   language=language
   aliases=aliases
-  onRowClick=(action 'onRowClick')
-  loadLogsAction=(action 'eventsLogsGet')
+  onRowClick=(action "onRowClick")
+  loadLogsAction=(action "eventsLogsGet")
   scrollToInitialSelectedIndex=true
   enableGrouping=true
   groupingSize=groupingSize
@@ -17,7 +17,7 @@
   searchTerm=searchTerm
   searchScrollIndex=searchScrollIndex
   eventTableFormattingOpts=eventTableFormattingOpts
-  visibleColumnsDidChange=(action 'setVisibleColumns')
+  visibleColumnsDidChange=(action "setVisibleColumns")
   eventRelationshipsEnabled=eventRelationshipsEnabled
   eventsHaveSplits=eventsHaveSplits
 }}
@@ -26,22 +26,22 @@
     translateTitles=false
     enableColumnSelector=true as |column|}}
     {{#with (meta-key-alias column.field language) as |names|}}
-      {{#if (eq column.field 'checkbox')}}
-        {{!-- 'Select All' enabled only once the events are done streaming & query has results --}}
+      {{#if (eq column.field "checkbox")}}
+        {{!-- "Select All" enabled only once the events are done streaming & query has results --}}
         <label
-          class="rsa-form-checkbox-label {{if isSelectAllDisabled 'disabled'}} {{if areAllEventsSelected 'checked'}}"
-          title={{if isSelectAllDisabled (t 'investigate.events.selectAllDisabled') (t 'investigate.events.selectAll')}}>
+          class="rsa-form-checkbox-label {{if isSelectAllDisabled "disabled"}} {{if areAllEventsSelected "checked"}}"
+          title={{if isSelectAllDisabled (t "investigate.events.selectAllDisabled") (t "investigate.events.selectAll")}}>
           {{rsa-form-checkbox
             checked=areAllEventsSelected
-            change=(action 'toggleSelectAllEvents')
+            change=(action "toggleSelectAllEvents")
             disabled=isSelectAllDisabled
           }}
         </label>
       {{else}}
-        <h2 class="title" title="{{if column.title column.title names.bothNames}}">
-          {{#if (or (eq status 'streaming') (eq column.field 'custom.meta-summary') (eq column.field 'custom.metasummary') (eq column.field 'custom.theme'))}}
-            {{#rsa-content-tethered-panel-trigger panel=(concat 'columnSortTooltip' column.displayIndex)}}
-              {{#if (eq column.field 'time')}}
+        <h2 class="title" title={{if column.title column.title names.bothNames}}>
+          {{#if (or (eq status "streaming") (eq column.field "custom.meta-summary") (eq column.field "custom.metasummary") (eq column.field "custom.theme"))}}
+            {{#rsa-content-tethered-panel-trigger panel=(concat "columnSortTooltip" column.displayIndex)}}
+              {{#if (eq column.field "time")}}
                 <span class="disabled-sort">
                   {{if column.title column.title names.displayName}}
                 </span>
@@ -53,22 +53,22 @@
             {{/rsa-content-tethered-panel-trigger}}
           {{else if (contains column.field sortableColumns)}}
             {{#if (eq sortField column.field)}}
-              {{#if (eq sortDirection 'Ascending')}}
-                <span class="sort-indicator active" {{action 'toggleSort' column.field}}>
+              {{#if (eq sortDirection "Ascending")}}
+                <span class="sort-indicator active" {{action "toggleSort" column.field}}>
                   {{rsa-icon name="arrow-up-7" size="small"}}
                 </span>
               {{else}}
-                <span class="sort-indicator active" {{action 'toggleSort' column.field}}>
+                <span class="sort-indicator active" {{action "toggleSort" column.field}}>
                   {{rsa-icon name="arrow-down-7" size="small"}}
                 </span>
               {{/if}}
             {{else}}
-              <span class="sort-indicator" {{action 'toggleSort' column.field}}>
+              <span class="sort-indicator" {{action "toggleSort" column.field}}>
                 {{rsa-icon name="arrow-up-7" size="small"}}
               </span>
             {{/if}}
 
-            {{#if (eq column.field 'time')}}
+            {{#if (eq column.field "time")}}
               <span>
                 {{if column.title column.title names.displayName}}
               </span>
@@ -78,8 +78,8 @@
               </span>
             {{/if}}
           {{else}}
-            {{#rsa-content-tethered-panel-trigger panel=(concat 'columnSortTooltip' column.displayIndex)}}
-              {{#if (eq column.field 'time')}}
+            {{#rsa-content-tethered-panel-trigger panel=(concat "columnSortTooltip" column.displayIndex)}}
+              {{#if (eq column.field "time")}}
                 <span class="disabled-sort">
                   {{if column.title column.title names.displayName}}
                 </span>
@@ -91,7 +91,7 @@
             {{/rsa-content-tethered-panel-trigger}}
           {{/if}}
 
-          {{#rsa-content-tethered-panel displayCloseButton=false position='top' panelId=(concat 'columnSortTooltip' column.displayIndex)}}
+          {{#rsa-content-tethered-panel displayCloseButton=false position="top" panelId=(concat "columnSortTooltip" column.displayIndex)}}
             <section>
               {{events-table-container/events-table/sort-tooltip
                 status=status

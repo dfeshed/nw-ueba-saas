@@ -12,12 +12,12 @@
     {{#if shouldDisplayNoContentMessage}}
       {{rsa-panel-message
         class="content-hidden-message"
-        message=(t 'recon.textView.contentHiddenMessage')
+        message=(t "recon.textView.contentHiddenMessage")
       }}
     {{else if hasNoRenderedPayload}}
-      {{rsa-panel-message message=(t 'recon.packetView.noPayload')}}
+      {{rsa-panel-message message=(t "recon.packetView.noPayload")}}
     {{/if}}
-    {{#each renderedPackets key='sequence' as |packet index|}}
+    {{#each renderedPackets key="sequence" as |packet index|}}
       {{recon-event-detail/single-packet
         hasSignaturesHighlighted=hasSignaturesHighlighted
         hasStyledBytes=hasStyledBytes
@@ -28,8 +28,8 @@
     {{/each}}
 
     {{#if isPacketRenderingUnderWay}}
-      <centered class='rendering-more'>
-        {{rsa-loader size='large' label=(t 'recon.packetView.renderingMore')}}
+      <centered class="rendering-more">
+        {{rsa-loader size="large" label=(t "recon.packetView.renderingMore")}}
       </centered>
     {{/if}}
   </div>
@@ -49,11 +49,11 @@
         is due to arrive soon via incremental render, so show spinner
       --}}
       <div class="recon-loader">
-        {{rsa-loader size='larger'}}
+        {{rsa-loader size="larger"}}
       </div>
     {{/if}}
   {{else}}
-    {{rsa-panel-message message=(t 'recon.packetView.noHexData')}}
+    {{rsa-panel-message message=(t "recon.packetView.noHexData")}}
   {{/if}}
 {{/if}}
 

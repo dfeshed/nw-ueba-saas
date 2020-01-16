@@ -102,6 +102,7 @@ module('Integration | Component | Power Select After Options', function(hooks) {
     `);
     assert.ok(find(`${PILL_SELECTORS.powerSelectAfterOption}[aria-current=true]`), 'Option is highlighted');
     assert.notOk(find(`${PILL_SELECTORS.powerSelectAfterOption}[aria-current=false]`), 'No un-highlighted options');
+    // assert.notOk(find(`${PILL_SELECTORS.powerSelectAfterOption}[aria-current=false]`), 'No un-highlighted options');
   });
 
   test('Highlighting an option dispatches a HIGHLIGHTED_AFTER_OPTION event', async function(assert) {
@@ -221,7 +222,6 @@ module('Integration | Component | Power Select After Options', function(hooks) {
     assert.notOk(hasHighlight, 'no item should be highlighted');
     this.set('select', apiWithInvalidResults);
     await settled();
-
     const _options2 = findAll(PILL_SELECTORS.powerSelectAfterOption);
     const hasHighlight2 = _options2.some((d) => d.getAttribute('aria-current') === 'true');
     assert.ok(hasHighlight2, 'an item should be highlighted');

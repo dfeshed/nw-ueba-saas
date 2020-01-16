@@ -1,7 +1,7 @@
-{{#if (eq infoStatus 'completed')}}
+{{#if (eq infoStatus "completed")}}
   {{! Created time}}
   <p class="created">
-    <label title="{{t 'respond.incident.created'}}">{{t 'respond.incident.created'}}:</label>
+    <label title={{t "respond.incident.created"}}>{{t "respond.incident.created"}}:</label>
     <span>
       {{rsa-content-datetime
         timestamp=info.created
@@ -14,18 +14,18 @@
 
   {{! Created by (rule name or user name)}}
   <p class="by">
-    <label>{{if info.createdFromRule 'Rule' 'By'}}:</label>
+    <label>{{if info.createdFromRule "Rule" "By"}}:</label>
     <span>{{info.createdBy}}</span>
   </p>
 
   <p class="score">
-    <label title="{{t 'respond.incident.riskScore'}}">{{t 'respond.incident.riskScore'}}:</label>
+    <label title={{t "respond.incident.riskScore"}}>{{t "respond.incident.riskScore"}}:</label>
     <span>{{info.riskScore}}</span>
   </p>
 
   {{! Priority}}
   <p class="priority">
-    <label title="{{t 'respond.incident.priority'}}">{{t 'respond.incident.priority'}}:</label>
+    <label title={{t "respond.incident.priority"}}>{{t "respond.incident.priority"}}:</label>
     {{#if accessControl.respondCanManageIncidents}}
       <div class="edit-button">
         {{#power-select
@@ -36,19 +36,19 @@
           disabled=(is-incident-closed info.status)
           triggerComponent=(component "respond-common/button-trigger"
             isDisabled=(is-incident-closed info.status)
-            label=(t (concat 'respond.priority.' info.priority)))
-          onchange=(action 'update' info.id 'priority') as |option|}}
-          {{t (concat 'respond.priority.' option)}}
+            label=(t (concat "respond.priority." info.priority)))
+          onchange=(action "update" info.id "priority") as |option|}}
+          {{t (concat "respond.priority." option)}}
         {{/power-select}}
       </div>
     {{else}}
-      <span>{{t (concat 'respond.priority.' info.priority)}}</span>
+      <span>{{t (concat "respond.priority." info.priority)}}</span>
     {{/if}}
   </p>
 
   {{! Status}}
   <p class="status">
-    <label title="{{t 'respond.incident.status'}}">{{t 'respond.incident.status'}}:</label>
+    <label title={{t "respond.incident.status"}}>{{t "respond.incident.status"}}:</label>
     {{#if accessControl.respondCanManageIncidents}}
       <div class="edit-button">
         {{#power-select
@@ -57,19 +57,19 @@
           matchTriggerWidth=false
           searchEnabled=false
           triggerComponent=(component "respond-common/button-trigger"
-            label=(t (concat 'respond.status.' info.status)))
-          onchange=(action 'update' info.id 'status') as |option|}}
-          {{t (concat 'respond.status.' option)}}
+            label=(t (concat "respond.status." info.status)))
+          onchange=(action "update" info.id "status") as |option|}}
+          {{t (concat "respond.status." option)}}
         {{/power-select}}
       </div>
     {{else}}
-      <span>{{t (concat 'respond.status.' info.status)}}</span>
+      <span>{{t (concat "respond.status." info.status)}}</span>
     {{/if}}
   </p>
 
   {{! Assignee}}
   <p class="assignee">
-    <label title="{{t 'respond.incident.assignee'}}">{{t 'respond.incident.assignee'}}:</label>
+    <label title={{t "respond.incident.assignee"}}>{{t "respond.incident.assignee"}}:</label>
     {{#if accessControl.respondCanManageIncidents}}
       <div class="edit-button">
         {{#power-select
@@ -81,8 +81,8 @@
           triggerComponent=(component "respond-common/button-trigger"
             isDisabled=(not canChangeAssignee)
             label=assigneeName)
-          onchange=(action 'handleUpdateAssignee' info.id 'assignee') as |option|}}
-          {{#if (eq option.id 'UNASSIGNED')}}
+          onchange=(action "handleUpdateAssignee" info.id "assignee") as |option|}}
+          {{#if (eq option.id "UNASSIGNED")}}
             {{unassignedLabel}}
           {{else}}
             {{or option.name option.id}}
@@ -90,23 +90,23 @@
         {{/power-select}}
       </div>
     {{else}}
-      <span>{{if info.assignee info.assignee.name (t 'respond.assignee.none')}}</span>
+      <span>{{if info.assignee info.assignee.name (t "respond.assignee.none")}}</span>
     {{/if}}
   </p>
 
   {{! Sources ("Event Stream Analysis", "ECAT", etc)}}
   <p class="sources">
-    <label title="{{t 'respond.incident.sources'}}">{{t 'respond.incident.sources'}}:</label>
+    <label title={{t "respond.incident.sources"}}>{{t "respond.incident.sources"}}:</label>
     <span>
       {{#each info.sources as |source|}}
-        <span class="source">{{t (concat 'respond.alert.source.' source)}}</span>
+        <span class="source">{{t (concat "respond.alert.source." source)}}</span>
       {{/each}}
     </span>
   </p>
 
   {{! Categories ("Malware", "C2", etc)}}
   <p class="categories">
-    <label title="{{t 'respond.incident.categories'}}">{{t 'respond.incident.categories'}}:</label>
+    <label title={{t "respond.incident.categories"}}>{{t "respond.incident.categories"}}:</label>
     <span>
       {{#each info.categories as |category|}}
         <span class="category">
@@ -120,9 +120,9 @@
 
   {{! Alert count}}
   <p class="catalyst-count">
-    <label title="{{t 'respond.incident.catalystCount'}}">{{t 'respond.incident.catalystCount'}}:</label>
+    <label title={{t "respond.incident.catalystCount"}}>{{t "respond.incident.catalystCount"}}:</label>
     <span>
-      {{info.alertCount}} {{t 'respond.incident.alertCount'}}, {{info.eventCount}} {{t 'respond.incident.eventCount'}}
+      {{info.alertCount}} {{t "respond.incident.alertCount"}}, {{info.eventCount}} {{t "respond.incident.eventCount"}}
     </span>
   </p>
 {{/if}}

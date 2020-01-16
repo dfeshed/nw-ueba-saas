@@ -2,7 +2,7 @@
   isPayloadOnly=isPayloadOnly
   isSticky=false
   packet=packet
-  togglePacketExpansion=(action 'togglePacketExpansion')
+  togglePacketExpansion=(action "togglePacketExpansion")
 }}
 
 {{#if isPacketExpanded}}
@@ -12,7 +12,7 @@
         byteRows=packet.byteRows
       }}
       <section class="rsa-packet__hex">
-        {{#each chunkedPacket key='byteRows' as |packet|}}
+        {{#each chunkedPacket key="byteRows" as |packet|}}
           {{recon-event-detail/single-packet/byte-table
             byteFormat="hex"
             hasSignaturesHighlighted=hasSignaturesHighlighted
@@ -22,7 +22,7 @@
         {{/each}}
       </section>
       <section class="rsa-packet__ascii">
-        {{#each chunkedPacket key='byteRows' as |packet|}}
+        {{#each chunkedPacket key="byteRows" as |packet|}}
           {{recon-event-detail/single-packet/byte-table
             byteFormat="ascii"
             hasSignaturesHighlighted=hasSignaturesHighlighted

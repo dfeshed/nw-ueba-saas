@@ -1,8 +1,8 @@
-<iframe src="{{iframeSrc}}" class="download-rar-installer"></iframe>
+<iframe src={{iframeSrc}} class="download-rar-installer"></iframe>
 
 {{#if enableRarPage}}
-  <div class='endpoint-rar-header'>
-    <h1>{{t 'endpointRAR.title'}}</h1>
+  <div class="endpoint-rar-header">
+    <h1>{{t "endpointRAR.title"}}</h1>
   </div>
 
   {{#rsa-page-layout showRightZone=true as |layout|}}
@@ -19,5 +19,5 @@
     {{/layout.right}}
   {{/rsa-page-layout}}
 {{else }}
-  {{rsa-panel-message message=(t 'endpointRAR.notPermitted')}}
+  {{rsa-panel-message message=(t "endpointRAR.notPermitted")}}
 {{/if}}

@@ -116,7 +116,6 @@ module('Integration | Component | Recent Query', function(hooks) {
 
   test('it broadcasts a message when some text is typed in recent queries tab', async function(assert) {
     const done = assert.async();
-    const X_CHAR = 88;
     new ReduxDataHelper(setState)
       .language()
       .recentQueriesFilteredList()
@@ -141,8 +140,6 @@ module('Integration | Component | Recent Query', function(hooks) {
     await clickTrigger(PILL_SELECTORS.recentQuery);
     // Type in text
     await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'x');
-    // Trigger keyDown event to emulate actual type in
-    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', X_CHAR);
   });
 
   test('Pressing escape from recent-query when there is some partially entered text cleans up the input and broadcasts a message', async function(assert) {

@@ -1,28 +1,28 @@
 {{#rsa-data-table lazy=true items=users columnsConfig=columnsData onRowClick=(action "selectUser")}}
   {{#rsa-data-table/body as |item index column|}}
     {{#rsa-data-table/body-cell column=column}}
-      {{#if (eq column.field 'score')}}
-        {{rsa-content-badge-score score=(get item column.field) size='small'  invertColor=true style=(get severityMap (get item 'scoreSeverity'))}}
-      {{else if (eq column.field 'isAdmin')}}
+      {{#if (eq column.field "score")}}
+        {{rsa-content-badge-score score=(get item column.field) size="small"  invertColor=true style=(get severityMap (get item "scoreSeverity"))}}
+      {{else if (eq column.field "isAdmin")}}
         {{#if (eq (get item column.field) true)}}
-          <span class='users-tab_body_list_admin'>
-            {{rsa-icon size='large' name='account-group-5'}}
+          <span class="users-tab_body_list_admin">
+            {{rsa-icon size="large" name="account-group-5"}}
           </span>
         {{/if}}
-      {{else if (eq column.field 'trendingScore.daily')}}
-        + {{get item column.field}} <span class='users-tab_body_list_timeRange'>{{t 'investigateUsers.trendRange.lastDay'}}</span>
-      {{else if (eq column.field 'trendingScore.weekly')}}
-        + {{get item column.field}} <span class='users-tab_body_list_timeRange'>{{t 'investigateUsers.trendRange.lastWeek'}}</span>
-      {{else if (eq column.field 'alerts')}}
-        {{users-tab/body/list/alerts  userId=(get item 'id') alerts=(get item column.field)}}    
-      {{else if (eq column.field 'displayName')}}
-        <span class='users-tab_body_list_name'>
+      {{else if (eq column.field "trendingScore.daily")}}
+        + {{get item column.field}} <span class="users-tab_body_list_timeRange">{{t "investigateUsers.trendRange.lastDay"}}</span>
+      {{else if (eq column.field "trendingScore.weekly")}}
+        + {{get item column.field}} <span class="users-tab_body_list_timeRange">{{t "investigateUsers.trendRange.lastWeek"}}</span>
+      {{else if (eq column.field "alerts")}}
+        {{users-tab/body/list/alerts  userId=(get item "id") alerts=(get item column.field)}}    
+      {{else if (eq column.field "displayName")}}
+        <span class="users-tab_body_list_name">
           {{get item column.field}}
         </span>
-      {{else if (eq column.field 'followed')}}  
-        {{#if (eq (get item 'followed') true)}}
-          <span class='users-tab_body_list_watched'>
-            {{rsa-icon size='large' name='view-1'}}
+      {{else if (eq column.field "followed")}}  
+        {{#if (eq (get item "followed") true)}}
+          <span class="users-tab_body_list_watched">
+            {{rsa-icon size="large" name="view-1"}}
           </span>
         {{/if}}
       {{/if}}
@@ -30,7 +30,7 @@
   {{/rsa-data-table/body}}
 {{/rsa-data-table}}
 {{#unless allUserReceived}}
-  <div class='users-tab_body_list_loader'>
-    {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+  <div class="users-tab_body_list_loader">
+    {{rsa-loader size="medium" label=(t "investigate.loading")}}
   </div>
 {{/unless}}

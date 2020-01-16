@@ -25,9 +25,11 @@ const fileProperties = {
   downloadInfo: { status: 'Downloaded' }
 };
 const downloadFilesToServerSpy = sinon.spy(fileContextCreators, 'downloadFilesToServer');
+const actionSpy = sinon.spy(window, 'open');
 
 const spys = [
-  downloadFilesToServerSpy
+  downloadFilesToServerSpy,
+  actionSpy
 ];
 
 const hosts = [
@@ -195,13 +197,10 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       assert.equal(findAll('.rsa-header .rsa-nav-tab.is-active')[0].textContent.trim(), 'Hosts', 'Host name list tab is selected');
       assert.equal(findAll('.host-name-list').length, 1, 'host name list is rendered');
       assert.equal(findAll('.host-name').length, 3, 'Expected to render 3 host name');
-      const actionSpy = sinon.spy(window, 'open');
       await click(findAll('.host-name__link')[0]);
       assert.ok(actionSpy.calledOnce, 'Window.open is called');
       assert.ok(actionSpy.args[0][0].includes('0C0454BB-A0D9-1B2A-73A6-5E8CCBF88DAC'), 'expected to include agent id');
       assert.ok(actionSpy.args[0][0].includes('/investigate/hosts/'), 'expected to include details in url');
-      actionSpy.resetHistory();
-      actionSpy.restore();
     });
   });
 
@@ -227,13 +226,10 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       await click(findAll('.rsa-data-table-body-row')[0]);
       await click(findAll('.rsa-nav-tab')[2]);
       assert.equal(findAll('.host-name').length, 3, 'Expected to render 3 host name');
-      const actionSpy = sinon.spy(window, 'open');
       await click(findAll('.pivot-to-investigate button')[0]);
       assert.ok(actionSpy.calledOnce, 'Window.open is called');
       assert.ok(actionSpy.args[0][0].includes('123456'), 'expected to include agent id');
       assert.ok(actionSpy.args[0][0].includes('/events'), 'expected to include details in url');
-      actionSpy.resetHistory();
-      actionSpy.restore();
     });
   });
 
@@ -266,7 +262,6 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
   });
 
   test('renders the process analysis item on click on Analyze process', async function(assert) {
-    const actionSpy = sinon.spy(window, 'open');
     new ReduxDataHelper(setState)
       .serviceId('123456')
       .timeRange({ value: 7, unit: 'days' })
@@ -290,7 +285,6 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       assert.ok(actionSpy.calledOnce);
       assert.ok(actionSpy.args[0][0].includes('vid=123123'));
       assert.ok(actionSpy.args[0][0].includes('sid=123456'));
-      actionSpy.restore();
     });
   });
 

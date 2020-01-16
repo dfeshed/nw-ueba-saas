@@ -1,14 +1,14 @@
 <hbox class="schedule-time">
   <label class="rsa-form-input">
-    {{rsa-icon name="calendar-timeout" class='datetime-picker-icon'}}
+    {{rsa-icon name="calendar-timeout" class="datetime-picker-icon"}}
     {{ember-flatpickr
       enableTime=true
       noCalendar=true
       enableSeconds=false
       time_24hr=true
-      dateFormat='H:i'
-      onChange=(action 'onTimeChange')
-      onClose=(action 'onTimeChange')
+      dateFormat="H:i"
+      onChange=(action "onTimeChange")
+      onClose=(action "onTimeChange")
       minuteIncrement=1
       locale=locale
       defaultHour=12

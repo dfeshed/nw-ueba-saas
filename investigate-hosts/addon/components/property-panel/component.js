@@ -20,11 +20,11 @@ export default class _PropertyPanel extends PropertyPanel {
   @computed('data', 'config')
   get properties() {
     assert('Cannot instantiate Summary panel without configuration.', this.config);
-    this.config = this.updateConfig(this.data, this.config);
+    const updatedConfig = this.updateConfig(this.data, this.config);
     if (this.data) {
       const i18n = this.get('i18n');
       // Loop through the list of property and set the value for each field
-      const properties = this.config.map((item) => {
+      const properties = updatedConfig.map((item) => {
         // Loop through all the fields and set the value and display name
         const fields = item.fields.map((fieldItem) => {
           const { fieldPrefix, field, labelKey, isStandardString } = fieldItem;

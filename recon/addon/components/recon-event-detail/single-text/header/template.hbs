@@ -1,18 +1,18 @@
 {{#if showPercentMessage}}
   <div class="header-percent-complete">
-    {{t 'recon.textView.headerShowing'}} {{percentText}}%
+    {{t "recon.textView.headerShowing"}} {{percentText}}%
   </div>
 {{/if}}
 
-<div class="{{side}}">
+<div class={{side}}>
   <span>
-    {{rsa-icon name=(concat 'arrow-circle-' arrowDirection '-2')}}
+    {{rsa-icon name=(concat "arrow-circle-" arrowDirection "-2")}}
   </span>
   <span class="text">
     {{#if isLog}}
-      {{t 'recon.textView.rawLogHeader'}}
+      {{t "recon.textView.rawLogHeader"}}
     {{else if isEndpoint}}
-      {{t 'recon.textView.rawEndpointHeader'}}  
+      {{t "recon.textView.rawEndpointHeader"}}  
     {{else}}
       {{side}}
     {{/if}}

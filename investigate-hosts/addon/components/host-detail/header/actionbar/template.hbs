@@ -2,14 +2,14 @@
   <div class="divider"/>
   <div class="rsa-button-group panel-control-group">
     <label class="rsa-form-label power-select snapshot-select">
-      <span class="label-text snap-shot-text">{{t 'investigateHosts.hosts.summary.snapshotTime'}}</span>
+      <span class="label-text snap-shot-text">{{t "investigateHosts.hosts.summary.snapshotTime"}}</span>
       {{#power-select
         searchEnabled=false
         triggerClass="inline"
         options=snapShots
         disabled=isProcessDetailsView
         selected=selectedSnapshot
-        onchange=(action 'setSelect') as |option|}}
+        onchange=(action "setSelect") as |option|}}
         {{#if option}}
           {{rsa-content-datetime timestamp=option.scanStartTime  displayMilliseconds=false}}
         {{/if}}
@@ -18,22 +18,22 @@
   </div>
 {{/unless}}
 
-<iframe src="{{downloadLink}}" class="host_export-files-iframe"></iframe>
+<iframe src={{downloadLink}} class="host_export-files-iframe"></iframe>
 <div class="titlebar__buttons-holder flexi-fit">
   {{#if showRightPanelButton}}
     {{#rsa-form-button
-       title=(t 'investigateHosts.hosts.button.rightPanel')
+       title=(t "investigateHosts.hosts.button.rightPanel")
        class="open-properties"
        isActive=isDetailRightPanelVisible
        isIconOnly=true
-       defaultAction=(action 'toggleDetailRightPanel')
+       defaultAction=(action "toggleDetailRightPanel")
     }}
-      {{rsa-icon name='layout-2' size='small'}}
+      {{rsa-icon name="layout-2" size="small"}}
     {{/rsa-form-button}}
-    <div class='divider'/>
+    <div class="divider"/>
   {{/if}}
 
-  {{#link-to 'hosts.index' (query-params sid=null)}}
-    {{rsa-icon class='header-button' name='close' title=(t 'investigateHosts.hosts.button.close')}}
+  {{#link-to "hosts.index" (query-params sid=null)}}
+    {{rsa-icon class="header-button" name="close" title=(t "investigateHosts.hosts.button.close")}}
   {{/link-to}}
 </div>

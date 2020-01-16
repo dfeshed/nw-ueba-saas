@@ -2,46 +2,46 @@
   <div class="create-incident-button">
     {{#rsa-form-button
       isDisabled=isDisabled
-      defaultAction=(action 'createIncident')}}
-      {{t 'respond.alerts.createIncident'}}
+      defaultAction=(action "createIncident")}}
+      {{t "respond.alerts.createIncident"}}
     {{/rsa-form-button}}
   </div>
   <div class="add-to-incident-button">
     {{#rsa-form-button
       isDisabled=isDisabled
-      defaultAction=(action 'addToIncident')}}
-      {{t 'respond.alerts.addToIncident'}}
+      defaultAction=(action "addToIncident")}}
+      {{t "respond.alerts.addToIncident"}}
     {{/rsa-form-button}}
   </div>
 </div>
 
 <div class="incident-dropdown">
   <hbox class="rsa-button-group">
-    {{#rsa-form-button isDisabled=isDisabled defaultAction=(action 'createIncident')}}
+    {{#rsa-form-button isDisabled=isDisabled defaultAction=(action "createIncident")}}
       {{#if isSelectedEventsLimitCrossed}}
         {{rsa-icon
           class="selected-events-threshold"
-          size='small'
-          name='report-problem-triangle'
-          title=(t 'respond.investigation.selectedEventsThresoldTooltip')}}
+          size="small"
+          name="report-problem-triangle"
+          title=(t "respond.investigation.selectedEventsThresoldTooltip")}}
       {{/if}}
-      {{t 'respond.alerts.createIncident'}}
+      {{t "respond.alerts.createIncident"}}
     {{/rsa-form-button}}
     {{#click-outside action=(action "clickOutside")}}
-      {{#rsa-form-button class="rsa-split-dropdown" isDisabled=isDisabled isActive=isExpanded defaultAction=(action 'toggleExpand')}}
+      {{#rsa-form-button class="rsa-split-dropdown" isDisabled=isDisabled isActive=isExpanded defaultAction=(action "toggleExpand")}}
         {{rsa-icon name="arrow-down-12"}}
       {{/rsa-form-button}}
       {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
-        <li><a {{action 'createIncident'}} class="create-incident-list-item">{{t 'respond.alerts.createIncident'}}</a></li>
-        <li><a {{action 'addToIncident'}} class="add-to-incident-list-item">{{t 'respond.alerts.addToIncident'}}</a></li>
+        <li><a {{action "createIncident"}} class="create-incident-list-item">{{t "respond.alerts.createIncident"}}</a></li>
+        <li><a {{action "addToIncident"}} class="add-to-incident-list-item">{{t "respond.alerts.addToIncident"}}</a></li>
       {{/rsa-button-menu}}
     {{/click-outside}}
   </hbox>
 </div>
 
-{{#if (eq activeModalId 'create-incident')}}
-  {{#rsa-application-modal eventId='create-incident' label=(t "respond.alerts.createIncident") style="standard create-incident-modal"}}
-    <div class='modal-content'>
+{{#if (eq activeModalId "create-incident")}}
+  {{#rsa-application-modal eventId="create-incident" label=(t "respond.alerts.createIncident") style="standard create-incident-modal"}}
+    <div class="modal-content">
       {{incident-toolbar/create-incident
         alertCount=alertIds.length
         selectedEventIds=selectedEventIds
@@ -49,20 +49,20 @@
         startTime=startTime
         endTime=endTime
         selectedAlerts=selectedAlerts
-        close=(action 'closeModal' 'create-incident')}}
+        close=(action "closeModal" "create-incident")}}
     </div>
   {{/rsa-application-modal}}
 {{/if}}
-{{#if (eq activeModalId 'add-to-incident')}}
-  {{#rsa-application-modal eventId='add-to-incident' label=(t "respond.alerts.addToIncident") style=modalClassName onClose=clearResults}}
-    <div class='modal-content'>
+{{#if (eq activeModalId "add-to-incident")}}
+  {{#rsa-application-modal eventId="add-to-incident" label=(t "respond.alerts.addToIncident") style=modalClassName onClose=clearResults}}
+    <div class="modal-content">
       {{incident-toolbar/add-to-incident
         selectedEventIds=selectedEventIds
         endpointId=endpointId
         startTime=startTime
         endTime=endTime
         selectedAlerts=selectedAlerts
-        finish=(action 'closeModal' 'add-to-incident')}}
+        finish=(action "closeModal" "add-to-incident")}}
     </div>
   {{/rsa-application-modal}}
 {{/if}}

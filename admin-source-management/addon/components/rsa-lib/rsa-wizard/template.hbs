@@ -9,13 +9,13 @@
     {{#each steps as |step|}}
       <li>
         <a
-          class="{{if (eq currentStepId step.id) 'active'}}"
+          class="{{if (eq currentStepId step.id) "active"}}"
           {{!-- TODO make steps clickable once we figure out validations --}}
           {{!-- onclick={{action 'transitionToStep' step.id}} --}}
         >
           {{t step.title}}
           {{#if (not-eq currentStepId step.id)}}
-            {{rsa-icon name='arrow-right-12'}}
+            {{rsa-icon name="arrow-right-12"}}
           {{/if}}
         </a>
       </li>
@@ -37,7 +37,7 @@
   {{/if}}
   {{!-- wizard current step toolbar container --}}
   <vbox class="rsa-wizard-toolbar-container">
-    {{component currentStep.toolbarComponent step=currentStep transitionToStep=(action 'transitionToStep') transitionToClose=(action transitionToClose)}}
+    {{component currentStep.toolbarComponent step=currentStep transitionToStep=(action "transitionToStep") transitionToClose=(action transitionToClose)}}
   </vbox>
 </vbox>
 

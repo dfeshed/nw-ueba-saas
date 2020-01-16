@@ -1,7 +1,7 @@
 {{#unless isHidden}}
   {{#rsa-form-button
     class="export-files-button"
-    defaultAction=(action 'extractFiles')
+    defaultAction=(action "extractFiles")
     isDisabled=isDisabled
   }}
     {{#if isDownloading}}
@@ -12,7 +12,7 @@
   {{rsa-download-export
     extractLink=extractLink
     isAutoDownloadFile=isAutoDownloadFile
-    iframeClass='export-files-iframe js-export-files-iframe'
-    sendMessage=(action 'didDownloadFiles')
+    iframeClass="export-files-iframe js-export-files-iframe"
+    sendMessage=(action "didDownloadFiles")
   }}
 {{/unless}}

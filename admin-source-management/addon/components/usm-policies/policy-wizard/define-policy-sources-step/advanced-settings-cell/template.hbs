@@ -2,11 +2,11 @@
 {{#rsa-content-accordion label=(t column.title) isCollapsed=isAdvancedSettingsAccordionCollapsed class="blue" animate=true}}
   {{#each column.config as |column|}}
 
-    {{#if (eq column.displayType 'sourceNameInput') }}
+    {{#if (eq column.displayType "sourceNameInput") }}
       <div class="{{column.field}}">
-        <h4 class='subheading'>
+        <h4 class="subheading">
           {{#rsa-text-with-tooltip
-            value=(t (concat column.title 'Tooltip'))
+            value=(t (concat column.title "Tooltip"))
             style="standard"
             alwaysShow=true
           }}
@@ -19,16 +19,16 @@
             maxLength=256
             isError=(eq (get item column.field) invalidTableItem)
             errorMessage=(t errorMessage)
-            onFocusOut=(action 'handleSourceNameChange' column.field)
+            onFocusOut=(action "handleSourceNameChange" column.field)
           }}
         </div>
       </div>
 
-    {{else if (eq column.displayType 'fileEncoding')}}
+    {{else if (eq column.displayType "fileEncoding")}}
       <div class="{{column.field}}">
-        <h4 class='subheading'>
+        <h4 class="subheading">
           {{#rsa-text-with-tooltip
-            value=(t (concat column.title 'Tooltip'))
+            value=(t (concat column.title "Tooltip"))
             style="standard"
             alwaysShow=true
           }}
@@ -37,12 +37,12 @@
         </h4>
         <div class="file-encoding">
           {{#power-select
-            placeholder=(t 'packager.placeholder')
+            placeholder=(t "packager.placeholder")
             options=encodingOptions
             selected=item.fileEncoding
-            searchPlaceholder=(t 'packager.searchPlaceholder')
+            searchPlaceholder=(t "packager.searchPlaceholder")
             searchEnabled=false
-            onchange=(action 'handleSelectionChange' column.field bubbles=false) as |option|}}
+            onchange=(action "handleSelectionChange" column.field bubbles=false) as |option|}}
             {{option}}
           {{/power-select}}
         </div>

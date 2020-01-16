@@ -10,11 +10,11 @@
   {{#rsa-data-table/body as |item index column|}}
     {{#rsa-data-table/body-cell item=item column=column}}
 
-      {{#if (eq column.format 'UNICODE')}}
+      {{#if (eq column.format "UNICODE")}}
         {{#if item.unicode}}
-          {{rsa-icon name='check-2' class='rsa-green-color'}}
+          {{rsa-icon name="check-2" class="rsa-green-color"}}
         {{else}}
-          <div class='unicode-false'>--</div>
+          <div class="unicode-false">--</div>
         {{/if}}
       {{else}}
         <div>{{get item column.field}}</div>
@@ -25,6 +25,6 @@
 {{/rsa-data-table}}
 <section class="file-pager">
   <div class="file-info lighter right">
-    {{t 'investigateHosts.hosts.footerLabel.strings' count=filteredDataWithLength.length total=fileData.length}}
+    {{t "investigateHosts.hosts.footerLabel.strings" count=filteredDataWithLength.length total=fileData.length}}
   </div>
 </section>

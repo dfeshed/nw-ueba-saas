@@ -1,13 +1,13 @@
-<vbox class='rsa-form-radio-group'>
+<vbox class="rsa-form-radio-group">
   <vbox class="radio-buttons">
     {{#each radioButtonConfig.items as |item|}}
       {{#radio-button
-        classNames='rsa-form-radio-wrapper'
-        radioClass='recurrence-type'
+        classNames="rsa-form-radio-wrapper"
+        radioClass="recurrence-type"
         value=item.name
         groupValue=(readonly intervalType)
-        name='radio-recurrence-type'
-        changed=(action 'updatePolicyProperty' 'recurrenceUnit' item.name)
+        name="radio-recurrence-type"
+        changed=(action "updatePolicyProperty" "recurrenceUnit" item.name)
       }}
         <span>{{t item.label}}</span>
       {{/radio-button}}
@@ -16,14 +16,14 @@
 </vbox>
 
 <hbox class="recurrence-run-interval">
-  <span class='text'>{{t 'adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.every'}}</span>
+  <span class="text">{{t "adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.every"}}</span>
   <div class="recurrence-run-interval__list">
     <label class="rsa-form-label power-select">
       {{#power-select
         triggerClass="inline"
         options=runIntervalConfig.options
         selected=interval
-        onchange=(action 'updatePolicyProperty' 'recurrenceInterval') as |selectedDays|}}
+        onchange=(action "updatePolicyProperty" "recurrenceInterval") as |selectedDays|}}
         {{selectedDays}}
       {{/power-select}}
     </label>
@@ -31,7 +31,7 @@
   <span class="text">
     {{t runIntervalConfig.runLabel}}
     {{#if isWeeklyInterval}}
-      {{t 'adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.on'}}
+      {{t "adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.on"}}
     {{/if}}
   </span>
 </hbox>
@@ -39,7 +39,7 @@
 {{#if isWeeklyInterval}}
   <hbox class="recurrence-run-interval__week-options">
     {{#each weekOptions as |option|}}
-      {{#rsa-form-button class='week-button' click=(action 'selectWeek' option.week) style=(if option.isActive 'primary')}}
+      {{#rsa-form-button class="week-button" click=(action "selectWeek" option.week) style=(if option.isActive "primary")}}
         {{t option.label}}
       {{/rsa-form-button}}
     {{/each}}

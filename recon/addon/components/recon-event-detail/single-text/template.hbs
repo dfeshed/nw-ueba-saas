@@ -25,30 +25,30 @@
   {{#if userInComponent}}
 
     {{#rsa-content-tethered-panel
-      position='top'
-      panelId=(concat 'span' elementId)
+      position="top"
+      panelId=(concat "span" elementId)
       hideOnLeave=false
       displayCloseButton=hasCloseButton
-      style='highlighted'
+      style="highlighted"
       panelClass="recon-tooltip"
     }}
       <div class="reconTooltip">
         {{#if isActionClicked }}
           <header>{{tooltipHeading}}</header>
           <div class="body">
-            <div class='selection-name'>Original Selection</div>
-            <div class='selection-value'>{{originalString}}</div>
-            <div class='selection-name'>Base64 Format</div>
-            <div class='selection-value'>{{encDecStrBase64}}</div>
-            <div class='selection-name'>URL Format</div>
-            <div class='selection-value'>{{encDecStrUrl}}</div>
+            <div class="selection-name">Original Selection</div>
+            <div class="selection-value">{{originalString}}</div>
+            <div class="selection-name">Base64 Format</div>
+            <div class="selection-value">{{encDecStrBase64}}</div>
+            <div class="selection-name">URL Format</div>
+            <div class="selection-value">{{encDecStrUrl}}</div>
           </div>
         {{else}}
           {{#if supportsCopyPaste}}
-            <div class="list-item" {{action 'copyText'}}>Copy Selected Text</div>
+            <div class="list-item" {{action "copyText"}}>Copy Selected Text</div>
           {{/if}}
-          <div class="list-item" {{action 'decodeText'}}>Decode Selected Text</div>
-          <div class="list-item" {{action 'encodeText'}}>Encode Selected Text</div>
+          <div class="list-item" {{action "decodeText"}}>Decode Selected Text</div>
+          <div class="list-item" {{action "encodeText"}}>Encode Selected Text</div>
         {{/if}}
       </div>
     {{/rsa-content-tethered-panel}}
@@ -57,7 +57,7 @@
   {{#if displayShowAllButton}}
     <div class="load-more-text-entries">
       {{#rsa-form-button
-        defaultAction=(action 'showRemainingText')
+        defaultAction=(action "showRemainingText")
         isDisabled=renderingRemainingText}}
         {{ remainingTextMessage }}
       {{/rsa-form-button}}
@@ -65,7 +65,7 @@
   {{else if showTruncatedMessage}}
     <div class="text-truncated">
       {{rsa-icon class="info-warning" name="report-problem-triangle"}}
-      {{t 'recon.textView.singleMessageTruncated'}}
+      {{t "recon.textView.singleMessageTruncated"}}
     </div>
   {{/if}}
 {{/unless}}

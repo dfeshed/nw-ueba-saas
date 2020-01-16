@@ -1,60 +1,60 @@
 {{#rsa-form-button
-  class='prev-button'
-  defaultAction=(action 'transitionToPrevStep')
+  class="prev-button"
+  defaultAction=(action "transitionToPrevStep")
   isDisabled=step.prevButtonDisabled
 }}
-  {{t 'adminUsm.groupWizard.previous'}}
+  {{t "adminUsm.groupWizard.previous"}}
 {{/rsa-form-button}}
 
 {{#rsa-form-button
-  class='next-button'
-  style='primary'
-  defaultAction=(action 'transitionToNextStep')
+  class="next-button"
+  style="primary"
+  defaultAction=(action "transitionToNextStep")
   isDisabled=step.nextButtonDisabled
 }}
-  {{t 'adminUsm.groupWizard.next'}}
+  {{t "adminUsm.groupWizard.next"}}
 {{/rsa-form-button}}
 
 {{#rsa-form-button
-  class='save-button'
-  defaultAction=(action 'save')
+  class="save-button"
+  defaultAction=(action "save")
   isDisabled=step.saveButtonDisabled
 }}
-  {{t 'adminUsm.groupWizard.saveAndClose'}}
+  {{t "adminUsm.groupWizard.saveAndClose"}}
 {{/rsa-form-button}}
 
 {{#rsa-form-button
-  class='publish-button'
-  defaultAction=(action 'publish')
+  class="publish-button"
+  defaultAction=(action "publish")
   isDisabled=step.publishButtonDisabled
 }}
-  {{t 'adminUsm.groupWizard.publishGroup'}}
+  {{t "adminUsm.groupWizard.publishGroup"}}
 {{/rsa-form-button}}
 
 {{#rsa-form-button
-  class='cancel-button'
-  defaultAction=(action 'cancel')
+  class="cancel-button"
+  defaultAction=(action "cancel")
   isStepValid=isStepValid
 }}
-  {{t 'adminUsm.groupWizard.cancel'}}
+  {{t "adminUsm.groupWizard.cancel"}}
 {{/rsa-form-button}}
 
 {{#if _showConfirmationModal}}
   {{#rsa-application-modal
-    style='standard confirmation-modal'
-    eventId='confirm-modal'
-    label=(t 'adminUsm.groupWizard.modals.discardChanges.title')
-    onClose=(action 'onModalClose')}}
-    <div class='modal-content'>
-      <p>{{t 'adminUsm.groupWizard.modals.discardChanges.confirm'}}</p>
+    style="standard confirmation-modal"
+    eventId="confirm-modal"
+    label=(t "adminUsm.groupWizard.modals.discardChanges.title")
+    onClose=(action "onModalClose")}}
+    <div class="modal-content">
+      <p>{{t "adminUsm.groupWizard.modals.discardChanges.confirm"}}</p>
     </div>
     <footer>
       <hbox class="modal-footer-buttons">
-        {{#rsa-form-button defaultAction=(action 'continueEditing')}}
-          {{t 'adminUsm.groupWizard.modals.discardChanges.continueEditing'}}
+        {{#rsa-form-button defaultAction=(action "continueEditing")}}
+          {{t "adminUsm.groupWizard.modals.discardChanges.continueEditing"}}
         {{/rsa-form-button}}
-        {{#rsa-form-button style='primary' click=(action 'discardChanges')}}
-          {{t 'adminUsm.groupWizard.modals.discardChanges.discardChanges'}}
+        {{#rsa-form-button style="primary" click=(action "discardChanges")}}
+          {{t "adminUsm.groupWizard.modals.discardChanges.discardChanges"}}
         {{/rsa-form-button}}
       </hbox>
     </footer>

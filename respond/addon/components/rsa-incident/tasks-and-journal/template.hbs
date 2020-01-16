@@ -1,18 +1,18 @@
 <hbox fit justify="center" nowrap class="rsa-journal-and-tasks__toolbar">
-  <div class="rsa-tab text-only journal-tab {{if (eq tasksJournalMode 'journal') 'is-active' ''}}"
+  <div class="rsa-tab text-only journal-tab {{if (eq tasksJournalMode "journal") "is-active" ""}}"
     {{action "showTab" "journal"}}>
-    {{t 'respond.journal.title'}} ({{journalEntryCount}})
+    {{t "respond.journal.title"}} ({{journalEntryCount}})
   </div>
-  <div class="rsa-tab text-only remediation-tab {{if (eq tasksJournalMode 'remediation') 'is-active' ''}}"
+  <div class="rsa-tab text-only remediation-tab {{if (eq tasksJournalMode "remediation") "is-active" ""}}"
     {{action "showTab" "remediation"}}>
-    {{t 'respond.entities.remediationTasks'}} ({{taskCount}})
+    {{t "respond.entities.remediationTasks"}} ({{taskCount}})
   </div>
 </hbox>
-{{#if (eq tasksJournalMode 'journal')}}
+{{#if (eq tasksJournalMode "journal")}}
   {{#if accessControl.hasRespondJournalAccess}}
     {{rsa-incident/journal info=info}}
   {{else}}
-    <centered>{{t 'respond.journal.noAccess'}}</centered>
+    <centered>{{t "respond.journal.noAccess"}}</centered>
   {{/if}}
 {{else}}
   {{#liquid-bind isAddingNewTask use=(if isAddingNewTask "toLeft" "toRight") as |currentIsAddingNewTask|}}
@@ -21,43 +21,43 @@
       {{! New Task Form}}
       {{rsa-remediation-tasks/new-task
         incidentId=incidentId
-        onCancel=(action 'cancelNewTask')
-        onCreated=(action 'onTaskCreated')
+        onCancel=(action "cancelNewTask")
+        onCreated=(action "onTaskCreated")
       }}
     {{else}}
       {{#if accessControl.respondCanManageRemediation}}
         {{! Add New Task Button }}
         {{#rsa-form-button
-          title=(t 'respond.remediationTasks.addNewTask')
+          title=(t "respond.remediationTasks.addNewTask")
           isFullWidth=true
-          defaultAction=(action 'addNewTask')
+          defaultAction=(action "addNewTask")
           isDisabled=isIncidentClosed
         }}
-          {{t 'respond.remediationTasks.addNewTask'}}
+          {{t "respond.remediationTasks.addNewTask"}}
         {{/rsa-form-button}}
       {{/if}}
 
       {{! If the user has remedation permission }}
       {{#if accessControl.hasRespondRemediationAccess}}
         {{! Loading spinner }}
-        {{#if (eq tasksStatus 'wait')}}
+        {{#if (eq tasksStatus "wait")}}
           <centered>
-            {{rsa-loader size="large" label=(t 'respond.remediationTasks.loading')}}
+            {{rsa-loader size="large" label=(t "respond.remediationTasks.loading")}}
           </centered>
         {{else}}
           {{! Task List}}
-          <div class="task-list {{unless accessControl.respondCanManageRemediation 'read-only'}}">
+          <div class="task-list {{unless accessControl.respondCanManageRemediation "read-only"}}">
             {{#if tasks.length}}
               {{#each tasks as |task|}}
                 {{rsa-remediation-tasks/task info=task }}
               {{/each}}
             {{else}}
-              <centered>{{t 'respond.remediationTasks.noTasks' incidentId=incidentId}}</centered>
+              <centered>{{t "respond.remediationTasks.noTasks" incidentId=incidentId}}</centered>
             {{/if}}
           </div>
         {{/if}}
       {{else}}
-        <centered>{{t 'respond.remediationTasks.noAccess'}}</centered>
+        <centered>{{t "respond.remediationTasks.noAccess"}}</centered>
       {{/if}}
 
     {{/if}}
@@ -66,9 +66,9 @@
 <div class="close-panel">
   {{#rsa-form-button
     isIconOnly=true
-    title=(t 'respond.close')
-    defaultAction=(action 'toggleTasksAndJournalPanel')
+    title=(t "respond.close")
+    defaultAction=(action "toggleTasksAndJournalPanel")
   }}
-    {{rsa-icon name='close'}}
+    {{rsa-icon name="close"}}
   {{/rsa-form-button}}
 </div>

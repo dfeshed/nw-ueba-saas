@@ -4,28 +4,28 @@
     activePillTab=(readonly activePillTab)
     hasTextPill=hasTextPill
     options=(readonly _groomedAfterOptionsMenu.list)
-    sendMessage=(action 'handleMessage')
+    sendMessage=(action "handleMessage")
   )
   allowClear=false
-  dropdownClass='investigate-query-dropdown recent-query-tab'
+  dropdownClass="investigate-query-dropdown recent-query-tab"
   calculatePosition=_calculatePostion
   initiallyOpened=false
   matchTriggerWidth=false
   matcher=_matcher
-  noMatchesMessage=' '
+  noMatchesMessage=" "
   options=options
   optionsComponent=(
-    component 'query-container/power-select-options'
-    onmouseenter=(action 'onOptionMouseEnter')
+    component "query-container/power-select-options"
+    onmouseenter=(action "onOptionMouseEnter")
   )
   placeholder=pillPlaceholder
-  onchange=(action 'onChange')
-  onfocus=(action 'onFocus')
-  onkeydown=(action 'onKeyDown')
-  oninput=(action 'onInput')
-  onclose=(action 'onClose')
+  onchange=(action "onChange")
+  onfocus=(action "onFocus")
+  onkeydown=(action "onKeyDown")
+  oninput=(action "onInput")
+  onclose=(action "onClose")
   preventScroll=true
-  triggerComponent='query-container/power-select-resizable-input'
+  triggerComponent="query-container/power-select-resizable-input"
   as |recentQ|
 }}
   <span class="recent-queries-option value">{{recentQ.query}}</span>

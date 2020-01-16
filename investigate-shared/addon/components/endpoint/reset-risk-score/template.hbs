@@ -1,10 +1,10 @@
-{{#if (eq buttonType 'button')}}
-  {{#rsa-form-button isDisabled=disableButton class='reset-score-button' click=(action 'onResetAction')}}{{t 'investigateHosts.hosts.resetHosts.modal.title'}}{{/rsa-form-button}}
+{{#if (eq buttonType "button")}}
+  {{#rsa-form-button isDisabled=disableButton class="reset-score-button" click=(action "onResetAction")}}{{t "investigateHosts.hosts.resetHosts.modal.title"}}{{/rsa-form-button}}
 {{/if}}
 
 {{#if showResetScoreModal}}
   {{endpoint/reset-risk-score/modal
     isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
-    onClose=(action 'onResetScoreModalClose')
-    onReset=(action 'handleResetHostsRiskScore')}}
+    onClose=(action "onResetScoreModalClose")
+    onReset=(action "handleResetHostsRiskScore")}}
 {{/if}}

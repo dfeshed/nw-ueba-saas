@@ -5,18 +5,18 @@
   timezone=timezone.selected.zoneId
   dateFormat=dateFormat.selected.format
   use12HourClock=use12HourClock
-  onChange=(action 'setCustomTimeRange')
-  onError=(action 'timeRangeError')
+  onChange=(action "setCustomTimeRange")
+  onError=(action "timeRangeError")
 }}
 {{#rsa-content-tethered-panel-trigger
   panel=panelId
-  triggerEvent='click'
+  triggerEvent="click"
 }}
   {{#rsa-form-button
     allowToggleActive=true
     style=buttonStyle
     title=selectedTimeRangeName
-    class='time-selector'
+    class="time-selector"
     withDropdown=true
   }}
   {{/rsa-form-button}}
@@ -25,14 +25,14 @@
   displayCloseButton=false
   isPopover=true
   panelId=panelId
-  position='bottom-left'
+  position="bottom-left"
   panelClass="timerange-selector-panel"
   as |hideTooltip|
 }}
   <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
     {{#each timeRanges as |range|}}
       {{#unless range.hidden}}
-        <li {{action 'entireTimeRangeSelection' range}}>{{range.name}}</li>
+        <li {{action "entireTimeRangeSelection" range}}>{{range.name}}</li>
       {{/unless}}
     {{/each}}
   </ul>

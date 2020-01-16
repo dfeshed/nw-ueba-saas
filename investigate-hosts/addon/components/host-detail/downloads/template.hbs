@@ -1,33 +1,33 @@
 <box class="files-content">
-  {{#rsa-page-layout showLeftZone=(readonly isShowHostDetailsFilterPanel) onClose=(action 'onCloseSidePanel') showRightZone=false as |layout|}}
+  {{#rsa-page-layout showLeftZone=(readonly isShowHostDetailsFilterPanel) onClose=(action "onCloseSidePanel") showRightZone=false as |layout|}}
     {{#layout.left as |leftPanel|}}
-      {{leftPanel.header iconName='filter-2' title=(t 'investigateHosts.downloads.filters.title')}}
+      {{leftPanel.header iconName="filter-2" title=(t "investigateHosts.downloads.filters.title")}}
       {{endpoint/filters-wrapper
         filterState=filter
-        filterType='DOWNLOAD'
+        filterType="DOWNLOAD"
         filterTypes=filterTypes
         savedFilter=savedFilter
         savedFilters=hostDownloadsFilters
         selectedFilterId=selectedFilterId
-        resetFilters=(action 'resetFilters')
-        applyFilters=(action 'applyFilters' (action 'getFirstPageOfDownloads'))
-        applySavedFilters=(action 'applySavedFilters' (action 'getFirstPageOfDownloads'))
-        deleteFilter=(action 'deleteFilter')
-        createCustomSearch=(action 'createCustomSearch')
-        closeEntityDetails=(action layout.close 'right')}}
+        resetFilters=(action "resetFilters")
+        applyFilters=(action "applyFilters" (action "getFirstPageOfDownloads"))
+        applySavedFilters=(action "applySavedFilters" (action "getFirstPageOfDownloads"))
+        deleteFilter=(action "deleteFilter")
+        createCustomSearch=(action "createCustomSearch")
+        closeEntityDetails=(action layout.close "right")}}
     {{/layout.left}}
     {{#layout.center}}
       <box class="downloaded-files-body">
         {{host-detail/downloads/action-bar
           disableActions=disableActions
-          deleteFiles=(action 'onShowConfirmationModal')
-          saveLocalCopy=(action 'onSaveLocalCopy')
-          openFilterPanel=(action layout.open 'left')}}
+          deleteFiles=(action "onShowConfirmationModal")
+          saveLocalCopy=(action "onSaveLocalCopy")
+          openFilterPanel=(action layout.open "left")}}
 
         {{host-detail/downloads/downloads-list
           disableActions=disableActions
-          deleteFiles=(action 'onShowConfirmationModal')
-          saveLocalCopy=(action 'onSaveLocalCopy')}}
+          deleteFiles=(action "onShowConfirmationModal")
+          saveLocalCopy=(action "onSaveLocalCopy")}}
       </box>
       <box class="downloaded-files-footer">
         {{host-detail/downloads/file-pagination}}
@@ -38,9 +38,9 @@
 
 {{#if showConfirmationModal}}
   {{utils/confirmation-modal
-    confirmAction=(action 'onDeleteFilesFromServer')
-    closeConfirmModal=(action 'hideConfirmationModal')
-    class='delete-downloaded-files'
-    title=(t 'investigateHosts.downloads.deleteDownloadedFiles.modal.title')
-    confirmationMessage=(t 'investigateHosts.downloads.deleteDownloadedFiles.modal.message')}}
+    confirmAction=(action "onDeleteFilesFromServer")
+    closeConfirmModal=(action "hideConfirmationModal")
+    class="delete-downloaded-files"
+    title=(t "investigateHosts.downloads.deleteDownloadedFiles.modal.title")
+    confirmationMessage=(t "investigateHosts.downloads.deleteDownloadedFiles.modal.message")}}
 {{/if}}

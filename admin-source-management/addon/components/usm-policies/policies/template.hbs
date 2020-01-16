@@ -1,29 +1,29 @@
 {{#rsa-explorer class="usm-policies"
-  noResultsMessage=(or noResultsMessage (t 'adminUsm.policies.list.noResultsMessage'))
+  noResultsMessage=(or noResultsMessage (t "adminUsm.policies.list.noResultsMessage"))
   columns=columns
-  reduxSpace='usm.policies'
+  reduxSpace="usm.policies"
   creators=creators as |explorer|}}
 
-  {{#explorer.toolbar toolbarControlsComponent='usm-policies/policies/toolbar' as |toolbar|}}
+  {{#explorer.toolbar toolbarControlsComponent="usm-policies/policies/toolbar" as |toolbar|}}
     {{toolbar.toolbarControls}}
   {{/explorer.toolbar}}
 
-  {{#explorer.filters filterControlsComponent='usm-policies/policies/filters' hasTimeFilter=false showFooter=false as |filters|}}
+  {{#explorer.filters filterControlsComponent="usm-policies/policies/filters" hasTimeFilter=false showFooter=false as |filters|}}
     {{filters.filterControls}}
   {{/explorer.filters}}
 
   {{#explorer.table as |row|}}
     {{#row.cell as |item index column|}}
-      <span class="{{concat 'usm-policy-column-' column.field}} {{if item.defaultPolicy 'usm-default-policy-row'}}">
-        {{#if (eq column.dataType 'checkbox') }}
-          {{#if (and (not-eq item.id '__default_windows_log_policy') (not-eq item.id '__default_file_policy'))}}
+      <span class="{{concat "usm-policy-column-" column.field}} {{if item.defaultPolicy "usm-default-policy-row"}}">
+        {{#if (eq column.dataType "checkbox") }}
+          {{#if (and (not-eq item.id "__default_windows_log_policy") (not-eq item.id "__default_file_policy"))}}
             <label class="rsa-form-checkbox-wrapper">
               {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
               <span></span>
             </label>
           {{/if}}
         {{else if (eq column.field "sourceType")}}
-          {{t (concat 'adminUsm.policyTypes.' item.policyType)}}
+          {{t (concat "adminUsm.policyTypes." item.policyType)}}
         {{else if (eq column.field "name")}}
           {{#rsa-text-with-tooltip value=(get item column.field) style="standard"}}
             <div class="table-cell-text">{{get item column.field}}</div>
@@ -37,12 +37,12 @@
             sources=item.sources}}
           {{/usm-policies/policies/missing-typespec}}
           {{#if (eq item.lastPublishedOn 0)}}
-            <span class="pub-status status-unpublished">{{t 'adminUsm.publishStatus.unpublished'}}</span>
+            <span class="pub-status status-unpublished">{{t "adminUsm.publishStatus.unpublished"}}</span>
           {{else}}
             {{#if item.dirty}}
-              <span class="pub-status status-unpublished-edits">{{t 'adminUsm.publishStatus.unpublishedEdits'}}</span>
+              <span class="pub-status status-unpublished-edits">{{t "adminUsm.publishStatus.unpublishedEdits"}}</span>
             {{else}}
-              <span class="pub-status">{{t 'adminUsm.publishStatus.published'}}</span>
+              <span class="pub-status">{{t "adminUsm.publishStatus.published"}}</span>
             {{/if}}
           {{/if}}
         {{else if (eq column.field "associatedGroups")}}
@@ -51,15 +51,15 @@
               <span>,  </span>
             {{else}}
               {{#if item.defaultPolicy}}
-                <span class="status-default-policy-associated-group">{{t 'adminUsm.policies.list.defaultPolicyAssociatedGroup'}},  </span>
+                <span class="status-default-policy-associated-group">{{t "adminUsm.policies.list.defaultPolicyAssociatedGroup"}},  </span>
               {{/if}}
             {{/if}}
             {{group.name}}
           {{else}}
             {{#if item.defaultPolicy}}
-              <p class="status-default-policy-associated-group">{{t 'adminUsm.policies.list.defaultPolicyAssociatedGroup'}}</p>
+              <p class="status-default-policy-associated-group">{{t "adminUsm.policies.list.defaultPolicyAssociatedGroup"}}</p>
             {{else}}
-              <p class="status-noassociated-groups">{{t 'adminUsm.policies.list.noAssociatedGroups'}}</p>
+              <p class="status-noassociated-groups">{{t "adminUsm.policies.list.noAssociatedGroups"}}</p>
             {{/if}}
           {{/each}}
         {{else if (eq column.field "numSources")}}
@@ -72,8 +72,8 @@
   {{/explorer.table}}
 
   {{#explorer.inspector
-    inspectorHeaderComponent='usm-policies/policies/inspector/header'
-    inspectorContentComponent='usm-policies/policies/inspector'
+    inspectorHeaderComponent="usm-policies/policies/inspector/header"
+    inspectorContentComponent="usm-policies/policies/inspector"
     hasInspectorToolbar=false as |inspector|}}
     {{inspector.inspectorHeader}}
     {{inspector.inspectorContent}}

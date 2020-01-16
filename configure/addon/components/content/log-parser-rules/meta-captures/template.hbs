@@ -1,12 +1,12 @@
 {{#if hasNoCapturesConfigured}}
-  <span class="form-error">{{t 'configure.logsParser.captures.noCapturesError'}}</span>
+  <span class="form-error">{{t "configure.logsParser.captures.noCapturesError"}}</span>
 {{/if}}
-<ul class='meta-capture-list'>
+<ul class="meta-capture-list">
   {{#each metaCaptures as |capture index|}}
-    <li class='{{if (eq index 0) 'firstItem'}}'>
+    <li class={{if (eq index 0) "firstItem"}}>
       <label class="rsa-form-label power-select">
         <div class="label-text">
-          {{t (concat 'configure.logsParser.captures.' capture.captureType)}}
+          {{t (concat "configure.logsParser.captures." capture.captureType)}}
         </div>
         {{#power-select
           placeholder="None"
@@ -16,7 +16,7 @@
           searchPlaceholder="Type to filter options"
           disabled=(or rule.outOfBox (not accessControl.canManageLogParsers))
           allowClear=true
-          onchange=(action 'handleMetaChange' index) as |option|
+          onchange=(action "handleMetaChange" index) as |option|
         }}
           {{option.metaName}}
         {{/power-select}}

@@ -1,40 +1,40 @@
 {{#if column.componentClass}}
-  <label class="rsa-form-checkbox-label {{if (get item 'directory') 'disabled'}} {{if
-          (and (is-selected selections item) (not (get item 'directory'))) 'checked'}} ">
-    {{rsa-form-checkbox disabled=(get item 'directory')
-                        checked=(if (and (is-selected selections item) (not (get item 'directory'))) true false)
+  <label class="rsa-form-checkbox-label {{if (get item "directory") "disabled"}} {{if
+          (and (is-selected selections item) (not (get item "directory"))) "checked"}} ">
+    {{rsa-form-checkbox disabled=(get item "directory")
+                        checked=(if (and (is-selected selections item) (not (get item "directory"))) true false)
                         change=checkBoxAction}}
   </label>
 
-{{else if (or (eq column.field 'allocatedSize') (eq column.field 'realSize'))}}
+{{else if (or (eq column.field "allocatedSize") (eq column.field "realSize"))}}
   {{rsa-content-memsize size=(get item column.field)}}
-{{else if (eq column.field 'name')}}
+{{else if (eq column.field "name")}}
   <hbox class="downloaded-file-name">
-    {{#if (get item 'directory')}}
+    {{#if (get item "directory")}}
       <span>
-        {{rsa-icon name='folder-2'}}
+        {{rsa-icon name="folder-2"}}
         <a href="#" {{action "onFetchSubdirectories" item}}>{{get item column.field}}</a>
       </span>
     {{else}}
-      <span>{{rsa-icon name='file-new-1'}}{{get item column.field}}</span>
+      <span>{{rsa-icon name="file-new-1"}}{{get item column.field}}</span>
     {{/if}}
   </hbox>
-{{else if (or (eq column.field 'archive') (eq column.field 'compressed') (eq column.field 'encrypted') (eq column.field 'hidden') (eq column.field 'directory'))}}
+{{else if (or (eq column.field "archive") (eq column.field "compressed") (eq column.field "encrypted") (eq column.field "hidden") (eq column.field "directory"))}}
   {{#if (get item column.field)}}
-    {{rsa-icon name='check-2' class="rsa-green-color"}}
+    {{rsa-icon name="check-2" class="rsa-green-color"}}
   {{else}}
-    {{t 'investigateHosts.downloads.mftTable.bodyCell.noValue'}}
+    {{t "investigateHosts.downloads.mftTable.bodyCell.noValue"}}
   {{/if}}
-{{else if (or (eq column.field 'creationTime') (eq column.field 'creationTimeSi') (eq column.field 'mftChangedTime') (eq column.field 'mftChangedTimeSi') (eq column.field 'fileReadTime') (eq column.field 'fileReadTimeSi') (eq column.field 'alteredTime') (eq column.field 'alteredTimeSi'))}}
+{{else if (or (eq column.field "creationTime") (eq column.field "creationTimeSi") (eq column.field "mftChangedTime") (eq column.field "mftChangedTimeSi") (eq column.field "fileReadTime") (eq column.field "fileReadTimeSi") (eq column.field "alteredTime") (eq column.field "alteredTimeSi"))}}
   <div>
     {{#if (or (and (is-timestomped item column.field)))}}
       <span class="date-stomp">
-        {{#rsa-content-tethered-panel-trigger panel='panel4'}}
+        {{#rsa-content-tethered-panel-trigger panel="panel4"}}
           {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
-          {{rsa-icon class='rsa-icon-report-problem-triangle'}}
+          {{rsa-icon class="rsa-icon-report-problem-triangle"}}
         {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel displayCloseButton=false style='error' panelClass="date-stomp-content-teathredpanel" position='top' panelId='panel4' }}
-          <section> {{t 'investigateHosts.downloads.mftTable.bodyCell.dateStomp'}}</section>
+        {{#rsa-content-tethered-panel displayCloseButton=false style="error" panelClass="date-stomp-content-teathredpanel" position="top" panelId="panel4" }}
+          <section> {{t "investigateHosts.downloads.mftTable.bodyCell.dateStomp"}}</section>
         {{/rsa-content-tethered-panel}}
       </span>
     {{else}}
@@ -43,20 +43,20 @@
       </span>
     {{/if}}
   </div>
-{{else if (eq column.field 'status')}}
+{{else if (eq column.field "status")}}
   {{endpoint/download-status downloadInfo=downloadInfo checksum=item.id}}
-{{else if (eq column.field 'checksumSha256')}}
+{{else if (eq column.field "checksumSha256")}}
   {{#if item.checksumSha256}}
     {{get item column.field}}
   {{else}}
     NA
   {{/if}}
-{{else if (eq column.field 'fullPathName')}}
-  {{#rsa-text-with-tooltip format=property.format value=(get item column.field) tipPosition='left'}}
+{{else if (eq column.field "fullPathName")}}
+  {{#rsa-text-with-tooltip format=property.format value=(get item column.field) tipPosition="left"}}
     {{get-field item column timezone dateFormat timeFormat i18n.locale}}
   {{/rsa-text-with-tooltip}}
 {{else}}
-  <div title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}">
+  <div title={{get-field item column timezone dateFormat timeFormat i18n.locale}}>
     {{get-field item column timezone dateFormat timeFormat i18n.locale}}
   </div>
 {{/if}}

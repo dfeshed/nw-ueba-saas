@@ -1,22 +1,22 @@
 <box class="content-body">
   {{#each updatedConfig as |config|}}
-    <div class='filter-controls {{replace-dot config.filterOptions.name}}' test-id={{replace-dot config.filterOptions.name}}>
-      {{component config.component onChange=(action 'onChange') isReset=isReset filterOptions=config.filterOptions}}
+    <div class="filter-controls {{replace-dot config.filterOptions.name}}" test-id={{replace-dot config.filterOptions.name}}>
+      {{component config.component onChange=(action "onChange") isReset=isReset filterOptions=config.filterOptions}}
     </div>
   {{/each}}
 </box>
-<hbox class='filters-footer'>
-  {{#rsa-form-button class='reset-filter-button' defaultAction=(action 'resetFilters')}}
-    {{t 'dataFilters.reset'}}
+<hbox class="filters-footer">
+  {{#rsa-form-button class="reset-filter-button" defaultAction=(action "resetFilters")}}
+    {{t "dataFilters.reset"}}
   {{/rsa-form-button}}
   {{#if showSaveFilterButton}}
-    {{#rsa-form-button class='save-filter-button' isDisabled=disableSaveFilterButton defaultAction=(action 'saveFilters' false)}}
-      {{t 'dataFilters.save'}}
+    {{#rsa-form-button class="save-filter-button" isDisabled=disableSaveFilterButton defaultAction=(action "saveFilters" false)}}
+      {{t "dataFilters.save"}}
     {{/rsa-form-button}}
   {{/if}}
   {{#if showSaveAsFilterButton}}
-    {{#rsa-form-button class='save-as-filter-button' isDisabled=disableSaveFilterButton defaultAction=(action 'saveFilters' true)}}
-      {{t 'dataFilters.saveAs'}}
+    {{#rsa-form-button class="save-as-filter-button" isDisabled=disableSaveFilterButton defaultAction=(action "saveFilters" true)}}
+      {{t "dataFilters.saveAs"}}
     {{/rsa-form-button}}
   {{/if}}
 </hbox>

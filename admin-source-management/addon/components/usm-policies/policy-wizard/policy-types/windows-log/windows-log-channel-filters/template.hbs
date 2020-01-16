@@ -12,16 +12,16 @@
           delete=(action "deleteRow")
           invalidTableItem=channelFiltersValidator.invalidTableItem
           errorMessage=channelFiltersValidator.errorMessage
-          channelUpdated=(action 'channelUpdated')}}
+          channelUpdated=(action "channelUpdated")}}
       {{/rsa-data-table/body}}
     {{/rsa-data-table}}
   </div>
   <div class="add-row">
     {{#rsa-form-button
-      class='add-channel-button'
-      click=(action 'addRowFilter')
+      class="add-channel-button"
+      click=(action "addRowFilter")
     }}
-      {{t 'adminUsm.policyWizard.windowsLogPolicy.channel.add'}}
+      {{t "adminUsm.policyWizard.windowsLogPolicy.channel.add"}}
     {{/rsa-form-button}}
   </div>
 </div>

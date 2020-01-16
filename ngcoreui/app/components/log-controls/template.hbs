@@ -1,7 +1,7 @@
 <vbox fit>
-  <div class='rsa-form-radio-group'>
-    <h4 class='rsa-form-radio-group-label'>Selection Type</h4>
-    <label class="rsa-form-radio-label {{if (eq 'id' selectionType) 'checked'}}">
+  <div class="rsa-form-radio-group">
+    <h4 class="rsa-form-radio-group-label">Selection Type</h4>
+    <label class="rsa-form-radio-label {{if (eq "id" selectionType) "checked"}}">
       {{radio-button
         value="id"
         groupValue=selectionType
@@ -9,7 +9,7 @@
         ID
     </label>
 
-    <label class="rsa-form-radio-label {{if (eq 'time' selectionType) 'checked'}}">
+    <label class="rsa-form-radio-label {{if (eq "time" selectionType) "checked"}}">
       {{radio-button
         value="time"
         groupValue=selectionType
@@ -23,51 +23,51 @@
   {{#if isId}}
     {{#if latest}}
       <vbox fit>
-        {{rsa-form-input label='Count' value=count onKeyUp=(action 'logsFilterChange')}}
-        <label class="rsa-form-checkbox-label less-top-margin {{if latest 'checked'}}">
+        {{rsa-form-input label="Count" value=count onKeyUp=(action "logsFilterChange")}}
+        <label class="rsa-form-checkbox-label less-top-margin {{if latest "checked"}}">
           {{rsa-form-checkbox
           checked=latest
-          change=(action 'toggleLatest')}}
+          change=(action "toggleLatest")}}
           Show Latest
         </label>
       </vbox>
     {{else}}
       <vbox fit>
-        {{rsa-form-input label='id1' value=id1 onKeyUp=(action 'logsFilterChange') isDisabled=latest}}
-        <label class="rsa-form-checkbox-label less-top-margin {{if latest 'checked'}}">
+        {{rsa-form-input label="id1" value=id1 onKeyUp=(action "logsFilterChange") isDisabled=latest}}
+        <label class="rsa-form-checkbox-label less-top-margin {{if latest "checked"}}">
           {{rsa-form-checkbox
           checked=latest
-          change=(action 'toggleLatest')}}
+          change=(action "toggleLatest")}}
           Show Latest
         </label>
       </vbox>
       <vbox fit>
-        {{rsa-form-input label='id2' value=id2 onKeyUp=(action 'logsFilterChange')}}
+        {{rsa-form-input label="id2" value=id2 onKeyUp=(action "logsFilterChange")}}
       </vbox>
     {{/if}}
   {{else if isTime}}
     {{rsa-form-datetime
-      label='time1'
+      label="time1"
       dateFormat=dateFormat
       value=time1Local
-      onChange=(action 'setTime1')
+      onChange=(action "setTime1")
     }}
     {{rsa-form-datetime
-      label='time2'
+      label="time2"
       dateFormat=dateFormat
       value=time2Local
-      onChange=(action 'setTime2')
+      onChange=(action "setTime2")
     }}
   {{/if}}
 </hbox>
 
 <vbox fit>
-  {{rsa-form-input label=(if regexMode 'Regex' 'Match') value=filter onKeyUp=(action 'logsFilterChange')}}
+  {{rsa-form-input label=(if regexMode "Regex" "Match") value=filter onKeyUp=(action "logsFilterChange")}}
   <div class="less-top-margin">
-    <label class="rsa-form-checkbox-label {{if regexMode 'checked'}}">
+    <label class="rsa-form-checkbox-label {{if regexMode "checked"}}">
       {{rsa-form-checkbox
       checked=regexMode
-      change=(action 'toggleRegexMode')}}
+      change=(action "toggleRegexMode")}}
       Use Regex
     </label>
   </div>
@@ -79,42 +79,42 @@
   </div>
   <hbox class="top-margin">
     <div>
-      <label class="rsa-form-checkbox-label {{if debug 'checked'}}">
+      <label class="rsa-form-checkbox-label {{if debug "checked"}}">
         {{rsa-form-checkbox
         checked=debug
-        change=(action 'toggleDebug')}}
+        change=(action "toggleDebug")}}
         Debug
       </label>
     </div>
     <div>
-      <label class="rsa-form-checkbox-label {{if info 'checked'}}">
+      <label class="rsa-form-checkbox-label {{if info "checked"}}">
         {{rsa-form-checkbox
         checked=info
-        change=(action 'toggleInfo')}}
+        change=(action "toggleInfo")}}
         Info
       </label>
     </div>
     <div>
-      <label class="rsa-form-checkbox-label {{if audit 'checked'}}">
+      <label class="rsa-form-checkbox-label {{if audit "checked"}}">
         {{rsa-form-checkbox
         checked=audit
-        change=(action 'toggleAudit')}}
+        change=(action "toggleAudit")}}
         Audit
       </label>
     </div>
     <div>
-      <label class="rsa-form-checkbox-label {{if warning 'checked'}}">
+      <label class="rsa-form-checkbox-label {{if warning "checked"}}">
         {{rsa-form-checkbox
         checked=warning
-        change=(action 'toggleWarning')}}
+        change=(action "toggleWarning")}}
         Warning
       </label>
     </div>
     <div>
-      <label class="rsa-form-checkbox-label {{if failure 'checked'}}">
+      <label class="rsa-form-checkbox-label {{if failure "checked"}}">
         {{rsa-form-checkbox
         checked=failure
-        change=(action 'toggleFailure')}}
+        change=(action "toggleFailure")}}
         Failure
       </label>
     </div>
@@ -123,6 +123,6 @@
 
 {{#if logsFilterChangePending}}
   <vbox fit justify="center">
-    {{#rsa-form-button style='primary' defaultAction=(action 'updateParams')}}Change Filters{{/rsa-form-button}}
+    {{#rsa-form-button style="primary" defaultAction=(action "updateParams")}}Change Filters{{/rsa-form-button}}
   </vbox>
 {{/if}}

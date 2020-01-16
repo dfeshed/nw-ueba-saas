@@ -1,8 +1,8 @@
 {{#if shouldShowBinoculars}}
   <vbox class="binocular-icon"fit>
     {{rsa-icon
-      size='large'
-      click=(action 'clickBinoculars')
+      size="large"
+      click=(action "clickBinoculars")
       name="binoculars"}}
   </vbox>
 {{/if}}
@@ -11,7 +11,7 @@
     {{name}}
   </div>
   <div class="meta-value">
-    {{#if (or (eq name 'time') (eq name 'event.time'))}}
+    {{#if (or (eq name "time") (eq name "event.time"))}}
       {{rsa-content-datetime
         displayMilliseconds=false
         timestamp=value}}

@@ -1,7 +1,7 @@
-<header>{{t 'respond.journal.newEntry'}}</header>
+<header>{{t "respond.journal.newEntry"}}</header>
 {{textarea value=notes}}
 <div class="metadata">
-  <label>{{t 'respond.journal.milestone'}}<span class="required-field"/></label>
+  <label>{{t "respond.journal.milestone"}}<span class="required-field"/></label>
   <div class="edit-button journal-milestone">
     {{#power-select
       options=milestoneTypes
@@ -9,12 +9,12 @@
       matchTriggerWidth=false
       searchEnabled=false
       triggerComponent=(component "respond-common/button-trigger"
-        iconName='arrow-down-12'
-        iconPosition='after'
-        label=(if milestone (t (concat 'respond.milestones.' milestone)) (t 'respond.none')))
-      onchange=(action 'handleMilestoneChange') as |option|}}
-      {{t (concat 'respond.milestones.' option)}}
+        iconName="arrow-down-12"
+        iconPosition="after"
+        label=(if milestone (t (concat "respond.milestones." milestone)) (t "respond.none")))
+      onchange=(action "handleMilestoneChange") as |option|}}
+      {{t (concat "respond.milestones." option)}}
     {{/power-select}}
   </div>
 </div>
-{{#rsa-form-button class='save-journal' isFullWidth=true isDisabled=isInvalid defaultAction=(action 'handleSubmit')}}{{t 'forms.submit'}}{{/rsa-form-button}}
+{{#rsa-form-button class="save-journal" isFullWidth=true isDisabled=isInvalid defaultAction=(action "handleSubmit")}}{{t "forms.submit"}}{{/rsa-form-button}}

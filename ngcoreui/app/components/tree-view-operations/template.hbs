@@ -9,7 +9,7 @@
       options=filteredOperationNames
       selected=selectedOperation.name
       searchPlaceholder="Type to filter operations"
-      onchange=(action 'selectOperation') as |option|}}
+      onchange=(action "selectOperation") as |option|}}
       {{option}}
     {{/power-select}}
   </label>
@@ -26,10 +26,10 @@
 
   {{#if responses.error}}
     <br>
-    {{rsa-form-textarea value=responses.error label='Error' isError=true isReadOnly=true}}
+    {{rsa-form-textarea value=responses.error label="Error" isError=true isReadOnly=true}}
   {{/if}}
   {{#if responses.hasPendingOperation}}
-    {{rsa-loader size='medium' label=(concat responses.progress responses.status)}}
+    {{rsa-loader size="medium" label=(concat responses.progress responses.status)}}
   {{/if}}
 
   <div class="scroll-box response-panel padding">

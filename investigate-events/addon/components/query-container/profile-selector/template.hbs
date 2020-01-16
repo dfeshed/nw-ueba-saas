@@ -6,7 +6,7 @@
     shouldSelectedItemPersist=false
     list=profiles
     isDisabled=isDisabled
-    itemSelection=(action 'selectProfile')
+    itemSelection=(action "selectProfile")
     helpId=helpId
     as |manager|
   }}
@@ -20,8 +20,8 @@
     {{/manager.itemList}}
 
     {{#manager.details
-      itemTransform=(action 'enrichProfile')
-      isValidItem=(action 'validateEditedProfile')
+      itemTransform=(action "enrichProfile")
+      isValidItem=(action "validateEditedProfile")
       as |details|}}
       {{#if details.delete}}
         {{details.delete}}

@@ -3,7 +3,7 @@
     canPerformTextSearch=canPerformTextSearch
     metaOptions=metaOptions
     languageAndAliasesForParser=languageAndAliasesForParser
-    sendMessage=(action 'handleMessage')
+    sendMessage=(action "handleMessage")
     position=newPillPosition
     pillPlaceholder=pillPlaceholder
     hasTextPill=hasTextPill
@@ -12,5 +12,5 @@
     isValueSuggestionsCallInProgress=isValueSuggestionsCallInProgress
   }}
 {{else}}
-  <div title={{t 'queryBuilder.insertFilter'}} class='new-pill-trigger' {{action "triggerNewPill"}}>&nbsp;</div>
+  <div title={{t "queryBuilder.insertFilter"}} class="new-pill-trigger" {{action "triggerNewPill"}}>&nbsp;</div>
 {{/if}}

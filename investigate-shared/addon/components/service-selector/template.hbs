@@ -1,21 +1,21 @@
 {{#rsa-content-tethered-panel-trigger
   panel=panelId
   isDisabled=isDisabled
-  triggerEvent='click'
+  triggerEvent="click"
 }}
   {{#rsa-form-button
     allowToggleActive=true
     title=title
     isDisabled=isDisabled
-    class='service-selector'
+    class="service-selector"
     withDropdown=true
   }}
     {{#if isLoading}}
-      {{rsa-loader size='small'}}
+      {{rsa-loader size="small"}}
     {{else}}
-      {{rsa-icon class=iconDetails.class size='small' name=iconDetails.name}}
+      {{rsa-icon class=iconDetails.class size="small" name=iconDetails.name}}
     {{/if}}
-    <span class='js-test-service'>{{selectedServiceName}}</span>
+    <span class="js-test-service">{{selectedServiceName}}</span>
   {{/rsa-form-button}}
 {{/rsa-content-tethered-panel-trigger}}
 {{#rsa-content-tethered-panel
@@ -23,12 +23,12 @@
   displayCloseButton=false
   isPopover=true
   panelId=panelId
-  position='bottom-right'
+  position="bottom-right"
   as |hideTooltip|
 }}
   <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
     {{#each serviceData as |service|}}
-      <li class="{{if (eq service.id serviceId) 'selected' ''}}" {{action onServiceSelection service}}>{{service.displayName}}</li>
+      <li class={{if (eq service.id serviceId) "selected" ""}} {{action onServiceSelection service}}>{{service.displayName}}</li>
     {{/each}}
   </ul>
 {{/rsa-content-tethered-panel}}

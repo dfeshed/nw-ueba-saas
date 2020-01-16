@@ -1,7 +1,7 @@
-{{#if (is-equal size 'min')}}
+{{#if (is-equal size "min")}}
   <div class="mask size default" {{action "resizePanel" metaPanelSizes.DEFAULT}}>{{rsa-icon name="arrow-right-9"}}</div>
 {{/if}}
-<section class="rsa-investigate-meta__content {{if hideDom 'hidden'}}">
+<section class="rsa-investigate-meta__content {{if hideDom "hidden"}}">
   <header class="rsa-investigate-meta__header">
     <nav class="rsa-investigate-meta__nav">
       <h2>
@@ -12,7 +12,7 @@
       </h2>
     </nav>
     <span class="rsa-investigate-meta__tools">
-      {{#if (is-equal size 'max')}}
+      {{#if (is-equal size "max")}}
         <button class="size default" {{action "resizePanel" metaPanelSizes.DEFAULT}}>{{rsa-icon name="arrow-left-9"}}</button>
         <button class="size min" {{action "resizePanel" metaPanelSizes.MIN}}>{{rsa-icon name="close"}}</button>
       {{else}}
@@ -29,7 +29,7 @@
       aliases=aliases
       emptyMetaKeyStates=emptyMetaKeys
       contextDetails=contextDetails
-      clickValueAction=(action 'drillInOnValue')
-      toggleAction=(action 'toggleMetaGroup')}}
+      clickValueAction=(action "drillInOnValue")
+      toggleAction=(action "toggleMetaGroup")}}
   </section>
 </section>

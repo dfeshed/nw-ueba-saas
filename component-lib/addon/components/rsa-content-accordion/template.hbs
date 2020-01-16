@@ -1,4 +1,4 @@
-<h3 tabindex="0" onclick={{action 'toggleContent'}} onkeyup={{action 'toggleContent'}}>
+<h3 tabindex="0" onclick={{action "toggleContent"}} onkeyup={{action "toggleContent"}}>
   {{#if isCollapsed}}
     {{rsa-icon size="small" name="arrow-right-12"}}
   {{else}}
@@ -8,7 +8,7 @@
 </h3>
 
 {{#if animate}}
-  {{#liquid-unless isCollapsed use='crossFade'}}
+  {{#liquid-unless isCollapsed use="crossFade"}}
     {{yield}}
   {{/liquid-unless}}
 {{else}}

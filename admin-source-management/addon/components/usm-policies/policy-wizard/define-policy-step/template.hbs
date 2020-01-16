@@ -2,12 +2,12 @@
   <vbox xs="5" class="available-settings">
     <div class="control">
       <div class="label">
-        {{t 'adminUsm.policyWizard.availableSettings'}}
-        {{#rsa-text-with-tooltip value=(t 'adminUsm.policyWizard.availableTooltip')
+        {{t "adminUsm.policyWizard.availableSettings"}}
+        {{#rsa-text-with-tooltip value=(t "adminUsm.policyWizard.availableTooltip")
           displayOnTab=false
           style="standard"
           alwaysShow=true}}
-          {{rsa-icon size='large' displayOnTab=true name="information-circle"}}
+          {{rsa-icon size="large" displayOnTab=true name="information-circle"}}
         {{/rsa-text-with-tooltip}}
       </div>
       {{#each enabledAvailableSettings as |enabledAvailableSetting|}}
@@ -17,15 +17,15 @@
           </div>
         {{else}}
           <div class="title available-setting {{enabledAvailableSetting.id}}
-            {{if enabledAvailableSetting.isGreyedOut 'is-greyed-out' 'not-greyed-out'}}">
+            {{if enabledAvailableSetting.isGreyedOut "is-greyed-out" "not-greyed-out"}}">
             {{t enabledAvailableSetting.label}}
 
-            {{#rsa-text-with-tooltip value=(t (concat enabledAvailableSetting.label 'Tooltip' ))
+            {{#rsa-text-with-tooltip value=(t (concat enabledAvailableSetting.label "Tooltip" ))
               style="standard"
               alwaysShow=true}}
-              {{rsa-icon size='large' name="information-circle" displayOnTab=true}}
+              {{rsa-icon size="large" name="information-circle" displayOnTab=true}}
             {{/rsa-text-with-tooltip}}
-            <span onclick={{action 'handleAddToSelectedSettings' enabledAvailableSetting.id}} onkeyup={{action 'handleAddToSelectedSettings' enabledAvailableSetting.id}}>
+            <span onclick={{action "handleAddToSelectedSettings" enabledAvailableSetting.id}} onkeyup={{action "handleAddToSelectedSettings" enabledAvailableSetting.id}}>
               {{rsa-icon name="add-circle-1" displayOnTab=(not enabledAvailableSetting.isGreyedOut)}}
             </span>
           </div>
@@ -36,12 +36,12 @@
   <vbox xs="5" class="selected-settings">
     <div class="control">
       <div class="label">
-        {{t 'adminUsm.policyWizard.selectedSettings'}}
-        {{#rsa-text-with-tooltip value=(t 'adminUsm.policyWizard.selectedTooltip')
+        {{t "adminUsm.policyWizard.selectedSettings"}}
+        {{#rsa-text-with-tooltip value=(t "adminUsm.policyWizard.selectedTooltip")
           displayOnTab=false
           style="standard"
           alwaysShow=true}}
-          {{rsa-icon size='large' name="information-circle" displayOnTab=true}}
+          {{rsa-icon size="large" name="information-circle" displayOnTab=true}}
         {{/rsa-text-with-tooltip}}
       </div>
       {{#each sortedSelectedSettings as |sortedSelectedSetting|}}
@@ -49,13 +49,13 @@
           <div class="heading">{{t sortedSelectedSetting.label}}</div>
         {{else}}
           {{usm-policies/policy-wizard/policy-types/policy-setting
-            removeFromSelectedSettings=(action 'handleRemoveFromSelectedSettings')
+            removeFromSelectedSettings=(action "handleRemoveFromSelectedSettings")
             settingComponent=sortedSelectedSetting.component
             selectedSettingId=sortedSelectedSetting.id
             policyType=policyType
             isDefaultPolicy=defaultPolicy
             label=(t sortedSelectedSetting.label)
-            tooltip=(t (concat sortedSelectedSetting.label 'Tooltip' ))
+            tooltip=(t (concat sortedSelectedSetting.label "Tooltip" ))
           }}
         {{/if}}
       {{/each}}

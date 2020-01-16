@@ -2,8 +2,8 @@
   {{yield item.label item.value}}
 {{else}}
   {{#rsa-content-definition label=(t item.label) value=item.value}}
-    {{#if (eq item.field 'fileName')}}
-      <a title={{t 'investigateHosts.process.toolTip.openFileDetails'}} class='file-name-link' href='/investigate/files/file?checksum={{item.checksum}}&sid={{sid}}&sourceSid={{item.sourceSid}}' target='_blank' rel='noopener noreferrer'>
+    {{#if (eq item.field "fileName")}}
+      <a title={{t "investigateHosts.process.toolTip.openFileDetails"}} class="file-name-link" href="/investigate/files/file?checksum={{item.checksum}}&sid={{sid}}&sourceSid={{item.sourceSid}}" target="_blank" rel="noopener noreferrer">
         {{item.value}}
       </a>
     {{else}}

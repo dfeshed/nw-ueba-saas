@@ -3,17 +3,17 @@
     <div class="{{section.hasError}}">
       {{#if section.hasError}}
         {{#rsa-text-with-tooltip
-            value=(t (concat 'adminUsm.policyWizard.' section.error))
+            value=(t (concat "adminUsm.policyWizard." section.error))
             alwaysShow=true
             style="standard"}}
-          {{rsa-icon name='report-problem-diamond'}}
+          {{rsa-icon name="report-problem-diamond"}}
         {{/rsa-text-with-tooltip}}
       {{/if}}
       <div class="heading">{{t section.header section.headerVars}}</div>
       {{#each section.props as |prop|}}
         <hbox fit class="col-xs-12">
           <hbox class="title col-xs-6 col-md-5">{{t prop.name}}</hbox>
-          {{#if (eq prop.name 'adminUsm.policyWizard.filePolicy.customConfig') }}
+          {{#if (eq prop.name "adminUsm.policyWizard.filePolicy.customConfig") }}
             <hbox class="value col-xs-6 col-md-7">
               {{#rsa-text-with-tooltip value=prop.value
                 style="standard"}}

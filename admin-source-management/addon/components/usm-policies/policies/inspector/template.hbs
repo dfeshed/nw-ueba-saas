@@ -1,9 +1,9 @@
 <vbox class="rsa-application-layout-panel-content" xs="12" fit>
 
-  {{#if (eq focusedPolicy.policyType 'filePolicy')}}
+  {{#if (eq focusedPolicy.policyType "filePolicy")}}
     {{#if hasSourceError}}
       {{#rsa-content-warn-text-box
-        value=(t 'adminUsm.policyWizard.missingTypespec')
+        value=(t "adminUsm.policyWizard.missingTypespec")
         isShowing=true
         isAlert=true}}
       {{/rsa-content-warn-text-box}}
@@ -11,24 +11,24 @@
   {{/if}}
 
   {{#if focusedPolicy.associatedGroups}}
-    <hbox class="heading">{{t 'adminUsm.policies.list.associatedGroups'}}</hbox>
+    <hbox class="heading">{{t "adminUsm.policies.list.associatedGroups"}}</hbox>
     {{#each focusedPolicy.associatedGroups as |group|}}
       <hbox class="value">{{group.name}}</hbox>
     {{/each}}
   {{/if}}
-  {{#if (eq focusedPolicy.policyType 'edrPolicy')}}
+  {{#if (eq focusedPolicy.policyType "edrPolicy")}}
     {{usm-policies/policies/inspector/edr-policy}}
-  {{else if (eq focusedPolicy.policyType 'windowsLogPolicy')}}
+  {{else if (eq focusedPolicy.policyType "windowsLogPolicy")}}
     {{usm-policies/policies/inspector/windows-log-policy}}
-  {{else if (eq focusedPolicy.policyType 'filePolicy')}}
+  {{else if (eq focusedPolicy.policyType "filePolicy")}}
     {{usm-policies/policies/inspector/file-policy}}
   {{/if}}
-  <div class="heading">{{t 'adminUsm.policies.detail.history'}}</div>
+  <div class="heading">{{t "adminUsm.policies.detail.history"}}</div>
   <hbox fit class="col-xs-12">
-    <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.createdOn'}}</hbox>
+    <hbox class="title col-xs-6 col-md-5">{{t "adminUsm.policies.detail.createdOn"}}</hbox>
     <hbox class="value col-xs-6 col-md-7">
       {{#if (eq focusedPolicy.createdOn 0)}}
-        {{t 'adminUsm.policies.detail.systemCreated'}}
+        {{t "adminUsm.policies.detail.systemCreated"}}
       {{else}}
         {{moment-format focusedPolicy.createdOn "YYYY-MM-DD hh:mm"}}
       {{/if}}
@@ -36,13 +36,13 @@
   </hbox>
   {{#if focusedPolicy.createdBy}}
     <hbox fit class="createdBy col-xs-12">
-      <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.createdBy'}}</hbox>
+      <hbox class="title col-xs-6 col-md-5">{{t "adminUsm.policies.detail.createdBy"}}</hbox>
       <hbox class="value col-xs-6 col-md-7">{{focusedPolicy.createdBy}}</hbox>
     </hbox>
   {{/if}}
   {{#if (not-eq focusedPolicy.lastModifiedOn 0)}}
     <hbox fit class="lastModifiedOn col-xs-12">
-      <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.lastUpdatedOn'}}</hbox>
+      <hbox class="title col-xs-6 col-md-5">{{t "adminUsm.policies.detail.lastUpdatedOn"}}</hbox>
       <hbox class="value col-xs-6 col-md-7">
         {{moment-format focusedPolicy.lastModifiedOn "YYYY-MM-DD hh:mm"}}
       </hbox>
@@ -50,13 +50,13 @@
   {{/if}}
   {{#if focusedPolicy.lastModifiedBy}}
     <hbox fit class="lastModifiedBy col-xs-12">
-      <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.lastUpdatedBy'}}</hbox>
+      <hbox class="title col-xs-6 col-md-5">{{t "adminUsm.policies.detail.lastUpdatedBy"}}</hbox>
       <hbox class="value col-xs-6 col-md-7">{{focusedPolicy.lastModifiedBy}}</hbox>
     </hbox>
   {{/if}}
   {{#if (not-eq focusedPolicy.lastPublishedOn 0)}}
     <hbox fit class="lastPublishedOn col-xs-12">
-      <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.lastPublishedOn'}}</hbox>
+      <hbox class="title col-xs-6 col-md-5">{{t "adminUsm.policies.detail.lastPublishedOn"}}</hbox>
       <hbox class="value col-xs-6 col-md-7">
         {{moment-format focusedPolicy.lastPublishedOn "YYYY-MM-DD hh:mm"}}
       </hbox>

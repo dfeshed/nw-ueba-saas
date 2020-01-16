@@ -1,8 +1,8 @@
 <box flexi-fill class="rsa-incident-journal__body">
   <div class="list">
-    {{#if (eq infoStatus 'wait')}}
+    {{#if (eq infoStatus "wait")}}
       <centered>
-        {{rsa-loader size="large" label=(t 'respond.journal.loading')}}
+        {{rsa-loader size="large" label=(t "respond.journal.loading")}}
       </centered>
     {{else}}
       {{#if entries.length}}
@@ -10,7 +10,7 @@
           {{rsa-incident/journal/entry incidentId=info.id entry=entry}}
         {{/each}}
       {{else}}
-        <centered><p>{{t 'respond.journal.noEntries' incidentId=info.id}}</p></centered>
+        <centered><p>{{t "respond.journal.noEntries" incidentId=info.id}}</p></centered>
       {{/if}}
     {{/if}}
   </div>

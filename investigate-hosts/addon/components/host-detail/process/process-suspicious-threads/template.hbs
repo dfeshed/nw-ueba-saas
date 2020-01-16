@@ -3,14 +3,14 @@
   lazy=true
   selectedIndex=selectedIndex
   columnsConfig=columnsConfig
-  onRowClick=(action 'toggleSelectedRow')}}
+  onRowClick=(action "toggleSelectedRow")}}
   {{#rsa-data-table/header as |column|}}
     {{t column.title}}
   {{/rsa-data-table/header}}
-  {{#rsa-data-table/body noResultsMessage=(t 'investigateHosts.process.suspiciousThreads.message.noResultsMessage') as |item index column|}}
+  {{#rsa-data-table/body noResultsMessage=(t "investigateHosts.process.suspiciousThreads.message.noResultsMessage") as |item index column|}}
     {{host-detail/utils/table-cell item=item column=column sid=sid}}
   {{/rsa-data-table/body}}
 {{/rsa-data-table}}
 <box>
-  {{host-table-footer total=threadList.length index=threadList.length label='suspicious threads' selectedItems=-1 }}
+  {{host-table-footer total=threadList.length index=threadList.length label="suspicious threads" selectedItems=-1 }}
 </box>

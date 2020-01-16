@@ -1,9 +1,9 @@
 {{#if missingPermissions}}
-  {{rsa-panel-message message=(t 'recon.fatalError.permissions')}}
+  {{rsa-panel-message message=(t "recon.fatalError.permissions")}}
 {{else}}
   {{#if isLoading}}
     <div class="recon-loader">
-      {{rsa-loader size='larger'}}
+      {{rsa-loader size="larger"}}
     </div>
   {{else}}
     {{#if isContentError}}

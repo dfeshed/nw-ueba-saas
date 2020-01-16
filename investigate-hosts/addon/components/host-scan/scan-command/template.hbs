@@ -1,19 +1,19 @@
-{{#if (eq command 'START_SCAN')}}
+{{#if (eq command "START_SCAN")}}
   {{host-scan/start-scan-button
     warningMessage=warningMessages
     isDisabled=isScanStartButtonDisabled
     agentIds=agentIds
     modalTitle=modalTitle
-    buttonText=(t 'investigateHosts.hosts.button.initiateScan')
+    buttonText=(t "investigateHosts.hosts.button.initiateScan")
     title=actionsDisableMessage
     isStartScanIconDisplayed=isStartScanIconDisplayed
     serverId=serverIdForScanCommand}}
-{{else if (eq command 'STOP_SCAN')}}
+{{else if (eq command "STOP_SCAN")}}
   {{host-scan/stop-scan-button
     warningMessage=warningMessages
     isDisabled=isScanStopButtonDisabled
     agentIds=agentIds
     modalTitle=title
-    buttonText=(t 'investigateHosts.hosts.moreActions.cancelScan')
+    buttonText=(t "investigateHosts.hosts.moreActions.cancelScan")
     serverId=serverIdForScanCommand}}
 {{/if}}

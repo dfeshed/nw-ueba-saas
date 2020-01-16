@@ -1,27 +1,27 @@
-{{service-selector isDisabled=true services=services serviceId=serviceId onServiceSelection=(action 'setSelectedService')}}
+{{service-selector isDisabled=true services=services serviceId=serviceId onServiceSelection=(action "setSelectedService")}}
 {{time-selector
   startTime=startTime
   endTime=endTime
-  onTimeRangeError=(action 'timeRangeError')
-  onIndividualTimeUnitChange=(action 'customTimeRange')
+  onTimeRangeError=(action "timeRangeError")
+  onIndividualTimeUnitChange=(action "customTimeRange")
   timeRangeInvalid=timeRangeInvalid
-  onEntireTimeRangeSelection=(action 'timeRangeSelection')}}
+  onEntireTimeRangeSelection=(action "timeRangeSelection")}}
 {{#rsa-form-button
-  class='execute-query-button'
+  class="execute-query-button"
   defaultAction=executeQuery
-  style='primary'}}
+  style="primary"}}
   Analyze
 {{/rsa-form-button}}
 
 <div class="process-detail-navigation">
-  <hbox class="rsa-nav-tab-group {{if isTabDisabled 'disabled' }}">
+  <hbox class="rsa-nav-tab-group {{if isTabDisabled "disabled" }}">
     {{#each tabs as |tab|}}
-      {{#rsa-nav-tab align='left' isActive=tab.isActive click=(action 'activate' tab) }}
+      {{#rsa-nav-tab align="left" isActive=tab.isActive click=(action "activate" tab) }}
         <div class="label">
           {{rsa-icon name=tab.icon}}
-          {{#if (eq tab.name 'events')}}
+          {{#if (eq tab.name "events")}}
             {{t tab.label count=eventsCount}}
-          {{else if (eq tab.name 'hosts')}}
+          {{else if (eq tab.name "hosts")}}
             {{t tab.label count=hostCount}}
           {{else}}
             {{t tab.label count=allAlertCount}}
@@ -29,7 +29,7 @@
         </div>
       {{/rsa-nav-tab}}
     {{/each}}
-    {{#rsa-form-button isIconOnly=true defaultAction=(action 'goToHelp')}}
+    {{#rsa-form-button isIconOnly=true defaultAction=(action "goToHelp")}}
       {{rsa-icon name="help-circle"}}
     {{/rsa-form-button}}
   </hbox>

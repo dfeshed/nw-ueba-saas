@@ -6,8 +6,8 @@
           {{t "investigate.events.titleThreshold" age=eventResultSetStartLabel count=actualEventCount sort=abbreviatedSortOrder}}
           {{rsa-icon
             class="at-threshold"
-            name='report-problem-triangle'
-            title=(t 'investigate.events.titleThresholdTooltip' age=eventResultSetStart count=count actualEventCount=actualEventCount)}}
+            name="report-problem-triangle"
+            title=(t "investigate.events.titleThresholdTooltip" age=eventResultSetStart count=count actualEventCount=actualEventCount)}}
         {{else}}
           {{t "investigate.events.title" count=actualEventCount sort=abbreviatedSortOrder}}
         {{/if}}
@@ -35,9 +35,9 @@
             {{#x-toggle
               disabled=(not eventsHaveSplits)
               showLabels=true
-              onLabel=(t 'investigate.enableEventRelationshipsLabel')
+              onLabel=(t "investigate.enableEventRelationshipsLabel")
               value=eventRelationshipsEnabled
-              onToggle=(action 'toggleEventRelationshipsWithTableFocus') as |toggle|}}
+              onToggle=(action "toggleEventRelationshipsWithTableFocus") as |toggle|}}
               {{toggle.switch}}
               {{toggle.onLabel value=(readonly (not eventRelationshipsEnabled))}}
             {{/x-toggle}}
@@ -50,37 +50,37 @@
   <div class="events-table-control">
     {{#if isSearchDisabled}}
       {{rsa-icon
-        name='search'
-        class='rsa-data-table-header__search-selector disabled'
+        name="search"
+        class="rsa-data-table-header__search-selector disabled"
         title=searchDisabledMessage}}
     {{else}}
       {{#rsa-content-tethered-panel-trigger
-        panel='tableSearchPanel'
-        triggerEvent='click'
-        class='rsa-data-table-header__search-selector'}}
+        panel="tableSearchPanel"
+        triggerEvent="click"
+        class="rsa-data-table-header__search-selector"}}
         {{rsa-icon
-          name='search'
-          title=(t 'investigate.events.search')}}
+          name="search"
+          title=(t "investigate.events.search")}}
       {{/rsa-content-tethered-panel-trigger}}
 
       {{#rsa-content-tethered-panel
         closeOnAppClick=true
         closeOnEsc=true
-        position='left'
+        position="left"
         panelClass="rsa-data-table-search-panel"
-        panelId='tableSearchPanel'
+        panelId="tableSearchPanel"
         panelDidOpen=searchPanelDidOpen}}
         <section>
-          {{rsa-form-input bubbles=true value=_searchTerm onKeyUp=(action 'debouncedSearchForTerm') label=(t 'investigate.events.search') placeholder=(t 'investigate.events.searchPlaceholder')}}
+          {{rsa-form-input bubbles=true value=_searchTerm onKeyUp=(action "debouncedSearchForTerm") label=(t "investigate.events.search") placeholder=(t "investigate.events.searchPlaceholder")}}
           {{events-table-container/header-container/search-controls}}
           {{#if searchMatchesCount}}
-            <p>{{t 'investigate.events.eventCount' current=searchScrollDisplay total=searchMatchesCount}}</p>
+            <p>{{t "investigate.events.eventCount" current=searchScrollDisplay total=searchMatchesCount}}</p>
           {{/if}}
           {{#if (eq _searchTerm.length 1)}}
-            {{t 'investigate.events.searchMin'}}
+            {{t "investigate.events.searchMin"}}
           {{/if}}
           {{#if (and (gt _searchTerm.length 1) (eq searchMatchesCount 0))}}
-            {{t 'investigate.events.noMatches'}}
+            {{t "investigate.events.noMatches"}}
           {{/if}}
 
         </section>
@@ -95,7 +95,7 @@
     {{rsa-icon
       disabled=(not isReconOpen)
       click=toggleSlaveFullScreen
-      name='close'
-      title=(t 'investigate.events.close')}}
+      name="close"
+      title=(t "investigate.events.close")}}
   </div>
 </div>

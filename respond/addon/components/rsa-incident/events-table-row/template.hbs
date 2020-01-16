@@ -11,7 +11,7 @@
     <div class="devices">
       {{rsa-icon class="device" name="computer-imac-1"}}
       {{#with fromDevice as |from|}}
-        <span class="from device entity" data-meta-key="{{from.field}}" data-entity-id="{{from.value}}">
+        <span class="from device entity" data-meta-key={{from.field}} data-entity-id={{from.value}}>
           {{from.value}}
         </span>
       {{/with}}
@@ -19,7 +19,7 @@
         {{rsa-icon class="arrow" name="arrow-right-5" size="smaller"}}
       {{/with}}
       {{#with toDevice as |to|}}
-        <span class="to device entity" data-meta-key="{{to.field}}" data-entity-id="{{to.value}}">
+        <span class="to device entity" data-meta-key={{to.field}} data-entity-id={{to.value}}>
           {{to.value}}
         </span>
       {{/with}}
@@ -29,7 +29,7 @@
     <div class="users">
       {{rsa-icon class="user" name="account-circle-1"}}
       {{#with fromUser as |fromUser|}}
-        <span class="from user entity" data-meta-key="username" data-entity-id="{{fromUser}}">
+        <span class="from user entity" data-meta-key="username" data-entity-id={{fromUser}}>
           {{fromUser}}
         </span>
       {{/with}}
@@ -37,7 +37,7 @@
         {{rsa-icon class="arrow" name="arrow-right-5" size="smaller"}}
       {{/with}}
       {{#with toUser as |toUser|}}
-        <span class="to user entity" data-meta-key="username" data-entity-id="{{toUser}}">
+        <span class="to user entity" data-meta-key="username" data-entity-id={{toUser}}>
           {{toUser}}
         </span>
       {{/with}}
@@ -49,10 +49,10 @@
       {{#with fileData as |fileData|}}
         {{#if fileData.isMultiple}}
           <span class="file">
-            {{fileData.value}} {{t 'respond.event.files'}}
+            {{fileData.value}} {{t "respond.event.files"}}
           </span>
         {{else}}
-          <span class="file entity" data-meta-key="{{fileData.field}}" data-entity-id="{{fileData.value}}">
+          <span class="file entity" data-meta-key={{fileData.field}} data-entity-id={{fileData.value}}>
             {{fileData.value}}
           </span>
         {{/if}}

@@ -1,35 +1,35 @@
-<vbox class='files-host-list scroll-box'>
+<vbox class="files-host-list scroll-box">
   {{#if isHostListLoading}}
-    <centered class='loader_icon'>
-      {{rsa-loader size='large'}}
+    <centered class="loader_icon">
+      {{rsa-loader size="large"}}
     </centered>
   {{else}}
     {{#if items}}
       {{#if countLabelKey}}
         <div class="count-info">
-          <span class='info-icon'>
-            {{rsa-icon name='information-circle'}}
+          <span class="info-icon">
+            {{rsa-icon name="information-circle"}}
           </span>
           {{t countLabelKey count=hostListCount}}
         </div>
       {{/if}}
 
       {{#each items as |item|}}
-        <div class='host_details_link'>
-          <a class='host_list_content navigate_host_details' title={{item.hostname}} href='#' target='_blank' rel='noopener' {{action 'openHost' item}}>
+        <div class="host_details_link">
+          <a class="host_list_content navigate_host_details" title={{item.hostname}} href="#" target="_blank" rel="noopener" {{action "openHost" item}}>
             {{item.hostname}}
           </a>
         </div>
-        <span class='score-detail'>
-          {{rsa-risk-score score=item.score size='small' radius=12}}
+        <span class="score-detail">
+          {{rsa-risk-score score=item.score size="small" radius=12}}
         </span>
-        <span class='host_list_content divider'></span>
-        {{#rsa-form-button isIconOnly=true class='pivot-to-investigate' defaultAction=(action 'pivotToInvestigate' item.hostname)}}
-          {{rsa-icon name='expand-6' size='small' title=(t 'investigateShared.endpoint.fileActions.pivotToInvestigate')}}
+        <span class="host_list_content divider"></span>
+        {{#rsa-form-button isIconOnly=true class="pivot-to-investigate" defaultAction=(action "pivotToInvestigate" item.hostname)}}
+          {{rsa-icon name="expand-6" size="small" title=(t "investigateShared.endpoint.fileActions.pivotToInvestigate")}}
         {{/rsa-form-button}}
       {{/each}}
     {{else}}
-      {{rsa-panel-message message=(t 'investigateFiles.message.noHostResultMessage') messageType='no-results-message'}}
+      {{rsa-panel-message message=(t "investigateFiles.message.noHostResultMessage") messageType="no-results-message"}}
     {{/if}}
   {{/if}}
 

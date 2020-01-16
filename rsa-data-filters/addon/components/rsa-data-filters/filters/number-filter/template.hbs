@@ -1,12 +1,12 @@
-<h2 class='filter-text'>{{options.label}}</h2>
+<h2 class="filter-text">{{options.label}}</h2>
 <hbox>
   {{#power-select
-    tagName='div'
-    class='operators'
+    tagName="div"
+    class="operators"
     options=options.operators
     selected=filterValue.operator
     searchEnabled=false
-    onchange=(action 'changeOperator') as |option|}}
+    onchange=(action "changeOperator") as |option|}}
     {{#if options.useI18N}}
       {{t option.label}}
     {{else}}
@@ -19,36 +19,36 @@
       {{input
         type="number"
         value=(readonly filterValue.value.[0])
-        placeholder=(t 'dataFilters.textPlaceholder')
-        key-press=(action 'handleKeyPress')
-        key-up=(action 'handleKeyUp')}}
+        placeholder=(t "dataFilters.textPlaceholder")
+        key-press=(action "handleKeyPress")
+        key-up=(action "handleKeyUp")}}
     </div>
     <div class="number-input end rsa-form-input">
       {{input
         type="number"
         value=(readonly filterValue.value.[1])
-        placeholder=(t 'dataFilters.textPlaceholder')
-        key-press=(action 'handleKeyPress')
-        key-up=(action 'handleKeyUp')}}
+        placeholder=(t "dataFilters.textPlaceholder")
+        key-press=(action "handleKeyPress")
+        key-up=(action "handleKeyUp")}}
     </div>
   {{else}}
     <div class="number-input rsa-form-input">
       {{input
         type="number"
         value=(readonly filterValue.value.[0])
-        placeholder='Enter Value'
-        key-press=(action 'handleKeyPress')
-        key-up=(action 'handleKeyUp')}}
+        placeholder="Enter Value"
+        key-press=(action "handleKeyPress")
+        key-up=(action "handleKeyUp")}}
     </div>
   {{/if}}
   {{#if hasUnits}}
     {{#power-select
-      tagName='div'
-      class='units'
+      tagName="div"
+      class="units"
       options=options.units
       selected=filterValue.unit
       searchEnabled=false
-      onchange=(action 'chageUnit') as |option|}}
+      onchange=(action "chageUnit") as |option|}}
       {{#if options.useI18N}}
         {{t option.label}}
       {{else}}

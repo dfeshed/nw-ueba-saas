@@ -1,8 +1,8 @@
 <header>
   <hbox class="rule-builder-toolbar">
     {{#rsa-form-button
-      defaultAction=(action 'addGroup')}}
-      {{t 'configure.incidentRules.ruleBuilder.addConditionGroup'}}
+      defaultAction=(action "addGroup")}}
+      {{t "configure.incidentRules.ruleBuilder.addConditionGroup"}}
     {{/rsa-form-button}}
   </hbox>
 </header>
@@ -15,10 +15,10 @@
   {{#if isInvalid}}
     <ul>
       {{#if hasGroupsWithoutConditions}}
-        <li>{{t 'configure.incidentRules.ruleBuilder.hasGroupsWithoutConditions'}}</li>
+        <li>{{t "configure.incidentRules.ruleBuilder.hasGroupsWithoutConditions"}}</li>
       {{/if}}
       {{#if hasMissingConditionInfo}}
-        <li>{{t 'configure.incidentRules.ruleBuilder.hasMissingConditionInfo'}}</li>
+        <li>{{t "configure.incidentRules.ruleBuilder.hasMissingConditionInfo"}}</li>
       {{/if}}
     </ul>
   {{/if}}

@@ -1,7 +1,7 @@
 {{#if isDataTruncated}}
-  <span class='search-result-note'>
-    {{rsa-icon class='rsa-icon-report-problem-triangle'}}
-    {{t 'investigateHosts.hosts.explore.truncatedNote'}}
+  <span class="search-result-note">
+    {{rsa-icon class="rsa-icon-report-problem-triangle"}}
+    {{t "investigateHosts.hosts.explore.truncatedNote"}}
   </span>
 {{/if}}
 {{#if enahancedSearchResult.length}}
@@ -12,7 +12,7 @@
           <hbox>
             <div class="host-explore__content__header">
               <span class="host-explore__content__header__filename"
-                {{action 'navigateToFile' file.checksumSha256 res.scanStartTime searchKey }}>
+                {{action "navigateToFile" file.checksumSha256 res.scanStartTime searchKey }}>
                 {{file.fileName}}
               </span>
               <span class="host-explore__content__header__result__ranas">
@@ -29,6 +29,6 @@
   {{/each}}
 {{else if searchResultNotFound}}
   <centered class="host-explore__no-results">
-    {{t 'investigateHosts.hosts.explore.noResultsFound'}}
+    {{t "investigateHosts.hosts.explore.noResultsFound"}}
   </centered>
 {{/if}}

@@ -1,13 +1,13 @@
 <aside>
-  {{#if (eq sampleLogsStatus 'error')}}
+  {{#if (eq sampleLogsStatus "error")}}
     <div class="error">
-      {{rsa-icon name='report-problem-triangle'}} {{t 'configure.logsParser.sampleLogsError'}}
+      {{rsa-icon name="report-problem-triangle"}} {{t "configure.logsParser.sampleLogsError"}}
     </div>
   {{else}}
-    {{t 'configure.logsParser.sampleLogs'}}
+    {{t "configure.logsParser.sampleLogs"}}
   {{/if}}
   {{#if isHighlighting}}
-    {{rsa-loader size='small'}}
+    {{rsa-loader size="small"}}
   {{/if}}
 </aside>
 {{#if isHighlighting}}

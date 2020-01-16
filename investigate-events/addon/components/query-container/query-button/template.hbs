@@ -1,13 +1,13 @@
 {{#rsa-form-button
-  class='execute-query-button'
-  defaultAction=(action 'cancelOrExecuteAction')
+  class="execute-query-button"
+  defaultAction=(action "cancelOrExecuteAction")
   isDisabled=isDisabled
-  style='primary'}}
+  style="primary"}}
   {{#if showSpinner}}
     {{rsa-loader size="small" testId="queryButtonQueued"}}
   {{else if isQueryRunning}}
-    {{rsa-icon class='execute-query-spyglass' name='stop-button' testId="queryButtonExecuting"}}
+    {{rsa-icon class="execute-query-spyglass" name="stop-button" testId="queryButtonExecuting"}}
   {{else}}
-    {{rsa-icon class='execute-query-spyglass' name='search' testId="queryButtonInactive"}}
+    {{rsa-icon class="execute-query-spyglass" name="search" testId="queryButtonInactive"}}
   {{/if}}
 {{/rsa-form-button}}

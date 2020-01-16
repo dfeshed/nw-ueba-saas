@@ -23,7 +23,7 @@
   <section class="timestamp right">
     {{rsa-content-datetime timestamp=endDate displayMilliseconds=false}}
   </section>
-  {{rsa-icon size='large' name=toggleIcon click=(action 'toggleContent')}}
+  {{rsa-icon size="large" name=toggleIcon click=(action "toggleContent")}}
   {{#if isExpanded}}
     <section class="hover-data">
       {{#if hoverValue}}
@@ -73,19 +73,19 @@
   {{/if}}
   {{#if shouldShowStatus}}
     <div class="status">
-      {{#if (is-equal status 'wait')}}
+      {{#if (is-equal status "wait")}}
         <div class="wait js-test-wait">
-          {{rsa-loader size="small" label=(t 'investigate.loading')}}
+          {{rsa-loader size="small" label=(t "investigate.loading")}}
         </div>
-      {{else if (is-equal status 'rejected')}}
-        {{#rsa-panel-message messageType='rejected' testCss='js-test-rejected'}}
+      {{else if (is-equal status "rejected")}}
+        {{#rsa-panel-message messageType="rejected" testCss="js-test-rejected"}}
           <p>
-            <span>{{t 'investigate.error.title'}}</span>
-            <a class="js-test-retry" {{action 'retryDataFetch'}}>{{t 'investigate.tryAgain'}}</a>
+            <span>{{t "investigate.error.title"}}</span>
+            <a class="js-test-retry" {{action "retryDataFetch"}}>{{t "investigate.tryAgain"}}</a>
           </p>
         {{/rsa-panel-message}}
       {{else if isDataEmpty}}
-        {{rsa-panel-message messageType='empty-time-line' testCss='js-test-empty' message=(t 'investigate.empty.title')}}
+        {{rsa-panel-message messageType="empty-time-line" testCss="js-test-empty" message=(t "investigate.empty.title")}}
       {{/if}}
     </div>
   {{/if}}

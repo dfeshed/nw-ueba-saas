@@ -2,56 +2,56 @@
 {{#if session.isAuthenticated}}
   {{rsa-loader size="largest"}}
 {{else}}
-  <div class="login-wrapper {{if hasError 'has-error'}} {{if browserWarning 'unsupported-browser'}}">
+  <div class="login-wrapper {{if hasError "has-error"}} {{if browserWarning "unsupported-browser"}}">
     <header>
-      {{rsa-logo title=(t 'appTitle') legacyRsaLogo=false}}
+      {{rsa-logo title=(t "appTitle") legacyRsaLogo=false}}
     </header>
 
     {{#if mustChangePassword}}
-      <grid class="{{if displayPolicies 'display-policies'}}">
+      <grid class={{if displayPolicies "display-policies"}}>
         <vbox xs="6" class="password-policies">
           <h4>Password Format Rules</h4>
           <ul>
             {{#if passwordPolicyMinChars}}
-              <li>{{t 'passwordPolicy.passwordPolicyMinChars' passwordPolicyMinChars=passwordPolicyMinChars}}</li>
+              <li>{{t "passwordPolicy.passwordPolicyMinChars" passwordPolicyMinChars=passwordPolicyMinChars}}</li>
             {{/if}}
 
             {{#if passwordPolicyMinNumericChars}}
-              <li>{{t 'passwordPolicy.passwordPolicyMinNumericChars' passwordPolicyMinNumericChars=passwordPolicyMinNumericChars}}</li>
+              <li>{{t "passwordPolicy.passwordPolicyMinNumericChars" passwordPolicyMinNumericChars=passwordPolicyMinNumericChars}}</li>
             {{/if}}
 
             {{#if passwordPolicyMinUpperChars}}
-              <li>{{t 'passwordPolicy.passwordPolicyMinUpperChars' passwordPolicyMinUpperChars=passwordPolicyMinUpperChars}}</li>
+              <li>{{t "passwordPolicy.passwordPolicyMinUpperChars" passwordPolicyMinUpperChars=passwordPolicyMinUpperChars}}</li>
             {{/if}}
 
             {{#if passwordPolicyMinLowerChars}}
-              <li>{{t 'passwordPolicy.passwordPolicyMinLowerChars' passwordPolicyMinLowerChars=passwordPolicyMinLowerChars}}</li>
+              <li>{{t "passwordPolicy.passwordPolicyMinLowerChars" passwordPolicyMinLowerChars=passwordPolicyMinLowerChars}}</li>
             {{/if}}
 
             {{#if passwordPolicyMinNonLatinChars}}
-              <li>{{t 'passwordPolicy.passwordPolicyMinNonLatinChars' passwordPolicyMinNonLatinChars=passwordPolicyMinNonLatinChars}}</li>
+              <li>{{t "passwordPolicy.passwordPolicyMinNonLatinChars" passwordPolicyMinNonLatinChars=passwordPolicyMinNonLatinChars}}</li>
             {{/if}}
 
             {{#if passwordPolicyMinSpecialChars}}
-              <li>{{t 'passwordPolicy.passwordPolicyMinSpecialChars' passwordPolicyMinSpecialChars=passwordPolicyMinSpecialChars}}</li>
+              <li>{{t "passwordPolicy.passwordPolicyMinSpecialChars" passwordPolicyMinSpecialChars=passwordPolicyMinSpecialChars}}</li>
             {{/if}}
 
             {{#if passwordPolicyCannotIncludeId}}
-              <li>{{t 'passwordPolicy.passwordPolicyCannotIncludeId'}}</li>
+              <li>{{t "passwordPolicy.passwordPolicyCannotIncludeId"}}</li>
             {{/if}}
           </ul>
         </vbox>
         <vbox xs="6">
           <form class="change-password" {{action "changePassword" on="submit"}}>
             <p>
-              {{t 'login.forcePassword.warning'}}
+              {{t "login.forcePassword.warning"}}
             </p>
 
             {{rsa-form-input
               class="js-test-login-old-password-input"
               type="password"
               autocomplete="current-password"
-              label=(t 'login.oldPassword')
+              label=(t "login.oldPassword")
               isError=hasError
               value=password}}
 
@@ -59,7 +59,7 @@
               class="js-test-login-new-password-input"
               type="password"
               autocomplete="new-password"
-              label=(t 'login.newPassword')
+              label=(t "login.newPassword")
               isError=hasError
               value=newPassword}}
 
@@ -67,7 +67,7 @@
               class="js-test-login-confirm-new-password-input"
               type="password"
               autocomplete="new-password"
-              label=(t 'login.confirmPassword')
+              label=(t "login.confirmPassword")
               isError=hasError
               value=newPasswordConfirm}}
 
@@ -82,7 +82,7 @@
               style="primary"
               isFullWidth=true
               isDisabled=changePasswordDisabled}}
-              {{t 'login.forcePassword.changePassword'}}
+              {{t "login.forcePassword.changePassword"}}
             {{/rsa-form-button}}
           </form>
         </vbox>
@@ -92,7 +92,7 @@
         {{rsa-form-input
           autocomplete="username"
           class="js-test-login-username-input"
-          label=(t 'login.username')
+          label=(t "login.username")
           testId="loginUsername"
           isError=hasError
           value=username}}
@@ -101,7 +101,7 @@
           class="js-test-login-password-input"
           type="password"
           autocomplete="current-password"
-          label=(t 'login.password')
+          label=(t "login.password")
           testId="loginPassword"
           isError=hasError
           value=password}}
@@ -120,7 +120,7 @@
           isFullWidth=true
           style="primary"}}
           {{#if isAuthenticating}}
-            {{t 'login.loggingIn'}}
+            {{t "login.loggingIn"}}
           {{else}}
             {{t "login.login"}}
           {{/if}}

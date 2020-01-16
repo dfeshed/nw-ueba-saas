@@ -1,6 +1,6 @@
 {{#rsa-content-tethered-panel-trigger
   panel=panelId
-  triggerEvent='click'
+  triggerEvent="click"
 }}
   {{list-manager/list-manager-container/list-menu-trigger
     stateLocation=stateLocation
@@ -9,22 +9,22 @@
 {{#rsa-content-tethered-panel
   displayCloseButton=false
   panelId=panelId
-  position='bottom-right'
+  position="bottom-right"
   panelClass="list-manager-panel"
   isPopover=true
 }}
   {{#if isListView}}
-    <div class='list-view-body'>
+    <div class="list-view-body">
       {{yield (hash
-          filter=(component 'list-manager/list-manager-container/list-filter'
+          filter=(component "list-manager/list-manager-container/list-filter"
             stateLocation=stateLocation
           )
         )
       }}
       {{yield (hash
-          itemList=(component 'list-manager/list-manager-container/item-list'
+          itemList=(component "list-manager/list-manager-container/item-list"
             stateLocation=stateLocation
-            itemSelection=(action 'handleItemSelection')
+            itemSelection=(action "handleItemSelection")
           )
         )
       }}
@@ -36,10 +36,10 @@
 
   {{else}}
     {{yield (hash
-        details=(component 'list-manager/list-manager-container/item-details'
+        details=(component "list-manager/list-manager-container/item-details"
           stateLocation=stateLocation
-          itemSelection=(action 'handleItemSelection')
-          itemUpdate=(action 'handleItemUpdate')
+          itemSelection=(action "handleItemSelection")
+          itemUpdate=(action "handleItemUpdate")
         )
       )
     }}

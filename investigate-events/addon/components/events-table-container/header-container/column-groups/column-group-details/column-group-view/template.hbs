@@ -1,14 +1,14 @@
-<div class='column-group-name'>
-  <div class='name'>Group Name</div>
-  <div class='value'>{{columnGroup.name}}</div>
+<div class="column-group-name">
+  <div class="name">Group Name</div>
+  <div class="value">{{columnGroup.name}}</div>
 </div>
-<div class='column-group-details displayed-details scroll-box readonly'>
-  <div class='name'>Displayed Meta Keys</div>
-  <ul class='column-list value readonly'>
+<div class="column-group-details displayed-details scroll-box readonly">
+  <div class="name">Displayed Meta Keys</div>
+  <ul class="column-list value readonly">
     {{#each columnGroup.columns as |column|}}
       <li>
-        <span class='field'>{{column.field}}</span>
-        <span title={{column.title}} class='title'>{{column.title}}</span>
+        <span class="field">{{column.field}}</span>
+        <span title={{column.title}} class="title">{{column.title}}</span>
       </li>
     {{/each}}
   </ul>

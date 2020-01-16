@@ -1,12 +1,12 @@
 {{#rsa-form-button
   isDisabled=isDisabled
-  defaultAction=(action 'toggleScanStartModal')
+  defaultAction=(action "toggleScanStartModal")
   isIconOnly=isIconOnly title=title}}
   {{#if isIconOnly}}
-    {{rsa-icon name='play-button-2'}}
+    {{rsa-icon name="play-button-2"}}
   {{else}}
     {{#if isStartScanIconDisplayed}}
-      {{rsa-icon name='check-shield' size='small'}}
+      {{rsa-icon name="check-shield" size="small"}}
     {{/if}}
     {{buttonText}}
   {{/if}}
@@ -14,11 +14,11 @@
 
 {{#if _showStartScanModal}}
   {{host-scan/scan-modal
-    command='START_SCAN'
-    modalStyle='start-scan-modal'
-    eventId='start-scan'
+    command="START_SCAN"
+    modalStyle="start-scan-modal"
+    eventId="start-scan"
     modalTitle=modalTitle
     warningMessages=warningMessage
-    onModalClose=(action 'onModalClose')
-    primaryAction=(action 'handleInitiateScan')}}
+    onModalClose=(action "onModalClose")
+    primaryAction=(action "handleInitiateScan")}}
 {{/if}}

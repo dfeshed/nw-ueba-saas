@@ -1,4 +1,4 @@
-<iframe src="{{downloadLink}}" class="save-files-iframe"></iframe>
+<iframe src={{downloadLink}} class="save-files-iframe"></iframe>
 {{#rsa-data-table
   lazy=true
   items=files
@@ -6,22 +6,22 @@
   usePreferredDisplayIndex=true
   agentCountMapping=agentCountMapping
   columnsConfig=columns
-  onColumnConfigChange=(action 'onColumnConfigChange')
-  onRowClick=(action 'toggleSelectedRow')
-  onReorderColumns=(action 'onReorderColumns')}}
+  onColumnConfigChange=(action "onColumnConfigChange")
+  onRowClick=(action "toggleSelectedRow")
+  onReorderColumns=(action "onReorderColumns")}}
   {{#file-list/header
     enableColumnFilter=true
     translateTitles=true
-    onToggleColumn=(action 'onColumnConfigChange' 'display')
+    onToggleColumn=(action "onColumnConfigChange" "display")
     enableColumnSelector=showColumnChooser as |column|}}
     {{#if (eq column.dataType "checkbox")}}
-      <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if isAllSelected 'checked'}}">
+      <label class="rsa-form-checkbox-label {{concat "column-selection-" column.field}} {{if isAllSelected "checked"}}">
         {{rsa-form-checkbox
           checked=isALlSelected
-          change=(action 'toggleAllSelection')}}
+          change=(action "toggleAllSelection")}}
       </label>
     {{else}}
-      <span class='js-move-handle'>
+      <span class="js-move-handle">
         {{t column.title}}
       </span>
     {{/if}}
@@ -32,82 +32,82 @@
         column=column
         isSortDescending=isSortDescending
         closeRiskPanel=closeRiskPanel
-        sortBy=(action 'sortData')}}
+        sortBy=(action "sortData")}}
     {{/unless}}
   {{/file-list/header}}
   {{#if areFilesLoading}}
     <centered>
-      {{rsa-loader size='larger'}}
+      {{rsa-loader size="larger"}}
     </centered>
   {{else}}
     {{#rsa-data-table/body
       rowComponentClass=(
-        component 'endpoint/file-custom-row'
+        component "endpoint/file-custom-row"
         serviceList=serviceList
         selections=selections
         showResetRiskScore = true
-        beforeContextMenuShow=(action 'beforeContextMenuShow')
-        editFileStatus=(action 'showEditFileStatus')
-        resetRiskScore=(action 'showRiskScoreModal')
-        pivotToInvestigate=(action 'pivotToInvestigate')
-        onSaveFileStatus=(action 'saveFileStatus' checksums)
-        retrieveRemediationStatus=(action 'retrieveRemediationStatus')
+        beforeContextMenuShow=(action "beforeContextMenuShow")
+        editFileStatus=(action "showEditFileStatus")
+        resetRiskScore=(action "showRiskScoreModal")
+        pivotToInvestigate=(action "pivotToInvestigate")
+        onSaveFileStatus=(action "saveFileStatus" checksums)
+        retrieveRemediationStatus=(action "retrieveRemediationStatus")
         showViewCertificate=true
-        navigateToCertificateView=(action 'certificateView' selections)
+        navigateToCertificateView=(action "certificateView" selections)
         fileDownloadButtonStatus=fileDownloadButtonStatus
         downloadFiles=downloadFiles
         saveLocalCopy=saveLocalCopy
         analyzeFile=analyzeFile
         isCertificateViewDisabled=isCertificateViewDisabled
       )
-      noResultsMessage=(t 'investigateFiles.message.noResultsMessage')
+      noResultsMessage=(t "investigateFiles.message.noResultsMessage")
       as |item index column|}}
       {{#if column.componentClass}}
         {{#rsa-data-table/body-cell item=item column=column}}
-          <label class="rsa-form-checkbox-label {{if (is-selected selections item) 'checked'}}">
-            {{rsa-form-checkbox checked=(is-selected selections item) change=(action 'toggleItemSelection' item)}}
+          <label class="rsa-form-checkbox-label {{if (is-selected selections item) "checked"}}">
+            {{rsa-form-checkbox checked=(is-selected selections item) change=(action "toggleItemSelection" item)}}
           </label>
         {{/rsa-data-table/body-cell}}
       {{else}}
         {{#rsa-data-table/body-cell column=column}}
-          {{#if (eq column.field 'firstFileName')}}
+          {{#if (eq column.field "firstFileName")}}
             <div class="file-name">
-              {{#link-to 'files.details' (get item 'checksumSha256') (query-params sid=(get item 'serviceId') checksum=(get item 'checksumSha256') tabName='OVERVIEW' sourceSid=(get item 'downloadInfo.serviceId'))}}
+              {{#link-to "files.details" (get item "checksumSha256") (query-params sid=(get item "serviceId") checksum=(get item "checksumSha256") tabName="OVERVIEW" sourceSid=(get item "downloadInfo.serviceId"))}}
                 {{get item column.field}}
               {{/link-to}}
             </div>
-          {{else if (eq column.field 'size')}}
+          {{else if (eq column.field "size")}}
             {{rsa-content-memsize size=(get item column.field)}}
-          {{else if (eq column.field 'pe.imageSize')}}
+          {{else if (eq column.field "pe.imageSize")}}
             {{rsa-content-memsize size=(get item column.field)}}
-          {{else if (eq column.field 'signature.features')}}
+          {{else if (eq column.field "signature.features")}}
             {{#if (get item column.field)}}
               {{get item column.field}}
             {{else}}
               unsigned
             {{/if}}
-          {{else if (eq column.dataType 'DATE')}}
+          {{else if (eq column.dataType "DATE")}}
             {{#if (get item column.field)}}
               {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
             {{else}}
               N/A
             {{/if}}
-          {{else if (eq column.field 'signature.timeStamp')}}
+          {{else if (eq column.field "signature.timeStamp")}}
             {{rsa-content-datetime timestamp=(get item column.field)}}
-          {{else if (eq column.field 'fileStatus')}}
-            {{t (concat 'investigateFiles.fileStatus.' (get item column.field))}}
-          {{else if (eq column.field 'remediationAction')}}
-            {{t (concat 'investigateFiles.remediationAction.' (get item column.field))}}
-          {{else if (eq column.field 'score')}}
+          {{else if (eq column.field "fileStatus")}}
+            {{t (concat "investigateFiles.fileStatus." (get item column.field))}}
+          {{else if (eq column.field "remediationAction")}}
+            {{t (concat "investigateFiles.remediationAction." (get item column.field))}}
+          {{else if (eq column.field "score")}}
             <centered>
               {{#if (get item column.field)}}
-                {{rsa-risk-score score=(get item column.field) size='small'}}
+                {{rsa-risk-score score=(get item column.field) size="small"}}
               {{else}}
-                {{rsa-risk-score score='0' size='small'}}
+                {{rsa-risk-score score="0" size="small"}}
               {{/if}}
             </centered>
-          {{else if (eq column.field 'downloadInfo.status')}}
-            {{endpoint/download-status downloadInfo=(get item 'downloadInfo') checksum=item.checksumSha256}}
+          {{else if (eq column.field "downloadInfo.status")}}
+            {{endpoint/download-status downloadInfo=(get item "downloadInfo") checksum=item.checksumSha256}}
           {{else}}
             {{get-field item column timezone dateFormat timeFormat i18n.locale}}
           {{/if}}
@@ -117,10 +117,10 @@
     {{endpoint/load-more
       status=loadMoreStatus
       serverId=serverId
-      title=(t 'investigateFiles.showNextRecords' count=nextLoadCount label='files')
+      title=(t "investigateFiles.showNextRecords" count=nextLoadCount label="files")
       servers=servers
       count=totalItems
-      getMoreData=(action 'getPageOfFiles')}}
+      getMoreData=(action "getPageOfFiles")}}
   {{/if}}
 {{/rsa-data-table}}
 
@@ -130,28 +130,28 @@
     restrictedFileList=restrictedFileList
     isRemediationAllowed=remediationStatus
     isFloatingOrMemoryDll=isFloatingOrMemoryDll
-    onSaveFileStatus=(action 'saveFileStatus' checksums)
+    onSaveFileStatus=(action "saveFileStatus" checksums)
     data=data
-    closeModal=(action 'onCloseEditFileStatus')}}
+    closeModal=(action "onCloseEditFileStatus")}}
 {{/if}}
 
 {{#if showResetScoreModal}}
   {{#rsa-application-modal
     autoOpen=true
-    label=(t 'investigateFiles.riskScore.label')
-    onClose=(action 'onResetScoreModalClose')}}
-    <div class='modal-content reset-risk-score'>
+    label=(t "investigateFiles.riskScore.label")
+    onClose=(action "onResetScoreModalClose")}}
+    <div class="modal-content reset-risk-score">
       {{#if isMaxResetRiskScoreLimit}}
-        <span class='max-limit-info'>
-          {{rsa-icon class='rsa-icon-information-circle'}}
-          <p>{{t 'investigateFiles.riskScore.limitInfo'}}</p>
+        <span class="max-limit-info">
+          {{rsa-icon class="rsa-icon-information-circle"}}
+          <p>{{t "investigateFiles.riskScore.limitInfo"}}</p>
         </span>
       {{/if}}
-      {{t 'investigateFiles.riskScore.confirmMessage'}}
+      {{t "investigateFiles.riskScore.confirmMessage"}}
       <div class="confirmationButtons">
-        {{#rsa-form-button class="closeReset" click=(action 'onResetScoreModalClose') }}{{t 'investigateFiles.riskScore.cancel'}}{{/rsa-form-button}}
-        {{#rsa-form-button class="resetButton" style='primary' click=(action 'resetRiskScoreAction')}}
-          {{t 'investigateFiles.riskScore.reset'}}
+        {{#rsa-form-button class="closeReset" click=(action "onResetScoreModalClose") }}{{t "investigateFiles.riskScore.cancel"}}{{/rsa-form-button}}
+        {{#rsa-form-button class="resetButton" style="primary" click=(action "resetRiskScoreAction")}}
+          {{t "investigateFiles.riskScore.reset"}}
         {{/rsa-form-button}}
       </div>
     </div>

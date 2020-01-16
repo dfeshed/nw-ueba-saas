@@ -1,34 +1,34 @@
 <div {{action "saveChanges" on="onDeactivate"}}>
-  {{rsa-form-input class=(concat 'operator-input firstValueInput ' validation)
-    placeholder=(t 'adminUsm.groupCriteria.placeholders.beginning_IP')
+  {{rsa-form-input class=(concat "operator-input firstValueInput " validation)
+    placeholder=(t "adminUsm.groupCriteria.placeholders.beginning_IP")
     maxLength=1024
     value=firstValue
     isError=(or firstValueValidator.showError firstlockError)
-    errorMessage=(t (concat 'adminUsm.groupCriteria.inputValidations.' validation))
-    focusIn=(action 'firstValueFocusIn')
-    focusOut=(action 'firstValueChange')
+    errorMessage=(t (concat "adminUsm.groupCriteria.inputValidations." validation))
+    focusIn=(action "firstValueFocusIn")
+    focusOut=(action "firstValueChange")
     spellcheck=false
   }}
-  <span>{{t 'adminUsm.groupCriteria.and'}}</span>
-  {{#if (eq validation 'validIPv6')}}
+  <span>{{t "adminUsm.groupCriteria.and"}}</span>
+  {{#if (eq validation "validIPv6")}}
     <br>
   {{/if}}
-  {{rsa-form-input class=(concat 'operator-input secondValueInput ' validation)
-    placeholder=(t 'adminUsm.groupCriteria.placeholders.end_IP')
+  {{rsa-form-input class=(concat "operator-input secondValueInput " validation)
+    placeholder=(t "adminUsm.groupCriteria.placeholders.end_IP")
     maxLength=1024
     value=secondValue
     isError=(or secondValueValidator.showError secondlockError)
-    errorMessage=(t (concat 'adminUsm.groupCriteria.inputValidations.' validation))
-    focusIn=(action 'secondValueFocusIn')
-    focusOut=(action 'secondValueChange')
+    errorMessage=(t (concat "adminUsm.groupCriteria.inputValidations." validation))
+    focusIn=(action "secondValueFocusIn")
+    focusOut=(action "secondValueChange")
     spellcheck=false    
   }}
 </div>
 
 <div class="tooltip">
-  {{#rsa-text-with-tooltip value=(t (concat 'adminUsm.groupCriteria.tooltips.' selectedAttribute '_' validation '_' selectedOperator))
+  {{#rsa-text-with-tooltip value=(t (concat "adminUsm.groupCriteria.tooltips." selectedAttribute "_" validation "_" selectedOperator))
     style="standard"
     alwaysShow=true}}
-    {{rsa-icon size='large' name="information-circle" displayOnTab=true}}
+    {{rsa-icon size="large" name="information-circle" displayOnTab=true}}
   {{/rsa-text-with-tooltip}}
 </div>

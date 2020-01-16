@@ -8,16 +8,16 @@
     type="text"
     value={{text}}>
 {{else}}
-  <span class='text-wrapper'>
+  <span class="text-wrapper">
     {{pillData.complexFilterText}}
   </span>
 
   {{query-container/delete-pill
-    sendMessage=(action 'handleMessage')
+    sendMessage=(action "handleMessage")
   }}
   {{#if isFocused}}
     {{query-container/focus-holder
-      sendMessage=(action 'handleMessage')
+      sendMessage=(action "handleMessage")
     }}
   {{/if}}
 {{/if}}

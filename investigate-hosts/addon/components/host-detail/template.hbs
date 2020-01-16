@@ -1,11 +1,11 @@
 {{#if selectedServiceData.isServiceOnline}}
   <box class="host-detail-wrapper">
-    <iframe src="{{downloadLink}}" class="save-files-iframe"></iframe>
+    <iframe src={{downloadLink}} class="save-files-iframe"></iframe>
     {{#if showSnapshotEmptyMessage}}
-      {{rsa-panel-message message=(t 'investigateHosts.noSnapshotMessage')}}
+      {{rsa-panel-message message=(t "investigateHosts.noSnapshotMessage")}}
     {{else if isSnapshotsLoading}}
       <centered>
-        {{rsa-loader size='larger'}}
+        {{rsa-loader size="larger"}}
       </centered>
     {{else}}
       {{component selectedTabComponent analyzeFile=analyzeFile}}
@@ -14,6 +14,6 @@
   </box>
 {{else}}
   {{error-page
-    errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription' serviceType=selectedServiceData.name)
-    title=(t 'investigateFiles.errorPage.serviceDown' serviceType=selectedServiceData.name)}}
+    errorDescription=(t "investigateFiles.errorPage.serviceDownDescription" serviceType=selectedServiceData.name)
+    title=(t "investigateFiles.errorPage.serviceDown" serviceType=selectedServiceData.name)}}
 {{/if}}

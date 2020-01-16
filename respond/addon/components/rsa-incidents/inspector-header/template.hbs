@@ -4,8 +4,8 @@
     value=info.name
     allowEmptyValue=false
     isDisabled=(not accessControl.respondCanManageIncidents)
-    placeholder=(t 'respond.empty')
-    onFieldChange=(action 'updateName' info.id 'name')
+    placeholder=(t "respond.empty")
+    onFieldChange=(action "updateName" info.id "name")
   }}
 </div>
 {{#if isSendToArcherAvailable}}
@@ -14,15 +14,15 @@
       <div class="rsa-button-with-confirmation">
         {{#rsa-button-with-confirmation
           isDisabled=isSendToArcherDisabled
-          title=(t 'respond.incidents.actions.actionMessages.confirmSendToArcherTitle')
-          cancelButtonLabel=(t 'forms.cancel')
-          confirmationMessage=(t 'respond.incidents.actions.actionMessages.confirmSendToArcher')
-          onConfirm=(action 'sendToArcher' info.id)}}
-          {{t 'respond.incident.sendToArcher'}}
+          title=(t "respond.incidents.actions.actionMessages.confirmSendToArcherTitle")
+          cancelButtonLabel=(t "forms.cancel")
+          confirmationMessage=(t "respond.incidents.actions.actionMessages.confirmSendToArcher")
+          onConfirm=(action "sendToArcher" info.id)}}
+          {{t "respond.incident.sendToArcher"}}
         {{/rsa-button-with-confirmation}}
       </div>
     {{else}}
-      {{rsa-icon name='report-problem-triangle'}} {{t 'respond.incident.sentToArcher'}}
+      {{rsa-icon name="report-problem-triangle"}} {{t "respond.incident.sentToArcher"}}
     {{/if}}
   </div>
 {{/if}}

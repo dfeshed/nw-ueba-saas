@@ -1,18 +1,18 @@
 <table>
-  <caption class="sr-only" test-id="eventTableCaption">{{t 'respond.eventDetails.caption'}}</caption>
+  <caption class="sr-only" test-id="eventTableCaption">{{t "respond.eventDetails.caption"}}</caption>
   <thead>
     <tr>
       <th></th>
-      <th scope="col" test-id="eventTableIpLabel">{{t 'respond.eventsList.generic.tableIP'}}</th>
-      <th scope="col" test-id="eventTablePortLabel">{{t 'respond.eventsList.generic.tablePORT'}}</th>
-      <th scope="col" test-id="eventTableHostLabel">{{t 'respond.eventsList.generic.tableHOST'}}</th>
-      <th scope="col" test-id="eventTableMacLabel">{{t 'respond.eventsList.generic.tableMAC'}}</th>
-      <th scope="col" test-id="eventTableUserLabel">{{t 'respond.eventsList.generic.tableUSER'}}</th>
+      <th scope="col" test-id="eventTableIpLabel">{{t "respond.eventsList.generic.tableIP"}}</th>
+      <th scope="col" test-id="eventTablePortLabel">{{t "respond.eventsList.generic.tablePORT"}}</th>
+      <th scope="col" test-id="eventTableHostLabel">{{t "respond.eventsList.generic.tableHOST"}}</th>
+      <th scope="col" test-id="eventTableMacLabel">{{t "respond.eventsList.generic.tableMAC"}}</th>
+      <th scope="col" test-id="eventTableUserLabel">{{t "respond.eventsList.generic.tableUSER"}}</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th scope="row" test-id="eventSourceLabel">{{t 'respond.eventsList.generic.sourceLabel'}}</th>
+      <th scope="row" test-id="eventSourceLabel">{{t "respond.eventsList.generic.sourceLabel"}}</th>
       {{properties-for/determine-value key="ip_address" value=item.source.device.ip_address tag="td" testId="eventSourceIpValue"}}
       <td test-id="eventSourcePortValue">{{properties-for/determine-value value=item.source.device.port}}</td>
       <td test-id="eventSourceHostValue">{{properties-for/determine-value value=item.source.device.dns_hostname}}</td>
@@ -20,7 +20,7 @@
       {{properties-for/determine-value key="username" value=item.source.user.username tag="td" testId="eventSourceUserValue"}}
     </tr>
     <tr>
-      <th scope="row" test-id="eventTargetLabel">{{t 'respond.eventsList.generic.targetLabel'}}</th>
+      <th scope="row" test-id="eventTargetLabel">{{t "respond.eventsList.generic.targetLabel"}}</th>
       {{properties-for/determine-value key="ip_address" value=item.destination.device.ip_address tag="td" testId="eventTargetIpValue"}}
       <td test-id="eventTargetPortValue">{{properties-for/determine-value value=item.destination.device.port}}</td>
       <td test-id="eventTargetHostValue">{{properties-for/determine-value value=item.destination.device.dns_hostname}}</td>

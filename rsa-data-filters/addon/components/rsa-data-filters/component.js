@@ -35,7 +35,7 @@ export default Component.extend({
   @computed('config')
   updatedConfig(config) {
     const updated = config.map((conf) => {
-      const component = `rsa-data-filters.filters.${conf.type}-filter`;
+      const component = `rsa-data-filters/filters/${conf.type}-filter`;
       return { component, filterOptions: conf };
     });
     return updated;

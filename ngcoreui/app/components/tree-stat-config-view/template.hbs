@@ -24,7 +24,7 @@
           {{rsa-form-input value=configValue placeholder="New value" isDisabled=hasNoGetPermission isSuccess=configSetSuccess isError=configSetError errorMessage=configSetResult}}
         </box>
         <box fit class="bottom-padding">
-          {{#rsa-form-button style='primary' isDisabled=hasNoGetPermission defaultAction=(action 'setConfigValue' configValue)}}Set{{/rsa-form-button}}
+          {{#rsa-form-button style="primary" isDisabled=hasNoGetPermission defaultAction=(action "setConfigValue" configValue)}}Set{{/rsa-form-button}}
         </box>
       </div>
     {{/if}}

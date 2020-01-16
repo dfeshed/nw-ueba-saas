@@ -1,14 +1,14 @@
 
-<div class='rsa-form-radio-group'>
-  <h3 class='rsa-form-radio-group-label'>{{t 'investigateHosts.hosts.summary.securityConfig.arrangeBy'}}</h3>
-  <label class="rsa-form-radio-label {{if (eq 'alphabetical' arrangeBy) 'checked'}}">
+<div class="rsa-form-radio-group">
+  <h3 class="rsa-form-radio-group-label">{{t "investigateHosts.hosts.summary.securityConfig.arrangeBy"}}</h3>
+  <label class="rsa-form-radio-label {{if (eq "alphabetical" arrangeBy) "checked"}}">
     {{radio-button value="alphabetical" groupValue=value changed=(action "arrangeSecurityConfigs")}}
-    {{t 'investigateHosts.hosts.summary.securityConfig.alphabetical'}}
+    {{t "investigateHosts.hosts.summary.securityConfig.alphabetical"}}
   </label>
 
-  <label class="rsa-form-radio-label {{if sameConfigStatus 'disabled'}} {{if (eq 'status' arrangeBy) 'checked'}}">
+  <label class="rsa-form-radio-label {{if sameConfigStatus "disabled"}} {{if (eq "status" arrangeBy) "checked"}}">
     {{radio-button value="status" groupValue=value disabled=sameConfigStatus changed=(action "arrangeSecurityConfigs")}}
-    {{t 'investigateHosts.hosts.summary.securityConfig.status'}}
+    {{t "investigateHosts.hosts.summary.securityConfig.status"}}
   </label>
 </div>
 
@@ -17,9 +17,9 @@
     <box class="security-configuration__column">
       <box class="securityConfigIcon">
         {{#if config.disabled}}
-          {{rsa-icon name='delete-1' class="rsa-red-color"}}
+          {{rsa-icon name="delete-1" class="rsa-red-color"}}
         {{else}}
-          {{rsa-icon name='check-2' class="rsa-green-color"}}
+          {{rsa-icon name="check-2" class="rsa-green-color"}}
         {{/if}}
       </box>
       <box class="securityConfigDisc">

@@ -4,23 +4,23 @@
       options=groupOperators
       selected=selectedGroupOperator
       searchEnabled=false
-      onchange=(action 'updateGroupOperator') as |groupOperator|}}
-      {{ t (concat 'configure.incidentRules.ruleBuilder.groupOperators.' groupOperator)}}
+      onchange=(action "updateGroupOperator") as |groupOperator|}}
+      {{ t (concat "configure.incidentRules.ruleBuilder.groupOperators." groupOperator)}}
     {{/power-select}}
   </box>
   <box class="add-condition">
     {{#rsa-form-button
       isDisabled=hasInvalidConditions
-      defaultAction=(action 'addCondition')}}
-      {{t 'configure.incidentRules.ruleBuilder.addCondition'}}
+      defaultAction=(action "addCondition")}}
+      {{t "configure.incidentRules.ruleBuilder.addCondition"}}
     {{/rsa-form-button}}
   </box>
   {{! The root grouping of condidtions cannot be removed }}
   <box class="remove-group">
     {{#if (not isRootGroup)}}
       {{#rsa-form-button
-        defaultAction=(action 'removeGroup')}}
-        {{t 'configure.incidentRules.ruleBuilder.removeConditionGroup'}}
+        defaultAction=(action "removeGroup")}}
+        {{t "configure.incidentRules.ruleBuilder.removeConditionGroup"}}
       {{/rsa-form-button}}
     {{/if}}
   </box>

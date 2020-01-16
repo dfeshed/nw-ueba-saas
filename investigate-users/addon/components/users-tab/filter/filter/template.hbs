@@ -1,33 +1,33 @@
-<div class='users-tab_filter_filter_list'>
+<div class="users-tab_filter_filter_list">
   <label class="rsa-form-label power-select users-tab_filter_filter_select">
     <div class="label-text">
-      {{t 'investigateUsers.users.filters.entityType'}}
+      {{t "investigateUsers.users.filters.entityType"}}
     </div>
     {{#power-select
       options=entityFilter
       selected=entityType
       searchEnabled=false
-      placeholder='Select'
-      onchange=(action 'updateFilterForEntityType') as |option|}}
+      placeholder="Select"
+      onchange=(action "updateFilterForEntityType") as |option|}}
       {{#if option}}
-        <span title='{{option}}'>{{t (concat 'investigateUsers.entityTypes.' option)}}</span>
+        <span title={{option}}>{{t (concat "investigateUsers.entityTypes." option)}}</span>
       {{/if}}
     {{/power-select}}
   </label>
   {{users-tab/filter/category}}
   <label class="rsa-form-label power-select users-tab_filter_filter_select">
     <div class="label-text">
-      {{t 'investigateUsers.alerts.filters.severity'}}
+      {{t "investigateUsers.alerts.filters.severity"}}
     </div>
     {{#power-select
       options=severityFilter
       selected=selectedSeverity
       searchEnabled=false
-      placeholder='Select'
-      onchange=(action 'updateSeverityFilter') as |option|}}
+      placeholder="Select"
+      onchange=(action "updateSeverityFilter") as |option|}}
       {{#if option}}
-        <span title='{{t (concat 'investigateUsers.severity.' option)}}'>
-          {{t (concat 'investigateUsers.severity.' option)}}
+        <span title={{t (concat "investigateUsers.severity." option)}}>
+          {{t (concat "investigateUsers.severity." option)}}
         </span>
       {{else}}
         &nbsp;
@@ -36,32 +36,32 @@
   </label>
   <label class="rsa-form-label power-select users-tab_filter_filter_select">
     <div class="label-text">
-      {{t 'investigateUsers.alerts.title'}}
+      {{t "investigateUsers.alerts.title"}}
     </div>
 
     {{#power-select-multiple
       options=existAlertTypes
       selected=selectedAlertTypes
-      placeholder='Select'
-      searchField='displayLabel'
-      onchange=(action 'updateFilterForAlertTypes') as |option|}}
-      <span title='{{option.displayLabel}}'>
+      placeholder="Select"
+      searchField="displayLabel"
+      onchange=(action "updateFilterForAlertTypes") as |option|}}
+      <span title={{option.displayLabel}}>
         {{option.displayLabel}}
       </span>
     {{/power-select-multiple}}
   </label>
   <label class="rsa-form-label power-select users-tab_filter_filter_select">
     <div class="label-text">
-      {{t 'investigateUsers.users.filters.indicators'}}
+      {{t "investigateUsers.users.filters.indicators"}}
     </div>
 
     {{#power-select-multiple
       options=existAnomalyTypes
       selected=selectedAnomalyTypes
-      placeholder='Select'
-      searchField='displayLabel'
-      onchange=(action 'updateFilterForAnomalyTypes') as |option|}}
-      <span title='{{option.displayLabel}}'>
+      placeholder="Select"
+      searchField="displayLabel"
+      onchange=(action "updateFilterForAnomalyTypes") as |option|}}
+      <span title={{option.displayLabel}}>
         {{option.displayLabel}}
       </span>
     {{/power-select-multiple}}

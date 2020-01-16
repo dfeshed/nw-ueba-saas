@@ -1,21 +1,21 @@
 {{#each group.keys as |groupKey groupKeyIndex|}}
   {{meta-view/key-values
     groupKey=groupKey
-    values=(get (array-lookup metaKeyStates groupKeyIndex) 'values')
-    info=(get (array-lookup metaKeyStates groupKeyIndex) 'info')
+    values=(get (array-lookup metaKeyStates groupKeyIndex) "values")
+    info=(get (array-lookup metaKeyStates groupKeyIndex) "info")
     options=options
     aliases=aliases
     contextDetails=contextDetails
     clickValueAction=clickValueAction
-    toggleAction=(action "safeCallback" toggleAction (get (array-lookup metaKeyStates groupKeyIndex) 'info'))}}
+    toggleAction=(action "safeCallback" toggleAction (get (array-lookup metaKeyStates groupKeyIndex) "info"))}}
 {{/each}}
 
 {{#if emptyMetaKeyStates.length}}
-  <div class="rsa-investigate-meta-key-values complete {{if isEmptyMetaGroupVisible 'is-open'}}">
+  <div class="rsa-investigate-meta-key-values complete {{if isEmptyMetaGroupVisible "is-open"}}">
     <header class="rsa-investigate-meta-key-values__header js-toggle-open" {{action "toggleEmptyMetaValuesPanel"}}>
       <h2 class="rsa-investigate-meta-key-values__title">
         <span class="toggle-icon">{{rsa-icon name="arrow-right-12" size="smaller"}}</span>
-        <span class="meta-name" title="{{emptyMetaGroup.name}}">{{emptyMetaGroup.name}}</span>
+        <span class="meta-name" title={{emptyMetaGroup.name}}>{{emptyMetaGroup.name}}</span>
         <span class="meta-size">({{emptyMetaKeyStates.length}})</span>
       </h2>
     </header>

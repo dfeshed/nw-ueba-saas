@@ -2,11 +2,11 @@
 
   <box fit>
     {{#link-to "tree" urlSegment activeClass="ember-active"}}
-      <a class="large{{if requiresRestart ' error-text-hover'}}">
+      <a class="large{{if requiresRestart " error-text-hover"}}">
         {{#if node.display}}
           <span title={{node.name}}>{{node.display}}</span>
         {{else}}
-          {{node.name}}{{unless isStatOrConfigNode '/'}}
+          {{node.name}}{{unless isStatOrConfigNode "/"}}
         {{/if}}
       </a>
     {{/link-to}}

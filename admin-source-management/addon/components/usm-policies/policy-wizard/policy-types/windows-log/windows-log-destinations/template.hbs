@@ -1,17 +1,17 @@
 <div class="windows-log-destinations__list">
   {{#power-select
-    placeholder=(t 'packager.placeholder')
+    placeholder=(t "packager.placeholder")
     options=logServersList
     searchField="name"
-    triggerClass=(if windowsLogDestinationValidator.showError 'selector-error')
+    triggerClass=(if windowsLogDestinationValidator.showError "selector-error")
     dropdownClass=errorClass
-    searchPlaceholder=(t 'packager.searchPlaceholder')
+    searchPlaceholder=(t "packager.searchPlaceholder")
     selected=selectedLogServer
-    onchange=(action 'updatePolicyProperty' selectedSettingId) as |option|
+    onchange=(action "updatePolicyProperty" selectedSettingId) as |option|
   }}
     {{rsa-form-select/default-option
       disabled=option.disabled
-      disabledTooltip=(if option.disabledTooltip (t option.disabledTooltip) '')
+      disabledTooltip=(if option.disabledTooltip (t option.disabledTooltip) "")
       optionLabel=option.name
     }}
   {{/power-select}}

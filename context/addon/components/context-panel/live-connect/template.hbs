@@ -1,18 +1,18 @@
 {{context-panel/data-source-header contextData=contextData dataSourceDetails=liveConnectDsDetails}}
 
 {{#if liveConnectError}}
-  <div class="rsa-context-panel__liveconnect__field">{{t 'context.lc.errorMsg' error=liveConnectError}}</div>
+  <div class="rsa-context-panel__liveconnect__field">{{t "context.lc.errorMsg" error=liveConnectError}}</div>
 {{else if showContextPanel}}
   {{#if contextData.liveConnectData.allTags}}
     <div>
-      {{#if (is-equal model.meta 'IP')}}
+      {{#if (is-equal model.meta "IP")}}
         {{context-panel/live-connect/lc-community-activity
         liveConnectData=contextData.liveConnectData.IpReputation
         model=model
         allTags=contextData.liveConnectData.allTags
         allReasons=contextData.liveConnectData.allReasons}}
         {{context-panel/live-connect/lc-identity liveConnectData=contextData.liveConnectData.IpInfo}}
-      {{else if (is-equal model.meta 'FILE_HASH')}}
+      {{else if (is-equal model.meta "FILE_HASH")}}
         {{context-panel/live-connect/lc-community-activity
         liveConnectData=contextData.liveConnectData.FileReputation
         model=model
@@ -20,7 +20,7 @@
         allReasons=contextData.liveConnectData.allReasons}}
         {{context-panel/live-connect/lc-file-identity liveConnectData=contextData.liveConnectData.FileInfo}}
         {{context-panel/live-connect/lc-certificate-info liveConnectData=contextData.liveConnectData.FileInfo}}
-      {{else if (is-equal model.meta 'DOMAIN')}}
+      {{else if (is-equal model.meta "DOMAIN")}}
         {{context-panel/live-connect/lc-community-activity
         liveConnectData=contextData.liveConnectData.DomainReputation
         model=model

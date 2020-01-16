@@ -8,8 +8,8 @@
     includeSeconds=includeSeconds
     dateSeparatorCharacter=dateSeparatorCharacter
     timeSeparatorCharacter=timeSeparatorCharacter
-    onChange=(action 'onChangeStart')
-    onError=(action 'onStartError')
+    onChange=(action "onChangeStart")
+    onError=(action "onStartError")
   }}
 </div>
 <span class="time-range-separator">{{rangeSeparatorCharacter}}</span>
@@ -23,8 +23,8 @@
     includeSeconds=includeSeconds
     dateSeparatorCharacter=dateSeparatorCharacter
     timeSeparatorCharacter=timeSeparatorCharacter
-    onChange=(action 'onChangeEnd')
-    onError=(action 'onEndError')
+    onChange=(action "onChangeEnd")
+    onError=(action "onEndError")
   }}
 </div>
-<span title="{{errorMessages}}">{{rsa-icon name="calendar-2" class='date-time-picker-icon'}}</span>
+<span title={{errorMessages}}>{{rsa-icon name="calendar-2" class="date-time-picker-icon"}}</span>

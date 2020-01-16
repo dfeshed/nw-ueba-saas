@@ -1,7 +1,7 @@
 {{#if isServicesRetrieveError}}
-  {{#rsa-panel-message message=(t 'investigate.services.error.description')}}
-    {{#rsa-form-button defaultAction=(action 'getServices')}}
-      <span>{{t 'investigate.tryAgain'}}</span>
+  {{#rsa-panel-message message=(t "investigate.services.error.description")}}
+    {{#rsa-form-button defaultAction=(action "getServices")}}
+      <span>{{t "investigate.tryAgain"}}</span>
     {{/rsa-form-button}}
   {{/rsa-panel-message}}
 {{else}}
@@ -9,7 +9,7 @@
     {{query-container executeQuery=executeQuery}}
 
     {{#if showFutureFeatures}}
-      {{!-- For now, hide the timeline until we've performed a search --}}
+      {{!-- For now, hide the timeline until we"ve performed a search --}}
       {{!-- Continue to evaluate if this is the UX we want --}}
       {{#if atLeastOneQueryIssued}}
         {{events-container/time-line}}
@@ -20,7 +20,7 @@
   {{#if hasFatalSummaryError}}
     <vbox>
       {{#rsa-panel-message}}
-        <div class="summary-error">{{t 'investigate.events.fatalSummaryError'}}</div>
+        <div class="summary-error">{{t "investigate.events.fatalSummaryError"}}</div>
       {{/rsa-panel-message}}
     </vbox>
   {{else if (and noEvents eventResultsErrorMessage)}}
@@ -32,12 +32,12 @@
 
     <vbox>
       {{#rsa-panel-message}}
-        <div class="query-error">{{or eventResultsErrorMessage (t 'investigate.events.error')}}</div>
+        <div class="query-error">{{or eventResultsErrorMessage (t "investigate.events.error")}}</div>
       {{/rsa-panel-message}}
     </vbox>
   {{else}}
     {{#if (or atLeastOneQueryIssued hasIncommingQueryParams)}}
-      <section class="{{queryBodyClass}}">
+      <section class={{queryBodyClass}}>
         <section class="rsa-investigate-query__body-master">
           {{#if showFutureFeatures}}
             <aside class="rsa-investigate-query__body-master-aside">

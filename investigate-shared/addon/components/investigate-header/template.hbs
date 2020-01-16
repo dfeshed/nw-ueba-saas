@@ -1,27 +1,27 @@
 <nav class="rsa-investigate__nav">
   <div class="rsa-nav-tab-group">
     {{#each tabs as |tab|}}
-      {{#rsa-nav-tab align='left' compact=true isActive=tab.isActive}}
+      {{#rsa-nav-tab align="left" compact=true isActive=tab.isActive}}
         {{#if tab.isActive}}
-          {{#if (eq tab.name 'investigate.investigate-events')}}
+          {{#if (eq tab.name "investigate.investigate-events")}}
             <a href={{tab.url}}>{{t tab.localeKey}}</a>
-          {{else if (eq tab.name 'investigate.investigate-hosts')}}
-            {{#link-to 'hosts.index' (query-params machineId=null tabName=null sid=null)}}
+          {{else if (eq tab.name "investigate.investigate-hosts")}}
+            {{#link-to "hosts.index" (query-params machineId=null tabName=null sid=null)}}
               {{t tab.localeKey}}
             {{/link-to}}
-          {{else if (eq tab.name 'investigate.investigate-files')}}
-            {{#link-to 'files.index' (query-params sid=null checksum=null)}}
+          {{else if (eq tab.name "investigate.investigate-files")}}
+            {{#link-to "files.index" (query-params sid=null checksum=null)}}
               {{t tab.localeKey}}
             {{/link-to}}
-          {{else if (eq tab.name 'investigate.investigate-users')}}
+          {{else if (eq tab.name "investigate.investigate-users")}}
             <a href={{tab.url}}>{{t tab.localeKey}}</a>
           {{else}}
-            <a href='#'>{{t tab.localeKey}}</a>
+            <a href="#">{{t tab.localeKey}}</a>
           {{/if}}
         {{else if tab.isClassic}}
-          <a href={{tab.url}} class={{concat 'js-test-investigate-'tab.label '-classic'}}>{{t tab.localeKey}}</a>
+          <a href={{tab.url}} class={{concat "js-test-investigate-"tab.label "-classic"}}>{{t tab.localeKey}}</a>
         {{else}}
-          {{#link-to-external tab.name class=(concat 'js-test-investigate-' tab.name '-classic')}}
+          {{#link-to-external tab.name class=(concat "js-test-investigate-" tab.name "-classic")}}
             {{t tab.localeKey}}
           {{/link-to-external}}
         {{/if}}

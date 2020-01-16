@@ -1,6 +1,6 @@
 {{#if isLoading}}
   <centered>
-    {{rsa-loader size='larger'}}
+    {{rsa-loader size="larger"}}
   </centered>
 {{else}}
   <section class="incident-rule-form">
@@ -9,56 +9,56 @@
         <div class="form-cell group-name">Basic Settings</div>
         <div class="form-cell">
           <div class="rule-control enabled">
-            <label class="rsa-form-checkbox-label {{if ruleInfo.enabled 'checked'}}">
+            <label class="rsa-form-checkbox-label {{if ruleInfo.enabled "checked"}}">
               {{rsa-form-checkbox
                 checked=ruleInfo.enabled
-                change=(action 'update' 'ruleInfo.enabled' (not ruleInfo.enabled))
+                change=(action "update" "ruleInfo.enabled" (not ruleInfo.enabled))
               }}
-              {{t 'configure.incidentRules.enabled'}}
+              {{t "configure.incidentRules.enabled"}}
             </label>
           </div>
 
           <div class="rule-control name">
             {{rsa-form-input
-              label=(concat (t 'configure.incidentRules.name') '*')
+              label=(concat (t "configure.incidentRules.name") "*")
               value=(readonly ruleInfo.name)
-              placeholder=(t 'configure.incidentRules.namePlaceholder')
-              focusOut=(action 'handleNameChange')
-              isError=(and (contains 'ruleInfo.name' visited) (not ruleInfo.name))
-              errorMessage=(t 'configure.incidentRules.ruleNameRequired')
+              placeholder=(t "configure.incidentRules.namePlaceholder")
+              focusOut=(action "handleNameChange")
+              isError=(and (contains "ruleInfo.name" visited) (not ruleInfo.name))
+              errorMessage=(t "configure.incidentRules.ruleNameRequired")
             }}
           </div>
 
           <div class="rule-control description">
             {{rsa-form-textarea
-              label=(t 'configure.incidentRules.description')
+              label=(t "configure.incidentRules.description")
               value=(readonly ruleInfo.description)
-              placeholder=(t 'configure.incidentRules.descriptionPlaceholder')
-              focusOut=(action 'handleDescriptionChange' value='target.value')
+              placeholder=(t "configure.incidentRules.descriptionPlaceholder")
+              focusOut=(action "handleDescriptionChange" value="target.value")
             }}
           </div>
         </div>
 
       </div>
       <div class="form-row">
-        <div class="form-cell group-name">{{t 'configure.incidentRules.matchConditions'}}*</div>
+        <div class="form-cell group-name">{{t "configure.incidentRules.matchConditions"}}*</div>
         <div class="form-cell">
           <div class="rule-control match-conditions">
-            <div class='query-type'>
-              <label>{{t 'configure.incidentRules.queryMode'}}</label>
+            <div class="query-type">
+              <label>{{t "configure.incidentRules.queryMode"}}</label>
               {{#power-select
                 options=queryModes
                 selected=queryMode
                 searchEnabled=false
-                onchange=(action 'handleQueryTypeChange') as |queryMode|}}
-                {{t (concat 'configure.incidentRules.queryModes.' queryMode)}}
+                onchange=(action "handleQueryTypeChange") as |queryMode|}}
+                {{t (concat "configure.incidentRules.queryModes." queryMode)}}
               {{/power-select}}
             </div>
             {{#if hasAdvancedQuery}}
               {{rsa-form-textarea
                 value=(readonly ruleInfo.uiFilterConditions)
-                isError=(and (contains 'ruleInfo.uiFilterConditions' visited) (not ruleInfo.uiFilterConditions))
-                focusOut=(action 'handleAdvancedQueryChange' value='target.value')
+                isError=(and (contains "ruleInfo.uiFilterConditions" visited) (not ruleInfo.uiFilterConditions))
+                focusOut=(action "handleAdvancedQueryChange" value="target.value")
               }}
             {{else}}
               {{respond/incident-rule/rule-builder}}
@@ -67,52 +67,52 @@
         </div>
       </div>
       <div class="form-row">
-        <div class="form-cell group-name">{{t 'configure.incidentRules.action'}}*</div>
+        <div class="form-cell group-name">{{t "configure.incidentRules.action"}}*</div>
         <div class="form-cell">
           <div class="rule-control action">
-            <div class='rsa-form-radio-group'>
-              <h4 class='rsa-form-radio-group-label'>{{t 'configure.incidentRules.actionMessage'}}</h4>
-              <label class="rsa-form-radio-label {{if (eq ruleInfo.action 'GROUP_INTO_INCIDENT') 'checked'}}">
+            <div class="rsa-form-radio-group">
+              <h4 class="rsa-form-radio-group-label">{{t "configure.incidentRules.actionMessage"}}</h4>
+              <label class="rsa-form-radio-label {{if (eq ruleInfo.action "GROUP_INTO_INCIDENT") "checked"}}">
                 {{radio-button
-                  value='GROUP_INTO_INCIDENT'
+                  value="GROUP_INTO_INCIDENT"
                   groupValue=(readonly ruleInfo.action)
-                  changed=(action 'handleActionChange')}}
-                {{t 'configure.incidentRules.groupAction'}}
+                  changed=(action "handleActionChange")}}
+                {{t "configure.incidentRules.groupAction"}}
               </label>
 
-              <label class="rsa-form-radio-label {{if (eq ruleInfo.action 'SUPPRESS_ALERT') 'checked'}}">
+              <label class="rsa-form-radio-label {{if (eq ruleInfo.action "SUPPRESS_ALERT") "checked"}}">
                 {{radio-button
-                  value='SUPPRESS_ALERT'
+                  value="SUPPRESS_ALERT"
                   groupValue=(readonly ruleInfo.action)
-                  changed=(action 'handleActionChange')}}
-                {{t 'configure.incidentRules.suppressAction'}}
+                  changed=(action "handleActionChange")}}
+                {{t "configure.incidentRules.suppressAction"}}
               </label>
             </div>
           </div>
         </div>
       </div>
     </div>
-    {{#if (eq ruleInfo.action 'GROUP_INTO_INCIDENT')}}
+    {{#if (eq ruleInfo.action "GROUP_INTO_INCIDENT")}}
       {{respond/incident-rule/grouping-options}}
     {{/if}}
   </section>
   <footer class="respond-form-footer">
     <span class="form-warning">
       {{#if (not accessControl.respondCanManageAlertRules)}}
-        {{rsa-icon name='report-problem-triangle'}}
-        {{t 'configure.incidentRules.noManagePermissions'}}
+        {{rsa-icon name="report-problem-triangle"}}
+        {{t "configure.incidentRules.noManagePermissions"}}
       {{else if isMissingRequiredData}}
-        {{rsa-icon name='report-problem-triangle'}}
-        {{t 'configure.incidentRules.missingRequiredInfo'}}
+        {{rsa-icon name="report-problem-triangle"}}
+        {{t "configure.incidentRules.missingRequiredInfo"}}
       {{/if}}
     </span>
 
     <hbox class="form-save-controls">
-      {{#rsa-form-button class='cancel-button' defaultAction=transitionToRules}}
-        {{t 'forms.cancel'}}
+      {{#rsa-form-button class="cancel-button" defaultAction=transitionToRules}}
+        {{t "forms.cancel"}}
       {{/rsa-form-button}}
-      {{#rsa-form-button style='primary' class='confirm-button' defaultAction=(action 'save') isDisabled=(or isMissingRequiredData (not accessControl.respondCanManageAlertRules))}}
-        {{t 'forms.save'}}
+      {{#rsa-form-button style="primary" class="confirm-button" defaultAction=(action "save") isDisabled=(or isMissingRequiredData (not accessControl.respondCanManageAlertRules))}}
+        {{t "forms.save"}}
       {{/rsa-form-button}}
     </hbox>
   </footer>
@@ -126,20 +126,20 @@
   </div>
 {{/if}}
 {{#if showConfirmationDialog}}
-  {{#rsa-application-modal eventId='change-query-type' label=(t "configure.incidentRules.confirmQueryChange") style="standard respond-confirmation-dialog"}}
-    <div class='modal-content'>
+  {{#rsa-application-modal eventId="change-query-type" label=(t "configure.incidentRules.confirmQueryChange") style="standard respond-confirmation-dialog"}}
+    <div class="modal-content">
       {{#if confirmationData.warning}}
         <p>{{confirmationData.warning}}</p>
       {{/if}}
-      <p>{{t 'configure.incidentRules.confirm'}}</p>
+      <p>{{t "configure.incidentRules.confirm"}}</p>
     </div>
     <footer>
       <hbox class="modal-footer-buttons">
-        {{#rsa-form-button class='cancel-button' defaultAction=(action 'cancel')}}
-          {{t 'forms.cancel'}}
+        {{#rsa-form-button class="cancel-button" defaultAction=(action "cancel")}}
+          {{t "forms.cancel"}}
         {{/rsa-form-button}}
-        {{#rsa-form-button style='danger' class='confirm-button' defaultAction=(action 'confirm')}}
-          {{t 'forms.ok'}}
+        {{#rsa-form-button style="danger" class="confirm-button" defaultAction=(action "confirm")}}
+          {{t "forms.ok"}}
         {{/rsa-form-button}}
       </hbox>
     </footer>

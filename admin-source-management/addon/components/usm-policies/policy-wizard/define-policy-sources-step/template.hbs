@@ -1,7 +1,7 @@
 {{#if hasSourceError}}
   <vbox class="event-source-guide-box event-source-error">
     {{#rsa-content-warn-text-box
-      value=(t 'adminUsm.policyWizard.filePolicy.eventSourceError')
+      value=(t "adminUsm.policyWizard.filePolicy.eventSourceError")
       isAlert=true
     }}
     {{/rsa-content-warn-text-box}}
@@ -9,11 +9,11 @@
 {{/if}}
 <hbox class="control">
   <div class="label">
-    {{t 'adminUsm.policyWizard.filePolicy.filePolicySettingsHeader'}}
+    {{t "adminUsm.policyWizard.filePolicy.filePolicySettingsHeader"}}
   </div>
 </hbox>
 <div class="help-title">
-  {{t 'adminUsm.policyWizard.filePolicy.helpTitle'}}
+  {{t "adminUsm.policyWizard.filePolicy.helpTitle"}}
 </div>
 {{!-- event source configuration guide box --}}
 
@@ -22,14 +22,14 @@
 
     <vbox class="event-source-guide-box">
       {{#rsa-content-warn-text-box
-        value=(t 'adminUsm.policyWizard.filePolicy.eventSourceConfigGuide')
+        value=(t "adminUsm.policyWizard.filePolicy.eventSourceConfigGuide")
         isInfo=true
       }}
       {{/rsa-content-warn-text-box}}
     </vbox>
 
     {{#each sourcesIds as |item index|}}
-      <div class="rsa-data-table-body-row {{if (get fileSources (concat index '.errorState.state')) 'warning'}}">
+      <div class="rsa-data-table-body-row {{if (get fileSources (concat index ".errorState.state")) "warning"}}">
         <div class="inner-row">
           {{#each columns as |column|}}
             {{component column.component
@@ -43,34 +43,34 @@
     {{/each}}
   </div>
 
-  <h4 class='subheading'>
+  <h4 class="subheading">
     {{#rsa-text-with-tooltip
-      value=(t 'adminUsm.policyWizard.filePolicy.logFileTypeTooltip')
+      value=(t "adminUsm.policyWizard.filePolicy.logFileTypeTooltip")
       style="standard"
       alwaysShow=true
     }}
-      {{t 'adminUsm.policyWizard.filePolicy.logFileType'}}
+      {{t "adminUsm.policyWizard.filePolicy.logFileType"}}
     {{/rsa-text-with-tooltip}}
   </h4>
   <hbox class="file-source-type__list">
     <div class="file-source-type">
       {{#power-select
-        placeholder=(t 'adminUsm.policyWizard.filePolicy.fileSourceType.placeholder')
+        placeholder=(t "adminUsm.policyWizard.filePolicy.fileSourceType.placeholder")
         options=fileSourcesList
         selected=selectedFileSource
-        searchField='prettyName'
-        searchPlaceholder=(t 'packager.searchPlaceholder')
-        onchange=(action 'updatePolicyProperty' 'selectedFileSource') as |option|}}
+        searchField="prettyName"
+        searchPlaceholder=(t "packager.searchPlaceholder")
+        onchange=(action "updatePolicyProperty" "selectedFileSource") as |option|}}
         {{option.prettyName}}
       {{/power-select}}
     </div>
     <div class="add-row">
       {{#rsa-form-button
-        class='add-selected-file-type'
+        class="add-selected-file-type"
         isDisabled=(eq fileSourcesList.length 0)
-        click=(action 'addRowFilter')
+        click=(action "addRowFilter")
       }}
-        {{t 'adminUsm.policyWizard.filePolicy.fileSourceType.add'}}
+        {{t "adminUsm.policyWizard.filePolicy.fileSourceType.add"}}
       {{/rsa-form-button}}
     </div>
   </hbox>

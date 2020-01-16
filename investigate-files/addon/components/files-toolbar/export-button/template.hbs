@@ -1,11 +1,11 @@
 {{#if isExportButtonDisabled.disabled}}
   {{#rsa-form-button class="export-button" isIconOnly=true isDisabled=true}}
-    {{rsa-icon title=(t exportTitle) name='file-zipped'}}
+    {{rsa-icon title=(t exportTitle) name="file-zipped"}}
   {{/rsa-form-button}}
 {{else}}
-  {{#if (eq downloadStatus 'completed')}}
-    {{#rsa-form-button class="export-button" isIconOnly=true click=(action 'exportFileAsCSV')}}
-      {{rsa-icon title=(t 'investigateFiles.button.exportToCSV') name='file-zipped'}}
+  {{#if (eq downloadStatus "completed")}}
+    {{#rsa-form-button class="export-button" isIconOnly=true click=(action "exportFileAsCSV")}}
+      {{rsa-icon title=(t "investigateFiles.button.exportToCSV") name="file-zipped"}}
     {{/rsa-form-button}}
   {{else}}
     {{#rsa-form-button class="export-button" isIconOnly=true isDisabled=true}}
@@ -13,4 +13,4 @@
     {{/rsa-form-button}}
   {{/if}}
 {{/if}}
-<iframe src="{{exportLink}}" class="export-files-iframe"></iframe>
+<iframe src={{exportLink}} class="export-files-iframe"></iframe>

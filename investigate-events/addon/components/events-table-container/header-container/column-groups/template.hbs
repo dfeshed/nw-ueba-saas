@@ -5,7 +5,7 @@
   selectedItemId=selectedColumnGroupId
   list=columnGroups
   isDisabled=isDisabled
-  itemSelection=(action 'selectColumnGroup')
+  itemSelection=(action "selectColumnGroup")
   helpId=helpId
   shouldSelectedItemPersist=true
   as |manager|
@@ -20,8 +20,8 @@
   {{/manager.itemList}}
 
   {{#manager.details
-    itemTransform=(action 'columnGroupResponseMapping')
-    isValidItem=(action 'validateEditedColumnGroup')
+    itemTransform=(action "columnGroupResponseMapping")
+    isValidItem=(action "validateEditedColumnGroup")
     as |details|}}
 
     {{#if details.delete}}

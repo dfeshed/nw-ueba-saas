@@ -1,14 +1,14 @@
-{{#if (eq addRelatedIndicatorsStatus 'wait')}}
+{{#if (eq addRelatedIndicatorsStatus "wait")}}
   <centered class="rsa-incident-alerts-search__wait">
-    {{rsa-loader size="larger" label=(t 'respond.incident.search.actions.addingAlert')}}
+    {{rsa-loader size="larger" label=(t "respond.incident.search.actions.addingAlert")}}
   </centered>
-{{else if (eq addRelatedIndicatorsStatus 'error')}}
+{{else if (eq addRelatedIndicatorsStatus "error")}}
   <centered class="rsa-incident-alerts-search__error">
     <vbox align="center">
-      <p>{{t 'respond.incident.search.actions.unableToAddAlert'}}</p>
-      <p>{{t 'respond.incident.search.actions.pleaseTryAgain'}}</p>
+      <p>{{t "respond.incident.search.actions.unableToAddAlert"}}</p>
+      <p>{{t "respond.incident.search.actions.pleaseTryAgain"}}</p>
       {{#rsa-form-button style="primary" defaultAction=(action "clearAddToIncidentStatus")}}
-        {{t 'forms.ok'}}
+        {{t "forms.ok"}}
       {{/rsa-form-button}}
     </vbox>
   </centered>
@@ -20,7 +20,7 @@
   {{search.form
     selectedTimeFrameName=defaultSearchTimeFrameName
     selectedEntityTypeName=defaultSearchEntityType
-    isSearchUnderway=(eq searchStatus 'streaming')
+    isSearchUnderway=(eq searchStatus "streaming")
     onChangeTimeFrame=(action "onChangeTimeFrame")
     onChangeEntityType=(action "onChangeEntityType")
     onSubmit=(action "onSubmit")
@@ -46,7 +46,7 @@
         {{!Alert source + timestamp}}
         <hbox nowrap>
           <box fill class="p source">
-            <span>{{t (concat 'respond.alert.source.' item.alert.source)}}</span>
+            <span>{{t (concat "respond.alert.source." item.alert.source)}}</span>
           </box>
           <box fit nowrap align="end" class="p time">
             {{rsa-content-datetime
@@ -60,15 +60,15 @@
         </hbox>
 
         {{!Alert name}}
-        <h3 class="alert-name" title="{{item.alert.name}}">{{item.alert.name}}</h3>
+        <h3 class="alert-name" title={{item.alert.name}}>{{item.alert.name}}</h3>
 
         {{!Alert events count and link}}
         <hbox nowrap>
           <box fill class="p event-count">
-            {{item.alert.numEvents}} {{t (if (eq 1 item.alert.numEvents) 'respond.storyline.event' 'respond.storyline.events')}}
+            {{item.alert.numEvents}} {{t (if (eq 1 item.alert.numEvents) "respond.storyline.event" "respond.storyline.events")}}
           </box>
           <box fit align="end" class="p">
-            {{#link-to 'alert' item.id target="_blank"}}{{t 'respond.incident.search.results.openInNewWindow'}}{{/link-to}}
+            {{#link-to "alert" item.id target="_blank"}}{{t "respond.incident.search.results.openInNewWindow"}}{{/link-to}}
           </box>
         </hbox>
 
@@ -78,7 +78,7 @@
           {{!Alert is already part of this incident}}
           <div class="incident-action part-of-this-incident">
             {{#rsa-form-button isDisabled=true}}
-              {{t 'respond.incident.search.partOfThisIncident'}}
+              {{t "respond.incident.search.partOfThisIncident"}}
             {{/rsa-form-button}}
           </div>
 
@@ -86,9 +86,9 @@
 
           {{!Alert is part of another incident}}
           <p class="incident-action part-of-other-incident">
-            <label>{{t 'respond.storyline.partOfIncident'}}:</label>
+            <label>{{t "respond.storyline.partOfIncident"}}:</label>
             <span>
-              {{#link-to 'incident' item.incidentId}}
+              {{#link-to "incident" item.incidentId}}
                 {{item.incidentId}}
               {{/link-to}}
             </span>
@@ -99,10 +99,10 @@
           {{!Alert is not part of any incident}}
           <div class="incident-action not-part-of-incident">
             {{#rsa-form-button style="primary" defaultAction=(action "addToIncident" item) isDisabled=(is-incident-closed incidentInfo.status)}}
-              {{t 'respond.incident.search.actions.addToIncident'}}
+              {{t "respond.incident.search.actions.addToIncident"}}
             {{/rsa-form-button}}
             {{#if (is-incident-closed incidentInfo.status)}}
-              <div class="disabled-control-message">{{t 'respond.incident.search.actions.closedIncident'}}</div>
+              <div class="disabled-control-message">{{t "respond.incident.search.actions.closedIncident"}}</div>
             {{/if}}
           </div>
 

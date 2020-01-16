@@ -1,39 +1,39 @@
 <div class="add-log-parser-form">
   <aside class="add-log-parser-instruction">
-    {{t 'configure.logsParser.addParser.instruction'}}
+    {{t "configure.logsParser.addParser.instruction"}}
   </aside>
   <section class="form-option log-parser">
     <label class="rsa-form-label power-select">
       <div class="label-text">
-        {{t 'configure.logsParser.addParser.selectParser'}}
+        {{t "configure.logsParser.addParser.selectParser"}}
       </div>
       {{#power-select
         selected=selectedDeviceType
         options=(readonly deviceTypes)
         searchField="desc"
         onchange=(action (mut selectedDeviceType)) as |logParsers|}}
-        {{or logParsers.desc (t 'configure.logsParser.addParser.new')}}
+        {{or logParsers.desc (t "configure.logsParser.addParser.new")}}
       {{/power-select}}
     </label>
   </section>
   <section class="form-option log-parser-name">
     {{rsa-form-input
-      label=(t 'configure.logsParser.addParser.deviceType')
-      placeholder=(t 'configure.logsParser.addParser.deviceTypePlaceholder')
+      label=(t "configure.logsParser.addParser.deviceType")
+      placeholder=(t "configure.logsParser.addParser.deviceTypePlaceholder")
       isDisabled=isExistingDeviceType
       isError=(or nameAlreadyExists inValidParserNameWarning)
-      errorMessage=(t 'configure.logsParser.addParser.nameExistsError')
+      errorMessage=(t "configure.logsParser.addParser.nameExistsError")
       value=logDeviceParserName
       maxLength=30
     }}
   </section>
   <section class="form-option log-parser-display-name">
     {{rsa-form-input
-      label=(t 'configure.logsParser.addParser.deviceDisplayName')
-      placeholder=(t 'configure.logsParser.addParser.deviceDisplayNamePlaceholder')
+      label=(t "configure.logsParser.addParser.deviceDisplayName")
+      placeholder=(t "configure.logsParser.addParser.deviceDisplayNamePlaceholder")
       isDisabled=isExistingDeviceType
       isError=displayNameAlreadyExists
-      errorMessage=(t 'configure.logsParser.addParser.displayNameExistsError')
+      errorMessage=(t "configure.logsParser.addParser.displayNameExistsError")
       value=displayName
       maxLength=30
     }}
@@ -41,7 +41,7 @@
   <section class="form-option device-class">
     <label class="rsa-form-label power-select">
       <div class="label-text">
-        {{t 'configure.logsParser.addParser.deviceClass'}}
+        {{t "configure.logsParser.addParser.deviceClass"}}
       </div>
       {{#power-select
         options=(readonly deviceClasses)
@@ -55,7 +55,7 @@
   <section class="form-option clone-from">
     <label class="rsa-form-label power-select">
       <div class="label-text">
-        {{t 'configure.logsParser.addParser.cloneFrom'}}
+        {{t "configure.logsParser.addParser.cloneFrom"}}
       </div>
       {{#power-select
         options=(readonly logParsers)
@@ -72,10 +72,10 @@
   <hbox class="modal-footer-buttons">
     {{#rsa-form-button
       class="apply"
-      style='primary'
+      style="primary"
       isDisabled=(not isValid)
-      defaultAction=(action 'handleAddParser')}}
-      {{t 'configure.logsParser.addParser.label'}}
+      defaultAction=(action "handleAddParser")}}
+      {{t "configure.logsParser.addParser.label"}}
     {{/rsa-form-button}}
   </hbox>
 </footer>

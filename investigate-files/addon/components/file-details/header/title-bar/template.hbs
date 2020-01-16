@@ -1,7 +1,7 @@
 {{#if summary.score}}
-  {{rsa-risk-score score=summary.score size='large' radius=24}}
+  {{rsa-risk-score score=summary.score size="large" radius=24}}
 {{else}}
-  {{rsa-risk-score score='0' size='large' radius=24}}
+  {{rsa-risk-score score="0" size="large" radius=24}}
 {{/if}}
 <hbox class="title-bar__file-title" fit>
   <div class="file-title-os-wrapper">
@@ -11,16 +11,16 @@
   <div class="file-header-actions">
     {{endpoint/file-actionbar
       showOnlyIcons=true
-      resetRiskScore = (action 'resetRiskScoreAction')
+      resetRiskScore = (action "resetRiskScoreAction")
       serviceList=serviceList
-      metaName='checksumSha256'
+      metaName="checksumSha256"
       itemList=selectedItemList
       selectedFileCount=selectedDetailFile.length
-      pivotIconSize='medium'
-      downloadDisabledTooltip=(t 'investigateShared.endpoint.fileActions.tooltips.files.downloadToServer')}}
+      pivotIconSize="medium"
+      downloadDisabledTooltip=(t "investigateShared.endpoint.fileActions.tooltips.files.downloadToServer")}}
     {{host-detail/header/more-actions}}
   </div>
-  <div class='divider'/>
+  <div class="divider"/>
 
 </hbox>
 {{file-details/header/summary}}
@@ -29,19 +29,19 @@
   {{#if displayCloseRightPanel}}
     <hbox class="title-bar__fileProperties flexi-fit">
       {{#rsa-form-button
-        title=(t 'investigateHosts.hosts.button.rightPanel')
+        title=(t "investigateHosts.hosts.button.rightPanel")
         class="open-properties"
         isActive=isFilePropertyPanelVisible
         isIconOnly=true
-        defaultAction=(action 'toggleFilePropertyPanel')
+        defaultAction=(action "toggleFilePropertyPanel")
       }}
-        {{rsa-icon name='layout-2' size='small'}}
+        {{rsa-icon name="layout-2" size="small"}}
       {{/rsa-form-button}}
     </hbox>
   {{/if}}
   <hbox class="title-bar__close flexi-fit">
-    {{#link-to 'files.index' (query-params sid=null checksum=null tabName=null)}}
-      {{rsa-icon class='header-button' name='close' title=(t 'investigateFiles.button.close')}}
+    {{#link-to "files.index" (query-params sid=null checksum=null tabName=null)}}
+      {{rsa-icon class="header-button" name="close" title=(t "investigateFiles.button.close")}}
     {{/link-to}}
   </hbox>
 

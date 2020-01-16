@@ -6,16 +6,16 @@
           {{items.length}}
         </span>
         <span class="event-label" test-id="eventLabel">
-          {{t 'respond.eventsList.title' count=items.length}}
+          {{t "respond.eventsList.title" count=items.length}}
         </span>
         {{#if selectionExists}}
           <span class="clear-selection" test-id="clearSelection">
             <button class="see-all-events" test-id="clearSelectionBtn" onclick={{action clearSelection}}>
-              {{t 'respond.eventsList.seeAllEvents'}}
+              {{t "respond.eventsList.seeAllEvents"}}
             </button>
           </span>
         {{/if}}
-        {{#if (not-eq loadingStatus 'completed')}}
+        {{#if (not-eq loadingStatus "completed")}}
           <span class="event-fetch-loader" test-id="eventFetchLoader">
             {{rsa-loader size="small"}}
           </span>

@@ -1,12 +1,12 @@
 <div class="input-content__header">
-  <h1>{{t 'packager.packagerTitle'}}</h1>
+  <h1>{{t "packager.packagerTitle"}}</h1>
 </div>
 {{#rsa-page-layout showRightZone=true as |layout|}}
   {{#layout.center}}
 
     {{#if isLoading}}
       <centered>
-        {{rsa-loader size='larger'}}
+        {{rsa-loader size="larger"}}
       </centered>
     {{else}}
       {{#if error}}
@@ -17,7 +17,7 @@
           {{packager-form serverId=serverId}}
         </div>
 
-        <iframe src="{{iframeSrc}}" class="export-files-iframe"></iframe>
+        <iframe src={{iframeSrc}} class="export-files-iframe"></iframe>
       {{/if}}
     {{/if}}
 

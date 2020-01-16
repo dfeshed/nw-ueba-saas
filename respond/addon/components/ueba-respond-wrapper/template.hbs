@@ -3,21 +3,21 @@
     <header class="ueba-container__header">
       <hbox class="ueba-container__header__inner">
         <vbox xs="10">
-          <div class="ueba-respond-header">{{t 'respond.ueba.label'}}</div>
+          <div class="ueba-respond-header">{{t "respond.ueba.label"}}</div>
         </vbox>
         <vbox xs="2" class="ueba-container__header-icons">
           <div>
-            <button test-id="eventUebaContextualHelp" class="rsa-form-button event-ueba-contextual-help" onclick={{action 'goToHelp' 'respond' 'incUeba'}}>
-              {{rsa-icon name='help-circle'}}
+            <button test-id="eventUebaContextualHelp" class="rsa-form-button event-ueba-contextual-help" onclick={{action "goToHelp" "respond" "incUeba"}}>
+              {{rsa-icon name="help-circle"}}
             </button>
-            <button test-id="uebaRespondCloseBtn" onclick={{action "close"}} class="event-ueba-close" title={{t 'respond.close'}}>
-              {{rsa-icon name='close'}}
+            <button test-id="uebaRespondCloseBtn" onclick={{action "close"}} class="event-ueba-close" title={{t "respond.close"}}>
+              {{rsa-icon name="close"}}
             </button>
           </div>
         </vbox>
       </hbox>
     </header>
-    <div class='ueba-container'>
+    <div class="ueba-container">
       {{#if entityModel}}
         {{mount "entity-details" model=entityModel}}
       {{/if}}

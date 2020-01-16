@@ -6,10 +6,10 @@
   {{/rsa-data-table/header}}
   {{#rsa-data-table/body as |item index column|}}
     {{#rsa-data-table/body-cell column=column}}
-      {{#if (eq column.type 'DATE_TIME')}}
+      {{#if (eq column.type "DATE_TIME")}}
         {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
       {{else if (get item column.linkField)}}
-        <a class='entity-details-container-body-indicator-details_events-table_href' onclick={{action 'pivotToInvestigate' item column }} target='_blank' rel='noopener'>{{get item column.field}}</a>  
+        <a class="entity-details-container-body-indicator-details_events-table_href" onclick={{action "pivotToInvestigate" item column }} target="_blank" rel="noopener">{{get item column.field}}</a>  
       {{else}}
         {{get item column.field}}
       {{/if}}  
@@ -17,11 +17,11 @@
   {{/rsa-data-table/body}}
 {{/rsa-data-table}}
 {{#unless areAllEventsReceived}}
-  <div class='entity-details_loader'>
+  <div class="entity-details_loader">
     {{#if (eq indicatorEventError true)}}
-      {{t 'investigateUsers.alerts.indicator.eventsError'}}
+      {{t "investigateUsers.alerts.indicator.eventsError"}}
     {{else}}
-      {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+      {{rsa-loader size="medium" label=(t "investigate.loading")}}
     {{/if}}  
   </div>
 {{/unless}}

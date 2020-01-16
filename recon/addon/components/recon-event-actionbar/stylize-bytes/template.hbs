@@ -1,7 +1,7 @@
-{{#rsa-content-tethered-panel-trigger panel='stylizePanel'}}
+{{#rsa-content-tethered-panel-trigger panel="stylizePanel"}}
   {{#x-toggle
-    onLabel=(t 'recon.packetView.stylizeBytesLabel')
-    onToggle=(action 'toggleByteStyling')
+    onLabel=(t "recon.packetView.stylizeBytesLabel")
+    onToggle=(action "toggleByteStyling")
     showLabels=true
     value=(readonly hasStyledBytes) as |toggle|}}
     {{toggle.switch}}
@@ -10,7 +10,7 @@
 {{/rsa-content-tethered-panel-trigger}}
 {{#rsa-content-tethered-panel
   displayCloseButton=false
-  panelId='stylizePanel'
-  position='bottom'}}
-  <p>{{t 'recon.packetView.stylizeBytesTitle'}}</p>
+  panelId="stylizePanel"
+  position="bottom"}}
+  <p>{{t "recon.packetView.stylizeBytesTitle"}}</p>
 {{/rsa-content-tethered-panel}}

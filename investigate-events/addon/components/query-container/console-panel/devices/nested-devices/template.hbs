@@ -4,7 +4,7 @@
   </svg>
 {{/if}}
 
-<span class="one-line-summary" {{action 'expandDevices'}}>
+<span class="one-line-summary" {{action "expandDevices"}}>
   {{#if device.devices.length}}
     {{#if isExpanded}}
       {{#if hasError}}
@@ -46,25 +46,25 @@
   <strong class="device">{{device.serviceName}}</strong>
 
   {{#if device.elapsedTime}}
-    <span class="elapsed-time">{{t 'investigate.queryStats.nestedElapsedTime' time=device.elapsedTime}}</span>
+    <span class="elapsed-time">{{t "investigate.queryStats.nestedElapsedTime" time=device.elapsedTime}}</span>
   {{else}}
-    <span class="elapsed-time">{{t 'investigate.queryStats.nestedNoElapsedTime'}}</span>
+    <span class="elapsed-time">{{t "investigate.queryStats.nestedNoElapsedTime"}}</span>
   {{/if}}
 
   {{#if device.devices.length}}
-    {{rsa-icon class="expand" name='arrow-down-12' size="small"}}
+    {{rsa-icon class="expand" name="arrow-down-12" size="small"}}
   {{/if}}
 
   {{#if isSlowest}}
-    {{rsa-icon class="slowest" name='stopwatch' size="large" title=(t 'investigate.queryStats.slowest')}}
+    {{rsa-icon class="slowest" name="stopwatch" size="large" title=(t "investigate.queryStats.slowest")}}
   {{/if}}
 
   {{#if warning}}
-    {{rsa-icon class="warning" name='report-problem-triangle' size="large" title=warning.warning}}
+    {{rsa-icon class="warning" name="report-problem-triangle" size="large" title=warning.warning}}
   {{/if}}
 
   {{#if hasOffline}}
-    {{rsa-icon class="offline" name='report-problem-triangle' size="large" title=(t 'investigate.queryStats.offline')}}
+    {{rsa-icon class="offline" name="report-problem-triangle" size="large" title=(t "investigate.queryStats.offline")}}
   {{/if}}
 </span>
 
@@ -72,7 +72,7 @@
   <ul class="device-hierarchy">
     {{#each device.devices as |childDevice|}}
       {{query-container/console-panel/devices/nested-devices
-        devicesExpanded=(action 'devicesExpanded')
+        devicesExpanded=(action "devicesExpanded")
         device=childDevice
         slowestInQuery=slowestInQuery
         offlineServices=offlineServices

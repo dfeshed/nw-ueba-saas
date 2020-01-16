@@ -1,26 +1,26 @@
 {{#if filePropertiesData}}
   {{#rsa-page-layout showRightZone=true as |layout|}}
     {{#layout.center}}
-      <div class='file-analysis-header'>
-        {{#link-to 'hosts.details.tab' agentId activeHostDetailTab}}
-          {{#rsa-form-button class='close-action-wrapper file-analysis-title'}}
-            {{rsa-icon size="small" name="arrow-left-12"}} <span class='backButton'>{{t backToActiveHostDatailTab}}</span>
+      <div class="file-analysis-header">
+        {{#link-to "hosts.details.tab" agentId activeHostDetailTab}}
+          {{#rsa-form-button class="close-action-wrapper file-analysis-title"}}
+            {{rsa-icon size="small" name="arrow-left-12"}} <span class="backButton">{{t backToActiveHostDatailTab}}</span>
           {{/rsa-form-button}}
         {{/link-to}}
-        <span class='file-analysis-title'>{{t 'investigateShared.endpoint.fileAnalysis.title'}}</span>
+        <span class="file-analysis-title">{{t "investigateShared.endpoint.fileAnalysis.title"}}</span>
         -
-        <span class='view-type'>{{t componentConfig.title}}</span>
+        <span class="view-type">{{t componentConfig.title}}</span>
 
         {{#if isStringsView}}
-          <span class='string-filter-wrapper'>
-            <h4 class='label'>{{t 'investigateShared.endpoint.fileAnalysis.filter'}}</h4>
-            {{rsa-form-input value=searchText placeholder=(t 'investigateShared.endpoint.fileAnalysis.searchPlaceHolder')}}
+          <span class="string-filter-wrapper">
+            <h4 class="label">{{t "investigateShared.endpoint.fileAnalysis.filter"}}</h4>
+            {{rsa-form-input value=searchText placeholder=(t "investigateShared.endpoint.fileAnalysis.searchPlaceHolder")}}
           </span>
         {{/if}}
 
       </div>
-      {{#if (eq fileDataLoadingStatus 'loading')}}
-        {{rsa-loader size="larger" class='file-analysis-loading'}}
+      {{#if (eq fileDataLoadingStatus "loading")}}
+        {{rsa-loader size="larger" class="file-analysis-loading"}}
       {{else}}
         {{component componentConfig.component fileData=fileData searchText=searchText}}
       {{/if}}
@@ -29,19 +29,19 @@
     {{#layout.right as |rightPanel|}}
       {{#rightPanel.header  class="host-list-properties"}}
 
-        <h3 class='title'>
+        <h3 class="title">
           {{filePropertiesData.fileName}}
         </h3>
-        <span class='file-analysis_close-action'>
-          {{#link-to 'hosts.details.tab' agentId activeHostDetailTab}}
-            {{rsa-icon class='close-icon' name='close' size='smaller' title=(t 'investigateHosts.context.button.close')}}
+        <span class="file-analysis_close-action">
+          {{#link-to "hosts.details.tab" agentId activeHostDetailTab}}
+            {{rsa-icon class="close-icon" name="close" size="smaller" title=(t "investigateHosts.context.button.close")}}
           {{/link-to}}
         </span>
 
 
       {{/rightPanel.header}}
       <div class="rsa-nav-tab is-active is-left-aligned-primary">
-        <div class="label">{{t 'investigateHosts.context.details'}}</div>
+        <div class="label">{{t "investigateHosts.context.details"}}</div>
       </div>
       {{endpoint/file-analysis-properties filePropertiesData=filePropertiesData}}
     {{/layout.right}}

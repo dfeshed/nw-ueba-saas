@@ -1,38 +1,38 @@
 <div class="row">
   <div class="column verbose">
-    <dt test-id="eventTimeLabel">{{t 'respond.eventsList.endpoint.time'}}</dt>
+    <dt test-id="eventTimeLabel">{{t "respond.eventsList.endpoint.time"}}</dt>
     <dd class="datetime" test-id="eventTimeValue">{{rsa-content-datetime timestamp=item.timestamp}}</dd>
   </div>
   <div class="column">
-    <dt test-id="eventTypeLabel">{{t 'respond.eventsList.endpoint.type'}}</dt>
+    <dt test-id="eventTypeLabel">{{t "respond.eventsList.endpoint.type"}}</dt>
     <dd test-id="eventTypeValue">{{properties-for/determine-value value=item.type}}</dd>
   </div>
   <div class="column">
-    <dt test-id="eventCategoryLabel">{{t 'respond.eventsList.endpoint.category'}}</dt>
+    <dt test-id="eventCategoryLabel">{{t "respond.eventsList.endpoint.category"}}</dt>
     <dd test-id="eventCategoryValue">{{properties-for/determine-value value=item.category}}</dd>
   </div>
   <div class="column">
-    <dt test-id="eventActionLabel">{{t 'respond.eventsList.endpoint.action'}}</dt>
+    <dt test-id="eventActionLabel">{{t "respond.eventsList.endpoint.action"}}</dt>
     <dd test-id="eventActionValue">{{properties-for/determine-value value=item.action}}</dd>
   </div>
   <div class="column">
-    <dt test-id="eventHostnameLabel">{{t 'respond.eventsList.endpoint.hostname'}}</dt>
+    <dt test-id="eventHostnameLabel">{{t "respond.eventsList.endpoint.hostname"}}</dt>
     {{properties-for/determine-value key="dns_hostname" value=item.hostname testId="eventHostnameValue"}}
   </div>
   <div class="column">
-    <dt test-id="eventUserAccountLabel">{{t 'respond.eventsList.endpoint.userAccount'}}</dt>
+    <dt test-id="eventUserAccountLabel">{{t "respond.eventsList.endpoint.userAccount"}}</dt>
     {{properties-for/determine-value key="username" value=item.user_account testId="eventUserAccountValue"}}
   </div>
   <div class="column">
-    <dt test-id="eventOperatingSystemLabel">{{t 'respond.eventsList.endpoint.operatingSystem'}}</dt>
+    <dt test-id="eventOperatingSystemLabel">{{t "respond.eventsList.endpoint.operatingSystem"}}</dt>
     <dd test-id="eventOperatingSystemValue">{{properties-for/determine-value value=item.operating_system}}</dd>
   </div>
   <div class="column">
-    <dt test-id="eventFileNameLabel">{{t 'respond.eventsList.endpoint.fileName'}}</dt>
+    <dt test-id="eventFileNameLabel">{{t "respond.eventsList.endpoint.fileName"}}</dt>
     {{properties-for/determine-value key="filename" value=item.data.0.filename testId="eventFileNameValue"}}
   </div>
   <div class="column hash">
-    <dt test-id="eventFileHashLabel">{{t 'respond.eventsList.endpoint.hash'}}</dt>
+    <dt test-id="eventFileHashLabel">{{t "respond.eventsList.endpoint.hash"}}</dt>
     {{properties-for/determine-value key="hash" value=item.data.0.hash testId="eventFileHashValue"}}
   </div>
 </div>

@@ -1,60 +1,62 @@
 <table>
-  {{#if (eq modelType 'array')}}
-    {{!model is an array}}
-    {{#each members as |member|}}
-      <tr class="key">
-        <td class="key-value">
-          {{#if member.isNestedValue}}
-            {{yield (hash
-              nested=(component nestedValueComponentClass
-                model=member.value
-                modelPath=modelPath
-                scalarValueComponentClass=scalarValueComponentClass
-                nestedValueComponentClass=nestedValueComponentClass
-                propertyNameFormatter=propertyNameFormatter
-              )
-            )}}
-          {{else}}
-            {{yield (hash
-              scalar=(component scalarValueComponentClass
-                key=modelPath
-                fullPath=key.fullPath
-                value=member.value
-              )
-            )}}
-          {{/if}}
-        </td>
-      </tr>
-    {{/each}}
-  {{else}}
-    {{!assume model is an object}}
-    {{#each keys as |key|}}
-      <tr class="key">
-        <td class="key-name">
-          {{key.nameFormatted}}
-        </td>
-        <td class="key-value">
-          {{#if key.isNestedValue}}
-            {{yield (hash
-              nested=(component nestedValueComponentClass
-                model=key.value
-                modelPath=key.fullPath
-                scalarValueComponentClass=scalarValueComponentClass
-                nestedValueComponentClass=nestedValueComponentClass
-                propertyNameFormatter=propertyNameFormatter
-              )
-            )}}
-          {{else}}
-            {{yield (hash
-              scalar=(component scalarValueComponentClass
-                key=key.name
-                fullPath=key.fullPath
-                value=key.value
-              )
-            )}}
-          {{/if}}
-        </td>
-      </tr>
-    {{/each}}
-  {{/if}}
+  <tbody>
+    {{#if (eq modelType "array")}}
+      {{!model is an array}}
+      {{#each members as |member|}}
+        <tr class="key">
+          <td class="key-value">
+            {{#if member.isNestedValue}}
+              {{yield (hash
+                nested=(component nestedValueComponentClass
+                  model=member.value
+                  modelPath=modelPath
+                  scalarValueComponentClass=scalarValueComponentClass
+                  nestedValueComponentClass=nestedValueComponentClass
+                  propertyNameFormatter=propertyNameFormatter
+                )
+              )}}
+            {{else}}
+              {{yield (hash
+                scalar=(component scalarValueComponentClass
+                  key=modelPath
+                  fullPath=key.fullPath
+                  value=member.value
+                )
+              )}}
+            {{/if}}
+          </td>
+        </tr>
+      {{/each}}
+    {{else}}
+      {{!assume model is an object}}
+      {{#each keys as |key|}}
+        <tr class="key">
+          <td class="key-name">
+            {{key.nameFormatted}}
+          </td>
+          <td class="key-value">
+            {{#if key.isNestedValue}}
+              {{yield (hash
+                nested=(component nestedValueComponentClass
+                  model=key.value
+                  modelPath=key.fullPath
+                  scalarValueComponentClass=scalarValueComponentClass
+                  nestedValueComponentClass=nestedValueComponentClass
+                  propertyNameFormatter=propertyNameFormatter
+                )
+              )}}
+            {{else}}
+              {{yield (hash
+                scalar=(component scalarValueComponentClass
+                  key=key.name
+                  fullPath=key.fullPath
+                  value=key.value
+                )
+              )}}
+            {{/if}}
+          </td>
+        </tr>
+      {{/each}}
+    {{/if}}
+  </tbody>
 </table>

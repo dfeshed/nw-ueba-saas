@@ -1,28 +1,28 @@
-{{#if (eq property.format 'ACCORDIONLIST')}}
+{{#if (eq property.format "ACCORDIONLIST")}}
   {{endpoint/file-analysis-properties/file-analysis-accordion-list data=property}}
 {{else}}
-  {{#rsa-text-with-tooltip format=property.format value=property.value tipPosition='left'}}
-    {{#if (eq property.format 'DATE')}}
+  {{#rsa-text-with-tooltip format=property.format value=property.value tipPosition="left"}}
+    {{#if (eq property.format "DATE")}}
       {{#if property.value}}
         {{rsa-content-datetime timestamp=property.value}}
       {{/if}}
-    {{else if (eq property.format 'SIZE')}}
+    {{else if (eq property.format "SIZE")}}
       {{rsa-content-memsize size=property.value}}
-    {{else if (eq property.format 'HEX')}}
+    {{else if (eq property.format "HEX")}}
       {{rsa-content-hex value=property.value}}
-    {{else if (eq property.format 'SIGNATURE')}}
+    {{else if (eq property.format "SIGNATURE")}}
       {{signature-text property.value}}
-    {{else if (eq property.format 'LIST')}}
+    {{else if (eq property.format "LIST")}}
       {{#each property.value as |item|}}
         <p>{{item}}</p>
       {{/each}}
-    {{else if (eq property.format 'ACCORDION')}}
+    {{else if (eq property.format "ACCORDION")}}
       {{#rsa-content-accordion
       isCollapsed=true
       label=(t property.accordionLabel count=propertyValueLength)
       class="properties__accordion__item"}}
         {{#each property.value as |item|}}
-          <div class='value'>{{item}}</div>
+          <div class="value">{{item}}</div>
         {{/each}}
       {{/rsa-content-accordion}}
     {{else if property.showRightClick}}
@@ -32,7 +32,7 @@
         <span class="user-name">{{property.value}}</span>
       {{/rsa-context-menu}}
     {{else if property.showAsLink}}
-      <span class='userLink' {{action 'navigateToUEBA' property.value}}>{{property.value}}</span>
+      <span class="userLink" {{action "navigateToUEBA" property.value}}>{{property.value}}</span>
     {{else}}
       {{property.value}}
     {{/if}}

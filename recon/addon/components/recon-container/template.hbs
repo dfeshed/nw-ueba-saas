@@ -1,16 +1,16 @@
 {{#if apiFatalErrorCode}}
   <div class="fatal-error-icons">
     {{rsa-icon
-    class='fatal-error-toggle-button'
-    click=(action 'toggleReconExpanded')
+    class="fatal-error-toggle-button"
+    click=(action "toggleReconExpanded")
     name=toggleEventsClass
     title=(t toggleEventsTitle)}}
 
     {{rsa-icon
-    class='fatal-error-close-button'
-    click=(action 'closeReconWhenFatalError')
-    name='close'
-    title=(t 'recon.toggles.close')}}
+    class="fatal-error-close-button"
+    click=(action "closeReconWhenFatalError")
+    name="close"
+    title=(t "recon.toggles.close")}}
   </div>
 
   {{rsa-panel-message message=errorMessage}}
@@ -29,7 +29,7 @@
     </hbox>
   {{else}}
     <div class="recon-loader">
-      {{rsa-loader size='larger'}}
+      {{rsa-loader size="larger"}}
     </div>
   {{/if}}
 {{/if}}

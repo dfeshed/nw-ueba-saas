@@ -2,18 +2,18 @@
   <hbox class="flex-space-between">
     {{#if type.isText}}
       <box fill>
-        {{rsa-form-input label=param.displayName placeholder="Text" value=value focusOut=(action 'updateValue')}}
+        {{rsa-form-input label=param.displayName placeholder="Text" value=value focusOut=(action "updateValue")}}
       </box>
     {{else if type.isNumber}}
       <box fill>
-        {{rsa-form-input label=param.displayName placeholder="Number" value=value focusOut=(action 'updateValue')}}
+        {{rsa-form-input label=param.displayName placeholder="Number" value=value focusOut=(action "updateValue")}}
       </box>
     {{else if type.isBoolean}}
       {{#x-toggle
         showLabels=true
         onLabel=param.displayName
         value=(readonly bool)
-        onToggle=(action 'toggleValue') as |toggle|}}
+        onToggle=(action "toggleValue") as |toggle|}}
         {{toggle.switch}}
         {{toggle.onLabel value=(readonly (not bool))}}
       {{/x-toggle}}
@@ -29,7 +29,7 @@
             options=param.acceptableValues
             selected=value
             searchPlaceholder="Type to filter options"
-            onchange=(action 'setSelect') as |option|}}
+            onchange=(action "setSelect") as |option|}}
             {{option}}
           {{/power-select}}
         </label>
@@ -45,9 +45,9 @@
           placeholder="Parameter options (select multiple)..."
           options=param.acceptableValues
           selected=selections
-          searchField='name'
+          searchField="name"
           searchPlaceholder="Type to filter options"
-          onchange=(action 'setSelections') as |option|}}
+          onchange=(action "setSelections") as |option|}}
             {{option.name}}
           {{/power-select-multiple}}
         </label>
@@ -56,23 +56,23 @@
       <box fill>
         {{rsa-form-datetime
           label=param.displayName
-          placeholder='Pick a date & time'
+          placeholder="Pick a date & time"
           dateFormat=dateFormat
           value=dateTime
-          onChange=(action 'setDateTime')
+          onChange=(action "setDateTime")
         }}
       </box>
     {{else}}
       <box fill>
-        {{rsa-form-input label=param.displayName placeholder=param.type value=value focusOut=(action 'updateValue')}}
+        {{rsa-form-input label=param.displayName placeholder=param.type value=value focusOut=(action "updateValue")}}
       </box>
     {{/if}}
     {{#if (or param.custom param.optional)}}
-      <hbox fit align="center" class="close-button"><a {{action 'deleteOrHideSelf'}}>{{rsa-icon name="close"}}</a></hbox>
+      <hbox fit align="center" class="close-button"><a {{action "deleteOrHideSelf"}}>{{rsa-icon name="close"}}</a></hbox>
     {{/if}}
   </hbox>
 {{/rsa-content-tethered-panel-trigger}}
-{{#rsa-content-tethered-panel position='bottom' displayCloseButton=false panelId=param.name}}
+{{#rsa-content-tethered-panel position="bottom" displayCloseButton=false panelId=param.name}}
   <header>{{param.name}}</header>
   <p>{{param.description}}</p>
 {{/rsa-content-tethered-panel}}

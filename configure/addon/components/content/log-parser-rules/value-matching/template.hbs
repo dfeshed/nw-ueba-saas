@@ -1,4 +1,4 @@
-<div class='ruleValues'>
+<div class="ruleValues">
   <label class="rsa-form-label power-select">
     {{#power-select
       placeholder="Make a selection"
@@ -7,44 +7,44 @@
       searchField="name"
       searchPlaceholder="Type to filter options"
       disabled=(or rule.outOfBox (not accessControl.canManageLogParsers))
-      onchange=(action 'handleFormatChange') as |option|}}
+      onchange=(action "handleFormatChange") as |option|}}
       {{option.name}}
     {{/power-select}}
   </label>
 </div>
 
-<div class='ruleType'>
+<div class="ruleType">
   {{rsa-form-input
-    label=(t 'configure.logsParser.type')
+    label=(t "configure.logsParser.type")
     value=selectedFormat.type
     isReadOnly=true
     isInline=true
   }}
 </div>
 
-<div class='ruleMatches'>
+<div class="ruleMatches">
   {{rsa-form-input
-    label=(t 'configure.logsParser.valueMatching')
+    label=(t "configure.logsParser.valueMatching")
     value=selectedFormat.matches
     isReadOnly=true
     isInline=true
   }}
 </div>
 {{#if isRegex}}
-  <div class='ruleRegex'>
+  <div class="ruleRegex">
     {{rsa-form-textarea
-      label=(t 'configure.logsParser.pattern')
+      label=(t "configure.logsParser.pattern")
       value=regex
       isError=(or hasInvalidRegex hasMissingCaptures)
       isInline=true
       isDisabled=(or rule.outOfBox (not accessControl.canManageLogParsers))
-      keyUp=(action 'handleKeyUp')
+      keyUp=(action "handleKeyUp")
     }}
     {{#if hasInvalidRegex}}
-      <span class="input-error">{{t 'configure.logsParser.invalidRegEx'}}</span>
+      <span class="input-error">{{t "configure.logsParser.invalidRegEx"}}</span>
     {{/if}}
     {{#if hasMissingCaptures}}
-      <span class="input-error">{{t 'configure.logsParser.hasMissingCapturesError'}}</span>
+      <span class="input-error">{{t "configure.logsParser.hasMissingCapturesError"}}</span>
     {{/if}}
   </div>
 {{/if}}

@@ -1,74 +1,74 @@
 <div class="create-incident-form">
   <p>
     {{#if selectedEventIds}}
-      {{t 'respond.incidents.actions.actionMessages.createIncidentFromEventsInstruction' alertCount=alertIds.length}}
+      {{t "respond.incidents.actions.actionMessages.createIncidentFromEventsInstruction" alertCount=alertIds.length}}
     {{else}}
-      {{t 'respond.incidents.actions.actionMessages.createIncidentInstruction' alertCount=alertIds.length}}
+      {{t "respond.incidents.actions.actionMessages.createIncidentInstruction" alertCount=alertIds.length}}
     {{/if}}
   </p>
 
   {{#if selectedEventIds}}
     <div class="create-incident-alert-summary">
-      {{rsa-form-input label=(t 'respond.alerts.alertSummary') value=alertSummary}}
+      {{rsa-form-input label=(t "respond.alerts.alertSummary") value=alertSummary}}
       <span class="rsa-label">
-        <label>{{t 'respond.alerts.severity'}}</label>
+        <label>{{t "respond.alerts.severity"}}</label>
       </span>
 
-      <span class="{{if isAlertSeverityInvalid 'alert-severity-invalid'}}">
+      <span class={{if isAlertSeverityInvalid "alert-severity-invalid"}}>
         {{input
-          type='number'
+          type="number"
           min=1
           max=100
-          name='alertSeverity'
-          class='severity-input'
+          name="alertSeverity"
+          class="severity-input"
           value=alertSeverity
           key-up=(action "alertSeverityChanged")}}
 
         {{#if isAlertSeverityInvalid}}
           <span class="severity-error">
-            {{t 'respond.alerts.alertSeverityError'}}
+            {{t "respond.alerts.alertSeverityError"}}
           </span>
         {{/if}}
       </span>
     </div>
   {{/if}}
 
-  {{rsa-form-input label=(t 'respond.incidents.incidentName') value=name}}
+  {{rsa-form-input label=(t "respond.incidents.incidentName") value=name}}
 
   <label class="rsa-form-label power-select create-incident-priority">
     <div class="label-text">
-      {{t 'respond.incident.priority'}}
+      {{t "respond.incident.priority"}}
     </div>
     {{#power-select
         options=priorityTypes
         selected=priority
         searchEnabled=false
         onchange=(action (mut priority)) as |option|}}
-      {{t (concat 'respond.priority.' option)}}
+      {{t (concat "respond.priority." option)}}
     {{/power-select}}
   </label>
   <label class="rsa-form-label power-select create-incident-assignee">
     <div class="label-text">
-      {{t 'respond.incident.assignee'}}
+      {{t "respond.incident.assignee"}}
     </div>
     {{#power-select
         options=enabledUsers
         selected=assignee
         searchEnabled=false
-        placeholder=(t 'respond.incident.chooseAssignee')
+        placeholder=(t "respond.incident.chooseAssignee")
         onchange=(action (mut assignee)) as |option|}}
       {{or option.name option.id}}
     {{/power-select}}
   </label>
   <label class="rsa-form-label power-select create-incident-categories">
     <div class="label-text">
-      {{t 'respond.incident.categories'}}
+      {{t "respond.incident.categories"}}
     </div>
     {{#power-select-multiple
         options=groupedCategories
         selected=categories
         searchEnabled=false
-        placeholder=(t 'respond.incident.chooseCategory')
+        placeholder=(t "respond.incident.chooseCategory")
         onchange=(action (mut categories)) as |category|}}
       {{category.parent}}: {{category.name}}
     {{/power-select-multiple}}
@@ -76,16 +76,16 @@
 </div>
 <footer>
   <hbox class="modal-footer-buttons">
-    {{#rsa-form-button defaultAction=(action 'handleCancel') class='cancel'}}
-      {{t 'forms.cancel'}}
+    {{#rsa-form-button defaultAction=(action "handleCancel") class="cancel"}}
+      {{t "forms.cancel"}}
     {{/rsa-form-button}}
     {{#rsa-form-button
         class="apply"
         isDisabled=isDisabled
-        style='primary'
-        defaultAction=(action 'handleCreate')
+        style="primary"
+        defaultAction=(action "handleCreate")
     }}
-      {{t 'forms.ok'}}
+      {{t "forms.ok"}}
     {{/rsa-form-button}}
   </hbox>
 </footer>

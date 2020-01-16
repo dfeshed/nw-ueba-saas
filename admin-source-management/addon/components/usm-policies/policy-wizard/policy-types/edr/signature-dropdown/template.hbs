@@ -1,9 +1,9 @@
 {{#power-select
   options=listOfValues
-  searchField='name'
-  searchPlaceholder=(t 'packager.searchPlaceholder')
+  searchField="name"
+  searchPlaceholder=(t "packager.searchPlaceholder")
   selected=selectedOption
-  onchange=(action 'updateDropdownSelection' selectedSettingId) as |list|
+  onchange=(action "updateDropdownSelection" selectedSettingId) as |list|
 }}
   {{list.name}}
 {{/power-select}}

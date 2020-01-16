@@ -1,5 +1,5 @@
 {{!--loop all criterias and nested group criterias--}}
-<div class='criteria-wrapper'>
+<div class="criteria-wrapper">
   {{#each criterias as |criteria index|}}
     {{!--if criteria is an array, the criteria is a single criteria and not a group of criterias. Need to find the list of
     attributes, operators, input and validator--}}
@@ -10,15 +10,15 @@
           {{#each attribute.[1] as |operator|}}
             {{!--then find input field/s and validation in groupAttributesMap--}}
             {{#if (eq criteria.[1] operator.[0])}}
-              <hbox class='group-criteria'>
+              <hbox class="group-criteria">
                 <span class="attribute">
                   <label class="rsa-form-label power-select">
                     {{#power-select
                       searchEnabled=false
                       options=groupAttributesMap.attribute
                       selected=criteria.[0]
-                      onchange=(action 'handleAttributeChange' (concat criteriaPath ',' index)) as |option|}}
-                      {{t (concat 'adminUsm.groupCriteria.attribute.' option)}}
+                      onchange=(action "handleAttributeChange" (concat criteriaPath "," index)) as |option|}}
+                      {{t (concat "adminUsm.groupCriteria.attribute." option)}}
                     {{/power-select}}
                   </label>
                 </span>
@@ -28,23 +28,23 @@
                       searchEnabled=false
                       options=attribute.[1]
                       selected=operator
-                      onchange=(action 'handleOperatorChange' (concat criteriaPath ',' index)) as |option|}}
-                      {{t (concat 'adminUsm.groupCriteria.operator.' option.[0])}}
+                      onchange=(action "handleOperatorChange" (concat criteriaPath "," index)) as |option|}}
+                      {{t (concat "adminUsm.groupCriteria.operator." option.[0])}}
                     {{/power-select}}
                   </label>
                 </span>
                 <span class="input-value">
                   {{!--go to input field/s and validation. criteriaPath is needed for updating state--}}
-                  {{component (concat 'usm-groups/group/group-attributes/attribute-inputs/' operator.[1])
+                  {{component (concat "usm-groups/group/group-attributes/attribute-inputs/" operator.[1])
                     selectedAttribute=criteria.[0]
                     selectedOperator=criteria.[1]
                     inputField=operator.[1]
                     value=criteria.[2]
                     validation=operator.[2]
-                    criteriaPath=(concat criteriaPath ',' index)}}
+                    criteriaPath=(concat criteriaPath "," index)}}
                 </span>
-                <span class="remove-criteria" onclick={{action 'handleRemoveCriteria' (concat criteriaPath ',' index)}} onkeyup={{action 'handleRemoveCriteria' (concat criteriaPath ',' index)}}>
-                  {{rsa-icon size='large' name="remove-circle-1" displayOnTab=true}}
+                <span class="remove-criteria" onclick={{action "handleRemoveCriteria" (concat criteriaPath "," index)}} onkeyup={{action "handleRemoveCriteria" (concat criteriaPath "," index)}}>
+                  {{rsa-icon size="large" name="remove-circle-1" displayOnTab=true}}
                 </span>
               </hbox>
             {{/if}}
@@ -52,24 +52,24 @@
         {{/if}}
       {{/each}}
     {{else}}
-      {{!--if criteria it's not an array, it is an object. The criteria is a group of criterias. Need to call componenet group-attributes and pass nessted criteria.criteria --}}
-      <div class='group-criterias'>
-        {{usm-groups/group/group-attributes criterias=criteria.criteria criteriaPath=(concat criteriaPath ',' index)}}
+      {{!--if criteria it"s not an array, it is an object. The criteria is a group of criterias. Need to call componenet group-attributes and pass nessted criteria.criteria --}}
+      <div class="group-criterias">
+        {{usm-groups/group/group-attributes criterias=criteria.criteria criteriaPath=(concat criteriaPath "," index)}}
       </div>
     {{/if}}
   {{/each}}
 </div>
 {{index}}
 {{#rsa-form-button
-  class='add-criteria-button'
-  style='standard'
+  class="add-criteria-button"
+  style="standard"
   isDisabled=maxTenCriteria
-  defaultAction=(action 'handleAddCriteria')
+  defaultAction=(action "handleAddCriteria")
 }}
-  {{t 'adminUsm.groupWizard.addCondition'}}
+  {{t "adminUsm.groupWizard.addCondition"}}
 {{/rsa-form-button}}
 {{#if maxTenCriteria}}
-  <span class='maxTenCriteria'>{{t 'adminUsm.groupWizard.maxTenCriteria'}}</span>
+  <span class="maxTenCriteria">{{t "adminUsm.groupWizard.maxTenCriteria"}}</span>
 {{/if}}
 
 

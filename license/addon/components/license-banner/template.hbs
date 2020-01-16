@@ -1,18 +1,18 @@
 <span class="banner-msg">
-  {{t messageKey}}<a href={{url}} target='_blank' rel="noopener noreferrer">{{t urlTextKey}}</a>
+  {{t messageKey}}<a href={{url}} target="_blank" rel="noopener noreferrer">{{t urlTextKey}}</a>
 </span>
 
 <span class="buttons">
 
   {{#rsa-form-button
       isIconOnly=true
-      defaultAction=(action 'goToHelp' 'license' 'licenseCompliance')}}
+      defaultAction=(action "goToHelp" "license" "licenseCompliance")}}
     {{rsa-icon name="help-circle" displayOnTab=true}}
   {{/rsa-form-button}}
-  {{#if (is-equal level 'warning')}}
+  {{#if (is-equal level "warning")}}
     <span class="dismiss-btn">
       {{#rsa-form-button defaultAction=(action "dismiss")}}
-        {{t 'license.banner.dismiss'}}
+        {{t "license.banner.dismiss"}}
       {{/rsa-form-button}}
     </span>
   {{/if}}

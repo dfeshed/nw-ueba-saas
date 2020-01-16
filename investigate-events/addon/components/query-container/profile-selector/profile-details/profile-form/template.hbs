@@ -1,37 +1,37 @@
-<div class='item-name'>
-  <div class='name'>{{t 'investigate.profile.profileName'}}</div>
+<div class="item-name">
+  <div class="name">{{t "investigate.profile.profileName"}}</div>
   {{rsa-form-input
-    class='value'
-    type='text'
+    class="value"
+    type="text"
     maxLength=80
     isError=isNameError
     errorMessage=nameInvalidMessage
     value=name
-    onKeyUp=(action 'onNameChange')
-    placeholder=(t 'investigate.profile.profileNamePlaceholder')
+    onKeyUp=(action "onNameChange")
+    placeholder=(t "investigate.profile.profileNamePlaceholder")
   }}
 </div>
-<div class='column-group-name'>
-  <div class='name'>{{t 'investigate.profile.columnGroup'}}</div>
+<div class="column-group-name">
+  <div class="name">{{t "investigate.profile.columnGroup"}}</div>
   <label class="rsa-form-label power-select select-column-group">
     {{#power-select
       options=columnGroups
       optionsComponent=(
-        component 'query-container/power-select-options'
-        titleAttribute='name'
+        component "query-container/power-select-options"
+        titleAttribute="name"
       )
       selected=columnGroup
       searchEnabled=true
-      searchField='name'
-      onchange=(action 'onColumnGroupChange') as |option|
+      searchField="name"
+      onchange=(action "onColumnGroupChange") as |option|
     }}
       <span title={{option.name}}>{{option.name}}</span>
     {{/power-select}}
   </label>
 </div>
-<div class='prequery-conditions scroll-box'>
-  <div class='name'>
-    {{t 'investigate.profile.prequeryConditions.prequeryConditions'}}
+<div class="prequery-conditions scroll-box">
+  <div class="name">
+    {{t "investigate.profile.prequeryConditions.prequeryConditions"}}
   </div>
   {{query-container/profile-selector/profile-details/profile-query-bar}}
 </div>

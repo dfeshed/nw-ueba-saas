@@ -2,7 +2,7 @@
   <vbox>
     {{#each visibleParams as |param|}}
       <div class="bottom-margin">
-        {{tree-view-operation-parameter param=param paramUpdateAction=(action 'updateParams')}}
+        {{tree-view-operation-parameter param=param paramUpdateAction=(action "updateParams")}}
       </div>
     {{/each}}
     <hr class="dim-separator">
@@ -10,7 +10,7 @@
       placeholder="Add a parameter..."
       options=hiddenParamNames
       searchPlaceholder="Type to filter parameters"
-      onchange=(action 'newParam') as |option|}}
+      onchange=(action "newParam") as |option|}}
       {{option}}
     {{/power-select}}
     <div class="bottom-margin">
@@ -27,19 +27,19 @@
                 options=operationTypes
                 selected=pendingCustomParameter.type
                 searchPlaceholder="Type to filter types"
-                onchange=(action 'selectCustomParamType') as |option|}}
+                onchange=(action "selectCustomParamType") as |option|}}
                 {{option}}
               {{/power-select}}
             </label>
           </div>
 
           <div class="bottom-margin">
-            {{rsa-form-input label="Custom Parameter Name" placeholder="Paramater Name" value=pendingCustomParameter.name focusOut=(action 'updateDisplayName')}}
+            {{rsa-form-input label="Custom Parameter Name" placeholder="Paramater Name" value=pendingCustomParameter.name focusOut=(action "updateDisplayName")}}
           </div>
 
           <hbox class="bottom-margin flex-space-between">
-            {{#rsa-form-button defaultAction=(action 'pushAndClearParam' pendingCustomParameter) style='primary'}}Add{{/rsa-form-button}}
-            {{#rsa-form-button defaultAction=(action 'cancelCustomParameter')}}Cancel{{/rsa-form-button}}
+            {{#rsa-form-button defaultAction=(action "pushAndClearParam" pendingCustomParameter) style="primary"}}Add{{/rsa-form-button}}
+            {{#rsa-form-button defaultAction=(action "cancelCustomParameter")}}Cancel{{/rsa-form-button}}
           </hbox>
         </div>
       {{else}}
@@ -48,12 +48,12 @@
     <hbox class="bottom-margin flex-space-between">
       {{#if doesNotHavePermission}}
         <box title={{operationRoleText}}>
-          {{#rsa-form-button defaultAction=(action 'sendOperation' operationMessageObject) isDisabled=true style='primary'}}Send{{/rsa-form-button}}        
+          {{#rsa-form-button defaultAction=(action "sendOperation" operationMessageObject) isDisabled=true style="primary"}}Send{{/rsa-form-button}}        
         </box>
       {{else}}
-        {{#rsa-form-button defaultAction=(action 'sendOperation' operationMessageObject) style='primary'}}Send{{/rsa-form-button}}        
+        {{#rsa-form-button defaultAction=(action "sendOperation" operationMessageObject) style="primary"}}Send{{/rsa-form-button}}        
       {{/if}}
-      {{#rsa-form-button defaultAction=(action 'cancelOperation') isDisabled=(if hasPendingOperation false true)}}Cancel{{/rsa-form-button}}
+      {{#rsa-form-button defaultAction=(action "cancelOperation") isDisabled=(if hasPendingOperation false true)}}Cancel{{/rsa-form-button}}
     </hbox>
     {{#if operationHelp}}
       <h1 class="small-header">Help for "{{selectedOperation.name}}"</h1>
@@ -62,13 +62,13 @@
         {{#if operationManual}}
           <hr>
           {{#if operationManualVisible}}
-            <a {{action 'toggleOperationManualVisibility'}} class="manual-toggle">Hide manual</a>
-            {{!-- It's safe to disable this here because of how the HTML is returned directy from the core service --}}
+            <a {{action "toggleOperationManualVisibility"}} class="manual-toggle">Hide manual</a>
+            {{!-- It"s safe to disable this here because of how the HTML is returned directy from the core service --}}
             <div {{! template-lint-disable-tree "no-triple-curlies" }}>
               {{{operationManual}}}
             </div>
           {{else}}
-            <a {{action 'toggleOperationManualVisibility'}} class="manual-toggle">Show extended manual</a>
+            <a {{action "toggleOperationManualVisibility"}} class="manual-toggle">Show extended manual</a>
           {{/if}}
         {{/if}}
       </div>

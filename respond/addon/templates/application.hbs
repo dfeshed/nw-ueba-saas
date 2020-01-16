@@ -2,22 +2,22 @@
   {{#if respondServerOffline}}
     {{license-banner}}
     {{error-page
-      errorDescription=(t 'respond.errorPage.serviceDownDescription')
-      title=(t 'respond.errorPage.serviceDown')}}
+      errorDescription=(t "respond.errorPage.serviceDownDescription")
+      title=(t "respond.errorPage.serviceDown")}}
   {{else}}
     <div class="rsa-nav-tab-group">
       {{#if riac.hasIncidentsAccess}}
-        {{#rsa-nav-tab compact=true align='left' isActive=(eq routePath 'incidents') click=(action 'navigateTo' 'incidents')}}
+        {{#rsa-nav-tab compact=true align="left" isActive=(eq routePath "incidents") click=(action "navigateTo" "incidents")}}
           <div class="label">{{t "respond.entities.incidents"}}</div>
         {{/rsa-nav-tab}}
       {{/if}}
       {{#if riac.hasAlertsAccess}}
-        {{#rsa-nav-tab compact=true align='left' isActive=(eq routePath 'alerts') click=(action 'navigateTo' 'alerts')}}
+        {{#rsa-nav-tab compact=true align="left" isActive=(eq routePath "alerts") click=(action "navigateTo" "alerts")}}
           <div class="label">{{t "respond.entities.alerts"}}</div>
         {{/rsa-nav-tab}}
       {{/if}}
       {{#if riac.hasTasksAccess}}
-        {{#rsa-nav-tab compact=true align='left' isActive=(eq routePath 'tasks') click=(action 'navigateTo' 'tasks')}}
+        {{#rsa-nav-tab compact=true align="left" isActive=(eq routePath "tasks") click=(action "navigateTo" "tasks")}}
           <div class="label">{{t "respond.entities.remediationTasks"}}</div>
         {{/rsa-nav-tab}}
       {{/if}}

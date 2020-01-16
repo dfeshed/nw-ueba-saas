@@ -1,6 +1,6 @@
 {{#rsa-form-button
   class="viz js-test-hide-viz-false"
-  title=(t 'respond.incident.view.graph')
+  title=(t "respond.incident.view.graph")
   isActive=(not hideViz)
   isIconOnly=true
   defaultAction=(action "setHideVizAction" false)
@@ -11,7 +11,7 @@
 
 {{#rsa-form-button
   class="datasheet js-test-hide-viz-true"
-  title=(t 'respond.incident.view.eventslist')
+  title=(t "respond.incident.view.eventslist")
   isActive=hideViz
   isIconOnly=true
   defaultAction=(action "setHideVizAction" true)
@@ -22,12 +22,12 @@
 
 {{#unless isShowingTasksAndJournal}}
   {{#rsa-form-button
-    title=(t 'respond.incident.journalTasksRelated')
+    title=(t "respond.incident.journalTasksRelated")
     class="journal-and-tasks js-test-journal"
     isActive=isShowingTasksAndJournal
     defaultAction=(action "toggleTasksAndJournalPanel")
   }}
-    {{rsa-icon name='checklist' size='small'}}
+    {{rsa-icon name="checklist" size="small"}}
     <span class="journal-tasks-icon">Journal & Tasks</span>
   {{/rsa-form-button}}
 {{/unless}}

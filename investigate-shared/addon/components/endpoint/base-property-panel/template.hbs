@@ -5,15 +5,15 @@
     </hbox>
   {{/if}}
   <hbox fit class="header-section__search-box">
-    {{rsa-form-input value=_searchText placeholder=(t 'investigateHosts.hosts.properties.filter')}}
+    {{rsa-form-input value=_searchText placeholder=(t "investigateHosts.hosts.properties.filter")}}
   </hbox>
   {{!--Show check box to filter the empty values--}}
   <hbox fit class="header-section__check-box">
-    <label class="rsa-form-checkbox-label {{if showNonEmptyProperty 'checked'}}">
+    <label class="rsa-form-checkbox-label {{if showNonEmptyProperty "checked"}}">
       {{rsa-form-checkbox
-        change=(action 'toggleIsIncludeEmptyValue')
+        change=(action "toggleIsIncludeEmptyValue")
         checked=showNonEmptyProperty}}
-      {{t 'investigateHosts.hosts.properties.checkbox'}}
+      {{t "investigateHosts.hosts.properties.checkbox"}}
     </label>
   </hbox>
 </box>
@@ -32,7 +32,7 @@
     {{#if errorMessage}}
       {{rsa-panel-message message=errorMessage}}
     {{else}}
-      {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
+      {{rsa-panel-message message=(t "investigateHosts.common.emptyMessage")}}
     {{/if}}
   {{/each}}
 </box>

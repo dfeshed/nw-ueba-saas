@@ -24,17 +24,18 @@ class SubdirectoryAccess extends Component {
 
   @computed('close', 'openDirectories', 'data')
   get displaySubdirectory() {
+    const { openDirectories, data } = this.getProperties('openDirectories', 'data');
+    let isClosed = this.get('close');
 
     let arrowDirection = 'arrow-down-12';
 
-    if (this.openDirectories.includes(this.data.recordNumber)) {
-      this.close = false;
-      this.set('close', this.close);
+    if (openDirectories.includes(data.recordNumber)) {
+      isClosed = false;
     } else {
-      arrowDirection = this.close ? 'arrow-right-12' : 'arrow-down-12';
+      arrowDirection = isClosed ? 'arrow-right-12' : 'arrow-down-12';
     }
 
-    return { arrowDirection, close: this.close };
+    return { arrowDirection, isClosed };
   }
 
   @action

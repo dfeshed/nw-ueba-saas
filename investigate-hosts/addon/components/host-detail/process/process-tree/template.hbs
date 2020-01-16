@@ -1,55 +1,55 @@
-<box class='process-tree-table-box'>
+<box class="process-tree-table-box">
   {{#rsa-data-table
     items=visibleItems
-    tabName='PROCESS'
+    tabName="PROCESS"
     usePreferredDisplayIndex=true
     agentCountMapping=agentCountMapping
     selectedIndex=selectedRowIndex
     lazy=true
     onRowClick=(action "handleRowClickAction")
-    onColumnConfigChange=(action 'onColumnConfigChange')
-    onReorderColumns=(action 'onReorderColumns')
+    onColumnConfigChange=(action "onColumnConfigChange")
+    onReorderColumns=(action "onReorderColumns")
     columnsConfig=columns}}
 
     {{#host-detail/utils/file-context-table/header
-      onToggleColumn=(action 'onColumnConfigChange' 'display')
+      onToggleColumn=(action "onColumnConfigChange" "display")
       enableColumnFilter=true
       translateTitles=true
       enableColumnSelector=true as |column|}}
       {{#if (eq column.dataType "checkbox")}}
-        <label class="rsa-form-checkbox-label  {{if areAllSelected 'checked'}}">
-          {{rsa-form-checkbox checked=areAllSelected change=(action 'selectAllProcess' visibleItems)}}
+        <label class="rsa-form-checkbox-label  {{if areAllSelected "checked"}}">
+          {{rsa-form-checkbox checked=areAllSelected change=(action "selectAllProcess" visibleItems)}}
         </label>
       {{else}}
-        <span class='js-move-handle'>
+        <span class="js-move-handle">
           {{t column.title}}
         </span>
       {{/if}}
       {{#unless column.disableSort}}
         {{rsa-icon
-          click=(action 'sort' column)
+          click=(action "sort" column)
           name=(if column.isDescending "arrow-down-7" "arrow-up-7")
           class="sort"}}
       {{/unless}}
     {{/host-detail/utils/file-context-table/header}}
     {{#if isProcessTreeLoading}}
       <centered>
-        {{rsa-loader size='larger'}}
+        {{rsa-loader size="larger"}}
       </centered>
     {{else}}
       {{#host-detail/utils/file-context-table-body
         closePropertyPanel=closePropertyPanel
         rowComponentClass=(
-          component 'endpoint/file-custom-row'
+          component "endpoint/file-custom-row"
           serviceList=serviceList
           osType=osType
           showProcessAnalysis = true
           showDownloadProcessDump = showDownloadProcessDump
           selections=selectedProcessList
-          beforeContextMenuShow=(action 'beforeContextMenuShow')
-          editFileStatus=(action 'showEditFileStatus')
-          pivotToInvestigate=(action 'pivotToInvestigate')
-          navigateToProcessAnalysis=(action 'navigateToProcessAnalysis')
+          beforeContextMenuShow=(action "beforeContextMenuShow")
+          editFileStatus=(action "showEditFileStatus")
+          pivotToInvestigate=(action "pivotToInvestigate")
+          navigateToProcessAnalysis=(action "navigateToProcessAnalysis")
           isRemediationAllowed=isRemediationAllowed
           restrictedFileList=restrictedFileList
           fileDownloadButtonStatus=fileDownloadButtonStatus
@@ -60,12 +60,12 @@
           timeRange=timeRange
           analyzeFile=analyzeFile
           isAgentMigrated=isAgentMigrated
-          retrieveRemediationStatus=(action 'retrieveRemediationStatus' 'PROCESS')
-          onSaveFileStatus = (action 'setFileContextFileStatus' 'PROCESS' selectedFileChecksums)
+          retrieveRemediationStatus=(action "retrieveRemediationStatus" "PROCESS")
+          onSaveFileStatus = (action "setFileContextFileStatus" "PROCESS" selectedFileChecksums)
         )
-        noResultsMessage=(t 'investigateHosts.process.message.noResultsMessage') as |item index column|}}
+        noResultsMessage=(t "investigateHosts.process.message.noResultsMessage") as |item index column|}}
         {{#if column.componentClass}}
-          {{#if (eq column.dataType 'tree-column')}}
+          {{#if (eq column.dataType "tree-column")}}
             {{#rsa-data-table/body-cell item=item column=column}}
               {{host-detail/process/process-tree/process-name
                 serviceList=serviceList
@@ -73,27 +73,27 @@
                 item=item
                 index=index
                 osType=osType
-                onToggleExpand=(action 'handleToggleExpand')}}
+                onToggleExpand=(action "handleToggleExpand")}}
             {{/rsa-data-table/body-cell}}
           {{else}}
             {{#rsa-data-table/body-cell item=item column=column}}
-              <label class="rsa-form-checkbox-label {{if (is-selected selectedProcessList item) 'checked'}}">
-                {{rsa-form-checkbox checked=false change=(action 'toggleProcessSelection' item)}}
+              <label class="rsa-form-checkbox-label {{if (is-selected selectedProcessList item) "checked"}}">
+                {{rsa-form-checkbox checked=false change=(action "toggleProcessSelection" item)}}
               </label>
             {{/rsa-data-table/body-cell}}
           {{/if}}
         {{else}}
-          {{#if (eq column.format 'DOWNLOADSTATUS')}}
+          {{#if (eq column.format "DOWNLOADSTATUS")}}
             {{host-detail/utils/table-cell item=item column=column}}
-          {{else if (and isInsightsAgent (or (eq column.field 'machineFileScore')(eq column.field 'fileProperties.score')))}}
-            <div title="{{t 'investigateHosts.hosts.insightAgentTooltip'}}" class="insights-host">N/A</div>
-          {{else if (eq column.field 'machineCount')}}
+          {{else if (and isInsightsAgent (or (eq column.field "machineFileScore")(eq column.field "fileProperties.score")))}}
+            <div title={{t "investigateHosts.hosts.insightAgentTooltip"}} class="insights-host">N/A</div>
+          {{else if (eq column.field "machineCount")}}
             {{#rsa-data-table/body-cell item=item column=column}}
               {{endpoint/machine-count item=item machineCountMapping=agentCountMapping}}
             {{/rsa-data-table/body-cell}}
-          {{else if (eq column.field 'name')}}
-            {{#rsa-data-table/body-cell item=item column=column class='process-name'}}
-              {{#link-to 'hosts.details.tab.info' 'PROCESS' item.pid }}
+          {{else if (eq column.field "name")}}
+            {{#rsa-data-table/body-cell item=item column=column class="process-name"}}
+              {{#link-to "hosts.details.tab.info" "PROCESS" item.pid }}
                 {{get-field item column timezone dateFormat timeFormat i18n.locale}}
               {{/link-to}}
             {{/rsa-data-table/body-cell}}
@@ -105,41 +105,41 @@
     {{/if}}
   {{/rsa-data-table}}
 </box>
-<box class='process-tree-table-footer'>
-  {{host-table-footer total=processList.length index=visibleItems.length label='processes' selectedItems=selectedProcessList.length }}
+<box class="process-tree-table-footer">
+  {{host-table-footer total=processList.length index=visibleItems.length label="processes" selectedItems=selectedProcessList.length }}
 </box>
 
 {{#if showServiceModal}}
   {{endpoint/pivot-to-investigate/modal
     serviceList=serviceList
-    metaName='checksumSha256'
+    metaName="checksumSha256"
     itemList=itemList
     serviceId=serviceId
     timeRange=timeRange
-    label='process'
-    closeModal=(action 'onCloseServiceModal')}}
+    label="process"
+    closeModal=(action "onCloseServiceModal")}}
 {{/if}}
 {{#if showFileStatusModal}}
   {{endpoint/edit-file-status/modal
     itemList=selectedProcessList
     restrictedFileList=restrictedFileList
-    onSaveFileStatus=(action 'setFileContextFileStatus' 'PROCESS' selectedFileChecksums selectedProcessList)
-    retrieveRemediationStatus=(action 'retrieveRemediationStatus' 'PROCESS')
+    onSaveFileStatus=(action "setFileContextFileStatus" "PROCESS" selectedFileChecksums selectedProcessList)
+    retrieveRemediationStatus=(action "retrieveRemediationStatus" "PROCESS")
     data=fileStatus
     isRemediationAllowed=isRemediationAllowed
-    closeModal=(action 'onCloseEditFileStatus')}}
+    closeModal=(action "onCloseEditFileStatus")}}
 {{/if}}
 {{#if showResetScoreModal}}
   {{#rsa-application-modal
     autoOpen=true
-    label=(t 'investigateFiles.riskScore.label')
-    onClose=(action 'onResetScoreModalClose')}}
-    <div class='modal-content reset-risk-score'>
-      {{t 'investigateFiles.riskScore.confirmMessage'}}
+    label=(t "investigateFiles.riskScore.label")
+    onClose=(action "onResetScoreModalClose")}}
+    <div class="modal-content reset-risk-score">
+      {{t "investigateFiles.riskScore.confirmMessage"}}
       <div class="confirmationButtons">
-        {{#rsa-form-button class="closeReset" click=(action 'onResetScoreModalClose') }}{{t 'investigateFiles.riskScore.cancel'}}{{/rsa-form-button}}
-        {{#rsa-form-button class="resetButton" style='primary' click=(action 'resetRiskScoreAction')}}
-          {{t 'investigateFiles.riskScore.reset'}}
+        {{#rsa-form-button class="closeReset" click=(action "onResetScoreModalClose") }}{{t "investigateFiles.riskScore.cancel"}}{{/rsa-form-button}}
+        {{#rsa-form-button class="resetButton" style="primary" click=(action "resetRiskScoreAction")}}
+          {{t "investigateFiles.riskScore.reset"}}
         {{/rsa-form-button}}
       </div>
     </div>

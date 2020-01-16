@@ -1,6 +1,6 @@
 {{#if isConfigured}}
   {{#unless dsData}}
-    <hbox class='rsa-context-panel__loader'>
+    <hbox class="rsa-context-panel__loader">
       <div class="rsa-loader is-largest">
         <div class="rsa-loader__wheel"></div>
         <div class="rsa-loader__text"></div>
@@ -8,10 +8,10 @@
     </hbox>
   {{/unless}}
 {{else}}
-  <div class='rsa-context-panel__error-text'>
+  <div class="rsa-context-panel__error-text">
     <div>
       {{#if onLiveConnectTab}}
-        {{t 'context.lcMarketingText' }}
+        {{t "context.lcMarketingText" }}
       {{else}}
         {{dsTypeMarketing}}
       {{/if}}
@@ -19,8 +19,8 @@
   </div>
 {{/if}}
 {{#if errorMessage}}
-  <div class='rsa-context-panel__error-text'>
-    {{rsa-icon name='report-problem-triangle'}}
+  <div class="rsa-context-panel__error-text">
+    {{rsa-icon name="report-problem-triangle"}}
     <span> {{errorMessage}} </span>
   </div>
 {{/if}}

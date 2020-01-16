@@ -1,6 +1,6 @@
 <div class="recon-request-response-header {{packet.side}}">
   <span>
-    {{rsa-icon name=(concat 'arrow-circle-' arrowDirection '-2')}}
+    {{rsa-icon name=(concat "arrow-circle-" arrowDirection "-2")}}
   </span>
   <span class="text">
     {{packet.side}}
@@ -13,12 +13,12 @@
       <span class="toggle-icon">
         {{#if (not isSticky)}}
           {{rsa-icon
-            click=(action 'togglePacketExpansion')
-            name=(concat 'arrow-' collapseArrowDirection '-12')}}
+            click=(action "togglePacketExpansion")
+            name=(concat "arrow-" collapseArrowDirection "-12")}}
         {{/if}}
       </span>
       <span class="text">
-        {{t 'list.packet'}}&nbsp;{{packet.pageRowIndex}}
+        {{t "list.packet"}}&nbsp;{{packet.pageRowIndex}}
       </span>
     </box>
     <box align="center" justify="center" xs="4">

@@ -3,11 +3,11 @@
   {{entity-details-container/body/alert-details/details}}
   {{entity-details-container/body/alert-details/indicators}}
 {{else}}
-  <div class='entity-details_loader'>
+  <div class="entity-details_loader">
     {{#if (not-eq alertError null)}}
-      {{t (concat 'investigateUsers.alerts.' alertError)}}
+      {{t (concat "investigateUsers.alerts." alertError)}}
     {{else}}
-      {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+      {{rsa-loader size="medium" label=(t "investigate.loading")}}
     {{/if}}
   </div>
 {{/if}} 

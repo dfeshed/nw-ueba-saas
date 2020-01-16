@@ -1,43 +1,43 @@
-<div class='edit-modal-content'>
-  <div class='exclusion-list-wrapper'>
+<div class="edit-modal-content">
+  <div class="exclusion-list-wrapper">
     <box class="comment-box">
       <label class="comment-box-description">
-        {{t 'investigateHosts.networkIsolation.isolate.checkboxDescription'}}
+        {{t "investigateHosts.networkIsolation.isolate.checkboxDescription"}}
       </label>
       <label class="comment-box-label">
-        {{t 'investigateHosts.networkIsolation.isolate.editExclusionList'}}
+        {{t "investigateHosts.networkIsolation.isolate.editExclusionList"}}
       </label>
       {{rsa-form-textarea
         value=exclusionList
         maxlength=4500
         isError=isExclusionListError
-        placeholder=(t 'investigateHosts.networkIsolation.isolate.exclusionListPlaceholder')
-        focusOut=(action 'validate' exclusionList)
+        placeholder=(t "investigateHosts.networkIsolation.isolate.exclusionListPlaceholder")
+        focusOut=(action "validate" exclusionList)
       }}
       {{#if isExclusionListError}}
-        <span class='exclusion-list-error'>
+        <span class="exclusion-list-error">
           {{t errorString}}
         </span>
       {{/if}}
     </box>
   </div>
 
-  <div class='comment-wrapper'>
+  <div class="comment-wrapper">
     <box class="comment-box">
       <label class="comment-box-label">
-        {{t 'investigateHosts.networkIsolation.isolate.comments'}}
+        {{t "investigateHosts.networkIsolation.isolate.comments"}}
       </label>
       {{rsa-form-textarea
         value=isolationComment
         maxlength=900
         isError=isIsolationCommentEmpty
-        placeholder=(t 'investigateHosts.networkIsolation.isolate.placeholder')
-        keyUp=(action 'onKeyUpValidateComment' isolationComment)
-        focusOut=(action 'onFocusOutValidateComment' isolationComment)
+        placeholder=(t "investigateHosts.networkIsolation.isolate.placeholder")
+        keyUp=(action "onKeyUpValidateComment" isolationComment)
+        focusOut=(action "onFocusOutValidateComment" isolationComment)
       }}
       {{#if isolationCommentInfo.isCharacterLimitReached}}
-        <span class='limit-reached'>
-          {{t 'investigateFiles.editFileStatus.commentLimitError'}}
+        <span class="limit-reached">
+          {{t "investigateFiles.editFileStatus.commentLimitError"}}
         </span>
       {{/if}}
     </box>
@@ -46,10 +46,10 @@
 <footer>
   <hbox class="modal-footer-buttons">
     {{#rsa-form-button defaultAction=closeConfirmModal}}
-      {{t 'investigateHosts.networkIsolation.buttons.cancel'}}
+      {{t "investigateHosts.networkIsolation.buttons.cancel"}}
     {{/rsa-form-button}}
-    {{#rsa-form-button style='primary' isDisabled=isolationCommentInfo.isIsolateHostDisabled defaultAction=(action 'confirmEditExclusionList')}}
-      {{t 'investigateHosts.networkIsolation.buttons.save'}}
+    {{#rsa-form-button style="primary" isDisabled=isolationCommentInfo.isIsolateHostDisabled defaultAction=(action "confirmEditExclusionList")}}
+      {{t "investigateHosts.networkIsolation.buttons.save"}}
     {{/rsa-form-button}}
   </hbox>
 </footer>

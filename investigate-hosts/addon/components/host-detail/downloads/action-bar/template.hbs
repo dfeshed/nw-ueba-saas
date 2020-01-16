@@ -1,31 +1,31 @@
 <div class="title-header">
   {{#rsa-form-button
-    class='close-filter'
-    defaultAction=(action 'showFilterPanel' openFilterPanel)
+    class="close-filter"
+    defaultAction=(action "showFilterPanel" openFilterPanel)
   }}
-    {{rsa-icon name='filter-2' size='small'}}
-    <span>{{t 'investigateFiles.filter.filter'}}</span>
+    {{rsa-icon name="filter-2" size="small"}}
+    <span>{{t "investigateFiles.filter.filter"}}</span>
   {{/rsa-form-button}}
 </div>
-<div class='title'>{{t 'investigateHosts.downloads.deleteDownloadedFiles.title'}}</div>
+<div class="title">{{t "investigateHosts.downloads.deleteDownloadedFiles.title"}}</div>
 {{#if disableActions.hasManageAccess}}
   <div>
     {{#rsa-form-button
-      class='save-local-copy'
+      class="save-local-copy"
       isDisabled=disableActions.saveLocalCopy
       defaultAction=saveLocalCopy
-      title=(if disableActions.saveLocalCopy (t 'investigateHosts.downloads.buttons.saveLocalCopyDisabledTooltip'))
+      title=(if disableActions.saveLocalCopy (t "investigateHosts.downloads.buttons.saveLocalCopyDisabledTooltip"))
     }}
-      <span>{{t 'investigateHosts.downloads.buttons.saveLocalCopy'}}</span>
+      <span>{{t "investigateHosts.downloads.buttons.saveLocalCopy"}}</span>
     {{/rsa-form-button}}
 
     {{#rsa-form-button
-      class='delete-file'
+      class="delete-file"
       isDisabled=disableActions.deleteFile
       defaultAction=deleteFiles
-      title=(if disableActions.deleteFile (t 'investigateHosts.downloads.buttons.deleteDisabledTooltip'))
+      title=(if disableActions.deleteFile (t "investigateHosts.downloads.buttons.deleteDisabledTooltip"))
     }}
-      <span>{{t 'investigateHosts.downloads.buttons.deleteFiles'}}</span>
+      <span>{{t "investigateHosts.downloads.buttons.deleteFiles"}}</span>
     {{/rsa-form-button}}
 
   </div>

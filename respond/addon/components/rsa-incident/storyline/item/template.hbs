@@ -9,15 +9,15 @@
 
       <p class="is-catalyst">
         {{#if isCatalyst}}
-          {{t 'respond.storyline.catalystIndicator'}}
+          {{t "respond.storyline.catalystIndicator"}}
         {{else}}
-          {{t 'respond.storyline.relatedIndicator'}}
+          {{t "respond.storyline.relatedIndicator"}}
         {{/if}}
       </p>
 
       {{!Source}}
       <p class="source">
-        <span>{{t (concat 'respond.alert.source.' item.indicator.alert.source)}}</span>
+        <span>{{t (concat "respond.alert.source." item.indicator.alert.source)}}</span>
       </p>
     </box>
 
@@ -28,9 +28,9 @@
         {{#if item.events}}
           {{item.events.length}}
           {{#if (eq item.events.length 1)}}
-            {{t 'respond.storyline.event'}}
+            {{t "respond.storyline.event"}}
           {{else}}
-            {{t 'respond.storyline.events'}}
+            {{t "respond.storyline.events"}}
           {{/if}}
         {{else}}
           Loading events...
@@ -56,9 +56,9 @@
       {{!Related incident}}
       {{#if item.indicator.partOfIncident}}
         <p class="incident">
-          <label>{{t 'respond.storyline.partOfIncident'}}:</label>
+          <label>{{t "respond.storyline.partOfIncident"}}:</label>
           <span>
-            {{#link-to 'incident' item.indicator.incidentId}}
+            {{#link-to "incident" item.indicator.incidentId}}
               {{item.indicator.incidentId}}
             {{/link-to}}
           </span>

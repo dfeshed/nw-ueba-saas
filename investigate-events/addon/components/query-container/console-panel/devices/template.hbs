@@ -1,16 +1,16 @@
 {{#if (eq 1 offlineServices.length)}}
   <div class="some-offline">
-    {{rsa-icon title=(t 'investigate.queryStats.warning') name='report-problem-triangle' size="large"}}
-    {{t 'investigate.queryStats.oneOffline'}}
+    {{rsa-icon title=(t "investigate.queryStats.warning") name="report-problem-triangle" size="large"}}
+    {{t "investigate.queryStats.oneOffline"}}
   </div>
 {{else if offlineServices.length}}
   <div class="some-offline">
-    {{rsa-icon title=(t 'investigate.queryStats.warning') name='report-problem-triangle' size="large"}}
-    {{t 'investigate.queryStats.someOffline' offline=offlineServices.length}}
+    {{rsa-icon title=(t "investigate.queryStats.warning") name="report-problem-triangle" size="large"}}
+    {{t "investigate.queryStats.someOffline" offline=offlineServices.length}}
   </div>
 {{else}}
   <div class="all-online">
-    {{t 'investigate.queryStats.allOnline'}}
+    {{t "investigate.queryStats.allOnline"}}
   </div>
 {{/if}}
 
@@ -23,7 +23,7 @@
         </svg>
       {{/if}}
 
-      <span class="one-line-summary" {{action 'expandDevices'}}>
+      <span class="one-line-summary" {{action "expandDevices"}}>
         {{#if device.devices}}
           {{#if isExpanded}}
             {{#if hasError}}
@@ -55,15 +55,15 @@
         <strong class="device">{{device.serviceName}}</strong>
 
         {{#if (and actualEventCount streamingTimeElapsed)}}
-          {{t 'investigate.queryStats.summary' age=eventResultSetStartLabel eventCount=formattedActualEventCount queryTimeElapsed=queryTimeElapsed streamingTimeElapsed=streamingTimeElapsed}}
+          {{t "investigate.queryStats.summary" age=eventResultSetStartLabel eventCount=formattedActualEventCount queryTimeElapsed=queryTimeElapsed streamingTimeElapsed=streamingTimeElapsed}}
         {{else if actualEventCount}}
-          {{t 'investigate.queryStats.summaryNoStreaming' age=eventAge eventCount=formattedActualEventCount queryTimeElapsed=queryTimeElapsed}}
+          {{t "investigate.queryStats.summaryNoStreaming" age=eventAge eventCount=formattedActualEventCount queryTimeElapsed=queryTimeElapsed}}
         {{else}}
-          {{t 'investigate.queryStats.summaryNoEvents' queryTimeElapsed=queryTimeElapsed}}
+          {{t "investigate.queryStats.summaryNoEvents" queryTimeElapsed=queryTimeElapsed}}
         {{/if}}
 
         {{#if device.devices.length}}
-          {{rsa-icon name='arrow-down-12' size="small"}}
+          {{rsa-icon name="arrow-down-12" size="small"}}
         {{/if}}
       </span>
 
@@ -71,7 +71,7 @@
         <ul class="device-hierarchy">
           {{#each device.devices as |childDevice|}}
             {{query-container/console-panel/devices/nested-devices
-              devicesExpanded=(action 'devicesExpanded')
+              devicesExpanded=(action "devicesExpanded")
               device=childDevice
               slowestInQuery=slowestInQuery
               offlineServices=offlineServices

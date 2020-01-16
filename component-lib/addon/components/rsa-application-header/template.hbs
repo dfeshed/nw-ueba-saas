@@ -9,17 +9,17 @@
     {{#rsa-form-button
       isIconOnly=true
       class="global-contextual-help"
-      defaultAction=(action 'goToGlobalHelp')}}
+      defaultAction=(action "goToGlobalHelp")}}
       {{rsa-icon name="help-circle"}}
     {{/rsa-form-button}}
   {{/if}}
 
   {{#if (and session.isAuthenticated displayPreferences)}}
     {{#rsa-form-button
-      defaultAction=(action 'toggleUserPreferences')
-      class=(if layoutService.userPreferencesActive 'user-preferences-trigger is-active' 'user-preferences-trigger ')}}
+      defaultAction=(action "toggleUserPreferences")
+      class=(if layoutService.userPreferencesActive "user-preferences-trigger is-active" "user-preferences-trigger ")}}
       <span class="username">{{username}}</span>
-      {{rsa-icon name='arrow-down-12'}}
+      {{rsa-icon name="arrow-down-12"}}
     {{/rsa-form-button}}
   {{/if}}
 

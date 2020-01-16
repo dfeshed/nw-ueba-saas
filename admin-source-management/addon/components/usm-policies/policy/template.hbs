@@ -7,22 +7,22 @@
 <box class="form">
   <hbox class="toolbar">
     {{#rsa-form-button
-      style='primary'
-      class='confirm-button'
+      style="primary"
+      class="confirm-button"
       tabIndex="3"
       defaultAction=(action "save")
       isDisabled=hasMissingRequiredData
     }}
-      {{t 'adminUsm.button.save'}}
+      {{t "adminUsm.button.save"}}
     {{/rsa-form-button}}
-    {{#rsa-form-button class='cancel-button' defaultAction=(action 'cancel')}}
-      {{t 'adminUsm.button.cancel'}}
+    {{#rsa-form-button class="cancel-button" defaultAction=(action "cancel")}}
+      {{t "adminUsm.button.cancel"}}
     {{/rsa-form-button}}
   </hbox>
   <hbox class="control">
     {{rsa-form-input
-      label=(t 'adminUsm.policy.name')
-      placeholder=(t 'adminUsm.policy.namePlaceholder')
+      label=(t "adminUsm.policy.name")
+      placeholder=(t "adminUsm.policy.namePlaceholder")
       value=(readonly policy.name)
       maxLength=256
       focusOut=(action "handleNameChange")
@@ -30,11 +30,11 @@
   </hbox>
   <hbox class="control">
     {{rsa-form-textarea
-      label=(t 'adminUsm.policy.description')
-      placeholder=(t 'adminUsm.policy.descPlaceholder')
+      label=(t "adminUsm.policy.description")
+      placeholder=(t "adminUsm.policy.descPlaceholder")
       value=(readonly policy.description)
       maxLength=8000
-      focusOut=(action 'handleDescriptionChange' value='target.value')
+      focusOut=(action "handleDescriptionChange" value="target.value")
     }}
   </hbox>
 

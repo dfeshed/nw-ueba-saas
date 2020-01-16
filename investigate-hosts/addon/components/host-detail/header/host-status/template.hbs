@@ -1,43 +1,43 @@
 {{#if isInsightsAgent}}
-  {{rsa-content-definition class='host-action' value='N/A'}}
+  {{rsa-content-definition class="host-action" value="N/A"}}
 {{else}}
   {{#if hostDetails.score}}
-    {{rsa-risk-score score=hostDetails.score size='large' radius=24}}
+    {{rsa-risk-score score=hostDetails.score size="large" radius=24}}
   {{else}}
-    {{rsa-risk-score score='0' size='large' radius=24}}
+    {{rsa-risk-score score="0" size="large" radius=24}}
   {{/if}}
 {{/if}}
 <hbox class="host-title" fit>
-  <div class='host-title-os-wrapper'>
-    <div class='host-name' title={{hostName}}>{{hostName}}</div>
-    <div class='osType'>{{hostDetails.machineIdentity.machineOsType}}</div>
+  <div class="host-title-os-wrapper">
+    <div class="host-name" title={{hostName}}>{{hostName}}</div>
+    <div class="osType">{{hostDetails.machineIdentity.machineOsType}}</div>
     {{#if isIsolated}}
       {{utils/isolation-pill}}
     {{/if}}
 
   </div>
-  <div class='host-title_action-wrapper'>
+  <div class="host-title_action-wrapper">
     {{#pivot-to-investigate
       serviceList=serviceList
       serviceId=serviceId
-      metaName='machineIdentity.machineName'
-      size='large'
+      metaName="machineIdentity.machineName"
+      size="large"
       metaValue=hostName
       showAsRightClick=false}}
     {{/pivot-to-investigate}}
     {{host-detail/header/more-actions}}
   </div>
-  <div class='divider'/>
+  <div class="divider"/>
 </hbox>
-{{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.agentStatus.scanStatus')}}
+{{#rsa-content-definition class="host-action" label=(t "investigateHosts.hosts.column.agentStatus.scanStatus")}}
   {{host-scan-status agent=hostDetails}}
 {{/rsa-content-definition}}
-{{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.agentStatus.lastSeenTime')}}
+{{#rsa-content-definition class="host-action" label=(t "investigateHosts.hosts.column.agentStatus.lastSeenTime")}}
   <span>{{moment-from-now hostDetails.agentStatus.lastSeenTime locale=i18n.locale timeZone=timezone.selected.zoneId}}</span>
   {{#if isAgentRoaming}}
-    <span class='rar-icon' title="{{t 'investigateHosts.hosts.rarIconTitle'}}">
-      {{rsa-icon size='large' name='cloud-wifi'}}
+    <span class="rar-icon" title={{t "investigateHosts.hosts.rarIconTitle"}}>
+      {{rsa-icon size="large" name="cloud-wifi"}}
     </span>
   {{/if}}
 {{/rsa-content-definition}}
-{{rsa-content-definition class='host-action agent-version' label=(t 'investigateHosts.hosts.column.machineIdentity.agentVersion') value=hostDetails.machineIdentity.agentVersion}}
+{{rsa-content-definition class="host-action agent-version" label=(t "investigateHosts.hosts.column.machineIdentity.agentVersion") value=hostDetails.machineIdentity.agentVersion}}

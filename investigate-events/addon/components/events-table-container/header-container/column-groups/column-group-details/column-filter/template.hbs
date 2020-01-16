@@ -1,12 +1,12 @@
-<div class='filter-group'>
+<div class="filter-group">
   <centered>
-    {{rsa-icon name='filter-2'}}
+    {{rsa-icon name="filter-2"}}
   </centered>
   <input
     autocomplete="off"
     class="ember-power-select-search-input"
     oninput={{action "handleInput"}}
-    placeholder={{t 'investigate.events.columnGroups.columnsSearchPlaceholder'}}
+    placeholder={{t "investigate.events.columnGroups.columnsSearchPlaceholder"}}
     type="text"
     value={{filterText}}
   >
@@ -14,7 +14,7 @@
     {{#rsa-form-button class="clear-filter"
       defaultAction=(action "resetFilter")
     }}
-      {{rsa-icon name='close'}}
+      {{rsa-icon name="close"}}
     {{/rsa-form-button}}
   {{/if}}
 </div>

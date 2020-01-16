@@ -1,16 +1,16 @@
-{{#rsa-form-button isFullWidth=true style='secondary' class=(if (eq entityType 'userId') 'selected') click=(action 'updateEntity' 'userId')}}
-  {{t 'investigateUsers.entityTypes.userId'}}
+{{#rsa-form-button isFullWidth=true style="secondary" class=(if (eq entityType "userId") "selected") click=(action "updateEntity" "userId")}}
+  {{t "investigateUsers.entityTypes.userId"}}
 {{/rsa-form-button}}
-<div class='user-overview-tab_users_entities_network'>
-  {{#rsa-form-button isFullWidth=true style='secondary' class=(if (or (eq entityType 'sslSubject') (eq entityType 'ja3')) 'selected') click=(action 'networkClicked')}}
-    {{t 'investigateUsers.entityTypes.network'}} {{rsa-icon name='arrow-down-12'}}
+<div class="user-overview-tab_users_entities_network">
+  {{#rsa-form-button isFullWidth=true style="secondary" class=(if (or (eq entityType "sslSubject") (eq entityType "ja3")) "selected") click=(action "networkClicked")}}
+    {{t "investigateUsers.entityTypes.network"}} {{rsa-icon name="arrow-down-12"}}
   {{/rsa-form-button}}
   {{#if networkClicked}}
-    {{#rsa-form-button isFullWidth=true style='secondary' class=(if (eq entityType 'ja3') 'selected') click=(action 'updateEntity' 'ja3')}}
-      {{t 'investigateUsers.entityTypes.ja3'}}
+    {{#rsa-form-button isFullWidth=true style="secondary" class=(if (eq entityType "ja3") "selected") click=(action "updateEntity" "ja3")}}
+      {{t "investigateUsers.entityTypes.ja3"}}
     {{/rsa-form-button}}
-    {{#rsa-form-button isFullWidth=true style='secondary' class=(if (eq entityType 'sslSubject') 'selected') click=(action 'updateEntity' 'sslSubject')}}
-      {{t 'investigateUsers.entityTypes.sslSubject'}}
+    {{#rsa-form-button isFullWidth=true style="secondary" class=(if (eq entityType "sslSubject") "selected") click=(action "updateEntity" "sslSubject")}}
+      {{t "investigateUsers.entityTypes.sslSubject"}}
     {{/rsa-form-button}}
   {{/if}}
 </div>

@@ -1,18 +1,18 @@
 {{#if isLoading}}
 
-  <span class='mft-directory_loader'>{{rsa-loader size='small'}}</span>
+  <span class="mft-directory_loader">{{rsa-loader size="small"}}</span>
 
 {{else}}
 
-  <span class='mft-directory_arrow' {{action 'toggleSubdirectories'}}>
-    {{rsa-icon name=displaySubdirectory.arrowDirection class='subdirectory-access'}}
+  <span class="mft-directory_arrow" {{action "toggleSubdirectories"}}>
+    {{rsa-icon name=displaySubdirectory.arrowDirection class="subdirectory-access"}}
   </span>
 
 {{/if}}
 
 {{#if hasBlock}}
 
-  <div class="subdirectory {{if displaySubdirectory.isClosed 'hideSubdirectory'}}">
+  <div class="subdirectory {{if displaySubdirectory.isClosed "hideSubdirectory"}}">
     {{yield}}
   </div>
 

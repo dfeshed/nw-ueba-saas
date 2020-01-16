@@ -1,11 +1,11 @@
 {{#if show}}
   <span>
     {{#link-to "incident.ueba" (query-params ueba=ueba selection=storyPointId) class="ueba-link-to" bubbles=false}}
-      {{t (concat 'respond.alert.source.' alert.source)}}
+      {{t (concat "respond.alert.source." alert.source)}}
     {{/link-to}}
   </span>
 {{else}}
   <span>
-    {{t (concat 'respond.alert.source.' alert.source)}}
+    {{t (concat "respond.alert.source." alert.source)}}
   </span>
 {{/if}}

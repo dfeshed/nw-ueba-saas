@@ -1,14 +1,14 @@
 {{#if isDisplayed}}
   <span>
     {{#ember-tether target=target attachment=attachment offset=offset class=tetherClass}}
-      <div class="panel-content {{panelClass}} {{_position}} {{style}} {{elementId}} {{if isPopover 'is-popover'}}" style={{panelContentStyle}}>
+      <div class="panel-content {{panelClass}} {{_position}} {{style}} {{elementId}} {{if isPopover "is-popover"}}" style={{panelContentStyle}}>
         {{#if displayCloseButton}}
-          <span class="close-icon" {{action 'hidepanel'}}>
+          <span class="close-icon" {{action "hidepanel"}}>
             {{rsa-icon name="close" size="small"}}
           </span>
         {{/if}}
 
-        {{yield (action 'hidepanel') model}}
+        {{yield (action "hidepanel") model}}
 
         <div class="triangle">
           <div class="inner-triangle"></div>

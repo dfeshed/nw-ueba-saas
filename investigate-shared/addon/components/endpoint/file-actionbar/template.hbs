@@ -1,10 +1,10 @@
 {{#if (and (not isSubtabs) showOpenFilterButton)}}
   {{#rsa-form-button
-     class=(concat 'close-filter ' tabLabel)
+     class=(concat "close-filter " tabLabel)
      defaultAction=openFilterPanel
   }}
-    {{rsa-icon name='filter-2' size='small'}}
-    <span>{{t 'investigateFiles.filter.filter'}}</span>
+    {{rsa-icon name="filter-2" size="small"}}
+    <span>{{t "investigateFiles.filter.filter"}}</span>
   {{/rsa-form-button}}
 {{/if}}
 {{#if isDisplayTabLabel}}
@@ -23,21 +23,21 @@
   isRemediationAllowed=isRemediationAllowed
   isFloatingOrMemoryDll=isFloatingOrMemoryDll}}
 
-{{endpoint/pivot-to-event-analysis label='file' iconSize=pivotIconSize selections=itemList isIconOnly=showOnlyIcons pivotToInvestigate=(action 'pivotToInvestigate')}}
+{{endpoint/pivot-to-event-analysis label="file" iconSize=pivotIconSize selections=itemList isIconOnly=showOnlyIcons pivotToInvestigate=(action "pivotToInvestigate")}}
 
 {{#rsa-content-tethered-panel-trigger
-  panel=(if isEditStatusButtonDisabled 'file-status-more-actions disabled' 'file-status-more-actions')
-  triggerEvent='click'
+  panel=(if isEditStatusButtonDisabled "file-status-more-actions disabled" "file-status-more-actions")
+  triggerEvent="click"
 }}
   {{#rsa-form-button
     isIconOnly=showOnlyIcons
-    title=(t 'investigateShared.endpoint.fileActions.moreActions')
+    title=(t "investigateShared.endpoint.fileActions.moreActions")
     withDropdown=true
     isDisabled=isEditStatusButtonDisabled
-    class='watch-button more-action-button'}}
-    {{rsa-icon name='navigation-show-more-2' size='small'}}
+    class="watch-button more-action-button"}}
+    {{rsa-icon name="navigation-show-more-2" size="small"}}
     {{#unless showOnlyIcons}}
-      {{t 'investigateShared.endpoint.fileActions.moreActions'}}
+      {{t "investigateShared.endpoint.fileActions.moreActions"}}
     {{/unless}}
   {{/rsa-form-button}}
 {{/rsa-content-tethered-panel-trigger}}
@@ -45,14 +45,14 @@
   panelClass="file-action-selector-panel"
   displayCloseButton=false
   isPopover=true
-  panelId='file-status-more-actions'
-  position='bottom-right'
+  panelId="file-status-more-actions"
+  position="bottom-right"
   as |hideTooltip|
 }}
   <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
     {{#each fileActionOptions as |fileAction|}}
       {{#if fileAction.subItems}}
-        <li class="{{if isEditStatusButtonDisabled 'disabled'}}">
+        <li class={{if isEditStatusButtonDisabled "disabled"}}>
           {{#rsa-content-tethered-panel-trigger
             panel=fileAction.panelId
             displayDelay=200
@@ -61,7 +61,7 @@
           }}
             <div>
               {{fileAction.title}}
-              {{rsa-icon name='arrow-right-12'}}
+              {{rsa-icon name="arrow-right-12"}}
             </div>
           {{/rsa-content-tethered-panel-trigger}}
 
@@ -70,27 +70,27 @@
             displayCloseButton=false
             isPopover=true
             panelId=fileAction.panelId
-            position='right-bottom'
+            position="right-bottom"
             as |hideTooltip|
           }}
             <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
               {{#each fileAction.subItems as |subItem|}}
-                <li {{action 'onFileAction' subItem}}>{{subItem.title}}</li>
+                <li {{action "onFileAction" subItem}}>{{subItem.title}}</li>
               {{/each}}
             </ul>
           {{/rsa-content-tethered-panel}}
         </li>
-      {{else if (eq fileAction.name 'resetRiskScore')}}
+      {{else if (eq fileAction.name "resetRiskScore")}}
         <hr class="divider actionSeperator">
-        <li test-id="{{fileAction.name}}" class="{{if isEditStatusButtonDisabled 'disabled'}}" {{action 'onResetAction'}}>{{fileAction.title}}</li>
+        <li test-id={{fileAction.name}} class={{if isEditStatusButtonDisabled "disabled"}} {{action "onResetAction"}}>{{fileAction.title}}</li>
       {{else}}
-        {{#if (or (eq fileAction.name 'downloadToServer') (eq fileAction.name 'downloadProcessDumpToServer'))}}
+        {{#if (or (eq fileAction.name "downloadToServer") (eq fileAction.name "downloadProcessDumpToServer"))}}
           <hr class="divider actionSeperator">
         {{/if}}
-        <li title="{{if fileAction.disabled fileAction.disabledTooltip}}"
-        class="{{fileAction.panelId}}{{if fileAction.disabled ' disabled'}}"
-        test-id="{{fileAction.name}}"
-        {{action 'onFileDownloadOptions' fileAction.name fileAction.disabled}}>
+        <li title={{if fileAction.disabled fileAction.disabledTooltip}}
+        class="{{fileAction.panelId}}{{if fileAction.disabled " disabled"}}"
+        test-id={{fileAction.name}}
+        {{action "onFileDownloadOptions" fileAction.name fileAction.disabled}}>
           {{fileAction.title}}
         </li>
       {{/if}}
@@ -102,23 +102,23 @@
   {{#rsa-application-modal
     class="reset-risk-score"
     autoOpen=true
-    label=(t 'investigateFiles.riskScore.label')
-    onClose=(action 'onResetScoreModalClose')
+    label=(t "investigateFiles.riskScore.label")
+    onClose=(action "onResetScoreModalClose")
   }}
-    <div class='modal-content reset-risk-score'>
+    <div class="modal-content reset-risk-score">
       {{#if isMaxResetRiskScoreLimit}}
-        <span class='max-limit-info'>
-          {{rsa-icon class='rsa-icon-information-circle'}}
+        <span class="max-limit-info">
+          {{rsa-icon class="rsa-icon-information-circle"}}
           <p>
-            {{t 'investigateFiles.riskScore.limitInfo'}}
+            {{t "investigateFiles.riskScore.limitInfo"}}
           </p>
         </span>
       {{/if}}
-      {{t 'investigateFiles.riskScore.confirmMessage'}}
+      {{t "investigateFiles.riskScore.confirmMessage"}}
       <div class="confirmationButtons">
-        {{#rsa-form-button class="closeReset" click=(action 'onResetScoreModalClose') }}{{t 'investigateFiles.riskScore.cancel'}}{{/rsa-form-button}}
-        {{#rsa-form-button class="resetButton" style='primary' click=(action 'resetRiskScoreAction')}}
-          {{t 'investigateFiles.riskScore.reset'}}
+        {{#rsa-form-button class="closeReset" click=(action "onResetScoreModalClose") }}{{t "investigateFiles.riskScore.cancel"}}{{/rsa-form-button}}
+        {{#rsa-form-button class="resetButton" style="primary" click=(action "resetRiskScoreAction")}}
+          {{t "investigateFiles.riskScore.reset"}}
         {{/rsa-form-button}}
       </div>
     </div>

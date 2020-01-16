@@ -1,11 +1,11 @@
 <vbox class="apply-policy-step-inner">
-  <span class="help-title">{{t 'adminUsm.groupWizard.applyPolicy.helpTitle.label1'}}</span>
-  <span class="help-title">{{t 'adminUsm.groupWizard.applyPolicy.helpTitle.label2'}}</span>
+  <span class="help-title">{{t "adminUsm.groupWizard.applyPolicy.helpTitle.label1"}}</span>
+  <span class="help-title">{{t "adminUsm.groupWizard.applyPolicy.helpTitle.label2"}}</span>
 
   <vbox class="source-type-wrapper">
     {{#if hasAssignments}}
       {{#each assignedPolicyList as |policy|}}
-        {{#if (eq policy.id 'placeholder') }}
+        {{#if (eq policy.id "placeholder") }}
           {{usm-groups/group-wizard/apply-policy-step/source-type
             selectedSourceType=policy.policyType
             selectedPolicy=null}}
@@ -22,12 +22,12 @@
 
   <vbox>
     {{#rsa-form-button
-      class='add-source-type-button'
-      style='standard'
-      defaultAction=(action 'addSourceType')
+      class="add-source-type-button"
+      style="standard"
+      defaultAction=(action "addSourceType")
       isDisabled=(not hasSourceTypesAvailable)
     }}
-      {{t 'adminUsm.groupWizard.applyPolicy.addSourceType'}}
+      {{t "adminUsm.groupWizard.applyPolicy.addSourceType"}}
     {{/rsa-form-button}}
   </vbox>
 

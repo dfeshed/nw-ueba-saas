@@ -12,15 +12,15 @@
   </section>
 
   <footer class="scroll-message">
-    {{rsa-icon name='arrow-circle-down-1'}}
-    <span>{{t 'investigate.events.scrollMessage'}}</span>
+    {{rsa-icon name="arrow-circle-down-1"}}
+    <span>{{t "investigate.events.scrollMessage"}}</span>
   </footer>
 {{else}}
   <centered>
     {{#if isAtThreshold}}
-      {{rsa-loader size='largest' label=(t 'investigate.loadingAtThreshold' threshold=threshold)}}
+      {{rsa-loader size="largest" label=(t "investigate.loadingAtThreshold" threshold=threshold)}}
     {{else}}
-      {{rsa-loader size='largest' label=(concat (t 'investigate.loading') ' ...')}}
+      {{rsa-loader size="largest" label=(concat (t "investigate.loading") " ...")}}
     {{/if}}
   </centered>
 {{/if}}

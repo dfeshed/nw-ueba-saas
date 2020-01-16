@@ -1,25 +1,25 @@
 {{#if disableSort}}
   <span class="disable-sort">
-    {{t 'investigate.sortTooltips.disableSort'}}
+    {{t "investigate.sortTooltips.disableSort"}}
   </span>
 {{else if (contains field notIndexedAtValue)}}
   <span class="not-indexed-at-value">
-    {{t 'investigate.sortTooltips.notIndexedAtValue'}}
+    {{t "investigate.sortTooltips.notIndexedAtValue"}}
   </span>
 {{else if (contains field notSingleton)}}
   <span class="not-singleton">
-    {{t 'investigate.sortTooltips.notSingleton'}}
+    {{t "investigate.sortTooltips.notSingleton"}}
   </span>
 {{else if (contains field notValid)}}
   <span class="not-valid">
-    {{t 'investigate.sortTooltips.notValid'}}
+    {{t "investigate.sortTooltips.notValid"}}
   </span>
-{{else if (eq status 'streaming')}}
+{{else if (eq status "streaming")}}
   <span class="is-streaming">
-    {{t 'investigate.sortTooltips.isStreaming'}}
+    {{t "investigate.sortTooltips.isStreaming"}}
   </span>
 {{else}}
   <span class="composed">
-    {{t 'investigate.sortTooltips.composed'}}
+    {{t "investigate.sortTooltips.composed"}}
   </span>
 {{/if}}

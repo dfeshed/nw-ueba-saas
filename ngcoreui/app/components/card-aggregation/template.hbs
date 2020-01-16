@@ -16,27 +16,27 @@
 {{/rsa-chart}}
 <h1 class="large centered">{{ngcoreui-formatted-number size=valuesAdapter.session_rate}} Sessions/Second</h1>
 {{#dashboard-properties-grid}}
-  {{dashboard-property-item propertyName='Meta Rate' propertyValue=valuesAdapter.meta_rate type='numeric'}}
-  {{dashboard-property-item propertyName='Status' propertyValue=valuesAdapter.status}}
+  {{dashboard-property-item propertyName="Meta Rate" propertyValue=valuesAdapter.meta_rate type="numeric"}}
+  {{dashboard-property-item propertyName="Status" propertyValue=valuesAdapter.status}}
   <div class="property-item" title={{noPermissionReason}}>
-    {{#if (or (eq valuesAdapter.status 'started') (eq valuesAdapter.status 'stopping'))}}
+    {{#if (or (eq valuesAdapter.status "started") (eq valuesAdapter.status "stopping"))}}
       <hbox class="rsa-button-with-confirmation">
         {{#rsa-button-with-confirmation
           style="danger"
-          title='Confirm Stop Aggregation'
-          confirmationMessage='Are you sure that you want to stop aggregation?'
-          confirmButtonLabel='Yes'
+          title="Confirm Stop Aggregation"
+          confirmationMessage="Are you sure that you want to stop aggregation?"
+          confirmButtonLabel="Yes"
           isDisabled=cannotStop
-          cancelButtonLabel='No'
-          onConfirm=(action 'stopAggregation')}}
+          cancelButtonLabel="No"
+          onConfirm=(action "stopAggregation")}}
           Stop
         {{/rsa-button-with-confirmation}}
       </hbox>
     {{else}}
       {{#rsa-form-button
-        style='primary'
+        style="primary"
         isDisabled=cannotStart
-        defaultAction=(action 'startAggregation')}}
+        defaultAction=(action "startAggregation")}}
         Start
       {{/rsa-form-button}}
     {{/if}}

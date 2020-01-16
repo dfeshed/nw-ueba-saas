@@ -1,7 +1,7 @@
 {{#if hasRenderIds}}
   {{#if hasSelectedFiles}}
     <div class="attachment-download-warning">
-      {{rsa-content-warn-text-box isAlert=true value=(t 'recon.fileView.downloadWarning')}}
+      {{rsa-content-warn-text-box isAlert=true value=(t "recon.fileView.downloadWarning")}}
     </div>
   {{/if}}
   <div class="email-scroll-box">
@@ -12,6 +12,6 @@
   </div>
 {{else}}
   {{#if hasNoEmailContent}}
-    {{rsa-panel-message message=(t 'recon.emailView.noEmailData')}}
+    {{rsa-panel-message message=(t "recon.emailView.noEmailData")}}
   {{/if}}
 {{/if}}

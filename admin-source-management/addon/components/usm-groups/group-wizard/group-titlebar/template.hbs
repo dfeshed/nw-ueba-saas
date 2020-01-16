@@ -1,15 +1,15 @@
 <div>
   {{#if group.name}}
     {{#rsa-text-with-tooltip value=group.name style="standard"}}
-      {{rsa-icon name='network-computers-2'}}
+      {{rsa-icon name="network-computers-2"}}
       <label class="group-name-label">
         {{group.name}}
       </label>
     {{/rsa-text-with-tooltip}}
   {{else}}
-    {{rsa-icon name='network-computers-2'}}
+    {{rsa-icon name="network-computers-2"}}
     <label class="group-name-label">
-      {{t 'adminUsm.groupWizard.newGroup'}}
+      {{t "adminUsm.groupWizard.newGroup"}}
     </label>
   {{/if}}
 </div>

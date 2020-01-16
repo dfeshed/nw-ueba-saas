@@ -1,8 +1,8 @@
 {{context-panel/data-source-header contextData=contextData dataSourceDetails=dataSourceDetails}}
-<div class='rsa-context-panel__config-grid__panel {{fullWidth}}'>
+<div class="rsa-context-panel__config-grid__panel {{fullWidth}}">
   {{#each dataSourceData as |gridData|}}
     {{#each-in gridData as |label content|}}
-      <div class='rsa-context-panel__config-grid__layout col-xs-3'>
+      <div class="rsa-context-panel__config-grid__layout col-xs-3">
         {{#if (and (eq label dataSourceDetails.groupField) (gt content.length 3))}}
           {{context-panel/dynamic-grid/group
           groupData=content
@@ -10,9 +10,9 @@
           }}
         {{else}}
           {{#if (get dataSourceDetails.localisationField label)}}
-            <div>{{rsa-content-definition label=(t (get dataSourceDetails.localisationField label)) value=(if content content '-')}}</div>
+            <div>{{rsa-content-definition label=(t (get dataSourceDetails.localisationField label)) value=(if content content "-")}}</div>
           {{else}}
-            <div>{{rsa-content-definition label=label value=(if content content '-')}}</div>
+            <div>{{rsa-content-definition label=label value=(if content content "-")}}</div>
           {{/if}}
         {{/if}}
       </div>

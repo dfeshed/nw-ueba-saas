@@ -1,16 +1,16 @@
 {{#rsa-content-tethered-panel-trigger
-  panel='host-more-actions'
-  triggerEvent='click'
+  panel="host-more-actions"
+  triggerEvent="click"
   isDisabled=noHostsSelected
 }}
   {{#rsa-form-button
     isIconOnly=false
     withDropdown=true
     isDisabled=noHostsSelected
-    class='more-action-button'}}
-    {{rsa-icon name='navigation-show-more-2' size='small'}}
+    class="more-action-button"}}
+    {{rsa-icon name="navigation-show-more-2" size="small"}}
     {{#unless showOnlyIcons}}
-      {{t 'investigateShared.endpoint.fileActions.moreActions'}}
+      {{t "investigateShared.endpoint.fileActions.moreActions"}}
     {{/unless}}
   {{/rsa-form-button}}
 {{/rsa-content-tethered-panel-trigger}}
@@ -20,27 +20,27 @@
     panelClass="host-more-actions"
     displayCloseButton=false
     isPopover=true
-    panelId='host-more-actions'
-    position='bottom-right'
+    panelId="host-more-actions"
+    position="bottom-right"
     as |hideTooltip|
   }}
     <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
       {{#each moreOptions as |moreOption|}}
-        {{#if (eq moreOption.buttonId 'delete-button')}}
+        {{#if (eq moreOption.buttonId "delete-button")}}
           <li {{action deleteAction}}>{{t moreOption.name}}</li>
-        {{else if (eq moreOption.buttonId 'reset-button')}}
+        {{else if (eq moreOption.buttonId "reset-button")}}
           <li {{action showRiskScoreModal}}>{{t moreOption.name}}</li>
-        {{else if (eq moreOption.buttonId 'downloadMFT-button')}}
+        {{else if (eq moreOption.buttonId "downloadMFT-button")}}
 
-          <li class="downloadMFT-button{{if moreOption.divider ' divider'}}" >
+          <li class="downloadMFT-button{{if moreOption.divider " divider"}}" >
             {{#rsa-form-button
               defaultAction=requestMFTDownload
               isDisabled=isAgentMigrated}}
               {{t moreOption.name}}
             {{/rsa-form-button}}
           </li>
-        {{else if (eq moreOption.buttonId 'downloadSystemDump-button') }}
-          <li class='download-system-dump-button'>
+        {{else if (eq moreOption.buttonId "downloadSystemDump-button") }}
+          <li class="download-system-dump-button">
             {{#rsa-form-button
               defaultAction=requestSystemDumpDownload
               isDisabled=isAgentMigrated}}
@@ -48,7 +48,7 @@
             {{/rsa-form-button}}
           </li>
         {{else if moreOption.subItems}}
-          <li class="isolate-button{{if moreOption.divider ' divider'}}">
+          <li class="isolate-button{{if moreOption.divider " divider"}}">
             {{#rsa-content-tethered-panel-trigger
                panel=moreOption.panelId
                displayDelay=200
@@ -57,10 +57,10 @@
             }}
               {{#rsa-form-button
                  isDisabled=isAgentMigrated}}
-                <span class='host-network-isolation'>
+                <span class="host-network-isolation">
                   {{t moreOption.name}}
                 </span>
-                {{rsa-icon name='arrow-right-12'}}
+                {{rsa-icon name="arrow-right-12"}}
               {{/rsa-form-button}}
             {{/rsa-content-tethered-panel-trigger}}
 
@@ -69,13 +69,13 @@
                displayCloseButton=false
                isPopover=true
                panelId=moreOption.panelId
-               position='right-bottom'
+               position="right-bottom"
             }}
               <ul class="rsa-dropdown-action-list">
                 {{#each moreOption.subItems as |subItem|}}
-                  <li class="{{if subItem.isDisabled 'disabled'}}">
+                  <li class={{if subItem.isDisabled "disabled"}}>
                     {{#rsa-form-button
-                       defaultAction=(action 'displayIsolationModal' subItem.modalName)
+                       defaultAction=(action "displayIsolationModal" subItem.modalName)
                        isDisabled=subItem.isDisabled}}
                       {{t subItem.name}}
                     {{/rsa-form-button}}

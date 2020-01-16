@@ -8,8 +8,8 @@
 }}
 
   {{#rsa-data-table/header translateTitles=true as |column|}}
-    {{#if (eq column.dataType 'checkbox')}}
-      <label class="rsa-form-checkbox-wrapper {{if isSelectAll 'checked'}}">
+    {{#if (eq column.dataType "checkbox")}}
+      <label class="rsa-form-checkbox-wrapper {{if isSelectAll "checked"}}">
         {{rsa-form-checkbox
           checked=isSelectAll
           change=(action toggleSelectAll)
@@ -17,11 +17,11 @@
         <span></span>
       </label>
     {{else}}
-      <div {{action 'sort' column isSortDescending}} class="header-title {{if (not column.disableSort) 'sortable'}}" title="{{t column.title}}">
+      <div {{action "sort" column isSortDescending}} class="header-title {{if (not column.disableSort) "sortable"}}" title={{t column.title}}>
         {{t column.title}}
         {{#unless column.disableSort}}
           <span class="sort-indicator {{if (or (eq sortField column.field) (eq sortField column.sortField))
-            (if isSortDescending 'sorted descending' 'sorted ascending')}}">
+            (if isSortDescending "sorted descending" "sorted ascending")}}">
             {{rsa-icon size="small" name=(if isSortDescending "arrow-down-7" "arrow-up-7")}}
           </span>
         {{/unless}}
@@ -29,19 +29,19 @@
     {{/if}}
   {{/rsa-data-table/header}}
 
-  {{#if (eq fetchStatus 'wait')}}
+  {{#if (eq fetchStatus "wait")}}
     <centered>
-      {{rsa-loader size='larger'}}
+      {{rsa-loader size="larger"}}
     </centered>
-  {{else if (eq fetchStatus 'error')}}
-    <centered class="items-error">{{t 'rsaExplorer.fetchError'}}</centered>
+  {{else if (eq fetchStatus "error")}}
+    <centered class="items-error">{{t "rsaExplorer.fetchError"}}</centered>
   {{else}}
     {{#rsa-data-table/body
-      rowComponentClass='rsa-explorer/explorer-table/row'
+      rowComponentClass="rsa-explorer/explorer-table/row"
       noResultsMessage=noResultsMessage
       as |item index column|}}
 
-      {{yield (hash cell=(component 'rsa-data-table/body-cell' item=item column=column columnWidth=column.width))}}
+      {{yield (hash cell=(component "rsa-data-table/body-cell" item=item column=column columnWidth=column.width))}}
 
     {{/rsa-data-table/body}}
   {{/if}}

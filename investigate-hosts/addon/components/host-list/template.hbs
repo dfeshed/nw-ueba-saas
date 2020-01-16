@@ -3,14 +3,14 @@
   closeProperties=closeProperties
   isMFTEnabled=isMFTEnabled
   hostDetails=hostDetails
-  requestSystemDumpDownload=(action 'requestSystemDumpDownload')
+  requestSystemDumpDownload=(action "requestSystemDumpDownload")
   isAgentMigrated=isAgentMigrated
-  showRiskScoreModal=(action 'showRiskScoreModal')
-  pivotToInvestigate=(action 'pivotToInvestigate')
-  showConfirmationModal=(action 'onshowConfirmationModal')
-  showScanModal=(action 'showScanModal')
-  requestMFTDownload=(action 'requestMFTDownload')
-  showIsolationModal=(action 'onshowIsolationModal')
+  showRiskScoreModal=(action "showRiskScoreModal")
+  pivotToInvestigate=(action "pivotToInvestigate")
+  showConfirmationModal=(action "onshowConfirmationModal")
+  showScanModal=(action "showScanModal")
+  requestMFTDownload=(action "requestMFTDownload")
+  showIsolationModal=(action "onshowIsolationModal")
 }}
 {{#if selectedServiceData.isServiceOnline}}
   {{host-list/host-table
@@ -19,75 +19,75 @@
     closeProperties=closeProperties
     isMFTEnabled=isMFTEnabled
     isAgentMigrated=isAgentMigrated
-    pivotToInvestigate=(action 'pivotToInvestigate')
-    showConfirmationModal=(action 'onshowConfirmationModal')
-    showRiskScoreModal=(action 'showRiskScoreModal')
-    showScanModal=(action 'showScanModal')
-    requestSystemDumpDownload=(action 'requestSystemDumpDownload')
-    requestMFTDownload=(action 'requestMFTDownload')
-    showIsolationModal=(action 'onshowIsolationModal')
+    pivotToInvestigate=(action "pivotToInvestigate")
+    showConfirmationModal=(action "onshowConfirmationModal")
+    showRiskScoreModal=(action "showRiskScoreModal")
+    showScanModal=(action "showScanModal")
+    requestSystemDumpDownload=(action "requestSystemDumpDownload")
+    requestMFTDownload=(action "requestMFTDownload")
+    showIsolationModal=(action "onshowIsolationModal")
     hostDetails=hostDetails
   }}
 {{else}}
   {{error-page
-    errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription' serviceType=selectedServiceData.name)
-    title=(t 'investigateFiles.errorPage.serviceDown' serviceType=selectedServiceData.name)}}
+    errorDescription=(t "investigateFiles.errorPage.serviceDownDescription" serviceType=selectedServiceData.name)
+    title=(t "investigateFiles.errorPage.serviceDown" serviceType=selectedServiceData.name)}}
 {{/if}}
 {{#if showCommandModal}}
   {{host-scan/scan-modal
     command=scanCommand
-    modalStyle='scan-command-modal'
-    eventId='scan-command'
+    modalStyle="scan-command-modal"
+    eventId="scan-command"
     modalTitle=modalTitle
-    warningMessages=(if (eq scanCommand 'START_SCAN') warningMessages)
-    onModalClose=(action 'hideScanModal')
-    primaryAction=(action 'initiateScanCommand')}}
+    warningMessages=(if (eq scanCommand "START_SCAN") warningMessages)
+    onModalClose=(action "hideScanModal")
+    primaryAction=(action "initiateScanCommand")}}
 {{/if}}
 
 {{#if showConfirmationModal}}
   {{utils/confirmation-modal
-    confirmAction=(action 'handleDeleteHosts')
-    closeConfirmModal=(action 'hideConfirmationModal')
-    class='delete-host-modal'
-    title=(t 'investigateHosts.hosts.deleteHosts.modal.title')
-    confirmationMessage=(t 'investigateHosts.hosts.deleteHosts.modal.message')}}
+    confirmAction=(action "handleDeleteHosts")
+    closeConfirmModal=(action "hideConfirmationModal")
+    class="delete-host-modal"
+    title=(t "investigateHosts.hosts.deleteHosts.modal.title")
+    confirmationMessage=(t "investigateHosts.hosts.deleteHosts.modal.message")}}
 {{/if}}
 
 {{#if showResetScoreModal}}
   {{endpoint/reset-risk-score/modal
     isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
-    onClose=(action 'onResetScoreModalClose')
-    onReset=(action 'handleResetHostsRiskScore')}}
+    onClose=(action "onResetScoreModalClose")
+    onReset=(action "handleResetHostsRiskScore")}}
 {{/if}}
 
 {{#if showDownloadModal}}
   {{#rsa-application-modal
-    eventId='download-warning-modal'
-    style='standard download-warning-modal'
+    eventId="download-warning-modal"
+    style="standard download-warning-modal"
     autoOpen=true
-    onClose=(action 'hideDownloadMsgModal')
-    label=(t 'investigateHosts.downloads.downloadWarningModal.title')}}
+    onClose=(action "hideDownloadMsgModal")
+    label=(t "investigateHosts.downloads.downloadWarningModal.title")}}
     <div class="modal-content">
       <div class="download-warning-message">
-        {{t 'investigateHosts.downloads.downloadWarningModal.message'}}
+        {{t "investigateHosts.downloads.downloadWarningModal.message"}}
       </div>
       <span class="download-warning-doNotShow">
-        <label class="rsa-form-checkbox-label {{if downloadModalCheckbox 'checked'}}">
+        <label class="rsa-form-checkbox-label {{if downloadModalCheckbox "checked"}}">
           {{rsa-form-checkbox
             checked=downloadModalCheckbox
-            change=(action 'toggleShowDownloadMsg')}}
-          {{t 'investigateHosts.downloads.downloadWarningModal.doNotShow'}}
+            change=(action "toggleShowDownloadMsg")}}
+          {{t "investigateHosts.downloads.downloadWarningModal.doNotShow"}}
         </label>
       </span>
 
       <footer>
         <hbox class="modal-footer-buttons">
-          {{#rsa-form-button class='close-modal' click=(action 'hideDownloadMsgModal')}}
-            {{t 'investigateHosts.downloads.downloadWarningModal.button.cancel'}}
+          {{#rsa-form-button class="close-modal" click=(action "hideDownloadMsgModal")}}
+            {{t "investigateHosts.downloads.downloadWarningModal.button.cancel"}}
           {{/rsa-form-button}}
 
-          {{#rsa-form-button class='close-modal' style='primary' click=(action 'continueDownload')}}
-            {{t 'investigateHosts.downloads.downloadWarningModal.button.continue'}}
+          {{#rsa-form-button class="close-modal" style="primary" click=(action "continueDownload")}}
+            {{t "investigateHosts.downloads.downloadWarningModal.button.continue"}}
           {{/rsa-form-button}}
         </hbox>
       </footer>
@@ -96,7 +96,7 @@
 {{/if}}  
 {{#if showIsolationModal}}
   {{utils/machine-isolation-modal
-    closeConfirmModal=(action 'hideIsolationModal')
+    closeConfirmModal=(action "hideIsolationModal")
     agentId=hostDetails.id
     serverId=hostDetails.serviceId
     selectedModal=selectedModal}}

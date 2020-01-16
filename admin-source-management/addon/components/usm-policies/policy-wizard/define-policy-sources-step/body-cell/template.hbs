@@ -1,14 +1,14 @@
-{{#if (eq column.displayType 'fileTypeInput')}}
+{{#if (eq column.displayType "fileTypeInput")}}
   <span class="remove-setting"
-    {{action 'handleRemoveSource' index bubble=false}}>
+    {{action "handleRemoveSource" index bubble=false}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>
   {{#if item.errorState.state}}
-    {{rsa-content-label label=(t 'adminUsm.policyWizard.MISSING_TYPE_SPECIFICATION') style='danger'}}
+    {{rsa-content-label label=(t "adminUsm.policyWizard.MISSING_TYPE_SPECIFICATION") style="danger"}}
   {{/if}}
-  <h4 class='subheading'>
+  <h4 class="subheading">
     {{#rsa-text-with-tooltip
-      value=(t (concat column.title 'Tooltip'))
+      value=(t (concat column.title "Tooltip"))
       style="standard"
       alwaysShow=true
     }}
@@ -17,21 +17,21 @@
   </h4>
   <div class="file-type">
     {{#power-select
-      placeholder=(t 'adminUsm.policyWizard.dropdownPlaceholder')
+      placeholder=(t "adminUsm.policyWizard.dropdownPlaceholder")
       selected=item.fileTypePrettyName
-      searchPlaceholder=(t 'packager.searchPlaceholder')
+      searchPlaceholder=(t "packager.searchPlaceholder")
       disabled=true
-      onchange=(action 'handleSelectionChange' column.field bubbles=false) as |option|
+      onchange=(action "handleSelectionChange" column.field bubbles=false) as |option|
     }}
       <span title={{option}}>{{option}}</span>
     {{/power-select}}
   </div>
 
-{{else if (eq column.displayType 'enabledRadio')}}
-  <vbox class='rsa-form-radio-group'>
-    <h4 class='rsa-form-radio-group-label'>
+{{else if (eq column.displayType "enabledRadio")}}
+  <vbox class="rsa-form-radio-group">
+    <h4 class="rsa-form-radio-group-label">
       {{#rsa-text-with-tooltip
-        value=(t (concat column.title 'Tooltip'))
+        value=(t (concat column.title "Tooltip"))
         style="standard"
         alwaysShow=true
       }}
@@ -41,12 +41,12 @@
     <vbox class="radio-buttons">
       {{#each enableOnAgentConfig.items as |option|}}
         {{#radio-button
-          classNames='rsa-form-radio-wrapper'
-          radioClass='radio-option'
+          classNames="rsa-form-radio-wrapper"
+          radioClass="radio-option"
           value=option.name
           groupValue=(readonly item.enabled)
-          name=(concat 'radio-enabled-' itemId)
-          changed=(action 'handleSelectionChange' column.field bubbles=false)
+          name=(concat "radio-enabled-" itemId)
+          changed=(action "handleSelectionChange" column.field bubbles=false)
         }}
           <span>{{t option.label}}</span>
         {{/radio-button}}
@@ -54,11 +54,11 @@
     </vbox>
   </vbox>
 
-{{else if (eq column.displayType 'eventsRadio')}}
-  <vbox class='rsa-form-radio-group'>
-    <h4 class='rsa-form-radio-group-label'>
+{{else if (eq column.displayType "eventsRadio")}}
+  <vbox class="rsa-form-radio-group">
+    <h4 class="rsa-form-radio-group-label">
       {{#rsa-text-with-tooltip
-        value=(t (concat column.title 'Tooltip'))
+        value=(t (concat column.title "Tooltip"))
         style="standard"
         alwaysShow=true
       }}
@@ -68,12 +68,12 @@
     <vbox class="radio-buttons">
       {{#each dataCollectionConfig.items as |option|}}
         {{#radio-button
-          classNames='rsa-form-radio-wrapper'
-          radioClass='radio-option'
+          classNames="rsa-form-radio-wrapper"
+          radioClass="radio-option"
           value=option.name
           groupValue=(readonly item.startOfEvents)
-          name=(concat 'radio-startOfEvents-' itemId)
-          changed=(action 'handleSelectionChange' column.field bubbles=false)
+          name=(concat "radio-startOfEvents-" itemId)
+          changed=(action "handleSelectionChange" column.field bubbles=false)
         }}
           <span>{{t option.label}}</span>
         {{/radio-button}}
@@ -81,10 +81,10 @@
     </vbox>
   </vbox>
 
-{{else if (eq column.displayType 'paths') }}
-  <h4 class='subheading'>
+{{else if (eq column.displayType "paths") }}
+  <h4 class="subheading">
     {{#rsa-text-with-tooltip
-      value=(t (concat column.title 'Tooltip'))
+      value=(t (concat column.title "Tooltip"))
       style="standard"
       alwaysShow=true
     }}
@@ -98,12 +98,12 @@
           value=path
           isError=(eq (get item.paths (concat index)) invalidPath)
           errorMessage=(t errorMessage)
-          onFocusOut=(action 'handlePathChange' column.field index)
+          onFocusOut=(action "handlePathChange" column.field index)
         }}
       </vbox>
       <vbox class="delete-path">
-        {{#rsa-form-button isIconOnly=true defaultAction=(action 'handleDeletePath' index) }}
-          {{rsa-icon name='bin-1' size='small' class='delete-button'}}
+        {{#rsa-form-button isIconOnly=true defaultAction=(action "handleDeletePath" index) }}
+          {{rsa-icon name="bin-1" size="small" class="delete-button"}}
         {{/rsa-form-button}}
       </vbox>
     </hbox>
@@ -116,19 +116,19 @@
 
   <div class="add-path">
     {{#rsa-form-button
-      class='add-directory-path'
+      class="add-directory-path"
       isDisabled=(eq item.paths.length 16)
-      click=(action 'handleAddPath')
+      click=(action "handleAddPath")
     }}
-      {{t 'adminUsm.policyWizard.filePolicy.addPath'}}
+      {{t "adminUsm.policyWizard.filePolicy.addPath"}}
     {{/rsa-form-button}}
   </div>
 
 
-{{else if (eq column.displayType 'exclusionFilters') }}
-  <h4 class='subheading'>
+{{else if (eq column.displayType "exclusionFilters") }}
+  <h4 class="subheading">
     {{#rsa-text-with-tooltip
-      value=(t (concat column.title 'Tooltip'))
+      value=(t (concat column.title "Tooltip"))
       style="standard"
       alwaysShow=true
     }}
@@ -137,12 +137,12 @@
   </h4>
   <div class="exclusion-filters">
     {{rsa-form-textarea-oneway
-      tabIndex='3'
-      placeholder=(t 'adminUsm.policyWizard.filePolicy.exclusionFiltersPlaceholder')
+      tabIndex="3"
+      placeholder=(t "adminUsm.policyWizard.filePolicy.exclusionFiltersPlaceholder")
       value=exclusionFilters
       maxLength=8000
       isError=(or (eq (get item.exclusionFilters exFilterInvalidIndex) exFilterInvalid) exFilterErr)
-      onFocusOut=(action 'handleExclusionFiltersChange' column.field)
+      onFocusOut=(action "handleExclusionFiltersChange" column.field)
     }}
   </div>
   <div class="exclusion-filter-error">

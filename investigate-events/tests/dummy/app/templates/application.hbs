@@ -3,14 +3,14 @@
     {{#flash-message tagName="li" flash=flash as |component flash|}}
       <hbox align="stretch">
         <centered xs="2">
-          {{#if (eq flash.type 'success')}}
-            {{rsa-icon name='check-circle-2' style=flash.iconStyle size=flash.iconSize}}
-          {{else if (eq flash.type 'warning')}}
-            {{rsa-icon name='report-problem-circle' size=flash.iconSize}}
-          {{else if (eq flash.type 'error')}}
-            {{rsa-icon name='delete-1' size=flash.iconSize}}
+          {{#if (eq flash.type "success")}}
+            {{rsa-icon name="check-circle-2" style=flash.iconStyle size=flash.iconSize}}
+          {{else if (eq flash.type "warning")}}
+            {{rsa-icon name="report-problem-circle" size=flash.iconSize}}
+          {{else if (eq flash.type "error")}}
+            {{rsa-icon name="delete-1" size=flash.iconSize}}
           {{else}}
-            {{rsa-icon name='information-circle' size=flash.iconSize}}
+            {{rsa-icon name="information-circle" size=flash.iconSize}}
           {{/if}}
         </centered>
         <vbox xs="9" justify="center" class="message">
@@ -24,7 +24,7 @@
   {{/each}}
 </ul>
 {{context-menu}}
-<article class="investigate-dummy__main {{if (and entityId entityType) 'has-entity-info'}}">
+<article class="investigate-dummy__main {{if (and entityId entityType) "has-entity-info"}}">
   <section fill class="investigate-dummy__main-body">
     {{#rsa-application-content}}
       {{outlet}}
@@ -32,12 +32,12 @@
   </section>
   <aside fit class="investigate-dummy__main-aside">
     {{#if (and entityId entityType)}}
-      {{context-panel entityId=entityId entityType=entityType closePanel=(action 'closeContextPanel')}}
+      {{context-panel entityId=entityId entityType=entityType closePanel=(action "closeContextPanel")}}
     {{/if}}
   </aside>
 </article>
-<div id='modalDestination'></div>
-{{context-tooltip clickDataAction=(action 'openContextPanel') addToListAction=(action 'openContextAddToList')}}
+<div id="modalDestination"></div>
+{{context-tooltip clickDataAction=(action "openContextPanel") addToListAction=(action "openContextAddToList")}}
 {{#if (or entityToAddToList entityId)}}
   {{context-panel/add-to-list entity=entityToAddToList}}
 {{/if}}

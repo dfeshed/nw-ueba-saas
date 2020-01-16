@@ -1,4 +1,4 @@
-<h3 {{action 'toggleContent'}}>
+<h3 {{action "toggleContent"}}>
   {{#if isCollapsed}}
     {{rsa-icon class="arrow-icon" size="small" name="arrow-right-12"}}
   {{else}}
@@ -23,7 +23,7 @@
           <span class="entity-data">
             {{#each entityData as |data|}}
               {{#if data.score}}
-                {{rsa-risk-score score=data.score size='small'}}
+                {{rsa-risk-score score=data.score size="small"}}
               {{/if}}
               <span class="entity-name">{{data.name}}</span>
             {{/each}}

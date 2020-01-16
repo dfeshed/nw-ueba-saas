@@ -5,7 +5,7 @@
     pillsInsideParens=pillsInsideParens
     metaOptions=metaOptions
     languageAndAliasesForParser=languageAndAliasesForParser
-    sendMessage=(action 'handleMessage')
+    sendMessage=(action "handleMessage")
     newPillPosition=index
     pillPlaceholder=pillPlaceholder
     cursorPosition=cursorPosition
@@ -17,12 +17,12 @@
     {{query-container/logical-operator
       pillData=(readonly pillData)
       position=index
-      sendMessage=(action 'handleMessage')
+      sendMessage=(action "handleMessage")
     }}
   {{else if (eq pillData.type COMPLEX_FILTER)}}
     {{query-container/complex-pill
       pillData=(readonly pillData)
-      sendMessage=(action 'handleMessage')
+      sendMessage=(action "handleMessage")
       position=index
       isActive=pillData.isEditing
     }}
@@ -32,21 +32,21 @@
       isActive=pillData.isEditing
       pillData=(readonly pillData)
       position=index
-      sendMessage=(action 'handleMessage')
+      sendMessage=(action "handleMessage")
     }}
 
   {{else if (eq pillData.type CLOSE_PAREN)}}
     {{query-container/close-paren
       pillData=(readonly pillData)
       position=index
-      sendMessage=(action 'handleMessage')
+      sendMessage=(action "handleMessage")
     }}
 
   {{else if (eq pillData.type OPEN_PAREN)}}
     {{query-container/open-paren
       pillData=(readonly pillData)
       position=index
-      sendMessage=(action 'handleMessage')
+      sendMessage=(action "handleMessage")
     }}
 
   {{else}}
@@ -54,7 +54,7 @@
       metaOptions=metaOptions
       languageAndAliasesForParser=languageAndAliasesForParser
       pillData=(readonly pillData)
-      sendMessage=(action 'handleMessage')
+      sendMessage=(action "handleMessage")
       position=index
       pillPlaceholder=pillPlaceholder
       isActive=pillData.isEditing
@@ -67,7 +67,7 @@
 
 {{query-container/query-pill
   canPerformTextSearch=canPerformTextSearch
-  classNames='new-pill-template'
+  classNames="new-pill-template"
   cleanupInputFields=cleanupInputFields
   hasTextPill=hasTextPill
   pillsInsideParens=pillsInsideParens
@@ -77,7 +77,7 @@
   position=lastIndex
   isLastPill=true
   pillPlaceholder=pillPlaceholder
-  sendMessage=(action 'handleMessage')
+  sendMessage=(action "handleMessage")
   valueSuggestions=(readonly valueSuggestions)
   isValueSuggestionsCallInProgress=isValueSuggestionsCallInProgress
 }}

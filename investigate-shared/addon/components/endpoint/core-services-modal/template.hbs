@@ -1,18 +1,18 @@
 {{#rsa-application-modal
-  style='standard service-modal'
+  style="standard service-modal"
   eventId=eventId
   label=modalTitle
   autoOpen=true
-  onClose=(action 'onModalClose')}}
+  onClose=(action "onModalClose")}}
   <div class="modal-content">
     {{#rsa-data-table
       items=serviceList
-      onRowClick=(action 'onRowSelection')
+      onRowClick=(action "onRowSelection")
       columnsConfig=columnsConfig}}
       {{rsa-data-table/header}}
       {{#if isLoadingServices}}
         <centered>
-          {{rsa-loader size='small'}}
+          {{rsa-loader size="small"}}
         </centered>
       {{else}}
         {{#rsa-data-table/body as |item index column|}}

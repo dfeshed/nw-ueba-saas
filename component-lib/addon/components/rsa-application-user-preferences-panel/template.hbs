@@ -1,16 +1,16 @@
-{{#rsa-content-section-header label='Section Heading'}}
-  {{t 'userPreferences.preferences'}}
+{{#rsa-content-section-header label="Section Heading"}}
+  {{t "userPreferences.preferences"}}
 
   <div class="controls">
-    {{#rsa-form-button isIconOnly=true defaultAction=(action 'toggleUserPreferences')}}
+    {{#rsa-form-button isIconOnly=true defaultAction=(action "toggleUserPreferences")}}
       {{rsa-icon name="close" size="small"}}
     {{/rsa-form-button}}
   </div>
 {{/rsa-content-section-header}}
 
-<form {{action 'saveUserPreferences' on="submit"}}>
+<form {{action "saveUserPreferences" on="submit"}}>
   <p>
-    {{t 'userPreferences.personalize'}}
+    {{t "userPreferences.personalize"}}
   </p>
 
   <hbox>
@@ -23,14 +23,14 @@
     <vbox xs="12">
       <label class="rsa-form-label power-select js-test-time-zone-select">
         <div class="label-text">
-          {{t 'userPreferences.timeZone'}}
+          {{t "userPreferences.timeZone"}}
         </div>
 
         {{#power-select
           options=timezone.options
           searchField="displayLabel"
           selected=timezone.selected
-          onchange=(action 'setTimezone') as |option|}}
+          onchange=(action "setTimezone") as |option|}}
           {{option.displayLabel}}
         {{/power-select}}
       </label>
@@ -41,24 +41,24 @@
     <vbox xs="6">
       <label class="rsa-form-label power-select js-test-date-format-select">
         <div class="label-text">
-          {{t 'userPreferences.dateFormat.label'}}
+          {{t "userPreferences.dateFormat.label"}}
         </div>
 
         {{#power-select
           options=dateFormat.options
           selected=dateFormat.selected
           searchEnabled=false
-          onchange=(action 'setDateFormat') as |option|}}
+          onchange=(action "setDateFormat") as |option|}}
           {{t option.label}}
         {{/power-select}}
       </label>
     </vbox>
 
     <vbox xs="6">
-      <div class='rsa-form-radio-group time-format-radio-group'>
-        <h4 class='rsa-form-radio-group-label'>{{t 'userPreferences.timeFormat.label'}}</h4>
+      <div class="rsa-form-radio-group time-format-radio-group">
+        <h4 class="rsa-form-radio-group-label">{{t "userPreferences.timeFormat.label"}}</h4>
         {{#each timeFormat.options as |option|}}
-          <label class="rsa-form-radio-label {{option.key}} {{if (eq option timeFormat.selected) 'checked'}}">
+          <label class="rsa-form-radio-label {{option.key}} {{if (eq option timeFormat.selected) "checked"}}">
             {{radio-button
               value=option
               groupValue=timeFormat.selected
@@ -74,14 +74,14 @@
     <vbox xs="12">
       <label class="rsa-form-label power-select js-test-default-landing-page-select">
         <div class="label-text">
-          {{t 'userPreferences.defaultLandingPage.label'}}
+          {{t "userPreferences.defaultLandingPage.label"}}
         </div>
 
         {{#power-select
           options=landingPage.options
           selected=landingPage.selected
           searchEnabled=false
-          onchange=(action 'setDefaultLandingPage') as |option|}}
+          onchange=(action "setDefaultLandingPage") as |option|}}
           {{t option.label}}
         {{/power-select}}
       </label>
@@ -93,14 +93,14 @@
       <vbox xs="12">
         <label class="rsa-form-label power-select js-test-default-investigate-page-select">
           <div class="label-text">
-            {{t 'userPreferences.defaultInvestigatePage.label'}}
+            {{t "userPreferences.defaultInvestigatePage.label"}}
           </div>
           {{#power-select
             options=investigateViewOptions
             selected=investigatePage.selected
             searchEnabled=false
-            onchange=(action 'setDefaultInvestigatePage') as |option|}}
-            {{t (concat 'userPreferences.defaultInvestigatePage.' option.label)}}
+            onchange=(action "setDefaultInvestigatePage") as |option|}}
+            {{t (concat "userPreferences.defaultInvestigatePage." option.label)}}
           {{/power-select}}
         </label>
       </vbox>
@@ -115,7 +115,7 @@
 
   <hbox>
     <a class="change-password" href="/profile#preferences">
-      {{t 'login.changePasswordLink'}}
+      {{t "login.changePasswordLink"}}
     </a>
   </hbox>
 </form>
@@ -123,10 +123,10 @@
 <footer>
   <vbox>
     <p>
-      {{t 'userPreferences.version'}} {{version}}
+      {{t "userPreferences.version"}} {{version}}
     </p>
 
-    <a class="signout-app" {{action 'logout'}}>{{t 'userPreferences.signOut'}}</a>
+    <a class="signout-app" {{action "logout"}}>{{t "userPreferences.signOut"}}</a>
   </vbox>
 </footer>
 

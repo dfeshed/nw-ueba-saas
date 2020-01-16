@@ -1,76 +1,76 @@
 {{overview-tab/user/entity-type-selector}}
-<div class='user-overview-tab_title'>
-  <div class='user-overview-tab_title_title'>
-    {{t 'investigateUsers.users.highRisk'}} {{t (concat 'investigateUsers.entityTypes.' entityType)}}
+<div class="user-overview-tab_title">
+  <div class="user-overview-tab_title_title">
+    {{t "investigateUsers.users.highRisk"}} {{t (concat "investigateUsers.entityTypes." entityType)}}
   </div>
 </div>
 {{overview-tab/watched applyUserFilter=applyUserFilter}}
 {{show-trend}}
-<div class='user-overview-tab_users_rows'>
+<div class="user-overview-tab_users_rows">
   {{#if hasTopRiskyUsers}}
     {{#each topUsers as |user|}}
-      <div class='user-overview-tab_users_row'  {{action 'initiateUser' (hash userId=user.id)}}>
-        <div class='user-overview-tab_users_row_score'>
-          {{rsa-content-badge-score score=user.score size='small' style=(get severityMap user.scoreSeverity) invertColor=true}}
+      <div class="user-overview-tab_users_row"  {{action "initiateUser" (hash userId=user.id)}}>
+        <div class="user-overview-tab_users_row_score">
+          {{rsa-content-badge-score score=user.score size="small" style=(get severityMap user.scoreSeverity) invertColor=true}}
         </div>
-        <div class='user-overview-tab_users_row_trend'>
+        <div class="user-overview-tab_users_row_trend">
           <span>+{{user.trendingScore}}</span>
-          <span>{{t 'investigateUsers.alerts.score'}}</span>
+          <span>{{t "investigateUsers.alerts.score"}}</span>
         </div>
-        {{#rsa-content-tethered-panel-trigger panel=(concat 'alert-' user.id) }}
-          <div class='user-overview-tab_users_row_name'>
+        {{#rsa-content-tethered-panel-trigger panel=(concat "alert-" user.id) }}
+          <div class="user-overview-tab_users_row_name">
             <span>{{user.displayName}}</span>
             <span>
-              <span class='user-overview-tab_users_row_alert-title'>
-                <span>{{t 'investigateUsers.alerts.title'}}</span>
+              <span class="user-overview-tab_users_row_alert-title">
+                <span>{{t "investigateUsers.alerts.title"}}</span>
                 <span>-</span>
               </span>
-              <div class='user-overview-tab_users_row_alert-severity Critical'></div>
-              <div class='user-overview-tab_users_row_alert-score'>{{user.alertGroup.Critical}}</div>
-              <div class='user-overview-tab_users_row_alert-severity High'></div>
-              <div class='user-overview-tab_users_row_alert-score'>{{user.alertGroup.High}}</div>
-              <div class='user-overview-tab_users_row_alert-severity Medium'></div>
-              <div class='user-overview-tab_users_row_alert-score'>{{user.alertGroup.Medium}}</div>
-              <div class='user-overview-tab_users_row_alert-severity Low'></div>
-              <div class='user-overview-tab_users_row_alert-score'>{{user.alertGroup.Low}}</div>
+              <div class="user-overview-tab_users_row_alert-severity Critical"></div>
+              <div class="user-overview-tab_users_row_alert-score">{{user.alertGroup.Critical}}</div>
+              <div class="user-overview-tab_users_row_alert-severity High"></div>
+              <div class="user-overview-tab_users_row_alert-score">{{user.alertGroup.High}}</div>
+              <div class="user-overview-tab_users_row_alert-severity Medium"></div>
+              <div class="user-overview-tab_users_row_alert-score">{{user.alertGroup.Medium}}</div>
+              <div class="user-overview-tab_users_row_alert-severity Low"></div>
+              <div class="user-overview-tab_users_row_alert-score">{{user.alertGroup.Low}}</div>
             </span>
           </div>
         {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel panelId=(concat 'alert-' user.id) style="primary" position='bottom' displayCloseButton=false panelClass='user-overview-tab_users_row_alert'}}
-          <div class='user-overview-tab_users_row_alert_row'>
-            <div class='user-overview-tab_users_row_alert_row_severity Critical'></div>
+        {{#rsa-content-tethered-panel panelId=(concat "alert-" user.id) style="primary" position="bottom" displayCloseButton=false panelClass="user-overview-tab_users_row_alert"}}
+          <div class="user-overview-tab_users_row_alert_row">
+            <div class="user-overview-tab_users_row_alert_row_severity Critical"></div>
             <div>{{user.alertGroup.Critical}}</div>
-            <div>{{t 'investigateUsers.severity.Critical'}}</div>
+            <div>{{t "investigateUsers.severity.Critical"}}</div>
           </div>
-          <div class='user-overview-tab_users_row_alert_row'>
-            <div class='user-overview-tab_users_row_alert_row_severity High'></div>
+          <div class="user-overview-tab_users_row_alert_row">
+            <div class="user-overview-tab_users_row_alert_row_severity High"></div>
             <div>{{user.alertGroup.High}}</div>
-            <div>{{t 'investigateUsers.severity.High'}}</div>
+            <div>{{t "investigateUsers.severity.High"}}</div>
           </div>
-          <div class='user-overview-tab_users_row_alert_row'>
-            <div class='user-overview-tab_users_row_alert_row_severity Medium'></div>
+          <div class="user-overview-tab_users_row_alert_row">
+            <div class="user-overview-tab_users_row_alert_row_severity Medium"></div>
             <div>{{user.alertGroup.Medium}}</div>
-            <div>{{t 'investigateUsers.severity.Medium'}}</div>
+            <div>{{t "investigateUsers.severity.Medium"}}</div>
           </div>
-          <div class='user-overview-tab_users_row_alert_row'>
-            <div class='user-overview-tab_users_row_alert_row_severity Low'></div>
+          <div class="user-overview-tab_users_row_alert_row">
+            <div class="user-overview-tab_users_row_alert_row_severity Low"></div>
             <div>{{user.alertGroup.Low}}</div>
-            <div>{{t 'investigateUsers.severity.Low'}}</div>
+            <div>{{t "investigateUsers.severity.Low"}}</div>
           </div>
         {{/rsa-content-tethered-panel}}
-        <div class='user-overview-tab_users_row_icon' title='Watched Entity'>
+        <div class="user-overview-tab_users_row_icon" title="Watched Entity">
           {{#if (eq user.followed true)}}
-            {{rsa-icon size='large' name='view-1'}}
+            {{rsa-icon size="large" name="view-1"}}
           {{/if}}
         </div>
       </div>
     {{/each}}
   {{else}}
-    <center class='center'>
+    <center class="center">
       {{#if topUsersError}}
-        {{t (concat 'investigateUsers.errorMessages.' topUsersError)}}
+        {{t (concat "investigateUsers.errorMessages." topUsersError)}}
       {{else}}
-        {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+        {{rsa-loader size="medium" label=(t "investigate.loading")}}
       {{/if}}
     </center>
   {{/if}}

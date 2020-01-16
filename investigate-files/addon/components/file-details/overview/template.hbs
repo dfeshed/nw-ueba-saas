@@ -3,34 +3,34 @@
     <hbox class="file-detail-box">
       <box class="alerts">
         {{endpoint/risk-properties
-          defaultAction=(action 'getUpdatedRiskScoreContext')
-          setSelectedAlert=(action 'setSelectedAlert')
+          defaultAction=(action "getUpdatedRiskScoreContext")
+          setSelectedAlert=(action "setSelectedAlert")
           riskState=risk
-          riskType='FILE'}}
+          riskType="FILE"}}
       </box>
       <box class="events">
         {{endpoint/risk-properties/events-list-container
           riskState=risk
           listOfServices=listOfServices
-          expandEvent=(action 'expandEventAction')}}
+          expandEvent=(action "expandEventAction")}}
       </box>
     </hbox>
   {{/layout.center}}
   {{#if isFilePropertyPanelVisible}}
     {{#layout.right as |right|}}
       {{#right.header  class="investigate-file-tab"}}
-        {{#title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
+        {{#title-bar tabs=dataSourceTabs defaultAction=(action "setDataSourceTab") as |tab|}}
           <div class="label">{{t tab.label}}</div>
         {{/title-bar}}
-        {{#rsa-form-button class='close-zone' isIconOnly=true click=(action 'toggleFilePropertyPanel') }}
-          {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+        {{#rsa-form-button class="close-zone" isIconOnly=true click=(action "toggleFilePropertyPanel") }}
+          {{rsa-icon class="close-icon" name="close" title=(t "investigateHosts.context.button.close")}}
         {{/rsa-form-button}}
       {{/right.header}}
-      {{#if (eq activeDataSourceTab 'HOSTS')}}
+      {{#if (eq activeDataSourceTab "HOSTS")}}
         {{file-found-on-hosts}}
       {{else}}
         {{endpoint/file-property-panel
-          localeNameSpace='investigateHosts.property.file'
+          localeNameSpace="investigateHosts.property.file"
           config=propertyConfig
           data=fileProperty}}
       {{/if}}

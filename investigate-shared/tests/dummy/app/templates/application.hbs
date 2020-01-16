@@ -3,14 +3,14 @@
     {{#flash-message tagName="li" flash=flash as |component flash|}}
       <hbox align="stretch">
         <centered xs="2">
-          {{#if (eq flash.type 'success')}}
-            {{rsa-icon name='check-circle-2' style=flash.iconStyle size=flash.iconSize}}
-          {{else if (eq flash.type 'warning')}}
-            {{rsa-icon name='report-problem-circle' style=flash.iconStyle size=flash.iconSize}}
-          {{else if (eq flash.type 'error')}}
-            {{rsa-icon name='delete-1' size=flash.iconSize}}
+          {{#if (eq flash.type "success")}}
+            {{rsa-icon name="check-circle-2" style=flash.iconStyle size=flash.iconSize}}
+          {{else if (eq flash.type "warning")}}
+            {{rsa-icon name="report-problem-circle" style=flash.iconStyle size=flash.iconSize}}
+          {{else if (eq flash.type "error")}}
+            {{rsa-icon name="delete-1" size=flash.iconSize}}
           {{else}}
-            {{rsa-icon name='information-circle' style=flash.iconStyle size=flash.iconSize}}
+            {{rsa-icon name="information-circle" style=flash.iconStyle size=flash.iconSize}}
           {{/if}}
         </centered>
         <vbox xs="9" justify="center" class="message">
@@ -26,4 +26,4 @@
 <page>
   Investigate Shared
 </page>
-<div id='modalDestination'></div>
+<div id="modalDestination"></div>

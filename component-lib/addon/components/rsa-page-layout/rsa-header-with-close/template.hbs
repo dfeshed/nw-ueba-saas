@@ -2,7 +2,7 @@
   {{yield (hash closeZone=(action "closeZone"))}}
 {{else}}
   <vbox>
-    <h3 class='title'>
+    <h3 class="title">
       {{#if showHeaderIcon}}
         {{rsa-icon name=iconName}}
       {{/if}}
@@ -11,7 +11,7 @@
   </vbox>
   <vbox>
     {{#rsa-form-button class="close-zone" isIconOnly=true defaultAction=(action "closeZone")}}
-      {{rsa-icon name='close'}}
+      {{rsa-icon name="close"}}
     {{/rsa-form-button}}
   </vbox>
 {{/if}}

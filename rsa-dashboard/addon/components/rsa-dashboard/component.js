@@ -12,6 +12,6 @@ export default class RsaDashboard extends Component {
 
   @computed('layoutStyle')
   get layoutComponent() {
-    return `layout.${this.layoutStyle}-layout`;
+    return `layout/${this.layoutStyle}-layout`;
   }
 }

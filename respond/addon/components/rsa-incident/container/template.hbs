@@ -15,14 +15,14 @@
       {{rsa-incident/events-list-container}}
     {{/if}}
     <box fill class="rsa-incident-container__main-status">
-      {{#if (eq storylineStatus 'streaming')}}
+      {{#if (eq storylineStatus "streaming")}}
         <fill justify="center" align="center">
-          {{rsa-loader size="large" label=(t 'respond.storyline.loading')}}
+          {{rsa-loader size="large" label=(t "respond.storyline.loading")}}
         </fill>
-      {{else if (eq storylineStatus 'error')}}
+      {{else if (eq storylineStatus "error")}}
         <fill justify="center" align="center">
           {{rsa-icon name="warning-signal" size="large"}}
-          <h3>{{t 'respond.storyline.error'}}</h3>
+          <h3>{{t "respond.storyline.error"}}</h3>
         </fill>
       {{else}}
         {{#if (not storyline.length)}}

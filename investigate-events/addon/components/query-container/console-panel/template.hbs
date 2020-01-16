@@ -1,12 +1,12 @@
 <div class="console-content">
   <div>
     <div class="service">
-      <span class="label">{{t 'investigate.queryStats.queried'}}</span>
+      <span class="label">{{t "investigate.queryStats.queried"}}</span>
       <span class="value">{{queriedService.displayName}}</span>
     </div>
 
     <div class="timerange">
-      <span class="label">{{t 'investigate.queryStats.between'}}</span>
+      <span class="label">{{t "investigate.queryStats.between"}}</span>
       <span class="value">
         <span class="start">
           {{moment-format formattedStartDate format
@@ -26,7 +26,7 @@
 
     {{#if filters.metaFilters}}
       <div class="filters">
-        <span class="label">{{t 'investigate.queryStats.metaFilter'}}</span>
+        <span class="label">{{t "investigate.queryStats.metaFilter"}}</span>
         <span class="value">
           <code>{{filters.metaFilters}}</code>
         </span>
@@ -35,9 +35,9 @@
 
     {{#if filters.textFilter}}
       <div class="filters">
-        <span class="label" title={{t 'investigate.queryStats.textFilterWarning'}}>
-          {{t 'investigate.queryStats.textFilter'}}
-          {{rsa-icon name='information-circle'}}&nbsp;:
+        <span class="label" title={{t "investigate.queryStats.textFilterWarning"}}>
+          {{t "investigate.queryStats.textFilter"}}
+          {{rsa-icon name="information-circle"}}&nbsp;:
         </span>
         <span class="value">
           <code>{{filters.textFilter}}</code>
@@ -50,8 +50,8 @@
     <ul class="warnings">
       {{#if isMixedMode}}
         <li>
-          {{rsa-icon title=(t 'investigate.queryStats.warning') name='synchronize-warning-1' size="large" class="is-mixed-mode"}}
-          {{t 'investigate.queryStats.isMixedMode'}}
+          {{rsa-icon title=(t "investigate.queryStats.warning") name="synchronize-warning-1" size="large" class="is-mixed-mode"}}
+          {{t "investigate.queryStats.isMixedMode"}}
         </li>
       {{/if}}
       {{#each warnings as |w|}}
@@ -62,7 +62,7 @@
 
   <div class="status-summary">
     <div class="progress">
-      <span class="label">{{t 'investigate.queryStats.progress'}}</span>
+      <span class="label">{{t "investigate.queryStats.progress"}}</span>
       <span class="value">
         {{progressLabel}}
       </span>
@@ -78,7 +78,7 @@
       <ul class="fatal-errors">
         {{#each errors as |error|}}
           <li>
-            {{rsa-icon title=(t 'investigate.queryStats.error') name='report-problem-triangle' size="large"}}
+            {{rsa-icon title=(t "investigate.queryStats.error") name="report-problem-triangle" size="large"}}
             {{#if error.serviceName}}
               <strong>{{error.serviceName}}:</strong>
             {{/if}}

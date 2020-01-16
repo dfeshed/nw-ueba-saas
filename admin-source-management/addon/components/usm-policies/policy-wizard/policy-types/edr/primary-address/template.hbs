@@ -1,13 +1,13 @@
 <div class="primary-address__list">
   {{#power-select
-    placeholder=(t 'packager.placeholder')
+    placeholder=(t "packager.placeholder")
     options=endpointsList
     searchField="name"
-    triggerClass=(if primaryAddressValidator.showError 'selector-error')
+    triggerClass=(if primaryAddressValidator.showError "selector-error")
     dropdownClass=errorClass
-    searchPlaceholder=(t 'packager.searchPlaceholder')
+    searchPlaceholder=(t "packager.searchPlaceholder")
     selected=selectedEndpointSever    
-    onchange=(action 'updatePolicyProperty' 'primaryAddress') as |list|
+    onchange=(action "updatePolicyProperty" "primaryAddress") as |list|
   }}
     {{list.name}}
   {{/power-select}}  
@@ -21,19 +21,19 @@
 
 <vbox class="primary-address__alias">
   <span class="text">
-    {{#rsa-text-with-tooltip value=(t 'adminUsm.policyWizard.edrPolicy.primaryAliasTooltip')
+    {{#rsa-text-with-tooltip value=(t "adminUsm.policyWizard.edrPolicy.primaryAliasTooltip")
     style="standard"
     alwaysShow=true}}
-      {{t 'adminUsm.policyWizard.edrPolicy.primaryAlias'}}
+      {{t "adminUsm.policyWizard.edrPolicy.primaryAlias"}}
     {{/rsa-text-with-tooltip}}
   </span>
   <span class="rsa-form-input">
     {{rsa-form-input-oneway
-      class='primary-alias'
+      class="primary-alias"
       value=primaryAlias
       isError=isPrimaryAliasValid.showError
       errorMessage=(t isPrimaryAliasValid.errorMessage)
-      onFocusOut=(action 'handlePrimaryAliasChange' value='target.value')
+      onFocusOut=(action "handlePrimaryAliasChange" value="target.value")
     }}
   </span>
 </vbox>

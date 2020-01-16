@@ -3,71 +3,71 @@
     {{#if accessControl.hasLiveSearchAccess}}
       {{#rsa-nav-tab
         compact=true
-        align='left'
+        align="left"
         isActive=false
-        click=(action 'redirect' '/live/search')
+        click=(action "redirect" "/live/search")
       }}
-        <div class="label">{{t 'configure.liveContent'}}</div>
+        <div class="label">{{t "configure.liveContent"}}</div>
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasLiveResourcesAccess}}
       {{#rsa-nav-tab
         compact=true
-        align='left'
+        align="left"
         isActive=false
-        click=(action 'redirect' '/live/manage')
+        click=(action "redirect" "/live/manage")
       }}
-        <div class="label">{{t 'configure.subscriptions'}}</div>
+        <div class="label">{{t "configure.subscriptions"}}</div>
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasRespondAlertRulesAccess}}
       {{#rsa-nav-tab
         compact=true
-        align='left'
-        isActive=(is-active 'protected.configure.respond.incident-rules')
-        click=(action 'controllerNavigateTo' 'respond.incident-rules')
+        align="left"
+        isActive=(is-active "protected.configure.respond.incident-rules")
+        click=(action "controllerNavigateTo" "respond.incident-rules")
       }}
-        <div class="label">{{t 'configure.incidentRulesTitle'}}</div>
+        <div class="label">{{t "configure.incidentRulesTitle"}}</div>
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasRespondNotificationsAccess}}
       {{#rsa-nav-tab
         compact=true
-        align='left'
-        isActive=(is-active 'protected.configure.respond.notifications')
-        click=(action 'controllerNavigateTo' 'respond.notifications')
+        align="left"
+        isActive=(is-active "protected.configure.respond.notifications")
+        click=(action "controllerNavigateTo" "respond.notifications")
       }}
-        <div class="label">{{t 'configure.respondNotifications'}}</div>
+        <div class="label">{{t "configure.respondNotifications"}}</div>
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasESARulesAccess}}
       {{#rsa-nav-tab
         compact=true
-        align='left'
+        align="left"
         isActive=false
-        click=(action 'redirect' '/alerting/configure')
+        click=(action "redirect" "/alerting/configure")
       }}
-        <div class="label">{{t 'configure.esaRules'}}</div>
+        <div class="label">{{t "configure.esaRules"}}</div>
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasLiveFeedsAccess}}
       {{#rsa-nav-tab
         compact=true
-        align='left'
+        align="left"
         isActive=false
-        click=(action 'redirect' '/live/feeds')
+        click=(action "redirect" "/live/feeds")
       }}
-        <div class="label">{{t 'configure.customFeeds'}}</div>
+        <div class="label">{{t "configure.customFeeds"}}</div>
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasLogParsersAccess}}
       {{#rsa-nav-tab
         compact=true
-        align='left'
-        isActive=(is-active 'protected.configure.content.log-parser-rules')
-        click=(action 'controllerNavigateTo' 'content.log-parser-rules')
+        align="left"
+        isActive=(is-active "protected.configure.content.log-parser-rules")
+        click=(action "controllerNavigateTo" "content.log-parser-rules")
       }}
-        <div class="label">{{t 'configure.logsParser.logParserRules'}}</div>
+        <div class="label">{{t "configure.logsParser.logParserRules"}}</div>
       {{/rsa-nav-tab}}
     {{/if}}
   </div>

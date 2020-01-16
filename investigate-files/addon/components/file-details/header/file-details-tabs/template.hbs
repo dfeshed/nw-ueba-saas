@@ -1,6 +1,6 @@
 <hbox>
   {{#each fileDetailTabs as |tab|}}
-    {{#rsa-nav-tab isActive=tab.selected click=(action 'setFileTabAndFetchData' tab.name)}}
+    {{#rsa-nav-tab isActive=tab.selected click=(action "setFileTabAndFetchData" tab.name)}}
       <div class="label">{{t tab.label}}</div>
     {{/rsa-nav-tab}}
   {{/each}}

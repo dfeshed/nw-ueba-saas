@@ -1,9 +1,9 @@
 {{#rsa-explorer
   creators=creators
   columns=columns
-  reduxSpace='respond.incidents' as |explorer|}}
+  reduxSpace="respond.incidents" as |explorer|}}
 
-  {{#explorer.toolbar toolbarControlsComponent='rsa-incidents/toolbar-controls' as |toolbar|}}
+  {{#explorer.toolbar toolbarControlsComponent="rsa-incidents/toolbar-controls" as |toolbar|}}
     {{toolbar.toolbarControls
       priorityTypes=priorityTypes
       statusTypes=statusTypes
@@ -12,20 +12,20 @@
     }}
   {{/explorer.toolbar}}
 
-  {{#explorer.filters filterControlsComponent='rsa-incidents/filter-controls' as |filters|}}
+  {{#explorer.filters filterControlsComponent="rsa-incidents/filter-controls" as |filters|}}
     {{filters.filterControls}}
   {{/explorer.filters}}
 
   {{#explorer.table as |row|}}
     {{#row.cell as |item index column|}}
-      {{#if (eq column.dataType 'date')}}
+      {{#if (eq column.dataType "date")}}
         {{rsa-content-datetime timestamp=(get item column.field) displayTime=true displayMilliseconds=false}}
 
-      {{else if (eq column.dataType 'number')}}
+      {{else if (eq column.dataType "number")}}
         <div class="number-type">{{get item column.field}}</div>
 
-      {{else if (eq column.dataType 'checkbox') }}
-        <label class="rsa-form-checkbox-wrapper {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
+      {{else if (eq column.dataType "checkbox") }}
+        <label class="rsa-form-checkbox-wrapper {{if (contains item.id explorer.instance.itemsSelected) "checked"}}">
           {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
           <span></span>
         </label>
@@ -35,13 +35,13 @@
             {{get item column.field}}
           {{/link-to}}
         </div>
-      {{ else if (eq column.field 'priority')}}
-        <span class="entity-priority-indicator {{concat 'priority-' (priority-to-content-style (get item column.field))}}"></span>
-        <span class="entity-priority">{{t (concat 'respond.priority.' (get item column.field))}}</span>
-      {{ else if (eq column.field 'id')}}
-        <span>{{#link-to 'incident' item.id}}{{item.id}}{{/link-to}}</span>
-      {{ else if (eq column.field 'status')}}
-        {{t (concat 'respond.status.' (get item column.field)) }}
+      {{ else if (eq column.field "priority")}}
+        <span class="entity-priority-indicator {{concat "priority-" (priority-to-content-style (get item column.field))}}"></span>
+        <span class="entity-priority">{{t (concat "respond.priority." (get item column.field))}}</span>
+      {{ else if (eq column.field "id")}}
+        <span>{{#link-to "incident" item.id}}{{item.id}}{{/link-to}}</span>
+      {{ else if (eq column.field "status")}}
+        {{t (concat "respond.status." (get item column.field)) }}
       {{else if (eq column.field "assignee")}}
         {{or (get item "assignee.name") (get item "assignee.id")}}
       {{else}}
@@ -51,9 +51,9 @@
   {{/explorer.table}}
 
   {{#explorer.inspector
-    inspectorHeaderComponent='rsa-incidents/inspector-header'
-    inspectorContentComponent='rsa-incident/overview' as |inspector|}}
+    inspectorHeaderComponent="rsa-incidents/inspector-header"
+    inspectorContentComponent="rsa-incident/overview" as |inspector|}}
     {{inspector.inspectorHeader isSendToArcherAvailable=isSendToArcherAvailable}}
-    {{inspector.inspectorContent infoStatus='completed'}}
+    {{inspector.inspectorContent infoStatus="completed"}}
   {{/explorer.inspector}}
 {{/rsa-explorer}}

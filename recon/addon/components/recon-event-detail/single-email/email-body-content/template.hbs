@@ -1,12 +1,12 @@
 {{#if showPercentMessage}}
   <div class="rendered-email-percent">
-    {{t 'recon.emailView.renderedEmailPercent'}} {{percentText}}%
+    {{t "recon.emailView.renderedEmailPercent"}} {{percentText}}%
   </div>
 {{/if}}
 <div class="email-body-text">
   <div class="emailContent">
-    <iframe id="{{emailRenderId}}"
-      srcdoc="{{renderEmailBodyContent}}"
+    <iframe id={{emailRenderId}}
+      srcdoc={{renderEmailBodyContent}}
       width="100%"
       height="100%"
       sandbox="allow-same-origin allow-scripts">
@@ -14,26 +14,26 @@
   </div>
   {{#if displayShowRemainingButton}}
     <div class="email-show-remaining">
-      {{#rsa-form-button defaultAction= (action 'showRemainingEmailContent')}}
+      {{#rsa-form-button defaultAction= (action "showRemainingEmailContent")}}
         {{ remainingEmailContentLabel }}
       {{/rsa-form-button}}
     </div>
   {{/if}}
   {{#if actualLink}}
     {{#rsa-application-modal
-      eventId= 'email-info-task'
+      eventId= "email-info-task"
       autoOpen= true
-      onClose=(action 'closeLinkModal')
-      label= (t 'recon.emailView.linkAddressLabel')
+      onClose=(action "closeLinkModal")
+      label= (t "recon.emailView.linkAddressLabel")
       style="standard email-recon-link-info-dialog"}}
-      <div class='modal-content'>
-        <p>{{t 'recon.emailView.actualLinkInfoMessage'}}</p>
-        <p class='original-link'>{{actualLink}}</p>
+      <div class="modal-content">
+        <p>{{t "recon.emailView.actualLinkInfoMessage"}}</p>
+        <p class="original-link">{{actualLink}}</p>
       </div>
       <footer>
         <div class="modal-footer-buttons">
-          {{#rsa-form-button style='primary' defaultAction=(action 'closeLinkModal')}}
-            {{t 'forms.ok'}}
+          {{#rsa-form-button style="primary" defaultAction=(action "closeLinkModal")}}
+            {{t "forms.ok"}}
           {{/rsa-form-button}}
         </div>
       </footer>

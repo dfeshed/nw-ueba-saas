@@ -1,7 +1,7 @@
-{{#rsa-content-tethered-panel-trigger panel='payloadPanel'}}
+{{#rsa-content-tethered-panel-trigger panel="payloadPanel"}}
   {{#x-toggle
-    onLabel=(t 'recon.packetView.payloadToggleLabel')
-    onToggle=(action 'togglePayloadOnly')
+    onLabel=(t "recon.packetView.payloadToggleLabel")
+    onToggle=(action "togglePayloadOnly")
     showLabels=true
     value=(readonly isPayloadOnly) as |toggle|}}
     {{toggle.switch}}
@@ -10,7 +10,7 @@
 {{/rsa-content-tethered-panel-trigger}}
 {{#rsa-content-tethered-panel
   displayCloseButton=false
-  panelId='payloadPanel'
-  position='bottom'}}
-  <p>{{t 'recon.packetView.payloadToggleTitle'}}</p>
+  panelId="payloadPanel"
+  position="bottom"}}
+  <p>{{t "recon.packetView.payloadToggleTitle"}}</p>
 {{/rsa-content-tethered-panel}}

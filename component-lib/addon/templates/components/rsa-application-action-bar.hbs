@@ -1,29 +1,29 @@
 {{#rsa-form-button
   isIconOnly=true
   isDisabled=(eq layoutService.actionConfig null)
-  click=(action 'toggleIncidentQueue')
-  class=(if layoutService.incidentQueueActive 'incident-queue-trigger is-active' 'incident-queue-trigger')}}
+  click=(action "toggleIncidentQueue")
+  class=(if layoutService.incidentQueueActive "incident-queue-trigger is-active" "incident-queue-trigger")}}
   {{rsa-icon
     name="inbox"
-    style=(if layoutService.incidentQueueActive 'filled' 'lined')}}
+    style=(if layoutService.incidentQueueActive "filled" "lined")}}
 {{/rsa-form-button}}
 
-{{#if (eq layoutService.actionConfig 'incident')}}
+{{#if (eq layoutService.actionConfig "incident")}}
   {{#rsa-form-button
     isIconOnly=true
-    click=(action 'toggleIncidentJournal')
-    class=(if incidentJournalActive 'incident-journal-trigger is-active' 'incident-journal-trigger')}}
+    click=(action "toggleIncidentJournal")
+    class=(if incidentJournalActive "incident-journal-trigger is-active" "incident-journal-trigger")}}
     {{rsa-icon
       name="notepad-edit"
-      style=(if incidentJournalActive 'filled' 'lined')}}
+      style=(if incidentJournalActive "filled" "lined")}}
   {{/rsa-form-button}}
 
   {{#rsa-form-button
     isIconOnly=true
-    click=(action 'toggleIncidentOverview')
-    class=(if incidentOverviewActive 'incident-overview-trigger is-active' 'incident-overview-trigger')}}
+    click=(action "toggleIncidentOverview")
+    class=(if incidentOverviewActive "incident-overview-trigger is-active" "incident-overview-trigger")}}
     {{rsa-icon
       name="information-circle"
-      style=(if incidentOverviewActive 'filled' 'lined')}}
+      style=(if incidentOverviewActive "filled" "lined")}}
   {{/rsa-form-button}}
 {{/if}}

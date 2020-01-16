@@ -365,7 +365,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it does not select meta if a trailing SPACE is entered and there is more than one option', async function(assert) {
-    assert.expect(3);
+    assert.expect(1);
     this.set('metaOptions', metaOptions);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {

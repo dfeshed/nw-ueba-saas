@@ -1,24 +1,24 @@
-<h2 class='saved-filters-title'>{{t 'investigateShared.endpoint.savedFilters'}}</h2>
+<h2 class="saved-filters-title">{{t "investigateShared.endpoint.savedFilters"}}</h2>
 {{#power-select
-  class='filter-list'
+  class="filter-list"
   searchEnabled=false
   selected=selected
   options=customFilters
   renderInPlace=true
-  noMatchesMessage=(t 'investigateShared.endpoint.filter.noSavedFilters')
-  onclose=(action 'onClose')
-  placeholder=(t 'investigateShared.endpoint.filter.select')
-  onchange=(action 'applyCustomFilter') as |option| }}
-  <span class="saved-filter-name" title="{{option.name}}">{{option.name}}</span>
+  noMatchesMessage=(t "investigateShared.endpoint.filter.noSavedFilters")
+  onclose=(action "onClose")
+  placeholder=(t "investigateShared.endpoint.filter.select")
+  onchange=(action "applyCustomFilter") as |option| }}
+  <span class="saved-filter-name" title={{option.name}}>{{option.name}}</span>
   <a onmouseup={{action "stopPropagation"}} onmousedown={{action "stopPropagation"}}>
     {{#rsa-button-with-confirmation
-      style='danger'
-      class='delete-filter'
-      title=(t 'investigateFiles.deleteTitle')
+      style="danger"
+      class="delete-filter"
+      title=(t "investigateFiles.deleteTitle")
       isIconOnly=true
-      confirmationMessage=(t 'investigateFiles.filter.customFilters.delete.confirmMessage')
-      onConfirm=(action 'deleteSelectedFilter' option.id)}}
-      {{rsa-icon name='bin-1' title=(t 'investigateFiles.deleteTitle')}}
+      confirmationMessage=(t "investigateFiles.filter.customFilters.delete.confirmMessage")
+      onConfirm=(action "deleteSelectedFilter" option.id)}}
+      {{rsa-icon name="bin-1" title=(t "investigateFiles.deleteTitle")}}
     {{/rsa-button-with-confirmation}}
   </a>
 {{/power-select}}

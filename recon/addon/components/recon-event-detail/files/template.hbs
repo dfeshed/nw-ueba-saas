@@ -1,12 +1,12 @@
 {{#if filesRetrieved}}
 
   {{#if hasNoFiles}}
-    {{rsa-panel-message message=(t 'recon.files.noFiles')}}
+    {{rsa-panel-message message=(t "recon.files.noFiles")}}
   {{else}}
 
     {{#if hasSelectedFiles}}
       <div class="download-warning">
-        {{rsa-content-warn-text-box isAlert=true value=(t 'recon.fileView.downloadWarning')}}
+        {{rsa-content-warn-text-box isAlert=true value=(t "recon.fileView.downloadWarning")}}
       </div>
     {{/if}}
 
@@ -17,7 +17,7 @@
       {{#rsa-data-table/header as |column|}}
         {{#if column.isCheckboxColumn}}
           {{#if hasMultipleSessionFiles}}
-            <label class="rsa-form-checkbox-label {{if allSelected 'checked'}}">
+            <label class="rsa-form-checkbox-label {{if allSelected "checked"}}">
               {{rsa-form-checkbox checked=allSelected change=(action "toggleAll")}}
             </label>
           {{/if}}
@@ -30,14 +30,14 @@
         {{#rsa-data-table/body-cell columnWidth=column.width}}
           {{#if column.isCheckboxColumn}}
             {{#if (not-eq item.type "link")}}
-              <label class="rsa-form-checkbox-label {{if item.selected 'checked'}}">
+              <label class="rsa-form-checkbox-label {{if item.selected "checked"}}">
                 {{rsa-form-checkbox checked=item.selected change=(action "toggleOne" item.id)}}
               </label>
             {{/if}}
           {{else if (eq column.field "hashes")}}
             {{#if (eq item.type "link")}}
               <div class="recon-file-linkfile">
-                {{t 'recon.files.linkFile'}}
+                {{t "recon.files.linkFile"}}
               </div>
             {{else}}
               {{#each item.hashes as |hash|}}
@@ -54,15 +54,15 @@
             {{/if}}
           {{else if (eq column.field "fileName")}}
             {{#if (eq item.type "link")}}
-              <div class="recon-file-ellipsis recon-file-link" title="{{get item column.field}}"
+              <div class="recon-file-ellipsis recon-file-link" title={{get item column.field}}
               {{action "openLinkedFile" item}}>
                 {{get item column.field}}
               </div>
             {{else}}
-              <div class="recon-file-ellipsis" title="{{get item column.field}}">{{get item column.field}}</div>
+              <div class="recon-file-ellipsis" title={{get item column.field}}>{{get item column.field}}</div>
             {{/if}}
           {{else}}
-            <div class="recon-file-ellipsis" title="{{get item column.field}}">{{get item column.field}}</div>
+            <div class="recon-file-ellipsis" title={{get item column.field}}>{{get item column.field}}</div>
           {{/if}}
         {{/rsa-data-table/body-cell}}
 

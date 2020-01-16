@@ -1,34 +1,34 @@
-<div class='entity-details-container-body-alert-details_indicators_header'>
-  {{t 'investigateUsers.alerts.alertFlow'}}
+<div class="entity-details-container-body-alert-details_indicators_header">
+  {{t "investigateUsers.alerts.alertFlow"}}
 </div>
-<div class='entity-details-container-body-alert-details_indicators_flow'>
+<div class="entity-details-container-body-alert-details_indicators_flow">
   <div>
     {{#rsa-form-button
-      class='entity-details-container-body-alert-details_indicators_flow_button'
+      class="entity-details-container-body-alert-details_indicators_flow_button"
       isFullWidth=true
-      click=(action 'moveLeft')}}
+      click=(action "moveLeft")}}
       <div>
-        {{rsa-icon size='large' name='arrow-left-12'}}
+        {{rsa-icon size="large" name="arrow-left-12"}}
       </div>
     {{/rsa-form-button}}
   </div>
-  <div class='entity-details-container-body-alert-details_indicators_flow_timeline'>
+  <div class="entity-details-container-body-alert-details_indicators_flow_timeline">
     {{#each alertDetails.evidences as |indicator index|}}
-      <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill'>
-        <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill_icon-row'>
-          <div {{action 'initializeIndicator' indicator.id}}>
-            {{rsa-icon size='larger' name='add-circle-1'}}
+      <div class="entity-details-container-body-alert-details_indicators_flow_timeline_pill">
+        <div class="entity-details-container-body-alert-details_indicators_flow_timeline_pill_icon-row">
+          <div {{action "initializeIndicator" indicator.id}}>
+            {{rsa-icon size="larger" name="add-circle-1"}}
           </div>
           {{#if (not-eq (add index 1)  alertDetails.evidences.length)}}
-            <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill_icon-row_line'>
+            <div class="entity-details-container-body-alert-details_indicators_flow_timeline_pill_icon-row_line">
               <hr>
             </div>
           {{/if}}
         </div>
-        <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill_desc'>
-          {{t (concat 'investigateUsers.alerts.indicator.indicatorNames.' indicator.anomalyTypeFieldName '.name')}}
+        <div class="entity-details-container-body-alert-details_indicators_flow_timeline_pill_desc">
+          {{t (concat "investigateUsers.alerts.indicator.indicatorNames." indicator.anomalyTypeFieldName ".name")}}
         </div>
-        <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill_time'>
+        <div class="entity-details-container-body-alert-details_indicators_flow_timeline_pill_time">
           {{rsa-content-datetime timestamp=indicator.startDate displayMilliseconds=false}}
         </div>
       </div>
@@ -36,11 +36,11 @@
   </div>
   <div>
     {{#rsa-form-button
-      class='entity-details-container-body-alert-details_indicators_flow_button'
+      class="entity-details-container-body-alert-details_indicators_flow_button"
       isFullWidth=true
-      click=(action 'moveRight')}}
+      click=(action "moveRight")}}
       <div>
-        {{rsa-icon size='large' name='arrow-right-12'}}
+        {{rsa-icon size="large" name="arrow-right-12"}}
       </div>
     {{/rsa-form-button}}
   </div>

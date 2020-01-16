@@ -1,37 +1,37 @@
-<div class='users-tab_body_header'>
+<div class="users-tab_body_header">
   {{severity-bar data=usersSeverity}}
-  <div class='users-tab_body_header_bar'>
-    <div class='users-tab_body_header_bar_count'>
-      <div class='users-tab_body_header_bar_count_number'>
-        {{t (concat 'investigateUsers.entityTypes.' entityType)}} ({{totalUsers}})
+  <div class="users-tab_body_header_bar">
+    <div class="users-tab_body_header_bar_count">
+      <div class="users-tab_body_header_bar_count_number">
+        {{t (concat "investigateUsers.entityTypes." entityType)}} ({{totalUsers}})
       </div>
       <div>
         <label class="rsa-form-label power-select users-tab_body_header_bar_count_sort">
           <div class="label-text">
-            {{t 'investigateUsers.sortBy'}}:
+            {{t "investigateUsers.sortBy"}}:
           </div>
           {{#power-select
             options=options
             selected=sortBy
             searchEnabled=false
-            onchange=(action 'updateSort') as |option|}}
-            {{t (concat 'investigateUsers.sortOptions.' option.id)}}
+            onchange=(action "updateSort") as |option|}}
+            {{t (concat "investigateUsers.sortOptions." option.id)}}
           {{/power-select}}
         </label>
       </div>
     </div>
-    <div class='users-tab_body_header_bar_control'>
+    <div class="users-tab_body_header_bar_control">
       <div>
-        {{#rsa-form-button click=(action 'exportUsers')}}
-          {{rsa-icon size='medium' name='file-zipped'}} {{t 'investigateUsers.export'}}
+        {{#rsa-form-button click=(action "exportUsers")}}
+          {{rsa-icon size="medium" name="file-zipped"}} {{t "investigateUsers.export"}}
         {{/rsa-form-button}}
       </div>
       <div>
-        {{#rsa-form-button click=(action 'followUsersAction')}}
+        {{#rsa-form-button click=(action "followUsersAction")}}
           {{#if (eq allWatched true)}}
-            {{rsa-icon size='medium' name='view-1'}} {{t 'investigateUsers.users.removeAllFromWatchedList'}}
+            {{rsa-icon size="medium" name="view-1"}} {{t "investigateUsers.users.removeAllFromWatchedList"}}
           {{else}}
-            {{rsa-icon size='medium' name='view-1'}} {{t 'investigateUsers.users.addAllToWatchedList'}}
+            {{rsa-icon size="medium" name="view-1"}} {{t "investigateUsers.users.addAllToWatchedList"}}
           {{/if}}
         {{/rsa-form-button}}
       </div>

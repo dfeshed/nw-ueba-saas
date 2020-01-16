@@ -9,8 +9,8 @@
           isSticky=false
           metaToHighlight=metaToHighlight
           packet=text
-          showMoreFinished=(action 'showMoreFinished')
-          updatePercentRendered=(action 'updatePercentRendered')
+          showMoreFinished=(action "showMoreFinished")
+          updatePercentRendered=(action "updatePercentRendered")
           showTruncatedMessage=showTruncatedMessage
         }}
       {{/each}}
@@ -35,7 +35,7 @@
       {{#if shouldDisplayNoContentMessage}}
         {{rsa-panel-message
           class="content-hidden-message"
-          message=(t 'recon.textView.contentHiddenMessage')
+          message=(t "recon.textView.contentHiddenMessage")
         }}
       {{/if}}
       {{!--
@@ -49,14 +49,14 @@
           isSticky=false
           metaToHighlight=metaToHighlight
           packet=text
-          showMoreFinished=(action 'showMoreFinished')
-          updatePercentRendered=(action 'updatePercentRendered')
+          showMoreFinished=(action "showMoreFinished")
+          updatePercentRendered=(action "updatePercentRendered")
           showTruncatedMessage=showTruncatedMessage
         }}
       {{/each}}
       {{#if hasMoreToDisplay}}
-        <centered class='rendering-more'>
-          {{rsa-loader size='large' label=(t 'recon.textView.renderingMore')}}
+        <centered class="rendering-more">
+          {{rsa-loader size="large" label=(t "recon.textView.renderingMore")}}
         </centered>
       {{/if}}
     </div>
@@ -72,7 +72,7 @@
       --}}
       {{#unless isAllDataHidden}}
         <div class="recon-loader">
-          {{rsa-loader size='larger'}}
+          {{rsa-loader size="larger"}}
         </div>
       {{/unless}}
     {{else}}

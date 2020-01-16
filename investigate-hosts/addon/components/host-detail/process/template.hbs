@@ -1,9 +1,9 @@
-{{#rsa-page-layout showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
+{{#rsa-page-layout showRightZone=false onClose=(action "onPropertyPanelClose")  as |layout|}}
   {{#layout.left as |leftPanel|}}
-    {{leftPanel.header iconName='filter-2' title=(t 'investigateHosts.downloads.filters.title')}}
+    {{leftPanel.header iconName="filter-2" title=(t "investigateHosts.downloads.filters.title")}}
     {{endpoint/filters-wrapper
             filterState=filter
-            filterType='FILECONTEXT'
+            filterType="FILECONTEXT"
             filterTypes=filterTypes
             savedFilter=savedFilter
             showSaveAsFilterButton=false
@@ -11,45 +11,45 @@
             showSavedFilters=false
             savedFilters=hostDetailFilters
             selectedFilterId=selectedFilterId
-            resetFilters=(action 'resetFilters')
-            applyFilters=(action 'applyFilters')
-            closeEntityDetails=(action layout.close 'right')}}
+            resetFilters=(action "resetFilters")
+            applyFilters=(action "applyFilters")
+            closeEntityDetails=(action layout.close "right")}}
   {{/layout.left}}
   {{#layout.center}}
     <box class="process-list-box scroll-box">
       <div class="process-list-header">
         {{#if (not isNavigatedFromExplore)}}
-          <span class="toggle-icon" {{action 'toggleView' (action layout.close 'right')}}>
-            {{#rsa-content-tethered-panel-trigger panel='toggle-treeview-panel'}}
+          <span class="toggle-icon" {{action "toggleView" (action layout.close "right")}}>
+            {{#rsa-content-tethered-panel-trigger panel="toggle-treeview-panel"}}
               {{#x-toggle
-                class='toggle-tree-view'
+                class="toggle-tree-view"
                 showLabels=true
-                onLabel=(t 'investigateHosts.process.viewType.treeView')
+                onLabel=(t "investigateHosts.process.viewType.treeView")
                 value=isTreeView
-                onToggle=(action 'toggleView') as |toggle|}}
+                onToggle=(action "toggleView") as |toggle|}}
                 {{toggle.switch}}
                 {{toggle.onLabel}}
               {{/x-toggle}}
             {{/rsa-content-tethered-panel-trigger}}
-            {{#rsa-content-tethered-panel style="primary" position='top' panelId='toggle-treeview-panel'}}
-              <section>{{t 'investigateHosts.process.viewType.treeViewTooltip'}}</section>
+            {{#rsa-content-tethered-panel style="primary" position="top" panelId="toggle-treeview-panel"}}
+              <section>{{t "investigateHosts.process.viewType.treeViewTooltip"}}</section>
             {{/rsa-content-tethered-panel}}
           </span>
         {{/if}}
         <div class="process-list-actions analyze-process-button">
           {{#if isShowOpenFilterButton}}
             {{#rsa-form-button
-               class='close-filter'
-               defaultAction=(action 'openFilterPanel' (action layout.open 'left'))
+               class="close-filter"
+               defaultAction=(action "openFilterPanel" (action layout.open "left"))
             }}
-              {{rsa-icon name='filter-2' size='small'}}
-              <span>{{t 'investigateFiles.filter.filter'}}</span>
+              {{rsa-icon name="filter-2" size="small"}}
+              <span>{{t "investigateFiles.filter.filter"}}</span>
             {{/rsa-form-button}}
           {{/if}}
           <span class="process-tab-label">
-            <label>{{t (concat 'investigateHosts.tabs.' tabName)}}</label>
+            <label>{{t (concat "investigateHosts.tabs." tabName)}}</label>
           </span>
-          {{#if (not-eq osType 'linux')}}
+          {{#if (not-eq osType "linux")}}
             {{host-detail/process/pivot-to-process-analysis
               item=selectedProcessList
               serviceList=serviceList
@@ -59,11 +59,11 @@
           {{/if}}
         </div>
         {{endpoint/file-actionbar
-          onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums selectedProcessList)
-          getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
+          onSaveFileStatus = (action "setFileContextFileStatus" tabName selectedFileChecksums selectedProcessList)
+          getSavedFileStatus = (action "getFileContextFileStatus" tabName)
           serviceList=serviceList
           hostName=hostName
-          metaName='checksumSha256'
+          metaName="checksumSha256"
           itemList=selectedProcessList
           serviceId=serviceId
           timeRange=timeRange
@@ -71,29 +71,29 @@
           selectedFileCount=selectedFileCount
           restrictedFileList=restrictedFileList
           isRemediationAllowed=isRemediationAllowed
-          retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
+          retrieveRemediationStatus=(action "retrieveRemediationStatus" tabName)
           showDownloadProcessDump = showDownloadProcessDump
           fileDownloadButtonStatus=fileDownloadButtonStatus
           isFloatingOrMemoryDll=isFloatingOrMemoryDll
           isAgentMigrated=isAgentMigrated
-          downloadFiles=(action 'onDownloadFilesToServer')
-          downloadProcessDump=(action 'onDownloadProcessDump')
-          saveLocalCopy=(action 'onSaveLocalCopy')
-          analyzeFile=(action 'onAnalyzeFile')
-          downloadDisabledTooltip=(t 'investigateShared.endpoint.fileActions.tooltips.files.downloadToServer')
+          downloadFiles=(action "onDownloadFilesToServer")
+          downloadProcessDump=(action "onDownloadProcessDump")
+          saveLocalCopy=(action "onSaveLocalCopy")
+          analyzeFile=(action "onAnalyzeFile")
+          downloadDisabledTooltip=(t "investigateShared.endpoint.fileActions.tooltips.files.downloadToServer")
         }}
 
       </div>
       {{host-detail/process/process-tree
-        openPropertyPanel=(action layout.open 'right')
-        closePropertyPanel=(action layout.close 'right')
-        closeFilterPanel=(action layout.close 'left')
+        openPropertyPanel=(action layout.open "right")
+        closePropertyPanel=(action layout.close "right")
+        closeFilterPanel=(action layout.close "left")
         fileDownloadButtonStatus=fileDownloadButtonStatus
         showDownloadProcessDump=showDownloadProcessDump
-        downloadFiles=(action 'onDownloadFilesToServer')
-        downloadProcessDump=(action 'onDownloadProcessDump')
-        saveLocalCopy=(action 'onSaveLocalCopy')
-        analyzeFile=(action 'onAnalyzeFile')}}
+        downloadFiles=(action "onDownloadFilesToServer")
+        downloadProcessDump=(action "onDownloadProcessDump")
+        saveLocalCopy=(action "onSaveLocalCopy")
+        analyzeFile=(action "onAnalyzeFile")}}
     </box>
   {{/layout.center}}
   {{#layout.right as |right|}}
@@ -101,31 +101,31 @@
       {{endpoint/entity-details
         title=selectedProcessName
         tabs= hostDetailPropertyTabs
-        setTabAction=(action 'setHostDetailPropertyTab' )
-        closeAction=(action layout.close 'right')
+        setTabAction=(action "setHostDetailPropertyTab" )
+        closeAction=(action layout.close "right")
       }}
     {{/right.header}}
-    {{#if (eq activeHostDetailPropertyTab 'RISK')}}
+    {{#if (eq activeHostDetailPropertyTab "RISK")}}
       {{endpoint/risk-properties
-        defaultAction=(action 'getUpdatedRiskScoreContext')
+        defaultAction=(action "getUpdatedRiskScoreContext")
         agentId=agentId
         riskState=risk
-        riskType='HOST'
+        riskType="HOST"
         isInsightsAgent=isInsightsAgent
       }}
-    {{else if (eq activeHostDetailPropertyTab 'FILE_DETAILS')}}
+    {{else if (eq activeHostDetailPropertyTab "FILE_DETAILS")}}
       <box class="process-property-box scroll-box">
         {{endpoint/file-property-panel
           config=propertyConfig
           hostName=hostName
-          localeNameSpace='investigateHosts.property.file'
+          localeNameSpace="investigateHosts.property.file"
           data=process}}
       </box>
-    {{else if (eq activeHostDetailPropertyTab 'HOSTS')}}
+    {{else if (eq activeHostDetailPropertyTab "HOSTS")}}
       {{endpoint/host-name-list
         items=hostNameList
         itemCount=selectedFileHostCount
-        onItemClick=(action 'onHostNameClick')}}
+        onItemClick=(action "onHostNameClick")}}
     {{/if}}
   {{/layout.right}}
 {{/rsa-page-layout}}

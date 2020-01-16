@@ -1,14 +1,14 @@
-<article class="investigate-dummy__main {{if (and entityId entityType) 'has-entity-info'}}">
+<article class="investigate-dummy__main {{if (and entityId entityType) "has-entity-info"}}">
   <section fill class="investigate-dummy__main-body">
     {{outlet}}
   </section>
   <aside fit class="investigate-dummy__main-aside">
     {{#if (and entityId entityType)}}
-      {{context-panel entityId=entityId entityType=entityType closePanel=(action 'closeContextPanel')}}
+      {{context-panel entityId=entityId entityType=entityType closePanel=(action "closeContextPanel")}}
     {{/if}}
   </aside>
 </article>
-{{context-tooltip clickDataAction=(action 'openContextPanel') addToListAction=(action 'openContextAddToList')}}
+{{context-tooltip clickDataAction=(action "openContextPanel") addToListAction=(action "openContextAddToList")}}
 {{#if (or entityToAddToList entityId)}}
   {{context-panel/add-to-list entity=entityToAddToList}}
 {{/if}}
@@ -31,4 +31,4 @@
   {{/each}}
 </ul>
 
-<div id='modalDestination'></div>
+<div id="modalDestination"></div>

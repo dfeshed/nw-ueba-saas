@@ -1,22 +1,22 @@
-<div class='release-modal-content comment-wrapper'>
+<div class="release-modal-content comment-wrapper">
   <label class="comment-box-label">
-    {{t 'investigateHosts.networkIsolation.releaseHost.descriptionText'}}
+    {{t "investigateHosts.networkIsolation.releaseHost.descriptionText"}}
   </label>
   <box class="comment-box">
     <label class="comment-box-label">
-      {{t 'investigateHosts.networkIsolation.isolate.comments'}}
+      {{t "investigateHosts.networkIsolation.isolate.comments"}}
     </label>
     {{rsa-form-textarea
       value=releaseFromIsolationComment
       maxlength=900
       isError=isReleaseFromIsolationCommentEmpty
-      placeholder=(t 'investigateHosts.networkIsolation.isolate.placeholder')
-      keyUp=(action 'onKeyUpValidateComment' releaseFromIsolationComment)
-      focusOut=(action 'onFocusOutValidateComment' releaseFromIsolationComment)
+      placeholder=(t "investigateHosts.networkIsolation.isolate.placeholder")
+      keyUp=(action "onKeyUpValidateComment" releaseFromIsolationComment)
+      focusOut=(action "onFocusOutValidateComment" releaseFromIsolationComment)
     }}
     {{#if releaseFromIsolationCommentInfo.isCharacterLimitReached}}
-      <span class='limit-reached'>
-        {{t 'investigateFiles.editFileStatus.commentLimitError'}}
+      <span class="limit-reached">
+        {{t "investigateFiles.editFileStatus.commentLimitError"}}
       </span>
     {{/if}}
   </box>
@@ -25,10 +25,10 @@
 <footer>
   <hbox class="modal-footer-buttons">
     {{#rsa-form-button defaultAction=closeConfirmModal}}
-      {{t 'investigateHosts.networkIsolation.buttons.cancel'}}
+      {{t "investigateHosts.networkIsolation.buttons.cancel"}}
     {{/rsa-form-button}}
-    {{#rsa-form-button style='primary' isDisabled=releaseFromIsolationCommentInfo.isReleaseFromIsolation defaultAction=(action 'confirmStopIsolationRequest')}}
-      {{t 'investigateHosts.networkIsolation.buttons.releaseHost'}}
+    {{#rsa-form-button style="primary" isDisabled=releaseFromIsolationCommentInfo.isReleaseFromIsolation defaultAction=(action "confirmStopIsolationRequest")}}
+      {{t "investigateHosts.networkIsolation.buttons.releaseHost"}}
     {{/rsa-form-button}}
   </hbox>
 </footer>

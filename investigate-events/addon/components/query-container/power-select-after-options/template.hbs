@@ -5,11 +5,11 @@
     <li class="ember-power-select-option ember-power-select-after-option"
       aria-disabled="{{opt.disabled}}"
       aria-current="{{opt.highlighted}}"
-      data-option-index="{{index}}"
-      onmouseenter={{action 'onMouseEnter'}}
-      onmouseleave={{action 'onMouseLeave'}}
-      onmouseup={{action 'onMouseUp'}}
-      onmousedown={{action 'stopPropagation'}}
+      data-option-index={{index}}
+      onmouseenter={{action "onMouseEnter"}}
+      onmouseleave={{action "onMouseLeave"}}
+      onmouseup={{action "onMouseUp"}}
+      onmousedown={{action "stopPropagation"}}
       role="option">
       <span class="value">
         {{!-- do not show search text if option is disabled --}}
@@ -25,5 +25,5 @@
 </div>
 {{query-container/power-select-tabs
   activePillTab=(readonly activePillTab)
-  sendMessage=(action 'handleMessage')
+  sendMessage=(action "handleMessage")
 }}

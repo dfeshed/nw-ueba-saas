@@ -1,30 +1,30 @@
 <vbox>
   <hbox class="control">
     {{rsa-form-input-oneway
-      class='group-name'
-      tooltip=(t 'adminUsm.groupWizard.nameTooltip')
-      tabIndex='1'
-      label=(t 'adminUsm.groupWizard.name')
-      placeholder=(t 'adminUsm.groupWizard.namePlaceholder')
+      class="group-name"
+      tooltip=(t "adminUsm.groupWizard.nameTooltip")
+      tabIndex="1"
+      label=(t "adminUsm.groupWizard.name")
+      placeholder=(t "adminUsm.groupWizard.namePlaceholder")
       value=name
       maxLength=256
       isError=nameValidator.showError
       errorMessage=(t nameValidator.errorMessage)
-      onFocusOut=(action 'handleNameChange' value='target.value')
+      onFocusOut=(action "handleNameChange" value="target.value")
     }}
   </hbox>
   <vbox>
     <hbox class="control-with-error">
       {{rsa-form-textarea-oneway
-        class='group-description'
-        tooltip=(t 'adminUsm.groupWizard.descTooltip')
-        tabIndex='2'
-        label=(t 'adminUsm.groupWizard.description')
-        placeholder=(t 'adminUsm.groupWizard.descPlaceholder')
+        class="group-description"
+        tooltip=(t "adminUsm.groupWizard.descTooltip")
+        tabIndex="2"
+        label=(t "adminUsm.groupWizard.description")
+        placeholder=(t "adminUsm.groupWizard.descPlaceholder")
         value=description
         maxLength=8000
         isError=descriptionValidator.showError
-        onFocusOut=(action 'handleDescriptionChange' value='target.value')
+        onFocusOut=(action "handleDescriptionChange" value="target.value")
       }}
     </hbox>
     <div class="control-input-error group-description-error">

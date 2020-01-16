@@ -1,7 +1,7 @@
-{{#rsa-content-tethered-panel-trigger panel='filePatternPanel'}}
+{{#rsa-content-tethered-panel-trigger panel="filePatternPanel"}}
   {{#x-toggle
-    onLabel=(t 'recon.packetView.commonFilePatternLabel')
-    onToggle=(action 'toggleKnownSignatures')
+    onLabel=(t "recon.packetView.commonFilePatternLabel")
+    onToggle=(action "toggleKnownSignatures")
     showLabels=true
     value=(readonly hasSignaturesHighlighted) as |toggle|}}
     {{toggle.switch}}
@@ -10,7 +10,7 @@
 {{/rsa-content-tethered-panel-trigger}}
 {{#rsa-content-tethered-panel
   displayCloseButton=false
-  panelId='filePatternPanel'
-  position='bottom'}}
-  <p>{{t 'recon.packetView.commonFilePatternTitle'}}</p>
+  panelId="filePatternPanel"
+  position="bottom"}}
+  <p>{{t "recon.packetView.commonFilePatternTitle"}}</p>
 {{/rsa-content-tethered-panel}}

@@ -3,12 +3,12 @@
   <hbox class="recon-email-collapse-header">
     <box justify="center" fit>
       {{rsa-icon
-        name=(concat collapseArrowDirection '-circle-1')
-        click=(action 'toggleEmailExpansion')
+        name=(concat collapseArrowDirection "-circle-1")
+        click=(action "toggleEmailExpansion")
       }}
     </box>
     <box class="header-text" justify="end" align="end">
-      {{t 'recon.emailView.emailOfTotal' emailIndex=emailIndex emailCount=emailCount}}
+      {{t "recon.emailView.emailOfTotal" emailIndex=emailIndex emailCount=emailCount}}
     </box>
   </hbox>
 
@@ -18,9 +18,9 @@
     {{#if isBodyLoaded}}
       {{recon-event-detail/single-email/email-body-content email=email}}
     {{else if lazyLoadError}}
-      <div class="email-lazyload-error">{{t 'recon.emailView.noEmailBody'}}</div>
+      <div class="email-lazyload-error">{{t "recon.emailView.noEmailBody"}}</div>
     {{else}}
-      {{rsa-loader size='medium'}}
+      {{rsa-loader size="medium"}}
     {{/if}}
   {{/if}}
 

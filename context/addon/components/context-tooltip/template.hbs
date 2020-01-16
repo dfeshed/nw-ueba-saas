@@ -9,7 +9,7 @@ as |hideAction model|
       <vbox fill class="rsa-context-tooltip__content">
         {{#if model.type}}
           <box fit class="rsa-context-tooltip__content-header">
-            {{t 'context.tooltip.contextHighlights'}}
+            {{t "context.tooltip.contextHighlights"}}
           </box>
           <box fill justify="center" class="rsa-context-tooltip__content-body">
             {{context-tooltip/records
@@ -23,18 +23,18 @@ as |hideAction model|
               style="primary"
               defaultAction=(action "handleClick" hideAction clickDataAction model)
             }}
-              {{t 'context.tooltip.viewOverview'}}
+              {{t "context.tooltip.viewOverview"}}
             {{/rsa-form-button}}
           </centered>
         {{else}}
           <centered class="rsa-context-tooltip__content-error">
-            <h3>{{t 'context.tooltip.contextUnavailable'}}</h3>
+            <h3>{{t "context.tooltip.contextUnavailable"}}</h3>
           </centered>
         {{/if}}
       </vbox>
       <vbox fit class="rsa-context-tooltip__aside">
         <h3 class="rsa-context-tooltip__aside-header">
-          {{t 'context.tooltip.actions'}}
+          {{t "context.tooltip.actions"}}
         </h3>
         {{context-tooltip/actions
           class="rsa-context-tooltip__aside-body"

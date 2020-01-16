@@ -1,13 +1,13 @@
-<div class='alerts-tab_body_body-table_body_row'>
-  <div class='alerts-tab_body_body-table_body_row_date' {{action 'expandDate' timestamp}}>
-    <span class='alerts-tab_body_body-table_body_row_date_icon'>
+<div class="alerts-tab_body_body-table_body_row">
+  <div class="alerts-tab_body_body-table_body_row_date" {{action "expandDate" timestamp}}>
+    <span class="alerts-tab_body_body-table_body_row_date_icon">
       {{#if (has-element dateExpended timestamp)}}
-        {{rsa-icon size='small' name='arrow-right-12'}}
+        {{rsa-icon size="small" name="arrow-right-12"}}
       {{else}}
-        {{rsa-icon size='small' name='arrow-down-12'}}
+        {{rsa-icon size="small" name="arrow-down-12"}}
       {{/if}}
     </span>
-    {{t 'investigateUsers.alerts.startFrom'}} &nbsp; {{timestamp}}
+    {{t "investigateUsers.alerts.startFrom"}} &nbsp; {{timestamp}}
   </div>
   {{#if (eq (has-element dateExpended timestamp) false)}}
     {{alerts-tab/body/alerts-table/date-row/alert alerts=alerts}}

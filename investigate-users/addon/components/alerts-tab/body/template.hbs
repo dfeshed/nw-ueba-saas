@@ -1,22 +1,22 @@
-<div class='alerts-tab_body_header'>
+<div class="alerts-tab_body_header">
   {{severity-bar data=alertsSeverity}}
-  <div class='alerts-tab_body_header_export'>
+  <div class="alerts-tab_body_header_export">
     <div>
-      {{#rsa-form-button click=(action 'exportAlerts')}}
-        {{rsa-icon size='medium' name='file-zipped'}} {{t 'investigateUsers.export'}}
+      {{#rsa-form-button click=(action "exportAlerts")}}
+        {{rsa-icon size="medium" name="file-zipped"}} {{t "investigateUsers.export"}}
       {{/rsa-form-button}}
     </div>
   </div>
 </div>
-<div class='alerts-tab_body_body'>
+<div class="alerts-tab_body_body">
   {{#if hasAlerts}}
     {{alerts-tab/body/alerts-table}}
   {{else}}
-    <center class='center'>
+    <center class="center">
       {{#if alertListError}}
-        {{t (concat 'investigateUsers.errorMessages.' alertListError)}}
+        {{t (concat "investigateUsers.errorMessages." alertListError)}}
       {{else}}
-        {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+        {{rsa-loader size="medium" label=(t "investigate.loading")}}
       {{/if}}
     </center>
   {{/if}}

@@ -1,5 +1,5 @@
 <vbox fit class="recon-event-header">
-  {{recon-event-titlebar enable=(action 'enableHighlightEntities')}}
+  {{recon-event-titlebar enable=(action "enableHighlightEntities")}}
   {{recon-event-actionbar}}
 
   {{#if (and headerError (not isLoading))}}
@@ -24,8 +24,8 @@
           </grid>
           {{#rsa-content-tethered-panel
             displayCloseButton=false
-            panelId='eventHeaderTooltip'
-            position='top' as |hide model|
+            panelId="eventHeaderTooltip"
+            position="top" as |hide model|
           }}
             <p>{{model}}</p>
           {{/rsa-content-tethered-panel}}
