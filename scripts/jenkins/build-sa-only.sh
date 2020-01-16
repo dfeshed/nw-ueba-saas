@@ -40,7 +40,7 @@ yarn
 cd sa
 ln -s ../node_modules node_modules
 info "Running 'ember build' for sa"
-NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF ember build -e production
+NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF node --max_old_space_size=8192 ./node_modules/.bin/ember build -e production
 checkError "Ember build failed for sa"
 success "'ember build' for sa was successful"
 
