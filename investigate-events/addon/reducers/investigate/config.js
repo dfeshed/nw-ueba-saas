@@ -59,8 +59,7 @@ export default {
     ],
     field: 'eventAnalysisPreferences.defaultPacketFormat'
   },
-  // TODO add meta download back in 11.4.1
-  /* {
+  {
     name: 'preferences.investigate-events.defaultMetaFormat',
     type: 'dropdown',
     eventDownloadType: 'META',
@@ -71,7 +70,7 @@ export default {
       'TSV'
     ],
     field: 'eventAnalysisPreferences.defaultMetaFormat'
-  }, */
+  },
   {
     name: 'preferences.investigate-events.queryTimeFormat',
     type: 'radio',
@@ -107,13 +106,14 @@ export default {
       currentReconView: 'TEXT',
       defaultLogFormat: 'TEXT',
       defaultPacketFormat: 'PCAP',
-      // defaultMetaFormat: 'TEXT',
+      defaultMetaFormat: 'TEXT',
       autoDownloadExtractedFiles: true,
       packetsPageSize: 100,
       autoUpdateSummary: false,
       eventTimeSortOrder: SORT_ORDER.ASC
     },
     eventPreferences: {
-      columnGroup: 'SUMMARY' }
+      columnGroup: 'SUMMARY'
+    }
   }
 };

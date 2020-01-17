@@ -734,23 +734,20 @@ module('Unit | Selectors | event-results', function(hooks) {
 
     const defaultGroup = result[0].options;
     const otherGroup = result[1].options;
-    // TODO add meta download back in 11.4.1
-    assert.equal(defaultGroup.length, 2);
-    assert.equal(otherGroup.length, 3);
+    assert.equal(defaultGroup.length, 3);
+    assert.equal(otherGroup.length, 6);
 
     await assertForDownloadOptions(assert, defaultGroup, 0, 'LOG', 'TEXT', 'Logs as Text');
     await assertForDownloadOptions(assert, defaultGroup, 1, 'NETWORK', 'PCAP', 'Network as PCAP');
-    // TODO add meta download back in 11.4.1
-    // await assertForDownloadOptions(assert, defaultGroup, 2, 'META', 'TEXT', 'Visible Meta as Text');
+    await assertForDownloadOptions(assert, defaultGroup, 2, 'META', 'TEXT', 'Visible Meta as Text');
     await assertForDownloadOptions(assert, otherGroup, 0, 'LOG', 'CSV', 'Logs as CSV');
-    // await assertForDownloadOptions(assert, otherGroup, 3, 'META', 'CSV', 'Visible Meta as CSV');
+    await assertForDownloadOptions(assert, otherGroup, 3, 'META', 'CSV', 'Visible Meta as CSV');
     // preferred LOG option
     await assertForCountsAndSessionIds(assert, defaultGroup, 0, '0/2', [], true);
     // preferred Network option
     await assertForCountsAndSessionIds(assert, defaultGroup, 1, '2/2', [101, 102], false);
     // preffered Meta option
-    // TODO add meta download back in 11.4.1
-    // await assertForCountsAndSessionIds(assert, defaultGroup, 2, '2/2', [101, 102], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 2, '2/2', [101, 102], false);
   });
 
   test('getDownloadOptions returns appropriate counts for options when one each of log and network events are selected', async function(assert) {
@@ -790,8 +787,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     // preferred Network option with session Ids in order of clientSorted data
     await assertForCountsAndSessionIds(assert, defaultGroup, 1, '2/3', [102, 101], false);
     // preffered Meta option
-    // TODO add meta download back in 11.4.1
-    // await assertForCountsAndSessionIds(assert, defaultGroup, 2, '3/3', [102, 103, 101], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 2, '3/3', [102, 103, 101], false);
   });
 
   test('eventTimeSortOrder returns proper data', async function(assert) {

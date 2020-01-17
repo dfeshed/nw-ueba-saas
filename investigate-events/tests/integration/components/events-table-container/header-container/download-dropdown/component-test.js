@@ -131,16 +131,14 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     // actual options inside the groups
     const options = findAll(`${downloadOptions} li ul li`);
 
-    // TODO add meta download back in 11.4.1
-    assert.equal(options.length, 5, '5 options found, only 1 of 4 Network download options available');
+    assert.equal(options.length, 9, '9 options found, only 1 of 4 Network download options available');
 
     // Log download option in prefered section of download displays user preference
     await assertForDownloadOptions(assert, options, 0, 'Logs as CSV', '1/3');
     // Network download option in prefered section of download does not update to user preference, remains equal to PCAP always
     await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '2/3');
     // Meta  download option in prefered section of download displays user preference
-    // TODO add meta download back in 11.4.1
-    // await assertForDownloadOptions(assert, options, 2, 'Visible Meta as TSV', '3/3');
+    await assertForDownloadOptions(assert, options, 2, 'Visible Meta as TSV', '3/3');
   });
 
   test('download dropdown should show appropriate options if log and Network events are selected ', async function(assert) {
@@ -157,8 +155,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
 
     await assertForDownloadOptions(assert, options, 0, 'Logs as Text', '1/2');
     await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '1/2');
-    // TODO add meta download back in 11.4.1
-    // await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
+    await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
   });
 
   test('download dropdown should show appropriate options if only Network events are selected ', async function(assert) {
@@ -175,8 +172,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
 
     await assertForDownloadOptions(assert, options, 0, 'Logs as Text', '0/2');
     await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '2/2');
-    // TODO add meta download back in 11.4.1
-    // await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
+    await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
   });
 
 

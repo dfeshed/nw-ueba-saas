@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { throwSocket } from '../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -43,8 +43,7 @@ const renderApplicationContent = async function(ctx, assert) {
     {{/rsa-application-content}}
   `);
   await click('.rsa-icon-settings-1');
-  // TODO add meta download back in 11.4.1
-  await waitUntil(() => findAll('.rsa-preferences-field-content').length === 7, { timeout: 3000 });
+  await waitUntil(() => findAll('.rsa-preferences-field-content').length === 8, { timeout: 3000 });
   assert.ok(find('.is-expanded'), 'Preference Panel opened.');
 };
 
@@ -63,7 +62,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
 
   test('Preferences panel opens correctly with all user selected preferences', async function(assert) {
     await renderApplicationContent(this, assert);
-    await waitUntil(() => findAll('.ember-power-select-selected-item').length === 3, { timeout: 3000 });
+    await waitUntil(() => findAll('.ember-power-select-selected-item').length === 4, { timeout: 3000 });
     const selectedItems = findAll('.ember-power-select-selected-item');
     let str = selectedItems[0].textContent.trim();
     assert.equal(str, 'Packet');
@@ -71,9 +70,8 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.equal(str, 'Download Text');
     str = selectedItems[2].textContent.trim();
     assert.equal(str, 'Download PCAP');
-    // TODO add meta download back in 11.4.1
-    // str = selectedItems[3].textContent.trim();
-    // assert.equal(str, 'Download Text');
+    str = selectedItems[3].textContent.trim();
+    assert.equal(str, 'Download Text');
     assert.ok(find('.rsa-form-radio-label.DB.checked'));
     assert.ok(find('.rsa-form-checkbox-label.checked'));
     assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
@@ -93,8 +91,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
 
   test('Preferences panel should render title for default event sort order', async function(assert) {
     await renderApplicationContent(this, assert);
-    // TODO add meta download back in 11.4.1 5>6
-    assert.equal(find('.rsa-preferences-field-content:nth-of-type(5) i').title,
+    assert.equal(find('.rsa-preferences-field-content:nth-of-type(6) i').title,
       translation.t('preferences.investigate-events.eventTimeSortOrder-tooltip'));
   });
 
@@ -131,8 +128,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.equal(getTextFromDOMArray(options), 'DownloadPayloadsDownloadPCAPDownloadResponsePayloadDownloadRequestPayload');
   });
 
-  // TODO add meta download back in 11.4.1
-  skip('Preferences panel comes with valid options for meta format', async function(assert) {
+  test('Preferences panel comes with valid options for meta format', async function(assert) {
     await renderApplicationContent(this, assert);
     await clickTrigger('.rsa-preferences-field-content:nth-child(4)');
     const options = findAll('.ember-power-select-option');
@@ -161,8 +157,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await assertForPreferencesPanelSelectedOptions(assert, 3, 2, 'Download PCAP');
   });
 
-  // TODO add meta download back in 11.4.1
-  skip('Preferences panel defaults the dowloadMetaFormat to the user selected value', async function(assert) {
+  test('Preferences panel defaults the dowloadMetaFormat to the user selected value', async function(assert) {
     await renderApplicationContent(this, assert);
     await assertForPreferencesPanelSelectedOptions(assert, 4, 3, 'Download Text');
   });
