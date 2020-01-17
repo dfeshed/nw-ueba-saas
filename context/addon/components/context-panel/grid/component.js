@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import layout from './template';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import Component from '@ember/component';
 import { getData, getOrder, getWarningInfo } from 'context/utils/context-data-modifier';
 import { inject as service } from '@ember/service';
@@ -18,12 +18,12 @@ const GridComponent = Component.extend({
   i18n: service(),
   isCalledOnce: false,
 
-  @computed('lookupData.[]', 'dataSourceDetails')
-  dataSourceData([lookupData], dataSourceDetails) {
-    const dsData = getData(lookupData, dataSourceDetails);
-    const orderDetails = getOrder(lookupData, dataSourceDetails);
+  dataSourceData: computed('lookupData.[]', 'dataSourceDetails', function() {
+    const [lookupData] = this.lookupData;
+    const dsData = getData(lookupData, this.dataSourceDetails);
+    const orderDetails = getOrder(lookupData, this.dataSourceDetails);
     const orderedArray = [];
-    const warningData = getWarningInfo(lookupData, dataSourceDetails);
+    const warningData = getWarningInfo(lookupData, this.dataSourceDetails);
     if (warningData && !this.get('isCalledOnce')) {
       this.set('isCalledOnce', true);
       const warningMessage = `context.error.archer.${warningData.type}`;
@@ -45,11 +45,10 @@ const GridComponent = Component.extend({
       });
       return orderedArray;
     }
-  },
+  }),
 
-  @computed('dataSourceData')
-  fullWidth(dataSourceData) {
-    return isEmpty(dataSourceData) ? '' : 'full-width';
-  }
+  fullWidth: computed('dataSourceData', function() {
+    return isEmpty(this.dataSourceData) ? '' : 'full-width';
+  })
 });
 export default connect(stateToComputed)(GridComponent);

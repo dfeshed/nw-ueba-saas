@@ -1,8 +1,8 @@
+import { computed } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import { saveList, resetList, openCreateList, enableNewList } from 'context/actions/list-creators';
 import { inject as service } from '@ember/service';
 import { listData, entityType, isError, errorMessage, isDisabled } from 'context/reducers/list/selectors';
@@ -30,24 +30,22 @@ const ListViewComponent = Component.extend({
   selectedRow: null,
   isDisabled: false,
 
-  @computed('errorMessageKey')
-  errorMessage(errorMessageKey) {
-    return this.get('i18n').t(`context.error.${errorMessageKey}`);
-  },
+  errorMessage: computed('errorMessageKey', function() {
+    return this.get('i18n').t(`context.error.${this.errorMessageKey}`);
+  }),
 
-  @computed('filterStr', 'listData')
-  getFilteredList(filterStr, listData) {
-    if (isEmpty(filterStr)) {
-      return listData;
+  getFilteredList: computed('filterStr', 'listData', function() {
+    if (isEmpty(this.filterStr)) {
+      return this.listData;
     } else {
-      const filterStrCaps = filterStr.toUpperCase();
-      return listData.filter((data) => {
+      const filterStrCaps = this.filterStr.toUpperCase();
+      return this.listData.filter((data) => {
         const name = data.name.toUpperCase().match(filterStrCaps);
         const desc = data.description && data.description.toUpperCase().match(filterStrCaps);
         return name || desc;
       });
     }
-  },
+  }),
 
   actions:
   {
@@ -64,7 +62,6 @@ const ListViewComponent = Component.extend({
       this.send('saveList');
     }
   }
-
 });
 
 export default connect(stateToComputed, dispatchToActions)(ListViewComponent);

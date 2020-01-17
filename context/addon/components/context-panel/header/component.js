@@ -1,7 +1,7 @@
+import { computed } from '@ember/object';
 import { connect } from 'ember-redux';
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { contextHelpIds } from 'context/utils/help-ids';
 import { restoreDefault } from 'context/actions/context-creators';
@@ -20,16 +20,16 @@ const HeaderComponent = Component.extend({
   contextualHelp: service(),
   classNames: 'rsa-context-panel__header',
   testId: 'contextPanelHeader',
+
   attributeBindings: [
     'testId:test-id'
   ],
 
-  @computed('activeTabName')
-  headerTitle(activeTabName) {
-    if (activeTabName) {
-      return this.get('i18n').t(`context.header.title.${activeTabName.camelize()}`);
+  headerTitle: computed('activeTabName', function() {
+    if (this.activeTabName) {
+      return this.get('i18n').t(`context.header.title.${this.activeTabName.camelize()}`);
     }
-  },
+  }),
 
   actions: {
     goToHelp() {

@@ -1,17 +1,20 @@
+import { computed } from '@ember/object';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import Component from '@ember/component';
 
 export default Component.extend({
   layout,
 
-  @computed('groupData')
-  groupDataArray: (groupData) => (groupData) ? [].concat(groupData) : [],
+  groupDataArray: computed('groupData', function() {
+    return (this.groupData) ? [].concat(this.groupData) : [];
+  }),
 
-  @computed('groupDataArray')
-  groupSize: (groupDataArray) => groupDataArray.length,
+  groupSize: computed('groupDataArray', function() {
+    return this.groupDataArray.length;
+  }),
 
-  @computed('title', 'index')
-  tetherPanelId: (title, index) => title.camelize().concat(index)
+  tetherPanelId: computed('title', 'index', function() {
+    return this.title.camelize().concat(this.index);
+  })
 
 });

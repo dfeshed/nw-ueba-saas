@@ -1,7 +1,8 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
 import lcColumnList from 'context/config/liveconnect-columns';
-import computed, { or } from 'ember-computed-decorators';
+import { or } from '@ember/object/computed';
 
 const liveConnectTabs = ['LiveConnect-Ip', 'LiveConnect-Domain', 'LiveConnect-File'];
 export default Component.extend({
@@ -9,15 +10,18 @@ export default Component.extend({
   lcColumnList,
   classNames: 'rsa-context-panel__liveconnect',
 
-  @computed('activeTabName')
-  showContextPanel: (activeTabName) => liveConnectTabs.includes(activeTabName),
+  showContextPanel: computed('activeTabName', function() {
+    return liveConnectTabs.includes(this.activeTabName);
+  }),
 
-  @or('model.contextData.LiveConnect-Ip_ERROR', 'model.contextData.LiveConnect-Domain_ERROR', 'model.contextData.LiveConnect-File_ERROR')
-  liveConnectError: null,
+  liveConnectError: or(
+    'model.contextData.LiveConnect-Ip_ERROR',
+    'model.contextData.LiveConnect-Domain_ERROR',
+    'model.contextData.LiveConnect-File_ERROR'
+  ),
 
-  @computed('activeTabName')
-  liveConnectDsDetails: (activeTabName) => {
-    return { dataSourceGroup: activeTabName };
-  }
+  liveConnectDsDetails: computed('activeTabName', function() {
+    return { dataSourceGroup: this.activeTabName };
+  })
 
 });

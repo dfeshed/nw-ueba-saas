@@ -1,7 +1,8 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
 import { inject as service } from '@ember/service';
-import computed, { equal } from 'ember-computed-decorators';
+import { equal } from '@ember/object/computed';
 import safeCallback from 'component-lib/utils/safe-callback';
 import { connect } from 'ember-redux';
 import { updateActiveTab } from 'context/actions/context-creators';
@@ -74,15 +75,7 @@ const ContextTooltipRecords = Component.extend({
    */
   clickDataAction: null,
 
-  /**
-   * Indicates whether to show the "context unavailable" message in the UI.
-   * Only returns true if the data fetch hit an error. If fetch completes successfully but returns no data, we should
-   * still NOT show the "context unavailable" message because there may be additional non-summary data available in Context Panel.
-   * @type {Boolean}
-   * @private
-   */
-  @equal('modelStatus', 'error')
-  isContextUnavailable: null,
+  isContextUnavailable: equal('modelStatus', 'error'),
 
   init() {
     this._super(...arguments);
@@ -107,15 +100,14 @@ const ContextTooltipRecords = Component.extend({
    * @type {{name: String, count: *, severity: *, lastUpdated: Number}[]}
    * @public
    */
-  @computed('modelSummary.[]', 'modelStatus', 'model.type')
-  resolvedModelSummary(summary, status, type) {
-    summary = summary || [];
+  resolvedModelSummary: computed('modelSummary.[]', 'modelStatus', 'model.type', function() {
+    const summary = this.modelSummary || [];
 
     // final resolved model summary which will return to UI.
     const finalModelSummary = [];
 
     // Loop thru the expected data sources for this entity type.
-    const recordNames = entityTypeToRecordNamesMap[type] || entityTypeToRecordNamesMap.DEFAULT;
+    const recordNames = entityTypeToRecordNamesMap[this.model.type] || entityTypeToRecordNamesMap.DEFAULT;
 
     recordNames
       .forEach((name) => {
@@ -136,7 +128,7 @@ const ContextTooltipRecords = Component.extend({
             finalModelSummary.push(record);
           }
 
-        } else if (status !== 'streaming') {
+        } else if (this.modelStatus !== 'streaming') {
 
           // We don't have the data, and we are not awaiting anymore data.
           // Show the data source in the UI anyway, along with a zero or hyphen (depending on data type).
@@ -154,8 +146,7 @@ const ContextTooltipRecords = Component.extend({
         }
       });
     return finalModelSummary;
-  },
-
+  }),
 
   _populateReputationStatus(finalModelSummary, record) {
     finalModelSummary.push({
@@ -188,7 +179,6 @@ const ContextTooltipRecords = Component.extend({
    * @public
    */
   modelStatus: null,
-
 
   actions: {
     // Handles clicks on each data record.

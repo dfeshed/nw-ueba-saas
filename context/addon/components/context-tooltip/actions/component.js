@@ -1,7 +1,8 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
 import safeCallback from 'component-lib/utils/safe-callback';
-import computed, { notEmpty } from 'ember-computed-decorators';
+import { notEmpty } from '@ember/object/computed';
 import { isEmpty } from '@ember/utils';
 import { connect } from 'ember-redux';
 import { pivotToInvestigateUrl, pivotToEndpointUrl } from 'context/utils/context-data-modifier';
@@ -54,38 +55,34 @@ const ContextToolTipActions = Component.extend({
    */
   addToListAction: null,
 
-  @notEmpty('endpointServices')
-  isEndpointServerAvailable: false,
+  isEndpointServerAvailable: notEmpty('endpointServices'),
 
   /**
    * Indicates whether or not to show the link to NetWitness Endpoint thick client ("ECAT").
    * @type {Boolean}
    * @private
   */
-  @computed('entityType', 'entityId')
-  showEndpointThickClientLink(entityType, entityId) {
-    return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC_ADDRESS/));
-  },
+  showEndpointThickClientLink: computed('entityType', 'entityId', function() {
+    return !isEmpty(this.entityId) && !!(String(this.entityType).match(/IP|HOST|MAC_ADDRESS/));
+  }),
 
   /**
    * Indicates whether or not to show the link to Pivot to Archer.
    * @type {Boolean}
    * @private
   */
-  @computed('entityType', 'entityId')
-  showArcherLink(entityType, entityId) {
-    return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC_ADDRESS/));
-  },
+  showArcherLink: computed('entityType', 'entityId', function() {
+    return !isEmpty(this.entityId) && !!(String(this.entityType).match(/IP|HOST|MAC_ADDRESS/));
+  }),
 
   /**
    * Indicates whether or not to show the link to NetWitness Endpoint.
    * @type {Boolean}
    * @private
    */
-  @computed('entityType', 'entityType')
-  showEndpointLink(entityType, entityId) {
-    return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC_ADDRESS|FILE_HASH|FILE_NAME/));
-  },
+  showEndpointLink: computed('entityType', 'entityType', function() {
+    return !isEmpty(this.entityType) && !!(String(this.entityType).match(/IP|HOST|MAC_ADDRESS|FILE_HASH|FILE_NAME/));
+  }),
 
   /**
    * This URL will navigate the user to the Classic Investigate UI with a query for the entity, but
@@ -104,14 +101,13 @@ const ContextToolTipActions = Component.extend({
    * @type {String}
    * @private
    */
-  @computed('showArcherLink', 'modelSummary.[]')
-  pivotToArcherUrl(showArcherLink, summary) {
+  pivotToArcherUrl: computed('showArcherLink', 'modelSummary.[]', function() {
     let archerDetails;
-    if (showArcherLink) {
-      archerDetails = summary ? summary.findBy('name', 'Archer') : null;
+    if (this.showArcherLink) {
+      archerDetails = this.modelSummary ? this.modelSummary.findBy('name', 'Archer') : null;
     }
     return archerDetails ? archerDetails.url : null;
-  },
+  }),
 
   /**
    * Computes the Pivot To Investigate link URL for the current entity type & id.

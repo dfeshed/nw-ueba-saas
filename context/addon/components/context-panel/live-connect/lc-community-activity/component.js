@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { isEmpty } from '@ember/utils';
-import computed from 'ember-computed-decorators';
 import ContextHelper from 'context/utils/util';
 import layout from './template';
 
@@ -37,35 +37,35 @@ export default Component.extend({
     this.fixedYDomain = this.fixedYDomain || [0, 100];
   },
 
-  @computed('liveConnectData.customerPercentageTrend')
-  trendingCommunityActivity: (seenTrend) => [ContextHelper.filterLast30Days(seenTrend)],
+  trendingCommunityActivity: computed('liveConnectData.customerPercentageTrend', function() {
+    return [ContextHelper.filterLast30Days(this.liveConnectData?.customerPercentageTrend)];
+  }),
 
-  @computed('liveConnectData')
-  trendingSubmissionActivity: (lcData) => ([
-    ContextHelper.filterLast30Days(lcData ? lcData.customerHighRiskFeedbackPercentageTrend : []),
-    ContextHelper.filterLast30Days(lcData ? lcData.customerRiskyFeedbackPercentageTrend : []),
-    ContextHelper.filterLast30Days(lcData ? lcData.customerSuspiciousFeedbackPercentageTrend : [])
-  ]),
+  trendingSubmissionActivity: computed('liveConnectData', function() {
+    return [
+      ContextHelper.filterLast30Days(this.liveConnectData ? this.liveConnectData.customerHighRiskFeedbackPercentageTrend : []),
+      ContextHelper.filterLast30Days(this.liveConnectData ? this.liveConnectData.customerRiskyFeedbackPercentageTrend : []),
+      ContextHelper.filterLast30Days(this.liveConnectData ? this.liveConnectData.customerSuspiciousFeedbackPercentageTrend : [])
+    ];
+  }),
 
-  @computed('trendingSubmissionActivity')
-  showSubmissionTrend: (submissionTrend) => {
-    return submissionTrend.any((arr) => {
+  showSubmissionTrend: computed('trendingSubmissionActivity', function() {
+    return this.trendingSubmissionActivity.any((arr) => {
       return !isEmpty(arr);
     });
-  },
+  }),
 
-  @computed('liveConnectData.tags', 'allTags')
-  riskIndicatorCategories: (riskIndicatorTags, allTags) => {
+  riskIndicatorCategories: computed('liveConnectData.tags', 'allTags', function() {
     // Collect tags to be highlighted
-    const tagsToHighlight = (riskIndicatorTags || []).reduce((hash, tag) => {
+    const tagsToHighlight = (this.liveConnectData?.tags || []).reduce((hash, tag) => {
       hash[tag] = true;
       return hash;
     }, {});
 
     // Map all tags to respective fields identified by the category name
     const categories = {};
-    if (allTags && allTags.length > 0) {
-      allTags.forEach((tag) => {
+    if (this.allTags && this.allTags.length > 0) {
+      this.allTags.forEach((tag) => {
         if (!categories.hasOwnProperty(tag.category)) {
           categories[tag.category] = {
             categoryText: tag.categoryText,
@@ -83,28 +83,25 @@ export default Component.extend({
 
     // Finally return all values as array
     return Object.keys(categories).map((key) => categories[key]);
-  },
+  }),
 
-  @computed('liveConnectData.riskReasonTypeList', 'allReasons')
-  riskReasonList: (riskReasons, allReasons) => {
-    const riskReasonMap = allReasons.reduce((hash, reason) => {
+  riskReasonList: computed('liveConnectData.riskReasonTypeList', 'allReasons', function() {
+    const riskReasonMap = this.allReasons.reduce((hash, reason) => {
       hash[reason.value] = reason.description;
       return hash;
     }, {});
 
-    const reasonsToDisplay = (riskReasons || []).map((reason) => {
+    const reasonsToDisplay = (this.liveConnectData?.riskReasonTypeList || []).map((reason) => {
       return riskReasonMap[reason];
     });
     return reasonsToDisplay;
-  },
+  }),
 
-  @computed('liveConnectData.risk')
-  riskDescription: (risk) => {
-    return riskTemplate[risk].desc;
-  },
+  riskDescription: computed('liveConnectData.risk', function() {
+    return riskTemplate[this.liveConnectData?.risk].desc;
+  }),
 
-  @computed('liveConnectData.risk')
-  riskBadgeStyle: (risk) => {
-    return riskTemplate[risk].style;
-  }
+  riskBadgeStyle: computed('liveConnectData.risk', function() {
+    return riskTemplate[this.liveConnectData?.risk].style;
+  })
 });

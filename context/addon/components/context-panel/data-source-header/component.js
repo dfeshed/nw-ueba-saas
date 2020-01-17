@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import layout from './template';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import Component from '@ember/component';
 import { getErrorMessage } from 'context/utils/context-data-modifier';
 import { onLiveConnectTab } from 'context/reducers/tabs/selectors';
@@ -18,39 +18,37 @@ const DSHeaderComponent = Component.extend({
   layout,
   classNames: 'rsa-context-panel__data__header',
 
-  @computed('contextData', 'lookupData.[]', 'dataSourceDetails')
-  dsData(contextData, [lookupData], dataSourceDetails) {
+  dsData: computed('contextData', 'lookupData.[]', 'dataSourceDetails', function() {
+    const [lookupData] = this.lookupData;
     if (!lookupData) {
       return;
     }
-    const data = contextData && (contextData.liveConnectData || contextData.resultList);
+    const data = this.contextData && (this.contextData.liveConnectData || this.contextData.resultList);
     if (data) {
-      return contextData;
+      return this.contextData;
     }
-    return lookupData[dataSourceDetails.dataSourceGroup];
-  },
+    return lookupData[this.dataSourceDetails.dataSourceGroup];
+  }),
 
-  @computed('dsData')
-  errorMessage(dsData) {
-    if (dsData && dsData.liveConnectData) {
+  errorMessage: computed('dsData', function() {
+    if (this.dsData && this.dsData.liveConnectData) {
       return '';
     }
-    return getErrorMessage(dsData, this.get('i18n'));
-  },
-  @computed('dataSourceDetails')
-  dsTypeMarketing({ dataSourceGroup }) {
-    if (dataSourceGroup === FILE_REPUTATION_SERVER) {
+    return getErrorMessage(this.dsData, this.get('i18n'));
+  }),
+
+  dsTypeMarketing: computed('dataSourceDetails', function() {
+    if (this.dataSourceDetails.dataSourceGroup === FILE_REPUTATION_SERVER) {
       return this.get('i18n').t('context.fileReputationMarketingText');
     }
-    const dataSourceName = this.get('i18n').t(`context.marketingDSType.${dataSourceGroup}`);
+    const dataSourceName = this.get('i18n').t(`context.marketingDSType.${this.dataSourceDetails.dataSourceGroup}`);
     const marketingText = this.get('i18n').t('context.marketingText');
     return dataSourceName + marketingText;
-  },
+  }),
 
-  @computed('dataSources', 'activeTabName', 'dataSourceDetails')
-  isConfigured: {
+  isConfigured: computed('dataSources', 'activeTabName', 'dataSourceDetails', {
     get() {
-      const dataSources = this.get('datasources');
+      const dataSources = this.get('dataSources');
       const activeTabName = this.get('activeTabName');
       const { dataSourceGroup } = this.get('dataSourceDetails');
       if (!dataSources) {
@@ -63,6 +61,6 @@ const DSHeaderComponent = Component.extend({
     set(key, value) {
       return value;
     }
-  }
+  })
 });
 export default connect(stateToComputed)(DSHeaderComponent);

@@ -1,10 +1,10 @@
+import { computed } from '@ember/object';
 import layout from './template';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { isEmpty } from '@ember/utils';
 import { addToList, resetList, createNewList, setErrorOnList, resetError } from 'context/actions/list-creators';
 import { listData, isError, errorMessage, isDisabled } from 'context/reducers/list/selectors';
-import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   listData: listData(state),
@@ -25,10 +25,9 @@ const CreateListViewComponent = Component.extend({
   layout,
   errorMessageForList: null,
 
-  @computed('errorMessageKey')
-  errorMessage(errorMessageKey) {
-    return this.get('i18n').t(`context.error.${errorMessageKey}`);
-  },
+  errorMessage: computed('errorMessageKey', function() {
+    return this.get('i18n').t(`context.error.${this.errorMessageKey}`);
+  }),
 
   actions: {
 
@@ -55,7 +54,6 @@ const CreateListViewComponent = Component.extend({
       }
     }
   }
-
 });
 
 export default connect(stateToComputed, dispatchToActions)(CreateListViewComponent);

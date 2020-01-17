@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import layout from './template';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import Component from '@ember/component';
 import { getTimeWindow } from 'context/utils/context-data-modifier';
 
@@ -16,33 +16,31 @@ const FooterComponent = Component.extend({
   layout,
   classNames: 'rsa-context-panel__footer',
 
-  @computed('lookupData.[]', 'activeTabName')
-  dataSourceData([lookupData], activeTabName) {
+  dataSourceData: computed('lookupData.[]', 'activeTabName', function() {
+    const [lookupData] = this.lookupData;
     if (!lookupData) {
       return;
     }
-    return lookupData[activeTabName === 'Endpoint' ? 'Machines' : activeTabName];
-  },
+    return lookupData[this.activeTabName === 'Endpoint' ? 'Machines' : this.activeTabName];
+  }),
 
-  @computed('dataSourceData')
-  footerTimeStamp(dataSourceData) {
-    return getTimeWindow(dataSourceData, this.get('i18n'));
-  },
+  footerTimeStamp: computed('dataSourceData', function() {
+    return getTimeWindow(this.dataSourceData, this.get('i18n'));
+  }),
 
-  @computed('dataSourceData', 'activeTabName')
-  dSResultCount(dataSourceData, activeTabName) {
-    if (footerExcludedTabs.includes(activeTabName)) {
+  dSResultCount: computed('dataSourceData', 'activeTabName', function() {
+    if (footerExcludedTabs.includes(this.activeTabName)) {
       return '';
     } else {
-      const count = dataSourceData && dataSourceData.resultList ? dataSourceData.resultList.length : 0;
-      const dataSource = `${count } ${ this.get('i18n').t(`context.footer.title.${activeTabName.camelize()}`)}`;
-      if (footerIncludedTabs.includes(activeTabName)) {
-        if (dataSourceData && dataSourceData.resultMeta) {
-          return `${dataSource } ${ this.get('i18n').t('context.footer.resultCount', { count: dataSourceData.resultMeta.limit })}`;
+      const count = this.dataSourceData && this.dataSourceData.resultList ? this.dataSourceData.resultList.length : 0;
+      const dataSource = `${count } ${ this.get('i18n').t(`context.footer.title.${this.activeTabName.camelize()}`)}`;
+      if (footerIncludedTabs.includes(this.activeTabName)) {
+        if (this.dataSourceData && this.dataSourceData.resultMeta) {
+          return `${dataSource } ${ this.get('i18n').t('context.footer.resultCount', { count: this.dataSourceData.resultMeta.limit })}`;
         }
       }
       return dataSource;
     }
-  }
+  })
 });
 export default connect(stateToComputed)(FooterComponent);

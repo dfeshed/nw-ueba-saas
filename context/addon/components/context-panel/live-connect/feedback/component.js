@@ -1,8 +1,8 @@
+import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { isEmpty } from '@ember/utils';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import riskLevels from './risk-levels';
 import confidenceLevels from './confidence-levels';
@@ -38,14 +38,14 @@ const FeedbackComponent = Component.extend({
 
   },
 
-  @computed('activeTabName', 'model.contextData.liveConnectData')
-  showFeedbackPanel: (activeTabName, lcData) => liveConnectTabs.includes(activeTabName) && lcData,
+  showFeedbackPanel: computed('activeTabName', 'model.contextData.liveConnectData', function() {
+    return liveConnectTabs.includes(this.activeTabName) && this.model?.contextData?.liveConnectData;
+  }),
 
-  @computed('model.contextData.liveConnectData.allTags')
-  riskTags: (tags) => {
+  riskTags: computed('model.contextData.liveConnectData.allTags', function() {
     const groups = {};
-    if (!isEmpty(tags)) {
-      tags.forEach((tag) => {
+    if (!isEmpty(this.model?.contextData?.liveConnectData?.allTags)) {
+      this.model?.contextData?.liveConnectData?.allTags.forEach((tag) => {
         if (!groups.hasOwnProperty(tag.category)) {
           groups[tag.category] = {
             groupName: tag.categoryText,
@@ -56,7 +56,7 @@ const FeedbackComponent = Component.extend({
       });
     }
     return Object.keys(groups).map((key) => groups[key]);
-  },
+  }),
 
   actions: {
     setSelectedRiskLevel(option) {

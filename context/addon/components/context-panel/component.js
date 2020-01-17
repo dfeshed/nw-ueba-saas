@@ -1,7 +1,6 @@
 import { warn, log } from 'ember-debug';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import {
   initializeContextPanel,
   restoreDefault,
@@ -14,7 +13,7 @@ import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import { isArray } from '@ember/array';
 import { once, later } from '@ember/runloop';
-import EmberObject from '@ember/object';
+import EmberObject, { computed } from '@ember/object';
 
 const stateToComputed = ({ context: { context: { errorMessage, lookupData, isClicked }, tabs: { dataSources, activeTabName } } }) => ({
   dataSources,
@@ -34,29 +33,25 @@ const dispatchToActions = {
 const ContextComponent = Component.extend({
   layout,
   classNames: 'rsa-context-panel',
-
   request: service(),
   eventBus: service(),
   context: service(),
-
   contextData: null,
   isDisplayed: false,
   model: null,
 
-  @computed('lookupData.[]', 'dataSources', 'errorMessage')
-  isReady(lookupData, dataSources, errorMessage) {
-    if (errorMessage && errorMessage !== '') {
+  isReady: computed('lookupData.[]', 'dataSources', 'errorMessage', function() {
+    if (this.errorMessage && this.errorMessage !== '') {
       return true;
     }
-    if (!lookupData || !dataSources) {
+    if (!this.lookupData || !this.dataSources) {
       return false;
     }
     this._initModel();
-    this._initLCData(lookupData);
+    this._initLCData(this.lookupData);
     this._endOfResponse();
     return true;
-  },
-
+  }),
 
   didReceiveAttrs() {
     const { entityId, entityType } = this.getProperties('entityId', 'entityType');
@@ -97,6 +92,7 @@ const ContextComponent = Component.extend({
       [lookupData['LiveConnect-Ip'], lookupData['LiveConnect-File'], lookupData['LiveConnect-Domain']].map(this._parseLCData.bind(this));
     }
   },
+
   _parseLCData(contextDatum) {
     if (!contextDatum || !contextDatum.resultList) {
       return;
@@ -114,6 +110,7 @@ const ContextComponent = Component.extend({
       }
     });
   },
+
   _endOfResponse() {
     if (!this.get('model.contextData.liveConnectData.allTags')) {
       this.set('model.contextData.liveConnectData', null);
@@ -144,6 +141,7 @@ const ContextComponent = Component.extend({
       }
     });
   },
+
   _checkNullForInfo(entityType, obj) {
     entityType.checkNullFields.forEach((field) => {
       if (isEmpty(obj[entityType.info][field])) {
@@ -224,6 +222,5 @@ const ContextComponent = Component.extend({
       _closePanel();
     }
   }
-
 });
 export default connect(stateToComputed, dispatchToActions)(ContextComponent);
