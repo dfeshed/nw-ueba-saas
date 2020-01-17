@@ -1,7 +1,7 @@
+import { computed } from '@ember/object';
 import Mixin from '@ember/object/mixin';
 import { join, next, debounce } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
-import computed from 'ember-computed-decorators';
 
 /**
  * @class HasScrollAttr Mixin
@@ -46,10 +46,9 @@ export default Mixin.create({
    * @type {Object}
    * @private
    */
-  @computed('element', 'scrollSelector')
-  scrollElement(element, scrollSelector) {
-    return isEmpty(scrollSelector) ? element : (element && this.element.querySelector(scrollSelector));
-  },
+  scrollElement: computed('element', 'scrollSelector', function() {
+    return isEmpty(this.scrollSelector) ? this.element : (this.element && this.element.querySelector(this.scrollSelector));
+  }),
 
   /**
    * A callback function that reads the `scroll*` properties from `scrollElement` and writes them to the `scroll*` attrs
@@ -57,28 +56,27 @@ export default Mixin.create({
    * @type {Function}
    * @private
    */
-  @computed('scrollElement', 'scrollDebounce')
-  scrollCallback(scrollElement, scrollDebounce) {
-    if (!scrollElement) {
+  scrollCallback: computed('scrollElement', 'scrollDebounce', function() {
+    if (!this.scrollElement) {
       return null;
     }
     const update = function() {
       const scrollAttr = this.get('scrollAttr');
       this.set(scrollAttr, {
-        top: scrollElement.scrollTop,
-        left: scrollElement.scrollLeft
+        top: this.scrollElement.scrollTop,
+        left: this.scrollElement.scrollLeft
       });
     };
-    if (scrollDebounce) {
+    if (this.scrollDebounce) {
       return (() => {
-        debounce(this, update, scrollDebounce);
+        debounce(this, update, this.scrollDebounce);
       });
     } else {
       return (() => {
         join(this, update);
       });
     }
-  },
+  }),
 
   // Attach a scroll listener, and call it manually the 1st time.
   initScrollAttr() {

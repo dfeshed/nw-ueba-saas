@@ -1,5 +1,5 @@
+import { computed } from '@ember/object';
 import Mixin from '@ember/object/mixin';
-import computed from 'ember-computed-decorators';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 
 /**
@@ -36,8 +36,7 @@ export default Mixin.create({
    * @type {object}
    * @private
    */
-  @computed('selections.ids.[]')
-  selectionsHash(ids) {
-    return arrayToHashKeys(ids);
-  }
+  selectionsHash: computed('selections.ids.[]', function() {
+    return arrayToHashKeys(this.selections?.ids);
+  })
 });

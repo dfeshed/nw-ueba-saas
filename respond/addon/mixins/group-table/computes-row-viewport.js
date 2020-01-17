@@ -1,8 +1,8 @@
 import Mixin from '@ember/object/mixin';
 import ComputesRowExtents from './computes-row-extents';
-import computed, { alias } from 'ember-computed-decorators';
+import { alias } from '@ember/object/computed';
 import { debounce } from '@ember/runloop';
-import { get, set } from '@ember/object';
+import { get, set, computed } from '@ember/object';
 
 /**
  * @class ComputesRowViewport Mixin
@@ -22,32 +22,28 @@ export default Mixin.create(ComputesRowExtents, {
    * @type {Number}
    * @public
    */
-  @alias('viewportIndices.firstGroupIndex')
-  firstGroupIndex: 0,
+  firstGroupIndex: alias('viewportIndices.firstGroupIndex'),
 
   /**
    * The index of the first group item which lies within the buffered viewport.
    * @type {Number}
    * @public
    */
-  @alias('viewportIndices.firstGroupItemIndex')
-  firstGroupItemIndex: 0,
+  firstGroupItemIndex: alias('viewportIndices.firstGroupItemIndex'),
 
   /**
    * The index of the last group which lies within the buffered viewport.
    * @type {Number}
    * @public
    */
-  @alias('viewportIndices.lastGroupIndex')
-  lastGroupIndex: 0,
+  lastGroupIndex: alias('viewportIndices.lastGroupIndex'),
 
   /**
    * The index of the last group item which lies within the buffered viewport.
    * @type {Number}
    * @public
    */
-  @alias('viewportIndices.lastGroupItemIndex')
-  lastGroupItemIndex: 0,
+  lastGroupItemIndex: alias('viewportIndices.lastGroupItemIndex'),
 
   /**
    * Debounce interval (in millisec) for recalculating `viewport` once DOM change is detected.
@@ -72,34 +68,32 @@ export default Mixin.create(ComputesRowExtents, {
    * @type {Number}
    * @public
    */
-  @computed
-  scrollerPos: {
+  scrollerPos: computed({
     get() {
       return this._scrollerPos || {};
     },
-    set(value) {
+    set(key, value) {
       this._scrollerPos = value || {};
       this.viewportDomDidChange();
       return value;
     }
-  },
+  }),
 
   /**
    * Configurable height (in pixels) of the current scrollable viewport.
    * @type {Number}
    * @public
    */
-  @computed
-  scrollerSize: {
+  scrollerSize: computed({
     get() {
       return this._scrollerSize || {};
     },
-    set(value) {
+    set(key, value) {
       this._scrollerSize = value || {};
       this.viewportDomDidChange();
       return value;
     }
-  },
+  }),
 
   /**
    * The group currently positioned at the top of the (non-buffered) viewport.
@@ -107,20 +101,19 @@ export default Mixin.create(ComputesRowExtents, {
    * @type {{ index: Number, group: Object, isLeaving: Boolean }}
    * @public
    */
-  @computed('scrollerPos.top', 'groups', 'groupExtents', 'groupHeaderSize.outerHeight')
-  groupAtTop(scrollTop, groups, groupExtents, groupHeaderOuterHeight) {
+  groupAtTop: computed('scrollerPos.top', 'groups', 'groupExtents', 'groupHeaderSize.outerHeight', function() {
     // Compute the index of the first group that intersects the non-buffered viewport.
     // TODO optimization: use a binary search instead of a linear `find`
-    const firstGroup = groupExtents.find((extent) => extent.bottom >= scrollTop);
+    const firstGroup = this.groupExtents.find((extent) => extent.bottom >= this.scrollerPos?.top);
     const index = firstGroup ? firstGroup.index : 0;
-    const group = (groups || [])[index];
-    const isLeaving = firstGroup ? ((firstGroup.bottom - scrollTop) <= groupHeaderOuterHeight) : false;
+    const group = (this.groups || [])[index];
+    const isLeaving = firstGroup ? ((firstGroup.bottom - this.scrollerPos?.top) <= this.groupHeaderSize?.outerHeight) : false;
     return {
       index,
       group,
       isLeaving
     };
-  },
+  }),
 
   /**
    * Triggers a recalculation of the viewport` after applying throttle.
@@ -144,11 +137,10 @@ export default Mixin.create(ComputesRowExtents, {
    * @type {{firstGroupIndex: number, firstGroupItemIndex: number, lastGroupIndex: number, lastGroupItemIndex: number}}
    * @private
    */
-  @computed('viewportDom', 'viewportBuffer', 'groupExtents', 'groupHeaderSize', 'groupItemSize')
-  viewportIndices(viewportDom, viewportBuffer, groupExtents, groupHeaderSize, groupItemSize) {
-    const grpHeaderSize = groupHeaderSize || {};
+  viewportIndices: computed('viewportDom', 'viewportBuffer', 'groupExtents', 'groupHeaderSize', 'groupItemSize', function() {
+    const grpHeaderSize = this.groupHeaderSize || {};
     const groupHeaderHeight = (grpHeaderSize.outerHeight) ? grpHeaderSize.outerHeight : 0;
-    const grpItemSize = groupItemSize || {};
+    const grpItemSize = this.groupItemSize || {};
     const groupItemHeight = (grpItemSize.outerHeight) ? grpItemSize.outerHeight : 0;
     const { scrollerPos, scrollerSize } = this.getProperties('scrollerPos', 'scrollerSize');
     const { top } = scrollerPos || {};
@@ -161,14 +153,14 @@ export default Mixin.create(ComputesRowExtents, {
     };
 
     const buffered = {
-      top: actual.top - viewportBuffer,
-      bottom: actual.bottom + viewportBuffer
+      top: actual.top - this.viewportBuffer,
+      bottom: actual.bottom + this.viewportBuffer
     };
 
     // Compute the index of the first group that fits within the viewport.
     // TODO optimization: use a binary search instead of a linear `find`
-    let firstGroup = groupExtents.find((extent) => extent.bottom >= buffered.top);
-    firstGroup = firstGroup || groupExtents[0];
+    let firstGroup = this.groupExtents.find((extent) => extent.bottom >= buffered.top);
+    firstGroup = firstGroup || this.groupExtents[0];
     const firstGroupIndex = firstGroup ? firstGroup.index : 0;
 
     // Compute the index of the first group item that fits within the viewport.
@@ -179,10 +171,10 @@ export default Mixin.create(ComputesRowExtents, {
     }
 
     // Compute the index of the last group that fits within the viewport.
-    const firstGroupBelow = groupExtents.slice(firstGroupIndex).find((extent) => extent.top > buffered.bottom);
-    let lastGroupIndex = firstGroupBelow ? (firstGroupBelow.index - 1) : (groupExtents.length - 1);
+    const firstGroupBelow = this.groupExtents.slice(firstGroupIndex).find((extent) => extent.top > buffered.bottom);
+    let lastGroupIndex = firstGroupBelow ? (firstGroupBelow.index - 1) : (this.groupExtents.length - 1);
     lastGroupIndex = Math.max(firstGroupIndex, lastGroupIndex);
-    const lastGroup = groupExtents[lastGroupIndex];
+    const lastGroup = this.groupExtents[lastGroupIndex];
 
     // Compute the index of the last group item that fits within the viewport.
     let lastGroupItemIndex = -1;
@@ -191,9 +183,9 @@ export default Mixin.create(ComputesRowExtents, {
       lastGroupItemIndex = Math.ceil(yDiff / groupItemHeight);
     }
 
-    const initializedExtents = groupExtents.filter((extent) => extent.top === 0 && extent.bottom === -1);
-    const defaultExtents = get(initializedExtents, 'length') === get(groupExtents, 'length');
-    if (defaultExtents && groupItemSize === null && lastGroupItemIndex === -1) {
+    const initializedExtents = this.groupExtents.filter((extent) => extent.top === 0 && extent.bottom === -1);
+    const defaultExtents = get(initializedExtents, 'length') === get(this.groupExtents, 'length');
+    if (defaultExtents && this.groupItemSize === null && lastGroupItemIndex === -1) {
       lastGroupIndex = 0;
     }
 
@@ -203,7 +195,7 @@ export default Mixin.create(ComputesRowExtents, {
       lastGroupIndex,
       lastGroupItemIndex
     };
-  },
+  }),
 
   /**
    * Maps each member of `groups` to a wrapper object where we can store additional UI-related info about that group.
@@ -212,12 +204,11 @@ export default Mixin.create(ComputesRowExtents, {
    * @type {{ group: Object, index: Number }[]}
    * @private
    */
-  @computed('groups.[]')
-  groupRefs(groups) {
-    groups = groups || [];
+  groupRefs: computed('groups.[]', function() {
+    const groups = this.groups || [];
     const len = groups.length;
     return (groups || []).map((group, index) => ({ group, index, isLast: index === len - 1 }));
-  },
+  }),
 
   /**
    * Returns the same array as `groupRefs` but ensures each array member has its `extent` set to the corresponding
@@ -225,21 +216,19 @@ export default Mixin.create(ComputesRowExtents, {
    * @type {{ group: Object, index: Number, extent: { top: Number, bottom: Number }}[]}
    * @private
    */
-  @computed('groupRefs', 'groupExtents')
-  groupRefsWithExtents(refs, extents) {
-    refs.forEach((ref, index) => {
-      set(ref, 'extent', extents[index]);
+  groupRefsWithExtents: computed('groupRefs', 'groupExtents', function() {
+    this.groupRefs.forEach((ref, index) => {
+      set(ref, 'extent', this.groupExtents[index]);
     });
-    return refs;
-  },
+    return this.groupRefs;
+  }),
 
   /**
    * Subset of `groupRefsWithExtents` which intersect the current scroll viewport.
    * @type {{ group: Object, index: Number, extent: { top: Number, bottom: Number }}[]}
    * @public
    */
-  @computed('groupRefsWithExtents', 'firstGroupIndex', 'lastGroupIndex', 'groupExtents')
-  groupRefsInViewport(refs, first, last) {
-    return refs.slice(first, last + 1);
-  }
+  groupRefsInViewport: computed('groupRefsWithExtents', 'firstGroupIndex', 'lastGroupIndex', 'groupExtents', function() {
+    return this.groupRefsWithExtents.slice(this.firstGroupIndex, this.lastGroupIndex + 1);
+  })
 });

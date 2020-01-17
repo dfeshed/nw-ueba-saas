@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Mixin from '@ember/object/mixin';
 import HasColumns from './has-columns';
-import computed from 'ember-computed-decorators';
 
 /**
  * @class ComputesColumnSizes Mixin
@@ -17,14 +17,13 @@ export default Mixin.create(HasColumns, {
    * @type {String}
    * @public
    */
-  @computed('visibleColumns.@each.width')
-  totalColumnsWidth(visibleColumns) {
-    const obj = (visibleColumns || [])
+  totalColumnsWidth: computed('visibleColumns.@each.width', function() {
+    const obj = (this.visibleColumns || [])
       .mapBy('parsedWidth')
       .reduce(
         ((total, w) => total ? total.add(w) : w),
         null
       );
     return obj ? obj.get('string') : '';
-  }
+  })
 });

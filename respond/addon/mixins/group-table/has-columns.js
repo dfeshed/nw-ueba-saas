@@ -1,6 +1,7 @@
+import { computed } from '@ember/object';
 import Column from 'respond/utils/group-table/column';
 import Mixin from '@ember/object/mixin';
-import computed, { filterBy } from 'ember-computed-decorators';
+import { filterBy } from '@ember/object/computed';
 
 /**
  * @class HasColumns Mixin
@@ -56,17 +57,15 @@ export default Mixin.create({
    * @type {Ember.Object[]}
    * @public
    */
-  @computed('columnsConfig.[]')
-  columns(columnsConfig) {
-    return (columnsConfig || [])
+  columns: computed('columnsConfig.[]', function() {
+    return (this.columnsConfig || [])
       .map((config) => Column.create(config));
-  },
+  }),
 
   /**
    * Computes the subset of `columns` whose `selected` is `true`.
    * @type {Object[]}
    * @public
    */
-  @filterBy('columns', 'visible', true)
-  visibleColumns: null
+  visibleColumns: filterBy('columns', 'visible', true)
 });

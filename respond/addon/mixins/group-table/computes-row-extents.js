@@ -1,7 +1,6 @@
 import Mixin from '@ember/object/mixin';
 import HasGroupedRows from './has-grouped-rows';
-import computed from 'ember-computed-decorators';
-import { get } from '@ember/object';
+import { get, computed } from '@ember/object';
 import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 /**
@@ -45,10 +44,9 @@ export default Mixin.create(HasGroupedRows, {
    * @type {Number[]}
    * @private
    */
-  @computed('groups.@each.items')
-  groupItemCounts(groups) {
-    return (groups || []).map((group) => (get(group, 'items.length') || 0));
-  },
+  groupItemCounts: computed('groups.@each.items', function() {
+    return (this.groups || []).map((group) => (get(group, 'items.length') || 0));
+  }),
 
   /**
    * An array of the heights of each of the `groups`.
@@ -56,15 +54,14 @@ export default Mixin.create(HasGroupedRows, {
    * @type {{ openHeight: Number, closedHeight: Number }[]}
    * @private
    */
-  @computed('groupItemCounts', 'groupHeaderSize.outerHeight', 'groupItemSize.outerHeight')
-  groupHeights(itemCounts, headerHeight, itemHeight) {
-    headerHeight = headerHeight || 0;
-    itemHeight = itemHeight || 0;
-    return itemCounts.map((count) => ({
-      openHeight: headerHeight + count * itemHeight,
-      closedHeight: headerHeight
+  groupHeights: computed('groupItemCounts', 'groupHeaderSize.outerHeight', 'groupItemSize.outerHeight', function() {
+    const groupHeaderSizeOuterHeight = this.groupHeaderSize?.outerHeight || 0;
+    const groupItemSizeOuterHeight = this.groupItemSize?.outerHeight || 0;
+    return this.groupItemCounts.map((count) => ({
+      openHeight: groupHeaderSizeOuterHeight + count * groupItemSizeOuterHeight,
+      closedHeight: groupHeaderSizeOuterHeight
     }));
-  },
+  }),
 
   /**
    * An array of the tops & bottoms (in pixels) of each of the `groups`.
@@ -72,13 +69,12 @@ export default Mixin.create(HasGroupedRows, {
    * @type {{ index: Number, top: Number, bottom: Number }[]}
    * @public
    */
-  @computed('groups.@each.isOpen', 'groupHeights')
-  groupExtents(groups, groupHeights) {
+  groupExtents: computed('groups.@each.isOpen', 'groupHeights', function() {
     const extents = [];
     let y = 0;
-    (groups || []).forEach((group, index) => {
+    (this.groups || []).forEach((group, index) => {
       const isOpen = get(group, 'isOpen');
-      const heights = groupHeights[index];
+      const heights = this.groupHeights[index];
       const height = isOpen ? heights.openHeight : heights.closedHeight;
       extents.push({
         index,
@@ -88,7 +84,7 @@ export default Mixin.create(HasGroupedRows, {
       y += height;
     });
     return extents;
-  },
+  }),
 
   /**
    * The total pixel height of open rows as a String, including the units suffix 'px'.
@@ -98,8 +94,7 @@ export default Mixin.create(HasGroupedRows, {
    * @type {Number}
    * @public
    */
-  @computed('groupExtents.lastObject.bottom')
-  totalRowsHeight(bottom) {
-    return isNumeric(bottom) ? `${bottom + 1}px` : '';
-  }
+  totalRowsHeight: computed('groupExtents.lastObject.bottom', function() {
+    return isNumeric(this.groupExtents?.lastObject?.bottom) ? `${this.groupExtents?.lastObject?.bottom + 1}px` : '';
+  })
 });
