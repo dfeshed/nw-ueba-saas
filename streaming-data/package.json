@@ -36,7 +36,7 @@
     "ember-cli-node-assets": "0.2.0",
     "ember-dependency-lookup": "2.0.0",
     "ember-get-config": "0.2.3",
-    "ember-fetch": "6.7.0",
+    "ember-fetch": "7.0.0",
     "sockjs-client-web": "1.1.1-alpha.2"
   },
   "devDependencies": {

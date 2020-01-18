@@ -2158,9 +2158,10 @@ abbrev@1:
   resolved "https://registry.npmjs.org/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
 
-abortcontroller-polyfill@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/abortcontroller-polyfill/-/abortcontroller-polyfill-1.3.0.tgz#de69af32ae926c210b7efbcc29bf644ee4838b00"
+abortcontroller-polyfill@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/abortcontroller-polyfill/-/abortcontroller-polyfill-1.4.0.tgz#0d5eb58e522a461774af8086414f68e1dda7a6c4"
+  integrity sha512-3ZFfCRfDzx3GFjO6RAkYx81lPGpUS20ISxux9gLxuKnqafNcFQo59+IoZqpO2WvQlyc287B62HDnDdNYRmlvWA==
 
 accepts@~1.3.4, accepts@~1.3.5:
   version "1.3.5"
@@ -2599,15 +2600,16 @@ atob@^2.1.1:
   resolved "https://registry.npmjs.org/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-autoprefixer@^6.0.0:
-  version "6.7.7"
-  resolved "https://registry.npmjs.org/autoprefixer/-/autoprefixer-6.7.7.tgz#1dbd1c835658e35ce3f9984099db00585c782014"
+autoprefixer@^7.0.0:
+  version "7.2.6"
+  resolved "https://registry.npmjs.org/autoprefixer/-/autoprefixer-7.2.6.tgz#256672f86f7c735da849c4f07d008abb056067dc"
+  integrity sha512-Iq8TRIB+/9eQ8rbGhcP7ct5cYb/3qjNYAR2SnzLCEcwF6rvVOax8+9+fccgXk4bEhQGjOZd5TLhsksmAdsbGqQ==
   dependencies:
-    browserslist "^1.7.6"
-    caniuse-db "^1.0.30000634"
+    browserslist "^2.11.3"
+    caniuse-lite "^1.0.30000805"
     normalize-range "^0.1.2"
     num2fraction "^1.2.2"
-    postcss "^5.2.16"
+    postcss "^6.0.17"
     postcss-value-parser "^3.2.3"
 
 aws-sign2@~0.7.0:
@@ -3523,14 +3525,14 @@ broccoli-asset-rewrite@^2.0.0:
   dependencies:
     broccoli-filter "^1.2.3"
 
-broccoli-autoprefixer@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.npmjs.org/broccoli-autoprefixer/-/broccoli-autoprefixer-4.1.0.tgz#5a612ef4fcebda51fa9b645c3e35c911c81516c2"
+broccoli-autoprefixer@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmjs.org/broccoli-autoprefixer/-/broccoli-autoprefixer-5.0.0.tgz#68c9f3bfdfff9df2d39e46545b9cf9d4443d6a16"
+  integrity sha1-aMnzv9//nfLTnkZUW5z51EQ9ahY=
   dependencies:
-    autoprefixer "^6.0.0"
+    autoprefixer "^7.0.0"
     broccoli-persistent-filter "^1.1.6"
-    object-assign "^4.0.1"
-    postcss "^5.0.4"
+    postcss "^6.0.1"
 
 broccoli-babel-transpiler@^6.5.0:
   version "6.5.1"
@@ -3643,7 +3645,7 @@ broccoli-concat@^3.2.2, broccoli-concat@^3.7.3:
     lodash.uniq "^4.2.0"
     walk-sync "^0.3.2"
 
-broccoli-concat@^3.7.1, broccoli-concat@^3.7.4:
+broccoli-concat@^3.7.1, broccoli-concat@^3.7.4, broccoli-concat@^3.7.5:
   version "3.7.5"
   resolved "https://registry.npmjs.org/broccoli-concat/-/broccoli-concat-3.7.5.tgz#223beda8c1184252cf08ae020a3d45ffa6a48218"
   integrity sha512-rDs1Mej3Ej0Cy5yIO9oIQq5+BCv0opAwS2NW7M0BeCsAMeFM42Z/zacDUC6jKc5OV5wiHvGTyCPLnZkMe0h6kQ==
@@ -4354,14 +4356,15 @@ browserify-zlib@^0.2.0:
   dependencies:
     pako "~1.0.5"
 
-browserslist@^1.7.6:
-  version "1.7.7"
-  resolved "https://registry.npmjs.org/browserslist/-/browserslist-1.7.7.tgz#0bd76704258be829b2398bb50e4b62d1a166b0b9"
+browserslist@^2.11.3:
+  version "2.11.3"
+  resolved "https://registry.npmjs.org/browserslist/-/browserslist-2.11.3.tgz#fe36167aed1bbcde4827ebfe71347a2cc70b99b2"
+  integrity sha512-yWu5cXT7Av6mVwzWc8lMsJMHWn4xyjSuGYi4IozbVTLUOEYPSagUB8kiMDUHA1fS3zjr8nkxkn9jdvug4BBRmA==
   dependencies:
-    caniuse-db "^1.0.30000639"
-    electron-to-chromium "^1.2.7"
+    caniuse-lite "^1.0.30000792"
+    electron-to-chromium "^1.3.30"
 
-browserslist@^3.1.1, browserslist@^3.2.6:
+browserslist@^3.2.6:
   version "3.2.8"
   resolved "https://registry.npmjs.org/browserslist/-/browserslist-3.2.8.tgz#b0005361d6471f0f5952797a76fc985f1f978fc6"
   integrity sha512-WHVocJYavUwVgVViC0ORikPHQquXwVh939TaelZ4WDqpWgTX/FsGhl/+P4qBUAGcRvtOgDgC+xftNWWp2RUTAQ==
@@ -4574,13 +4577,14 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30000909"
-  resolved "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000909.tgz#a5b5b52e30e0083836632cf87e20770e646a3a4a"
-
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000960:
   version "1.0.30000962"
   resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30000962.tgz#6c10c3ab304b89bea905e66adf98c0905088ee44"
+
+caniuse-lite@^1.0.30000792, caniuse-lite@^1.0.30000805:
+  version "1.0.30001021"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001021.tgz#e75ed1ef6dbadd580ac7e7720bb16f07b083f254"
+  integrity sha512-wuMhT7/hwkgd8gldgp2jcrUjOU9RXJ4XxGumQeOsUr91l3WwmM68Cpa/ymCnWEDqakwFXhuDQbaKNHXBPgeE9g==
 
 caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30000975:
   version "1.0.30000979"
@@ -5845,10 +5849,6 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
 
-electron-to-chromium@^1.2.7:
-  version "1.3.84"
-  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.84.tgz#2e55df59e818f150a9f61b53471ebf4f0feecc65"
-
 electron-to-chromium@^1.3.124:
   version "1.3.125"
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.125.tgz#dbde0e95e64ebe322db0eca764d951f885a5aff2"
@@ -5857,6 +5857,11 @@ electron-to-chromium@^1.3.164, electron-to-chromium@^1.3.47:
   version "1.3.185"
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.185.tgz#36368514eb719632a91435f3c9f57c98b47d81de"
   integrity sha512-h2iW0AHIwix8ifNJg/RkXhQjUDqBME8TvX8qQQMvvF2Tb6F2KnO6febvI+JqI9CdZOWnl90CPxdBRWGDrdk9UA==
+
+electron-to-chromium@^1.3.30:
+  version "1.3.336"
+  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.336.tgz#f0e7a3e78f1c9a0385b6693a4a4b7453f0ae6aaf"
+  integrity sha512-FtazvnXAizSVMxQNPqUcTv2UElY5r3uRPQwiU1Tyg/Yc2UFr+/3wqDoLIV9ES6ablW3IrCcR8uEK2ppxaNPWhw==
 
 electron-to-chromium@^1.3.322:
   version "1.3.322"
@@ -5978,11 +5983,12 @@ ember-cli-app-version@3.2.0:
     ember-cli-babel "^6.12.0"
     git-repo-version "^1.0.2"
 
-ember-cli-autoprefixer@0.6.0:
-  version "0.6.0"
-  resolved "https://registry.npmjs.org/ember-cli-autoprefixer/-/ember-cli-autoprefixer-0.6.0.tgz#a64a106b5b8174a298855b5df6c32e5ac198b642"
+ember-cli-autoprefixer@0.8.1:
+  version "0.8.1"
+  resolved "https://registry.npmjs.org/ember-cli-autoprefixer/-/ember-cli-autoprefixer-0.8.1.tgz#071dd9574451057b03dcc03b71f5bd9cb07ef332"
+  integrity sha1-Bx3ZV0RRBXsD3MA7cfW9nLB+8zI=
   dependencies:
-    broccoli-autoprefixer "^4.1.0"
+    broccoli-autoprefixer "^5.0.0"
     lodash "^4.0.0"
 
 ember-cli-babel-plugin-helpers@^1.0.0, ember-cli-babel-plugin-helpers@^1.1.0:
@@ -6157,7 +6163,7 @@ ember-cli-babel@^7.1.2, ember-cli-babel@^7.4.0:
     ensure-posix-path "^1.0.2"
     semver "^5.5.0"
 
-ember-cli-babel@^7.10.0, ember-cli-babel@^7.11.1:
+ember-cli-babel@^7.10.0, ember-cli-babel@^7.11.1, ember-cli-babel@^7.13.0:
   version "7.13.2"
   resolved "https://registry.npmjs.org/ember-cli-babel/-/ember-cli-babel-7.13.2.tgz#6b6f4d508cc3bb300c5711d3d02c59ba80f0f686"
   integrity sha512-VH2tMXaRFkbQEyVJnxUtAyta5bAKjtcLwJ4lStW/iRk/NIlNFNJh1uOd7uL9H9Vm0f4/xR7Mc0Q7ND9ezKOo+A==
@@ -6514,7 +6520,7 @@ ember-cli-test-loader@^2.2.0:
   dependencies:
     ember-cli-babel "^6.8.1"
 
-ember-cli-typescript@^2.0.0:
+ember-cli-typescript@^2.0.0, ember-cli-typescript@^2.0.2:
   version "2.0.2"
   resolved "https://registry.npmjs.org/ember-cli-typescript/-/ember-cli-typescript-2.0.2.tgz#464984131fbdc05655eb61d1c3cdd911d3137f0d"
   integrity sha512-7I5azCTxOgRDN8aSSnJZIKSqr+MGnT+jLTUbBYqF8wu6ojs2DUnTePxUcQMcvNh3Q3B1ySv7Q/uZFSjdU9gSjA==
@@ -6713,7 +6719,7 @@ ember-compatibility-helpers@^1.2.0:
   version "0.3.0"
   dependencies:
     ember-cli-babel "7.11.1"
-    ember-macro-helpers "0.17.0"
+    ember-macro-helpers "4.2.2"
 
 "ember-concurrency@^0.8.27 || ^0.9.0 || ^0.10.0 || ^1.0.0":
   version "1.0.0"
@@ -6826,39 +6832,23 @@ ember-factory-for-polyfill@^1.3.1:
   dependencies:
     ember-cli-version-checker "^2.1.0"
 
-ember-fetch@6.7.0:
-  version "6.7.0"
-  resolved "https://registry.npmjs.org/ember-fetch/-/ember-fetch-6.7.0.tgz#c219f820e40f7918147391617a5940c67d293319"
-  integrity sha512-lB9G+XDKOc84Dr3THJs+l/KmtzUus7nv12Z0xOP54J917HmjnAsSZ9OHTp+X8ClxlAm35/v9l+sFd7IlB9Baqw==
+ember-fetch@7.0.0, "ember-fetch@^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.npmjs.org/ember-fetch/-/ember-fetch-7.0.0.tgz#8ac4ce20e3ab7a66aba97bdd58bf675e54044cf4"
+  integrity sha512-kmTdRTbLRv8gtHEBxsi3kxgMNa2VEqQFv1QM+3ZH3xJHdGG/SbIgCItY6JBu9wPR8EOARgoxFMprI1anFDHKrw==
   dependencies:
-    abortcontroller-polyfill "^1.3.0"
-    broccoli-concat "^3.2.2"
+    abortcontroller-polyfill "^1.4.0"
+    broccoli-concat "^3.7.5"
     broccoli-debug "^0.6.5"
     broccoli-merge-trees "^3.0.0"
     broccoli-rollup "^2.1.1"
-    broccoli-stew "^2.1.0"
+    broccoli-stew "^3.0.0"
     broccoli-templater "^2.0.1"
     calculate-cache-key-for-tree "^2.0.0"
     caniuse-api "^3.0.0"
-    ember-cli-babel "^6.8.2"
+    ember-cli-babel "^7.13.0"
+    ember-cli-typescript "^2.0.2"
     node-fetch "^2.6.0"
-    whatwg-fetch "^3.0.0"
-
-"ember-fetch@^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0":
-  version "6.5.1"
-  resolved "https://registry.npmjs.org/ember-fetch/-/ember-fetch-6.5.1.tgz#6512153b9b85042744ed5a7934c8edb4a5b02dd0"
-  dependencies:
-    abortcontroller-polyfill "^1.3.0"
-    broccoli-concat "^3.2.2"
-    broccoli-debug "^0.6.5"
-    broccoli-merge-trees "^3.0.0"
-    broccoli-rollup "^2.1.1"
-    broccoli-stew "^2.1.0"
-    broccoli-templater "^2.0.1"
-    calculate-cache-key-for-tree "^2.0.0"
-    caniuse-api "^3.0.0"
-    ember-cli-babel "^6.8.2"
-    node-fetch "^2.3.0"
     whatwg-fetch "^3.0.0"
 
 ember-flatpickr@2.12.0:
@@ -6958,24 +6948,14 @@ ember-lodash-shim@4.0.0:
   dependencies:
     ember-cli-babel "^6.6.0"
 
-ember-macro-helpers@0.17.0:
-  version "0.17.0"
-  resolved "https://registry.npmjs.org/ember-macro-helpers/-/ember-macro-helpers-0.17.0.tgz#5e64a49f476e38c1916aff75f949455533cd1abe"
-  integrity sha1-XmSkn0duOMGRav91+UlFVTPNGr4=
+ember-macro-helpers@4.2.2, ember-macro-helpers@^4.2.2:
+  version "4.2.2"
+  resolved "https://registry.npmjs.org/ember-macro-helpers/-/ember-macro-helpers-4.2.2.tgz#dfb28b2b21f9fd49ade599f68c99e73ce5692cdc"
+  integrity sha512-E46MnpjMu+ZXRw/5A1tADZKFJADGpSAcsclcaBNfV/B1aRPV3PTTnCpDvYC1wfJ4kwwUh0DRLDH/OpBv+/41pQ==
   dependencies:
-    ember-cli-babel "^6.6.0"
+    ember-cli-babel "^7.7.3"
     ember-cli-string-utils "^1.1.0"
     ember-cli-test-info "^1.0.0"
-    ember-weakmap "^3.0.0"
-
-ember-macro-helpers@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.npmjs.org/ember-macro-helpers/-/ember-macro-helpers-2.2.0.tgz#682bb887fda0679fd82cf981190f6dbba20b6e03"
-  dependencies:
-    ember-cli-babel "^6.18.0"
-    ember-cli-string-utils "^1.1.0"
-    ember-cli-test-info "^1.0.0"
-    ember-weakmap "^3.0.0"
 
 ember-math-helpers@2.7.1:
   version "2.7.1"
@@ -7021,13 +7001,14 @@ ember-modifier@^1.0.2:
     ember-cli-string-utils "^1.1.0"
     ember-modifier-manager-polyfill "^1.2.0"
 
-ember-moment@7.8.1:
-  version "7.8.1"
-  resolved "https://registry.npmjs.org/ember-moment/-/ember-moment-7.8.1.tgz#6f77cf941d1a92e231b2f4b810e113b2fae50c5f"
+ember-moment@8.0.0:
+  version "8.0.0"
+  resolved "https://registry.npmjs.org/ember-moment/-/ember-moment-8.0.0.tgz#f3993711df0af444558f0f3922dc3f412af72410"
+  integrity sha512-JbwmTiS75EEXFWGR5P8rXykISpDf6EH8L8IpxsF6FaRwJ/4odXV/yf8cKh6gpzxoags9OJ8qxyQqG0Prhgs9Sg==
   dependencies:
     ember-cli-babel "^6.7.2"
     ember-getowner-polyfill "^2.2.0"
-    ember-macro-helpers "^2.1.0"
+    ember-macro-helpers "^4.2.2"
 
 ember-power-select-typeahead@0.7.4:
   version "0.7.4"
@@ -7154,7 +7135,7 @@ ember-runtime-enumerable-includes-polyfill@^2.0.0:
     ember-cli-babel "7.9.0"
     ember-cli-is-package-missing "^1.0.0"
     ember-cookies "^0.3.0 || ^0.4.0"
-    ember-fetch "^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0"
+    ember-fetch "^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0"
     ember-getowner-polyfill "^1.1.0 || ^2.0.0"
     silent-error "^1.0.0"
 
@@ -7273,14 +7254,6 @@ ember-validators@^1.2.0:
   dependencies:
     ember-cli-babel "^6.9.2"
     ember-require-module "^0.2.0"
-
-ember-weakmap@^3.0.0:
-  version "3.3.1"
-  resolved "https://registry.npmjs.org/ember-weakmap/-/ember-weakmap-3.3.1.tgz#5188b035f5bfb17397067ea635300ae4e1205e11"
-  dependencies:
-    browserslist "^3.1.1"
-    debug "^3.1.0"
-    ember-cli-babel "^6.6.0"
 
 ember-window-mock@^0.4.0:
   version "0.4.1"
@@ -9543,7 +9516,7 @@ jquery@^3.4.1:
   resolved "https://registry.npmjs.org/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
   integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
 
-js-base64@^2.1.8, js-base64@^2.1.9:
+js-base64@^2.1.8:
   version "2.4.9"
   resolved "https://registry.npmjs.org/js-base64/-/js-base64-2.4.9.tgz#748911fb04f48a60c4771b375cac45a80df11c03"
 
@@ -10919,10 +10892,6 @@ node-dir@^0.1.16:
   dependencies:
     minimatch "^3.0.2"
 
-node-fetch@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-2.3.0.tgz#1a1d940bbfb916a1d3e0219f037e89e71f8c5fa5"
-
 node-fetch@^2.6.0:
   version "2.6.0"
   resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
@@ -11758,18 +11727,10 @@ postcss-value-parser@^3.2.3:
   version "3.3.1"
   resolved "https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-3.3.1.tgz#9ff822547e2893213cf1c30efa51ac5fd1ba8281"
 
-postcss@^5.0.4, postcss@^5.2.16:
-  version "5.2.18"
-  resolved "https://registry.npmjs.org/postcss/-/postcss-5.2.18.tgz#badfa1497d46244f6390f58b319830d9107853c5"
-  dependencies:
-    chalk "^1.1.3"
-    js-base64 "^2.1.9"
-    source-map "^0.5.6"
-    supports-color "^3.2.3"
-
-postcss@^6.0.14:
+postcss@^6.0.1, postcss@^6.0.14, postcss@^6.0.17:
   version "6.0.23"
   resolved "https://registry.npmjs.org/postcss/-/postcss-6.0.23.tgz#61c82cc328ac60e677645f979054eb98bc0e3324"
+  integrity sha512-soOk1h6J3VMTZtVeVpv15/Hpdl2cBLX3CAw4TAbkpTJiNPk9YP/zWcD1ND+xEtvyuuvKzbxliTOIyvkSeSJ6ag==
   dependencies:
     chalk "^2.4.1"
     source-map "^0.6.1"
@@ -13419,7 +13380,7 @@ supports-color@^2.0.0:
   resolved "https://registry.npmjs.org/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
   integrity sha1-U10EXOa2Nj+kARcIRimZXp3zJMc=
 
-supports-color@^3.1.0, supports-color@^3.2.3:
+supports-color@^3.1.0:
   version "3.2.3"
   resolved "https://registry.npmjs.org/supports-color/-/supports-color-3.2.3.tgz#65ac0504b3954171d8a64946b2ae3cbb8a5f54f6"
   integrity sha1-ZawFBLOVQXHYpklGsq48u4pfVPY=
