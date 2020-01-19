@@ -10,6 +10,7 @@ import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.Presid
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
 import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import org.assertj.core.api.Fail;
+import org.assertj.core.api.SoftAssertions;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
@@ -47,6 +48,7 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
     List<AlertsStoredRecord.Indicator> allIndicators;
     private Map<String, List<AlertsStoredRecord.Indicator>> indicatorsInTimeRangeByEntityType;
     private Map<String, List<String>> indicatorIdsByType;
+    private RespondServerAlertCollectionHelper alertCollection = new RespondServerAlertCollectionHelper();
 
     private Instant endTime;
     private Instant startTime;
@@ -81,6 +83,8 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
                         e -> e.getKey(),
                         e -> e.getValue().parallelStream().map(ind -> ind.getId()).distinct().collect(toList()))
                 );
+
+        respondServerAlertCollectionHelper.deleteAllAlertCollectionsIncludingBackup();
     }
 
 
@@ -100,9 +104,9 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
     }
 
 
-    private void test(String entityType) {
+    private synchronized void test(String entityType) {
+        SoftAssertions softly = new SoftAssertions();
         LOGGER.info(" --- Forwarding validation started for " + entityType);
-        respondServerAlertCollectionHelper.truncateCollection();
 
         ImmutableList<String> expectedIndicatorIdsFromRest = ImmutableList.copyOf(indicatorIdsByType.get(entityType));
         assertThat(expectedIndicatorIdsFromRest).as("Empty Respond Server result for " + entityType).isNotEmpty();
@@ -114,7 +118,6 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
         int actual = actualIndicatorsFromCmdResponse(response);
         assertThat(actual).as("REST count doesn't match log response.").isEqualTo(expectedIndicatorIdsFromRest.size());
 
-        RespondServerAlertCollectionHelper alertCollection = new RespondServerAlertCollectionHelper();
         List<RespondServerAlertCollectionHelper.RespondServerAlert> respondServerAlerts = alertCollection.getRespondServerAlertsForLastWeek(startTime, endTime);
         LOGGER.info("<" + entityType + "> " + respondServerAlerts.size() + " alerts found on the respond server.");
 
@@ -133,14 +136,17 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
                         .map(e -> e.getId().concat(" ").concat(e.getAlertEntityType()).concat(" ").concat(e.getStartDate().toString()).concat(" ").concat(e.getEndDate().toString()))
                         .collect(joining("\n"));
 
-        assertThat(missingFromRespondServer)
-                .overridingErrorMessage(allAlertsUrl + "\n-----  REST response Indicators missing from Respond Server: \n" + printDetails.apply(missingFromRespondServer))
+        softly.assertThat(missingFromRespondServer)
+                .overridingErrorMessage(allAlertsUrl + "\n[" + entityType + "]: REST response Indicators missing from Respond Server: \n" + printDetails.apply(missingFromRespondServer))
                 .isEmpty();
 
-        assertThat(missingFromRest)
-                .as(allAlertsUrl + "\n ---- Respond server Indicators missing from from REST." + "\n" + printDetails.apply(missingFromRest))
+        softly.assertThat(missingFromRest)
+                .as(allAlertsUrl + "\n[" + entityType + "]: Respond server Indicators missing from from REST." + "\n" + printDetails.apply(missingFromRest))
                 .isEmpty();
 
+
+        respondServerAlertCollectionHelper.backupAlertCollection(entityType);
+        softly.assertAll();
         LOGGER.info(" --- Forwarding validation after test " + entityType);
     }
 

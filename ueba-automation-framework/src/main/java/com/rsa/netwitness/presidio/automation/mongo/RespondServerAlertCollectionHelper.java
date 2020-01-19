@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.automation.mongo;
 
 import ch.qos.logback.classic.Logger;
+import com.mongodb.MongoNamespace;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -22,11 +23,13 @@ import java.util.stream.Collectors;
 import static com.mongodb.client.model.Filters.gte;
 import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.getOrNull;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RespondServerAlertCollectionHelper {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(RespondServerAlertCollectionHelper.class);
 
-    private MongoCollection<Document> collection;
+    private MongoCollection<Document> alertCollection;
+    private MongoDatabase database;
     private Function<Document, RespondServerAlert> alertParser = doc -> {
         Instant receivedTime = getOrNull(doc.getDate("receivedTime"), Date::toInstant);
         Document originalAlert = doc.get("originalAlert", Document.class);
@@ -38,15 +41,33 @@ public class RespondServerAlertCollectionHelper {
     };
 
     public RespondServerAlertCollectionHelper() {
-        MongoDatabase database = MongoClientEsaServer.getConnection().getDatabase("respond-server");
-        collection = database.getCollection("alert");
+        database = MongoClientEsaServer.getConnection().getDatabase("respond-server");
+        alertCollection = database.getCollection("alert");
     }
 
     public void truncateCollection() {
         LOGGER.warn("**************************************************");
         LOGGER.warn(" !!! Going to DROP respond-server alerts table.");
         LOGGER.warn("**************************************************");
-        collection.drop();
+        alertCollection.drop();
+        assertThat(alertCollection.countDocuments()).as("Documents count after drop").isEqualTo(0);
+    }
+
+    public void deleteAllAlertCollectionsIncludingBackup() {
+        LOGGER.warn("**************************************************");
+        LOGGER.warn(" !!! Going to DROP respond-server alerts table.");
+        LOGGER.warn("**************************************************");
+        List<String> names = new ArrayList<>();
+        database.listCollectionNames().iterator().forEachRemaining(names::add);
+        List<String> alertCollections = names.stream().filter(e -> e.startsWith("alert")).collect(Collectors.toList());
+        alertCollections.forEach(e -> database.getCollection(e).drop());
+    }
+
+    public void backupAlertCollection(String marker) {
+        String backupCollection = "alert_" + marker + "_" + System.currentTimeMillis();
+        LOGGER.info("Backup created: " + backupCollection);
+        MongoNamespace newName = new MongoNamespace("respond-server", backupCollection);
+        alertCollection.renameCollection(newName);
     }
 
     public List<RespondServerAlert> getRespondServerAlertsForLastWeek(Instant indicatorStartDateInclusive, Instant indicatorEndDateInclusive) {
@@ -56,7 +77,7 @@ public class RespondServerAlertCollectionHelper {
     public List<RespondServerAlert> getRespondServerAlerts(Instant indicatorStartDateInclusive, Instant indicatorEndDateInclusive, Instant fromReceivedTimeInclusive) {
         Bson filters = gte("receivedTime", fromReceivedTimeInclusive);
 
-        FindIterable<Document> documents = collection
+        FindIterable<Document> documents = alertCollection
                 .find(filters)
                 .projection(Projections.include("receivedTime", "originalAlert"))
                 .batchSize(500);
