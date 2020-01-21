@@ -1,9 +1,8 @@
-import RSVP from 'rsvp';
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import sinon from 'sinon';
 import { click, waitFor, visit, currentURL, find } from '@ember/test-helpers';
-import { lookup } from 'ember-dependency-lookup';
+import Request from 'streaming-data/services/data-access/requests';
 
 module('Acceptance | basic', function(hooks) {
   setupApplicationTest(hooks);
@@ -20,16 +19,14 @@ module('Acceptance | basic', function(hooks) {
 
   });
 
-  skip('visiting /investigate-hosts shows server down message', async function(assert) {
-    const request = lookup('service:request');
-    sinon.stub(request, 'ping').callsFake(() => {
-      return new RSVP.Promise((resolve, reject) => reject());
-    });
+  test('visiting /investigate-hosts shows server down message', async function(assert) {
+    sinon.stub(Request, 'ping').rejects();
 
     await visit('/investigate-hosts');
     assert.equal(currentURL(), '/investigate-hosts');
 
     await waitFor('.error-page', { timeout: 10000 });
-    assert.equal(find('.error-page .title').text().trim(), 'Endpoint Server is offline');
+    assert.equal(find('.error-page .title').textContent.trim(), 'Endpoint Server is offline');
   });
+
 });

@@ -34,7 +34,6 @@ module('Integration | Component | endpoint host-detail/process/process-image-hoo
     assert.equal(findAll('.process-image-hooks-list').length, 1, 'Image hooks component rendered');
   });
 
-  // skipping the test as this component is removed, but will be further needed for process-details page
   test('All the matched image hooks are rendered', async function(assert) {
     new ReduxDataHelper(initState).dllList(dllListData).selectedProcessId(1392).build();
     await render(hbs`{{host-detail/process/process-image-hooks}}`);

@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click, settled, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
@@ -11,9 +11,9 @@ import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import HostCreators from 'investigate-hosts/actions/data-creators/host';
 import RiskCreators from 'investigate-shared/actions/data-creators/risk-creators';
 import sinon from 'sinon';
-import { throwSocket } from '../../../helpers/patch-socket';
+import { patchSocket, throwSocket } from '../../../helpers/patch-socket';
 import { patchFlash } from '../../../helpers/patch-flash';
-let deleteHostsSpy, startScanSpy, stopScanSpy, resetRiskScoreSpy, setState;
+let startScanSpy, stopScanSpy, resetRiskScoreSpy, setState;
 
 const spys = [];
 
@@ -198,7 +198,6 @@ const selectedMoreHostsState =
     endpointQuery
   };
 spys.push(
-  deleteHostsSpy = sinon.stub(HostCreators, 'deleteHosts'),
   resetRiskScoreSpy = sinon.stub(RiskCreators, 'resetRiskScore')
 );
 
@@ -409,35 +408,6 @@ module('Integration | Component | host-list', function(hooks) {
     });
   });
 
-  test('delete host action is called', async function(assert) {
-    setState(endpointState);
-    this.set('closeProperties', () => {});
-    this.set('openProperties', () => {});
-    await render(hbs`
-      <style>
-        box, section {
-          min-height: 1000px
-        }
-      </style>
-      <div id='modalDestination'></div>
-      {{host-list
-        openProperties=openProperties
-        closeProperties=closeProperties}}
-      {{context-menu}}
-    `);
-    triggerEvent(findAll('.score')[1], 'contextmenu', e);
-    return settled().then(async() => {
-      const selector = '.context-menu';
-      const menuItems = findAll(`${selector} > .context-menu__item`);
-      await click(`#${menuItems[1].id}`);
-      return settled().then(async() => {
-        assert.equal(document.querySelectorAll('#modalDestination .confirmation-modal').length, 1);
-        await click(document.querySelector('.confirmation-modal .is-primary button'));
-        assert.equal(deleteHostsSpy.callCount, 1, 'Delete action is called once');
-      });
-    });
-  });
-
   test('start scan action is getting called', async function(assert) {
     setState(endpointState);
     this.set('closeProperties', () => {});
@@ -569,12 +539,8 @@ module('Integration | Component | host-list', function(hooks) {
   });
 
   // It is failing in Ember exam but executes with ember s. will re look into it.
-  skip('on clicking delete hosts, and when socket throws error', async function(assert) {
+  test('on clicking delete hosts, and when socket throws error', async function(assert) {
     assert.expect(2);
-    spys.forEach((s) => {
-      s.reset();
-      s.restore();
-    });
     const done = throwSocket({ methodToThrow: 'deleteHosts', modelNameToThrow: 'agent' });
     setState(endpointState);
     this.set('closeProperties', () => {
@@ -585,6 +551,7 @@ module('Integration | Component | host-list', function(hooks) {
       assert.equal(flash.type, 'error');
       assert.equal(flash.message.string, 'Host is already deleted.');
     });
+
     await render(hbs`
       <div id='modalDestination'></div>
       <style>
@@ -604,6 +571,44 @@ module('Integration | Component | host-list', function(hooks) {
       });
     });
   });
+
+
+  test('delete host action is called', async function(assert) {
+    assert.expect(3);
+    setState(endpointState);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      <div id='modalDestination'></div>
+      {{host-list
+        openProperties=openProperties
+        closeProperties=closeProperties}}
+      {{context-menu}}
+    `);
+
+    patchSocket((method, modelName) => {
+      assert.equal(method, 'deleteHosts');
+      assert.equal(modelName, 'agent');
+    });
+
+    triggerEvent(findAll('.score')[1], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await click(`#${menuItems[1].id}`);
+      return settled().then(async() => {
+        assert.equal(document.querySelectorAll('#modalDestination .confirmation-modal').length, 1);
+        await click(document.querySelector('.confirmation-modal .is-primary button'));
+      });
+    });
+  });
+
+
   test('Isolation status options not rendered for not contained but migrated agents', async function(assert) {
     setState(endpointScanPending);
     this.set('closeProperties', () => {});

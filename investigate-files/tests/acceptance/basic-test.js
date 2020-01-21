@@ -1,79 +1,47 @@
-import rsvp from 'rsvp';
-import { test, skip } from 'qunit';
-import { find } from '@ember/test-helpers';
-import moduleForAcceptance from '../helpers/module-for-acceptance';
-import sinon from 'sinon';
-import Service from '@ember/service';
-import { lookup } from 'ember-dependency-lookup';
-import wait from 'ember-test-helpers/wait';
+import { module, test } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
+import { visit, currentURL, waitFor, find } from '@ember/test-helpers';
 import { waitForSockets } from '../helpers/wait-for-sockets';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import wait from 'ember-test-helpers/wait';
+import sinon from 'sinon';
+import Request from 'streaming-data/services/data-access/requests';
 
-const AccessControlService = Service.extend({
-  hasInvestigateEmberAccess: true,
-  hasInvestigateAccess: true,
-  hasInvestigateEventsAccess: true,
-  hasInvestigateHostsAccess: true
-});
-
-moduleForAcceptance('Acceptance | basic', {
-  beforeEach() {
-    this.application.register('service:accessControl', AccessControlService);
-    this.application.inject('route:application', 'accessControl', 'service:accessControl');
-    initialize(this.application);
-  }
-});
-
-test('visiting /investigate-files', function(assert) {
-  visit('/investigate-files');
-  andThen(() => {
+module('Acceptance | basic', function(hooks) {
+  setupApplicationTest(hooks);
+  test('visiting /investigate-files', async function(assert) {
+    await visit('/investigate-files');
     assert.equal(currentURL(), '/investigate-files');
   });
-});
 
-test('visiting /investigate-files/certificates', function(assert) {
-  assert.expect(1);
-  const done = waitForSockets();
-  visit('/investigate-files/certificates');
-  andThen(function() {
+  test('visiting /investigate-files/certificates', async function(assert) {
+    assert.expect(1);
+    const done = waitForSockets();
+    await visit('/investigate-files/certificates');
     assert.equal(currentURL(), '/investigate-files/certificates', 'The route loads and we are not redirected');
-  });
-  andThen(function() {
     return wait().then(() => done());
   });
-});
 
-test('visiting /investigate-files/1234', function(assert) {
-  assert.expect(1);
+  test('visiting /investigate-files/1234', async function(assert) {
+    assert.expect(1);
 
-  const done = waitForSockets();
+    const done = waitForSockets();
 
-  visit('/investigate-files/1234');
-
-  andThen(function() {
+    await visit('/investigate-files/1234');
     assert.equal(currentURL(), '/investigate-files/1234', 'The route loads and we are not redirected');
-  });
-
-  andThen(function() {
     return wait().then(() => done());
-  });
-});
 
-skip('visiting /investigate-files shows server down message', function(assert) {
-  const request = lookup('service:request');
-  sinon.stub(request, 'ping').callsFake(() => {
-    return new rsvp.Promise((resolve, reject) => reject());
   });
 
-  visit('/investigate-files');
+  test('visiting /investigate-files shows server down message', async function(assert) {
+    sinon.stub(Request, 'ping').rejects();
 
-  andThen(() => {
+    await visit('/investigate-files');
+
     assert.equal(currentURL(), '/investigate-files');
-  });
 
-  waitFor('.error-page');
-
-  andThen(() => {
-    assert.equal(find('.error-page .title').text().trim(), 'Endpoint Server is offline');
+    await waitFor('.error-page', { timeout: 10000 });
+    assert.equal(find('.error-page .title').textContent.trim(), 'Endpoint Server is offline');
   });
 });
+
+
