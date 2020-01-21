@@ -1,9 +1,10 @@
 /* eslint-env node */
 
-const licenseMocks = require('../license').mockDestinations;
-const customData = require('../investigate-users').dataPath;
-
 const path = require('path');
+
+const licenseMocks = require('../license').mockDestinations;
+const customData = path.join(__dirname, 'tests', 'data', 'presidio');
+
 const administrationMocks = path.join(__dirname, 'tests', 'data', 'subscriptions');
 
 require('mock-server').startServer({
@@ -20,4 +21,4 @@ require('mock-server').startServer({
       }
     }
   ]
-}, null, { urlPattern: '/presidio/*', customData });
+}, null, { urlPattern: '/api/*', customData });
