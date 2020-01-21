@@ -16,17 +16,7 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route('login');
-  this.route('internal-error');
-  this.route('sso-oauth');
-  this.route('sso-error');
-  this.route('sso-logout');
-
-  this.route('protected', { path: '/' }, function() {
-    this.mount('investigate-users', { path: 'investigate/entities' });
-  });
-
-  this.route('not-found', { path: '/*path' });
+  this.mount('investigate-users', { path: 'investigate/entities' });
 });
 
 export default Router;
