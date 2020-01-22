@@ -122,7 +122,7 @@ public class SuccessfulInteractiveAuthenticationUseCaseEventGeneratorsBuilder ex
 
     protected IAuthenticationOperationGenerator getOperationGenerator(){
         AuthenticationOperationGenerator operationGenerator = new AuthenticationOperationGenerator();
-        operationGenerator.setOperationTypeGenerator(new AuthenticationOperationTypeCyclicGenerator(new OperationType(AUTHENTICATION_OPERATION_TYPE.INTERACTIVE.value, Arrays.asList(new String[] {"REMOTE_INTERACTIVE"}))));
+        operationGenerator.setOperationTypeGenerator(new AuthenticationOperationTypeCyclicGenerator(new OperationType(AUTHENTICATION_OPERATION_TYPE.INTERACTIVE.value, Arrays.asList(new String[] {"INTERACTIVE"}))));
         return operationGenerator;
     }
 

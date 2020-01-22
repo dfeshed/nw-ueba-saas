@@ -58,21 +58,23 @@ public class StabilityLogsGenTest extends AbstractTestNGSpringContextTests {
     private final String LOCAL_SERVER_MACHINES_CLUSTER_PREFIX = "local_srv_";
     private final int NUM_OF_LOCAL_SERVER_MACHINES_PER_CLUSTER = 5;
 
-    private static final int AUTHENTICATION_NUM_OF_NORMAL_USERS = 100000;
-    private static final int AUTHENTICATION_NUM_OF_ADMIN_USERS = 80000;
-    private static final int AUTHENTICATION_NUM_OF_SERVICE_ACCOUNT_USERS = 20000;
-    private static final int FILE_NUM_OF_NORMAL_USERS = 180000;
-    private static final int FILE_NUM_OF_ADMIN_USERS = 15000;
-    private static final int FILE_NUM_OF_SERVICE_ACCOUNT_USERS = 5000;
-    private static final int ACTIVE_DIRECTORY_NUM_OF_NORMAL_USERS = 190000;
-    private static final int ACTIVE_DIRECTORY_NUM_OF_ADMIN_USERS = 10000;
-    private static final int ACTIVE_DIRECTORY_NUM_OF_SERVICE_ACCOUNT_USERS = 1000;
-    private static final int PROCESS_NUM_OF_NORMAL_USERS = 190000;
-    private static final int PROCESS_NUM_OF_ADMIN_USERS = 10000;
-    private static final int PROCESS_NUM_OF_SERVICE_ACCOUNT_USERS = 1000;
-    private static final int REGISTRY_NUM_OF_NORMAL_USERS = 190000;
-    private static final int REGISTRY_NUM_OF_ADMIN_USERS = 10000;
-    private static final int REGISTRY_NUM_OF_SERVICE_ACCOUNT_USERS = 1000;
+
+    private static final int AUTHENTICATION_NUM_OF_NORMAL_USERS = 20000;
+    private static final int AUTHENTICATION_NUM_OF_ADMIN_USERS = 16000;
+    private static final int AUTHENTICATION_NUM_OF_SERVICE_ACCOUNT_USERS = 4000;
+    private static final int FILE_NUM_OF_NORMAL_USERS = 18000;
+    private static final int FILE_NUM_OF_ADMIN_USERS = 1500;
+    private static final int FILE_NUM_OF_SERVICE_ACCOUNT_USERS = 500;
+    private static final int ACTIVE_DIRECTORY_NUM_OF_NORMAL_USERS = 19000;
+    private static final int ACTIVE_DIRECTORY_NUM_OF_ADMIN_USERS = 1000;
+    private static final int ACTIVE_DIRECTORY_NUM_OF_SERVICE_ACCOUNT_USERS = 100;
+    private static final int PROCESS_NUM_OF_NORMAL_USERS = 10000;
+    private static final int PROCESS_NUM_OF_ADMIN_USERS = 500;
+    private static final int PROCESS_NUM_OF_SERVICE_ACCOUNT_USERS = 50;
+    private static final int REGISTRY_NUM_OF_NORMAL_USERS = 10000;
+    private static final int REGISTRY_NUM_OF_ADMIN_USERS = 500;
+    private static final int REGISTRY_NUM_OF_SERVICE_ACCOUNT_USERS = 50;
+
 
     private StopWatch stopWatch = new StopWatch();
     private StopWatch tlsStopWatch = new StopWatch();
