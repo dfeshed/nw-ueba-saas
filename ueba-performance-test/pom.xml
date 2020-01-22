@@ -22,16 +22,6 @@
         <suiteXmlFile>
             src/test/resources/PerformanceStabilityMongoGenTest.xml
         </suiteXmlFile>
-
-        <start_time>2018-04-01T00:00:00.00Z</start_time>
-        <end_time>2018-04-04T00:00:00.00Z</end_time>
-        <probability_multiplier>0.15</probability_multiplier>
-        <users_multiplier>0.1</users_multiplier>
-
-        <tls_alerts_probability>0.001</tls_alerts_probability>
-        <tls_groups_to_create>1</tls_groups_to_create>
-        <tls_events_per_day_per_group>1000</tls_events_per_day_per_group>
-        <generator_format>MONGO_ADAPTER</generator_format>
     </properties>
 
     <dependencies>
