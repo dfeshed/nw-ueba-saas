@@ -24,7 +24,8 @@ import { removeEmptyParens } from 'investigate-shared/actions/api/events/utils';
 import { findSelectedPills } from 'investigate-events/actions/pill-utils';
 import { OPERATOR_AND } from 'investigate-events/constants/pill';
 const SUMMARY_CALL_INTERVAL = 60000;
-let timerId;
+const NOTIFICATION_SUBSCRIPTION_INTERVAL = 1866000;
+let timerId, notificationsSchedulerId;
 
 export default Route.extend({
   contextualHelp: service(),
@@ -76,6 +77,10 @@ export default Route.extend({
     timerId = setInterval(() => this.get('redux').dispatch(updateSummaryData()), SUMMARY_CALL_INTERVAL);
     // dispatch call to open notification websocket
     this.get('redux').dispatch(initializeNotifications());
+    // TODO Nehal to revise this to subscribe to notifications when connection is lost
+    // Scheduler for subscribing to notifications queue for every new websocket connection
+    // in intervals of 31 minutes
+    notificationsSchedulerId = setInterval(() => this.get('redux').dispatch(initializeNotifications()), NOTIFICATION_SUBSCRIPTION_INTERVAL);
   },
 
   deactivate() {
@@ -84,6 +89,7 @@ export default Route.extend({
     this.set('contextualHelp.topic', null);
     // terminate the continous polling of summary
     clearInterval(timerId);
+    clearInterval(notificationsSchedulerId);
     const { notifications: { stopNotifications } } = this.get('redux').getState().investigate;
     if (stopNotifications) {
       stopNotifications();

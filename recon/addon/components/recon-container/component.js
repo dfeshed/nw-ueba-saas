@@ -269,6 +269,9 @@ const ReconContainer = Component.extend({
         this.set('_isAnimationDone', true);
       }
     }, 500);
+
+    // TODO NEHAL schedule initializeNotifications in intervals of 31 minutes incase WS
+    // closes in about 31 minutes of recon being open
   },
 
   willDestroyElement() {
