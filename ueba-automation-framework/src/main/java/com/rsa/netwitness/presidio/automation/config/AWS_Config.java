@@ -11,14 +11,37 @@ import java.util.function.Supplier;
 public enum AWS_Config {
     S3_CONFIG;
 
+    private final String RESOURCE_NAME = "aws_key.properties";
     private Lazy<Properties> propertiesHolder = new Lazy<>();
     private Supplier<Properties> properties = () -> propertiesHolder.getOrCompute(this::getResource);
 
-    public String accessKey = properties.get().getProperty("access_key");
-    public String secretKey = properties.get().getProperty("secret_key");
+    public String getAccessKey() {
+        return getOrThrow("secret_key");
+    }
+
+    public String getSecretKey() {
+        return getOrThrow("access_key");
+    }
+
+    public String getBucket() {
+        return getOrThrow("bucket");
+    }
+
+
+    public String getTenant() {
+        return properties.get().getOrDefault("tenant", "acme").toString();
+    }
+
+    public String getAccount() {
+        return properties.get().getOrDefault("account", "123456789001").toString();
+    }
+
+    public String getRegion() {
+        return properties.get().getOrDefault("region", "us-east-2").toString();
+    }
+
 
     private Properties getResource() {
-        String RESOURCE_NAME = "aws_key.properties";
         Properties props = new Properties();
 
         try(InputStream resourceStream = AWS_Config.class.getClassLoader().getResourceAsStream(RESOURCE_NAME)) {
@@ -27,5 +50,16 @@ public enum AWS_Config {
             e.printStackTrace();
         }
         return props;
+    }
+
+
+    private String getOrThrow(String key) {
+        String value = properties.get().getProperty(key);
+
+        if (value==null || value.isBlank()) {
+            throw new RuntimeException(key.concat(" property value is not set in ").concat(RESOURCE_NAME));
+        } else {
+            return value;
+        }
     }
 }
