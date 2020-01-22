@@ -11,26 +11,30 @@ import org.slf4j.LoggerFactory;
 
 import static com.rsa.netwitness.presidio.automation.config.AWS_Config.S3_CONFIG;
 
-public class S3_Client {
+enum S3_Client {
+    S3_CLIENT;
+
     private static  Logger LOGGER = (Logger) LoggerFactory.getLogger(S3_Client.class);
 
-    private static Lazy<AmazonS3> amazonS3Lazy = new Lazy<>();
-    public static String region = "us-east-1";
-    public static String accessKey = S3_CONFIG.accessKey;
-    public static String secretKey = S3_CONFIG.secretKey;
-    public static AmazonS3 s3Client = amazonS3Lazy.getOrCompute(S3_Client::connectToS3);
+    private Lazy<AmazonS3> amazonS3Lazy = new Lazy<>();
+    private String region = S3_CONFIG.getRegion();
+    private String accessKey = S3_CONFIG.getAccessKey();
+    private String secretKey = S3_CONFIG.getSecretKey();
 
-    private static AmazonS3 connectToS3() {
+    static AmazonS3 s3Client = S3_CLIENT.amazonS3Lazy.getOrCompute(S3_CLIENT::connectToS3);
+
+    private AmazonS3 connectToS3() {
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
         try {
-            s3Client = AmazonS3ClientBuilder.standard()
+            return AmazonS3ClientBuilder.standard()
                     .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
                     .withRegion(region)
                     .build();
         } catch (AmazonServiceException e) {
             LOGGER.error("Failed to init s3Client");
             e.printStackTrace();
+            return null;
+
         }
-        return s3Client;
     }
 }

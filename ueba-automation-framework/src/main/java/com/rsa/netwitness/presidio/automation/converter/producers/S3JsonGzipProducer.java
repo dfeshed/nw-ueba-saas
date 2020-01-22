@@ -25,13 +25,14 @@ import java.util.Set;
 import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 
+import static com.rsa.netwitness.presidio.automation.config.AWS_Config.S3_CONFIG;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(S3JsonGzipProducer.class);
-    private static String bucket = "ueba-qa-data";
+    private static String bucket = S3_CONFIG.getBucket();
 
     private S3_Key keyGen = new S3_Key();
     private final S3_Helper s3_helper = new S3_Helper();
@@ -49,7 +50,7 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
 
     @Override
     public Map<Schema, Long> send(Stream<NetwitnessEvent> eventsList) {
-        truncateBucketOnInit();
+        // truncateBucketOnInit();
 
         List<NetwitnessEvent> events = eventsList.parallel().collect(toList());
 

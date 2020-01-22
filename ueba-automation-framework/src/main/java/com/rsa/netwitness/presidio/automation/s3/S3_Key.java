@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import static com.rsa.netwitness.presidio.automation.config.AWS_Config.S3_CONFIG;
 import static fortscale.common.general.Schema.*;
 import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -21,24 +22,17 @@ public class S3_Key {
 
     private static final Number UPLOAD_INTERVAL_MINUTES = 5;
     private static final ImmutableMap<Schema, String> applicationLabel = new ImmutableMap.Builder<Schema, String>()
-            .put(TLS, "NetworkTraffic")
-            .put(ACTIVE_DIRECTORY, "ActiveDirectory")
-            .put(AUTHENTICATION, "Authentication")
-            .put(FILE, "File")
-            .put(PROCESS, "Process")
-            .put(REGISTRY, "Registry")
+            .put(TLS, "TLS")
+            .put(ACTIVE_DIRECTORY, "ACTIVE_DIRECTORY")
+            .put(AUTHENTICATION, "AUTHENTICATION")
+            .put(FILE, "FILE")
+            .put(PROCESS, "PROCESS")
+            .put(REGISTRY, "REGISTRY")
             .build();
 
-    /** defaults **/
-    private String tenant = "acme";
-    private String account = "123456789012";
-    private String region = "us-east-1";
-
-    public S3_Key(String tenant, String account, String region) {
-        this.tenant = tenant;
-        this.account = account;
-        this.region = region;
-    }
+    private String tenant = S3_CONFIG.getTenant();
+    private String account = S3_CONFIG.getAccount();
+    private String region = S3_CONFIG.getRegion();
 
     public S3_Key() { }
 
