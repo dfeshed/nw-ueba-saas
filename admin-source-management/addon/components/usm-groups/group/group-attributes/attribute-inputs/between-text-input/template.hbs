@@ -1,26 +1,28 @@
 <div {{action "saveChanges" on="onDeactivate"}}>
-  {{rsa-form-input class=(concat "operator-input firstValueInput " validation)
+  {{rsa-form-input-oneway
+    class=(concat "operator-input firstValueInput " validation)
     placeholder=(t "adminUsm.groupCriteria.placeholders.beginning_IP")
     maxLength=1024
     value=firstValue
     isError=(or firstValueValidator.showError firstlockError)
     errorMessage=(t (concat "adminUsm.groupCriteria.inputValidations." validation))
     focusIn=(action "firstValueFocusIn")
-    focusOut=(action "firstValueChange")
+    onFocusOut=(action "firstValueChange" value="target.value")
     spellcheck=false
   }}
   <span>{{t "adminUsm.groupCriteria.and"}}</span>
   {{#if (eq validation "validIPv6")}}
     <br>
   {{/if}}
-  {{rsa-form-input class=(concat "operator-input secondValueInput " validation)
+  {{rsa-form-input-oneway
+    class=(concat "operator-input secondValueInput " validation)
     placeholder=(t "adminUsm.groupCriteria.placeholders.end_IP")
     maxLength=1024
     value=secondValue
     isError=(or secondValueValidator.showError secondlockError)
     errorMessage=(t (concat "adminUsm.groupCriteria.inputValidations." validation))
     focusIn=(action "secondValueFocusIn")
-    focusOut=(action "secondValueChange")
+    onFocusOut=(action "secondValueChange" value="target.value")
     spellcheck=false    
   }}
 </div>

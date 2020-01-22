@@ -1,11 +1,12 @@
-{{rsa-form-input class="operator-input"
+{{rsa-form-input-oneway
+  class="operator-input"
   placeholder=(t (concat "adminUsm.groupCriteria.placeholders." selectedAttribute "_" selectedOperator))
   maxLength=1024
   value=localValue
   isError=(or validator.showError lockError)
   errorMessage=(t (concat "adminUsm.groupCriteria.inputValidations." validation))
   focusIn=(action "handleFocusIn")
-  focusOut=(action "handleInputChange")
+  onFocusOut=(action "handleInputChange" value="target.value")
   spellcheck=false
 }}
 

@@ -22,13 +22,31 @@ const BetweenTextInput = Component.extend({
   secondlockError: false,
 
   @computed('value')
-  firstValue(value) {
-    return value[0];
+  firstValue: {
+    get() {
+      if (this._firstValue) {
+        return this._firstValue;
+      }
+      return this.value[0];
+    },
+    set(newValue) {
+      this._firstValue = newValue;
+      return this._firstValue;
+    }
   },
 
   @computed('value')
-  secondValue(value) {
-    return value[1];
+  secondValue: {
+    get() {
+      if (this._secondValue) {
+        return this._secondValue;
+      }
+      return this.value[1];
+    },
+    set(newValue) {
+      this._secondValue = newValue;
+      return this._secondValue;
+    }
   },
 
   @computed('firstValue', 'validation', 'firstVisited', 'stepShowErrors')
@@ -53,6 +71,7 @@ const BetweenTextInput = Component.extend({
     firstValueChange(value) {
       this.set('firstVisited', true);
       this.set('firstlockError', false);
+      this.set('firstValue', value.trim());
       this.send('updateGroupCriteria', this.get('criteriaPath'), value.trim(), 10);
     },
 
@@ -67,6 +86,7 @@ const BetweenTextInput = Component.extend({
     secondValueChange(value) {
       this.set('secondVisited', true);
       this.set('secondlockError', false);
+      this.set('secondValue', value.trim());
       this.send('updateGroupCriteria', this.get('criteriaPath'), value.trim(), 11);
     }
   }

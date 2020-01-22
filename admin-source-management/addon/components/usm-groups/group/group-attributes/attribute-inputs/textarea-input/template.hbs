@@ -1,14 +1,14 @@
 <vbox>
-  {{rsa-form-textarea class="operator-input"
+  {{rsa-form-textarea-oneway
+    class="operator-input"
     placeholder=(t (concat "adminUsm.groupCriteria.placeholders." selectedAttribute "_" validation))
     value=localValue
     isInline=true
     isError=(or validator.showError lockError)
-    errorMessage=(t (concat "adminUsm.groupCriteria.inputValidations." validation))
     focusIn=(action "handleFocusIn")
-    focusOut=(action "handleInputChange" value="target.value")
+    onFocusOut=(action "handleInputChange" value="target.value")
     spellcheck=false
-  }} 
+  }}
   {{#if (or validator.showError lockError)}}
     <span class="input-error">
       {{t (concat "adminUsm.groupCriteria.inputValidations." validation)}}

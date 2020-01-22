@@ -20,8 +20,17 @@ const TextInput = Component.extend({
   lockError: false,
 
   @computed('value')
-  localValue(value) {
-    return value;
+  localValue: {
+    get() {
+      if (this._localValue) {
+        return this._localValue;
+      }
+      return this.value;
+    },
+    set(newValue) {
+      this._localValue = newValue;
+      return this._localValue;
+    }
   },
 
   @computed('localValue', 'validation', 'visited', 'stepShowErrors')
@@ -40,6 +49,7 @@ const TextInput = Component.extend({
     handleInputChange(value) {
       this.set('visited', true);
       this.set('lockError', false);
+      this.set('localValue', value.trim());
       this.send('updateGroupCriteria', this.get('criteriaPath'), [value.trim()], 2);
     }
   }
