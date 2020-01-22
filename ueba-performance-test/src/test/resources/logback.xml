@@ -18,6 +18,9 @@
         <level value="INFO" />
     </logger>
 
+    <logger name="presidio.integration.performance">
+        <level value="INFO" />
+    </logger>
 
     <!-- By default, the level of the root level is set to DEBUG -->
     <root level="ERROR">
