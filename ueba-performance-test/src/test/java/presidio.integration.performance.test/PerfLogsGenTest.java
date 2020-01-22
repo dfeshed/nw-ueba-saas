@@ -89,7 +89,7 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
                             @Optional("1") int groupsToCreate, 
                             @Optional("1000") double tlsEventsPerDayPerGroup,
                             @Optional("FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS,TLS") String schemas,
-                            @Optional("S3_JSON_GZIP_BUCKETS") GeneratorFormat generatorFormat) {
+                            @Optional("S3_JSON_GZIP_CHUNKS") GeneratorFormat generatorFormat) {
 
         setTestProperties();
         test.startInstant = Instant.parse(startTimeStr);

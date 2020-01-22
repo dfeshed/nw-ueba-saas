@@ -30,8 +30,8 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class S3JsonGzipBucketsProducer implements EventsProducer<NetwitnessEvent> {
-    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(S3JsonGzipBucketsProducer.class);
+public class S3JsonGzipChunksProducer implements EventsProducer<NetwitnessEvent> {
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(S3JsonGzipChunksProducer.class);
     private static String bucket = S3_CONFIG.getBucket();
 
     private S3_Key keyGen = new S3_Key();
@@ -42,7 +42,7 @@ public class S3JsonGzipBucketsProducer implements EventsProducer<NetwitnessEvent
     private static volatile Lazy<Boolean> truncateFlag = new Lazy<>();
     private long total = 0;
 
-    S3JsonGzipBucketsProducer(EventFormatter<NetwitnessEvent, String> formatter){
+    S3JsonGzipChunksProducer(EventFormatter<NetwitnessEvent, String> formatter){
         requireNonNull(formatter);
         this.formatter = formatter;
     }
@@ -103,7 +103,7 @@ public class S3JsonGzipBucketsProducer implements EventsProducer<NetwitnessEvent
         omd.setContentLength(zippedBytes.length);
         omd.setContentType("application/octet-stream");
 
-        Upload upload = transferManager.upload(S3JsonGzipBucketsProducer.bucket,
+        Upload upload = transferManager.upload(S3JsonGzipChunksProducer.bucket,
                 key,
                 new ByteArrayInputStream(zippedBytes),
                 omd);
