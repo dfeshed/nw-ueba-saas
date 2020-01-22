@@ -6,16 +6,6 @@
       {{rsa-loader size="larger"}}
     </div>
   {{else}}
-    {{#if isContentError}}
-      {{rsa-panel-message message=reconMessage}}
-      {{recon-pager
-        eventIndex=eventIndex
-        eventTotal=eventTotal
-        isPacket=false
-        isText=false
-      }}
-    {{else}}
-      {{component currentReconView.component}}
-    {{/if}}
+    {{component currentReconView.component}}
   {{/if}}
 {{/if}}

@@ -1,10 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import { doesStateHaveViewData } from 'recon/utils/reconstruction-types';
 import {
-  errorMessage,
-  isContentError,
   isLoading
 } from 'recon/reducers/data-selectors';
 
@@ -22,8 +19,6 @@ import ReconPagerMixin from 'recon/mixins/recon-pager';
 
 const stateToComputed = ({ recon }) => ({
   currentReconView: recon.visuals.currentReconView,
-  errorMessage: errorMessage(recon),
-  isContentError: isContentError(recon) && !doesStateHaveViewData(recon, recon.visuals.currentReconView),
   isLoading: isLoading(recon),
   isMetaShown: recon.visuals.isMetaShown,
   reconData: recon.data,
@@ -48,14 +43,6 @@ const EventContentComponent = Component.extend(ReconPagerMixin, {
   @computed('reconData.endpointId', 'reconData.eventId')
   classicWebReconPath(endpointId, eventId) {
     return `/investigation/${endpointId}/navigate/event/WEB/${eventId}`;
-  },
-
-  @computed('isEmailView', 'isWebEmail', 'errorMessage', 'classicWebReconPath')
-  reconMessage(isEmailView, isWebEmail, errorMessage, classicWebReconPath) {
-    if (isEmailView && isWebEmail) {
-      return this.get('i18n').t('recon.emailView.webMailRedirect', { url: classicWebReconPath });
-    }
-    return errorMessage;
   }
 });
 
