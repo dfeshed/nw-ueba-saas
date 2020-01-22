@@ -6,7 +6,8 @@ import {
   getNetworkDownloadOptions,
   getDefaultDownloadFormat,
   _packetsRetrieved,
-  packetRenderingUnderWay
+  packetRenderingUnderWay,
+  _toBeRenderedPackets
 } from 'recon/reducers/packets/selectors';
 
 import summaryDataInput from '../../../data/subscriptions/reconstruction-summary/query/data';
@@ -28,6 +29,16 @@ const packets = [{
   side: 'request',
   timestamp: '1485792552870'
 }];
+const packetFields = [
+  { length: 6, name: 'eth.dst', position: 0 },
+  { length: 6, name: 'eth.src', position: 6 },
+  { length: 2, name: 'eth.type', position: 12 },
+  { length: 4, name: 'ip.src', position: 26 },
+  { length: 4, name: 'ip.dst', position: 30 },
+  { length: 1, name: 'ip.proto', position: 23 },
+  { length: 2, name: 'tcp.srcport', position: 34 },
+  { length: 2, name: 'tcp.dstport', position: 36 }
+];
 
 module('Unit | selector | packets', function(hooks) {
   setupTest(hooks);
@@ -140,5 +151,74 @@ module('Unit | selector | packets', function(hooks) {
       }
     }));
     assert.notOk(result, 'packetRenderingUnderWay should be false');
+  });
+
+  test('_toBeRenderedPackets returns packets if visual req/resp are not hidden', function(assert) {
+    const result = _toBeRenderedPackets(Immutable.from({
+      visuals: {
+        isRequestShown: true,
+        isResponseShown: true
+      },
+      packets: {
+        packets,
+        isPayloadOnly: false,
+        packetFields
+      }
+    }));
+
+    assert.equal(result.length, 2, 'Did not find request and response');
+  });
+
+  test('_toBeRenderedPackets returns requests if visual response is hidden', function(assert) {
+    const result = _toBeRenderedPackets(Immutable.from({
+      visuals: {
+        isRequestShown: true,
+        isResponseShown: false
+      },
+      packets: {
+        packets,
+        isPayloadOnly: false,
+        packetFields
+      }
+    }));
+
+    assert.equal(result.length, 1, 'Did not find request');
+    assert.ok(result[0].side === 'request', 'Did not find request');
+
+  });
+
+  test('_toBeRenderedPackets returns response if visual request is hidden', function(assert) {
+    const result = _toBeRenderedPackets(Immutable.from({
+      visuals: {
+        isRequestShown: false,
+        isResponseShown: true
+      },
+      packets: {
+        packets,
+        isPayloadOnly: false,
+        packetFields
+      }
+    }));
+
+    assert.equal(result.length, 1, 'Did not find response');
+    assert.ok(result[0].side === 'response', 'Did not find request');
+
+  });
+
+  test('_toBeRenderedPackets returns empty array if req/resp are hidden', function(assert) {
+    const result = _toBeRenderedPackets(Immutable.from({
+      visuals: {
+        isRequestShown: false,
+        isResponseShown: false
+      },
+      packets: {
+        packets,
+        isPayloadOnly: false,
+        packetFields
+      }
+    }));
+
+    assert.equal(result.length, 0, 'Found content when it should not');
+
   });
 });

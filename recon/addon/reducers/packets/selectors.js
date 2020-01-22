@@ -32,10 +32,10 @@ export const hasRenderIds = createSelector(
 
 /**
  * Selector, those packets that are CANDIDATES for rendering
- *
+ * Exporting it for testing purposes
  * @public
  */
-const _toBeRenderedPackets = createSelector(
+export const _toBeRenderedPackets = createSelector(
   [packets, isPayloadOnly, packetFields, isRequestShown, isResponseShown],
   (packets, isPayloadOnly, packetFields, isRequestShown, isResponseShown) => {
 
@@ -45,18 +45,18 @@ const _toBeRenderedPackets = createSelector(
       return [];
     }
 
+    packets = processPacketPayloads(packets, isPayloadOnly, packetFields);
+
     // if showing all packets, just return them
     if (isRequestShown && isResponseShown) {
-      return processPacketPayloads(packets, isPayloadOnly, packetFields);
+      return packets;
     }
 
     // we're not showing req or res, so let's filter them out
-    packets = packets.filter((p) => {
+    return packets.filter((p) => {
       return (p.side === 'request' && isRequestShown) ||
         (p.side === 'response' && isResponseShown);
     });
-
-    return processPacketPayloads(packets, isPayloadOnly, packetFields);
   }
 );
 
