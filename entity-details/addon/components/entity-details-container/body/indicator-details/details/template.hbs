@@ -29,5 +29,20 @@
   </div>
 </div>
 <div class="entity-details-container-body-indicator-details_details_desc">
-  {{t (concat "investigateUsers.alerts.indicator.indicatorNames." incidentDetails.anomalyTypeFieldName ".timeline") entityName=entityDisplayName contexts=contexts anomalyValue=incidentDetails.anomalyValue}}
+  {{t (concat "investigateUsers.alerts.indicator.indicatorNames." incidentDetails.anomalyTypeFieldName ".timeline")
+    entityName=entityDisplayName
+    processFileName=contexts.processFileName
+    registryKeyGroup=contexts.registryKeyGroup
+    dstProcessFileName=contexts.dstProcessFileName
+    srcProcessFileName=contexts.srcProcessFileName
+    srcIp=contexts.srcIp
+    sslSubjectName=contexts.sslSubjectName
+    domainName=contexts.domainName
+    dstOrgName=contexts.dstOrgName
+    dstPortName=contexts.dstPortName
+    ja3Name=contexts.ja3Name
+    ja3name=contexts.ja3.name
+    srcNetname=contexts.srcNetname
+    anomalyValue=incidentDetails.anomalyValue
+  }}
 </div>
