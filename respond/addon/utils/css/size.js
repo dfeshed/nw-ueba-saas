@@ -1,6 +1,5 @@
-import EmberObject from '@ember/object';
+import EmberObject, { computed } from '@ember/object';
 import { isEmpty } from '@ember/utils';
-import computed from 'ember-computed-decorators';
 import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 /**
@@ -41,9 +40,8 @@ const Size = EmberObject.extend({
    * @type {Number|String}
    * @public
    */
-  @computed
-  value: {
-    set(v) {
+  value: computed({
+    set(key, v) {
       if (isEmpty(v) || (v === 'auto')) {
         this.setProperties({
           auto: true,
@@ -77,7 +75,7 @@ const Size = EmberObject.extend({
       }
       return v;
     }
-  },
+  }),
 
   /**
    * Serializes this value to a string.
@@ -85,10 +83,9 @@ const Size = EmberObject.extend({
    * @returns {string}
    * @public
    */
-  @computed('auto', 'number', 'units')
-  string(auto, number, units) {
-    return auto ? '' : `${number}${units}`;
-  },
+  string: computed('auto', 'number', 'units', function() {
+    return this.auto ? '' : `${this.number}${this.units}`;
+  }),
 
   /**
    * Adds another Size instance to this Size instance, returning a new instance with the result.

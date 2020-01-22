@@ -1,6 +1,5 @@
-import EmberObject from '@ember/object';
+import EmberObject, { computed } from '@ember/object';
 import Size from 'respond/utils/css/size';
-import computed from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
 
 /**
@@ -10,7 +9,6 @@ import { htmlSafe } from '@ember/string';
  * @public
  */
 export default EmberObject.extend({
-
   /**
    * Name of the data property from which values should be read for this column.
    * @type {String}
@@ -61,28 +59,29 @@ export default EmberObject.extend({
    */
   componentClass: null,
 
-  @computed('width')
-  parsedWidth(width) {
-    return Size.create({ value: width });
-  },
+  parsedWidth: computed('width', function() {
+    return Size.create({ value: this.width });
+  }),
 
-  @computed('width')
-  parsedMinWidth(minWidth) {
-    return Size.create({ value: minWidth });
-  },
+  parsedMinWidth: computed('width', function() {
+    return Size.create({ value: this.width });
+  }),
 
-  @computed('width')
-  parsedMaxWidth(maxWidth) {
-    return Size.create({ value: maxWidth });
-  },
+  parsedMaxWidth: computed('width', function() {
+    return Size.create({ value: this.width });
+  }),
 
   // Generates a safe CSS string that applies this column's width to the DOM. Used for template bindings.
   // Note: In some browsers, setting `width` alone on a <td> isn't enough; you need `min-width` & `max-width` too.
-  @computed('parsedWidth.string', 'parsedMinWidth.string', 'parsedMaxWidth.string')
-  styleText(parsedWidth, parsedMinWidth, parsedMaxWidth) {
-    const styleText = `width:${parsedWidth};
-      min-width:${parsedMinWidth || parsedWidth};
-      max-width:${parsedMaxWidth || parsedWidth}`;
-    return htmlSafe(styleText);
-  }
+  styleText: computed(
+    'parsedWidth.string',
+    'parsedMinWidth.string',
+    'parsedMaxWidth.string',
+    function() {
+      const styleText = `width:${this.parsedWidth?.string};
+        min-width:${this.parsedMinWidth?.string || this.parsedWidth?.string};
+        max-width:${this.parsedMaxWidth?.string || this.parsedWidth?.string}`;
+      return htmlSafe(styleText);
+    }
+  )
 });

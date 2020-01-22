@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
-import computed from 'ember-computed-decorators';
 
 export default Controller.extend({
   riac: service(),
@@ -13,12 +13,11 @@ export default Controller.extend({
    * @public
    * @returns {*}
    */
-  @computed('routing.currentRouteName')
-  routePath(currentRouteName) {
-    const paths = currentRouteName.split('.');
+  routePath: computed('routing.currentRouteName', function() {
+    const paths = this.routing?.currentRouteName.split('.');
     const path = paths.pop();
     return path === 'index' ? paths.pop() || '' : path;
-  },
+  }),
   actions: {
     navigateTo(routeName) {
       this.transitionToRoute(routeName);

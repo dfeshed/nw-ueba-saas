@@ -1,8 +1,8 @@
 import EnrichmentsToDisplay from './enrichments-to-display';
 import KeysToi18n from './keys-to-i18n';
-import computed, { alias } from 'ember-computed-decorators';
+import { alias } from '@ember/object/computed';
 import { isEmpty } from '@ember/utils';
-import EmberObject, { get } from '@ember/object';
+import EmberObject, { get, computed } from '@ember/object';
 
 /**
  * @class StoryPoint
@@ -21,7 +21,6 @@ import EmberObject, { get } from '@ember/object';
  * @public
  */
 export default EmberObject.extend({
-
   /**
    * The indicator POJO that this instance wraps.
    * @type {Object}
@@ -29,8 +28,7 @@ export default EmberObject.extend({
    */
   indicator: null,
 
-  @alias('indicator.id')
-  id: null,
+  id: alias('indicator.id'),
 
   /**
    * The list of events for this indicator.
@@ -61,10 +59,9 @@ export default EmberObject.extend({
    * @type {Object[]}
    * @public
    */
-  @computed('showEnrichmentsAsItems', 'enrichments', 'events')
-  items(showEnrichmentsAsItems, enrichments, events) {
-    return showEnrichmentsAsItems ? enrichments : events;
-  },
+  items: computed('showEnrichmentsAsItems', 'enrichments', 'events', function() {
+    return this.showEnrichmentsAsItems ? this.enrichments : this.events;
+  }),
 
   /**
    * Computes an array of enrichments (possibly empty) from the current list of events.
@@ -112,9 +109,8 @@ export default EmberObject.extend({
    * @type {{ id: String, key: String, i18nKey: String, value: * }[]}
    * @public
    */
-  @computed('events.lastObject')
-  enrichments(evt) {
-    const { id: eventId, enrichment: enrichmentHash } = evt || {};
+  enrichments: computed('events.lastObject', function() {
+    const { id: eventId, enrichment: enrichmentHash } = this.events?.lastObject || {};
     // Some normalization scripts may set enrichment hash to "", null or a POJO
     if (isEmpty(enrichmentHash)) {
       return [];
@@ -150,5 +146,5 @@ export default EmberObject.extend({
         };
       })
       .compact();
-  }
+  })
 });

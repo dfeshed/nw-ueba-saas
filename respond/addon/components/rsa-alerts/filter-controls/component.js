@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import {
   getAlertNames,
   getAlertTypeFilters,
@@ -37,10 +37,9 @@ const stateToComputed = (state) => {
 const AlertFilters = Component.extend({
   tagName: '',
 
-  @computed('alertNameFilters')
-  selectedNames(alertNameFilters) {
-    return [...alertNameFilters];
-  },
+  selectedNames: computed('alertNameFilters', function() {
+    return [...this.alertNameFilters];
+  }),
 
   init() {
     this._super(arguments);

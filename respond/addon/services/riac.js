@@ -1,5 +1,6 @@
+import { computed } from '@ember/object';
 import Service, { inject as service } from '@ember/service';
-import computed, { alias } from 'ember-computed-decorators';
+import { alias } from '@ember/object/computed';
 import { connect } from 'ember-redux';
 import { isRiacEnabled, getAdminRoles } from 'respond/selectors/riac';
 
@@ -13,67 +14,54 @@ const stateToComputed = (state) => {
 const RiacService = Service.extend({
 
   accessControl: service(),
+  authorities: alias('accessControl.authorities.[]'),
+  _rbacAlertsAccess: alias('accessControl.hasRespondAlertsAccess'),
 
-  @alias('accessControl.authorities.[]')
-  authorities: [],
+  _riacAlertsAccess: computed('authorities.[]', 'adminRoles', function() {
+    return this.authorities.some((authority) => this.adminRoles.includes(authority));
+  }),
 
-  @alias('accessControl.hasRespondAlertsAccess')
-  _rbacAlertsAccess: null,
+  _rbacTasksAccess: alias('accessControl.hasRespondRemediationAccess'),
 
-  @computed('authorities.[]', 'adminRoles')
-  _riacAlertsAccess(authorities, adminRoles) {
-    return authorities.some((authority) => adminRoles.includes(authority));
-  },
+  _riacTasksAccess: computed('authorities.[]', 'adminRoles', function() {
+    return this.authorities.some((authority) => this.adminRoles.includes(authority));
+  }),
 
-  @alias('accessControl.hasRespondRemediationAccess')
-  _rbacTasksAccess: null,
+  _riacChangeAssigneeAccess: computed('authorities.[]', 'adminRoles', function() {
+    return this.authorities.some((authority) => this.adminRoles.includes(authority));
+  }),
 
-  @computed('authorities.[]', 'adminRoles')
-  _riacTasksAccess(authorities, adminRoles) {
-    return authorities.some((authority) => adminRoles.includes(authority));
-  },
-
-  @computed('authorities.[]', 'adminRoles')
-  _riacChangeAssigneeAccess(authorities, adminRoles) {
-    return authorities.some((authority) => adminRoles.includes(authority));
-  },
-
-  @computed('riacEnabled', '_riacAlertsAccess', '_rbacAlertsAccess')
-  hasAlertsAccess(riacEnabled, riacAlertsAccess, rbacAlertsAccess) {
-    switch (riacEnabled) {
+  hasAlertsAccess: computed('riacEnabled', '_riacAlertsAccess', '_rbacAlertsAccess', function() {
+    switch (this.riacEnabled) {
       case true:
-        return riacAlertsAccess;
+        return this._riacAlertsAccess;
       case false:
-        return rbacAlertsAccess;
+        return this._rbacAlertsAccess;
       default:
         return false;
     }
-  },
+  }),
 
-  @computed('riacEnabled', '_riacTasksAccess', '_rbacTasksAccess')
-  hasTasksAccess(riacEnabled, riacTasksAccess, rbacTasksAccess) {
-    switch (riacEnabled) {
+  hasTasksAccess: computed('riacEnabled', '_riacTasksAccess', '_rbacTasksAccess', function() {
+    switch (this.riacEnabled) {
       case true:
-        return riacTasksAccess;
+        return this._riacTasksAccess;
       case false:
-        return rbacTasksAccess;
+        return this._rbacTasksAccess;
       default:
         return false;
     }
-  },
+  }),
 
-  @computed('riacEnabled', '_riacChangeAssigneeAccess')
-  canChangeAssignee(riacEnabled, riacAc) {
-    if (riacEnabled) {
-      return riacAc;
+  canChangeAssignee: computed('riacEnabled', '_riacChangeAssigneeAccess', function() {
+    if (this.riacEnabled) {
+      return this._riacChangeAssigneeAccess;
     } else {
       return true;
     }
-  },
+  }),
 
-  @alias('accessControl.hasRespondIncidentsAccess')
-  hasIncidentsAccess: null
-
+  hasIncidentsAccess: alias('accessControl.hasRespondIncidentsAccess')
 });
 
 export default connect(stateToComputed)(RiacService);

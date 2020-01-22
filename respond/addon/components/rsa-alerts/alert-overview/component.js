@@ -1,5 +1,5 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 
 const stateToComputed = (state) => {
@@ -23,12 +23,12 @@ const AlertOverview = Component.extend({
   actions: {
     update() {}
   },
-  @computed('originalAlert')
-  formattedRawAlert(originalAlert) {
-    if (originalAlert) {
-      return JSON.stringify(originalAlert, undefined, 2);
+
+  formattedRawAlert: computed('originalAlert', function() {
+    if (this.originalAlert) {
+      return JSON.stringify(this.originalAlert, undefined, 2);
     }
-  }
+  })
 });
 
 export default connect(stateToComputed, undefined)(AlertOverview);
