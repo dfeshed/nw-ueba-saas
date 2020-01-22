@@ -20,7 +20,6 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 
 public class S3_Key {
 
-    private static final Number UPLOAD_INTERVAL_MINUTES = 5;
     private static final ImmutableMap<Schema, String> applicationLabel = new ImmutableMap.Builder<Schema, String>()
             .put(TLS, "TLS")
             .put(ACTIVE_DIRECTORY, "ACTIVE_DIRECTORY")
@@ -45,11 +44,11 @@ public class S3_Key {
 
     public Set<String> getAllS3_Keys(Instant from, Instant to, Schema schema) {
         long between = MINUTES.between(getRelatedTimeInterval(from), getRelatedTimeInterval(to));
-        long numOfIntervals = between / UPLOAD_INTERVAL_MINUTES.longValue();
+        long numOfIntervals = between / S3_CONFIG.UPLOAD_INTERVAL_MINUTES.longValue();
 
         Stream<Instant> localDateTimeStream = LongStream.rangeClosed(0, numOfIntervals).parallel()
                 .boxed()
-                .map(i -> from.plus(UPLOAD_INTERVAL_MINUTES.longValue() * i, MINUTES));
+                .map(i -> from.plus(S3_CONFIG.UPLOAD_INTERVAL_MINUTES.longValue() * i, MINUTES));
 
         return localDateTimeStream.parallel().map(e -> key(e, schema)).collect(Collectors.toSet());
     }
@@ -105,10 +104,10 @@ public class S3_Key {
     }
 
     private LocalDateTime getRelatedTimeInterval(Instant toConvert) {
-        LocalDateTime time = LocalDateTime.ofInstant(toConvert, UTC).plusMinutes(UPLOAD_INTERVAL_MINUTES.intValue());
+        LocalDateTime time = LocalDateTime.ofInstant(toConvert, UTC).plusMinutes(S3_CONFIG.UPLOAD_INTERVAL_MINUTES.intValue());
 
         /* plusMinutes(1) is required put minutes equal to (UPLOAD_INTERVAL_MINUTES * n) into the next chunk */
-        int nearestMinute = (int) Math.floor(time.getMinute() / UPLOAD_INTERVAL_MINUTES.doubleValue()) * UPLOAD_INTERVAL_MINUTES.intValue();
+        int nearestMinute = (int) Math.floor(time.getMinute() / S3_CONFIG.UPLOAD_INTERVAL_MINUTES.doubleValue()) * S3_CONFIG.UPLOAD_INTERVAL_MINUTES.intValue();
         return (nearestMinute == 60) ? time.plusHours(1).withSecond(0).withMinute(0) : time.withSecond(0).withMinute(nearestMinute);
     }
 

@@ -11,16 +11,18 @@ import java.util.function.Supplier;
 public enum AWS_Config {
     S3_CONFIG;
 
+    public static final Number UPLOAD_INTERVAL_MINUTES = 5;
+
     private final String RESOURCE_NAME = "aws_key.properties";
     private Lazy<Properties> propertiesHolder = new Lazy<>();
     private Supplier<Properties> properties = () -> propertiesHolder.getOrCompute(this::getResource);
 
     public String getAccessKey() {
-        return getOrThrow("secret_key");
+        return getOrThrow("access_key");
     }
 
     public String getSecretKey() {
-        return getOrThrow("access_key");
+        return getOrThrow("secret_key");
     }
 
     public String getBucket() {

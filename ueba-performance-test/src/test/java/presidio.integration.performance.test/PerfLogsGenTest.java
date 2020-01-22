@@ -104,9 +104,9 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
         test.print();
 
 
-        List<Schema> schemasToCreate = Arrays.stream(schemas.split(",")).map(String::trim).map(Schema::valueOf).collect(toList());
+        List<Schema> schemasToProcess = Arrays.stream(schemas.split(",")).map(String::trim).map(Schema::valueOf).collect(toList());
 
-        List<PerformanceScenario> scenarios = schemasToCreate.stream()
+        List<PerformanceScenario> scenarios = schemasToProcess.stream()
                 .map(e -> new PerformanceScenariosSupplier(e, test).get())
                 .collect(toList());
 
