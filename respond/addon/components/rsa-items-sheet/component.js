@@ -1,6 +1,7 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
-import computed, { gt } from 'ember-computed-decorators';
+import { gt } from '@ember/object/computed';
 
 /**
  * @class Items Sheet component
@@ -84,63 +85,54 @@ export default Component.extend({
   },
 
   // Computes which item should be currently shown in the Item Details view
-  @computed('items.[]', 'selectedItem', 'totalCount')
-  resolvedSelectedItem(items, selectedItem, totalCount) {
-    if (selectedItem) {
-      return selectedItem;
+  resolvedSelectedItem: computed('items.[]', 'selectedItem', 'totalCount', function() {
+    if (this.selectedItem) {
+      return this.selectedItem;
     } else {
-      const canAutoSelect = (totalCount === 1);
+      const canAutoSelect = (this.totalCount === 1);
       if (canAutoSelect) {
-        return items && items[0];
+        return this.items && this.items[0];
       }
       return null;
     }
-  },
+  }),
 
   // Computes the index of `resolvedSelectedItem` relative to the entire `items` array.
-  @computed('items.[]', 'resolvedSelectedItem')
-  selectedIndex(items, selectedItem) {
-    if (!selectedItem || !items) {
+  selectedIndex: computed('items.[]', 'resolvedSelectedItem', function() {
+    if (!this.resolvedSelectedItem || !this.items) {
       return -1;
     }
-    return items.indexOf(selectedItem);
-  },
+    return this.items.indexOf(this.resolvedSelectedItem);
+  }),
 
   // Computes the 1-based number that corresponds to the 0-based selectedIndex.
-  @computed('selectedIndex')
-  selectedOrdinal(selectedIndex) {
-    return selectedIndex + 1;
-  },
+  selectedOrdinal: computed('selectedIndex', function() {
+    return this.selectedIndex + 1;
+  }),
 
   // Computes the item in `items` that is immediately before `resolvedSelectedItem` (if any).
-  @computed('items.[]', 'selectedIndex')
-  previousItem(items, selectedIndex) {
-    return (selectedIndex > 0) ? items[selectedIndex - 1] : null;
-  },
+  previousItem: computed('items.[]', 'selectedIndex', function() {
+    return (this.selectedIndex > 0) ? this.items[this.selectedIndex - 1] : null;
+  }),
 
   // Computes the item in `items` that is immediately after `resolvedSelectedItem` (if any).
-  @computed('items.[]', 'selectedIndex')
-  nextItem(items, selectedIndex) {
-    return (selectedIndex > -1) ? items[selectedIndex + 1] : null;
-  },
+  nextItem: computed('items.[]', 'selectedIndex', function() {
+    return (this.selectedIndex > -1) ? this.items[this.selectedIndex + 1] : null;
+  }),
 
   // True if the Item Details view should be displayed; otherwise, Table view should be displayed.
-  @computed('resolvedSelectedItem', 'totalCount')
-  shouldShowDetails(selectedItem, totalCount) {
-    return !!selectedItem || (totalCount === 1);
-  },
+  shouldShowDetails: computed('resolvedSelectedItem', 'totalCount', function() {
+    return !!this.resolvedSelectedItem || (this.totalCount === 1);
+  }),
 
-  // True if the Previous & Next navigation controls should be displayed; i.e., if there are multiple objects in `items`.
-  @gt('items.length', 1)
-  isNavEnabled: false,
+  // True if the Previous & Next navigation controls should be displayed
+  // i.e., if there are multiple objects in `items`.
+  isNavEnabled: gt('items.length', 1),
+  isPreviousEnabled: gt('selectedIndex', 0),
 
-  @gt('selectedIndex', 0)
-  isPreviousEnabled: false,
-
-  @computed('selectedOrdinal', 'items.length')
-  isNextEnabled(ordinal, length) {
-    return ordinal < length;
-  },
+  isNextEnabled: computed('selectedOrdinal', 'items.length', function() {
+    return this.selectedOrdinal < this.items?.length;
+  }),
 
   actions: {
     /**

@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import { debounce } from '@ember/runloop';
 import {
   getTopLevelCategoryNames,
@@ -52,11 +52,10 @@ const IncidentFilters = Component.extend({
   tagName: '',
   accessControl: service(),
 
-  @computed('idFilter')
-  idFilterNumber(idString) {
-    const capture = /INC-(\d+)/g.exec(idString);
+  idFilterNumber: computed('idFilter', function() {
+    const capture = /INC-(\d+)/g.exec(this.idFilter);
     return capture?.[1] ?? '';
-  },
+  }),
 
   /**
    * The user objects that have been selected via the assignee picker
@@ -66,13 +65,14 @@ const IncidentFilters = Component.extend({
    * @param assigneeFilters
    * @returns {Array}
    */
-  @computed('users', 'assigneeFilters')
-  selectedAssignees(users, assigneeFilters = []) {
-    return users.filter((user) => (assigneeFilters.includes(user.id)));
-  },
+  selectedAssignees: computed('users', 'assigneeFilters', function() {
+    const assigneeFilters = this.assigneeFilters || [];
+    return this.users.filter((user) => (assigneeFilters.includes(user.id)));
+  }),
 
-  @computed('users', 'accessControl.username')
-  assigneeOptions: enhance,
+  assigneeOptions: computed('users', 'accessControl.username', function() {
+    return enhance(this.users, this.accessControl?.username);
+  }),
 
   /**
    * Returns the list of selected category objects that are currently being used in the filter
@@ -80,10 +80,10 @@ const IncidentFilters = Component.extend({
    * @param categories
    * @param categoryFilters
    */
-  @computed('categoryTags', 'categoryFilters')
-  selectedCategories(categories, categoryFilters = []) {
-    return categories.filter((category) => (categoryFilters.includes(category)));
-  },
+  selectedCategories: computed('categoryTags', 'categoryFilters', function() {
+    const categoryFilters = this.categoryFilters || [];
+    return this.categoryTags.filter((category) => (categoryFilters.includes(category)));
+  }),
 
   assigneeMatcher({ name, id }, searchTerm) {
     const userName = name || id;

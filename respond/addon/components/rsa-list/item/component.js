@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { alias } from 'ember-computed-decorators';
+import { alias } from '@ember/object/computed';
 import Clickable from 'respond/mixins/dom/clickable';
 
 export default Component.extend(Clickable, {
@@ -10,6 +10,5 @@ export default Component.extend(Clickable, {
 
   // Specifies the data to be submitted to click event handlers.
   // @see respond/mixins/dom/clickable
-  @alias('item')
-  clickData: null
+  clickData: alias('item')
 });

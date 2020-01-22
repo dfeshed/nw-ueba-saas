@@ -1,5 +1,5 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 import { getPriorityTypes } from 'respond-shared/selectors/create-incident/selectors';
@@ -30,10 +30,9 @@ const RemediationTaskOverview = Component.extend({
    * @returns {boolean}
    * @public
    */
-  @computed('info.status')
-  isOpen(status) {
-    return !closedStatuses.includes(status);
-  },
+  isOpen: computed('info.status', function() {
+    return !closedStatuses.includes(this.info?.status);
+  }),
 
   actions: {
     /**

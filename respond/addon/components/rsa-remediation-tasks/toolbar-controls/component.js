@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { gt } from 'ember-computed-decorators';
+import { gt } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 
 /**
@@ -12,7 +12,7 @@ export default Component.extend({
   accessControl: service(),
   i18n: service(),
 
-  @gt('itemsSelected.length', 1) isBulkSelection: false,
+  isBulkSelection: gt('itemsSelected.length', 1),
 
   deleteConfirmationDialogId: 'delete-entities',
 

@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import { updateItem, deleteItem } from 'respond/actions/creators/remediation-task-creators';
 import Confirmable from 'component-lib/mixins/confirmable';
 import Notifications from 'component-lib/mixins/notifications';
@@ -61,10 +61,9 @@ const RemediationTask = Component.extend(Notifications, Confirmable, {
    * @returns {boolean}
    * @public
    */
-  @computed('info.status')
-  isOpen(status) {
-    return !closedStatuses.includes(status);
-  },
+  isOpen: computed('info.status', function() {
+    return !closedStatuses.includes(this.info?.status);
+  }),
 
   actions: {
     selectionChange(entityId, field, updatedValue) {

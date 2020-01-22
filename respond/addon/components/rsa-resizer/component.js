@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import DragBehavior from 'respond/utils/behaviors/drag';
 import safeCallback from 'component-lib/utils/safe-callback';
 
@@ -53,8 +53,7 @@ export default Component.extend({
    * Creates a DragBehavior instance and attaches it to this component's mouseDown.
    * @private
    */
-  @computed()
-  dragBehavior() {
+  dragBehavior: computed(function() {
     const dragstart = () => {
       this.setProperties({
         isResizing: true,
@@ -77,7 +76,7 @@ export default Component.extend({
         dragend
       }
     });
-  },
+  }),
 
   // Notifies `dragBehavior` that a drag may be starting.
   mouseDown(e) {

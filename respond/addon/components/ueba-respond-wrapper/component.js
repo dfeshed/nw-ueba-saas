@@ -1,9 +1,8 @@
-import { get } from '@ember/object';
+import { get, computed } from '@ember/object';
 import { connect } from 'ember-redux';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { htmlSafe } from '@ember/string';
-import computed from 'ember-computed-decorators';
 import { getInspectorWidth } from 'respond/selectors/incidents';
 
 const stateToComputed = (state) => ({
@@ -16,18 +15,17 @@ const UebaWrapper = Component.extend({
   classNames: ['ueba-standalone-container'],
   contextualHelp: service(),
 
-  @computed('width')
-  resolvedWidth(width) {
-    return htmlSafe(`width: calc(100% - ${width}px);`);
-  },
-  @computed('ueba')
-  entityModel(ueba) {
-    if (!ueba) {
+  resolvedWidth: computed('width', function() {
+    return htmlSafe(`width: calc(100% - ${this.width}px);`);
+  }),
+
+  entityModel: computed('ueba', function() {
+    if (!this.ueba) {
       return null;
     }
-    const [, entityId] = ueba.match(/user\/(.*)\/alert/i);
-    const [, alertId] = ueba.match(/alert\/(.*)\/indicator/i);
-    const [, indicatorId] = ueba.match(/indicator\/(.*)/i);
+    const [, entityId] = this.ueba.match(/user\/(.*)\/alert/i);
+    const [, alertId] = this.ueba.match(/alert\/(.*)\/indicator/i);
+    const [, indicatorId] = this.ueba.match(/indicator\/(.*)/i);
     return {
       entityType: 'user',
       showOnlyIndicator: true,
@@ -35,7 +33,7 @@ const UebaWrapper = Component.extend({
       alertId,
       indicatorId
     };
-  },
+  }),
   actions: {
     close() {
       get(this, 'uebaClose')();

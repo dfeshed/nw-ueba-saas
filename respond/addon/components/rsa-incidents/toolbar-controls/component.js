@@ -1,5 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import computed, { gt } from 'ember-computed-decorators';
+import { gt } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import enhance from 'respond/utils/enhance-users';
 
@@ -13,20 +14,20 @@ export default Component.extend({
   riac: service(),
   accessControl: service(),
   i18n: service(),
+  isBulkSelection: gt('itemsSelected.length', 1),
 
-  @gt('itemsSelected.length', 1) isBulkSelection: false,
-
-  @computed(
+  canChangeAssignee: computed(
     'riac.canChangeAssignee',
     'hasNoSelections',
-    'hasSelectedClosedIncidents'
-  )
-  canChangeAssignee(canChangeAssignee, hasNoSelections, hasSelectedClosedIncidents) {
-    return !hasNoSelections && !hasSelectedClosedIncidents && canChangeAssignee;
-  },
+    'hasSelectedClosedIncidents',
+    function() {
+      return !this.hasNoSelections && !this.hasSelectedClosedIncidents && this.riac?.canChangeAssignee;
+    }
+  ),
 
-  @computed('users', 'accessControl.username')
-  assigneeOptions: enhance,
+  assigneeOptions: computed('users', 'accessControl.username', function() {
+    return enhance(this.users, this.accessControl?.username);
+  }),
 
   updateConfirmationDialogId: 'bulk-update-entities',
   deleteConfirmationDialogId: 'delete-entities',

@@ -1,5 +1,5 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import { isEmpty, typeOf } from '@ember/utils';
 
 /**
@@ -70,29 +70,28 @@ export default Component.extend({
    * @type {string}
    * @private
    */
-  @computed('model')
-  modelType(model) {
-    return typeOf(model);
-  },
+  modelType: computed('model', function() {
+    return typeOf(this.model);
+  }),
 
   /**
    * Computes an array of property names to be displayed from `model`, ordered according to `order`, filtered by `hidden`,
    * and possibly including extra ("unknown") properties depending upon `skipUnknowns`.
    * @private
    */
-  @computed('order', 'model', 'modelType', 'hidden', 'skipUnknowns')
-  resolvedOrder(order, model, modelType, hidden, skipUnknowns) {
-    const modelKeys = (modelType === 'object') ? Object.keys(model) : [];
+  resolvedOrder: computed('order', 'model', 'modelType', 'hidden', 'skipUnknowns', function() {
+    const modelKeys = (this.modelType === 'object') ? Object.keys(this.model) : [];
 
-    let result = order;
-    if (typeOf(order) === 'string') {
-      result = order.split(',').map((str) => str.trim());
+    let result = this.order;
+    let hidden = this.hidden || [];
+    if (typeOf(this.order) === 'string') {
+      result = this.order.split(',').map((str) => str.trim());
     }
     if (isEmpty(result)) {
 
       // `order` is unspecified, so start with all the keys from model.
       result = modelKeys;
-    } else if (!skipUnknowns) {
+    } else if (!this.skipUnknowns) {
 
       // `order` is specified, append other found keys.
       modelKeys.forEach((key) => {
@@ -110,7 +109,7 @@ export default Component.extend({
       result = result.reject((key) => hidden.includes(key));
     }
     return result;
-  },
+  }),
 
   /**
    * An array of information about the properties of an object-type `model` and their respective values & data types.
@@ -118,28 +117,33 @@ export default Component.extend({
    * @type {{key: String, value: *, type: String, isNestedValue: Boolean}[]}
    * @private
    */
-  @computed('model', 'resolvedOrder', 'modelPath', 'propertyNameFormatter')
-  keys(model, resolvedOrder, modelPath, propertyNameFormatter) {
-    if (!model) {
-      return [];
-    }
+  keys: computed(
+    'model',
+    'resolvedOrder',
+    'modelPath',
+    'propertyNameFormatter',
+    function() {
+      if (!this.model) {
+        return [];
+      }
 
-    return resolvedOrder
-      .filter((name) => !isEmpty(model[name]))
-      .map((name) => {
-        const value = model[name];
-        const type = typeOf(value);
-        const fullPath = modelPath ? `${modelPath}.${name}` : name;
-        return {
-          name,
-          nameFormatted: propertyNameFormatter ? propertyNameFormatter(name, fullPath) : name,
-          fullPath,
-          value,
-          type,
-          isNestedValue: (type === 'object') || (type === 'array')
-        };
-      });
-  },
+      return this.resolvedOrder
+        .filter((name) => !isEmpty(this.model[name]))
+        .map((name) => {
+          const value = this.model[name];
+          const type = typeOf(value);
+          const fullPath = this.modelPath ? `${this.modelPath}.${name}` : name;
+          return {
+            name,
+            nameFormatted: this.propertyNameFormatter ? this.propertyNameFormatter(name, fullPath) : name,
+            fullPath,
+            value,
+            type,
+            isNestedValue: (type === 'object') || (type === 'array')
+          };
+        });
+    }
+  ),
 
   /**
    * An array of information about the members of an array-type `model`, i.e. their respective values & data types.
@@ -147,10 +151,9 @@ export default Component.extend({
    * @type {value: *, type: String, isNestedValue: Boolean}[]}
    * @private
    */
-  @computed('model', 'modelType')
-  members(model, modelType) {
-    if (modelType === 'array') {
-      return model.map((value) => {
+  members: computed('model', 'modelType', function() {
+    if (this.modelType === 'array') {
+      return this.model.map((value) => {
         const type = typeOf(value);
         return {
           value,
@@ -161,7 +164,7 @@ export default Component.extend({
     } else {
       return [];
     }
-  },
+  }),
 
   /**
    * Required configurable name of the Ember Component class to be used for rendering property values that

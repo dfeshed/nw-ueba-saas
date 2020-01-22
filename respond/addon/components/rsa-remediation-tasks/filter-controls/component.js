@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import { debounce } from '@ember/runloop';
 
 const stateToComputed = (state) => {
@@ -48,10 +48,10 @@ const RemediationTaskFilters = Component.extend({
    * @param createdByFilters
    * @returns {Array}
    */
-  @computed('users', 'createdByFilters')
-  selectedCreatedBys(users, createdByFilters = []) {
-    return users.filter((user) => (createdByFilters.includes(user.id)));
-  },
+  selectedCreatedBys: computed('users', 'createdByFilters', function() {
+    const createdByFilters = this.createdByFilters || [];
+    return this.users.filter((user) => (createdByFilters.includes(user.id)));
+  }),
 
   // Custom search for the createdBy filter to ensure that if the user.name is not found, we also search id
   createdByMatcher({ name, id }, searchTerm) {

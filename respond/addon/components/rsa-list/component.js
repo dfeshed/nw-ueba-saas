@@ -1,6 +1,6 @@
 import Component from '@ember/component';
-import { set, get } from '@ember/object';
-import computed, { notEmpty } from 'ember-computed-decorators';
+import { set, get, computed } from '@ember/object';
+import { notEmpty } from '@ember/object/computed';
 import layout from './template';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 
@@ -81,28 +81,28 @@ export default Component.extend({
   selections: null,
 
   /**
-   * Is `true` only if the `selections` hash contains at least one key. Used for CSS class name bindings.
+   * Is `true` only if the `selections` hash contains at least one key.
+   * Used for CSS class name bindings.
    *
    * @type {boolean}
    * @private
    */
-  @notEmpty('selections')
-  hasSelections: null,
+  hasSelections: notEmpty('selections'),
 
   /**
    * Hashtable of the values in `selections`.  Each hash key is a value from the `selections` array.  The hash values
    * are all set to `true`.  Values which are not in `selections` are not included in the hash keys.
    *
-   * Parsing `selections` into a hash is useful for performance, because we can quickly check if a set of items
-   * are selected by directly looking up their ids in the hash rather than searching for them by looping repeatedly hru an array.
+   * Parsing `selections` into a hash is useful for performance,
+   * because we can quickly check if a set of items are selected by directly looking up their ids in the hash
+   * rather than searching for them by looping repeatedly through an array.
    *
    * @type {object}
    * @private
    */
-  @computed('selections.[]')
-  selectionsHash(selections) {
-    return arrayToHashKeys(selections);
-  },
+  selectionsHash: computed('selections.[]', function() {
+    return arrayToHashKeys(this.selections);
+  }),
 
   /**
    * An array of objects, each of which wraps an item from `items`. The original item is stored in each object's
@@ -114,11 +114,10 @@ export default Component.extend({
    * @type {{ raw: object }}
    * @public
    */
-  @computed('items.[]')
-  wrappedItems(items) {
-    items = items || [];
+  wrappedItems: computed('items.[]', function() {
+    const items = this.items || [];
     return items.map((item) => ({ data: item }));
-  },
+  }),
 
   /**
    * The same `wrappedItems` array, but each member is equipped with an `isSelected` attribute that specifies whether
@@ -127,12 +126,12 @@ export default Component.extend({
    * @type {object[]}
    * @private
    */
-  @computed('wrappedItems.[]', 'itemIdField', 'selectionsHash')
-  statefulWrappedItems(items, itemIdField, selectionsHash = {}) {
-    items.forEach((item) => {
-      const isSelected = get(item.data, itemIdField) in selectionsHash;
+  statefulWrappedItems: computed('wrappedItems.[]', 'itemIdField', 'selectionsHash', function() {
+    const selectionsHash = this.selectionsHash || {};
+    this.wrappedItems.forEach((item) => {
+      const isSelected = get(item.data, this.itemIdField) in selectionsHash;
       set(item, 'isSelected', isSelected);
     });
-    return items;
-  }
+    return this.wrappedItems;
+  })
 });

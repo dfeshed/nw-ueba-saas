@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { run } from '@ember/runloop';
-import computed from 'ember-computed-decorators';
 import layout from './template';
 
 /* global addResizeListener */
@@ -28,7 +28,9 @@ export default Component.extend({
   classNames: ['rsa-lazy-list'],
   layout,
   itemComponentClass: 'rsa-list/item',
-  selections: null, // passed down to rsa-list child; @see rsa-list#selections
+
+  // passed down to rsa-list child; @see rsa-list#selections
+  selections: null,
 
   /**
    * Configurable number of items to render in a single batch.
@@ -67,15 +69,13 @@ export default Component.extend({
   playhead: 0,
 
   // The subset of `items` which should be rendered in DOM; namely, the items before `playhead`.
-  @computed('items.[]', 'playhead')
-  renderedItems(items, playhead) {
-    return items.slice(0, playhead);
-  },
+  renderedItems: computed('items.[]', 'playhead', function() {
+    return this.items.slice(0, this.playhead);
+  }),
 
-  @computed('items.length', 'playhead')
-  allItemsAreRendered(itemCount, playhead) {
-    return itemCount <= playhead;
-  },
+  allItemsAreRendered: computed('items.length', 'playhead', function() {
+    return this.items?.length <= this.playhead;
+  }),
 
   // Defines setter for `items`.
   items: {
