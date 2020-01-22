@@ -27,6 +27,7 @@ public class EventsProducerFactory {
         if (netwitnessEventStore != null) {
             producers.putIfAbsent(MONGO_ADAPTER, new MongoAdapterNetwitnessEventProducer(new MongoKeyValueFormatter(), netwitnessEventStore));
             producers.putIfAbsent(S3_JSON_GZIP, new S3JsonGzipProducer(new JsonLineFormatter<>(new NetwitnessStoredDataFormatter(netwitnessEventStore))));
+            producers.putIfAbsent(S3_JSON_GZIP_BUCKETS, new S3JsonGzipBucketsProducer(new JsonLineFormatter<>(new NetwitnessStoredDataFormatter(netwitnessEventStore))));
         }
     }
 

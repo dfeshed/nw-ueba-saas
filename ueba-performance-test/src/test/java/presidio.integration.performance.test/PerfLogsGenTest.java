@@ -20,7 +20,7 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import presidio.data.domain.event.Event;
-import presidio.data.generators.common.GeneratorException;
+import presidio.integration.performance.utils.ChunksGenerator;
 import presidio.integration.performance.utils.PerformanceScenario;
 import presidio.integration.performance.utils.PerformanceScenariosSupplier;
 import presidio.integration.performance.utils.TestProperties;
@@ -28,6 +28,7 @@ import presidio.integration.performance.utils.TestProperties;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -42,6 +43,7 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
     public static final TestProperties test = new TestProperties();
 
     private static final int EVENTS_GENERATION_CHUNK = 50000;
+    private static final boolean PARALLEL_SCENARIOS_INSERT = false;
 
     private void setTestProperties() {
 
@@ -87,7 +89,7 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
                             @Optional("1") int groupsToCreate, 
                             @Optional("1000") double tlsEventsPerDayPerGroup,
                             @Optional("FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS,TLS") String schemas,
-                            @Optional("S3_JSON_GZIP") GeneratorFormat generatorFormat) throws GeneratorException {
+                            @Optional("S3_JSON_GZIP_BUCKETS") GeneratorFormat generatorFormat) {
 
         setTestProperties();
         test.startInstant = Instant.parse(startTimeStr);
@@ -110,6 +112,28 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
 
         LOGGER.info(" *****  Created scenarios  *****");
         scenarios.forEach(System.out::println);
+
+        Stream<PerformanceScenario> scenariosStream = PARALLEL_SCENARIOS_INSERT ?  scenarios.parallelStream() : scenarios.stream().sequential();
+        scenariosStream.forEach(scenario ->
+        {
+            ChunksGenerator gen = new ChunksGenerator(scenario, EVENTS_GENERATION_CHUNK);
+            EventConverter<Event> converter = getConverter();
+            EventsProducer<NetwitnessEvent> producer = getProducer();
+
+            List<? extends Event> nextChunk;
+
+            do {
+                LOGGER.info("[" + scenario.getSchema() + "] -- Going to generate next chunk");
+                nextChunk = gen.getNextChunk();
+                LOGGER.info("[" + scenario.getSchema() + "] -- Generated chunk");
+
+                LOGGER.info("[" + scenario.getSchema() + "] -- Going to convert and insert chunk");
+                Stream<NetwitnessEvent> converted = nextChunk.parallelStream().map(converter::convert);
+                producer.send(converted);
+                LOGGER.info("[" + scenario.getSchema() + "] -- Chunk insert is done");
+
+            } while (!nextChunk.isEmpty());
+        });
 
         System.out.println("done");
     }
