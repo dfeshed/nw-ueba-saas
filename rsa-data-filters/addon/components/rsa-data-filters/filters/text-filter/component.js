@@ -1,42 +1,40 @@
+import classic from 'ember-classic-decorator';
+import { classNames, layout as templateLayout } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import layout from './template';
 import { assign } from '@ember/polyfills';
 import { isEmpty } from '@ember/utils';
-import { computed } from '@ember/object';
 import { debounce } from '@ember/runloop';
-import { inject as service } from '@ember/service';
 
-export default Component.extend({
+@classic
+@templateLayout(layout)
+@classNames('text-filter')
+export default class TextFilter extends Component {
+  @service
+  i18n;
 
-  layout,
+  isError = false;
+  errorMessage = '';
 
-  classNames: ['text-filter'],
+  @computed('options')
+  get filterValue() {
+    const { filterValue: { operator, value }, operators, useI18N } = this.get('options');
+    let { placeholder } = this.get('options');
+    const selectedOperator = operators.findBy('type', operator);
+    const val = value.join('||');
+    placeholder = useI18N ? this.i18n.t(placeholder) : placeholder;
+    const placeholderText = placeholder ? placeholder : this.i18n.t('dataFilters.textPlaceholder');
+    return { operator: selectedOperator, value: val, placeholderText };
+  }
 
-  i18n: service(),
-
-  isError: false,
-
-  errorMessage: '',
-
-  filterValue: computed('options', {
-
-    get() {
-      const { filterValue: { operator, value }, operators, useI18N } = this.get('options');
-      let { placeholder } = this.get('options');
-      const selectedOperator = operators.findBy('type', operator);
-      const val = value.join('||');
-      placeholder = useI18N ? this.i18n.t(placeholder) : placeholder;
-      const placeholderText = placeholder ? placeholder : this.i18n.t('dataFilters.textPlaceholder');
-      return { operator: selectedOperator, value: val, placeholderText };
-    },
-
-    set(key, value) {
-      return value;
-    }
-  }),
+  set filterValue(value) {
+    return value;
+  }
 
   init() {
-    this._super(arguments);
+    super.init(arguments);
     this.defaults = this.defaults || {
       maxLength: 256,
       filterOnBlur: false,
@@ -56,7 +54,7 @@ export default Component.extend({
     if (this.get('validations') === undefined) {
       this.validations = {};
     }
-  },
+  }
 
   didReceiveAttrs() {
     const isReset = this.get('isReset');
@@ -65,7 +63,7 @@ export default Component.extend({
       this.set('isError', false);
       this.set('errorMessage', '');
     }
-  },
+  }
 
   _validate() {
     let property;
@@ -93,7 +91,7 @@ export default Component.extend({
       }
     }
     return { isValid: true };
-  },
+  }
 
   _onFilterChange() {
     const { filterValue: { value, operator: { type } }, options: { name }, onChange } = this.getProperties('filterValue', 'options', 'onChange');
@@ -104,7 +102,7 @@ export default Component.extend({
       }
       onChange({ name, operator: type, value: val });
     }
-  },
+  }
 
   _handleFilterChanged(value) {
     this.set('filterValue.value', value);
@@ -116,18 +114,18 @@ export default Component.extend({
       this.set('isError', true);
       this.set('errorMessage', message);
     }
-  },
+  }
 
-  actions: {
-    handleKeyUp(value = '') {
-      debounce(this, this._handleFilterChanged, value, 600);
-    },
+  @action
+  handleKeyUp(value = '') {
+    debounce(this, this._handleFilterChanged, value, 600);
+  }
 
-    changeOperator(option) {
-      this.set('filterValue.operator', option);
-      if (!this.get('isError')) {
-        this._onFilterChange();
-      }
+  @action
+  changeOperator(option) {
+    this.set('filterValue.operator', option);
+    if (!this.get('isError')) {
+      this._onFilterChange();
     }
   }
-});
+}

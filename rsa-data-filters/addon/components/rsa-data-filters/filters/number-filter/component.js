@@ -1,47 +1,44 @@
+import classic from 'ember-classic-decorator';
+import { classNames, layout as templateLayout } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
 import { assign } from '@ember/polyfills';
-import computed from 'ember-computed-decorators';
 import { debounce, next } from '@ember/runloop';
 
-export default Component.extend({
-
-  layout,
-
-  classNames: ['number-filter'],
-
+@classic
+@templateLayout(layout)
+@classNames('number-filter')
+export default class NumberFilter extends Component {
   @computed('options')
-  filterValue: {
-    get() {
-      const { filterValue: { operator, value, unit }, operators, units } = this.get('options');
-      const selectedOperator = operators.findBy('type', operator);
-      let selectedUnit = null;
+  get filterValue() {
+    const { filterValue: { operator, value, unit }, operators, units } = this.get('options');
+    const selectedOperator = operators.findBy('type', operator);
+    let selectedUnit = null;
 
-      if (units && units.length) {
-        selectedUnit = unit ? units.findBy('type', unit) : units[0];
-      }
-      // Set the default values to temp
-      return { operator: selectedOperator, value: [ ...value ], unit: selectedUnit };
-    },
-
-    set(key, value) {
-      return value;
+    if (units && units.length) {
+      selectedUnit = unit ? units.findBy('type', unit) : units[0];
     }
+    // Set the default values to temp
+    return { operator: selectedOperator, value: [ ...value ], unit: selectedUnit };
+  }
 
-  },
+  set filterValue(value) {
+    return value;
+  }
 
   @computed('options.units')
-  hasUnits(units) {
-    return units && units.length;
-  },
+  get hasUnits() {
+    return this.options?.units && this.options?.units.length;
+  }
 
   @computed('filterValue.operator')
-  isOperatorBetween(operator) {
-    return 'BETWEEN' === (operator && operator.type);
-  },
+  get isOperatorBetween() {
+    return 'BETWEEN' === (this.filterValue?.operator && this.filterValue?.operator.type);
+  }
 
   init() {
-    this._super(arguments);
+    super.init(arguments);
     this.defaults = this.defaults || {
       filterOnBlur: false,
       isDecimalAllowed: true,
@@ -63,16 +60,15 @@ export default Component.extend({
     }
     const options = assign({}, this.get('defaults'), this.get('filterOptions'));
     this.set('options', options);
-  },
-
+  }
 
   didReceiveAttrs() {
-    this._super(...arguments);
+    super.didReceiveAttrs(...arguments);
     const isReset = this.get('isReset');
     if (isReset) {
       this.notifyPropertyChange('filterValue');
     }
-  },
+  }
 
   _onFilterChange() {
     const { onChange, filterValue, options: { name } } = this.getProperties('onChange', 'filterValue', 'options');
@@ -80,7 +76,7 @@ export default Component.extend({
     if (onChange) {
       onChange({ operator: operator.type, value, unit: unit ? unit.type : null, name });
     }
-  },
+  }
 
   _handleFilterChange(value) {
     const isOperatorBetween = this.get('isOperatorBetween');
@@ -94,27 +90,29 @@ export default Component.extend({
     next(() => {
       this._onFilterChange();
     });
-  },
+  }
 
-  actions: {
-    handleKeyUp(value = '') {
-      debounce(this, this._handleFilterChange, value, 600);
-    },
+  @action
+  handleKeyUp(value = '') {
+    debounce(this, this._handleFilterChange, value, 600);
+  }
 
-    handleKeyPress(val, event) {
-      if (event.charCode === 46 && !this.get('filterOptions.isDecimalAllowed')) {
-        event.preventDefault();
-      }
-    },
-
-    changeOperator(option) {
-      this.set('filterValue.operator', option);
-      this._onFilterChange();
-    },
-
-    chageUnit(option) {
-      this.set('filterValue.unit', option);
-      this._onFilterChange();
+  @action
+  handleKeyPress(val, event) {
+    if (event.charCode === 46 && !this.get('filterOptions.isDecimalAllowed')) {
+      event.preventDefault();
     }
   }
-});
+
+  @action
+  changeOperator(option) {
+    this.set('filterValue.operator', option);
+    this._onFilterChange();
+  }
+
+  @action
+  chageUnit(option) {
+    this.set('filterValue.unit', option);
+    this._onFilterChange();
+  }
+}

@@ -123,7 +123,7 @@ module('Integration | Component | rsa-data-filters/filters/date-filter', functio
     assert.equal(find('input.flatpickr-input:first-of-type').value, '05/02/2015 12:01:01 AM', 'Selected date appears in the start input');
   });
 
-  test('it sends modified value on change when includeTimezone is false', async function(assert) {
+  test('fail it sends modified value on change when includeTimezone is false', async function(assert) {
     assert.expect(6);
     this.set('filterOptions', {
       name: 'scanTime',
@@ -135,7 +135,7 @@ module('Integration | Component | rsa-data-filters/filters/date-filter', functio
     });
     this.set('onQueryChange', (filterValue) => {
       assert.equal(filterValue.operator, 'BETWEEN');
-      assert.notEqual(filterValue.value[0], 1430550061000, 'timezone is not applied'); // 2 May 2015 07:01:01
+      assert.notEqual(filterValue.value[0], 1427958061000, 'timezone is not applied'); // 2 May 2015 07:01:01
     });
 
     await render(hbs`{{rsa-data-filters/filters/date-filter filterOptions=filterOptions onChange=(action onQueryChange)}}`);
