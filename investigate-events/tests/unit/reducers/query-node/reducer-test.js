@@ -146,22 +146,6 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     assert.equal(result.queryTimeFormat, undefined);
   });
 
-  test('SET_QUERY_VIEW reducer sets the correct mode provided', async function(assert) {
-    const prevState = Immutable.from({
-      queryView: 'guided',
-      pillsData: []
-    });
-    const action = {
-      type: ACTION_TYPES.SET_QUERY_VIEW,
-      payload: {
-        queryView: 'freeForm'
-      }
-    };
-    const result = reducer(prevState, action);
-
-    assert.equal(result.queryView, 'freeForm');
-  });
-
   test('SET_QUERY_TIME_RANGE set time range', async function(assert) {
     const prevState = Immutable.from({
       previouslySelectedTimeRanges: { 2: 'LAST_24_HOURS' },
@@ -207,33 +191,6 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     assert.equal(result.timeRangeInvalid, true);
     assert.equal(result.startTime, 2, 'Correct invalid Start Time');
     assert.equal(result.endTime, 1, 'Correct invalid End Time');
-  });
-
-  test('SET_QUERY_VIEW reducer makes it so any pills being edited are no longer being edited', async function(assert) {
-    const { pillsData } = new ReduxDataHelper()
-      .pillsDataPopulated()
-      .markEditing(['1'])
-      .build()
-      .investigate
-      .queryNode;
-
-    // is being edited...
-    assert.equal(pillsData[0].isEditing, true);
-
-    const prevState = Immutable.from({
-      queryView: 'guided',
-      pillsData
-    });
-    const action = {
-      type: ACTION_TYPES.SET_QUERY_VIEW,
-      payload: {
-        queryView: 'freeForm'
-      }
-    };
-    const result = reducer(prevState, action);
-
-    // ...but not now
-    assert.equal(result.pillsData[0].isEditing, false);
   });
 
   test('ADD_PILL adds pill to empty list', async function(assert) {
@@ -1071,27 +1028,6 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     const result = reducer(initialState, action);
 
     assert.equal(result.pillsData.length, 0, 'pillsData is the correct length');
-  });
-
-  test('INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', async function(assert) {
-  /* INTENT- overwrites queryView */
-    const prevState = Immutable.from({
-      queryView: 'freeForm',
-      previouslySelectedTimeRanges: { 2: 'LAST_24_HOURS' },
-      queryPills: []
-    });
-    const action = {
-      type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
-      payload: {
-        queryParams: {
-          metaFilter: [],
-          selectedTimeRangeId: 'ALL_DATA'
-        }
-      }
-    };
-    const result = reducer(prevState, action);
-
-    assert.equal(result.queryView, 'freeForm');
   });
 
   test('REPLACE_ALL_GUIDED_PILLS replaces all pills', async function(assert) {

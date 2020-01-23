@@ -165,8 +165,7 @@ module('Integration | Component | Query Pills', function(hooks) {
           originalPills: COMPLEX_PILL_DATA,
           metaFilter: [],
           previouslySelectedTimeRanges: {},
-          serviceId: '1',
-          queryView: 'guided'
+          serviceId: '1'
         },
         services: {
           serviceData: [{ id: '1', displayName: 'concentrator', version: '11.4.0' }],
@@ -204,7 +203,6 @@ module('Integration | Component | Query Pills', function(hooks) {
           metaFilter: [],
           previouslySelectedTimeRanges: {},
           serviceId: '1',
-          queryView: 'guided',
           isPillsDataStashed: true
         },
         services: {

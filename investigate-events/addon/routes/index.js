@@ -199,7 +199,7 @@ export default Route.extend({
       const {
         data: { reconSize, sortField, sortDirection },
         meta: { metaPanelSize },
-        queryNode: { endTime, pillsData, queryView, serviceId, startTime }
+        queryNode: { endTime, pillsData, serviceId, startTime }
       } = state.investigate;
 
       // If we're not opening this query in a new window, start the query
@@ -214,7 +214,7 @@ export default Route.extend({
       if (isPillValidationInProgress(state)) {
         later(this, this.send, 'executeQuery', externalLinkProps, 50);
         return;
-      } else if (queryView === 'guided' && hasInvalidPill(state)) {
+      } else if (hasInvalidPill(state)) {
         // Only exit if we're in guided mode and we have invalid pills
         redux.dispatch(queryIsRunning(false));
         return;

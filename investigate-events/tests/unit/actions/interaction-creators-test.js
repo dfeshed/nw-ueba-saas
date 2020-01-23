@@ -199,12 +199,6 @@ module('Unit | Actions | interaction creators', function(hooks) {
     thunk(myDispatch, getState);
   });
 
-  test('setQueryView action creator returns proper type and payload', function(assert) {
-    const action = interactionCreators.setQueryView('foo');
-    assert.equal(action.type, ACTION_TYPES.SET_QUERY_VIEW, 'action has the correct type');
-    assert.deepEqual(action.payload, { queryView: 'foo' }, 'payload has correct data');
-  });
-
   test('toggleQueryConsole fires when not disabled', function(assert) {
     assert.expect(1);
     const getState = () => {

@@ -32,8 +32,7 @@ module('Integration | Component | Profile query bar', function(hooks) {
           pillsData: DEFAULT_PILLS_DATA,
           metaFilter: [],
           previouslySelectedTimeRanges: {},
-          serviceId: '1',
-          queryView: 'guided'
+          serviceId: '1'
         }
       },
       listManagers: {
@@ -54,8 +53,7 @@ module('Integration | Component | Profile query bar', function(hooks) {
           pillsData: DEFAULT_PILLS_DATA,
           metaFilter: [],
           previouslySelectedTimeRanges: {},
-          serviceId: '1',
-          queryView: 'guided'
+          serviceId: '1'
         }
       },
       listManagers: {

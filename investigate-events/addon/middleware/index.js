@@ -19,7 +19,6 @@ if (config.environment !== 'test') {
     [
       'queryNode.previouslySelectedTimeRanges',
       'queryNode.serviceId',
-      'queryNode.queryView',
       'data.reconSize',
       'files.fileExtractStatus'
     ]

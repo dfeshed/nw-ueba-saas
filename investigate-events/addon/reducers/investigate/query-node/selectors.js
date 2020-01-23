@@ -28,7 +28,6 @@ const _queryTimeFormat = (state) => state.investigate.queryNode.queryTimeFormat;
 const _serviceId = (state) => state.investigate.queryNode.serviceId;
 const _startTime = (state) => state.investigate.queryNode.startTime;
 const _isTimeRangeInvalid = (state) => state.investigate.queryNode.timeRangeInvalid;
-const _queryView = (state) => state.investigate.queryNode.queryView;
 const _currentQueryHash = (state) => state.investigate.queryNode.currentQueryHash;
 const _updatedFreeFormText = (state) => state.investigate.queryNode.updatedFreeFormText;
 const _pillDataHashes = (state) => state.investigate.queryNode.pillDataHashes;
@@ -186,16 +185,6 @@ export const canFetchEvents = createSelector(
   (serviceId, startTime, endTime) => !!(serviceId && startTime && endTime)
 );
 
-export const isOnFreeForm = createSelector(
-  [_queryView],
-  (queryView) => queryView === 'freeForm'
-);
-
-export const isOnGuided = createSelector(
-  [_queryView],
-  (queryView) => queryView === 'guided'
-);
-
 /**
  * Returns an object that has the values required to execute a query. If the
  * query is marked as "dirty", we should use the values from the previous
@@ -215,8 +204,8 @@ export const getActiveQueryNode = createSelector(
 );
 
 export const hasInvalidPill = createSelector(
-  [pillsData, isOnGuided],
-  (_pillsData, isOnGuided) => isOnGuided && _pillsData.isAny('isInvalid')
+  [pillsData],
+  (_pillsData) => _pillsData.isAny('isInvalid')
 );
 
 const _twinProcessedPills = createSelector(

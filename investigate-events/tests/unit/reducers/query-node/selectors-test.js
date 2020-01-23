@@ -8,8 +8,6 @@ import {
   hasRequiredValuesToQuery,
   hadTextPill,
   hasTextPill,
-  isOnFreeForm,
-  isOnGuided,
   isDirty,
   isPillBeingEdited,
   isPillValidationInProgress,
@@ -358,28 +356,6 @@ test('has required inputs to query', function(assert) {
     }
   };
   assert.ok(hasRequiredValuesToQuery(state), 'Missing some required state to query');
-});
-
-test('check isOnFreeForm', function(assert) {
-  const state = {
-    investigate: {
-      queryNode: {
-        queryView: 'freeForm'
-      }
-    }
-  };
-  assert.equal(isOnFreeForm(state), true, 'Should have focus');
-});
-
-test('check isOnGuided', function(assert) {
-  const state = {
-    investigate: {
-      queryNode: {
-        queryView: 'guided'
-      }
-    }
-  };
-  assert.equal(isOnGuided(state), true, 'Should have focus');
 });
 
 test('enrichedPillsData is false when status is not error', function(assert) {

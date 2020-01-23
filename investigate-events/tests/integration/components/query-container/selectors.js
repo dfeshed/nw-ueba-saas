@@ -4,9 +4,6 @@
  */
 export default {
   // Top Level Query Bar Toggles
-  queryFormatToggleLinks: '.query-bar-select-actions a',
-  queryFormatFreeFormToggle: '.query-bar-select-actions .freeForm-link',
-  queryFormatGuidedToggle: '.query-bar-select-actions .guided-link',
   queryButton: '.execute-query-button button',
   queryButtonDisabled: '.execute-query-button.is-disabled',
   queryButtonQueued: '[test-id=queryButtonQueued]',

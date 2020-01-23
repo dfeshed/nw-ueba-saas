@@ -6,7 +6,7 @@ import { isEmpty } from '@ember/utils';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { createQueryHash } from 'investigate-events/util/query-hash';
 import { createOperator, createParens, reassignTwinIds } from 'investigate-events/util/query-parsing';
-import { pillBeingEdited, focusedPill } from './selectors';
+import { focusedPill } from './selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import {
   removePills,
@@ -44,7 +44,6 @@ const _initialState = Immutable.from({
   serviceId: undefined,
   sessionId: undefined,
   startTime: 0,
-  queryView: 'guided',
 
   // GUIDED, keeping separated until chance to clean up reducer
 
@@ -414,17 +413,11 @@ export default handleActions({
           endTime: endTime || 0,
           startTime: startTime || 0,
           previouslySelectedTimeRanges: localStorageObj.queryNode.previouslySelectedTimeRanges,
-          queryView: localStorageObj.queryNode.queryView,
           previousQueryParams
         });
       }
 
     } else {
-      // pull out previously selected view (if present)
-      let previousView;
-      if (localStorageObj) {
-        previousView = localStorageObj.queryNode.queryView;
-      }
       const { queryParams } = payload;
       const hasIncommingQueryParams = !!(queryParams.endTime && queryParams.serviceId && queryParams.startTime);
       const { previouslySelectedTimeRanges } = state;
@@ -446,7 +439,6 @@ export default handleActions({
         previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange),
         sessionId: queryParams.sessionId && parseInt(queryParams.sessionId, 10) || undefined,
         startTime: queryParams.startTime && parseInt(queryParams.startTime, 10) || 0,
-        queryView: previousView ? previousView : state.queryView,
         updatedFreeFormText: undefined,
         pillDataHashes: queryParams.pillDataHashes
       }, { deep: true });
@@ -459,20 +451,6 @@ export default handleActions({
 
   [ACTION_TYPES.SESSION_SELECTED]: (state, { payload }) => {
     return state.set('sessionId', payload);
-  },
-
-  [ACTION_TYPES.SET_QUERY_VIEW]: (state, { payload }) => {
-    const _pillBeingEdited = pillBeingEdited({ investigate: { queryNode: state } });
-
-    // Switching view, exit editing of any pill
-    if (_pillBeingEdited) {
-      const newPillData = {
-        ..._pillBeingEdited,
-        isEditing: false
-      };
-      state = _handlePillUpdate(state, newPillData);
-    }
-    return state.set('queryView', payload.queryView);
   },
 
   [ACTION_TYPES.SERVICE_SELECTED]: (state, { payload }) => {

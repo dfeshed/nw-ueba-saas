@@ -497,11 +497,6 @@ export default class DataHelper {
     return this;
   }
 
-  queryView(view) {
-    _set(this.state, 'queryNode.queryView', view);
-    return this;
-  }
-
   selectedColumnGroup(columnGroup) {
     _set(this.state, 'data.selectedColumnGroup', columnGroup);
     return this;
@@ -647,7 +642,6 @@ export default class DataHelper {
     _set(this.state, 'queryNode.metaFilter', []);
     _set(this.state, 'queryNode.previouslySelectedTimeRanges', {});
     _set(this.state, 'queryNode.serviceId', '1');
-    _set(this.state, 'queryNode.queryView', 'guided');
     _set(this.state, 'queryNode.pillsData', []);
     if (flag) {
       _set(this.state, 'services.serviceData', [{ id: '1', displayName: 'concentrator', version: '11.4.0' }]);
