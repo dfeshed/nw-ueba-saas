@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import layout from './template';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import { isEmpty, typeOf } from '@ember/utils';
 
 export default Component.extend({
@@ -10,14 +10,12 @@ export default Component.extend({
   attributeBindings: ['testId:test-id', 'keyName:test-key-name'],
   classNames: ['properties-for'],
 
-  @computed('item')
-  itemType(item) {
-    return typeOf(item);
-  },
+  itemType: computed('item', function() {
+    return typeOf(this.item);
+  }),
 
-  @computed('item')
-  members(item) {
-    return item.map((value) => {
+  members: computed('item', function() {
+    return this.item.map((value) => {
       const type = typeOf(value);
       return {
         value,
@@ -25,35 +23,33 @@ export default Component.extend({
         isNestedValue: (type === 'object') || (type === 'array')
       };
     });
-  },
+  }),
 
-  @computed('order', 'item', 'itemType', 'hidden')
-  resolvedOrder(order, item, itemType, hidden) {
-    const exclude = hidden || '';
-    const ordering = order || '';
+  resolvedOrder: computed('order', 'item', 'itemType', 'hidden', function() {
+    const exclude = this.hidden || '';
+    const ordering = this.order || '';
     const excludedKeys = exclude.split(',').map((str) => str.trim());
     const orderedKeys = ordering.split(',').map((str) => str.trim());
-    const allKeys = (itemType === 'object') ? Object.keys(item) : [];
+    const allKeys = (this.itemType === 'object') ? Object.keys(this.item) : [];
 
     const resolved = allKeys.filter((key) => {
       return !orderedKeys.includes(key);
     });
 
     return orderedKeys.concat(resolved).reject((key) => excludedKeys.includes(key));
-  },
+  }),
 
-  @computed('item', 'resolvedOrder', 'itemPath')
-  keys(item, resolvedOrder, itemPath) {
-    if (!item) {
+  keys: computed('item', 'resolvedOrder', 'itemPath', function() {
+    if (!this.item) {
       return [];
     }
 
-    return resolvedOrder
-      .filter((name) => !isEmpty(item[name]))
+    return this.resolvedOrder
+      .filter((name) => !isEmpty(this.item[name]))
       .map((name) => {
-        const value = item[name];
+        const value = this.item[name];
         const type = typeOf(value);
-        const fullPath = itemPath ? `${itemPath}.${name}` : name;
+        const fullPath = this.itemPath ? `${this.itemPath}.${name}` : name;
         return {
           name,
           fullPath,
@@ -62,5 +58,5 @@ export default Component.extend({
           isNestedValue: (type === 'object') || (type === 'array')
         };
       });
-  }
+  })
 });

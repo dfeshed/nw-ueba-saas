@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { htmlSafe } from '@ember/string';
@@ -32,34 +32,31 @@ export default Component.extend({
 
   offsetsStyle: null,
 
-  @computed('allSelectedEventIds', 'limit')
-  selectedEventIds(allSelectedEventIds, limit) {
-    if (allSelectedEventIds) {
-      const allSelectedEventIdsArray = Object.values(allSelectedEventIds);
-      if (!Number.isNaN(limit) && limit > 0) {
-        return allSelectedEventIdsArray.slice(0, limit);
+  selectedEventIds: computed('allSelectedEventIds', 'limit', function() {
+    if (this.allSelectedEventIds) {
+      const allSelectedEventIdsArray = Object.values(this.allSelectedEventIds);
+      if (!Number.isNaN(this.limit) && this.limit > 0) {
+        return allSelectedEventIdsArray.slice(0, this.limit);
       }
       return allSelectedEventIdsArray;
     }
-  },
+  }),
 
-  @computed('allSelectedEventIds', 'limit')
-  isSelectedEventsLimitCrossed(allSelectedEventIds, limit) {
-    if (!allSelectedEventIds) {
+  isSelectedEventsLimitCrossed: computed('allSelectedEventIds', 'limit', function() {
+    if (!this.allSelectedEventIds) {
       return [];
     } else {
-      const allSelectedEventIdsArray = Object.values(allSelectedEventIds);
-      return allSelectedEventIdsArray && allSelectedEventIdsArray.length > limit;
+      const allSelectedEventIdsArray = Object.values(this.allSelectedEventIds);
+      return allSelectedEventIdsArray && allSelectedEventIdsArray.length > this.limit;
     }
-  },
+  }),
 
-  @computed('selectedEventIds')
-  modalClassName(selectedEventIds) {
-    if (selectedEventIds != null && selectedEventIds.length > 0) {
+  modalClassName: computed('selectedEventIds', function() {
+    if (this.selectedEventIds != null && this.selectedEventIds.length > 0) {
       return 'standard add-to-incident-modal investigate-panel';
     }
     return 'standard add-to-incident-modal respond-panel';
-  },
+  }),
 
   init() {
     this._super(arguments);
@@ -102,6 +99,6 @@ export default Component.extend({
       this.set('offsetsStyle', menuOffsetsStyle(this.get('element')));
       this.toggleProperty('isExpanded');
     }
-  }
 
+  }
 });

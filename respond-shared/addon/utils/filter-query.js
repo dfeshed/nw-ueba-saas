@@ -1,9 +1,8 @@
-import EmberObject from '@ember/object';
+import EmberObject, { computed } from '@ember/object';
 import { isPresent, isEmpty } from '@ember/utils';
 import { isArray, A } from '@ember/array';
 import { resolveSinceWhenStartTime } from 'respond-shared/utils/since-when-types';
 import { assert } from '@ember/debug';
-import computed, { readOnly } from 'ember-computed-decorators';
 
 /**
  * A class that represents a filter query
@@ -25,18 +24,18 @@ const FilterQuery = EmberObject.extend({
    * @property filters
    * @public
    */
-    @readOnly
-    @computed('_filters')
-  filters(filters) {
-    return filters.map((filter) => {
-      // if values is only one item, pull out of array (some queries do not support values array property)
-      if (filter.values && filter.values.length === 1) {
-        filter.value = filter.values[0];
-        delete filter.values;
+  filters: computed('_filters', function() {
+    return this._filters.map((filter) => {
+      if (filter) {
+        // if values is only one item, pull out of array (some queries do not support values array property)
+        if (filter?.values?.length === 1) {
+          filter.value = filter?.values[0];
+          delete filter?.values;
+        }
       }
       return filter;
     });
-  },
+  }).readOnly(),
 
   /**
    * Maximum number of records returned by the filter query
@@ -53,13 +52,12 @@ const FilterQuery = EmberObject.extend({
    */
   batch: 100,
 
-  @computed('limit', 'batch')
-  stream(limit, batch) {
+  stream: computed('limit', 'batch', function() {
     return {
-      limit,
-      batch
+      limit: this.limit,
+      batch: this.batch
     };
-  },
+  }),
 
   /*
    * Init() bootstraps the filters property so that it is created instance by instance, and not on the

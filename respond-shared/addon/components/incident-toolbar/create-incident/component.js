@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import layout from './template';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import Notifications from 'component-lib/mixins/notifications';
 import { isEmpty, typeOf } from '@ember/utils';
 import {
@@ -160,10 +160,9 @@ const createIncidentButton = Component.extend(Notifications, {
    * @type {boolean}
    * @public
    */
-  @computed('name', 'isAlertSeverityInvalid', 'isCreateInProgress')
-  isDisabled(name, isAlertSeverityInvalid, isCreateInProgress) {
-    return isEmpty(name) || typeOf(name) === 'string' && isEmpty(name.trim()) || isAlertSeverityInvalid || isCreateInProgress;
-  },
+  isDisabled: computed('name', 'isAlertSeverityInvalid', 'isCreateInProgress', function() {
+    return isEmpty(this.name) || typeOf(this.name) === 'string' && isEmpty(this.name?.trim()) || this.isAlertSeverityInvalid || this.isCreateInProgress;
+  }),
 
   didInsertElement() {
     this._super(...arguments);

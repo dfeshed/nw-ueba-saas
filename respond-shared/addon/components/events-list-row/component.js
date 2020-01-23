@@ -1,7 +1,7 @@
+import { computed } from '@ember/object';
 import layout from './template';
 import { next, join } from '@ember/runloop';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import { guidFor } from '@ember/object/internals';
 import HighlightsEntities from 'context/mixins/highlights-entities';
 import { createProcessAnalysisLink, createEventAnalysisLink } from 'respond-shared/utils/event-analysis';
@@ -34,29 +34,26 @@ export default Component.extend(HighlightsEntities, {
     });
   },
 
-  @computed('expanded')
-  tabIndex(expanded) {
-    return expanded ? '0' : '-1';
-  },
+  tabIndex: computed('expanded', function() {
+    return this.expanded ? '0' : '-1';
+  }),
 
-  @computed('item.eventIndex')
-  eventIndex(index) {
-    return index && parseInt(index, 10) + 1 || 1;
-  },
+  eventIndex: computed('item.eventIndex', function() {
+    return this.item?.eventIndex && parseInt(this.item?.eventIndex, 10) + 1 || 1;
+  }),
 
-  @computed('item', 'services', 'investigatePage.legacyEventsEnabled')
-  customizedItem(item, services, legacyEventsEnabled) {
-    const modifiedItem = _.cloneDeep(item);
+  customizedItem: computed('item', 'services', 'investigatePage.legacyEventsEnabled', function() {
+    const modifiedItem = _.cloneDeep(this.item);
     // eslint-disable-next-line camelcase
     if (modifiedItem?.related_links) {
       // Check if investigate original event specific related link exists in given event
       const isInvestigateEvent = modifiedItem.related_links.some((e) => e.type === 'investigate_original_event');
       // Create event analysis url and replaced it with legacy events url for investigate event if legacy events flag is disabled
-      if (isInvestigateEvent && !legacyEventsEnabled) {
-        modifiedItem.related_links[0].url = createEventAnalysisLink(item, services);
+      if (isInvestigateEvent && !this.investigatePage?.legacyEventsEnabled) {
+        modifiedItem.related_links[0].url = createEventAnalysisLink(this.item, this.services);
       }
 
-      const processAnalysisLink = createProcessAnalysisLink(item, services);
+      const processAnalysisLink = createProcessAnalysisLink(this.item, this.services);
       if (processAnalysisLink) {
         modifiedItem.related_links.push({
           type: 'analyze_process',
@@ -65,17 +62,16 @@ export default Component.extend(HighlightsEntities, {
       }
     }
     return modifiedItem;
-  },
+  }),
 
-  @computed('alerts', 'item.indicatorId')
-  associatedAlert(alerts, indicatorId) {
-    return alerts && alerts.find((alert) => alert.indicatorId === indicatorId);
-  },
+  associatedAlert: computed('alerts', 'item.indicatorId', function() {
+    return this.alerts && this.alerts.find((alert) => alert.indicatorId === this.item?.indicatorId);
+  }),
 
-  @computed('item.device_type', 'item.schema')
-  componentClasses(deviceType, schema) {
+  componentClasses: computed('item.device_type', 'item.schema', function() {
     let componentClass;
-    switch (schema || deviceType) {
+    // eslint-disable-next-line camelcase
+    switch (this.item?.schema || this.item?.device_type) {
       case 'FILE':
       case 'AUTHENTICATION':
       case 'ACTIVE_DIRECTORY':
@@ -100,27 +96,23 @@ export default Component.extend(HighlightsEntities, {
       detail: `${componentClass}/detail`
     };
 
-  },
+  }),
 
-  @computed()
-  guid() {
+  guid: computed(function() {
     return guidFor(this);
-  },
+  }),
 
-  @computed('guid')
-  ariaControls(guid) {
-    return `${guid}-row-details`;
-  },
+  ariaControls: computed('guid', function() {
+    return `${this.guid}-row-details`;
+  }),
 
-  @computed('expandedId', 'item.id')
-  expanded(expandedId, itemId) {
-    return expandedId === itemId;
-  },
+  expanded: computed('expandedId', 'item.id', function() {
+    return this.expandedId === this.item?.id;
+  }),
 
-  @computed('expanded')
-  collapsed(expanded) {
-    return !expanded;
-  },
+  collapsed: computed('expanded', function() {
+    return !this.expanded;
+  }),
 
   actions: {
     showDetail() {

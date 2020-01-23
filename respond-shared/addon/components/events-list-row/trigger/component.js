@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import layout from './template';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 
 const ENTER_KEY = 13;
 
@@ -16,14 +16,15 @@ export default Component.extend({
     'ariaExpanded:aria-expanded',
     'ariaPressed:aria-pressed'
   ],
-  @computed('expanded')
-  ariaExpanded(expanded) {
-    return expanded ? 'true' : 'false';
-  },
-  @computed('expanded')
-  ariaPressed(expanded) {
-    return expanded ? 'true' : 'false';
-  },
+
+  ariaExpanded: computed('expanded', function() {
+    return this.expanded ? 'true' : 'false';
+  }),
+
+  ariaPressed: computed('expanded', function() {
+    return this.expanded ? 'true' : 'false';
+  }),
+
   click() {
     this.showDetail();
   },

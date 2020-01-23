@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import layout from './template';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 
 export default Component.extend({
   layout,
@@ -9,12 +9,11 @@ export default Component.extend({
   attributeBindings: ['testId:test-id'],
   classNames: ['properties-for'],
 
-  @computed()
-  member() {
+  member: computed(function() {
     return {
       type: 'array',
       name: 'related_links',
       isNestedValue: true
     };
-  }
+  })
 });

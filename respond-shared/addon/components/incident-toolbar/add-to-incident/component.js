@@ -1,3 +1,4 @@
+import { computed } from '@ember/object';
 import layout from './template';
 import Component from '@ember/component';
 import { debounce } from '@ember/runloop';
@@ -5,7 +6,6 @@ import Notifications from 'component-lib/mixins/notifications';
 import columns from './columns';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
-import computed from 'ember-computed-decorators';
 import {
   clearSearchIncidentsResults,
   updateSearchIncidentsText,
@@ -99,7 +99,6 @@ const addToIncidentButton = Component.extend(Notifications, {
    */
   alertSummary: null,
 
-
   /**
    * Represents the alert Severity that will be set on all the alerts created from the selected events (internally)
    * @property alertSeverity
@@ -174,10 +173,9 @@ const addToIncidentButton = Component.extend(Notifications, {
    * @type {boolean}
    * @public
    */
-  @computed('isIncidentNotSelected', 'isAlertSeverityInvalid')
-  isInvalid(isIncidentNotSelected, isAlertSeverityInvalid) {
-    return isIncidentNotSelected || isAlertSeverityInvalid;
-  },
+  isInvalid: computed('isIncidentNotSelected', 'isAlertSeverityInvalid', function() {
+    return this.isIncidentNotSelected || this.isAlertSeverityInvalid;
+  }),
 
   didInsertElement() {
     this._super(...arguments);
