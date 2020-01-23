@@ -47,7 +47,7 @@ const start = function({ subscriptionLocations, routes }, cb, { urlPattern, cust
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
 
-  app.use('/locales/', express.static(path.join(__dirname, 'locales')), dirListing('locales'));
+  app.use('/translations/', express.static(path.join(__dirname, 'translations')), dirListing('translations'));
 
   app.use('/userpkistatus', function(req, res) {
     res.setHeader('Content-Type', 'text/html');

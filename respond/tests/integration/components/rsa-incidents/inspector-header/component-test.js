@@ -109,7 +109,7 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
       // Note: the archerIncidentId is mocked in the mock server data
       const expectedMessage = translation.t('respond.incidents.actions.actionMessages.sendToArcherSuccess', { incidentId: 'INC-1234', archerIncidentId: '12321349' });
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
     this.set('info', {
@@ -136,7 +136,7 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
         const translation = this.owner.lookup('service:i18n');
         const expectedMessage = translation.t(`respond.incidents.actions.actionMessages.${i18nKeyLeaf}`, { incidentId: 'INC-1234' });
         assert.equal(flash.type, 'error');
-        assert.equal(flash.message.string, expectedMessage);
+        assert.equal(flash.message, expectedMessage);
         done();
       });
       this.set('info', {

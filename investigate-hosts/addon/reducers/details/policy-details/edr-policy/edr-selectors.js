@@ -164,7 +164,7 @@ const _getScanSetting = (prop, focusedPolicy, scheduledScan) => {
 
   let days = '';
   if (focusedPolicy.runOnDaysOfWeek && focusedPolicy.runOnDaysOfWeek.length) {
-    const daysLocale = focusedPolicy.runOnDaysOfWeek.map((day) => _i18n.t(`adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.weekDay.${day}`).string).join(', ');
+    const daysLocale = focusedPolicy.runOnDaysOfWeek.map((day) => _i18n.t(`adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.weekDay.${day}`)).join(', ');
     days = `${_i18n.t('adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.on')} ${daysLocale}`;
   }
 

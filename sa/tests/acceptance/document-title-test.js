@@ -15,7 +15,7 @@ module('Acceptance | document title', function(hooks) {
     assert.equal(currentURL(), '/login', 'currentUrl is /login');
     await settled();
     const translation = this.owner.lookup('service:i18n');
-    const expected = translation.t('appTitle').string;
+    const expected = translation.t('appTitle');
     // multiple <title> in document
     // like title "SA Tests" for the test
     // not just "NetWitness Platform" (expected)

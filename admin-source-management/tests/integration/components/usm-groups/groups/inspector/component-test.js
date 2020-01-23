@@ -118,7 +118,7 @@ module('Integration | Component | Group Inspector', function(hooks) {
       'expected ANY conjunction property');
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
     assert.equal(findAll('.usm-groups-inspector .count')[0].textContent.trim(), 'Updating', 'source count shows as expected');
-    assert.equal(findAll('.usm-groups-inspector .count-desc')[0].textContent.trim(), `(${expectedSrcCount.string})`, 'source count description shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count-desc')[0].textContent.trim(), `(${expectedSrcCount})`, 'source count description shows as expected');
   });
 
   test('It shows the applied policies section with correct values', async function(assert) {
@@ -178,7 +178,7 @@ module('Integration | Component | Group Inspector', function(hooks) {
     assert.equal(findAll('.usm-groups-inspector .lastPublishedOn').length, 0, 'last published on is missing as expected');
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
     assert.equal(findAll('.usm-groups-inspector .count')[0].innerText, 'N/A', 'source count shows as expected');
-    assert.equal(findAll('.usm-groups-inspector .count-desc')[0].innerText, `(${expectedSrcCount.string})`, 'source count description shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count-desc')[0].innerText, `(${expectedSrcCount})`, 'source count description shows as expected');
   });
 
   test('It shows the source count when special case', async function(assert) {
@@ -191,7 +191,7 @@ module('Integration | Component | Group Inspector', function(hooks) {
     await render(hbs`{{usm-groups/groups/inspector}}`);
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedNewGroupTooltip');
     assert.equal(findAll('.usm-groups-inspector .count')[0].innerText, 'N/A', 'source count shows as expected');
-    assert.equal(findAll('.usm-groups-inspector .count-desc')[0].innerText, `(${expectedSrcCount.string})`, 'source count description shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count-desc')[0].innerText, `(${expectedSrcCount})`, 'source count description shows as expected');
   });
 
   test('It shows the source count when unpublished edit case', async function(assert) {
@@ -206,6 +206,6 @@ module('Integration | Component | Group Inspector', function(hooks) {
     await render(hbs`{{usm-groups/groups/inspector}}`);
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedEditedGroupTooltip');
     assert.equal(findAll('.usm-groups-inspector .count')[0].innerText, 30, 'source count shows as expected');
-    assert.equal(findAll('.usm-groups-inspector .count-desc')[0].innerText, `(${expectedSrcCount.string})`, 'source count description shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count-desc')[0].innerText, `(${expectedSrcCount})`, 'source count description shows as expected');
   });
 });

@@ -13,14 +13,14 @@
     {{else if (eq (get item "fileType") "File")}}
       {{get item column.field}}
     {{else}}
-      <div title={{get-field item column timezone dateFormat timeFormat i18n.locale}}>
-        {{get-field item column timezone dateFormat timeFormat i18n.locale}}
+      <div title={{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}>
+        {{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}
       </div>
     {{/if}}
   </hbox>
 {{else if (eq column.field "downloadedTime")}}
-  <div title={{get-field item column timezone dateFormat timeFormat i18n.locale}}>
-    {{moment-from-now (get item column.field) locale=i18n.locale timeZone=timezone.selected.zoneId allow-empty=true}}
+  <div title={{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}>
+    {{moment-from-now (get item column.field) locale=i18n.primaryLocale timeZone=timezone.selected.zoneId allow-empty=true}}
   </div>
 {{else if (eq column.field "status")}}
   {{endpoint/download-status downloadInfo=downloadInfo checksum=item.id}}
@@ -31,7 +31,7 @@
     NA
   {{/if}}
 {{else}}
-  <div title={{get-field item column timezone dateFormat timeFormat i18n.locale}}>
-    {{get-field item column timezone dateFormat timeFormat i18n.locale}}
+  <div title={{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}>
+    {{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}
   </div>
 {{/if}}

@@ -14,11 +14,6 @@ module.exports = function(environment) {
       includeLocales: true,
       includeTimezone: 'all'
     },
-    i18n: {
-      defaultLocale: 'en-us',
-      defaultFallback: true,
-      includedLocales: ['en-us']
-    },
     APP: {
     }
   };

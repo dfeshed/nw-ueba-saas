@@ -91,7 +91,7 @@ module('Integration | Component | usm-groups/group-ranking/group-toolbar', funct
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('adminUsm.groupRankingWizard.rankingSavedSuccessful');
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
     const [savePublishBtnEl] = findAll('.publish-button:not(.is-disabled) button');

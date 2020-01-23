@@ -2,7 +2,7 @@
   {{#each selectedFilePolicy as |section|}}
     <div class="heading">
       <hbox fit class="col-xs-12">
-        <hbox class="value col-xs-6 col-md-7">{{t section.header section.headerVars}}</hbox>
+        <hbox class="value col-xs-6 col-md-7">{{t section.header fileType=section.headerVars.fileType}}</hbox>
         <hbox class="value col-xs-6 col-md-5"></hbox>
       </hbox>
     </div>

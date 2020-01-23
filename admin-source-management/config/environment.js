@@ -25,13 +25,6 @@ module.exports = function(environment/* , appConfig */) {
     moment: {
       includeLocales: ['en', 'ja'],
       includeTimezone: 'subset'
-    },
-    i18n: {
-      defaultLocale: 'en-us',
-      defaultFallback: true,
-      includedLocales: ['en-us']
-    },
-    APP: {
     }
   };
 

@@ -45,7 +45,7 @@ export default Component.extend({
 
   @computed('i18n.locale')
   locale: (locale) => {
-    return locale.split('-')[0];
+    return locale[0].split('-')[0];
   },
 
   @computed('dateFormat.selected.key')

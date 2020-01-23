@@ -162,7 +162,7 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
       '-1 count is as expected');
     await triggerEvent('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(3) .tooltip-text', 'mouseover');
     assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(),
-      expectedSrcCount.string,
+      expectedSrcCount,
       '-1 count tooltip is as expected');
 
     expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
@@ -171,7 +171,7 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
       '-2 count is as expected');
     await triggerEvent('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(3) .tooltip-text', 'mouseover');
     assert.equal(document.querySelectorAll('.tool-tip-value')[1].innerText.trim(),
-      expectedSrcCount.string,
+      expectedSrcCount,
       '-2 count tooltip is as expected');
 
     expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedNewGroupTooltip');
@@ -180,7 +180,7 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
       '-3 count is as expected');
     await triggerEvent('.rsa-data-table-body-row:nth-of-type(13) .rsa-data-table-body-cell:nth-of-type(3) .tooltip-text', 'mouseover');
     assert.equal(document.querySelectorAll('.tool-tip-value')[2].innerText.trim(),
-      expectedSrcCount.string,
+      expectedSrcCount,
       '-3 count tooltip is as expected');
 
     expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedEditedGroupTooltip');
@@ -189,7 +189,7 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
       'unpublished edit count is as expected');
     await triggerEvent('.rsa-data-table-body-row:nth-of-type(14) .rsa-data-table-body-cell:nth-of-type(3) .tooltip-text', 'mouseover');
     assert.equal(document.querySelectorAll('.tool-tip-value')[3].innerText.trim(),
-      expectedSrcCount.string,
+      expectedSrcCount,
       'unpublished edit count tooltip is as expected');
 
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(7) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),

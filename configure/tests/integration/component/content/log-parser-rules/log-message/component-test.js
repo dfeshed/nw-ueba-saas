@@ -158,7 +158,7 @@ module('Integration | Component | Configure - Content - Sample Log Message', fun
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('configure.logsParser.tooManyLogMessages');
       assert.equal(flash.type, 'warning');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
     });
     await triggerEvent('.sample-log-text', 'paste', { clipboardData: { getData: () => 'asdfghjkl' } });
   });

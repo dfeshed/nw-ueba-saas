@@ -79,7 +79,7 @@ const _initializeGlobalPreferences = (dispatch) => {
     dispatch(updateGlobalPreferences({
       dateFormat: dateFormatService.selected.format,
       timeFormat: timeFormatService.selected.format,
-      locale: i18nService.locale,
+      locale: i18nService.primaryLocale,
       timeZone: timezoneService.selected.zoneId
     }));
   }

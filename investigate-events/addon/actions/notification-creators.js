@@ -119,7 +119,7 @@ const _showDownloadInQueueInfo = () => {
   if (flashMessages && flashMessages.info) {
     const i18n = lookup('service:i18n');
     const url = `${window.location.origin}/profile#jobs`;
-    flashMessages.info(i18n.t('fileExtract.info', { url }));
+    flashMessages.info(i18n.t('fileExtract.info', { url, htmlSafe: true }).string);
   }
 };
 

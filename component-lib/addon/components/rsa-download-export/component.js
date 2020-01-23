@@ -46,7 +46,7 @@ export default Component.extend({
         source = extractLink;
       } else {
         const url = `${window.location.origin}/profile#jobs`;
-        this.get('flashMessages').success(this.get('i18n').t('fileExtract.ready', { url }));
+        this.get('flashMessages').success(this.get('i18n').t('fileExtract.ready', { url, htmlSafe: true }).string);
       }
       this.set('lastExtractLink', extractLink);
       debounce(this, this.debouncedAction, 200);

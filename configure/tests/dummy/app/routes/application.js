@@ -21,7 +21,6 @@ export default Route.extend({
         'offset': 'GMT+00:00',
         'zoneId': 'UTC'
       }],
-      'i18n.locale': 'en-us',
       'dateFormat.selected': 'MM/dd/yyyy',
       'timeFormat.selected': 'HR24',
       'timezone.selected': 'UTC'

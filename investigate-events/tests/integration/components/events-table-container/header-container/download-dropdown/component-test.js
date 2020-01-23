@@ -189,9 +189,9 @@ module('Integration | Component | Download Dropdown', function(hooks) {
 
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMsg = translation.t('fileExtract.ready');
+      const expectedMsg = translation.t('fileExtract.ready', { url: '', htmlSafe: true });
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMsg);
+      assert.equal(flash.message, expectedMsg.string);
     });
 
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
@@ -213,9 +213,9 @@ module('Integration | Component | Download Dropdown', function(hooks) {
 
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMsg = translation.t('fileExtract.ready', { url });
+      const expectedMsg = translation.t('fileExtract.ready', { url, htmlSafe: true });
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMsg);
+      assert.equal(flash.message, expectedMsg.string);
     });
 
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);

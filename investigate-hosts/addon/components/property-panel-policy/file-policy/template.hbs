@@ -1,6 +1,6 @@
 <vbox class="rsa-application-layout-panel-content" xs="12" fit>
   {{#each selectedFilePolicy as |section|}}
-    <div class="content-section__section-name ">{{t section.header section.headerVars}}</div>
+    <div class="content-section__section-name ">{{t section.header fileType=section.headerVars.fileType}}</div>
     {{#each section.props as |prop|}}
       <hbox fit class="col-xs-12 content-section__property">
         <hbox class="property-name  col-xs-6 col-md-5">{{t prop.name}}</hbox>

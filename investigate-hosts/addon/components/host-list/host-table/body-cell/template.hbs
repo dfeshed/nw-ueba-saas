@@ -29,8 +29,8 @@
   </div>
 {{else if (eq column.field "agentStatus.lastSeenTime")}}
   <div class="last-seen-time">
-    <span title={{get-field item column timezone dateFormat timeFormat i18n.locale}} class={{unless item.groupPolicy.managed "host-disable-text"}}>
-      {{moment-from-now (get item column.field) locale=i18n.locale timeZone=timezone.selected.zoneId allow-empty=true}}
+    <span title={{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}} class={{unless item.groupPolicy.managed "host-disable-text"}}>
+      {{moment-from-now (get item column.field) locale=i18n.primaryLocale timeZone=timezone.selected.zoneId allow-empty=true}}
     </span>
     {{#if item.isAgentRoaming}}
       <span class="rar-icon" title={{t "investigateHosts.hosts.rarIconTitle"}}>
@@ -55,7 +55,7 @@
     {{rsa-content-memsize size=(get item column.field)}}
   </div>
 {{else}}
-  <div title={{get-field item column timezone dateFormat timeFormat i18n.locale}} class={{unless item.groupPolicy.managed "host-disable-text"}}>
-    {{get-field item column timezone dateFormat timeFormat i18n.locale}}
+  <div title={{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}} class={{unless item.groupPolicy.managed "host-disable-text"}}>
+    {{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}
   </div>
 {{/if}}

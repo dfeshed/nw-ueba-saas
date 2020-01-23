@@ -9,7 +9,6 @@ module.exports = function(environment) {
     environment,
     rootURL: '/',
     locationType: 'auto',
-    i18n: { defaultLocale: 'en-us' },
     flashMessageDefaults: {
       timeout: 5000,
       extendedTimeout: 0,

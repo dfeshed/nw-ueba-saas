@@ -4,7 +4,7 @@ import computed, { alias, readOnly } from 'ember-computed-decorators';
 export default Service.extend({
   appVersion: service(),
 
-  @alias('i18n.locale') locale: null,
+  @alias('i18n.primaryLocale') locale: null,
   @readOnly @alias('appVersion.version') version: null,
 
   investigateModule: 'investigation',

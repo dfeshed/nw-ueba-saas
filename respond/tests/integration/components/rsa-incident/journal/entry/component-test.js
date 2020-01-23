@@ -119,7 +119,7 @@ module('Integration | Component | Journal Entry', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('respond.entities.actionMessages.updateFailure');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
     this.set('journalEntry', journalEntry);
@@ -137,7 +137,7 @@ module('Integration | Component | Journal Entry', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('respond.entities.actionMessages.deleteFailure');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
     this.set('journalEntry', journalEntry);

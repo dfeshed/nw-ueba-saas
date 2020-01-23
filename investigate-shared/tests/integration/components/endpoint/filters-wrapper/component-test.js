@@ -358,7 +358,7 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
       const translation = this.owner.lookup('service:i18n');
       const expectedMsg = translation.t('dataFilters.accessError');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMsg);
+      assert.equal(flash.message, expectedMsg);
     });
     await render(hbs`{{endpoint/filters-wrapper
     filterState=filterState

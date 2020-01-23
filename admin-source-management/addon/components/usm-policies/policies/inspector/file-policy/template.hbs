@@ -9,7 +9,7 @@
           {{rsa-icon name="report-problem-diamond"}}
         {{/rsa-text-with-tooltip}}
       {{/if}}
-      <div class="heading">{{t section.header section.headerVars}}</div>
+      <div class="heading">{{t section.header fileType=section.headerVars.fileType}}</div>
       {{#each section.props as |prop|}}
         <hbox fit class="col-xs-12">
           <hbox class="title col-xs-6 col-md-5">{{t prop.name}}</hbox>

@@ -113,7 +113,7 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
 
     patchFlash((flash) => {
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, labels(this, 'updateSuccess'));
+      assert.equal(flash.message, labels(this, 'updateSuccess'));
     });
 
     assert.equal(find(selectors.saveButton).disabled, true);
@@ -144,7 +144,7 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
 
     patchFlash((flash) => {
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, labels(this, 'updateFailure'));
+      assert.equal(flash.message, labels(this, 'updateFailure'));
     });
 
     assert.equal(find(selectors.saveButton).disabled, true);

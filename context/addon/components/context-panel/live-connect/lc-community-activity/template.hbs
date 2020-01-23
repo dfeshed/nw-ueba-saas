@@ -89,7 +89,7 @@
         {{/if}}
       </div>
       <div class="rsa-context-panel__liveconnect__comm-activity__desc">
-        {{t "context.lc.communityActivityDesc1" seen=liveConnectData.customerPercentage value=model.lookupKey}}<br>
+        {{t "context.lc.communityActivityDesc1" seen=liveConnectData.customerPercentage value=model.lookupKey htmlSafe=true}}<br>
       </div>
     </vbox>
     <vbox class="rsa-context-panel__liveconnect__comm-activity__charts-container">
@@ -109,18 +109,18 @@
         {{/if}}
       </div>
       <div class="rsa-context-panel__liveconnect__comm-activity__desc">
-        {{t "context.lc.submittedActivityDesc1" submitted=liveConnectData.customerInvestigatedPercentage}}<br>
+        {{t "context.lc.submittedActivityDesc1" submitted=liveConnectData.customerInvestigatedPercentage htmlSafe=true}}<br>
       </div>
       <hbox>
         <div class="rsa-context-panel__liveconnect__comm-activity__desc">
-          {{t "context.lc.submittedActivityDesc2" highrisk= (check-null liveConnectData.customerHighRiskFeedbackPercentage 0)}}<br>
-          {{t "context.lc.submittedActivityDesc3" unsafe= (check-null liveConnectData.customerRiskyFeedbackPercentage 0)}}<br>
-          {{t "context.lc.submittedActivityDesc4" suspicious= (check-null liveConnectData.customerSuspiciousFeedbackPercentage 0)}}<br>
+          {{t "context.lc.submittedActivityDesc2" highrisk= (check-null liveConnectData.customerHighRiskFeedbackPercentage 0) htmlSafe=true}}<br>
+          {{t "context.lc.submittedActivityDesc3" unsafe= (check-null liveConnectData.customerRiskyFeedbackPercentage 0) htmlSafe=true}}<br>
+          {{t "context.lc.submittedActivityDesc4" suspicious= (check-null liveConnectData.customerSuspiciousFeedbackPercentage 0) htmlSafe=true}}<br>
         </div>
         <div class="rsa-context-panel__liveconnect__comm-activity__desc">
           {{rsa-content-definition label=(t "context.lc.submittedActivityDesc5")}}<br>
-          {{t "context.lc.submittedActivityDesc6" safe= (check-null liveConnectData.customerNotRiskyFeedbackPercentage 0)}}<br>
-          {{t "context.lc.submittedActivityDesc7" unknown= (check-null liveConnectData.customerUnknownFeedbackPercentage 0)}}<br>
+          {{t "context.lc.submittedActivityDesc6" safe= (check-null liveConnectData.customerNotRiskyFeedbackPercentage 0) htmlSafe=true}}<br>
+          {{t "context.lc.submittedActivityDesc7" unknown= (check-null liveConnectData.customerUnknownFeedbackPercentage 0) htmlSafe=true}}<br>
         </div>
       </hbox>
     </vbox>

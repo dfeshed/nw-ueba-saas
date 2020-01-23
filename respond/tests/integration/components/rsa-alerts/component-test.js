@@ -178,7 +178,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     patchFlash((flash) => {
       const expectedMessage = i18n.t('rsaExplorer.flash.updateSuccess');
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       flashSuccess = true;
     });
     await render(hbs`
@@ -195,7 +195,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     await waitUntil(() => flashSuccess === true, { timeout: 8000 });
     await waitUntil(() => {
       const noResultsMessageFound = find(selectors.noResultsMessage);
-      return noResultsMessageFound && noResultsMessageFound.textContent && noResultsMessageFound.textContent.trim() === noResultsMessage.string;
+      return noResultsMessageFound && noResultsMessageFound.textContent && noResultsMessageFound.textContent.trim() === noResultsMessage;
     }, { timeout: 8000 });
     assert.equal(find(selectors.noResultsMessage).textContent.trim(), noResultsMessage, 'There are no more results and the no results message displays');
   });

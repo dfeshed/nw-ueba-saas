@@ -127,7 +127,8 @@ module('Integration | Component | Context Menu', function(hooks) {
     const japaneseExternalLookup = 'コメタ';
     run(i18n, 'addTranslations', 'ja-jp', {
       'contextmenu.actions.getCopy': japaneseCopyMeta,
-      'contextmenu.groups.externalLookupGroup': japaneseExternalLookup
+      'contextmenu.groups.externalLookupGroup': japaneseExternalLookup,
+      'contextmenu.groups.contextGroupDataScience': 'Data Science'
     });
 
     this.set('contextSelection', contextSelection);

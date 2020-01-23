@@ -21,7 +21,7 @@ export default Service.extend(Evented, {
       timeFormat,
       dateFormat,
       timezone,
-      locale
+      locale: locale[0]
     };
   },
 

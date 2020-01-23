@@ -18,6 +18,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   dateFormat: service(),
   timeFormat: service(),
   timezone: service(),
+  i18n: service(),
   entityEndpointId: 'CORE',
   autoHighlightEntities: true,
 
@@ -71,7 +72,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
           'undefined': i18n.t('investigate.medium.undefined')
         }
       },
-      locale,
+      locale: locale[0],
       timeZone
     };
   },

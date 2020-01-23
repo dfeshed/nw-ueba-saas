@@ -546,12 +546,12 @@ export const searchMatches = createSelector(
       for (let fieldLoopIndex = 0; fieldLoopIndex < prunedFields.length; fieldLoopIndex++) {
         const [field, value] = prunedFields[fieldLoopIndex];
         let toSearch = formatUtil.text(field, value, opts);
-        toSearch = (typeof toSearch === 'object' ? toSearch.string : toSearch).toLowerCase();
+        toSearch = toSearch.toLowerCase();
 
         if (field === 'medium' && data[dataLoopIndex]['nwe.callback_id']) {
           // handle endpoint comparison
           const hash = opts.i18n && opts.i18n[field];
-          if (hash.endpoint.string && hash.endpoint.string.toLowerCase().includes(searchTerm)) {
+          if (hash.endpoint && hash.endpoint.toLowerCase().includes(searchTerm)) {
             allMatches.push(data[dataLoopIndex].sessionId);
             break;
           }

@@ -94,7 +94,7 @@
           {{else if (eq column.field "name")}}
             {{#rsa-data-table/body-cell item=item column=column class="process-name"}}
               {{#link-to "hosts.details.tab.info" "PROCESS" item.pid }}
-                {{get-field item column timezone dateFormat timeFormat i18n.locale}}
+                {{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}
               {{/link-to}}
             {{/rsa-data-table/body-cell}}
           {{else}}

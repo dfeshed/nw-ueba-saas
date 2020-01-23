@@ -12,6 +12,7 @@ export default Controller.extend({
   session: service(),
   accessControl: service(),
   router: service(),
+  i18n: service(),
 
   authenticatedAndPageFound: computed('session.isAuthenticated', 'router.currentRouteName', function() {
     if (!this.session?.isAuthenticated || this.router?.currentRouteName === 'not-found' || this.router?.currentRouteName === 'internal-error') {
@@ -50,28 +51,15 @@ export default Controller.extend({
     document.cookie = `nw-ui-theme=${themeName};Path=/;`;
   },
 
-  _appendLocaleScript(body) {
-    const sourceId = 'dynamicLocale';
-    const dynamicScript = document.getElementById(sourceId);
-    if (dynamicScript) {
-      document.body.removeChild(dynamicScript);
-    }
-    const script = document.createElement('script');
-    script.id = sourceId;
-    script.type = 'text/javascript';
-    script.innerHTML = body;
-    document.body.appendChild(script);
-  },
-
   _addDynamicLocale(key, langCode, fileName) {
     if (!fileName) {
       this.set('i18n.locale', key);
       get(this, 'moment').changeLocale(langCode);
     } else {
-      const scriptUrl = `/locales/${fileName}`;
-      fetch(scriptUrl).then((fetched) => fetched.text()).then((body) => {
-        this._appendLocaleScript(body);
-        this.set('i18n.locale', key);
+      const scriptUrl = `/translations/${fileName}`;
+      fetch(scriptUrl).then((fetched) => fetched.text()).then((translations) => {
+        this.i18n.addTranslations(key, translations);
+        this.i18n.setLocale([key, 'en-us']);
         get(this, 'moment').changeLocale(langCode);
       }).catch(() => {
         const translationService = get(this, 'i18n');

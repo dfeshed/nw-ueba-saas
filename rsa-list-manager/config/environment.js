@@ -13,13 +13,6 @@ module.exports = function(environment/* , appConfig */) {
     environment,
     APP: {
       readyDelay: 0
-    },
-    i18n: {
-      defaultLocale: 'en-us',
-      defaultFallback: true,
-      includedLocales: ['en-us']
-    },
-    APP: {
     }
   };
 

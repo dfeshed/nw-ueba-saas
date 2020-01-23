@@ -1,7 +1,6 @@
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { t } from 'ember-i18n/test-support';
 import { waitUntil, settled } from '@ember/test-helpers';
 import { localStorageClear } from 'sa/tests/helpers/wait-for';
 import * as ACTION_TYPES from 'sa/actions/types';
@@ -119,7 +118,7 @@ module('Unit | Controller | application', function(hooks) {
       updatesRun++;
     };
 
-    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' } });
+    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.json' } });
     assert.equal(updatesRun, 1);
 
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en_US', key: 'en-us', label: 'english' } });
@@ -147,18 +146,16 @@ module('Unit | Controller | application', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedError = translation.t('userPreferences.locale.fetchError');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedError);
+      assert.equal(flash.message, expectedError);
     });
 
-    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' } });
+    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.json' } });
 
     return settled();
   });
 
   test('moment will be updated when locale changes', async function(assert) {
     assert.expect(2);
-
-    const dynamicScripts = () => document.body.querySelectorAll('script#dynamicLocale');
 
     const moment = this.owner.lookup('service:moment');
     const redux = this.owner.lookup('service:redux');
@@ -175,7 +172,7 @@ module('Unit | Controller | application', function(hooks) {
       });
     });
 
-    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' } });
+    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.json' } });
 
     return settled().then(async() => {
       assert.equal(get(moment, 'locale'), 'es');
@@ -185,34 +182,30 @@ module('Unit | Controller | application', function(hooks) {
       return settled().then(async() => {
         assert.equal(get(moment, 'locale'), 'en');
       });
-    }).finally(async() => {
-      document.body.removeChild(dynamicScripts()[0]);
     });
   });
 
-  test('will fetch/append script and set i18n to correct character set when locale changes', async function(assert) {
-    assert.expect(17);
+  test('will set i18n to correct character set when locale changes', async function(assert) {
+    assert.expect(13);
 
     let fetchCount = 0;
-    const dynamicScripts = () => document.body.querySelectorAll('script#dynamicLocale');
     const i18n = this.owner.lookup('service:i18n');
     const redux = this.owner.lookup('service:redux');
 
     this.owner.lookup('controller:application');
 
-    assert.equal(get(i18n, 'locale'), 'en-us');
-    assert.equal(dynamicScripts().length, 0);
-    assert.equal(t('title').toString(), 'Missing translation: title');
+    assert.equal(get(i18n, 'primaryLocale'), 'en-us');
+    assert.equal(i18n.t('title'), 'Missing translation "title" for locale "en-us"');
 
     const fileFetch = (url) => {
       fetchCount++;
-      assert.equal(url, '/locales/spanish_es-mx.js');
+      assert.equal(url, '/translations/spanish_es-mx.json');
       return new Promise(function(resolve) {
         resolve({
           ok: true,
           text() {
             return new Promise(function(r) {
-              r("define('sa/locales/es-mx/translations', ['exports'], function (exports) { exports.default = { title: 'spanish_x' }; })");
+              r({ title: 'spanish_x' });
             });
           }
         });
@@ -220,40 +213,34 @@ module('Unit | Controller | application', function(hooks) {
     };
 
     patchFetch((url) => fileFetch(url));
-    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' } });
+    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.json' } });
 
     return settled().then(async() => {
       assert.equal(fetchCount, 1);
-      assert.equal(get(i18n, 'locale'), 'es-mx');
-      assert.equal(dynamicScripts().length, 1);
-
-      await waitUntil(() => t('title').toString() === 'spanish_x', { timeout });
-      assert.equal(t('title').toString(), 'spanish_x');
+      assert.equal(get(i18n, 'primaryLocale'), 'es-mx');
+      await waitUntil(() => i18n.t('title') === 'spanish_x', { timeout });
+      assert.equal(i18n.t('title'), 'spanish_x');
 
       patchFetch((url) => fileFetch(url));
       redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en_US', key: 'en-us', label: 'english' } });
 
       return settled().then(async() => {
         assert.equal(fetchCount, 1);
-        assert.equal(get(i18n, 'locale'), 'en-us');
-        assert.equal(dynamicScripts().length, 1);
+        assert.equal(get(i18n, 'primaryLocale'), 'en-us');
 
-        await waitUntil(() => t('title').toString() === 'Missing translation: title', { timeout });
-        assert.equal(t('title').toString(), 'Missing translation: title');
+        await waitUntil(() => i18n.t('title') === 'Missing translation "title" for locale "en-us"', { timeout });
+        assert.equal(i18n.t('title'), 'Missing translation "title" for locale "en-us"');
 
-        redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' } });
+        redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.json' } });
 
         return settled().then(async() => {
           assert.equal(fetchCount, 2);
-          assert.equal(get(i18n, 'locale'), 'es-mx');
-          assert.equal(dynamicScripts().length, 1);
+          assert.equal(get(i18n, 'primaryLocale'), 'es-mx');
 
-          await waitUntil(() => t('title').toString() === 'spanish_x', { timeout });
-          assert.equal(t('title').toString(), 'spanish_x');
+          await waitUntil(() => i18n.t('title') === 'spanish_x', { timeout });
+          assert.equal(i18n.t('title'), 'spanish_x');
         });
       });
-    }).finally(async() => {
-      document.body.removeChild(dynamicScripts()[0]);
     });
   });
 
@@ -278,10 +265,10 @@ module('Unit | Controller | application', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedError = translation.t('userPreferences.locale.fetchError');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedError);
+      assert.equal(flash.message, expectedError);
     });
 
-    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' } });
+    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.json' } });
 
     return settled();
   });

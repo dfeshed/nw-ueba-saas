@@ -108,7 +108,7 @@ module('Integration | Component | Configure - Content - Add Log Parser', functio
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('configure.logsParser.addParser.addParserFailed');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
     });
     await click(`${selectors.addParserButton} button`);
   });
@@ -138,7 +138,7 @@ module('Integration | Component | Configure - Content - Add Log Parser', functio
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('configure.logsParser.addParser.addParserSuccessful');
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
     await click(`${selectors.addParserButton} button`);

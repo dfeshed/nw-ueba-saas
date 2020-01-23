@@ -95,7 +95,7 @@ module('Integration | Component | Host Scan Start Button', function(hooks) {
 
     patchFlash((flash) => {
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, 'Scan failed. Contact your system administrator.');
+      assert.equal(flash.message, 'Scan failed. Contact your system administrator.');
     });
     await click('.rsa-form-button');
     return settled().then(async() => {

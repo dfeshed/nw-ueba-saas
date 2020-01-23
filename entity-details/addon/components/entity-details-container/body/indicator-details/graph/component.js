@@ -43,7 +43,7 @@ const EventsGraphComponent = Component.extend({
     // Init will not be called when user jumps between indicators. So need to clear container div before drawing chart.
     this.chart = null;
     const timeZoneId = this.get('timezone.selected.zoneId') || 'UTC';
-    const locale = this.get('i18n.locale') || 'en';
+    const locale = this.get('i18n.primaryLocale') || 'en';
     document.getElementById('chartComponentPlaceholder').innerHTML = '';
     if (!indicatorMapSettings || !historicalData) {
       return;

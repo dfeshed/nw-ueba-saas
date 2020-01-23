@@ -285,6 +285,6 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     const expectedToolTip = translation.t('adminUsm.policyWizard.filePolicy.protocolTooltip');
     await triggerEvent(document.querySelectorAll('.tooltip-text')[5], 'mouseover');
-    assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(), expectedToolTip.string.trim(), 'Protocol Tooltip was activated on mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(), expectedToolTip.trim(), 'Protocol Tooltip was activated on mouseover');
   });
 });

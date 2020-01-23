@@ -31,6 +31,8 @@ const menuOffsetsStyle = (el) => {
 
 const DownloadPacketComponent = Component.extend({
   accessControl: service(),
+  i18n: service(),
+
   layout,
 
   classNameBindings: ['isExpanded:expanded:collapsed'],

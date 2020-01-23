@@ -86,7 +86,7 @@ module('Integration | Component | rsa-theme-preferences', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedError = translation.t('userPreferences.theme.error');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedError);
+      assert.equal(flash.message, expectedError);
     });
 
     const darkRadioSelector = `${labelSelector}:nth-of-type(1) input[type=radio]`;

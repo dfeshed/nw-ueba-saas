@@ -41,7 +41,7 @@ class FileFound extends Component {
   @action
   onNavigateToTab(catString) {
     let subTabName = null;
-    const category = catString.string.toLowerCase().replace(/\s/g, '');
+    const category = catString.toLowerCase().replace(/\s/g, '');
     const scanTime = this.get('scanTime');
     const checksum = this.get('file').checksumSha256;
     const searchKey = this.get('searchKey');

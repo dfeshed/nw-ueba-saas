@@ -168,7 +168,7 @@ export const getAlertsForTimeline = createSelector(
     const timezone = lookup('service:timezone');
     return alertsForTimeline.map((alert) => {
       const alertDay = moment(alert.day)
-        .locale(i18n.locale || 'en')
+        .locale(i18n.primaryLocale || 'en')
         .tz(timezone.selected ? timezone.selected.zoneId : 'UTC')
         .format('DD-MMM');
       const alertObj = { day: alertDay, originalTime: alert.day };

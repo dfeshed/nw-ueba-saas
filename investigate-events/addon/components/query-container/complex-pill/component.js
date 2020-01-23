@@ -74,7 +74,7 @@ export default Component.extend({
   title: (pillData, stringifiedPill, isActive) => {
     if (!isActive && pillData) {
       if (pillData.isInvalid) {
-        return pillData.validationError ? pillData.validationError.string || pillData.validationError.message : 'Invalid';
+        return pillData.validationError ? pillData.validationError.message || pillData.validationError : 'Invalid';
       } else {
         return pillData.complexFilterText;
       }

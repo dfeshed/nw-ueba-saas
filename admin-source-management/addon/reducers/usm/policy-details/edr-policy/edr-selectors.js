@@ -150,7 +150,7 @@ const _getScanSetting = (prop, focusedPolicy, _focusedPolicyOrigin, emptyOrigin)
 
   let days = '';
   if (focusedPolicy.runOnDaysOfWeek) {
-    const daysLocale = focusedPolicy.runOnDaysOfWeek.map((day) => _i18n.t(`adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.weekDay.${day}`).string).join(', ');
+    const daysLocale = focusedPolicy.runOnDaysOfWeek.map((day) => _i18n.t(`adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.weekDay.${day}`)).join(', ');
     days = `${_i18n.t('adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.on')} ${daysLocale}`;
   }
   const recurValue = `${_i18n.t('adminUsm.policies.detail.recurrenceEvery')} ${focusedPolicy.recurrenceInterval} ${unit} ${days}`;
@@ -238,6 +238,9 @@ const _getFileDownloadSettings = (prop, focusedPolicy, _focusedPolicyOrigin, emp
   const _i18n = lookup('service:i18n');
   const unit = focusedPolicy.maxFileDownloadSizeUnit || '';
   const maxFileDownloadSizeUnit = _i18n.t(`adminUsm.policyWizard.edrPolicy.maxFileDownloadSize_${unit.toUpperCase()}`);
+  const val = focusedPolicy[prop];
+  const fileDownloadCriteriaValue = ['All', 'NotKnownSigned', 'Unsigned'].includes(val) ? val : 'All';
+
   const fileDownloadSettings = {
     fileDownloadEnabled: {
       name: 'adminUsm.policyWizard.edrPolicy.automaticFileDownloads',
@@ -246,7 +249,7 @@ const _getFileDownloadSettings = (prop, focusedPolicy, _focusedPolicyOrigin, emp
     },
     fileDownloadCriteria: {
       name: 'adminUsm.policyWizard.edrPolicy.signature',
-      value: _i18n.t(`adminUsm.policyWizard.edrPolicy.${focusedPolicy[prop]}`),
+      value: _i18n.t(`adminUsm.policyWizard.edrPolicy.${fileDownloadCriteriaValue}`),
       origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin
     },
     maxFileDownloadSize: {

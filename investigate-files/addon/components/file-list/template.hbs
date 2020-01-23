@@ -109,7 +109,7 @@
           {{else if (eq column.field "downloadInfo.status")}}
             {{endpoint/download-status downloadInfo=(get item "downloadInfo") checksum=item.checksumSha256}}
           {{else}}
-            {{get-field item column timezone dateFormat timeFormat i18n.locale}}
+            {{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}
           {{/if}}
         {{/rsa-data-table/body-cell}}
       {{/if}}

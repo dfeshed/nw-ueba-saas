@@ -39,7 +39,7 @@ module('Unit | Selectors | Global | Preferences', function() {
               id: 'de_DE',
               key: 'de-de',
               label: 'german',
-              fileName: 'german_de-de.js'
+              fileName: 'german_de-de.json'
             }
           ]
         }
@@ -59,7 +59,7 @@ module('Unit | Selectors | Global | Preferences', function() {
         key: 'de-de',
         langCode: 'de',
         label: 'german',
-        fileName: 'german_de-de.js',
+        fileName: 'german_de-de.json',
         displayLabel: 'German'
       }
     ]);

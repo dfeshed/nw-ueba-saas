@@ -6,7 +6,7 @@ const mockAppVersionService = EmObj.create({
 });
 
 const mockI18nService = EmObj.create({
-  locale: 'foo'
+  primaryLocale: 'foo'
 });
 
 const options = {

@@ -44,7 +44,7 @@ export default class _PropertyPanel extends PropertyPanel {
           return {
             ...fieldItem,
             value,
-            displayName: isStandardString ? label : i18n.t(label).string
+            displayName: isStandardString ? label : i18n.t(label)
           };
         });
         return { ...item, fields };

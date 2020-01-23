@@ -384,7 +384,7 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
       const codeResponse = translation.t('adminUsm.errorCodeResponse.default');
       const expectedMessage = translation.t('adminUsm.groupWizard.actionMessages.saveFailure', { errorType: codeResponse });
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
 
@@ -414,7 +414,7 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('adminUsm.groupWizard.actionMessages.saveSuccess');
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
 
@@ -442,7 +442,7 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
       const codeResponse = translation.t('adminUsm.errorCodeResponse.default');
       const expectedMessage = translation.t('adminUsm.groupWizard.actionMessages.savePublishFailure', { errorType: codeResponse });
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
 
@@ -469,7 +469,7 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
       const codeResponse = translation.t('adminUsm.errorCodeResponse.default');
       const expectedMessage = translation.t('adminUsm.groupWizard.actionMessages.savePublishNoChangeFailure', { errorType: codeResponse });
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
 
@@ -501,7 +501,7 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('adminUsm.groupWizard.actionMessages.savePublishSuccess');
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
 

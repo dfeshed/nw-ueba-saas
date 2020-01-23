@@ -108,7 +108,7 @@ module('Integration | Component | Respond Incident Rules Toolbar', function(hook
 
     patchFlash((flash) => {
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, 'You successfully cloned the selected rule');
+      assert.equal(flash.message, 'You successfully cloned the selected rule');
     });
 
     patchSocket((method, modelName, query) => {

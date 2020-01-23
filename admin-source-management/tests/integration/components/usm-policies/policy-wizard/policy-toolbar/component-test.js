@@ -297,7 +297,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
       const codeResponse = translation.t('adminUsm.errorCodeResponse.default');
       const expectedMessage = translation.t('adminUsm.policyWizard.actionMessages.saveFailure', { errorType: codeResponse });
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
 
@@ -332,7 +332,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('adminUsm.policyWizard.actionMessages.saveSuccess');
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
 
@@ -365,7 +365,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
       const codeResponse = translation.t('adminUsm.errorCodeResponse.default');
       const expectedMessage = translation.t('adminUsm.policyWizard.actionMessages.savePublishFailure', { errorType: codeResponse });
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
 
@@ -402,7 +402,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
       const codeResponse = translation.t('adminUsm.errorCodeResponse.default');
       const expectedMessage = translation.t('adminUsm.policyWizard.actionMessages.savePublishNoChangeFailure', { errorType: codeResponse });
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
 
@@ -439,7 +439,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('adminUsm.policyWizard.actionMessages.savePublishSuccess');
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
 
@@ -470,7 +470,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
       const codeResponse = translation.t('adminUsm.errorCodeResponse.default');
       const expectedMessage = translation.t('adminUsm.policyWizard.actionMessages.saveNoGlobalSourceFailure', { errorType: codeResponse });
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
 

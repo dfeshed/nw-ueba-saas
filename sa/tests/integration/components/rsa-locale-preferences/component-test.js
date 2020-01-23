@@ -91,7 +91,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedError = translation.t('userPreferences.locale.error');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedError);
+      assert.equal(flash.message, expectedError);
     });
 
     await selectChoose(powerSelector, japaneseLocale);

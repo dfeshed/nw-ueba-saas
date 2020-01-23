@@ -8,10 +8,6 @@ module.exports = function(environment) {
     environment,
     rootURL: '/',
     locationType: 'auto',
-    i18n: {
-      defaultLocale: 'en-us',
-      includedLocales: ['en-us']
-    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

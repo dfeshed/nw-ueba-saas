@@ -107,8 +107,8 @@ export default Component.extend({
 
     // Translated titles added.
     return fileActionConfClone.map((item) => {
-      const title = i18n.t(`investigateShared.endpoint.fileActions.${item.name}`).string;
-      let disabledTooltip = i18n.t(`investigateShared.endpoint.fileActions.tooltips.${item.name}`).string;
+      const title = i18n.t(`investigateShared.endpoint.fileActions.${item.name}`);
+      let disabledTooltip = i18n.t(`investigateShared.endpoint.fileActions.tooltips.${item.name}`);
       if ((item.name === 'downloadToServer') && (itemList.length !== 1)) {
         // Setting download disabled tooltip
         disabledTooltip = this.get('downloadDisabledTooltip');
@@ -116,7 +116,7 @@ export default Component.extend({
       let { subItems } = item;
       if (subItems) {
         subItems = subItems.map((subItem) => {
-          const title = i18n.t(`investigateShared.endpoint.fileActions.${subItem.name}`).string;
+          const title = i18n.t(`investigateShared.endpoint.fileActions.${subItem.name}`);
           return { ...subItem, title };
         });
         return { ...item, title, subItems };

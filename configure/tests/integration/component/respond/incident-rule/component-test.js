@@ -233,7 +233,7 @@ module('Integration | Component | Respond Incident Rule', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedError = translation.t('configure.incidentRules.actionMessages.saveFailure');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedError);
+      assert.equal(flash.message, expectedError);
     });
     await render(hbs`{{respond/incident-rule ruleId='12345'}}`);
     assert.notOk(find(selectors.saveButton).disabled, 'The Save button is not disabled');

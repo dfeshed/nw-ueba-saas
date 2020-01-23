@@ -2135,8 +2135,8 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   test('Right click wrap in parens option should be disabled if there is a text pill', async function(assert) {
     const translation = this.owner.lookup('service:i18n');
-    const wrapInParenNotAllowedMessage = translation.t('queryBuilder.wrapInParensNotAllowed').string.trim();
-    const wrapInParensMessage = translation.t('queryBuilder.wrapParens').string.trim();
+    const wrapInParenNotAllowedMessage = translation.t('queryBuilder.wrapInParensNotAllowed').trim();
+    const wrapInParensMessage = translation.t('queryBuilder.wrapParens').trim();
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()

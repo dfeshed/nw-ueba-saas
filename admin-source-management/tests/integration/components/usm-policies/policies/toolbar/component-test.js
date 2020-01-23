@@ -134,7 +134,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('adminUsm.policies.modals.deletePolicies.success', { numItems: '2' });
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
     await click('.modal-footer-buttons .is-danger button');
@@ -158,7 +158,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
     patchFlash((flash) => {
       const expectedMessage = translation.t('adminUsm.policies.modals.deletePolicies.failure');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
     await click('.modal-footer-buttons .is-danger button');
@@ -192,7 +192,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('adminUsm.policies.modals.publishPolicies.success', { numItems: '2' });
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
     await click('.modal-footer-buttons .is-primary button');
@@ -216,7 +216,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
     patchFlash((flash) => {
       const expectedMessage = translation.t('adminUsm.policies.modals.publishPolicies.failure');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
     await click('.modal-footer-buttons .is-primary button');

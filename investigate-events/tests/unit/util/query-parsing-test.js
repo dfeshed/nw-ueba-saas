@@ -274,7 +274,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '\'foo\'', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You must enter an 8-bit Integer.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'You must enter an 8-bit Integer.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an invalid pill when length is used with a negative number', function(assert) {
@@ -286,7 +286,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, 'length', 'operator should match');
     assert.equal(result[0].value, '-3', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You must enter an integer greater than or equal to 1.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'You must enter an integer greater than or equal to 1.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an invalid pill when length is used with zero', function(assert) {
@@ -298,7 +298,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, 'length', 'operator should match');
     assert.equal(result[0].value, '0', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You must enter an integer greater than or equal to 1.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'You must enter an integer greater than or equal to 1.', 'validation error should be correct');
   });
 
   // Leaving here to remind me to implement this soon
@@ -313,7 +313,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '36893488147419103000', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You must enter a 64-bit Integer.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'You must enter a 64-bit Integer.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an valid pill when an alias is used correctly', function(assert) {
@@ -373,7 +373,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '\'IEEEthernet\'', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You must enter an 8-bit Integer.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'You must enter an 8-bit Integer.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns a normal pill for an IPv4 address in CIDR notation', function(assert) {
@@ -397,7 +397,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '192.168.0.1/', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You must enter a valid number following the forward slash.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'You must enter a valid number following the forward slash.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an invalid pill for an IP with a slash but with alphanumeric mask', function(assert) {
@@ -409,7 +409,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '192.168.0.1/abc', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You must enter a valid number following the forward slash.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'You must enter a valid number following the forward slash.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an invalid pill for an IP with an out-of-range mask', function(assert) {
@@ -421,7 +421,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '192.168.0.1/42', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'The CIDR mask must be between 0 and 32.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'The CIDR mask must be between 0 and 32.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an invalid pill for an IP with a negative out-of-range mask', function(assert) {
@@ -433,7 +433,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '192.168.0.1/-5', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'Negative values are not allowed.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'Negative values are not allowed.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns a normal pill for an IPv6 address in CIDR notation', function(assert) {
@@ -457,7 +457,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '3ffe:1900:4545:3:200:f8ff:fe21:67cf/', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You must enter a valid number following the forward slash.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'You must enter a valid number following the forward slash.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an invalid pill for an IPv6 with a slash but with alphanumeric mask', function(assert) {
@@ -469,7 +469,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '3ffe:1900:4545:3:200:f8ff:fe21:67cf/abc', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You must enter a valid number following the forward slash.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'You must enter a valid number following the forward slash.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an invalid pill for an IPv6 with an out-of-range mask', function(assert) {
@@ -481,7 +481,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '3ffe:1900:4545:3:200:f8ff:fe21:67cf/167', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'The CIDR mask must be between 0 and 128.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'The CIDR mask must be between 0 and 128.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an invalid pill for an IPv6 with a negative out-of-range mask', function(assert) {
@@ -493,7 +493,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '3ffe:1900:4545:3:200:f8ff:fe21:67cf/-5', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'Negative values are not allowed.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'Negative values are not allowed.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an invalid pill for negative numbers', function(assert) {
@@ -505,7 +505,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '-3', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'Negative values are not allowed.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'Negative values are not allowed.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an invalid pill for upside-down ranges', function(assert) {
@@ -517,7 +517,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '5-1', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'The second number in the range must be greater than the first.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'The second number in the range must be greater than the first.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns valid pill with l', function(assert) {
@@ -610,7 +610,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '1,,3', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You cannot enter more than one comma in a row.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'You cannot enter more than one comma in a row.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns an invalid pill for comma-separated values with a mismatched type', function(assert) {
@@ -622,7 +622,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '1,2,\'string\'', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You must enter an 8-bit Integer.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'You must enter an 8-bit Integer.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns a complex pill for a non-value type included in a comma-separated list of values', function(assert) {
@@ -789,7 +789,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '8080', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You must enter an IPv4 address.', 'validation error should be correct');
+    assert.equal(result[0].validationError, 'You must enter an IPv4 address.', 'validation error should be correct');
     assert.equal(result[1].type, OPERATOR_AND, 'type should match');
     assert.equal(result[2].meta, 'medium', 'forward slash was not parsed correctly');
     assert.equal(result[2].operator, '=', 'forward slash was not parsed correctly');

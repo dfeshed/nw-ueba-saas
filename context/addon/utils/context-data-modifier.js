@@ -84,7 +84,6 @@ const getErrorMessage = (dsData, i18n) => {
   if (dsData && !isEmpty(dsData.errorMessage)) {
     let errorMessage = i18n.t(`context.error.${dsData.errorMessage}`);
     if (dsData.errorParameters) {
-      errorMessage = errorMessage.string;
       for (const [key, value] of Object.entries(dsData.errorParameters)) {
         errorMessage = errorMessage.replace(`{${key}}`, value);
       }

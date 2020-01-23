@@ -173,7 +173,7 @@ const EventsTableContextMenu = RsaContextMenu.extend({
       message = i18n.t('investigate.empty.description');
       if (hadTextPill) {
         const url = `${window.location.origin}/${classicEventsURL({ ...queryNodeValuesForClassicUrl, ...summaryValuesForClassicUrl })}`;
-        message = i18n.t('investigate.textSearchLimitedResults', { url, message });
+        message = i18n.t('investigate.textSearchLimitedResults', { url, message, htmlSafe: true }).string;
       }
     }
     return message;

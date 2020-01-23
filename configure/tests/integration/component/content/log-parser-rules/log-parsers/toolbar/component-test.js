@@ -56,7 +56,7 @@ module('Integration | Component | Parser Toolbar', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('configure.logsParser.modals.deleteParser.success', { parserName: 'builtin' });
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
     await click('.modal-footer-buttons .is-primary button');
@@ -76,7 +76,7 @@ module('Integration | Component | Parser Toolbar', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('configure.logsParser.modals.deleteParser.failure', { parserName: 'builtin' });
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
     });
     await click('.modal-footer-buttons .is-primary button');
   });

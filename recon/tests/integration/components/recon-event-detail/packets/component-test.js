@@ -98,7 +98,7 @@ module('Integration | Component | Recon Event Detail | Packets', function(hooks)
       const translation = this.owner.lookup('service:i18n');
 
       const noContentString = find('.rsa-panel-message').textContent.trim();
-      assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').string.trim(), 'Did not find no content message panel');
+      assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').trim(), 'Did not find no content message panel');
     });
   });
 
@@ -114,13 +114,13 @@ module('Integration | Component | Recon Event Detail | Packets', function(hooks)
     return wait().then(() => {
       const translation = this.owner.lookup('service:i18n');
       const payloadsOnlyNoContentMessage = find('.rsa-panel-message').textContent.trim();
-      assert.equal(payloadsOnlyNoContentMessage, translation.t('recon.packetView.noPayload').string.trim(), 'Did not find message for content hidden by payloads only');
+      assert.equal(payloadsOnlyNoContentMessage, translation.t('recon.packetView.noPayload').trim(), 'Did not find message for content hidden by payloads only');
 
       redux.dispatch(VisualActions.toggleRequestData());
       redux.dispatch(VisualActions.toggleResponseData());
 
       const noContentString = find('.rsa-panel-message').textContent.trim();
-      assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').string.trim(), 'Did not find no content message panel');
+      assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').trim(), 'Did not find no content message panel');
     });
   });
 });

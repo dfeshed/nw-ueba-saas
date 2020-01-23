@@ -14,7 +14,7 @@ module('Unit | Service | global preferences', function(hooks) {
     service.set('timeFormat', { selected: { format: 'timeFormat' } });
     service.set('dateFormat', { selected: { format: 'dateFormat' } });
     service.set('timezone', { selected: { zoneId: 'timezone' } });
-    service.set('i18n', { locale: 'locale' });
+    service.set('i18n.locale', 'locale');
 
     assert.deepEqual(service.get('preferences'), {
       timeFormat: 'timeFormat',

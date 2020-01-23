@@ -157,7 +157,7 @@ module('Integration | Component | incident-toolbar/add-to-incident', function(ho
       const expectedMessage = translation.t('respond.incidents.actions.actionMessages.addAlertToIncidentSucceeded',
         { incidentId: 'INC-123', entity: 'alerts' });
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
     this.set('handleFinish', () => {
@@ -176,7 +176,7 @@ module('Integration | Component | incident-toolbar/add-to-incident', function(ho
       const translation = this.owner.lookup('service:i18n');
       const expectedError = translation.t('respond.incidents.actions.actionMessages.addAlertToIncidentFailed', { entity: 'alerts' });
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedError);
+      assert.equal(flash.message, expectedError);
       done();
     });
     setState({

@@ -1,7 +1,7 @@
 <div class="create-incident-form">
   <p>
     {{#if selectedEventIds}}
-      {{t "respond.incidents.actions.actionMessages.createIncidentFromEventsInstruction" alertCount=alertIds.length}}
+      {{t "respond.incidents.actions.actionMessages.createIncidentFromEventsInstruction" evenCount=alertIds.length}}
     {{else}}
       {{t "respond.incidents.actions.actionMessages.createIncidentInstruction" alertCount=alertIds.length}}
     {{/if}}

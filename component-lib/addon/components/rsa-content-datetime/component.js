@@ -32,6 +32,8 @@ export default Component.extend({
 
   dateFormat: service(),
 
+  i18n: service(),
+
   @computed('timeFormat.selected.format', 'displayTime', 'displaySeconds', 'displayMilliseconds')
   adjustedTimeFormat: (format, displayTime, displaySeconds, displayMilliseconds) => {
     if (format && displayTime) {
@@ -62,7 +64,7 @@ export default Component.extend({
 
   @computed('timestamp', 'i18n.locale', 'timezone.selected.zoneId')
   timeAgo: (timestamp, locale, timeZone) => {
-    return moment.apply(moment, [timestamp], { locale, timeZone }).fromNow();
+    return moment.apply(moment, [timestamp], { locale: locale[0], timeZone }).fromNow();
   }
 
 });

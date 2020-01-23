@@ -7,9 +7,9 @@ import { patchFetch } from 'sa/tests/helpers/patch-fetch';
 import { getLocales } from 'sa/reducers/global/preferences/selectors';
 
 const english = { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' };
-const spanish = { id: 'es_MX', key: 'es-mx', label: 'spanish', langCode: 'es', fileName: 'spanish_es-mx.js', displayLabel: 'Spanish' };
-const german = { id: 'de_DE', key: 'de-de', label: 'german', langCode: 'de', fileName: 'german_de-de.js', displayLabel: 'German' };
-const japanese = { id: 'ja_JP', key: 'ja-jp', label: 'japanese', langCode: 'ja', fileName: 'japanese_ja-jp.js', displayLabel: 'Japanese' };
+const spanish = { id: 'es_MX', key: 'es-mx', label: 'spanish', langCode: 'es', fileName: 'spanish_es-mx.json', displayLabel: 'Spanish' };
+const german = { id: 'de_DE', key: 'de-de', label: 'german', langCode: 'de', fileName: 'german_de-de.json', displayLabel: 'German' };
+const japanese = { id: 'ja_JP', key: 'ja-jp', label: 'japanese', langCode: 'ja', fileName: 'japanese_ja-jp.json', displayLabel: 'Japanese' };
 
 module('Unit | Route | application', function(hooks) {
   setupTest(hooks);

@@ -260,7 +260,7 @@ export default Component.extend({
     if (!isActive && pillData) {
       if (pillData.isInvalid) {
         const { value } = pillData;
-        const validationError = pillData.validationError.string || pillData.validationError.message;
+        const validationError = pillData.validationError.message || pillData.validationError;
         // i18n converts chars like `=` to encoded strings, so can't use that here.
         const errorMessage = `You entered '${value}'. ${validationError}`;
         return errorMessage;

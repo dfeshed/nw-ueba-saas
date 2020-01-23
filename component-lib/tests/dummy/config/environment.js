@@ -17,11 +17,6 @@ module.exports = function(environment) {
         Date: false
       }
     },
-    i18n: {
-      defaultLocale: 'en-us',
-      defaultFallback: true,
-      includedLocales: ['en-us']
-    },
     dateFormatDefault: 'MM/dd/yyyy',
     timeFormatDefault: 'HR24',
     timezoneDefault: 'America/Los_Angeles',

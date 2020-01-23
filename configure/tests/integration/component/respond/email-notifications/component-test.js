@@ -291,7 +291,7 @@ module('Integration | Component | Respond Email Notifications', function(hooks) 
     const done = throwSocket({ methodToThrow: 'updateRecord', modelNameToThrow: 'notification-settings', message: { code: 1 } });
     patchFlash((flash) => {
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, labels(this, 'updateFailure'));
+      assert.equal(flash.message, labels(this, 'updateFailure'));
       done();
     });
 
@@ -319,7 +319,7 @@ module('Integration | Component | Respond Email Notifications', function(hooks) 
     const done = throwSocket({ methodToThrow: 'updateRecord', modelNameToThrow: 'notification-settings', message: { code: 41 } });
     patchFlash((flash) => {
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, labels(this, 'updateEmailServerFailure'));
+      assert.equal(flash.message, labels(this, 'updateEmailServerFailure'));
       done();
     });
 
@@ -347,7 +347,7 @@ module('Integration | Component | Respond Email Notifications', function(hooks) 
     const done = throwSocket({ methodToThrow: 'updateRecord', modelNameToThrow: 'notification-settings', message: { foo: undefined } });
     patchFlash((flash) => {
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, labels(this, 'updateFailure'));
+      assert.equal(flash.message, labels(this, 'updateFailure'));
       done();
     });
 

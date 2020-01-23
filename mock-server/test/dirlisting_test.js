@@ -18,7 +18,7 @@ describe('directory listing', () => {
 
   it('will return directory listing for locales directory', (done) => {
     request(server)
-      .get('/locales/')
+      .get('/translations/')
       .expect('Content-Type', /json/)
       .end(function(err, res) {
         if (err) {
@@ -26,18 +26,18 @@ describe('directory listing', () => {
         }
 
         expect(res.body.length).to.eql(3);
-        expect(res.body[0]).to.eql({ 'name': 'german_de-de.js', 'size': 15 });
-        expect(res.body[1]).to.eql({ 'name': 'japanese_ja-jp.js', 'size': 17 });
-        expect(res.body[2]).to.eql({ 'name': 'spanish_es-mx.js', 'size': 16 });
+        expect(res.body[0]).to.eql({ 'name': 'german_de-de.json', 'size': 17 });
+        expect(res.body[1]).to.eql({ 'name': 'japanese_ja-jp.json', 'size': 19 });
+        expect(res.body[2]).to.eql({ 'name': 'spanish_es-mx.json', 'size': 18 });
         done();
       });
   });
 
   it('will return static file from locales directory', (done) => {
     request(server)
-      .get('/locales/spanish_es-mx.js')
+      .get('/translations/spanish_es-mx.json')
       .expect('Content-Type', /text\/javascript/)
-      .expect('Content-Length', '116287')
+      .expect('Content-Length', '120505')
       .end(function(err, res) {
         if (err) {
           throw err;
@@ -50,7 +50,7 @@ describe('directory listing', () => {
 
   it('will return 404 when static file not found in locales directory', (done) => {
     request(server)
-      .get('/locales/foo.bar')
+      .get('/translations/foo.bar')
       .expect('Content-Type', /text\/html/)
       .end(function(err, res) {
         if (err) {

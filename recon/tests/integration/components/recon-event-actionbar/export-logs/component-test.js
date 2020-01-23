@@ -197,9 +197,9 @@ test('the extracted file must not be downloaded automatically', function(assert)
 
   patchFlash((flash) => {
     const translation = getOwner(this).lookup('service:i18n');
-    const expectedMsg = translation.t('fileExtract.ready', { url });
+    const expectedMsg = translation.t('fileExtract.ready', { url, htmlSafe: true });
     assert.equal(flash.type, 'success');
-    assert.equal(flash.message.string, expectedMsg);
+    assert.equal(flash.message, expectedMsg.string);
   });
 
   this.render(hbs`{{recon-event-actionbar/export-logs accessControl=accessControl}}`);

@@ -251,7 +251,7 @@ yarn link mock-server
 buildEmberApp streaming-data false true true 512
 buildEmberApp component-lib false false true 512
 buildEmberApp packager false true true 1024
-buildEmberApp endpoint-rar false true true 512
+buildEmberApp endpoint-rar false true true 1024
 buildEmberApp entity-details false true true 512
 buildEmberApp rsa-dashboard false true true 512
 buildEmberApp license false true true 512

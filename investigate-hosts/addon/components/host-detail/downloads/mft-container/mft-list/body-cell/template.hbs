@@ -53,10 +53,10 @@
   {{/if}}
 {{else if (eq column.field "fullPathName")}}
   {{#rsa-text-with-tooltip format=property.format value=(get item column.field) tipPosition="left"}}
-    {{get-field item column timezone dateFormat timeFormat i18n.locale}}
+    {{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}
   {{/rsa-text-with-tooltip}}
 {{else}}
-  <div title={{get-field item column timezone dateFormat timeFormat i18n.locale}}>
-    {{get-field item column timezone dateFormat timeFormat i18n.locale}}
+  <div title={{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}>
+    {{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}
   </div>
 {{/if}}

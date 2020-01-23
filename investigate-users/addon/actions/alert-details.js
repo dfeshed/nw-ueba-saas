@@ -34,7 +34,7 @@ const _getAlertsGroupedDaily = (currentGroupedAlerts, alertsList) => {
     const timezone = lookup('service:timezone');
     const i18n = lookup('service:i18n');
     const alertDay = moment(alert.startDate)
-      .locale(i18n.locale || 'en')
+      .locale(i18n.primaryLocale || 'en')
       .tz(timezone.selected ? timezone.selected.zoneId : 'UTC')
       .format('MMM DD YYYY');
     const alertsForDay = currentGroupedAlerts[alertDay];

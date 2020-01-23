@@ -177,7 +177,7 @@ module('Integration | Component | Respond Remediation Tasks', function(hooks) {
     patchFlash((flash) => {
       const expectedMessage = i18n.t('rsaExplorer.flash.updateSuccess');
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       flashSuccess = true;
     });
     await render(hbs`

@@ -73,7 +73,7 @@ module('Unit | Util | Parser', function(hooks) {
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
     const [ criteria ] = result.children;
     assert.strictEqual(criteria.isInvalid, true, 'should be invalid');
-    assert.strictEqual(criteria.validationError.string, 'Negative values are not allowed.', 'validation error should be correct');
+    assert.strictEqual(criteria.validationError, 'Negative values are not allowed.', 'validation error should be correct');
     assert.strictEqual(criteria.type, GRAMMAR.CRITERIA, 'type should be correct');
     assert.deepEqual(criteria.meta, { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(criteria.operator, { type: LEXEMES.OPERATOR_EQ, text: '=' });
@@ -236,7 +236,7 @@ module('Unit | Util | Parser', function(hooks) {
     const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.ok(result.children[0].isInvalid);
-    assert.strictEqual(result.children[0].validationError.string, 'Strings must be quoted with "');
+    assert.strictEqual(result.children[0].validationError, 'Strings must be quoted with "');
     assert.deepEqual(result.children[0].meta, { type: LEXEMES.META, text: 'b' });
     assert.deepEqual(result.children[0].operator, { type: LEXEMES.OPERATOR_EQ, text: '=' });
   });
@@ -250,7 +250,7 @@ module('Unit | Util | Parser', function(hooks) {
     const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.ok(result.children[0].isInvalid);
-    assert.strictEqual(result.children[0].validationError.string, 'You must enter an 8-bit Integer.');
+    assert.strictEqual(result.children[0].validationError, 'You must enter an 8-bit Integer.');
     assert.deepEqual(result.children[0].meta, { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result.children[0].operator, { type: LEXEMES.OPERATOR_EQ, text: '=' });
   });

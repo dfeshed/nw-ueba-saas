@@ -22,7 +22,7 @@
 
     <vbox class="event-source-guide-box">
       {{#rsa-content-warn-text-box
-        value=(t "adminUsm.policyWizard.filePolicy.eventSourceConfigGuide")
+        value=(t "adminUsm.policyWizard.filePolicy.eventSourceConfigGuide" htmlSafe=true)
         isInfo=true
       }}
       {{/rsa-content-warn-text-box}}
@@ -45,7 +45,7 @@
 
   <h4 class="subheading">
     {{#rsa-text-with-tooltip
-      value=(t "adminUsm.policyWizard.filePolicy.logFileTypeTooltip")
+      value=(t "adminUsm.policyWizard.filePolicy.logFileTypeTooltip" htmlSafe=true)
       style="standard"
       alwaysShow=true
     }}

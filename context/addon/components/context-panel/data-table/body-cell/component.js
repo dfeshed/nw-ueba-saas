@@ -17,9 +17,9 @@ export default Component.extend({
     const dateTimeFormat = selectedDateFormat ? `${selectedDateFormat} ${selectedTimeFormat}` : 'YYYY/MM/DD HH:mm:ss';
     const dateTimeString =
       moment(get(this.item, this.column.field))
-        .locale(this.get('i18n.locale') || 'en')
+        .locale(this.get('i18n.primaryLocale') || 'en')
         .tz(timeZoneId).format(dateTimeFormat.replace(/.SSS/, ''));
-    const timeAgo = moment(get(this.item, this.column.field)).locale(this.get('i18n.locale') || 'en').fromNow();
+    const timeAgo = moment(get(this.item, this.column.field)).locale(this.get('i18n.primaryLocale') || 'en').fromNow();
     return `${dateTimeString} (${timeAgo})`;
   }),
 

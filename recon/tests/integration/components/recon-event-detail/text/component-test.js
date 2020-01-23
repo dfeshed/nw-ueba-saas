@@ -94,7 +94,7 @@ module('Integration | Component | recon event detail text', function(hooks) {
     const translation = this.owner.lookup('service:i18n');
 
     const noContentString = find('.rsa-panel-message').textContent.trim();
-    assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').string.trim(), 'Did not find no content message panel');
+    assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').trim(), 'Did not find no content message panel');
   });
 
   test('renders a message when data present, but hidden by request', async function(assert) {
@@ -111,7 +111,7 @@ module('Integration | Component | recon event detail text', function(hooks) {
     const translation = this.owner.lookup('service:i18n');
 
     const noContentString = find('.rsa-panel-message').textContent.trim();
-    assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').string.trim(), 'Did not find no content message panel');
+    assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').trim(), 'Did not find no content message panel');
   });
 
   test('renders a message when data present, but hidden by response', async function(assert) {
@@ -128,7 +128,7 @@ module('Integration | Component | recon event detail text', function(hooks) {
     const translation = this.owner.lookup('service:i18n');
 
     const noContentString = find('.rsa-panel-message').textContent.trim();
-    assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').string.trim(), 'Did not find no content message panel');
+    assert.equal(noContentString, translation.t('recon.textView.contentHiddenMessage').trim(), 'Did not find no content message panel');
   });
 
   test('will not render noContent message if request is hidden but response has content', async function(assert) {

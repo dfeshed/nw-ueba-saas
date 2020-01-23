@@ -65,7 +65,7 @@ export default Component.extend({
 
     onClose(data, e) {
       const i18n = this.get('i18n');
-      if (e.target.textContent.trim() === i18n.t('forms.yes').string) {
+      if (e.target.textContent.trim() === i18n.t('forms.yes')) {
         return false;
       }
     }

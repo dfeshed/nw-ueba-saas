@@ -549,7 +549,7 @@ module('Integration | Component | host-list', function(hooks) {
     });
     patchFlash((flash) => {
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, 'Host is already deleted.');
+      assert.equal(flash.message, 'Host is already deleted.');
     });
 
     await render(hbs`

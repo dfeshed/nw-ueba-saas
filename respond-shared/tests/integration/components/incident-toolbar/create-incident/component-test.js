@@ -84,7 +84,7 @@ module('Integration | Component | incident-toolbar/create-incident', function(ho
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('respond.incidents.actions.actionMessages.incidentCreated', { incidentId: 'INC-24' });
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
       done();
     });
     patchSocket((method, modelName, query) => {
@@ -163,7 +163,7 @@ module('Integration | Component | incident-toolbar/create-incident', function(ho
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('respond.incidents.actions.actionMessages.incidentCreationFailed');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
+      assert.equal(flash.message, expectedMessage);
     });
     await click('.apply .rsa-form-button');
   });

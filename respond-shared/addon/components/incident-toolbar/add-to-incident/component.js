@@ -181,7 +181,7 @@ const addToIncidentButton = Component.extend(Notifications, {
 
   didInsertElement() {
     this._super(...arguments);
-    this.set('alertSummary', this.get('i18n').t('respond.alerts.defaultAlertSummaryText').string);
+    this.set('alertSummary', this.get('i18n').t('respond.alerts.defaultAlertSummaryText'));
   },
 
   actions: {

@@ -56,9 +56,6 @@ module.exports = function(environment) {
       includeLocales: ['en', 'ja'],
       includeTimezone: 'subset'
     },
-    i18n: {
-      defaultLocale: 'en'
-    },
     featureFlags: common.addFeatureFlags(environment)
   };
 

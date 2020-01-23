@@ -24,16 +24,16 @@ module('Unit | selector | data', function(hooks) {
         contentError: 1
       }
     };
-    assert.equal(errorMessage(Immutable.from(state)).string, 'An unexpected error has occurred attempting to retrieve this data. If further details are available, they can be found in the console. code: 1 - UNHANDLED_ERROR');
+    assert.equal(errorMessage(Immutable.from(state)), 'An unexpected error has occurred attempting to retrieve this data. If further details are available, they can be found in the console. code: 1 - UNHANDLED_ERROR');
 
     state.visuals.currentReconView = RECON_VIEW_TYPES_BY_NAME.MAIL;
     state.data.contentError = 65536;
-    assert.equal(errorMessage(Immutable.from(state)).string, 'No Email reconstruction available for this event.');
+    assert.equal(errorMessage(Immutable.from(state)), 'No Email reconstruction available for this event.');
 
     state.visuals.currentReconView = RECON_VIEW_TYPES_BY_NAME.FILE;
     state.data.contentError = 65536;
 
-    assert.equal(errorMessage(Immutable.from(state)).string, 'No File reconstruction available for this event.');
+    assert.equal(errorMessage(Immutable.from(state)), 'No File reconstruction available for this event.');
   });
 
 });

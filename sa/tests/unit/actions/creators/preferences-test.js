@@ -30,8 +30,8 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       locale: { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
       locales: [
         { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
-        { id: 'es_MX', key: 'es-mx', label: 'spanish', langCode: 'es', fileName: 'spanish_es-mx.js', displayLabel: 'Spanish' },
-        { id: 'de_DE', key: 'de-de', label: 'german', langCode: 'de', fileName: 'german_de-de.js', displayLabel: 'German' }
+        { id: 'es_MX', key: 'es-mx', label: 'spanish', langCode: 'es', fileName: 'spanish_es-mx.json', displayLabel: 'Spanish' },
+        { id: 'de_DE', key: 'de-de', label: 'german', langCode: 'de', fileName: 'german_de-de.json', displayLabel: 'German' }
       ]
     });
 
@@ -65,7 +65,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedError = translation.t('userPreferences.locale.fetchError');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedError);
+      assert.equal(flash.message, expectedError);
     });
 
     bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))('es_MX');
@@ -81,8 +81,8 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       locale: { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
       locales: [
         { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
-        { id: 'es_MX', key: 'es-mx', label: 'spanish', langCode: 'es', fileName: 'spanish_es-mx.js', displayLabel: 'Spanish' },
-        { id: 'es_MX', key: 'es-mx', label: 'spanish2', langCode: 'es', fileName: 'spanish_es-mx.js', displayLabel: 'Spanish2' }
+        { id: 'es_MX', key: 'es-mx', label: 'spanish', langCode: 'es', fileName: 'spanish_es-mx.json', displayLabel: 'Spanish' },
+        { id: 'es_MX', key: 'es-mx', label: 'spanish2', langCode: 'es', fileName: 'spanish_es-mx.json', displayLabel: 'Spanish2' }
       ]
     });
 
@@ -95,7 +95,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       const translation = this.owner.lookup('service:i18n');
       const expectedError = translation.t('userPreferences.locale.fetchError');
       assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedError);
+      assert.equal(flash.message, expectedError);
     });
 
     bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))('es_MX');
@@ -138,10 +138,10 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       locale: { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
       locales: [
         { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
-        { id: 'es_MX', key: 'es-mx', label: 'spanish', langCode: 'es', fileName: 'spanish_es-mx.js', displayLabel: 'Spanish' },
-        { id: 'de_DE', key: 'de-de', label: 'german', langCode: 'de', fileName: 'german_de-de.js', displayLabel: 'German' },
-        { id: 'fr_FR', key: 'fr-fr', label: 'french', langCode: 'fr', fileName: 'french_fr-fr.js', displayLabel: 'French' },
-        { id: 'ja_JP', key: 'ja-jp', label: 'japanese', langCode: 'ja', fileName: 'japanese_ja-jp.js', displayLabel: 'Japanese' }
+        { id: 'es_MX', key: 'es-mx', label: 'spanish', langCode: 'es', fileName: 'spanish_es-mx.json', displayLabel: 'Spanish' },
+        { id: 'de_DE', key: 'de-de', label: 'german', langCode: 'de', fileName: 'german_de-de.json', displayLabel: 'German' },
+        { id: 'fr_FR', key: 'fr-fr', label: 'french', langCode: 'fr', fileName: 'french_fr-fr.json', displayLabel: 'French' },
+        { id: 'ja_JP', key: 'ja-jp', label: 'japanese', langCode: 'ja', fileName: 'japanese_ja-jp.json', displayLabel: 'Japanese' }
       ]
     });
 
@@ -221,7 +221,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       key: 'ja-jp',
       label: 'japanese',
       langCode: 'ja',
-      fileName: 'japanese_ja-jp.js',
+      fileName: 'japanese_ja-jp.json',
       displayLabel: 'Japanese'
     });
 
@@ -238,7 +238,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       locale: { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
       locales: [
         { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
-        { id: 'es_MX', key: 'es-mx', label: 'spanish', langCode: 'es', fileName: 'spanish_es-mx.js', displayLabel: 'Spanish' }
+        { id: 'es_MX', key: 'es-mx', label: 'spanish', langCode: 'es', fileName: 'spanish_es-mx.json', displayLabel: 'Spanish' }
       ]
     });
 
@@ -261,7 +261,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       key: 'es-mx',
       label: 'spanish',
       langCode: 'es',
-      fileName: 'spanish_es-mx.js',
+      fileName: 'spanish_es-mx.json',
       displayLabel: 'Spanish'
     });
 
@@ -278,7 +278,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       locale: { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
       locales: [
         { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
-        { id: 'de_DE', key: 'de-de', label: 'german', langCode: 'de', fileName: 'german_de-de.js', displayLabel: 'German' }
+        { id: 'de_DE', key: 'de-de', label: 'german', langCode: 'de', fileName: 'german_de-de.json', displayLabel: 'German' }
       ]
     });
 
@@ -301,7 +301,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       key: 'de-de',
       label: 'german',
       langCode: 'de',
-      fileName: 'german_de-de.js',
+      fileName: 'german_de-de.json',
       displayLabel: 'German'
     });
 
@@ -318,7 +318,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       locale: { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
       locales: [
         { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
-        { id: 'fr_FR', key: 'fr-fr', label: 'french', langCode: 'fr', fileName: 'french_fr-fr.js', displayLabel: 'French' }
+        { id: 'fr_FR', key: 'fr-fr', label: 'french', langCode: 'fr', fileName: 'french_fr-fr.json', displayLabel: 'French' }
       ]
     });
 
@@ -341,7 +341,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       key: 'fr-fr',
       label: 'french',
       langCode: 'fr',
-      fileName: 'french_fr-fr.js',
+      fileName: 'french_fr-fr.json',
       displayLabel: 'French'
     });
 
@@ -355,10 +355,10 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
     assert.expect(3);
 
     setState({
-      locale: { id: 'de_DE', key: 'de-de', label: 'german', langCode: 'de', fileName: 'german_de-de.js', displayLabel: 'German' },
+      locale: { id: 'de_DE', key: 'de-de', label: 'german', langCode: 'de', fileName: 'german_de-de.json', displayLabel: 'German' },
       locales: [
         { id: 'en_US', key: 'en-us', label: 'english', langCode: 'en', displayLabel: 'English' },
-        { id: 'de_DE', key: 'de-de', label: 'german', langCode: 'de', fileName: 'german_de-de.js', displayLabel: 'German' }
+        { id: 'de_DE', key: 'de-de', label: 'german', langCode: 'de', fileName: 'german_de-de.json', displayLabel: 'German' }
       ]
     });
 

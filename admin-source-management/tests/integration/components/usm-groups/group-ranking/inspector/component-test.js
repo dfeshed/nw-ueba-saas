@@ -35,6 +35,8 @@ module('Integration | Component | group-ranking/inspector | Policy Inspector', f
   });
 
   test('It shows the common sections for history and groups for edrPolicy', async function(assert) {
+    const data = { ...edrTestPolicy };
+    data.policy.customConfig = 'All';
     new ReduxDataHelper(setState)
       .selectedSourceType('edrPolicy')
       .focusedPolicy(edrTestPolicy)

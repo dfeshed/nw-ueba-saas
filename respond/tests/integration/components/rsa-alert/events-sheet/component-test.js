@@ -7,6 +7,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import { investigateEvent, malwareEvent } from './data';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { setupIntl } from 'ember-intl/test-support';
 
 let setState, investigatePageService;
 
@@ -18,6 +19,7 @@ module('Integration | Component | rsa-alert/events-sheet', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('respond')
   });
+  setupIntl(hooks, 'en-us');
 
   hooks.beforeEach(function() {
     initialize(this.owner);

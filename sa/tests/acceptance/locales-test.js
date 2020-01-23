@@ -10,9 +10,9 @@ import { visit, currentURL, settled, waitUntil } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 const english = { id: 'en_US', key: 'en-us', label: 'english' };
-const spanish = { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' };
-const german = { id: 'de_DE', key: 'de-de', label: 'german', fileName: 'german_de-de.js' };
-const japanese = { id: 'ja_JP', key: 'ja-jp', label: 'japanese', fileName: 'japanese_ja-jp.js' };
+const spanish = { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.json' };
+const german = { id: 'de_DE', key: 'de-de', label: 'german', fileName: 'german_de-de.json' };
+const japanese = { id: 'ja_JP', key: 'ja-jp', label: 'japanese', fileName: 'japanese_ja-jp.json' };
 
 const setupLocalStorage = (locale, locales) => {
   localStorage.setItem('reduxPersist:global', JSON.stringify({
@@ -42,20 +42,20 @@ module('Acceptance | locales', function(hooks) {
     await settled();
 
     const i18n = this.owner.lookup('service:i18n');
-    assert.equal(get(i18n, 'locale'), 'en-us');
+    assert.equal(get(i18n, 'primaryLocale'), 'en-us');
 
     const redux = this.owner.lookup('service:redux');
     const { locale, locales } = redux.getState().global.preferences;
     assert.deepEqual(locale, english);
-    assert.deepEqual(locales, [english, german, japanese, spanish]);
+    assert.equal(locales.length, 4);
 
     await login();
 
     await waitUntil(() => currentURL() === '/respond/incidents', { timeout: 5000 });
     assert.equal(currentURL(), '/respond/incidents');
 
-    await waitUntil(() => get(i18n, 'locale') === 'en-us', { timeout: 5000 });
-    assert.equal(get(i18n, 'locale'), 'en-us');
+    await waitUntil(() => get(i18n, 'primaryLocale') === 'en-us', { timeout: 5000 });
+    assert.equal(get(i18n, 'primaryLocale'), 'en-us');
 
     await settled().then(() => done());
   });
@@ -75,7 +75,7 @@ module('Acceptance | locales', function(hooks) {
     await settled();
 
     const i18n = this.owner.lookup('service:i18n');
-    assert.equal(get(i18n, 'locale'), 'es-mx');
+    assert.equal(get(i18n, 'primaryLocale'), 'es-mx');
 
     const redux = this.owner.lookup('service:redux');
     const { locale, locales } = redux.getState().global.preferences;
@@ -87,8 +87,8 @@ module('Acceptance | locales', function(hooks) {
     await waitUntil(() => currentURL() === '/respond/incidents', { timeout: 5000 });
     assert.equal(currentURL(), '/respond/incidents');
 
-    await waitUntil(() => get(i18n, 'locale') === 'en-us', { timeout: 5000 });
-    assert.equal(get(i18n, 'locale'), 'en-us');
+    await waitUntil(() => get(i18n, 'primaryLocale') === 'en-us', { timeout: 5000 });
+    assert.equal(get(i18n, 'primaryLocale'), 'en-us');
 
     await settled().then(() => done());
   });
@@ -110,8 +110,8 @@ module('Acceptance | locales', function(hooks) {
     await waitUntil(() => currentURL() === '/respond/incidents', { timeout: 5000 });
     assert.equal(currentURL(), '/respond/incidents');
 
-    await waitUntil(() => get(headData, 'title').toString() === 'Incidents - Respond - NetWitness Platform', { timeout: 5000 });
-    assert.equal(get(headData, 'title').toString(), 'Incidents - Respond - NetWitness Platform');
+    await waitUntil(() => get(headData, 'title') === 'Incidents - Respond - NetWitness Platform', { timeout: 5000 });
+    assert.equal(get(headData, 'title'), 'Incidents - Respond - NetWitness Platform');
 
     patchFetch(() => {
       return new Promise(function(resolve) {
@@ -119,7 +119,7 @@ module('Acceptance | locales', function(hooks) {
           ok: true,
           text() {
             return new Promise(function(r) {
-              r("define('sa/locales/ja-jp/translations', ['exports'], function (exports) { exports.default = { respond: { title: 'JA_Respond' } }; })");
+              r({ respond: { title: 'JA_Respond' } });
             });
           }
         });
@@ -129,7 +129,9 @@ module('Acceptance | locales', function(hooks) {
     const powerSelect = '[test-id=locale-preferences] .power-select';
     await selectChoose(`${powerSelect} .ember-power-select-trigger`, 'Japanese');
 
-    await waitUntil(() => get(headData, 'title').toString() === 'Incidents - JA_Respond - NetWitness Platform', { timeout: 5000 });
+    await waitUntil(() => {
+      return get(headData, 'title') === 'Incidents - JA_Respond - NetWitness Platform';
+    }, { timeout: 5000 });
     assert.equal(get(headData, 'title').toString(), 'Incidents - JA_Respond - NetWitness Platform');
 
     await settled().then(() => done());

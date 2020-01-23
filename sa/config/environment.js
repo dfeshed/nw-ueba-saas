@@ -22,11 +22,6 @@ module.exports = function(environment) {
     timezoneDefault: 'UTC',
     landingPageDefault: '/unified',
     investigatePageDefault: '/navigate',
-    i18n: {
-      defaultLocale: 'en-us',
-      defaultFallback: true,
-      includedLocales: ['en-us']
-    },
     timezones: [{
       'displayLabel': 'UTC (GMT+00:00)',
       'offset': 'GMT+00:00',

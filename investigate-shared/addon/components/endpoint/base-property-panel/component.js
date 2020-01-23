@@ -140,7 +140,7 @@ export default Component.extend({
       // Filter the fields based on searchText
       const fields = prop.fields.filter((field) => {
         const flag = showNonEmptyProperty ? (!isEmpty(field.value) || field.field === 'signature.features') : true;
-        const displayName = field.displayName.string || field.displayName || '';
+        const displayName = field.displayName || '';
         const value = field.value || '';
         const valueFlag = value.toString().toLowerCase().includes(searchText.toLowerCase());
         const propertyFlag = displayName.toLowerCase().includes(searchText.toLowerCase());

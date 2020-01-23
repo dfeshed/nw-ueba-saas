@@ -1,7 +1,7 @@
 {{#if asTimeAgo}}
   <span class="time-ago" title={{timeAgo}} test-id="asTimeAgo">{{timeAgo}}</span>
 {{else}}
-  {{#let (moment-format timestamp outputFormat locale=i18n.locale timeZone=timezone.selected.zoneId) as |datetime|}}
+  {{#let (moment-format timestamp outputFormat locale=i18n.primaryLocale timeZone=timezone.selected.zoneId) as |datetime|}}
     <span class="datetime" title={{datetime}}>{{datetime}}</span>
   {{/let}}
 

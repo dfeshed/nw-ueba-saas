@@ -15,22 +15,22 @@ module('Unit | Utils | utils/groups-util', function(hooks) {
     // unpublished edit
     let toolTip = sourceCountTooltip(i18n, true, 30, 1523655368173);
     let expectedTooltip = i18n.t('adminUsm.groups.list.sourceCountUnpublishedEditedGroupTooltip');
-    assert.equal(toolTip, expectedTooltip.string, 'expected unpublished edit tooltip');
+    assert.equal(toolTip, expectedTooltip, 'expected unpublished edit tooltip');
 
     // new published group with endpoints
     toolTip = sourceCountTooltip(i18n, false, -1, 1523655368173);
     expectedTooltip = i18n.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
-    assert.equal(toolTip, expectedTooltip.string, 'expected new published with endpoint tooltip');
+    assert.equal(toolTip, expectedTooltip, 'expected new published with endpoint tooltip');
 
     // new published group no endpoints
     toolTip = sourceCountTooltip(i18n, false, -2, 1523655368173);
     expectedTooltip = i18n.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
-    assert.equal(toolTip, expectedTooltip.string, 'expected new published no endpoints tooltip');
+    assert.equal(toolTip, expectedTooltip, 'expected new published no endpoints tooltip');
 
     // un published group
     toolTip = sourceCountTooltip(i18n, true, -3, 0);
     expectedTooltip = i18n.t('adminUsm.groups.list.sourceCountUnpublishedNewGroupTooltip');
-    assert.equal(toolTip, expectedTooltip.string, 'expected un published group tooltip');
+    assert.equal(toolTip, expectedTooltip, 'expected un published group tooltip');
 
     // published group with synced up count
     toolTip = sourceCountTooltip(i18n, false, 100, 0);

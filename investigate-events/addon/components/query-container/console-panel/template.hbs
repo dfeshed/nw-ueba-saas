@@ -10,14 +10,14 @@
       <span class="value">
         <span class="start">
           {{moment-format formattedStartDate format
-            locale=i18n.locale
+            locale=i18n.primaryLocale
             timeZone=timezone.selected.zoneId
           }}
         </span>
         -
         <span class="end">
           {{moment-format formattedEndDate format
-            locale=i18n.locale
+            locale=i18n.primaryLocale
             timeZone=timezone.selected.zoneId
           }}
         </span>

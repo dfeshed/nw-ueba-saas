@@ -10,7 +10,7 @@ module('Unit | Service | standard-errors', function(hooks) {
     assert.expect(2);
 
     service.set('flashMessages.error', (passedToError) => {
-      assert.equal(passedToError.string, 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions. code: 110 - ACCESS_DENIED');
+      assert.equal(passedToError, 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions. code: 110 - ACCESS_DENIED');
     });
 
     const displayedMessage = service.display({
@@ -22,7 +22,7 @@ module('Unit | Service | standard-errors', function(hooks) {
       serverMessage: undefined
     });
 
-    assert.equal(displayedMessage.string, 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions. code: 110 - ACCESS_DENIED');
+    assert.equal(displayedMessage, 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions. code: 110 - ACCESS_DENIED');
   });
 
   test('display returns the static localized message sent to flash', function(assert) {

@@ -32,7 +32,7 @@ class RegistryDiscrepancies extends Component {
     const textTranslatePath = 'investigateHosts.anomalies.registryDiscrepancies.';
 
     return this.columnsConfig.map((item) => {
-      const title = (this.get('i18n').t(`${textTranslatePath}${item.title}`)).string;
+      const title = (this.get('i18n').t(`${textTranslatePath}${item.title}`));
       return {
         ...item,
         title

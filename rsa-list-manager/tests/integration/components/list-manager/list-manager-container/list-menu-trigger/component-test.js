@@ -77,9 +77,9 @@ module('Integration | Component | list-menu-trigger', function(hooks) {
     assert.ok(find(rsaSplitDropdownIsDisabled), 'Should have button with rsa-split-dropdown class disabled');
     assert.ok(find(listCaptionIsDisabled), 'Should have list caption with list-caption class disabled');
     assert.equal(find(listCaption).textContent.trim(), listName1, 'Shall have correct list caption');
-    assert.equal(find(listCaptionIsDisabled).getAttribute('title'), i18n.t('rsaListManager.listMenuTrigger.disabled.permission') + listName1.toLowerCase(),
+    assert.equal(find(listCaptionIsDisabled).getAttribute('title'), i18n.t('rsaListManager.listMenuTrigger.disabled.permission', { listName: '' }) + listName1.toLowerCase(),
       'disabled list menu trigger should have correct title');
-    assert.equal(find(rsaSplitDropdownIsDisabled).getAttribute('title'), i18n.t('rsaListManager.listMenuTrigger.disabled.permission') + listName1.toLowerCase(),
+    assert.equal(find(rsaSplitDropdownIsDisabled).getAttribute('title'), i18n.t('rsaListManager.listMenuTrigger.disabled.permission', { listName: '' }) + listName1.toLowerCase(),
       'disabled list menu trigger should have correct title');
   });
 });
