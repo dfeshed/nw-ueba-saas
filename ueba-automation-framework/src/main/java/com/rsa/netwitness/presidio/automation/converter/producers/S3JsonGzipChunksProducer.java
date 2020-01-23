@@ -47,7 +47,7 @@ public class S3JsonGzipChunksProducer implements EventsProducer<NetwitnessEvent>
                 .collect(toList());
 
         Stream<S3_Chunk> chunksToProcess = IS_PARALLEL ? chunksSorted.parallelStream() : chunksSorted.stream();
-        chunksToProcess.forEach(chunk -> chunk.process(eventsByInterval.get(chunk.getInterval())));
+        chunksToProcess.forEach(chunk -> chunk.process(formatAll(eventsByInterval.get(chunk.getInterval()))));
 
         Stream<S3_Chunk> chunksToClose = IS_PARALLEL ?
                 chunksSorted.subList(0, chunksSorted.size() - 2).parallelStream() : chunksSorted.subList(0, chunksSorted.size() - 2).stream();
@@ -61,6 +61,10 @@ public class S3JsonGzipChunksProducer implements EventsProducer<NetwitnessEvent>
     @Override
     public void close() {
         previousChunk.close();
+    }
+
+    private List<String> formatAll(List<NetwitnessEvent> netwitnessEvents) {
+        return netwitnessEvents.parallelStream().map(formatter::format).collect(toList());
     }
 
 }

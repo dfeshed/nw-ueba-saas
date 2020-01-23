@@ -41,6 +41,9 @@ public class S3_Key {
 
     public Function<NetwitnessEvent, String> application = e -> getApplicationLabel(e.schema);
 
+    public String getKeyBeginningPart(Instant time, Schema schema) {
+        return toPath(time, schema).concat(toFileNamePrefix(time, schema));
+    }
 
     public Set<String> getAllS3_Keys(Instant from, Instant to, Schema schema) {
         long between = MINUTES.between(getRelatedTimeInterval(from), getRelatedTimeInterval(to));
@@ -94,6 +97,13 @@ public class S3_Key {
                 .concat(toFileTimestamp(eventTime)).concat("_")
                 .concat(generateUnique()).concat("_")
                 .concat(".json.gz");
+    }
+
+    private String toFileNamePrefix(Instant eventTime, Schema schema) {
+        return account.concat("_")
+                .concat(region).concat("_")
+                .concat(getApplicationLabel(schema)).concat("_")
+                .concat(toFileTimestamp(eventTime));
     }
 
     //  is the minute after the latest record in the file
