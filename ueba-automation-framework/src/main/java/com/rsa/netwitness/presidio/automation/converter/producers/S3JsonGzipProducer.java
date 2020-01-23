@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(S3JsonGzipProducer.class);
-    private static String bucket = S3_CONFIG.getBucket();
+    private String bucket = S3_CONFIG.bucket.get();
 
     private S3_Key keyGen = new S3_Key();
     private final S3_Helper s3_helper = new S3_Helper();
@@ -103,7 +103,7 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
         omd.setContentLength(zippedBytes.length);
         omd.setContentType("application/octet-stream");
 
-        Upload upload = transferManager.upload(S3JsonGzipProducer.bucket,
+        Upload upload = transferManager.upload(bucket,
                 key,
                 new ByteArrayInputStream(zippedBytes),
                 omd);

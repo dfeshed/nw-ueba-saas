@@ -18,8 +18,8 @@ enum S3_Client {
 
     private Lazy<AmazonS3> amazonS3Lazy = new Lazy<>();
     private String region = S3_CONFIG.getRegion();
-    private String accessKey = S3_CONFIG.getAccessKey();
-    private String secretKey = S3_CONFIG.getSecretKey();
+    private String accessKey = S3_CONFIG.accessKey.get();
+    private String secretKey = S3_CONFIG.secretKey.get();
 
     static AmazonS3 s3Client = S3_CLIENT.amazonS3Lazy.getOrCompute(S3_CLIENT::connectToS3);
 

@@ -17,17 +17,11 @@ public enum AWS_Config {
     private Lazy<Properties> propertiesHolder = new Lazy<>();
     private Supplier<Properties> properties = () -> propertiesHolder.getOrCompute(this::getResource);
 
-    public String getAccessKey() {
-        return getOrThrow("access_key");
-    }
+    public Supplier<String> accessKey = () -> getOrThrow("access_key");
 
-    public String getSecretKey() {
-        return getOrThrow("secret_key");
-    }
+    public  Supplier<String> secretKey = () -> getOrThrow("secret_key");
 
-    public String getBucket() {
-        return getOrThrow("bucket");
-    }
+    public  Supplier<String> bucket = () -> getOrThrow("bucket");
 
 
     public String getTenant() {
