@@ -21,7 +21,7 @@ public class S3_Chunk {
     private static final int FILE_MAX_EVENTS = 100000;
     private final Instant firstSample;
     private final Instant lastSample;
-    private String bucketName = S3_CONFIG.getBucket();
+    private String bucketName = S3_CONFIG.bucket.get();
 
     private final String path;
     private int partNumber = 1;
