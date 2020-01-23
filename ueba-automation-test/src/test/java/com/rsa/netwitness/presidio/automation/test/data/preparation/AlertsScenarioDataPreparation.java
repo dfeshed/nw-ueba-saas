@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
+import ch.qos.logback.classic.Logger;
 import com.rsa.netwitness.presidio.automation.common.scenarios.alerts.AlertsScenario;
 import com.rsa.netwitness.presidio.automation.common.scenarios.events.EnrichmentExtraData;
 import org.slf4j.LoggerFactory;
@@ -11,8 +12,7 @@ import presidio.data.generators.common.GeneratorException;
 import java.util.stream.Stream;
 
 public class AlertsScenarioDataPreparation extends DataPreparationBase {
-    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(AlertsScenarioDataPreparation.class.getName());
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(AlertsScenarioDataPreparation.class);
 
     @Override
     protected Stream<? extends Event> generate() throws GeneratorException {
