@@ -1,21 +1,15 @@
 package com.rsa.netwitness.presidio.automation.converter.producers.stream_converters;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
 
-public class GzipStreamConverter implements ProducerStreamConverter<ByteArrayInputStream, String> {
+public class GzipStreamConverter implements ProducerStreamConverter<byte[], String> {
 
     @Override
-    public ByteArrayInputStream convert(List<String> lines) {
-        byte[] zippedBytes = gzip(lines);
-        return new ByteArrayInputStream(zippedBytes);
-    }
-
-    private byte[] gzip(List<String> lines) {
+    public byte[] convert(List<String> lines) {
         byte[] bytesToWrite;
         bytesToWrite = String.join("", lines).getBytes();
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
@@ -33,6 +27,4 @@ public class GzipStreamConverter implements ProducerStreamConverter<ByteArrayInp
 
         return byteOut.toByteArray();
     }
-
-
 }

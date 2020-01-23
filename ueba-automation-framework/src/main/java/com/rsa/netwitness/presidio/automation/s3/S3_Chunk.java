@@ -3,7 +3,6 @@ package com.rsa.netwitness.presidio.automation.s3;
 import com.amazonaws.services.s3.model.PartETag;
 import com.amazonaws.services.s3.transfer.model.UploadResult;
 import com.rsa.netwitness.presidio.automation.converter.producers.stream_converters.GzipStreamConverter;
-import com.rsa.netwitness.presidio.automation.converter.producers.stream_converters.ProducerStreamConverter;
 import fortscale.common.general.Schema;
 
 import java.time.Instant;
@@ -26,8 +25,8 @@ public class S3_Chunk implements Comparable<S3_Chunk> {
     private final Instant interval;
     private final Schema schema;
     private final S3_Key keyGen = new S3_Key();
-    private String bucketName = S3_CONFIG.getBucket();
-    private ProducerStreamConverter streamConverter = new GzipStreamConverter();
+    private String bucketName = S3_CONFIG.bucket.get();
+    private GzipStreamConverter streamConverter = new GzipStreamConverter();
     private List<String> cache = new LinkedList<>();
 
     private int fileUniqueId = 1;
@@ -94,11 +93,14 @@ public class S3_Chunk implements Comparable<S3_Chunk> {
     }
 
     private UploadResult uploadCache() {
-     return null;
+        S3_Helper helper = new S3_Helper();
+        byte[] bytes = streamConverter.convert(cache);
+        return helper.upload(keyBeginningPart + addSuffix(), bytes);
     }
 
     private UploadResult uploadEmpty() {
-        return null;
+        cache.add("");
+        return uploadCache();
     }
 
 

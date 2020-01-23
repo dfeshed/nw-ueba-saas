@@ -18,12 +18,12 @@ public class S3_Helper {
                 .build();
     }
 
-    private UploadResult upload(String key, byte[] zippedBytes) {
+    public UploadResult upload(String key, byte[] zippedBytes) {
         ObjectMetadata omd = new ObjectMetadata();
         omd.setContentLength(zippedBytes.length);
         omd.setContentType("application/octet-stream");
 
-        Upload upload = getTransferManager().upload(S3_CONFIG.getBucket(),
+        Upload upload = getTransferManager().upload(S3_CONFIG.bucket.get(),
                 key,
                 new ByteArrayInputStream(zippedBytes),
                 omd);
