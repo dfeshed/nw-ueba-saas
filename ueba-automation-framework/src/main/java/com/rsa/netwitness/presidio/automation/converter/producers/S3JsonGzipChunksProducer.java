@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,32 +51,40 @@ public class S3JsonGzipChunksProducer implements EventsProducer<NetwitnessEvent>
 
     @Override
     public Map<Schema, Long> send(Stream<NetwitnessEvent> eventsList) {
-        // truncateBucketOnInit();
-
         List<NetwitnessEvent> events = eventsList.parallel().collect(toList());
+        List<Schema> schema = events.parallelStream().map(e -> e.schema).distinct().collect(toList());
+        assertThat(schema).as("same schema").hasSize(1);
+        Instant firstSample = events.parallelStream().map(e -> e.eventTimeEpoch).min(Instant::compareTo).orElseThrow();
+        Instant lastSample = events.parallelStream().map(e -> e.eventTimeEpoch).max(Instant::compareTo).orElseThrow();
 
-        Map<String, List<NetwitnessEvent>> eventsByKey = events.parallelStream()
-                .collect(groupingBy(keyGen.key));
+//        Set<S3_Chunk> allS3_batches = keyGen.getAllS3_Batches(firstSample, lastSample, schema.get(0), bucket);
+//
+//        Map<String, List<NetwitnessEvent>> eventsByBatch = events
+//                .parallelStream()
+//                .collect(groupingBy(keyGen.batch));
+//
+//
+//
+//
+//
+//
+//
+//        // save last for next time
+//
+//
+//        allS3_batches.forEach();
+//
+//
+//        initS3Chunks(firstSample, schema.get(0));
+//
+//        Map<String, List<NetwitnessEvent>> eventsByChunk = events.parallelStream().collect(groupingBy(keyGen.batch));
+//
+//        assertThat(s3Chunks.keySet()).as("keys out of range").containsAll(eventsByChunk.keySet());
+//
+//        eventsByChunk.entrySet().parallelStream()
+//                .forEach( e -> s3Chunks.get(e.getKey()).process(e.getValue().parallelStream().map(formatter::format).collect(toList())));
 
-        LOGGER.info("+++ Amount of keys = " + eventsByKey.keySet().size());
-
-        assertThat(keysUploaded)
-                .overridingErrorMessage("Trying to upload same key twice")
-                .doesNotContainAnyElementsOf(eventsByKey.keySet());
-
-        LOGGER.info("Starting to upload the data to S3");
-        eventsByKey.entrySet().parallelStream()
-                .forEach(entry -> System.out.println(upload(eventsByKey.get(entry.getKey()), entry.getKey()).getKey()));
-        LOGGER.info("Data upload finished.");
-
-        keysUploaded.addAll(eventsByKey.keySet());
-
-        uploadEmptyFilesForMissingTimeSlots(events);
-
-        LOGGER.info("TOTAL EVENTS=" + total);
-        assertThat(total).as("Events count mismatch").isEqualTo(events.size());
-
-        return events.parallelStream().collect(groupingBy(e -> e.schema, counting()));
+        return new HashMap<>();
     }
 
 
