@@ -1,5 +1,5 @@
+import { computed } from '@ember/object';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
 import moment from 'moment';
 
 export default Component.extend({
@@ -7,15 +7,14 @@ export default Component.extend({
   attributeBindings: ['testId:test-id'],
   classNames: ['recon-standalone-container'],
 
-  @computed('endpointId')
-  queryInputs(endpointId) {
+  queryInputs: computed('endpointId', function() {
     const now = moment();
     // Default to a time range of last 7 days since
     const queryInputs = {
       endTime: now.unix(),
-      serviceId: endpointId,
+      serviceId: this.endpointId,
       startTime: now.subtract(7, 'days').unix()
     };
     return queryInputs;
-  }
+  })
 });
