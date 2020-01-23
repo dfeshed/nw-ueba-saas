@@ -7,4 +7,5 @@ import java.util.stream.Stream;
 
 public interface EventsProducer<T> {
     Map<Schema, Long> send(Stream<T> eventsList);
+    default void close() {}
 }
