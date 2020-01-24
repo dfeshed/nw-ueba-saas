@@ -1,7 +1,13 @@
 import { get } from '@ember/object';
 
 export const doesStateHaveViewData =
-  (state, type) => !!get(state, type.dataKey);
+  (state, type) => {
+    const content = get(state, type.dataKey);
+    if (content === null || content?.length === 0) {
+      return false;
+    }
+    return true;
+  };
 
 /*
  * code: id

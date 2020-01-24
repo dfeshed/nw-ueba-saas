@@ -89,19 +89,6 @@ module('Integration | Component | recon event content', function(hooks) {
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'You do not have the required permissions to view this content.', 'Error is displayed with correct message');
   });
 
-  test('it renders appropriate message when there is a content error on text view', async function(assert) {
-    new DataHelper(this.get('redux'))
-      .setViewToText()
-      .contentRetrieveFailure(1);
-    await render(hbs`{{recon-event-content accessControl=accessControl}}`);
-
-    assert.equal(findAll('.rsa-panel-message').length, 1, 'Content error not set');
-    const translation = this.owner.lookup('service:i18n');
-
-    const noContentString = find('.rsa-panel-message').textContent.trim();
-    assert.equal(noContentString, translation.t('recon.error.noTextContentData').trim(), 'Did not find no content message panel');
-  });
-
   // skipped for 11.4 release since email reconstruction is turned off for 11.4, unskip this when email recon will turned back on
   skip('displays correct error when reconstruction error occurs', async function(assert) {
     new DataHelper(this.get('redux'))

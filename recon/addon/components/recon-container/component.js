@@ -217,11 +217,9 @@ const ReconContainer = Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
     const {
-      _previousEventId,
-      _previousEndpointId,
       index,
       total
-    } = this.getProperties('_previousEventId', '_previousEndpointId', 'index', 'total');
+    } = this.getProperties('index', 'total');
     const inputs = this.getProperties('endpointId', 'eventId', 'eventType',
       'language', 'eventMeta', 'aliases', 'linkToFileAction', 'size', 'queryInputs');
 
@@ -233,19 +231,12 @@ const ReconContainer = Component.extend({
 
     assert('Cannot instantiate recon without endpointId and eventId.', inputs.endpointId && inputs.eventId);
 
-    // guard against re-running init on any redux state change,
-    // if same id and same service, no need to do anything
-    // But if any of these two changes, initialize
-    if (inputs.eventId !== _previousEventId || inputs.endpointId !== _previousEndpointId) {
+    // Clean up any potential leaks
+    this._cleanUp();
 
-      // Clean up any potential leaks
-      this._cleanUp();
-
-      this.set('_previousEventId', inputs.eventId);
-      this.set('_previousEndpointId', inputs.endpointId);
-      this.send('initializeRecon', inputs);
-    }
-
+    this.set('_previousEventId', inputs.eventId);
+    this.set('_previousEndpointId', inputs.endpointId);
+    this.send('initializeRecon', inputs);
     this.send('setIndexAndTotal', index, total);
   },
 

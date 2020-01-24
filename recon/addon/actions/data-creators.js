@@ -419,8 +419,7 @@ const storeDefaultReconView = (newView) => {
  * @public
  */
 const initializeRecon = (reconInputs) => {
-  return (dispatch, getState) => {
-    const dataState = getState().recon.data;
+  return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.OPEN_RECON
     });
@@ -432,68 +431,63 @@ const initializeRecon = (reconInputs) => {
     // something relevant if user purposely manipulates it
     reconInputs.eventId = Number.parseInt(reconInputs.eventId, 10);
 
-    // If its the same eventId on the same service, there is nothing to do
-    // as previous state will be intact. But if either of eventId or endpointId changes, fetch.
-    if (dataState.eventId !== reconInputs.eventId || dataState.endpointId !== reconInputs.endpointId) {
+    // first, dispatch the data provided to recon as input
+    dispatch({
+      type: ACTION_TYPES.INITIALIZE,
+      payload: reconInputs
+    });
 
-      // first, dispatch the data provided to recon as input
+    // language is optional parameter for recon
+    // may be passed in, if not, fetch
+    if (!reconInputs.language) {
       dispatch({
-        type: ACTION_TYPES.INITIALIZE,
-        payload: reconInputs
-      });
-
-      // language is optional parameter for recon
-      // may be passed in, if not, fetch
-      if (!reconInputs.language) {
-        dispatch({
-          type: ACTION_TYPES.LANGUAGE_RETRIEVE,
-          promise: fetchLanguage(reconInputs),
-          meta: {
-            onFailure(response) {
-              // failure to get language is no good, but
-              // is not critical error no need to dispatch
-              handleInvestigateErrorCode(response, 'FETCH_LANGUAGE');
-            }
-          }
-        });
-      }
-
-      // aliases is optional parameter for recon
-      // may be passed in, if not, fetch
-      if (!reconInputs.aliases) {
-        dispatch({
-          type: ACTION_TYPES.ALIASES_RETRIEVE,
-          promise: fetchAliases(reconInputs),
-          meta: {
-            onFailure(response) {
-              handleInvestigateErrorCode(response, 'FETCH_ALIASES');
-            }
-          }
-        });
-      }
-
-      dispatch({
-        type: ACTION_TYPES.SUMMARY_RETRIEVE,
-        promise: fetchReconSummary(reconInputs),
+        type: ACTION_TYPES.LANGUAGE_RETRIEVE,
+        promise: fetchLanguage(reconInputs),
         meta: {
-          onFailure(response = {}) {
-            const error = handleInvestigateErrorCode(response, 'FETCH_RECON_SUMMARY');
-            if (error) {
-              const { errorCode } = error;
-              dispatch(_checkForFatalApiError(errorCode));
-            }
+          onFailure(response) {
+            // failure to get language is no good, but
+            // is not critical error no need to dispatch
+            handleInvestigateErrorCode(response, 'FETCH_LANGUAGE');
           }
         }
       });
+    }
 
-      // If meta not passed in then need to fetch it now (even if its not being
-      // displayed) as we need to use meta to determine which data to fetch and
-      // which recon view to display
-      if (!reconInputs.eventMeta) {
-        dispatch(_retrieveMeta(reconInputs));
-      } else {
-        dispatch(determineReconView(reconInputs.eventMeta));
+    // aliases is optional parameter for recon
+    // may be passed in, if not, fetch
+    if (!reconInputs.aliases) {
+      dispatch({
+        type: ACTION_TYPES.ALIASES_RETRIEVE,
+        promise: fetchAliases(reconInputs),
+        meta: {
+          onFailure(response) {
+            handleInvestigateErrorCode(response, 'FETCH_ALIASES');
+          }
+        }
+      });
+    }
+
+    dispatch({
+      type: ACTION_TYPES.SUMMARY_RETRIEVE,
+      promise: fetchReconSummary(reconInputs),
+      meta: {
+        onFailure(response = {}) {
+          const error = handleInvestigateErrorCode(response, 'FETCH_RECON_SUMMARY');
+          if (error) {
+            const { errorCode } = error;
+            dispatch(_checkForFatalApiError(errorCode));
+          }
+        }
       }
+    });
+
+    // If meta not passed in then need to fetch it now (even if its not being
+    // displayed) as we need to use meta to determine which data to fetch and
+    // which recon view to display
+    if (!reconInputs.eventMeta) {
+      dispatch(_retrieveMeta(reconInputs));
+    } else {
+      dispatch(determineReconView(reconInputs.eventMeta));
     }
   };
 };
