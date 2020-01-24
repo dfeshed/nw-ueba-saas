@@ -224,6 +224,14 @@ module('Unit | Actions | interaction creators', function(hooks) {
     assert.equal(type, ACTION_TYPES.SET_SEARCH_TERM, 'action has the correct type');
   });
 
+  test('setEventsTableSessionId action creator returns proper type', function(assert) {
+    const event = { sessionId: 232434 };
+    const tableSessionIdData = { tableSessionId: event.sessionId };
+    const { type, payload } = interactionCreators.setEventsTableSessionId(event);
+    assert.equal(type, ACTION_TYPES.SET_TABLE_SESSION_ID, 'action has the correct type');
+    assert.deepEqual(payload, { tableSessionIdData }, 'action has the correct payload');
+  });
+
   test('toggleSelectAllEvents has the correctly sorted payload when all events were not selected before toggling', function(assert) {
     const getState = () => {
       return new ReduxDataHelper()

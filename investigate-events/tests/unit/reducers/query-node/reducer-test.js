@@ -1936,4 +1936,24 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     assert.equal(result.pillsData[2].meta, 'bar', 'Did not find third profile pill copied over to pillsData');
     assert.equal(result.pillsData[1].type, OPERATOR_AND, 'Did not find the operator in pillsData');
   });
+
+  test('ACTION_TYPES.SET_TABLE_SESSION_ID reducer when a table row is selected and localStorage has a different tableSessionId', async function(assert) {
+    const previousState = Immutable.from({
+      investigate: {
+        queryNode: {
+          tableSessionId: 123
+        }
+      }
+    });
+
+    const action = {
+      type: ACTION_TYPES.SET_TABLE_SESSION_ID,
+      payload: {
+        tableSessionIdData: { tableSessionId: 223 }
+      }
+    };
+    const result = reducer(previousState, action);
+
+    assert.equal(result.investigate.queryNode.tableSessionId, 123);
+  });
 });

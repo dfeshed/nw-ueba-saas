@@ -240,6 +240,16 @@ export const setReconOpen = (event = {}) => {
   };
 };
 
+export const setEventsTableSessionId = (event = {}) => {
+  const { sessionId } = event;
+  return {
+    type: ACTION_TYPES.SET_TABLE_SESSION_ID,
+    payload: {
+      tableSessionIdData: { tableSessionId: sessionId }
+    }
+  };
+};
+
 export const setReconClosed = () => {
   return (dispatch, getState) => {
     const { isReconOpen } = getState().investigate.data;

@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { later } from '@ember/runloop';
+import { later, debounce } from '@ember/runloop';
 import { initializeInvestigate, queryIsRunning } from 'investigate-events/actions/initialization-creators';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { updateSummaryData } from 'investigate-events/actions/data-creators';
@@ -8,6 +8,7 @@ import {
   setMetaPanelSize,
   setReconClosed,
   setReconOpen,
+  setEventsTableSessionId,
   setReconPanelSize
 } from 'investigate-events/actions/interaction-creators';
 import { isSearchTerm, metaFiltersAsString, injectLogicalOperatorIfMissing } from 'investigate-events/util/query-parsing';
@@ -23,6 +24,8 @@ import { replaceAllGuidedPills } from 'investigate-events/actions/pill-creators'
 import { removeEmptyParens } from 'investigate-shared/actions/api/events/utils';
 import { findSelectedPills } from 'investigate-events/actions/pill-utils';
 import { OPERATOR_AND } from 'investigate-events/constants/pill';
+import { RECON_EVENT_UPDATE_WAIT_TIME } from 'investigate-events/constants/event-recon';
+
 const SUMMARY_CALL_INTERVAL = 60000;
 const NOTIFICATION_SUBSCRIPTION_INTERVAL = 1866000;
 let timerId, notificationsSchedulerId;
@@ -275,24 +278,10 @@ export default Route.extend({
 
     selectEvent(event) {
       const redux = this.get('redux');
-      const state = redux.getState();
-      const { reconSize, sortField, sortDirection } = state.investigate.data;
-      const { sessionId } = event;
-      redux.dispatch(setReconOpen(event));
-      this.send('contextPanelClose');
-
-      const queryParams = {
-        eid: sessionId,
-        rs: reconSize,
-        mps: META_PANEL_SIZES.MIN
-      };
-
-      if (hasMinimumCoreServicesVersionForColumnSorting(state)) {
-        queryParams.sortField = sortField;
-        queryParams.sortDir = sortDirection;
-      }
-
-      this.transitionTo({ queryParams });
+      redux.dispatch(setEventsTableSessionId(event));
+      // awaiting before transitioning to recon.
+      // this will avoid calls to recon while traversing the event table.
+      debounce(this, this.transitionToRecon, event, RECON_EVENT_UPDATE_WAIT_TIME);
     },
 
     /**
@@ -383,5 +372,25 @@ export default Route.extend({
         }
       };
     })()
+  },
+  transitionToRecon(event) {
+    const redux = this.get('redux');
+    redux.dispatch(setReconOpen(event));
+    this.send('contextPanelClose');
+    const state = redux.getState();
+    const { reconSize, sortField, sortDirection } = state.investigate.data;
+    const { sessionId } = event;
+    const queryParams = {
+      eid: sessionId,
+      rs: reconSize,
+      mps: META_PANEL_SIZES.MIN
+    };
+
+    if (hasMinimumCoreServicesVersionForColumnSorting(state)) {
+      queryParams.sortField = sortField;
+      queryParams.sortDir = sortDirection;
+    }
+
+    this.transitionTo({ queryParams });
   }
 });

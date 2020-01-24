@@ -13,7 +13,7 @@ import initializationCreators from 'investigate-events/actions/initialization-cr
 import dataCreators from 'investigate-events/actions/data-creators';
 import { CLOSE_PAREN, OPEN_PAREN } from 'investigate-events/constants/pill';
 
-let redux;
+let transition, redux;
 
 const isBaseInvestigateIntializationComplete = () => {
   const { investigate } = redux.getState();
@@ -34,6 +34,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
+    transition = null;
     initialize(this.owner);
   });
 
@@ -49,6 +50,9 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       transitionToPillHash() {
         // leaving this empty, can't seem to get context right
         // and get failures when called, so stubbing out/removing
+      },
+      transitionTo(routeName) {
+        transition = routeName;
       }
     });
     return PatchedRoute.create();
@@ -365,5 +369,27 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       }
       return false;
     }, { timeout: 10000 });
+  });
+
+  test('recon route visit with delayed wait time', async function(assert) {
+    assert.expect(1);
+    // setup reducer and route
+    patchReducer(this, Immutable.from({
+      investigate: {
+        data: {
+          reconSize: 500
+        }
+      }
+    }));
+    const route = setupRoute.call(this);
+    const event = { sessionId: '123232343' };
+    const queryParams = {
+      eid: event.sessionId,
+      rs: 500,
+      mps: 'min'
+    };
+    await route.send('selectEvent', event);
+    await settled();
+    assert.deepEqual(transition, { queryParams }, 'transition to is called');
   });
 });

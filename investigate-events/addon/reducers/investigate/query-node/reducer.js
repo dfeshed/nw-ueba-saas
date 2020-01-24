@@ -43,6 +43,8 @@ const _initialState = Immutable.from({
   queryTimeFormat: undefined,
   serviceId: undefined,
   sessionId: undefined,
+  // holds the session Id used to highlight the table row on reload of the page.
+  tableSessionId: undefined,
   startTime: 0,
 
   // GUIDED, keeping separated until chance to clean up reducer
@@ -438,6 +440,7 @@ export default handleActions({
         serviceId: queryParams.serviceId,
         previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange),
         sessionId: queryParams.sessionId && parseInt(queryParams.sessionId, 10) || undefined,
+        tableSessionId: queryParams.sessionId && parseInt(queryParams.sessionId, 10) || undefined,
         startTime: queryParams.startTime && parseInt(queryParams.startTime, 10) || 0,
         updatedFreeFormText: undefined,
         pillDataHashes: queryParams.pillDataHashes
@@ -488,6 +491,9 @@ export default handleActions({
 
   [ACTION_TYPES.SET_RECON_VIEWABLE]: (state, { payload: { eventData } }) => {
     return state.merge({ ...eventData });
+  },
+  [ACTION_TYPES.SET_TABLE_SESSION_ID]: (state, { payload: { tableSessionIdData } }) => {
+    return state.merge({ ...tableSessionIdData });
   },
 
   [ACTION_TYPES.SET_EVENTS_PAGE]: (state) => {

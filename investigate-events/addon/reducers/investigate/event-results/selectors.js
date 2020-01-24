@@ -23,6 +23,7 @@ const _eventResultCount = (state) => state.investigate.eventCount.data;
 const _status = (state) => state.investigate.eventResults.status;
 const _visibleColumns = (state) => state.investigate.eventResults.visibleColumns;
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
+const _tableSessionId = (state) => state.investigate.queryNode.tableSessionId;
 const _errorMessage = (state) => state.investigate.eventResults.message;
 const _eventAnalysisPreferences = (state) => state.investigate.data.eventAnalysisPreferences;
 const _items = (state) => state.investigate.data.eventsPreferencesConfig && state.investigate.data.eventsPreferencesConfig.items;
@@ -456,6 +457,17 @@ export const selectedIndex = createSelector(
     let idx = -1;
     if (sessionId && data && data.length) {
       idx = _indexOfBy(data, 'sessionId', sessionId);
+    }
+    return idx;
+  }
+);
+
+export const selectedTableIndex = createSelector(
+  [_tableSessionId, nestChildEvents], // sessionId not set on refresh
+  (tableSessionId, data) => {
+    let idx = -1;
+    if (tableSessionId && data && data.length) {
+      idx = _indexOfBy(data, 'sessionId', tableSessionId);
     }
     return idx;
   }

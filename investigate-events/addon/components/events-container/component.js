@@ -5,7 +5,7 @@ import computed from 'ember-computed-decorators';
 import { queryBodyClass } from 'investigate-events/reducers/investigate/data-selectors';
 import {
   eventType,
-  selectedIndex,
+  selectedTableIndex,
   eventResultsErrorMessage,
   actualEventCount,
   noEvents } from 'investigate-events/reducers/investigate/event-results/selectors';
@@ -32,7 +32,7 @@ const stateToComputed = (state) => ({
   queryBodyClass: queryBodyClass(state),
   queryNode: getActiveQueryNode(state),
   reconSize: state.investigate.data.reconSize,
-  selectedIndex: selectedIndex(state),
+  selectedTableIndex: selectedTableIndex(state),
   sessionId: state.investigate.queryNode.sessionId,
   totalCount: actualEventCount(state)
 });

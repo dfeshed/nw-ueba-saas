@@ -76,6 +76,27 @@ module('Integration | Component | recon container', function(hooks) {
     assert.equal(initializeReconSpy.callCount, 1, 'The delete pill action creator was called once');
   });
 
+  test('recon container rendered with shouldEventUpdateWait turned on', async function(assert) {
+    assert.expect(1);
+    this.set('endpointId', '555d9a6fe4b0d37c827d402e');
+    this.set('eventId', '5');
+    this.set('eventType', NETWORK);
+    this.set('shouldEventUpdateWait', true);
+    this.set('eventUpdateWaitTimeInMillSec', 1000);
+
+    await render(hbs`
+      {{recon-container
+        endpointId=endpointId
+        eventId=eventId
+        eventType=eventType
+        shouldEventUpdateWait=shouldEventUpdateWait
+        eventUpdateWaitTimeInMillSec=eventUpdateWaitTimeInMillSec
+      }}
+    `);
+
+    assert.equal(initializeReconSpy.callCount, 1, 'Recon container is initialized');
+  });
+
   test('initializeReconSpy will be called if sessionIds are different but endpoint is same', async function(assert) {
     assert.expect(1);
 

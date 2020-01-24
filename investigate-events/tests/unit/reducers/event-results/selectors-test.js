@@ -26,7 +26,8 @@ import {
   nestChildEvents,
   updateStreamKeyTree,
   eventsHaveSplits,
-  eventResultSetStart
+  eventResultSetStart,
+  selectedTableIndex
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -2706,5 +2707,64 @@ module('Unit | Selectors | event-results', function(hooks) {
     });
   });
 
+  test('selectedTableIndex should return the right index based on the table session Id', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          eventRelationshipsEnabled: false,
+          data: [
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 1,
+              sessionId: 142
+            },
+            {
+              'time': 'Tue Oct 11 2019 13:54:16',
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 223
+            },
+            {
+              'time': 'Tue Oct 12 2019 13:54:16',
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 334
+            }
+
+          ]
+        },
+        data: {
+          sortDirection: 'Ascending',
+          sortField: 'time'
+        },
+        eventCount: {
+          data: 3,
+          threshold: 3
+        },
+        services: {
+          serviceData: [{ version: 11.4 }]
+        },
+        dictionaries: {
+          language: [{ metaName: 'size', format: 'Int' }],
+          languageCache: {},
+          aliases: 'aliases',
+          aliasesCache: {}
+        },
+        queryNode: {
+          tableSessionId: 223
+        }
+      }
+    };
+
+    const index = selectedTableIndex(state);
+    assert.equal(index, 1, 'Correct index is selected');
+  });
 
 });
