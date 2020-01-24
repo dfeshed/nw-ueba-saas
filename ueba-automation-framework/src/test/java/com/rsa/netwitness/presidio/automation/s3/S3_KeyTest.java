@@ -1,11 +1,9 @@
 package com.rsa.netwitness.presidio.automation.s3;
 
-import fortscale.common.general.Schema;
 import org.junit.Test;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -90,9 +88,6 @@ public class S3_KeyTest {
     }
 
     private List<String>  getSortedKeys(Instant start, Instant end) {
-        return key.getAllS3_Keys(start, end, Schema.TLS)
-                .stream()
-                .sorted(String::compareTo)
-                .collect(Collectors.toList());
+        return null;
     }
 }

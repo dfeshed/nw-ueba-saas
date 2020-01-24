@@ -82,14 +82,14 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
             "tls_groups_to_create", "tls_events_per_day_per_group","schemas","generator_format"})
     @Test
     public void performance(@Optional("2019-10-30T00:00:00.00Z") String startTimeStr, 
-                            @Optional("2019-10-30T01:59:00.00Z") String endTimeStr,
-                            @Optional("0.005") double probabilityMultiplier, 
-                            @Optional("0.005") double usersMultiplier,
-                            @Optional("0.001") double tlsAlertsProbability, 
+                            @Optional("2019-10-30T00:15:00.00Z") String endTimeStr,
+                            @Optional("1") double probabilityMultiplier,
+                            @Optional("1") double usersMultiplier,
+                            @Optional("0.001") double tlsAlertsProbability,
                             @Optional("1") int groupsToCreate, 
                             @Optional("1000") double tlsEventsPerDayPerGroup,
                             @Optional("FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS,TLS") String schemas,
-                            @Optional("S3_JSON_GZIP_CHUNKS") GeneratorFormat generatorFormat) {
+                            @Optional("S3_JSON_GZIP") GeneratorFormat generatorFormat) {
 
         setTestProperties();
         test.startInstant = Instant.parse(startTimeStr);
@@ -120,22 +120,25 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
             EventConverter<Event> converter = getConverter();
             EventsProducer<NetwitnessEvent> producer = getProducer();
 
-            List<? extends Event> nextChunk;
+            LOGGER.info("[" + scenario.getSchema() + "] -- Going to generate next chunk");
+            List<? extends Event> nextChunk= gen.getNextChunk();
+            LOGGER.info("[" + scenario.getSchema() + "] -- Generated chunk");
 
-            do {
-                LOGGER.info("[" + scenario.getSchema() + "] -- Going to generate next chunk");
-                nextChunk = gen.getNextChunk();
-                LOGGER.info("[" + scenario.getSchema() + "] -- Generated chunk");
+            while ( !nextChunk.isEmpty()) {
 
                 LOGGER.info("[" + scenario.getSchema() + "] -- Going to convert and insert chunk");
                 Stream<NetwitnessEvent> converted = nextChunk.parallelStream().map(converter::convert);
                 producer.send(converted);
                 LOGGER.info("[" + scenario.getSchema() + "] -- Chunk insert is done");
 
-            } while (!nextChunk.isEmpty());
+                LOGGER.info("[" + scenario.getSchema() + "] -- Going to generate next chunk");
+                nextChunk = gen.getNextChunk();
+                LOGGER.info("[" + scenario.getSchema() + "] -- Generated chunk");
+            }
+            producer.close();
         });
 
-        System.out.println("done");
+        LOGGER.info("Finished.");
     }
 
 

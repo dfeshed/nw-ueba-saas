@@ -1,159 +1,123 @@
 package com.rsa.netwitness.presidio.automation.converter.producers;
 
 import ch.qos.logback.classic.Logger;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.services.s3.transfer.Upload;
-import com.amazonaws.services.s3.transfer.model.UploadResult;
+import com.rsa.netwitness.presidio.automation.config.AWS_Config;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import com.rsa.netwitness.presidio.automation.converter.formatters.EventFormatter;
-import com.rsa.netwitness.presidio.automation.s3.S3_Bucket;
 import com.rsa.netwitness.presidio.automation.s3.S3_Helper;
-import com.rsa.netwitness.presidio.automation.s3.S3_Key;
-import com.rsa.netwitness.presidio.automation.utils.common.Lazy;
+import com.rsa.netwitness.presidio.automation.s3.S3_Interval;
 import fortscale.common.general.Schema;
-import org.apache.mina.util.ConcurrentHashSet;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
-import java.util.zip.GZIPOutputStream;
 
-import static com.rsa.netwitness.presidio.automation.config.AWS_Config.S3_CONFIG;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(S3JsonGzipProducer.class);
-    private static String bucket = S3_CONFIG.getBucket();
 
-    private S3_Key keyGen = new S3_Key();
-    private final S3_Helper s3_helper = new S3_Helper();
-    private final TransferManager transferManager = s3_helper.getTransferManager();
-    private final EventFormatter<NetwitnessEvent,String> formatter;
-    private static Set<String> keysUploaded = new ConcurrentHashSet<>();
-    private static volatile Lazy<Boolean> truncateFlag = new Lazy<>();
-    private long total = 0;
+    private final EventFormatter<NetwitnessEvent, String> formatter;
+    private AtomicInteger totalUploaded = new AtomicInteger(0);
+    private S3_Interval previousIntervalObj;
+    private boolean IS_PARALLEL = false;
+    private S3_Helper s3_helper = new S3_Helper();
+    private Schema schema;
 
-    S3JsonGzipProducer(EventFormatter<NetwitnessEvent, String> formatter){
+    S3JsonGzipProducer(EventFormatter<NetwitnessEvent, String> formatter) {
         requireNonNull(formatter);
         this.formatter = formatter;
     }
 
-
     @Override
     public Map<Schema, Long> send(Stream<NetwitnessEvent> eventsList) {
-        // truncateBucketOnInit();
-
         List<NetwitnessEvent> events = eventsList.parallel().collect(toList());
+        List<Schema> schema = events.parallelStream().map(e -> e.schema).distinct().collect(toList());
+        assertThat(schema).as("same schema").hasSize(1);
+        this.schema = schema.get(0);
 
-        Map<String, List<NetwitnessEvent>> eventsByKey = events.parallelStream()
-                .collect(groupingBy(keyGen.key));
+        Map<Instant, List<NetwitnessEvent>> eventsByInterval = events.parallelStream()
+                .collect(groupingBy(event -> S3_Helper.toChunkInterval.apply(event.eventTimeEpoch)));
 
-        LOGGER.info("+++ Amount of keys = " + eventsByKey.keySet().size());
+        /** Test: event time is before the file name it's located **/
+        boolean timeTest = eventsByInterval.entrySet().parallelStream()
+                .allMatch(e -> e.getValue().parallelStream().map(ev -> ev.eventTimeEpoch).max(Instant::compareTo).orElseThrow().isBefore(e.getKey()));
+        assertThat(timeTest).as("Some file contains even with time not matching it.").isTrue();
 
-        assertThat(keysUploaded)
-                .overridingErrorMessage("Trying to upload same key twice")
-                .doesNotContainAnyElementsOf(eventsByKey.keySet());
+        List<S3_Interval> intervalObjects = createIntervalsMatchingEventsMinMaxTime(events);
 
-        LOGGER.info("Starting to upload the data to S3");
-        eventsByKey.entrySet().parallelStream()
-                .forEach(entry -> System.out.println(upload(eventsByKey.get(entry.getKey()), entry.getKey()).getKey()));
-        LOGGER.info("Data upload finished.");
-
-        keysUploaded.addAll(eventsByKey.keySet());
-
-        uploadEmptyFilesForMissingTimeSlots(events);
-
-        LOGGER.info("TOTAL EVENTS=" + total);
-        assertThat(total).as("Events count mismatch").isEqualTo(events.size());
-
-        return events.parallelStream().collect(groupingBy(e -> e.schema, counting()));
-    }
-
-
-
-
-
-
-
-    private void truncateBucketOnInit() {
-        assertThat(truncateFlag.getOrCompute(() -> new S3_Bucket(bucket).truncate()))
-                .as("Failed to truncate bucket " + bucket)
-                .isTrue();
-    }
-
-    private UploadResult upload(List<NetwitnessEvent> eventsByKey, String key) {
-        System.out.print(eventsByKey.size() + " ");
-        Stream<String> stringStream = eventsByKey.parallelStream().map(formatter::format);
-        byte[] zippedBytes = gzipSerializer(stringStream);
-        total += eventsByKey.size();
-        return upload(key, zippedBytes);
-    }
-
-    private UploadResult upload(String key, byte[] zippedBytes) {
-        ObjectMetadata omd = new ObjectMetadata();
-        omd.setContentLength(zippedBytes.length);
-        omd.setContentType("application/octet-stream");
-
-        Upload upload = transferManager.upload(S3JsonGzipProducer.bucket,
-                key,
-                new ByteArrayInputStream(zippedBytes),
-                omd);
-        try {
-            return upload.waitForUploadResult();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (previousIntervalObj != null) {
+            intervalObjects.add(previousIntervalObj);
         }
-        return null;
+
+        List<S3_Interval> chunksSorted = intervalObjects.parallelStream().sorted().collect(toList());
+
+        processChunks(eventsByInterval, chunksSorted);
+
+        closeChunks(intervalObjects, chunksSorted);
+
+        previousIntervalObj = chunksSorted.get(intervalObjects.size() - 1);
+
+        return new HashMap<>();
     }
 
-    private void uploadEmptyFilesForMissingTimeSlots(List<NetwitnessEvent> events) {
-        Map<String, List<NetwitnessEvent>> eventsByApplication = events.parallelStream().collect(groupingBy(keyGen.application));
-        LOGGER.info("Amount of empty files=" + eventsByApplication);
-        eventsByApplication.forEach( (app, values) -> {
-            Instant max = eventsByApplication.get(app).parallelStream().map(e -> e.eventTimeEpoch).max(Instant::compareTo).orElseThrow();
-            Instant min = eventsByApplication.get(app).parallelStream().map(e -> e.eventTimeEpoch).min(Instant::compareTo).orElseThrow();
+    private List<S3_Interval> createIntervalsMatchingEventsMinMaxTime(List<NetwitnessEvent> events) {
+        Instant firstInterval = (previousIntervalObj == null) ? firstChunkFromEvents(events) : previousIntervalObj.getInterval().plus(AWS_Config.UPLOAD_INTERVAL_MINUTES.intValue(), MINUTES);
+        Instant lastInterval = S3_Helper.toChunkInterval.apply(events.parallelStream().map(e -> e.eventTimeEpoch).max(Instant::compareTo).orElseThrow());
+        List<Instant> intervals = s3_helper.divideToIntervals(firstInterval, lastInterval);
 
-            System.out.println("Min=" + min + " Max=" + max);
-            Set<String> missingKeys = keyGen.getAllS3_Keys(min, max, values.get(0).schema);
-            missingKeys.removeAll(keysUploaded);
+        return intervals.parallelStream()
+                .map(interval -> new S3_Interval(interval, schema))
+                .collect(toList());
+    }
 
-            LOGGER.info("Going to upload" + missingKeys.size() + " empty files. Application = " + app);
-            missingKeys.parallelStream().forEach(e -> System.out.println(uploadEmptyFile(e).getKey()));
-            LOGGER.info("Empty files upload finished. Application = " + app);
+    private Instant firstChunkFromEvents(List<NetwitnessEvent> events) {
+        Instant minEventTime = events.parallelStream().map(e -> e.eventTimeEpoch).min(Instant::compareTo).orElseThrow();
+        return S3_Helper.toChunkInterval.apply(minEventTime);
+    }
+
+
+    private void closeChunks(List<S3_Interval> intervals, List<S3_Interval> intervalsSorted) {
+        List<S3_Interval> close = intervalsSorted.subList(0, intervals.size() - 1);
+        Stream<S3_Interval> intervalsToClose = IS_PARALLEL ? close.parallelStream() : close.stream();
+        intervalsToClose.forEach(intervalObj -> {
+            intervalObj.close();
+            totalUploaded.addAndGet(intervalObj.getTotalUploaded());
+        });
+
+        LOGGER.info("[" + schema + "] -- " + close.size() + " intervals upload accomplished.");
+    }
+
+    private void processChunks(Map<Instant, List<NetwitnessEvent>> eventsByInterval, List<S3_Interval> intervalsSorted) {
+        LOGGER.info("[" + schema + "] -- " + "Going to process events chunk from "
+                + intervalsSorted.get(0).getInterval() + " to " + intervalsSorted.get(intervalsSorted.size() - 1).getInterval());
+
+        Stream<S3_Interval> process = IS_PARALLEL ? intervalsSorted.parallelStream() : intervalsSorted.stream();
+        process.forEach(intervalObj -> {
+            Instant interval = intervalObj.getInterval();
+            if (eventsByInterval.containsKey(interval)) {
+                intervalObj.process(toStringLines(eventsByInterval.get(interval)));
+                totalUploaded.addAndGet(intervalObj.getTotalUploaded());
+            }
         });
     }
 
-    private UploadResult uploadEmptyFile(String key) {
-        return upload(key, gzipSerializer(Stream.of("")));
+    @Override
+    public void close() {
+        previousIntervalObj.close();
+        LOGGER.info("[" + schema + "] -- " + "TOTAL EVENTS UPLOADED: " + totalUploaded.addAndGet(previousIntervalObj.getTotalUploaded()));
     }
 
-    private byte[] gzipSerializer(Stream<String> lines) {
-        byte[] bytesToWrite;
-        bytesToWrite = lines.collect(joining()).getBytes();
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        GZIPOutputStream gzipOut;
-
-        try {
-            gzipOut = new GZIPOutputStream(byteOut);
-            gzipOut.write(bytesToWrite, 0, bytesToWrite.length);
-            gzipOut.flush();
-            gzipOut.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return byteOut.toByteArray();
+    private List<String> toStringLines(List<NetwitnessEvent> netwitnessEvents) {
+        return netwitnessEvents.parallelStream().map(formatter::format).collect(toList());
     }
-
 
 }
