@@ -55,9 +55,9 @@ public class S3JsonGzipChunksProducer implements EventsProducer<NetwitnessEvent>
 
         List<S3_Interval> chunksSorted = intervalObjects.parallelStream().sorted().collect(toList());
 
-        processChunks(eventsByInterval, chunksSorted);
+        processIntervals(eventsByInterval, chunksSorted);
 
-        closeChunks(intervalObjects, chunksSorted);
+        closeIntervals(intervalObjects, chunksSorted);
 
         previousIntervalObj = chunksSorted.get(intervalObjects.size() - 1);
 
@@ -101,7 +101,7 @@ public class S3JsonGzipChunksProducer implements EventsProducer<NetwitnessEvent>
     }
 
 
-    private void closeChunks(List<S3_Interval> intervals, List<S3_Interval> intervalsSorted) {
+    private void closeIntervals(List<S3_Interval> intervals, List<S3_Interval> intervalsSorted) {
         List<S3_Interval> close = intervalsSorted.subList(0, intervals.size() - 1);
         Stream<S3_Interval> intervalsToClose = IS_PARALLEL ? close.parallelStream() : close.stream();
         intervalsToClose.forEach(intervalObj -> {
@@ -112,7 +112,7 @@ public class S3JsonGzipChunksProducer implements EventsProducer<NetwitnessEvent>
         LOGGER.info("[" + schema + "] -- " + close.size() + " intervals upload accomplished.");
     }
 
-    private void processChunks(Map<Instant, List<NetwitnessEvent>> eventsByInterval, List<S3_Interval> intervalsSorted) {
+    private void processIntervals(Map<Instant, List<NetwitnessEvent>> eventsByInterval, List<S3_Interval> intervalsSorted) {
         LOGGER.info("[" + schema + "] -- " + "Going to process events chunk from "
                 + intervalsSorted.get(0).getInterval() + " to " + intervalsSorted.get(intervalsSorted.size() - 1).getInterval());
 
