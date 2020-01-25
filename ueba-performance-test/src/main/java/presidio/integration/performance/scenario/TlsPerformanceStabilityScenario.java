@@ -1,20 +1,19 @@
 package presidio.integration.performance.scenario;
 
-import com.google.common.collect.Iterators;
-import com.google.common.collect.UnmodifiableIterator;
-import org.assertj.core.util.Lists;
 import presidio.data.domain.event.Event;
 import presidio.data.domain.event.network.TlsEvent;
+import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.event.AbstractEventGenerator;
-import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.event.performance.PerformanceStabilityScenario;
 import presidio.data.generators.event.performance.tls.TlsEventsSimplePerfGen;
 import presidio.data.generators.event.performance.tls.TlsPerfClusterParams;
 import presidio.data.generators.event.performance.tls.TlsSessionSplitSimplePerfGen;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -71,13 +70,51 @@ public class TlsPerformanceStabilityScenario extends PerformanceStabilityScenari
 
     @Override
     public List<Event> generateEvents(int numOfEventsToGenerate) {
-        Stream<Event> events = tlsEventsGenerators.stream().flatMap(IEventGenerator::generateToStream);
-        UnmodifiableIterator<List<Event>> partition = Iterators.partition(events.iterator(), numOfEventsToGenerate);
-        if (partition.hasNext()) {
-            return partition.next();
-        } else {
-            return Lists.emptyList();
+        List<Event> events = new ArrayList<>();
+
+        while (events.size() < numOfEventsToGenerate) {
+            Optional<GeneratorWithNextEventTime> minTimeGen = tlsEventsGenerators.parallelStream()
+                    .map(e -> new GeneratorWithNextEventTime(e.hasNext(), e))
+                    .filter(e -> e.nextTime != null)
+                    .min(GeneratorWithNextEventTime::compareTo);
+
+            if (minTimeGen.isPresent()) {
+                events.add(generateEvent(minTimeGen.get().generator));
+            } else {
+                break;
+            }
+        }
+
+        return events;
+    }
+
+    private class GeneratorWithNextEventTime implements Comparable<GeneratorWithNextEventTime> {
+        final Instant nextTime;
+        final AbstractEventGenerator<TlsEvent> generator;
+
+        GeneratorWithNextEventTime(Instant nextTime, AbstractEventGenerator<TlsEvent> generator) {
+            this.nextTime = nextTime;
+            this.generator = generator;
+        }
+
+        @Override
+        public int compareTo(GeneratorWithNextEventTime other) {
+            return this.nextTime.compareTo(other.nextTime);
         }
     }
+
+
+    private Event generateEvent(AbstractEventGenerator gen) {
+        if (gen.hasNext() != null) {
+            try {
+                return gen.generateNext();
+            } catch (GeneratorException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
 
 }
