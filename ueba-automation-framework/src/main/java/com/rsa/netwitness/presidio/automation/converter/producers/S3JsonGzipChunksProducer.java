@@ -22,8 +22,8 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
-    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(S3JsonGzipProducer.class);
+public class S3JsonGzipChunksProducer implements EventsProducer<NetwitnessEvent> {
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(S3JsonGzipChunksProducer.class);
 
     private final EventFormatter<NetwitnessEvent, String> formatter;
     private AtomicInteger totalUploaded = new AtomicInteger(0);
@@ -32,7 +32,7 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
     private S3_Helper s3_helper = new S3_Helper();
     private Schema schema;
 
-    S3JsonGzipProducer(EventFormatter<NetwitnessEvent, String> formatter) {
+    S3JsonGzipChunksProducer(EventFormatter<NetwitnessEvent, String> formatter) {
         requireNonNull(formatter);
         this.formatter = formatter;
     }
@@ -40,17 +40,12 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
     @Override
     public Map<Schema, Long> send(Stream<NetwitnessEvent> eventsList) {
         List<NetwitnessEvent> events = eventsList.parallel().collect(toList());
-        List<Schema> schema = events.parallelStream().map(e -> e.schema).distinct().collect(toList());
-        assertThat(schema).as("same schema").hasSize(1);
-        this.schema = schema.get(0);
+        setSchema(events);
 
         Map<Instant, List<NetwitnessEvent>> eventsByInterval = events.parallelStream()
                 .collect(groupingBy(event -> S3_Helper.toChunkInterval.apply(event.eventTimeEpoch)));
 
-        /** Test: event time is before the file name it's located **/
-        boolean timeTest = eventsByInterval.entrySet().parallelStream()
-                .allMatch(e -> e.getValue().parallelStream().map(ev -> ev.eventTimeEpoch).max(Instant::compareTo).orElseThrow().isBefore(e.getKey()));
-        assertThat(timeTest).as("Some file contains even with time not matching it.").isTrue();
+        testEventTimeLessThenInterval(eventsByInterval);
 
         List<S3_Interval> intervalObjects = createIntervalsMatchingEventsMinMaxTime(events);
 
@@ -67,6 +62,27 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
         previousIntervalObj = chunksSorted.get(intervalObjects.size() - 1);
 
         return new HashMap<>();
+    }
+
+    @Override
+    public void close() {
+        previousIntervalObj.close();
+        LOGGER.info("[" + schema + "] -- " + "TOTAL EVENTS UPLOADED: " + totalUploaded.addAndGet(previousIntervalObj.getTotalUploaded()));
+    }
+
+
+
+
+    private void testEventTimeLessThenInterval(Map<Instant, List<NetwitnessEvent>> eventsByInterval) {
+        boolean timeTest = eventsByInterval.entrySet().parallelStream()
+                .allMatch(e -> e.getValue().parallelStream().map(ev -> ev.eventTimeEpoch).max(Instant::compareTo).orElseThrow().isBefore(e.getKey()));
+        assertThat(timeTest).as("Some file contains even with time not matching it.").isTrue();
+    }
+
+    private void setSchema(List<NetwitnessEvent> events) {
+        List<Schema> schema = events.parallelStream().map(e -> e.schema).distinct().collect(toList());
+        assertThat(schema).as("Multiple schemas not allowed here").hasSize(1);
+        this.schema = schema.get(0);
     }
 
     private List<S3_Interval> createIntervalsMatchingEventsMinMaxTime(List<NetwitnessEvent> events) {
@@ -108,12 +124,6 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
                 totalUploaded.addAndGet(intervalObj.getTotalUploaded());
             }
         });
-    }
-
-    @Override
-    public void close() {
-        previousIntervalObj.close();
-        LOGGER.info("[" + schema + "] -- " + "TOTAL EVENTS UPLOADED: " + totalUploaded.addAndGet(previousIntervalObj.getTotalUploaded()));
     }
 
     private List<String> toStringLines(List<NetwitnessEvent> netwitnessEvents) {

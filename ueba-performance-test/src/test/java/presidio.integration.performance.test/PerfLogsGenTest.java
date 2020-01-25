@@ -86,7 +86,7 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
                             @Optional("1") double probabilityMultiplier,
                             @Optional("1") double usersMultiplier,
                             @Optional("0.001") double tlsAlertsProbability,
-                            @Optional("1") int groupsToCreate, 
+                            @Optional("1") int groupsToCreate,
                             @Optional("1000") double tlsEventsPerDayPerGroup,
                             @Optional("FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS,TLS") String schemas,
                             @Optional("S3_JSON_GZIP") GeneratorFormat generatorFormat) {
