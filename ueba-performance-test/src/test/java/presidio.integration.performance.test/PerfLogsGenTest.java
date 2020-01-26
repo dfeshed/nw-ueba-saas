@@ -43,7 +43,7 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
     public static final TestProperties test = new TestProperties();
 
     private static final int EVENTS_GENERATION_CHUNK = 50000;
-    private static final boolean PARALLEL_SCENARIOS_INSERT = false;
+    private static final boolean PARALLEL_SCENARIOS_INSERT = true;
 
     private void setTestProperties() {
 
@@ -60,21 +60,21 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
         test.LOCAL_SERVER_MACHINES_CLUSTER_PREFIX = "local_srv_";
         test.NUM_OF_LOCAL_SERVER_MACHINES_PER_CLUSTER = 5;
 
-        test.AUTHENTICATION_NUM_OF_NORMAL_USERS = 25000;
-        test.AUTHENTICATION_NUM_OF_ADMIN_USERS = 20000;
-        test.AUTHENTICATION_NUM_OF_SERVICE_ACCOUNT_USERS = 5000;
-        test.FILE_NUM_OF_NORMAL_USERS = 45000;
-        test.FILE_NUM_OF_ADMIN_USERS = 3750;
-        test.FILE_NUM_OF_SERVICE_ACCOUNT_USERS = 1250;
-        test.ACTIVE_DIRECTORY_NUM_OF_NORMAL_USERS = 45000;
-        test.ACTIVE_DIRECTORY_NUM_OF_ADMIN_USERS = 2500;
-        test.ACTIVE_DIRECTORY_NUM_OF_SERVICE_ACCOUNT_USERS = 250;
-        test.PROCESS_NUM_OF_NORMAL_USERS = 25000;
-        test.PROCESS_NUM_OF_ADMIN_USERS = 1250;
-        test.PROCESS_NUM_OF_SERVICE_ACCOUNT_USERS = 125;
-        test.REGISTRY_NUM_OF_NORMAL_USERS = 25000;
-        test.REGISTRY_NUM_OF_ADMIN_USERS = 1250;
-        test.REGISTRY_NUM_OF_SERVICE_ACCOUNT_USERS = 125;
+        test.AUTHENTICATION_NUM_OF_NORMAL_USERS = 20000;
+        test.AUTHENTICATION_NUM_OF_ADMIN_USERS = 5000;
+        test.AUTHENTICATION_NUM_OF_SERVICE_ACCOUNT_USERS = 1000;
+        test.FILE_NUM_OF_NORMAL_USERS = 18000;
+        test.FILE_NUM_OF_ADMIN_USERS = 1500;
+        test.FILE_NUM_OF_SERVICE_ACCOUNT_USERS = 500;
+        test.ACTIVE_DIRECTORY_NUM_OF_NORMAL_USERS = 19000;
+        test.ACTIVE_DIRECTORY_NUM_OF_ADMIN_USERS = 1000;
+        test.ACTIVE_DIRECTORY_NUM_OF_SERVICE_ACCOUNT_USERS = 100;
+        test.PROCESS_NUM_OF_NORMAL_USERS = 20000;
+        test.PROCESS_NUM_OF_ADMIN_USERS = 1000;
+        test.PROCESS_NUM_OF_SERVICE_ACCOUNT_USERS = 100;
+        test.REGISTRY_NUM_OF_NORMAL_USERS = 20000;
+        test.REGISTRY_NUM_OF_ADMIN_USERS = 1000;
+        test.REGISTRY_NUM_OF_SERVICE_ACCOUNT_USERS = 100;
     }
 
 
@@ -82,13 +82,13 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
             "tls_groups_to_create", "tls_events_per_day_per_group","schemas","generator_format"})
     @Test
     public void performance(@Optional("2020-01-01T00:00:00.00Z") String startTimeStr,
-                            @Optional("2020-01-03T00:00:00.00Z") String endTimeStr,
+                            @Optional("2020-01-02T00:00:00.00Z") String endTimeStr,
                             @Optional("1") double probabilityMultiplier,
                             @Optional("1") double usersMultiplier,
                             @Optional("0.001") double tlsAlertsProbability,
                             @Optional("1") int groupsToCreate,
                             @Optional("1000") double tlsEventsPerDayPerGroup,
-                            @Optional("FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS,TLS") String schemas,
+                            @Optional("FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS") String schemas,
                             @Optional("S3_JSON_GZIP_CHUNKS") GeneratorFormat generatorFormat) {
 
         setTestProperties();

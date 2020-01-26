@@ -60,20 +60,20 @@ public class StabilityLogsGenTest extends AbstractTestNGSpringContextTests {
 
 
     private static final int AUTHENTICATION_NUM_OF_NORMAL_USERS = 20000;
-    private static final int AUTHENTICATION_NUM_OF_ADMIN_USERS = 16000;
-    private static final int AUTHENTICATION_NUM_OF_SERVICE_ACCOUNT_USERS = 4000;
+    private static final int AUTHENTICATION_NUM_OF_ADMIN_USERS = 5000;
+    private static final int AUTHENTICATION_NUM_OF_SERVICE_ACCOUNT_USERS = 1000;
     private static final int FILE_NUM_OF_NORMAL_USERS = 18000;
     private static final int FILE_NUM_OF_ADMIN_USERS = 1500;
     private static final int FILE_NUM_OF_SERVICE_ACCOUNT_USERS = 500;
     private static final int ACTIVE_DIRECTORY_NUM_OF_NORMAL_USERS = 19000;
     private static final int ACTIVE_DIRECTORY_NUM_OF_ADMIN_USERS = 1000;
     private static final int ACTIVE_DIRECTORY_NUM_OF_SERVICE_ACCOUNT_USERS = 100;
-    private static final int PROCESS_NUM_OF_NORMAL_USERS = 10000;
-    private static final int PROCESS_NUM_OF_ADMIN_USERS = 500;
-    private static final int PROCESS_NUM_OF_SERVICE_ACCOUNT_USERS = 50;
-    private static final int REGISTRY_NUM_OF_NORMAL_USERS = 10000;
-    private static final int REGISTRY_NUM_OF_ADMIN_USERS = 500;
-    private static final int REGISTRY_NUM_OF_SERVICE_ACCOUNT_USERS = 50;
+    private static final int PROCESS_NUM_OF_NORMAL_USERS = 20000;
+    private static final int PROCESS_NUM_OF_ADMIN_USERS = 1000;
+    private static final int PROCESS_NUM_OF_SERVICE_ACCOUNT_USERS = 100;
+    private static final int REGISTRY_NUM_OF_NORMAL_USERS = 20000;
+    private static final int REGISTRY_NUM_OF_ADMIN_USERS = 1000;
+    private static final int REGISTRY_NUM_OF_SERVICE_ACCOUNT_USERS = 100;
 
 
     private StopWatch stopWatch = new StopWatch();
@@ -87,10 +87,15 @@ public class StabilityLogsGenTest extends AbstractTestNGSpringContextTests {
     @Parameters({"start_time", "end_time", "probability_multiplier", "users_multiplier", "tls_alerts_probability",
             "tls_groups_to_create", "tls_events_per_day_per_group","schemas","generator_format"})
     @Test
-    public void performance(@Optional("2019-10-30T00:00:00.00Z") String startTimeStr, @Optional("2019-10-30T01:59:00.00Z") String endTimeStr,
-                            @Optional("0.005") double probabilityMultiplier, @Optional("0.005") double usersMultiplier,
-                            @Optional("0.001") double tlsAlertsProbability, @Optional("1") int groupsToCreate, @Optional("1000") double tlsEventsPerDayPerGroup,
-                            @Optional("TLS") String schemas,  @Optional("CEF_DAILY_FILE") GeneratorFormat generatorFormat) throws GeneratorException {
+    public void performance(@Optional("2020-01-01T00:00:00.00Z") String startTimeStr,
+                            @Optional("2020-01-02T00:00:00.00Z") String endTimeStr,
+                            @Optional("1") double probabilityMultiplier,
+                            @Optional("1") double usersMultiplier,
+                            @Optional("0.001") double tlsAlertsProbability,
+                            @Optional("1") int groupsToCreate,
+                            @Optional("1000") double tlsEventsPerDayPerGroup,
+                            @Optional("FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS") String schemas,
+                            @Optional("S3_JSON_GZIP_CHUNKS") GeneratorFormat generatorFormat) throws GeneratorException {
 
         System.out.println("=================== TEST PARAMETERS =============== ");
         System.out.println("start_time: " + startTimeStr);
@@ -187,45 +192,49 @@ public class StabilityLogsGenTest extends AbstractTestNGSpringContextTests {
     private void printDaysOfProcessEvents(ProcessPerformanceStabilityScenario scenario) throws GeneratorException {
         System.out.println("$$$$ Starts Generating Process Events $$$$");
         /** Generate and send events **/
+        EventsProducer<NetwitnessEvent> producer = getProducer();
         List<Event> events;
         do {
             events = scenario.generateEvents(EVENTS_GENERATION_CHUNK);
             Stream<NetwitnessEvent> converted = events.parallelStream().map(getConverter()::convert);
-            getProducer().send(converted);
+            producer.send(converted);
             System.out.println(EVENTS_GENERATION_CHUNK + " events where written to PROCESS");
         } while (events.size() == EVENTS_GENERATION_CHUNK);
+        producer.close();
     }
 
     private void printDaysOfRegistryEvents(RegistryPerformanceStabilityScenario scenario) throws GeneratorException {
         /** Generate and send events **/
         System.out.println("$$$$ Starts Generating Registry Events $$$$");
-
+        EventsProducer<NetwitnessEvent> producer = getProducer();
         List<Event> events;
         do {
             events = scenario.generateEvents(EVENTS_GENERATION_CHUNK);
             Stream<NetwitnessEvent> converted = events.parallelStream().map(getConverter()::convert);
-            getProducer().send(converted);
+            producer.send(converted);
             System.out.println(EVENTS_GENERATION_CHUNK + " events where written to REGISTRY");
         } while (events.size() == EVENTS_GENERATION_CHUNK);
+        producer.close();
     }
 
     private void printDaysOfADEvents(ActiveDirectoryPerformanceStabilityScenario scenario) throws GeneratorException {
         /** Generate and send events **/
         System.out.println("$$$$ Starts Generating Active Directory Events $$$$");
-
+        EventsProducer<NetwitnessEvent> producer = getProducer();
         List<Event> events;
         do {
             events = scenario.generateEvents(EVENTS_GENERATION_CHUNK);
             Stream<NetwitnessEvent> converted = events.parallelStream().map(getConverter()::convert);
-            getProducer().send(converted);
+            producer.send(converted);
             System.out.println(EVENTS_GENERATION_CHUNK + " events where written to AD");
         } while (events.size() == EVENTS_GENERATION_CHUNK);
+        producer.close();
     }
 
     private void printDaysOfFileEvents(FilePerformanceStabilityScenario scenario) throws GeneratorException {
         /** Generate and send events **/
         System.out.println("$$$$ Starts Generating File Events $$$$");
-
+        EventsProducer<NetwitnessEvent> producer = getProducer();
         List<Event> events;
         do {
             events = scenario.generateEvents(EVENTS_GENERATION_CHUNK);
@@ -242,14 +251,16 @@ public class StabilityLogsGenTest extends AbstractTestNGSpringContextTests {
                 dstProcessEvents.add(event);
             }
             Stream<NetwitnessEvent> converted = events.parallelStream().map(getConverter()::convert);
-            getProducer().send(converted);
+            producer.send(converted);
             System.out.println(EVENTS_GENERATION_CHUNK + " events where written to FILE");
         } while (events.size() == EVENTS_GENERATION_CHUNK);
+        producer.close();
     }
 
     private void printDaysOfAuthEvents(AuthenticationPerformanceStabilityScenario scenario) throws GeneratorException {
         /** Generate and send events **/
         System.out.println("$$$$ Starts Generating Authentication Events $$$$");
+        EventsProducer<NetwitnessEvent> producer = getProducer();
         List<Event> events;
         do {
             events = scenario.generateEvents(EVENTS_GENERATION_CHUNK);
@@ -262,9 +273,10 @@ public class StabilityLogsGenTest extends AbstractTestNGSpringContextTests {
                 dstMachineEvents.add(event);
             }
             Stream<NetwitnessEvent> converted = events.parallelStream().map(getConverter()::convert);
-            getProducer().send(converted);
+            producer.send(converted);
             System.out.println(EVENTS_GENERATION_CHUNK + " events where written to AUTH");
         } while (events.size() == EVENTS_GENERATION_CHUNK);
+        producer.close();
     }
 
     private List<MachineEntity> createGlobalServerMachinePool() {

@@ -25,10 +25,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class S3JsonGzipChunksProducer implements EventsProducer<NetwitnessEvent> {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(S3JsonGzipChunksProducer.class);
 
+    private boolean IS_PARALLEL = true;
+
     private final EventFormatter<NetwitnessEvent, String> formatter;
     private AtomicInteger totalUploaded = new AtomicInteger(0);
     private S3_Interval previousIntervalObj;
-    private boolean IS_PARALLEL = false;
     private S3_Helper s3_helper = new S3_Helper();
     private Schema schema;
 
