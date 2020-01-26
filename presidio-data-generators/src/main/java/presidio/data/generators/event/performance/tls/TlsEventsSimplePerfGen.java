@@ -123,8 +123,8 @@ public class TlsEventsSimplePerfGen extends AbstractEventGenerator<TlsEvent> {
             time = timeGenerator.getNext();
         } while (timeGenerator.hasNext() !=null && tlsPerfUtils.needToSkipWeekendEvent(time, random, params.getWeekendSkipEventProbability()));
 
-        Instant nextTime = isAnomaly.get() ? setAbnormalActivityTime(time) : time;
-        TlsEvent tlsEvent = new TlsEvent(nextTime);
+        // Instant nextTime = isAnomaly.get() ? setAbnormalActivityTime(time) : time;
+        TlsEvent tlsEvent = new TlsEvent(time);
 
         tlsEvent.setEventId(eventIdGenerator.getNext());
         tlsEvent.setFqdn(nextSslSubjectEntityGen.getDomainGen().nextValues(3));
