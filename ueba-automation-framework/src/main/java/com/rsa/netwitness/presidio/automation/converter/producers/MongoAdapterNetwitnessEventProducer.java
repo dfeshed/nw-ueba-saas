@@ -26,11 +26,14 @@ class MongoAdapterNetwitnessEventProducer implements EventsProducer<NetwitnessEv
     }
 
     @Override
-    public Map<Schema, Long> send(Stream<NetwitnessEvent> eventsList) {
+    public Map<Schema, Long> send(Stream<NetwitnessEvent> eventsList ) {
         Map<Schema, Long> totalResult = new HashMap<>();
 
+        List<NetwitnessEvent> events = eventsList.parallel().collect(toList());
+
         LOGGER.debug("Going to group bucket by schema and add file path");
-        Map<Schema, List<NetwitnessEvent>> eventsPerSchema = eventsList.parallel().collect(groupingBy(e -> e.schema));
+        Map<Schema, List<NetwitnessEvent>> eventsPerSchema = events.parallelStream()
+                .collect(groupingBy(e -> e.schema));
         LOGGER.debug("Done grouping bucket by schema");
         Set<Schema> schemas = eventsPerSchema.keySet();
 
@@ -43,10 +46,11 @@ class MongoAdapterNetwitnessEventProducer implements EventsProducer<NetwitnessEv
         schemas.forEach(schema -> netwitnessEventStore.store(
                 getAsNetwitnessStoredData.apply(schema), schema));
 
-        Map<Schema, Long> update = eventsList.parallel().collect(groupingBy(ev -> ev.schema, counting()));
+        Map<Schema, Long> update = events.parallelStream().collect(groupingBy(ev -> ev.schema, counting()));
         update.forEach((key, value) -> totalResult.compute(key, (k, v) -> totalResult.getOrDefault(key, 0L) + value));
 
-       totalResult.forEach((k, v) -> System.out.println(k + ": " + v));
+        totalResult.forEach((k, v) -> System.out.println(k + ": " + v));
+        LOGGER.info("Finished upload " + events.size() + " events.");
 
         return totalResult;
     }
