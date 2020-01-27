@@ -29,6 +29,7 @@ const ALL_SUBMODULES = [
   'investigate-process-analysis',
   'rsa-context-menu',
   'rsa-data-filters',
+  'springboard',
   'ngcoreui'
 ];
 
@@ -61,6 +62,7 @@ const saModuleDependants = {
     'investigate-process-analysis',
     'rsa-context-menu',
     'rsa-data-filters',
+    'springboard',
     'ngcoreui'
   ],
   'mock-server': [
@@ -84,6 +86,7 @@ const saModuleDependants = {
     'context',
     'investigate-process-analysis',
     'rsa-list-manager',
+    'springboard',
     'rsa-context-menu'
   ],
   'investigate-shared': [
@@ -101,6 +104,7 @@ const saModuleDependants = {
   'entity-details': ['sa'],
   'investigate-users': ['sa'],
   'investigate-process-analysis': ['sa'],
+  'springboard': ['sa'],
   packager: ['sa'],
   'endpoint-rar': ['sa'],
   'rsa-dashboard': [
@@ -147,7 +151,8 @@ const saModuleDependants = {
     'sa',
     'style-guide',
     'context',
-    'investigate-process-analysis'
+    'investigate-process-analysis',
+    'springboard'
   ],
   'style-guide': [], // style-guide is an end state app, nothing depends on it
   context: [

@@ -91,6 +91,7 @@ prepareApp preferences
 prepareApp test-helpers
 prepareApp investigate-process-analysis
 prepareApp ngcoreui
+prepareApp springboard
 prepareApp sa
 
 cd $CWD

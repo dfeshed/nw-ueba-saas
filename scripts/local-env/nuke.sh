@@ -53,6 +53,7 @@ nukeNode investigate-process-analysis
 nukeNode rsa-context-menu
 nukeNode rsa-data-filters
 nukeNode ngcoreui
+nukeNode springboard
 nukeNode sa
 
 red "                               ________________
