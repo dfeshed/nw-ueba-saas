@@ -29,6 +29,7 @@ nukeNode component-lib
 nukeNode streaming-data
 nukeNode packager
 nukeNode endpoint-rar
+nukeNode health-wellness
 nukeNode rsa-dashboard
 nukeNode license
 nukeNode recon

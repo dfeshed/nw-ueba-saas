@@ -69,6 +69,7 @@ prepareApp rsa-data-filters
 prepareApp streaming-data
 prepareApp packager
 prepareApp endpoint-rar
+prepareApp health-wellness
 prepareApp rsa-dashboard
 prepareApp license
 prepareApp recon
