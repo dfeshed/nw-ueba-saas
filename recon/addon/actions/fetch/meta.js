@@ -1,35 +1,24 @@
 import RSVP from 'rsvp';
-import { lookup } from 'ember-dependency-lookup';
 import {
-  addStreaming,
-  addSessionQueryFilter,
-  endpointFilter,
-  addCatchAllTimeRange
+  basicPromiseRequest
 } from '../util/query-util';
+import { formatResponse } from '../util/meta-util';
 
 const fetchMeta = ({ endpointId, eventId }) => {
-  const request = lookup('service:request');
-  let query = endpointFilter(endpointId);
-  query = addStreaming(query);
-  query = addSessionQueryFilter(query, eventId);
-  query = addCatchAllTimeRange(query);
   return new RSVP.Promise((resolve, reject) => {
-    request.streamRequest({
-      method: 'stream',
-      modelName: 'core-event',
-      query,
-      streamOptions: {
-        cancelPreviouslyExecuting: true
-      },
-      onError: reject,
-      onResponse({ data, meta }) {
-        if (meta.complete) {
-          // call to events returns array of events
-          // but this just has single event, yank that out
-          // and pass along
-          resolve((data[0] && data[0].metas) || []);
-        }
-      }
+    basicPromiseRequest(
+      endpointId,
+      eventId,
+      'reconstruction-meta',
+      { cancelPreviouslyExecuting: true } // can only have one event in recon at a time
+    ).then(({ data }) => {
+      const formattedData = formatResponse(data);
+      // call to events returns array of events
+      // but this just has single event, yank that out
+      // and pass along
+      resolve((formattedData[0] && formattedData[0].metas) || []);
+    }).catch((response) => {
+      reject(response);
     });
   });
 };

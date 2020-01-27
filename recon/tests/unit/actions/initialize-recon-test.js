@@ -126,13 +126,13 @@ module('Unit | Actions | initializeRecon', function(hooks) {
 
     await waitUntil(() => {
       const { meta } = redux.getState().recon.meta;
-      return Array.isArray(meta) && meta.length === 21;
+      return Array.isArray(meta) && meta.length === 26;
     }, { timeout: 10000 });
 
     const { meta } = redux.getState().recon.meta;
     const [ metaEl ] = meta;
     assert.equal(typeof(metaEl), 'object', 'meta was not correct type');
-    assert.equal(metaEl[0], 'service', 'meta key was incorrect');
+    assert.equal(metaEl[0], 'sessionid', 'meta key was incorrect');
 
     await settled().then(() => done());
   });
