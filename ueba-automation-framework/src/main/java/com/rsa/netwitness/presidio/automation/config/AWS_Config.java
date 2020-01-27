@@ -20,28 +20,28 @@ public enum AWS_Config {
     private Supplier<Properties> properties = () -> propertiesHolder.getOrCompute(this::getResource);
 
     public String getAccessKey() {
-        return getMandatoryKey("access_key");
+        return getEnvOrFileOrDefault("access_key", "");
     }
 
     public String getSecretKey() {
-        return getMandatoryKey("secret_key");
+        return getEnvOrFileOrDefault("secret_key", "");
     }
 
     public String getBucket() {
-        return getMandatoryKey("bucket");
+        return getEnvOrFileOrDefault("bucket", "");
     }
 
 
     public String getTenant() {
-        return properties.get().getOrDefault("tenant", "acme").toString();
+        return getEnvOrFileOrDefault("tenant", "acme");
     }
 
     public String getAccount() {
-        return properties.get().getOrDefault("account", "123456789001").toString();
+        return getEnvOrFileOrDefault("account", "");
     }
 
     public String getRegion() {
-        return properties.get().getOrDefault("region", "us-east-2").toString();
+        return getEnvOrFileOrDefault("region", "us-east-2");
     }
 
 
@@ -56,14 +56,19 @@ public enum AWS_Config {
         return props;
     }
 
-    private String getMandatoryKey(String key) {
-        String value = properties.get().getProperty(key);
+    private String getEnvOrFileOrDefault(String key, String def) {
+        String getenv = System.getenv(key);
+        String fromFileOrDefault = properties.get().getOrDefault(key, def).toString();
 
-        if (value == null || value.isBlank()) {
-            LOGGER.error(key.concat(" property value is not set in ").concat(RESOURCE_NAME));
-            return "";
+        if ( !(getenv == null || getenv.isBlank())) {
+            return getenv;
         } else {
-            return value;
+            if (fromFileOrDefault.isBlank()) {
+                LOGGER.warn("S3 property missing: " + key);
+                return fromFileOrDefault;
+            } else {
+                return fromFileOrDefault;
+            }
         }
     }
 }
