@@ -9,7 +9,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import teardownSockets from '../../../helpers/teardown-sockets';
 import dataCreators from 'recon/actions/data-creators';
 import sinon from 'sinon';
-import { throwSocket } from '../../../helpers/patch-socket';
+import { waitForSockets } from '../../../helpers/wait-for-sockets';
 
 let setState;
 
@@ -146,10 +146,9 @@ module('Integration | Component | recon container', function(hooks) {
   });
 
   test('recon container with fatal error code - invalid session', async function(assert) {
-    const invalidSession = {
-      'code': 124
-    };
-    const done = throwSocket({ methodToThrow: 'query', modelNameToThrow: 'reconstruction-summary', message: invalidSession });
+    const done = waitForSockets();
+
+    new ReduxDataHelper(setState).apiFatalErrorCode(124).build();
 
     this.set('endpointId', '555d9a6fe4b0d37c827d402e');
     this.set('eventId', '5');
@@ -170,14 +169,13 @@ module('Integration | Component | recon container', function(hooks) {
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'Invalid session ID: 5', 'Appropriate error description for invaild session Id');
     assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
     assert.ok(find('.rsa-icon-shrink-diagonal-2'), 'icon is visible');
-    done();
+    return settled().then(() => done());
   });
 
   test('recon container with fatal error code - sessionId too large', async function(assert) {
-    const invalidSession = {
-      'code': 11
-    };
-    const done = throwSocket({ methodToThrow: 'query', modelNameToThrow: 'reconstruction-summary', message: invalidSession });
+    const done = waitForSockets();
+
+    new ReduxDataHelper(setState).apiFatalErrorCode(11).build();
 
     this.set('endpointId', '555d9a6fe4b0d37c827d402e');
     this.set('eventId', '5456544654654564654654');
@@ -203,10 +201,9 @@ module('Integration | Component | recon container', function(hooks) {
   });
 
   test('recon container with fatal error code - session unavailable 115', async function(assert) {
-    const invalidSession = {
-      'code': 115
-    };
-    const done = throwSocket({ methodToThrow: 'query', modelNameToThrow: 'reconstruction-summary', message: invalidSession });
+    const done = waitForSockets();
+
+    new ReduxDataHelper(setState).apiFatalErrorCode(115).build();
 
     this.set('endpointId', '555d9a6fe4b0d37c827d402e');
     this.set('eventId', '5');
@@ -232,10 +229,9 @@ module('Integration | Component | recon container', function(hooks) {
   });
 
   test('recon container with fatal error code - session unavailable 1000', async function(assert) {
-    const invalidSession = {
-      'code': 1000
-    };
-    const done = throwSocket({ methodToThrow: 'query', modelNameToThrow: 'reconstruction-summary', message: invalidSession });
+    const done = waitForSockets();
+
+    new ReduxDataHelper(setState).apiFatalErrorCode(1000).build();
 
     this.set('endpointId', '555d9a6fe4b0d37c827d402e');
     this.set('eventId', '5');
@@ -261,10 +257,9 @@ module('Integration | Component | recon container', function(hooks) {
   });
 
   test('recon container with fatal error code - service unavailable 3', async function(assert) {
-    const invalidSession = {
-      'code': 3
-    };
-    const done = throwSocket({ methodToThrow: 'query', modelNameToThrow: 'reconstruction-summary', message: invalidSession });
+    const done = waitForSockets();
+
+    new ReduxDataHelper(setState).apiFatalErrorCode(3).build();
 
     this.set('endpointId', '555d9a6fe4b0d37c827d402e');
     this.set('eventId', '5');
@@ -290,13 +285,11 @@ module('Integration | Component | recon container', function(hooks) {
   });
 
   test('recon container with fatal error should always have a close icon on the right, so the window can be closed', async function(assert) {
+    const done = waitForSockets();
     const closeSelector = '.fatal-error-close-button';
 
     assert.expect(2);
-    const invalidSession = {
-      'code': 1000
-    };
-    const done = throwSocket({ methodToThrow: 'query', modelNameToThrow: 'reconstruction-summary', message: invalidSession });
+    new ReduxDataHelper(setState).apiFatalErrorCode(1000).build();
 
     this.set('endpointId', '555d9a6fe4b0d37c827d402e');
     this.set('eventId', '5');
@@ -324,11 +317,9 @@ module('Integration | Component | recon container', function(hooks) {
   });
 
   test('recon container with fatal error should have a shrink/expand toggle and clicking it should execute an action', async function(assert) {
-    const invalidSession = {
-      'code': 1000
-    };
-    const done = throwSocket({ methodToThrow: 'query', modelNameToThrow: 'reconstruction-summary', message: invalidSession });
-    new ReduxDataHelper(setState).isTextView().isReconExpanded(true).build();
+    const done = assert.async();
+
+    new ReduxDataHelper(setState).apiFatalErrorCode(1000).isReconExpanded(true).build();
     this.set('endpointId', '555d9a6fe4b0d37c827d402e');
 
     this.set('eventId', '5');
