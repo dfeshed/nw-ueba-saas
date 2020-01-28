@@ -4,7 +4,6 @@ import ch.qos.logback.classic.Logger;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.rsa.netwitness.presidio.automation.utils.common.Lazy;
@@ -25,8 +24,8 @@ enum S3_Client {
         try {
             String region = S3_CONFIG.getRegion();
             if (S3_CONFIG.getAccessKey().isBlank() || S3_CONFIG.getSecretKey().isBlank()) {
-                AwsClientBuilder.EndpointConfiguration ec = new AwsClientBuilder.EndpointConfiguration("https://s3." + region + ".amazonaws.com", region);
-                return AmazonS3ClientBuilder.standard().withEndpointConfiguration(ec).build();
+                // AwsClientBuilder.EndpointConfiguration ec = new AwsClientBuilder.EndpointConfiguration("https://s3." + region + ".amazonaws.com", region);
+                return AmazonS3ClientBuilder.defaultClient();
             } else {
                 BasicAWSCredentials awsCreds = new BasicAWSCredentials(S3_CONFIG.getAccessKey(), S3_CONFIG.getSecretKey());
                 return AmazonS3ClientBuilder.standard()
