@@ -4,10 +4,10 @@ import loadInitializers from 'ember-load-initializers';
 import config from './config/environment';
 
 const { modulePrefix } = config;
-const Eng = Engine.extend({
-  modulePrefix,
-  Resolver,
-  dependencies: {
+export default class Eng extends Engine {
+  modulePrefix = modulePrefix;
+  Resolver = Resolver;
+  dependencies = {
     services: [
       // this is shared to solve problems with ember-wormhole
       // https://github.com/yapplabs/ember-wormhole/issues/84
@@ -35,8 +35,6 @@ const Eng = Engine.extend({
       'protected'
     ]
   }
-});
+}
 
 loadInitializers(Eng, modulePrefix);
-
-export default Eng;
