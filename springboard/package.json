@@ -41,6 +41,7 @@
     "ember-cli-seamless-immutable-shim": "1.0.0",
     "ember-math-helpers": "2.7.1",
     "ember-moment": "8.0.0",
+    "ember-redux": "4.0.3",
     "flexi": "2.0.1"
   },
   "devDependencies": {
@@ -51,6 +52,7 @@
     "ember-cli": "3.14.0",
     "ember-cli-code-coverage": "1.0.0-beta.8",
     "ember-cli-dependency-checker": "3.1.0",
+    "ember-dependency-lookup": "2.0.0",
     "ember-cli-eslint": "5.1.0",
     "ember-cli-inject-live-reload": "2.0.1",
     "ember-cli-sass": "10.0.0",
