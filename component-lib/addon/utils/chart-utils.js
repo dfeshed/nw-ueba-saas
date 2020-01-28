@@ -180,3 +180,42 @@ export function siFormat(domain, count = 10) {
 function _tzFormat(timezone) {
   return (specifier) => (date) => moment(date).tz(timezone).format(specifier);
 }
+
+/**
+ * Calculate a color points in the range [0, 1] based on our dataset’s length
+ * @param i
+ * @param intervalSize
+ * @param colorRangeInfo
+ * @returns {*}
+ */
+function _calculatePoint(i, intervalSize, colorRangeInfo) {
+  const { colorEnd } = colorRangeInfo;
+  return colorEnd - (i * intervalSize);
+}
+
+/**
+ * Create an array of colors based on our data’s length,
+ * Must use an interpolated color scale, which has a range of [0, 1]
+ * @param dataLength
+ * @param colorScale
+ * @param colorRangeInfo
+ * @returns {[]}
+ */
+export function interpolateColors(dataLength, colorScale, colorRangeInfo) {
+  const rangeInfo = colorRangeInfo || {
+    colorStart: 0.15,
+    colorEnd: 0.75,
+    useEndAsStart: true
+  };
+  const colorRange = rangeInfo.colorEnd - rangeInfo.colorStart;
+  const intervalSize = colorRange / dataLength;
+  let i, colorPoint;
+  const colorArray = [];
+
+  for (i = 0; i < dataLength; i++) {
+    colorPoint = _calculatePoint(i, intervalSize, rangeInfo);
+    colorArray.push(colorScale(colorPoint));
+  }
+
+  return colorArray;
+}

@@ -47,6 +47,7 @@ Router.map(function() {
       this.route('lineSeries');
       this.route('areaSeries');
       this.route('grids');
+      this.route('donut');
     });
 
     this.route('content', function() {

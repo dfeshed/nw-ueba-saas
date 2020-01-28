@@ -6349,5 +6349,8 @@
         "permission": "Please contact your administrator to obtain the necessary permissions to view {listName}"
       }
     }
+  },
+  "chart": {
+    "noChartDataMessage": "No chart data available"
   }
 }

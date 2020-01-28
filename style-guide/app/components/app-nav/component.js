@@ -39,7 +39,8 @@ export default Component.extend({
           { name: 'Grid Lines', link: 'grids' },
           { name: 'Line Series', link: 'lineSeries' },
           { name: 'X Axis', link: 'xAxis' },
-          { name: 'Y Axis', link: 'yAxis' }
+          { name: 'Y Axis', link: 'yAxis' },
+          { name: 'Donut', link: 'donut' }
         ]
       },
       {
