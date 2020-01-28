@@ -62,6 +62,8 @@ public class S3JsonGzipChunksProducer implements EventsProducer<NetwitnessEvent>
 
         previousIntervalObj = chunksSorted.get(intervalObjects.size() - 1);
 
+        LOGGER.info("[" + schema + "] -- " + "Uploaded till now: " + totalUploaded.addAndGet(previousIntervalObj.getTotalUploaded()));
+
         return new HashMap<>();
     }
 
