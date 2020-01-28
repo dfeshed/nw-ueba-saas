@@ -42,7 +42,7 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
 
     public static final TestProperties test = new TestProperties();
 
-    private static final int EVENTS_GENERATION_CHUNK = 50000;
+    private static final int EVENTS_GENERATION_CHUNK = 51000;
     private static final boolean PARALLEL_SCENARIOS_INSERT = true;
 
     private void setTestProperties() {

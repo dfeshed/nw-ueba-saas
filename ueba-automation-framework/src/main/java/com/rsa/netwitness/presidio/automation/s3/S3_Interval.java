@@ -46,7 +46,9 @@ public class S3_Interval implements Comparable<S3_Interval> {
 
     public void close() {
         if (cache.isEmpty()) {
-            uploadEmpty();
+            if (fileUniqueId == 0) {
+                uploadEmpty();
+            }
         } else {
             uploadCache();
         }
