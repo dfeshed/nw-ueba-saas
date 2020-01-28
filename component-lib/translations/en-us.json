@@ -3316,7 +3316,8 @@
         "update": "Update",
         "reset": "Reset",
         "rightPanel": "Show/Hide Detail Right Panel",
-        "resetRiskScore": "Reset Risk Score"
+        "resetRiskScore": "Reset Risk Score",
+        "manualFileDownload": "Download files from Server"
       },
       "autoruns": {
         "services": {

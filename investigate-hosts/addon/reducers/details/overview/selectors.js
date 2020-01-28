@@ -455,7 +455,7 @@ export const isAgentMigrated = createSelector(
 );
 
 export const mftDownloadButtonStatusDetails = createSelector(
-  [_hostOverview, isAgentMigrated],
+  [_hostOverview],
   (hostOverview) => {
     const { machineIdentity = {}, agentStatus: { lastSeen } } = hostOverview.agentStatus ? hostOverview : { agentStatus: {} };
 
@@ -487,4 +487,19 @@ export const isolationStatus = createSelector(
 export const getRARStatus = createSelector(
   [_hostDetails],
   ({ agentStatus = {} }) => (agentStatus.lastSeen === 'RelayServer')
+);
+
+export const manualFileDownloadVisualStatus = createSelector(
+  [_hostOverview],
+  (hostOverview) => {
+    const minorVersionNumber = 5;
+    const { machineIdentity = {} } = hostOverview;
+
+    const { agentMode, agentVersion } = machineIdentity;
+    let isManualFileDownloadAllowed = false;
+    if (isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion, minorVersionNumber)) {
+      isManualFileDownloadAllowed = true;
+    }
+    return { isDisplayed: isManualFileDownloadAllowed };
+  }
 );

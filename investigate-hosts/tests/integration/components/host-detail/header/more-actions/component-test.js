@@ -73,6 +73,28 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(3)').textContent.trim(), 'Network Isolation', 'Network Isolation button renders');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(4)').textContent.trim(), 'Download MFT to Server', 'Download MFT button renders');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(5)').textContent.trim(), 'Download System Dump to Server', 'Download system dump button renders');
+    assert.equal(findAll('.host-details_dropdown-action-list li.manual-file-download-button').length, 0, 'Manual file download  button renders');
+  });
+
+  test('test for More Actions when version is 11.5 and above', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hostOverview(data)
+      .machineIdentityAgentVersion('11.5.0.0')
+      .policy(policy)
+      .isJsonExportCompleted(true)
+      .build();
+    await render(hbs `{{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+    assert.equal(findAll('.host-details_dropdown-action-list li').length, 6, 'Number of actions present is 5 as MFT and system dump permission added');
+    assert.equal(findAll('.host-details_dropdown-action-list li.disabled').length, 2, 'export host detail is disabled');
+
+    assert.ok(find('.host-start-scan-button'), 'scan-command renders giving the start scan button');
+    assert.equal(findAll('.rsa-icon-check-shield').length, 0, 'Start scan icon not present');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(2)').textContent.trim(), 'Export Host details', 'Export Host details button renders');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(3)').textContent.trim(), 'Network Isolation', 'Network Isolation button renders');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(4)').textContent.trim(), 'Download MFT to Server', 'Download MFT button renders');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(5)').textContent.trim(), 'Download System Dump to Server', 'Download system dump button renders');
+    assert.equal(findAll('.host-details_dropdown-action-list li.manual-file-download-button').length, 1, 'Manual file download  button renders');
   });
   test('test for More Actions with no manage permission', async function(assert) {
     new ReduxDataHelper(setState)
@@ -378,6 +400,7 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     new ReduxDataHelper(setState)
       .host(data)
       .hostOverview(data)
+      .machineIdentityAgentVersion('11.4.0.0')
       .policy(isolationDisabled)
       .isJsonExportCompleted(true)
       .isSnapshotsAvailable(true)
@@ -391,10 +414,41 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     assert.equal(findAll('.host-details_dropdown-action-list li').length, 4, 'No Network isolation related options rendered');
   });
 
+  test('Test for absence of network isolation options when policy is disabled when version is 11.5 and above', async function(assert) {
+    const isolationDisabled = {
+      policy: {
+        edrPolicy: {
+          name: 'Default EDR Policy',
+          isolationConfig:
+            {
+              enabled: false
+            }
+        }
+      }
+    };
+
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .machineIdentityAgentVersion('11.5.0.0')
+      .policy(isolationDisabled)
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+    await render(hbs `
+      <div id='modalDestination'></div>
+      {{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+
+    assert.equal(findAll('.host-details_dropdown-action-list li').length, 5, 'No Network isolation related options rendered');
+  });
+
   test('test for absence of network isolation options when policy is not present', async function(assert) {
     new ReduxDataHelper(setState)
       .host(data)
       .hostOverview(data)
+      .machineIdentityAgentVersion('11.4.0.0')
       .isJsonExportCompleted(true)
       .isSnapshotsAvailable(true)
       .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
@@ -405,6 +459,23 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     await click('.host_more_actions .host-details-more-actions');
 
     assert.equal(findAll('.host-details_dropdown-action-list li').length, 4, 'No Network isolation related options rendered');
+  });
+
+  test('test for absence of network isolation options when policy is not present when version is 11.5 and above', async function(assert) {
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .machineIdentityAgentVersion('11.5.0.0')
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+    await render(hbs `
+      <div id='modalDestination'></div>
+      {{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+
+    assert.equal(findAll('.host-details_dropdown-action-list li').length, 5, 'No Network isolation related options rendered');
   });
 
   test('test for network isolation options', async function(assert) {
@@ -534,6 +605,7 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
   test('Test for More Actions when on RAR', async function(assert) {
     new ReduxDataHelper(setState)
       .hostOverview(data)
+      .machineIdentityAgentVersion('11.4.0.0')
       .policy(policy)
       .lastSeen('RelayServer')
       .isJsonExportCompleted(true)
@@ -541,6 +613,24 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
     await render(hbs `{{host-detail/header/more-actions}}`);
     await click('.host_more_actions .host-details-more-actions');
     assert.equal(findAll('.host-details_dropdown-action-list li').length, 3, 'Number of actions present is 3 as MFT and system dump permission are not present');
+
+    assert.ok(find('.host-start-scan-button'), 'scan-command renders giving the start scan button');
+    assert.equal(findAll('.rsa-icon-check-shield').length, 0, 'Start scan icon not present');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(2)').textContent.trim(), 'Export Host details', 'Export Host details button renders');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(3)').textContent.trim(), 'Network Isolation', 'Network Isolation button renders');
+  });
+
+  test('Test for More Actions when on RAR when version is 11.5 and above', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hostOverview(data)
+      .machineIdentityAgentVersion('11.5.0.0')
+      .policy(policy)
+      .lastSeen('RelayServer')
+      .isJsonExportCompleted(true)
+      .build();
+    await render(hbs `{{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+    assert.equal(findAll('.host-details_dropdown-action-list li').length, 4, 'Number of actions present is 3 as MFT and system dump permission are not present');
 
     assert.ok(find('.host-start-scan-button'), 'scan-command renders giving the start scan button');
     assert.equal(findAll('.rsa-icon-check-shield').length, 0, 'Start scan icon not present');

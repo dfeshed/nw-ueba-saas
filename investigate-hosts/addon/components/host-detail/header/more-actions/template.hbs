@@ -95,6 +95,14 @@
             {{t moreOption.name}}
           {{/rsa-form-button}}
         </li>
+      {{else if (eq moreOption.buttonId "manualFileDownload-button")}}
+        <li class="manual-file-download-button">
+          {{#rsa-form-button
+            defaultAction=(action "requestManualFileDownload")
+            isDisabled=isAgentMigrated}}
+            {{t moreOption.name}}
+          {{/rsa-form-button}}
+        </li>
       {{/if}}
     {{/each}}
   </ul>

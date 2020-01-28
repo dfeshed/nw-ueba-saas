@@ -26,6 +26,7 @@ import {
   hostOverviewServerId,
   isAgentMigrated,
   isolationStatus,
+  manualFileDownloadVisualStatus,
   policyAdminUsm } from 'investigate-hosts/reducers/details/overview/selectors';
 
 let setState;
@@ -1167,5 +1168,58 @@ module('Unit | Selectors | overview', function(hooks) {
     });
     const result = isAgentMigrated(state);
     assert.equal(result, false);
+  });
+
+  test('manualFileDownloadVisualStatus', function(assert) {
+    const state1 = {
+      endpoint: {
+        overview: {
+          hostOverview: {
+            groupPolicy: {
+              policyStatus: 'Updated'
+            },
+            machineIdentity: { machineOsType: 'windows', agentMode: 'advanced', agentVersion: '11.4.0.0' },
+            agentStatus: { isolationStatus: { isolated: true } }
+          }
+        }
+      }
+    };
+
+    const result1 = manualFileDownloadVisualStatus(state1);
+    assert.equal(result1.isDisplayed, false, 'Returns false as the agent version does not match');
+
+    const state2 = {
+      endpoint: {
+        overview: {
+          hostOverview: {
+            groupPolicy: {
+              policyStatus: 'Updated'
+            },
+            machineIdentity: { machineOsType: 'windows', agentMode: 'insight', agentVersion: '11.5.0.0' },
+            agentStatus: { isolationStatus: { isolated: true } }
+          }
+        }
+      }
+    };
+
+    const result2 = manualFileDownloadVisualStatus(state2);
+    assert.equal(result2.isDisplayed, false, 'Returns false as the agent mode does not match');
+
+    const state3 = {
+      endpoint: {
+        overview: {
+          hostOverview: {
+            groupPolicy: {
+              policyStatus: 'Updated'
+            },
+            machineIdentity: { machineOsType: 'windows', agentMode: 'advanced', agentVersion: '11.5.0.0' },
+            agentStatus: { isolationStatus: { isolated: true } }
+          }
+        }
+      }
+    };
+
+    const result3 = manualFileDownloadVisualStatus(state3);
+    assert.equal(result3.isDisplayed, true, 'Returns true as the agent version and mode match');
   });
 });

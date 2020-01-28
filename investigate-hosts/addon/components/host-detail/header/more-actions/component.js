@@ -10,6 +10,7 @@ import { hostWithStatus,
   isJsonExportCompleted,
   isSnapshotsAvailable,
   isAgentMigrated,
+  manualFileDownloadVisualStatus,
   hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { exportFileContext } from 'investigate-hosts/actions/data-creators/details';
 import { downloadMFT, downloadSystemDump } from 'investigate-hosts/actions/data-creators/host';
@@ -26,7 +27,8 @@ const stateToComputed = (state) => ({
   isScanStartButtonDisabled: isScanStartButtonDisabled(state),
   isMFTEnabled: mftDownloadButtonStatusDetails(state),
   isAgentMigrated: isAgentMigrated(state),
-  isolationStatus: isolationStatus(state)
+  isolationStatus: isolationStatus(state),
+  manualFileDownloadVisualStatus: manualFileDownloadVisualStatus(state)
 });
 
 const dispatchToActions = {
@@ -48,8 +50,7 @@ class HostDetailsMoreActions extends Component {
   @computed('isMFTEnabled')
   get moreOptions() {
     let subNavItem = {};
-    const isMFTEnabled = this.get('isMFTEnabled');
-    const isolationStatus = this.get('isolationStatus');
+    const { manualFileDownloadVisualStatus, isMFTEnabled, isolationStatus } = this;
 
     if (isolationStatus.isIsolated) {
       subNavItem = {
@@ -111,12 +112,21 @@ class HostDetailsMoreActions extends Component {
       }
     ];
 
+    const manualFileDownload = {
+      panelId: 'panel6',
+      name: 'investigateHosts.hosts.button.manualFileDownload',
+      buttonId: 'manualFileDownload-button'
+    };
+
     if (this.get('accessControl.endpointCanManageFiles')) {
       if (isolationStatus.isIsolationEnabled) {
         moreActionOptions.push(networkIsolation);
       }
       if (isMFTEnabled.isDisplayed) {
         moreActionOptions.push(...windowsOsActions);
+      }
+      if (manualFileDownloadVisualStatus.isDisplayed) {
+        moreActionOptions.push(manualFileDownload);
       }
     }
     return moreActionOptions;
@@ -161,6 +171,11 @@ class HostDetailsMoreActions extends Component {
       callBackOptions
     });
     this.send('handleDownloadModal');
+  }
+
+  @action
+  requestManualFileDownload() {
+    // Placeholder for manual file download
   }
 
   @action

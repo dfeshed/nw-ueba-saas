@@ -227,6 +227,12 @@ export default class DataHelper {
     _set(this.state, 'process.processList', value);
     return this;
   }
+
+  machineIdentityAgentVersion(value) {
+    _set(this.state, 'overview.hostOverview.machineIdentity.agentVersion', value);
+    return this;
+  }
+
   machineOSType(value) {
     _set(this.state, 'overview.hostOverview.machineIdentity.machineOsType', value);
     return this;
@@ -247,6 +253,7 @@ export default class DataHelper {
     _set(this.state, 'overview.hostDetails.machineIdentity', value);
     return this;
   }
+
   processTree(value) {
     _set(this.state, 'process.processTree', value);
     return this;

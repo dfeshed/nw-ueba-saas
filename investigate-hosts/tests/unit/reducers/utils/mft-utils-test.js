@@ -32,3 +32,13 @@ test('isAgentVersionAdvanced when mode is correct', function(assert) {
   const result = isAgentVersionAdvanced('11.7.0');
   assert.equal(result, true);
 });
+
+test('isAgentVersionAdvanced when minor version number is sent', function(assert) {
+  const result = isAgentVersionAdvanced('11.7.0', 3);
+  assert.equal(result, true);
+});
+
+test('isAgentVersionAdvanced when minor version number is sent', function(assert) {
+  const result = isAgentVersionAdvanced('11.4.0', 5);
+  assert.equal(result, false);
+});
