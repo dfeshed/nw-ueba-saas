@@ -43,8 +43,7 @@ class MongoAdapterNetwitnessEventProducer implements EventsProducer<NetwitnessEv
                         .map(NetwitnessStoredData::new)
                         .collect(toList());
 
-        schemas.forEach(schema -> netwitnessEventStore.store(
-                getAsNetwitnessStoredData.apply(schema), schema));
+        schemas.forEach(schema -> netwitnessEventStore.store(getAsNetwitnessStoredData.apply(schema), schema));
 
         Map<Schema, Long> update = events.parallelStream().collect(groupingBy(ev -> ev.schema, counting()));
         update.forEach((key, value) -> totalResult.compute(key, (k, v) -> totalResult.getOrDefault(key, 0L) + value));

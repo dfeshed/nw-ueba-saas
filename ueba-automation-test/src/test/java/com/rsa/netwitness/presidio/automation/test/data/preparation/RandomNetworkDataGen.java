@@ -5,7 +5,7 @@ import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverterFactory;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducer;
-import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducerFactory;
+import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducerSupplier;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.enums.GeneratorFormat;
@@ -131,7 +131,7 @@ public class RandomNetworkDataGen extends AbstractTestNGSpringContextTests {
     }
 
     private EventsProducer<NetwitnessEvent> getProducer() {
-        return new EventsProducerFactory(netwitnessEventStore).get(generatorFormat);
+        return new EventsProducerSupplier(netwitnessEventStore).get(generatorFormat);
     }
 
     private EventConverter<Event> getConverter() {
