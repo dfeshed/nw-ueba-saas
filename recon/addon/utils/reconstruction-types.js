@@ -40,7 +40,8 @@ const RECON_VIEW_TYPES = [{
   code: 4,
   id: 'mail',
   name: 'MAIL',
-  isClassicReconView: true
+  component: 'recon-event-detail/emails',
+  dataKey: 'emails.emails'
 }, {
   code: 5,
   id: 'web',

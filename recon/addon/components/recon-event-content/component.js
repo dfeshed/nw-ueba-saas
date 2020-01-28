@@ -53,7 +53,7 @@ const EventContentComponent = Component.extend(ReconPagerMixin, {
   @computed('isEmailView', 'isWebEmail', 'errorMessage', 'classicWebReconPath')
   reconMessage(isEmailView, isWebEmail, errorMessage, classicWebReconPath) {
     if (isEmailView && isWebEmail) {
-      return this.get('i18n').t('recon.emailView.webMailRedirect', { url: classicWebReconPath });
+      return this.get('i18n').t('recon.emailView.webMailRedirect', { url: classicWebReconPath, htmlSafe: true });
     }
     return errorMessage;
   }

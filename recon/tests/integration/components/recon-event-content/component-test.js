@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { render, findAll, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import EmberObject from '@ember/object';
@@ -89,8 +89,7 @@ module('Integration | Component | recon event content', function(hooks) {
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'You do not have the required permissions to view this content.', 'Error is displayed with correct message');
   });
 
-  // skipped for 11.4 release since email reconstruction is turned off for 11.4, unskip this when email recon will turned back on
-  skip('displays correct error when reconstruction error occurs', async function(assert) {
+  test('displays correct error when reconstruction error occurs', async function(assert) {
     new DataHelper(this.get('redux'))
       .initializeData({ eventId: 1, endpointId: 2, meta: [['service', 80]] })
       .setViewToEmail()
@@ -101,8 +100,7 @@ module('Integration | Component | recon event content', function(hooks) {
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'No Email reconstruction available for this event.', 'Correct error message is shown for reconstruction error');
   });
 
-  // skipped for 11.4 release since email reconstruction is turned off for 11.4, unskip this when email recon will turned back on
-  skip('test redirect to classic web recon view for web mail', async function(assert) {
+  test('test redirect to classic web recon view for web mail', async function(assert) {
     new DataHelper(this.get('redux'))
       .initializeData({ eventId: 1, endpointId: 2, meta: [['service', 80], ['alias.host', 'web.mail.google.com']] })
       .setViewToEmail()

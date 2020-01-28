@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import hbs from 'htmlbars-inline-precompile';
@@ -107,22 +107,12 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     assert.equal(find('.tview-label').textContent.trim(), 'Text');
   });
 
-  // skipped for 11.4 release since email reconstruction is turned off for 11.4, unskip this when email recon will turned back on
-  skip('Click on Email tab changes the tab', async function(assert) {
+  test('Click on Email tab changes the tab', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isTextView().build();
     await render(hbs`{{recon-event-titlebar}}`);
     assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Text');
     await selectChoose('.heading-select', 'Email');
     assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Email');
-  });
-
-  // Remove this test when email reconstruction is turned back on
-  test('Click on Email tab opens the event in a new tab and does not change the current tab', async function(assert) {
-    new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isPacketView().build();
-    await render(hbs`{{recon-event-titlebar}}`);
-    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Packet');
-    await selectChoose('.heading-select', 'Email');
-    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Packet');
   });
 
   test('Click on Web tab opens the web meta in a new tab and does not change the current tab', async function(assert) {
@@ -133,12 +123,11 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'Packet');
   });
 
-  // Remove/Update this test when email reconstruction is turned back on
-  test('email and web views shows icon of classic redirect', async function(assert) {
+  test('web view shows icon of classic redirect', async function(assert) {
     new ReduxDataHelper(setState).meta([['foo', 'bar'], ['fooz', 'ball']]).isPacketView().isNetworkEvent().build();
     await render(hbs`{{recon-event-titlebar}}`);
     await clickTrigger();
-    assert.equal(findAll('.ember-power-select-option .rsa-icon-expand-5').length, 2, 'Email and Web View');
+    assert.equal(findAll('.ember-power-select-option .rsa-icon-expand-5').length, 1, 'Web View');
   });
 
   // header toggle
