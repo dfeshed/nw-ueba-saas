@@ -86,6 +86,7 @@ export default {
     info: true, // for preferences that need additional information
     type: 'radio',
     options: [
+      SORT_ORDER.NO_SORT,
       SORT_ORDER.ASC,
       SORT_ORDER.DESC
     ],
@@ -111,7 +112,7 @@ export default {
       autoDownloadExtractedFiles: true,
       packetsPageSize: 100,
       autoUpdateSummary: false,
-      eventTimeSortOrder: SORT_ORDER.ASC
+      eventTimeSortOrder: SORT_ORDER.NO_SORT
     },
     eventPreferences: {
       columnGroup: 'SUMMARY'

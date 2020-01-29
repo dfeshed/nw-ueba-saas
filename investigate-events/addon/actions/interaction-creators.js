@@ -37,7 +37,7 @@ import { CLOSE_PAREN, OPEN_PAREN } from 'investigate-events/constants/pill';
  * @param {*} dispatch
  */
 const _resetSortState = (dispatch, prefs) => {
-  const sortDirection = (prefs && prefs.eventTimeSortOrder) || SORT_ORDER.ASC;
+  const sortDirection = (prefs && prefs.eventTimeSortOrder) || SORT_ORDER.NO_SORT;
   const sortField = 'time';
   dispatch(updateSort('time', sortDirection));
   const params = updateUrl(window.location.search, {

@@ -89,6 +89,7 @@ export default {
     info: true, // for preferences that need additional information
     type: 'radio',
     options: [
+      SORT_ORDER.NO_SORT,
       SORT_ORDER.ASC,
       SORT_ORDER.DESC
     ],
@@ -113,7 +114,7 @@ export default {
       defaultMetaFormat: 'TEXT',
       autoDownloadExtractedFiles: true,
       autoUpdateSummary: false,
-      eventTimeSortOrder: 'Ascending'
+      eventTimeSortOrder: 'Unsorted'
     },
     eventPreferences: {
       columnGroup: 'SUMMARY'

@@ -2269,6 +2269,7 @@
       "eventTimeSortOrder-tooltip": "By default, sort events in ascending or descending order based on collection time. If results exceed the events limit, not all events can be loaded. The oldest events show if in ascending order and the newest events show if in descending order.",
       "Descending": "Descending",
       "Ascending": "Ascending",
+      "Unsorted": "Unsorted",
       "sortOrderDefaultText": "(default)"
     },
     "endpoint-preferences": {

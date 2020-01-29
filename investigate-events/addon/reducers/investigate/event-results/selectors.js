@@ -43,7 +43,8 @@ const _eventRelationshipsEnabled = (state) => state.investigate.eventResults.eve
 
 export const SORT_ORDER = {
   DESC: 'Descending',
-  ASC: 'Ascending'
+  ASC: 'Ascending',
+  NO_SORT: 'Unsorted'
 };
 
 export const eventResultSetStart = createSelector(
@@ -78,9 +79,9 @@ export const eventTimeSortOrder = createSelector(
   [_eventAnalysisPreferences],
   (preferences) => {
     if (preferences) {
-      return preferences.eventTimeSortOrder || SORT_ORDER.ASC;
+      return preferences.eventTimeSortOrder || SORT_ORDER.NO_SORT;
     }
-    return SORT_ORDER.ASC;
+    return SORT_ORDER.NO_SORT;
   }
 );
 

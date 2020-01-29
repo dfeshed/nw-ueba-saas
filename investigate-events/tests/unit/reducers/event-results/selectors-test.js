@@ -791,6 +791,8 @@ module('Unit | Selectors | event-results', function(hooks) {
   });
 
   test('eventTimeSortOrder returns proper data', async function(assert) {
+    const preferenceRefData = { ...preferenceData };
+    preferenceRefData.eventAnalysisPreferences.eventTimeSortOrder = 'Ascending';
     let result = eventTimeSortOrder({
       investigate: {
         data: preferenceData
@@ -805,7 +807,7 @@ module('Unit | Selectors | event-results', function(hooks) {
         }
       }
     });
-    assert.equal(result, 'Ascending', 'when no data passes correct return');
+    assert.equal(result, 'Unsorted', 'when no data passes correct return');
   });
 
   test('isEventResultsError is false when status is not error', function(assert) {
