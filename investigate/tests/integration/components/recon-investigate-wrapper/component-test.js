@@ -1,5 +1,5 @@
 import hbs from 'htmlbars-inline-precompile';
-import { module, test } from 'qunit';
+import { module, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, settled } from '@ember/test-helpers';
 import Service from '@ember/service';
@@ -23,7 +23,7 @@ module('Integration | Component | recon investigate wrapper', function(hooks) {
     this.owner.register('component:link-to-external', LinkToExternalComponent);
   });
 
-  test('recon container is rendered', async function(assert) {
+  skip('recon container is rendered', async function(assert) {
     assert.expect(3);
 
     this.set('eventId', '5');
