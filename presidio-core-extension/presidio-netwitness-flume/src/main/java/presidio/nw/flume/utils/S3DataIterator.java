@@ -189,7 +189,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
     private void initFolderIterator() {
         List<String> days = new ArrayList<>();
         logger.info("Fetching events from inclusive {} to exclusive {}.", startTime, endTime);
-        for (Instant time = startTime; time.compareTo(endTime) != 1; time = time.plus(1, DAYS).truncatedTo(DAYS)) {
+        for (Instant time = startTime; time.compareTo(endTime) <= 0; time = time.plus(1, DAYS).truncatedTo(DAYS)) {
             days.add(streamPrefix + generateDaySuffix(time));
         }
         folderIterator = days.iterator();
