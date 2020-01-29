@@ -18,6 +18,11 @@ const dispatchToActions = {
 const DefineGroupStep = Component.extend({
   tagName: 'vbox',
   classNames: ['define-group-step', 'scroll-box'],
-  andOr: ['AND', 'OR']
+  andOr: null,
+
+  init() {
+    this._super(...arguments);
+    this.andOr = ['AND', 'OR'];
+  }
 });
 export default connect(stateToComputed, dispatchToActions)(DefineGroupStep);

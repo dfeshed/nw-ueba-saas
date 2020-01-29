@@ -8,8 +8,13 @@ import { next } from '@ember/runloop';
 export default DataTableBody.extend({
   layout,
   classNames: 'windows-log-channel-list',
-  filterOptions: ['INCLUDE', 'EXCLUDE'],
+  filterOptions: null,
   channelOptions: A(channels),
+
+  init() {
+    this._super(...arguments);
+    this.filterOptions = ['INCLUDE', 'EXCLUDE'];
+  },
 
   actions: {
     setSelected(column, value) {

@@ -19,13 +19,18 @@ const VmMax = Component.extend({
   classNames: 'vm-max',
   classNameBindings: ['selectedSettingId'],
   isDefaultPolicy: null,
-  format: {
-    to(value) {
-      return Math.round(value);
-    },
-    from(value) {
-      return value;
-    }
+  format: null,
+
+  init() {
+    this._super(...arguments);
+    this.format = {
+      to(value) {
+        return Math.round(value);
+      },
+      from(value) {
+        return value;
+      }
+    };
   }
 });
 

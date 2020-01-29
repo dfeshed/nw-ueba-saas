@@ -6,7 +6,7 @@ const RsaWizard = Component.extend({
   classNames: ['rsa-wizard-container'],
 
   // step objects expected to be passed in
-  steps: [],
+  steps: null,
   // initial step ID expected to be passed in
   initialStepId: '',
   // current/active step ID managed internally
@@ -18,6 +18,7 @@ const RsaWizard = Component.extend({
 
   init() {
     this._super(...arguments);
+    this.steps = this.steps || [];
     this.set('currentStepId', this.get('initialStepId'));
   },
 

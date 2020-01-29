@@ -14,15 +14,19 @@ const dispatchToActions = {
 
 const ScanOptions = Component.extend({
   tagName: 'box',
-
   classNames: 'scan-options',
-  format: {
-    to(value) {
-      return Math.round(value);
-    },
-    from(value) {
-      return value;
-    }
+  format: null,
+
+  init() {
+    this._super(...arguments);
+    this.format = {
+      to(value) {
+        return Math.round(value);
+      },
+      from(value) {
+        return value;
+      }
+    };
   }
 
 });
