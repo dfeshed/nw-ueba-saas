@@ -64,7 +64,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     }
   }
 
-
   .rsa-form-checkbox-label {
     letter-spacing: 0;
 
@@ -86,13 +85,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     @include rsa-vendor-prefix(flex-grow, 0); /* can't grow beyond min size */
     background-color: background-color(primary, darker, somewhat-opaque);
 
-    .rsa-form-checkbox-label {
-      &::before {
-        position: absolute;
-        right: 11px;
-      }
-    }
-
     &__column-selector {
       position: absolute;
       right: 0;
@@ -107,39 +99,48 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       }
     }
 
+    .rsa-form-checkbox-label {
+      &::before {
+        position: absolute;
+        right: 11px;
+      }
+    }
+
     .sortable-item {
       position: relative;
+      @include rsa-vendor-prefix(flex-shrink, 0); /* can't shrink beyond min size */
+      @include rsa-vendor-prefix(flex-grow, 0); /* can't grow beyond min size */
 
-      .sort {
-        display: none;
-        position: absolute;
-        padding: rsa-whitespace(least);
-        right: rsa-whitespace(least);
-        top: rsa-whitespace(less);
-
-        &:hover {
-          cursor: pointer;
-        }
-      }
-
-      &.is-sorted {
-        background-color: background-color(primary, darkest, translucent);
-
+      .rsa-data-table-header-cell {
         .sort {
-          color: text-color(secondary);
-          display: inline-block;
-        }
+          display: none;
+          position: absolute;
+          padding: rsa-whitespace(least);
+          right: rsa-whitespace(least);
+          top: rsa-whitespace(less);
 
-        &.asc {
-          .sort {
-            transform: rotate(180deg);
+          &:hover {
+            cursor: pointer;
           }
         }
-      }
+        &.is-sorted {
+          background-color: background-color(primary, darkest, translucent);
 
-      &:hover {
-        .sort {
-          display: inline-block;
+          .sort {
+            color: text-color(secondary);
+            display: inline-block;
+          }
+
+          &.asc {
+            .sort {
+              transform: rotate(180deg);
+            }
+          }
+        }
+        &:hover {
+          .sort {
+            display: inline-block;
+          }
         }
       }
     }

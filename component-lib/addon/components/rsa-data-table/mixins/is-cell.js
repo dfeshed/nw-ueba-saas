@@ -38,7 +38,13 @@ export default Mixin.create(HasTableParent, {
 
   @computed('_resolvedWidth')
   style(_resolvedWidth) {
-    return htmlSafe(`width: ${_resolvedWidth};`);
+    // See note from didInsertElement()
+    if (this._sortableItemParent) {
+      this.setParentWidth(_resolvedWidth);
+      return htmlSafe('width: 100%;');
+    } else {
+      return htmlSafe(`width: ${_resolvedWidth};`);
+    }
   },
 
 
@@ -80,8 +86,15 @@ export default Mixin.create(HasTableParent, {
   index: 0,
 
   /**
+   * Parent DOM node that was inserted by the ember-sortable addon. Only used if
+   * a cell is part of a sortable row/column.
+   * @private
+   */
+  _sortableItemParent: undefined,
+
+  /**
    * Computes the width (as a CSS string value) to be applied to component's DOM element.
-   * If the `width` attribute is defined, it gets precedence; otherwise look for a width in `column`.
+   * If the `columnWidth` attribute is defined, it gets precedence; otherwise look for a width in `column`.
    * If both are missing, resort to a hard-coded default.
    * In any case, ensure the width has some sort of unit (if none, assume pixels).
    * @type string
@@ -100,13 +113,35 @@ export default Mixin.create(HasTableParent, {
 
   @computed('column.field', 'currentSort.field')
   isSorted(columnField, sortField) {
-    return columnField === sortField;
+    return !!columnField && !!sortField && columnField === sortField;
   },
 
   @computed('isSorted', 'currentSort.direction')
   sortDir(isSorted, currentDir) {
     if (isSorted) {
       return currentDir;
+    }
+  },
+
+  didInsertElement() {
+    this._super(...arguments);
+    const parent = this.element.parentElement;
+    // Warning, creative coding ahead!
+    // Because ember-sortable adds a DOM element into the DOM hierarchy that
+    // we cannot control, setting a calculated width on a cell would cause
+    // improper layout. Instead, we check if the parent is a type specific to
+    // ember-sorable. If it is, then we save the parent reference and set the
+    // calculated width on the parent, not this cell.
+    if (parent && parent.className.includes('sortable-item')) {
+      this.set('_sortableItemParent', parent);
+      this.setParentWidth(this._resolvedWidth);
+      this.element.style.width = '100%';
+    }
+  },
+
+  setParentWidth(width) {
+    if (this._sortableItemParent) {
+      this._sortableItemParent.style.width = width;
     }
   }
 

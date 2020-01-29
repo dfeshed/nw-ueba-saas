@@ -1,31 +1,19 @@
-import computed, { alias } from 'ember-computed-decorators';
-import SortableItemMixin from 'ember-sortable/mixins/sortable-item';
 import Component from '@ember/component';
-/**
- * Extension of the Data Table default row class for supporting selecting and dragging of rows
- * @public
- */
-export default Component.extend(SortableItemMixin, {
-  tagName: 'tr',
-  classNameBindings: ['isSelected'],
-  @alias('rule') model: null, // used by ember-sortable
-  handle: 'tr', // used by ember-sortable
-  distance: 2, // used by ember-sortable
 
-  /**
-   * Tracks which item is currently selected / highlighted by the user
-   * @property isSelected
-   * @public
-   */
-  @computed('selectedRules', 'rule.id')
-  isSelected(selectedRules, itemId) {
-    return selectedRules.includes(itemId);
-  },
+export default Component.extend({
+  tagName: null,
 
   onRowClick() {},
+  onCheckboxClick() {},
 
   click() {
-    this.get('onRowClick').apply(this, arguments);
+    this.onRowClick(...arguments);
     return false;
+  },
+
+  actions: {
+    handleCheckboxClick(rule) {
+      this.onCheckboxClick(rule);
+    }
   }
 });

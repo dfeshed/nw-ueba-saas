@@ -79,23 +79,29 @@
           </thead>
         </table>
         <div class="group-ranking-table">
-          {{#sortable-group tagName="table" onChange="reorderRanking" as |group|}}
+          {{#sortable-group tagName="table" model=groupRanking onChange=(action "reorderRanking") as |group|}}
             <tbody class="group-ranking-table-body">
-              {{#each groupRanking as |item index|}}
-                {{#usm-groups/group-ranking/edit-ranking-step/row
+              {{#each group.model key="id" as |groupRank index|}}
+                {{#group.item
+                  class=(row-class-name selectedGroupRanking groupRank)
+                  click=(action "handlePreviewRankingWithFetch" groupRank index)
                   distance=10
-                  item=item
-                  group=group
-                  index=index
-                  selectedItemId=selectedGroupRanking
-                  tabindex=(if index -1 0)
-                  selectedSourceType=selectedSourceType
-                  click=(action "handlePreviewRankingWithFetch" index item.isChecked)
-                  mouseUp=(action "handleSelectGroupRanking")
+                  focusIn=(action "selectGroupRanking" groupRank.name)
                   keyDown=(action "handleKeyBoard" index)
-                  focusIn=(action "selectGroupRanking" item.name)
-                  mouseMove=(action "handleScroll")}}
-                {{/usm-groups/group-ranking/edit-ranking-step/row}}
+                  model=groupRank
+                  tabindex=(if index -1 0)
+                  tagName="tr"
+                  as |groupItem|}}
+                  {{#groupItem.handle class="reorder-item-cell col-md-1"}}
+                    <span class="handle"></span>
+                  {{/groupItem.handle}}
+                  {{#usm-groups/group-ranking/edit-ranking-step/row
+                    index=index
+                    item=groupRank
+                    selectedSourceType=selectedSourceType
+                  }}
+                  {{/usm-groups/group-ranking/edit-ranking-step/row}}
+                {{/group.item}}
               {{/each}}
             </tbody>           
           {{/sortable-group}}

@@ -237,9 +237,9 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       </style>
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
     return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(async() => {
-      assert.equal(findAll('.rsa-data-table-header-cell:nth-child(2) i.rsa-icon-arrow-up-7').length, 1, 'rsa arrow-up icon before sorting');
-      await click('.rsa-data-table-header-cell:nth-child(2) .rsa-icon');
-      assert.equal(findAll('.rsa-data-table-header-cell:nth-child(2) i.rsa-icon-arrow-down-7').length, 1, 'rsa arrow-down icon after sorting');
+      assert.equal(findAll('.sortable-item:nth-child(2) i.rsa-icon-arrow-up-7').length, 1, 'rsa arrow-up icon before sorting');
+      await click('.sortable-item:nth-child(2) .rsa-icon');
+      assert.equal(findAll('.sortable-item:nth-child(2) i.rsa-icon-arrow-down-7').length, 1, 'rsa arrow-down icon after sorting');
     });
 
   });
@@ -265,7 +265,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       </style>
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName closePropertyPanel=closePropertyPanel columnsConfig=columnConfig}}`);
     return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(async() => {
-      await click('.rsa-data-table-header-cell:nth-child(2) .rsa-icon');
+      await click('.sortable-item:nth-child(2) .rsa-icon');
     });
   });
 

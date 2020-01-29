@@ -106,7 +106,6 @@
             display: flex;
             width: 100%;
             border-bottom: 1px solid border-color(primary, dark);
-            cursor: pointer;
             &:hover {
               background-color: rgba(180, 180, 180, 0.08);
             }
@@ -127,6 +126,13 @@
           td {
             display: inline-block;
             width: 100%;
+            pointer-events: none;
+            .group-preview-cell {
+              .float-toggle {
+                pointer-events: all;
+                cursor: pointer;
+              }
+            }
             .group-name-cell, .policy-cell {
               padding-left: rsa-whitespace();
               .tooltip-text {
@@ -178,21 +184,26 @@
     }
     table {
       width: 100%;
-      th, td {
-        .handle {
-          display: inline-block;
-          cursor: move;
-          height: 21px;
-          width: 15px;
-          &::before {
-            display: block;
-            content: '';
-            height: 100%;
-            width: 100%;
-            background-image: radial-gradient(background-color(secondary) 40%, transparent 40%);
-            background-size: 4px 4px;
-            background-position: 100% 0;
-            background-repeat: repeat;
+      th, tr {
+        .reorder-item-cell {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          .handle {
+            display: inline-block;
+            cursor: move;
+            height: 21px;
+            width: 15px;
+            &::before {
+              display: block;
+              content: '';
+              height: 100%;
+              width: 100%;
+              background-image: radial-gradient(background-color(secondary) 40%, transparent 40%);
+              background-size: 4px 4px;
+              background-position: 100% 0;
+              background-repeat: repeat;
+            }
           }
         }
       }

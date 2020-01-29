@@ -186,7 +186,6 @@
     // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
     // TODO: remove global component overwrites below and update the global component itself
     &__downloadEvents {
-      display: inline-block;
       float: left;
       max-height: 43px;
       margin-right: rsa-whitespace(least);

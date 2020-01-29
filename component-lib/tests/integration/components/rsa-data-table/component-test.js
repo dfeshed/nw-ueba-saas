@@ -198,10 +198,10 @@ test('it renders declaratively with the correct number of expected elements.', f
   this.render(hbs`
       {{#rsa-data-table lazy=false items=items}}
         {{#rsa-data-table/header}}
-          {{#rsa-data-table/header-cell}}
+          {{#rsa-data-table/header-cell class='rsa-data-table-header-cell'}}
             Index:
           {{/rsa-data-table/header-cell}}
-          {{#rsa-data-table/header-cell}}
+          {{#rsa-data-table/header-cell class='rsa-data-table-header-cell'}}
             Foo:
           {{/rsa-data-table/header-cell}}
         {{/rsa-data-table/header}}
@@ -232,7 +232,7 @@ test('it renders declaratively with the correct number of expected elements.', f
   assert.ok(lastRow.classList.contains('is-last'), 'Last row has is-last class.');
 
   assert.equal(document.querySelectorAll('.rsa-data-table-header-row').length, 1, 'Correct number of header-row dom elements found.');
-  assert.equal(document.querySelectorAll('.rsa-data-table-header-cell').length, 2, 'Correct number of body-cell dom elements found.');
+  assert.equal(document.querySelectorAll('.rsa-data-table-header-cell').length, 2, 'Correct number of header-cell dom elements found.');
 });
 
 test('it renders imperatively (with a string config) the correct number of expected elements.', function(assert) {

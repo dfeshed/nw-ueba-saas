@@ -1,4 +1,5 @@
 {{! Toolbar }}
+{{! template-lint-disable quotes}}
 {{#if (eq rulesStatus "complete")}}
   {{respond/incident-rules/toolbar transitionToRule=transitionToRule}}
 {{/if}}
@@ -17,7 +18,7 @@
 {{else}}
   {{! Table Header}}
   <div class="incident-rule-header">
-    <table class="{{if accessControl.respondCanManageAlertRules "editable" "not-editable"}}">
+    <table class="{{if accessControl.respondCanManageAlertRules 'editable' 'not-editable'}}">
       <thead>
         <tr>
           <th class="reorder">&varr;</th>
@@ -30,31 +31,31 @@
               </label>
             </centered>
           </th>
-          <th class="order" title="{{t "configure.incidentRules.order"}}">
+          <th class="order" title="{{t 'configure.incidentRules.order'}}">
             {{t "configure.incidentRules.order"}}
           </th>
-          <th class="enabled" title="{{t "configure.incidentRules.enabled"}}">
+          <th class="enabled" title="{{t 'configure.incidentRules.enabled'}}">
             {{t "configure.incidentRules.enabled"}}
           </th>
-          <th class="name" title="{{t "configure.incidentRules.name"}}">
+          <th class="name" title="{{t 'configure.incidentRules.name'}}">
             {{t "configure.incidentRules.name"}}
           </th>
-          <th class="description" title="{{t "configure.incidentRules.description"}}">
+          <th class="description" title="{{t 'configure.incidentRules.description'}}">
             <div>{{t "configure.incidentRules.description"}}</div>
           </th>
-          <th class="last-matched" title="{{t "configure.incidentRules.lastMatched"}}">
+          <th class="last-matched" title="{{t 'configure.incidentRules.lastMatched'}}">
             {{t "configure.incidentRules.lastMatched"}}
           </th>
-          <th class="alerts-matched" title="{{t "configure.incidentRules.alertsMatchedCount"}}">
+          <th class="alerts-matched" title="{{t 'configure.incidentRules.alertsMatchedCount'}}">
             {{t "configure.incidentRules.alertsMatchedCount"}}
           </th>
-          <th class="incidents-created" title="{{t "configure.incidentRules.incidentsCreatedCount"}}">
+          <th class="incidents-created" title="{{t 'configure.incidentRules.incidentsCreatedCount'}}">
             {{t "configure.incidentRules.incidentsCreatedCount"}}
           </th>
-          <th class="rule-created" title="{{t "configure.incidentRules.ruleCreated"}}">
+          <th class="rule-created" title="{{t 'configure.incidentRules.ruleCreated'}}">
             {{t "configure.incidentRules.ruleCreated"}}
           </th>
-          <th class="rule-last-updated" title="{{t "configure.incidentRules.ruleLastUpdated"}}">
+          <th class="rule-last-updated" title="{{t 'configure.incidentRules.ruleLastUpdated'}}">
             {{t "configure.incidentRules.ruleLastUpdated"}}
           </th>
         </tr>
@@ -63,77 +64,37 @@
   </div>
   {{! Table }}
   <div class="incident-rule-list">
-    {{#sortable-group onChange="reorder" as |group|}}
-      <table class="{{if accessControl.respondCanManageAlertRules "editable" "not-editable"}}">
-        <tbody>
-          {{#each rules as |rule|}}
-            {{!-- Only pass along the group if the user has permission to reorder/manage the rules --}}
-            {{#respond/incident-rules/row
-              rule=rule
+    {{#sortable-group
+      class="{{if accessControl.respondCanManageAlertRules 'editable' 'not-editable'}}"
+      tagName="table"
+      model=rules
+      onChange=(action "reorder")
+      as |group|}}
+      <tbody>
+        {{#each group.model as |groupRule|}}
+          {{#group.item
+            distance=2
+            model=groupRule
+            onDragStop=(action "handleDragStopped")
+            tagName="tr"
+            class=(if (contains groupRule.id selectedRules) "is-selected")
+            as |groupItem|
+          }}
+            {{#groupItem.handle tagName="td" class="reorder reorder-rule-cell"}}
+              <span class="handle"></span>
+            {{/groupItem.handle}}
+            {{!-- Only pass along the group if the user has permission to reorder/manage the rules
               group=(if accessControl.respondCanManageAlertRules group null)
+             --}}
+            {{respond/incident-rules/row
+              onCheckboxClick=(action "handleCheckboxClick")
+              onRowClick=(action "handleRowClick" groupRule)
+              rule=groupRule
               selectedRules=selectedRules
-              onRowClick=(action "handleRowClick" rule)
-              onDragStart=(action "handleDragStarted" rule)
             }}
-              <td class="reorder reorder-rule-cell ">
-                <centered>
-                  <span class="handle"></span>
-                </centered>
-              </td>
-              <td class="select" {{action "handleCheckboxClick" rule bubbles=false}}>
-                <centered>
-                  <label class="rsa-form-checkbox-label {{if (contains rule.id selectedRules) "checked"}}">
-                    {{rsa-form-checkbox
-                      checked=(contains rule.id selectedRules)
-                    }}
-                  </label>
-                </centered>
-              </td>
-              <td class="order">
-                <div>{{rule.order}}</div>
-              </td>
-              <td class="enabled">
-                <centered>
-                  <div title={{rule.enabled}} class="{{if (eq rule.enabled true) "enabled-rule" "disabled-rule"}}"></div>
-                </centered>
-              </td>
-              <td class="name">
-                <div title="{{rule.name}}">{{#link-to "respond.incident-rule" rule.id test-id="incidentRuleLink"}}{{rule.name}}{{/link-to}}</div>
-              </td>
-              <td class="description">
-                <div title="{{rule.description}}">{{rule.description}}</div>
-              </td>
-              <td class="last-matched">
-                <div>
-                  {{#if rule.lastMatched}}
-                    {{rsa-content-datetime timestamp=rule.lastMatched displayTime=true displayMilliseconds=false}}
-                  {{/if}}
-                </div>
-              </td>
-              <td class="alerts-matched">
-                <div title="{{rule.alertsMatchedCount}}">{{rule.alertsMatchedCount}}</div>
-              </td>
-              <td class="incidents-created">
-                <div title="{{rule.incidentsCreatedCount}}">{{rule.incidentsCreatedCount}}</div>
-              </td>
-              <td class="rule-created">
-                <div>
-                  {{#if rule.createdDate}}
-                    {{rsa-content-datetime timestamp=rule.createdDate displayTime=true displayMilliseconds=false}}
-                  {{/if}}
-                </div>
-              </td>
-              <td class="rule-last-updated">
-                <div>
-                  {{#if rule.lastUpdatedDate}}
-                    {{rsa-content-datetime timestamp=rule.lastUpdatedDate displayTime=true displayMilliseconds=false}}
-                  {{/if}}
-                </div>
-              </td>
-            {{/respond/incident-rules/row}}
-          {{/each}}
-        </tbody>
-      </table>
+          {{/group.item}}
+        {{/each}}
+      </tbody>
     {{/sortable-group}}
   </div>
 {{/if}}
@@ -141,3 +102,4 @@
 {{#if isTransactionUnderway}}
   <div class="transaction-overlay"></div>
 {{/if}}
+{{! template-lint-enable quotes }}

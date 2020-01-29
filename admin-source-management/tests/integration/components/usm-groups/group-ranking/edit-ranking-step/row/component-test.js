@@ -28,17 +28,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
       .groupRankingWithData()
       .build();
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step/row}}`);
-    assert.equal(findAll('tr').length, 1, 'The component appears in the DOM');
-  });
-
-  test('The component mouseUp on the row', async function(assert) {
-    new ReduxDataHelper(setState)
-      .groupWiz()
-      .groupRankingWithData()
-      .build();
-    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step/row}}`);
-    await triggerEvent(document.querySelectorAll('tr')[0], 'mouseUp');
-    assert.equal(findAll('tr.is-selected').length, 1, 'The row is selected');
+    assert.equal(findAll('td').length, 1, 'The component appears in the DOM');
   });
 
   test('Show correct source count for special cases', async function(assert) {
@@ -197,6 +187,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
     assert.equal(document.querySelectorAll('.src-count')[4].innerText.trim(), 10, 'published and synced source count as expected');
     assert.equal(document.querySelectorAll('.src-count-text').length, 4, 'no tooltip rendered for normal count');
   });
+
   test('Show edrPolicy policy applied', async function(assert) {
     const rankingData =
     {
@@ -223,6 +214,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
     assert.equal(document.querySelectorAll('.policy-cell .tooltip-text')[0].innerText.trim(), 'policy_edr', 'edrPolicy shows as expected with tooltip');
     assert.equal(document.querySelectorAll('.group-name-cell .tooltip-text')[0].innerText.trim(), 'Zebra 001', 'Group name shows as expected with tooltip');
   });
+
   test('Show windowsLogPolicy policy applied', async function(assert) {
     const rankingData =
     {

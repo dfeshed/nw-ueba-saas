@@ -125,13 +125,7 @@ module('Integration | Component | process-node-list', function(hooks) {
     await click(document.querySelectorAll('.rsa-data-table-header-cell .rsa-form-checkbox')[0]);
   });
 
-  test('risk score component is rendered', async function(assert) {
-    this.set('nodeList', testData);
-    await render(hbs`{{process-node-list nodeList=nodeList}}`);
-    assert.strictEqual(document.querySelectorAll('.rsa-risk-score').length, 3, 'risk score is rendered');
-  });
-
-  test('on clicking the process name sorts the table', async function(assert) {
+  test('clicking the process name sorts the table', async function(assert) {
     this.set('nodeList', testData);
     this.set('currentSort', {
       field: 'data.localScore',
@@ -166,4 +160,9 @@ module('Integration | Component | process-node-list', function(hooks) {
     assert.strictEqual(document.querySelectorAll('.is-row-checked').length, 1, 'correct css class is added the row selection');
   });
 
+  test('risk score component is rendered', async function(assert) {
+    this.set('nodeList', testData);
+    await render(hbs`{{process-node-list nodeList=nodeList}}`);
+    assert.strictEqual(document.querySelectorAll('.rsa-risk-score').length, 3, 'risk score is rendered');
+  });
 });

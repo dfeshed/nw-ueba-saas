@@ -1,36 +1,14 @@
-import computed, { alias } from 'ember-computed-decorators';
-import SortableItemMixin from 'ember-sortable/mixins/sortable-item';
+import computed from 'ember-computed-decorators';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import { connect } from 'ember-redux';
 import { sourceCountTooltip, getSourceCount } from 'admin-source-management/utils/groups-util';
-import {
-  previewRankingWithFetch
-} from 'admin-source-management/actions/creators/group-wizard-creators';
-
-const dispatchToActions = {
-  previewRankingWithFetch
-};
 
 /**
  * Extension of the Data Table default row class for supporting selecting and dragging of rows
  * @public
  */
-const Row = Component.extend(SortableItemMixin, {
-  tagName: 'tr',
-  classNameBindings: ['isSelected'],
-  @alias('item') model: null, // used by ember-sortable
-  handle: 'tr', // used by ember-sortable
-  /**
-   * Tracks which item is currently selected / highlighted by the user
-   * @property isSelected
-   * @public
-   */
-  @computed('selectedItemId', 'item.name')
-  isSelected(selectedItemId, itemId) {
-    return selectedItemId === itemId;
-  },
-
+const Row = Component.extend({
+  tagName: 'td',
   i18n: service(),
 
   @computed('item.sourceCount', 'item.dirty', 'item.lastPublishedOn')
@@ -54,4 +32,4 @@ const Row = Component.extend(SortableItemMixin, {
   }
 });
 
-export default connect(undefined, dispatchToActions)(Row);
+export default Row;

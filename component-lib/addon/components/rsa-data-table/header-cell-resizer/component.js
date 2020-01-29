@@ -112,7 +112,7 @@ export default Component.extend(HasTableParent, {
         w = parseInt(w, 10);
       } else {
         // In case of % elem is returing resizer not the actual column. Due to that initial width is always 9px.
-        const elem = element.parentElement.previousElementSibling;
+        const elem = element.parentElement.parentElement;
         w = parseInt(getInnerWidth(elem), 10);
       }
       this._initialWidth = w;

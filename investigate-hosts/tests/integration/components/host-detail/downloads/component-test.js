@@ -150,13 +150,13 @@ module('Integration | Component | downloads', function(hooks) {
     new ReduxDataHelper(initState).hostDownloads(hostDownloads).build();
     await render(hbs`{{host-detail/downloads}}`);
 
-    assert.equal(findAll('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(1) .rsa-form-checkbox-label').length, 1, 'Column 1 is a checkbox');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'File name', 'Column 2 is File name');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Type', 'Column 3 is Type');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(4)').textContent.trim(), 'Downloaded', 'Column 4 is Downloaded');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Size', 'Column 5 is Size');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Downloaded Time', 'Column 6 is Downloaded Time');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(7)').textContent.trim(), 'SHA256', 'Column 7 is SHA256');
+    assert.equal(findAll('.sortable-item:nth-child(1) .rsa-data-table-header-cell .rsa-form-checkbox-label').length, 1, 'Column 1 is a checkbox');
+    assert.equal(find('.sortable-item:nth-child(2) .rsa-data-table-header-cell').textContent.trim(), 'File name', 'Column 2 is File name');
+    assert.equal(find('.sortable-item:nth-child(3) .rsa-data-table-header-cell').textContent.trim(), 'Type', 'Column 3 is Type');
+    assert.equal(find('.sortable-item:nth-child(4) .rsa-data-table-header-cell').textContent.trim(), 'Downloaded', 'Column 4 is Downloaded');
+    assert.equal(find('.sortable-item:nth-child(5) .rsa-data-table-header-cell').textContent.trim(), 'Size', 'Column 5 is Size');
+    assert.equal(find('.sortable-item:nth-child(6) .rsa-data-table-header-cell').textContent.trim(), 'Downloaded Time', 'Column 6 is Downloaded Time');
+    assert.equal(find('.sortable-item:nth-child(7) .rsa-data-table-header-cell').textContent.trim(), 'SHA256', 'Column 7 is SHA256');
 
   });
   test('On right clicking the row it renders the context menu', async function(assert) {

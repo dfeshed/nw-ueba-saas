@@ -43,47 +43,32 @@
 {{/if}}
 
 {{#sortable-group
-  tagName="div" class="rsa-data-table-header-row js-header-row" direction="x"
-  onChange=(action "reorderColumns" target=table) as |group|}}
+  class="rsa-data-table-header-row js-header-row"
+  direction="x"
+  model=table.visibleColumns
+  onChange=(action "reorderColumns" target=table)
+  tagName="div" as |group|}}
 
   {{#if table.columnsDefinedDeclaratively}}
-
     {{!assume the consumer provided a block that includes an individual table cell for each column; no need to iterate}}
     {{yield this}}
-
   {{else}}
     {{!for each column model, render a header-cell, wrapped in sortable-item so it can be drag-moved}}
-    {{#each table.visibleColumns as |column index|}}
-
-      {{!check if the consumer provided a block for the header-cell contents}}
-      {{#if hasBlock}}
+    {{#each group.model as |column index|}}
+      {{#group.item
+        model=column
+        spacing=3
+        tagName="div"}}
         {{#rsa-data-table/header-cell
           column=column
-          index=index
-          model=column
-          group=group
-          spacing=3
           currentSort=currentSort
           handle=moveHandleSelector
+          index=index
           translateTitle=translateTitles}}
           {{yield column index}}
         {{/rsa-data-table/header-cell}}
-
-      {{else}}
-        {{rsa-data-table/header-cell
-          column=column
-          index=index
-          model=column
-          group=group
-          spacing=3
-          currentSort=currentSort
-          handle=moveHandleSelector
-          translateTitle=translateTitles}}
-
-      {{/if}}
-
+      {{/group.item}}
     {{/each}}
-
   {{/if}}
 
 {{/sortable-group}}

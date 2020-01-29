@@ -351,8 +351,8 @@ module('Integration | Component | certificates-container/certificates-data-table
         }
       </style>
       {{certificates-container/certificates-data-table}}`);
-    assert.equal(findAll('.rsa-data-table-header-cell:nth-of-type(2) .rsa-icon').length, 1, 'sort icon present for friendlyName column');
-    assert.equal(findAll('.rsa-data-table-header-cell:nth-of-type(4) .rsa-icon').length, 0, 'sort icon is not present for thumbPrint column');
+    assert.equal(findAll('.sortable-item:nth-of-type(2) .rsa-icon').length, 1, 'sort icon present for friendlyName column');
+    assert.equal(findAll('.sortable-item:nth-of-type(4) .rsa-icon').length, 0, 'sort icon is not present for thumbPrint column');
   });
 
 
@@ -376,7 +376,7 @@ module('Integration | Component | certificates-container/certificates-data-table
       {{certificates-container/certificates-data-table}}`);
     const initialState = this.owner.lookup('service:redux').getState().certificate.list.isSortDescending;
     assert.deepEqual(initialState, true, 'before clicking sort icon, sorting state isSortDescending is true');
-    await click('.rsa-data-table-header-cell:nth-of-type(2) .rsa-icon');
+    await click('.sortable-item:nth-of-type(2) .rsa-icon');
     const updatedState = this.owner.lookup('service:redux').getState().certificate.list;
     assert.deepEqual(updatedState.sortField, 'friendlyName', 'friendlyName column is clicked, sortField state is set to friendlyName.');
     assert.deepEqual(updatedState.isSortDescending, false, 'after sort icon is clicked, isSortDescending is toggled.');

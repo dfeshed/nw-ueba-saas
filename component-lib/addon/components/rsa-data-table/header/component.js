@@ -1,11 +1,10 @@
 import Component from '@ember/component';
-import { observer } from '@ember/object';
-import computed from 'ember-computed-decorators';
-
 import HasTableParent from 'component-lib/components/rsa-data-table/mixins/has-table-parent';
-import layout from './template';
-import { isNumeric } from 'component-lib/utils/jquery-replacement';
+import { observer } from '@ember/object';
 import { next } from '@ember/runloop';
+import computed from 'ember-computed-decorators';
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
+import layout from './template';
 
 export default Component.extend(HasTableParent, {
   layout,

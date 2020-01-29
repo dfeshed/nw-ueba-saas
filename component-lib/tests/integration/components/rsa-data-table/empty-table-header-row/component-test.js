@@ -30,7 +30,9 @@ module('Integration | Component | rsa data table/empty row', function(hooks) {
           {{column.title}}
         {{/rsa-data-table/header}}
         {{#rsa-data-table/body  showNoResultMessage=false as |item index column|}}
-          A
+          {{#rsa-data-table/body-cell}}
+            A
+          {{/rsa-data-table/body-cell}}
         {{/rsa-data-table/body}}
       {{/rsa-data-table}}
     `);

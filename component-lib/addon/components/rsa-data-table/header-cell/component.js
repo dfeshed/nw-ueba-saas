@@ -1,13 +1,12 @@
-import computed from 'ember-computed-decorators';
-
-import HasTableParent from '../mixins/has-table-parent';
+import Component from '@ember/component';
 import CellMixin from '../mixins/is-cell';
-import SortableItem from 'ember-sortable/components/sortable-item';
+import computed from 'ember-computed-decorators';
 import layout from './template';
 
-export default SortableItem.extend(HasTableParent, CellMixin, {
+export default Component.extend(CellMixin, {
   layout,
-  classNames: 'rsa-data-table-header-cell',
+  tagName: 'div',
+  classNames: ['rsa-data-table-header-cell'],
 
   @computed('column.title', 'column.field', 'translateTitle')
   displayTitle(title, field, translateTitle) {

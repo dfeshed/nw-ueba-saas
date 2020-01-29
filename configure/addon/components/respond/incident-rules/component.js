@@ -78,7 +78,7 @@ const IncidentRules = Component.extend({
      * @private
      */
 
-    handleDragStarted(item) {
+    handleDragStopped(item) {
       if (!this.get('selectedRules').includes(item.id)) {
         this.send('clearSelectedRules');
         this.send('selectRule', item.id);

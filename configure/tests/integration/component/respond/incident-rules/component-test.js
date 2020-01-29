@@ -107,7 +107,7 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
   });
 
   test('click handler should not prevent propagating of event', async function(assert) {
-    assert.expect(3);
+    assert.expect(2);
 
     const transitions = [];
     const FakeRoutingService = Service.extend({
@@ -123,13 +123,10 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
     let clicked, rowClicked;
     const FakeComponent = Component.extend({
       layout: hbs`
-        {{#respond/incident-rules/row
+        {{respond/incident-rules/row
           rule=rule
-          selectedRules=selectedRules onRowClick=(action 'handleRowClick' rule)}}
-          <div test-id="linkWrapper">
-            {{#link-to 'respond.incident-rule' rule.id test-id="ruleLink"}}{{rule.name}}{{/link-to}}
-          </div>
-        {{/respond/incident-rules/row}}
+          selectedRules=selectedRules
+          onRowClick=(action 'handleRowClick' rule)}}
       `,
       click() {
         clicked = true;
@@ -147,41 +144,30 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
     this.set('rule', { id: 1, name: 'x' });
     await render(hbs`{{test-clazz rule=rule selectedRules=selectedRules}}`);
 
-    const divSelector = '[test-id=linkWrapper]';
+    const divSelector = '.order';
     await click(divSelector);
 
     await waitUntil(() => rowClicked === true, { timeout });
     assert.equal(rowClicked, true);
     assert.equal(clicked, undefined);
-
-    const linkSelector = '[test-id=ruleLink]';
-    await click(linkSelector);
-
-    await waitUntil(() => transitions.length > 0, { timeout });
-    assert.deepEqual(transitions, ['respond.incident-rule']);
-
   });
 
   test('Check if dragging a row selects the row', async function(assert) {
-    assert.expect(3);
+    assert.expect(2);
 
     await setState({ ...initialState });
     await render(hbs`{{respond/incident-rules}}`);
-    const rows = findAll('tbody tr');
+    const rows = findAll('[data-sortable-handle]');
     assert.equal(rows.length, 20, 'We have 20 rows');
 
+    // Turn off animation
+    findAll('.sortable-item').forEach((d) => d.style['transition-property'] = 'none');
+
     // verifiying the drag Event of the row
-    const [first, second] = rows;
-
-    await triggerEvent(second, 'mousedown', { clientX: second.offsetLeft, clientY: second.offsetTop, which: 1 });
-    await triggerEvent(second, 'mousemove', { clientX: second.offsetLeft, clientY: second.offsetTop, which: 1 });
-    await triggerEvent(second, 'mousemove', { clientX: second.offsetLeft, clientY: second.offsetTop + 30, which: 1 });
-
-    assert.equal(findAll('tbody tr.is-selected').length, 1, 'There is one row selected');
-
-    await triggerEvent(first, 'mousedown', { clientX: first.offsetLeft, clientY: first.offsetTop, which: 1 });
-    await triggerEvent(first, 'mousemove', { clientX: first.offsetLeft, clientY: first.offsetTop, which: 1 });
-    await triggerEvent(first, 'mousemove', { clientX: first.offsetLeft, clientY: first.offsetTop + 30, which: 1 });
+    const [firstRow] = rows;
+    await triggerEvent(firstRow, 'mousedown', { clientX: 0, clientY: 0, which: 1 });
+    await triggerEvent(firstRow, 'mousemove', { clientX: 0, clientY: 10, which: 1 });
+    await triggerEvent(firstRow, 'mouseup', { clientX: 0, clientY: 50, which: 1 });
 
     assert.equal(findAll('tbody tr.is-selected').length, 1, 'There is one row selected');
   });

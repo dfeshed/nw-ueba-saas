@@ -1,1 +1,50 @@
-{{yield}}
+<td class="select" {{action "handleCheckboxClick" rule bubbles=false}}>
+  <centered>
+    <label class="rsa-form-checkbox-label {{if (contains rule.id selectedRules) "checked"}}">
+      {{rsa-form-checkbox
+        checked=(contains rule.id selectedRules)
+      }}
+    </label>
+  </centered>
+</td>
+<td class="order">
+  <div>{{rule.order}}</div>
+</td>
+<td class="enabled">
+  <centered>
+    <div title={{rule.enabled}} class="{{if (eq rule.enabled true) "enabled-rule" "disabled-rule"}}"></div>
+  </centered>
+</td>
+<td class="name">
+  <div title="{{rule.name}}">{{#link-to "respond.incident-rule" rule.id test-id="incidentRuleLink"}}{{rule.name}}{{/link-to}}</div>
+</td>
+<td class="description">
+  <div title="{{rule.description}}">{{rule.description}}</div>
+</td>
+<td class="last-matched">
+  <div>
+    {{#if rule.lastMatched}}
+      {{rsa-content-datetime timestamp=rule.lastMatched displayTime=true displayMilliseconds=false}}
+    {{/if}}
+  </div>
+</td>
+<td class="alerts-matched">
+  <div title="{{rule.alertsMatchedCount}}">{{rule.alertsMatchedCount}}</div>
+</td>
+<td class="incidents-created">
+  <div title="{{rule.incidentsCreatedCount}}">{{rule.incidentsCreatedCount}}</div>
+</td>
+<td class="rule-created">
+  <div>
+    {{#if rule.createdDate}}
+      {{rsa-content-datetime timestamp=rule.createdDate displayTime=true displayMilliseconds=false}}
+    {{/if}}
+  </div>
+</td>
+<td class="rule-last-updated">
+  <div>
+    {{#if rule.lastUpdatedDate}}
+      {{rsa-content-datetime timestamp=rule.lastUpdatedDate displayTime=true displayMilliseconds=false}}
+    {{/if}}
+  </div>
+</td>

@@ -9,6 +9,7 @@ import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import hostListState from '../../state/host.machines';
 import { patchSocket } from '../../../../helpers/patch-socket';
+import { drag } from 'ember-sortable/test-support/helpers';
 
 import endpoint from '../../state/schema';
 
@@ -33,6 +34,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolver('investigate-hosts')
   });
+
   hooks.beforeEach(function() {
     initialize(this.owner);
     initState = (state) => {
@@ -64,11 +66,11 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       }
       </style>
     {{host-list/host-table}}`);
-    assert.equal(findAll('.rsa-data-table-header-cell').length, 7, 'Total 7 columns are rendered. checkbox + fields');
-    assert.equal(find('.rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'Hostname', 'Second column should be hostname');
-    assert.equal(find('.rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Risk Score', 'Third column should be Risk Score');
-    assert.equal(find('.rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Agent Version', 'fifth column should be Agent version');
-    assert.equal(find('.rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Operating System', 'Sixth column should be Operating system');
+    assert.equal(findAll('.sortable-item').length, 7, 'Total 7 columns are rendered. checkbox + fields');
+    assert.equal(find('.sortable-item:nth-child(2)').textContent.trim(), 'Hostname', 'Second column should be hostname');
+    assert.equal(find('.sortable-item:nth-child(3)').textContent.trim(), 'Risk Score', 'Third column should be Risk Score');
+    assert.equal(find('.sortable-item:nth-child(5)').textContent.trim(), 'Agent Version', 'fifth column should be Agent version');
+    assert.equal(find('.sortable-item:nth-child(6)').textContent.trim(), 'Operating System', 'Sixth column should be Operating system');
   });
 
   test('Right clicking already selected row, will keep row highlighted', async function(assert) {
@@ -162,6 +164,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-down-7'), true, 'Arrow down icon appears after sorting');
     });
   });
+
   test('Select all and deselect all rows using header checkbox', async function(assert) {
 
     this.set('closeProperties', function() {
@@ -186,6 +189,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     await click(findAll('.rsa-data-table-header-cell .rsa-form-checkbox')[0]);
     assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 0, 'All 12 rows deelected');
   });
+
   test('selecting an already check-boxed row, opens the risk panel', async function(assert) {
     this.set('closeProperties', () => {});
     this.set('openProperties', function() {
@@ -399,6 +403,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       assert.equal(items[4].innerText, 'Network Isolation', 'Context menu rendered with network isolation options');
     });
   });
+
   test('Download MFT option not rendered when permissions are not there', async function(assert) {
 
     const accessControl = this.owner.lookup('service:accessControl');
@@ -424,11 +429,10 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       assert.equal(items.length, 5, 'Context menu rendered with 5 items with Download MFT option');
     });
   });
-  test('re-arranging the column will call set the preference', async function(assert) {
-    this.set('closeProperties', () => {});
-    this.set('openProperties', function() {
-      assert.ok('open property panel is called.');
-    });
+
+  test('re-arranging the columns will make a network call to save preferences', async function(assert) {
+    assert.expect(4);
+    const done = assert.async();
     new ReduxDataHelper(initState)
       .columns(endpoint.schema)
       .hostList(hostList)
@@ -452,30 +456,26 @@ module('Integration | Component | host-list/host-table', function(hooks) {
           }
         ])
       .build();
-    await render(hbs`
-    <style>
-      box, section {
-        min-height: 1000px
-      }
-    </style>
-    {{host-list/host-table closeProperties=closeProperties openProperties=openProperties}}`);
-    const [, , draggedItem] = document.querySelectorAll('.js-move-handle'); // 3 column
-    let done = false;
+
     patchSocket((method, modelName) => {
-      done = true;
       assert.equal(method, 'getPreferences');
       assert.equal(modelName, 'endpoint-preferences');
+      done();
     });
-    assert.equal(findAll('.rsa-data-table-header-row .rsa-data-table-header-cell')[3].textContent.trim(), 'Last Scan Time', 'Column before re-order');
-    await triggerEvent(draggedItem, 'mousedown', { clientX: draggedItem.offsetLeft, clientY: draggedItem.offsetTop, which: 1 });
-    await triggerEvent(draggedItem, 'mousemove', { clientX: 300, clientY: draggedItem.offsetTop, which: 1 });
-    await triggerEvent(draggedItem, 'mousemove', { clientX: 310, clientY: draggedItem.offsetTop, which: 1 });
-    await triggerEvent(draggedItem, 'mouseup', { clientX: 310, clientY: draggedItem.offsetTop, which: 1 });
 
-    return waitUntil(() => done, { timeout: 6000 }).then(() => {
-      assert.ok(true);
-    });
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list/host-table}}
+    `);
+    assert.equal(findAll('.rsa-data-table-header-cell')[3].textContent.trim(), 'Last Scan Time', 'Column before re-order');
+    await drag('mouse', '.sortable-item:nth-child(4)', () => ({ dy: 0, dx: 100 }));
+    assert.equal(findAll('.rsa-data-table-header-cell')[3].textContent.trim(), 'Agent Version', 'Column after re-order');
   });
+
   test('re-sizing the column will call set the preference', async function(assert) {
 
     this.set('closeProperties', () => {});
@@ -517,6 +517,8 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       assert.equal(method, 'getPreferences');
       assert.equal(modelName, 'endpoint-preferences');
     });
+    // Turn off animation
+    findAll('.sortable-item').forEach((d) => d.style['transition-property'] = 'none');
     await triggerEvent(draggedItem, 'mousedown', { clientX: draggedItem.offsetLeft, clientY: draggedItem.offsetTop, which: 3 });
     await triggerEvent(draggedItem, 'mousemove', { clientX: draggedItem.offsetLeft - 10, clientY: draggedItem.offsetTop, which: 3 });
     await triggerEvent(draggedItem, 'mouseup', { clientX: 510, clientY: draggedItem.offsetTop, which: 3 });
@@ -583,7 +585,6 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     });
   });
 
-
   test('Download System dump option not rendered when criteria is not met', async function(assert) {
 
     new ReduxDataHelper(initState)
@@ -631,6 +632,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       assert.equal(items.length, 8, 'Context menu rendered with 8 items with Download System dump option');
     });
   });
+
   test('Download System dump option not rendered when permissions are not there', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('roles', []);
