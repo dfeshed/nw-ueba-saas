@@ -10,7 +10,7 @@
   },
   "repository": "",
   "engines": {
-    "node": "*"
+    "node": "12.14.1"
   },
   "author": "",
   "license": "MIT",
@@ -38,7 +38,6 @@
     "jsesc": "2.2.0",
     "merge": "1.2.0",
     "morgan": "1.7.0",
-    "stompjs": "2.3.3",
-    "ws": "1.1.1"
+    "stompjs": "2.3.3"
   }
 }
