@@ -6,15 +6,9 @@ import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducer;
 import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducerSupplier;
-import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
-import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.enums.GeneratorFormat;
 import fortscale.common.general.Schema;
-import fortscale.utils.mongodb.config.MongoConfig;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
@@ -32,13 +26,8 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
-@SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})
-public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
-    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(PerfLogsGenTest.class);
-
-    @Autowired
-    private NetwitnessEventStore netwitnessEventStore;
+public class PerfLogsNoSpringGenTest extends AbstractTestNGSpringContextTests {
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(PerfLogsNoSpringGenTest.class);
 
     public static final TestProperties test = new TestProperties();
 
@@ -144,7 +133,7 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
 
 
     private EventsProducer<NetwitnessEvent> getProducer() {
-        return new EventsProducerSupplier(netwitnessEventStore).get(test.generatorFormat);
+        return new EventsProducerSupplier().get(test.generatorFormat);
     }
 
     private EventConverter<Event> getConverter() {

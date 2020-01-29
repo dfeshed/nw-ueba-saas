@@ -17,19 +17,23 @@ enum S3_Client {
     private static  Logger LOGGER = (Logger) LoggerFactory.getLogger(S3_Client.class);
 
     private Lazy<AmazonS3> amazonS3Lazy = new Lazy<>();
-    private String region = S3_CONFIG.getRegion();
-    private String accessKey = S3_CONFIG.getAccessKey();
-    private String secretKey = S3_CONFIG.getSecretKey();
 
     static AmazonS3 s3Client = S3_CLIENT.amazonS3Lazy.getOrCompute(S3_CLIENT::connectToS3);
 
     private AmazonS3 connectToS3() {
-        BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
         try {
-            return AmazonS3ClientBuilder.standard()
-                    .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
-                    .withRegion(region)
-                    .build();
+            String region = S3_CONFIG.getRegion();
+            if (S3_CONFIG.getAccessKey().isBlank() || S3_CONFIG.getSecretKey().isBlank()) {
+                // AwsClientBuilder.EndpointConfiguration ec = new AwsClientBuilder.EndpointConfiguration("https://s3." + region + ".amazonaws.com", region);
+                return AmazonS3ClientBuilder.defaultClient();
+            } else {
+                BasicAWSCredentials awsCreds = new BasicAWSCredentials(S3_CONFIG.getAccessKey(), S3_CONFIG.getSecretKey());
+                return AmazonS3ClientBuilder.standard()
+                        .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+                        .withRegion(region)
+                        .build();
+            }
+
         } catch (AmazonServiceException e) {
             LOGGER.error("Failed to init s3Client");
             e.printStackTrace();

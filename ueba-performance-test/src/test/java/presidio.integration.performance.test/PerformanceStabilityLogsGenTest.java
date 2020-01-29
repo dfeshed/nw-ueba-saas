@@ -4,7 +4,7 @@ import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverterFactory;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducer;
-import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducerFactory;
+import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducerSupplier;
 import fortscale.common.general.Schema;
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -51,8 +51,8 @@ public class PerformanceStabilityLogsGenTest extends AbstractTestNGSpringContext
     private StopWatch stopWatch = new StopWatch();
     private StopWatch tlsStopWatch = new StopWatch();
 
-    private EventsProducer<NetwitnessEvent> eventsProducer = new EventsProducerFactory(null).get(CEF_HOURLY_FILE);
-    public final EventConverter<Event> eventEventConverter = new EventConverterFactory().get();
+    private EventsProducer<NetwitnessEvent> eventsProducer = new EventsProducerSupplier().get(CEF_HOURLY_FILE);
+    private final EventConverter<Event> eventEventConverter = new EventConverterFactory().get();
 
 
     @Parameters({"start_time", "end_time", "probability_multiplier", "users_multiplier",

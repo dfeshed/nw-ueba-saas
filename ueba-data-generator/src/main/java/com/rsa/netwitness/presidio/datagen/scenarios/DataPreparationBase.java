@@ -5,7 +5,7 @@ import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter
 import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverterFactory;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducer;
-import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducerFactory;
+import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducerSupplier;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.enums.GeneratorFormat;
@@ -24,7 +24,7 @@ import presidio.data.generators.common.GeneratorException;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})
@@ -56,9 +56,8 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
         List<? extends Event> precidioEvents = generate();
 
         LOGGER.info("  ++++++ Going to convert.");
-        List<NetwitnessEvent> converted = precidioEvents.parallelStream()
-                .map(getConverter()::convert)
-                .collect(Collectors.toList());
+        Stream<NetwitnessEvent> converted = precidioEvents.parallelStream()
+                .map(getConverter()::convert);
 
         LOGGER.info("  ++++++ Going to send.");
         generatorResultCount = getProducer().send(converted);
@@ -72,8 +71,8 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
         System.exit(0);
     }
 
-    private EventsProducer<List<NetwitnessEvent>> getProducer() {
-        return new EventsProducerFactory(netwitnessEventStore).get(generatorFormat);
+    private EventsProducer<NetwitnessEvent> getProducer() {
+        return new EventsProducerSupplier(netwitnessEventStore).get(generatorFormat);
     }
 
     private EventConverter<Event> getConverter() {

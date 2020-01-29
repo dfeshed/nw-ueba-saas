@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -104,7 +105,10 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
     }
 
 
-    private synchronized void test(String entityType) {
+    private final int MAX_RETRIES = 5;
+    private final int WAIT_SEC = 3;
+
+    private void test(String entityType) {
         SoftAssertions softly = new SoftAssertions();
         LOGGER.info(" --- Forwarding validation started for " + entityType);
 
@@ -115,11 +119,10 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
         SshResponse response = sshHelper.uebaHostExec().run(cmd);
         testScriptFinishedSuccessfully(cmd, response);
 
-        int actual = actualIndicatorsFromCmdResponse(response);
-        assertThat(actual).as("REST count doesn't match log response.").isEqualTo(expectedIndicatorIdsFromRest.size());
+        int cmdActual = actualIndicatorsFromCmdResponse(response);
+        assertThat(cmdActual).as("REST count doesn't match log response.").isEqualTo(expectedIndicatorIdsFromRest.size());
 
-        List<RespondServerAlertCollectionHelper.RespondServerAlert> respondServerAlerts = alertCollection.getRespondServerAlertsForLastWeek(startTime, endTime);
-        LOGGER.info("<" + entityType + "> " + respondServerAlerts.size() + " alerts found on the respond server.");
+        List<RespondServerAlertCollectionHelper.RespondServerAlert> respondServerAlerts = getRespondServerAlerts(cmdActual, entityType);
 
         ImmutableList<String> actualIndicatorIdsFromRespondServer = ImmutableList.copyOf(respondServerAlerts.parallelStream().map(alert -> alert.uebaIndicatorId).collect(toList()));
         assertThat(actualIndicatorIdsFromRespondServer).as("No alerts found on respond server from startDate=" + startTime + " to endDate=" + endTime).isNotEmpty();
@@ -150,6 +153,20 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
         LOGGER.info(" --- Forwarding validation after test " + entityType);
     }
 
+    private List<RespondServerAlertCollectionHelper.RespondServerAlert> getRespondServerAlerts(int cmdActual, String entityType) {
+        List<RespondServerAlertCollectionHelper.RespondServerAlert> respondServerAlerts = new ArrayList<>();
+
+        for (int i = 0; (i < MAX_RETRIES) && (respondServerAlerts.size() < cmdActual); i++) {
+            try {
+                TimeUnit.SECONDS.sleep(WAIT_SEC);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            respondServerAlerts = alertCollection.getRespondServerAlertsForLastWeek(startTime, endTime);
+            LOGGER.info("<<<" + entityType + ">>> " + respondServerAlerts.size() + " alerts found on the respond server.");
+        }
+        return respondServerAlerts;
+    }
 
 
     private int actualIndicatorsFromCmdResponse(SshResponse response) {
