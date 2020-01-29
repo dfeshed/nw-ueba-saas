@@ -277,7 +277,8 @@ buildEmberApp investigate-process-analysis false true true 1024
 buildEmberApp admin-source-management false true true 1024
 buildEmberApp admin false true true 1024
 buildEmberApp springboard false true true 1024
-buildEmberApp sa true true true 9192
+buildEmberApp springboard-widget-lib false true true 512
+buildEmberApp sa true true true 10192
 
 success "All apps built successfully"
 

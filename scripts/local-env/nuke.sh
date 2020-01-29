@@ -55,6 +55,7 @@ nukeNode rsa-context-menu
 nukeNode rsa-data-filters
 nukeNode ngcoreui
 nukeNode springboard
+nukeNode springboard-widget-lib
 nukeNode sa
 
 red "                               ________________

@@ -31,6 +31,7 @@ const ALL_SUBMODULES = [
   'rsa-context-menu',
   'rsa-data-filters',
   'springboard',
+  'springboard-widget-lib',
   'ngcoreui'
 ];
 
@@ -65,6 +66,7 @@ const saModuleDependants = {
     'rsa-context-menu',
     'rsa-data-filters',
     'springboard',
+    'springboard-widget-lib',
     'ngcoreui'
   ],
   'mock-server': [
@@ -200,6 +202,7 @@ const saModuleDependants = {
   'test-helpers': [],
   'ember-computed-decorators': [],
   'ember-simple-auth': [],
+  'springboard-widget-lib': ['sa', 'springboard'],
   docs: [] // lol
 };
 
