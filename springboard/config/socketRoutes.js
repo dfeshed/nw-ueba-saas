@@ -1,17 +1,24 @@
 /* eslint-env node */
 
 const common = require('../../common');
+const { determineSocketUrl } = common;
 
-
-const sprinboardConfigGen = function(env) {
+const springboardConfigGen = function(env) {
+  const socketUrl = determineSocketUrl(env, '/administration/socket');
   return {
-
+    springboard: {
+      socketUrl,
+      all: {
+        subscriptionDestination: '/user/queue/administration/springboard/all',
+        requestDestination: '/ws/administration/administration/springboard/all'
+      }
+    }
   };
 };
 
 // order matters, first config in wins if there are matching configs
 const configGenerators = [
-  sprinboardConfigGen
+  springboardConfigGen
 ];
 
 let socketConfig = null;
