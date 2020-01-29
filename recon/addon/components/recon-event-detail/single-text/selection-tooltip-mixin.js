@@ -25,6 +25,7 @@ const _getContainerClassName = (node) => {
   }
   return className;
 };
+let mouseEnterFn, mouseLeaveFn, mouseUpFn, mouseMoveFn, mouseDownFn;
 
 export default Mixin.create({
   didDrag: false,
@@ -52,11 +53,11 @@ export default Mixin.create({
    * for instance, leave the tether panel in place if someone has the tooltip
    * open and clicks outside the component to close it.
    */
-  mouseEnter() {
+  handleMouseEnter() {
     this.set('userInComponent', true);
   },
 
-  mouseLeave() {
+  handleMouseLeave() {
     // going to the tooltip component is considered a mouseLeave
     // of THIS component, but we do not want to remove the thether,
     // obviously, if the tooltip is open
@@ -65,7 +66,7 @@ export default Mixin.create({
     }
   },
 
-  mouseUp() {
+  handleMouseUp() {
     if (this.get('startDragPosition') && this.get('didDrag')) {
       const selection = this.getSelected();
       // model contains the highlighted text, this text is used to do encoding/decoding operations
@@ -104,11 +105,11 @@ export default Mixin.create({
     }
   },
 
-  mouseMove() {
+  handleMouseMove() {
     this.set('didDrag', true);
   },
 
-  mouseDown(e) {
+  handleMouseDown(e) {
     this.set('startDragPosition', { left: e.pageX, top: e.pageY });
     this.unTether();
   },
@@ -191,6 +192,18 @@ export default Mixin.create({
       // Save off so we can remove handlers
       this.setProperties({ scrollBoxEl, scrollFn, windowClickFn });
     }
+    mouseEnterFn = this.handleMouseEnter.bind(this);
+    mouseLeaveFn = this.handleMouseLeave.bind(this);
+    mouseUpFn = this.handleMouseUp.bind(this);
+    mouseDownFn = this.handleMouseDown.bind(this);
+    mouseMoveFn = this.handleMouseMove.bind(this);
+
+
+    this.element.addEventListener('mouseover', mouseEnterFn);
+    this.element.addEventListener('mouseout', mouseLeaveFn);
+    this.element.addEventListener('mousemove', mouseMoveFn);
+    this.element.addEventListener('mouseup', mouseUpFn);
+    this.element.addEventListener('mousedown', mouseDownFn);
   },
 
   willDestroyElement() {
@@ -204,5 +217,16 @@ export default Mixin.create({
       scrollBoxEl.removeEventListener('scroll', scrollFn);
       window.removeEventListener('click', windowClickFn);
     }
+    this.element.removeEventListener('mouseover', mouseEnterFn);
+    this.element.removeEventListener('mouseout', mouseLeaveFn);
+    this.element.removeEventListener('mousemove', mouseMoveFn);
+    this.element.removeEventListener('mouseup', mouseUpFn);
+    this.element.removeEventListener('mousedown', mouseDownFn);
+
+    mouseEnterFn = null;
+    mouseLeaveFn = null;
+    mouseMoveFn = null;
+    mouseUpFn = null;
+    mouseDownFn = null;
   }
 });

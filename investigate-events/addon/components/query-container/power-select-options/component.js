@@ -27,6 +27,8 @@ const isTouchDevice = (!!window && 'ontouchstart' in window);
   }
 })(window.Element.prototype);
 
+let mouseEnterFn, mouseLeaveFn;
+
 export default Component.extend({
   isTouchDevice,
   // layout,
@@ -65,6 +67,13 @@ export default Component.extend({
 
     this.element.addEventListener('mouseup', (e) => findOptionAndPerform(this.get('select.actions.choose'), e));
     this.element.addEventListener('mouseover', (e) => findOptionAndPerform(this.get('select.actions.highlight'), e));
+
+    mouseEnterFn = this.handleMouseEnter.bind(this);
+    mouseLeaveFn = this.handleMouseLeave.bind(this);
+
+    this.element.addEventListener('mouseenter', mouseEnterFn);
+    this.element.addEventListener('mouseleave', mouseLeaveFn);
+
     if (this.get('isTouchDevice')) {
       this._addTouchEvents();
     }
@@ -76,13 +85,13 @@ export default Component.extend({
 
   // GTB, I ADDED THIS TO ORIGINAL CODE
   // Event handlers
-  mouseEnter(e) {
+  handleMouseEnter(e) {
     const optionMouseEnterCallback = this.get('onmouseenter');
     if (optionMouseEnterCallback) {
       optionMouseEnterCallback(e);
     }
   },
-  mouseLeave() {
+  handleMouseLeave() {
     const select = this.get('select');
     select.actions.highlight(null);
   },
@@ -131,5 +140,15 @@ export default Component.extend({
       option = option.options[parseInt(parts[i], 10)];
     }
     return option;
+  },
+
+  willDestroyElement() {
+    this._super(...arguments);
+
+    this.element.removeEventListener('mouseenter', mouseEnterFn);
+    this.element.removeEventListener('mouseleave', mouseLeaveFn);
+
+    mouseEnterFn = null;
+    mouseLeaveFn = null;
   }
 });

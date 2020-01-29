@@ -5,6 +5,8 @@ import { inject as service } from '@ember/service';
 import layout from './template';
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 
+let mouseEnterFn, mouseLeaveFn;
+
 export default Component.extend({
   tagName: 'span',
   layout,
@@ -26,7 +28,40 @@ export default Component.extend({
   isClick: equal('triggerEvent', 'click'),
   isHover: equal('triggerEvent', 'hover'),
 
-  mouseEnter() {
+  click() {
+    if (!this.get('isDisabled')) {
+      if (this.get('isClick')) {
+        sendTetherEvent(
+          this.element,
+          this.get('panel'),
+          this.get('eventBus'),
+          'toggle',
+          this.get('model')
+        );
+      }
+    }
+  },
+
+  didInsertElement() {
+    this._super(...arguments);
+    mouseEnterFn = this.handleMouseEnter.bind(this);
+    mouseLeaveFn = this.handleMouseLeave.bind(this);
+
+    this.element.addEventListener('mouseover', mouseEnterFn);
+    this.element.addEventListener('mouseout', mouseLeaveFn);
+  },
+
+  willDestroyElement() {
+    this._super(...arguments);
+
+    this.element.removeEventListener('mouseover', mouseEnterFn);
+    this.element.removeEventListener('mouseout', mouseLeaveFn);
+
+    mouseEnterFn = null;
+    mouseLeaveFn = null;
+  },
+
+  handleMouseEnter() {
     if (!this.get('isDisabled')) {
       if (this.get('isHover')) {
         if (this.get('hideEvent')) {
@@ -51,7 +86,7 @@ export default Component.extend({
     }
   },
 
-  mouseLeave() {
+  handleMouseLeave() {
     if (this.get('isHover')) {
       if (this.get('displayEvent')) {
         run.cancel(this.get('displayEvent'));
@@ -68,20 +103,6 @@ export default Component.extend({
         }
       }, this.get('hideDelay'));
       this.set('hideEvent', hideEvent);
-    }
-  },
-
-  click() {
-    if (!this.get('isDisabled')) {
-      if (this.get('isClick')) {
-        sendTetherEvent(
-          this.element,
-          this.get('panel'),
-          this.get('eventBus'),
-          'toggle',
-          this.get('model')
-        );
-      }
     }
   }
 });

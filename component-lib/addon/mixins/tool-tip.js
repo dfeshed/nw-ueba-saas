@@ -3,6 +3,8 @@ import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 import { run } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 
+let mouseEnterFn, mouseLeaveFn;
+
 export default Mixin.create({
   displayDelay: 500,
   displayEvent: null,
@@ -24,7 +26,7 @@ export default Mixin.create({
    * @param e
    * @public
    */
-  mouseEnter(e) {
+  handleMouseEnter(e) {
     this.set('showToolTip', true);
     if (this.get('alwaysShow') || this._isTextOverFlow(e.target)) {
       if (this.get('hideEvent')) {
@@ -49,7 +51,7 @@ export default Mixin.create({
     }
   },
 
-  mouseLeave() {
+  handleMouseLeave() {
     if (this.get('displayEvent')) {
       run.cancel(this.get('displayEvent'));
       this.set('displayEvent', null);
@@ -69,10 +71,10 @@ export default Mixin.create({
   },
 
   focusIn(e) {
-    this.mouseEnter(e);
+    this.handleMouseEnter(e);
   },
   focusOut() {
-    this.mouseLeave();
+    this.handleMouseLeave();
   },
   /**
    * Register the window click event, on click set the show tooltip flag to false
@@ -82,6 +84,12 @@ export default Mixin.create({
     const windowClickFunct = this._handleWindowClick.bind(this);
     window.addEventListener('click', windowClickFunct);
     this.setProperties({ windowClickFunct });
+
+    mouseEnterFn = this.handleMouseEnter.bind(this);
+    mouseLeaveFn = this.handleMouseLeave.bind(this);
+
+    this.element.addEventListener('mouseover', mouseEnterFn);
+    this.element.addEventListener('mouseout', mouseLeaveFn);
   },
 
   /**
@@ -91,6 +99,11 @@ export default Mixin.create({
   willDestroyElement() {
     const { windowClickFunct } = this.getProperties('windowClickFunct');
     window.removeEventListener('click', windowClickFunct);
+    this.element.removeEventListener('mouseover', mouseEnterFn);
+    this.element.removeEventListener('mouseout', mouseLeaveFn);
+    mouseEnterFn = null;
+    mouseLeaveFn = null;
+
   },
 
   /**

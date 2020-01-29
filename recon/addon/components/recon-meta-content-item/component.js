@@ -7,6 +7,7 @@ import { highlightMeta } from 'recon/actions/interaction-creators';
 const dispatchToActions = {
   highlightMeta
 };
+let mouseEnterFn, mouseLeaveFn;
 
 const MetaContentItem = Component.extend({
   layout,
@@ -48,7 +49,7 @@ const MetaContentItem = Component.extend({
    * @type {string}
    * @public
    */
-  @alias('item.0')
+    @alias('item.0')
   name: null,
 
   /**
@@ -56,7 +57,7 @@ const MetaContentItem = Component.extend({
    * @type {*}
    * @public
    */
-  @alias('item.1')
+    @alias('item.1')
   value: null,
 
   /**
@@ -69,7 +70,7 @@ const MetaContentItem = Component.extend({
    * @returns {boolean} If selected or not
    * @private
    */
-  @computed('isTextView', 'metaToHighlight', 'hasMetaToHighlight', 'name', 'value')
+    @computed('isTextView', 'metaToHighlight', 'hasMetaToHighlight', 'name', 'value')
   isSelected(isTextView, metaToHighlight, hasMetaToHighlight, name, value) {
     if (metaToHighlight && hasMetaToHighlight && isTextView) {
       return name === metaToHighlight.name && String(metaToHighlight.value) === String(value);
@@ -85,7 +86,7 @@ const MetaContentItem = Component.extend({
    * @return {number}
    * @public
    */
-  @computed('name', 'value', 'metaHighlightCount')
+    @computed('name', 'value', 'metaHighlightCount')
   totalCount(name, value, metaHighlightCount) {
     let count = 0;
     if (metaHighlightCount) {
@@ -102,7 +103,7 @@ const MetaContentItem = Component.extend({
    * @type {boolean}
    * @public
    */
-  @bool('totalCount')
+    @bool('totalCount')
   hasMetaToHighlight: false,
 
   /*
@@ -121,11 +122,11 @@ const MetaContentItem = Component.extend({
     return isSelected && eventHasPayload && hasMetaToHighlight;
   },
 
-  mouseEnter() {
+  handleMouseEnter() {
     this.set('isHovering', true);
   },
 
-  mouseLeave() {
+  handleMouseLeave() {
     this.set('isHovering', false);
   },
 
@@ -138,6 +139,25 @@ const MetaContentItem = Component.extend({
       ...queryInputs,
       language
     };
+  },
+
+  didInsertElement() {
+    mouseEnterFn = this.handleMouseEnter.bind(this);
+    mouseLeaveFn = this.handleMouseLeave.bind(this);
+
+    this.element.addEventListener('mouseover', mouseEnterFn);
+    this.element.addEventListener('mouseout', mouseLeaveFn);
+  },
+
+  /**
+   * Unbind the events
+   * @public
+   */
+  willDestroyElement() {
+    this.element.removeEventListener('mouseover', mouseEnterFn);
+    this.element.removeEventListener('mouseout', mouseLeaveFn);
+    mouseEnterFn = null;
+    mouseLeaveFn = null;
   },
 
   actions: {
