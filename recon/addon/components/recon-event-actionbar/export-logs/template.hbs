@@ -1,4 +1,4 @@
-{{#unless isHidden}}
+{{#if isShowDownload }}
   <hbox class="rsa-button-group">
     {{#rsa-form-button
       class="export-logs-button"
@@ -33,4 +33,4 @@
     iframeClass="export-logs-iframe js-export-logs-iframe"
     sendMessage=(action "didDownloadFiles")
   }}
-{{/unless}}
+{{/if}}

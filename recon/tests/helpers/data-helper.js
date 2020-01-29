@@ -222,6 +222,15 @@ class DataHelper {
     this.redux.dispatch({ type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS, payload: { link: extractedLink } });
     return this;
   }
+
+  isEndpointEvent(flag) {
+    if (flag) {
+      _dispatchInitializeData(this.redux, { eventId: 1, eventType: 'ENDPOINT', endpointId: 2, meta: [['medium', 1]] });
+    } else {
+      _dispatchInitializeData(this.redux, { eventId: 1, endpointId: 2, meta: [['medium', 1]] });
+    }
+
+  }
 }
 
 export default DataHelper;

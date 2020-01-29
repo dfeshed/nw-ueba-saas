@@ -210,3 +210,25 @@ test('the extracted file must not be downloaded automatically', function(assert)
     assert.equal(iframe[0].src, '');
   });
 });
+
+test('download option is not rendered when event is a endpoint event', function(assert) {
+  new DataHelper(this.get('redux'))
+    .isEndpointEvent(true);
+
+  this.render(hbs`{{recon-event-actionbar/export-logs accessControl=accessControl}}`);
+
+  return wait().then(() => {
+    assert.equal(this.$('.export-logs-button').length, 0, 'Expected no download button');
+  });
+});
+
+test('download option is rendered when event is a not-endpoint event', function(assert) {
+  new DataHelper(this.get('redux'))
+    .isEndpointEvent(false);
+
+  this.render(hbs`{{recon-event-actionbar/export-logs accessControl=accessControl}}`);
+
+  return wait().then(() => {
+    assert.equal(this.$('.export-logs-button').length, 1, 'Expected download button');
+  });
+});

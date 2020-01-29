@@ -3,7 +3,7 @@ import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
 import computed, { not, match } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-
+import { isEndpointEvent } from 'recon/reducers/meta/selectors';
 import {
   didDownloadFiles,
   extractFiles
@@ -11,8 +11,9 @@ import {
 
 import layout from './template';
 
-const stateToComputed = ({ recon: { files, visuals } }) => ({
+const stateToComputed = ({ recon, recon: { files, visuals } }) => ({
   extractLink: files.fileExtractLink,
+  isEndpointEvent: isEndpointEvent(recon),
   status: files.fileExtractStatus,
   defaultLogFormat: visuals.defaultLogFormat,
   isAutoDownloadFile: files.isAutoDownloadFile
@@ -63,6 +64,11 @@ const DownloadLogsComponent = Component.extend({
     }
     const logFormat = downloadFormat.find((x) => x.key === defaultLogFormat);
     return i18n.t(`recon.textView.${logFormat.value}`);
+  },
+
+  @computed('isEndpointEvent', 'isHidden')
+  isShowDownload(isEndpointEvent, isHidden) {
+    return !isHidden && !isEndpointEvent;
   },
 
   actions: {
