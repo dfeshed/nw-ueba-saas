@@ -5,6 +5,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { patchFlash } from '../../../../helpers/patch-flash';
+import { patchFetch } from '../../../../helpers/patch-fetch';
 import { patchSocket, throwSocket } from '../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { waitUntil, fillIn, find, findAll, click, render } from '@ember/test-helpers';
@@ -156,11 +157,21 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
     assert.equal(find(selectors.saveButton).disabled, false);
     assert.equal(find(selectors.resetButton).disabled, false);
 
-    await click(selectors.saveButton);
-    await Promise.resolve();
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
 
-    assert.equal(find(selectors.saveButton).disabled, false);
-    assert.equal(find(selectors.resetButton).disabled, false);
+    await click(selectors.saveButton);
+    await waitUntil(() => find(selectors.saveButton).disabled === true, { timeout });
+
+    // when save is rejected, changset will rollback
+    assert.equal(find(selectors.saveButton).disabled, true);
+    assert.equal(find(selectors.resetButton).disabled, true);
   });
 
   test('onclick the icon will toggle form visibility', async function(assert) {

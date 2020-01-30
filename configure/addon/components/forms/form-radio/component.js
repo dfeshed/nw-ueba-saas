@@ -6,6 +6,7 @@ export default Component.extend({
 
   actions: {
     radioChange(value) {
+      this.props.changeset.set(this.attrs.property, value);
       const passiveChange = get(this, 'passiveChange');
       if (passiveChange) {
         passiveChange(value);

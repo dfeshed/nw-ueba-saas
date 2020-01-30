@@ -1,4 +1,4 @@
-{{#let (hash update=(action (mut (get props.changeset property)))) as |select|}}
+{{#let (hash update=(action (changeset-set props.changeset property))) as |select|}}
   {{#forms/form-wrapper property=property label=label labelHidden=labelHidden props=props as |wrapper|}}
     {{yield
       (hash
@@ -7,7 +7,7 @@
           triggerId=wrapper.inputId
           ariaDescribedBy=wrapper.descriptionId
           onchange=select.update
-          selected=(get props.changeset property)
+          selected=(changeset-get props.changeset property)
           onfocus=(action wrapper.focus)
           onblur=(action wrapper.blur)
           searchEnabled=false

@@ -5,7 +5,6 @@ import { get, set } from '@ember/object';
 import Component from '@ember/component';
 import Changeset from 'ember-changeset';
 import computed from 'ember-computed-decorators';
-import deepSet from 'ember-deep-set';
 import { inject as service } from '@ember/service';
 import lookupValidator from 'ember-changeset-validations';
 
@@ -72,20 +71,18 @@ export default Component.extend({
     save(changeset) {
       set(this, 'submitted', true);
       this.notifyPropertyChange('submitted');
-      const snapshot = changeset.snapshot();
       return changeset
         .validate()
         .then(() => {
           if (get(changeset, 'isValid')) {
-            const { changes } = snapshot;
+            changeset.save();
             const content = changeset.get('data');
-            Object.keys(changes).forEach((key) => {
-              deepSet(content, key, changes[key]);
-            });
             get(this, 'formSave')(content);
             set(this, 'submitted', false);
             this.notifyPropertyChange('submitted');
           }
+        }, () => {
+          changeset.rollback();
         });
     }
   }

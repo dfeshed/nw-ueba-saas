@@ -14,9 +14,7 @@ export default Component.extend({
 
   didReceiveAttrs() {
     this._super(...arguments);
-    const submitted = get(this, 'submitted');
-    const focusedValue = submitted ? 2 : 0;
-    set(this, 'focused', focusedValue);
+    set(this, 'focused', 0);
   },
 
   @computed('property', 'changeset.change')
@@ -27,7 +25,7 @@ export default Component.extend({
   @computed('focused', 'property', 'hasChanges')
   validForm(focused, property, hasChanges) {
     if (hasChanges || focused === 1) {
-      return true;
+      return this.changeset.get('isValid');
     }
     return !get(this, `changeset.error.${property}`);
   },
@@ -37,7 +35,7 @@ export default Component.extend({
       const property = get(this, 'property');
       const hasChanges = get(this, 'hasChanges');
       const focused = get(this, 'focused');
-      set(this, 'focused', hasChanges ? 1 : focused + 1);
+      set(this, 'focused', hasChanges ? 0 : focused + 1);
       get(this, 'validateProperty')(property);
     },
 
