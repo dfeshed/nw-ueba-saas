@@ -14,5 +14,14 @@ export default Group.extend({
   // True if this group is the last group in the entire table's `groups` array.
   isLast: computed('group', 'table.groups.lastObject', function() {
     return this.group === this.table?.groups?.lastObject;
-  })
+  }),
+
+  /**
+   * A click on a non-link storypoint or event cell closes any open open recon/ueba overlay.
+   */
+  click() {
+    if (this.get('closeOverlay')) {
+      this.get('closeOverlay')();
+    }
+  }
 });

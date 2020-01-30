@@ -87,14 +87,5 @@ export default Component.extend(HasSizeAttr, HasScrollAttr, {
     const groups = this.table?.groups || [];
     const found = groups.findBy('items.length');
     return found || groups[0];
-  }),
-
-  /**
-   * A click on a non-link storypoint or event cell closes any open open recon/ueba overlay.
-   */
-  click() {
-    if (this.get('closeOverlay')) {
-      this.get('closeOverlay')();
-    }
-  }
+  })
 });
