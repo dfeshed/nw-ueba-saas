@@ -10,7 +10,7 @@ const springboardConfigGen = function(env) {
       socketUrl,
       all: {
         subscriptionDestination: '/user/queue/administration/springboard/all',
-        requestDestination: '/ws/administration/administration/springboard/all'
+        requestDestination: '/ws/administration/springboard/all'
       }
     }
   };

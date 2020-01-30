@@ -1,7 +1,9 @@
-'use strict';
+/* eslint-env node */
+
+const socketRouteGenerator = require('../../../config/socketRoutes');
 
 module.exports = function(environment) {
-  let ENV = {
+  const ENV = {
     modulePrefix: 'dummy',
     environment,
     rootURL: '/',
@@ -9,7 +11,7 @@ module.exports = function(environment) {
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
-        // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
+        // e.g. 'with-controller': true
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
@@ -20,6 +22,10 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+    },
+    moment: {
+      includeLocales: ['en'],
+      includeTimezone: '2010-2020'
     }
   };
 
@@ -29,9 +35,13 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV.roles = ['admin-server.springboard.read', 'admin-server.springboard.manage'];
   }
 
   if (environment === 'test') {
+    ENV['ember-tether'] = {
+      bodyElementId: 'ember-testing'
+    };
     // Testem prefers this...
     ENV.locationType = 'none';
 
@@ -40,12 +50,13 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
-    ENV.APP.autoboot = false;
+    ENV.roles = ['admin-server.springboard.read', 'admin-server.springboard.manage'];
   }
 
-  if (environment === 'production') {
-    // here you can enable a production-specific feature
-  }
+  // if (environment === 'production') {
+  // }
+
+  ENV.socketRoutes = socketRouteGenerator(environment);
 
   return ENV;
 };

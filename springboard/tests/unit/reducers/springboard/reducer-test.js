@@ -9,7 +9,11 @@ module('Unit | Reducers | Springboard', function() {
 
   test('should return the initial state', function(assert) {
     const result = reducer(undefined, {});
-    assert.deepEqual(result, { springboards: [], fetchStatus: null });
+    assert.deepEqual(result, {
+      springboards: [],
+      activeSpringboardId: null,
+      fetchStatus: null
+    });
   });
 
   test('FETCH_ALL_SPRINGBOARD should set data to state', function(assert) {
@@ -32,6 +36,14 @@ module('Unit | Reducers | Springboard', function() {
 
     assert.equal(newEndState.fetchStatus, 'completed');
     assert.equal(newEndState.springboards.length, 1);
+  });
+
+  test('SET_ACTIVE_SPRINGBOARD_ID will set the active springboard id to state', function(assert) {
+    const previous = Immutable.from({
+      activeSpringboardId: null
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_ACTIVE_SPRINGBOARD_ID, payload: '1' });
+    assert.equal(result.activeSpringboardId, 1, 'Setting the coorect id');
   });
 
 });
