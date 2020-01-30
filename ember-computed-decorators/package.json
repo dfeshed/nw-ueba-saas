@@ -22,14 +22,14 @@
   },
   "dependencies": {
     "ember-macro-helpers": "4.2.2",
-    "ember-cli-babel": "7.11.1"
+    "ember-cli-babel": "^7.13.0"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
     "ember-cli": "2.10.0",
     "ember-cli-app-version": "^2.0.0",
     "ember-cli-dependency-checker": "^1.3.0",
-    "ember-cli-htmlbars": "4.0.5",
+    "ember-cli-htmlbars": "4.2.2",
     "ember-cli-inject-live-reload": "2.0.1",
     "ember-cli-jshint": "^2.0.1",
     "ember-cli-qunit": "^3.0.1",
