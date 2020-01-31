@@ -3,7 +3,7 @@ const data = [
   { name: 'time', type: 'TimeT', value: '2020-01-23T17:40:28.000+0000', count: 0 },
   { name: 'size', type: 'UInt32', value: 1410, count: 0 },
   { name: 'payload', type: 'UInt32', value: 58, count: 0 },
-  { name: 'medium', type: 'UInt8', value: 1, count: 0 },
+  { name: 'medium', type: 'UInt8', value: 32, count: 0 },
   { name: 'eth.src', type: 'MAC', value: '00:00:00:00:00:00', count: 0 },
   { name: 'eth.dst', type: 'MAC', value: '00:00:00:00:00:00', count: 0 },
   { name: 'eth.type', type: 'UInt16', value: 2048, count: 0 },
