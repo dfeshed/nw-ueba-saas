@@ -37,6 +37,10 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/endpoint/command/download-file',
         requestDestination: '/ws/endpoint/command/download-file'
       },
+      downloadWildcardMatchedFilesToServer: {
+        subscriptionDestination: '/user/queue/endpoint/command/download-files',
+        requestDestination: '/ws/endpoint/command/download-files'
+      },
       resetHostRiskScore: {
         subscriptionDestination: '/user/queue/endpoint/machine/remove',
         requestDestination: '/ws/endpoint/machine/remove'

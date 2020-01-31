@@ -46,6 +46,7 @@ class HostDetailsMoreActions extends Component {
   showIsolationModal = false;
   downloadConfig = null;
   showDownloadModal = false;
+  isManualFileDownloadModalVisible = false;
 
   @computed('isMFTEnabled')
   get moreOptions() {
@@ -174,8 +175,13 @@ class HostDetailsMoreActions extends Component {
   }
 
   @action
-  requestManualFileDownload() {
-    // Placeholder for manual file download
+  onShowManualFileDownloadModal() {
+    this.set('isManualFileDownloadModalVisible', true);
+  }
+
+  @action
+  hideManualFileDownloadModal() {
+    this.set('isManualFileDownloadModalVisible', false);
   }
 
   @action

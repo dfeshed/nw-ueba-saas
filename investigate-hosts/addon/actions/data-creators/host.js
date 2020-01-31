@@ -439,6 +439,18 @@ const downloadSystemDump = (agentId, serverId, callbacks = callbacksDefault) => 
     });
 };
 
+const downloadWildcardsMatchedFilesRequest = (data, serverId, callbacks = callbacksDefault) => {
+  if (serverId) {
+    Machines.downloadWildcardMatchedFilesToServer(data, serverId)
+      .then(() => {
+        callbacks.onSuccess();
+      }).catch(({ meta: message }) => {
+        if (message) {
+          callbacks.onFailure(message.message);
+        }
+      });
+  }
+};
 
 export {
   getAllServices,
@@ -464,5 +476,6 @@ export {
   isolateHostRequest,
   editExclusionListRequest,
   downloadSystemDump,
-  stopIsolationRequest
+  stopIsolationRequest,
+  downloadWildcardsMatchedFilesRequest
 };

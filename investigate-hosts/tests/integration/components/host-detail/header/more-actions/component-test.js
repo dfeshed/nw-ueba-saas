@@ -533,6 +533,38 @@ module('Integration | Component | host-detail/header/more-actions', function(hoo
 
   });
 
+  test('test for manual file download modal', async function(assert) {
+    const isolationStatus = {
+      isolated: false
+    };
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .policy(policy)
+      .isolationStatus(isolationStatus)
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+
+    await render(hbs `
+      <div id='modalDestination'></div>
+      {{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+
+    await triggerEvent(find('.host-details_dropdown-action-list li.manual-file-download-button'), 'mouseover');
+
+    assert.equal(findAll('.manual-file-download').length, 0, 'Manual file download modal not loaded');
+    await click(find('.manual-file-download-button button'));
+
+    return settled().then(() => {
+      assert.equal(findAll('#modalDestination .manual-file-download').length, 1, 'Manual file download modal loaded');
+    });
+
+  });
+
+
   test('test for Release isolation modal', async function(assert) {
     const isolationStatus = {
       isolated: true,

@@ -98,7 +98,7 @@
       {{else if (eq moreOption.buttonId "manualFileDownload-button")}}
         <li class="manual-file-download-button">
           {{#rsa-form-button
-            defaultAction=(action "requestManualFileDownload")
+            defaultAction=(action "onShowManualFileDownloadModal")
             isDisabled=isAgentMigrated}}
             {{t moreOption.name}}
           {{/rsa-form-button}}
@@ -107,6 +107,13 @@
     {{/each}}
   </ul>
 {{/rsa-content-tethered-panel}}
+
+{{#if isManualFileDownloadModalVisible}}
+  {{utils/manual-file-download
+    closeConfirmModal=(action "hideManualFileDownloadModal")
+    agentId=agentId
+    serverId=hostDetails.serviceId}}
+{{/if}}
 
 {{#if showIsolationModal}}
   {{utils/machine-isolation-modal

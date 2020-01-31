@@ -115,3 +115,30 @@
     vertical-align: text-bottom;
   }
 }
+.manual-file-download_content {
+  margin: rsa-whitespace();
+  .rsa-form-label{
+    color: text-color(primary, lightest);
+  }
+  .manual-file-download_file-path {
+    margin-bottom: 2rem;
+  }
+  .file-size-count-config {
+     .manual-file-download_file-count {
+      width: 45%;
+      display: inline-block;
+       margin-right: 4rem;
+    }
+    .manual-file-download_file-size {
+      width: 42%;
+      display: inline-block;
+    }
+  }
+
+  .file-path-note {
+    color: text-color(primary, light);
+    margin: rsa-whitespace(less) rsa-whitespace() rsa-whitespace() 0;
+    @include rsa-font(body, small);
+    line-height: 1.2rem;
+  }
+}

@@ -9,7 +9,8 @@ import {
   downloadLink,
   updateConfig,
   savedColumnsConfig,
-  isProcessDumpDownloadSupported
+  isProcessDumpDownloadSupported,
+  filePathSeparatorFormat
 } from 'investigate-hosts/reducers/details/selectors';
 
 module('Unit | selectors | details');
@@ -267,5 +268,35 @@ test('isProcessDumpDownloadSupported is false when machineIdentity is not presen
     }
   });
   assert.equal(isProcessDumpDownloadSupported(state), false);
+});
+
+test('filePathSeparatorFormat when OS is windows', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      overview: {
+        hostOverview: {
+          machineIdentity: {
+            machineOsType: 'windows'
+          }
+        }
+      }
+    }
+  });
+  assert.equal(filePathSeparatorFormat(state), '\\');
+});
+
+test('filePathSeparatorFormat when OS is mac or linux', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      overview: {
+        hostOverview: {
+          machineIdentity: {
+            machineOsType: 'mac'
+          }
+        }
+      }
+    }
+  });
+  assert.equal(filePathSeparatorFormat(state), '/');
 });
 

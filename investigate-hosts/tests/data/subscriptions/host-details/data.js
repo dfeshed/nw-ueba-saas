@@ -2,6 +2,7 @@
 
 module.exports = {
   'id': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+  'serverId': 'testServerId123',
   'machine': {
     'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
     'agentVersion': '1.0.0.0',
@@ -217,6 +218,13 @@ module.exports = {
     },
     'lastUpdatedTime': '2017-07-11T05:42:57.021Z',
     'agentMode': 'insights'
+  },
+  'groupPolicy': {
+    'groups': [],
+    'policyStatus': 'Updated',
+    'managed': true,
+    'serverName': 'endpointloghybrid1 - Endpoint Server',
+    'isolationAllowed': false
   },
   'agentStatus': { 'lastSeenTime': 1500091621745, 'scanStatus': 'idle' },
   'groups': [{ 'name': 'group1', 'type': 'type1', 'id': 'id1' }],

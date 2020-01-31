@@ -381,6 +381,27 @@ const stopIsolationRequest = (data, serverId) => {
   });
 };
 
+/**
+ * Executes a websocket call to request files that match a wildcard pattern to be downloaded
+ *
+ * @method downloadWildcardMatchedFilesToServer
+ * @param agentId and comment added
+ * @param serverId {String} post to a specific server
+ * @public
+ * @returns {Promise}
+**/
+
+const downloadWildcardMatchedFilesToServer = (data, serverId) => {
+  const request = lookup('service:request');
+  const streamOptions = serverId ? { socketUrlPostfix: serverId, requiredSocketUrl: 'endpoint/socket' } : null;
+  return request.promiseRequest({
+    method: 'downloadWildcardMatchedFilesToServer',
+    modelName: 'agent',
+    query: { data },
+    streamOptions
+  });
+};
+
 export default {
   getAllServices,
   getAllFilters,
@@ -399,5 +420,6 @@ export default {
   isolateHostRequest,
   downloadSystemDump,
   editExclusionListRequest,
-  stopIsolationRequest
+  stopIsolationRequest,
+  downloadWildcardMatchedFilesToServer
 };

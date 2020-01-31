@@ -1,0 +1,72 @@
+{{#rsa-application-modal
+  style="standard file-status-modal manual-file-download"
+  eventId="manual-file-download"
+  label=(t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.title")
+  autoOpen=true
+  onClose=closeConfirmModal}}
+
+  <div class="manual-file-download_content">
+    <div class="manual-file-download_file-path rsa-form-input">
+      <h4 class="rsa-form-label">
+        {{t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.filePath"}}
+      </h4>
+      <p class="file-path-note">
+        {{t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.filePathDescription"}}
+      </p>
+      <p class="file-path-note">
+        {{t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.filePathNote"}}
+      </p>
+      {{rsa-form-input
+        isError=isFilePathInvalid
+        class="file-path"
+        errorMessage=(t filePathError)
+        placeholder=selectedServerForEdit.host
+        value=filePath}}
+    </div>
+    {{#if fileDownloadButtonStatus.isWildcardPresent}}
+      <div class="file-size-count-config rsa-form-input">
+        <div class="manual-file-download_file-count">
+          <h4 class="rsa-form-label">
+            {{t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.fileCount"}}
+          </h4>
+          <p class="file-path-note">
+            {{t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.fileCountDescription"}}
+          </p>
+          {{rsa-form-input
+            isError=isFilePathInvalid
+            class="file-path"
+            errorMessage=(t fileCountError)
+            placeholder=fileCountPlaceHolder
+            value=fileCount}}
+        </div>
+        <div class="manual-file-download_file-size">
+          <h4 class="rsa-form-label">
+            {{t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.fileSize"}}
+          </h4>
+          <p class="file-path-note">
+            {{t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.fileSizeDescription"}}
+          </p>
+          {{rsa-form-input
+            isError=isFilePathInvalid
+            class="file-path"
+            errorMessage=(t fileSizeError)
+            placeholder=fileSizePlaceHolder
+            value=fileSize}}
+        </div>
+      </div>
+    {{/if}}
+
+  </div>
+
+  <footer>
+    <hbox class="modal-footer-buttons">
+      {{#rsa-form-button defaultAction=closeConfirmModal}}
+        {{t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.buttons.cancel"}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button style="primary" isDisabled=fileDownloadButtonStatus.isDownloadDisabled defaultAction=(action "requestManualFileDownloads")}}
+        {{t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.buttons.download"}}
+      {{/rsa-form-button}}
+    </hbox>
+  </footer>
+
+{{/rsa-application-modal}}

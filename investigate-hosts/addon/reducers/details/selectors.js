@@ -114,3 +114,15 @@ export const isProcessDumpDownloadSupported = createSelector(
     }
   }
 );
+
+export const filePathSeparatorFormat = createSelector(
+  [_hostOverview],
+  ({ machineIdentity }) => {
+    if (machineIdentity) {
+      const { machineOsType } = machineIdentity;
+      return isOSWindows(machineOsType) ? '\\' : '/';
+    } else {
+      return false;
+    }
+  }
+);
