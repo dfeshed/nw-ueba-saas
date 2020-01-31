@@ -222,7 +222,7 @@ module('Integration | Component | Recent Query', function(hooks) {
     assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_FREE_FORM_LABEL, 'first Advanced Option was not highlighted');
   });
 
-  test('If no options are present, Text Filter is highlighted by default', async function(assert) {
+  test('If no options are present, nothing is highlighted', async function(assert) {
 
     await render(hbs`
       {{query-container/recent-query
@@ -230,8 +230,7 @@ module('Integration | Component | Recent Query', function(hooks) {
       }}
     `);
     await clickTrigger(PILL_SELECTORS.recentQuery);
-    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
-    assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_TEXT_LABEL, 'second Advanced Option was not highlighted');
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 0, 'nothing should be highlighted');
   });
 
   test('Highlight will move from options in the dropdown to Advanced Options list and back in recent query tab', async function(assert) {

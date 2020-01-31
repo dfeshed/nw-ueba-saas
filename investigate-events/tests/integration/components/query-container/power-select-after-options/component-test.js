@@ -155,7 +155,8 @@ module('Integration | Component | Power Select After Options', function(hooks) {
     const apiWithNoResults = {
       ...EPS_API,
       results: [],
-      resultsCount: 0
+      resultsCount: 0,
+      searchText: 'foobar'
     };
     this.set('options', MENU_OPTIONS);
     this.set('select', EPS_API);
@@ -198,7 +199,8 @@ module('Integration | Component | Power Select After Options', function(hooks) {
     const apiWithInvalidResults = {
       ...EPS_API,
       results: [isIndexedByNoneMeta],
-      resultsCount: 1
+      resultsCount: 1,
+      searchText: 'Action Event'
     };
     const MENU_OPTIONS_WITH_ISINDEXEDBYNONE = [...MENU_OPTIONS, isIndexedByNoneMeta];
     this.set('options', MENU_OPTIONS_WITH_ISINDEXEDBYNONE);

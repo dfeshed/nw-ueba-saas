@@ -27,7 +27,7 @@ import {
 import * as MESSAGE_TYPES from '../message-types';
 import Ember from 'ember';
 import BoundedList from 'investigate-events/util/bounded-list';
-import { hasComplexText, valueList } from 'investigate-events/util/query-parsing';
+import { hasOperator, valueList } from 'investigate-events/util/query-parsing';
 import {
   addAndRemoveElements,
   addNoResultsMessage,
@@ -405,7 +405,7 @@ export default Component.extend({
           this.set('_searchString', trimmedValueString);
         }
         actions.search(trimmedValueString);
-        if (hasComplexText(trimmedValueString)) {
+        if (hasOperator(trimmedValueString)) {
           // If the search text is complex/contains operators, only allow freeform selection
           this._afterOptionsMenu.highlightIndex = 0; // Free-form
           powerSelectAPI.actions.highlight(null);
@@ -433,7 +433,7 @@ export default Component.extend({
       // Need to make a decision about highlight and marking it as complex
       // only for the first time while creating a pill.
       if (!this.get('isEditing')) {
-        const isComplex = hasComplexText(input);
+        const isComplex = hasOperator(input);
         this.set('_isComplex', isComplex);
         if (isComplex) {
           next(this, () => {

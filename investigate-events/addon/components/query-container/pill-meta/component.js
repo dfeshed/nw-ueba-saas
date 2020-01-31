@@ -36,7 +36,7 @@ import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import { searcher, resultsCount } from 'investigate-events/components/query-container/query-pill/query-pill-util';
 import { filterValidMeta, lastValidMeta } from 'investigate-events/util/meta';
-import { hasComplexText } from 'investigate-events/util/query-parsing';
+import { hasOperator } from 'investigate-events/util/query-parsing';
 
 const { log } = console;// eslint-disable-line
 
@@ -422,7 +422,7 @@ export default Component.extend({
         if (resultsCount(this.get('metaOptions'), prepopulatedMetaText) === 0) {
           // Force free-form pill highlight if the search text has complex operators or a
           // text pill already exists
-          if (hasComplexText(prepopulatedMetaText) || this.get('hasTextPill')) {
+          if (hasOperator(prepopulatedMetaText) || this.get('hasTextPill')) {
             this._afterOptionsMenu.highlightIndex = 0; // Free-form
           // Otherwise, set it to text pill
           } else {

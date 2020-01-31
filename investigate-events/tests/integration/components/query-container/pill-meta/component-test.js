@@ -970,6 +970,12 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await typeInSearch('(x)');
     option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
     assert.ok(option.includes(AFTER_OPTION_FREE_FORM_LABEL), 'Free-Form Filter was not highlighted');
+    // Reset
+    await typeInSearch('');
+    // Type in complex text
+    await typeInSearch('xcontains');
+    option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
+    assert.ok(option.includes(AFTER_OPTION_FREE_FORM_LABEL), 'Free-Form Filter was not highlighted');
   });
 
   test('it does not broadcast a message to toggle when a pill is opened in edit mode', async function(assert) {

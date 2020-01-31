@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import * as MESSAGE_TYPES from '../message-types';
 import { next } from '@ember/runloop';
-import { hasComplexText } from 'investigate-events/util/query-parsing';
+import { hasOperator } from 'investigate-events/util/query-parsing';
 import { filterValidMeta } from 'investigate-events/util/meta';
 
 const { log } = console; // eslint-disable-line no-unused-vars
@@ -93,7 +93,7 @@ export default Component.extend({
       // Text Filter is never auto-selected, so we don't consider it like we do
       // for meta/operator.
       if (this._prevSearchText !== searchText) {
-        if (hasComplexText(searchText)) {
+        if (hasOperator(searchText)) {
           next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, FREE_FORM_INDEX);
         } else {
           next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT);
@@ -105,12 +105,15 @@ export default Component.extend({
       // which Advanced Option to highlight.
       if (this._prevSearchText !== searchText) {
         if (filteredResultsCount === 0) {
-          // All options filterd out. If text is complex or a text filter was
+          // All options filtered out. If text is complex or a text filter was
           // previously created, choose free-form, otherwise default to text.
-          if (hasComplexText(searchText) || !this.get('canPerformTextSearch') || this.get('hasTextPill')) {
-            next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, FREE_FORM_INDEX);
-          } else {
-            next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, TEXT_INDEX);
+          // Only highlight if searchText is not an empty string.
+          if (searchText.length > 0) {
+            if (hasOperator(searchText) || !this.get('canPerformTextSearch') || this.get('hasTextPill')) {
+              next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, FREE_FORM_INDEX);
+            } else {
+              next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, TEXT_INDEX);
+            }
           }
         } else {
           // Something was highlighted in main list, so remove any highlighting of

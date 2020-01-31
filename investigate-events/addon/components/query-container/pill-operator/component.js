@@ -26,7 +26,7 @@ import KEY_MAP, {
 } from 'investigate-events/util/keys';
 import BoundedList from 'investigate-events/util/bounded-list';
 import { assert } from '@ember/debug';
-import { hasComplexText } from 'investigate-events/util/query-parsing';
+import { hasOperator } from 'investigate-events/util/query-parsing';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -349,7 +349,7 @@ export default Component.extend({
         if (operatorResultsCount === 0) {
           // Force free-form pill highlight if the search text has complex operators or a
           // text pill already exists
-          if (hasComplexText(prepopulatedOperatorText) || this.get('hasTextPill')) {
+          if (hasOperator(prepopulatedOperatorText) || this.get('hasTextPill')) {
             this._afterOptionsMenu.highlightIndex = 0; // Free-form
           // Otherwise, set it to text pill
           } else {

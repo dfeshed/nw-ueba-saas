@@ -15,6 +15,7 @@ import {
   COMPLEX_FILTER,
   COMPLEX_OPERATORS,
   OPEN_PAREN,
+  OPERATORS,
   OPERATOR_AND,
   OPERATOR_OR,
   QUERY_FILTER,
@@ -37,6 +38,8 @@ import {
 const { log } = console; // eslint-disable-line
 
 const TWIN_PREFIX = 'twinPill_';
+
+const ALL_OPERATORS = [...OPERATORS, ...COMPLEX_OPERATORS];
 
 /**
  * String representation of filter with spaces trimmed.
@@ -228,6 +231,10 @@ export const reassignTwinIds = (filters, insertionIndex) => {
 
 export const hasComplexText = (str) => {
   return COMPLEX_OPERATORS.some((d) => str.includes(d));
+};
+
+export const hasOperator = (str) => {
+  return ALL_OPERATORS.some((d) => str.includes(d));
 };
 
 /**

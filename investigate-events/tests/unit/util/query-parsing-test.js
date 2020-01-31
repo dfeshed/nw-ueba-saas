@@ -7,6 +7,7 @@ import {
   createOperator,
   createParens,
   hasComplexText,
+  hasOperator,
   isSearchTerm,
   parsePillDataFromUri,
   reassignTwinIds,
@@ -1289,6 +1290,50 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.ok(hasComplexText('x(x'), 'Missed detecting "("');
     assert.ok(hasComplexText(')'), 'Missed detecting ")"');
     assert.ok(hasComplexText('x)x'), 'Missed detecting ")"');
+  });
+
+  test('hasOperator can properly detect all operators', function(assert) {
+    // AND
+    assert.ok(hasOperator('&&'), 'Missed detecting "&&"');
+    assert.ok(hasOperator('x&&x'), 'Missed detecting "&&"');
+    assert.ok(hasOperator('AND'), 'Missed detecting "AND"');
+    assert.ok(hasOperator('xANDx'), 'Missed detecting "AND"');
+    assert.notOk(hasOperator('and'), 'Improperly detected "and" as complex');
+    // OR
+    assert.ok(hasOperator('||'), 'Missed detecting "||"');
+    assert.ok(hasOperator('x||x'), 'Missed detecting "||"');
+    assert.ok(hasOperator('OR'), 'Missed detecting "OR"');
+    assert.ok(hasOperator('xORx'), 'Missed detecting "OR"');
+    assert.notOk(hasOperator('or'), 'Improperly detected "or" as complex');
+    // NOT
+    // assert.ok(hasOperator('!'), 'Missed detecting "!"');
+    // assert.ok(hasOperator('x!x'), 'Missed detecting "!"');
+    assert.ok(hasOperator('NOT'), 'Missed detecting "NOT"');
+    assert.ok(hasOperator('xNOTx'), 'Missed detecting "NOT"');
+    assert.notOk(hasOperator('not'), 'Improperly detected "not" as complex');
+    // PARENS
+    assert.ok(hasOperator('('), 'Missed detecting "("');
+    assert.ok(hasOperator('x(x'), 'Missed detecting "("');
+    assert.ok(hasOperator(')'), 'Missed detecting ")"');
+    assert.ok(hasOperator('x)x'), 'Missed detecting ")"');
+    // exists, !exists
+    assert.ok(hasOperator('exists'), 'Missed detecting "exists"');
+    assert.ok(hasOperator('xexistsx'), 'Missed detecting "xexistsx"');
+    assert.ok(hasOperator('x!existsx'), 'Missed detecting "x!existsx"');
+    // contains
+    assert.ok(hasOperator('contains'), 'Missed detecting "contains"');
+    assert.ok(hasOperator('xcontainsx'), 'Missed detecting "xcontainsx"');
+    // begins
+    assert.ok(hasOperator('begins'), 'Missed detecting "begins"');
+    assert.ok(hasOperator('xbeginsx'), 'Missed detecting "xbeginsx"');
+    // ends
+    assert.ok(hasOperator('ends'), 'Missed detecting "ends"');
+    assert.ok(hasOperator('xendsx'), 'Missed detecting "xendsx"');
+    // equals, not equals
+    assert.ok(hasOperator('='), 'Missed detecting "="');
+    assert.ok(hasOperator('this=that'), 'Missed detecting "this=that"');
+    assert.ok(hasOperator('!='), 'Missed detecting "!="');
+    assert.ok(hasOperator('this!=that'), 'Missed detecting "this!=that"');
   });
 
   test('convertTextToPillData parses half typed meta', function(assert) {
