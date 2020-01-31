@@ -86,6 +86,7 @@
       "../license",
       "../packager",
       "../endpoint-rar",
+      "../health-wellness",
       "../preferences",
       "../recon",
       "../respond",

@@ -6,7 +6,7 @@ module.exports = function(environment) {
   const socketUrl = common.determineSocketUrl(environment, '/metric/socket');
 
   return {
-    'metric-server-ping': {
+    'metrics-server-ping': {
       socketUrl
     },
     'health-wellness': {

@@ -26,6 +26,7 @@ Router.map(function() {
     this.route('monitor');
     this.route('packager');
     this.route('rarconfig');
+    this.route('hwconfig');
     this.mount('respond');
     this.mount('configure');
     this.mount('investigate');
