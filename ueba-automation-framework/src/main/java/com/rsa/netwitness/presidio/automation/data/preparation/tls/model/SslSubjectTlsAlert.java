@@ -482,10 +482,26 @@ public class SslSubjectTlsAlert {
         eventsGenInit.sslSubjectGen.setConstantValueGen("bytes_sent_by_src_ip_to_new_ssl_subject_history");
         UncommonValueForEntity<String> commonValuesCreator = new UncommonValueForEntity<>(eventsGenInit.sslSubjectGen.getGenerator().getNext(), TYPE, name, dataPeriod, uncommonStartDay);
         commonValuesCreator.createCommonValuesGen(eventsGenInit, eventsGenInit.srcNetnameGen, eventsGenInit.hostnameGen);
+        commonValuesCreator.createUncommonValuesHistoryGen(eventsGenInit, eventsGenInit.srcNetnameGen, eventsGenInit.hostnameGen);
         alert.indicators.add(commonValuesCreator.getIndicator());
 
         return this;
     }
+
+    public SslSubjectTlsAlert high_number_of_bytes_sent_by_src_ip_to_new_ssl_subject_outbound_1() {
+        String name = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOGGER.info("Adding indicator: " + name);
+        alert.indicatorNames.add(name);
+
+        AbnormalTrafficNewOccurrences<String> indicatorCreator = new AbnormalTrafficNewOccurrences<>(alert.entity, TYPE, name, dataPeriod, uncommonStartDay);
+
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
+        indicatorCreator.createHighTrafficFromSrcIpAnomalyGen(eventsGenInit);
+        alert.indicators.add(indicatorCreator.getIndicator());
+
+        return this;
+    }
+
 
 
 
