@@ -1,6 +1,6 @@
 <div class="isolation-modal-content">
   <div class="isolate-description-text">
-    {{t "investigateHosts.networkIsolation.isolate.descriptionText"}}
+    {{t "investigateHosts.networkIsolation.isolate.descriptionText" htmlSafe=true}}
   </div>
   <div class="exclusion-list-wrapper">
     <label class="rsa-form-checkbox-label {{if isExclusionListEnabled "checked"}}">
@@ -33,7 +33,7 @@
   <div class="comment-wrapper">
     <box class="comment-box">
       <label class="comment-box-label">
-        {{t "investigateHosts.networkIsolation.isolate.comments"}}
+        {{t "investigateHosts.networkIsolation.isolate.comments" htmlSafe=true}}
       </label>
       {{rsa-form-textarea
         value=isolationComment
