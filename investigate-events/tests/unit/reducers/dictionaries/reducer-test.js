@@ -6,7 +6,7 @@ import * as ACTION_TYPES from 'investigate-events/actions/types';
 import reducer from 'investigate-events/reducers/investigate/dictionaries/reducer';
 import makePackAction from '../../../helpers/make-pack-action';
 import { LIFECYCLE } from 'redux-pack';
-import data from '../../../helpers/language-and-aliases-data-helper';
+import data from '../../../helpers/language-and-aliases-data';
 
 module('Unit | Reducers | dictionaries | Investigate');
 

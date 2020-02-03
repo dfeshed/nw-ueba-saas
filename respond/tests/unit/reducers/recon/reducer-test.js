@@ -5,7 +5,7 @@ import makePackAction from '../../../helpers/make-pack-action';
 import reducer from 'respond/reducers/respond/recon/index';
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'respond/actions/types';
-import data from '../../../helpers/language-and-aliases-data-helper';
+import data from '../../../helpers/language-and-aliases-data';
 
 module('Unit | Reducers | respond | recon', function(hooks) {
   setupTest(hooks);
