@@ -25,6 +25,7 @@ public class NetworkDataPreparation extends DataPreparationBase {
                 new SslSubjectHighBytesSentAlerts(historicalDaysBack, anomalyDay).get()
         ).flatMap(e -> e);
 
+        SessionSplitEnrichmentData sessionSplitEnrichmentData = new SessionSplitEnrichmentData(historicalDaysBack);
 
         Stream<TlsEvent> networkEvents = Stream.of(
                 /** alerts **/
@@ -33,7 +34,8 @@ public class NetworkDataPreparation extends DataPreparationBase {
                 /** future time events **/
                 new FutureEventsForMetrics(10).get(),
                 /** Session split data **/
-                new SessionSplitEnrichmentData().generateAll(),
+                sessionSplitEnrichmentData.generateAll(),
+                sessionSplitEnrichmentData.sslSubjectsForPreProcessing(),
                 /** Special cases alerts scenarios **/
                 new AlertsSpecialCases(historicalDaysBack, anomalyDay).generateAll()
         ).flatMap(e -> e);

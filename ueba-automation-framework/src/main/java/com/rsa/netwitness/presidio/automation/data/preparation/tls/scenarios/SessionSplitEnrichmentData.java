@@ -6,10 +6,12 @@ import presidio.data.domain.event.network.TlsEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.common.time.SingleSampleTimeGenerator;
+import presidio.data.generators.event.tls.TlsRangeEventsGen;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.UnaryOperator;
@@ -22,6 +24,12 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 public class SessionSplitEnrichmentData extends NetworkScenarioBase {
+
+    private static long historicalDaysBack;
+
+    public SessionSplitEnrichmentData(long historicalDaysBack) {
+        this.historicalDaysBack = historicalDaysBack;
+    }
 
     @Override
     String getScenarioName() {
@@ -57,6 +65,27 @@ public class SessionSplitEnrichmentData extends NetworkScenarioBase {
         ).flatMap(e -> e);
     }
 
+
+    public Stream<TlsEvent> sslSubjectsForPreProcessing() {
+        TlsRangeEventsGen eventsGenInit = new TlsRangeEventsGen(1);
+        List<String> sslSubjects = this.generateAll().map(TlsEvent::getSslSubject).distinct().collect(toList());
+        Instant preProcessingTime = now().truncatedTo(DAYS).minus(historicalDaysBack, DAYS).plus(1, ChronoUnit.HOURS);
+
+        return sslSubjects.parallelStream()
+                .map(e -> {
+                    TlsEvent tlsEvent = null;
+                    try {
+                        tlsEvent = eventsGenInit.generateNext();
+                    } catch (GeneratorException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    Objects.requireNonNull(tlsEvent).setSslSubject(e);
+                    Objects.requireNonNull(tlsEvent).setNumOfBytesSent(1);
+                    Objects.requireNonNull(tlsEvent).setDateTime(preProcessingTime);
+                    return tlsEvent;
+                });
+    }
 
     private Stream<TlsEvent> getBaseTestEvents() {
         return generateSessionSplitHourlyEvents(EVENTS_END_TIME, 10, simpleEnrichmentTestDataParams);
