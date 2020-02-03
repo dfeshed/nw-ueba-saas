@@ -96,13 +96,22 @@ test('test REHYDRATE', function(assert) {
 
 test('test CLOSE_RECON', function(assert) {
   const currentState = initialState.merge({
-    fileExtractStatus: 'wait'
+    fileExtractStatus: 'wait',
+    files: ['foo'],
+    fileExtractJobId: '2',
+    selectedFileIds: ['1'],
+    linkToFileAction: 'link',
+    isAutoDownloadFile: true
   });
   const action = {
     type: ACTION_TYPES.CLOSE_RECON
   };
   const result = reducer(currentState, action);
   assert.equal(result.fileExtractStatus, 'queued');
+  assert.deepEqual(result.files, initialState.files);
+  assert.equal(result.fileExtractJobId, initialState.fileExtractJobId);
+  assert.deepEqual(result.selectedFileIds, initialState.selectedFileIds);
+  assert.equal(result.linkToFileAction, initialState.linkToFileAction);
 });
 
 test('test FILE_EXTRACT_FAILURE', function(assert) {

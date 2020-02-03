@@ -33,6 +33,11 @@ const dictionariesReducer = handleActions({
     return dictionariesInitialState.merge({ aliases, language });
   },
 
+  [ACTION_TYPES.CLOSE_RECON]: (state) => {
+    // TODO language/alias errors?
+    return state.merge(dictionariesInitialState);
+  },
+
   [ACTION_TYPES.LANGUAGE_RETRIEVE]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.merge({ language: null, languageError: null }),

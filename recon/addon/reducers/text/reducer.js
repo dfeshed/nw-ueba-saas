@@ -51,6 +51,11 @@ const textReducer = handleActions({
     return state.set('metaToHighlight', null);
   },
 
+  [ACTION_TYPES.CLOSE_RECON]: (state) => {
+    // TODO decode??
+    return state.merge(textInitialState);
+  },
+
   [ACTION_TYPES.TEXT_RECEIVE_PAGE]: (state, { payload }) => {
     const augmentedEntries = augmentResult(payload.data);
     const textContent = (state.textContent || Immutable.from([])).concat(augmentedEntries);

@@ -63,3 +63,35 @@ test('META_RETRIEVE success will not mess with queryInput start & end times if n
   assert.equal(result.queryInputs.startTime, 123);
   assert.equal(result.queryInputs.endTime, 420);
 });
+
+test('test CLOSE_RECON', function(assert) {
+  const dataInitialState = Immutable.from({
+    // Recon inputs
+    endpointId: null,
+    eventId: null,
+    eventType: null,
+    contentError: null, // handler for content related errors
+    contentLoading: false,
+    isStandalone: false,
+    apiFatalErrorCode: 0, // handler for shutting down recon and displaying error
+    contextMenuItems: [],
+    queryInputs: null,
+    index: undefined,
+    total: undefined
+  });
+
+  const currentState = dataInitialState.merge({
+    endpointId: '1',
+    eventId: '2',
+    eventType: 'NETWORK',
+    queryInputs: { foo: 'bar' },
+    index: 1,
+    total: 500
+  });
+
+  const action = {
+    type: ACTION_TYPES.CLOSE_RECON
+  };
+  const result = reducer(currentState, action);
+  assert.deepEqual(result, dataInitialState);
+});

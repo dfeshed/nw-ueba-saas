@@ -104,4 +104,26 @@ module('Unit | Reducer | header', function(hooks) {
     assert.equal(result.headerItems[0].name, 'foo');
     assert.equal(result.headerError, false);
   });
+
+  test('test CLOSE_RECON', function(assert) {
+    const headerInitialState = Immutable.from({
+      headerError: null,
+      headerErrorCode: null,
+      headerItems: null,
+      headerLoading: null
+    });
+
+    const currentState = headerInitialState.merge({
+      headerError: false,
+      headerItems: ['foo'],
+      headerLoading: false
+    });
+
+    const action = {
+      type: ACTION_TYPES.CLOSE_RECON
+    };
+
+    const result = reducer(currentState, action);
+    assert.deepEqual(result, headerInitialState);
+  });
 });

@@ -14,6 +14,10 @@ const headerInitialState = {
 const headerReducer = handleActions({
   [ACTION_TYPES.INITIALIZE]: () => Immutable.from(headerInitialState),
 
+  [ACTION_TYPES.CLOSE_RECON]: (state) => {
+    return state.merge(headerInitialState);
+  },
+
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
     return handle(state, action, {
       start: (s) => {

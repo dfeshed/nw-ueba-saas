@@ -14,7 +14,9 @@ const dataInitialState = Immutable.from({
   isStandalone: false,
   apiFatalErrorCode: 0, // handler for shutting down recon and displaying error
   contextMenuItems: [],
-  queryInputs: null
+  queryInputs: null,
+  index: undefined,
+  total: undefined
 });
 
 const dataReceivedDoneLoading = (state) => state.set('contentLoading', false);
@@ -54,6 +56,10 @@ const data = handleActions({
 
   [ACTION_TYPES.SET_FATAL_API_ERROR_FLAG]: (state, { payload }) => {
     return state.set('apiFatalErrorCode', payload);
+  },
+
+  [ACTION_TYPES.CLOSE_RECON]: (state) => {
+    return state.merge(dataInitialState);
   },
 
   [ACTION_TYPES.META_RETRIEVE]: (state, action) => {

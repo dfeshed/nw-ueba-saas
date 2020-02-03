@@ -42,6 +42,10 @@ const packetReducer = handleActions({
     return state.set('packetsPageSize', packetsInitialState.packetsPageSize);
   },
 
+  [ACTION_TYPES.CLOSE_RECON]: (state) => {
+    return state.merge(packetsInitialState);
+  },
+
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.set('packetFields', null),

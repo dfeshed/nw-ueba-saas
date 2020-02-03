@@ -20,3 +20,32 @@ test('test RESET_PREFERENCES action handler', function(assert) {
   assert.equal(result.packetsTotal, 200);
   assert.equal(result.pageNumber, 2);
 });
+
+test('test CLOSE_RECON', function(assert) {
+  const packetsInitialState = Immutable.from({
+    isPayloadOnly: false,
+    hasStyledBytes: true,
+    hasSignaturesHighlighted: false,
+    packetFields: null,
+    packets: null,
+    packetsPageSize: 100,
+    packetsTotal: 100,
+    packetTooltipData: null,
+    renderIds: null,
+    pageNumber: 1
+  });
+
+  const currentState = packetsInitialState.merge({
+    packetFields: ['foo', 'bar'],
+    packets: ['baz'],
+    renderIds: ['1'],
+    pageNumber: 2
+  });
+
+  const action = {
+    type: ACTION_TYPES.CLOSE_RECON
+  };
+
+  const result = reducer(currentState, action);
+  assert.deepEqual(result, packetsInitialState);
+});

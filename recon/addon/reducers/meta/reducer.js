@@ -16,6 +16,10 @@ const metaReducer = handleActions({
     return metaInitialState.merge({ meta });
   },
 
+  [ACTION_TYPES.CLOSE_RECON]: (state) => {
+    return state.merge(metaInitialState);
+  },
+
   [ACTION_TYPES.META_RETRIEVE]: (state, action) => {
     return handle(state, action, {
       start: () => metaInitialState.set('metaLoading', true),

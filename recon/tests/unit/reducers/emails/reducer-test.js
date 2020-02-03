@@ -91,3 +91,27 @@ test('test EMAIL_RENDER_NEXT action handler', function(assert) {
   const result = reducer(initialState, action);
   assert.ok(result.renderIds.length > 4, 'set email renderIds to email state');
 });
+
+test('test CLOSE_RECON', function(assert) {
+
+  const initialEmailState = Immutable.from({
+    isEmail: true,
+    emails: null,
+    renderIds: null,
+    renderedAll: null
+  });
+
+  const currentState = initialEmailState.merge({
+    emails: ['foo'],
+    renderIds: ['1'],
+    renderedAll: true
+  });
+
+  const action = {
+    type: ACTION_TYPES.CLOSE_RECON
+  };
+
+  const result = reducer(currentState, action);
+  assert.deepEqual(result, initialEmailState);
+
+});

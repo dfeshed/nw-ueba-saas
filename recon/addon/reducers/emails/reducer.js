@@ -39,6 +39,10 @@ const emailsReducer = handleActions({
     });
   },
 
+  [ACTION_TYPES.CLOSE_RECON]: (state) => {
+    return state.merge(emailsInitialState);
+  },
+
   [ACTION_TYPES.EMAIL_RENDER_NEXT]: (state, { payload }) => {
     const ids = payload.map((e) => e.messageId);
     return state.set('renderIds', state.renderIds ? state.renderIds.concat(ids) : ids);

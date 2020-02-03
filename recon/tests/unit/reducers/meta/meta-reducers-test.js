@@ -56,4 +56,23 @@ module('Unit | Reducer | meta', function(hooks) {
     assert.equal(result.metaError, 'foo');
     assert.equal(result.metaLoading, false);
   });
+
+  test('test CLOSE_RECON', function(assert) {
+    const metaInitialState = Immutable.from({
+      meta: null,
+      metaError: null,
+      metaLoading: false
+    });
+
+    const currentState = metaInitialState.merge({
+      meta: ['foo']
+    });
+
+    const action = {
+      type: ACTION_TYPES.CLOSE_RECON
+    };
+
+    const result = reducer(currentState, action);
+    assert.deepEqual(result, metaInitialState);
+  });
 });

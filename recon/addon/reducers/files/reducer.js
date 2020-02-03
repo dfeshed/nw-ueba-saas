@@ -128,7 +128,9 @@ const filesReducer = handleActions({
   },
 
   [ACTION_TYPES.CLOSE_RECON]: (state) => {
-    return state.merge({ 'fileExtractStatus': _fileExtractEnqueueState(state.fileExtractStatus) });
+    const fileExtractStatus = _fileExtractEnqueueState(state.fileExtractStatus);
+    const resultState = { ...filesInitialState, fileExtractStatus };
+    return state.merge(resultState);
   },
   // Files-based notifcation handling
   [ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS]: (state) => {
