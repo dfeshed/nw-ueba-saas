@@ -739,7 +739,7 @@
             "textFive": "Click the browser <span class=\"highlight\">Back</span> button to go back to the previous state.",
             "textSix": "Click the operator to switch between <span class=\"highlight\">AND</span> / <span class=\"highlight\">OR</span> operators."
           },
-          "summaryTwo": {
+          "keyboard": {
             "header": "KEYBOARD INTERACTIONS",
             "textOne": "Begin typing a meta key name or description in the query builder.",
             "textTwo": "Use <span class=\"highlight\">up</span> and <span class=\"highlight\">down arrows</span> in the drop-down menus, and press <span class=\"highlight\">Enter</span> to select.",
