@@ -1,1 +1,1 @@
-export const RECON_EVENT_UPDATE_WAIT_TIME = 500;
+export const RECON_EVENT_UPDATE_WAIT_TIME = 625;
