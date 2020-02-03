@@ -65,6 +65,6 @@ public class S3_Helper {
 
 
     private TransferManager getTransferManager() {
-        return TransferManagerBuilder.standard().withS3Client(S3_Client.s3Client).build();
+        return TransferManagerBuilder.defaultTransferManager();
     }
 }

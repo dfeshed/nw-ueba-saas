@@ -26,7 +26,7 @@ public class S3_Key {
 
     private String tenant = S3_CONFIG.getTenant();
     private String account = S3_CONFIG.getAccount();
-    private String region = S3_CONFIG.getRegion();
+    private String region = S3_Client.s3Client.getRegionName();
 
     public S3_Key() { }
 
