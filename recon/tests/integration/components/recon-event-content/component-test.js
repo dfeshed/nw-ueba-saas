@@ -110,6 +110,6 @@ module('Integration | Component | recon event content', function(hooks) {
 
     assert.ok(find('.rsa-panel-message .message'), 'classic redirection message panel is shown');
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'This session has a web email. View the reconstruction of this session here', 'Classic Web email redirection message is shown');
-    assert.equal(find('.rsa-panel-message .message a').pathname, '/investigation/2/navigate/event/WEB/1', 'Classic redirect URL is correct');
+    assert.equal(find('.rsa-panel-message .message a').pathname, '/investigation/2/reconstruction/1/WEB', 'Classic redirect URL is correct');
   });
 });

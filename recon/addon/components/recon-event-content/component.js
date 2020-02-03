@@ -47,7 +47,7 @@ const EventContentComponent = Component.extend(ReconPagerMixin, {
 
   @computed('reconData.endpointId', 'reconData.eventId')
   classicWebReconPath(endpointId, eventId) {
-    return `/investigation/${endpointId}/navigate/event/WEB/${eventId}`;
+    return `/investigation/${endpointId}/reconstruction/${eventId}/WEB`;
   },
 
   @computed('isEmailView', 'isWebEmail', 'errorMessage', 'classicWebReconPath')
