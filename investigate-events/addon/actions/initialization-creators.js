@@ -5,7 +5,7 @@ import { isEmpty } from '@ember/utils';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
 
 import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
-import { fetchAliases, fetchLanguage, fetchMetaKeyCache } from './fetch/dictionaries';
+import { fetchMetaKeyCache, fetchLanguageAndAliases } from './fetch/dictionaries';
 import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
 import fetchRecentQueries from './fetch/recent-queries';
 import fetchValueSuggestions from './fetch/value-suggestions';
@@ -731,17 +731,17 @@ export const getDictionaries = (resolve = noop, reject = noop) => {
     if (!serviceId) {
       resolve();
     } else {
-      const { aliasesCache, languageCache } = getState().investigate.dictionaries;
+      const { aliasesCache } = getState().investigate.dictionaries;
 
-      const languagePromise = new RSVP.Promise((resolveLang, rejectLang) => {
-        if (!languageCache[serviceId]) {
+      return new RSVP.Promise((resolveLangAndAliases, rejectLangAndAliases) => {
+        if (!aliasesCache[serviceId]) {
           dispatch({
-            type: ACTION_TYPES.LANGUAGE_RETRIEVE,
-            promise: fetchLanguage(serviceId),
+            type: ACTION_TYPES.LANGUAGE_AND_ALIASES_RETRIEVE,
+            promise: fetchLanguageAndAliases(serviceId),
             meta: {
               onFailure(response) {
-                handleInvestigateErrorCode(response, 'FETCH_LANGUAGE');
-                rejectLang(response);
+                handleInvestigateErrorCode(response, 'FETCH_LANGUAGE_AND_ALIASES');
+                rejectLangAndAliases(response);
               },
               onSuccess() {
                 // Every language call populates a metaKeyCache with metaKeys
@@ -749,41 +749,19 @@ export const getDictionaries = (resolve = noop, reject = noop) => {
                 dispatch(_getMetaKeyCache());
               },
               onFinish() {
-                resolveLang();
+                resolveLangAndAliases();
               }
             }
           });
         } else {
+          // dispatch get language from cache AND aliases from cache
           dispatch({
-            type: ACTION_TYPES.LANGUAGE_GET_FROM_CACHE,
+            type: ACTION_TYPES.LANGUAGE_AND_ALIASES_GET_FROM_CACHE,
             payload: serviceId
           });
-          resolveLang();
+          resolveLangAndAliases();
         }
-      });
-
-      const aliasesPromise = new RSVP.Promise((resolveAliases, rejectAliases) => {
-        if (!aliasesCache[serviceId]) {
-          dispatch({
-            type: ACTION_TYPES.ALIASES_RETRIEVE,
-            promise: fetchAliases(serviceId),
-            meta: {
-              onFailure(response) {
-                handleInvestigateErrorCode(response, 'FETCH_ALIASES');
-                rejectAliases(response);
-              },
-              onFinish() {
-                resolveAliases();
-              }
-            }
-          });
-        } else {
-          dispatch({ type: ACTION_TYPES.ALIASES_GET_FROM_CACHE, payload: serviceId });
-          resolveAliases();
-        }
-      });
-
-      RSVP.all([languagePromise, aliasesPromise]).then(() => {
+      }).then(() => {
         resolve();
       }, reject);
     }

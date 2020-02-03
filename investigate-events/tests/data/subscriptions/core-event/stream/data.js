@@ -1,9 +1,10 @@
 import faker from 'faker';
 import { shared } from 'mock-server';
+import { getAliases } from '../../../../../addon/reducers/investigate/dictionaries/utils';
 
 let eventList;
 const NUMBER_OF_EVENTS = 500;
-const aliases = shared.subscriptions.coreMetaAliasData;
+const aliases = getAliases(shared.subscriptions.coreMetaAliasData);
 const SERVICES = Object.keys(aliases.service).map(Number);
 const TCP_SRC_PORTS = Object.keys(aliases['tcp.srcport']).map(Number);
 const TCP_DST_PORTS = Object.keys(aliases['tcp.dstport']).map(Number);

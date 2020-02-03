@@ -29,7 +29,7 @@ test('incident details storyline events open event analysis on click', function(
 
   andThen(function() {
     assert.equal(currentURL(), '/respond/incident/INC-123', 'The route starts at incident details');
-    assert.equal(find(indicatorsSelector).length, 1);
+    assert.equal(find(indicatorsSelector).length, 1, 'one indicators found');
   });
 
   click(indicatorsSelector);
@@ -39,21 +39,21 @@ test('incident details storyline events open event analysis on click', function(
   });
 
   andThen(function() {
-    assert.ok(find(toggleEventsSelector).length > 0);
+    assert.ok(find(toggleEventsSelector).length > 0, 'toggle events found');
   });
 
   click(toggleEventsSelector);
 
   andThen(function() {
     assert.equal(currentURL(), '/respond/incident/INC-123', 'The route remains incident details');
-    assert.ok(find(reconLinkSelector).length > 0);
+    assert.ok(find(reconLinkSelector).length > 0, 'recon link found');
   });
 
   click(`${reconLinkSelector} .recon-link-to:eq(0)`);
 
   andThen(function() {
     return wait().then(() => {
-      assert.equal(find(reconWrapperSelector).length, 1);
+      assert.equal(find(reconWrapperSelector).length, 1, 'one recon respond wrapper found');
 
       const queryParamsRegex = new RegExp(/respond\/incident\/INC-123\/recon\?endpointId=555d9a6fe4b0d37c827d402d&eventId=150&eventType=NETWORK&selection=(.*)/);
       const theCurrentUrl = currentURL();

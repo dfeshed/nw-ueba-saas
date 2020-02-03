@@ -1,3 +1,6 @@
+import _ from 'lodash';
+import sort from 'fast-sort';
+
 // Mask for the index level of a language's meta key.
 export const LANGUAGE_KEY_INDEX_MASK = 0x000F;
 
@@ -27,6 +30,11 @@ export const LANGUAGE_KEY_SPECIAL_MASK = 0x000000F0;
 
 // Token appears only once per session
 export const LANGUAGE_KEY_SPECIAL_SINGLETON = 0x00000010;
+
+// returns formattedName for language object
+const _getFormattedName = (item) => {
+  return item.metaName ? `${item.metaName} (${item.displayName})` : item.displayName;
+};
 
 // Some keys are always hidden from view by UI.
 const LANGUAGE_KEYS_ALWAYS_HIDDEN = ['time', 'sessionid'];
@@ -99,4 +107,43 @@ export const isOpen = (languageKey) => {
     ret = _indexLevel(languageKey) === LANGUAGE_KEY_INDEX_VALUES;
   }
   return ret;
+};
+
+/**
+ * iterates over data array to construct aliases
+ * returns aliases
+ *
+ * @param {object[]} data { language: { }, aliases: { } }[]
+ *
+ */
+export const getAliases = (data) => {
+  const aliases = {};
+  if (data && data.length) {
+    data.forEach((item) => {
+      if (!_.isEmpty(item.aliases)) {
+        aliases[item.language.metaName] = _.cloneDeep(item.aliases);
+      }
+    });
+  }
+  return aliases;
+};
+
+/**
+ * iterates over data array to get language
+ * returns language
+ *
+ * @param {object[]} data { language: { }, aliases: { } }[]
+ *
+ */
+export const getLanguage = (data) => {
+  if (data && data.length) {
+    const enrichedLanguage = data.map((item) => {
+      const languageItem = _.cloneDeep(item.language);
+      languageItem.formattedName = _getFormattedName(item.language);
+      return languageItem;
+    });
+    sort(enrichedLanguage).by([{ asc: (item) => item.metaName.toUpperCase() }]);
+    return enrichedLanguage;
+  }
+  return [];
 };

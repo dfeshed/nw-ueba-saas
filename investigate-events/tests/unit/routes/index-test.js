@@ -20,8 +20,8 @@ const isBaseInvestigateIntializationComplete = () => {
   const { dictionaries, queryNode, services, columnGroup } = investigate;
   const columnGroupsCameback = (columnGroup.columnGroups || []).length > 5;
   const preferencesCameBack = queryNode.queryTimeFormat === 'DB';
-  const aliasesCameBack = Object.keys(dictionaries.aliases || {}).length === 9;
-  const languagesCameBack = (dictionaries.language || []).length === 95;
+  const aliasesCameBack = Object.keys(dictionaries.aliases || {}).length === 8;
+  const languagesCameBack = (dictionaries.language || []).length === 246;
   const servicesCameBack = (services.serviceData || []).length === 4;
 
   // Useful, leaving for later

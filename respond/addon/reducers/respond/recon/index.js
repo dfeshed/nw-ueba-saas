@@ -3,6 +3,7 @@ import { handle } from 'redux-pack';
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import * as ACTION_TYPES from 'respond/actions/types';
+import { getAliases, getLanguage } from './utils';
 
 const initialState = Immutable.from({
   serviceData: undefined,
@@ -36,6 +37,7 @@ export default handleActions({
   [ACTION_TYPES.ALIASES_AND_LANGUAGE_RETRIEVE]: (state, action) => {
     return state.set('loadingRecon', action.payload.loading);
   },
+
   [ACTION_TYPES.GET_FROM_LANGUAGE_AND_ALIASES_CACHE]: (state, action) => {
     const { payload: { endpointId } } = action;
     const aliases = state.aliasesCache[endpointId];
@@ -45,12 +47,12 @@ export default handleActions({
       aliases
     });
   },
+
   [ACTION_TYPES.ALIASES_AND_LANGUAGE_COMPLETE]: (state, action) => {
-    const { response, endpointId } = action.payload;
-    const [ languageResponse, aliasesResponse ] = response;
-    const aliases = aliasesResponse.data;
-    const language = languageResponse.data;
-    const aliasesCache = state.aliasesCache.setIn([endpointId], aliases);
+    const { response: { data }, endpointId } = action.payload;
+    const aliases = getAliases(data);
+    const language = getLanguage(data);
+    const aliasesCache = state.aliasesCache.setIn([endpointId], getAliases(data));
     const languageCache = state.languageCache.setIn([endpointId], language);
     return state.merge({
       language,

@@ -4,42 +4,22 @@ import {
   findAllPromiseRequest
 } from 'investigate-shared/actions/api/events/utils';
 
-const LANGUAGE_MODEL_NAME = 'core-meta-key';
-const ALIAS_MODEL_NAME = 'core-meta-alias';
+const LANGUAGE_AND_ALIASES_MODEL_NAME = 'core-meta-alias';
 const META_KEY_CACHE_MODEL_NAME = 'meta-key-cache';
 
 /**
- * Fetch the language for a given service.
- * @param {string|number} serviceId Id of the service
+ * fetch `language` and `aliases` for a service
  * @return {object} RSVP Promise
- * @public
+ * @param {*} serviceId id of service
  */
-const fetchLanguage = (serviceId) => {
+const fetchLanguageAndAliases = (serviceId) => {
   const query = {
     filter: [
       serviceIdFilter(serviceId)
     ]
   };
   return queryPromiseRequest(
-    LANGUAGE_MODEL_NAME,
-    query
-  );
-};
-
-/**
- * Fetch the aliases for a given service.
- * @param {string|number} serviceId Id of the service
- * @return {object} RSVP Promise
- * @public
- */
-const fetchAliases = (serviceId) => {
-  const query = {
-    filter: [
-      serviceIdFilter(serviceId)
-    ]
-  };
-  return queryPromiseRequest(
-    ALIAS_MODEL_NAME,
+    LANGUAGE_AND_ALIASES_MODEL_NAME,
     query
   );
 };
@@ -52,7 +32,6 @@ const fetchAliases = (serviceId) => {
 const fetchMetaKeyCache = () => findAllPromiseRequest(META_KEY_CACHE_MODEL_NAME);
 
 export {
-  fetchLanguage,
-  fetchAliases,
-  fetchMetaKeyCache
+  fetchMetaKeyCache,
+  fetchLanguageAndAliases
 };

@@ -3,6 +3,7 @@ import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 import sort from 'fast-sort';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
+import { getAliases, getLanguage } from './utils';
 
 const _initialState = Immutable.from({
   aliases: undefined,
@@ -10,48 +11,50 @@ const _initialState = Immutable.from({
   language: undefined,
   languageCache: {},
   metaKeyCache: undefined,
-  languageError: false,
-  aliasesError: false
+  languageAndAliasesError: false
 });
 
-const _sortByMetaName = (a, b) => {
-  const nameA = a.metaName.toUpperCase();
-  const nameB = b.metaName.toUpperCase();
-  if (nameA < nameB) {
-    return -1;
-  }
-  if (nameA > nameB) {
-    return 1;
-  }
-  return 0;
-};
+const ENDPOINTID = 'endpointId';
 
 export default handleActions({
-  // Handles the results from a Promise call to fetch `language` for a given
-  // service.
-  [ACTION_TYPES.LANGUAGE_RETRIEVE]: (state, action) => {
+
+  // handles results from a Promise call that
+  // fetches `language` and `aliases` for a given service
+  [ACTION_TYPES.LANGUAGE_AND_ALIASES_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ language: undefined, languageError: false }),
-      failure: (s) => s.set('languageError', true),
+      start: (s) => s.merge({
+        language: undefined,
+        languageAndAliasesError: false,
+        aliases: undefined
+      }),
+      failure: (s) => s.merge({
+        languageAndAliasesError: true
+      }),
       success: (s) => {
         const { filter: filters } = action.payload.request;
-        const filter = filters.find((e) => e.field === 'endpointId');
+        const filter = filters.find((e) => e.field === ENDPOINTID);
         const { value: serviceId } = filter;
-        const data = action.payload.data.map((d) => ({
-          ...d,
-          formattedName: d.metaName ? `${d.metaName} (${d.displayName})` : d.displayName
-        })).sort(_sortByMetaName);
-        const languageCache = s.languageCache.setIn([serviceId], data);
-        return s.merge({ language: data, languageCache });
+        const aliases = getAliases(action.payload.data);
+        const aliasesCache = s.aliasesCache.setIn([serviceId], aliases);
+        const language = getLanguage(action.payload.data);
+        const languageCache = s.languageCache.setIn([serviceId], language);
+
+        return s.merge({
+          aliases,
+          aliasesCache,
+          language,
+          languageCache
+        });
       }
     });
   },
 
-  // Gets a language object from cache for a given service
-  [ACTION_TYPES.LANGUAGE_GET_FROM_CACHE]: (state, action) => {
+  // gets `language` and `aliases` from cache for a given service
+  [ACTION_TYPES.LANGUAGE_AND_ALIASES_GET_FROM_CACHE]: (state, action) => {
     const { payload: serviceId } = action;
     const language = state.languageCache[serviceId];
-    return state.merge({ language });
+    const aliases = state.aliasesCache[serviceId];
+    return state.merge({ aliases, language });
   },
 
   [ACTION_TYPES.META_KEY_CACHE_RETRIEVE]: (state, action) => {
@@ -71,29 +74,6 @@ export default handleActions({
         }
       }
     });
-  },
-
-  // Handles the results from a Promise call to fetch `aliases` for a given
-  // service.
-  [ACTION_TYPES.ALIASES_RETRIEVE]: (state, action) => {
-    return handle(state, action, {
-      start: (s) => s.merge({ aliases: undefined, aliasesError: false }),
-      failure: (s) => s.set('aliasesError', true),
-      success: (s) => {
-        const { filter: filters } = action.payload.request;
-        const filter = filters.find((e) => e.field === 'endpointId');
-        const { value: serviceId } = filter;
-        const aliasesCache = s.aliasesCache.setIn([serviceId], action.payload.data);
-        return s.merge({ aliases: action.payload.data, aliasesCache });
-      }
-    });
-  },
-
-  // Gets an aliases object from cache for a given service
-  [ACTION_TYPES.ALIASES_GET_FROM_CACHE]: (state, action) => {
-    const { payload: serviceId } = action;
-    const aliases = state.aliasesCache[serviceId];
-    return state.merge({ aliases });
   },
 
   // Helper function for testing

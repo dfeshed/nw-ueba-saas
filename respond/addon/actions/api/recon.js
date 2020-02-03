@@ -1,4 +1,4 @@
-import RSVP, { Promise } from 'rsvp';
+import { Promise } from 'rsvp';
 import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from '../types';
 import { getServices } from 'respond/reducers/respond/recon/selectors';
@@ -30,20 +30,8 @@ const fetchPackAction = function(resolve, reject) {
 };
 
 const serviceIdFilter = (value) => ({ field: 'endpointId', value });
-const fetchLanguage = function(endpointId) {
-  const request = lookup('service:request');
-  return request.promiseRequest({
-    method: 'query',
-    modelName: 'core-meta-key',
-    query: {
-      filter: [
-        serviceIdFilter(endpointId)
-      ]
-    }
-  });
-};
 
-const fetchAliases = function(endpointId) {
+const fetchLanguageAndAliases = function(endpointId) {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'query',
@@ -74,9 +62,6 @@ export default {
   },
 
   getLanguagesAndAliases(endpointId) {
-    const languagePromise = fetchLanguage(endpointId);
-    const aliasesPromise = fetchAliases(endpointId);
-    return RSVP.all([languagePromise, aliasesPromise]);
+    return fetchLanguageAndAliases(endpointId);
   }
-
 };

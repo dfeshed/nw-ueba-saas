@@ -52,13 +52,6 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/timeline'
       }
     },
-    'core-meta-key': {
-      socketUrl,
-      query: {
-        subscriptionDestination: '/user/queue/investigate/languages',
-        requestDestination: '/ws/investigate/languages'
-      }
-    },
     'core-meta-alias': {
       socketUrl,
       query: {

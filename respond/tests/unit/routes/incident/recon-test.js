@@ -108,40 +108,41 @@ module('Unit | Route | incident.recon', function(hooks) {
     }, { timeout: 10000 });
   });
 
-  test('should fetch languages and aliases then cache them', async function(assert) {
+  test('should fetch language and aliases then cache them', async function(assert) {
     assert.expect(8);
 
     patchReducer(this, Immutable.from({}));
     const route = setupRoute.call(this);
 
     patchSocket((method, modelName, query) => {
-      assert.equal(method, 'query');
-      assert.equal(modelName, 'core-meta-key');
+      assert.equal(method, 'query', 'method is query');
+      assert.equal(modelName, 'core-meta-alias', 'modelName is core-meta-alias');
       assert.deepEqual(query, {
         filter: [{
           field: 'endpointId',
           value: endpointId
         }]
-      });
+      }, 'correct query object');
     });
 
     await route.model(param, options);
 
     await waitUntil(() => {
       const { respond: { recon: { aliases, language } } } = redux.getState();
-      const aliasesAreSetup = aliases && Object.keys(aliases).length === 9;
-      const languagesAreSetup = language && language.length === 95;
+      const aliasesAreSetup = aliases && Object.keys(aliases).length === 8;
+      const languagesAreSetup = language && language.length === 246;
+
       if (aliasesAreSetup && languagesAreSetup) {
         assert.ok(true, 'aliases and language were correctly set during the model hook');
       }
       return aliasesAreSetup && languagesAreSetup;
-    }, { timeout: 10000 });
+    }, { timeout: 3000 }); // TODO 10000
 
     const { respond: { recon: { aliasesCache, languageCache } } } = redux.getState();
-    assert.equal(Object.keys(aliasesCache[endpointId]).length, 9);
-    assert.equal(languageCache[endpointId].length, 95);
-    assert.equal(aliasesCache[endpointId]['eth.type'][0], '802.3');
-    assert.equal(languageCache[endpointId][0].metaName, 'time');
+    assert.equal(Object.keys(aliasesCache[endpointId]).length, 8, 'aliasesCache is of correct length');
+    assert.equal(languageCache[endpointId].length, 246, 'languageCache is of correct length');
+    assert.equal(aliasesCache[endpointId]['eth.type'][0], '802.3', 'aliasesCache has expected element');
+    assert.equal(languageCache[endpointId][0].metaName, 'access.point', 'languageCache has expected element');
   });
 
   test('should hydrate languages and aliases from cache when available', async function(assert) {
@@ -176,7 +177,7 @@ module('Unit | Route | incident.recon', function(hooks) {
     const route = setupRoute.call(this);
 
     patchSocket((method, modelName) => {
-      if (modelName === 'core-meta-key' || modelName === 'core-meta-alias') {
+      if (modelName === 'core-meta-alias') {
         assert.ok(false, 'should not have fetched languages or aliases from the api');
       }
     });

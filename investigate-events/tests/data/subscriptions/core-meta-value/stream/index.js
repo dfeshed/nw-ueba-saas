@@ -1,10 +1,10 @@
 import faker from 'faker';
 import { shared } from 'mock-server';
-
-const aliases = shared.subscriptions.coreMetaAliasData;
+import { getAliases } from '../../../../../addon/reducers/investigate/dictionaries/utils';
 
 const ENUMS_BY_META_NAME = {};
 const SIZE = 20;
+const aliases = getAliases(shared.subscriptions.coreMetaAliasData);
 
 ['medium', 'service', 'tcp.srcport', 'tcp.dstport', 'ip.proto'].forEach((metaName) => {
   ENUMS_BY_META_NAME[metaName] = Object.keys(aliases[metaName]);
