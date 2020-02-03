@@ -27,7 +27,8 @@
   &.is-sticky {
     .packet-details {
       box {
-        @include rsa-word-wrap();
+        white-space: nowrap;
+        margin-right: rsa-whitespace(less);
       }
     }
   }
