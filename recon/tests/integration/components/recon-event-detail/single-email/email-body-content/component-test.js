@@ -7,6 +7,7 @@ import EmberObject from '@ember/object';
 import emailData from '../../../../../data/subscriptions/reconstruction-email-data/stream/data';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
+import _ from 'lodash';
 
 const _first200 = (str) => str.trim().replace(/\s/g, '').substring(0, 200);
 
@@ -102,10 +103,11 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
 
   test('renders well formatted plain text email body content', async function(assert) {
     const [, , , email] = emailData;
-    email.bodyContent = 'first line\\nsecond line\\nthird line';
-    this.set('email', EmberObject.create(email));
+    const emailCopy = _.cloneDeep(email);
+    emailCopy.bodyContent = 'first line\\nsecond line\\nthird line';
+    this.set('email', EmberObject.create(emailCopy));
     await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
-    assert.equal(find('iframe').contentDocument.body.innerText, email.bodyContent, 'Plain text email body must be well formatted');
+    assert.equal(find('iframe').contentDocument.body.innerText, emailCopy.bodyContent, 'Plain text email body must be well formatted');
   });
 
   test('adds hrefs to hyperlinks in the body', async function(assert) {

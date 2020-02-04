@@ -29,8 +29,7 @@ import {
 } from 'recon/utils/error-codes';
 import { killAllBatching } from './util/batch-data-handler';
 import {
-  fetchAliases,
-  fetchLanguage,
+  fetchLanguageAndAliases,
   fetchMeta,
   fetchNotifications,
   fetchPacketData,
@@ -419,7 +418,7 @@ const storeDefaultReconView = (newView) => {
  * @public
  */
 const initializeRecon = (reconInputs) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch({
       type: ACTION_TYPES.OPEN_RECON
     });
@@ -437,31 +436,17 @@ const initializeRecon = (reconInputs) => {
       payload: reconInputs
     });
 
-    // language is optional parameter for recon
-    // may be passed in, if not, fetch
-    if (!reconInputs.language) {
-      dispatch({
-        type: ACTION_TYPES.LANGUAGE_RETRIEVE,
-        promise: fetchLanguage(reconInputs),
-        meta: {
-          onFailure(response) {
-            // failure to get language is no good, but
-            // is not critical error no need to dispatch
-            handleInvestigateErrorCode(response, 'FETCH_LANGUAGE');
-          }
-        }
-      });
-    }
+    const { endpointId } = getState().recon.data;
 
-    // aliases is optional parameter for recon
+    // language and aliases are optional parameters for recon
     // may be passed in, if not, fetch
-    if (!reconInputs.aliases) {
+    if (!reconInputs.language || !reconInputs.aliases) {
       dispatch({
-        type: ACTION_TYPES.ALIASES_RETRIEVE,
-        promise: fetchAliases(reconInputs),
+        type: ACTION_TYPES.LANGUAGE_AND_ALIASES_RETRIEVE,
+        promise: fetchLanguageAndAliases(endpointId),
         meta: {
           onFailure(response) {
-            handleInvestigateErrorCode(response, 'FETCH_ALIASES');
+            handleInvestigateErrorCode(response, 'FETCH_LANGUAGE_AND_ALIASES');
           }
         }
       });

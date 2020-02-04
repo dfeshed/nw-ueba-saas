@@ -39,8 +39,8 @@ test('test EMAIL_RECEIVE_PAGE action handler', function(assert) {
 });
 
 test('test EMAIL_RECEIVE_PAGE action handler - handle split email body', function(assert) {
-
-  let part1 = _.cloneDeep(emailData.slice(0, 4));
+  const emailData1 = _.cloneDeep(emailData).sort((a, b) => a.messageId < b.messageId);
+  let part1 = _.cloneDeep(emailData1.slice(0, 4));
   let splitEmail = part1[part1.length - 1];
   splitEmail.bodyContent = splitEmail.bodyContent.substring(0, 2000);
 
@@ -59,11 +59,11 @@ test('test EMAIL_RECEIVE_PAGE action handler - handle split email body', functio
   assert.equal(result1.emails[3].bodyContent.length, 2000, 'Email body is 2000 char');
   assert.ok(result1.emails[3].partial, 'Last email marked partial');
 
-  part1 = _.cloneDeep(emailData.slice(0, 4));
+  part1 = _.cloneDeep(emailData1.slice(0, 4));
   splitEmail = part1[part1.length - 1];
   const part2FirstMail = _.cloneDeep(part1[part1.length - 1]);
   part2FirstMail.bodyContent = splitEmail.bodyContent.substring(2000, splitEmail.bodyContent.length);
-  const part2 = emailData.slice(4, emailData.length);
+  const part2 = emailData1.slice(4, emailData1.length);
 
   action = {
     type: ACTION_TYPES.EMAIL_RECEIVE_PAGE,

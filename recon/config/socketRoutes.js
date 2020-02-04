@@ -10,13 +10,6 @@ const reconValueConfigGen = function(environment) {
   const socketUrl = common.determineSocketUrl(environment, '/investigate/socket');
 
   return {
-    'core-meta-key': {
-      socketUrl,
-      query: {
-        subscriptionDestination: '/user/queue/investigate/languages',
-        requestDestination: '/ws/investigate/languages'
-      }
-    },
     'core-meta-alias': {
       socketUrl,
       query: {

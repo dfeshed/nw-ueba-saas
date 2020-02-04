@@ -95,6 +95,32 @@ const basicPromiseRequest = (endpointId, eventId, modelName, streamOptions = {})
   });
 };
 
+/**
+ * Creates a serviceId filter
+ * @param {string|number} value - The Id of the service
+ * @return {object} A field/value object
+ * @public
+ */
+const serviceIdFilter = (value) => ({ field: 'endpointId', value });
+
+/**
+ * Creates a Promise request with its "method" set to `query`,
+ * @param {string} modelName - Name of model
+ * @param {object} query - (Optional) Query params for request
+ * @param {object} streamOptions - (Optional) Stream params
+ * @return {object} An RSVP Promise
+ * @public
+ */
+const queryPromiseRequest = (modelName, query = {}, streamOptions = {}) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'query',
+    modelName,
+    query,
+    streamOptions
+  });
+};
+
 const addFileTypeFilter = (query, type) => {
   return _addFilter(
     query,
@@ -150,6 +176,8 @@ export {
   addStreaming,
   addSessionQueryFilter,
   basicPromiseRequest,
+  serviceIdFilter,
+  queryPromiseRequest,
   addDecode,
   addEmail
 };

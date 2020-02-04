@@ -11,7 +11,7 @@ import {
   cursorLast
 } from './text';
 import { fetchEmailData, batchEmailData } from './emails';
-import { fetchLanguage, fetchAliases } from './dictionaries';
+import { fetchLanguageAndAliases } from './dictionaries';
 import fetchExtractJobId from './file-extract';
 import fetchNotifications from './notifications';
 
@@ -26,8 +26,7 @@ export {
   cursorPrevious,
   cursorNext,
   cursorLast,
-  fetchLanguage,
-  fetchAliases,
+  fetchLanguageAndAliases,
   fetchNotifications,
   fetchExtractJobId,
   batchPacketData,

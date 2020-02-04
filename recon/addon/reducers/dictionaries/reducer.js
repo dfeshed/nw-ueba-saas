@@ -3,6 +3,7 @@ import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 
 import * as ACTION_TYPES from 'recon/actions/types';
+import { getAliases, getLanguage } from './utils';
 
 const dictionariesInitialState = Immutable.from({
   // NOTE: actual aliases/language data is stored in
@@ -22,9 +23,7 @@ const dictionariesInitialState = Immutable.from({
   // recon from investigate
   aliases: null,
   language: null,
-
-  languageError: null,
-  aliasesError: null
+  languageAndAliasesError: null
 });
 
 const dictionariesReducer = handleActions({
@@ -38,19 +37,26 @@ const dictionariesReducer = handleActions({
     return state.merge(dictionariesInitialState);
   },
 
-  [ACTION_TYPES.LANGUAGE_RETRIEVE]: (state, action) => {
+  // handles results from fetching `language` and `aliases` for given service
+  [ACTION_TYPES.LANGUAGE_AND_ALIASES_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ language: null, languageError: null }),
-      failure: (s) => s.set('languageError', true),
-      success: (s) => s.set('language', action.payload.data)
-    });
-  },
+      start: (s) => s.merge({
+        aliases: undefined,
+        language: undefined,
+        languageAndAliasesError: false
+      }),
+      failure: (s) => s.merge({
+        languageAndAliasesError: true
+      }),
+      success: (s) => {
+        const aliases = getAliases(action.payload.data);
+        const language = getLanguage(action.payload.data);
 
-  [ACTION_TYPES.ALIASES_RETRIEVE]: (state, action) => {
-    return handle(state, action, {
-      start: (s) => s.merge({ aliases: null, aliasesError: null }),
-      failure: (s) => s.set('aliasesError', true),
-      success: (s) => s.set('aliases', { data: action.payload.data })
+        return s.merge({
+          aliases,
+          language
+        });
+      }
     });
   }
 }, dictionariesInitialState);
