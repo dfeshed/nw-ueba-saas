@@ -71,7 +71,7 @@ public class AbnormalTrafficNewOccurrences<T> {
 
         return newOccurrencesGen.copy();
     }
-    
+
 
     public TlsRangeEventsGen negativeHighTrafficAnomalyGen(TlsRangeEventsGen heightTrafficAnomalyGen){
         setEntity(heightTrafficAnomalyGen);
