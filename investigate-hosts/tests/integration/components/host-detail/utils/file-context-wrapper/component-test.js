@@ -9,6 +9,7 @@ import { patchSocket } from '../../../../../helpers/patch-socket';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import drivers from '../../../state/driver.state';
+import files from '../../../state/host.files-state';
 import Immutable from 'seamless-immutable';
 import sinon from 'sinon';
 
@@ -921,5 +922,30 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     assert.equal(findAll('.rsa-data-table-body-row').length, 1, 'one row is getting filtered');
   });
 
+  test('testing the click of the toggle and changing the value', async function(assert) {
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
+
+    new ReduxDataHelper(setState)
+      .hostFiles(files)
+      .host(hostDetails)
+      .fileContextSelectionsForFiles(fileContextSelections)
+      .isSnapshotsAvailable(true)
+      .listAllFiles(true)
+      .build();
+    this.set('storeName', 'hostFiles');
+    this.set('tabName', 'FILE');
+    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    return settled().then(async() => {
+      assert.equal(findAll('.x-toggle-btn').length, 1, 'toggle button');
+      await click('.x-toggle-btn');
+      const state = this.owner.lookup('service:redux').getState();
+      const { endpoint: { visuals: { listAllFiles } } } = state;
+      assert.equal(listAllFiles, false, 'It should toggle to switch off state');
+    });
+  });
 
 });

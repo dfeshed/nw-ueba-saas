@@ -57,6 +57,12 @@ export default Component.extend({
 
   showDownloadProcessDump: false,
 
+  isFileTab: false,
+
+  listAllFiles: true,
+
+  isSnapshotsAvailable: false,
+
   @computed('itemList')
   isEditStatusButtonDisabled(itemList) {
     if (!itemList) {
@@ -130,6 +136,17 @@ export default Component.extend({
     return itemList.length > 100;
   },
 
+  @computed('isSnapshotsAvailable')
+  disableToggle() {
+    return !this.isSnapshotsAvailable;
+  },
+
+  @computed('isSnapshotsAvailable')
+  allFilesTooltip() {
+    const i18n = this.get('i18n');
+    return this.isSnapshotsAvailable ? i18n.t('investigateHosts.files.toolTip.allFilesToggle') : i18n.t('investigateHosts.files.toolTip.noSnapShotToggle');
+  },
+
   actions: {
     onFileAction(action) {
       const selectedList = this.get('itemList');
@@ -175,6 +192,10 @@ export default Component.extend({
     pivotToInvestigate(item, category) {
       const machineName = this.get('hostName');
       this.get('pivot').pivotToInvestigate(this.get('metaName'), { ...item, machineName }, category);
+    },
+
+    toggleAllFile() {
+      this.get('filesToggle')();
     }
 
   }

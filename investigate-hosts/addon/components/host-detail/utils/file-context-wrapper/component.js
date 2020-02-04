@@ -25,7 +25,7 @@ import {
   hostNameList
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { hostDetailPropertyTabs, isProcessDumpDownloadSupported } from 'investigate-hosts/reducers/details/selectors';
-import { hostName, isAgentMigrated } from 'investigate-hosts/reducers/details/overview/selectors';
+import { hostName, isAgentMigrated, isSnapshotsAvailable } from 'investigate-hosts/reducers/details/overview/selectors';
 import { setHostDetailPropertyTab, applyDetailsFilter } from 'investigate-hosts/actions/data-creators/details';
 import {
   setFileContextFileStatus,
@@ -33,7 +33,8 @@ import {
   retrieveRemediationStatus,
   downloadProcessDump,
   downloadFilesToServer,
-  setRowSelection
+  setRowSelection,
+  toggleAllFiles
 } from 'investigate-hosts/actions/data-creators/file-context';
 
 import { getFileAnalysisData, saveLocalFileCopy } from 'investigate-shared/actions/data-creators/file-analysis-creators';
@@ -87,7 +88,9 @@ const stateToComputed = (state, { storeName }) => ({
   savedFilter: savedFilter(state.endpoint.details),
   hostDetailFilters: state.endpoint.details.filter.savedFilterList,
   hostNameList: hostNameList(state, storeName),
-  serverId: state.endpointQuery.serverId
+  serverId: state.endpointQuery.serverId,
+  listAllFiles: state.endpoint.visuals.listAllFiles,
+  isSnapshotsAvailable: isSnapshotsAvailable(state)
 });
 
 const dispatchToActions = {
@@ -103,7 +106,8 @@ const dispatchToActions = {
   setRowSelection,
   toggleHostDetailsFilter,
   resetFilters,
-  applyDetailsFilter
+  applyDetailsFilter,
+  toggleAllFiles
 };
 
 
@@ -137,6 +141,11 @@ class ContextWrapper extends Component {
     return tabsToDisplayLabels.some((tab) => {
       return tab === this.tabName;
     });
+  }
+
+  @computed('tabName')
+  get isFileTab() {
+    return 'FILE' === this.tabName;
   }
 
   @computed('tabName', 'isProcessDumpDownloadSupported')
@@ -211,6 +220,12 @@ class ContextWrapper extends Component {
       this.get('pivot').pivotToInvestigate('machineIdentity.machineName', { machineIdentity: { machineName: item } });
     }
   }
+
+  @action
+  onFileToggle() {
+    this.send('toggleAllFiles', this.tabName);
+  }
 }
+
 
 export default connect(stateToComputed, dispatchToActions)(ContextWrapper);

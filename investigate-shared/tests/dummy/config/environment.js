@@ -48,6 +48,9 @@ module.exports = function(environment) {
 
     ENV.APP.rootElement = '#ember-testing';
     ENV.roles = ['endpoint-server.agent.read', 'accessInvestigationModule', 'endpoint-server.filter.manage'];
+    ENV['ember-tether'] = {
+      bodyElementId: 'ember-testing'
+    };
   }
 
   if (environment === 'production') {

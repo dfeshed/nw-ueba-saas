@@ -112,11 +112,20 @@ const _agentId = (state) => state.endpoint.detailsInput.agentId;
 const _isWindowsFlag = (state) => isMachineWindows(state);
 const _riskState = (state) => state.endpoint.risk || {};
 const _activePropertyPanelTab = (state) => state.endpoint.visuals.activePropertyPanelTab || 'HOST_DETAILS';
+const _listAllFiles = (state) => state.endpoint.visuals.listAllFiles;
+const _isProcessDetailsView = (state) => state.endpoint.visuals.isProcessDetailsView;
 
 export const riskState = createSelector(
   [_riskState],
   (riskState) => {
     return riskState;
+  }
+);
+
+export const isSnapShotDisable = createSelector(
+  _activeHostDetailTab, _listAllFiles, _isProcessDetailsView,
+  (activeHostDetailTab, listAllFiles, isProcessDetailsView) => {
+    return ((activeHostDetailTab === 'FILES' && listAllFiles) || isProcessDetailsView);
   }
 );
 

@@ -16,7 +16,8 @@ test('should return the initial state', function(assert) {
     activeSystemInformationTab: 'HOST_ENTRIES',
     activePropertyPanelTab: 'HOST_DETAILS',
     isProcessDetailsView: false,
-    showHostDetailsFilter: true
+    showHostDetailsFilter: true,
+    listAllFiles: true
   });
 });
 
@@ -41,7 +42,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     activeSystemInformationTab: 'HOST_ENTRIES',
     activePropertyPanelTab: 'HOST_DETAILS',
     isProcessDetailsView: false,
-    showHostDetailsFilter: true
+    showHostDetailsFilter: true,
+    listAllFiles: true
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.RESET_INPUT_DATA });
@@ -129,6 +131,20 @@ test('The TOGGLE_HOST_DETAILS_FILTER sets the showHostDetailsFilter true', funct
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_HOST_DETAILS_FILTER, payload: { flag: true } });
+
+  assert.deepEqual(result, expectedEndState);
+});
+
+test('The TOGGLE_ALL_FILE toggles the All files state', function(assert) {
+  const previous = Immutable.from({
+    listAllFiles: false
+  });
+
+  const expectedEndState = {
+    listAllFiles: true
+  };
+
+  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_ALL_FILE });
 
   assert.deepEqual(result, expectedEndState);
 });

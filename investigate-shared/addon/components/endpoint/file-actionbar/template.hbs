@@ -97,6 +97,25 @@
     {{/each}}
   </ul>
 {{/rsa-content-tethered-panel}}
+{{#if isFileTab}}
+  <span class="toggle-icon">
+    {{#rsa-content-tethered-panel-trigger panel="toggle-file-panel"}}
+      {{#x-toggle
+        class="toggle-All_File"
+        showLabels=true
+        disabled=disableToggle
+        onLabel=(t "investigateHosts.files.fields.allFiles")
+        value=listAllFiles
+        onToggle=(action "toggleAllFile") as |toggle|}}
+        {{toggle.switch}}
+        {{toggle.onLabel}}
+      {{/x-toggle}}
+    {{/rsa-content-tethered-panel-trigger}}
+    {{#rsa-content-tethered-panel style="primary" position="left-top" panelId="toggle-file-panel"}}
+      <section class="toggleToolTip">{{allFilesTooltip}}</section>
+    {{/rsa-content-tethered-panel}}
+  </span>
+{{/if}}
 
 {{#if showResetScoreModal}}
   {{#rsa-application-modal
@@ -124,3 +143,4 @@
     </div>
   {{/rsa-application-modal}}
 {{/if}}
+

@@ -1,13 +1,13 @@
 {{#unless hideSnapshotAndExploreSearch}}
   <div class="divider"/>
-  <div class="rsa-button-group panel-control-group">
+  <div class="rsa-button-group panel-control-group" title={{snapShotDisableTooltip}}>
     <label class="rsa-form-label power-select snapshot-select">
       <span class="label-text snap-shot-text">{{t "investigateHosts.hosts.summary.snapshotTime"}}</span>
       {{#power-select
         searchEnabled=false
         triggerClass="inline"
         options=snapShots
-        disabled=isProcessDetailsView
+        disabled=isSnapShotDisable
         selected=selectedSnapshot
         onchange=(action "setSelect") as |option|}}
         {{#if option}}

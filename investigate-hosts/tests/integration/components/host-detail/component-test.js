@@ -123,6 +123,16 @@ module('Integration | Component | host-detail', function(hooks) {
     assert.equal(find('.rsa-panel-message').textContent.trim(), 'No downloads found', 'default message panel is not rendered');
   });
 
+  test('it renders the no data found message for Files', async function(assert) {
+    new ReduxDataHelper(setState)
+      .isSnapshotsLoading(false)
+      .isSnapshotsAvailable(false)
+      .selectedTabComponent('FILES')
+      .build();
+    await render(hbs`{{host-detail}}`);
+    assert.equal(findAll('.rsa-panel-message').length, 0, 'no message panel is rendered');
+  });
+
   test('it renders error page when endpointserver is offline', async function(assert) {
     new ReduxDataHelper(setState)
       .endpointServer(endpointServer)

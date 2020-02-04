@@ -3988,6 +3988,12 @@
           "save": "Save"
         }
       },
+      "toolTip": {
+        "allFilesToggle": "Lists all the files available in the host irrespective of the selected snapshot.",
+        "disableSnapShot": "Currently viewing all the files available in the host, turn off 'All Files' to view files specific to snapshot",
+        "noSnapShot": "No snapshots available",
+        "noSnapShotToggle": "Currently lists all the files available in the host and this option is disabled since there are no snapshots available."
+      },
       "fields": {
         "id": "ID",
         "firstSeenTime": "First Seen Time",
@@ -4053,7 +4059,8 @@
         "format": "Format",
         "sectionNames": "Section Names",
         "importedLibraries": "Imported Libraries",
-        "size": "Size"
+        "size": "Size",
+        "allFiles": "All Files"
       }
     },
     "pivotToInvestigate": {

@@ -1,5 +1,5 @@
 import classic from 'ember-classic-decorator';
-import { action } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { classNames, tagName } from '@ember-decorators/component';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
@@ -7,7 +7,8 @@ import { connect } from 'ember-redux';
 import {
   downloadLink,
   hostName,
-  selectedSnapshot
+  selectedSnapshot,
+  isSnapshotsAvailable
 } from 'investigate-hosts/reducers/details/overview/selectors';
 
 import {
@@ -15,7 +16,7 @@ import {
   setTransition
 } from 'investigate-hosts/actions/data-creators/details';
 import { toggleDetailRightPanel } from 'investigate-hosts/actions/ui-state-creators';
-import { isOnOverviewTab, isActiveTabDownloads } from 'investigate-hosts/reducers/visuals/selectors';
+import { isOnOverviewTab, isActiveTabDownloads, isSnapShotDisable } from 'investigate-hosts/reducers/visuals/selectors';
 import { changeSnapshotTime } from 'investigate-hosts/actions/data-creators/host-details';
 const stateToComputed = (state) => ({
   hostName: hostName(state),
@@ -25,10 +26,13 @@ const stateToComputed = (state) => ({
   agentId: state.endpoint.detailsInput.agentId,
   snapShots: state.endpoint.detailsInput.snapShots,
   downloadLink: downloadLink(state),
-  isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
+  isSnapShotDisable: isSnapShotDisable(state),
   isDetailRightPanelVisible: state.endpoint.detailsInput.isDetailRightPanelVisible,
   showRightPanelButton: isOnOverviewTab(state),
-  hideSnapshotAndExploreSearch: isActiveTabDownloads(state)
+  hideSnapshotAndExploreSearch: isActiveTabDownloads(state),
+  listAllFiles: state.endpoint.visuals.listAllFiles,
+  activeHostDetailTab: state.endpoint.visuals.activeHostDetailTab,
+  isSnapshotsAvailable: isSnapshotsAvailable(state)
 });
 
 const dispatchToActions = {
@@ -67,6 +71,17 @@ class ActionBar extends Component {
     } else {
       this.get('flashMessage').showErrorMessage(i18n.t('investigateHosts.hosts.moreActions.notAnEcatAgent'));
     }
+  }
+
+  @computed('listAllFiles', 'activeHostDetailTab', 'isSnapshotsAvailable')
+  get snapShotDisableTooltip() {
+    const { activeHostDetailTab, i18n, isSnapshotsAvailable, listAllFiles } = this;
+    if (activeHostDetailTab === 'FILES' && !isSnapshotsAvailable) {
+      return i18n.t('investigateHosts.files.toolTip.noSnapShot');
+    } else if (listAllFiles && activeHostDetailTab === 'FILES') {
+      return i18n.t('investigateHosts.files.toolTip.disableSnapShot');
+    }
+    return '';
   }
 }
 

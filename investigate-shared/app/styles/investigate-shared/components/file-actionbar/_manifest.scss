@@ -29,6 +29,13 @@
   .pivot-to-event-analysis {
     height: fit-content;
   }
+  .toggle-icon {
+    padding-top: 1rem;
+    padding-right: 23px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
 }
 
 .file-action-selector-panel {
@@ -135,3 +142,5 @@
     }
   }
 }
+
+

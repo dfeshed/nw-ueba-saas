@@ -1,16 +1,20 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click, triggerEvent } from '@ember/test-helpers';
+import { render, findAll, click, triggerEvent, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import EmberObject from '@ember/object';
 
+const wormhole = 'wormhole-context-menu';
 module('Integration | Component | endpoint/file-actionbar', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
   });
 
   test('renders default action buttons', async function(assert) {
@@ -574,4 +578,72 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await render(hbs`{{endpoint/file-actionbar itemList=itemList selectedFileCount=0 isSubtabs=false showOpenFilterButton=false }}`);
     assert.equal(findAll('.close-filter').length, 0, 'Filter button hidden');
   });
+  test('toggle All files should be present for File tab', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList isFileTab=true listAllFiles=true isSnapshotsAvailable=true}}`);
+    assert.equal(findAll('.x-toggle-btn').length, 1, 'toggle button present for Files tab');
+
+  });
+
+  test('toggle All files should not be present for tabs other than File', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList isFileTab=false listAllFiles=true}}`);
+    assert.equal(findAll('.x-toggle-btn').length, 0, 'toggle button not present for tab other than files');
+
+  });
+
+  test('it should test the toggle click and calling external function', async function(assert) {
+    assert.expect(1);
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    this.set('externalFunction', () => {
+      assert.ok(true);
+    });
+    await render(hbs`{{endpoint/file-actionbar filesToggle=(action externalFunction) itemList=itemList isFileTab=true listAllFiles=true isSnapshotsAvailable=true}}`);
+    await click('.x-toggle-btn');
+  });
+
+  test('toggle All files is disabled when snapshot is not present for files tab', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList isFileTab=true listAllFiles=true isSnapshotsAvailable=false}}`);
+    assert.equal(findAll('.x-toggle-disabled').length, 1, 'toggle button is disabled when snapshot is not present for Files tab');
+  });
+
+  test('tool tip present for toggle All files when it is disabled', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList isFileTab=true listAllFiles=true isSnapshotsAvailable=false}}`);
+    await triggerEvent('.toggle-file-panel', 'mouseover');
+    await settled();
+    return settled().then(() => {
+      assert.equal(document.querySelector('.toggleToolTip').textContent, 'Currently lists all the files available in the host and this option is disabled since there are no snapshots available.', 'tool tip present for toggle All files when it is disabled');
+    });
+  });
+
+  test('tool tip present for toggle All files when it is not disabled', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList isFileTab=true listAllFiles=true isSnapshotsAvailable=true}}`);
+    await triggerEvent('.toggle-file-panel', 'mouseover');
+    await settled();
+    return settled().then(() => {
+      assert.equal(document.querySelector('.toggleToolTip').textContent, 'Lists all the files available in the host irrespective of the selected snapshot.', 'tool tip present for toggle All files when it is not disabled');
+    });
+  });
+
 });

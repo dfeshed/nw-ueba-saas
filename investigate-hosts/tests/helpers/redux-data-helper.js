@@ -159,6 +159,14 @@ export default class DataHelper {
     _set(this.state, 'hostFiles.fileStatusData', data);
     return this;
   }
+  fileContextSelectionsForFiles(fileContextSelections) {
+    _set(this.state, 'hostFiles.fileContextSelections', fileContextSelections);
+    return this;
+  }
+  hostFiles(files) {
+    _set(this.state, 'hostFiles', files);
+    return this;
+  }
   // Host drivers
   drivers(drivers) {
     _set(this.state, 'drivers', drivers);
@@ -524,6 +532,10 @@ export default class DataHelper {
   }
   processHostNameList(data) {
     _set(this.state, 'processes.hostNameList', data);
+    return this;
+  }
+  listAllFiles(flag) {
+    _set(this.state, 'visuals.listAllFiles', flag);
     return this;
   }
 }

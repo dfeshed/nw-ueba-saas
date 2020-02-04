@@ -9,6 +9,7 @@ import {
   selectedTabComponent,
   getPropertyPanelTabs,
   isActiveTabDownloads,
+  isSnapShotDisable,
   riskState } from 'investigate-hosts/reducers/visuals/selectors';
 
 module('Unit | selectors | visuals');
@@ -170,4 +171,32 @@ test('isActiveTabDownloads', function(assert) {
   });
 
   assert.equal(isActiveTabDownloads(state2), true);
+});
+
+test('isSnapShotDisable', function(assert) {
+  const state1 = Immutable.from({
+    endpoint: {
+      visuals: {
+        activeHostDetailTab: 'FILES',
+        listAllFiles: true,
+        isProcessDetailsView: false
+      }
+    }
+  });
+
+  const result1 = isSnapShotDisable(state1);
+  assert.equal(result1, true, 'Snapshot should be disabled');
+
+  const state2 = Immutable.from({
+    endpoint: {
+      visuals: {
+        activeHostDetailTab: 'FILES',
+        listAllFiles: false,
+        isProcessDetailsView: false
+      }
+    }
+  });
+
+  const result2 = isSnapShotDisable(state2);
+  assert.equal(result2, false, 'Snapshot should not be disabled');
 });

@@ -20,11 +20,14 @@ const getFileContext = (belongsTo, categories) => {
     // Get selected agentId and scan time from the state
     const { endpoint: { detailsInput: { agentId, scanTime } } } = getState();
     const serviceId = getState().endpointQuery.serverId;
+    const { endpoint: { visuals: { listAllFiles } } } = getState();
     const data = {
       agentId,
-      scanTime,
       categories
     };
+    if (!listAllFiles || belongsTo !== 'FILE') {
+      data.scanTime = scanTime;
+    }
     dispatch({ type: ACTION_TYPES.RESET_CONTEXT_DATA, meta: { belongsTo } });
     dispatch({
       type: ACTION_TYPES.FETCH_FILE_CONTEXT,
@@ -191,6 +194,13 @@ const fetchHostNames = (tabName, checksum) => {
   };
 };
 
+const toggleAllFiles = (belongsTo) => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.TOGGLE_ALL_FILE });
+    dispatch(getFileContext(belongsTo));
+  };
+};
+
 export {
   getFileContext,
   onHostFileSelection,
@@ -207,5 +217,6 @@ export {
   fetchMachineCount,
   setRowSelection,
   deSelectAllSelection,
-  fetchHostNames
+  fetchHostNames,
+  toggleAllFiles
 };

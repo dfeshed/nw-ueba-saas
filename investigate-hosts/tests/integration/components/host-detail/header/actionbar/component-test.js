@@ -124,4 +124,48 @@ module('Integration | Component | host-detail/header/actionbar', function(hooks)
     await render(hbs`{{host-detail/header/actionbar}}`);
     assert.equal(findAll('.actionbar .power-select').length, 1, 'should render the power-select');
   });
+
+  test('snapshot selection is disabled when Files tab is active and toggle all files is true', async function(assert) {
+    new ReduxDataHelper(setState)
+      .listAllFiles(true)
+      .selectedTabComponent('FILES')
+      .snapShot(snapShot)
+      .build();
+    await render(hbs`{{host-detail/header/actionbar}}`);
+    await clickTrigger();
+    assert.ok(find('.actionbar .ember-power-select-trigger'), 'should render the power-select trigger');
+    assert.equal(findAll('.actionbar .ember-power-select-trigger[aria-disabled=true]').length, 1);
+  });
+
+  test('snapshot selection should not be disabled when Files tab is active and toggle all files is false', async function(assert) {
+    new ReduxDataHelper(setState)
+      .listAllFiles(false)
+      .snapShot(snapShot)
+      .build();
+    await render(hbs`{{host-detail/header/actionbar}}`);
+    await clickTrigger();
+    assert.ok(find('.actionbar .ember-power-select-trigger'), 'should render the power-select trigger');
+    assert.equal(findAll('.ember-power-select-option').length, 4, 'dropdown  rendered with available snapShots');
+  });
+
+  test('Tool tip present for disabled snapshot drop down when snapshot is present', async function(assert) {
+    new ReduxDataHelper(setState)
+      .listAllFiles(true)
+      .snapShot(snapShot)
+      .selectedTabComponent('FILES')
+      .build();
+    await render(hbs`{{host-detail/header/actionbar}}`);
+    await clickTrigger();
+    assert.ok(find('.actionbar .rsa-button-group').title, 'Currently viewing all the files available in the host, turn off \'All Files\' to view files specific to snapshot', 'Tool tip present for disabled snapshot');
+  });
+
+  test('Tool tip present for disabled snapshot drop down when snapshot is not present', async function(assert) {
+    new ReduxDataHelper(setState)
+      .listAllFiles(true)
+      .selectedTabComponent('FILES')
+      .build();
+    await render(hbs`{{host-detail/header/actionbar}}`);
+    await clickTrigger();
+    assert.ok(find('.actionbar .rsa-button-group').title, 'No snapshots available.', 'Tool tip present for disabled snapshot');
+  });
 });

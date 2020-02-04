@@ -11,7 +11,8 @@ const visualsInitialState = Immutable.from({
   showDeleteHostsModal: false,
   activeSystemInformationTab: 'HOST_ENTRIES',
   isProcessDetailsView: false,
-  showHostDetailsFilter: true
+  showHostDetailsFilter: true,
+  listAllFiles: true
 });
 
 const getStateKey = (tabName, subTabName) => {
@@ -55,7 +56,9 @@ const visuals = handleActions({
 
   [ACTION_TYPES.CHANGE_PROPERTY_PANEL_TAB]: (state, { payload: { tabName } }) => state.set('activePropertyPanelTab', tabName),
 
-  [ACTION_TYPES.TOGGLE_HOST_DETAILS_FILTER]: (state, { payload: { flag } }) => state.set('showHostDetailsFilter', flag)
+  [ACTION_TYPES.TOGGLE_HOST_DETAILS_FILTER]: (state, { payload: { flag } }) => state.set('showHostDetailsFilter', flag),
+
+  [ACTION_TYPES.TOGGLE_ALL_FILE]: (state) => state.set('listAllFiles', !state.listAllFiles)
 
 }, visualsInitialState);
 
