@@ -22,11 +22,19 @@ const _contextLoadMoreStatus = (state, name) => state.endpoint[name].contextLoad
 const _isRemediationAllowed = (state, name) => state.endpoint[name].isRemediationAllowed;
 const _hostDetails = (state) => state.endpoint.overview.hostDetails;
 const _expressionList = (state) => state.endpoint?.details?.filter?.expressionList;
+const _serverId = (state) => state.endpointQuery.serverId;
+const _selectedMachineServerId = (state) => state.endpointQuery.selectedMachineServerId;
 export const fileStatus = createSelector(
   _fileStatus,
   (fileStatus) => ({ ...fileStatus })
 );
 
+export const isSelectedMachineServerId = createSelector(
+  _serverId, _selectedMachineServerId,
+  (serverId, selectedMachineServerId) => {
+    return selectedMachineServerId ? selectedMachineServerId : serverId;
+  }
+);
 
 export const selectedRowId = createSelector(
   _selectedRowId,

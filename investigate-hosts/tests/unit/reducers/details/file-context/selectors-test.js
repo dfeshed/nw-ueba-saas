@@ -18,7 +18,8 @@ import {
   selectedFileList,
   isAnyFileFloatingOrMemoryDll,
   hostNameList,
-  selectedFileHostCount
+  selectedFileHostCount,
+  isSelectedMachineServerId
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 import { fileContextSelectionsData } from '../../../../integration/components/state/fileContextData';
@@ -760,6 +761,24 @@ module('Unit | Selectors | File Context', function() {
       }
     }), 'drivers');
     assert.deepEqual(result, 2, 'Verify first file Host Count');
+  });
+
+  test('isSelectedMachineServerId is set', function(assert) {
+    const result = isSelectedMachineServerId(Immutable.from({
+      endpointQuery: {
+        selectedMachineServerId: null,
+        serverId: '1ad8338d-68ee-44b7-bac6-3b09ce43ac4e'
+      }
+    }));
+    assert.deepEqual(result, '1ad8338d-68ee-44b7-bac6-3b09ce43ac4e', 'verify the server Id');
+
+    const result1 = isSelectedMachineServerId(Immutable.from({
+      endpointQuery: {
+        selectedMachineServerId: '1ad8338d-68ee-44b7-bac6-3b09ce43ac4e',
+        serverId: null
+      }
+    }));
+    assert.deepEqual(result1, '1ad8338d-68ee-44b7-bac6-3b09ce43ac4e', 'verify the Machine server Id');
   });
 
 });

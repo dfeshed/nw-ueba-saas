@@ -23,7 +23,8 @@ import {
   totalItems,
   contextLoadMoreStatus,
   isRemediationAllowed,
-  isAnyFileFloatingOrMemoryDll
+  isAnyFileFloatingOrMemoryDll,
+  isSelectedMachineServerId
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 import {
@@ -56,7 +57,7 @@ const stateToComputed = (state, { storeName, tabName }) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   restrictedFileList: state.fileStatus.restrictedFileList,
-  sid: state.endpointQuery.selectedMachineServerId,
+  sid: isSelectedMachineServerId(state),
   agentCountMapping: state.endpoint[storeName].agentCountMapping,
   sortConfig: state.endpoint[storeName].sortConfig,
   selectedRowIndex: state.endpoint[storeName].selectedRowIndex,
