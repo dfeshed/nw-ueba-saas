@@ -1,45 +1,42 @@
+import classic from 'ember-classic-decorator';
+import { classNames, layout as templateLayout } from '@ember-decorators/component';
+import { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 
 /**
  * Component for rendering the filter controls and emits the filter objects based and applied filters
  * @public
  */
-export default Component.extend({
+@classic
+@templateLayout(layout)
+@classNames('rsa-data-filters')
+export default class RsaDataFilters extends Component {
+  config = null;
+  onFilterChange = null;
+  clearFormOnReset = true;
+  showSaveFilterButton = false;
+  disableSaveFilterButton = false;
 
-  layout,
+  // default'ing to true for backward compatibility
+  showSaveAsFilterButton = true;
 
-  classNames: ['rsa-data-filters'],
+  isReset = false;
 
-  config: null,
-
-  onFilterChange: null,
-
-  clearFormOnReset: true,
-
-  showSaveFilterButton: false,
-
-  disableSaveFilterButton: false,
-
-  showSaveAsFilterButton: true, // default'ing to true for backward compatibility
-
-  isReset: false,
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this.appliedFilters = this.appliedFilters || [];
     this.updatedFilters = this.updatedFilters || [];
-  },
-
+  }
 
   @computed('config')
-  updatedConfig(config) {
-    const updated = config.map((conf) => {
+  get updatedConfig() {
+    const updated = this.config.map((conf) => {
       const component = `rsa-data-filters/filters/${conf.type}-filter`;
       return { component, filterOptions: conf };
     });
     return updated;
-  },
+  }
 
   _setPreAppliedFilterValues(config) {
     const preLoadedFilters = [];
@@ -71,70 +68,69 @@ export default Component.extend({
       }
     });
     return preLoadedFilters;
-  },
+  }
 
   didReceiveAttrs() {
-    this._super(arguments);
+    super.didReceiveAttrs(arguments);
     const preLoadedFilters = this._setPreAppliedFilterValues(this.get('config'));
     this.set('preLoadedFilters', preLoadedFilters);
     this.set('updatedFilters', [...preLoadedFilters]);
     this.set('disableSaveFilterButton', preLoadedFilters.length === 0);
-  },
+  }
 
+  @action
+  onChange(filter) {
+    let newFilters = this.get('updatedFilters');
+    const onFilterChange = this.get('onFilterChange');
+    const isApplied = newFilters.findBy('name', filter.name);
 
-  actions: {
-
-    onChange(filter) {
-      let newFilters = this.get('updatedFilters');
-      const onFilterChange = this.get('onFilterChange');
-      const isApplied = newFilters.findBy('name', filter.name);
-
-      this.set('isReset', false);
-      // If preload filters (in case of save filters) or filter is modified then remove the filter from the list
-      // And insert the modified filter to the list
-      if (isApplied) {
-        newFilters = newFilters.rejectBy('name', filter.name);
-        newFilters.push(filter);
-        this.set('updatedFilters', newFilters);
-      } else {
-        newFilters.push(filter);
-      }
-
-      if (onFilterChange) {
-        onFilterChange(newFilters);
-      }
-      if (this.closeEntityDetails) {
-        this.closeEntityDetails();
-      }
+    this.set('isReset', false);
+    // If preload filters (in case of save filters) or filter is modified then remove the filter from the list
+    // And insert the modified filter to the list
+    if (isApplied) {
+      newFilters = newFilters.rejectBy('name', filter.name);
+      newFilters.push(filter);
       this.set('updatedFilters', newFilters);
-      this.set('disableSaveFilterButton', newFilters.length === 0);
-    },
+    } else {
+      newFilters.push(filter);
+    }
 
-    saveFilters(saveAs) {
-      const onSave = this.get('onSave');
-      if (onSave) {
-        onSave(this.get('updatedFilters'), saveAs);
-      }
-    },
+    if (onFilterChange) {
+      onFilterChange(newFilters);
+    }
+    if (this.closeEntityDetails) {
+      this.closeEntityDetails();
+    }
+    this.set('updatedFilters', newFilters);
+    this.set('disableSaveFilterButton', newFilters.length === 0);
+  }
 
-    resetFilters() {
-      const onFilterChange = this.get('onFilterChange');
-      if (this.closeEntityDetails) {
-        this.closeEntityDetails();
+  @action
+  saveFilters(saveAs) {
+    const onSave = this.get('onSave');
+    if (onSave) {
+      onSave(this.get('updatedFilters'), saveAs);
+    }
+  }
+
+  @action
+  onResetFilters() {
+    const onFilterChange = this.get('onFilterChange');
+    if (this.closeEntityDetails) {
+      this.closeEntityDetails();
+    }
+    this.set('disableSaveFilterButton', true);
+    if (!this.get('clearFormOnReset')) {
+      const preLoadedFilters = this.get('preLoadedFilters');
+      if (onFilterChange) {
+        this.set('updatedFilters', [...preLoadedFilters]);
+        onFilterChange(preLoadedFilters);
       }
-      this.set('disableSaveFilterButton', true);
-      if (!this.get('clearFormOnReset')) {
-        const preLoadedFilters = this.get('preLoadedFilters');
-        if (onFilterChange) {
-          this.set('updatedFilters', [...preLoadedFilters]);
-          onFilterChange(preLoadedFilters);
-        }
-      } else {
-        this.set('updatedFilters', []);
-        if (onFilterChange) {
-          onFilterChange([], true);
-        }
+    } else {
+      this.set('updatedFilters', []);
+      if (onFilterChange) {
+        onFilterChange([], true);
       }
     }
   }
-});
+}

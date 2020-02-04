@@ -6,7 +6,7 @@
   {{/each}}
 </box>
 <hbox class="filters-footer">
-  {{#rsa-form-button class="reset-filter-button" defaultAction=(action "resetFilters")}}
+  {{#rsa-form-button class="reset-filter-button" defaultAction=(action "onResetFilters")}}
     {{t "dataFilters.reset"}}
   {{/rsa-form-button}}
   {{#if showSaveFilterButton}}
