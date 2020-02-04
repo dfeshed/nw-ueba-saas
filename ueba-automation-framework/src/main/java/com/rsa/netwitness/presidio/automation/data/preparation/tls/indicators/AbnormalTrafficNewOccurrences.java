@@ -64,7 +64,8 @@ public class AbnormalTrafficNewOccurrences<T> {
         TlsRangeEventsGen nextIp2 = newOccurrencesGen.copy();
         nextIp2.srcIpGenerator.nextRangeGenCyclic(1);
 
-        eventsSupplier.setCommonValuesGenForNewOccurrences(newOccurrencesGen, 480);  // 2 events per day
+        // 2 events per day x 3 ips ;  total daily traffic = 2*10^9 * 3 IPs
+        eventsSupplier.setCommonValuesGenForNewOccurrences(newOccurrencesGen, 480);
         eventsSupplier.setCommonValuesGenForNewOccurrences(nextIp1, 480);
         eventsSupplier.setCommonValuesGenForNewOccurrences(nextIp2, 480);
 
@@ -77,15 +78,16 @@ public class AbnormalTrafficNewOccurrences<T> {
         setEntity(heightTrafficAnomalyGen);
         heightTrafficAnomalyGen.srcIpGenerator.nextRangeGenCyclic(6);
         heightTrafficAnomalyGen.setNumOfBytesSentGenerator(regularTrafficGenerator);
-        eventsSupplier.setUncommonValuesAnomalyGen(heightTrafficAnomalyGen, 480);
+        eventsSupplier.setUncommonValuesAnomalyGen(heightTrafficAnomalyGen, 480 / 6);
         return heightTrafficAnomalyGen.copy();
     }
 
 
     public TlsRangeEventsGen createHighTrafficFromSrcIpAnomalyGen(TlsRangeEventsGen heightTrafficAnomalyGen){
         setEntity(heightTrafficAnomalyGen);
+        // 2 events per day x 1 ips ;  total daily traffic = 2 * 10^9 * 3
         heightTrafficAnomalyGen.srcIpGenerator.nextRangeGenCyclic(1);
-        heightTrafficAnomalyGen.setNumOfBytesSentGenerator(trafficGenerator.apply(6d));
+        heightTrafficAnomalyGen.setNumOfBytesSentGenerator(trafficGenerator.apply(3d));
         eventsSupplier.setUncommonValuesAnomalyGen(heightTrafficAnomalyGen,480);
         return heightTrafficAnomalyGen.copy();
     }
