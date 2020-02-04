@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import layout from './template';
 import { inject as service } from '@ember/service';
 import complianceConfig from './compliance-config';
-import { or } from 'ember-computed-decorators';
+import { or } from '@ember/object/computed';
 import ContextualHelp from 'component-lib/mixins/contextual-help';
 import { scheduleOnce } from '@ember/runloop';
 
@@ -17,8 +17,7 @@ export default Component.extend(ContextualHelp, {
 
   compliant: true,
 
-  @or('compliant', 'dismissed')
-  isHidden: true,
+  isHidden: or('compliant', 'dismissed'),
 
   async _getLicenseCompliance() {
     const { compliant, compliances: [ compliance ] } = await this.get('license').getCompliance();

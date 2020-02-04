@@ -1,5 +1,5 @@
+import { computed } from '@ember/object';
 import EmberContextMenu from 'ember-context-menu/components/context-menu';
-import computed from 'ember-computed-decorators';
 import { calculateContextMenuOffset } from 'rsa-context-menu/utils/context-menu-utils';
 import { htmlSafe } from '@ember/string';
 
@@ -10,10 +10,15 @@ import { htmlSafe } from '@ember/string';
  */
 export default EmberContextMenu.extend({
 
-  @computed('contextMenu.position.left', 'contextMenu.position.top', 'clickEvent.view.window.innerHeight', 'items.length')
-  position: (xPos, yPos, screenHeight, itemCount) => {
-    const offset = calculateContextMenuOffset(itemCount, screenHeight, yPos);
-    const adjustedYPos = (offset < 0) ? (yPos + offset) : yPos;
-    return htmlSafe(`left: ${xPos}px; top: ${adjustedYPos}px;`);
-  }
+  position: computed(
+    'contextMenu.position.left',
+    'contextMenu.position.top',
+    'clickEvent.view.window.innerHeight',
+    'items.length',
+    function() {
+      const offset = calculateContextMenuOffset(this.items?.length, this.clickEvent?.view?.window?.innerHeight, this.contextMenu?.position?.top);
+      const adjustedYPos = (offset < 0) ? (this.contextMenu?.position?.top + offset) : this.contextMenu?.position?.top;
+      return htmlSafe(`left: ${this.contextMenu?.position?.left}px; top: ${adjustedYPos}px;`);
+    }
+  )
 });
