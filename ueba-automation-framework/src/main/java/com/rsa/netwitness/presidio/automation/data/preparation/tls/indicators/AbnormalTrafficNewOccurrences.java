@@ -97,7 +97,7 @@ public class AbnormalTrafficNewOccurrences<T> {
         setEntity(heightTrafficAnomalyGen);
         // 2 events per day x 1 ips ;  total daily traffic = 2 * 10^9 * 3
         heightTrafficAnomalyGen.srcIpGenerator.nextRangeGenCyclic(1);
-        heightTrafficAnomalyGen.setNumOfBytesSentGenerator(trafficGenerator.apply(3d));
+        heightTrafficAnomalyGen.setNumOfBytesSentGenerator(trafficGenerator.apply(6d));
         eventsSupplier.setUncommonValuesAnomalyGen(heightTrafficAnomalyGen,480);
         return heightTrafficAnomalyGen.copy();
     }
