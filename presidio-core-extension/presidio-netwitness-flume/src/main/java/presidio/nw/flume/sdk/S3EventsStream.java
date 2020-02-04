@@ -23,7 +23,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class S3EventsStream extends AbstractNetwitnessEventsStream {
 
-    private static final Logger logger = LoggerFactory.getLogger(NetwitnessEventsStream.class);
+    private static final Logger logger = LoggerFactory.getLogger(S3EventsStream.class);
 
     /**
      * Instantiate the iterator for streaming. The config map MUST contain the following properties:
