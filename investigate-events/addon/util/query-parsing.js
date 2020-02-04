@@ -13,7 +13,7 @@ import Parser from 'investigate-events/util/parser';
 import {
   CLOSE_PAREN,
   COMPLEX_FILTER,
-  COMPLEX_OPERATORS,
+  SYNTAX_OPERATORS,
   OPEN_PAREN,
   OPERATORS,
   OPERATOR_AND,
@@ -39,7 +39,7 @@ const { log } = console; // eslint-disable-line
 
 const TWIN_PREFIX = 'twinPill_';
 
-const ALL_OPERATORS = [...OPERATORS, ...COMPLEX_OPERATORS];
+const ALL_OPERATORS = [...OPERATORS, ...SYNTAX_OPERATORS];
 
 /**
  * String representation of filter with spaces trimmed.
@@ -227,10 +227,6 @@ export const reassignTwinIds = (filters, insertionIndex) => {
     }
   }
   return filters;
-};
-
-export const hasComplexText = (str) => {
-  return COMPLEX_OPERATORS.some((d) => str.includes(d));
 };
 
 export const hasOperator = (str) => {

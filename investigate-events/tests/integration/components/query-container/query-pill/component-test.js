@@ -2879,7 +2879,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       'first Advanced Option was not highlighted');
   });
 
-  test('Typing text in meta tab from pill-meta and toggling over to recent-query tab will highlight freeform option if text is an operator', async function(assert) {
+  test('Typing text in meta tab from pill-meta and toggling over to recent-query tab will highlight freeform option if text has an operator', async function(assert) {
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
       .language()
@@ -2906,7 +2906,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       'first Advanced Option was not highlighted');
   });
 
-  test('Typing text in recenty query and tabbing to meta will highlight freeform option if text is complex', async function(assert) {
+  test('Typing text in recent query and tabbing to meta will highlight freeform option if text is complex', async function(assert) {
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
       .language()
@@ -2933,7 +2933,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       'first Advanced Option was not highlighted');
   });
 
-  test('Typing text in recenty query and tabbing to meta will highlight freeform option if text is an operator', async function(assert) {
+  test('Typing text in recent query and tabbing to meta will highlight freeform option if text has an operator', async function(assert) {
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
       .language()

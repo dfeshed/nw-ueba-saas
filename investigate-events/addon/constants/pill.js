@@ -10,7 +10,7 @@ export const CLOSE_PAREN = 'close-paren';
 // complex.
 export const LOGICAL_OPERATORS = ['&&', 'AND', '||', 'OR'];
 // TODO - Move "NOT" up to LOGICAL_OPERATORS once we support that
-export const COMPLEX_OPERATORS = [...LOGICAL_OPERATORS, '(', ')', 'NOT'];
+export const SYNTAX_OPERATORS = [...LOGICAL_OPERATORS, '(', ')', 'NOT'];
 export const COMPLEX_FILTER = 'complex';
 export const OPEN_PAREN = 'open-paren';
 export const OPERATOR_AND = 'operator-and';
