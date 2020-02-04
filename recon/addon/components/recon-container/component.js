@@ -6,6 +6,7 @@ import { observer } from '@ember/object';
 import { later, next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { lookup } from 'ember-dependency-lookup';
+import { createWorker } from 'ember-artisans';
 
 import { toggleReconExpanded } from 'recon/actions/visual-creators';
 import layout from './template';
@@ -212,6 +213,19 @@ const ReconContainer = Component.extend({
 
     // clear memoization out
     this.send('clearSelectorMemory');
+  },
+
+  init() {
+    this._super(...arguments);
+    this.sayHello();
+  },
+
+  sayHello: async() => {
+    console.log('Main: Creating worker');//eslint-disable-line
+    const myWorker = createWorker('/assets/workers/reconstruction.js');
+    console.log('Main: Sending message "world" to worker');//eslint-disable-line
+    const { result } = await myWorker.greetings('world');
+    console.log(`Main: Received message from worker: "${result}"`);//eslint-disable-line
   },
 
   didReceiveAttrs() {
