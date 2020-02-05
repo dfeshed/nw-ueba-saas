@@ -54,12 +54,14 @@ class MachineIsolationModal extends Component {
   @computed('filePath')
   get fullPathFileQuery() {
     const { filePath, agentId, filePathSeparatorFormat } = this;
-    const filePathSections = filePath.split(filePathSeparatorFormat);
+    const lastIndexOfSeparator = filePath.lastIndexOf(filePathSeparatorFormat);
+    const path = filePath.slice(0, lastIndexOfSeparator);
+    const fileName = filePath.slice(lastIndexOfSeparator + 1);
     return {
       agentId,
       files: [{
-        path: filePath,
-        fileName: filePathSections.lastItem
+        path,
+        fileName
       }]
     };
   }
@@ -74,7 +76,7 @@ class MachineIsolationModal extends Component {
     if (isWildcardPresent) {
       this.send('downloadWildcardsMatchedFilesRequest', wildcardFileQuery, serverId, callBackOptions);
     } else {
-      this.send('downloadFilesToServer', agentId, files, callBackOptions);
+      this.send('downloadFilesToServer', agentId, files, serverId, callBackOptions);
     }
     this.closeConfirmModal();
   }

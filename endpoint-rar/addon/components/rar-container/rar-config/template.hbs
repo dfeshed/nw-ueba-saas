@@ -17,7 +17,7 @@
       isDisabled=isRarDisabled
       class="server-input-js"
       errorMessage=(t invalidHostNameMessage)
-      label=(t "endpointRAR.rarConfig.hostName")
+      label=(t "endpointRAR.rarConfig.hostName" htmlSafe=true)
       value=configData.rarConfig.esh}}
     <div class="tooltip">
       {{#rsa-text-with-tooltip  copyText=false value=(t "endpointRAR.rarConfig.infoMessage")
@@ -36,7 +36,7 @@
           isDisabled=isRarDisabled
           class="server-input"
           errorMessage=(t invalidServerMessage)
-          label=(t "endpointRAR.rarConfig.server")
+          label=(t "endpointRAR.rarConfig.server" htmlSafe=true)
           value=configData.rarConfig.address}}
       </div>
       <div class="col-xs-3 host-port">
@@ -46,7 +46,7 @@
           isDisabled=isRarDisabled
           isError=isPortError
           errorMessage=(t invalidPortMessage)
-          label=(t "endpointRAR.rarConfig.port")
+          label=(t "endpointRAR.rarConfig.port" htmlSafe=true)
           value=configData.rarConfig.httpsPort}}
       </div>
       <div class="col-xs-4 beacon-interval-value">
@@ -55,7 +55,7 @@
           isError=isBeaconError
           isDisabled=isRarDisabled
           errorMessage=(t invalidBeaconIntervalMessage)
-          label=(t "endpointRAR.rarConfig.beaconInterval")
+          label=(t "endpointRAR.rarConfig.beaconInterval" htmlSafe=true)
           value=configData.rarConfig.httpsBeaconIntervalInSeconds
         }}
       </div>

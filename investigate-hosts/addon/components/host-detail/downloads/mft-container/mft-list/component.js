@@ -39,7 +39,7 @@ const stateToComputed = (state) => ({
   isAllMftSelected: isAllMftSelected(state),
   selections: state.endpoint.hostDownloads.mft.mftDirectory.selectedMftFileList,
   selectedIndex: state.endpoint.hostDownloads.downloads.selectedMftIndex,
-  serverId: state.endpointQuery.serverId,
+  serverId: state.endpointQuery.selectedMachineServerId,
   nextLoadCount: nextLoadCount(state),
   servers: state.endpointServer.serviceData,
   pageStatus: pageStatus(state),
@@ -156,10 +156,9 @@ class DownloadedFileList extends Component {
   @action
   onDownloadFilesToServer() {
     const callBackOptions = this.get('callBackOptions')(this);
-    const agentId = this.get('agentId');
-    const fileSelections = this.get('selections');
+    const { serverId, agentId, selections } = this;
 
-    this.send('downloadFilesToServer', agentId, fileSelections, callBackOptions);
+    this.send('downloadFilesToServer', agentId, selections, serverId, callBackOptions);
   }
 }
 

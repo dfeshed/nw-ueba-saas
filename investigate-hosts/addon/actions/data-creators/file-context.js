@@ -162,8 +162,8 @@ const downloadProcessDump = (agentId, selectedFiles, callbacks) => {
   };
 };
 
-const downloadFilesToServer = (agentId, selectedFiles, callbacks) => {
-  HostDetails.sendFileDownloadToServerRequest(_getListOfFilesToDownload(selectedFiles, agentId))
+const downloadFilesToServer = (agentId, selectedFiles, serverId, callbacks) => {
+  HostDetails.sendFileDownloadToServerRequest(_getListOfFilesToDownload(selectedFiles, agentId), serverId)
     .then(() => {
       callbacks.onSuccess();
     }).catch(({ meta: message }) => {

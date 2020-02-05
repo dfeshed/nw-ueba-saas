@@ -31,7 +31,7 @@
         class="port-input-js"
         isError=isPortError
         errorMessage=(t invalidPortMessage)
-        label=(t "packager.port")
+        label=(t "packager.port" htmlSafe=true)
         value=selectedServerForEdit.port}}
     </div>
   </div>
@@ -59,7 +59,7 @@
       isError=isPasswordError
       errorMessage=(t passwordInvalidMessage)
       onKeyUp=(action "validate")
-      label=(t "packager.certificatePassword")
+      label=(t "packager.certificatePassword" htmlSafe=true)
       value=configData.packageConfig.certificatePassword}}
   </div>
 </div>
@@ -105,7 +105,7 @@
               class="service-name-input-js"
               errorMessage=(t invalidServiceNameMessage)
               maxLength=256
-              label=(t "packager.serviceName")
+              label=(t "packager.serviceName" htmlSafe=true)
               value=configData.packageConfig.serviceName}}
           </div>
           <div class="col-xs-5 display-name-js">
@@ -114,7 +114,7 @@
               class="display-name-input-js"
               errorMessage=(t invalidDisplayNameMessage)
               maxLength=256
-              label=(t "packager.displayName")
+              label=(t "packager.displayName" htmlSafe=true)
               value=configData.packageConfig.displayName}}
           </div>
         </hbox>
@@ -137,7 +137,7 @@
               class="service-name-input-js"
               errorMessage=(t invalidServiceNameMessage)
               maxLength=256
-              label=(t "packager.driverServiceName")
+              label=(t "packager.driverServiceName" htmlSafe=true)
               value=driverServiceName}}
           </div>
           <div class="col-xs-5 display-name-js">
@@ -146,7 +146,7 @@
               class="display-name-input-js"
               errorMessage=(t invalidDisplayNameMessage)
               maxLength=256
-              label=(t "packager.driverDisplayName")
+              label=(t "packager.driverDisplayName" htmlSafe=true)
               value=driverDisplayName}}
           </div>
         </hbox>

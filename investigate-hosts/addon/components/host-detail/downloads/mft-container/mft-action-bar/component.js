@@ -17,7 +17,7 @@ const callBackOptions = (context) => ({
 
 const stateToComputed = (state) => ({
   focusedHost: state.endpoint.detailsInput.agentId,
-  serverId: state.endpointQuery.serverId,
+  serverId: state.endpointQuery.selectedMachineServerId,
   selections: state.endpoint.hostDownloads.mft.mftDirectory.selectedMftFileList,
   agentId: state.endpoint.detailsInput.agentId,
   selectedDirectory: state.endpoint.hostDownloads.mft.mftDirectory.selectedDirectoryForDetails,
@@ -55,10 +55,9 @@ class mftActionBar extends Component {
   @action
   onDownloadFilesToServer() {
     const callBackOptions = this.get('callBackOptions')(this);
-    const agentId = this.get('agentId');
-    const fileSelections = this.get('selections');
+    const { serverId, agentId, selections } = this;
 
-    this.send('downloadFilesToServer', agentId, fileSelections, callBackOptions);
+    this.send('downloadFilesToServer', agentId, selections, serverId, callBackOptions);
   }
 }
 

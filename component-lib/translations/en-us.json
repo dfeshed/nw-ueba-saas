@@ -3167,7 +3167,6 @@
           "title": "Download Files",
           "filePath": "File Path",
           "filePathDescription": "Enter a filepath that you think the file is present at. Two wildcard entries are allowed one for the directory structure and the other for the file",
-          "filePathNote": "Note: Files are downloaded based on the most recently modified time",
           "filePathError": "Invalid File Path",
           "fileCount": "Number of files from location",
           "fileCountDescription": "Upto a maximum of 100",
@@ -3338,7 +3337,7 @@
         "reset": "Reset",
         "rightPanel": "Show/Hide Detail Right Panel",
         "resetRiskScore": "Reset Risk Score",
-        "manualFileDownload": "Download files from Server"
+        "manualFileDownload": "Download Files to Server"
       },
       "autoruns": {
         "services": {

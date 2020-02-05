@@ -142,12 +142,14 @@ const sendProcessDumpRequest = (selectedProcess) => {
   });
 };
 
-const sendFileDownloadToServerRequest = (selectedFileDetails) => {
+const sendFileDownloadToServerRequest = (selectedFileDetails, serverId) => {
   const request = lookup('service:request');
+  const streamOptions = serverId ? { socketUrlPostfix: serverId, requiredSocketUrl: 'endpoint/socket' } : null;
   return request.promiseRequest({
     method: 'downloadFileToServer',
     modelName: 'agent',
-    query: { data: selectedFileDetails }
+    query: { data: selectedFileDetails },
+    streamOptions
   });
 };
 

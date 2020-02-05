@@ -2,7 +2,7 @@
   {{rsa-panel-message message=(t "investigateShared.endpoint.riskProperties.error.noEvents")}}
 {{else if isInsightsAgent}}
   <box>
-    {{rsa-panel-message message=(t "investigateShared.endpoint.riskProperties.error.insightAgentRiskError")}}
+    {{rsa-panel-message message=(t "investigateShared.endpoint.riskProperties.error.insightAgentRiskError" htmlSafe=true)}}
   </box>
 {{else}}
   <div class="events-info-message">

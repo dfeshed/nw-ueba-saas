@@ -91,6 +91,7 @@ const stateToComputed = (state) => ({
   savedFilter: savedFilter(state.endpoint.details),
   hostDetailFilters: state.endpoint.details.filter.savedFilterList,
   hostNameList: hostNameList(state, 'processes'),
+  selectedMachineServerId: state.endpointQuery.selectedMachineServerId,
   serverId: state.endpointQuery.serverId
 });
 
@@ -184,10 +185,9 @@ class Container extends Component {
   @action
   onDownloadFilesToServer() {
     const callBackOptions = this.get('callBackOptions')(this);
-    const agentId = this.get('agentId');
-    const selectedProcessList = this.get('selectedProcessList');
+    const { selectedMachineServerId, agentId, selectedProcessList } = this;
 
-    this.send('downloadFilesToServer', agentId, selectedProcessList, callBackOptions);
+    this.send('downloadFilesToServer', agentId, selectedProcessList, selectedMachineServerId, callBackOptions);
   }
 
   @action

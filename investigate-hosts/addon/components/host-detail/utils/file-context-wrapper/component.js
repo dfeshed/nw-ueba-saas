@@ -88,6 +88,7 @@ const stateToComputed = (state, { storeName }) => ({
   savedFilter: savedFilter(state.endpoint.details),
   hostDetailFilters: state.endpoint.details.filter.savedFilterList,
   hostNameList: hostNameList(state, storeName),
+  selectedMachineServerId: state.endpointQuery.selectedMachineServerId,
   serverId: state.endpointQuery.serverId,
   listAllFiles: state.endpoint.visuals.listAllFiles,
   isSnapshotsAvailable: isSnapshotsAvailable(state)
@@ -175,10 +176,9 @@ class ContextWrapper extends Component {
   @action
   onDownloadFilesToServer() {
     const callBackOptions = this.get('callBackOptions')(this);
-    const agentId = this.get('agentId');
-    const fileContextSelections = this.get('fileContextSelections');
+    const { selectedMachineServerId, agentId, fileContextSelections } = this;
 
-    this.send('downloadFilesToServer', agentId, fileContextSelections, callBackOptions);
+    this.send('downloadFilesToServer', agentId, fileContextSelections, selectedMachineServerId, callBackOptions);
   }
 
   @action

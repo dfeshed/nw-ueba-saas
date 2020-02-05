@@ -1,6 +1,6 @@
 {{#if isInsightsAgent}}
   <box class="alert-error-message insight-message">
-    {{rsa-panel-message message=(t "investigateShared.endpoint.riskProperties.error.insightAgentRiskError")}}
+    {{rsa-panel-message message=(t "investigateShared.endpoint.riskProperties.error.insightAgentRiskError" htmlSafe=true)}}
   </box>
 {{else if (not isRespondServerOffline)}}
   {{#if riskScoringServerError}}

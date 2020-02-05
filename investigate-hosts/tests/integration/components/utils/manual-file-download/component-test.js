@@ -5,7 +5,10 @@ import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchSocket } from '../../../../helpers/patch-socket';
+import { patchReducer } from '../../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
+let setState;
 module('Integration | Component | Utils | manual-file-download', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolver('investigate-hosts')
@@ -13,6 +16,10 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
 
   hooks.beforeEach(function() {
     initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
+    setState = (state) => {
+      patchReducer(this, state);
+    };
   });
 
   test('manual-file-download has rendered', async function(assert) {
@@ -117,9 +124,13 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
     await click(find('.modal-footer-buttons .is-primary button'));
   });
 
-  test('manual-file-download socket call for full path', async function(assert) {
+  test('manual-file-download socket call for full path, windows', async function(assert) {
 
     assert.expect(6);
+
+    new ReduxDataHelper(setState)
+      .machineOSType('windows')
+      .build();
 
     this.set('agentId', 'agentID');
     this.set('serverId', 'serverId ');
@@ -133,9 +144,9 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
           agentId: 'agentID',
           files: [
             {
-              fileName: '/test/test',
+              fileName: 'test.txt',
               hash: undefined,
-              path: '/test/test'
+              path: 'c:\\test'
             }
           ]
         }
@@ -150,7 +161,51 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
 
     assert.equal(findAll('#modalDestination .manual-file-download_file-path').length, 1, 'text box for file path present');
 
-    await fillIn('#modalDestination .manual-file-download_file-path input', '/test/test');
+    await fillIn('#modalDestination .manual-file-download_file-path input', 'c:\\test\\test.txt');
+
+    assert.equal(findAll('#modalDestination .manual-file-download_file-count').length, 0, 'text box for file count present');
+    assert.equal(findAll('#modalDestination .manual-file-download_file-size').length, 0, 'text box for file size present');
+    await click(find('.modal-footer-buttons .is-primary button'));
+  });
+
+  test('manual-file-download socket call for full path, linux', async function(assert) {
+
+    assert.expect(6);
+
+    new ReduxDataHelper(setState)
+      .machineOSType('linux')
+      .build();
+
+    this.set('agentId', 'agentID');
+    this.set('serverId', 'serverId ');
+    this.set('closeConfirmModal', function() {});
+
+    patchSocket((method, modelName, query) => {
+      assert.equal(method, 'downloadFileToServer');
+      assert.equal(modelName, 'agent');
+      assert.deepEqual(query, {
+        data: {
+          agentId: 'agentID',
+          files: [
+            {
+              fileName: 'test.txt',
+              hash: undefined,
+              path: '/testFolder'
+            }
+          ]
+        }
+      });
+    });
+
+    await render(hbs `<div id='modalDestination'></div>
+      {{utils/manual-file-download
+      agentId=agentId
+      serverId=serverId
+      closeConfirmModal=closeConfirmModal}}`);
+
+    assert.equal(findAll('#modalDestination .manual-file-download_file-path').length, 1, 'text box for file path present');
+
+    await fillIn('#modalDestination .manual-file-download_file-path input', '/testFolder/test.txt');
 
     assert.equal(findAll('#modalDestination .manual-file-download_file-count').length, 0, 'text box for file count present');
     assert.equal(findAll('#modalDestination .manual-file-download_file-size').length, 0, 'text box for file size present');
