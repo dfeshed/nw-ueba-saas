@@ -1,3 +1,36 @@
+# [15.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v15.1.0)
+## Features
+* [ASOC-74183](https://bedfordjira.na.rsa.net/browse/ASOC-74183):&emsp;UI sending command request for files download
+* [ASOC-82493](https://bedfordjira.na.rsa.net/browse/ASOC-82493):&emsp;Agent command abstraction
+* [ASOC-85324](https://bedfordjira.na.rsa.net/browse/ASOC-85324):&emsp;Update ember-sortable (v2.1.2)
+* [ASOC-85325](https://bedfordjira.na.rsa.net/browse/ASOC-85325):&emsp;Update ember-changeset-validations (v3.0.1)
+* [ASOC-85326](https://bedfordjira.na.rsa.net/browse/ASOC-85326):&emsp;Update to latest Ember (v3.16)
+* [ASOC-87215](https://bedfordjira.na.rsa.net/browse/ASOC-87215):&emsp;Shared Dashboard Validations
+* [ASOC-87216](https://bedfordjira.na.rsa.net/browse/ASOC-87216):&emsp;Dashboard: Hide Dashlet Values
+* [ASOC-87472](https://bedfordjira.na.rsa.net/browse/ASOC-87472):&emsp;Add "copy entire query" option to selected pills
+* [ASOC-87474](https://bedfordjira.na.rsa.net/browse/ASOC-87474):&emsp;Remove free-form toggle and associated code
+* [ASOC-87505](https://bedfordjira.na.rsa.net/browse/ASOC-87505):&emsp;Reporting Engine: Validate RE Rules after update
+* [ASOC-87524](https://bedfordjira.na.rsa.net/browse/ASOC-87524):&emsp;Implement SSO support for Multi analyst deployment
+* [ASOC-87532](https://bedfordjira.na.rsa.net/browse/ASOC-87532):&emsp;Reporting Engine: Validate Alerts after update
+* [ASOC-87724](https://bedfordjira.na.rsa.net/browse/ASOC-87724):&emsp;Improve the logStats2collectd tool
+* [ASOC-87727](https://bedfordjira.na.rsa.net/browse/ASOC-87727):&emsp;Show graphs for event sources from one log collector / log decoder
+* [ASOC-87884](https://bedfordjira.na.rsa.net/browse/ASOC-87884):&emsp;Turn Intra-Session back on
+* [ASOC-87888](https://bedfordjira.na.rsa.net/browse/ASOC-87888):&emsp;Turn on Email Recon in Events
+* [ASOC-87895](https://bedfordjira.na.rsa.net/browse/ASOC-87895):&emsp;Node LTS update (12.14.1)
+* [ASOC-87920](https://bedfordjira.na.rsa.net/browse/ASOC-87920):&emsp;Add Donut chart to component-lib
+* [ASOC-87921](https://bedfordjira.na.rsa.net/browse/ASOC-87921):&emsp;Create a component library for scatter Chart
+* [ASOC-87942](https://bedfordjira.na.rsa.net/browse/ASOC-87942):&emsp;Update API to Allow New Option for Sort Preference
+* [ASOC-87949](https://bedfordjira.na.rsa.net/browse/ASOC-87949):&emsp;Cache Recon Meta Call
+* [ASOC-87950](https://bedfordjira.na.rsa.net/browse/ASOC-87950):&emsp;Update Recon UI to Leverage Meta from Enriched Header API
+* [ASOC-87955](https://bedfordjira.na.rsa.net/browse/ASOC-87955):&emsp;Update Aliases API to Include Language Info
+* [ASOC-87967](https://bedfordjira.na.rsa.net/browse/ASOC-87967):&emsp;Web Worker introduction
+* [ASOC-87971](https://bedfordjira.na.rsa.net/browse/ASOC-87971):&emsp;Clear Recon Content State on Close
+* [ASOC-88001](https://bedfordjira.na.rsa.net/browse/ASOC-88001):&emsp;Directed <MESSAGE> parsing for NW annotated RFC-5424 logs.
+* [ASOC-88035](https://bedfordjira.na.rsa.net/browse/ASOC-88035):&emsp;CyberNoFlyv2: Provide ability for admins to define which meta is sent to SecurID (no UI)
+* [ASOC-88044](https://bedfordjira.na.rsa.net/browse/ASOC-88044):&emsp;Host Details: Manual file download menu button
+* [ASOC-88087](https://bedfordjira.na.rsa.net/browse/ASOC-88087):&emsp;UI - Create Health & wellness tab in Health & Wellness.
+
+
 # [14.8.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v14.8.0)
 ## Features
 * [ASOC-85865](https://bedfordjira.na.rsa.net/browse/ASOC-85865):&emsp;Alter migration and API so all custom content is public instead of private

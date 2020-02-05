@@ -163,14 +163,13 @@ The following is a list of steps to perform to close out a sprint.
 2. Update the version in the root `package.json` file.
 3. After the PR with the above changes has been merge, tag master with the new version.
 ```
-  $ git tag -a v14.0.0 -m'End of Sprint 14.0'
-  $ git push asoc v14.0.0
+  $ git tag -a v15.0.0 -m'End of Sprint 15.0'
+  $ git push asoc v15.0.0
 ```
 4. Go to https://asoc-jenkins2.rsa.lab.emc.com/job/sa-ui-swiss-army-knife and start a build using the following properties:
  - REPO: asoc/sa-ui
- - BRANCH: tags/v14.0.0
+ - BRANCH: tags/v15.0.0
  - STABILITY: 5
-4. Update the `sa-ui` entry in the _Sprint Component List_ on the [WIKI](https://wiki.na.rsa.net/display/ENVNG/11.4+Sprint+RPMs).
 
 ## Points of Contact
 ### Context Hub
@@ -180,7 +179,7 @@ The following is a list of steps to perform to close out a sprint.
 - Drogon: Todd Little
 - House Stark: Geoff Bell
 ### Respond
-- Swayze: Abhinav Iyappan
+- House Stark: Abhinav Iyappan
 ### Endpoint
 - Beatles: Raghavendra Bhat
 - Nirvana: Meghna Murali
