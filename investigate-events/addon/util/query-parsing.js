@@ -13,9 +13,8 @@ import Parser from 'investigate-events/util/parser';
 import {
   CLOSE_PAREN,
   COMPLEX_FILTER,
-  SYNTAX_OPERATORS,
+  ALL_OPERATORS,
   OPEN_PAREN,
-  OPERATORS,
   OPERATOR_AND,
   OPERATOR_OR,
   QUERY_FILTER,
@@ -38,8 +37,6 @@ import {
 const { log } = console; // eslint-disable-line
 
 const TWIN_PREFIX = 'twinPill_';
-
-const ALL_OPERATORS = [...OPERATORS, ...SYNTAX_OPERATORS];
 
 /**
  * String representation of filter with spaces trimmed.

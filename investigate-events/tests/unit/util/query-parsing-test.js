@@ -1307,6 +1307,17 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.ok(hasOperator('this=that'), 'Missed detecting "this=that"');
     assert.ok(hasOperator('!='), 'Missed detecting "!="');
     assert.ok(hasOperator('this!=that'), 'Missed detecting "this!=that"');
+    // regex
+    assert.ok(hasOperator('regex'), 'Missed detecting "regex"');
+    assert.ok(hasOperator('xregexx'), 'Missed detecting "xregexx"');
+    // length
+    assert.ok(hasOperator('!='), 'Missed detecting "!="');
+    assert.ok(hasOperator('this!=that'), 'Missed detecting "this!=that"');
+    // <, >
+    assert.ok(hasOperator('>'), 'Missed detecting ">"');
+    assert.ok(hasOperator('x>x'), 'Missed detecting "x>x"');
+    assert.ok(hasOperator('<'), 'Missed detecting "<"');
+    assert.ok(hasOperator('1<2'), 'Missed detecting "1<2"');
   });
 
   test('convertTextToPillData parses half typed meta', function(assert) {
