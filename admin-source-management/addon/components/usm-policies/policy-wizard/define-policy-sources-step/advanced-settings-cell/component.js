@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import { connect } from 'ember-redux';
 import {
   updatePolicyFileSourceProperty
@@ -24,9 +24,11 @@ const dispatchToActions = {
 
 const SourceAdvancedSettingsCell = Component.extend({
   classNames: 'child-source-container',
+
   // multiple fields are nested so do this in the template
   // classNameBindings: ['column.field'],
   encodingOptions,
+
   isAdvancedSettingsAccordionCollapsed: true,
 
   didInsertElement() {
@@ -36,16 +38,14 @@ const SourceAdvancedSettingsCell = Component.extend({
     this.set('isAdvancedSettingsAccordionCollapsed', this.get('isAdvancedSettingsCollapsed'));
   },
 
-  @computed()
-  panelId() {
+  panelId: computed(function() {
     return `fileTypeSourcesTooltip-${this.get('elementId')}`;
-  },
+  }),
 
-  @computed('itemId')
-  itemIdAsInt(itemId) {
-    const idAsInt = parseInt(itemId, 10);
+  itemIdAsInt: computed('itemId', function() {
+    const idAsInt = parseInt(this.itemId, 10);
     return idAsInt;
-  },
+  }),
 
   actions: {
     // power-selects & radio-buttons

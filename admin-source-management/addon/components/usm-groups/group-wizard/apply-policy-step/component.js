@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import Notifications from 'component-lib/mixins/notifications';
 import {
   assignedPolicyList,
@@ -30,17 +30,15 @@ const ApplyPolicyStep = Component.extend(Notifications, {
   sourceType: null,
   policy: null,
 
-  @computed('assignedPolicyList')
-  hasAssignments(assignedPolicyList) {
-    return assignedPolicyList.length > 0;
-  },
+  hasAssignments: computed('assignedPolicyList', function() {
+    return this.assignedPolicyList.length > 0;
+  }),
 
-  @computed('availablePolicySourceTypes', 'assignedPolicyList')
-  hasSourceTypesAvailable(sourceTypes, assignedPolicyList) {
+  hasSourceTypesAvailable: computed('availablePolicySourceTypes', 'assignedPolicyList', function() {
     // first filter out disabled policy source types
-    const onlyEnabledTypes = sourceTypes.filter((sourceType) => !sourceType.disabled);
-    return (assignedPolicyList.length > 0 && onlyEnabledTypes.length != assignedPolicyList.length);
-  },
+    const onlyEnabledTypes = this.availablePolicySourceTypes.filter((sourceType) => !sourceType.disabled);
+    return this.assignedPolicyList.length > 0 && onlyEnabledTypes.length != this.assignedPolicyList.length;
+  }),
 
   actions: {
     addSourceType() {

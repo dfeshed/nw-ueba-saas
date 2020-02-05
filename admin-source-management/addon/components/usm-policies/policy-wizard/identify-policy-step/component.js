@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 
 import {
   policy,
@@ -35,17 +35,15 @@ const IdentifyPolicyStep = Component.extend({
   tagName: 'vbox',
   classNames: ['identify-policy-step', 'scroll-box', 'rsa-wizard-step'],
 
-  @computed('defaultPolicy', 'createdOn')
-  cannotEditSourceType(defaultPolicy, createdOn) {
-    return defaultPolicy || (createdOn > 0);
-  },
+  cannotEditSourceType: computed('defaultPolicy', 'createdOn', function() {
+    return this.defaultPolicy || (this.createdOn > 0);
+  }),
 
-  @computed('defaultPolicy')
-  cannotEditPolicyIdentity(defaultPolicy) {
-    if (defaultPolicy) {
-      return defaultPolicy;
+  cannotEditPolicyIdentity: computed('defaultPolicy', function() {
+    if (this.defaultPolicy) {
+      return this.defaultPolicy;
     }
-  },
+  }),
 
   // step object required to be passed in
   // step: null, // the wizard passes this in but we're not using it (yet anyway) - uncomment if/when needed

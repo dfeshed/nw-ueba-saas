@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import { connect } from 'ember-redux';
 import {
   removePolicyFileSource,
@@ -37,24 +37,21 @@ const SourceBodyCell = Component.extend({
   enableOnAgentConfig: enableOnAgentConfig(),
   dataCollectionConfig: dataCollectionConfig(),
 
-  @computed()
-  panelId() {
+  panelId: computed(function() {
     return `fileTypeSourcesTooltip-${this.get('elementId')}`;
-  },
+  }),
 
-  @computed('itemId')
-  itemIdAsInt(itemId) {
-    const idAsInt = parseInt(itemId, 10);
+  itemIdAsInt: computed('itemId', function() {
+    const idAsInt = parseInt(this.itemId, 10);
     return idAsInt;
-  },
+  }),
 
-  @computed('exFilterInvalidIndex')
-  exFiltersErrLineIndex(invalidIndex) {
+  exFiltersErrLineIndex: computed('exFilterInvalidIndex', function() {
     // if there is an invalid exclusion filter, add +1 to index to get the line number
-    if (invalidIndex !== -1) {
-      return ++invalidIndex;
+    if (this.exFilterInvalidIndex !== -1) {
+      return this.exFilterInvalidIndex + 1;
     }
-  },
+  }),
 
   actions: {
     handleRemoveSource(/* index */) {

@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { success, failure } from 'admin-source-management/utils/flash-messages';
 import { inject as service } from '@ember/service';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 
 import {
   hasSelectedApplyPoliciesItems,
@@ -38,20 +38,29 @@ const UsmGroupsToolbar = Component.extend({
   classNames: ['usm-groups-toolbar'],
   accessControl: service(),
 
-  @computed('hasSelectedEditItem', 'accessControl.canManageSourceServerGroups')
-  cannotEditGroups(hasSelectedEditItem, canManageSourceServerGroups) {
-    return !hasSelectedEditItem || !canManageSourceServerGroups;
-  },
+  cannotEditGroups: computed(
+    'hasSelectedEditItem',
+    'accessControl.canManageSourceServerGroups',
+    function() {
+      return !this.hasSelectedEditItem || !this.accessControl?.canManageSourceServerGroups;
+    }
+  ),
 
-  @computed('hasSelectedDeleteItems', 'accessControl.canManageSourceServerGroups')
-  cannotDeleteGroups(hasSelectedDeleteItems, canManageSourceServerGroups) {
-    return !hasSelectedDeleteItems || !canManageSourceServerGroups;
-  },
+  cannotDeleteGroups: computed(
+    'hasSelectedDeleteItems',
+    'accessControl.canManageSourceServerGroups',
+    function() {
+      return !this.hasSelectedDeleteItems || !this.accessControl?.canManageSourceServerGroups;
+    }
+  ),
 
-  @computed('hasSelectedPublishItems', 'accessControl.canManageSourceServerGroups')
-  cannotPublishGroups(hasSelectedPublishItems, canManageSourceServerGroups) {
-    return !hasSelectedPublishItems || !canManageSourceServerGroups;
-  },
+  cannotPublishGroups: computed(
+    'hasSelectedPublishItems',
+    'accessControl.canManageSourceServerGroups',
+    function() {
+      return !this.hasSelectedPublishItems || !this.accessControl?.canManageSourceServerGroups;
+    }
+  ),
 
   actions: {
 

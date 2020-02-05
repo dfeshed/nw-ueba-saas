@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import {
   focusedGroup,
@@ -22,16 +22,19 @@ const UsmGroupsInspector = Component.extend({
 
   i18n: service(),
 
-  @computed('focusedGroup.sourceCount', 'focusedGroup.dirty', 'focusedGroup.lastPublishedOn')
-  srcCountTooltip(sourceCount, isDirty, lastPublishedOn) {
-    const i18n = this.get('i18n');
-    return sourceCountTooltip(i18n, isDirty, sourceCount, lastPublishedOn);
-  },
+  srcCountTooltip: computed(
+    'focusedGroup.sourceCount',
+    'focusedGroup.dirty',
+    'focusedGroup.lastPublishedOn',
+    function() {
+      const i18n = this.get('i18n');
+      return sourceCountTooltip(i18n, this.focusedGroup?.dirty, this.focusedGroup?.sourceCount, this.focusedGroup?.lastPublishedOn);
+    }
+  ),
 
-  @computed('focusedGroup.sourceCount')
-  srcCount(sourceCount) {
-    return getSourceCount(sourceCount);
-  }
+  srcCount: computed('focusedGroup.sourceCount', function() {
+    return getSourceCount(this.focusedGroup?.sourceCount);
+  })
 });
 
 export default connect(stateToComputed, dispatchToActions)(UsmGroupsInspector);

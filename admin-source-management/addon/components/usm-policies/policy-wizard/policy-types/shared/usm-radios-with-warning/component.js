@@ -1,8 +1,7 @@
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import UsmRadios from './../usm-radios/component';
 
 export default UsmRadios.extend({
-
   initialValueBackup: false,
 
   init() {
@@ -10,9 +9,8 @@ export default UsmRadios.extend({
     this.set('initialValueBackup', this.get('radioButtonValue'));
   },
 
-  @computed('initialValueBackup', 'radioButtonValue')
-  isWarningMessage(initialValueBackup, radioButtonValue) {
+  isWarningMessage: computed('initialValueBackup', 'radioButtonValue', function() {
     // Warning message is to be displayed only when the initial value is enabled and the user is trying to disable it.
-    return initialValueBackup && !radioButtonValue;
-  }
+    return this.initialValueBackup && !this.radioButtonValue;
+  })
 });

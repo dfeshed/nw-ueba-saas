@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { scheduleOnce } from '@ember/runloop';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import {
   updatePolicyProperty,
   addPolicyFileSource
@@ -33,20 +33,18 @@ const DefinePolicySourcesStep = Component.extend({
   tagName: 'vbox',
   classNames: ['define-policy-sources-step', 'scroll-box', 'rsa-wizard-step'],
 
-  @computed()
-  panelId() {
+  panelId: computed(function() {
     return `fileTypeSourcesTooltip-${this.get('elementId')}`;
-  },
+  }),
 
   _scrollToAddSelectedFileTypeBtn() {
     this.get('element').querySelector('.add-selected-file-type').scrollIntoView(false);
   },
 
-  @computed('fileSources')
-  hasSourceError(fileSources) {
-    const errorCount = fileSources ? fileSources.filter((source) => source?.errorState?.state) : [];
+  hasSourceError: computed('fileSources', function() {
+    const errorCount = this.fileSources ? this.fileSources.filter((source) => source?.errorState?.state) : [];
     return errorCount.length;
-  },
+  }),
 
   actions: {
     // adding a container to the sources

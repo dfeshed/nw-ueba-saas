@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import {
   groupRanking,
   isLoadingGroupRanking,
@@ -43,10 +43,9 @@ const EditRankingStep = Component.extend({
   tagName: 'hbox',
   classNames: 'edit-ranking-step',
 
-  @computed('selectedGroupRanking', 'groupRankingSelectedIndex')
-  hasSelectedGroup(selectedGroupRanking, groupRankingSelectedIndex) {
-    return selectedGroupRanking !== null && groupRankingSelectedIndex !== 0;
-  },
+  hasSelectedGroup: computed('selectedGroupRanking', 'groupRankingSelectedIndex', function() {
+    return this.selectedGroupRanking !== null && this.groupRankingSelectedIndex !== 0;
+  }),
 
   init() {
     this._super(...arguments);

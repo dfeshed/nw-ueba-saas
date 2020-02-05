@@ -1,6 +1,6 @@
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 
 export default Controller.extend({
   accessControl: service(),
@@ -13,27 +13,24 @@ export default Controller.extend({
    * @public
    * @returns {*}
    */
-  @computed('routing.currentRouteName')
-  routePath(currentRouteName) {
-    const paths = currentRouteName.split('.');
+  routePath: computed('routing.currentRouteName', function() {
+    const paths = this.routing?.currentRouteName.split('.');
     const path = paths.pop();
     return path === 'index' ? paths.pop() || '' : path;
-  },
+  }),
 
-  @computed
-  hasAdminViewUnifiedSourcesAccess() {
+  hasAdminViewUnifiedSourcesAccess: computed(function() {
     const hasUsmAccess = this.get('accessControl.hasAdminViewUnifiedSourcesAccess');
     return hasUsmAccess;
-  },
+  }),
 
-  @computed('routing.currentRouteName')
-  isUnifiedSourcesActive(currentRouteName) {
+  isUnifiedSourcesActive: computed('routing.currentRouteName', function() {
     let isActive = false;
-    if (currentRouteName.indexOf('admin-source-management') !== -1) {
+    if (this.routing?.currentRouteName.indexOf('admin-source-management') !== -1) {
       isActive = true;
     }
     return isActive;
-  },
+  }),
 
   actions: {
     // let router handle this

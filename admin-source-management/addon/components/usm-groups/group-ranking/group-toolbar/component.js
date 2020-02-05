@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import Notifications from 'component-lib/mixins/notifications';
 import { inject } from '@ember/service';
 
@@ -36,23 +36,28 @@ const GroupWizardToolbar = Component.extend(Notifications, {
   i18n: inject(),
   accessControl: inject(),
 
-  @computed('hasGroupRankingChanged', 'accessControl.canManageSourceServerGroups')
-  cannotPublishRanking(hasGroupRankingChanged, canManageSourceServerGroups) {
-    return !hasGroupRankingChanged || !canManageSourceServerGroups;
-  },
+  cannotPublishRanking: computed(
+    'hasGroupRankingChanged',
+    'accessControl.canManageSourceServerGroups',
+    function() {
+      return !this.hasGroupRankingChanged || !this.accessControl?.canManageSourceServerGroups;
+    }
+  ),
+
   // step object required to be passed in
   step: undefined,
+
   // closure action required to be passed in
   transitionToStep: undefined,
 
-  @computed('groupRankingStatus')
-  isStepValid(groupRankingStatus) {
-    return groupRankingStatus == 'complete';
-  },
-  @computed('selectedGroupRanking', 'groupRankingSelectedIndex')
-  hasSelectedGroup(selectedGroupRanking, groupRankingSelectedIndex) {
-    return selectedGroupRanking !== null && groupRankingSelectedIndex !== 0;
-  },
+  isStepValid: computed('groupRankingStatus', function() {
+    return this.groupRankingStatus == 'complete';
+  }),
+
+  hasSelectedGroup: computed('selectedGroupRanking', 'groupRankingSelectedIndex', function() {
+    return this.selectedGroupRanking !== null && this.groupRankingSelectedIndex !== 0;
+  }),
+
   actions: {
     transitionToPrevStep() {
       this.get('transitionToStep')(this.get('step').prevStepId);

@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { scheduleOnce } from '@ember/runloop';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import _ from 'lodash';
 import {
   updatePolicyProperty
@@ -27,14 +27,13 @@ const WindowsLogChannelFilters = Component.extend({
   classNames: 'windows-log-channel-filters',
   classNameBindings: ['selectedSettingId'],
 
-  @computed()
-  panelId() {
+  panelId: computed(function() {
     return `winLogCollectionTooltip-${this.get('elementId')}`;
-  },
-  @computed('channelFilters')
-  channels(channelFilters) {
-    return _.cloneDeep(channelFilters);
-  },
+  }),
+
+  channels: computed('channelFilters', function() {
+    return _.cloneDeep(this.channelFilters);
+  }),
 
   _updateChannelFilters() {
     this.send('updatePolicyProperty', 'channelFilters', this.get('channels'));

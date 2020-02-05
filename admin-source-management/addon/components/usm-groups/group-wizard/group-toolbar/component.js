@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { run, next } from '@ember/runloop';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import Notifications from 'component-lib/mixins/notifications';
 import { inject as service } from '@ember/service';
 
@@ -55,52 +55,51 @@ const GroupWizardToolbar = Component.extend(Notifications, {
 
   // step object required to be passed in
   step: undefined,
+
   // closure action required to be passed in
   transitionToStep: undefined,
+
   _showConfirmationModal: false,
 
-  @computed(
+  isStepValid: computed(
     'step',
     'isIdentifyGroupStepValid',
     'identifyGroupStepShowErrors',
     'isDefineGroupStepValid',
     'defineGroupStepShowErrors',
     'isApplyPolicyStepValid',
-    'applyPolicyStepShowErrors'
-  )
-  isStepValid(step,
-    isIdentifyGroupStepValid, identifyGroupStepShowErrors,
-    isDefineGroupStepValid, defineGroupStepShowErrors,
-    isApplyPolicyStepValid, applyPolicyStepShowErrors) {
-    switch (this.step.id) {
-      case 'identifyGroupStep':
-        if (isIdentifyGroupStepValid && identifyGroupStepShowErrors) {
-          run.next(() => {
-            this.setShowErrors(false);
-          });
-        }
-        return isIdentifyGroupStepValid;
+    'applyPolicyStepShowErrors',
+    function() {
+      switch (this.step.id) {
+        case 'identifyGroupStep':
+          if (this.isIdentifyGroupStepValid && this.identifyGroupStepShowErrors) {
+            run.next(() => {
+              this.setShowErrors(false);
+            });
+          }
+          return this.isIdentifyGroupStepValid;
 
-      case 'defineGroupStep':
-        if (isDefineGroupStepValid && defineGroupStepShowErrors) {
-          run.next(() => {
-            this.setShowErrors(false);
-          });
-        }
-        return isDefineGroupStepValid;
+        case 'defineGroupStep':
+          if (this.isDefineGroupStepValid && this.defineGroupStepShowErrors) {
+            run.next(() => {
+              this.setShowErrors(false);
+            });
+          }
+          return this.isDefineGroupStepValid;
 
-      case 'applyPolicyStep':
-        if (isApplyPolicyStepValid && applyPolicyStepShowErrors) {
-          run.next(() => {
-            this.setShowErrors(false);
-          });
-        }
-        return isApplyPolicyStepValid;
+        case 'applyPolicyStep':
+          if (this.isApplyPolicyStepValid && this.applyPolicyStepShowErrors) {
+            run.next(() => {
+              this.setShowErrors(false);
+            });
+          }
+          return this.isApplyPolicyStepValid;
 
-      default:
-        return false;
+        default:
+          return false;
+      }
     }
-  },
+  ),
 
   setShowErrors(show) {
     switch (this.step.id) {

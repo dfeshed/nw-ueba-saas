@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import { next } from '@ember/runloop';
 import {
   groupAttributesMap,
@@ -30,10 +30,10 @@ const dispatchToActions = {
 const GroupAttributes = Component.extend({
   classNames: ['group-attributes'],
   criteriaPath: '',
-  @computed('criterias')
-  maxTenCriteria(criterias) {
-    return criterias.length > 9;
-  },
+  maxTenCriteria: computed('criterias', function() {
+    return this.criterias.length > 9;
+  }),
+
   actions: {
     handleAddCriteria() {
       this.send('addCriteria');
@@ -53,6 +53,7 @@ const GroupAttributes = Component.extend({
       }
     }
   },
+
   init() {
     this._super(...arguments);
     next(() => {

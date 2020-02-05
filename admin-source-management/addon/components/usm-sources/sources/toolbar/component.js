@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { success, failure } from 'admin-source-management/utils/flash-messages';
 import { inject as service } from '@ember/service';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 
 import {
   hasSelectedEditItem,
@@ -36,20 +36,29 @@ const UsmSourcesToolbar = Component.extend({
   classNames: ['usm-sources-toolbar'],
   accessControl: service(),
 
-  @computed('hasSelectedEditItem', 'accessControl.canManageSourceServerSources')
-  cannotEditSources(hasSelectedEditItem, canManageSourceServerSources) {
-    return !hasSelectedEditItem || !canManageSourceServerSources;
-  },
+  cannotEditSources: computed(
+    'hasSelectedEditItem',
+    'accessControl.canManageSourceServerSources',
+    function() {
+      return !this.hasSelectedEditItem || !this.accessControl?.canManageSourceServerSources;
+    }
+  ),
 
-  @computed('hasSelectedDeleteItems', 'accessControl.canManageSourceServerSources')
-  cannotDeleteSources(hasSelectedDeleteItems, canManageSourceServerSources) {
-    return !hasSelectedDeleteItems || !canManageSourceServerSources;
-  },
+  cannotDeleteSources: computed(
+    'hasSelectedDeleteItems',
+    'accessControl.canManageSourceServerSources',
+    function() {
+      return !this.hasSelectedDeleteItems || !this.accessControl?.canManageSourceServerSources;
+    }
+  ),
 
-  @computed('hasSelectedPublishItems', 'accessControl.canManageSourceServerSources')
-  cannotPublishSources(hasSelectedPublishItems, canManageSourceServerSources) {
-    return !hasSelectedPublishItems || !canManageSourceServerSources;
-  },
+  cannotPublishSources: computed(
+    'hasSelectedPublishItems',
+    'accessControl.canManageSourceServerSources',
+    function() {
+      return !this.hasSelectedPublishItems || !this.accessControl?.canManageSourceServerSources;
+    }
+  ),
 
   actions: {
 

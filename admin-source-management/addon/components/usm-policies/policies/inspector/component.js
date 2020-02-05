@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import {
   focusedPolicy
 } from 'admin-source-management/reducers/usm/policies-selectors';
@@ -15,10 +15,10 @@ const stateToComputed = (state) => ({
 
 const UsmPoliciesInspector = Component.extend({
   classNames: ['usm-policies-inspector'],
-  @computed('focusedPolicy')
-  hasSourceError(focusedPolicy) {
-    return focusedPolicy.sources ? focusedPolicy.sources.filter((source) => source?.errorState?.state) : '';
-  }
+
+  hasSourceError: computed('focusedPolicy', function() {
+    return this.focusedPolicy.sources ? this.focusedPolicy.sources.filter((source) => source?.errorState?.state) : '';
+  })
 });
 
 export default connect(stateToComputed, dispatchToActions)(UsmPoliciesInspector);

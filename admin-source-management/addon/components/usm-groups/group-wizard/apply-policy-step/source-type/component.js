@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import Notifications from 'component-lib/mixins/notifications';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 // import { sourceTypes } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 import { sortBy } from 'admin-source-management/reducers/usm/util/selector-helpers';
 import {
@@ -39,21 +39,19 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
   selectedSourceType: null,
   selectedPolicy: null,
 
-  @computed('availablePolicySourceTypes', 'selectedSourceType')
-  selectedSourceTypeObj(policySourceTypesAsObjs, sourceType) {
-    const sourceTypeObj = selectedSourceTypeAsObj(policySourceTypesAsObjs, sourceType);
+  selectedSourceTypeObj: computed('availablePolicySourceTypes', 'selectedSourceType', function() {
+    const sourceTypeObj = selectedSourceTypeAsObj(this.availablePolicySourceTypes, this.selectedSourceType);
     if (sourceTypeObj && sourceTypeObj.disabled) {
       return null;
     }
     return sourceTypeObj;
-  },
+  }),
 
-  @computed('policyList', 'selectedSourceType')
-  availablePoliciesForSourceType(policyList, sourceType) {
+  availablePoliciesForSourceType: computed('policyList', 'selectedSourceType', function() {
     const list = [];
-    for (let index = 0; index < policyList.length; index++) {
-      const policy = policyList[index];
-      if ((policy.policyType === sourceType) && (policy.lastPublishedOn > 0)) {
+    for (let index = 0; index < this.policyList.length; index++) {
+      const policy = this.policyList[index];
+      if ((policy.policyType === this.selectedSourceType) && (policy.lastPublishedOn > 0)) {
         list.push(policy);
       }
     }
@@ -64,24 +62,22 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
       return String(a).toUpperCase();
     }));
     return sortedList;
-  },
+  }),
 
-  @computed('selectedSourceType', 'selectedPolicy', 'stepShowErrors')
-  validator(selectedSourceType, selectedPolicy, stepShowErrors) {
+  validator: computed('selectedSourceType', 'selectedPolicy', 'stepShowErrors', function() {
     let inputValid = true;
-    if (selectedSourceType && !selectedPolicy) {
+    if (this.selectedSourceType && !this.selectedPolicy) {
       inputValid = false;
     }
     return {
       isError: !inputValid,
-      showError: stepShowErrors ? !inputValid : false
+      showError: this.stepShowErrors ? !inputValid : false
     };
-  },
+  }),
 
-  @computed('selectedPolicy')
-  hasSelectedPolicy(selectedPolicy) {
-    return !!selectedPolicy;
-  },
+  hasSelectedPolicy: computed('selectedPolicy', function() {
+    return !!this.selectedPolicy;
+  }),
 
   actions: {
     handleSourceTypeChange(value) {

@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { run, next } from '@ember/runloop';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import Notifications from 'component-lib/mixins/notifications';
 import { inject as service } from '@ember/service';
 
@@ -60,56 +60,55 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
 
   // step object required to be passed in
   step: null,
+
   // closure action required to be passed in
   transitionToStep: null,
+
   _showConfirmationModal: false,
 
-  @computed('fileSources')
-  hasSourceErr(fileSources) {
-    const errorCount = fileSources ? fileSources.filter((source) => source?.errorState?.state) : [];
+  hasSourceErr: computed('fileSources', function() {
+    const errorCount = this.fileSources ? this.fileSources.filter((source) => source?.errorState?.state) : [];
     return errorCount.length > 0;
-  },
+  }),
 
-  @computed(
+  isStepValid: computed(
     'step',
     'isIdentifyPolicyStepValid',
     'identifyPolicyStepShowErrors',
     'isDefinePolicyStepValid',
     'definePolicyStepShowErrors',
     'isDefinePolicySourcesStepValid',
-    'definePolicySourcesStepShowErrors'
-  )
-  isStepValid(step,
-    isIdentifyPolicyStepValid, identifyPolicyStepShowErrors,
-    isDefinePolicyStepValid, definePolicyStepShowErrors, isDefinePolicySourcesStepValid, definePolicySourcesStepShowErrors) {
-    switch (this.step.id) {
-      case 'identifyPolicyStep':
-        if (isIdentifyPolicyStepValid && identifyPolicyStepShowErrors) {
-          run.next(() => {
-            this.setShowErrors(false);
-          });
-        }
-        return isIdentifyPolicyStepValid;
+    'definePolicySourcesStepShowErrors',
+    function() {
+      switch (this.step.id) {
+        case 'identifyPolicyStep':
+          if (this.isIdentifyPolicyStepValid && this.identifyPolicyStepShowErrors) {
+            run.next(() => {
+              this.setShowErrors(false);
+            });
+          }
+          return this.isIdentifyPolicyStepValid;
 
-      case 'definePolicyStep':
-        if (isDefinePolicyStepValid && definePolicyStepShowErrors) {
-          run.next(() => {
-            this.setShowErrors(false);
-          });
-        }
-        return isDefinePolicyStepValid;
+        case 'definePolicyStep':
+          if (this.isDefinePolicyStepValid && this.definePolicyStepShowErrors) {
+            run.next(() => {
+              this.setShowErrors(false);
+            });
+          }
+          return this.isDefinePolicyStepValid;
 
-      case 'definePolicySourcesStep':
-        if (isDefinePolicySourcesStepValid && definePolicySourcesStepShowErrors) {
-          run.next(() => {
-            this.setShowErrors(false);
-          });
-        }
-        return isDefinePolicySourcesStepValid;
-      default:
-        return false;
+        case 'definePolicySourcesStep':
+          if (this.isDefinePolicySourcesStepValid && this.definePolicySourcesStepShowErrors) {
+            run.next(() => {
+              this.setShowErrors(false);
+            });
+          }
+          return this.isDefinePolicySourcesStepValid;
+        default:
+          return false;
+      }
     }
-  },
+  ),
 
   setShowErrors(show) {
     switch (this.step.id) {

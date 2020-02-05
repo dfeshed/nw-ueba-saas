@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import { computed } from '@ember/object';
 import _ from 'lodash';
 import { groupExpressionValidator } from 'admin-source-management/reducers/usm/util/selector-helpers';
 import { updateGroupCriteria } from 'admin-source-management/actions/creators/group-wizard-creators';
@@ -26,15 +26,13 @@ const OsSelector = Component.extend({
 
   // cloneDeep is needed for OS Type power-selector-multiple as it is directly mutating the selected items
   // cloneDeep only data related to this power-selector-multiple.
-  @computed('value')
-  selectedValues(value) {
-    return _.cloneDeep(value);
-  },
+  selectedValues: computed('value', function() {
+    return _.cloneDeep(this.value);
+  }),
 
-  @computed('selectedValues', 'validation', 'stepShowErrors')
-  validator(selectedValues, validation, stepShowErrors) {
-    return groupExpressionValidator(selectedValues, validation, true, stepShowErrors);
-  },
+  validator: computed('selectedValues', 'validation', 'stepShowErrors', function() {
+    return groupExpressionValidator(this.selectedValues, this.validation, true, this.stepShowErrors);
+  }),
 
   actions: {
     onChangeOSSelector(value) {
