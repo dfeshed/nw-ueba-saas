@@ -1,16 +1,15 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { render, findAll } from '@ember/test-helpers';
 
-moduleForComponent('color-swatch', 'Integration | Component | color swatch', {
-  integration: true
-});
+module('Integration | Component | color swatch', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it renders', function(assert) {
-
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });" + EOL + EOL +
-
-  this.render(hbs`{{color-swatch}}`);
-
-  assert.ok(this.$('.color-swatch').length, 'Could not find component\'s root DOM element.');
+  test('it renders', async function(assert) {
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });" + EOL + EOL +
+    await render(hbs`{{color-swatch}}`);
+    assert.ok(findAll('.color-swatch').length, 'Could not find component\'s root DOM element.');
+  });
 });

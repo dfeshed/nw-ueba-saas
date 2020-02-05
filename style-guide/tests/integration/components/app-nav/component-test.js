@@ -1,22 +1,21 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { render, findAll } from '@ember/test-helpers';
 
-moduleForComponent('app-nav', 'Integration | Component | app nav', {
-  integration: true
-});
+module('Integration | Component | app nav', function(hooks) {
 
-test('it renders', function(assert) {
+  setupRenderingTest(hooks);
 
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });" + EOL + EOL +
+  test('it renders', async function(assert) {
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });" + EOL + EOL +
+    await render(hbs`{{app-nav}}`);
+    assert.ok(findAll('.app-nav').length, 'Could not find component\'s root DOM element.');
+  });
 
-  this.render(hbs`{{app-nav}}`);
-
-  assert.ok(this.$('.app-nav').length, 'Could not find component\'s root DOM element.');
-});
-
-test('has visual tour link', function(assert) {
-  this.render(hbs`{{app-nav}}`);
-
-  assert.ok(this.$('.visual-tour-link').length, 'Could not find visual tour link.');
+  test('has visual tour link', async function(assert) {
+    await render(hbs`{{app-nav}}`);
+    assert.ok(findAll('.visual-tour-link').length, 'Could not find visual tour link.');
+  });
 });

@@ -1,16 +1,16 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { render, findAll } from '@ember/test-helpers';
 
-moduleForComponent('spec-masthead', 'Integration | Component | spec masthead', {
-  integration: true
-});
+module('Integration | Component | spec masthead', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it renders', function(assert) {
+  test('it renders', async function(assert) {
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });" + EOL + EOL +
 
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });" + EOL + EOL +
-
-  this.render(hbs`{{spec-masthead}}`);
-
-  assert.ok(this.$('.spec-masthead').length, 'Could not find component\'s root DOM element.');
+    await render(hbs`{{spec-masthead}}`);
+    assert.ok(findAll('.spec-masthead').length, 'Could not find component\'s root DOM element.');
+  });
 });
