@@ -20,7 +20,7 @@ export default {
         autoDownloadExtractedFiles: true,
         packetsPageSize: 100,
         autoUpdateSummary: false,
-        eventTimeSortOrder: 'Ascending'
+        eventTimeSortOrder: 'Unsorted'
       },
       eventPreferences: {
         columnGroup: 'EMAIL'

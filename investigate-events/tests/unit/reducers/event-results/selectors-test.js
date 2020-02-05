@@ -1403,6 +1403,49 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].foo, state.investigate.eventResults.data[0].foo);
   });
 
+  test('clientSortedData when IPv4 and sort direction is Unsorted', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { foo: '0.0.0.1' },
+            { foo: '50.0.0.2' },
+            { foo: '128.0.0.3' }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Unsorted',
+          globalPreferences: {
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'foo',
+            format: 'IPv4'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        },
+        queryNode: {
+          previousQueryParams: {}
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].foo, state.investigate.eventResults.data[0].foo);
+    assert.equal(result[1].foo, state.investigate.eventResults.data[1].foo);
+    assert.equal(result[2].foo, state.investigate.eventResults.data[2].foo);
+  });
+
 
   test('clientSortedData when IPv6 when Descending', async function(assert) {
     const state = {
@@ -1543,6 +1586,53 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[0].time, state.investigate.eventResults.data[2].time);
     assert.equal(result[1].time, state.investigate.eventResults.data[1].time);
     assert.equal(result[2].time, state.investigate.eventResults.data[0].time);
+  });
+
+  test('clientSortedData when time and sort direction is Unsorted', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { time: 1 },
+            { time: 2 },
+            { time: 3 }
+          ]
+        },
+        data: {
+          sortField: 'time',
+          sortDirection: 'Unsorted',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'time',
+            format: 'TimeT'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        },
+        queryNode: {
+          previousQueryParams: {}
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].time, state.investigate.eventResults.data[0].time);
+    assert.equal(result[1].time, state.investigate.eventResults.data[1].time);
+    assert.equal(result[2].time, state.investigate.eventResults.data[2].time);
   });
 
   test('clientSortedData when Float', async function(assert) {

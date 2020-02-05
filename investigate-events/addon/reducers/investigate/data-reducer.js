@@ -40,7 +40,7 @@ export default handleActions({
       sortDirection = sortDirection || state.sortDirection;
     } else {
       const prefs = state.eventAnalysisPreferences;
-      sortDirection = (prefs && prefs.eventTimeSortOrder) || SORT_ORDER.ASC;
+      sortDirection = (prefs && prefs.eventTimeSortOrder) || SORT_ORDER.NO_SORT;
     }
 
     return state.merge({

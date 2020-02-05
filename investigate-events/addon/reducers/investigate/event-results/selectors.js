@@ -253,7 +253,7 @@ export const clientSortedData = createSelector(
     opts,
     requireServiceSorting
   ) => {
-    if (!languages || requireServiceSorting || !data) {
+    if (!languages || requireServiceSorting || !data || sortDirection === SORT_ORDER.NO_SORT) {
       // client not responsible for sorting
       // return data as is
       return data;

@@ -12,7 +12,7 @@ export const DEFAULT_INITIALIZE = {
     isReconOpen: true,
     isRequestShown: true,
     isResponseShown: true,
-    eventTimeSortOrder: 'Ascending'
+    eventTimeSortOrder: 'Unsorted'
   }
 };
 export const makePackAction = (lifecycle, { type, payload, meta = {} }) => {

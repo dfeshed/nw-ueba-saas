@@ -121,6 +121,9 @@ const HeaderContainer = Component.extend({
   abbreviatedSortOrder(sortDirection, eventTimeSortOrder, canSort, i18n) {
     const sortBy = sortDirection && canSort ? sortDirection : eventTimeSortOrder;
     if (sortBy) {
+      if (sortBy.toLowerCase() === SORT_ORDER.NO_SORT.toLowerCase()) {
+        return;
+      }
       sortDirection = sortBy.toLowerCase() === SORT_ORDER.ASC.toLowerCase() ? SORT_ORDER.ASC : SORT_ORDER.DESC;
       return i18n.t(`investigate.events.abbr.${sortDirection}`);
     }

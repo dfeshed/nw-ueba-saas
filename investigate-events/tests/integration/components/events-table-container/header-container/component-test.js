@@ -45,7 +45,8 @@ module('Integration | Component | header-container', function(hooks) {
   test('render the events header with data at threshold', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).hasRequiredValuesToQuery(true).eventCount(100000).build();
     await render(hbs`{{events-table-container/header-container}}`);
-    assert.ok(find(eventLabelSelector).textContent.includes('oldest 100,000 Events (Asc)'), 'rendered event header title');
+    assert.ok(find(eventLabelSelector).textContent.includes('oldest 100,000 Events'), 'rendered event header title count');
+    assert.ok(find(eventLabelSelector).textContent.includes('(Asc)'), 'rendered event header title sort direction');
     const thresholdIconSelector = `${headerContainerSelector} .at-threshold`;
     assert.ok(find(thresholdIconSelector), 'at threshold icon is present');
     const tooltip = find(thresholdIconSelector).getAttribute('title').trim().split(' ');
@@ -56,7 +57,10 @@ module('Integration | Component | header-container', function(hooks) {
   test('render the events header with data at threshold sorted Desc', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Descending').columnGroups(EventColumnGroups).hasRequiredValuesToQuery(true).eventCount(100000).build();
     await render(hbs`{{events-table-container/header-container}}`);
-    assert.ok(find(eventLabelSelector).textContent.includes('newest 100,000 Events (Desc)'), 'rendered event header title');
+    // Due to css they may appear to be next to each other but when you fetch the text content  count and sort direction
+    // are in two different lines. So checking them independently
+    assert.ok(find(eventLabelSelector).textContent.includes('newest 100,000 Events'), 'rendered event header title Counter');
+    assert.ok(find(eventLabelSelector).textContent.includes('(Desc)'), 'rendered event header title sort order');
     const thresholdIconSelector = `${headerContainerSelector} .at-threshold`;
     const tooltip = find(thresholdIconSelector).getAttribute('title').trim().split(' ');
     assert.ok(tooltip.includes('newest'));
@@ -98,19 +102,38 @@ module('Integration | Component | header-container', function(hooks) {
   test('render the events header with actualCount when canceled', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').selectedEventIds([]).columnGroups(EventColumnGroups).eventResults(eventResultsData).hasRequiredValuesToQuery(true).eventCount(10).build();
     await render(hbs`{{events-table-container/header-container}}`);
-    assert.ok(find(eventLabelSelector).textContent.includes('1 Events (Asc)'), 'rendered event header title');
+    assert.ok(find(eventLabelSelector).textContent.includes('1 Events'), 'rendered event header title count');
+    assert.ok(find(eventLabelSelector).textContent.includes('(Asc)'), 'rendered event header title sort direction');
   });
 
   test('render the events header with eventTimeSortOrderPreferenceWhenQueried when cannot sort', async function(assert) {
     new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').selectedEventIds([]).columnGroups(EventColumnGroups).eventResults(eventResultsData).hasRequiredValuesToQuery(false).eventTimeSortOrderPreferenceWhenQueried().eventCount(10).build();
     await render(hbs`{{events-table-container/header-container}}`);
-    assert.ok(find(eventLabelSelector).textContent.includes('1 Events (Asc)'), 'rendered event header title');
+    assert.ok(find(eventLabelSelector).textContent.includes('1 Events'), 'rendered event header title count');
+    assert.ok(find(eventLabelSelector).textContent.includes('(Asc)'), 'rendered event header title sort direction');
   });
 
   test('render the events header with required fields ', async function(assert) {
     await renderDefaultHeaderContainer(assert);
     assert.equal(find(headerContainerSelector).childElementCount, 2, 'rendered with two elements - header__content, events-table-control');
-    assert.ok(find(eventLabelSelector).textContent.includes('55 Events (Asc)'), 'rendered event header title');
+    assert.ok(find(eventLabelSelector).textContent.includes('55 Events'), 'rendered event header title count');
+    assert.ok(find(eventLabelSelector).textContent.includes('(Asc)'), 'rendered event header title sort direction');
+    assert.equal(find(`${columnGroupManager} .list-caption`).textContent.trim(), 'Column Group: Summary List', 'rendered ColumnGroup title');
+    assert.equal(find(`${downloadSelector} .ember-power-select-trigger span[title='Download']`).textContent.trim(), 'Download', 'rendered event header title');
+    assert.equal(find(`${headerContentSelector} .create-incident-button`).textContent.trim(), 'Create Incident', 'rendered Create Incident title');
+    assert.equal(find(`${headerContentSelector} .add-to-incident-button`).textContent.trim(), 'Add to Incident', 'rendered Create Incident title');
+    assert.ok(find(`${textSearchSelector}.disabled`), 'rendered event header text search');
+  });
+
+  test('render the events header with required fields when sort direction is unsorted ', async function(assert) {
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Unsorted').hasRequiredValuesToQuery(true).columnGroups(EventColumnGroups).eventCount(55).build();
+    await render(hbs`{{events-table-container/header-container}}`);
+    assert.ok(find(headerContainerSelector), 'Header container rendered');
+    assert.equal(find(headerContainerSelector).childElementCount, 2, 'rendered with two elements - header__content, events-table-control');
+    assert.ok(find(eventLabelSelector).textContent.includes('55 Events'), 'rendered event header title count');
+    assert.notOk(find(eventLabelSelector).textContent.includes('(Asc)'), 'should not render event header title sort direction');
+    assert.notOk(find(eventLabelSelector).textContent.includes('(Desc)'), 'should not render event header title sort direction');
+    assert.notOk(find(eventLabelSelector).textContent.includes('()'), 'should not render event header title sort direction');
     assert.equal(find(`${columnGroupManager} .list-caption`).textContent.trim(), 'Column Group: Summary List', 'rendered ColumnGroup title');
     assert.equal(find(`${downloadSelector} .ember-power-select-trigger span[title='Download']`).textContent.trim(), 'Download', 'rendered event header title');
     assert.equal(find(`${headerContentSelector} .create-incident-button`).textContent.trim(), 'Create Incident', 'rendered Create Incident title');

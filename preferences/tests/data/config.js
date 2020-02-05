@@ -1,6 +1,7 @@
 const SORT_ORDER = {
   DESC: 'Descending',
-  ASC: 'Ascending'
+  ASC: 'Ascending',
+  NO_SORT: 'Unsorted'
 };
 
 /**

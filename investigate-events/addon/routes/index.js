@@ -244,7 +244,7 @@ export default Route.extend({
         pdhash: undefined
       };
 
-      if (hasMinimumCoreServicesVersionForColumnSorting(state)) {
+      if (hasMinimumCoreServicesVersionForColumnSorting(state) && sortDirection !== 'Unsorted') {
         qp.sortField = sortField;
         qp.sortDir = sortDirection;
       }

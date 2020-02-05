@@ -74,7 +74,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.equal(str, 'Download Text');
     assert.ok(find('.rsa-form-radio-label.DB.checked'));
     assert.ok(find('.rsa-form-checkbox-label.checked'));
-    assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
+    assert.ok(find('.rsa-form-radio-label.Unsorted.checked'));
   });
 
   test('Preferences panel should render title for DOWNLOAD EXTRACTED FILES AUTOMATICALLY', async function(assert) {
@@ -173,11 +173,17 @@ module('Integration | Component | Preferences Details', function(hooks) {
 
   test('Preferences panel should change Sort Event Settings on click', async function(assert) {
     await renderApplicationContent(this, assert);
-    assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
+    assert.ok(find('.rsa-form-radio-label.Unsorted.checked'));
+    assert.notOk(find('.rsa-form-radio-label.Ascending.checked'));
     assert.notOk(find('.rsa-form-radio-label.Descending.checked'));
     await click('.rsa-form-radio-label.Descending');
     await waitUntil(() => find('.rsa-form-radio-label.Descending.checked'), { timeout: 3000 });
     assert.notOk(find('.rsa-form-radio-label.Ascending.checked'));
+    assert.notOk(find('.rsa-form-radio-label.Unsorted.checked'));
+    await click('.rsa-form-radio-label.Ascending');
+    await waitUntil(() => find('.rsa-form-radio-label.Ascending.checked'), { timeout: 3000 });
+    assert.notOk(find('.rsa-form-radio-label.Unsorted.checked'));
+    assert.notOk(find('.rsa-form-radio-label.Descending.checked'));
   });
 
   test('Preferences panel should uncheck the Download automatically checkbox on click', async function(assert) {

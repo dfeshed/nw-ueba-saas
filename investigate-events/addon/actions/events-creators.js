@@ -14,7 +14,8 @@ import { updateErrorMsgIfMaxMemory } from './utils';
 export const _deriveSort = (field, sortDirection, state) => {
   const hasRequiredVersion = hasMinimumCoreServicesVersionForColumnSorting(state);
   const atThreshold = resultCountAtThreshold(state);
-  if (atThreshold && hasRequiredVersion && field && sortDirection) {
+  const sortingRequired = sortDirection && sortDirection.toLowerCase() !== SORT_ORDER.NO_SORT.toLowerCase();
+  if (atThreshold && hasRequiredVersion && field && sortingRequired) {
     return {
       field,
       descending: sortDirection.toLowerCase() === SORT_ORDER.DESC.toLowerCase()

@@ -208,7 +208,7 @@ const _buildUrlFromQueryInputs = (selected, queryOperator, contextDetails, metaF
     st: startTime,
     rs: 'min',
     sortField: 'time',
-    sortDir: 'Ascending'
+    sortDir: 'Unsorted'
   };
   const serializedParams = serializeQueryParams(qp);
   const path = `${investigateEventsUrl}?${serializedParams}`;

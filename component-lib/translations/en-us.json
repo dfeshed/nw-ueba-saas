@@ -637,8 +637,9 @@
       "searchMin": "2 character minimum to find text.",
       "noMatches": "No matches were found.",
       "searchPlaceholder": "Enter text to be found.",
-      "titleThreshold": "{age} {count} Events ({sort})",
-      "title": "{count} Events ({sort})",
+      "titleThreshold": "{age} {count} Events",
+      "title": "{count} Events",
+      "sortDirection": " ({sort})",
       "oldest": "oldest",
       "newest": "newest",
       "abbr": {

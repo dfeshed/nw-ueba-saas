@@ -71,7 +71,7 @@ test('it returns a well formed url if right click actions are coming from outsid
   const url = buildEventAnalysisUrl(selected, '=', contextDetails, false);
   assert.equal(
     url,
-    '/investigate/events?et=1561485479&mf=sessionid%2520%253D%25201&sid=fd6ee950-1cae-4013-be6b-85b11dd04135&st=1561439460&rs=min&sortField=time&sortDir=Ascending',
+    '/investigate/events?et=1561485479&mf=sessionid%2520%253D%25201&sid=fd6ee950-1cae-4013-be6b-85b11dd04135&st=1561439460&rs=min&sortField=time&sortDir=Unsorted',
     'The url was malformed'
   );
 
@@ -109,7 +109,7 @@ test('it returns a well formed url if right click actions are coming from outsid
   const url = buildEventAnalysisUrl(selected, '=', contextDetails, false);
   assert.equal(
     url,
-    '/investigate/events?et=1561485479&mf=sessionid%2520%253D%25201&sid=fd6ee950-1cae-4013-be6b-85b11dd04135&st=1561439460&rs=min&sortField=time&sortDir=Ascending',
+    '/investigate/events?et=1561485479&mf=sessionid%2520%253D%25201&sid=fd6ee950-1cae-4013-be6b-85b11dd04135&st=1561439460&rs=min&sortField=time&sortDir=Unsorted',
     'The url was malformed'
   );
 
