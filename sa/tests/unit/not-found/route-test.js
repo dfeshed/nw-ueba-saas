@@ -1,12 +1,11 @@
-import { moduleFor, test } from 'ember-qunit';
+import { setupTest } from 'ember-qunit';
+import { module, test } from 'qunit';
 
-moduleFor('route:not-found', 'Unit | Route | not found', {
-  // Specify the other units that are required for this test.
-  // needs: ['controller:foo']
-  needs: ['service:assetLoader', 'service:headData', 'service:session']
-});
+module('Unit | Route | not found', function(hooks) {
+  setupTest(hooks);
 
-test('it exists', function(assert) {
-  const route = this.subject();
-  assert.ok(route);
+  test('it exists', function(assert) {
+    const route = this.owner.lookup('route:not-found');
+    assert.ok(route);
+  });
 });
