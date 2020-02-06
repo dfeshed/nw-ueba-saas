@@ -1,3 +1,9 @@
-<div class="springboard-widget__header">
-
-</div>
+<box class="springboard-widget__header" fit>
+  <div class="springboard-widget__header-title">
+    {{@title}}
+  </div>
+  <div class="springboard-widget__header-button">
+    <RsaIcon class="springboard-widget__header-gear" @name="cog" {{on "click" this.onEditWidgetClick}}/>
+    <RsaIcon class="springboard-widget__header-arrow" @name="arrow-right-12" {{on "click" this.onViewAllClick}}/>
+  </div>
+</box>

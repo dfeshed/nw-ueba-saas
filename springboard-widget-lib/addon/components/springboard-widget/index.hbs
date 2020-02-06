@@ -1,7 +1,7 @@
 <box class="springboard-widget">
   {{yield
     (hash
-      header=(component "springboard-widget/header")
+      header=(component "springboard-widget/header" widget=@widget)
       content=(component "springboard-widget/content")
     )
   }}
