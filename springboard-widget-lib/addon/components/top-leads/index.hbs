@@ -1,0 +1,19 @@
+<box class="top-leads">
+  <SpringboardWidget as |widget|>
+    <widget.content @class="top-leads__visuals flexi-fit">
+      <ChartWidget @chartType={{this.visualType}} @options={{this.chartOptions}} @data={{this.chartData}}/>
+    </widget.content>
+    <widget.content @class="top-leads_table">
+      <RsaDataTable @items={{this.tableData}} @columnsConfig={{this.columns}}>
+        <RsaDataTable::Header as |column|>
+          {{column.title}}
+        </RsaDataTable::Header>
+        <RsaDataTable::Body as |item index column|>
+          <RsaDataTable::BodyCell @column={{column}}>
+            {{get item column.field}}
+          </RsaDataTable::BodyCell>
+        </RsaDataTable::Body>
+      </RsaDataTable>
+    </widget.content>
+  </SpringboardWidget>
+</box>
