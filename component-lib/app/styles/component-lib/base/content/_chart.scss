@@ -85,4 +85,16 @@
   .column-name {
     fill: text-color(neutral);
   }
+  .legend-name {
+    text-transform: uppercase;
+    font-family: Lato, serif;
+    font-size: 10px;
+    font-weight: 900;
+    fill: rsa-color(gray, lighter);
+  }
+  .legend-count {
+    font-family: Lato, serif;
+    font-size: 20px;
+    fill: rsa-color(gray, lightest);
+  }
 }

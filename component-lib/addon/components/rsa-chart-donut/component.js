@@ -27,9 +27,9 @@ export default class LayoutColumn extends Component {
 
   legendGap = 16;
 
-  legendHeight = 35;
+  legendHeight = 34;
 
-  legendWidth = 5;
+  legendWidth = 4;
 
   columnName = null;
 
@@ -94,7 +94,7 @@ export default class LayoutColumn extends Component {
       .attr('width', width)
       .attr('height', height)
       .append('g')
-      .attr('transform', `translate(${radius},${ height / 2 })`);
+      .attr('transform', `translate(${radius},${radius})`);
   }
 
   /**
@@ -105,36 +105,42 @@ export default class LayoutColumn extends Component {
    * @private
    */
   _addLegend(svg, color, options) {
-    const { legendSpacing, legendHeight, legendWidth, legendGap } = this;
-    const { radius } = options;
-    const legendX = radius + legendSpacing;
-    svg.selectAll('.legend')
-      .data(this.data)
+    const { legendHeight, legendWidth, legendGap, data } = this;
+    const { valueProp } = options;
+    const legend = svg.selectAll('.legend') // selecting elements with class 'legend'
+      .data(data)
       .enter()
-      .append('rect')
-      .attr('class', 'legend')
-      .attr('x', legendX)
-      .attr('y', (d, i) => -radius + i * (legendHeight + legendGap))
+      .append('g')
+      .attr('class', 'legend') // each g is given a legend class
+      .attr('transform', function(d, i) {
+        const height = legendHeight + legendGap;
+        const offset = height * data.length / 2;
+        const horz = 38 * legendWidth;
+        const vert = (i * height) - offset + 10;
+        return `translate(${ horz },${ vert })`;
+      });
+
+    legend.append('rect')
       .attr('width', legendWidth)
       .attr('height', legendHeight)
       .style('fill', (d, i) => color[i]);
 
-    svg.selectAll('.label')
-      .data(this.data)
-      .enter()
-      .append('text')
-      .style('alignment-baseline', 'middle')
-      .attr('class', 'label')
-      .attr('text-anchor', 'left')
-      .attr('x', legendX + 16 * 1.2)
-      .attr('y', (d, i) => -radius + i * (legendHeight + legendGap) + legendHeight / 2)
-      .style('fill', (d, i) => color[i])
+    legend.append('text')
+      .attr('class', 'legend-name')
+      .attr('x', legendWidth + 8)
+      .attr('y', legendGap / 2)
       .text((d) => d.name);
+
+    legend.append('text')
+      .attr('class', 'legend-count')
+      .attr('x', legendWidth + 8)
+      .attr('y', legendGap / 2 + 20)
+      .text((d) => d[valueProp]);
   }
 
   _renderChart() {
     const { options, hasData, data } = this;
-    const { colorScale } = options;
+    const { colorScale, columnName } = options;
     const scale = COLOR_SCALE_MAPPING[colorScale];
 
     if (hasData) {
@@ -142,7 +148,7 @@ export default class LayoutColumn extends Component {
       const pie = this._cretePie(options);
       const arc = this._createArc(options);
       const color = interpolateColors(data.length, CHROMATIC[scale]);
-
+      const groupBy = this.columnName || columnName;
       // Create Donut chart and append text
       const arcGroup = svg.selectAll('.arc')
         .data(pie(data))
@@ -153,13 +159,13 @@ export default class LayoutColumn extends Component {
         .attr('d', arc)
         .style('fill', (d, i) => color[i]);
 
-      if (this.columnName) {
+      if (groupBy) {
         svg.append('text')
           .attr('text-anchor', 'middle')
           .attr('class', 'column-name')
           .attr('font-size', this.fontSize)
           .attr('y', 10)
-          .text(this.columnName);
+          .text(groupBy);
       }
 
       if (options.showLegend) {

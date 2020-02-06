@@ -24,7 +24,7 @@ module('Integration | Component | donut-chart', function(hooks) {
   test('it renders the legend for the donut chart', async function(assert) {
     this.set('data', data);
     await render(hbs`<RsaChartDonut @data={{this.data}}/>`);
-    const legendStyle = findAll('.donut-chart .legend')[2].getAttribute('style');
+    const legendStyle = findAll('.donut-chart .legend rect')[2].getAttribute('style');
     const pieStyle = findAll('.donut-chart path')[2].getAttribute('style');
     assert.equal(findAll('.donut-chart .legend').length, 3, 'It renders 3 pie');
     assert.equal(pieStyle, legendStyle, 'Legend color is same as pie color');
