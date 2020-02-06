@@ -1,0 +1,13 @@
+.springboard-content {
+  flex-direction: row;
+  padding: rsa-whitespace();
+
+  &__widget {
+    background-color: $springboard-color;
+    width: $springboard-widget-width;
+  }
+
+  &__widget:not(:first-child) {
+    margin-left: rsa-whitespace();
+  }
+}

@@ -13,6 +13,6 @@ export default class SpringboardRoute extends Route {
   redirect() {
     // For now redirect to first springboard,
     const { springboard: { springboards: [ { id }] } } = this.redux.getState();
-    this.transitionTo('springboard.show', { id });
+    this.transitionTo('springboard.show', id);
   }
 }

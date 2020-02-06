@@ -64,6 +64,7 @@
     "ember-resolver": "7.0.0",
     "ember-source": "3.16.0",
     "eslint-plugin-ember-suave": "^1.0.0",
+    "qunit-dom": "0.9.2",
     "loader.js": "4.7.0",
     "sass": "1.17.2"
   },
