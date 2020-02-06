@@ -6898,7 +6898,7 @@ ember-assign-polyfill@^2.6.0:
     ember-cli-babel "^6.16.0"
     ember-cli-version-checker "^2.0.0"
 
-ember-auto-import@^1.5.2:
+ember-auto-import@^1.5.2, ember-auto-import@^1.5.3:
   version "1.5.3"
   resolved "https://registry.npmjs.org/ember-auto-import/-/ember-auto-import-1.5.3.tgz#b32936f874d1ed7057ad2ed3f6116357820be44b"
   integrity sha512-7JfdunM1BmLy/lyUXu7uEoi0Gi4+dxkGM23FgIEyW5g7z4MidhP53Fc61t49oPSnq7+J4lLpbH1f6C+mDMgb4A==
@@ -7070,7 +7070,7 @@ ember-cli-babel@^6.0.0, ember-cli-babel@^6.1.0, ember-cli-babel@^6.10.0, ember-c
     ember-cli-version-checker "^2.1.2"
     semver "^5.5.0"
 
-ember-cli-babel@^6.0.0-beta.4, ember-cli-babel@^6.12.0, ember-cli-babel@^6.16.0, ember-cli-babel@^6.18.0, ember-cli-babel@^6.6.0, ember-cli-babel@^6.8.2:
+ember-cli-babel@^6.0.0-beta.4, ember-cli-babel@^6.12.0, ember-cli-babel@^6.16.0, ember-cli-babel@^6.6.0, ember-cli-babel@^6.8.2:
   version "6.18.0"
   resolved "https://registry.npmjs.org/ember-cli-babel/-/ember-cli-babel-6.18.0.tgz#3f6435fd275172edeff2b634ee7b29ce74318957"
   integrity sha512-7ceC8joNYxY2wES16iIBlbPSxwKDBhYwC8drU3ZEvuPDMwVv1KzxCNu1fvxyFEBWhwaRNTUxSCsEVoTd9nosGA==
@@ -8142,11 +8142,14 @@ ember-redux-saga-shim@2.0.2:
     broccoli-string-replace "^0.1.2"
     ember-cli-babel "^6.6.0"
 
-ember-redux@4.0.3:
-  version "4.0.3"
-  resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-4.0.3.tgz#edf8830e30bf6d645b620c649cd625682939a76b"
+ember-redux@6.0.0:
+  version "6.0.0"
+  resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-6.0.0.tgz#e609ad3095c638d2d8a2376dbdb2b4c427a46c3c"
+  integrity sha512-qALOJSE9Y+DVKPXYTCfAGmmqygxY/aFweu9sGZ116TJiPjHgWDqpMjGBKE8L1OV2uzQnoolfLq5H1zSGGDFbbA==
   dependencies:
-    ember-cli-babel "^6.18.0"
+    ember-auto-import "^1.5.3"
+    ember-cli-babel "^7.13.0"
+    redux "^4.0.0"
 
 ember-require-module@^0.3.0:
   version "0.3.0"
@@ -13406,6 +13409,14 @@ redux@4.0.0:
   resolved "https://registry.npmjs.org/redux/-/redux-4.0.0.tgz#aa698a92b729315d22b34a0553d7e6533555cc03"
   dependencies:
     loose-envify "^1.1.0"
+    symbol-observable "^1.2.0"
+
+redux@^4.0.0:
+  version "4.0.5"
+  resolved "https://registry.npmjs.org/redux/-/redux-4.0.5.tgz#4db5de5816e17891de8a80c424232d06f051d93f"
+  integrity sha512-VSz1uMAH24DM6MF72vcojpYPtrTUu3ByVWfPL1nPfVRb5mZVTve5GnNCUV53QM/BZ66xfWrm0CTWoM+Xlz8V1w==
+  dependencies:
+    loose-envify "^1.4.0"
     symbol-observable "^1.2.0"
 
 regenerate-unicode-properties@^8.0.2, regenerate-unicode-properties@^8.1.0:
