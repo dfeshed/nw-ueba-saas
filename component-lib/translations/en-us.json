@@ -2267,7 +2267,7 @@
       "autoUpdateSummary": "Update time window automatically",
       "autoUpdateSummary-tooltip": "Enables continuous update of the relative time window for the query. The time window updates when new data is stored (database time) or when a minute elapses (current time). In both cases the query icon activates, allowing you to refresh stale results.",
       "eventTimeSortOrder": "Default Event Sort Order",
-      "eventTimeSortOrder-tooltip": "By default, sort events in ascending or descending order based on collection time. If results exceed the events limit, not all events can be loaded. The oldest events show if in ascending order and the newest events show if in descending order.",
+      "eventTimeSortOrder-tooltip": "By default, events are sorted as processed by the core services, representing matching results. Alternatively the resulting events can be listed in chronological order (ascending or descending) based on collection time. The default option is faster as it streams back the events as soon as a match is found versus waiting for all core services to respond and then display them in the appropriate order. Secondarily interacting with the table column headers allows for requesting the results again sorted differently. The oldest events show if in ascending order and the newest events show if in descending order.",
       "Descending": "Descending",
       "Ascending": "Ascending",
       "Unsorted": "Unsorted",
