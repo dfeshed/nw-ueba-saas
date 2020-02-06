@@ -608,9 +608,11 @@ const QueryPills = RsaContextMenu.extend({
    */
   _openNewPillTriggerRight(position) {
     const pillsData = this.get('pillsData');
-    if (pillsData.length === position + 1 || pillsData.length === 0) {
+    if (pillsData.length === position + 1 || pillsData.length === 0 || position >= pillsData.length) {
       // if this is the last pill in the list, no need for click().
       // Can just set takeFocus which opens the meta dropdown for new-pill-template
+      // Also occurs if pills are removed out from under us and we end up with a position
+      // that's higher than the number of pills we have.
       this.set('takeFocus', true);
     } else {
       // otherwise, open the trigger on it's right

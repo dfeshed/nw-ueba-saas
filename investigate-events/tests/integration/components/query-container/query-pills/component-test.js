@@ -6234,4 +6234,24 @@ module('Integration | Component | Query Pills', function(hooks) {
     await typeIn(PILL_SELECTORS.metaSelectInput, 'AND');
     assert.equal(findAll(PILL_SELECTORS.logicalOperator).length, 2, 'Should have two logical operators');
   });
+
+  test('Typing OpenParen followed by close paren opens the new pill template', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', OPEN_PAREN_KEY);
+    // Wait for *second* AND to magically appear
+    await waitForOperator(PILL_SELECTORS.logicalOperatorAND, 2);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', CLOSE_PAREN_KEY);
+    await waitUntil(() => findAll(PILL_SELECTORS.powerSelectDropdown).length === 1);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+  });
 });
