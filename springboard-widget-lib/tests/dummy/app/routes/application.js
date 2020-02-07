@@ -8,20 +8,25 @@ export default class SpringboardRoute extends Route {
         name: 'Top Risky Hosts',
         leadType: 'Hosts',
         leadCount: 25,
-        visualConfig: {
-          type: 'donut-chart',
-          aggregate: {
-            column: ['hostOsType'],
-            type: 'COUNT'
+        content: [
+          {
+            type: 'chart',
+            chartType: 'donut-chart',
+            aggregate: {
+              column: ['hostOsType'],
+              type: 'COUNT'
+            },
+            extraCss: 'flexi-fit'
+          },
+          {
+            type: 'table',
+            columns: ['hostName', 'score', 'hostOsType'],
+            sort: {
+              keys: ['score'],
+              descending: true
+            }
           }
-        },
-        tableConfig: {
-          columns: ['hostName', 'score', 'hostOsType'],
-          sort: {
-            keys: ['score'],
-            descending: true
-          }
-        }
+        ]
       },
       widgetData: {
         aggregate: {

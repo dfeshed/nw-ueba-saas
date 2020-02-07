@@ -28,9 +28,15 @@ module('Integration | Component | widget', function(hooks) {
 
     assert.dom(SELECTORS.header).exists('Widget header is rendered');
     assert.dom(SELECTORS.content).doesNotExist();
-
+    this.set('widget', {
+      content: [
+        {
+          type: 'table'
+        }
+      ]
+    });
     await render(hbs`
-      <SpringboardWidget as |widget|>
+      <SpringboardWidget @widget={{this.widget}} as |widget|>
         <widget.content/>
         <widget.content/>
       </SpringboardWidget>

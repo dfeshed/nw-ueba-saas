@@ -1,0 +1,8 @@
+<box class="custom-widget">
+  <SpringboardWidget @widget={{@widget}} as |widget|>
+    <widget.header @title={{@widget.name}}/>
+    <widget.content as |Widget content|>
+      <Widget @config={{content}} @data={{@widgetData}}/>
+    </widget.content>
+  </SpringboardWidget>
+</box>

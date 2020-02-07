@@ -6379,7 +6379,12 @@
       }
     }
   },
-  "chart": {
-    "noChartDataMessage": "No chart data available"
+  "springboard": {
+    "noChartDataMessage": "No chart data available",
+    "columns": {
+      "hostName": "Host",
+      "score": "Risk Score",
+      "hostOsType": "Operating System"
+    }
   }
 }

@@ -19,15 +19,25 @@ module('Integration | Component | chart-widget', function(hooks) {
   });
 
   test('it renders the appropriate chart based on the chart type', async function(assert) {
-    const data = [
-      { name: 'cats', value: 3 },
-      { name: 'dogs', value: 10 },
-      { name: 'horses', value: 17 }
-    ];
+    const data = {
+      aggregate: {
+        data: [
+          { name: 'cats', value: 3 },
+          { name: 'dogs', value: 10 },
+          { name: 'horses', value: 17 }
+        ]
+      }
+    };
     this.set('data', data);
-    this.set('chartType', 'donut-chart');
+    this.set('config', {
+      chartType: 'donut-chart',
+      aggregate: {
+        column: ['osType'],
+        type: 'COUNT'
+      }
+    });
 
-    await render(hbs`<ChartWidget @data={{this.data}} @chartType="{{this.chartType}}"/>`);
+    await render(hbs`<ChartWidget @data={{this.data}} @config={{this.config}}/>`);
     assert.dom(SELECTORS.chartType).exists();
   });
 

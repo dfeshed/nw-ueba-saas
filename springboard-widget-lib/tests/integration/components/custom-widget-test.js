@@ -4,11 +4,11 @@ import { render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 
 const SELECTORS = {
-  topLeads: '.top-leads',
-  visualTypeDonut: '.top-leads .donut-chart',
-  leadsTable: '.top-leads .rsa-data-table',
-  leadsTableRow: '.top-leads .rsa-data-table-body-row',
-  leadsTableHeaderCell: '.top-leads .rsa-data-table-header-cell'
+  topLeads: '.custom-widget',
+  visualTypeDonut: '.custom-widget .donut-chart',
+  leadsTable: '.custom-widget .rsa-data-table',
+  leadsTableRow: '.custom-widget .rsa-data-table-body-row',
+  leadsTableHeaderCell: '.custom-widget .rsa-data-table-header-cell'
 };
 
 module('Integration | Component | top-leads', function(hooks) {
@@ -17,22 +17,26 @@ module('Integration | Component | top-leads', function(hooks) {
   test('it should render the component based on config', async function(assert) {
     this.set('widget', {
       name: 'Top Risky Hosts',
-      leadType: 'Hosts',
-      leadCount: 25,
-      visualConfig: {
-        type: 'donut-chart',
-        aggregate: {
-          column: ['osType'],
-          type: 'COUNT'
+      leadType: 'Hosts', // Need this for master API
+      content: [
+        {
+          type: 'chart',
+          chartType: 'donut-chart',
+          aggregate: {
+            column: ['osType'],
+            type: 'COUNT'
+          }
+        },
+        {
+          type: 'table',
+          columns: ['hostName', 'score', 'hostOsType'],
+          size: 25,
+          sort: {
+            keys: ['score'],
+            descending: true
+          }
         }
-      },
-      tableConfig: {
-        columns: ['hostName', 'score', 'hostOsType'],
-        sort: {
-          keys: ['score'],
-          descending: true
-        }
-      }
+      ]
     });
     this.set('widgetData', {
       aggregate: {
@@ -51,7 +55,7 @@ module('Integration | Component | top-leads', function(hooks) {
       ]
     });
 
-    await render(hbs`<TopLeads @widget={{this.widget}} @widgetData={{this.widgetData}}/>`);
+    await render(hbs`<CustomWidget @widget={{this.widget}} @widgetData={{this.widgetData}}/>`);
     assert.dom(SELECTORS.visualTypeDonut).exists('It renders donut chart component');
     assert.dom(SELECTORS.leadsTable).exists('It renders table');
     assert.dom(SELECTORS.leadsTableRow).exists({ count: 1 }, 'It renders one row');

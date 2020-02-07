@@ -22,13 +22,15 @@ module('Integration | Component | table-widget', function(hooks) {
         descending: true
       }
     });
-    this.set('data', [
-      {
-        hostName: 'Test',
-        score: '100',
-        osType: 'windows'
-      }
-    ]);
+    this.set('data', {
+      items: [
+        {
+          hostName: 'Test',
+          score: '100',
+          osType: 'windows'
+        }
+      ]
+    });
     await render(hbs`<TableWidget @config={{this.config}} @data={{this.data}}/>`);
     assert.dom(SELECTORS.leadsTable).exists('It renders table');
     assert.dom(SELECTORS.leadsTableRow).exists({ count: 1 }, 'It renders one row');

@@ -1,8 +1,10 @@
 <box class="springboard-widget">
-  {{yield
-    (hash
-      header=(component "springboard-widget/header" widget=@widget)
-      content=(component "springboard-widget/content")
-    )
-  }}
+  {{yield (hash header=(component "springboard-widget/header" widget=@widget))}}
+  {{#each @widget.content as |content|}}
+    {{yield
+      (hash
+        content=(component "springboard-widget/content" content=content widget=(concat content.type "-widget"))
+      )
+    }}
+  {{/each}}
 </box>

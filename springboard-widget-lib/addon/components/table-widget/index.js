@@ -5,6 +5,11 @@ export default class TableWidgetComponent extends Component {
 
   @service('i18n') i18n;
 
+  get tableData() {
+    return this.args.data?.items;
+  }
+
+
   get columns() {
     const cols = this.args.config?.columns || [];
     const newColumns = cols.map((col) => {
