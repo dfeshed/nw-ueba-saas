@@ -6,10 +6,7 @@ import * as ACTION_TYPES from 'recon/actions/types';
 import { enhancePackets } from './util';
 import { augmentResult, handleSetTo } from 'recon/reducers/util';
 
-const packetsInitialState = Immutable.from({
-  isPayloadOnly: false,
-  hasStyledBytes: true,
-  hasSignaturesHighlighted: false,
+const packetReconstructionInitialState = {
   packetFields: null,
   packets: null,
   packetsPageSize: 100,
@@ -17,6 +14,15 @@ const packetsInitialState = Immutable.from({
   packetTooltipData: null,
   renderIds: null,
   pageNumber: 1
+};
+
+const packetsInitialState = Immutable.from({
+  // packet settings
+  isPayloadOnly: false,
+  hasStyledBytes: true,
+  hasSignaturesHighlighted: false,
+  // packet data
+  ...packetReconstructionInitialState
 });
 
 const packetReducer = handleActions({
@@ -43,7 +49,7 @@ const packetReducer = handleActions({
   },
 
   [ACTION_TYPES.CLOSE_RECON]: (state) => {
-    return state.merge(packetsInitialState);
+    return state.merge(packetReconstructionInitialState);
   },
 
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {

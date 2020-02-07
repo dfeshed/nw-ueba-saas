@@ -36,6 +36,10 @@ test('test CLOSE_RECON', function(assert) {
   });
 
   const currentState = packetsInitialState.merge({
+    isPayloadOnly: true,
+    hasStyledBytes: true,
+    hasSignaturesHighlighted: false,
+    packetsPageSize: 300,
     packetFields: ['foo', 'bar'],
     packets: ['baz'],
     renderIds: ['1'],
@@ -47,5 +51,16 @@ test('test CLOSE_RECON', function(assert) {
   };
 
   const result = reducer(currentState, action);
-  assert.deepEqual(result, packetsInitialState);
+
+  // packet settings are persisted when recon closes
+  assert.equal(result.isPayloadOnly, currentState.isPayloadOnly);
+  assert.equal(result.hasStyledBytes, currentState.hasStyledBytes);
+  assert.equal(result.hasSignaturesHighlighted, currentState.hasSignaturesHighlighted);
+
+  // packet data is reset when recon closes
+  assert.equal(result.packetsPageSize, packetsInitialState.packetsPageSize);
+  assert.equal(result.packetFields, packetsInitialState.packetFields);
+  assert.equal(result.packets, packetsInitialState.packets);
+  assert.equal(result.renderIds, packetsInitialState.renderIds);
+  assert.equal(result.pageNumber, packetsInitialState.pageNumber);
 });
