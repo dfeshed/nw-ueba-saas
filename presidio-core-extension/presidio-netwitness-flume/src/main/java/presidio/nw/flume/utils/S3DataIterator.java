@@ -320,17 +320,16 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
         @Override
         public String next() {
-            String next;
             try {
-                next = iter.next();
+                String next = iter.next();
                 if (!iter.hasNext()) {
                     close();
                 }
+                return next;
             } catch (Exception ex) {
                 logger.error("Failed to fetch next record");
                 throw new RuntimeException(ex);
             }
-            return next;
         }
     }
 }
