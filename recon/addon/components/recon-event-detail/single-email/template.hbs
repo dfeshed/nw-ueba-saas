@@ -20,7 +20,9 @@
     {{else if lazyLoadError}}
       <div class="email-lazyload-error">{{t "recon.emailView.noEmailBody"}}</div>
     {{else}}
-      {{rsa-loader size="medium"}}
+      <centered>
+        {{rsa-loader size="medium"}}
+      </centered>
     {{/if}}
   {{/if}}
 
