@@ -12,6 +12,7 @@ public class PreProcessingConfigScenarioFactory {
 
     public PreProcessingConfigScenarioFactory(AdapterTestManager adapterTestManager, Instant startDate) {
         scenarios = Lists.newArrayList(
+                new E2eMongoConfigScenario(adapterTestManager, startDate),
                 new E2eBrokerConfigScenario(adapterTestManager, startDate),
                 new CoreMongoConfigScenario(adapterTestManager, startDate)
         );
