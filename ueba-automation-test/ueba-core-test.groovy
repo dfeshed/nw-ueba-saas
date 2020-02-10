@@ -2,9 +2,8 @@
 pipeline {
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
-        string(name: 'DSL_BRANCH', defaultValue: 'master', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
-        
+
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: false, description: '')
         booleanParam(name: 'DATA_INJECTION', defaultValue: true, description: '')
