@@ -1,8 +1,8 @@
 import data from './data';
 
 export default {
-  subscriptionDestination: '/user/queue/administration/springboard/all',
-  requestDestination: '/ws/administration/springboard/all',
+  subscriptionDestination: '/user/queue/springboard/all',
+  requestDestination: '/ws/springboard/all',
   message(/* frame */) {
     return {
       data,

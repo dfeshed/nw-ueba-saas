@@ -15,3 +15,18 @@ export const getAllSpringboards = () => {
     query: {}
   });
 };
+
+export const widgetQuery = (widget) => {
+  const request = lookup('service:request');
+  const modelName = 'springboard';
+  const method = 'query';
+  const query = {
+    leadType: widget.leadType,
+    size: widget.leadCount
+  };
+  return request.promiseRequest({
+    method,
+    modelName,
+    query
+  });
+};

@@ -4,13 +4,17 @@ const common = require('../../common');
 const { determineSocketUrl } = common;
 
 const springboardConfigGen = function(env) {
-  const socketUrl = determineSocketUrl(env, '/administration/socket');
+  const socketUrl = determineSocketUrl(env, '/springboard/socket');
   return {
     springboard: {
       socketUrl,
       all: {
-        subscriptionDestination: '/user/queue/administration/springboard/all',
-        requestDestination: '/ws/administration/springboard/all'
+        subscriptionDestination: '/user/queue/springboard/all',
+        requestDestination: '/ws/springboard/all'
+      },
+      query: {
+        subscriptionDestination: '/user/queue/springboard/widget/query',
+        requestDestination: '/ws/springboard/widget/query'
       }
     }
   };
