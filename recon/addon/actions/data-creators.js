@@ -692,8 +692,10 @@ const displayDownloadError = (errorMessage) => {
  */
 const decodeText = () => {
   return (dispatch, getState) => {
-    dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
-    dispatch({ type: ACTION_TYPES.TOGGLE_TEXT_DECODE });
+    const batchActions = [];
+    batchActions.push({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
+    batchActions.push({ type: ACTION_TYPES.TOGGLE_TEXT_DECODE });
+    dispatch(batchActions);
     _fetchTextData(dispatch, getState());
   };
 };
