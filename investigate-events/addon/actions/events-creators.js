@@ -227,7 +227,7 @@ export const eventsStartOldest = () => {
         currentStreamState.eventStreamCallback = _stopStream;
         dispatch({
           type: ACTION_TYPES.INIT_EVENTS_STREAMING,
-          payload: { eventTimeSortOrderPreferenceWhenQueried: SORT_ORDER.ASC }
+          payload: { eventTimeSortOrderPreferenceWhenQueried: SORT_ORDER.NO_SORT }
         });
       },
       onResponse(response) {
