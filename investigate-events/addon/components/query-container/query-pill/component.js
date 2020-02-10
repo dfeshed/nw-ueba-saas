@@ -613,7 +613,7 @@ export default Component.extend({
         return;
       }
     }
-    if (this._isPillDataEmpty()) {
+    if (this._isPillDataEmpty() && document.hasFocus()) {
       // Treat this like an ESC was keyed
       this._cancelPillCreation();
     } else if (isSubmit && !isExistingPill && !(this._isPillDataEmpty())) {
