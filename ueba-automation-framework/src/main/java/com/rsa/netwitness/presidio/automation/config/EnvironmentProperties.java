@@ -124,7 +124,7 @@ public enum EnvironmentProperties {
     }
 
     private boolean checkForBrokerAvailability() {
-        SshResponse sshResponse =  new SshHelper().uebaHostRootExec().withTimeout(5, SECONDS).setUserDir(REMOTE_SCRIPT_PATH)
+        SshResponse sshResponse =  new SshHelper().uebaHostRootExec().withTimeout(10, SECONDS).setUserDir(REMOTE_SCRIPT_PATH)
                 .run("orchestration-cli-client --list-services");
         LOGGER.info("Broker availability test result = " + sshResponse.exitCode);
         return sshResponse.exitCode == 0;
