@@ -60,7 +60,7 @@ pipeline {
                 expression { return params.DATA_INJECTION }
             }
             steps {
-                runSuiteXmlFile('e2e/E2E_DataInjection.xml')
+                runSuiteXmlFile('core/CoreDataInjection.xml')
             }
         }
 
@@ -69,7 +69,7 @@ pipeline {
                 expression { return params.DATA_PROCESSING }
             }
             steps {
-                runSuiteXmlFile('e2e/E2E_ConfigAndDataProcessing.xml')
+                runSuiteXmlFile('e2e/E2E_MongoDataProcessing.xml')
             }
         }
 
