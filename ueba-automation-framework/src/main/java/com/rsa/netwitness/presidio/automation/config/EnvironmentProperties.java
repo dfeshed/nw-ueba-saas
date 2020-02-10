@@ -43,7 +43,8 @@ public enum EnvironmentProperties {
     }
 
     public String esaAnalyticsServerIp() {
-        return property(ESA_ANALYTICS_SERVER);
+        String resolved = property(ESA_ANALYTICS_SERVER);
+        return resolved.equals(AutomationConf.UEBA_IP) ? "" : resolved;
     }
 
     public String brokerIp() {
