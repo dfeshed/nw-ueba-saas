@@ -11,17 +11,16 @@ const initialState = Immutable.from({
   pageNumber: 1
 });
 
-test('test RESET_PREFERENCES action handler', function(assert) {
-  const currentState = initialState.merge({ packetsPageSize: 200, packetsTotal: 200, pageNumber: 2 });
-  const result = reducer(currentState, {
-    type: ACTION_TYPES.RESET_PREFERENCES
-  });
-  assert.equal(result.packetsPageSize, initialState.packetsPageSize);
-  assert.equal(result.packetsTotal, 200);
-  assert.equal(result.pageNumber, 2);
+test('RESET_PREFERENCES sets properties as expected', function(assert) {
+  const newPacketsPageSize = 200;
+  const currentState = initialState.merge({ packetsPageSize: newPacketsPageSize, packetsTotal: 200, pageNumber: 2 });
+  const result = reducer(currentState, { type: ACTION_TYPES.RESET_PREFERENCES });
+  assert.equal(result.packetsPageSize, newPacketsPageSize, 'packetsPageSize is not reset to 100 if previous value exists');
+  assert.equal(result.packetsTotal, 200, 'packetsTotal is not reset');
+  assert.equal(result.pageNumber, 2, 'pageNumber is not reset');
 });
 
-test('test CLOSE_RECON', function(assert) {
+test('CLOSE_RECON sets properties as expected', function(assert) {
   const packetsInitialState = Immutable.from({
     isPayloadOnly: false,
     hasStyledBytes: true,
@@ -53,14 +52,14 @@ test('test CLOSE_RECON', function(assert) {
   const result = reducer(currentState, action);
 
   // packet settings are persisted when recon closes
-  assert.equal(result.isPayloadOnly, currentState.isPayloadOnly);
-  assert.equal(result.hasStyledBytes, currentState.hasStyledBytes);
-  assert.equal(result.hasSignaturesHighlighted, currentState.hasSignaturesHighlighted);
+  assert.equal(result.isPayloadOnly, currentState.isPayloadOnly, 'isPayloadOnly persisted');
+  assert.equal(result.hasStyledBytes, currentState.hasStyledBytes, 'hasStyledBytes persisted');
+  assert.equal(result.hasSignaturesHighlighted, currentState.hasSignaturesHighlighted, 'hasSignaturesHighlithed persisted');
+  assert.equal(result.packetsPageSize, currentState.packetsPageSize, 'packetsPageSize persisted if there is previously selected value');
 
   // packet data is reset when recon closes
-  assert.equal(result.packetsPageSize, packetsInitialState.packetsPageSize);
-  assert.equal(result.packetFields, packetsInitialState.packetFields);
-  assert.equal(result.packets, packetsInitialState.packets);
-  assert.equal(result.renderIds, packetsInitialState.renderIds);
-  assert.equal(result.pageNumber, packetsInitialState.pageNumber);
+  assert.equal(result.packetFields, packetsInitialState.packetFields, 'packetFields reset');
+  assert.equal(result.packets, packetsInitialState.packets, 'packets reset');
+  assert.equal(result.renderIds, packetsInitialState.renderIds, 'renderIds reset');
+  assert.equal(result.pageNumber, packetsInitialState.pageNumber, 'pageNumber reset');
 });

@@ -9,10 +9,10 @@ import { augmentResult, handleSetTo } from 'recon/reducers/util';
 const packetReconstructionInitialState = {
   packetFields: null,
   packets: null,
-  packetsPageSize: 100,
   packetsTotal: 100,
   packetTooltipData: null,
   renderIds: null,
+  packetsPageSize: 100,
   pageNumber: 1
 };
 
@@ -44,12 +44,11 @@ const packetReducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.RESET_PREFERENCES]: (state) => {
-    return state.set('packetsPageSize', packetsInitialState.packetsPageSize);
-  },
-
   [ACTION_TYPES.CLOSE_RECON]: (state) => {
-    return state.merge(packetReconstructionInitialState);
+    return state.merge({
+      ...packetReconstructionInitialState,
+      packetsPageSize: state.packetsPageSize
+    });
   },
 
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
