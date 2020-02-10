@@ -5,8 +5,6 @@ import layout from './template';
 
 export default Component.extend(CellMixin, {
   layout,
-  tagName: 'div',
-  classNames: ['rsa-data-table-header-cell'],
 
   @computed('column.title', 'column.field', 'translateTitle')
   displayTitle(title, field, translateTitle) {

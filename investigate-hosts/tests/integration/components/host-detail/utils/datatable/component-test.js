@@ -158,9 +158,9 @@ module('Integration | Component | host-detail/utils/datatable', function(hooks) 
     this.set('columnsConfig', config);
     await render(hbs`{{#host-detail/utils/datatable items=data columnsConfig=columnsConfig}}{{/host-detail/utils/datatable}}`);
     assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 3, '3 sortable columns');
-    assert.equal(find('.sortable-item:nth-child(1)').textContent.trim(), 'File Name', 'First column should be File Name');
-    assert.equal(find('.sortable-item:nth-child(2)').textContent.trim(), 'LAST MODIFIED TIME', 'Second column should be LAST MODIFIED TIME');
-    assert.equal(find('.sortable-item:nth-child(3)').textContent.trim(), 'Signature', 'Third column should be Signature');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(1)').textContent.trim(), 'File Name', 'First column should be File Name');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'LAST MODIFIED TIME', 'Second column should be LAST MODIFIED TIME');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Signature', 'Third column should be Signature');
   });
 
   test('Check that sort action is called', async function(assert) {
@@ -168,10 +168,10 @@ module('Integration | Component | host-detail/utils/datatable', function(hooks) 
     this.set('data', dataItems);
     this.set('columnsConfig', config);
     await render(hbs`{{host-detail/utils/datatable items=data columnsConfig=columnsConfig}}`);
-    assert.equal(findAll('.sortable-item:nth-child(1) i.rsa-icon-arrow-up-7').length, 1, 'rsa arrow-up icon before sorting');
+    assert.equal(findAll('.rsa-data-table-header-cell:nth-child(1) i.rsa-icon-arrow-up-7').length, 1, 'rsa arrow-up icon before sorting');
 
-    await click('.sortable-item:nth-child(1) .rsa-icon');
-    assert.equal(findAll('.sortable-item:nth-child(1) i.rsa-icon-arrow-down-7').length, 1, 'rsa arrow-down icon after sorting');
+    await click('.rsa-data-table-header-cell:nth-child(1) .rsa-icon');
+    assert.equal(findAll('.rsa-data-table-header-cell:nth-child(1) i.rsa-icon-arrow-down-7').length, 1, 'rsa arrow-down icon after sorting');
   });
 
   test('Load More is shown for paged items', async function(assert) {

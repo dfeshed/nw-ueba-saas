@@ -66,11 +66,11 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       }
       </style>
     {{host-list/host-table}}`);
-    assert.equal(findAll('.sortable-item').length, 7, 'Total 7 columns are rendered. checkbox + fields');
-    assert.equal(find('.sortable-item:nth-child(2)').textContent.trim(), 'Hostname', 'Second column should be hostname');
-    assert.equal(find('.sortable-item:nth-child(3)').textContent.trim(), 'Risk Score', 'Third column should be Risk Score');
-    assert.equal(find('.sortable-item:nth-child(5)').textContent.trim(), 'Agent Version', 'fifth column should be Agent version');
-    assert.equal(find('.sortable-item:nth-child(6)').textContent.trim(), 'Operating System', 'Sixth column should be Operating system');
+    assert.equal(findAll('.rsa-data-table-header-cell').length, 7, 'Total 7 columns are rendered. checkbox + fields');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'Hostname', 'Second column should be hostname');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Risk Score', 'Third column should be Risk Score');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Agent Version', 'fifth column should be Agent version');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Operating System', 'Sixth column should be Operating system');
   });
 
   test('Right clicking already selected row, will keep row highlighted', async function(assert) {
@@ -472,7 +472,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       {{host-list/host-table}}
     `);
     assert.equal(findAll('.rsa-data-table-header-cell')[3].textContent.trim(), 'Last Scan Time', 'Column before re-order');
-    await drag('mouse', '.sortable-item:nth-child(4)', () => ({ dy: 0, dx: 100 }));
+    await drag('mouse', '.rsa-data-table-header-cell:nth-child(4)', () => ({ dy: 0, dx: 100 }));
     assert.equal(findAll('.rsa-data-table-header-cell')[3].textContent.trim(), 'Agent Version', 'Column after re-order');
   });
 

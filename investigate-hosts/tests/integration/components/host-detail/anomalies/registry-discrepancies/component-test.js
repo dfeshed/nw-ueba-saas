@@ -37,13 +37,13 @@ module('Integration | Component | Anomalies/Registry Discrepancies', function(ho
       .selectedAnomaliesTab('REGISTRYDISCREPANCY').build();
 
     await render(hbs`{{host-detail/anomalies}}`);
-    assert.equal(find('.sortable-item:nth-child(1) .rsa-data-table-header-cell').textContent.trim(), 'Hive', 'Column 1 is Hive');
-    assert.equal(find('.sortable-item:nth-child(2) .rsa-data-table-header-cell').textContent.trim(), 'Reason', 'Column 2 is Reason');
-    assert.equal(find('.sortable-item:nth-child(3) .rsa-data-table-header-cell').textContent.trim(), 'Registry Path', 'Column 3 is Registry Path');
-    assert.equal(find('.sortable-item:nth-child(4) .rsa-data-table-header-cell').textContent.trim(), 'Raw Type', 'Column 4 is Raw Type');
-    assert.equal(find('.sortable-item:nth-child(5) .rsa-data-table-header-cell').textContent.trim(), 'Raw Data', 'Column 5 is Raw Data');
-    assert.equal(find('.sortable-item:nth-child(6) .rsa-data-table-header-cell').textContent.trim(), 'Api Type', 'Column 6 is Api Type');
-    assert.equal(find('.sortable-item:nth-child(7) .rsa-data-table-header-cell').textContent.trim(), 'Api Data', 'Column 7 is Api Data');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(1)').textContent.trim(), 'Hive', 'Column 1 is Hive');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'Reason', 'Column 2 is Reason');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Registry Path', 'Column 3 is Registry Path');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(4)').textContent.trim(), 'Raw Type', 'Column 4 is Raw Type');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Raw Data', 'Column 5 is Raw Data');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Api Type', 'Column 6 is Api Type');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(7)').textContent.trim(), 'Api Data', 'Column 7 is Api Data');
 
   });
   test('Filter button present', async function(assert) {

@@ -36,7 +36,7 @@ module('Integration | Component | rsa data table/empty row', function(hooks) {
         {{/rsa-data-table/body}}
       {{/rsa-data-table}}
     `);
+    assert.equal(findAll('.rsa-data-table-header-row').length, 2, 'Should have two rows in case of no data.');
     assert.equal(findAll('.rsa-data-table-header-row-empty').length, 1, 'Should have one empty header row.');
-    assert.equal(findAll('.rsa-data-table-header-cell').length, columnsConfig.length * 2, 'Should have hidden row along with all header cells in case of no data.');
   });
 });

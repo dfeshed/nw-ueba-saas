@@ -5,46 +5,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   @include rsa-col(justify,fill);
   overflow: hidden; /* Hides header cells that spill outside viewport */
 
-  .is-at-grouping-size {
-    .group-label {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 100%;
-      bottom: -28px;
-      @include rsa-font(header);
-      display: flex;
-      align-items: center;
-      cursor: default;
-
-      .group-label-copy {
-        font-weight: bold;
-        letter-spacing: .5px;
-        padding: 4px rsa-whitespace(most) 4px rsa-whitespace();
-        color: text-color(primary, lighter);
-        text-transform: uppercase;
-        background: linear-gradient(90deg, background-color(primary, dark) 0%, background-color(primary, dark) 75%, background-color(primary, darkest) 100%);
-        cursor: default;
-
-        i {
-          margin-right: rsa-whitespace(least);
-        }
-      }
-    }
-
-    &:hover {
-      .group-label {
-        left: rsa-whitespace(less);
-      }
-    }
-
-    &.is-selected {
-      .group-label {
-        left: rsa-whitespace(less);
-      }
-    }
-  }
-
   &.enable-grouping {
     .rsa-data-table-body-row {
       &.is-at-grouping-size,
@@ -62,22 +22,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
         border-bottom: 1px solid border-color(primary, dark);
       }
     }
-  }
-
-  .rsa-form-checkbox-label {
-    letter-spacing: 0;
-
-    &::before {
-      position: absolute;
-      right: 12px;
-      margin-right: 0;
-    }
-  }
-
-  .rsa-form-checkbox-wrapper {
-    position: absolute;
-    right: 4px;
-    padding: 4px;
   }
 
   &-header {
@@ -103,45 +47,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       &::before {
         position: absolute;
         right: 11px;
-      }
-    }
-
-    .sortable-item {
-      position: relative;
-      @include rsa-vendor-prefix(flex-shrink, 0); /* can't shrink beyond min size */
-      @include rsa-vendor-prefix(flex-grow, 0); /* can't grow beyond min size */
-
-      .rsa-data-table-header-cell {
-        .sort {
-          display: none;
-          position: absolute;
-          padding: rsa-whitespace(least);
-          right: rsa-whitespace(least);
-          top: rsa-whitespace(less);
-
-          &:hover {
-            cursor: pointer;
-          }
-        }
-        &.is-sorted {
-          background-color: background-color(primary, darkest, translucent);
-
-          .sort {
-            color: text-color(secondary);
-            display: inline-block;
-          }
-
-          &.asc {
-            .sort {
-              transform: rotate(180deg);
-            }
-          }
-        }
-        &:hover {
-          .sort {
-            display: inline-block;
-          }
-        }
       }
     }
   }
@@ -173,8 +78,44 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     text-transform: uppercase;
     height: 30px;
     color: text-color(primary, lightest);
+
     &-empty {
       height: 1px;
+    }
+
+    .rsa-data-table-header-cell {
+      position: relative;
+      @include rsa-vendor-prefix(flex-shrink, 0); /* can't shrink beyond min size */
+      @include rsa-vendor-prefix(flex-grow, 0); /* can't grow beyond min size */
+
+      &:hover .sort {
+        display: inline-block;
+      }
+
+      .is-sorted {
+        background-color: background-color(primary, darkest, translucent);
+
+        &.asc .sort {
+          transform: rotate(180deg);
+        }
+
+        .sort {
+          color: text-color(secondary);
+          display: inline-block;
+        }
+      }
+
+      .sort {
+        display: none;
+        position: absolute;
+        padding: rsa-whitespace(least);
+        right: rsa-whitespace(least);
+        top: rsa-whitespace(less);
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
     }
   }
 
@@ -378,14 +319,13 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       display: none;
     }
   }
+
   &-header-cell .hideSort{
     visibility: hidden;
   }
+
   &-header-cell:hover .hideSort{
     visibility: visible;
-  }
-  button.expand {
-    padding-left: rsa-whitespace(less);
   }
 
   /* Color choices. */
@@ -397,6 +337,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       }
     }
   }
+
   &.monochrome {
     .rsa-data-table {
       &-body-row {
@@ -425,8 +366,68 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     }
   }
 
+  .is-at-grouping-size {
+    .group-label {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      bottom: -28px;
+      @include rsa-font(header);
+      display: flex;
+      align-items: center;
+      cursor: default;
+
+      .group-label-copy {
+        font-weight: bold;
+        letter-spacing: .5px;
+        padding: 4px rsa-whitespace(most) 4px rsa-whitespace();
+        color: text-color(primary, lighter);
+        text-transform: uppercase;
+        background: linear-gradient(90deg, background-color(primary, dark) 0%, background-color(primary, dark) 75%, background-color(primary, darkest) 100%);
+        cursor: default;
+
+        i {
+          margin-right: rsa-whitespace(least);
+        }
+      }
+    }
+
+    &:hover {
+      .group-label {
+        left: rsa-whitespace(less);
+      }
+    }
+
+    &.is-selected {
+      .group-label {
+        left: rsa-whitespace(less);
+      }
+    }
+  }
+
   .rsa-content-badge-score {
     padding: 0;
+  }
+
+  .rsa-form-checkbox-label {
+    letter-spacing: 0;
+  
+    &::before {
+      position: absolute;
+      right: 12px;
+      margin-right: 0;
+    }
+  }
+  
+  .rsa-form-checkbox-wrapper {
+    position: absolute;
+    right: 4px;
+    padding: 4px;
+  }
+
+  button.expand {
+    padding-left: rsa-whitespace(less);
   }
 }
 
