@@ -60,7 +60,7 @@ pipeline {
                 expression { return params.DATA_INJECTION }
             }
             steps {
-                runSuiteXmlFile('core/CoreDataInjection.xml')
+                runSuiteXmlFile('e2e/E2E_DataInjection.xml')
             }
         }
 
@@ -69,7 +69,7 @@ pipeline {
                 expression { return params.DATA_PROCESSING }
             }
             steps {
-                runSuiteXmlFile('core/CoreDataProcessing.xml')
+                runSuiteXmlFile('e2e/E2E_ConfigAndDataProcessing.xml')
             }
         }
 
@@ -78,7 +78,7 @@ pipeline {
                 expression { return params.RUN_TESTS }
             }
             steps {
-                runSuiteXmlFile('core/CoreTests.xml')
+                runSuiteXmlFile('e2e/E2E_Tests.xml')
             }
         }
 
