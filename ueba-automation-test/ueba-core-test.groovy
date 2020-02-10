@@ -5,7 +5,6 @@ pipeline {
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: false, description: '')
-        booleanParam(name: 'INSTALL_UEBA_UI_RPMS', defaultValue: false, description: '')
         booleanParam(name: 'DATA_INJECTION', defaultValue: true, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
