@@ -8,11 +8,11 @@ pipeline {
         booleanParam(name: 'DATA_INJECTION', defaultValue: true, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
-        choice(name: 'NODE_LABLE', choices: ['UEBA04'], description: '')
+        choice(name: 'NODE_LABEL', choices: ['UEBA04'], description: '')
         choice(name: 'VERSION', choices: ['11.4.0.0','11.5.0.0'], description: 'RPMs version')
     }
 
-    agent { label env.NODE_LABLE }
+    agent { label env.NODE_LABEL }
 
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
