@@ -42,7 +42,7 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
     private String esapServer;
     private RestHelper restHelper = new RestHelper();
     private SshHelper sshHelper = new SshHelper();
-    private RespondServerAlertCollectionHelper respondServerAlertCollectionHelper = new RespondServerAlertCollectionHelper();
+    private RespondServerAlertCollectionHelper respondServerAlertCollectionHelper;
 
     private final PresidioUrl allAlertsUrl = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
     private List<AlertsStoredRecord> allAlerts;
@@ -61,6 +61,7 @@ public class OutputForwardingCoreTest extends AbstractTestNGSpringContextTests {
         esapServer = EnvironmentProperties.ENVIRONMENT_PROPERTIES.esaAnalyticsServerIp();
         skipAllTestsIfMissingEsapServer();
 
+        respondServerAlertCollectionHelper = new RespondServerAlertCollectionHelper();
         allAlerts = restHelper.alerts().request().getAlerts(allAlertsUrl);
         assertThat(allAlerts).as(allAlertsUrl + "\nEmpty alerts response").isNotNull().isNotEmpty();
 

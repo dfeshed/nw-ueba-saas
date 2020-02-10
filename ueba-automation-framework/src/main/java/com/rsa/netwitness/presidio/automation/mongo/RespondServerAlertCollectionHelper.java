@@ -7,6 +7,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
+import com.rsa.netwitness.presidio.automation.config.EnvironmentProperties;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.slf4j.LoggerFactory;
@@ -41,8 +42,12 @@ public class RespondServerAlertCollectionHelper {
     };
 
     public RespondServerAlertCollectionHelper() {
-        database = MongoClientEsaServer.getConnection().getDatabase("respond-server");
-        alertCollection = database.getCollection("alert");
+        if ( ! EnvironmentProperties.ENVIRONMENT_PROPERTIES.esaAnalyticsServerIp().isBlank()) {
+            database = MongoClientEsaServer.getConnection().getDatabase("respond-server");
+            alertCollection = database.getCollection("alert");
+        } else {
+            LOGGER.error("ESA Server doesn't exist.");
+        }
     }
 
     public void truncateCollection() {
