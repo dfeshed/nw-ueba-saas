@@ -18,6 +18,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.rsa.netwitness.presidio.automation.config.AutomationConf.USER_DIR;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public enum EnvironmentProperties {
@@ -35,6 +36,7 @@ public enum EnvironmentProperties {
     private static final String MONGO_PRESIDIO = "mongo-presidio";
 
     private Lazy<Properties> envPropertiesHolder = new Lazy<>();
+    private Lazy<Boolean> isBrokerAvailable = new Lazy<>();
 
     public String logDecoderIp() {
         return property(LOG_DECODER);
@@ -63,16 +65,22 @@ public enum EnvironmentProperties {
 
 
     private String property(String propertyName) {
-        Properties prop = envPropertiesHolder.getOrCompute(this::load);
-        if (prop.isEmpty()) {
-            LOGGER.error("Failed to get env.properties file.");
-            return "";
-        } else {
-            String p = prop.getOrDefault(propertyName, "").toString();
-            if (p.isBlank()) {
-                LOGGER.error("Missing env.property key: " + p);
+        boolean canResolveHosts = isBrokerAvailable.getOrCompute(this::checkForBrokerAvailability);
+
+        if (canResolveHosts) {
+            Properties prop = envPropertiesHolder.getOrCompute(this::load);
+            if (prop.isEmpty()) {
+                LOGGER.error("Failed to get env.properties file.");
+                return "";
+            } else {
+                String p = prop.getOrDefault(propertyName, "").toString();
+                if (p.isBlank()) {
+                    LOGGER.error("Missing env.property key: " + p);
+                }
+                return p;
             }
-            return p;
+        } else {
+            return AutomationConf.UEBA_IP;
         }
     }
 
@@ -108,9 +116,16 @@ public enum EnvironmentProperties {
     }
 
     private void resolve() throws IOException {
-        SshResponse sshResponse =  new SshHelper().uebaHostRootExec().setUserDir(REMOTE_SCRIPT_PATH).run("sh env_properties_manager.sh --create");
+        SshResponse sshResponse =  new SshHelper().uebaHostRootExec().setUserDir(REMOTE_SCRIPT_PATH).withTimeout(10, SECONDS).run("sh env_properties_manager.sh --create");
         assertThat(sshResponse.exitCode).isEqualTo(0);
         List<String> output = sshResponse.output.stream().filter(e -> e.contains("=")).sorted().collect(Collectors.toList());
         Files.write(ENV_PROPERTIES_PATH, output , StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
+    private boolean checkForBrokerAvailability() {
+        SshResponse sshResponse =  new SshHelper().uebaHostRootExec().withTimeout(5, SECONDS).setUserDir(REMOTE_SCRIPT_PATH)
+                .run("orchestration-cli-client --list-services");
+        LOGGER.info("Broker availability test result = " + sshResponse.exitCode);
+        return sshResponse.exitCode == 0;
     }
 }
