@@ -1,0 +1,49 @@
+.rsa-collapseable-nav {
+  margin-top: rsa-whitespace();
+
+  .rsa-nav-tab-group {
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+
+    .rsa-nav-tab {
+      &:hover {
+        cursor: pointer;
+        color: text-color(primary, lightest);
+      }
+    }
+  }
+
+  &.nav-collapsed {
+    .for-collapsed {
+      display: flex;
+      margin-bottom: -1px;
+    }
+    .for-expanded {
+      opacity: 0;
+      height: 1px;
+    }
+  }
+
+  &.nav-expanded {
+    .for-collapsed {
+      opacity: 0;
+      height: 1px;
+    }
+    .for-expanded {
+      margin-top: -1px;
+      display: flex;
+    }
+  }
+}
+
+.rsa-collapseable-nav-rsa-collapsed-nav-dropdown {
+  li {
+    padding: rsa-whitespace(less);
+
+    &:hover {
+      cursor: pointer;
+      background-color: background-color(secondary, darker);
+    }
+  }
+}

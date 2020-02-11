@@ -22,6 +22,7 @@ Router.map(function() {
     this.route('loader');
     this.route('routableLogin');
     this.route('gauge');
+    this.route('sandbox');
 
     this.route('app', function() {
       this.route('header');
@@ -85,6 +86,7 @@ Router.map(function() {
       this.route('linkList');
       this.route('tab');
       this.route('linkToWin');
+      this.route('collapseable-nav');
     });
 
     this.route('table');
