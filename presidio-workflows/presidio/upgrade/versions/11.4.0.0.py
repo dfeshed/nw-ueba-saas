@@ -1,5 +1,6 @@
 import os
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import NotFoundError
 from presidio.utils.airflow.upgrade_utils import run_reset_presidio_for_upgrade, get_dags_by_prefix
 from presidio.builders.rerun_ueba_flow_dag_builder import get_registered_presidio_dags, pause_dags, \
     kill_dags_task_instances, \
@@ -256,11 +257,19 @@ if index_exists(INDEX_EVENT) & events_not_process():
 
 # Check user severities range index is exists
 if index_exists(INDEX_USER_SEVERITY_RANGE):
-    doc = es.get(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_USER_SEVERITY_RANGE,
-                 id=OLD_DOC_ID_USER_SEVERITY_RANGE)
-    doc["_source"]["id"] = NEW_DOC_ID_USER_SEVERITY_RANGE
-    es.index(index=INDEX_ENTITY_SEVERITY_RANGE, doc_type=DOC_TYPE_ENTITY_SEVERITY_RANGE,
-             id=NEW_DOC_ID_USER_SEVERITY_RANGE, body=dict(doc["_source"]))
+    try:
+        doc = es.get(index=INDEX_USER_SEVERITY_RANGE,
+                     doc_type=DOC_TYPE_USER_SEVERITY_RANGE,
+                     id=OLD_DOC_ID_USER_SEVERITY_RANGE)
+    except NotFoundError:
+        doc = None
+
+    if doc is not None:
+        doc["_source"]["id"] = NEW_DOC_ID_USER_SEVERITY_RANGE
+        es.index(index=INDEX_ENTITY_SEVERITY_RANGE,
+                 doc_type=DOC_TYPE_ENTITY_SEVERITY_RANGE,
+                 id=NEW_DOC_ID_USER_SEVERITY_RANGE,
+                 body=dict(doc["_source"]))
 
     # Remove user severities range index
     es.indices.delete(index=INDEX_USER_SEVERITY_RANGE)
