@@ -32,7 +32,7 @@ module('Integration | Component | chart-widget', function(hooks) {
     this.set('config', {
       chartType: 'donut-chart',
       aggregate: {
-        column: ['osType'],
+        columns: ['osType'],
         type: 'COUNT'
       }
     });

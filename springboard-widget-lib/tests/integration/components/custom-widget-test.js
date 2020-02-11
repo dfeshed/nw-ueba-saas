@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, waitUntil, findAll } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 
 const SELECTORS = {
@@ -8,7 +8,8 @@ const SELECTORS = {
   visualTypeDonut: '.custom-widget .donut-chart',
   leadsTable: '.custom-widget .rsa-data-table',
   leadsTableRow: '.custom-widget .rsa-data-table-body-row',
-  leadsTableHeaderCell: '.custom-widget .rsa-data-table-header-cell'
+  leadsTableHeaderCell: '.custom-widget .rsa-data-table-header-cell',
+  loadingIndicator: '.custom-widget .rsa-loader'
 };
 
 module('Integration | Component | top-leads', function(hooks) {
@@ -23,7 +24,7 @@ module('Integration | Component | top-leads', function(hooks) {
           type: 'chart',
           chartType: 'donut-chart',
           aggregate: {
-            column: ['osType'],
+            columns: ['osType'],
             type: 'COUNT'
           }
         },
@@ -38,7 +39,7 @@ module('Integration | Component | top-leads', function(hooks) {
         }
       ]
     });
-    this.set('widgetData', {
+    this.set('data', {
       aggregate: {
         data: [
           { name: 'cats', count: 3 },
@@ -55,7 +56,29 @@ module('Integration | Component | top-leads', function(hooks) {
       ]
     });
 
-    await render(hbs`<CustomWidget @widget={{this.widget}} @widgetData={{this.widgetData}}/>`);
+    this.set('fetchData', () => {
+      return new Promise((resolve) => setTimeout(() => resolve({
+        data: {
+          aggregate: {
+            data: [
+              { name: 'cats', count: 3 },
+              { name: 'dogs', count: 10 },
+              { name: 'horses', count: 17 }
+            ]
+          },
+          items: [
+            {
+              hostName: 'Test',
+              score: '100',
+              osType: 'windows'
+            }
+          ]
+        }
+      }), 1));
+    });
+
+    await render(hbs`<CustomWidget @widget={{this.widget}} @fetchData={{this.fetchData}}/>`);
+    await waitUntil(() => findAll(SELECTORS.loadingIndicator).length === 0);
     assert.dom(SELECTORS.visualTypeDonut).exists('It renders donut chart component');
     assert.dom(SELECTORS.leadsTable).exists('It renders table');
     assert.dom(SELECTORS.leadsTableRow).exists({ count: 1 }, 'It renders one row');

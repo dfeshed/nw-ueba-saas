@@ -10,10 +10,11 @@ export default class ChartWidgetComponent extends Component {
   get chartOptions() {
     const { config, config: { chartType } } = this.args;
     if (DONUT_CHART === chartType) {
-      const column = config?.aggregate.column[0];
+      const column = config?.aggregate.columns[0];
       return {
         valueProp: 'count',
         height: 240,
+        innerRadius: 105,
         columnName: this.i18n.t(`springboard.columns.${column}`)
       };
     }

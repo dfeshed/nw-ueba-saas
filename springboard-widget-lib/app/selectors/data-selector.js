@@ -1,0 +1,1 @@
+export { default } from 'springboard-widget-lib/selectors/data-selector';
