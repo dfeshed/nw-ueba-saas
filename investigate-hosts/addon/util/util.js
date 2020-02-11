@@ -53,3 +53,55 @@ export const convertBytesIntoKbOrMb = (bytes = 1024) => {
     unit
   };
 };
+/**
+ * filePathValidation checks if the file path is follows the format of the selected host OS.
+ * It also checks if more than 1 '*' is present in the directory path or the file name.
+ * @param path
+ * @param pathType
+ * @param filePathSeparatorFormat
+ * @returns {boolean}
+ */
+export const filePathValidation = (path, pathType = 'windows', filePathSeparatorFormat = '\\') => {
+
+  const windows = /^(?:[\w]:)(\\([a-z_\-*\s0-9.]+))+$/;
+  const windowsFullPath = /^(?:[\w]:)(\\([a-z_\-*\s0-9.]+))+\.[a-z]+$/;
+  const linux = /^((\/)[^\\]+)+$/;
+  const linuxFullPath = /^((\/)[^\\]+)+\.[a-z]+$/;
+
+  const osTypeRegex = { windows, windowsFullPath, linux, linuxFullPath, mac: linux, macFullPath: linuxFullPath };
+
+  if (osTypeRegex[pathType].test(path)) {
+    const lastIndexOfSeparator = path.lastIndexOf(filePathSeparatorFormat);
+    const filePath = path.slice(0, lastIndexOfSeparator);
+    const fileName = path.slice(lastIndexOfSeparator + 1);
+
+    return fileName.length ? ((filePath.match(/\*/g) || []).length <= 1) && ((fileName.match(/\*/g) || []).length <= 1) : false;
+  }
+
+  return false;
+};
+
+/**
+ * numberValidation checks to see if the value sent is a number and if it is within the range specified.
+ * @param value
+ * @param valueRangeObj
+ * @returns {{isInvalid: boolean, value: number}}
+ */
+
+export const numberValidation = (value, valueRangeObj = {}) => {
+  const { lowerLimit = value, upperLimit = value } = valueRangeObj;
+  let isInvalid = false;
+  let roundedOffValue = Math.round(value);
+
+  if (isNaN(roundedOffValue)) {
+    isInvalid = true;
+    roundedOffValue = value;
+  } else {
+    const lowerLimitEvaluation = lowerLimit ? roundedOffValue >= lowerLimit : true;
+    const upperLimitEvaluation = upperLimit ? roundedOffValue <= upperLimit : true;
+    isInvalid = !(lowerLimitEvaluation && upperLimitEvaluation);
+  }
+
+  return { isInvalid, value: roundedOffValue };
+
+};

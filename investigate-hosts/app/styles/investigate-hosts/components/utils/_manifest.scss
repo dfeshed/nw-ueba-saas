@@ -124,13 +124,17 @@
     margin-bottom: 2rem;
   }
   .file-size-count-config {
+    height: 120px;
      .manual-file-download_file-count {
-      width: 45%;
+      width: 195px;
+      height: 120px;
       display: inline-block;
-       margin-right: 4rem;
+      margin-right: 4rem;
+      float: left;
     }
     .manual-file-download_file-size {
-      width: 42%;
+      width: 195px;
+      height: 120px;
       display: inline-block;
     }
   }

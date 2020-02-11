@@ -15,10 +15,11 @@
       </p>
 
       {{rsa-form-input
-        isError=isFilePathInvalid
+        isError=isInvalidPath
         class="file-path"
-        errorMessage=(t filePathError)
+        errorMessage=(t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.filePathError")
         placeholder=selectedServerForEdit.host
+        focusOut=(action "validatePath" filePath)
         value=filePath}}
     </div>
     {{#if fileDownloadButtonStatus.isWildcardPresent}}
@@ -31,10 +32,11 @@
             {{t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.fileCountDescription"}}
           </p>
           {{rsa-form-input
-            isError=isFilePathInvalid
+            isError=isInvalidCount
             class="file-path"
-            errorMessage=(t fileCountError)
+            errorMessage=(t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.fileCountError")
             placeholder=fileCountPlaceHolder
+            focusOut=(action "validateCount" fileCount)
             value=fileCount}}
         </div>
         <div class="manual-file-download_file-size">
@@ -45,10 +47,11 @@
             {{t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.fileSizeDescription"}}
           </p>
           {{rsa-form-input
-            isError=isFilePathInvalid
+            isError=isInvalidSize
             class="file-path"
-            errorMessage=(t fileSizeError)
+            errorMessage=(t "investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.fileSizeError")
             placeholder=fileSizePlaceHolder
+            focusOut=(action "validateSize" fileSize)
             value=fileSize}}
         </div>
       </div>

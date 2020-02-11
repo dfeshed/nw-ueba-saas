@@ -5,7 +5,9 @@ import {
   getSelectedAgentIds,
   isAlreadySelected,
   isolateMachineValidation,
-  convertBytesIntoKbOrMb
+  convertBytesIntoKbOrMb,
+  filePathValidation,
+  numberValidation
 } from 'investigate-hosts/util/util';
 
 module('Unit | Util');
@@ -123,4 +125,68 @@ test('convertBytesIntoKbOrMb', function(assert) {
   const value3 = convertBytesIntoKbOrMb(1500);
   assert.deepEqual(value3, { unit: 'KB', value: '1.46' }, '1.46 KB returned when no value is passed.');
 
+});
+
+test('filePathValidation', function(assert) {
+  const value1 = filePathValidation();
+  assert.equal(value1, false, '');
+
+  const value2 = filePathValidation('D:\\folder\\test.xml', 'windows');
+  assert.equal(value2, true, 'D:\\folder\\test.xml, Valid Windows path');
+
+  const value5 = filePathValidation('/folder/test.xml', 'windows', '\\');
+  assert.equal(value5, false, '/folder/test.xml, invalid windows path');
+
+  const value6 = filePathValidation('\\folder\\test.xml', 'windows');
+  assert.equal(value6, false, '\\folder\\test.xml, invalid windows path');
+
+  const value3 = filePathValidation('D:/folder/test.xml', 'linux', '/');
+  assert.equal(value3, false, 'D:/folder/test.xml, invalid Linux path');
+
+  const value4 = filePathValidation('/folder/test.xml', 'linux', '/');
+  assert.equal(value4, true, '/folder/test.xml, Valid Linux path');
+
+  const value7 = filePathValidation('/folder**/test.xml', 'linux', '/');
+  assert.equal(value7, false, '/folder**/test.xml, invalid Linux path, more than 1 wildcard in the directory path');
+
+  const value8 = filePathValidation('/folder/*test.*', 'linux', '/');
+  assert.equal(value8, false, '/folder/*test.*, invalid Linux path, 2 wildcards in the file name');
+
+  const value9 = filePathValidation('/folder/*test.*', 'linux', '/');
+  assert.equal(value9, false, '/folder/, invalid Linux path, no file name present');
+
+  const value10 = filePathValidation('D*\\**\\test.xml', 'windows', '\\');
+  assert.equal(value10, false, 'D*\\**\\test.xml, invalid windows path, more than 1 wildcard in the directory path');
+
+  const value11 = filePathValidation('D:\\folder\\*.*', 'windows', '\\');
+  assert.equal(value11, false, 'D:\\folder\\*.*, invalid windows path, 2 wildcards in the file name');
+
+  const value12 = filePathValidation('D:\\folder\\', 'windows');
+  assert.equal(value12, false, 'D:\\folder\\, invalid windows path, no file name present');
+});
+
+test('numberValidation', function(assert) {
+  const value1 = numberValidation('randomValue');
+  assert.deepEqual(value1, { isInvalid: true, value: 'randomValue' }, 'Not a number');
+
+  const value2 = numberValidation(1);
+  assert.deepEqual(value2, { isInvalid: false, value: 1 }, 'Is a number');
+
+  const value3 = numberValidation(0);
+  assert.deepEqual(value3, { isInvalid: false, value: 0 }, 'Is a number');
+
+  const value4 = numberValidation(0, { lowerLimit: 1, upperLimit: 10 });
+  assert.deepEqual(value4, { isInvalid: true, value: 0 }, 'Not within range');
+
+  const value5 = numberValidation(0, { lowerLimit: 1 });
+  assert.deepEqual(value5, { isInvalid: true, value: 0 }, 'Not within range');
+
+  const value6 = numberValidation(5, { lowerLimit: 1 });
+  assert.deepEqual(value6, { isInvalid: false, value: 5 }, 'Within range');
+
+  const value7 = numberValidation(5, { upperLimit: 10 });
+  assert.deepEqual(value7, { isInvalid: false, value: 5 }, 'Within range');
+
+  const value8 = numberValidation(5, { upperLimit: 1 });
+  assert.deepEqual(value8, { isInvalid: true, value: 5 }, 'Not within range');
 });

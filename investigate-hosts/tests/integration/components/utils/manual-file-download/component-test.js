@@ -24,6 +24,10 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
 
   test('manual-file-download has rendered', async function(assert) {
 
+    new ReduxDataHelper(setState)
+      .machineOSType('windows')
+      .build();
+
     this.set('agentId', 'agentID');
     this.set('serverId', 'serverId ');
 
@@ -36,6 +40,10 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
   });
 
   test('manual-file-download content has rendered', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .machineOSType('windows')
+      .build();
 
     this.set('agentId', 'agentID');
     this.set('serverId', 'serverId ');
@@ -53,6 +61,10 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
   });
 
   test('manual-file-download count and size content has rendered', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .machineOSType('windows')
+      .build();
 
     this.set('agentId', 'agentID');
     this.set('serverId', 'serverId ');
@@ -75,6 +87,10 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
 
   test('manual-file-download download button disabled when no path is present', async function(assert) {
 
+    new ReduxDataHelper(setState)
+      .machineOSType('windows')
+      .build();
+
     this.set('agentId', 'agentID');
     this.set('serverId', 'serverId ');
 
@@ -92,6 +108,10 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
 
     assert.expect(6);
 
+    new ReduxDataHelper(setState)
+      .machineOSType('windows')
+      .build();
+
     this.set('agentId', 'agentID');
     this.set('serverId', 'serverId ');
     this.set('closeConfirmModal', function() {});
@@ -104,7 +124,7 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
           agentIds: ['agentID'],
           countFiles: 10,
           maxFileSize: 100,
-          path: '/test/*'
+          path: 'c:\\test\\*'
         }
       });
     });
@@ -117,7 +137,7 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
 
     assert.equal(findAll('#modalDestination .manual-file-download_file-path').length, 1, 'text box for file path present');
 
-    await fillIn('#modalDestination .manual-file-download_file-path input', '/test/*');
+    await fillIn('#modalDestination .manual-file-download_file-path input', 'c:\\test\\*');
 
     assert.equal(findAll('#modalDestination .manual-file-download_file-count').length, 1, 'text box for file count present');
     assert.equal(findAll('#modalDestination .manual-file-download_file-size').length, 1, 'text box for file size present');
@@ -127,14 +147,6 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
   test('manual-file-download socket call for full path, windows', async function(assert) {
 
     assert.expect(6);
-
-    new ReduxDataHelper(setState)
-      .machineOSType('windows')
-      .build();
-
-    this.set('agentId', 'agentID');
-    this.set('serverId', 'serverId ');
-    this.set('closeConfirmModal', function() {});
 
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'downloadFileToServer');
@@ -152,6 +164,14 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
         }
       });
     });
+
+    new ReduxDataHelper(setState)
+      .machineOSType('windows')
+      .build();
+
+    this.set('agentId', 'agentID');
+    this.set('serverId', 'serverId ');
+    this.set('closeConfirmModal', function() {});
 
     await render(hbs `<div id='modalDestination'></div>
       {{utils/manual-file-download
@@ -207,8 +227,81 @@ module('Integration | Component | Utils | manual-file-download', function(hooks)
 
     await fillIn('#modalDestination .manual-file-download_file-path input', '/testFolder/test.txt');
 
-    assert.equal(findAll('#modalDestination .manual-file-download_file-count').length, 0, 'text box for file count present');
-    assert.equal(findAll('#modalDestination .manual-file-download_file-size').length, 0, 'text box for file size present');
+    assert.equal(findAll('#modalDestination .manual-file-download_file-count').length, 0, 'text box for file count not present');
+    assert.equal(findAll('#modalDestination .manual-file-download_file-size').length, 0, 'text box for file size not present');
     await click(find('.modal-footer-buttons .is-primary button'));
   });
+
+  test('manual-file-download validate filePath, windows', async function(assert) {
+
+    assert.expect(7);
+
+    new ReduxDataHelper(setState)
+      .machineOSType('windows')
+      .build();
+
+    this.set('agentId', 'agentID');
+    this.set('serverId', 'serverId ');
+    this.set('closeConfirmModal', function() {});
+
+    await render(hbs `<div id='modalDestination'></div>
+      {{utils/manual-file-download
+      agentId=agentId
+      serverId=serverId
+      closeConfirmModal=closeConfirmModal}}`);
+
+    assert.equal(findAll('#modalDestination .manual-file-download_file-path').length, 1, 'text box for file path present');
+    assert.equal(findAll('#modalDestination .file-path.is-error').length, 0, 'text box error not present');
+
+    await fillIn('#modalDestination .manual-file-download_file-path input', '\\test\\*');
+
+    assert.equal(findAll('#modalDestination .manual-file-download_file-count').length, 1, 'text box for file count present');
+    assert.equal(findAll('#modalDestination .file-path.is-error').length, 0, 'text box error not present');
+
+    assert.equal(findAll('#modalDestination .manual-file-download_file-size').length, 1, 'text box for file size present');
+    assert.equal(findAll('#modalDestination .file-path.is-error').length, 0, 'text box error not present');
+
+    await fillIn('#modalDestination .manual-file-download_file-size input', 0);
+    await fillIn('#modalDestination .manual-file-download_file-count input', 'test');
+
+    await click(find('.modal-footer-buttons .is-primary button'));
+    assert.equal(findAll('#modalDestination .file-path.is-error').length, 3, 'text box error present for all 3 fields');
+  });
+
+  test('manual-file-download validate filePath, Linux', async function(assert) {
+
+    assert.expect(7);
+
+    new ReduxDataHelper(setState)
+      .machineOSType('linux')
+      .build();
+
+    this.set('agentId', 'agentID');
+    this.set('serverId', 'serverId ');
+    this.set('closeConfirmModal', function() {});
+
+    await render(hbs `<div id='modalDestination'></div>
+      {{utils/manual-file-download
+      agentId=agentId
+      serverId=serverId
+      closeConfirmModal=closeConfirmModal}}`);
+
+    assert.equal(findAll('#modalDestination .manual-file-download_file-path').length, 1, 'text box for file path present');
+    assert.equal(findAll('#modalDestination .file-path.is-error').length, 0, 'text box error not present');
+
+    await fillIn('#modalDestination .manual-file-download_file-path input', '\\test\\*');
+
+    assert.equal(findAll('#modalDestination .manual-file-download_file-count').length, 1, 'text box for file count present');
+    assert.equal(findAll('#modalDestination .file-path.is-error').length, 0, 'text box error not present');
+
+    assert.equal(findAll('#modalDestination .manual-file-download_file-size').length, 1, 'text box for file size present');
+    assert.equal(findAll('#modalDestination .file-path.is-error').length, 0, 'text box error not present');
+
+    await fillIn('#modalDestination .manual-file-download_file-size input', 0);
+    await fillIn('#modalDestination .manual-file-download_file-count input', 'test');
+
+    await click(find('.modal-footer-buttons .is-primary button'));
+    assert.equal(findAll('#modalDestination .file-path.is-error').length, 3, 'text box error present for all 3 fields');
+  });
+
 });

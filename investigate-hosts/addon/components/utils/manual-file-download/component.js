@@ -6,6 +6,7 @@ import { connect } from 'ember-redux';
 import { downloadWildcardsMatchedFilesRequest } from 'investigate-hosts/actions/data-creators/host';
 import { downloadFilesToServer } from 'investigate-hosts/actions/data-creators/file-context';
 import { filePathSeparatorFormat } from 'investigate-hosts/reducers/details/selectors';
+import { filePathValidation, numberValidation } from 'investigate-hosts/util/util';
 
 const callBackOptions = {
   onSuccess: () => success('investigateHosts.downloads.manualFileDownloads.manualFileDownloadsModal.success'),
@@ -14,7 +15,8 @@ const callBackOptions = {
 };
 
 const stateToComputed = (state) => ({
-  filePathSeparatorFormat: filePathSeparatorFormat(state)
+  filePathSeparatorFormat: filePathSeparatorFormat(state),
+  machineOsType: state.endpoint.overview.hostOverview.machineIdentity.machineOsType
 });
 
 const dispatchToActions = {
@@ -31,12 +33,16 @@ class MachineIsolationModal extends Component {
   fileSize = null;
   fileCountPlaceHolder = 10;
   fileSizePlaceHolder = 100;
+  isInvalidPath = false;
+  isInvalidCount = false;
+  isInvalidSize = false;
 
   @computed('filePath')
   get fileDownloadButtonStatus() {
     const { filePath } = this;
     const isWildcardPresent = filePath.includes('*');
-    const isDownloadDisabled = !this.filePath.length;
+    const isDownloadDisabled = !filePath.length;
+
     return { isWildcardPresent, isDownloadDisabled };
   }
 
@@ -67,18 +73,52 @@ class MachineIsolationModal extends Component {
   }
 
   @action
+  validatePath() {
+    const { filePath, machineOsType, fileDownloadButtonStatus: { isWildcardPresent }, filePathSeparatorFormat } = this;
+    const filePathType = isWildcardPresent ? machineOsType : `${machineOsType}FullPath`;
+    this.set('isInvalidPath', !filePathValidation(filePath, filePathType, filePathSeparatorFormat));
+  }
+
+  @action
+  validateCount() {
+    const { fileCount } = this;
+    const { isInvalid, value } = numberValidation(fileCount, { lowerLimit: 1, upperLimit: 100 });
+
+    this.set('isInvalidCount', isInvalid);
+    this.set('fileCount', value);
+  }
+
+  @action
+  validateSize() {
+    const { fileSize } = this;
+    const { isInvalid, value } = numberValidation(fileSize, { lowerLimit: 1 });
+
+    this.set('isInvalidSize', isInvalid);
+    this.set('fileSize', value);
+  }
+
+  @action
   requestManualFileDownloads() {
     const { fileDownloadButtonStatus: { isWildcardPresent },
       serverId,
       wildcardFileQuery,
-      fullPathFileQuery: { agentId, files } } = this;
+      fullPathFileQuery: { agentId, files },
+      isInvalidPath,
+      isInvalidCount,
+      isInvalidSize
+    } = this;
 
-    if (isWildcardPresent) {
-      this.send('downloadWildcardsMatchedFilesRequest', wildcardFileQuery, serverId, callBackOptions);
-    } else {
-      this.send('downloadFilesToServer', agentId, files, serverId, callBackOptions);
+    if (!isInvalidPath) {
+      if (isWildcardPresent) {
+        if (!isInvalidCount && !isInvalidSize) {
+          this.send('downloadWildcardsMatchedFilesRequest', wildcardFileQuery, serverId, callBackOptions);
+          this.closeConfirmModal();
+        }
+      } else {
+        this.send('downloadFilesToServer', agentId, files, serverId, callBackOptions);
+        this.closeConfirmModal();
+      }
     }
-    this.closeConfirmModal();
   }
 
 }
