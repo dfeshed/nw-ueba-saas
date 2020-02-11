@@ -31,6 +31,7 @@ Router.map(function() {
     this.mount('configure');
     this.mount('investigate');
     this.mount('admin');
+    this.mount('springboard');
   });
 
   this.route('not-found', { path: '/*path' });

@@ -2,5 +2,21 @@
   .rsa-data-table {
     width: 100%;
     height: 100%;
+    .rsa-data-table-body-row {
+      height: 30px;
+    }
+    .rsa-data-table-body-cell {
+      line-height: 30px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .rsa-data-table-header-row {
+      background-color: rsa-color(grey, darkest);
+    }
   }
+}
+
+.chart-widget {
+  padding-left: rsa-whitespace();
+  padding-bottom: 48px;
 }

@@ -5,6 +5,7 @@
   &__widget {
     background-color: $springboard-color;
     width: $springboard-widget-width;
+    flex: none;
   }
 
   &__widget:not(:first-child) {

@@ -84,6 +84,9 @@
 .donut-chart {
   .column-name {
     fill: text-color(neutral);
+    font-family: Lato;
+    font-size: 16px;
+    font-weight: 300;
   }
   .legend-name {
     text-transform: uppercase;
@@ -95,6 +98,7 @@
   .legend-count {
     font-family: Lato, serif;
     font-size: 20px;
+    font-weight: 300;
     fill: rsa-color(gray, lightest);
   }
 }

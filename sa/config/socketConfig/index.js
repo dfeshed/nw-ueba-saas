@@ -10,6 +10,7 @@ const packagerConfigGen = require('../../../packager').socketRouteGenerator;
 const endpointRARInstaller = require('../../../endpoint-rar').socketRouteGenerator;
 const adminEngineConfigGen = require('../../../admin').socketRouteGenerator;
 const licenseConfigGen = require('../../../license').socketRouteGenerator;
+const springboardConfigGen = require('../../../springboard').socketRouteGenerator;
 const adminConfigGen = require('./administration');
 const featuresConfigGen = require('./features');
 
@@ -24,6 +25,7 @@ const configGenerators = [
   endpointRARInstaller,
   adminEngineConfigGen,
   licenseConfigGen,
+  springboardConfigGen,
   adminConfigGen,
   featuresConfigGen
 ];

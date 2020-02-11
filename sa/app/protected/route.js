@@ -264,6 +264,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
   _checkAccessAndTransition(key, transitionName) {
     if ( // known transition into ember with perms
       (transitionName && transitionName.includes('configure')) ||
+      (transitionName && transitionName.includes('springboard')) ||
       (transitionName && transitionName.includes('respond') && this.get('accessControl.hasRespondAccess')) ||
       (transitionName && transitionName.includes('packager')) ||
       (transitionName && transitionName.includes('rarconfig')) ||

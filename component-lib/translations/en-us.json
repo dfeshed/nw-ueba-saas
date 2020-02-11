@@ -6381,10 +6381,16 @@
   },
   "springboard": {
     "noChartDataMessage": "No chart data available",
+    "loading": "fetching the data please wait",
     "columns": {
-      "hostName": "Host",
+      "machineIdentity.machineName": "Host",
       "score": "Risk Score",
-      "hostOsType": "Operating System"
+      "machineIdentity.machineOsType": "Operating System",
+      "firstFileName": "File",
+      "hostCount": "Host Count",
+      "reputationStatus": "Reputation",
+      "fileStatus": "File Status",
+      "remediationAction": "Remediation"
     }
   }
 }

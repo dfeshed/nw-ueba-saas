@@ -263,6 +263,28 @@ const App = Application.extend({
             'global-preferences'
           ]
         }
+      },
+      springboard: {
+        dependencies: {
+          services: [
+            '-document',
+            'contextual-help',
+            'access-control',
+            'dateFormat',
+            'timeFormat',
+            'timezone',
+            'i18n',
+            'flashMessages',
+            'eventBus',
+            'router',
+            'app-version',
+            'features',
+            'session'
+          ],
+          externalRoutes: {
+            protected: 'protected'
+          }
+        }
       }
     };
   }
