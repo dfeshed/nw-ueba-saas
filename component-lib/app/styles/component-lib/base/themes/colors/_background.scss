@@ -20,6 +20,16 @@ $background-colors: (
     lightest: var(--background-color-secondary-lightest)
   ),
 
+  tertiary: (
+    darkest:  var(--background-color-tertiary-darkest),
+    darker:   var(--background-color-tertiary-darker),
+    dark:     var(--background-color-tertiary-dark),
+    base:     var(--background-color-tertiary-base),
+    light:    var(--background-color-tertiary-light),
+    lighter:  var(--background-color-tertiary-lighter),
+    lightest: var(--background-color-tertiary-lightest)
+  ),
+
   accentOne: (
     darkest:  var(--background-color-accent-one-darkest),
     darker:   var(--background-color-accent-one-darker),

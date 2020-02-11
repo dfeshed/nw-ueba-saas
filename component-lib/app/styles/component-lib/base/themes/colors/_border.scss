@@ -20,6 +20,16 @@ $border-colors: (
     lightest: var(--border-color-secondary-lightest)
   ),
 
+  tertiary: (
+    darkest:  var(--border-color-tertiary-darkest),
+    darker:   var(--border-color-tertiary-darker),
+    dark:     var(--border-color-tertiary-dark),
+    base:     var(--border-color-tertiary-base),
+    light:    var(--border-color-tertiary-light),
+    lighter:  var(--border-color-tertiary-lighter),
+    lightest: var(--border-color-tertiary-lightest)
+  ),
+
   accentOne: (
     darkest:  var(--border-color-accent-one-darkest),
     darker:   var(--border-color-accent-one-darker),

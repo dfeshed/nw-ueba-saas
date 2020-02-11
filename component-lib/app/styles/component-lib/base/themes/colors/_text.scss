@@ -20,6 +20,16 @@ $text-colors: (
     lightest: var(--text-color-secondary-lightest)
   ),
 
+  tertiary: (
+    darkest:  var(--text-color-tertiary-darkest),
+    darker:   var(--text-color-tertiary-darker),
+    dark:     var(--text-color-tertiary-dark),
+    base:     var(--text-color-tertiary-base),
+    light:    var(--text-color-tertiary-light),
+    lighter:  var(--text-color-tertiary-lighter),
+    lightest: var(--text-color-tertiary-lightest)
+  ),
+
   accentOne: (
     darkest:  var(--text-color-accent-one-darkest),
     darker:   var(--text-color-accent-one-darker),
