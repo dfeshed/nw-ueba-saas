@@ -117,14 +117,14 @@ public enum EnvironmentProperties {
     }
 
     private void resolve() throws IOException {
-        SshResponse sshResponse =  new SshHelper().uebaHostRootExec().setUserDir(REMOTE_SCRIPT_PATH).withTimeout(10, SECONDS).run("sh env_properties_manager.sh --create");
+        SshResponse sshResponse =  new SshHelper().uebaHostRootExec().setUserDir(REMOTE_SCRIPT_PATH).withTimeout(20, SECONDS).run("sh env_properties_manager.sh --create");
         assertThat(sshResponse.exitCode).isEqualTo(0);
         List<String> output = sshResponse.output.stream().filter(e -> e.contains("=")).sorted().collect(Collectors.toList());
         Files.write(ENV_PROPERTIES_PATH, output , StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     private boolean checkForBrokerAvailability() {
-        SshResponse sshResponse =  new SshHelper().uebaHostRootExec().withTimeout(10, SECONDS).setUserDir(REMOTE_SCRIPT_PATH)
+        SshResponse sshResponse =  new SshHelper().uebaHostRootExec().withTimeout(20, SECONDS).setUserDir(REMOTE_SCRIPT_PATH)
                 .run("orchestration-cli-client --list-services");
         LOGGER.info("Broker availability test result = " + sshResponse.exitCode);
         return sshResponse.exitCode == 0;
