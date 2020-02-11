@@ -1,0 +1,41 @@
+<div class="dropdown-and-buttons-wrapper">
+  {{#if dropdownList.length}}
+    <div class="dropdowns">
+      {{#each dropdownList as |dropdownObj|}}
+        {{#rsa-content-tethered-panel-trigger class="dropdown" panel=dropdownPanelId}}
+          {{#rsa-form-button withDropdown=true}}
+            {{dropdownObj.label}}
+          {{/rsa-form-button}}
+        {{/rsa-content-tethered-panel-trigger}}
+
+        {{#rsa-content-tethered-panel displayCloseButton=false position="top" panelId=dropdownPanelId}}
+          {{rsa-collapseable-actions/collapsed-list list=dropdownObj.nestedActions}}
+        {{/rsa-content-tethered-panel}}
+      {{/each}}
+    </div>
+  {{/if}}
+
+  {{#if buttonList.length}}
+    <div class="buttons">
+      {{#rsa-content-tethered-panel-trigger panel=moreActionsPanelId class="more-dropdown"}}
+        {{#rsa-form-button withDropdown=true}}
+          More
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel panelClass="more-list" displayCloseButton=false position="top" panelId=moreActionsPanelId}}
+        {{rsa-collapseable-actions/more-list list=buttonList }}
+      {{/rsa-content-tethered-panel}}
+    </div>
+  {{/if}}
+</div>
+
+{{#if toggleList.length}}
+  <div class="toggles">
+    {{#each toggleList as |toggleObj|}}
+      {{#x-toggle showLabels=true onLabel=toggleObj.label value=(readonly toggleObj.value) onToggle=(action toggleObj.action) as |toggle|}}
+        {{toggle.switch}}
+        {{toggle.onLabel value=(readonly (not toggleObj.value))}}
+      {{/x-toggle}}
+    {{/each}}
+  </div>
+{{/if}}

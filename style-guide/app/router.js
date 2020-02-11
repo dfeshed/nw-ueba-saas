@@ -64,6 +64,7 @@ Router.map(function() {
       this.route('pageLayout');
       this.route('riskScore');
       this.route('editableText');
+      this.route('collapseableActions');
     });
 
     this.route('form', function() {

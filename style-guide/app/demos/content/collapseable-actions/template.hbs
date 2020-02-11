@@ -1,0 +1,105 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="Example"}}
+        {{rsa-collapseable-actions
+          dropdownList=dropdownList
+          buttonList=buttonList
+          toggleList=toggleList
+        }}
+
+      {{/spec-member}}
+    {{/spec-category}}
+
+    {{#spec-category title="Inputs"}}
+      {{#spec-member title="dropdownList" subtitle="dropdownList:Array of EmberObjects"}}
+        {{!-- BEGIN-SNIPPET dropdownListExample
+        {
+          dropdownList: computed('dropdownLabel', function() {
+            return [
+              EmberObject.create({
+                component: 'dropdown',
+                label: this.get('dropdownLabel'),
+                icon: 'cog',
+                nestedActions: A([{
+                  label: 'Dropdown Option 1',
+                  icon: 'cog',
+                  action: () => this.send('changeDropdownLabel', 'Dropdown Option 1')
+                }, {
+                  label: 'Dropdown Option 2',
+                  icon: 'cog',
+                  action: () => this.send('changeDropdownLabel', 'Dropdown Option 2')
+                }])
+              })
+            ];
+          })
+        }
+        END-SNIPPET --}}
+        {{code-snippet name="dropdownListExample.hbs"}}
+      {{/spec-member}}
+
+      {{#spec-member title="buttonList" subtitle="buttonList:Array of EmberObjects"}}
+        {{!-- BEGIN-SNIPPET buttonListExample
+        {
+          buttonList: computed(function() {
+            return [
+              EmberObject.create({
+                component: 'button',
+                label: 'Secondary Button 1',
+                icon: 'cog',
+                isPrimary: true,
+                action: () => this.send('action')
+              }),
+              EmberObject.create({
+                component: 'button-group',
+                label: 'Download Pcaps',
+                icon: 'cog',
+                isPrimary: false,
+                action: () => this.stub(),
+                nestedActions: [{
+                  label: 'Download Files',
+                  icon: 'cog',
+                  action: () => this.stub()
+                }, {
+                  label: 'Download Others',
+                  icon: 'cog',
+                  action: () => this.send('action')
+                }]
+              })
+            ];
+          })
+        }
+        END-SNIPPET --}}
+        {{code-snippet name="buttonListExample.hbs"}}
+      {{/spec-member}}
+
+      {{#spec-member title="toggleList" subtitle="toggleList:Array of EmberObjects"}}
+        {{!-- BEGIN-SNIPPET toggleListExample
+        {
+          toggleList: computed('showNulls', function() {
+            return [
+              EmberObject.create({
+                component: 'toggle',
+                label: 'Show Nulls',
+                value: this.get('showNulls'),
+                action: () => this.send('toggle')
+              }),
+              EmberObject.create({
+                component: 'toggle',
+                label: 'Show Nulls',
+                value: this.get('showNulls'),
+                action: () => this.send('toggle')
+              })
+            ];
+          })
+        }
+        END-SNIPPET --}}
+        {{code-snippet name="toggleListExample.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+  </fill>
+</hbox>

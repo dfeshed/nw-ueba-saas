@@ -186,7 +186,7 @@
       }
     }
   }
-  
+
   &.left {
     left: -1rem!important; // !important to override left:auto assigned in template
 
@@ -308,7 +308,12 @@
   .rsa-dropdown-action-list {
     li {
       @include rsa-font(body);
-      padding: rsa-whitespace(less) rsa-whitespace();
+      padding: rsa-whitespace(less);
+
+      i {
+        position: relative;
+        top: 1px;
+      }
     }
   }
 
