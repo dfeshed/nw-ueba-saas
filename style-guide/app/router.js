@@ -63,6 +63,7 @@ Router.map(function() {
       this.route('contextMenu');
       this.route('pageLayout');
       this.route('riskScore');
+      this.route('editableText');
     });
 
     this.route('form', function() {

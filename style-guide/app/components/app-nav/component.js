@@ -55,7 +55,8 @@ export default Component.extend({
           { name: 'Memory/File Size', link: 'memorySize' },
           { name: 'Tethered Panels', link: 'tetheredPanels' },
           { name: 'Page Layout', link: 'pageLayout' },
-          { name: 'Risk Score', link: 'riskScore' }
+          { name: 'Risk Score', link: 'riskScore' },
+          { name: 'Editable Text', link: 'editableText' }
         ]
       },
       {

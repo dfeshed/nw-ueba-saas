@@ -1,0 +1,39 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="Example"}}
+      <div>{{rsa-editable-text value=editableText persistChanges=(action 'persistTextChanges')}}</div>
+
+        {{!-- BEGIN-SNIPPET editableTextExample
+          <div>{{rsa-editable-text value=editableText persistChanges=(action 'persistTextChanges')}}</div>
+        END-SNIPPET --}}
+        {{code-snippet name="editableTextExample.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+
+    {{#spec-category title="Inputs"}}
+      {{#spec-member title="value" subtitle="value:String or Number"}}
+        {{!-- BEGIN-SNIPPET editableTextValue
+          'Any String or Number Will Do'
+        END-SNIPPET --}}
+        {{code-snippet name="editableTextValue.hbs"}}
+      {{/spec-member}}
+      {{#spec-member title="persistChanges" subtitle="persistChanges:Action or ActionCreator used to update value"}}
+        {{!-- BEGIN-SNIPPET editableTextPersistChanges
+        {
+          actions: {
+            persistTextChanges(value) {
+              this.set('value', value);
+            }
+          }
+        }
+        END-SNIPPET --}}
+        {{code-snippet name="editableTextPersistChanges.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+  </fill>
+</hbox>

@@ -1,0 +1,48 @@
+.rsa-editable-text {
+  position: relative;
+  color: text-color(primary, lightest);
+
+  .controls {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .rsa-form-label {
+    display: none;
+  }
+
+  .ember-text-field {
+    margin-top: 0;
+    padding-top: 0;
+    font-size: inherit;
+  }
+
+  .edit {
+    color: text-color(primary, lighter);
+    margin-left: rsa-whitespace(least);
+
+    &:hover {
+      cursor: pointer;
+      color: text-color(primary, lightest);
+    }
+  }
+
+  &.edit-mode {
+    .controls {
+      @include rsa-layer(controls);
+      margin-right: rsa-whitespace(least);
+
+      .cancel,
+      .save {
+        color: text-color(primary, lighter);
+        padding: rsa-whitespace(less) rsa-whitespace(least);
+
+        &:hover {
+          cursor: pointer;
+          color: text-color(primary, lightest);
+        }
+      }
+    }
+  }
+}
