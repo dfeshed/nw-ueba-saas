@@ -1,1 +1,8 @@
-<h1>Welcome to Ember</h1>
+{{#rsa-page-layout as |layout|}}
+  {{#layout.left as |left|}}
+    {{left.header}}
+  {{/layout.left}}
+  {{#layout.center}}
+    {{hw-list}}
+  {{/layout.center}}
+{{/rsa-page-layout}}

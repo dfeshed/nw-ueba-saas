@@ -1,13 +1,11 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import Immutable from 'seamless-immutable';
 import { patchReducer } from '../../../helpers/vnext-patch';
-
+import Immutable from 'seamless-immutable';
 import { revertPatch } from '../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
-
+import { render, findAll } from '@ember/test-helpers';
 
 let setState;
 
@@ -28,7 +26,7 @@ const monitors = [{
   'suppressionConfigured': false
 }];
 
-module('Integration | Component | health-wellness-container', function(hooks) {
+module('Integration | Component | hw-list', function(hooks) {
 
   setupRenderingTest(hooks);
 
@@ -42,13 +40,13 @@ module('Integration | Component | health-wellness-container', function(hooks) {
     revertPatch();
   });
 
-  test('health-wellness-container component renders', async function(assert) {
+  test('hw-table component renders', async function(assert) {
 
     new ReduxDataHelper(setState).monitors(monitors);
-    await render(hbs`{{health-wellness-container}}`);
+    await render(hbs`{{hw-list}}`);
 
-    assert.equal(findAll('.hw-container').length, 1, 'health wellness container is rendered');
-    assert.equal(findAll('.hw-list').length, 1, 'health wellness table is rendered');
+    assert.equal(findAll('.hw-list').length, 1, 'health wellness list is rendered');
 
   });
+
 });

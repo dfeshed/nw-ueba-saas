@@ -8,6 +8,7 @@ const respondConfigGen = require('../../../respond').socketRouteGenerator;
 const configureConfigGen = require('../../../configure').socketRouteGenerator;
 const packagerConfigGen = require('../../../packager').socketRouteGenerator;
 const endpointRARInstaller = require('../../../endpoint-rar').socketRouteGenerator;
+const healthWellnessConfigGen = require('../../../health-wellness').socketRouteGenerator;
 const adminEngineConfigGen = require('../../../admin').socketRouteGenerator;
 const licenseConfigGen = require('../../../license').socketRouteGenerator;
 const springboardConfigGen = require('../../../springboard').socketRouteGenerator;
@@ -23,6 +24,7 @@ const configGenerators = [
   preferencesConfigGen,
   packagerConfigGen,
   endpointRARInstaller,
+  healthWellnessConfigGen,
   adminEngineConfigGen,
   licenseConfigGen,
   springboardConfigGen,

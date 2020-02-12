@@ -1,0 +1,18 @@
+{{#rsa-data-table
+   items=items
+   columnsConfig=columns}}
+
+  {{#rsa-data-table/header as |column|}}
+    {{#unless column.disableSort}}
+      {{rsa-icon
+      name="arrow-down-7"
+      class="sort"}}
+    {{/unless}}
+    {{column.title}}
+  {{/rsa-data-table/header}}
+
+  {{#rsa-data-table/body as |item index column|}}
+    {{rsa-data-table/body-cell item=item column=column}}
+  {{/rsa-data-table/body}}
+
+{{/rsa-data-table}}
