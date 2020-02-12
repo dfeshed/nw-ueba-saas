@@ -17,7 +17,7 @@
     <h4 class="rsa-form-radio-group-label remediation-action-title">
       {{t "investigateFiles.editFileStatus.remediationActionTitle"}}
     </h4>
-    <p class="remediation-action-note">{{t "investigateFiles.editFileStatus.remediationActionNote"}}</p>
+    <p class="remediation-action-note">{{t "investigateFiles.editFileStatus.remediationActionNote" htmlSafe=true}}</p>
     {{#if errorDecorator.remediationAlert}}
       <span class="remediation-alert">
         {{rsa-icon class="rsa-icon-report-problem-triangle"}}

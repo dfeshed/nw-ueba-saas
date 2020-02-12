@@ -131,8 +131,8 @@ test('filePathValidation', function(assert) {
   const value1 = filePathValidation();
   assert.equal(value1, false, '');
 
-  const value2 = filePathValidation('D:\\folder\\test.xml', 'windows');
-  assert.equal(value2, true, 'D:\\folder\\test.xml, Valid Windows path');
+  const value2 = filePathValidation('D:\\Folder\\Test.xMl', 'windows');
+  assert.equal(value2, true, 'D:\\Folder\\Test.xMl, Valid Windows path');
 
   const value5 = filePathValidation('/folder/test.xml', 'windows', '\\');
   assert.equal(value5, false, '/folder/test.xml, invalid windows path');
@@ -143,8 +143,8 @@ test('filePathValidation', function(assert) {
   const value3 = filePathValidation('D:/folder/test.xml', 'linux', '/');
   assert.equal(value3, false, 'D:/folder/test.xml, invalid Linux path');
 
-  const value4 = filePathValidation('/folder/test.xml', 'linux', '/');
-  assert.equal(value4, true, '/folder/test.xml, Valid Linux path');
+  const value4 = filePathValidation('/Folder/tEst.xMl', 'linux', '/');
+  assert.equal(value4, true, '/Folder/tEst.xMl, Valid Linux path');
 
   const value7 = filePathValidation('/folder**/test.xml', 'linux', '/');
   assert.equal(value7, false, '/folder**/test.xml, invalid Linux path, more than 1 wildcard in the directory path');
