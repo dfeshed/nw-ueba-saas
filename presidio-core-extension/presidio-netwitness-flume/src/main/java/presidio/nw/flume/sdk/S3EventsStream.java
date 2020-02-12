@@ -1,5 +1,7 @@
 package presidio.nw.flume.sdk;
 
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.PredefinedClientConfigurations;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
@@ -23,7 +25,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class S3EventsStream extends AbstractNetwitnessEventsStream {
 
-    private static final Logger logger = LoggerFactory.getLogger(NetwitnessEventsStream.class);
+    private static final Logger logger = LoggerFactory.getLogger(S3EventsStream.class);
 
     /**
      * Instantiate the iterator for streaming. The config map MUST contain the following properties:
@@ -35,6 +37,14 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
      * <li>region: AWS region to read from</li>
      *
      * </ul>
+     *
+     * The ClientConfiguration will handle retries. The default settings retrying requests for the following cases:
+     * <ul>
+     * <li>Retry on client exceptions caused by IOException
+     * <li>Retry on service exceptions that are either 500 internal server
+     *     errors, 503 service unavailable errors, service throttling errors or
+     *     clock skew errors.
+     *<ul>
      *
      * @param schema    the data schema
      * @param startDate the start date of events to fetch
@@ -48,7 +58,9 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
         validateConfiguration(config);
         String bucket = config.get("bucket");
 
-        AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
+        ClientConfiguration clientConfiguration = PredefinedClientConfigurations.defaultConfig();
+        clientConfiguration.setMaxErrorRetry(10);
+        AmazonS3 s3 = AmazonS3ClientBuilder.standard().withClientConfiguration(clientConfiguration).build();
 
         S3DataIterator iterator;
         try {
