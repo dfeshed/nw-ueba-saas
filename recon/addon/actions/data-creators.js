@@ -113,6 +113,19 @@ const _fetchTextData = function(dispatch, state) {
   );
 };
 
+const _fetchReconFiles = function(dispatch, state) {
+  fetchReconFiles(state.recon.data)
+    .then(({ data }) => {
+      dispatch({
+        type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,
+        payload: data
+      });
+    })
+    .catch((response) => {
+      dispatch(_handleContentError(response, 'file'));
+    });
+};
+
 /**
  * Generic handler for errors fetching recon view data.
  * @param {object} response - Promise response object.
@@ -167,16 +180,7 @@ const _handleFetchingNewData = (newViewCode) => {
         // so use external interface to kill any batching
         // that may be occuring for other views
         killAllBatching();
-        fetchReconFiles(state.recon.data)
-          .then(({ data }) => {
-            dispatch({
-              type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,
-              payload: data
-            });
-          })
-          .catch((response) => {
-            dispatch(_handleContentError(response, 'file'));
-          });
+        _fetchReconFiles(dispatch, state);
         break;
       case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
         fetchPacketData(
@@ -196,16 +200,7 @@ const _handleFetchingNewData = (newViewCode) => {
           (payload) => dispatch({ type: ACTION_TYPES.EMAIL_RENDER_NEXT, payload }),
           (response) => dispatch(_handleContentError(response, 'email'))
         );
-        fetchReconFiles(state.recon.data)
-          .then(({ data }) => {
-            dispatch({
-              type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,
-              payload: data
-            });
-          })
-          .catch((response) => {
-            dispatch(_handleContentError(response, 'file'));
-          });
+        _fetchReconFiles(dispatch, state);
         break;
     }
   };
@@ -245,21 +240,21 @@ const _handleRenderingStateData = (newViewCode) => {
 
 const pageFirst = () => {
   return (dispatch) => {
-    dispatch(_changePageNumber(1));
+    dispatch(_handleChangePageNumber(1));
   };
 };
 
 const pagePrevious = () => {
   return (dispatch, getState) => {
     const pageNumber = Number(getState().recon.packets.pageNumber) - 1;
-    dispatch(_changePageNumber(pageNumber));
+    dispatch(_handleChangePageNumber(pageNumber));
   };
 };
 
 const pageNext = () => {
   return (dispatch, getState) => {
     const pageNumber = Number(getState().recon.packets.pageNumber) + 1;
-    dispatch(_changePageNumber(pageNumber));
+    dispatch(_handleChangePageNumber(pageNumber));
   };
 };
 
@@ -267,7 +262,7 @@ const pageLast = () => {
   return (dispatch, getState) => {
     const { recon, recon: { packets: { packetsPageSize } } } = getState();
     const pageNumber = Math.ceil(packetTotal(recon) / packetsPageSize);
-    dispatch(_changePageNumber(pageNumber));
+    dispatch(_handleChangePageNumber(pageNumber));
   };
 };
 
@@ -277,7 +272,7 @@ const jumpToPage = (newPage) => {
       const { recon, recon: { packets: { packetsPageSize } } } = getState();
       const totalPages = Math.ceil(packetTotal(recon) / packetsPageSize);
       if (newPage > 1 && newPage <= totalPages) {
-        dispatch(_changePageNumber(newPage));
+        dispatch(_handleChangePageNumber(newPage));
       } else if (newPage <= 1) {
         dispatch(pageFirst());
       } else if (newPage > totalPages) {
@@ -288,12 +283,17 @@ const jumpToPage = (newPage) => {
 };
 
 const _changePageNumber = (pageNumber) => {
+  return {
+    type: ACTION_TYPES.CHANGE_PAGE_NUMBER,
+    payload: pageNumber
+  };
+};
+
+const _handleChangePageNumber = (pageNumber) => {
   return (dispatch, getState) => {
     _cleanUpMemory();
-    dispatch({
-      type: ACTION_TYPES.CHANGE_PAGE_NUMBER,
-      payload: pageNumber
-    });
+    dispatch(_changePageNumber(pageNumber));
+    // async
     dispatch(_handleFetchingNewData(getState().recon.visuals.currentReconView.code));
   };
 };
@@ -350,6 +350,17 @@ const _textChangePageNumber = (textPageNumber) => {
 };
 
 /**
+ * sets new recon view and stores
+ * @param {*} newView
+ */
+const handleSetNewReconView = (newView) => {
+  return (dispatch) => {
+    dispatch(_setNewReconView(newView));
+    dispatch(_storeDefaultReconView(newView));
+  };
+};
+
+/**
  * An Action Creator for changing a recon view. Dispatches action to update
  * visual indicators, then will either fetch the data for the recon view or
  * prepare the data already in state.
@@ -357,7 +368,7 @@ const _textChangePageNumber = (textPageNumber) => {
  * @returns {function} redux-thunk
  * @public
  */
-const setNewReconView = (newView) => {
+const _setNewReconView = (newView) => {
   return (dispatch, getState) => {
     // Open web/email view of classic NW events reconstruction page in a new browser tab
     // without changing any content in current tab.
@@ -394,7 +405,7 @@ const setNewReconView = (newView) => {
  * defaultReconView is synced with investigate-preferences, but can be updated for recon from recon-titlebar
  * this is the view that is used when opening event in recon
  */
-const storeDefaultReconView = (newView) => {
+const _storeDefaultReconView = (newView) => {
   return {
     type: ACTION_TYPES.STORE_RECON_VIEW,
     payload: { newView }
@@ -525,11 +536,11 @@ const determineReconView = (meta) => {
 const _reconPreferencesAlreadyInitialized = (dispatch, forcedView, getState) => {
   // in case the selected event has a forcedView (eg: log/endpoint)
   if (forcedView) {
-    dispatch(setNewReconView(forcedView));
+    dispatch(_setNewReconView(forcedView));
   } else {
     // defaultReconView is the default view for recon that is updated from investigate-preferences and recon-titlebar
     const newView = getState().recon.visuals.defaultReconView;
-    dispatch(setNewReconView(newView));
+    dispatch(_setNewReconView(newView));
   }
 };
 
@@ -545,7 +556,7 @@ const _initReconPreferences = (dispatch, forcedView) => {
     cookieStore.persist({ authenticated: authCookie });
     const defaultView = _.get(data, 'eventAnalysisPreferences.currentReconView', RECON_VIEW_TYPES_BY_NAME.TEXT.name);
     const reconView = forcedView || RECON_VIEW_TYPES_BY_NAME[defaultView];
-    dispatch(setNewReconView(reconView));
+    dispatch(_setNewReconView(reconView));
   });
 };
 
@@ -562,7 +573,7 @@ const reconPreferencesUpdated = (preferences) => {
      * But for Log/Endpoint Event , it needs to remain 'Text Analysis' always.
      */
     if (newReconView && reconViewChanged && !(isLogEvent(getState().recon) || isEndpointEvent(getState().recon))) {
-      dispatch(setNewReconView(RECON_VIEW_TYPES_BY_NAME[newReconView]));
+      dispatch(_setNewReconView(RECON_VIEW_TYPES_BY_NAME[newReconView]));
     }
   };
 };
@@ -757,8 +768,7 @@ export {
   textPagePrevious,
   textPageNext,
   textPageLast,
-  setNewReconView,
-  storeDefaultReconView,
+  handleSetNewReconView,
   teardownNotifications,
   toggleMetaData,
   togglePayloadOnly,
