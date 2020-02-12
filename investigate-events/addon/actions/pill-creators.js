@@ -1,102 +1,24 @@
-import { lookup } from 'ember-dependency-lookup';
-import RSVP from 'rsvp';
-
 import * as ACTION_TYPES from './types';
 import { selectedPills, focusedPill, pillsData } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
-import validateQueryFragment from './fetch/query-validation';
 import {
   findEmptyParensAtPosition,
   findSelectedPills,
   findMissingTwins,
-  getAdjacentDeletableLogicalOperatorAt
+  getAdjacentDeletableLogicalOperatorAt,
+  isValidatablePill
 } from 'investigate-events/actions/pill-utils';
-import { transformTextToPillData } from 'investigate-events/util/query-parsing';
-import { ValidatableFilter } from 'investigate-events/util/filter-types';
 import {
-  COMPLEX_FILTER,
   TEXT_FILTER,
   OPERATOR_AND,
   OPERATOR_OR
 } from 'investigate-events/constants/pill';
+import {
+  batchValidation,
+  clientSideValidation
+} from 'investigate-events/actions/pill-validation-creators';
 
 const { log } = console; // eslint-disable-line no-unused-vars
-
-/**
- * Client side validation. Parser handles most validation, but if the pill has
- * not been through the parser already, do so.
- * 1. If the pill returned is a normal query pill & is not marked invalid,
- *    send for server side validation.
- * 2. If the pill is complex, send for server side validation.
- * 3. If the pill was marked invalid by the parser, no action is needed. The
- *    invalid pill is already in state with the correct error message.
- * @private
- */
-const _clientSideValidation = ({ pillData, position, isFromParser = false }) => {
-  return (dispatch, getState) => {
-    const { type } = pillData;
-    if (!isFromParser && type !== COMPLEX_FILTER) {
-      // If not from parser, no validation has been performed yet. Re-get pillData
-      // by putting through parser to do client side validation.
-      const { language, aliases } = languageAndAliasesForParser(getState());
-      const { meta, operator, value } = pillData;
-      const pills = transformTextToPillData(`${meta || ''} ${operator || ''} ${value || ''}`.trim(), { language, aliases, returnMany: true });
-      if (pills.length > 1) {
-        const i18n = lookup('service:i18n');
-        pillData.isInvalid = true;
-        pillData.validationError = i18n.t('queryBuilder.validationMessages.tooManyPills');
-      } else {
-        pillData = pills[0];
-      }
-    }
-
-    const { isInvalid } = pillData;
-    if (isInvalid && !isFromParser && type !== COMPLEX_FILTER) {
-      // If the pill is marked invalid but was not from the parser, dispatch an action now to mark it invalid.
-      // Otherwise, it was already marked invalid.
-      dispatch({
-        type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
-        promise: RSVP.Promise.reject({ meta: pillData.validationError }),
-        meta: {
-          position, // position is needed to update pill in reducer
-          isServerSide: false // sets `isValidationInProgress = true` while the req is being processed
-        }
-      });
-    } else if (!isInvalid || type === COMPLEX_FILTER) {
-      // This catches complex pills, and pills that passed client side validation.
-      // We still want to perform server side validation on those.
-      dispatch(_serverSideValidation(pillData, position));
-    }
-    // The only pills left once we get here are invalid pills that were invalid
-    // before being sent to this method. Those are already marked invalid in
-    // state, so no work needs to be done.
-  };
-};
-
-export const _serverSideValidation = (pillData, position) => {
-  return (dispatch, getState) => {
-    const { meta, operator, value, complexFilterText } = pillData;
-    let stringifiedPill;
-    // create stringified pill data, or just use the what was entered for
-    // complex filters
-    if (meta && operator) {
-      stringifiedPill = `${meta || ''} ${operator || ''} ${value || ''}`.trim();
-    } else {
-      stringifiedPill = complexFilterText;
-    }
-    // encode the string and pull out the service id
-    const encodedPill = encodeURIComponent(stringifiedPill);
-    const { serviceId } = getState().investigate.queryNode;
-    dispatch({
-      type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
-      promise: validateQueryFragment(serviceId, encodedPill),
-      meta: {
-        position, // position is needed to update pill in reducer
-        isServerSide: true // sets `isValidationInProgress = false` after the req was processed
-      }
-    });
-  };
-};
+const BATCH_VALIDATION_PILL_COUNT = 5;
 
 export const addGuidedPill = ({ pillData, position, shouldAddFocusToNewPill = false }) => {
   return (dispatch) => {
@@ -108,7 +30,7 @@ export const addGuidedPill = ({ pillData, position, shouldAddFocusToNewPill = fa
         shouldAddFocusToNewPill
       }
     });
-    dispatch(_clientSideValidation({ pillData, position }));
+    dispatch(clientSideValidation({ pillData, position }));
   };
 };
 
@@ -121,17 +43,24 @@ export const batchAddPills = ({ pillsData, initialPosition }) => {
         initialPosition
       }
     });
-    pillsData.forEach((pillData, i) => {
-      // Any pill that extends from the `ValidatableFilter` class will need to
-      // be validated. Excludes pill types like text, open/close paren, etc.
-      if (pillData instanceof ValidatableFilter) {
-        dispatch(_clientSideValidation({
-          pillData,
-          position: initialPosition + i,
-          isFromParser: true
-        }));
-      }
-    });
+    // In order to optimize performance, we use batch validation for pills when they are
+    // more than some decided number. Batch validation enables us to make one call instead
+    // of individual server calls.
+    if (pillsData.filter(isValidatablePill).length >= BATCH_VALIDATION_PILL_COUNT) {
+      dispatch(batchValidation(pillsData, initialPosition, true));
+    } else {
+      pillsData.forEach((pillData, i) => {
+        // Any pill that extends from the `ValidatableFilter` class will need to
+        // be validated. Excludes pill types like text, open/close paren, etc.
+        if (isValidatablePill(pillData)) {
+          dispatch(clientSideValidation({
+            pillData,
+            position: initialPosition + i,
+            isFromParser: true
+          }));
+        }
+      });
+    }
   };
 };
 
@@ -165,7 +94,7 @@ export const editGuidedPill = ({ pillData, position }) => {
     });
     // Don't validate Text filters
     if (pillData.type !== TEXT_FILTER) {
-      dispatch(_clientSideValidation({ pillData, position }));
+      dispatch(clientSideValidation({ pillData, position }));
     }
   };
 };
@@ -260,7 +189,7 @@ export const addFreeFormFilter = ({ pillData, position = 0, shouldAddFocusToNewP
         fromFreeFormMode
       }
     });
-    dispatch(_clientSideValidation({ pillData, position }));
+    dispatch(clientSideValidation({ pillData, position }));
   };
 };
 

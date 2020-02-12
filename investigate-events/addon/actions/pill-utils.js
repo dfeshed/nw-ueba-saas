@@ -8,6 +8,7 @@ import {
   QUERY_FILTER,
   TEXT_FILTER
 } from 'investigate-events/constants/pill';
+import { ValidatableFilter } from 'investigate-events/util/filter-types';
 
 /**
  * The pill has to be QF or text or complex
@@ -369,6 +370,8 @@ const _hasMultipleParenSets = (text) => {
   return text.indexOf(')') !== text.lastIndexOf(')');
 };
 
+const isValidatablePill = (pill) => pill instanceof ValidatableFilter;
+
 export {
   _hasEmptyParensAt, // exported for test
   _hasMultipleParenSets, // exported for test
@@ -384,6 +387,7 @@ export {
   findUnnecessaryOperators,
   isEmptyParenSetAt,
   isLogicalOperator,
+  isValidatablePill,
   isValidToWrapWithParens,
   selectPillsFromPosition,
   selectedPillIndexes,

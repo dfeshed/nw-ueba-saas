@@ -1,5 +1,5 @@
 export const invalidServerResponse = {
-  'code': 1,
+  'code': 0,
   'request': {
     'id': 'req-12',
     'stream': {
@@ -23,13 +23,13 @@ export const invalidServerResponse = {
     ],
     'filterOperator': 'and'
   },
-  'meta': {
-    'message': 'expecting <comma-separated list of numeric ranges, values, or value aliases> or <comma-separated list of keys> here: \'242424242424242424242424\''
+  'data': {
+    'sessionid%20%3D%20242424242424242424242424': 'expecting <comma-separated list of numeric ranges, values, or value aliases> or <comma-separated list of keys> here: \'242424242424242424242424\''
   }
 };
 
 export const invalidServerResponseText = {
-  'code': 1,
+  'code': 0,
   'request': {
     'id': 'req-12',
     'stream': {
@@ -53,8 +53,8 @@ export const invalidServerResponseText = {
     ],
     'filterOperator': 'and'
   },
-  'meta': {
-    'message': 'Invalid server response'
+  'data': {
+    'alert%20%3D%20x': 'Invalid server response'
   }
 };
 

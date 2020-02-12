@@ -722,7 +722,7 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     assert.equal(result.pillsData[1], stateWithPills.pillsData[1], 'starting server-side validation does not change state');
   });
 
-  test('VALIDATE_GUIDED_PILL reducer updates state when validation fails', async function(assert) {
+  test('VALIDATE_GUIDED_PILL reducer updates state when client validation fails', async function(assert) {
 
     const failureAction = makePackAction(LIFECYCLE.FAILURE, {
       type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
@@ -755,10 +755,13 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     assert.equal(result.pillsData[1], stateWithPills.pillsData[1], 'success of client-side validation does not change state');
   });
 
-  test('VALIDATE_GUIDED_PILL reducer updates state when server-side validation succeeds', async function(assert) {
+  test('VALIDATE_GUIDED_PILL reducer updates state when server-side validation succeeds with no errors', async function(assert) {
 
     const startAction = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
+      payload: {
+        data: {}
+      },
       meta: {
         position: 1,
         isServerSide: true
@@ -770,6 +773,29 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     assert.ok(result.pillsData[1].id !== '2', 'updated pillsData item has updated ID');
     assert.equal(result.pillsData[1].validationError, undefined, 'pillsData item reset its validation error');
     assert.notOk(result.pillsData[1].isInvalid, 'pill is invalid');
+    assert.notOk(result.pillsData[1].isValidationInProgress, 'pill is done validating');
+  });
+
+  test('VALIDATE_GUIDED_PILL reducer updates state when validation succeeds with errors', async function(assert) {
+
+    const failureAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
+      payload: {
+        data: {
+          'queryString': 'Error in validation'
+        }
+      },
+      meta: {
+        position: 1,
+        isServerSide: true
+      }
+    });
+    const result = reducer(stateWithPills, failureAction);
+
+    assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
+    assert.ok(result.pillsData[1].id !== '2', 'updated pillsData item has updated ID');
+    assert.equal(result.pillsData[1].validationError.message, 'Error in validation', 'pillsData item had its data updated with error');
+    assert.ok(result.pillsData[1].isInvalid, 'pill is invalid');
     assert.notOk(result.pillsData[1].isValidationInProgress, 'pill is done validating');
   });
 
@@ -1955,5 +1981,172 @@ module('Unit | Reducers | QueryNode', function(hooks) {
     const result = reducer(previousState, action);
 
     assert.equal(result.investigate.queryNode.tableSessionId, 123);
+  });
+
+  test('BATCH_VALIDATE_GUIDED_PILL reducer updates pills with errors and marks isValidationInProgress to false', async function(assert) {
+    const previousState = Immutable.from({
+      pillsData: [
+        {
+          meta: 'foo',
+          operator: '=',
+          value: 'bar',
+          isValidationInProgress: true
+        },
+        {
+          meta: 'foo',
+          operator: '=',
+          value: 'baz',
+          isValidationInProgress: true
+        }
+      ]
+    });
+
+    const action = {
+      type: ACTION_TYPES.BATCH_VALIDATE_GUIDED_PILL,
+      payload: {
+        pillsData: [
+          {
+            pillData: {
+              isInvalid: true,
+              validationError: 'boo'
+            },
+            position: 0
+          }
+        ],
+        markAll: false
+      }
+    };
+
+    // Will only mark first pill's isValidationInProgress as markAll is false
+    const pD = reducer(previousState, action).pillsData;
+    assert.ok(pD[0].isInvalid, 'First pill should be marked invalid');
+    assert.equal(pD[0].validationError, 'boo', 'First pill should contain the expected message');
+    assert.notOk(pD[0].isValidationInProgress, 'Flag should be false');
+
+    // Since markAll is false, second pill's isValidationInProgress should be true
+    assert.ok(pD[1].isValidationInProgress, 'Flag should be true');
+  });
+
+  test('BATCH_VALIDATE_GUIDED_PILL reducer marks all isValidationInProgress to false if markAll is true', async function(assert) {
+    const previousState = Immutable.from({
+      pillsData: [
+        {
+          meta: 'foo',
+          operator: '=',
+          value: 'bar',
+          isValidationInProgress: true
+        },
+        {
+          meta: 'foo',
+          operator: '=',
+          value: 'baz',
+          isValidationInProgress: true
+        }
+      ]
+    });
+
+    const action = {
+      type: ACTION_TYPES.BATCH_VALIDATE_GUIDED_PILL,
+      payload: {
+        pillsData: [
+          {
+            pillData: {
+              isInvalid: true,
+              validationError: 'boo'
+            },
+            position: 0
+          }
+        ],
+        markAll: true
+      }
+    };
+    const pD = reducer(previousState, action).pillsData;
+    assert.ok(pD[0].isInvalid, 'First pill should be marked invalid');
+    assert.equal(pD[0].validationError, 'boo', 'First pill should contain the expected message');
+    assert.notOk(pD[0].isValidationInProgress, 'Flag should be false');
+
+    assert.notOk(pD[1].isValidationInProgress, 'Flag should be false');
+  });
+
+  test('VALIDATION_IN_PROGRESS reducer updates validationFlag for all positions in the array', async function(assert) {
+    const previousState = Immutable.from({
+      pillsData: [
+        {
+          meta: 'foo',
+          operator: '=',
+          value: 'bar',
+          isValidationInProgress: false
+        },
+        {
+          type: OPERATOR_AND
+        },
+        {
+          meta: 'foo',
+          operator: '=',
+          value: 'baz',
+          isValidationInProgress: false
+        },
+        {
+          meta: 'bar',
+          operator: '=',
+          value: 'baz',
+          isValidationInProgress: false
+        }
+      ]
+    });
+
+    const action = {
+      type: ACTION_TYPES.VALIDATION_IN_PROGRESS,
+      payload: {
+        positionArray: [ 0, 2],
+        validationFlag: true
+      }
+    };
+    const pD = reducer(previousState, action).pillsData;
+
+    assert.ok(pD[0].isValidationInProgress, 'Flag should be true');
+    assert.ok(pD[2].isValidationInProgress, 'Flag should be true');
+    assert.notOk(pD[3].isValidationInProgress, 'Flag should be false');
+  });
+
+  test('VALIDATION_IN_PROGRESS will mark all with validationFlag if positionArray is empty', async function(assert) {
+    const previousState = Immutable.from({
+      pillsData: [
+        {
+          meta: 'foo',
+          operator: '=',
+          value: 'bar',
+          isValidationInProgress: true
+        },
+        {
+          type: OPERATOR_AND
+        },
+        {
+          meta: 'foo',
+          operator: '=',
+          value: 'baz',
+          isValidationInProgress: true
+        },
+        {
+          meta: 'bar',
+          operator: '=',
+          value: 'baz',
+          isValidationInProgress: true
+        }
+      ]
+    });
+
+    const action = {
+      type: ACTION_TYPES.VALIDATION_IN_PROGRESS,
+      payload: {
+        positionArray: [ ],
+        validationFlag: false
+      }
+    };
+    const pD = reducer(previousState, action).pillsData;
+
+    assert.notOk(pD[0].isValidationInProgress, 'Flag should be true');
+    assert.notOk(pD[2].isValidationInProgress, 'Flag should be true');
+    assert.notOk(pD[3].isValidationInProgress, 'Flag should be true');
   });
 });

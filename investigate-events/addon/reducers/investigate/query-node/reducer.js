@@ -330,6 +330,21 @@ const _replaceAllPills = (state, pillData, pillHashes) => {
   return state;
 };
 
+const _replaceValidatedPills = (pillsData, position, newPillProps) => {
+  const currentPillData = pillsData[position];
+
+  return Immutable.from([
+    ...pillsData.slice(0, position),
+    {
+      ...currentPillData,
+      ...newPillProps,
+      id: _.uniqueId(ID_PREFIX)
+
+    },
+    ...pillsData.slice(position + 1)
+  ]);
+};
+
 const _updatePillProperties = (state, position, updatedProperties) => {
   const { pillsData } = state;
   const currentPill = pillsData[position];
@@ -611,6 +626,56 @@ export default handleActions({
     return _handlePillUpdate(state, newPillData);
   },
 
+  [ACTION_TYPES.BATCH_VALIDATE_GUIDED_PILL]: (state, action) => {
+    let finalpills = state.pillsData;
+
+    const { pillsData: validatedPills, markAll } = action.payload;
+
+    validatedPills.forEach(({ pillData, position }) => {
+      finalpills = _replaceValidatedPills(finalpills, position, { ...pillData, isValidationInProgress: false });
+    });
+
+    // If this is the final action in the chain of validation calls,
+    // mark all the validationInProgress flags to false
+    if (markAll) {
+      finalpills = finalpills.map((pill) => {
+        if (pill.isValidationInProgress) {
+          return {
+            ...pill,
+            isValidationInProgress: false
+          };
+        }
+        return pill;
+      });
+    }
+    return state.set('pillsData', finalpills);
+  },
+
+  [ACTION_TYPES.VALIDATION_IN_PROGRESS]: (state, action) => {
+    let finalPills = state.pillsData;
+    const { positionArray, validationFlag } = action.payload;
+
+    // If the array is empty, we need to update all the pills with the flag
+    // This is a possible indication that all validation is complete.
+    if (positionArray.length === 0) {
+      finalPills = state.pillsData.map((pill) => {
+        if (pill.isValidationInProgress) {
+          return {
+            ...pill,
+            isValidationInProgress: validationFlag
+          };
+        }
+        return pill;
+      });
+    } else {
+      // Else just update the positions in the array sent.
+      positionArray.forEach((position) => {
+        finalPills = _replaceValidatedPills(finalPills, position, { isValidationInProgress: validationFlag });
+      });
+    }
+    return state.set('pillsData', finalPills);
+  },
+
   [ACTION_TYPES.VALIDATE_GUIDED_PILL]: (state, action) => {
     return handle(state, action, {
       start: (s) => {
@@ -623,6 +688,7 @@ export default handleActions({
           return s;
         }
       },
+      // This is being used by client side to reject with an error
       failure: (s) => {
         const newPillsData = _updatePillProperties(s, action.meta.position, {
           isInvalid: true,
@@ -631,12 +697,23 @@ export default handleActions({
         });
         return s.set('pillsData', newPillsData);
       },
+      // Server response comes back with code 0 even if a query has an error
+      // If the data object is empty, we can conclude that there are no errors
       success: (s) => {
         if (action.meta.isServerSide) {
+          const { payload: { data } } = action;
+          let validationError = undefined;
+          let isInvalid = false;
+          if (Object.values(data).length > 0) {
+            validationError = {
+              message: Object.values(data)[0]
+            };
+            isInvalid = true;
+          }
           const newPillsData = _updatePillProperties(s, action.meta.position, {
-            isInvalid: false,
+            isInvalid,
             isValidationInProgress: false,
-            validationError: undefined
+            validationError
           });
           return s.set('pillsData', newPillsData);
         } else {

@@ -74,11 +74,11 @@ const investigateConfigGen = function(env) {
         cancelDestination
       }
     },
-    'core-query-validate': {
+    'core-queries-validate': {
       socketUrl,
       query: {
-        subscriptionDestination: '/user/queue/investigate/validate/query',
-        requestDestination: '/ws/investigate/validate/query'
+        subscriptionDestination: '/user/queue/investigate/validate/queries',
+        requestDestination: '/ws/investigate/validate/queries'
       }
     },
     'event-settings': {

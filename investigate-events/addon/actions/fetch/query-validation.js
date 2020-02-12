@@ -1,27 +1,26 @@
-import {
-  conditionsFilter,
-  queryPromiseRequest,
-  serviceIdFilter
-} from 'investigate-shared/actions/api/events/utils';
+import { queryPromiseRequest } from 'investigate-shared/actions/api/events/utils';
 
 /**
 * Validate each query
 * @param {string|number} serviceId Id of the service
-* @param {String} filterString query string
+* @param {Array} filterStrings encoded query strings
 * @return {object} RSVP Promise
 * @public
 */
-
-export default function validateQueryFragment(serviceId, filterString) {
+const validateQueries = (serviceId, filterArray) => {
   const query = {
-    filter: [
-      serviceIdFilter(serviceId),
-      conditionsFilter(filterString)
-    ]
+    data: {
+      endpointId: serviceId,
+      queries: filterArray
+    }
   };
   return queryPromiseRequest(
-    'core-query-validate',
+    'core-queries-validate',
     query,
     { cancelPreviouslyExecuting: false }
   );
-}
+};
+
+export {
+  validateQueries
+};

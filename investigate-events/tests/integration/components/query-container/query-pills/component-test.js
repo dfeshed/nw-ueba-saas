@@ -22,8 +22,7 @@ import {
 } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
-import { throwSocket } from '../../../../helpers/patch-socket';
-import { invalidServerResponseText } from '../../../../unit/actions/data';
+import { patchSocket } from '../../../../helpers/patch-socket';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
@@ -568,7 +567,19 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   test('Creating a pill validates the pill (serverSide) and updates if necessary', async function(assert) {
-    const done = throwSocket({ methodToThrow: 'query', modelNameToThrow: 'core-query-validate', message: invalidServerResponseText });
+    const done = assert.async();
+    patchSocket(async(method, modelName, query) => {
+      if (modelName === 'core-queries-validate') {
+        assert.equal(modelName, 'core-queries-validate');
+        assert.equal(method, 'query');
+        assert.deepEqual(query, {
+          data: {
+            endpointId: 1,
+            queries: ['action%20%3D%20xxx']
+          }
+        });
+      }
+    });
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -580,11 +591,17 @@ module('Integration | Component | Query Pills', function(hooks) {
         {{query-container/query-pills isActive=true}}
       </div>
     `);
+    await selectChoose(PILL_SELECTORS.meta, 'alert');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, 'xxx');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+    await leaveNewPillTemplate();
 
-    await createBasicPill(false, 'Text');
+    await settled();
+    await waitUntil(() => findAll(PILL_SELECTORS.invalidPill).length === 1, { timeout: 5000 });
     // component class updates when store is updated
     assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Class for invalid pill should be present');
-    assert.equal(find(PILL_SELECTORS.invalidPill).getAttribute('title'), 'You entered \'\'x\'\'. Invalid server response', 'Expected title with the error message');
+    assert.equal(find(PILL_SELECTORS.invalidPill).getAttribute('title'), 'You entered \'\'xxx\'\'. Server error', 'Expected title with the error message');
     done();
   });
 

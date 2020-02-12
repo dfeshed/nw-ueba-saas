@@ -1,17 +1,32 @@
 import { module, test } from 'qunit';
-import { bindActionCreators } from 'redux';
 import { settled } from '@ember/test-helpers';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper, { TEXT_PILL_DATA } from '../../helpers/redux-data-helper';
-import { throwSocket } from '../../helpers/patch-socket';
-import { patchReducer } from '../../helpers/vnext-patch';
-import { invalidServerResponse } from './data';
 import pillCreators from 'investigate-events/actions/pill-creators';
 import ACTION_TYPES from 'investigate-events/actions/types';
 import { QueryFilter, ComplexFilter } from 'investigate-events/util/filter-types';
 import { createOperator } from 'investigate-events/util/query-parsing';
 import { OPERATOR_AND, OPERATOR_OR } from 'investigate-events/constants/pill';
+import {
+  OpenParen,
+  CloseParen,
+  OperatorAnd
+} from 'investigate-events/util/grammar-types';
+
+const createPill = (meta, operator, value) => QueryFilter.create({ meta, operator, value });
+const createAnd = () => OperatorAnd.create();
+const createClose = () => CloseParen.create();
+const createOpen = () => OpenParen.create();
+const addInvalidProp = (pill) => {
+  return QueryFilter.create({
+    ...pill,
+    isInvalid: true,
+    validationError: {
+      message: 'Client error'
+    }
+  });
+};
 
 module('Unit | Actions | Pill Creators', function(hooks) {
   setupTest(hooks);
@@ -361,42 +376,6 @@ module('Unit | Actions | Pill Creators', function(hooks) {
     const thunk = pillCreators.deleteSelectedGuidedPills(openParen);
 
     thunk(dispatch, getState);
-  });
-
-  test('_serverSideValidation will flag isInvalid and add a validation error in state from the response returned from web socket', async function(assert) {
-    assert.expect(2);
-
-    const mockedPillsData = [
-      {
-        meta: 'sessionid',
-        operator: '=',
-        value: 242424242424242424242424,
-        id: 1
-      }
-    ];
-
-    const done = throwSocket({ methodToThrow: 'query', modelNameToThrow: 'core-query-validate', message: invalidServerResponse });
-
-    new ReduxDataHelper((state) => patchReducer(this, state)).language().hasSummaryData(true, 1).pillsDataPopulated(mockedPillsData).build();
-
-    const redux = this.owner.lookup('service:redux');
-    const init = bindActionCreators(pillCreators._serverSideValidation, redux.dispatch.bind(redux));
-
-    const position = 0;
-    init({
-      meta: 'sessionid',
-      operator: '=',
-      value: '242424242424242424242424',
-      id: 1
-    }, position);
-
-    return settled().then(() => {
-      const { investigate: { queryNode: { pillsData } } } = redux.getState();
-      const currentPill = pillsData[position];
-      assert.ok(currentPill.isInvalid, 'Expected error flag');
-      assert.equal(currentPill.validationError.message, 'expecting <comma-separated list of numeric ranges, values, or value aliases> or <comma-separated list of keys> here: \'242424242424242424242424\'', 'Excpected server validation error');
-      done();
-    });
   });
 
   test('openGuidedPillForEdit dispatches the proper events', function(assert) {
@@ -849,5 +828,73 @@ module('Unit | Actions | Pill Creators', function(hooks) {
     };
     const thunk = pillCreators.unstashPills();
     thunk(dispatch, getState);
+  });
+
+  test('batchValidate action creator returns proper type and payload', function(assert) {
+    assert.expect(11);
+    const done = assert.async();
+    const getState = () => {
+      // Already has 3 pills
+      return new ReduxDataHelper().language().pillsDataPopulated().build();
+    };
+
+    const myDispatch = (action) => {
+      if (typeof action === 'function') {
+        action(updateFlagDispatch, getState);
+      } else {
+        assert.equal(action.type, ACTION_TYPES.BATCH_ADD_PILLS, 'action BATCH_ADD_PILLS was called');
+        assert.ok(action.payload.pillsData[0] instanceof QueryFilter, 'action pillsData has the right value');
+        assert.equal(action.payload.initialPosition, 3, 'action initialPosition has the right value');
+      }
+    };
+
+    let i = 0;
+    // This should be called as soon as we have some validatable pills to process
+    const updateFlagDispatch = (action) => {
+      if (typeof action === 'function') {
+        action(validateServerSideDispatch, getState);
+      } else if (i === 0) {
+        i++;
+        assert.equal(action.type, ACTION_TYPES.VALIDATION_IN_PROGRESS, 'Should contain validation in progress action');
+        assert.deepEqual(action.payload.positionArray, [3, 5, 7, 9, 11], 'Should contain all positions');
+      } else {
+        // If there are any invalid pills, BATCH_VALIDATE_GUIDED_PILL will be sent out with those failed
+        // client side pills
+        const { pillsData } = action.payload;
+        assert.equal(action.type, ACTION_TYPES.BATCH_VALIDATE_GUIDED_PILL, 'BATCH_VALIDATE_GUIDED_PILL is called with invalid client side pill');
+        assert.ok(pillsData[0].pillData.isInvalid, 'Failed client side error');
+        assert.equal(pillsData[0].position, 5, 'it should have the correct position so that state can update it');
+      }
+    };
+
+    // Called twice because of its recursive nature.
+    const validateServerSideDispatch = (action) => {
+      if (typeof action === 'function') {
+        action(validateServerSideDispatch, getState);
+      } else {
+        const { pillsData } = action.payload;
+        assert.equal(action.type, ACTION_TYPES.BATCH_VALIDATE_GUIDED_PILL, 'BATCH_VALIDATE_GUIDED_PILL is called with invalid server side pills');
+        assert.ok(pillsData[0].pillData.isInvalid, 'Should have failed server validation');
+        assert.equal(pillsData[0].position, 11, 'it should have the correct position so that state can update it');
+        done();
+      }
+    };
+
+    const pillsData = [
+      createPill('medium', '=', '1'),
+      createAnd(),
+      addInvalidProp(createPill('medium', '=', 'foo')), // client side failure
+      createOpen(),
+      createPill('action', 'exists'),
+      createClose(),
+      createPill('action', '=', 'bar'),
+      createAnd(),
+      createPill('action', '=', 'xxx') // server side failure
+    ];
+    const thunk = pillCreators.batchAddPills({
+      pillsData,
+      initialPosition: 3
+    });
+    thunk(myDispatch);
   });
 });
