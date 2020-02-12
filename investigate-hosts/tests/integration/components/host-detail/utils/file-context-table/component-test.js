@@ -765,4 +765,92 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     });
   });
 
+  test('it should render disable text css when file is deleted', async function(assert) {
+    const fileContext = {
+      1: {
+        id: 1,
+        fileName: 'test',
+        timeModified: 12313221,
+        hostCount: 1,
+        deleted: true,
+        fileProperties: {
+          checksumSha256: 'test',
+          checksumSha1: 'test',
+          checksumMd5: 'test',
+          signature: {
+            thumbprint: 1
+          }
+        },
+        signature: {
+          features: ['microsoft', 'valid']
+        }
+      }
+    };
+    initState({
+      endpoint: {
+        hostFiles: {
+          fileContext,
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    this.set('storeName', 'hostFiles');
+    this.set('tabName', 'Files');
+    this.set('columnConfig', config);
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(() => {
+      assert.equal(findAll('.deletedFile-disable-text').length, 3, 'Disabled text css class found');
+    });
+  });
+
+  test('it should not render disable text css when file is not deleted', async function(assert) {
+    const fileContext = {
+      1: {
+        id: 1,
+        fileName: 'test',
+        timeModified: 12313221,
+        hostCount: 1,
+        deleted: false,
+        fileProperties: {
+          checksumSha256: 'test',
+          checksumSha1: 'test',
+          checksumMd5: 'test',
+          signature: {
+            thumbprint: 1
+          }
+        },
+        signature: {
+          features: ['microsoft', 'valid']
+        }
+      }
+    };
+    initState({
+      endpoint: {
+        hostFiles: {
+          fileContext,
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    this.set('storeName', 'hostFiles');
+    this.set('tabName', 'Files');
+    this.set('columnConfig', config);
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(() => {
+      assert.equal(findAll('.deletedFile-disable-text').length, 0, 'disable css not found');
+    });
+  });
+
 });

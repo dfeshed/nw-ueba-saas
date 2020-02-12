@@ -1,25 +1,42 @@
 {{#if (eq column.format "DATE")}}
   {{#if (get item column.field)}}
-    {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
+    <div class={{if item.deleted "deletedFile-disable-text"}} >
+      {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
+    </div>
   {{/if}}
 {{else if (eq column.format "SIZE")}}
-  {{rsa-content-memsize size=(get item column.field)}}
+  <div class={{if item.deleted "deletedFile-disable-text"}} >
+    {{rsa-content-memsize size=(get item column.field)}}
+  </div>
 {{else if (eq column.format "DECIMAL")}}
-  {{rsa-round-decimal value=(get item column.field)}}
+  <div class={{if item.deleted "deletedFile-disable-text"}} >
+    {{rsa-round-decimal value=(get item column.field)}}
+  </div>
 {{else if (eq column.format "SIGNATURE")}}
-  {{signature-text (get item column.field) (get item column.signer)}}
+  <div class={{if item.deleted "deletedFile-disable-text"}} >
+    {{signature-text (get item column.field) (get item column.signer)}}
+  </div>
 {{else if (eq column.format "DOWNLOADSTATUS")}}
-  {{endpoint/download-status downloadInfo=(get item column.field) checksum=item.fileProperties.checksumSha256}}
+  <div class={{if item.deleted "deletedFile-disable-text"}} >
+    {{endpoint/download-status downloadInfo=(get item column.field) checksum=item.fileProperties.checksumSha256}}
+  </div>
 {{else if (eq column.format "FILENAME")}}
   <a class="file-name-link" href="/investigate/files/file?checksum={{item.fileProperties.checksumSha256}}&sid={{sid}}&sourceSid={{item.fileProperties.downloadInfo.serviceId}}" target="_blank" rel="noopener noreferrer">{{get item column.field}}</a>
 {{else if (eq column.field "status")}}
-  {{itemStatus}}
+  <div class={{if item.deleted "deletedFile-disable-text"}}>
+    {{itemStatus}}
+  </div>
 {{else if (or (eq column.field "fileProperties.score") (eq column.field "score") (eq column.field "machineFileScore"))}}
   <centered>
     {{rsa-risk-score score=(get item column.field) size="small"}}
   </centered>
 {{else if (eq column.field "fileProperties.fileStatus")}}
-  {{t (concat "investigateFiles.fileStatus." (get item column.field))}}
+  <div class={{if item.deleted "deletedFile-disable-text"}} >
+    {{t (concat "investigateFiles.fileStatus." (get item column.field))}}
+  </div>
 {{else}}
-  {{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}
+  <div class={{if item.deleted "deletedFile-disable-text"}} >
+    {{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}
+  </div>
+
 {{/if}}
