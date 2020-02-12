@@ -6,6 +6,7 @@ import { arc, pie } from 'd3-shape';
 import layout from './template';
 import { interpolateColors } from 'component-lib/utils/chart-utils';
 import { computed } from '@ember/object';
+import { htmlSafe } from '@ember/string';
 
 /**
  * Supported colors, If you want to introduce new color then add the mapping
@@ -173,6 +174,11 @@ export default class LayoutColumn extends Component {
         this._addLegend(svg, color, options);
       }
     }
+  }
+
+  @computed('options.height')
+  get customStyle() {
+    return htmlSafe(`height: ${this.options.height}px;`);
   }
 
   init() {

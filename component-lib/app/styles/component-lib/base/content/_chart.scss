@@ -83,7 +83,7 @@
 }
 .donut-chart {
   .column-name {
-    fill: text-color(neutral);
+    fill: text-color(primary, lightest);
     font-family: Lato;
     font-size: 16px;
     font-weight: 300;
@@ -93,12 +93,12 @@
     font-family: Lato, serif;
     font-size: 10px;
     font-weight: 900;
-    fill: rsa-color(gray, lighter);
+    fill: text-color(neutral);
   }
   .legend-count {
     font-family: Lato, serif;
     font-size: 20px;
     font-weight: 300;
-    fill: rsa-color(gray, lightest);
+    fill: text-color(primary, lightest);
   }
 }

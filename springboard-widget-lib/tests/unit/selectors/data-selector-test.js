@@ -13,12 +13,12 @@ module('Unit | Selectors | data selector', function() {
         ]
       },
       widget: {
-        content: []
+        aggregate: null
       }
 
     };
     const result = mashUpData(state);
-    assert.equal(result.aggregate, undefined, 'No aggregate data');
+    assert.equal(result.length, 0, 'No aggregate data');
 
     const state2 = {
       data: {
@@ -35,16 +35,13 @@ module('Unit | Selectors | data selector', function() {
         ]
       },
       widget: {
-        content: [{
-          type: 'chart',
-          aggregate: {
-            columns: ['name']
-          }
-        }]
+        aggregate: {
+          columns: ['name']
+        }
       }
 
     };
     const result2 = mashUpData(state2);
-    assert.equal(result2.aggregate.data.length, 2, 'Has Aggregate data');
+    assert.equal(result2.length, 2, 'Has Aggregate data');
   });
 });

@@ -20,13 +20,17 @@ module('Integration | Component | chart-widget', function(hooks) {
 
   test('it renders the appropriate chart based on the chart type', async function(assert) {
     const data = {
-      aggregate: {
-        data: [
-          { name: 'cats', value: 3 },
-          { name: 'dogs', value: 10 },
-          { name: 'horses', value: 17 }
-        ]
-      }
+      items: [
+        {
+          osType: 'windows'
+        },
+        {
+          osType: 'linux'
+        },
+        {
+          osType: 'mac'
+        }
+      ]
     };
     this.set('data', data);
     this.set('config', {

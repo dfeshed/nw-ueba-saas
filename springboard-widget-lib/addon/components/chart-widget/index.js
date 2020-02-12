@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { assert } from '@ember/debug';
 import { DONUT_CHART, DONUT_CHART_COMPONENT } from 'springboard-widget-lib/constants/springboard-widget-lib';
 import { inject as service } from '@ember/service';
+import { mashUpData } from 'springboard-widget-lib/selectors/data-selector';
 
 export default class ChartWidgetComponent extends Component {
 
@@ -22,7 +23,7 @@ export default class ChartWidgetComponent extends Component {
   }
 
   get chartData() {
-    return this.args.data?.aggregate?.data || [];
+    return mashUpData({ data: this.args.data, widget: this.args.config }) || [];
   }
 
   get chartComponent() {

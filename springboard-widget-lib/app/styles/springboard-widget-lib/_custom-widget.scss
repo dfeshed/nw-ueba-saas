@@ -5,13 +5,20 @@
     .rsa-data-table-body-row {
       height: 30px;
     }
+    .rsa-data-table-body-row:hover {
+      background-color: rgba(1,87,155,0.4);
+      padding: 0 0 0 rsa-whitespace(less);
+    }
+
     .rsa-data-table-body-cell {
+      color: text-color(primary, lighter);
       line-height: 30px;
       padding-top: 0;
       padding-bottom: 0;
+      background-color: transparent;
     }
     .rsa-data-table-header-row {
-      background-color: rsa-color(grey, darkest);
+      background-color: background-color(primary, darkest);
     }
   }
 }

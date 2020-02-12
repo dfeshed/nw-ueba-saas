@@ -1,5 +1,7 @@
 {{#if showMessage}}
-  <div class="empty-message">
-    {{t "springBoard.noChartDataMessage"}}
+  <div class="empty-message" style={{customStyle}}>
+    {{#rsa-panel-message}}
+      {{t "springboard.noChartDataMessage"}}
+    {{/rsa-panel-message}}
   </div>
 {{/if}}
