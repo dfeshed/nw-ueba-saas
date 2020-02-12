@@ -4,12 +4,8 @@ from airflow import LoggingMixin
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.adapter.adapter_operator import AdapterOperator
+from presidio.utils.airflow.operators.sensor.hour_is_ready_sensor_operator import HourIsReadySensorOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
-
-presidio_extension = __import__('presidio_extension.builders.adapter.adapter_dag_builder_extension',
-                                fromlist=['AdapterDagBuilderExtension'])
-AdapterDagBuilderExtension = getattr(presidio_extension, 'AdapterDagBuilderExtension')
-
 
 class AdapterOperatorBuilder(LoggingMixin):
     """
@@ -41,8 +37,12 @@ class AdapterOperatorBuilder(LoggingMixin):
             schema=self.schema,
             dag=dag)
 
-        adapter_dag_extended = AdapterDagBuilderExtension()
-        adapter_dag_extended.build(dag, self.schema, adapter_operator)
         task_sensor_service.add_task_sequential_sensor(adapter_operator)
 
-        return adapter_operator
+        hour_is_ready_sensor = HourIsReadySensorOperator(dag=dag,
+                                                         task_id='adapter_sensor_{}'.format(self.schema),
+                                                         poke_interval=60,  # 1 minute
+                                                         timeout=60 * 60 * 24 * 7,  # 1 week
+                                                         schema_name=self.schema)
+
+        return hour_is_ready_sensor >> adapter_operator
