@@ -65,6 +65,7 @@ Router.map(function() {
       this.route('riskScore');
       this.route('editableText');
       this.route('collapseableActions');
+      this.route('propertiesPanel');
     });
 
     this.route('form', function() {

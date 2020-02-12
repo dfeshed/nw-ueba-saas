@@ -1,0 +1,70 @@
+.rsa-properties-panel {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  header {
+    flex: 0 1 auto;
+    @include border-bottom(1px, solid, primary, dark);
+    background-color: #202A32;
+    position: relative;
+    color: text-color(primary, lightest);
+
+    .rsa-content-definition {
+      margin-left: rsa-whitespace();
+      margin-top: rsa-whitespace(less);
+      margin-right: rsa-whitespace(more);
+      margin-bottom: rsa-whitespace(less);
+      display: inline-flex;
+      flex-direction: column;
+    }
+
+    .control-icons {
+      margin-top: rsa-whitespace(least);
+      position: absolute;
+      padding: rsa-whitespace(less);
+      top: rsa-whitespace(less);
+      right: rsa-whitespace(less);
+
+      i {
+        margin-left: rsa-whitespace(less);
+
+        &:hover {
+          cursor: pointer;
+          color: text-color(primary, lightest);
+        }
+      }
+    }
+
+    h1 {
+      @include rsa-font(header, larger);
+      margin: rsa-whitespace();
+      margin-right: 5.5rem;
+      margin-bottom: rsa-whitespace(less);
+      color: text-color(primary, lightest);
+    }
+
+    h2 {
+      margin: rsa-whitespace();
+      margin-top: rsa-whitespace(less);
+    }
+  }
+
+  section {
+    background-color: background-color(tertiary, darkest);
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    .rsa-content-accordion {
+      .rsa-content-definition {
+        display: block;
+        margin-bottom: rsa-whitespace(more);
+      }
+    }
+  }
+}

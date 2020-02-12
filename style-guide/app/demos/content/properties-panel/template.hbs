@@ -1,0 +1,295 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="Example"}}
+        <div class="properties-panel-wrapper">
+          {{#rsa-properties-panel as |panel|}}
+            {{#panel.header as |header|}}
+              <div class="control-icons">
+                {{rsa-icon class="resize" name="expand-5" size="small" click=(action 'action')}}
+                {{rsa-icon class="resize" name="expand-diagonal-4" size="small" click=(action 'action')}}
+                {{rsa-icon class="close" name="close" size="small" click=(action 'action')}}
+              </div>
+
+              <h1>Panel Title</h1>
+              <h2>{{rsa-editable-text value=persistedText persistChanges=(action 'persistTextChanges')}}</h2>
+
+              {{rsa-collapseable-nav
+                onTabClick=(action "onTabClick")
+                activeTab=activeTab
+                contentSections=contentSections
+              }}
+
+              {{#if (eq activeTab "files")}}
+                {{rsa-collapseable-actions
+                  dropdownList=dropdownList
+                  buttonList=buttonList
+                  toggleList=toggleList
+                }}
+              {{/if}}
+            {{/panel.header}}
+
+            {{#panel.content}}
+              {{#rsa-content-accordion label="Global Meta Group Label 1"}}
+                {{rsa-content-definition label="Global Meta 1" value="A value"}}
+                {{rsa-content-definition label="Global Meta 1a" value="A value with a long length"}}
+                {{rsa-content-definition label="Global Meta 2" value="A value"}}
+                {{rsa-content-definition label="Global Meta 2a" value="Another value"}}
+                {{rsa-content-definition label="Global Meta 2b" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+
+              {{#if (eq activeTab "files")}}
+                {{#rsa-content-accordion label="Files Meta Group Label 1"}}
+                  {{#if showNulls}}
+                    {{rsa-content-definition label="Meta 5"}}
+                    {{rsa-content-definition label="Meta 6"}}
+                    {{rsa-content-definition label="Meta 7"}}
+                  {{/if}}
+                  {{rsa-content-definition label="Meta 8" value="A value"}}
+                  {{rsa-content-definition label="Meta 9" value="A value with a long length"}}
+                  {{#if showNulls}}
+                    {{rsa-content-definition label="Meta 10"}}
+                  {{/if}}
+                {{/rsa-content-accordion}}
+                {{#rsa-content-accordion label="Files Meta Group Label 2"}}
+                  {{rsa-content-definition label="Meta 11" value="A value with a long length"}}
+                  {{#if showNulls}}
+                    {{rsa-content-definition label="Meta 12"}}
+                    {{rsa-content-definition label="Meta 13"}}
+                  {{/if}}
+                {{/rsa-content-accordion}}
+              {{/if}}
+
+              {{#if (eq activeTab "hosts")}}
+                {{#rsa-content-accordion label="Hosts Accordion Label"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{/rsa-content-accordion}}
+                {{#rsa-content-accordion label="Hosts Accordion Label"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{/rsa-content-accordion}}
+                {{#rsa-content-accordion label="Hosts Accordion Label"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{/rsa-content-accordion}}
+                {{#rsa-content-accordion label="Hosts Accordion Label"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{/rsa-content-accordion}}
+              {{/if}}
+
+              {{#if (eq activeTab "packets")}}
+                {{#rsa-content-accordion label="Packets Accordion Label"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{/rsa-content-accordion}}
+                {{#rsa-content-accordion label="Packets Accordion Label"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{/rsa-content-accordion}}
+                {{#rsa-content-accordion label="Packets Accordion Label"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{/rsa-content-accordion}}
+                {{#rsa-content-accordion label="Packets Accordion Label"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{/rsa-content-accordion}}
+                {{#rsa-content-accordion label="Packets Accordion Label"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{/rsa-content-accordion}}
+                {{#rsa-content-accordion label="Packets Accordion Label"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{/rsa-content-accordion}}
+              {{/if}}
+
+              {{#if (eq activeTab "long")}}
+                {{#rsa-content-accordion label="Long Accordion Label"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{/rsa-content-accordion}}
+                {{#rsa-content-accordion label="Long Accordion Label"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                  {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{/rsa-content-accordion}}
+              {{/if}}
+            {{/panel.content}}
+          {{/rsa-properties-panel}}
+        </div>
+      {{/spec-member}}
+
+      {{#spec-member title="Code Example"}}
+        {{!-- BEGIN-SNIPPET propertiesPanelExample
+        {{#rsa-properties-panel as |panel|}}
+          {{#panel.header as |header|}}
+            <div class="control-icons">
+              {{rsa-icon class="resize" name="expand-5" size="small" click=(action 'action')}}
+              {{rsa-icon class="resize" name="expand-diagonal-4" size="small" click=(action 'action')}}
+              {{rsa-icon class="close" name="close" size="small" click=(action 'action')}}
+            </div>
+
+            <h1>Panel Title</h1>
+            <h2>{{rsa-editable-text value=persistedText persistChanges=(action 'persistTextChanges')}}</h2>
+
+            {{rsa-collapseable-nav
+              onTabClick=(action "onTabClick")
+              activeTab=activeTab
+              contentSections=contentSections
+            }}
+
+            {{#if (eq activeTab "files")}}
+              {{rsa-collapseable-actions
+                dropdownList=dropdownList
+                buttonList=buttonList
+                toggleList=toggleList
+              }}
+            {{/if}}
+          {{/panel.header}}
+
+          {{#panel.content}}
+            {{#rsa-content-accordion label="Global Meta Group Label 1"}}
+              {{rsa-content-definition label="Global Meta 1" value="A value"}}
+              {{rsa-content-definition label="Global Meta 1a" value="A value with a long length"}}
+              {{rsa-content-definition label="Global Meta 2" value="A value"}}
+              {{rsa-content-definition label="Global Meta 2a" value="Another value"}}
+              {{rsa-content-definition label="Global Meta 2b" value="A value with a long length"}}
+            {{/rsa-content-accordion}}
+
+            {{#if (eq activeTab "files")}}
+              {{#rsa-content-accordion label="Files Meta Group Label 1"}}
+                {{#if showNulls}}
+                  {{rsa-content-definition label="Meta 5"}}
+                  {{rsa-content-definition label="Meta 6"}}
+                  {{rsa-content-definition label="Meta 7"}}
+                {{/if}}
+                {{rsa-content-definition label="Meta 8" value="A value"}}
+                {{rsa-content-definition label="Meta 9" value="A value with a long length"}}
+                {{#if showNulls}}
+                  {{rsa-content-definition label="Meta 10"}}
+                {{/if}}
+              {{/rsa-content-accordion}}
+              {{#rsa-content-accordion label="Files Meta Group Label 2"}}
+                {{rsa-content-definition label="Meta 11" value="A value with a long length"}}
+                {{#if showNulls}}
+                  {{rsa-content-definition label="Meta 12"}}
+                  {{rsa-content-definition label="Meta 13"}}
+                {{/if}}
+              {{/rsa-content-accordion}}
+            {{/if}}
+
+            {{#if (eq activeTab "hosts")}}
+              {{#rsa-content-accordion label="Hosts Accordion Label"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+              {{#rsa-content-accordion label="Hosts Accordion Label"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+              {{#rsa-content-accordion label="Hosts Accordion Label"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+              {{#rsa-content-accordion label="Hosts Accordion Label"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+            {{/if}}
+
+            {{#if (eq activeTab "packets")}}
+              {{#rsa-content-accordion label="Packets Accordion Label"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+              {{#rsa-content-accordion label="Packets Accordion Label"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+              {{#rsa-content-accordion label="Packets Accordion Label"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+              {{#rsa-content-accordion label="Packets Accordion Label"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+              {{#rsa-content-accordion label="Packets Accordion Label"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+              {{#rsa-content-accordion label="Packets Accordion Label"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+            {{/if}}
+
+            {{#if (eq activeTab "long")}}
+              {{#rsa-content-accordion label="Long Accordion Label"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+              {{#rsa-content-accordion label="Long Accordion Label"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+                {{rsa-content-definition label="Data 1" value="A value with a long length"}}
+              {{/rsa-content-accordion}}
+            {{/if}}
+          {{/panel.content}}
+        {{/rsa-properties-panel}}
+        END-SNIPPET --}}
+        {{code-snippet name="propertiesPanelExample.hbs"}}
+      {{/spec-member}}
+
+    {{/spec-category}}
+  </fill>
+</hbox>

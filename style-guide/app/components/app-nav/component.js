@@ -57,7 +57,8 @@ export default Component.extend({
           { name: 'Page Layout', link: 'pageLayout' },
           { name: 'Risk Score', link: 'riskScore' },
           { name: 'Editable Text', link: 'editableText' },
-          { name: 'Collapseable Actions', link: 'collapseableActions' }
+          { name: 'Collapseable Actions', link: 'collapseableActions' },
+          { name: 'Properties Panel', link: 'propertiesPanel' }
         ]
       },
       {
