@@ -41,8 +41,6 @@ import {
   transformTextToPillData
 } from 'investigate-events/util/query-parsing';
 
-const { log } = console;//eslint-disable-line
-
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.key;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.key;
 const ARROW_DOWN_KEY = KEY_MAP.arrowDown.key;
@@ -61,7 +59,9 @@ const newActionSpy = sinon.spy(pillCreators, 'addGuidedPill');
 const deleteActionSpy = sinon.spy(pillCreators, 'deleteGuidedPill');
 const editGuidedPillSpy = sinon.spy(pillCreators, 'editGuidedPill');
 const selectActionSpy = sinon.spy(pillSelectionCreators, 'selectGuidedPills');
+const selectAllActionSpy = sinon.spy(pillSelectionCreators, 'selectAllPills');
 const deselectActionSpy = sinon.spy(pillSelectionCreators, 'deselectGuidedPills');
+const deselectAllActionSpy = sinon.spy(pillSelectionCreators, 'deselectAllGuidedPills');
 const openGuidedPillForEditSpy = sinon.spy(pillCreators, 'openGuidedPillForEdit');
 const resetGuidedPillSpy = sinon.spy(pillCreators, 'resetGuidedPill');
 const selectAllPillsTowardsDirectionSpy = sinon.spy(pillSelectionCreators, 'selectAllPillsTowardsDirection');
@@ -72,8 +72,8 @@ const valueSuggestionsSpy = sinon.spy(initializationCreators, 'valueSuggestions'
 const cancelPillCreationSpy = sinon.spy(pillCreators, 'cancelPillCreation');
 // const addFreeFormFilterSpy = sinon.spy(pillCreators, 'addFreeFormFilterSpy');
 const spys = [
-  newActionSpy, deleteActionSpy, editGuidedPillSpy, selectActionSpy,
-  deselectActionSpy, openGuidedPillForEditSpy, resetGuidedPillSpy,
+  newActionSpy, deleteActionSpy, editGuidedPillSpy, selectActionSpy, selectAllActionSpy,
+  deselectActionSpy, deselectAllActionSpy, openGuidedPillForEditSpy, resetGuidedPillSpy,
   selectAllPillsTowardsDirectionSpy, deleteSelectedGuidedPillsSpy,
   recentQueriesSpy, batchAddQueriesSpy, valueSuggestionsSpy,
   cancelPillCreationSpy
@@ -6253,5 +6253,256 @@ module('Integration | Component | Query Pills', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', CLOSE_PAREN_KEY);
     await waitUntil(() => findAll(PILL_SELECTORS.powerSelectDropdown).length === 1);
     assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+  });
+
+  test('Hitting ctrl-a/A on while focused on a query pill/freeform pill/text pill/parens selects all pills/parens', async function(assert) {
+    assert.expect(7);
+    const pD = [
+      {
+        type: 'open-paren',
+        twinId: 'twinPill_63',
+        id: 'guidedPill_149',
+        isSelected: false
+      },
+      {
+        complexFilterText: 'asdasd',
+        id: 'guidedPill_150',
+        isEditing: false,
+        isFocused: false,
+        isInvalid: false,
+        isSelected: false,
+        isValidationInProgress: false,
+        type: 'complex'
+      },
+      {
+        type: 'operator-or',
+        id: 'guidedPill_159',
+        isSelected: false,
+        isFocused: false,
+        isTextPillAttached: false
+      },
+      {
+        id: 'guidedPill_152',
+        isEditing: false,
+        isFocused: false,
+        isInvalid: false,
+        isSelected: false,
+        isValidationInProgress: false,
+        meta: 'action',
+        operator: 'exists',
+        value: null,
+        type: 'query'
+      },
+      {
+        type: 'close-paren',
+        twinId: 'twinPill_63',
+        id: 'guidedPill_153',
+        isFocused: false,
+        isSelected: false
+      },
+      {
+        type: 'operator-and',
+        id: 'guidedPill_154',
+        isSelected: false,
+        isFocused: false
+      },
+      {
+        id: 'guidedPill_157',
+        isEditing: false,
+        isFocused: false,
+        isInvalid: false,
+        isSelected: false,
+        isValidationInProgress: false,
+        searchTerm: 'asdasd',
+        type: 'text'
+      }
+    ];
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated(pD)
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 0, 'Initially all unselected pills');
+    await click(PILL_SELECTORS.queryPill);
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 1, 'click selects 1');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', 'A', { ctrlKey: true });
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 5, 'ctrl-a selects all pills');
+
+    await click(PILL_SELECTORS.openParen);
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 3, 'paren pair unselected');
+    await click(PILL_SELECTORS.logicalOperator);
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 3, 'operator is not considered a selection');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', 65, { ctrlKey: true });
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 5, 'ctrl-a selects all pills');
+
+    assert.ok(selectAllActionSpy.calledTwice, 'The addGuidedPill creator was called twice');
+  });
+
+  test('Hitting ctrl-a/A in empty meta of last new-pill-template selects all pills/parens', async function(assert) {
+    assert.expect(3);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 0, 'Initially all unselected pills');
+    await click(PILL_SELECTORS.newPillTemplate);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', 'A', { ctrlKey: true });
+    await settled();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 2, 'ctrl-a selects all pills');
+
+    assert.ok(selectAllActionSpy.calledOnce, 'The addGuidedPill creator was called');
+  });
+
+  test('typing text in new-pill-trigger deselects pills selected by ctrl-a/A', async function(assert) {
+    assert.expect(5);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 0, 'Initially all unselected pills');
+    await click(PILL_SELECTORS.newPillTrigger);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', 'A', { ctrlKey: true });
+    await settled();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 2, 'ctrl-a selects all pills');
+
+    await typeIn(PILL_SELECTORS.metaInput, 'foo');
+    await settled();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 0, 'pills deselected');
+    assert.ok(selectAllActionSpy.calledOnce, 'The addGuidedPill creator was called');
+    assert.ok(deselectAllActionSpy.called, 'The deselectAllGuidedPills creator was called');
+  });
+
+  test('typing text in new-pill-template deselects pills selected by ctrl-a/A', async function(assert) {
+    assert.expect(5);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 0, 'Initially all unselected pills');
+    await click(PILL_SELECTORS.newPillTemplate);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', 'A', { ctrlKey: true });
+    await settled();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 2, 'ctrl-a selects all pills');
+
+    await typeIn(PILL_SELECTORS.metaInput, 'foo');
+    await settled();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 0, 'pills deselected');
+    assert.ok(selectAllActionSpy.calledOnce, 'The addGuidedPill creator was called');
+    assert.ok(deselectAllActionSpy.called, 'The deselectAllGuidedPills creator was called');
+  });
+
+  test('Hitting ctrl-a/A in empty meta of new-pill-triggers selects all pills/parens', async function(assert) {
+    assert.expect(3);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 0, 'Initially all unselected pills');
+    await click(PILL_SELECTORS.newPillTrigger);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', 'A', { ctrlKey: true });
+    await settled();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 2, 'ctrl-a selects all pills');
+
+    assert.ok(selectAllActionSpy.calledOnce, 'The addGuidedPill creator was called');
+  });
+
+  test('Hitting ctrl-a/A in empty recent-query selects all pills/parens', async function(assert) {
+    assert.expect(3);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .recentQueriesUnfilteredList()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 0, 'Initially all unselected pills');
+
+    await click(PILL_SELECTORS.newPillTemplateRecentQuery);
+
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', 'A', { ctrlKey: true });
+    await settled();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 2, 'ctrl-a selects all pills');
+
+    assert.ok(selectAllActionSpy.calledOnce, 'The addGuidedPill creator was called');
+  });
+
+  test('typing text in recent-query deselects pills selected by ctrl-a/A', async function(assert) {
+    assert.expect(5);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 0, 'Initially all unselected pills');
+
+    await click(PILL_SELECTORS.newPillTemplateRecentQuery);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', 'A', { ctrlKey: true });
+    await settled();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 2, 'ctrl-a selects all pills');
+
+    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'foo');
+    await settled();
+    assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 0, 'pills deselected');
+    assert.ok(selectAllActionSpy.calledOnce, 'The addGuidedPill creator was called');
+    assert.ok(deselectAllActionSpy.called, 'The deselectAllGuidedPills creator was called');
   });
 });

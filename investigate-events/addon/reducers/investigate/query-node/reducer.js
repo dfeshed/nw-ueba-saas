@@ -174,16 +174,16 @@ const _replacePill = (state, pillData) => {
   ]);
 };
 
-const handlePillSelection = (state, pillData, isSelected) => {
+const handlePillSelection = (state, pillData, isSelected, generateNewIds = true) => {
 
   const selectIds = pillData.map((pD) => pD.id);
   const newPillsData = state.pillsData.map((pD) => {
     if (selectIds.includes(pD.id)) {
-      return {
-        ...pD,
-        id: _.uniqueId(ID_PREFIX),
-        isSelected
-      };
+      const newPD = { ...pD, isSelected };
+      if (generateNewIds) {
+        newPD.id = _.uniqueId(ID_PREFIX);
+      }
+      return newPD;
     }
 
     return pD;
@@ -226,12 +226,12 @@ const _shouldRemoveFocus = (selectedOrDeselectedPills, focusedPillData) => {
   return false;
 };
 
-const _handlePillFocus = (state, selectedOrDeselectedPills, shouldIgnoreFocus = false, isSelected) => {
+const _handlePillFocus = (state, selectedOrDeselectedPills, shouldIgnoreFocus = false, isSelected, generateNewIds = true) => {
 
   // if shouldIgnoreFocus is passed in explicitly, due to multiple
   // selected/deselected pills, no need to handle focus
   if (shouldIgnoreFocus) {
-    return handlePillSelection(state, selectedOrDeselectedPills, isSelected);
+    return handlePillSelection(state, selectedOrDeselectedPills, isSelected, generateNewIds);
   } else {
     const focusedPillData = focusedPill({ investigate: { queryNode: state } });
     let newState = state;
@@ -679,12 +679,12 @@ export default handleActions({
 
   [ACTION_TYPES.SELECT_GUIDED_PILLS]: (state, { payload }) => {
     const { pillData, shouldIgnoreFocus } = payload;
-    return _handlePillFocus(state, pillData, shouldIgnoreFocus, true);
+    return _handlePillFocus(state, pillData, shouldIgnoreFocus, true, false);
   },
 
   [ACTION_TYPES.DESELECT_GUIDED_PILLS]: (state, { payload }) => {
     const { pillData, shouldIgnoreFocus } = payload;
-    return _handlePillFocus(state, pillData, shouldIgnoreFocus, false);
+    return _handlePillFocus(state, pillData, shouldIgnoreFocus, false, false);
   },
 
   [ACTION_TYPES.OPEN_GUIDED_PILL_FOR_EDIT]: (state, { payload }) => {

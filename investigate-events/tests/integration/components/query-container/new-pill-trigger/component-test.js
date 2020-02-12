@@ -25,6 +25,7 @@ const ESCAPE_KEY = KEY_MAP.escape.key;
 const SPACE_KEY = KEY_MAP.space.key;
 const DELETE_KEY = KEY_MAP.delete.key;
 const BACKSPACE_KEY = KEY_MAP.backspace.key;
+const KEY_A = KEY_MAP.Key_A.key;
 
 module('Integration | Component | New Pill Trigger', function(hooks) {
   setupRenderingTest(hooks, {
@@ -558,5 +559,48 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     await waitUntil(() => findAll(PILL_SELECTORS.newPillTrigger).length > 0, { timeout: 5000 }).then(async() => {
       assert.equal(findAll(PILL_SELECTORS.newPillTrigger).length, 1, 'It is not in the new pill state');
     });
+  });
+
+  test('broadcasts message on ctrl-a/A', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (messageType) => {
+      if (messageType === MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED) {
+        assert.ok(true, 'message passed up chain');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        newPillPosition=1
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await focus(PILL_SELECTORS.metaTrigger);
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', KEY_A, { ctrlKey: true });
+  });
+
+  test('broadcasts message on input', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (messageType) => {
+      if (messageType === MESSAGE_TYPES.PILL_META_CHAR_ENTERED) {
+        assert.ok(true, 'message broadcast up chain');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        newPillPosition=1
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await typeIn(PILL_SELECTORS.metaInput, 'foo');
   });
 });

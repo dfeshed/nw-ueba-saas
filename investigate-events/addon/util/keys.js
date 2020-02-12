@@ -19,7 +19,9 @@ const keyMap = {
   space: { code: 32, key: ' ' },
   tab: { code: 9, key: 'Tab' },
   home: { code: 36, key: 'Home' },
-  end: { code: 35, key: 'End' }
+  end: { code: 35, key: 'End' },
+  Key_a: { key: 'a' },
+  Key_A: { key: 'A' }
 };
 
 /**
@@ -167,5 +169,7 @@ export const isHome = (event) => matchesHome(event.key) || (event.metaKey && mat
  * @public
  */
 export const isEnd = (event) => matchesEnd(event.key) || (event.metaKey && matchesArrowRight(event.metaKey));
+
+export const isCtrlA = (event) => [keyMap.Key_A.key, keyMap.Key_a.key].includes(event.key) && event.ctrlKey;
 
 export default keyMap;

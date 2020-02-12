@@ -26,7 +26,6 @@ import { filterValidMeta } from 'investigate-events/util/meta';
 
 let setState;
 let metaOptions = [];
-const { log } = console;// eslint-disable-line no-unused-vars
 const ARROW_DOWN = KEY_MAP.arrowDown.key;
 const ARROW_LEFT = KEY_MAP.arrowLeft.key;
 const ARROW_RIGHT = KEY_MAP.arrowRight.key;
@@ -37,6 +36,7 @@ const OPEN_PAREN = KEY_MAP.openParen.key;
 const TAB_KEY = KEY_MAP.tab.key;
 const DELETE_KEY = KEY_MAP.delete.key;
 const BACKSPACE_KEY = KEY_MAP.backspace.key;
+const KEY_A = KEY_MAP.Key_A.key;
 const modifiers = { shiftKey: true };
 
 // This trim also removes extra spaces inbetween words
@@ -369,7 +369,9 @@ module('Integration | Component | Pill Meta', function(hooks) {
     this.set('metaOptions', metaOptions);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
-      assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED); // Will be called as many times as chars are typed in
+      if (type === MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED) {
+        assert.ok(true); // Will be called as many times as chars are typed in
+      }
     });
     await render(hbs`
       {{query-container/pill-meta
@@ -893,8 +895,10 @@ module('Integration | Component | Pill Meta', function(hooks) {
     this.set('metaOptions', metaOptions);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
-      assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED);
-      assert.equal(data.data, 'f', 'Text typed in is not as expected');
+      if (type === MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED) {
+        assert.ok(true);
+        assert.equal(data.data, 'f', 'Text typed in is not as expected');
+      }
     });
     await render(hbs`
       {{query-container/pill-meta
@@ -908,12 +912,12 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await typeInSearch('f');
   });
 
-  test('it does not broadcasts a message when some text is typed in pill-meta in edit mode', async function(assert) {
-    assert.expect(0);
+  test('it broadcasts a message when some text is typed in pill-meta in edit mode', async function(assert) {
+    assert.expect(1);
     this.set('metaOptions', metaOptions);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
-    this.set('handleMessage', () => {
-      assert.notOk('message should not be dispatched');
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.PILL_META_CHAR_ENTERED);
     });
     await render(hbs`
       {{query-container/pill-meta
@@ -1263,5 +1267,83 @@ module('Integration | Component | Pill Meta', function(hooks) {
     assert.equal(find(PILL_SELECTORS.metaInput).value, 'and&&', 'operator-like value preceeded by lowercase text was not cleared');
     await blur(PILL_SELECTORS.metaInput);
     await clickTrigger(PILL_SELECTORS.meta);
+  });
+
+  test('it does NOT broadcast when ctrl-a/A is pressed in non-empty meta', async function(assert) {
+    assert.expect(0);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED) {
+        assert.ok(false, 'received proper message');
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isEditing=false
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'foobar');
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', KEY_A, { ctrlKey: true });
+  });
+
+  test('it does NOT broadcast when ctrl-a/A is pressed in empty meta for existing pills', async function(assert) {
+    assert.expect(0);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED) {
+        assert.ok(false, 'should not get message');
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isEditing=true
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', KEY_A, { ctrlKey: true });
+  });
+
+  test('it broadcasts a message when ctrl-a/A is pressed in empty meta for NPTs', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED) {
+        assert.ok(true, 'received proper message');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isEditing=false
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', KEY_A, { ctrlKey: true });
+  });
+
+  test('ctrl-a/A should not block regular a/A characters', async function(assert) {
+    assert.expect(1);
+    this.set('metaOptions', metaOptions);
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isEditing=false
+        metaOptions=metaOptions
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'aaAA');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, 'aaAA', 'text entered correctly');
   });
 });

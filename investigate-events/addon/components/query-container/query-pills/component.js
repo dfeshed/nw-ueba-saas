@@ -50,7 +50,8 @@ import {
   deselectAllGuidedPills,
   deselectGuidedPills,
   selectGuidedPills,
-  selectAllPillsTowardsDirection
+  selectAllPillsTowardsDirection,
+  selectAllPills
 } from 'investigate-events/actions/pill-selection-creators';
 
 import { hasMinimumCoreServicesVersionForTextSearch } from 'investigate-events/reducers/investigate/services/selectors';
@@ -115,6 +116,7 @@ const dispatchToActions = {
   replaceLogicalOperator,
   resetGuidedPill,
   selectAllPillsTowardsDirection,
+  selectAllPills,
   selectGuidedPills,
   valueSuggestions,
   wrapWithParens
@@ -304,6 +306,8 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT]: (data, position) => this._addFocusToRightPill(position),
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT]: (data, position) => this._pillsSelectAllToRight(position),
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT]: (data, position) => this._pillsSelectAllToLeft(position),
+      [MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED]: () => this._pillsSelectAll(),
+      [MESSAGE_TYPES.PILL_META_CHAR_ENTERED]: () => this._pillsDeselectAll(),
       [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: (data, position) => this._createPill(COMPLEX_FILTER, data, position),
       [MESSAGE_TYPES.CREATE_TEXT_PILL]: (data, position) => this._createPill(TEXT_FILTER, data, position),
       [MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT]: (data) => this._fetchRecentQueries(data),
@@ -746,6 +750,14 @@ const QueryPills = RsaContextMenu.extend({
 
   _pillsSelectAllToLeft(position) {
     this.send('selectAllPillsTowardsDirection', position, 'left');
+  },
+
+  _pillsSelectAll() {
+    this.send('selectAllPills');
+  },
+
+  _pillsDeselectAll() {
+    this.send('deselectAllGuidedPills');
   },
 
   /**

@@ -152,6 +152,12 @@ export default Component.extend({
         case MESSAGE_TYPES.PILL_DELETE_OR_BACKSPACE_PRESSED:
           this._broadcast(type, data);
           break;
+        case MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED:
+          this._broadcast(type, data);
+          break;
+        case MESSAGE_TYPES.PILL_META_CHAR_ENTERED:
+          this._broadcast(type, data);
+          break;
       }
     }
   },

@@ -41,13 +41,21 @@ export default Component.extend({
       [KEY_MAP.arrowLeft.key]: this._leftArrowHandler.bind(this),
       [KEY_MAP.home.key]: this._homeHandler.bind(this),
       [KEY_MAP.end.key]: this._endHandler.bind(this),
-      [KEY_MAP.openParen.key]: this._parenHandler.bind(this)
+      [KEY_MAP.openParen.key]: this._parenHandler.bind(this),
+      [KEY_MAP.Key_a.key]: this._ctrlAHandler.bind(this),
+      [KEY_MAP.Key_A.key]: this._ctrlAHandler.bind(this)
     });
   },
 
   didRender() {
     const { element } = this;
     element.querySelector('input').focus();
+  },
+
+  _ctrlAHandler({ e }) {
+    if (e.ctrlKey) {
+      this._broadcast(MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED);
+    }
   },
 
   _backspaceDeleteHandler({ e }) {

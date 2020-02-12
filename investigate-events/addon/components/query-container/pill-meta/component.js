@@ -38,8 +38,6 @@ import { searcher, resultsCount } from 'investigate-events/components/query-cont
 import { filterValidMeta, lastValidMeta } from 'investigate-events/util/meta';
 import { hasOperator } from 'investigate-events/util/query-parsing';
 
-const { log } = console;// eslint-disable-line
-
 const AND_OPERATOR_STRINGS = ['&&', 'AND'];
 const OR_OPERATOR_STRINGS = ['||', 'OR'];
 
@@ -277,7 +275,9 @@ export default Component.extend({
       [KEY_MAP.home.key]: this._navigationHandler.bind(this),
       [KEY_MAP.end.key]: this._navigationHandler.bind(this),
       [KEY_MAP.delete.key]: this._navigationHandler.bind(this),
-      [KEY_MAP.backspace.key]: this._navigationHandler.bind(this)
+      [KEY_MAP.backspace.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.Key_a.key]: this._ctrlAHandler.bind(this),
+      [KEY_MAP.Key_A.key]: this._ctrlAHandler.bind(this)
     });
     // _debugContainerKey is a private Ember property that returns the full
     // component name (component:query-container/pill-meta).
@@ -441,6 +441,9 @@ export default Component.extend({
      * @private
      */
     onInput(input, powerSelectAPI /* event */) {
+      if (input.length === 1) {
+        this._broadcast(MESSAGE_TYPES.PILL_META_CHAR_ENTERED);
+      }
       if (input.length === 0) {
         this.set('selection', null);
         this._broadcast(MESSAGE_TYPES.META_SELECTED, null);
@@ -596,6 +599,12 @@ export default Component.extend({
       }
     }
     return true;
+  },
+
+  _ctrlAHandler(powerSelectAPI, event) {
+    if (event.ctrlKey && !this.get('isEditing') && _isFirstChar(event)) {
+      this._broadcast(MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED);
+    }
   },
 
   /**

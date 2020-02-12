@@ -73,6 +73,7 @@ export default {
   queryPillNotTemplate: '.query-pill:not(.new-pill-template)',
   quoteHighlight: '.quote-highlight',
   selectedPill: '.is-selected',
+  selectedPillsAndParens: '.is-selected:not(.logical-operator)',
   textPill: '.text-pill',
   textPillActive: '.text-pill.is-active',
   textPillInput: '.text-pill input',

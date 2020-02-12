@@ -35,7 +35,7 @@ const OPEN_PAREN = KEY_MAP.openParen.key;
 const SPACE_KEY = KEY_MAP.space.key;
 const TAB_KEY = KEY_MAP.tab.key;
 const THREE_KEY = '3';
-const X_KEY = 'KeyX';
+const LOWERCASE_X = 88;
 const modifiers = { shiftKey: true };
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
@@ -880,7 +880,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     // Fill in the value, to properly simulate the event we need to fillIn AND
     // triggerKeyEvent for the "x" character.
     await fillIn(PILL_SELECTORS.valueSelectInput, 'x');
-    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', X_KEY); // x
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', LOWERCASE_X); // x
     await blur(PILL_SELECTORS.valueTrigger);
     assert.equal(trim(find(PILL_SELECTORS.queryPill).textContent), 'a=x');
   });
@@ -2519,12 +2519,10 @@ module('Integration | Component | Query Pill', function(hooks) {
       .build();
 
     this.set('handleMessage', (messageType, stringifiedPillText) => {
-      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
-        return;
+      if (messageType === MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT) {
+        assert.equal(stringifiedPillText, 'a ');
+        done();
       }
-      assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
-      assert.equal(stringifiedPillText, 'a ');
-      done();
     });
     await render(hbs`
       {{query-container/query-pill

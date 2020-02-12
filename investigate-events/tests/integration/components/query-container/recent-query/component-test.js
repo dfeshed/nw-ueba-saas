@@ -31,6 +31,7 @@ const HOME_KEY = KEY_MAP.home.key;
 const END_KEY = KEY_MAP.end.key;
 const DELETE_KEY = KEY_MAP.delete.key;
 const BACKSPACE_KEY = KEY_MAP.backspace.key;
+const KEY_A = KEY_MAP.Key_A.key;
 const modifiers = { shiftKey: true };
 
 // This trim also removes extra spaces inbetween words
@@ -123,8 +124,9 @@ module('Integration | Component | Recent Query', function(hooks) {
       .recentQueriesCallInProgress()
       .build();
 
-    this.set('handleMessage', (type, { data, dataSource }) => {
+    this.set('handleMessage', (type, messageData) => {
       if (type === MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED) {
+        const { data, dataSource } = messageData;
         assert.ok('message dispatched');
         assert.equal(data, 'x', 'Incorrect data is being sent up');
         assert.equal(dataSource, 'recent-query', 'Source of the component is incorrect');
@@ -586,4 +588,59 @@ module('Integration | Component | Recent Query', function(hooks) {
 
   });
 
+  test('it broadcasts a message when ctrl-a/A is pressed in empty recent-query', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED) {
+        assert.ok(true, 'received proper message');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', KEY_A, { ctrlKey: true });
+  });
+
+  test('it does NOT broadcast when ctrl-a/A is pressed in non-empty recent-query', async function(assert) {
+    assert.expect(0);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED) {
+        assert.ok(false, 'received message');
+      }
+    });
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'foobar');
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', KEY_A, { ctrlKey: true });
+  });
+
+  test('ctrl-a/A should not block regular a/A characters', async function(assert) {
+    assert.expect(1);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED) {
+        assert.ok(false, 'received message');
+      }
+    });
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'aaAA');
+    assert.equal(find(PILL_SELECTORS.recentQuerySelectInput).value, 'aaAA', 'text entered correctly');
+  });
 });

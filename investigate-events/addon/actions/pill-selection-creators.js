@@ -53,6 +53,13 @@ export const selectAllPillsTowardsDirection = (position, direction) => {
   };
 };
 
+export const selectAllPills = () => {
+  return (dispatch, getState) => {
+    const { investigate: { queryNode: { pillsData } } } = getState();
+    dispatch(selectGuidedPills({ pillData: pillsData }, true));
+  };
+};
+
 export const deselectAllGuidedPills = () => {
   return (dispatch, getState) => {
     const pillData = selectedPills(getState());

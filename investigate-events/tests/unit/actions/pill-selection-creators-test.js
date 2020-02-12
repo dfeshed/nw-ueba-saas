@@ -95,6 +95,30 @@ module('Unit | Actions | Pill Selection Creators', function(hooks) {
     thunk1(firstDispatch, getState);
   });
 
+  test('selectAllPills action creator returns proper type and payload', function(assert) {
+    const done = assert.async();
+
+    const getState = () => {
+      return new ReduxDataHelper().pillsDataPopulated().markSelected(['1', '2', '3']).build();
+    };
+    const { pillsData } = getState().investigate.queryNode;
+
+    const thirdDispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
+      done();
+    };
+    const secondDispatch = (thunk3) => {
+      thunk3(thirdDispatch, getState);
+    };
+    const firstDispatch = (thunk2) => {
+      thunk2(secondDispatch, getState);
+    };
+
+    const thunk1 = pillCreators.selectAllPills();
+    thunk1(firstDispatch, getState);
+  });
+
   test('selectGuidedPills action creator returns proper type and payload', function(assert) {
     const done = assert.async();
     const state = new ReduxDataHelper().pillsDataPopulated().build();

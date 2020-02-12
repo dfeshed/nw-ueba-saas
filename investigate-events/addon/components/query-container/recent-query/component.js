@@ -28,7 +28,8 @@ import {
   isHome,
   isEnd,
   isDelete,
-  isBackspace
+  isBackspace,
+  isCtrlA
 } from 'investigate-events/util/keys';
 import {
   addAndRemoveElements,
@@ -59,6 +60,8 @@ const AFTER_OPTIONS_MENU = [
 
 const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
 const AFTER_OPTIONS_COMPONENT = 'query-container/power-select-after-options';
+
+const _isFirstChar = (event) => event?.target?.value === '';
 
 const stateToComputed = (state) => ({
   recentQueriesUnfilteredList: state.investigate.queryNode.recentQueriesUnfilteredList || [],
@@ -154,6 +157,11 @@ const RecentQueryComponent = Component.extend({
    */
   @alias('isActive')
   isExpanded: false,
+
+  /**
+   * Function to call when sending messages and data to the parent component.
+   */
+  sendMessage: () => {},
 
   /**
    * Which is the active tab for EPS?
@@ -305,7 +313,9 @@ const RecentQueryComponent = Component.extend({
      * @private
      */
     onInput(input, powerSelectAPI /* event */) {
-      if (input.trim().length === 0) {
+      if (input.trim().length === 1) {
+        this._broadcast(MESSAGE_TYPES.PILL_META_CHAR_ENTERED);
+      } else if (input.trim().length === 0) {
         powerSelectAPI.actions.search('');
         powerSelectAPI.actions.highlight(null);
         this._afterOptionsMenu.clearHighlight();
@@ -427,6 +437,10 @@ const RecentQueryComponent = Component.extend({
           isBackspaceEvent: true,
           isFromRecentQuery: true
         });
+      } else if (isCtrlA(event)) {
+        if (!this.get('isEditing') && _isFirstChar(event)) {
+          this._broadcast(MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED);
+        }
       } else {
         // If recent queries tab is open and some text is typed in,
         // this is a possible search against recent queries API.

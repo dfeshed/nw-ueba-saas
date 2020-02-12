@@ -13,10 +13,12 @@ const ARROW_RIGHT = KEY_MAP.arrowRight.key;
 const BACKSPACE = KEY_MAP.backspace.key;
 const DELETE_KEY = KEY_MAP.delete.key;
 const ENTER = KEY_MAP.enter.key;
-const XKey = 'KeyX';
+const XKey = 88;
 const HOME_KEY = KEY_MAP.home.key;
 const END_KEY = KEY_MAP.end.key;
 const OPEN_PAREN = KEY_MAP.openParen.key;
+const UPPERCASE_A = 'A';
+const LOWERCASE_A = 65;
 
 module('Integration | Component | focus-holder', function(hooks) {
   setupRenderingTest(hooks, {
@@ -146,7 +148,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', END_KEY);
   });
 
-  test('it broadcasts a message when ( is pressed', async function(assert) {
+  test('it sends a message when ( is pressed', async function(assert) {
     assert.expect(1);
 
     this.set('sendMessage', (messageType) => {
@@ -155,5 +157,30 @@ module('Integration | Component | focus-holder', function(hooks) {
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', OPEN_PAREN);
+  });
+
+  test('it sends a message when ctrl-a/A is pressed', async function(assert) {
+    assert.expect(2);
+
+    this.set('sendMessage', (messageType) => {
+      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED, 'the correct message type is sent when `ctrl-a` is pressed');
+    });
+
+    await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', UPPERCASE_A, { ctrlKey: true });
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', LOWERCASE_A, { ctrlKey: true });
+  });
+
+  test('it does not send a message when ctrl-a/A is not pressed', async function(assert) {
+    assert.expect(0);
+
+    this.set('sendMessage', (messageType) => {
+      if (messageType === MESSAGE_TYPES.FOCUSED_PILL_CTRL_A_PRESSED) {
+        assert.ok(false);
+      }
+    });
+    await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', UPPERCASE_A);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', LOWERCASE_A);
   });
 });
