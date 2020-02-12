@@ -134,7 +134,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
         String event = lineIterator.next();
         try {
             return MAPPER.readValue(event, TYPE);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Failed to deserialize JSON string {}.", event, e);
             throw new IllegalArgumentException(e);
         }
@@ -223,7 +223,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
         S3ObjectInputStream S3Object;
         try {
             S3Object = s3.getObject(bucket, filePath).getObjectContent();
-        } catch (AmazonS3Exception e) {
+        } catch (Exception e) {
             logger.error("Failed to get object key: {}, from S3 bucket: {}.", filePath, bucket, e);
             throw new RuntimeException(e);
         }
@@ -232,7 +232,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
             GZIPInputStream gzip = new GZIPInputStream(S3Object);
             BufferedReader reader = new BufferedReader(new InputStreamReader(gzip));
             return new BufferReaderIterator(reader);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Failed to open file with key: {}.", filePath, e);
             throw new RuntimeException(e);
         }
@@ -244,7 +244,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
         ListObjectsV2Result objects;
         try {
             objects = this.s3.listObjectsV2(req);
-        } catch (AmazonS3Exception ex) {
+        } catch (Exception ex) {
             logger.error("Failed to list S3 objects with prefix: {}, from S3 bucket: {}.", prefix, bucket, ex);
             throw new RuntimeException(ex);
         }
@@ -266,7 +266,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
                 if (date.isAfter(startTime) && date.isBefore(endTime)) {
                     return true;
                 }
-            } catch (ParseException ex) {
+            } catch (Exception ex) {
                 logger.error("Invalid date format for S3 file: {} date: {}. Expected format: {}", object.getKey(), dateStr, DEFAULT_DATE_FORMAT, ex);
                 throw new IllegalArgumentException(ex);
             }
