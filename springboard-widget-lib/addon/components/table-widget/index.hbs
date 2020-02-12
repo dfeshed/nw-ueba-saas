@@ -5,7 +5,13 @@
     </RsaDataTable::Header>
     <RsaDataTable::Body as |item index column|>
       <RsaDataTable::BodyCell @column={{column}}>
-        {{get item column.field}}
+        {{#if (eq column.field "score")}}
+          <centered>
+            {{rsa-risk-score score=(get item column.field) size="small"}}
+          </centered>
+        {{else}}
+          {{get item column.field}}
+        {{/if}}
       </RsaDataTable::BodyCell>
     </RsaDataTable::Body>
   </RsaDataTable>

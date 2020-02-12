@@ -9,12 +9,12 @@ const springboardConfigGen = function(env) {
     springboard: {
       socketUrl,
       all: {
-        subscriptionDestination: '/user/queue/springboard/all',
-        requestDestination: '/ws/springboard/all'
+        subscriptionDestination: '/user/queue/springboard/get/all',
+        requestDestination: '/ws/springboard/get/all'
       },
       query: {
-        subscriptionDestination: '/user/queue/springboard/widget/query',
-        requestDestination: '/ws/springboard/widget/query'
+        subscriptionDestination: '/user/queue/springboard/leads/query',
+        requestDestination: '/ws/springboard/leads/query'
       }
     }
   };

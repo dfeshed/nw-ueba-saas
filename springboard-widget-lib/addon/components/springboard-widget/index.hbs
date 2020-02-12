@@ -4,6 +4,7 @@
     {{yield
       (hash
         content=(component "springboard-widget/content" content=content widget=(concat content.type "-widget"))
+        widgetData=@widetData
       )
     }}
   {{/each}}
