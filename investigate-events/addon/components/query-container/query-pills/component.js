@@ -934,10 +934,10 @@ const QueryPills = RsaContextMenu.extend({
     if (newPillsData.length === 1) {
       this.send('editGuidedPill', { pillData: newPillsData[0], position });
     } else {
-      // As long as pill deletion is done on pill id, it is okay to send the newly modified pill data
-      // because here it still has the old id
-      this.send('deleteGuidedPill', { pillData: [ pillData ] });
-      this.send('batchAddPills', { pillsData: newPillsData, initialPosition: position });
+      // Replace (edit) the original pill with our first new pill, then add
+      // the rest in one action with batchAddPills
+      this.send('editGuidedPill', { pillData: newPillsData[0], position });
+      this.send('batchAddPills', { pillsData: newPillsData.slice(1), initialPosition: position + 1 });
     }
   },
 

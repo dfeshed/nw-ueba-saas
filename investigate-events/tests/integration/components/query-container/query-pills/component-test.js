@@ -1792,19 +1792,19 @@ module('Integration | Component | Query Pills', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', ENTER_KEY);
 
     // action to store in state called
-    assert.equal(deleteActionSpy.callCount, 1, 'The delete pill action creator was called once');
-    const [ [ calledWith ] ] = deleteActionSpy.args;
-    assert.equal(calledWith.pillData[0].complexFilterText, 'medium = 1 AND medium = 2', 'Correct pill was deleted');
+    assert.equal(deleteActionSpy.callCount, 0, 'The delete pill action creator was not called');
+    assert.equal(editGuidedPillSpy.callCount, 1, 'The edit pill action creator was called once');
+    const [ [ calledWith ] ] = editGuidedPillSpy.args;
+    assert.equal(calledWith.pillData.meta, 'medium');
+    assert.equal(calledWith.pillData.operator, '=');
+    assert.equal(calledWith.pillData.value, '1');
     assert.equal(batchAddQueriesSpy.callCount, 1, 'Batch add pills was called once');
     const [ [ batchCalledWith ] ] = batchAddQueriesSpy.args;
-    assert.equal(batchCalledWith.pillsData.length, 3, 'Two pills were batch added');
-    assert.equal(batchCalledWith.pillsData[0].meta, 'medium');
-    assert.equal(batchCalledWith.pillsData[0].operator, '=');
-    assert.equal(batchCalledWith.pillsData[0].value, '1');
-    assert.equal(batchCalledWith.pillsData[1].type, OPERATOR_AND);
-    assert.equal(batchCalledWith.pillsData[2].meta, 'medium');
-    assert.equal(batchCalledWith.pillsData[2].operator, '=');
-    assert.equal(batchCalledWith.pillsData[2].value, '2');
+    assert.equal(batchCalledWith.pillsData.length, 2, 'Two pills were batch added');
+    assert.equal(batchCalledWith.pillsData[0].type, OPERATOR_AND);
+    assert.equal(batchCalledWith.pillsData[1].meta, 'medium');
+    assert.equal(batchCalledWith.pillsData[1].operator, '=');
+    assert.equal(batchCalledWith.pillsData[1].value, '2');
   });
 
   test('Editing a guided pill with commas will quote as expected', async function(assert) {
