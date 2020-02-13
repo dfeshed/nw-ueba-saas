@@ -3167,14 +3167,14 @@
         "manualFileDownloadsModal": {
           "title": "Download Files",
           "filePath": "File Path",
-          "filePathDescription": "Enter the path where files may be present. For wildcard search, use '*' at a folder level and file level.",
+          "filePathDescription": "Enter the path where files may be present. For wildcard search, a '*' can be used at a folder and file level.",
           "filePathError": "Invalid File Path",
           "fileCount": "Number of files",
           "fileCountDescription": "Maximum of 100",
           "fileCountError": "Enter a value between 1 to 100",
-          "fileSize": "Size of a file(mb)",
-          "fileSizeDescription": "Minimum is 1 MB",
-          "fileSizeError": "Enter a number",
+          "fileSize": "File size(mb)",
+          "fileSizeDescription": "Downloads all files upto the specified size limit",
+          "fileSizeError": "Enter a valid size",
           "success": "File(s) download initiated successfully",
           "buttons": {
             "download": "Download",

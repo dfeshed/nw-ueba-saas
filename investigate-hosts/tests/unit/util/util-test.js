@@ -163,6 +163,18 @@ test('filePathValidation', function(assert) {
 
   const value12 = filePathValidation('D:\\folder\\', 'windows');
   assert.equal(value12, false, 'D:\\folder\\, invalid windows path, no file name present');
+
+  const value13 = filePathValidation('D:\\\\folder\\\\', 'windows');
+  assert.equal(value13, false, 'D:\\\\folder\\\\, invalid windows path, double "\\" present');
+
+  const value15 = filePathValidation('D:\\\\folder\\\\*', 'windows');
+  assert.equal(value15, false, 'D:\\\\folder\\\\*, invalid windows path, double "\\" present');
+
+  const value14 = filePathValidation('//folder//test.xml', 'linux', '/');
+  assert.equal(value14, false, '//folder//test.xml, invalid Linux path, double "//" present');
+
+  const value16 = filePathValidation('//folder//*.xml', 'linux', '/');
+  assert.equal(value16, false, '//folder//*.xml, invalid Linux path, double "//" present');
 });
 
 test('numberValidation', function(assert) {
@@ -189,4 +201,10 @@ test('numberValidation', function(assert) {
 
   const value8 = numberValidation(5, { upperLimit: 1 });
   assert.deepEqual(value8, { isInvalid: true, value: 5 }, 'Not within range');
+
+  const value9 = numberValidation(' ', { upperLimit: 1 });
+  assert.deepEqual(value9, { isInvalid: false, value: 1 }, 'Default value returned when empty');
+
+  const value10 = numberValidation(' ', { upperLimit: 100, defaultValue: 50 });
+  assert.deepEqual(value10, { isInvalid: false, value: 50 }, 'Default value returned when empty');
 });

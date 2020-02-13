@@ -65,8 +65,8 @@ export const filePathValidation = (path, pathType = 'windows', filePathSeparator
 
   const windows = /^(?:[\w]:)(\\([a-z_A-Z\-*\s0-9.]+))+$/;
   const windowsFullPath = /^(?:[\w]:)(\\([a-z_A-Z\-*\s0-9.]+))+\.[a-zA-Z]+$/;
-  const linux = /^((\/)[^\\]+)+$/;
-  const linuxFullPath = /^((\/)[^\\]+)+\.[a-zA-Z]+$/;
+  const linux = /^((\/)[^/\\]+)+$/;
+  const linuxFullPath = /^(\/([^/\\]+))+\.[a-zA-Z]+$/;
 
   const osTypeRegex = { windows, windowsFullPath, linux, linuxFullPath, mac: linux, macFullPath: linuxFullPath };
 
@@ -89,9 +89,9 @@ export const filePathValidation = (path, pathType = 'windows', filePathSeparator
  */
 
 export const numberValidation = (value, valueRangeObj = {}) => {
-  const { lowerLimit = value, upperLimit = value } = valueRangeObj;
+  const { lowerLimit = value, upperLimit = value, defaultValue = 1 } = valueRangeObj;
   let isInvalid = false;
-  let roundedOffValue = Math.round(value);
+  let roundedOffValue = ((typeof value === 'string') && (value.trim().length === 0)) ? defaultValue : Math.round(value);
 
   if (isNaN(roundedOffValue)) {
     isInvalid = true;

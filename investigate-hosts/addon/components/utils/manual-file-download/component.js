@@ -82,7 +82,7 @@ class MachineIsolationModal extends Component {
   @action
   validateCount() {
     const { fileCount } = this;
-    const { isInvalid, value } = numberValidation(fileCount, { lowerLimit: 1, upperLimit: 100 });
+    const { isInvalid, value } = numberValidation(fileCount, { lowerLimit: 1, upperLimit: 100, defaultValue: 10 });
 
     this.set('isInvalidCount', isInvalid);
     this.set('fileCount', value);
@@ -91,7 +91,7 @@ class MachineIsolationModal extends Component {
   @action
   validateSize() {
     const { fileSize } = this;
-    const { isInvalid, value } = numberValidation(fileSize, { lowerLimit: 1 });
+    const { isInvalid, value } = numberValidation(fileSize, { lowerLimit: 1, defaultValue: 100 });
 
     this.set('isInvalidSize', isInvalid);
     this.set('fileSize', value);
