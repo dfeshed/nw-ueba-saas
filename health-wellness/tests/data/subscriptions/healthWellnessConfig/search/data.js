@@ -1,24 +1,26 @@
-export default {
-  'items': [{
-    'id': 'EkMnyG0BbK6JFp72teyl',
+export default [
+  {
+    'id': 'q6_IgW0B0ftGE-k_s-5s',
     'severity': 1,
-    'monitor': 'Reporting Engine Shared Task Critical Utilization',
-    'trigger': 'Shared Task Critical Utilization',
+    'monitor': 'Archiver Aggregation Stopped',
+    'trigger': 'Aggregation Stopped',
+    'enabled': true,
+    'suppressionConfigured': true
+  },
+  {
+    'id': 'q6_IgW0B0ftGE-k_s-5s',
+    'severity': 1,
+    'monitor': 'Archiver Aggregation Stopped',
+    'trigger': 'Aggregation Stopped',
     'enabled': true,
     'suppressionConfigured': false
   },
   {
-    'id': 'IUIEyG0BbK6JFp72n_Ka',
+    'id': 'q6_IgW0B0ftGE-k_s-5s',
     'severity': 1,
-    'monitor': 'Reporting Engine Schedule Task Pool Critical Utilization',
-    'trigger': 'Scheduled Task Pool Critical utilization',
+    'monitor': 'Archiver Aggregation Stopped',
+    'trigger': 'Aggregation Stopped',
     'enabled': true,
     'suppressionConfigured': false
-  }],
-  'pageNumber': 0,
-  'pageSize': 6,
-  'totalPages': 7,
-  'totalItems': 40,
-  'hasNext': true,
-  'hasPrevious': false
-};
+  }
+];

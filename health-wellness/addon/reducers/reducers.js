@@ -12,7 +12,7 @@ const hwReducer = handleActions({
   [ACTION_TYPES.GET_MONITORS]: (state, action) => {
     return handle(state, action, {
       success: (s) => {
-        return s.set('monitors', action.payload.data.items);
+        return s.set('monitors', action.payload.data);
       }
     });
   }

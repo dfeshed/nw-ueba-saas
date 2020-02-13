@@ -4,8 +4,12 @@
   height: 100%;
   width: 100%;
   .hw-list {
-
+    height: 100%;
     padding-top: rsa-whitespace();
+
+    .hw-table {
+      height: 100%;
+    }
   }
 
 }

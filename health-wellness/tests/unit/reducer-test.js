@@ -10,26 +10,34 @@ import { LIFECYCLE } from 'redux-pack';
 module('Unit | Reducers | health-wellness', function(hooks) {
   setupTest(hooks);
 
-  const monitors = {
-    'items': [{
-      'id': 'EkMnyG0BbK6JFp72teyl',
+  const monitors = [
+    {
+      'id': 'q6_IgW0B0ftGE-k_s-5s',
       'severity': 1,
-      'monitor': 'Reporting Engine Shared Task Critical Utilization',
-      'trigger': 'Shared Task Critical Utilization',
+      'monitor': 'Archiver Aggregation Stopped',
+      'trigger': 'Aggregation Stopped',
+      'enabled': true,
+      'suppressionConfigured': true
+    },
+    {
+      'id': 'q6_IgW0B0ftGE-k_s-5s',
+      'severity': 1,
+      'monitor': 'Archiver Aggregation Stopped',
+      'trigger': 'Aggregation Stopped',
       'enabled': true,
       'suppressionConfigured': false
     },
     {
-      'id': 'IUIEyG0BbK6JFp72n_Ka',
+      'id': 'q6_IgW0B0ftGE-k_s-5s',
       'severity': 1,
-      'monitor': 'Reporting Engine Schedule Task Pool Critical Utilization',
-      'trigger': 'Scheduled Task Pool Critical utilization',
+      'monitor': 'Archiver Aggregation Stopped',
+      'trigger': 'Aggregation Stopped',
       'enabled': true,
       'suppressionConfigured': false
-    }]
-  };
+    }
+  ];
 
-  test('The GET_MONITORS increments the page number', function(assert) {
+  test('The GET_MONITORS gets the monitors', function(assert) {
 
     const previous = Immutable.from({
       monitors: []
@@ -41,7 +49,7 @@ module('Unit | Reducers | health-wellness', function(hooks) {
     });
 
     const newState = reducer(previous, newAction);
-    assert.equal(newState.monitors.length, 2);
+    assert.equal(newState.monitors.length, 3);
   });
 
 });
