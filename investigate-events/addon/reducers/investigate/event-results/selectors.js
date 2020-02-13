@@ -629,7 +629,7 @@ export const getDownloadOptions = createSelector(
         preferredDownloadOptions.push({
           name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option }),
           eventDownloadType,
-          fileType: eventAnalysisPreferences[defaultEventType],
+          fileType,
           sessionIds: getIdsForEventType,
           count: `${num}/${total}`,
           disabled: num < 1

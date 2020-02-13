@@ -716,12 +716,14 @@ module('Unit | Selectors | event-results', function(hooks) {
   });
 
   test('getDownloadOptions returns appropriate counts for options when network events are selected', async function(assert) {
+    const updatedPreferences = { ...preferenceData };
+    updatedPreferences.eventAnalysisPreferences.defaultPacketFormat = 'PAYLOAD';
     const state = {
       investigate: {
         eventCount: {},
         dictionaries: {},
         services: {},
-        data: preferenceData,
+        data: updatedPreferences,
         eventResults: withNetworkEvents,
         queryNode: {
           previousQueryParams: {}
@@ -738,6 +740,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(otherGroup.length, 6);
 
     await assertForDownloadOptions(assert, defaultGroup, 0, 'LOG', 'TEXT', 'Logs as Text');
+    // regardless of preference for network download, the default option for bulk downloads should always be PCAP
     await assertForDownloadOptions(assert, defaultGroup, 1, 'NETWORK', 'PCAP', 'Network as PCAP');
     await assertForDownloadOptions(assert, defaultGroup, 2, 'META', 'TEXT', 'Visible Meta as Text');
     await assertForDownloadOptions(assert, otherGroup, 0, 'LOG', 'CSV', 'Logs as CSV');
