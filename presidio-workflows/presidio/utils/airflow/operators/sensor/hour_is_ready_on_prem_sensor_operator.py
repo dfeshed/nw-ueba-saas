@@ -9,7 +9,7 @@ from presidio.utils.services.time_service import datetime_to_epoch
 DELAY_TIME_IN_SECONDS = 60 * 15
 
 
-class HourIsReadySensorOperator(BaseSensorOperator):
+class HourIsReadyOnPremSensorOperator(BaseSensorOperator):
     """
     Sensor that waits for 15 minutes
     :param schema_name: The schema that we trying to check if is ready
@@ -24,7 +24,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             self,
             schema_name,
             *args, **kwargs):
-        super(HourIsReadySensorOperator, self).__init__(
+        super(HourIsReadyOnPremSensorOperator, self).__init__(
             retries=99999,
             retry_exponential_backoff=True,
             max_retry_delay=timedelta(seconds=300),
@@ -67,4 +67,3 @@ class HourIsReadySensorOperator(BaseSensorOperator):
     @staticmethod
     def get_counter_property(property_to_get, properties_file):
         return load_and_get_property(property_to_get, properties_file)
-

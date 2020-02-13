@@ -246,6 +246,13 @@ dags:
         main_class: presidio.input.pre.processing.application.PresidioInputPreProcessingApplication
         xmx: 512
         xms: 512
+    HourIsReadyS3Operator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-s3.jar
+        main_class: presidio.s3.FortscaleS3Application
+        xmx: 512
+        xms: 512
+
 components:
   ade:
     models:
@@ -261,9 +268,15 @@ components:
         build_model_interval_in_days: 1
         accumulate_interval_in_days: 1
         min_data_time_range_for_building_models_in_days: 14
+  adapter:
+    hour_is_ready_sensor:
+      type: s3
+      command: hourIsReady
+
 retention:
   min_time_to_start_retention_in_days: 2
   retention_interval_in_hours: 24
   command: applyRetentionPolicy
+
 
 
