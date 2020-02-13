@@ -47,6 +47,7 @@ public class S3_Interval implements Comparable<S3_Interval> {
     public void close() {
         if (cache.isEmpty()) {
             if (fileUniqueId == 0) {
+                totalUploaded = -1;
                 uploadEmpty();
             }
         } else {
@@ -58,9 +59,15 @@ public class S3_Interval implements Comparable<S3_Interval> {
         S3_Helper helper = new S3_Helper();
         byte[] bytes = streamConverter.convert(cache);
         UploadResult upload = helper.upload(keyBeginningPart.concat(keyGen.getKeyEndPart(fileUniqueId)), bytes);
-        fileUniqueId++;
-        totalUploaded += cache.size();
-        LOGGER.info(cache.size() + " " + upload.getKey());
+
+        if (totalUploaded < 0) {
+            LOGGER.info("0 " + upload.getKey());
+        } else {
+            fileUniqueId++;
+            totalUploaded += cache.size();
+            LOGGER.info(cache.size() + " " + upload.getKey());
+        }
+
         cache.clear();
         return upload;
     }
