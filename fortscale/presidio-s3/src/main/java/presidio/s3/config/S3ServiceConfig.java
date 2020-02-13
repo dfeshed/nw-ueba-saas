@@ -26,7 +26,7 @@ public class S3ServiceConfig {
     private String region;
 
     @Bean
-    public NWGatewayService nwGatwayService(){
+    public NWGatewayService nwGatewayService(){
         return new NWGatewayService(bucketName, tenant, account, region);
     }
 
