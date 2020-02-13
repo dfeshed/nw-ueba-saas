@@ -103,7 +103,7 @@ pipeline {
 def runSuiteXmlFile(String suiteXmlFile) {
     sh 'pwd'
     sh "echo JAVA_HOME=${env.JAVA_HOME}"
-    sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
+    sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS} -Dgenerator_format=${params.generator_format} -Dpre_processing_configuration_scenario=${pre_processing_configuration_scenario}"
 }
 
 def cleanUebaDBs() {
