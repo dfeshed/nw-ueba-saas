@@ -64,8 +64,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <forkMode>once</forkMode>
-                    <argLine>-Xms512m -Xmx2048m</argLine>
+                    <forkMode>never</forkMode>
+                    <argLine>-Xms512m -Xmx3048m</argLine>
                     <systemPropertyVariables>
                         <generator_format>${generator_format}</generator_format>
                         <pre_processing_configuration_scenario>${pre_processing_configuration_scenario}</pre_processing_configuration_scenario>
