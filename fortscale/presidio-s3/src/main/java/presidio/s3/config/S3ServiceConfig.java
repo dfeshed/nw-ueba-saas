@@ -1,10 +1,10 @@
-package presidio.utils.s3.config;
+package presidio.s3.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.utils.s3.services.NWGatewayService;
+import presidio.s3.services.NWGatewayService;
 
 @Configuration
 @Import({

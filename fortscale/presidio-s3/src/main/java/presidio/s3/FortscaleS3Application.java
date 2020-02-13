@@ -1,10 +1,10 @@
-package presidio.utils.s3;
+package presidio.s3;
 
 import fortscale.common.shell.PresidioShellableApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import presidio.utils.s3.config.S3ServiceConfig;
+import presidio.s3.config.S3ServiceConfig;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,17 +3,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>presidio-utils</artifactId>
+        <artifactId>fortscale</artifactId>
         <groupId>fortscale</groupId>
         <version>11.5.0-0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>presidio-utils-s3</artifactId>
+    <artifactId>presidio-s3</artifactId>
     <packaging>jar</packaging>
     <version>11.5.0-0-SNAPSHOT</version>
     <properties>
-        <start-class>presidio.utils.s3.FortscaleS3Application</start-class>
+        <start-class>presidio.s3.FortscaleS3Application</start-class>
     </properties>
 
     <dependencies>

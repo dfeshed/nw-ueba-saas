@@ -743,6 +743,7 @@
         <module>presidio-output</module>
         <module>presidio-configuration</module>
         <module>presidio-manager</module>
+        <module>presidio-s3</module>
     </modules>
 
     <distributionManagement>
