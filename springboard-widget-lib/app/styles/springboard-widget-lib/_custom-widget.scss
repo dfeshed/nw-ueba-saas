@@ -12,10 +12,11 @@
 
     .rsa-data-table-body-cell {
       color: text-color(primary, lighter);
-      line-height: 30px;
       padding-top: 0;
       padding-bottom: 0;
       background-color: transparent;
+      align-items: center;
+      display: flex;
     }
     .rsa-data-table-header-row {
       background-color: background-color(primary, darkest);
@@ -26,4 +27,31 @@
 .chart-widget {
   padding-left: rsa-whitespace();
   padding-bottom: 48px;
+}
+
+
+.pill {
+  width: fit-content;
+  min-width: 25px;
+  padding: 0 5px;
+  color: #000000;
+  font-family: Lato;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 20px;
+  border-radius: 20px;
+
+  &.is-danger {
+    background-color: text-color(accentOne);
+  }
+  &.is-high {
+    background-color: text-color(accentThree);
+  }
+  &.is-medium {
+    background-color: text-color(accentFour);
+  }
+  &.is-low {
+    background-color: text-color(accentTwo);
+  }
 }

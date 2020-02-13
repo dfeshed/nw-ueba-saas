@@ -7,7 +7,7 @@
       <RsaDataTable::BodyCell @column={{column}}>
         {{#if (eq column.field "score")}}
           <centered>
-            {{rsa-risk-score score=(get item column.field) size="small"}}
+            <TableWidget::ColumnPill @score={{get item column.field}}/>
           </centered>
         {{else}}
           {{get item column.field}}
