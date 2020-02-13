@@ -47,6 +47,16 @@ public class NWGatewayService {
         this.region = region;
     }
 
+    /**
+     * Check and wait for hour to be ready for reading by checking if later file is exists.
+     *
+     * @param startDate the hour start time
+     * @param endDate   the hour end time
+     * @param schema    the data schema
+     *
+     * @return true if ready
+     * @throws InterruptedException if the current thread is interrupted
+     */
     public boolean hourIsReady(Instant startDate, Instant endDate, String schema) throws InterruptedException {
         ClientConfiguration clientConfiguration = PredefinedClientConfigurations.defaultConfig();
         clientConfiguration.setMaxErrorRetry(10);
