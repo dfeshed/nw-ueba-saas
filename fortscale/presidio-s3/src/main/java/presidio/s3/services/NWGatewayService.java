@@ -22,8 +22,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  * A netwitness gateway service that supply services over s3. It makes the following assumption:
- *
- *  * the S3 keys are in the following format: <tenant>/NetWitness/<account>/<schema>/<region>/year/month/day/<Account>_<Region>_<Application>_<Timestamp>_<Unique>.json.gz
+ * the S3 keys are in the following format: <tenant>/NetWitness/<account>/<schema>/<region>/year/month/day/<Account>_<Region>_<Application>_<Timestamp>_<Unique>.json.gz
  */
 
 public class NWGatewayService {
