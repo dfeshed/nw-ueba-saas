@@ -25,9 +25,9 @@
   </hbox>
   <hbox class="col-md-2 col-xs-2 col-sm-2 n-sources-cell">
     <p>
-      <div class="table-cell-text" {{action "hideTip" index on="mouseLeave"}}>
+      <div class="table-cell-text" {{on "mouseleave" (fn this.hideTip index)}}>
         {{#if srcCountTooltip}}
-          <div class="src-count-text src-count" {{action "showTip" index on="mouseEnter"}}>{{srcCount}}</div>
+          <div class="src-count-text src-count" {{on "mouseenter" (fn this.showTip index)}}>{{srcCount}}</div>
           <div class="tip">
             <svg>
               <polygon class="poly-line-1" points="0,7 7,0 14,7"/>

@@ -1,4 +1,4 @@
-import { computed } from '@ember/object';
+import { computed, action } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { sourceCountTooltip, getSourceCount } from 'admin-source-management/utils/groups-util';
@@ -20,13 +20,14 @@ const Row = Component.extend({
     return getSourceCount(this.item?.sourceCount);
   }),
 
-  actions: {
-    showTip(index) {
-      document.getElementsByClassName('tip')[index].classList.add('show');
-    },
-    hideTip(index) {
-      document.getElementsByClassName('tip')[index].classList.remove('show');
-    }
+  @action
+  showTip(index) {
+    document.getElementsByClassName('tip')[index].classList.add('show');
+  },
+
+  @action
+  hideTip(index) {
+    document.getElementsByClassName('tip')[index].classList.remove('show');
   }
 });
 
