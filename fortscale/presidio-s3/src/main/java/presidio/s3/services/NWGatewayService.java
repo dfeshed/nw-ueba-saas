@@ -68,25 +68,25 @@ public class NWGatewayService {
 
         while (true) {
             for (S3ObjectSummary obj : objects.getObjectSummaries()) {
-                result = filterFilesByCompareDates(obj, startDate, endDate, new CompareDates() {
+                result = filterFilesByCompareDates(obj, startDate, endDate, new CompareS3ObjectDate() {
                     @Override
-                    public boolean compare(Instant date, Instant startDate, Instant endDate) {
-                        return date.compareTo(endDate) >= 0;
+                    public boolean compare(Instant s3FileDate, Instant startDate, Instant endDate) {
+                        return s3FileDate.compareTo(endDate) >= 0;
                     }
                 });
                 if (result) {
-                    logger.info("Hour {} is ready!. found file with key: {}", startDate, obj.getKey());
+                    logger.info("Hour {} is ready!. found file with key: {}.", startDate, obj.getKey());
                     return true;
                 }
             }
 
-            logger.info("Hour {} is not ready!, going to sleep for {} seconds", startDate, timeToSleep);
+            logger.info("Hour {} is not ready!, going to sleep for {} seconds.", startDate, timeToSleep);
             Thread.sleep(timeToSleep * 1000); // sleep for 30 seconds
         }
     }
 
     /**
-     * Generates the objects iterator for given start time, end time and schema.
+     * Generates objects iterator for given start time, end time and schema.
      *
      * @param s3        an AmazonS3 that is set up with access to the bucket paths provided.
      * @param startDate the start time to iterator on.
@@ -126,17 +126,17 @@ public class NWGatewayService {
     }
 
     private List<S3ObjectSummary> filterFilesByRange(ListObjectsV2Result objects, Instant startDate, Instant endDate){
-        List<S3ObjectSummary> result = objects.getObjectSummaries().stream().filter(obj -> filterFilesByCompareDates(obj, startDate, endDate, new CompareDates() {
+        List<S3ObjectSummary> result = objects.getObjectSummaries().stream().filter(obj -> filterFilesByCompareDates(obj, startDate, endDate, new CompareS3ObjectDate() {
             @Override
-            public boolean compare(Instant date, Instant startDate, Instant endDate) {
-                return date.isAfter(startDate) && date.isBefore(endDate);
+            public boolean compare(Instant s3FileDate, Instant startDate, Instant endDate) {
+                return s3FileDate.isAfter(startDate) && s3FileDate.isBefore(endDate);
             }
         })).collect(Collectors.toList());
         result.sort(defaultS3ObjectSummaryComparator);
         return result;
     }
 
-    private boolean filterFilesByCompareDates(S3ObjectSummary object, Instant startDate, Instant endDate, CompareDates compareDates) {
+    private boolean filterFilesByCompareDates(S3ObjectSummary object, Instant startDate, Instant endDate, CompareS3ObjectDate compareS3ObjectDate) {
         Pattern p = Pattern.compile(DATE_REGEX_FORMAT);
         Matcher m = p.matcher(object.getKey());
         if (m.matches()) {
@@ -145,7 +145,7 @@ public class NWGatewayService {
             String dateStr = m.group(1);
             try {
                 Instant date = sdf.parse(dateStr).toInstant().minusNanos(1);
-                if (compareDates.compare(date, startDate, endDate)) {
+                if (compareS3ObjectDate.compare(date, startDate, endDate)) {
                     return true;
                 }
             } catch (Exception ex) {
@@ -163,8 +163,8 @@ public class NWGatewayService {
         return formStreamPrefix(tenant, account, schema, region) + generateDaySuffix(date);
     }
 
-    interface CompareDates {
-        boolean compare(Instant date, Instant startDate, Instant endDate);
+    interface CompareS3ObjectDate {
+        boolean compare(Instant s3FileDate, Instant startDate, Instant endDate);
     }
 }
 
