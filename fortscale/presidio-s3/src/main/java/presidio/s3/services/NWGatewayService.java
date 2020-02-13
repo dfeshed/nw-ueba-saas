@@ -9,22 +9,21 @@ import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static fortscale.common.s3.NWGateway.DATE_REGEX_FORMAT;
+import static fortscale.common.s3.NWGateway.DEFAULT_DATE_FORMAT;
+import static fortscale.common.s3.NWGateway.formStreamPrefix;
+import static fortscale.common.s3.NWGateway.generateDaySuffix;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
- * An netwitness gateway service that supply services over s3. It makes the following assumptions:
+ * A netwitness gateway service that supply services over s3. It makes the following assumption:
  *
- * <ul>
- *     <li> the S3 keys are in the following format:
- *     <tenant>/NetWitness/<account>/<schema>/<region>/year/month/day/<Account>_<Region>_<Application>_<Timestamp>_<Unique>.json.gz</li>
- *  </ul>
+ *  * the S3 keys are in the following format: <tenant>/NetWitness/<account>/<schema>/<region>/year/month/day/<Account>_<Region>_<Application>_<Timestamp>_<Unique>.json.gz
  */
 
 public class NWGatewayService {
@@ -36,8 +35,6 @@ public class NWGatewayService {
     private String account;
     private String region;
 
-    private final static String DEFAULT_DATE_FORMAT = "yyyyMMdd'T'HHmm'Z'";
-    private final static String DATE_REGEX_FORMAT = ".*_(20\\d{6}T\\d{4}Z)_.*";
     private Comparator<S3ObjectSummary> defaultS3ObjectSummaryComparator = Comparator.comparing(S3ObjectSummary::getKey);
 
     public NWGatewayService(String bucketName, String tenant, String account, String region) {
@@ -48,9 +45,9 @@ public class NWGatewayService {
     }
 
     /**
-     * Generates the object iterator from start time, end time and schema.
+     * Generates the objects iterator for given start time, end time and schema.
      *
-     * @param s3        an AmazonS3Client that is set up with access to the bucket paths provided.
+     * @param s3        an AmazonS3 that is set up with access to the bucket paths provided.
      * @param startDate the start time to iterator on.
      * @param endDate   the end time to iterate on.
      * @param schema    the data schema
@@ -70,7 +67,7 @@ public class NWGatewayService {
         List<String> days = new ArrayList<>();
         logger.info("Fetching events from inclusive {} to exclusive {}.", startDate, endDate);
         for (Instant time = startDate; time.compareTo(endDate) <= 0; time = time.plus(1, DAYS).truncatedTo(DAYS)) {
-            days.add(formStreamPrefix(schema) + generateDaySuffix(time));
+            days.add(formStreamPrefix(tenant, account, schema, region) + generateDaySuffix(time));
         }
         return days;
     }
@@ -112,27 +109,5 @@ public class NWGatewayService {
             throw new IllegalArgumentException();
         }
         return false;
-    }
-
-    /**
-     * Generates the streamPrefix string from tenant, schema and region values.
-     *
-     * @param schema the data schema
-     * @return the streamPrefix.
-     */
-    private String formStreamPrefix(String schema) {
-        return this.tenant + "/NetWitness/" + this.account + "/" + schema + "/" + this.region + "/";
-    }
-
-    /**
-     * Generates the time-part of the path in S3. This is in the YYYY/MM/DD format. Along with the tenant, account, schema
-     * and region prefix, a object key would look like <tenant>/NetWitness/<account>/<schema>/<region>/year/month/day/events1.json.gz
-     *
-     * @param date an instant in time
-     * @return the time-part of the key prefix
-     */
-    private String generateDaySuffix(Instant date) {
-        ZonedDateTime dateTime = ZonedDateTime.ofInstant(date, ZoneId.of("UTC"));
-        return String.format("%1$tY/%1$tm/%1$td", dateTime);
     }
 }
