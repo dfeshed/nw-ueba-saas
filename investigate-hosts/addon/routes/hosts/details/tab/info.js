@@ -1,5 +1,5 @@
 import Route from '@ember/routing/route';
-import { getProcessDetails } from 'investigate-hosts/actions/data-creators/process';
+import { getProcessDetails, toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
 import { inject as service } from '@ember/service';
 
 export default Route.extend({
@@ -12,6 +12,7 @@ export default Route.extend({
     const { rowId } = params;
     if (rowId) {
       redux.dispatch(getProcessDetails(rowId));
+      redux.dispatch(toggleProcessDetailsView(true));
     }
     return { ...params, ...parentParam };
   }

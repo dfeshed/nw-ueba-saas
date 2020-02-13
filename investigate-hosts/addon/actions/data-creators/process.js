@@ -120,6 +120,8 @@ const deSelectAllProcess = () => ({ type: ACTION_TYPES.DESELECT_ALL_PROCESS });
 
 const setRowIndex = (index) => ({ type: ACTION_TYPES.SET_ROW_INDEX, payload: index });
 
+const toggleProcessDetailsView = (isProcessDetailsView = false) => ({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS, payload: isProcessDetailsView });
+
 export {
   sortBy,
   toggleProcessView,
@@ -131,5 +133,6 @@ export {
   setRowIndex,
   toggleSelectedProcessDllRow,
   setDllRowSelectedId,
-  getProcessDetails
+  getProcessDetails,
+  toggleProcessDetailsView
 };

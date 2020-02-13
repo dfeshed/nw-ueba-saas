@@ -14,10 +14,11 @@ import {
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import { isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
 import summaryItems from '../summary-item-config';
-import { setDllRowSelectedId } from 'investigate-hosts/actions/data-creators/process';
+import { setDllRowSelectedId, toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
 
 const dispatchToActions = {
-  setDllRowSelectedId
+  setDllRowSelectedId,
+  toggleProcessDetailsView
 };
 
 const stateToComputed = (state) => ({
@@ -63,6 +64,11 @@ class ProcessDetails extends Component {
   @action
   onPropertyPanelClose() {
     this.send('setDllRowSelectedId', -1);
+  }
+
+  willDestroyElement() {
+    super.willDestroyElement(...arguments);
+    this.send('toggleProcessDetailsView', false);
   }
 }
 

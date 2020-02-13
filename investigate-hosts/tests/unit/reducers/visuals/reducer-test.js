@@ -148,3 +148,17 @@ test('The TOGGLE_ALL_FILE toggles the All files state', function(assert) {
 
   assert.deepEqual(result, expectedEndState);
 });
+
+test('The TOGGLE_PROCESS_DETAILS toggles based on if process details view', function(assert) {
+  const previous = Immutable.from({
+    isProcessDetailsView: false
+  });
+
+  const expectedEndState = {
+    isProcessDetailsView: true
+  };
+
+  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS, payload: true });
+
+  assert.deepEqual(result, expectedEndState);
+});

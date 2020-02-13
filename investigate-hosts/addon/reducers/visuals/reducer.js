@@ -58,7 +58,9 @@ const visuals = handleActions({
 
   [ACTION_TYPES.TOGGLE_HOST_DETAILS_FILTER]: (state, { payload: { flag } }) => state.set('showHostDetailsFilter', flag),
 
-  [ACTION_TYPES.TOGGLE_ALL_FILE]: (state) => state.set('listAllFiles', !state.listAllFiles)
+  [ACTION_TYPES.TOGGLE_ALL_FILE]: (state) => state.set('listAllFiles', !state.listAllFiles),
+
+  [ACTION_TYPES.TOGGLE_PROCESS_DETAILS]: (state, action) => state.set('isProcessDetailsView', action.payload)
 
 }, visualsInitialState);
 
