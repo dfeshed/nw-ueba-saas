@@ -12,6 +12,10 @@
 
     <artifactId>ueba-automation-test</artifactId>
 
+    <properties>
+        <generator_format>MONGO_ADAPTER</generator_format>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.rsa.netwitness.presidio.automation</groupId>
