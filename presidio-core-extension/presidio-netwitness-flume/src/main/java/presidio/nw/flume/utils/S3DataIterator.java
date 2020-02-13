@@ -1,7 +1,10 @@
 package presidio.nw.flume.utils;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,7 +75,6 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
     private Iterator<S3ObjectSummary> fileIterator;
 
 
-
     /**
      * Internal constructor. Requires knowledge of the streamPrefix format, which is an implementation detail.
      * The current implementation rounds the start time down, and the endTime up. ie.
@@ -109,12 +111,17 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
      */
     @Override
     public boolean hasNext() {
-        // if current file is empty
-        if (!lineIterator.hasNext() && (fileIterator.hasNext() || folderIterator.hasNext())) {
-            // but we still have remaining files/folders, so iterate to a non-empty file, or to the end
-            nextFile();
+        try {
+            // if current file is empty
+            if (!lineIterator.hasNext() && (fileIterator.hasNext() || folderIterator.hasNext())) {
+                // but we still have remaining files/folders, so iterate to a non-empty file, or to the end
+                nextFile();
+            }
+            return lineIterator.hasNext();
+        } catch (Exception e) {
+            logger.error("S3 hasNext failure");
+            throw new RuntimeException(e);
         }
-        return lineIterator.hasNext();
     }
 
     /**
@@ -124,13 +131,12 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
      */
     @Override
     public Map<String, Object> next() {
+        String event = lineIterator.next();
         try {
-            return MAPPER.readValue(lineIterator.next(), TYPE);
-        }
-        catch (IOException e) {
-            logger.warn(e.getMessage());
-            logger.debug(e.getMessage(), e);
-            return Collections.emptyMap();
+            return MAPPER.readValue(event, TYPE);
+        } catch (Exception e) {
+            logger.error("Failed to deserialize JSON string {}.", event, e);
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -140,7 +146,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         if (lineIterator != null) {
             lineIterator.close();
         }
@@ -152,7 +158,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
     private void nextFile() {
         // remaining files in the current folder
         if (fileIterator.hasNext()) {
-            lineIterator = readS3File(fileIterator.next().getKey());
+            lineIterator = getS3Reader(fileIterator.next().getKey());
             // if this file is empty, recurse !
             if (!lineIterator.hasNext()) {
                 nextFile();
@@ -213,23 +219,37 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
      * @param filePath the key of the file to read
      * @return An iterator to a List containing the lines of the file as {@link String}s
      */
-    private BufferReaderIterator readS3File(String filePath) {
+    private BufferReaderIterator getS3Reader(String filePath) {
+        S3ObjectInputStream S3Object;
         try {
-            GZIPInputStream gzip = new GZIPInputStream(s3.getObject(bucket, filePath).getObjectContent());
+            S3Object = s3.getObject(bucket, filePath).getObjectContent();
+        } catch (Exception e) {
+            logger.error("Failed to get object key: {}, from S3 bucket: {}.", filePath, bucket, e);
+            throw new RuntimeException(e);
+        }
+
+        try {
+            GZIPInputStream gzip = new GZIPInputStream(S3Object);
             BufferedReader reader = new BufferedReader(new InputStreamReader(gzip));
             return new BufferReaderIterator(reader);
-        }
-        catch (IOException e) {
-            logger.warn(e.getMessage());
-            logger.debug(e.getMessage(), e);
-            return BufferReaderIterator.empty();
+        } catch (Exception e) {
+            logger.error("Failed to open file with key: {}.", filePath, e);
+            throw new RuntimeException(e);
         }
     }
 
     private List<S3ObjectSummary> getListOfObjectsFromS3ByPrefix(String prefix) {
         List<S3ObjectSummary> result;
         ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucket).withPrefix(prefix);
-        result = this.s3.listObjectsV2(req).getObjectSummaries().stream().filter(this::fileInRange).collect(Collectors.toList());
+        ListObjectsV2Result objects;
+        try {
+            objects = this.s3.listObjectsV2(req);
+        } catch (Exception ex) {
+            logger.error("Failed to list S3 objects with prefix: {}, from S3 bucket: {}.", prefix, bucket, ex);
+            throw new RuntimeException(ex);
+        }
+
+        result = objects.getObjectSummaries().stream().filter(this::fileInRange).collect(Collectors.toList());
         result.sort(defaultS3ObjectSummaryComparator);
         return result;
     }
@@ -246,11 +266,14 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
                 if (date.isAfter(startTime) && date.isBefore(endTime)) {
                     return true;
                 }
-            } catch (ParseException e) {
-                logger.error("Invalid date format for s3 file: {} date: {}. Expected format: {}", object.getKey(), dateStr, DEFAULT_DATE_FORMAT, e);
+            } catch (Exception ex) {
+                logger.error("Invalid date format for S3 file: {} date: {}. Expected format: {}", object.getKey(), dateStr, DEFAULT_DATE_FORMAT, ex);
+                throw new IllegalArgumentException(ex);
             }
+        } else {
+            logger.error("Invalid file name. Can't find time stamp for S3 file : {}, from S3 bucket: {}. Expected time stamp regex format: {}", object.getKey(), bucket, DATE_REGEX_FORMAT);
+            throw new IllegalArgumentException();
         }
-
         return false;
     }
 
@@ -266,11 +289,10 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
             if (reader != null) {
                 this.iter = reader.lines().iterator();
                 this.reader = reader;
-                if(!iter.hasNext()){
+                if (!iter.hasNext()) {
                     close();
                 }
-            }
-            else {
+            } else {
                 iter = Collections.emptyIterator();
             }
         }
@@ -285,8 +307,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
             if (reader != null) {
                 try {
                     reader.close();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     logger.error("Could not close iterator", e);
                 }
             }
@@ -299,11 +320,16 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
         @Override
         public String next() {
-            String next = iter.next();
-            if (!iter.hasNext()) {
-                close();
+            try {
+                String next = iter.next();
+                if (!iter.hasNext()) {
+                    close();
+                }
+                return next;
+            } catch (Exception ex) {
+                logger.error("Failed to fetch next record");
+                throw new RuntimeException(ex);
             }
-            return next;
         }
     }
 }
