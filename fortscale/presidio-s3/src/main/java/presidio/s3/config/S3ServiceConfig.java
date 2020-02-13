@@ -4,11 +4,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.s3.S3Shellcommands;
 import presidio.s3.services.NWGatewayService;
 
 @Configuration
 @Import({
-        NWGatewayService.class
+        S3Shellcommands.class
 })
 public class S3ServiceConfig {
 
