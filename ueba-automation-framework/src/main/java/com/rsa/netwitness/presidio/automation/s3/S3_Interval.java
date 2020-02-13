@@ -7,7 +7,7 @@ import fortscale.common.general.Schema;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class S3_Interval implements Comparable<S3_Interval> {
@@ -17,7 +17,7 @@ public class S3_Interval implements Comparable<S3_Interval> {
     private final S3_Key keyGen = new S3_Key();
     private final String keyBeginningPart;
     private GzipStreamConverter streamConverter = new GzipStreamConverter();
-    private List<String> cache = new ArrayList<>(FILE_MAX_EVENTS);
+    private List<String> cache = new LinkedList<>();
     private int fileUniqueId = 0;
     private int totalUploaded = 0;
 

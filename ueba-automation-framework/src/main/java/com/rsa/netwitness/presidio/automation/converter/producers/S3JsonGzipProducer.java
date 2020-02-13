@@ -88,10 +88,10 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
             Instant interval = intervalObj.getInterval();
             if (eventsByInterval.containsKey(interval)) {
                 intervalObj.process(toStringLines(eventsByInterval.get(interval)));
-                intervalObj.close();
                 resultingCount.putIfAbsent(schema, 0L);
                 resultingCount.computeIfPresent(schema, (s, i) -> i + intervalObj.getTotalUploaded());
             }
+            intervalObj.close();
         });
     }
 
