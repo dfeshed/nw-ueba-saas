@@ -4,12 +4,19 @@ pipeline {
         string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
 
+        string(name: 'S3_BUCKET', defaultValue: 'presidio-automation-data', description: '')
+        string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
+        string(name: 'S3_ACCOUNT', defaultValue: '123456789012', description: '')
+
+        string(name: 'generator_format', defaultValue: 'MONGO_ADAPTER', description: '')
+        string(name: 'pre_processing_configuration_scenario', defaultValue: 'E2E_MONGO', description: '')
+
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: false, description: '')
         booleanParam(name: 'DATA_INJECTION', defaultValue: true, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
-        choice(name: 'NODE_LABEL', choices: ['UEBA04'], description: '')
+        choice(name: 'NODE_LABEL', choices: ['UEBA01','UEBA02','UEBA03','UEBA04'], description: '')
         choice(name: 'VERSION', choices: ['11.4.0.0','11.5.0.0'], description: 'RPMs version')
     }
 
@@ -60,7 +67,7 @@ pipeline {
                 expression { return params.DATA_INJECTION }
             }
             steps {
-                runSuiteXmlFile('core/CoreDataInjection.xml')
+                runSuiteXmlFile('e2e/E2E_DataInjection.xml')
             }
         }
 

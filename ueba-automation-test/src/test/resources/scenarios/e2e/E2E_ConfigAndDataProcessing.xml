@@ -3,7 +3,6 @@
 <suite name="E2E Test Data Processing">
     <parameter name="historical_days_back" value="14" />
     <parameter name="anomaly_day" value="1" />
-    <parameter name="pre_processing_configuration_scenario" value="E2E_BROKER" />
 
     <test name="Data Processing">
         <classes>
