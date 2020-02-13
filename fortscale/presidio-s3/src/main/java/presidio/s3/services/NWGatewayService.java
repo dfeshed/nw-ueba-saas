@@ -62,7 +62,7 @@ public class NWGatewayService {
         clientConfiguration.setMaxErrorRetry(10);
         AmazonS3 s3 = AmazonS3ClientBuilder.standard().withClientConfiguration(clientConfiguration).build();
         endDate = endDate.truncatedTo(HOURS).plusSeconds(60);
-        String prefix = formStreamPrefix(tenant, account, schema, region) + generateDaySuffix(endDate);
+        String prefix = getPrefix(tenant, account, schema, region, endDate);
         ListObjectsV2Result objects = getListOfObjectsFromS3ByPrefix(s3, prefix);
         boolean result;
 
@@ -107,7 +107,7 @@ public class NWGatewayService {
         List<String> days = new ArrayList<>();
         logger.info("Fetching events from inclusive {} to exclusive {}.", startDate, endDate);
         for (Instant time = startDate; time.compareTo(endDate) <= 0; time = time.plus(1, DAYS).truncatedTo(DAYS)) {
-            days.add(formStreamPrefix(tenant, account, schema, region) + generateDaySuffix(time));
+            days.add(getPrefix(tenant, account, schema, region, time));
         }
         return days;
     }
@@ -157,6 +157,10 @@ public class NWGatewayService {
             throw new IllegalArgumentException();
         }
         return false;
+    }
+
+    private String getPrefix(String tenant, String account, String schema, String region, Instant date){
+        return formStreamPrefix(tenant, account, schema, region) + generateDaySuffix(date);
     }
 
     interface CompareDates {
