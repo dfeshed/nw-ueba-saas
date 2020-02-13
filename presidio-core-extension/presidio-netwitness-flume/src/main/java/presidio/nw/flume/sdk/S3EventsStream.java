@@ -2,19 +2,20 @@ package presidio.nw.flume.sdk;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.PredefinedClientConfigurations;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import fortscale.common.general.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.nw.flume.utils.S3DataIterator;
+import presidio.s3.services.NWGatewayService;
 
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.Map;
 
+import static java.time.temporal.ChronoUnit.HOURS;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -57,14 +58,24 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
 
         validateConfiguration(config);
         String bucket = config.get("bucket");
+        String tenant = config.get("tenant");
+        String account = config.get("account");
+        String region = config.get("region");
+        String configSchema = config.get("schema");
 
         ClientConfiguration clientConfiguration = PredefinedClientConfigurations.defaultConfig();
         clientConfiguration.setMaxErrorRetry(10);
         AmazonS3 s3 = AmazonS3ClientBuilder.standard().withClientConfiguration(clientConfiguration).build();
 
         S3DataIterator iterator;
+
+        startDate = startDate.truncatedTo(HOURS);
+        endDate = endDate.minusNanos(1).plusSeconds(3600).truncatedTo(HOURS);
+
         try {
-            iterator = new S3DataIterator(s3, bucket, formStreamPrefix(config), startDate, endDate);
+            NWGatewayService nwGatewayService = new NWGatewayService(bucket, tenant, account, region);
+            Iterator<S3ObjectSummary> objects = nwGatewayService.getObjectsByRange(s3, startDate, endDate, configSchema);
+            iterator = new S3DataIterator(s3, bucket, objects);
         }
         catch (Exception e) {
             logger.error("start streaming failed", e);
@@ -86,17 +97,5 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
         requireNonNull(config.get("region"), "'region' is missing in configuration");
     }
 
-    /**
-     * Generates the streamPrefix string from tenant, schema and region value in the parameter map.
-     *
-     * @param params the parameter config map
-     * @return the streamPrefix.
-     */
-    private String formStreamPrefix(Map<String, String> params) {
-        String tenant = requireNonNull(params.get("tenant"), "tenant is missing");
-        String account = requireNonNull(params.get("account"), "account is missing");
-        String schema = requireNonNull(params.get("schema"), "schema is missing");
-        String region = requireNonNull(params.get("region"), "region is missing");
-        return tenant + "/NetWitness/" + account + "/" +  schema + "/" + region + "/";
-    }
+
 }
