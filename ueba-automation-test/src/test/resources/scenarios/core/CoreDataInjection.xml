@@ -5,7 +5,6 @@
     <parameter name="outputProcessingEndDaysBack" value="1" />
     <parameter name="historical_days_back" value="35" />
     <parameter name="anomaly_day" value="1" />
-    <parameter name="generator_format" value="MONGO_ADAPTER" />
 
     <test name="Data Injection">
         <classes>

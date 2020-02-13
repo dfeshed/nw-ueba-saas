@@ -60,7 +60,7 @@
                 </executions>
                 <configuration>
                     <systemPropertyVariables>
-                        <generator_format>${generatorFormat}</generator_format>
+                        <generator_format>${generator_format}</generator_format>
                     </systemPropertyVariables>
                     <suiteXmlFiles>
                         <suiteXmlFile>${project.build.testOutputDirectory}/scenarios/${suiteXmlFile}</suiteXmlFile>
