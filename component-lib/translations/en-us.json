@@ -6384,6 +6384,7 @@
   "springboard": {
     "noChartDataMessage": "No chart data available",
     "loading": "fetching the data please wait",
+    "view.all": "View All leads",
     "columns": {
       "machineIdentity.machineName": "Host",
       "score": "Risk Score",

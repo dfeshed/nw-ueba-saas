@@ -1,5 +1,5 @@
 <box class="table-widget">
-  <RsaDataTable  @enableResizeColumn={{false}} @items={{this.tableData}} @columnsConfig={{this.columns}}>
+  <RsaDataTable  @onRowClick={{this.rowClick}} @enableResizeColumn={{false}} @items={{this.tableData}} @columnsConfig={{this.columns}}>
     <RsaDataTable::Header @currentSort={{this.currentSort}} as |column|>
       {{#unless column.disableSort}}
         <hbox class="sort-column" fit>

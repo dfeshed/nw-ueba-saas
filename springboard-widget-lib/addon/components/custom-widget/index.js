@@ -7,6 +7,8 @@ import { tracked } from '@glimmer/tracking';
 export default class CustomWidgetComponent extends Component {
   @service inViewport;
 
+  @service deepLink;
+
   @tracked isLoadingData = true;
 
   element = null;
@@ -26,6 +28,14 @@ export default class CustomWidgetComponent extends Component {
     const viewportTolerance = { right: 220 };
     const { onEnter } = instance.inViewport.watchElement(element, { viewportTolerance });
     onEnter(instance.didEnterViewport.bind(instance));
+  }
+
+  @action
+  navigateTo() {
+    const { deepLink } = this.args.widget;
+    if (deepLink) {
+      this.deepLink.transition(deepLink);
+    }
   }
 
   /**

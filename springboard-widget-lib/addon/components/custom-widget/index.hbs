@@ -5,7 +5,9 @@
     </centered>
   {{else}}
     <SpringboardWidget @widget={{@widget}} as |widget|>
-      <widget.header @title={{format-message "{title} ({total})" title=@widget.name total=this.totalItems}}/>
+      <widget.header
+              @navigateTo={{this.navigateTo}}
+              @title={{format-message "{title} ({total})" title=@widget.name total=this.totalItems}}/>
       <widget.content as |Widget content|>
         <Widget @config={{content}} @data={{this.widgetData}}/>
       </widget.content>

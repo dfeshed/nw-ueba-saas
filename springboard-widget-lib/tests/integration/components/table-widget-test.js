@@ -12,7 +12,8 @@ const SELECTORS = {
   sortingUp: '.rsa-data-table-header-cell:nth-child(2) .sort-icons .ascending',
   sortingDown: '.rsa-data-table-header-cell:nth-child(2) .sort-icons .descending',
   sortDescending: '.is-sorted.desc',
-  sortAscending: '.is-sorted.asc'
+  sortAscending: '.is-sorted.asc',
+  secondRow: '.rsa-data-table-body-row:nth-child(2)'
 };
 
 
@@ -85,4 +86,55 @@ module('Integration | Component | table-widget', function(hooks) {
     await click(SELECTORS.sortingDown);
     assert.dom(SELECTORS.sortDescending).containsText('Risk Score');
   });
+
+  test('it will call deep-link service method on click of the row', async function(assert) {
+    assert.expect(1);
+    const deepLink = this.owner.lookup('service:deepLink');
+    const originFn = deepLink.transition;
+
+    deepLink.transition = () => {
+      assert.ok(true);
+      deepLink.transition = originFn;
+    };
+
+    this.set('config', {
+      deepLink: {
+        location: 'HOST_DETAILS',
+        params: []
+      },
+      columns: ['hostName', 'score', 'hostOsType'],
+      size: 25,
+      sort: {
+        keys: ['score'],
+        descending: true
+      }
+    });
+    this.set('data', {
+      items: [
+        {
+          hostName: 'Test1',
+          score: '10',
+          osType: 'windows'
+        },
+        {
+          hostName: 'Test2',
+          score: '100',
+          osType: 'windows'
+        },
+        {
+          hostName: 'Test3',
+          score: '20',
+          osType: 'windows'
+        },
+        {
+          hostName: 'Test4',
+          score: '50',
+          osType: 'windows'
+        }
+      ]
+    });
+    await render(hbs`<TableWidget @config={{this.config}} @data={{this.data}}/>`);
+    await click(SELECTORS.secondRow);
+  });
+
 });

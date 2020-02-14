@@ -14,6 +14,8 @@ export default class TableWidgetComponent extends Component {
 
   @service('i18n') i18n;
 
+  @service deepLink;
+
   @tracked currentSort = null;
 
   @tracked tableData = null;
@@ -44,5 +46,13 @@ export default class TableWidgetComponent extends Component {
       sorted.reverse();
     }
     this.tableData = sorted;
+  }
+
+  @action
+  rowClick(item) {
+    const { deepLink } = this.args.config;
+    if (deepLink) {
+      this.deepLink.transition(deepLink, item);
+    }
   }
 }

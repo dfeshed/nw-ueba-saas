@@ -40,6 +40,9 @@ const getDefaultSpringboard = () => {
                 name: 'Top Risky Hosts',
                 leadType: 'HOST',
                 leadCount: 25,
+                deepLink: {
+                  location: 'HOST_LIST'
+                },
                 content: [
                   {
                     type: 'chart',
@@ -52,6 +55,10 @@ const getDefaultSpringboard = () => {
                   },
                   {
                     type: 'table',
+                    deepLink: {
+                      location: 'HOST_DETAILS',
+                      params: ['machineIdentity.id', 'serviceId']
+                    },
                     columns: ['machineIdentity.machineName', 'score', 'machineIdentity.machineOsType'],
                     sort: {
                       keys: ['score'],
@@ -67,6 +74,9 @@ const getDefaultSpringboard = () => {
                 name: 'Top Risky Files',
                 leadType: 'FILE',
                 leadCount: 25,
+                deepLink: {
+                  location: 'FILE_LIST'
+                },
                 content: [
                   {
                     type: 'chart',
@@ -79,6 +89,10 @@ const getDefaultSpringboard = () => {
                   },
                   {
                     type: 'table',
+                    deepLink: {
+                      location: 'FILE_DETAILS',
+                      params: ['id', 'serviceId']
+                    },
                     columns: ['firstFileName', 'score', 'hostCount'],
                     sort: {
                       keys: ['score'],
