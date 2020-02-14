@@ -155,6 +155,25 @@ class ContextWrapper extends Component {
     return this.get('accessControl.endpointCanManageFiles') && tabsWithDownloadProcessDump.includes(this.tabName) && this.isProcessDumpDownloadSupported;
   }
 
+  @computed('tabName', 'listAllFiles')
+  get modifiedFilterTypes() {
+    if (this.isFileTab && this.listAllFiles) {
+      const newFilterTypes = [...this.filterTypes];
+      const filter = {
+        'name': 'deleted',
+        'label': 'investigateHosts.files.filter.deletedFilesFilter',
+        'type': 'list',
+        'listOptions': [
+          { name: false, label: 'investigateHosts.files.filter.hideDeleteFiles' }
+        ]
+      };
+      newFilterTypes.push(filter);
+      return newFilterTypes;
+    } else {
+      return this.filterTypes;
+    }
+  }
+
   @action
   onPropertyPanelClose(side) {
     if (side === 'right') {
@@ -223,7 +242,7 @@ class ContextWrapper extends Component {
 
   @action
   onFileToggle() {
-    this.send('toggleAllFiles', this.tabName);
+    this.send('toggleAllFiles', this.tabName, this.filter);
   }
 }
 

@@ -11,6 +11,7 @@ export default {
       path: '/usr/lib/systemd/system',
       pathH8: '1778501902604433296',
       fileName: 'systemd-journald.service',
+      deleted: true,
       owner: {
         username: 'root',
         groupname: 'root',
@@ -87,6 +88,7 @@ export default {
       path: '/usr/lib/modules/3.10.0-229.20.1.el7.x86_64/kernel/drivers/ata',
       pathH8: '8325233813913331491',
       fileName: 'ata_generic.ko',
+      deleted: false,
       owner: {
         username: 'root',
         groupname: 'root',

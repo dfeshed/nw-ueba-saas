@@ -1,5 +1,6 @@
 import { HostDetails, Process } from '../api';
 import * as ACTION_TYPES from '../types';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { handleError } from '../creator-utils';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
 import { checksumsWithoutRestricted } from 'investigate-shared/utils/file-status-util';
@@ -194,10 +195,15 @@ const fetchHostNames = (tabName, checksum) => {
   };
 };
 
-const toggleAllFiles = (belongsTo) => {
+const toggleAllFiles = (belongsTo, filterValue) => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.TOGGLE_ALL_FILE });
     dispatch(getFileContext(belongsTo));
+    const { selectedFilter, expressionList } = filterValue;
+    if (!selectedFilter || selectedFilter.id === 1) {
+      const savedFilter = { id: 1, criteria: { expressionList } };
+      dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'FILECONTEXT' } });
+    }
   };
 };
 

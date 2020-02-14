@@ -948,4 +948,87 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     });
   });
 
+  test('Deleted file filter is present for all files toggle on and for files tab', async function(assert) {
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
+    const fileContextSelections = [];
+    new ReduxDataHelper(setState)
+      .hostFiles(files)
+      .host(hostDetails)
+      .fileContextSelectionsForFiles(fileContextSelections)
+      .isSnapshotsAvailable(true)
+      .listAllFiles(true)
+      .build();
+    this.set('storeName', 'hostFiles');
+    this.set('tabName', 'FILE');
+    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    assert.equal(findAll('.deleted .list-filter').length, 1, 'hide deleted files filter is present');
+    await click('.deleted .list-filter .list-filter-option');
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
+    assert.equal(findAll('.rsa-data-table-body-row').length, 1, 'one row is getting filtered for delete filter option');
+  });
+
+  test('Deleted file filter is not present for all files toggle off for files tab', async function(assert) {
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
+    const fileContextSelections = [];
+    new ReduxDataHelper(setState)
+      .hostFiles(files)
+      .host(hostDetails)
+      .fileContextSelectionsForFiles(fileContextSelections)
+      .isSnapshotsAvailable(true)
+      .listAllFiles(false)
+      .build();
+    this.set('storeName', 'hostFiles');
+    this.set('tabName', 'FILE');
+    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    assert.equal(findAll('.deleted .list-filter').length, 0, 'hide deleted file filter is not present');
+  });
+
+  test('Deleted file filter is not present for tabs other than files', async function(assert) {
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
+    const fileContextSelections = [];
+    new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
+    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    assert.equal(findAll('.deleted .list-filter').length, 0, 'Deleted file filter is not present');
+  });
+
+  test('testing for the filter value saved for all files toggle switch', async function(assert) {
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
+
+    new ReduxDataHelper(setState)
+      .hostFiles(files)
+      .host(hostDetails)
+      .fileContextSelectionsForFiles(fileContextSelections)
+      .isSnapshotsAvailable(true)
+      .listAllFiles(true)
+      .build();
+    this.set('storeName', 'hostFiles');
+    this.set('tabName', 'FILE');
+    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await click('.fileProperties-signature-features .list-filter .list-filter-option');
+    return settled().then(async() => {
+      assert.equal(findAll('.x-toggle-btn').length, 1, 'toggle button');
+      await click('.x-toggle-btn');
+      const state = this.owner.lookup('service:redux').getState();
+      const { endpoint: { details: { filter: { expressionList } } } } = state;
+      assert.equal(expressionList.length, 1, 'the filter state is saved');
+      assert.equal(findAll('.deleted .list-filter').length, 0, 'Deleted file filter is also not present after toggle');
+    });
+  });
+
 });

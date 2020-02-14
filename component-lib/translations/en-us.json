@@ -3960,6 +3960,8 @@
         "mac": "MAC",
         "linux": "LINUX",
         "favouriteFilters": "Favorite Filters",
+        "hideDeleteFiles": "Hide Deleted Files ",
+        "deletedFilesFilter": "Deleted Files",
         "restrictionType": {
           "moreThan": "Greater than",
           "lessThan": "Less than",
