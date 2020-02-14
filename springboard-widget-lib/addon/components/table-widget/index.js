@@ -1,20 +1,28 @@
 import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
+import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
+
 
 const COLUMN_WIDTH = {
-  'machineIdentity.machineName': '200px',
-  score: '70px'
+  'machineIdentity.machineName': '12vw',
+  'firstFileName': 190,
+  'score': 80
 };
-
 
 export default class TableWidgetComponent extends Component {
 
   @service('i18n') i18n;
 
-  get tableData() {
-    return this.args.data?.items || [];
-  }
+  @tracked currentSort = null;
 
+  @tracked tableData = null;
+
+  constructor() {
+    super(...arguments);
+    this.currentSort = { field: 'score', direction: 'desc' };
+    this.tableData = this.args.data?.items || [];
+  }
 
   get columns() {
     const cols = this.args.config?.columns || [];
@@ -26,5 +34,15 @@ export default class TableWidgetComponent extends Component {
       };
     });
     return [...newColumns];
+  }
+
+  @action
+  sortData({ field }, direction) {
+    this.currentSort = { field, direction };
+    const sorted = this.tableData.sortBy(field);
+    if (direction === 'desc') {
+      sorted.reverse();
+    }
+    this.tableData = sorted;
   }
 }

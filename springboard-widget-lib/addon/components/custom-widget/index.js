@@ -7,13 +7,15 @@ import { tracked } from '@glimmer/tracking';
 export default class CustomWidgetComponent extends Component {
   @service inViewport;
 
+  @tracked isLoadingData = true;
+
   element = null;
 
   isActive = false;
 
   data = null;
 
-  @tracked isLoadingData = true;
+  totalItems = 0;
 
   get widgetData() {
     return { ...this.data };
@@ -35,6 +37,7 @@ export default class CustomWidgetComponent extends Component {
       this.isActive = true;
       this.args.fetchData(this.args.widget).then((response) => {
         this.data = response.data;
+        this.totalItems = response.data?.items?.length;
         this.isLoadingData = false;
       });
     }

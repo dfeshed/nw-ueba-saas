@@ -1,7 +1,25 @@
 <box class="table-widget">
-  <RsaDataTable @items={{this.tableData}} @columnsConfig={{this.columns}}>
-    <RsaDataTable::Header as |column|>
-      {{column.title}}
+  <RsaDataTable  @enableResizeColumn={{false}} @items={{this.tableData}} @columnsConfig={{this.columns}}>
+    <RsaDataTable::Header @currentSort={{this.currentSort}} as |column|>
+      {{#unless column.disableSort}}
+        <hbox class="sort-column" fit>
+          <div class="column-title">
+            {{column.title}}
+          </div>
+          <vbox class="sort-icons" fit>
+            <RsaIcon
+                    @class="ascending"
+                    @name="arrow-up-8"
+                    @size="small"
+              {{on "click" (fn this.sortData column "asc" this)}}/>
+            <RsaIcon
+                    @class="descending"
+                    @name="arrow-down-8"
+                    @size="small"
+              {{on "click" (fn this.sortData column "desc" this)}}/>
+          </vbox>
+        </hbox>
+      {{/unless}}
     </RsaDataTable::Header>
     <RsaDataTable::Body as |item index column|>
       <RsaDataTable::BodyCell @column={{column}}>
@@ -10,7 +28,9 @@
             <TableWidget::ColumnPill @score={{get item column.field}}/>
           </centered>
         {{else}}
-          {{get item column.field}}
+          <div class="content">
+            {{get item column.field}}
+          </div>
         {{/if}}
       </RsaDataTable::BodyCell>
     </RsaDataTable::Body>

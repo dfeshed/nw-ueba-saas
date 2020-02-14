@@ -1,4 +1,4 @@
-<box class="springboard-widget">
+<box class="springboard-widget {{@widget.leadType}}">
   {{yield (hash header=(component "springboard-widget/header" widget=@widget))}}
   {{#each @widget.content as |content|}}
     {{yield

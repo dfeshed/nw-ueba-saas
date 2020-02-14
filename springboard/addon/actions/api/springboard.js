@@ -39,7 +39,7 @@ const getDefaultSpringboard = () => {
               widget: {
                 name: 'Top Risky Hosts',
                 leadType: 'HOST',
-                leadCount: 10,
+                leadCount: 25,
                 content: [
                   {
                     type: 'chart',

@@ -9,7 +9,21 @@
       background-color: rgba(1,87,155,0.4);
       padding: 0 0 0 rsa-whitespace(less);
     }
-
+    .rsa-data-table-header-cell {
+      .column-title {
+        max-width: calc(100% - 10px);
+      }
+      .is-sorted.desc {
+        .descending {
+          color: rsa-color(blue);
+        }
+      }
+      .is-sorted.asc {
+        .ascending {
+          color: rsa-color(blue);
+        }
+      }
+    }
     .rsa-data-table-body-cell {
       color: text-color(primary, lighter);
       padding-top: 0;
@@ -20,6 +34,12 @@
     }
     .rsa-data-table-header-row {
       background-color: background-color(primary, darkest);
+    }
+    .sort-icons {
+      justify-content: center;
+      margin-left: auto;
+      color: text-color(primary, lighter);
+      cursor: pointer;
     }
   }
 }
