@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.automation.s3;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.transfer.MultipleFileUpload;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
@@ -8,6 +9,8 @@ import com.amazonaws.services.s3.transfer.model.UploadResult;
 import com.rsa.netwitness.presidio.automation.config.AWS_Config;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,13 +30,13 @@ public class S3_Helper {
         omd.setContentLength(zippedBytes.length);
         omd.setContentType("application/octet-stream");
 
-        Upload upload = getTransferManager().upload(S3_CONFIG.getBucket(),
-                key,
-                new ByteArrayInputStream(zippedBytes),
-                omd);
-        try {
+        try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(zippedBytes)) {
+            Upload upload = getTransferManager().upload(S3_CONFIG.getBucket(),
+                    key,
+                    byteArrayInputStream,
+                    omd);
             return upload.waitForUploadResult();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
         return null;
