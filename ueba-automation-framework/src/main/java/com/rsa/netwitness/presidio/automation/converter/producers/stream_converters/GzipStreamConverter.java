@@ -11,7 +11,7 @@ public class GzipStreamConverter implements ProducerStreamConverter<byte[], Stri
     @Override
     public byte[] convert(List<String> lines) {
         byte[] bytesToWrite;
-        bytesToWrite = String.join("", lines).getBytes();
+        bytesToWrite = String.join("\n", lines).getBytes();
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         GZIPOutputStream gzipOut;
 
