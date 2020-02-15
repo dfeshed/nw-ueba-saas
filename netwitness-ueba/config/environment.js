@@ -73,16 +73,6 @@ module.exports = function(environment) {
       uebaTimeout: 100,
       rootElement: 'body'
     },
-    'ember-simple-auth': {
-      authenticate: 'authenticator:oauth-authenticator',
-      authorizer: 'authorizer:oauth-authorizer',
-      /* Local storage key that holds the CSRF token returned by the server */
-      csrfLocalstorageKey: 'rsa-x-csrf-token',
-      /* Local storage key that holds the OAuth access token returned by the Security Server */
-      accessTokenKey: 'rsa-oauth2-jwt-access-token',
-      /* Local storage key that holds the OAuth refresh token returned by the Security Server */
-      refreshTokenKey: 'rsa-oauth2-jwt-refresh-token'
-    },
     'ember-load': {
       loadingIndicatorClass: 'rsa-application-loading'
     },
@@ -95,74 +85,6 @@ module.exports = function(environment) {
       'style-src': "'self' 'unsafe-inline'"
     }
   };
-
-  if (environment === 'development') {
-    ENV.contentSecurityPolicy['connect-src'] = ["'self' ws: wss:", mockServerUrl];
-
-    ENV.roles = [
-      'accessAdminModule',
-      'viewAppliances',
-      'viewServices',
-      'viewEventSources',
-      'viewUnifiedSources',
-      'accessHealthWellness',
-      'manageSystemSettings',
-      'manageSASecurity',
-      'searchLiveResources',
-      'accessInvestigationModule',
-      'respond-server.*',
-      'integration-server.*',
-      'content-server.*',
-      'source-server.*',
-      'endpoint-server.agent.read'
-    ];
-
-    // ENV.APP.LOG_RESOLVER = true;
-    // ENV.APP.LOG_ACTIVE_GENERATION = true;
-    // ENV.APP.LOG_TRANSITIONS = true;
-    // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
-    // ENV.APP.LOG_VIEW_LOOKUPS = true;
-    // Uncomment this line below if you want to debug socket calls in dev environment
-    // ENV.socketDebug = true;
-  }
-
-  if (environment === 'test') {
-    // this allows connections to be made to mock-sever running on
-    ENV.contentSecurityPolicy['connect-src'] = ["'self' ws: wss:", mockServerUrl];
-
-    ENV.roles = [
-      'accessAdminModule',
-      'viewAppliances',
-      'viewServices',
-      'viewEventSources',
-      'viewUnifiedSources',
-      'accessHealthWellness',
-      'manageSystemSettings',
-      'manageSASecurity',
-      'searchLiveResources',
-      'accessInvestigationModule',
-      'respond-server.*',
-      'integration-server.*',
-      'content-server.*',
-      'source-server.*',
-      'endpoint-server.agent.read'
-    ];
-
-    // Testem prefers this...
-    ENV.locationType = 'none';
-
-    // keep test console output quieter
-    ENV.APP.LOG_ACTIVE_GENERATION = false;
-    ENV.APP.LOG_VIEW_LOOKUPS = false;
-
-    // @workaround Disable readyDelay to avoid a synchronization issue with automated tests
-    ENV.APP.readyDelay = 0;
-    ENV.APP.debounceDelay = 10;
-    ENV.APP.uebaTimeout = 1;
-
-    ENV.APP.rootElement = '#ember-testing';
-    ENV.APP.autoboot = false;
-  }
 
   if (environment === 'production') {
     // Ensure useMockServer is always false in production build

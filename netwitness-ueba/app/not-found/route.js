@@ -12,13 +12,9 @@ export default Route.extend({
   session: service(),
 
   redirect() {
-    if (!this.get('session.isAuthenticated')) {
-      this.transitionTo('login');
-    } else {
-      const url = this._routerMicrolib.location.formatURL('/not-found');
-      if (window.location.pathname !== url) {
-        this.transitionTo('/not-found');
-      }
+    const url = this._routerMicrolib.location.formatURL('/not-found');
+    if (window.location.pathname !== url) {
+      this.transitionTo('/not-found');
     }
   }
 });

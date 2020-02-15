@@ -12,30 +12,6 @@ const App = Application.extend({
     cut: 'cut'
   },
   engines: {
-    admin: {
-      dependencies: {
-        services: [
-          '-document',
-          'access-control',
-          'contextual-help',
-          'dateFormat',
-          'timeFormat',
-          'timezone',
-          'i18n',
-          'flashMessages',
-          'eventBus',
-          'router',
-          'app-version',
-          'features',
-          'global-preferences',
-          'session'
-        ],
-        externalRoutes: {
-          protected: 'protected',
-          'admin.admin-source-management': 'protected.admin.admin-source-management'
-        }
-      }
-    },
     investigateUsers: {
       dependencies: {
         services: [

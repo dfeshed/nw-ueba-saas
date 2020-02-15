@@ -1,5 +1,4 @@
 import Route from '@ember/routing/route';
-import { getOwner } from '@ember/application';
 import { inject as service } from '@ember/service';
 
 export default Route.extend({
@@ -23,28 +22,10 @@ export default Route.extend({
       'timeFormat.selected': 'HR24',
       'timezone.selected': 'UTC'
     });
-    this.set('accessControl.roles', [
-      'accessAdminModule',
-      'viewAppliances',
-      'viewServices',
-      'viewEventSources',
-      'viewUnifiedSources',
-      'accessHealthWellness',
-      'manageSystemSettings',
-      'manageSASecurity',
-      'searchLiveResources',
-      'accessInvestigationModule',
-      'respond-server.*',
-      'investigate-server.*',
-      'integration-server.*',
-      'endpoint-server.agent.read'
-    ]);
-
     // When running microservices, need to login and get cookie
     // so requests do not fail.
     //
     // However we do not want to force a login if we are running
     // local mocks (local node server)
-    
   }
 });
