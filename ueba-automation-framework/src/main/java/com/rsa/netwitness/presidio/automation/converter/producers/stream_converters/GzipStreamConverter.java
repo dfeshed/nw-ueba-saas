@@ -12,19 +12,19 @@ public class GzipStreamConverter implements ProducerStreamConverter<byte[], Stri
     public byte[] convert(List<String> lines) {
         byte[] bytesToWrite;
         bytesToWrite = String.join("\n", lines).getBytes();
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        GZIPOutputStream gzipOut;
 
         try {
+            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+            GZIPOutputStream gzipOut;
             gzipOut = new GZIPOutputStream(byteOut);
             gzipOut.write(bytesToWrite, 0, bytesToWrite.length);
             gzipOut.flush();
             gzipOut.close();
-
+            byteOut.close();
+            return byteOut.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-
-        return byteOut.toByteArray();
     }
 }
