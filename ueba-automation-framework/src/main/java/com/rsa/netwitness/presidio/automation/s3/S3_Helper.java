@@ -1,7 +1,6 @@
 package com.rsa.netwitness.presidio.automation.s3;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.transfer.MultipleFileUpload;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
@@ -9,11 +8,13 @@ import com.amazonaws.services.s3.transfer.model.UploadResult;
 import com.rsa.netwitness.presidio.automation.config.AWS_Config;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -68,6 +69,7 @@ public class S3_Helper {
 
 
     private TransferManager getTransferManager() {
-        return TransferManagerBuilder.defaultTransferManager();
+        return TransferManagerBuilder.standard().withExecutorFactory(() ->
+                new ThreadPoolExecutor(16, 32, 0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(100000))).build();
     }
 }
