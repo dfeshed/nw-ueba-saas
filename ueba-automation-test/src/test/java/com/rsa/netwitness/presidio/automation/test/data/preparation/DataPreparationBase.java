@@ -22,11 +22,8 @@ import org.testng.annotations.Parameters;
 import presidio.data.domain.event.Event;
 import presidio.data.generators.common.GeneratorException;
 
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})
@@ -55,10 +52,10 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
         Stream<? extends Event> precidioEvents = generate();
 
         LOGGER.info("  ++++++ Going to convert.");
-        List<NetwitnessEvent> converted = precidioEvents.parallel().map(getConverter()::convert).collect(toList());
+        Stream<NetwitnessEvent> converted = precidioEvents.parallel().map(getConverter()::convert);
 
         LOGGER.info("  ++++++ Going to send.");
-        generatorResultCount = getProducer().send(converted.stream());
+        generatorResultCount = getProducer().send(converted);
 
         LOGGER.info("   ++++++  Sent events count result:");
         generatorResultCount.forEach(
