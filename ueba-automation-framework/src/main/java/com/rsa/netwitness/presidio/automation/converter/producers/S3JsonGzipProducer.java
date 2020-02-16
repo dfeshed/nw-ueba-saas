@@ -35,7 +35,7 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
     public Map<Schema, Long> send(Stream<NetwitnessEvent> eventsList) {
         Map<Schema, List<NetwitnessEvent>> eventsBySchema = eventsList.parallel().collect(groupingBy(e -> e.schema));
         LOGGER.info("Collected events count:");
-        eventsBySchema.forEach((key, value) -> System.out.println(String.join("\n", key + " -> " + value)));
+        eventsBySchema.forEach((key, value) -> System.out.println(String.join("\n", key + " -> " + value.size())));
 
         eventsBySchema.forEach((schema, events) ->
         {
