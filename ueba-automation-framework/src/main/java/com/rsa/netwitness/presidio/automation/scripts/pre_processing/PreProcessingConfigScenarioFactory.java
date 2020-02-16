@@ -14,7 +14,8 @@ public class PreProcessingConfigScenarioFactory {
         scenarios = Lists.newArrayList(
                 new E2eMongoConfigScenario(adapterTestManager, startDate),
                 new E2eBrokerConfigScenario(adapterTestManager, startDate),
-                new CoreMongoConfigScenario(adapterTestManager, startDate)
+                new CoreMongoConfigScenario(adapterTestManager, startDate),
+                new S3CoreConfigScenario(adapterTestManager, startDate)
         );
     }
 
