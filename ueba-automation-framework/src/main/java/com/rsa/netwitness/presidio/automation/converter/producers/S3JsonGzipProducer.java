@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -41,7 +42,7 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
         {
             Map<Instant, List<NetwitnessEvent>> eventsByInterval = events.parallelStream()
                     .collect(groupingBy(event -> S3_Helper.toChunkInterval.apply(event.eventTimeEpoch)));
-            Stream<S3_Interval> allIntervals = createIntervalsMatchingEventsMinMaxTime(events, schema);
+            List<S3_Interval> allIntervals = createIntervalsMatchingEventsMinMaxTime(events, schema);
             processAllIntervals(eventsByInterval, allIntervals, schema);
         });
 
@@ -51,11 +52,12 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
 
 
 
-    private Stream<S3_Interval> createIntervalsMatchingEventsMinMaxTime(List<NetwitnessEvent> events, Schema schema) {
+    private List<S3_Interval> createIntervalsMatchingEventsMinMaxTime(List<NetwitnessEvent> events, Schema schema) {
         Instant firstInterval = firstChunkFromEvents(events);
         Instant lastInterval = S3_Helper.toChunkInterval.apply(events.parallelStream().map(e -> e.eventTimeEpoch).max(Instant::compareTo).orElseThrow());
         return s3_helper.divideToIntervals(firstInterval, lastInterval).parallelStream()
-                .map(interval -> new S3_Interval(interval, schema));
+                .map(interval -> new S3_Interval(interval, schema))
+                .collect(Collectors.toUnmodifiableList());
     }
 
     private Instant firstChunkFromEvents(List<NetwitnessEvent> events) {
@@ -63,8 +65,8 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
         return S3_Helper.toChunkInterval.apply(minEventTime);
     }
 
-    private void processAllIntervals(Map<Instant, List<NetwitnessEvent>> eventsByInterval, Stream<S3_Interval> intervals, Schema schema) {
-        Stream<S3_Interval> process = IS_PARALLEL ? intervals.parallel() : intervals.sequential();
+    private void processAllIntervals(Map<Instant, List<NetwitnessEvent>> eventsByInterval, List<S3_Interval> intervals, Schema schema) {
+        Stream<S3_Interval> process = IS_PARALLEL ? intervals.parallelStream() : intervals.stream().sequential();
 
         process.forEach(intervalObj -> {
             Instant interval = intervalObj.getInterval();
@@ -76,10 +78,9 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
             intervalObj.close();
             resultingCount.putIfAbsent(schema, 0L);
             resultingCount.computeIfPresent(schema, (s, i) -> i + intervalObj.getTotalUploaded());
-            LOGGER.info("[" + schema + "] -- Count = " + (int) intervals.count());
         });
 
-        LOGGER.info("[" + schema + "] -- " + (int) intervals.count() + " intervals upload is completed.");
+        LOGGER.info("[" + schema + "] -- " + intervals.size() + " intervals upload is completed.");
     }
 
     private List<String> toStringLines(List<NetwitnessEvent> netwitnessEvents) {
