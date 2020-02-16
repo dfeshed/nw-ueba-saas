@@ -24,7 +24,7 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
 
     private final EventFormatter<NetwitnessEvent, String> formatter;
     private ConcurrentHashMap<Schema, Long> resultingCount = new ConcurrentHashMap<>();
-    private boolean IS_PARALLEL = Boolean.getBoolean(System.getenv().getOrDefault("S3_IS_PARALLEL", "true"));
+    private boolean IS_PARALLEL = true;
     private S3_Helper s3_helper = new S3_Helper();
 
     S3JsonGzipProducer(EventFormatter<NetwitnessEvent, String> formatter) {
