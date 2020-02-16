@@ -5,7 +5,6 @@ from airflow import LoggingMixin
 from presidio.builders.adapter.hour_is_ready_sensor_operator_builder import HourIsReadySensorOperatorBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.adapter.adapter_operator import AdapterOperator
-from presidio.utils.airflow.operators.sensor.hour_is_ready_on_prem_sensor_operator import HourIsReadySensorOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 
 
