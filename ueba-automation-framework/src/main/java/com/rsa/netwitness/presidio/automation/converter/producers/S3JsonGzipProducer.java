@@ -1,6 +1,8 @@
 package com.rsa.netwitness.presidio.automation.converter.producers;
 
 import ch.qos.logback.classic.Logger;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.UnmodifiableIterator;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import com.rsa.netwitness.presidio.automation.converter.formatters.EventFormatter;
 import com.rsa.netwitness.presidio.automation.s3.S3_Helper;
@@ -20,6 +22,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
+    private static final int PARTITION_SIZE = 10000;
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(S3JsonGzipProducer.class);
 
     private final EventFormatter<NetwitnessEvent, String> formatter;
@@ -66,17 +69,22 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
     }
 
     private void processAllIntervals(Map<Instant, List<NetwitnessEvent>> eventsByInterval, List<S3_Interval> intervals, Schema schema) {
-        Stream<S3_Interval> process = IS_PARALLEL ? intervals.parallelStream() : intervals.stream().sequential();
+        UnmodifiableIterator<List<S3_Interval>> partition = Iterators.partition(intervals.iterator(), PARTITION_SIZE);
 
-        process.forEach(intervalObj -> {
-            Instant interval = intervalObj.getInterval();
-            if (eventsByInterval.containsKey(interval)) {
-                intervalObj.process(toStringLines(eventsByInterval.get(interval)));
-            }
-            intervalObj.close();
-            resultingCount.putIfAbsent(schema, 0L);
-            resultingCount.computeIfPresent(schema, (s, i) -> i + intervalObj.getTotalUploaded());
-        });
+        while (partition.hasNext()) {
+            List<S3_Interval> nextPartition = partition.next();
+            Stream<S3_Interval> process = IS_PARALLEL ? nextPartition.parallelStream() : nextPartition.stream().sequential();
+
+            process.forEach(intervalObj -> {
+                Instant interval = intervalObj.getInterval();
+                if (eventsByInterval.containsKey(interval)) {
+                    intervalObj.process(toStringLines(eventsByInterval.get(interval)));
+                }
+                intervalObj.close();
+                resultingCount.putIfAbsent(schema, 0L);
+                resultingCount.computeIfPresent(schema, (s, i) -> i + intervalObj.getTotalUploaded());
+            });
+        }
 
         LOGGER.info("[" + schema + "] -- " + intervals.size() + " intervals upload is completed.");
     }
