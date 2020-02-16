@@ -76,6 +76,7 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
             intervalObj.close();
             resultingCount.putIfAbsent(schema, 0L);
             resultingCount.computeIfPresent(schema, (s, i) -> i + intervalObj.getTotalUploaded());
+            LOGGER.info("[" + schema + "] -- Count = " + (int) intervals.count());
         });
 
         LOGGER.info("[" + schema + "] -- " + (int) intervals.count() + " intervals upload is completed.");
