@@ -549,7 +549,7 @@
       }
     },
     "splitSessionLabels": {
-      "withSplit": "This event is part of a split session (split.session: {split}) matching these parameters: \\{{tuple}\\}",
+      "withSplit": "This event is part of a split session (session.split: {split}) matching these parameters: \\{{tuple}\\}",
       "onlyGrouped": "This event is related to a previous session matching these parameters: \\{{tuple}\\}"
     },
     "enableEventRelationshipsLabel": "Group Events",
