@@ -23,8 +23,9 @@ module('Unit | Utils | activity-time-anomaly-settings', (hooks) => {
 
     assert.deepEqual(changedData[0], {
       category: '12 Nov 15:00',
-      color: '#CC3300',
+      color: '#A60808',
       originalCategory: '1542034800000',
+      strokeColor: '#01579B',
       value: 2,
       radius: 5
     });
@@ -36,11 +37,12 @@ module('Unit | Utils | activity-time-anomaly-settings', (hooks) => {
     assert.equal(changedData.length, 262);
 
     assert.deepEqual(changedData[0], {
-      'category': '12 Nov 15:00',
-      'globalData-color': '#CC3300',
-      'originalCategory': '1542034800000',
+      category: '12 Nov 15:00',
+      'globalData-color': '#A60808',
+      'globalData-radius': 5,
       'globalData-value': 2,
-      'globalData-radius': 5
+      originalCategory: '1542034800000',
+      strokeColor: '#01579B'
     });
   });
 });

@@ -40,7 +40,6 @@ module('Integration | Component | entity-details-container/body/indicator-detail
 
     new ReduxDataHelper(setState).build();
     await render(hbs`{{entity-details-container/body/indicator-details/events-table}}`);
-
     assert.equal(findAll('.rsa-data-table-header-cell').length, 6);
     assert.equal(findAll('.rsa-data-table-body-row').length, 85);
   });

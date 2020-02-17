@@ -149,11 +149,14 @@ module('Unit | Utils | chart-data-adapter', (hooks) => {
     const settings = activityTimeAnomalySettings('high_number_of_successful_object_change_operations');
     const data = chartDataAdapter(settings, distinctEventsByTimeData.data[0].data, 'UTC', 'en_US', distinctEventsByTimeData.data[1].data);
     assert.deepEqual(data.chartSettings.dataProvider[0], {
+      'baselineData-color': '#757575',
       'baselineData-radius': 1,
       'baselineData-value': 1,
       category: '27 Oct 08:00',
+      color: '#0288D1',
       originalCategory: '1540627200000',
       radius: 1,
+      strokeColor: '#01579B',
       value: 1
     });
   });

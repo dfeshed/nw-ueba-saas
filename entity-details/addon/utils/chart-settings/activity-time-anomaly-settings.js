@@ -20,12 +20,18 @@ export default (anomalyTypeFieldName) => {
       const timezoneDate = moment(parseInt(dataItem.keys[0], 10)).locale(localeId).tz(zoneId).format('DD MMM HH:mm');
       const chartItem = {};
       chartItem.category = timezoneDate;
+      chartItem.strokeColor = '#01579B';
       chartItem.originalCategory = dataItem.keys[0];
       chartItem[`${keyPrefix}value`] = dataItem.value;
       chartItem[`${keyPrefix}radius`] = 1;
-
+      if (keyPrefix === '') {
+        chartItem[`${keyPrefix}color`] = '#0288D1';
+      } else {
+        chartItem[`${keyPrefix}color`] = '#757575';
+      }
       if (dataItem.anomaly) {
-        chartItem[`${keyPrefix}color`] = '#CC3300';
+        chartItem[`${keyPrefix}color`] = '#A60808';
+        chartItem.strokeColor = '#01579B';
         chartItem[`${keyPrefix}radius`] = 5;
       }
       return chartItem;
