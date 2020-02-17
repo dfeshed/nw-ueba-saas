@@ -63,7 +63,7 @@ public class NWGatewayService {
 
         while (true) {
             for (S3ObjectSummary obj : objects.getObjectSummaries()) {
-                result = filterFilesByCompareDates(obj, startDate, endDate, new CompareS3ObjectDate() {
+                result = filterFilesByS3Comparator(obj, startDate, endDate, new S3Comparator() {
                     @Override
                     public boolean compare(Instant s3FileDate, Instant startDate, Instant endDate) {
                         return s3FileDate.compareTo(endDate) >= 0;
@@ -120,7 +120,7 @@ public class NWGatewayService {
     }
 
     private List<S3ObjectSummary> filterFilesByRange(ListObjectsV2Result objects, Instant startDate, Instant endDate){
-        List<S3ObjectSummary> result = objects.getObjectSummaries().stream().filter(obj -> filterFilesByCompareDates(obj, startDate, endDate, new CompareS3ObjectDate() {
+        List<S3ObjectSummary> result = objects.getObjectSummaries().stream().filter(obj -> filterFilesByS3Comparator(obj, startDate, endDate, new S3Comparator() {
             @Override
             public boolean compare(Instant s3FileDate, Instant startDate, Instant endDate) {
                 return s3FileDate.isAfter(startDate) && s3FileDate.isBefore(endDate);
@@ -130,7 +130,7 @@ public class NWGatewayService {
         return result;
     }
 
-    private boolean filterFilesByCompareDates(S3ObjectSummary object, Instant startDate, Instant endDate, CompareS3ObjectDate compareS3ObjectDate) {
+    private boolean filterFilesByS3Comparator(S3ObjectSummary object, Instant startDate, Instant endDate, S3Comparator s3Comparator) {
         Pattern p = Pattern.compile(DATE_REGEX_FORMAT);
         Matcher m = p.matcher(object.getKey());
         if (m.matches()) {
@@ -139,7 +139,7 @@ public class NWGatewayService {
             String dateStr = m.group(1);
             try {
                 Instant date = sdf.parse(dateStr).toInstant().minusNanos(1);
-                if (compareS3ObjectDate.compare(date, startDate, endDate)) {
+                if (s3Comparator.compare(date, startDate, endDate)) {
                     return true;
                 }
             } catch (Exception ex) {
@@ -157,7 +157,7 @@ public class NWGatewayService {
         return formStreamPrefix(tenant, account, schema, region) + generateDaySuffix(date);
     }
 
-    interface CompareS3ObjectDate {
+    interface S3Comparator {
         boolean compare(Instant s3FileDate, Instant startDate, Instant endDate);
     }
 }
