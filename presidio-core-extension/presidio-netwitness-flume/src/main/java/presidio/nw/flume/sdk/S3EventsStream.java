@@ -73,8 +73,8 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
         endDate = endDate.minusNanos(1).plusSeconds(3600).truncatedTo(HOURS);
 
         try {
-            NWGatewayService nwGatewayService = new NWGatewayService(bucket, tenant, account, region);
-            Iterator<S3ObjectSummary> objects = nwGatewayService.getObjectsByRange(s3, startDate, endDate, configSchema);
+            NWGatewayService nwGatewayService = new NWGatewayService(bucket, tenant, account, region, s3);
+            Iterator<S3ObjectSummary> objects = nwGatewayService.getObjectsByRange(startDate, endDate, configSchema);
             iterator = new S3DataIterator(s3, bucket, objects);
         }
         catch (Exception e) {
