@@ -63,12 +63,10 @@ export const convertBytesIntoKbOrMb = (bytes = 1024) => {
  */
 export const filePathValidation = (path, pathType = 'windows', filePathSeparatorFormat = '\\') => {
 
-  const windows = /^(?:[\w]:)(\\([a-z_A-Z\-*\s0-9.]+))+$/;
-  const windowsFullPath = /^(?:[\w]:)(\\([a-z_A-Z\-*\s0-9.]+))+\.[a-zA-Z]+$/;
+  const windows = /^(?:[\w]:)(\\([^/\\]+))+$/;
   const linux = /^((\/)[^/\\]+)+$/;
-  const linuxFullPath = /^(\/([^/\\]+))+\.[a-zA-Z]+$/;
 
-  const osTypeRegex = { windows, windowsFullPath, linux, linuxFullPath, mac: linux, macFullPath: linuxFullPath };
+  const osTypeRegex = { windows, linux, mac: linux };
 
   if (osTypeRegex[pathType].test(path)) {
     const lastIndexOfSeparator = path.lastIndexOf(filePathSeparatorFormat);

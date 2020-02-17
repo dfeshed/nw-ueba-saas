@@ -74,9 +74,8 @@ class MachineIsolationModal extends Component {
 
   @action
   validatePath() {
-    const { filePath, machineOsType, fileDownloadButtonStatus: { isWildcardPresent }, filePathSeparatorFormat } = this;
-    const filePathType = isWildcardPresent ? machineOsType : `${machineOsType}FullPath`;
-    this.set('isInvalidPath', !filePathValidation(filePath, filePathType, filePathSeparatorFormat));
+    const { filePath, machineOsType, filePathSeparatorFormat } = this;
+    this.set('isInvalidPath', !filePathValidation(filePath, machineOsType, filePathSeparatorFormat));
   }
 
   @action
