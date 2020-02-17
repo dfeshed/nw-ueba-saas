@@ -173,6 +173,8 @@ const _getColumnGroups = (dispatch, getState) => {
             // if the selectedColumnGroup no longer exists in database, the column group selection
             // should be reset to default and the user should be notified of the same
             if (!columnGroup) {
+              /* eslint-disable no-console */
+              console.warn('Previously selected Column Group: ', selectedColumnGroup);
               const summaryGroup = columnGroups.find((group) => group.id === 'SUMMARY');
 
               // setColumnGroup sets SUMMARY group as selected column group and save to preferences
