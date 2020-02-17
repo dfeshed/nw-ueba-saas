@@ -24,7 +24,7 @@ public class AdapterTestConfig {
     public PresidioExecutionService adapterExecutionService() throws Exception {
         PresidioInputPersistencyServiceFactory inputPersistencyServiceFactory = new PresidioInputPersistencyServiceFactory();
         final PresidioInputPersistencyService presidioInputPersistencyService = inputPersistencyServiceFactory.createPresidioInputPersistencyServiceForTests();
-        return new FlumeAdapterExecutionService(new ProcessExecutor(), new FlumeConfigurationUtil("adapter", "ca"), mockAdapterConfigurationUtil, presidioInputPersistencyService, mockedMongoTemplate);
+        return new FlumeAdapterExecutionService(new ProcessExecutor(), new FlumeConfigurationUtil("adapter", "ca", "bucket", "tenant", "123456789", "us-east-2"), mockAdapterConfigurationUtil, presidioInputPersistencyService, mockedMongoTemplate);
     }
 
 }

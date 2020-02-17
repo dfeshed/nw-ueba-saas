@@ -1,6 +1,8 @@
 package presidio.adapter.util;
 
 import fortscale.common.general.Schema;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +20,10 @@ public class FlumeConfigurationUtil {
 
     private static final String FLUME_CONF_START_DATE_FIELD_NAME = "startDate";
     private static final String FLUME_CONF_END_DATE_FIELD_NAME = "endDate";
+    private static final String FLUME_CONF_BUCKET_FIELD_NAME = "bucket";
+    private static final String FLUME_CONF_TENANT_FIELD_NAME = "tenant";
+    private static final String FLUME_CONF_ACCOUNT_FIELD_NAME = "account";
+    private static final String FLUME_CONF_REGION_FIELD_NAME = "region";
     private static final String AGENT_NAME_FLAG = "--name";
     private static final String CONF_FOLDER_FLAG = "--conf";
     protected static final String CONF_FILE_PATH_FLAG = "--conf-file";
@@ -26,7 +32,16 @@ public class FlumeConfigurationUtil {
     private final String moduleName;
     private final String smartKit;
 
-    public FlumeConfigurationUtil(String moduleName, String smartKit) {
+    private String bucketName;
+    private String tenant;
+    private String account;
+    private String region;
+
+    public FlumeConfigurationUtil(String moduleName, String smartKit, String bucketName, String tenant, String account, String region) {
+        this.bucketName = bucketName;
+        this.tenant = tenant;
+        this.account = account;
+        this.region = region;
         this.moduleName = moduleName;
         this.smartKit = smartKit;
     }
@@ -49,12 +64,20 @@ public class FlumeConfigurationUtil {
         }
 
         /* edit the properties */
-        for(Object key :props.keySet()) {
+        for (Object key : props.keySet()) {
             String currProperty = (String) key;
             if (currProperty.endsWith(FLUME_CONF_START_DATE_FIELD_NAME)) {
                 props.setProperty(currProperty, startDate.toString());
             } else if (currProperty.endsWith(FLUME_CONF_END_DATE_FIELD_NAME)) {
                 props.setProperty(currProperty, endDate.toString());
+            } else if (currProperty.endsWith(FLUME_CONF_BUCKET_FIELD_NAME)) {
+                props.setProperty(currProperty, bucketName);
+            } else if (currProperty.endsWith(FLUME_CONF_TENANT_FIELD_NAME)) {
+                props.setProperty(currProperty, tenant);
+            } else if (currProperty.endsWith(FLUME_CONF_ACCOUNT_FIELD_NAME)) {
+                props.setProperty(currProperty, String.valueOf(account));
+            } else if (currProperty.endsWith(FLUME_CONF_REGION_FIELD_NAME)) {
+                props.setProperty(currProperty, region);
             }
         }
 
