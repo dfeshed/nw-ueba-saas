@@ -124,12 +124,12 @@ def setBaseUrl(
     String baseUrl = "baseurl="
     String osBaseUrl = 'baseurl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/latest/11.5.0.0/OS/'
     if (env.VERSION == '11.4.0.0') {
-        nwOsBaseUrl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/13632/11.4.0.0/OS/
-        nwRsaBaseUrl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/13632/11.4.0.0/RSA/
+        nwOsBaseUrl = 'http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/13632/11.4.0.0/OS/'
+        nwRsaBaseUrl = 'http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/13632/11.4.0.0/RSA/'
     }
     else{
-        nwOsBaseUrl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/latest/11.5.0.0/OS/
-        nwRsaBaseUrl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/latest/11.5.0.0/RSA/
+        nwOsBaseUrl = 'http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/latest/11.5.0.0/OS/'
+        nwRsaBaseUrl = 'http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/latest/11.5.0.0/RSA/'
     }
     if (rpmBuildPath != '') {
         baseUrl = baseUrl + rpmBuildPath
