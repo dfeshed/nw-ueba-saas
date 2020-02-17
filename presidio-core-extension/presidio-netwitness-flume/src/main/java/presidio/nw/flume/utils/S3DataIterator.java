@@ -126,17 +126,17 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
      * @return An iterator to a List containing the lines of the file as {@link String}s
      */
     private BufferReaderIterator getS3Reader(String filePath) {
-        S3ObjectInputStream S3Object;
+        S3ObjectInputStream s3ObjectInputStream;
         try {
-            S3Object = s3.getObject(bucket, filePath).getObjectContent();
+            s3ObjectInputStream = s3.getObject(bucket, filePath).getObjectContent();
         } catch (Exception e) {
             logger.error("Failed to get object key: {}, from S3 bucket: {}.", filePath, bucket, e);
             throw new RuntimeException(e);
         }
 
         try {
-            GZIPInputStream gzip = new GZIPInputStream(S3Object);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(gzip));
+            GZIPInputStream gzipInputStream = new GZIPInputStream(s3ObjectInputStream);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(gzipInputStream));
             return new BufferReaderIterator(reader);
         } catch (Exception e) {
             logger.error("Failed to open file with key: {}.", filePath, e);
@@ -194,7 +194,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
                 }
                 return next;
             } catch (Exception ex) {
-                logger.error("Failed to fetch next record");
+                logger.error("Failed to fetch next record", ex);
                 throw new RuntimeException(ex);
             }
         }
