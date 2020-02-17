@@ -26,6 +26,7 @@ module('Integration | Component | springboard-content', function(hooks) {
   });
 
   test('it renders the springboard layout component', async function(assert) {
+    new DataHelper(setState).activeSpringboardId('2').springboards(SIMPLE_DATA_SET).build();
     await render(hbs`<SpringboardContent/>`);
     assert.dom(selectors.content).exists('Main section is present');
   });

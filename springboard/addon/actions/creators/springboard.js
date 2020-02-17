@@ -31,3 +31,23 @@ export const initializeSpringboard = () => {
     }
   };
 };
+
+/**
+ * Sets the active leads count for the pager.
+ * @param count
+ * @returns {{payload: *, type: *}}
+ */
+export const setActiveLeads = (count) => ({
+  type: ACTION_TYPES.SET_DEFAULT_ACTIVE_LEADS,
+  payload: count
+});
+
+/**
+ * Sets the position of the pager to show the active pages.
+ * @param position
+ * @returns {{payload: *, type: *}}
+ */
+export const setPagePosition = (position) => ({
+  type: ACTION_TYPES.SET_PAGER_POSITION,
+  payload: position
+});

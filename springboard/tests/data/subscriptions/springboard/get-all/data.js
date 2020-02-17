@@ -59,16 +59,85 @@ export default {
           }
         },
         {
-          columnIndex: 3
+          columnIndex: 3,
+          widget: {
+            name: 'Top Risky Hosts 2',
+            leadType: 'hosts',
+            leadCount: 10,
+            content: [
+              {
+                type: 'chart',
+                chartType: 'donut-chart',
+                aggregate: {
+                  column: ['hostOsType'],
+                  type: 'COUNT'
+                },
+                extraCss: 'flexi-fit'
+              },
+              {
+                type: 'table',
+                columns: ['hostName', 'score', 'hostOsType'],
+                sort: {
+                  keys: ['score'],
+                  descending: true
+                }
+              }
+            ]
+          }
         },
         {
-          columnIndex: 4
+          columnIndex: 4,
+          widget: {
+            name: 'Top Risky Hosts 2',
+            leadType: 'hosts',
+            leadCount: 10,
+            content: [
+              {
+                type: 'chart',
+                chartType: 'donut-chart',
+                aggregate: {
+                  column: ['hostOsType'],
+                  type: 'COUNT'
+                },
+                extraCss: 'flexi-fit'
+              },
+              {
+                type: 'table',
+                columns: ['hostName', 'score', 'hostOsType'],
+                sort: {
+                  keys: ['score'],
+                  descending: true
+                }
+              }
+            ]
+          }
         },
         {
-          columnIndex: 5
-        },
-        {
-          columnIndex: 6
+          columnIndex: 5,
+          widget: {
+            name: 'Top Risky Hosts 2',
+            leadType: 'hosts',
+            leadCount: 10,
+            content: [
+              {
+                type: 'chart',
+                chartType: 'donut-chart',
+                aggregate: {
+                  column: ['hostOsType'],
+                  type: 'COUNT'
+                },
+                extraCss: 'flexi-fit'
+              },
+              {
+                type: 'table',
+                columns: ['hostName', 'score', 'hostOsType'],
+                sort: {
+                  keys: ['score'],
+                  descending: true
+                }
+              }
+            ]
+          }
         }
       ]
     }

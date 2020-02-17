@@ -44,4 +44,8 @@ export default class DataHelper {
     _set(this.state, 'activeSpringboardId', id);
     return this;
   }
+  pagerPosition(position) {
+    _set(this.state, 'pagerPosition', position);
+    return this;
+  }
 }

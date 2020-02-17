@@ -1,7 +1,8 @@
-<box class="springboard-content">
+<box class="springboard-content" {{did-insert this.setup this}}>
   {{#each this.springboardWidgets as |layout|}}
     <box class="springboard-content__widget">
       <CustomWidget @widget={{layout.widget}} @fetchData={{this.widgetQuery}}/>
     </box>
   {{/each}}
 </box>
+<SpringboardFooter @pagerAction={{this.onPagerClick}}/>

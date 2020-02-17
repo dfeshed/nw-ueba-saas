@@ -11,8 +11,12 @@ module('Unit | Reducers | Springboard', function() {
     const result = reducer(undefined, {});
     assert.deepEqual(result, {
       springboards: [],
+      fetchStatus: null,
       activeSpringboardId: null,
-      fetchStatus: null
+      isPagerLeftDisabled: false,
+      isPagerRightDisabled: false,
+      pagerPosition: 0,
+      defaultActiveLeads: 0
     });
   });
 
@@ -45,5 +49,18 @@ module('Unit | Reducers | Springboard', function() {
     const result = reducer(previous, { type: ACTION_TYPES.SET_ACTIVE_SPRINGBOARD_ID, payload: '1' });
     assert.equal(result.activeSpringboardId, 1, 'Setting the coorect id');
   });
-
+  test('SET_DEFAULT_ACTIVE_LEADS will set the active springboard leads count to state', function(assert) {
+    const previous = Immutable.from({
+      defaultActiveLeads: 0
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_DEFAULT_ACTIVE_LEADS, payload: '2' });
+    assert.equal(result.defaultActiveLeads, 2, 'Setting the coorect defaultActiveLeads');
+  });
+  test('SET_PAGER_POSITION will set the active springboard pager position to state', function(assert) {
+    const previous = Immutable.from({
+      pagerPosition: 0
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_PAGER_POSITION, payload: '2' });
+    assert.equal(result.pagerPosition, 2, 'Setting the coorect pagerPosition');
+  });
 });
