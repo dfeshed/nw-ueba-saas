@@ -26,7 +26,7 @@ public class S3Shellcommands implements CommandMarker {
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
     ) throws Exception {
-        nwGatewayService.hourIsReady(startTime, endTime, schema.toCamelCase());
+        nwGatewayService.hourIsReady(startTime, endTime, schema.toString());
     }
 
 }
