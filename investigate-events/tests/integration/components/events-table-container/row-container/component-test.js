@@ -52,7 +52,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
   });
 
   test('it renders a row of cells correctly', async function(assert) {
-    assert.expect(2 + 3 * visibleColumns.length);
+    assert.expect(3 + 3 * visibleColumns.length);
 
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
@@ -66,7 +66,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
         { format: 'Int', metaName: 'size', flags: -2147482605 }
       ])
       .eventCount(100000)
-      .enableRelationships()
+      .enableRelationships(false)
       .eventResults([item])
       .build();
 
@@ -78,9 +78,9 @@ module('Integration | Component | Events Table Row', function(hooks) {
 
     // Check row is there.
     const rowSelector = '.rsa-investigate-events-table-row';
-    // const childRowSelector = '.rsa-investigate-events-table-row.is-child';
+    const childRowSelector = '.rsa-investigate-events-table-row.is-child';
     assert.equal(findAll(rowSelector).length, 1, 'Expected root DOM node with class name');
-    // assert.equal(findAll(childRowSelector).length, 0, 'Expected no root DOM node with is-child class name');
+    assert.equal(findAll(childRowSelector).length, 0, 'Expected no root DOM node with is-child class name');
 
     // Check cells are there.
     const cellsSelector = `${rowSelector} .rsa-data-table-body-cell`;
@@ -197,7 +197,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
   });
 
   test('will not set is-child with split without tuple and with nesting enabled', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
@@ -216,11 +216,12 @@ module('Integration | Component | Events Table Row', function(hooks) {
     `);
 
     assert.equal(findAll('.is-child').length, 0, 'Expected .is-child to be present');
+    assert.equal(findAll('.expand-collapse-children').length, 0, 'Expected .expand-collapse-child to be present');
     assert.equal(findAll('i.grouped-with-split').length, 0, 'Expected i to be present');
   });
 
   test('will not set is-child with split and with tuple but nesting disabled', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
@@ -243,11 +244,12 @@ module('Integration | Component | Events Table Row', function(hooks) {
     `);
 
     assert.equal(findAll('.is-child').length, 0, 'Expected .is-child to be present');
+    assert.equal(findAll('.expand-collapse-children').length, 0, 'Expected .expand-collapse-child to be present');
     assert.equal(findAll('i.grouped-with-split').length, 0, 'Expected i to be present');
   });
 
   test('will not set is-child without split and with tuple and nesting enabled', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
@@ -269,11 +271,12 @@ module('Integration | Component | Events Table Row', function(hooks) {
     `);
 
     assert.equal(findAll('.is-child').length, 0, 'Expected .is-child to be present');
+    assert.equal(findAll('.expand-collapse-children').length, 0, 'Expected .expand-collapse-child to be present');
     assert.equal(findAll('i.grouped-with-split').length, 0, 'Expected i to be present');
   });
 
   test('will not set is-child when grouped with tuple and nesting disabled', async function(assert) {
-    assert.expect(2);
+    assert.expect(4);
 
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
@@ -304,6 +307,8 @@ module('Integration | Component | Events Table Row', function(hooks) {
 
     assert.equal(findAll('.is-child').length, 0, 'Expected .is-child to be present');
     assert.equal(findAll('i.grouped-with-split').length, 0, 'Expected i to be present');
+    assert.equal(findAll('.expand-collapse-children').length, 0, 'Expected .expand-collapse-child to be present');
+    assert.equal(findAll('i.grouped-without-split').length, 0, 'Expected i to be present');
   });
 
   test('will set is-child with split with tuple and with nesting enabled', async function(assert) {
@@ -347,6 +352,8 @@ module('Integration | Component | Events Table Row', function(hooks) {
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
       .enableRelationships(true)
+      .language()
+      .aliases()
       .eventResults([{
         'sessionId': 1,
         'time': new Date('Mon Nov 04 2019 15:06:57 GMT-0500'),
@@ -381,6 +388,8 @@ module('Integration | Component | Events Table Row', function(hooks) {
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
       .enableRelationships(true)
+      .language()
+      .aliases()
       .eventResults([{
         'sessionId': 1,
         'time': new Date('Mon Nov 04 2019 15:06:57 GMT-0500'),

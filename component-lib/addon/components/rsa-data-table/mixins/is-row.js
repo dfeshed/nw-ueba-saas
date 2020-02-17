@@ -15,7 +15,7 @@ import { htmlStringToElement, getOuterHeight } from 'component-lib/utils/jquery-
 
 export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   classNames: 'rsa-data-table-body-row',
-  classNameBindings: ['isSelected', 'isAtGroupingSize', 'isLast', 'isSearchMatch', 'isScrollMatch', 'isRowChecked', 'isChild', 'isParent'],
+  classNameBindings: ['isSelected', 'isAtGroupingSize', 'isLast', 'isScrollMatch', 'isRowChecked', 'isChild', 'isParent'],
   attributeBindings: ['style'],
 
   // determines if this row is at the limit of the group size
@@ -185,7 +185,12 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
 
         schedule('afterRender', () => {
           const { element } = this;
-          const toAppend = `<div class="group-label">
+
+          // explicit width require for styling purposes
+          const firstCellWidth = this.get('table.eventRelationshipsEnabled') ? 42 : 18;
+          const whitespace = 16;
+          const labelWidth = firstCellWidth + element.offsetWidth + whitespace;
+          const toAppend = `<div class="group-label" style="width: ${ labelWidth }px">
             <div class="group-label-copy">
               <i class="rsa-icon rsa-icon-arrow-down-7"></i>
               ${label}

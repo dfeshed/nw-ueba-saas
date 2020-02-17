@@ -16,6 +16,71 @@ const stateWithSelections = Immutable.from({
   selectedEventIds: { 7: 442, 10: 165 }
 });
 
+test('Should toggle event relationships to true', function(assert) {
+  const previous = Immutable.from({
+    eventRelationshipsEnabled: false
+  });
+
+  const action = {
+    type: ACTION_TYPES.TOGGLE_EVENT_RELATIONSHIPS
+  };
+
+  const newEndState = reducer(previous, action);
+  assert.equal(newEndState.eventRelationshipsEnabled, true);
+});
+
+test('Should toggle event relationships to false', function(assert) {
+  const previous = Immutable.from({
+    eventRelationshipsEnabled: true
+  });
+
+  const action = {
+    type: ACTION_TYPES.TOGGLE_EVENT_RELATIONSHIPS
+  };
+
+  const newEndState = reducer(previous, action);
+  assert.equal(newEndState.eventRelationshipsEnabled, false);
+});
+
+test('Should collapse split sessions', function(assert) {
+  const previous = Immutable.from({
+    collapsedTuples: []
+  });
+
+  const action = {
+    type: ACTION_TYPES.TOGGLE_SPLIT_SESSION,
+    tuple: 'tuple',
+    relatedEvents: 3,
+    parentIndex: 1
+  };
+
+  const newEndState = reducer(previous, action);
+  assert.equal(newEndState.collapsedTuples.length, 1);
+  assert.deepEqual(newEndState.collapsedTuples[0], {
+    tuple: 'tuple',
+    relatedEvents: 2,
+    parentIndex: 1
+  });
+});
+
+test('Should expand split sessions', function(assert) {
+  const previous = Immutable.from({
+    collapsedTuples: [{
+      tuple: 'tuple',
+      relatedEvents: 2,
+      parentIndex: 1
+    }]
+  });
+
+  const action = {
+    type: ACTION_TYPES.TOGGLE_SPLIT_SESSION,
+    tuple: 'tuple'
+  };
+
+  const newEndState = reducer(previous, action);
+  assert.equal(newEndState.collapsedTuples.length, 0);
+});
+
 test('Should update seach term', function(assert) {
   const previous = Immutable.from({
     searchTerm: null

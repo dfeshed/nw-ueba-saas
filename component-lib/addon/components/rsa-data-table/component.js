@@ -12,6 +12,45 @@ import { getOuterHeight, getHeight, getWidth } from 'component-lib/utils/jquery-
 const DEFAULT_COLUMN_WIDTH = 100;
 const DEFAULT_COLUMN_VISIBILITY = true;
 
+// determine if "next" event is within a collapsed group
+export const getCollapsedGroupMatch = (
+  collapsedTuples,
+  selectedItem,
+  selectedItemIndex
+) => {
+  return collapsedTuples.find((group) => {
+    // check if selectedItem is within a collapsed group
+    const tupleMatch = group.tuple === selectedItem.tuple;
+    // check if selectedItemIndex matches the groups parent
+    const notGroupParent = selectedItemIndex !== group.parentIndex;
+    // only concerned about skipping collapses children
+    // the parent will be treated normally
+    return tupleMatch && notGroupParent;
+  });
+};
+
+// update collapsedHeightOfEventsAboveSelected for any collapsed groups prior to "next" event
+export const getCollapsedHeightOfEventsAboveSelected = (
+  collapsedTuples,
+  selectedItemIndex,
+  outerHeight
+) => {
+  return collapsedTuples.reduce((tracker, currentValue) => {
+    const { relatedEvents, parentIndex } = currentValue;
+    return parentIndex < selectedItemIndex ? (outerHeight * relatedEvents) + tracker : tracker;
+  }, 0);
+};
+
+// update scrollTop taking collapsedHeightOfEventsAboveSelected and prevGroupingLabelsHeight into account
+export const updateScrollTopForNextAndPrev = (
+  selectedItemIndex,
+  outerHeight,
+  collapsedHeightOfEventsAboveSelected,
+  prevGroupingLabelsHeight
+) => {
+  return (selectedItemIndex * outerHeight) - collapsedHeightOfEventsAboveSelected + prevGroupingLabelsHeight;
+};
+
 export default Component.extend(DomWatcher, {
   tagName: 'section',
   classNames: 'rsa-data-table',
@@ -517,30 +556,54 @@ export default Component.extend(DomWatcher, {
       const fn = this.get('onRowClick');
 
       if (typeof fn === 'function') {
-        let selectedItemIndex, selectedItem, scrollTop;
         const items = this.get('items');
+        const itemsCount = items.get('length');
+        const selectedIndex = this.get('selectedIndex');
+        let selectedItemIndex, selectedItem, scrollTop;
 
-        if (this.get('selectedIndex') === (items.get('length') - 1)) {
+        if (selectedIndex === itemsCount - 1) {
           selectedItemIndex = 0;
           selectedItem = items.objectAt(0);
           scrollTop = 0;
         } else {
-          selectedItemIndex = this.get('selectedIndex') + 1;
-          selectedItem = items.objectAt(selectedItemIndex);
           const dataTableBodyRow = this.element.querySelector('.rsa-data-table-body-row');
           const outerHeight = getOuterHeight(dataTableBodyRow);
-          scrollTop = (selectedItemIndex * outerHeight) + this.get('prevGroupingLabelsHeight');
+          const collapsedTuples = this.get('collapsedTuples');
+          selectedItemIndex = selectedIndex + 1;
+          selectedItem = items.objectAt(selectedItemIndex);
+
+          // set default offset for collapsed event groups
+          let collapsedHeightOfEventsAboveSelected = 0;
+          // skip if no collapsedTuples
+          if (collapsedTuples && collapsedTuples.get('length')) {
+            const collapsedGroupMatch = getCollapsedGroupMatch(collapsedTuples, selectedItem, selectedItemIndex);
+            collapsedHeightOfEventsAboveSelected = getCollapsedHeightOfEventsAboveSelected(collapsedTuples, selectedItemIndex, outerHeight);
+
+            // if "next" event is within a collapsed group
+            // reset selectedItemIndex and selectedItem to the collapsed group's parent
+            if (collapsedGroupMatch) {
+              selectedItemIndex = selectedItemIndex + collapsedGroupMatch.relatedEvents;
+              selectedItem = items.objectAt(selectedItemIndex);
+            }
+          }
+
+          scrollTop = updateScrollTopForNextAndPrev(
+            selectedItemIndex,
+            outerHeight,
+            collapsedHeightOfEventsAboveSelected,
+            this.get('prevGroupingLabelsHeight')
+          );
         }
 
         const dataTableBody = this.element.querySelector('.rsa-data-table-body');
 
         // do not 'smooth' if going from bottom of table to top
-        if (this.get('selectedIndex') === (items.get('length') - 1)) {
+        if (selectedIndex === itemsCount - 1) {
           dataTableBody.scroll({ top: scrollTop });
-
         } else {
           dataTableBody.scroll({ top: scrollTop, behavior: 'smooth' });
         }
+
         fn(selectedItem, selectedItemIndex, e, this);
       }
     }
@@ -560,31 +623,54 @@ export default Component.extend(DomWatcher, {
       const fn = this.get('onRowClick');
 
       if (typeof fn === 'function') {
+        const items = this.get('items');
+        const selectedIndex = this.get('selectedIndex');
         let selectedItemIndex, selectedItem, scrollTop;
 
-        if (this.get('selectedIndex') < 1) {
-          selectedItemIndex = this.get('items.length') - 1;
-          selectedItem = this.get('items').objectAt(selectedItemIndex);
+        if (selectedIndex < 1) {
+          selectedItemIndex = items.get('length') - 1;
+          selectedItem = items.objectAt(selectedItemIndex);
           // when vertical scroll is present, it will scroll to bottom,
           // which was not happening before.
           scrollTop = this.element.querySelector('.rsa-data-table-body').scrollHeight;
-
         } else {
-          selectedItemIndex = this.get('selectedIndex') - 1;
-          selectedItem = this.get('items').objectAt(selectedItemIndex);
           const dataTableBodyRow = this.element.querySelector('.rsa-data-table-body-row');
           const outerHeight = getOuterHeight(dataTableBodyRow);
-          scrollTop = (selectedItemIndex * outerHeight) + this.get('prevGroupingLabelsHeight');
+          const collapsedTuples = this.get('collapsedTuples');
+          selectedItemIndex = selectedIndex - 1;
+          selectedItem = items.objectAt(selectedItemIndex);
+
+          // set default offset for collapsed event groups
+          let collapsedHeightOfEventsAboveSelected = 0;
+          // skip if no collapsedTuples
+          if (collapsedTuples && collapsedTuples.get('length')) {
+            const collapsedGroupMatch = getCollapsedGroupMatch(collapsedTuples, selectedItem, selectedItemIndex);
+            collapsedHeightOfEventsAboveSelected = getCollapsedHeightOfEventsAboveSelected(collapsedTuples, selectedItemIndex, outerHeight);
+
+            // if "previous" event is within a collapsed group
+            // reset selectedItemIndex and selectedItem to the collapsed group's parent
+            if (collapsedGroupMatch) {
+              selectedItemIndex = selectedItemIndex - collapsedGroupMatch.relatedEvents;
+              selectedItem = items.objectAt(selectedItemIndex);
+            }
+          }
+
+          scrollTop = updateScrollTopForNextAndPrev(
+            selectedItemIndex,
+            outerHeight,
+            collapsedHeightOfEventsAboveSelected,
+            this.get('prevGroupingLabelsHeight')
+          );
         }
 
         const dataTableBody = this.element.querySelector('.rsa-data-table-body');
 
-        if (this.get('selectedIndex') < 1) {
+        if (selectedIndex < 1) {
           dataTableBody.scroll({ top: scrollTop });
-
         } else {
           dataTableBody.scroll({ top: scrollTop, behavior: 'smooth' });
         }
+
         fn(selectedItem, selectedItemIndex, e, this);
       }
     }
@@ -663,17 +749,29 @@ export default Component.extend(DomWatcher, {
         // Check selected index is a valid number before attempting scrollTop.
         // This ensures we don't calculate howFarToScrollTable on a negative index.
         if (selectedIndex >= 0 && !!firstRow) {
-          const heightForAllTableRows = getHeight(this.element.querySelector('.rsa-data-table-body-rows'));
-          let howFarToScrollTable = getOuterHeight(firstRow) * selectedIndex;
-          // Data could be flowing in over time, so the number of rows in the
-          // table may not immediately be enough to scroll to the selected row.
-          // If the height of the container surpasses where the item should be,
-          // we can scroll to it and exit recursion. Otherwise let it try again later.
+          const rowHeight = getOuterHeight(firstRow);
+          const collapsedTuples = this.get('collapsedTuples');
 
+          // set default offset for collapsed event groups
+          let collapsedHeightOfEventsAboveSelected = 0;
+          if (collapsedTuples && collapsedTuples.get('length')) {
+            collapsedHeightOfEventsAboveSelected = getCollapsedHeightOfEventsAboveSelected(collapsedTuples, selectedIndex, rowHeight);
+          }
+
+          const heightForAllTableRows = getHeight(this.element.querySelector('.rsa-data-table-body-rows'));
+
+          // update howFarToScrollTable taking collapsedHeightOfEventsAboveSelected into account
+          let howFarToScrollTable = (rowHeight * selectedIndex) - collapsedHeightOfEventsAboveSelected;
+
+          // if grouping is enabled, take height of rendered group labels into account
           if (this.get('enableGrouping') && (selectedIndex > this.get('groupingSize'))) {
             howFarToScrollTable = howFarToScrollTable + this.get('prevGroupingLabelsHeight');
           }
 
+          // Data could be flowing in over time, so the number of rows in the
+          // table may not immediately be enough to scroll to the selected row.
+          // If the height of the container surpasses where the item should be,
+          // we can scroll to it and exit recursion. Otherwise let it try again later.
           if (heightForAllTableRows >= howFarToScrollTable) {
             this.element.querySelector('.rsa-data-table-body').scroll(null, howFarToScrollTable);
             return;

@@ -12,8 +12,11 @@ import { SUMMARY_COLUMN_KEYS } from 'investigate-events/reducers/investigate/dat
  * the width is currently `auto`.
  * @private
  */
-function applyCellWidth($cell, column, opts) {
+function applyCellWidth($cell, column, opts, eventRelationshipsEnabled) {
   let width = get(column, 'width');
+  if (column.field === 'checkbox' && eventRelationshipsEnabled) {
+    width = '42px';
+  }
   const hasAutoWidth = width === 'auto';
   if (!hasAutoWidth) {
     width = formatUtil.width(width, opts);

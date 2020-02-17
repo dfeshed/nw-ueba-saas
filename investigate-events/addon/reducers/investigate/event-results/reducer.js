@@ -24,7 +24,8 @@ const _initialState = Immutable.from({
   searchScrollIndex: -1,
   visibleColumns: [],
 
-  eventRelationshipsEnabled: false
+  eventRelationshipsEnabled: false,
+  collapsedTuples: []
 });
 
 // * `data` is an array of objects with the following properties
@@ -44,6 +45,29 @@ export default handleActions({
     });
   },
 
+  [ACTION_TYPES.TOGGLE_SPLIT_SESSION]: (state, { tuple, relatedEvents, parentIndex }) => {
+    const newTuples = [
+      ...state.collapsedTuples
+    ];
+
+    const tupleMatch = newTuples.find((t) => t.tuple === tuple);
+    if (tupleMatch) {
+      newTuples.removeObject(tupleMatch);
+    } else {
+      newTuples.addObject({
+        // minus 1 because the passed value includes the parent
+        // in the relevant logic we need to ignore the parent
+        tuple,
+        relatedEvents: relatedEvents - 1,
+        parentIndex
+      });
+    }
+
+    return state.merge({
+      collapsedTuples: newTuples
+    });
+  },
+
   [ACTION_TYPES.SORT_IN_CLIENT_COMPLETE]: (state) => {
     const newState = state.merge({
       data: state.cachedData,
@@ -52,6 +76,7 @@ export default handleActions({
     });
     return newState;
   },
+
 
   [ACTION_TYPES.SORT_IN_CLIENT_BEGIN]: (state) => {
     return state.merge({

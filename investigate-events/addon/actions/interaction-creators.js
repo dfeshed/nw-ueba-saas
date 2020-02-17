@@ -7,7 +7,7 @@ import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/
 import { fetchInvestigateData, getServiceSummary, updateSort } from './data-creators';
 import { getDictionaries, queryIsRunning } from './initialization-creators';
 import { cancelEventCountStream } from './event-count-creators';
-import { cancelEventsStream } from './events-creators';
+import { cancelEventsStream, toggleSplitSession } from './events-creators';
 import { replaceAllGuidedPills, unstashPills } from './pill-creators';
 import {
   getDbStartTime,
@@ -93,9 +93,33 @@ export const cancelQuery = (dispatchStatus = true) => {
 };
 
 export const setSearchScroll = (searchScrollIndex) => {
-  return {
-    type: ACTION_TYPES.SET_SEARCH_SCROLL,
-    searchScrollIndex
+  return (dispatch, getState) => {
+    const state = getState();
+    const actions = [];
+    const { collapsedTuples } = state.investigate.eventResults;
+
+    // account for collapsed event groups
+    if (collapsedTuples.length) {
+      // find tuple of event to be scrolled to
+      const { tuple } = nestChildEvents(state).objectAt(searchScrollIndex);
+
+      // expand group if event to be scrolled to is within a collapsed group
+      if (collapsedTuples.findBy('tuple', tuple)) {
+        const toggleSplitSessionAction = toggleSplitSession(tuple);
+        actions.push(toggleSplitSessionAction);
+      }
+    }
+
+    const setSearchScrollAction = (() => {
+      return {
+        type: ACTION_TYPES.SET_SEARCH_SCROLL,
+        searchScrollIndex
+      };
+    })();
+
+    actions.push(setSearchScrollAction);
+
+    dispatch(actions);
   };
 };
 

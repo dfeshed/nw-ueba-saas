@@ -370,3 +370,7 @@ export const toggleEventRelationships = () => {
     type: ACTION_TYPES.TOGGLE_EVENT_RELATIONSHIPS
   };
 };
+
+export const toggleSplitSession = (tuple, relatedEvents, parentIndex) => {
+  return { type: ACTION_TYPES.TOGGLE_SPLIT_SESSION, tuple, relatedEvents, parentIndex };
+};

@@ -348,23 +348,62 @@
       cursor: default;
       border-top: 0px;
 
+      &.is-parent {
+        @include rsa-layer(controls);
+        .rsa-data-table-body-cell {
+          background: none;
+        }
+
+        &:hover {
+          .rsa-data-table-body-cell:not([data-visibility=false]) {
+            background-color: background-color(primary, darker);
+          }
+        }
+      }
+
       // Need to set height big enough to accommodate logs which
       // come in after the row is rendered
       min-height: 57px;
+
+      .expand-collapse-children {
+        color: text-color(primary, lightest);
+        @include rsa-layer(controls);
+        position: absolute;
+        left: .5rem;
+        top: 8px;
+        font-size: 1rem;
+        line-height: 20px;
+
+        &.is-disabled {
+          color: text-color(primary);
+        }
+
+        &:hover {
+          cursor: pointer;
+          color: text-color(secondary);
+        }
+      }
 
       .session-split-decorator {
         color: text-color(secondary, light);
         @include rsa-layer(controls);
         position: absolute;
-        left: 3rem;
+        left: calc(3rem + 24px);
         top: 8px;
         font-size: 1rem;
         line-height: 20px;
+
+        &[data-visibility=false] {
+          display: none;
+        }
       }
 
       &:hover {
         .session-split-decorator {
-          left: 3.5rem;
+          left: calc(3.5rem + 24px);
+        }
+        .expand-collapse-children {
+          left: 1rem;
         }
       }
 
@@ -391,12 +430,25 @@
 
         .session-split-decorator {
           color: text-color(primary, lightest);
-          left: 3.5rem;
+          left: calc(3.5rem + 24px);
+        }
+
+        .expand-collapse-children {
+          left: 1rem;
+
+          &.is-disabled {
+            color: text-color(primary, lightest);
+          }
         }
 
         &:hover {
           .session-split-decorator {
-            left: 3.5rem;
+            left: calc(3.5rem + 24px);
+          }
+
+          .expand-collapse-children {
+            left: 1rem;
+            color: text-color(primary, lightest);
           }
         }
       }
@@ -405,6 +457,12 @@
 
     &-body-cell {
       @include border-top(1px, solid, primary, dark);
+
+      &[data-visibility=false] {
+        .content {
+          display: none;
+        }
+      }
 
       .meta-key-and-value {
         .key {

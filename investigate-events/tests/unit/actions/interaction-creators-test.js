@@ -199,6 +199,70 @@ module('Unit | Actions | interaction creators', function(hooks) {
     thunk(myDispatch, getState);
   });
 
+  test('setSearchScroll action creator returns proper type and payload when no collapsedTuples', function(assert) {
+    assert.expect(3);
+
+    const getState = () => {
+      return new ReduxDataHelper()
+        .eventsQuerySort('time', 'Descending')
+        .hasRequiredValuesToQuery(true)
+        .queryStatsIsComplete()
+        .language()
+        .eventResults([{
+          'sessionId': 1,
+          'time': Date.now(),
+          'ip.src': '127.0.0.1',
+          'ip.dst': '127.0.0.1',
+          'tcp.srcport': 25,
+          'tcp.dstport': 25
+        }])
+        .collapsedTuples()
+        .build();
+    };
+
+    const myDispatch = (actions) => {
+      assert.equal(actions.length, 1);
+      assert.equal(actions[0].type, 'INVESTIGATE_EVENTS::SET_SEARCH_SCROLL');
+      assert.equal(actions[0].searchScrollIndex, 1, 'action has the correct searchScrollIndex');
+    };
+
+    const thunk = interactionCreators.setSearchScroll(1);
+    thunk(myDispatch, getState);
+  });
+
+  test('setSearchScroll action creator returns proper type and payload when collapsedTuples', function(assert) {
+    assert.expect(5);
+
+    const getState = () => {
+      return new ReduxDataHelper()
+        .eventsQuerySort('time', 'Descending')
+        .hasRequiredValuesToQuery(true)
+        .queryStatsIsComplete()
+        .language()
+        .eventResults([{
+          'sessionId': 1,
+          'time': Date.now(),
+          'ip.src': '127.0.0.1',
+          'ip.dst': '127.0.0.1',
+          'tcp.srcport': 25,
+          'tcp.dstport': 25
+        }])
+        .collapsedTuples([{ tuple: 'ip.src=127.0.0.1 AND ip.dst=127.0.0.1 AND tcp.srcport=25 AND tcp.dstport=25' }])
+        .build();
+    };
+
+    const myDispatch = (actions) => {
+      assert.equal(actions.length, 2);
+      assert.equal(actions[0].type, 'INVESTIGATE_EVENTS::TOGGLE_SPLIT_SESSION');
+      assert.equal(actions[0].tuple, 'ip.src=127.0.0.1 AND ip.dst=127.0.0.1 AND tcp.srcport=25 AND tcp.dstport=25', 'action has the correct tuple');
+      assert.equal(actions[1].type, 'INVESTIGATE_EVENTS::SET_SEARCH_SCROLL');
+      assert.equal(actions[1].searchScrollIndex, 0, 'action has the correct searchScrollIndex');
+    };
+
+    const thunk = interactionCreators.setSearchScroll(0);
+    thunk(myDispatch, getState);
+  });
+
   test('toggleQueryConsole fires when not disabled', function(assert) {
     assert.expect(1);
     const getState = () => {

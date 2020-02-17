@@ -477,6 +477,11 @@ export default class DataHelper {
     return this;
   }
 
+  collapsedTuples(tuples = []) {
+    _set(this.state, 'eventResults.collapsedTuples', tuples);
+    return this;
+  }
+
   enableRelationships(value = true) {
     _set(this.state, 'eventResults.eventRelationshipsEnabled', value);
     return this;

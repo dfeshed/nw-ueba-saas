@@ -4,6 +4,11 @@ import Service from '@ember/service';
 import Evented from '@ember/object/evented';
 import { moduleForComponent, test } from 'ember-qunit';
 import { getOuterHeight, text } from 'component-lib/utils/jquery-replacement';
+import {
+  getCollapsedGroupMatch,
+  getCollapsedHeightOfEventsAboveSelected,
+  updateScrollTopForNextAndPrev
+} from 'component-lib/components/rsa-data-table/component';
 
 const eventBusStub = Service.extend(Evented, {});
 const FIX_ELEMENT_ID = 'tether_fix_style_element';
@@ -124,6 +129,49 @@ moduleForComponent('rsa-data-table', 'Integration | Component | rsa-data-table',
   afterEach() {
     removeTetherFix();
   }
+});
+
+test('utility functions - getCollapsedGroupMatch', function(assert) {
+  assert.deepEqual(getCollapsedGroupMatch([{
+    tuple: 'foo',
+    parentIndex: 0
+  }], {
+    tuple: 'foo'
+  }, 1), {
+    tuple: 'foo',
+    parentIndex: 0
+  });
+
+  assert.notOk(getCollapsedGroupMatch([{
+    tuple: 'bar',
+    parentIndex: 0
+  }], {
+    tuple: 'foo'
+  }, 0));
+
+  assert.notOk(getCollapsedGroupMatch([{
+    tuple: 'foo',
+    parentIndex: 0
+  }], {
+    tuple: 'foo'
+  }, 0));
+});
+
+test('utility functions - getCollapsedHeightOfEventsAboveSelected', function(assert) {
+  assert.equal(getCollapsedHeightOfEventsAboveSelected([{
+    parentIndex: 10,
+    relatedEvents: 5
+  }], 0, 10), 0);
+
+  assert.equal(getCollapsedHeightOfEventsAboveSelected([{
+    parentIndex: 0,
+    relatedEvents: 5
+  }], 10, 10), 50);
+});
+
+test('utility functions - updateScrollTopForNextAndPrev', function(assert) {
+  assert.equal(updateScrollTopForNextAndPrev(10, 10, 10, 10), 100);
+  assert.equal(updateScrollTopForNextAndPrev(0, 10, 10, 10), 0);
 });
 
 test('sets body height and removes rows when hideForMessaging', function(assert) {

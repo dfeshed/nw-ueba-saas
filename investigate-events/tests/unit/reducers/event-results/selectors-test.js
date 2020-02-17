@@ -27,7 +27,8 @@ import {
   updateStreamKeyTree,
   eventsHaveSplits,
   eventResultSetStart,
-  selectedTableIndex
+  selectedTableIndex,
+  expandedAndCollapsedCalculator
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -1974,6 +1975,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           eventRelationshipsEnabled: false,
           data: [
             {
+              'time': 'Tue Oct 12 2019 13:54:16',
               'ip.dst': '127.0.0.1',
               'ip.src': '127.0.0.1',
               'tcp.srcport': 25,
@@ -1982,7 +1984,7 @@ module('Unit | Selectors | event-results', function(hooks) {
               sessionId: 1
             },
             {
-              'time': 'Tue Oct 11 2019 13:54:16',
+              'time': 'Tue Oct 11 2019 13:54:14',
               'ip.dst': '127.0.0.1',
               'ip.src': '127.0.0.1',
               'tcp.srcport': 25,
@@ -1990,7 +1992,7 @@ module('Unit | Selectors | event-results', function(hooks) {
               sessionId: 2
             },
             {
-              'time': 'Tue Oct 12 2019 13:54:16',
+              'time': 'Tue Oct 12 2019 13:54:15',
               'ip.dst': '127.0.0.1',
               'ip.src': '127.0.0.1',
               'tcp.srcport': 25,
@@ -2039,8 +2041,12 @@ module('Unit | Selectors | event-results', function(hooks) {
 
     const result = nestChildEvents(state);
     assert.equal(result[0].tuple, 'ip.src=127.0.0.1 AND ip.dst=127.0.0.1 AND tcp.srcport=25 AND tcp.dstport=25');
+    assert.equal(result[0].eventIndex, 1.0001);
+    assert.equal(result[1].tuple, 'ip.src=127.0.0.1 AND ip.dst=127.0.0.1 AND tcp.srcport=25 AND tcp.dstport=25');
     assert.equal(result[1].eventIndex, 1);
-    assert.equal(result[2].eventIndex, 1.000001570902856);
+    assert.equal(result[1].withChildren, true);
+    assert.equal(result[2].tuple, 'ip.src=127.0.0.1 AND ip.dst=127.0.0.1 AND tcp.srcport=25 AND tcp.dstport=25');
+    assert.equal(result[2].eventIndex, 1.000001570902855);
   });
 
   test('nestChildEvents for tuple: ip.dst|ip.src|tcp.srcport|tcp.dstport', async function(assert) {
@@ -2486,6 +2492,234 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[0].sessionId, 2);
     assert.equal(result[1].sessionId, 3);
     assert.equal(result[2].sessionId, 1);
+  });
+
+  test('expandedAndCollapsedCalculator when nothing collapsed', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          eventRelationshipsEnabled: true,
+          collapsedTuples: [],
+          data: [
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 1
+            },
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 0,
+              sessionId: 2
+            },
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 1,
+              sessionId: 3
+            }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [
+            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
+            { metaName: 'ipv6.dst' },
+            { metaName: 'ipv6.src' },
+            { metaName: 'tcp.dstport' },
+            { metaName: 'tcp.srcport' },
+            { metaName: 'udp.dstport' },
+            { metaName: 'udp.srcport' }
+          ]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        },
+        queryNode: {
+          previousQueryParams: {}
+        }
+      }
+    };
+
+    assert.equal(expandedAndCollapsedCalculator(state)[1], 0);
+    assert.equal(expandedAndCollapsedCalculator(state)[2], 57);
+    assert.equal(expandedAndCollapsedCalculator(state)[3], 114);
+  });
+
+  test('expandedAndCollapsedCalculator with collapsed', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          eventRelationshipsEnabled: true,
+          collapsedTuples: [{
+            tuple: 'ip.src=127.0.0.1 AND ip.dst=127.0.0.1 AND tcp.srcport=25 AND tcp.dstport=25',
+            relatedEvents: 1,
+            parentIndex: 0
+          }],
+          data: [
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 1
+            },
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 0,
+              sessionId: 2
+            },
+            {
+              'ip.dst': '127.0.0.2',
+              'ip.src': '127.0.0.2',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 3
+            }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [
+            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
+            { metaName: 'ipv6.dst' },
+            { metaName: 'ipv6.src' },
+            { metaName: 'tcp.dstport' },
+            { metaName: 'tcp.srcport' },
+            { metaName: 'udp.dstport' },
+            { metaName: 'udp.srcport' }
+          ]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        },
+        queryNode: {
+          previousQueryParams: {}
+        }
+      }
+    };
+
+    assert.equal(expandedAndCollapsedCalculator(state)[1], 0);
+    assert.equal(expandedAndCollapsedCalculator(state)[2], 0);
+    assert.equal(expandedAndCollapsedCalculator(state)[3], 57);
+  });
+
+  test('expandedAndCollapsedCalculator with collapsed but disabled', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          eventRelationshipsEnabled: false,
+          collapsedTuples: [{
+            tuple: 'ip.src=127.0.0.1 AND ip.dst=127.0.0.1 AND tcp.srcport=25 AND tcp.dstport=25',
+            relatedEvents: 1,
+            parentIndex: 0
+          }],
+          data: [
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 1
+            },
+            {
+              'ip.dst': '127.0.0.1',
+              'ip.src': '127.0.0.1',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              'session.split': 0,
+              sessionId: 2
+            },
+            {
+              'ip.dst': '127.0.0.2',
+              'ip.src': '127.0.0.2',
+              'tcp.srcport': 25,
+              'tcp.dstport': 25,
+              sessionId: 3
+            }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [
+            { metaName: 'ip.dst' },
+            { metaName: 'ip.src' },
+            { metaName: 'ipv6.dst' },
+            { metaName: 'ipv6.src' },
+            { metaName: 'tcp.dstport' },
+            { metaName: 'tcp.srcport' },
+            { metaName: 'udp.dstport' },
+            { metaName: 'udp.srcport' }
+          ]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        },
+        queryNode: {
+          previousQueryParams: {}
+        }
+      }
+    };
+
+    assert.equal(expandedAndCollapsedCalculator(state)[1], 0);
+    assert.equal(expandedAndCollapsedCalculator(state)[2], 57);
+    assert.equal(expandedAndCollapsedCalculator(state)[3], 114);
   });
 
   test('eventsHaveSplits when true', async function(assert) {

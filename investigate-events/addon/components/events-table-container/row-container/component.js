@@ -110,6 +110,22 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     }
   }),
 
+  _selectedEventDidChange: observer('item', 'table.selectedIndex', function() {
+    const { tuple } = this.get('item');
+    schedule('afterRender', () => {
+      if (document.querySelector(`.is-selected.is-child[data-tuple="${tuple}"]`)) {
+        document.querySelector(`.expand-collapse-children[data-tuple="${tuple}"]`)?.classList.add('is-disabled');
+      } else {
+        document.querySelector(`.expand-collapse-children[data-tuple="${tuple}"]`)?.classList.remove('is-disabled');
+      }
+    });
+  }),
+
+  @computed('item', 'table.expandedAndCollapsedCalculator', 'table.eventRelationshipsEnabled')
+  top(item, expandedAndCollapsedCalculator = {}) {
+    return expandedAndCollapsedCalculator[item.sessionId] || 0;
+  },
+
   /**
    * Triggers an update of the cell DOM widths whenever the column model's width
    * changes.
@@ -133,7 +149,14 @@ export default Component.extend(RowMixin, HighlightsEntities, {
 
   didInsertElement() {
     this._super(...arguments);
+    this.element.setAttribute('data-tuple', this.get('item').tuple);
+
     schedule('afterRender', this, this._afterRender);
+  },
+
+  willDestroyElement() {
+    this.element.querySelector('.expand-collapse-children')?.remove();
+    this.element.querySelector('.session-split-decorator')?.remove();
   },
 
   _highlightSearchMatch() {
@@ -189,34 +212,64 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     }
     const $el = select(this.element);
     const item = this.get('item');
+    const toggleSplitSession = this.get('table.toggleSplitSession');
 
     // Clear any prior rendered cells. It's important to specify the class name here because we don't
     // want to accidentally remove non-cell DOM (for example, the hidden resizer element!).
     $el.selectAll('.rsa-data-table-body-cell').remove();
-
-    if (item.tuple && this.get('table.eventRelationshipsEnabled')) {
-      if (!isEmpty(item['session.split'])) {
-        $el.append('i')
-          .attr('class', 'session-split-decorator grouped-with-split rsa-icon rsa-icon-layers-stacked')
-          .attr('title', this.get('i18n').t('investigate.splitSessionLabels.withSplit', {
-            split: item['session.split'],
-            tuple: item.tuple
-          }));
-      } else if (item.groupedWithoutSplit) {
-        $el.append('i')
-          .attr('class', 'session-split-decorator grouped-without-split rsa-icon rsa-icon-layers-stacked')
-          .attr('title', this.get('i18n').t('investigate.splitSessionLabels.onlyGrouped', {
-            tuple: item.tuple
-          }));
-      }
-    } else {
-      $el.select('.session-split-decorator').remove();
-    }
+    $el.selectAll('.session-split-decorator').remove();
+    $el.selectAll('.expand-collapse-children').remove();
 
     // For each column, build a cell DOM element.
     (this.get('table.visibleColumns') || []).forEach((column, columnIndex) => {
-      this._renderCell($el, column, item, columnIndex);
+      this._renderCell($el, column, item, columnIndex, this.get('table.eventRelationshipsEnabled'));
     });
+
+    // set first cell width based on eventRelationshipsEnabled and presence of collapse caret
+    if (this.get('table.eventRelationshipsEnabled')) {
+      select('.rsa-data-table-header-row .rsa-data-table-header-cell:first-child').style('width', '42px');
+    } else {
+      select('.rsa-data-table-header-row .rsa-data-table-header-cell:first-child').style('width', '18px');
+    }
+
+    if (item.tuple && this.get('table.eventRelationshipsEnabled')) {
+      const isCollapsed = this.get('table.collapsedTuples') && this.get('table.collapsedTuples').find((t) => t.tuple === item.tuple);
+      const arrowClass = isCollapsed ? 'expand-collapse-children rsa-icon rsa-icon-arrow-right-12' : 'expand-collapse-children rsa-icon rsa-icon-arrow-down-12';
+
+      if (item.withChildren) {
+        $el.append('i')
+          .attr('class', arrowClass)
+          .attr('data-tuple', item.tuple)
+          .on('click', () => {
+            if (!document.querySelector(`.is-selected.is-child[data-tuple="${item.tuple}"]`)) {
+              toggleSplitSession(item.tuple, item.relatedEvents, this.get('index'), this.get('top'));
+            }
+          });
+      }
+
+      if (!isCollapsed || (isCollapsed && this.get('isChild') && item.presentAsParent)) {
+        $el.selectAll('.rsa-data-table-body-cell').attr('data-visibility', true);
+
+        if (!isEmpty(item['session.split'])) {
+          $el.append('i')
+            .attr('class', 'session-split-decorator grouped-with-split rsa-icon rsa-icon-layers-stacked')
+            .attr('data-tuple', item.tuple)
+            .attr('title', this.get('i18n').t('investigate.splitSessionLabels.withSplit', {
+              split: item['session.split'],
+              tuple: item.tuple
+            }));
+        } else if (item.groupedWithoutSplit) {
+          $el.append('i')
+            .attr('class', 'session-split-decorator grouped-without-split rsa-icon rsa-icon-layers-stacked')
+            .attr('data-tuple', item.tuple)
+            .attr('title', this.get('i18n').t('investigate.splitSessionLabels.onlyGrouped', {
+              tuple: item.tuple
+            }));
+        }
+      } else if (!item.presentAsParent) {
+        $el.selectAll('.rsa-data-table-body-cell').attr('data-visibility', false);
+      }
+    }
 
     this._highlightSearchMatch();
   },
@@ -227,7 +280,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
    * inner DOM.
    * @private
    */
-  _renderCell($row, column, item, columnIndex) {
+  _renderCell($row, column, item, columnIndex, eventRelationshipsEnabled = false) {
     const field = get(column, 'field');
     const _opts = this.get('_opts');
     const isEndpoint = !!item['nwe.callback_id'];
@@ -240,7 +293,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
       .classed('rsa-data-table-body-cell', true)
       .classed(`column-index-${columnIndex}`, true)
       .attr('data-field', field);
-    columnUtil.applyCellWidth($cell, column, opts);
+    columnUtil.applyCellWidth($cell, column, opts, eventRelationshipsEnabled);
     columnUtil.buildCellContent($cell, field, item, opts);
   },
 

@@ -269,6 +269,43 @@ module('Integration | Component | events-table', function(hooks) {
     await click('.group-label-copy');
   });
 
+  test('when a expand-collapse icon is clicked selectEvent is not fired', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .eventCount(2)
+      .eventsPreferencesConfig()
+      .getColumns('SUMMARY', EventColumnGroups)
+      .collapsedTuples()
+      .enableRelationships()
+      .language()
+      .eventResults([{
+        sessionId: 'foo',
+        time: 123,
+        'ip.src': '127.0.0.1',
+        'ip.dst': '127.0.0.1',
+        'tcp.srcport': 25,
+        'tcp.dstport': 25
+      }, {
+        sessionId: 'bar',
+        time: 123,
+        'ip.src': '127.0.0.1',
+        'ip.dst': '127.0.0.1',
+        'tcp.srcport': 25,
+        'tcp.dstport': 25,
+        'session.split': 0
+      }])
+      .build();
+
+    this.set('selectEvent', () => {
+      assert.ok(false);
+    });
+
+    await render(hbs`{{events-table-container/events-table selectEvent=selectEvent}}`);
+    assert.equal(findAll('.rsa-data-table-body-row').length > 0, true, 'a row is rendered');
+    assert.equal(findAll('.expand-collapse-children').length === 1, true, 'an .expand-collapse-children is rendered');
+    await click('.expand-collapse-children');
+  });
+
   test('event table is displayed with expected default column sort controls', async function(assert) {
     new ReduxDataHelper(setState)
       .selectedColumnGroup('SUMMARY')

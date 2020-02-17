@@ -8,6 +8,7 @@ import {
 } from 'component-lib/utils/log-utils';
 import { hideEventsForReQuery } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
 
 /* status is being used here - https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/addon/components/rsa-data-table/body/component.js#L57
 To avoid going inside else loop , which shows noResultsMessage for a moment, which causes flickering of results */
@@ -27,6 +28,44 @@ const EventsTableBody = DataTableBody.extend({
       run.debounce(this, this._fetchLogData, 1000);
     }
   }),
+
+  @computed('_rowHeight', 'table.collapsedTuples', 'table.eventRelationshipsEnabled')
+  collapsedRows(rowHeight, collapsedTuples, eventRelationshipsEnabled) {
+    if (!eventRelationshipsEnabled) {
+      return 0;
+    } else {
+      return collapsedTuples && collapsedTuples.reduce((tracker, currentValue) => {
+        const { relatedEvents } = currentValue;
+        return relatedEvents + tracker;
+      }, 0) || 0;
+    }
+  },
+
+  @computed('status', 'hideForMessaging', '_rowHeight', 'items.length', 'table.groupingSize', 'table.enableGrouping', 'table.groupLabelHeight', 'collapsedRows', 'table.eventRelationshipsEnabled')
+  _minScrollHeight(status, hideForMessaging, rowHeight, itemsLength, groupSize, enableGrouping, groupLabelHeight, collapsedRows) {
+    const rowsHeight = rowHeight * (itemsLength - collapsedRows);
+    const groupCount = Math.floor(itemsLength / groupSize);
+    if (hideForMessaging) {
+      return 0;
+    } else {
+      if (enableGrouping) {
+        if (itemsLength <= groupSize) {
+          return rowsHeight || 0;
+        } else if (itemsLength % groupSize === 0) {
+          return rowsHeight + ((groupCount - 1) * groupLabelHeight);
+        } else {
+          return rowsHeight + ((groupCount) * groupLabelHeight);
+        }
+      } else {
+        return rowsHeight || 0;
+      }
+    }
+  },
+
+  @computed('_firstIndex', '_rowHeight', 'clientHeight', '_distributedGroupLabelHeight', 'collapsedRows')
+  _lastIndex(firstIndex, rowHeight, clientHeight, labelHeight, collapsedRows) {
+    return rowHeight ? firstIndex + collapsedRows + Math.ceil(clientHeight / (rowHeight + labelHeight)) : 0;
+  },
 
   _fetchLogData() {
     const loader = this.get('table.loadLogsAction');

@@ -40,6 +40,7 @@ const _isQueryExecutedByColumnGroup = (state) => state.investigate.data.isQueryE
 const _sortField = (state) => state.investigate.data.sortField;
 const _sortDirection = (state) => state.investigate.data.sortDirection;
 const _eventRelationshipsEnabled = (state) => state.investigate.eventResults.eventRelationshipsEnabled;
+const _collapsedTuples = (state) => state.investigate.eventResults.collapsedTuples;
 
 export const SORT_ORDER = {
   DESC: 'Descending',
@@ -346,10 +347,9 @@ export const updateStreamKeyTree = (streamKeyTree, e, keyA, keyB, keyC, keyD) =>
     const thisEventIsParent = isEmpty(split);
     const thisKeyIsEmpty = isEmpty(streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]);
     const thisKeyIsPopulated = !isEmpty(streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]);
-
     const thisKeyIsPopulatedWithChild = thisKeyIsPopulated && !isEmpty(streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]['session.split']);
     const thisKeyIsPopulatedWithParent = thisKeyIsPopulated && isEmpty(streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]['session.split']);
-    const thisEventIsPriorTime = e.time < streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]].time;
+    const thisEventIsPriorTime = e.time <= streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]].time;
     const thisEventIsPriorSplit = split < streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]]['session.split'];
 
     if (thisKeyIsEmpty ||
@@ -357,9 +357,11 @@ export const updateStreamKeyTree = (streamKeyTree, e, keyA, keyB, keyC, keyD) =>
       (thisKeyIsPopulatedWithParent && thisEventIsParent && thisEventIsPriorTime) ||
       (thisKeyIsPopulatedWithChild && thisEventIsPriorSplit)
     ) {
+      // update previously stored parent for matching streamKey
       streamKeyTree[e[keyA]][e[keyB]][e[keyC]][e[keyD]] = e;
     }
   } else {
+    // initial set for streamKey on first occurance of tuple
     if (!streamKeyTree[e[keyA]]) {
       streamKeyTree[e[keyA]] = {};
     }
@@ -378,7 +380,7 @@ export const updateStreamKeyTree = (streamKeyTree, e, keyA, keyB, keyC, keyD) =>
 };
 
 export const nestChildEvents = createSelector(
-  [clientSortedData, _eventRelationshipsEnabled],
+  [clientSortedData, _eventRelationshipsEnabled, _collapsedTuples],
   (events, eventRelationshipsEnabled) => {
     if (isEmpty(events)) {
       return events;
@@ -386,9 +388,11 @@ export const nestChildEvents = createSelector(
       events = Immutable.asMutable(events, { deep: true });
       let streamKeyTree = {};
 
+      // iterate through all events to determine parent events
       for (let eventIndex = 0; eventIndex < events.length; eventIndex++) {
         const event = events[eventIndex];
         event.eventIndex = eventIndex;
+        event.relatedEvents = 0;
 
         if (event['ip.dst'] && event['ip.src'] && event['tcp.dstport'] && event['tcp.srcport']) {
           streamKeyTree = updateStreamKeyTree(streamKeyTree, event, 'ip.dst', 'ip.src', 'tcp.dstport', 'tcp.srcport');
@@ -401,39 +405,68 @@ export const nestChildEvents = createSelector(
         }
       }
 
+      // iterate through all events to associate children to parent and decorate events
       for (let eventIndex = 0; eventIndex < events.length; eventIndex++) {
         const event = events[eventIndex];
         let parent;
 
+        // used in table components to determine when to decorate with icons
         event.presentAsParent = false;
+
         if (event['ip.dst'] && event['ip.src'] && event['tcp.dstport'] && event['tcp.srcport']) {
+          // used to annotate markup and identify related elements
           event.tuple = `ip.src=${event['ip.src']} AND ip.dst=${event['ip.dst']} AND tcp.srcport=${event['tcp.srcport']} AND tcp.dstport=${event['tcp.dstport']}`;
+          // set parent for future decoration
           parent = streamKeyTree[event['ip.dst']][event['ip.src']][event['tcp.dstport']][event['tcp.srcport']];
+          // used in table components to calculate heights and offsets when expanding/collapsing
+          parent.relatedEvents = parent.relatedEvents + 1;
         } else if (event['ip.dst'] && event['ip.src'] && event['udp.dstport'] && event['udp.srcport']) {
+          // used to annotate markup and identify related elements
           event.tuple = `ip.src=${event['ip.src']} AND ip.dst=${event['ip.dst']} AND udp.srcport=${event['udp.srcport']} AND udp.dstport=${event['udp.dstport']}`;
+          // set parent for future decoration
           parent = streamKeyTree[event['ip.dst']][event['ip.src']][event['udp.dstport']][event['udp.srcport']];
+          // used in table components to calculate heights and offsets when expanding/collapsing
+          parent.relatedEvents = parent.relatedEvents + 1;
         } else if (event['ipv6.dst'] && event['ipv6.src'] && event['tcp.dstport'] && event['tcp.srcport']) {
+          // used to annotate markup and identify related elements
           event.tuple = `ipv6.src=${event['ipv6.src']} AND ipv6.dst=${event['ipv6.dst']} AND tcp.srcport=${event['tcp.srcport']} AND tcp.dstport=${event['tcp.dstport']}`;
+          // set parent for future decoration
           parent = streamKeyTree[event['ipv6.dst']][event['ipv6.src']][event['tcp.dstport']][event['tcp.srcport']];
+          // used in table components to calculate heights and offsets when expanding/collapsing
+          parent.relatedEvents = parent.relatedEvents + 1;
         } else if (event['ipv6.dst'] && event['ipv6.src'] && event['udp.dstport'] && event['udp.srcport']) {
+          // used to annotate markup and identify related elements
           event.tuple = `ipv6.src=${event['ipv6.src']} AND ipv6.dst=${event['ipv6.dst']} AND udp.srcport=${event['udp.srcport']} AND udp.dstport=${event['udp.dstport']}`;
+          // set parent for future decoration
           parent = streamKeyTree[event['ipv6.dst']][event['ipv6.src']][event['udp.dstport']][event['udp.srcport']];
+          // used in table components to calculate heights and offsets when expanding/collapsing
+          parent.relatedEvents = parent.relatedEvents + 1;
         } else {
+          // set parent for future decoration
           parent = event;
         }
+
         parent.presentAsParent = true;
 
+        // used in table components to determine when to decorate with icons
+        if (parent.presentAsParent && parent.relatedEvents > 1) {
+          parent.withChildren = true;
+        }
+
+        // used in table components to determine which tooltip to render
         if ((isEmpty(event['session.split']) && isEmpty(parent['session.split'])) && event.sessionId !== parent.sessionId) {
           event.groupedWithoutSplit = true;
         }
 
         if (isEmpty(event['session.split'])) {
           if (event.groupedWithoutSplit) {
+            // floats used to preserve initial ordering of integer indexes
             event.eventIndex = parent.eventIndex + parseFloat(`.00000${new Date(event.time).getTime()}`);
           } else {
             event.eventIndex = parent.eventIndex;
           }
         } else {
+          // floats used to preserve initial ordering of integer indexes
           event.eventIndex = parent.eventIndex + ((event['session.split'] || .9999) * .0001);
         }
       }
@@ -443,6 +476,54 @@ export const nestChildEvents = createSelector(
   }
 );
 
+// calculate position for each event in data set
+// used by table row component to populate top property
+export const expandedAndCollapsedCalculator = createSelector(
+  [nestChildEvents, _eventRelationshipsEnabled, _collapsedTuples],
+  (data, eventRelationshipsEnabled, collapsedTuples) => {
+    const summary = {};
+    const rowHeight = 57;
+    const groupLabelHeight = 28;
+    const groupingSize = 100;
+
+    data?.forEach((event, eventIndex) => {
+      const previousLabelsRendered = parseInt(eventIndex / groupingSize, 10);
+      const parentOfCollapsed = collapsedTuples && collapsedTuples.find((t) => t.tuple === event.tuple);
+      const collapsedChild = parentOfCollapsed && eventRelationshipsEnabled && parentOfCollapsed?.tuple === event.tuple;
+
+      // set default top
+      let top = eventIndex * rowHeight;
+      let topModifier = 0;
+      if (eventRelationshipsEnabled) {
+
+        if (collapsedChild) {
+          // position under parent if tuple matches a collapsed group
+          top = parentOfCollapsed.parentIndex * rowHeight;
+        }
+
+        // update topModifier for any collapsed groups prior to this event
+        topModifier = collapsedTuples && collapsedTuples.reduce((tracker, currentValue) => {
+          const { relatedEvents, parentIndex, tuple } = currentValue;
+          return (parentIndex < eventIndex) && (tuple !== event.tuple) ? tracker + (relatedEvents * rowHeight) : tracker;
+        }, 0) || 0;
+      }
+
+      // set default groupLabelOffset
+      let groupLabelOffset = 0;
+      if (previousLabelsRendered && !collapsedChild) {
+        // update groupLabelOffset based on rendered labels
+        groupLabelOffset = groupLabelHeight * previousLabelsRendered;
+      }
+
+      summary[event.sessionId] = parseInt(previousLabelsRendered ? top - topModifier + groupLabelOffset : top - topModifier, 10);
+    });
+
+
+    return summary;
+  }
+);
+
+// used to enable/disable grouping toggle
 export const eventsHaveSplits = createSelector(
   [nestChildEvents],
   (data) => {

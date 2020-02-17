@@ -4,7 +4,8 @@ import { setupTest } from 'ember-qunit';
 import {
   eventsStartOldest,
   _deriveSort,
-  toggleEventRelationships
+  toggleEventRelationships,
+  toggleSplitSession
 } from 'investigate-events/actions/events-creators';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import ReduxDataHelper from '../../helpers/redux-data-helper';
@@ -182,4 +183,13 @@ module('Unit | Actions | event-creators', function(hooks) {
     const eventsStartOldestThunk = eventsStartOldest();
     eventsStartOldestThunk(downstreamOldestDispatchCreator(assert, asserts, getState), getState);
   });
+
+  test('toggleSplitSession action creator returns proper type', function(assert) {
+    const { type, tuple, relatedEvents, parentIndex } = toggleSplitSession('foo', 'bar', 'baz');
+    assert.equal(type, ACTION_TYPES.TOGGLE_SPLIT_SESSION, 'action has the correct type');
+    assert.equal(tuple, 'foo', 'action has the correct tuple');
+    assert.equal(relatedEvents, 'bar', 'action has the correct relatedEvents');
+    assert.equal(parentIndex, 'baz', 'action has the correct parentIndex');
+  });
+
 });

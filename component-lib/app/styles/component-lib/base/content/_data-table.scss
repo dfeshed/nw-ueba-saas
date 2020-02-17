@@ -125,10 +125,11 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     right: rsa-whitespace(less);
     @include rsa-font(paragraph, small);
     color: text-color(primary, lightest);
-    border-top: 1px solid border-color(primary, dark);
 
     &:hover {
+      .rsa-data-table-body-cell:not([data-visibility=false]) {
         background-color: background-color(primary, darker);
+      }
     }
     &.has-focus,
     &.is-selected,
@@ -170,15 +171,13 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       border-top: 1px solid transparent;
     }
 
-    &.is-search-match {
-      .search-match-text {
-        background: background-color(secondary);
-        color: text-color(primary, lightest);
-      }
+    .search-match-text {
+      background: background-color(secondary);
+      color: text-color(primary, lightest);
     }
 
-    &.is-search-match.is-scroll-match,
-    &.is-search-match.is-selected {
+    &.is-scroll-match,
+    &.is-selected {
       .search-match-text {
         background: background-color(primary, darkest);
         color: text-color(primary, lightest);
@@ -216,6 +215,8 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   &-body-cell {
     padding: rsa-whitespace(less);
     align-items: flex-start;
+    background-color: background-color(primary, darkest);
+    border-top: 1px solid border-color(primary, dark);
 
     br {
       display: none;
@@ -351,11 +352,14 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
   &-load-more {
     position: absolute;
-    top: 100%;
+    top: calc(100% - 1px);
     left: 0;
     right: 0;
     text-align: center;
-    margin: rsa-whitespace();
+    padding: rsa-whitespace();
+    margin: 0 rsa-whitespace(less);
+    @include border-top(1px, solid, primary, dark);
+    @include rsa-layer(controls);
 
     p {
       margin: rsa-whitespace(less) 0 rsa-whitespace();
@@ -371,17 +375,20 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       position: absolute;
       left: 0;
       right: 0;
-      top: 100%;
-      bottom: -28px;
+      top: calc(100% - 1px);
+      bottom: -27px;
       @include rsa-font(header);
       display: flex;
       align-items: center;
       cursor: default;
+      @include rsa-layer(overlay);
+      @include border-top(1px, solid, primary, dark);
 
       .group-label-copy {
         font-weight: bold;
         letter-spacing: .5px;
-        padding: 4px rsa-whitespace(most) 4px rsa-whitespace();
+        margin-top: 2px;
+        padding: 3px rsa-whitespace(most) 4px rsa-whitespace();
         color: text-color(primary, lighter);
         text-transform: uppercase;
         background: linear-gradient(90deg, background-color(primary, dark) 0%, background-color(primary, dark) 75%, background-color(primary, darkest) 100%);

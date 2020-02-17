@@ -22,11 +22,13 @@ import {
   areAllEventsSelected,
   nestChildEvents,
   eventsHaveSplits,
-  SORT_ORDER
+  SORT_ORDER,
+  expandedAndCollapsedCalculator
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 import { hadTextPill, queryNodeValuesForClassicUrl } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { eventsLogsGet } from 'investigate-events/actions/events-creators';
+import { eventsLogsGet, toggleSplitSession } from 'investigate-events/actions/events-creators';
+
 import {
   toggleSelectAllEvents,
   toggleEventSelection,
@@ -75,7 +77,9 @@ const stateToComputed = (state) => {
     queryNodeValuesForClassicUrl: queryNodeValuesForClassicUrl(state),
     summaryValuesForClassicUrl: summaryValuesForClassicUrl(state),
     eventRelationshipsEnabled: state.investigate.eventResults.eventRelationshipsEnabled,
-    eventsHaveSplits: eventsHaveSplits(state)
+    eventsHaveSplits: eventsHaveSplits(state),
+    collapsedTuples: state.investigate.eventResults.collapsedTuples,
+    expandedAndCollapsedCalculator: expandedAndCollapsedCalculator(state)
   };
 };
 
@@ -84,7 +88,8 @@ const dispatchToActions = {
   toggleSelectAllEvents,
   toggleEventSelection,
   setVisibleColumns,
-  setSort
+  setSort,
+  toggleSplitSession
 };
 
 // checkboxes for multiple event selection
@@ -212,9 +217,11 @@ const EventsTableContextMenu = RsaContextMenu.extend({
       const notKeyboardControl = keyCode != 40 && keyCode != 38;
       const checkboxClicked = className.includes('rsa-form-checkbox-label');
       const hasCheckboxChildren = target.getElementsByClassName('rsa-form-checkbox-label');
+      const expandCollapseClicked = className.includes('expand-collapse-children');
       const checkboxWrapperClicked = hasCheckboxChildren && hasCheckboxChildren.length;
       const labelClicked = className.includes('group-label') || className.includes('group-label-copy');
-      if (!labelClicked) {
+
+      if (!labelClicked && !expandCollapseClicked) {
         if (notKeyboardControl && (checkboxClicked || checkboxWrapperClicked)) {
           this.send('toggleEventSelection', event, index);
         } else {
