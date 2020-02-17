@@ -41,12 +41,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
 
     /**
-     * Internal constructor. Requires knowledge of the streamPrefix format, which is an implementation detail.
-     * The current implementation rounds the start time down, and the endTime up. ie.
-     * * <ul>
-     * * <li>2:00 to 3:00 fetches events from 2:00 to 2:59</li>
-     * * <li>2:30 to 3:30 fetches events from 2:00 to 3:59</li>
-     * * </ul>
+     * Internal constructor.
      *
      * @param s3           an AmazonS3Client that is set up with access to the bucket paths provided.
      * @param bucket       the S3 bucket to read from
@@ -72,7 +67,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
         try {
             // if current file is empty
             if (!lineIterator.hasNext() && (fileIterator.hasNext())) {
-                // but we still have remaining files/folders, so iterate to a non-empty file, or to the end
+                // but we still have remaining files, so iterate to a non-empty file, or to the end
                 nextFile();
             }
             return lineIterator.hasNext();
@@ -83,7 +78,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
     }
 
     /**
-     * This method is also responsible for handling the cross-file and cross-folder boundaries regarding iterator setup.
+     * This method is responsible for handling the cross-file boundaries regarding iterator setup.
      *
      * @return the next line of the file iterator
      */
@@ -111,10 +106,10 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
     }
 
     /**
-     * recurse to the next non-empty file, stepping through folders as necessary.
+     * recurse to the next non-empty file.
      */
     private void nextFile() {
-        // remaining files in the current folder
+        // remaining files
         if (fileIterator.hasNext()) {
             lineIterator = getS3Reader(fileIterator.next().getKey());
             // if this file is empty, recurse !
