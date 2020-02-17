@@ -113,6 +113,14 @@ def setBaseUrl(
 ) {
     String baseUrl = "baseurl="
     String osBaseUrl = 'baseurl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/latest/11.5.0.0/OS/'
+    if (env.VERSION == '11.4.0.0') {
+        nwOsBaseUrl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/13632/11.4.0.0/OS/
+        nwRsaosBaseUrl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/13632/11.4.0.0/RSA/
+    }
+    else{
+        nwOsBaseUrl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/latest/11.5.0.0/OS/
+        nwRsaosBaseUrl=http://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/latest/11.5.0.0/RSA/
+    }
     if (rpmBuildPath != '') {
         baseUrl = baseUrl + rpmBuildPath
         println(baseUrl)
@@ -128,7 +136,8 @@ def setBaseUrl(
     if (baseUrlresponsecode == '200') {
         sh "sudo sed -i \"s|.*baseurl=.*|${baseUrl}|g\" /etc/yum.repos.d/tier2-rsa-nw-upgrade.repo"
         sh "sudo sed -i \"s|.*baseurl=.*|${osBaseUrl}|g\" /etc/yum.repos.d/tier2-mirrors.repo"
-        sh "sudo sed -i \"s|enabled=.*|enabled=0|g\" /etc/yum.repos.d/*.repo"
+        sh "sudo sed -i \"s|.*baseurl=.*|${nwOsBaseUrl}|g\" /etc/yum.repos.d/nw-os-base.repo"
+        sh "sudo sed -i \"s|.*baseurl=.*|${nwRsaosBaseUrl}|g\" /etc/yum.repos.d/nw-rsa-base.repo"
         sh "sudo sed -i \"s|enabled=.*|enabled=1|g\" /etc/yum.repos.d/tier2-*.repo"
         sh "OWB_ALLOW_NON_FIPS=on sudo yum clean all"
         sh "sudo rm -rf /var/cache/yum"
