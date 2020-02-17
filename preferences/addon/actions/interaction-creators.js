@@ -40,6 +40,7 @@ export const saveNewPreferences = (preferencesField, preferenceValue) => {
     dispatch({
       type: ACTION_TYPES.SAVE_PREFERENCES,
       payload: preferencesField,
+      preferenceValue,
       promise: savePreferences(preferencesConfig.modelName, preferencesToSave)
     });
   };

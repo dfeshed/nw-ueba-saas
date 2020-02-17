@@ -7,6 +7,81 @@ import CONFIG from 'investigate-events/reducers/investigate/config';
 
 module('Unit | Reducers | data-reducer');
 
+test('Should not update set sort on pref changes before query is executed unless eventTimeSortOrder', function(assert) {
+  const previous = Immutable.from({
+    sortDirection: null,
+    eventAnalysisPreferences: {
+      eventTimeSortOrder: null
+    }
+  });
+
+  const action = {
+    type: ACTION_TYPES.SAVE_PREFERENCES,
+    payload: {
+      eventAnalysisPreferences: {
+        eventTimeSortOrder: 'Ascending'
+      }
+    },
+    meta: {
+      startPayload: 'foo',
+      'redux-pack/LIFECYCLE': 'Ascending'
+    }
+  };
+  const newEndState = reducer(previous, action);
+  assert.equal(newEndState.sortDirection, null);
+  assert.equal(newEndState.eventAnalysisPreferences.eventTimeSortOrder, null);
+});
+
+test('Should not update set sort on pref changes before query is executed unless success', function(assert) {
+  const previous = Immutable.from({
+    sortDirection: null,
+    eventAnalysisPreferences: {
+      eventTimeSortOrder: null
+    }
+  });
+
+  const action = {
+    type: ACTION_TYPES.SAVE_PREFERENCES,
+    payload: {
+      eventAnalysisPreferences: {
+        eventTimeSortOrder: 'Ascending'
+      }
+    },
+    meta: {
+      startPayload: 'eventAnalysisPreferences.eventTimeSortOrder',
+      'redux-pack/LIFECYCLE': 'foo'
+    }
+  };
+  const newEndState = reducer(previous, action);
+  assert.equal(newEndState.sortDirection, null);
+  assert.equal(newEndState.eventAnalysisPreferences.eventTimeSortOrder, null);
+});
+
+test('Should update set sort on pref changes before query is executed', function(assert) {
+  const previous = Immutable.from({
+    sortDirection: null,
+    eventAnalysisPreferences: {
+      eventTimeSortOrder: null
+    }
+  });
+
+  const action = {
+    type: ACTION_TYPES.SAVE_PREFERENCES,
+    payload: {
+      eventAnalysisPreferences: {
+        eventTimeSortOrder: 'Ascending'
+      }
+    },
+    meta: {
+      startPayload: 'eventAnalysisPreferences.eventTimeSortOrder',
+      'redux-pack/LIFECYCLE': 'success'
+    }
+  };
+  const newEndState = reducer(previous, action);
+  assert.equal(newEndState.sortDirection, 'Ascending');
+  assert.equal(newEndState.eventAnalysisPreferences.eventTimeSortOrder, 'Ascending');
+});
+
 test('Should update global preferences', function(assert) {
   const previous = Immutable.from({
     globalPreferences: null
@@ -218,4 +293,3 @@ test('ACTION_TYPES.SET_PREFERENCES will set correct preferences', function(asser
   const result = reducer(initialState, action);
   assert.equal(result.eventAnalysisPreferences.eventTimeSortOrder, 'Descending');
 });
-

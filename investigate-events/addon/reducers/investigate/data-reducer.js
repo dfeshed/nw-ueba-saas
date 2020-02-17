@@ -27,6 +27,23 @@ const _initialState = Immutable.from({
 });
 
 export default handleActions({
+  [ACTION_TYPES.SAVE_PREFERENCES]: (state, action) => {
+    const isEventTimeSortOrder = action.meta.startPayload === 'eventAnalysisPreferences.eventTimeSortOrder';
+    const isSuccess = action.meta['redux-pack/LIFECYCLE'] === 'success';
+    const onLandingPage = !window.location.search.includes('sid');
+
+    if (isEventTimeSortOrder && isSuccess && onLandingPage) {
+      return state.merge({
+        sortDirection: action.payload.eventAnalysisPreferences.eventTimeSortOrder,
+        eventAnalysisPreferences: {
+          eventTimeSortOrder: action.payload.eventAnalysisPreferences.eventTimeSortOrder
+        }
+      });
+    } else {
+      return state;
+    }
+  },
+
   [ACTION_TYPES.UPDATE_SORT]: (state, { sortField, sortDirection, isQueryExecutedBySort }) => {
     if (!sortField) {
       sortField = 'time';

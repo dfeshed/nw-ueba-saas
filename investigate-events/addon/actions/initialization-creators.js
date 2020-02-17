@@ -4,7 +4,6 @@ import { run } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
 
-import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
 import { fetchMetaKeyCache, fetchLanguageAndAliases } from './fetch/dictionaries';
 import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
 import fetchRecentQueries from './fetch/recent-queries';
@@ -627,7 +626,7 @@ export const initializeInvestigate = function(
 
     // 11) Ensure presence of sort params if in query
     // prevents events reload due to setSort as sortField and sortDir refreshModel
-    if (hasMinimumCoreServicesVersionForColumnSorting(getState()) && parsedQueryParams.serviceId && (!parsedQueryParams.sortField || !parsedQueryParams.sortDir)) {
+    if (parsedQueryParams.serviceId && (!parsedQueryParams.sortField || !parsedQueryParams.sortDir)) {
       // 12) Redirect with default sort params if missing
       const { router, currentPath } = lookup('service:-routing');
       const { investigate: { data: { sortDirection, sortField } } } = getState();
