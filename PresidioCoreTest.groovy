@@ -138,7 +138,7 @@ def setBaseUrl(
         sh "sudo sed -i \"s|.*baseurl=.*|${osBaseUrl}|g\" /etc/yum.repos.d/tier2-mirrors.repo"
         sh "sudo sed -i \"s|.*baseurl=.*|${nwOsBaseUrl}|g\" /etc/yum.repos.d/nw-os-base.repo"
         sh "sudo sed -i \"s|.*baseurl=.*|${nwRsaosBaseUrl}|g\" /etc/yum.repos.d/nw-rsa-base.repo"
-        sh "sudo sed -i \"s|enabled=.*|enabled=1|g\" /etc/yum.repos.d/tier2-*.repo"
+        sh "sudo sed -i \"s|enabled=.*|enabled=1|g\" /etc/yum.repos.d/*.repo"
         sh "OWB_ALLOW_NON_FIPS=on sudo yum clean all"
         sh "sudo rm -rf /var/cache/yum"
     } else {
