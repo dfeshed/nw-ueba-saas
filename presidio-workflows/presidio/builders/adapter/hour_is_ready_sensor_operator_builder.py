@@ -37,5 +37,5 @@ class HourIsReadySensorOperatorBuilder(LoggingMixin):
                                          command=self._sensor_command,
                                          task_id=task_id,
                                          schema=self.schema,
-                                         retries=99999,
-                                         retry_delay=timedelta(minutes=1))
+                                         fixed_duration_strategy=timedelta(hours=1),
+                                         run_clean_command_before_retry=False)
