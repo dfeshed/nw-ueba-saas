@@ -16,7 +16,7 @@ public class S3Shellcommands implements CommandMarker {
     @Autowired
     private NWGatewayService nwGatewayService;
 
-    @CliCommand(value = "hourIsReady", help = "clean output documents up to specified date")
+    @CliCommand(value = "hourIsReady", help = "check if hour is ready for reading")
     public void hourIsReady(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time bigger than specified start time will be processed") final Instant startTime,
 

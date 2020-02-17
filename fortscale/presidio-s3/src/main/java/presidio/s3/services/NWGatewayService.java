@@ -1,9 +1,6 @@
 package presidio.s3.services;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.PredefinedClientConfigurations;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
@@ -25,8 +22,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 
 /**
- * A netwitness gateway service that supply services over s3. It makes the following assumption:
- * the S3 keys are in the following format: <tenant>/NetWitness/<account>/<schema>/<region>/year/month/day/<Account>_<Region>_<Application>_<Timestamp>_<Unique>.json.gz
+ * A netwitness gateway service that supply services over s3.
  */
 
 public class NWGatewayService {
@@ -37,14 +33,16 @@ public class NWGatewayService {
     private String tenant;
     private String account;
     private String region;
+    private AmazonS3 s3;
 
     private Comparator<S3ObjectSummary> defaultS3ObjectSummaryComparator = Comparator.comparing(S3ObjectSummary::getKey);
 
-    public NWGatewayService(String bucketName, String tenant, String account, String region) {
+    public NWGatewayService(String bucketName, String tenant, String account, String region, AmazonS3 s3) {
         this.bucketName = bucketName;
         this.tenant = tenant;
         this.account = account;
         this.region = region;
+        this.s3 = s3;
     }
 
     /**
@@ -58,9 +56,6 @@ public class NWGatewayService {
      * @throws InterruptedException if the current thread is interrupted
      */
     public boolean hourIsReady(Instant startDate, Instant endDate, String schema) throws InterruptedException {
-        ClientConfiguration clientConfiguration = PredefinedClientConfigurations.defaultConfig();
-        clientConfiguration.setMaxErrorRetry(10);
-        AmazonS3 s3 = AmazonS3ClientBuilder.standard().withClientConfiguration(clientConfiguration).build();
         endDate = endDate.truncatedTo(HOURS).plusSeconds(60);
         String prefix = getPrefix(tenant, account, schema, region, endDate);
         ListObjectsV2Result objects = getListOfObjectsFromS3ByPrefix(s3, prefix);
@@ -88,13 +83,12 @@ public class NWGatewayService {
     /**
      * Generates objects iterator for given start time, end time and schema.
      *
-     * @param s3        an AmazonS3 that is set up with access to the bucket paths provided.
      * @param startDate the start time to iterator on.
      * @param endDate   the end time to iterate on.
      * @param schema    the data schema
      * @return list of objects.
      */
-    public Iterator<S3ObjectSummary> getObjectsByRange(AmazonS3 s3, Instant startDate, Instant endDate, String schema) {
+    public Iterator<S3ObjectSummary> getObjectsByRange(Instant startDate, Instant endDate, String schema) {
         List<S3ObjectSummary> objects = new ArrayList<>(Collections.emptyList());
         List<String> folders = getFolders(startDate, endDate, schema);
         for (String folder : folders) {
