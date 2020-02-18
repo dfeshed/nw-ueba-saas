@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
     private static final int PARTITION_SIZE = 1000;
@@ -49,6 +50,8 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
             processAllIntervals(eventsByInterval, allIntervals, schema);
         });
 
+        Map<Schema, Long> inputCount = eventsBySchema.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Long.valueOf(e.getValue().size())));
+        assertThat(resultingCount).as("Adapter input / output count mismatch").containsAllEntriesOf(inputCount);
         return resultingCount;
     }
 

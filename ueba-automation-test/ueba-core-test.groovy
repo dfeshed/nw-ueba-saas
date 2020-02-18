@@ -13,7 +13,7 @@ pipeline {
 
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: false, description: '')
-        booleanParam(name: 'DATA_INJECTION', defaultValue: true, description: '')
+        booleanParam(name: 'DATA_INJECTION', defaultValue: false, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
         choice(name: 'NODE_LABEL', choices: ['UEBA01','UEBA02','UEBA03','UEBA04'], description: '')
