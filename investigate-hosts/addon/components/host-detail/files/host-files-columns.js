@@ -88,7 +88,7 @@ const defaultColumns = [
     'field': 'fileProperties.fileStatus',
     'title': 'investigateHosts.detailsColumns.fileStatus',
     'label': 'investigateHosts.detailsColumns.fileStatus',
-    'disableSort': true,
+    'disableSort': false,
     'width': 100
   },
   {
