@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.data.processing;
 
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
@@ -19,15 +20,18 @@ import org.testng.annotations.Test;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static com.rsa.netwitness.presidio.automation.config.AutomationConf.CORE_SCHEMAS_TO_PROCESS;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(AdapterProcessData.class.getName());
-    private static TitlesPrinter ART_GEN = new TitlesPrinter();
+    private List<String> SCHEMAS_TO_PROCESS = AutomationConf.CORE_SCHEMAS_TO_PROCESS.stream().map(String::toLowerCase).collect(toList());
 
     @Autowired
     private AdapterTestManager adapterTestManager;
@@ -61,12 +65,16 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
         startDate = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
         LOGGER.info("startDate=" + startDate + " endDate=" + endDate);
         LOGGER.info("CORE_SCHEMAS_TO_PROCESS = ".concat(String.join(", ", CORE_SCHEMAS_TO_PROCESS)));
+
+        Stream<AdapterTestManager.AdapterRun> adapterRunStream = SCHEMAS_TO_PROCESS.stream()
+                .map(schema -> adapterTestManager.getAdapterRun(startDate, endDate, "hourly", schema));
+
+        adapterRunStream.parallel().forEach(AdapterTestManager.AdapterRun::call);
     }
 
     @Test
     public void adapterFileTest() {
         if (CORE_SCHEMAS_TO_PROCESS.contains("FILE")) {
-            adapterTestManager.process(startDate, endDate, "hourly", "FILE");
             long actualEventsCount = fileRepository.count();
             assertThat(actualEventsCount).as("input_file_raw_events count").isGreaterThan(0);
         }
@@ -75,7 +83,6 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     @Test
     public void adapterAuthenticationTest() {
         if (CORE_SCHEMAS_TO_PROCESS.contains("AUTHENTICATION")) {
-            adapterTestManager.process(startDate, endDate, "hourly", "AUTHENTICATION");
             long actualEventsCount = authenticationRepository.count();
             assertThat(actualEventsCount).as("input_authentication_raw_events count").isGreaterThan(0);
         }
@@ -84,7 +91,6 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     @Test
     public void adapterActiveDirectoryTest() {
         if (CORE_SCHEMAS_TO_PROCESS.contains("ACTIVE_DIRECTORY")) {
-            adapterTestManager.process(startDate, endDate, "hourly", "ACTIVE_DIRECTORY");
             long actualEventsCount = activeDirectoryRepository.count();
             assertThat(actualEventsCount).as("input_active_directory_raw_events count").isGreaterThan(0);
         }
@@ -93,7 +99,6 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     @Test
     public void adapterProcessTest() {
         if (CORE_SCHEMAS_TO_PROCESS.contains("PROCESS")) {
-            adapterTestManager.process(startDate, endDate, "hourly", "PROCESS");
             long actualEventsCount = processRepository.count();
             assertThat(actualEventsCount).as("input_process_raw_events count").isGreaterThan(0);
         }
@@ -102,7 +107,6 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     @Test
     public void adapterRegistryTest() {
         if (CORE_SCHEMAS_TO_PROCESS.contains("REGISTRY")) {
-            adapterTestManager.process(startDate, endDate, "hourly", "REGISTRY");
             long actualEventsCount = registryRepository.count();
             assertThat(actualEventsCount).as("input_registry_raw_events count").isGreaterThan(0);
         }
@@ -111,7 +115,6 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     @Test
     public void adapterTlsTest() {
         if (CORE_SCHEMAS_TO_PROCESS.contains("TLS")) {
-            adapterTestManager.process(startDate, endDate, "hourly", "TLS");
             long actualEventsCount = tlsRepository.count();
             assertThat(actualEventsCount).as("input_tls_raw_events count").isGreaterThan(0);
         }

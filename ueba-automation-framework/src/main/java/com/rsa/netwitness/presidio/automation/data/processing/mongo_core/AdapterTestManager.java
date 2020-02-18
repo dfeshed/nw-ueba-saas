@@ -23,6 +23,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 
 import static com.rsa.netwitness.presidio.automation.config.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
 import static com.rsa.netwitness.presidio.automation.domain.config.Consts.PRESIDIO_DIR;
@@ -109,6 +110,46 @@ public class AdapterTestManager {
                 .as("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
     }
+
+    public AdapterRun getAdapterRun(Instant start, Instant end, String timeFrame, String schema) {
+        return new AdapterRun(start, end, timeFrame, schema);
+    }
+
+    public class AdapterRun implements Callable<Integer> {
+        private final Instant startDate;
+        private final Instant endDate;
+        private final String timeFrame;
+        private final String schema;
+
+        private AdapterRun(Instant startDate, Instant endDate, String timeFrame, String schema) {
+
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.timeFrame = timeFrame;
+            this.schema = schema;
+        }
+
+        @Override
+        public Integer call() {
+            String flumeHome = "export FLUME_HOME=/var/netwitness/presidio/flume/ ; ";
+            String logPath = "/tmp/presidio-adapter_run_" + schema + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
+
+            // Runs adapter for entire events time range at once
+            SshResponse adapterProcess = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(flumeHome + PRESIDIO_ADAPTER_APP,
+                    "run", "--fixed_duration_strategy " + getFixedDuration(timeFrame),
+                    "--start_date " + startDate.toString(), "--end_date " + endDate.toString(), "--schema " + schema,
+                    "> " + logPath);
+
+            printLogIfError(logPath);
+            assertThat(adapterProcess.exitCode)
+                    .as("[" + schema  + "] -- Error exit code. Log: " + logPath)
+                    .isEqualTo(0);
+            return adapterProcess.exitCode;
+        }
+    }
+
+
+
 
     public void processEventsInIntervals(Instant startDate, Instant endDate, ChronoUnit interval, String schema) {
         /** Use this method when there are too much events for processing in one adapter run **/
