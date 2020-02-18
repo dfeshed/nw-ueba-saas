@@ -95,7 +95,7 @@ public class S3_Key {
     //  is the minute after the latest record in the file
     private String toFileTimestamp(Instant interval) {
         LocalDateTime intervalDate = LocalDateTime.ofInstant(interval, UTC);
-        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("YYYYMMDD'T'HHmm'Z'").withZone(UTC);
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmm'Z'").withZone(UTC);
         return DATE_TIME_FORMATTER.format(intervalDate);
     }
 
