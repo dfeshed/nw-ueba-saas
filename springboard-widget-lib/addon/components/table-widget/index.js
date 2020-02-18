@@ -5,7 +5,7 @@ import { tracked } from '@glimmer/tracking';
 
 
 const COLUMN_WIDTH = {
-  'machineIdentity.machineName': '12vw',
+  'machineIdentity.machineName': 190,
   'firstFileName': 190,
   'score': 80
 };

@@ -74,6 +74,9 @@ const getDefaultSpringboard = () => {
                 name: 'Top Risky Files',
                 leadType: 'FILE',
                 leadCount: 25,
+                deepLink: {
+                  location: 'FILE_LIST'
+                },
                 content: [
                   {
                     type: 'chart',
@@ -86,6 +89,10 @@ const getDefaultSpringboard = () => {
                   },
                   {
                     type: 'table',
+                    deepLink: {
+                      location: 'FILE_DETAILS',
+                      params: ['id', 'serviceId']
+                    },
                     columns: ['firstFileName', 'score', 'hostCount'],
                     sort: {
                       keys: ['score'],

@@ -6386,10 +6386,10 @@
     "loading": "fetching the data please wait",
     "view.all": "View All leads",
     "columns": {
-      "machineIdentity.machineName": "Host",
+      "machineIdentity.machineName": "Host Name",
       "score": "Risk Score",
       "machineIdentity.machineOsType": "Operating System",
-      "firstFileName": "File",
+      "firstFileName": "File Name",
       "hostCount": "Host Count",
       "reputationStatus": "Reputation",
       "fileStatus": "File Status",
