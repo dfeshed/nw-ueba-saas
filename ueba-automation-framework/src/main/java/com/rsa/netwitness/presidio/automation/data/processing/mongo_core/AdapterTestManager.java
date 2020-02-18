@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import static com.rsa.netwitness.presidio.automation.config.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
 import static com.rsa.netwitness.presidio.automation.domain.config.Consts.PRESIDIO_DIR;
@@ -134,16 +135,19 @@ public class AdapterTestManager {
             String flumeHome = "export FLUME_HOME=/var/netwitness/presidio/flume/ ; ";
             String logPath = "/tmp/presidio-adapter_run_" + schema + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
-            // Runs adapter for entire events time range at once
-            SshResponse adapterProcess = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(flumeHome + PRESIDIO_ADAPTER_APP,
-                    "run", "--fixed_duration_strategy " + getFixedDuration(timeFrame),
-                    "--start_date " + startDate.toString(), "--end_date " + endDate.toString(), "--schema " + schema,
-                    "> " + logPath);
+            SshResponse adapterProcess = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR)
+                    .withTimeout(15, TimeUnit.MINUTES)
+                    .run(flumeHome + PRESIDIO_ADAPTER_APP, "run",
+                            "--fixed_duration_strategy " + getFixedDuration(timeFrame),
+                            "--start_date " + startDate.toString(),
+                            "--end_date " + endDate.toString(),
+                            "--schema " + schema, "> " + logPath);
 
             printLogIfError(logPath);
             assertThat(adapterProcess.exitCode)
                     .as("[" + schema  + "] -- Error exit code. Log: " + logPath)
                     .isEqualTo(0);
+            LOGGER.info("[" + schema + "] -- Adapter processing finished with exit code = " + adapterProcess.exitCode);
             return adapterProcess.exitCode;
         }
     }

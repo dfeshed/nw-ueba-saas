@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(AdapterProcessData.class.getName());
-    private List<String> SCHEMAS_TO_PROCESS = AutomationConf.CORE_SCHEMAS_TO_PROCESS.stream().map(String::toLowerCase).collect(toList());
+    private List<String> SCHEMAS_TO_PROCESS = AutomationConf.CORE_SCHEMAS_TO_PROCESS.stream().map(String::toUpperCase).collect(toList());
 
     @Autowired
     private AdapterTestManager adapterTestManager;

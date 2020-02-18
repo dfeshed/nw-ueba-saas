@@ -6,10 +6,10 @@ pipeline {
 
         string(name: 'S3_BUCKET', defaultValue: 'presidio-automation-data', description: '')
         string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
-        string(name: 'S3_ACCOUNT', defaultValue: '123456789012', description: '')
+        string(name: 'S3_ACCOUNT', defaultValue: '123456789010', description: '')
 
-        choice(name: 'generator_format', choices: ['MONGO_ADAPTER','S3_JSON_GZIP'], description: '')
-        choice(name: 'pre_processing_configuration_scenario', choices: ['CORE_MONGO','CORE_S3'], description: '')
+        choice(name: 'generator_format', choices: ['S3_JSON_GZIP','MONGO_ADAPTER'], description: '')
+        choice(name: 'pre_processing_configuration_scenario', choices: ['CORE_S3','CORE_MONGO'], description: '')
 
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: false, description: '')
