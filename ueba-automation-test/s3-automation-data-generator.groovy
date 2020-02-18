@@ -1,6 +1,7 @@
 
 pipeline {
     parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         string(name: 'S3_BUCKET', defaultValue: 'presidio-automation-data', description: '')
         string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
