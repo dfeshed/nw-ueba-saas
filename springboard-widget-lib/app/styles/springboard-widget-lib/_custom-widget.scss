@@ -9,6 +9,9 @@
       background-color: rgba(1,87,155,0.4);
       padding: 0 0 0 rsa-whitespace(less);
     }
+    .rsa-data-table-body-cell:not([data-visibility=false]) {
+      background-color: transparent;
+    }
     .rsa-data-table-header-cell {
       .column-title {
         max-width: calc(100% - 10px);
