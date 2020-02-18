@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
-    private static final int PARTITION_SIZE = 10000;
+    private static final int PARTITION_SIZE = 1000;
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(S3JsonGzipProducer.class);
 
     private final EventFormatter<NetwitnessEvent, String> formatter;
@@ -84,6 +84,8 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
                 resultingCount.putIfAbsent(schema, 0L);
                 resultingCount.computeIfPresent(schema, (s, i) -> i + intervalObj.getTotalUploaded());
             });
+
+            LOGGER.info("Proceeding to the next partition");
         }
 
         LOGGER.info("[" + schema + "] -- " + intervals.size() + " intervals upload is completed.");
