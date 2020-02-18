@@ -1,18 +1,39 @@
 {{#rsa-data-table
-   items=items
+   items=monitorsData
    columnsConfig=columns}}
 
-  {{#rsa-data-table/header as |column|}}
+  {{#rsa-data-table/header currentSort=currentSort as |column|}}
     {{#unless column.disableSort}}
       {{rsa-icon
       name="arrow-down-7"
+      click=(action "sort" column)
       class="sort"}}
     {{/unless}}
-    {{column.title}}
+    {{#if column.headerComponentClass}}
+      <label class="rsa-form-checkbox-label {{if allItemsChecked "checked"}}">
+        {{rsa-form-checkbox checked=allItemsChecked change=(action "toggleAllItemSelection" items)}}
+      </label>
+    {{else}}
+      {{column.title}}
+    {{/if}}
   {{/rsa-data-table/header}}
 
   {{#rsa-data-table/body as |item index column|}}
-    {{rsa-data-table/body-cell item=item column=column}}
+    {{#if column.componentClass}}
+      {{#rsa-data-table/body-cell item=item column=column}}
+        <label class="rsa-form-checkbox-label {{if allItemsChecked "checked"}}">
+          {{rsa-form-checkbox checked=allItemsChecked change=(action "toggleItemSelection" item)}}
+        </label>
+      {{/rsa-data-table/body-cell}}
+    {{else if (eq column.field "suppressionConfigured")}}
+      {{#if (get item column.field)}}
+        {{rsa-icon name="check-2" class="rsa-green-color"}}
+      {{else}}
+        <span class="suppression-not-applied">--</span>
+      {{/if}}
+    {{else}}
+      {{rsa-data-table/body-cell item=item column=column class="cell-alignment"}}
+    {{/if}}
   {{/rsa-data-table/body}}
 
 {{/rsa-data-table}}

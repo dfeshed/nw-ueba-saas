@@ -41,4 +41,14 @@ export default class DataHelper {
     _set(this.state, 'monitors', item);
     return this;
   }
+
+  isError(item) {
+    _set(this.state, 'isError', item);
+    return this;
+  }
+
+  isMonitorLoading(item) {
+    _set(this.state, 'isMonitorLoading', item);
+    return this;
+  }
 }

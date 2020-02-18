@@ -40,12 +40,13 @@ module('Integration | Component | hw-list', function(hooks) {
     revertPatch();
   });
 
-  test('hw-table component renders', async function(assert) {
+  test('hw-list component renders', async function(assert) {
 
-    new ReduxDataHelper(setState).monitors(monitors);
+    new ReduxDataHelper(setState).monitors(monitors).build();
     await render(hbs`{{hw-list}}`);
-
     assert.equal(findAll('.hw-list').length, 1, 'health wellness list is rendered');
+    assert.equal(findAll('.action-bar').length, 1, 'action-bar is rendered');
+    assert.equal(findAll('.hw-table').length, 1, 'table is rendered');
 
   });
 

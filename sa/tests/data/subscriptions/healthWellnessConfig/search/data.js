@@ -10,7 +10,7 @@ export default [
   {
     'id': 'q6_IgW0B0ftGE-k_s-5s',
     'severity': 1,
-    'monitor': 'Archiver Aggregation Stopped',
+    'monitor': 'Brchiver Aggregation Stopped',
     'trigger': 'Aggregation Stopped',
     'enabled': true,
     'suppressionConfigured': false
@@ -18,7 +18,7 @@ export default [
   {
     'id': 'q6_IgW0B0ftGE-k_s-5s',
     'severity': 1,
-    'monitor': 'Archiver Aggregation Stopped',
+    'monitor': 'Crchiver Aggregation Stopped',
     'trigger': 'Aggregation Stopped',
     'enabled': true,
     'suppressionConfigured': false

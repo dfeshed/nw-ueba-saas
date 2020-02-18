@@ -10,6 +10,11 @@ const dispatchToActions = {
   getMonitorList
 };
 
+const stateToComputed = ({ hw }) => ({
+  isError: hw.isError,
+  isDataLoading: hw.isMonitorLoading
+});
+
 @classic
 @classNames('hw-container')
 @templateLayout(layout)
@@ -26,6 +31,6 @@ class HWContainer extends Component {
 
 }
 
-export default connect(undefined, dispatchToActions)(HWContainer);
+export default connect(stateToComputed, dispatchToActions)(HWContainer);
 
 

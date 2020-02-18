@@ -52,4 +52,18 @@ module('Unit | Reducers | health-wellness', function(hooks) {
     assert.equal(newState.monitors.length, 3);
   });
 
+  test('The GET_MONITORS sets the error state', function(assert) {
+
+    const previous = Immutable.from({
+      isError: false
+    });
+
+    const newAction = makePackAction(LIFECYCLE.FAILURE, {
+      type: ACTION_TYPES.GET_MONITORS
+    });
+
+    const newState = reducer(previous, newAction);
+    assert.equal(newState.isError, true);
+  });
+
 });

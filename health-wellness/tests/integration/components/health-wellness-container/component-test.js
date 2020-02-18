@@ -44,11 +44,39 @@ module('Integration | Component | health-wellness-container', function(hooks) {
 
   test('health-wellness-container component renders', async function(assert) {
 
-    new ReduxDataHelper(setState).monitors(monitors);
     await render(hbs`{{health-wellness-container}}`);
 
     assert.equal(findAll('.hw-container').length, 1, 'health wellness container is rendered');
-    assert.equal(findAll('.hw-list').length, 1, 'health wellness table is rendered');
 
   });
+
+  test('Loading is displayed', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .isMonitorLoading(true)
+      .build();
+    await render(hbs`{{health-wellness-container}}`);
+    assert.equal(findAll('.rsa-loader').length, 1, 'Loading is rendered');
+  });
+
+  test('Monitors are displayed', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .monitors(monitors)
+      .isMonitorLoading(false)
+      .build();
+    await render(hbs`{{health-wellness-container}}`);
+    assert.equal(findAll('.hw-table').length, 1, 'monitors are rendered');
+  });
+
+  test('Error message is displayed', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .isError(true)
+      .isMonitorLoading(false)
+      .build();
+    await render(hbs`{{health-wellness-container}}`);
+    assert.equal(findAll('.hw-container')[0].innerText, 'Unable to fetch the data', 'Error message is displayed');
+  });
+
 });

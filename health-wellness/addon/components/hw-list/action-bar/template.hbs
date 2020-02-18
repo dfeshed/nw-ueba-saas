@@ -1,0 +1,17 @@
+<hbox>
+  {{#rsa-form-button class="notification-button"}}{{t "health-wellness.actionbar.notification"}}{{/rsa-form-button}}
+  {{#rsa-form-button class="suppression-policy" isDisabled=true}}{{t "health-wellness.actionbar.suppression"}}{{/rsa-form-button}}
+  <hbox class="rsa-button-group pivot-button">
+    <div class="action-divider"/>
+    {{#rsa-form-button}}
+      {{rsa-icon name="expand-6" size="small"}}{{t "health-wellness.actionbar.pivot"}}
+    {{/rsa-form-button}}
+    {{#rsa-form-button class="rsa-split-dropdown" isActive=isExpanded defaultAction=(action "toggleExpand")}}
+      {{rsa-icon name="arrow-down-12"}}
+    {{/rsa-form-button}}
+    {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
+      <li><a>{{t "health-wellness.actionbar.kibanaDashboard"}}</a></li>
+      <li><a>{{t "health-wellness.actionbar.kibanaAlert"}}</a></li>
+    {{/rsa-button-menu}}
+  </hbox>
+</hbox>

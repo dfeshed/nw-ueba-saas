@@ -6395,5 +6395,17 @@
       "fileStatus": "File Status",
       "remediationAction": "Remediation"
     }
+  },
+  "health-wellness": {
+    "actionbar": {
+      "notification": "Notification",
+      "suppression": "Suppression Policy",
+      "pivot": "Pivot to Kibana",
+      "kibanaDashboard": "Kibana Dashboard",
+      "kibanaAlert": "Kibana Alert"
+    },
+    "error": {
+      "serviceOffline" : "Unable to fetch the data"
+    }
   }
 }
