@@ -6273,7 +6273,7 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   test('Hitting ctrl-a/A on while focused on a query pill/freeform pill/text pill/parens selects all pills/parens', async function(assert) {
-    assert.expect(7);
+    assert.expect(8);
     const pD = [
       {
         type: 'open-paren',
@@ -6362,6 +6362,11 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.selectedPillsAndParens).length, 5, 'ctrl-a selects all pills');
 
     assert.ok(selectAllActionSpy.calledTwice, 'The addGuidedPill creator was called twice');
+
+    const state = this.owner.lookup('service:redux').getState();
+    const { investigate: { queryNode: { pillsData } } } = state;
+    const selectedPills = pillsData.filter((p) => p.isSelected === true);
+    assert.equal(selectedPills.length, 5, 'operators are excluded');
   });
 
   test('Hitting ctrl-a/A in empty meta of last new-pill-template selects all pills/parens', async function(assert) {

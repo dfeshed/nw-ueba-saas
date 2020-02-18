@@ -56,7 +56,9 @@ export const selectAllPillsTowardsDirection = (position, direction) => {
 export const selectAllPills = () => {
   return (dispatch, getState) => {
     const { investigate: { queryNode: { pillsData } } } = getState();
-    dispatch(selectGuidedPills({ pillData: pillsData }, true));
+    // remove operators from list of pills to select
+    const pillData = pillsData.filter((p) => !p.type.startsWith('operator-'));
+    dispatch(selectGuidedPills({ pillData }, true));
   };
 };
 

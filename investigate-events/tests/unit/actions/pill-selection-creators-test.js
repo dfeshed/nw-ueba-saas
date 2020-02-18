@@ -99,13 +99,13 @@ module('Unit | Actions | Pill Selection Creators', function(hooks) {
     const done = assert.async();
 
     const getState = () => {
-      return new ReduxDataHelper().pillsDataPopulated().markSelected(['1', '2', '3']).build();
+      return new ReduxDataHelper().pillsDataPopulated().build();
     };
     const { pillsData } = getState().investigate.queryNode;
 
     const thirdDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
-      assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
+      assert.deepEqual(action.payload.pillData, [pillsData[0], pillsData[2]], 'action pillData has the right value');
       done();
     };
     const secondDispatch = (thunk3) => {
