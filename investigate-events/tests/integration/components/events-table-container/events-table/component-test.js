@@ -313,7 +313,7 @@ module('Integration | Component | events-table', function(hooks) {
       .eventThreshold(100000)
       .eventsPreferencesConfig()
       .columnGroups(EventColumnGroups)
-      .eventsQuerySort('time', 'Ascending')
+      .eventsQuerySort('time', 'Unsorted')
       .sortableColumns(['time', 'size'])
       .language([{ format: 'TimeT', metaName: 'time', flags: -2147482605 }, { format: 'Int', metaName: 'size', flags: -2147482605 }])
       .eventCount(100000)
@@ -321,9 +321,10 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table}}`);
     assert.notOk(find('h2[title=\'Collection Time\'] .js-move-handle')); // Collection time is not draggable
-    assert.equal(findAll('.rsa-data-table-header-row .sort-indicator .rsa-icon-arrow-up-7').length, 2);
-    assert.equal(findAll('.rsa-data-table-header-row .sort-indicator.active .rsa-icon-arrow-up-7').length, 1);
-    assert.equal(findAll('.rsa-data-table-header-row .sort-indicator:not(.active) .rsa-icon-arrow-up-7').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator .rsa-icon-arrow-up-8').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator .rsa-icon-arrow-down-8').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator:not(.active) .rsa-icon-arrow-up-8').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator:not(.active) .rsa-icon-arrow-down-8').length, 1);
   });
 
   test('event table is displayed with expected ascending sort controls', async function(assert) {
@@ -341,7 +342,10 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table}}`);
     assert.ok(find('h2[title=\'Summary\'] .disabled-sort')); // Summary should always be disabled
-    assert.ok(find('.rsa-data-table-header-row .sort-indicator.active .rsa-icon-arrow-up-7'));
+    assert.equal(findAll('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator .rsa-icon-arrow-up-8').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator .rsa-icon-arrow-down-8').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator.active .rsa-icon-arrow-up-8').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator:not(.active) .rsa-icon-arrow-down-8').length, 1);
   });
 
   test('event table header has sort disabled while streaming', async function(assert) {
@@ -376,10 +380,13 @@ module('Integration | Component | events-table', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
-    assert.ok(find('.rsa-data-table-header-row .sort-indicator.active .rsa-icon-arrow-down-7'));
+    assert.equal(findAll('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator .rsa-icon-arrow-up-8').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator .rsa-icon-arrow-down-8').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator:not(.active) .rsa-icon-arrow-up-8').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator.active .rsa-icon-arrow-down-8').length, 1);
   });
 
-  test('event table sort controls calls _toggleSort', async function(assert) {
+  test('event table sort controls calls _toggleSort, clicking descending when ascending is active', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState)
       .selectedColumnGroup('SUMMARY')
@@ -403,8 +410,36 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table _toggleSort=_toggleSort}}`);
 
-    click('.rsa-data-table-header-row .sort-indicator.active');
+    click('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator:not(.active)');
   });
+
+  test('event table sort controls calls _toggleSort, clicking ascending when ascending is active', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .selectedColumnGroup('SUMMARY')
+      .hasRequiredValuesToQuery(true)
+      .language()
+      .eventThreshold(100000)
+      .eventsPreferencesConfig()
+      .columnGroups(EventColumnGroups)
+      .sortableColumns()
+      .eventsQuerySort('time', 'Ascending')
+      .eventCount(100000)
+      .language([{ format: 'TimeT', metaName: 'time', flags: -2147482605 }])
+      .eventResults()
+      .eventResultsStatus('complete')
+      .build();
+
+    this.set('_toggleSort', (field, dir) => {
+      assert.equal(field, 'time');
+      assert.equal(dir, 'Unsorted');
+    });
+
+    await render(hbs`{{events-table-container/events-table _toggleSort=_toggleSort}}`);
+
+    click('.rsa-data-table-header-row  h2[title=\'Collection Time\'] .sort-indicator.active');
+  });
+
 
   test('event table sort controls doesnt call _toggleSort if already sorting', async function(assert) {
     assert.expect(0);

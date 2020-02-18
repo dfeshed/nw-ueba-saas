@@ -7,6 +7,24 @@
     .sort-indicator {
       display: none;
     }
+    .sort-indicator-container {
+      .asc {
+        top: 2px;
+      }
+      .desc {
+        bottom: 2px;
+      }
+      .rsa-icon {
+        font-size: 1.2em;
+      }
+      span {
+        height: 50%;
+        overflow: hidden;
+      }
+      i {
+        height: 100%
+      }
+    }
 
     &:hover {
       .sort-indicator {
@@ -334,6 +352,26 @@
           &:hover {
             cursor: pointer;
           }
+        }
+        .sort-indicator-container {
+          .sort-indicator {
+            color: text-color(primary, lighter);
+            &.active {
+              color: text-color(secondary);
+              display: inline-block;
+            }
+            &.show {
+              display: inline-block;
+              color: text-color(primary);
+            }
+            &.hover {
+              color: text-color(primary, lightest);
+            }
+            &.disabled {
+              color: text-color(primary);
+            }
+          }
+
         }
 
         &:first-of-type {

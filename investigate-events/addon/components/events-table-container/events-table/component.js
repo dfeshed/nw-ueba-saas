@@ -119,6 +119,8 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   eventBus: service(),
   i18n: service(),
   groupingSize: 100,
+  asc: SORT_ORDER.ASC,
+  desc: SORT_ORDER.DESC,
 
   // closing recon with a horizontally scrolled table results in a slow scroll to x: 0
   // this is a default browser scroll that occurs because of the element size change
@@ -231,13 +233,13 @@ const EventsTableContextMenu = RsaContextMenu.extend({
       }
     },
 
-    toggleSort(field) {
+    toggleSort(field, sortDir) {
       if (this.get('status') !== 'sorting') {
         let sortDirection;
-        if (this.get('sortField') === field && this.get('sortDirection') === SORT_ORDER.ASC) {
-          sortDirection = SORT_ORDER.DESC;
+        if (this.get('sortField') === field && this.get('sortDirection') === sortDir) {
+          sortDirection = SORT_ORDER.NO_SORT;
         } else {
-          sortDirection = SORT_ORDER.ASC;
+          sortDirection = sortDir;
         }
 
         this._toggleSort(field, sortDirection);

@@ -56,19 +56,45 @@
             {{/rsa-content-tethered-panel-trigger}}
           {{else if (contains column.field sortableColumns)}}
             {{#if (eq sortField column.field)}}
-              {{#if (eq sortDirection "Ascending")}}
-                <span class="sort-indicator active" {{action "toggleSort" column.field}}>
-                  {{rsa-icon name="arrow-up-7" size="small"}}
-                </span>
+              {{#if (eq sortDirection asc)}}
+                <div class="sort-indicator-container">
+                  <span class="sort-indicator asc active" {{action "toggleSort" column.field asc}}>
+                    {{rsa-icon name="arrow-up-8" size="small"}}
+                  </span>
+                  <span class="sort-indicator desc show" {{action "toggleSort" column.field desc}}>
+                    {{rsa-icon name="arrow-down-8" size="small"}}
+                  </span> 
+                </div>               
               {{else}}
-                <span class="sort-indicator active" {{action "toggleSort" column.field}}>
-                  {{rsa-icon name="arrow-down-7" size="small"}}
-                </span>
+                {{#if (eq sortDirection desc)}}
+                  <div class="sort-indicator-container">
+                    <span class="sort-indicator asc show" {{action "toggleSor" column.field asc}}>
+                      {{rsa-icon name="arrow-up-8" size="small"}}
+                    </span>
+                    <span class="sort-indicator desc active" {{action "toggleSort" column.field desc}}>
+                      {{rsa-icon name="arrow-down-8" size="small"}}
+                    </span>
+                  </div>
+                {{else}}
+                  <div class="sort-indicator-container">
+                    <span class="sort-indicator asc" {{action "toggleSort" column.field asc}}>
+                      {{rsa-icon name="arrow-up-8" size="small"}}
+                    </span>
+                    <span class="sort-indicator desc" {{action "toggleSort" column.field desc}}>
+                      {{rsa-icon name="arrow-down-8" size="small"}}
+                    </span>
+                  </div>
+                {{/if}}
               {{/if}}
             {{else}}
-              <span class="sort-indicator" {{action "toggleSort" column.field}}>
-                {{rsa-icon name="arrow-up-7" size="small"}}
-              </span>
+              <div class="sort-indicator-container">
+                <span class="sort-indicator asc" {{action "toggleSort" column.field asc}}>
+                  {{rsa-icon name="arrow-up-8" size="small"}}
+                </span>
+                <span class="sort-indicator desc" {{action "toggleSort" column.field desc}}>
+                  {{rsa-icon name="arrow-down-8" size="small"}}
+                </span>
+              </div>
             {{/if}}
 
             {{#if (eq column.field "time")}}
