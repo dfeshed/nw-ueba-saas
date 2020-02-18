@@ -31,9 +31,6 @@ pipeline {
         }
 
         stage('Generate data') {
-            when {
-                expression { return params.DATA_INJECTION }
-            }
             steps {
                 runSuiteXmlFile('core/CoreDataInjection.xml')
             }
