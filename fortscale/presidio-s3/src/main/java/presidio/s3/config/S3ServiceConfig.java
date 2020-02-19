@@ -29,8 +29,7 @@ public class S3ServiceConfig {
     @Value("${aws.region}")
     private String region;
 
-    @Bean
-    public AmazonS3 amazonS3() {
+    private AmazonS3 amazonS3() {
         ClientConfiguration clientConfiguration = PredefinedClientConfigurations.defaultConfig();
         clientConfiguration.setMaxErrorRetry(10);
         return AmazonS3ClientBuilder.standard().withClientConfiguration(clientConfiguration).build();

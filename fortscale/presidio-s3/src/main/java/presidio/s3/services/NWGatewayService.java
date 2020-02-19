@@ -45,7 +45,7 @@ public class NWGatewayService {
 
         while (true) {
             if (System.currentTimeMillis() < endTimeMillis) {
-                if (isHourReady(endDate, schema, this.bucketName, this.tenant, this.account, this.region, this.s3)){
+                if (isHourReady(endDate, schema, bucketName, tenant, account, region, s3)){
                 logger.info("Hour {} is ready!.", endDate);
                 return true;
                 }

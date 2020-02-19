@@ -40,6 +40,8 @@ class AdapterOperatorBuilder(LoggingMixin):
 
         task_sensor_service.add_task_sequential_sensor(adapter_operator)
 
-        hour_is_ready_sensor = HourIsReadySensorOperatorBuilder(self.schema).build(dag)
+        # 60 * 60 * 24 * 7 -> 1 week
+        hour_is_ready_sensor = HourIsReadySensorOperatorBuilder(self.schema, timeout=60 * 60 * 24 * 7,
+                                                                time_to_sleep_in_seconds=60).build(dag)
 
         return hour_is_ready_sensor >> adapter_operator

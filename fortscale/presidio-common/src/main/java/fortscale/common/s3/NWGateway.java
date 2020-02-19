@@ -33,7 +33,7 @@ public class NWGateway {
         for (S3ObjectSummary obj : objects.getObjectSummaries()) {
             result = getS3FileDate(obj, bucketName).compareTo(endDate) >= 0;
             if (result) {
-                logger.info("Hour {} is ready!. found file with key: {}.", endDate, obj.getKey());
+                logger.info("Found file with key: {}.", obj.getKey());
                 return true;
             }
         }

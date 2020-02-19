@@ -8,34 +8,37 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
     ConfigServerConfigurationReaderSingleton
 
 ADAPTER_HOUR_IS_READY_SENSOR_TYPE_CONF_KEY = "components.adapter.hour_is_ready_sensor.type"
-ADAPTER_HOUR_IS_READY_SENSOR_TYPE_DEFAULT_VALUE = "on_prem"
+ADAPTER_HOUR_IS_READY_SENSOR_TYPE_DEFAULT_VALUE = "HourIsReadyAccordingToSystemTimeSensorOperator"
 ADAPTER_HOUR_IS_READY_SENSOR_COMMAND_CONF_KEY = "components.adapter.hour_is_ready_sensor.command"
-ADAPTER_HOUR_IS_READY_SENSOR_COMMAND_DEFAULT_VALUE = "hourIsReady"
+ADAPTER_HOUR_IS_READY_SENSOR_COMMAND_DEFAULT_VALUE = "waitTillHourIsReady"
 
 
 class HourIsReadySensorOperatorBuilder(LoggingMixin):
 
-    def __init__(self, schema):
+    def __init__(self, schema, timeout, time_to_sleep_in_seconds):
         self.schema = schema
         conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
         self._sensor_type = conf_reader.read(ADAPTER_HOUR_IS_READY_SENSOR_TYPE_CONF_KEY,
                                              ADAPTER_HOUR_IS_READY_SENSOR_TYPE_DEFAULT_VALUE)
         self._sensor_command = conf_reader.read(ADAPTER_HOUR_IS_READY_SENSOR_COMMAND_CONF_KEY,
                                                 ADAPTER_HOUR_IS_READY_SENSOR_COMMAND_DEFAULT_VALUE)
+        self.timeout = timeout
+        self.time_to_sleep_in_seconds = time_to_sleep_in_seconds
 
     def build(self, dag):
         task_id = 'adapter_sensor_{}'.format(self.schema)
-        if self._sensor_type == "on_prem":
+        if self._sensor_type == "HourIsReadyAccordingToSystemTimeSensorOperator":
             return HourIsReadyOnPremSensorOperator(dag=dag,
                                                    task_id=task_id,
-                                                   poke_interval=60,  # 1 minute
-                                                   timeout=60 * 60 * 24 * 7,  # 1 week
+                                                   poke_interval=self.time_to_sleep_in_seconds,
+                                                   timeout=self.timeout,
                                                    schema_name=self.schema)
 
-        elif self._sensor_type == "s3":
+        elif self._sensor_type == "HourIsReadyAccordingToS3NWGatewaySensorOperator":
             return HourIsReadyS3Operator(dag=dag,
                                          command=self._sensor_command,
                                          task_id=task_id,
                                          schema=self.schema,
-                                         fixed_duration_strategy=timedelta(hours=1),
-                                         run_clean_command_before_retry=False)
+                                         run_clean_command_before_retry=False,
+                                         timeout=self.timeout,
+                                         time_to_sleep_in_seconds=self.time_to_sleep_in_seconds)
