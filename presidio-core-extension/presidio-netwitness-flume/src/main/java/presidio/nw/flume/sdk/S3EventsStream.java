@@ -6,10 +6,10 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import fortscale.common.general.Schema;
+import fortscale.common.s3.NWGateway;
+import fortscale.utils.s3.S3DataIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import presidio.nw.flume.utils.S3DataIterator;
-import presidio.s3.services.NWGatewayService;
 
 import java.time.Instant;
 import java.util.Iterator;
@@ -57,6 +57,7 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
             Map<String, String> config) {
 
         validateConfiguration(config);
+        validateStartAndEndDate(startDate, endDate);
         String bucket = config.get("bucket");
         String tenant = config.get("tenant");
         String account = config.get("account");
@@ -69,12 +70,8 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
 
         S3DataIterator iterator;
 
-        startDate = startDate.truncatedTo(HOURS);
-        endDate = endDate.minusNanos(1).plusSeconds(3600).truncatedTo(HOURS);
-
         try {
-            NWGatewayService nwGatewayService = new NWGatewayService(bucket, tenant, account, region, s3);
-            Iterator<S3ObjectSummary> objects = nwGatewayService.getObjectsByRange(startDate, endDate, configSchema);
+            Iterator<S3ObjectSummary> objects = NWGateway.getObjectsByRange(startDate, endDate, configSchema, bucket, tenant, account, region, s3);
             iterator = new S3DataIterator(s3, bucket, objects);
         }
         catch (Exception e) {
@@ -97,5 +94,8 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
         requireNonNull(config.get("region"), "'region' is missing in configuration");
     }
 
-
+    private void validateStartAndEndDate(Instant startDate, Instant endDate){
+        if (!startDate.truncatedTo(HOURS).equals(startDate)) throw new RuntimeException("start time must be hour on the hour.");
+        if (!endDate.truncatedTo(HOURS).equals(endDate)) throw new RuntimeException("end time must be hour on the hour.");
+    }
 }
