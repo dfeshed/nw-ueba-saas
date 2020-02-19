@@ -9,7 +9,7 @@ pipeline {
         string(name: 'S3_ACCOUNT', defaultValue: '123456789010', description: '')
 
         choice(name: 'generator_format', choices: ['S3_JSON_GZIP','MONGO_ADAPTER'], description: '')
-        choice(name: 'pre_processing_configuration_scenario', choices: ['E2E_S3','E2E_MONGO'], description: '')
+        choice(name: 'pre_processing_configuration_scenario', choices: ['E2E_BROKER','E2E_MONGO'], description: '')
 
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: false, description: '')
