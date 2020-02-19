@@ -109,9 +109,10 @@ def runSuiteXmlFile(String suiteXmlFile) {
 }
 
 def cleanUebaDBs() {
+    println "Going to resolve DB Host"
     def dbIpSearch = sh(script: "curl http://localhost:8888/application-null.properties -s | grep mongo.db.host.name", returnStdout: true).trim() as String
     def dbIp = dbIpSearch.split()[1]
-
+    println dbIp
     sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/cleanup_app.sh $VERSION $env.OLD_UEBA_RPMS"
     sh(script: "sshpass -p \"netwitness\" ssh root@${dbIp} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/cleanup_db.sh $VERSION $env.OLD_UEBA_RPM", returnStatus: true)
 }

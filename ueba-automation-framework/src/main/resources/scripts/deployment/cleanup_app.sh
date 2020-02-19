@@ -8,7 +8,7 @@ OLD_RPM_VERSION=`echo $OLD_RPM_VERSION | sed 's/[\.]//g'`
 NEW_RPM_VERSION=`echo $NEW_RPM_VERSION | sed 's/[\.]//g'`
 
 cleanningAirflowState(){
-#echo "%%%%%%%%%%%% Cleanning Airflow State %%%%%%%%%%%%"
+echo "############## cleanningAirflowState started ##############"
 rm -f /etc/netwitness/presidio/configserver/configurations/airflow/workflows-default.json
 rm -f /etc/netwitness/presidio/configserver/configurations/application-presidio.json
 source /etc/sysconfig/airflow
@@ -23,15 +23,20 @@ if [[ "$NEW_RPM_VERSION" -lt 11400 ]]&&[[  "$OLD_RPM_VERSION" -ge 11400  ]]; the
 fi
 airflow resetdb -y
 python -c "from presidio.charts import deploy_charts; deploy_charts.deploy_charts()"
+echo "############## cleanningAirflowState finished ##############"
 }
 
 cleanningFlumePropetrieFiles(){
+echo "############## cleanningFlumePropetrieFiles started ##############"
 #echo "cleanningFlumePropetrieFiles"
 cd /var/netwitness/presidio/flume/conf/adapter/
 rm -f file_* authentication_* active_directory_*  registry_*  process_* tls_*
+
+echo "############## cleanningFlumePropetrieFiles finished ##############"
 }
 
 cleanningLogs(){
+echo "############## cleanningLogs started ##############"
 if [ "$( ls -a /var/log/netwitness/presidio/3p/airflow/logs/*flow*)" ]; then
 	#echo "Cleaning Airflow Logs"
 	rm -rf /var/log/netwitness/presidio/3p/airflow/logs/*flow*
@@ -42,6 +47,7 @@ if [ "$( ls -a /tmp/presidio*.log)" ]; then
 	#echo "Cleaning Test Logs"
 	rm -f /tmp/presidio*.log
 fi
+echo "############## cleanningLogs finished ##############"
 }
 
 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DBs & Logs Cleaning %%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
