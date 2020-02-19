@@ -15,7 +15,8 @@ public class PreProcessingConfigScenarioFactory {
                 new E2eMongoConfigScenario(adapterTestManager, startDate),
                 new E2eBrokerConfigScenario(adapterTestManager, startDate),
                 new CoreMongoConfigScenario(adapterTestManager, startDate),
-                new S3CoreConfigScenario(adapterTestManager, startDate)
+                new S3CoreConfigScenario(adapterTestManager, startDate),
+                new S3_E2E_ConfigScenario(adapterTestManager, startDate)
         );
     }
 

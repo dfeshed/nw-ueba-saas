@@ -285,6 +285,16 @@ public class AdapterTestManager {
         assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
+    public void setS3E2EConfigurationForAdapterAndTransformer() {
+        URL url = this.getClass().getClassLoader()
+                .getResource("scripts/setS3_E2E_InputConfiguration.sh");
+
+        File file = new File(Objects.requireNonNull(url).getFile());
+        String command = "sh " + file.getAbsolutePath();
+        SshResponse p = sshHelper.uebaHostExec().run(command);
+        assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
+    }
+
     public void setBrokerConfigurationForAdapterAndTransformer() {
         URL url = this.getClass().getClassLoader()
                 .getResource("scripts/setBrokerInputConfiguration.sh");
