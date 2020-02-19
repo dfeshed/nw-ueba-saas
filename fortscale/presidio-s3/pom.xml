@@ -13,7 +13,7 @@
     <version>11.5.0-0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
-        <mainClass>presidio.s3.FortscaleS3Application</mainClass>
+        <mainClass>presidio.s3.S3NWGatewayOutputApplication</mainClass>
     </properties>
 
     <dependencies>

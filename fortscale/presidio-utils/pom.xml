@@ -227,6 +227,12 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.11.699</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

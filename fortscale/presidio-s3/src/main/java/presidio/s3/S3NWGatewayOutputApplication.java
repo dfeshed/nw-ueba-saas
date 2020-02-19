@@ -11,7 +11,7 @@ import java.util.List;
 
 @SpringBootApplication
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {"fortscale.*", "presidio.*"}))
-public class FortscaleS3Application {
+public class S3NWGatewayOutputApplication {
 
     public static void main(String[] args) {
         List<Class> configurationClasses = new ArrayList<>();
