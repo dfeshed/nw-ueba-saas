@@ -124,11 +124,17 @@
         <jedis.version>2.9.0</jedis.version>
         <spring-data-redis.version>2.1.0.RELEASE</spring-data-redis.version>
         <apache-tomcat.version>9.0.24</apache-tomcat.version>
+        <spring-cloud-config-aws-kms.version>4.0</spring-cloud-config-aws-kms.version>
         <jackson-dataformat-yaml.version>2.9.9</jackson-dataformat-yaml.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.zalando</groupId>
+                <artifactId>spring-cloud-config-aws-kms</artifactId>
+                <version>${spring-cloud-config-aws-kms.version}</version>
+            </dependency>
             <dependency>
                 <groupId>presidio-test-utils</groupId>
                 <artifactId>presidio-data-generators</artifactId>
