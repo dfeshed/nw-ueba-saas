@@ -7,7 +7,7 @@ import org.springframework.shell.core.CommandMarker;
 import org.springframework.shell.core.annotation.CliCommand;
 import org.springframework.shell.core.annotation.CliOption;
 import org.springframework.stereotype.Component;
-import presidio.s3.services.NWGatewayService;
+import presidio.s3.services.NWGatewayOutput;
 
 import java.time.Instant;
 
@@ -16,7 +16,7 @@ import static java.time.temporal.ChronoUnit.HOURS;
 @Component
 public class S3NWGatewayOutputCli implements CommandMarker {
     @Autowired
-    private NWGatewayService nwGatewayService;
+    private NWGatewayOutput nwGatewayOutput;
 
     @CliCommand(value = "waitTillHourIsReady", help = "check if hour is ready for reading")
     public void waitTillHourIsReady(
@@ -31,7 +31,7 @@ public class S3NWGatewayOutputCli implements CommandMarker {
     ) throws Exception {
         if (!endTime.truncatedTo(HOURS).equals(endTime))
             throw new IllegalArgumentException("the end time must be hour on the hour");
-        nwGatewayService.waitTillHourIsReady(endTime, schema.toString(), timeToSleepInSeconds, timeout);
+        nwGatewayOutput.waitTillHourIsReady(endTime, schema.toString(), timeToSleepInSeconds, timeout);
     }
 
 }

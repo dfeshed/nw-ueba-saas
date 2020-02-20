@@ -125,6 +125,7 @@
         <spring-data-redis.version>2.1.0.RELEASE</spring-data-redis.version>
         <apache-tomcat.version>9.0.24</apache-tomcat.version>
         <jackson-dataformat-yaml.version>2.9.9</jackson-dataformat-yaml.version>
+        <aws-java-sdk-s3.version>1.11.699</aws-java-sdk-s3.version>
     </properties>
 
     <dependencyManagement>

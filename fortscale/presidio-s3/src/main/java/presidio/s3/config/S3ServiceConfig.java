@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.s3.S3NWGatewayOutputCli;
-import presidio.s3.services.NWGatewayService;
+import presidio.s3.services.NWGatewayOutput;
 
 @Configuration
 @Import({
@@ -29,15 +29,15 @@ public class S3ServiceConfig {
     @Value("${aws.region}")
     private String region;
 
-    private AmazonS3 amazonS3() {
+    private AmazonS3 amazonS3(){
         ClientConfiguration clientConfiguration = PredefinedClientConfigurations.defaultConfig();
         clientConfiguration.setMaxErrorRetry(10);
         return AmazonS3ClientBuilder.standard().withClientConfiguration(clientConfiguration).build();
     }
 
     @Bean
-    public NWGatewayService nwGatewayService() {
-        return new NWGatewayService(bucketName, tenant, account, region, amazonS3());
+    public NWGatewayOutput nwGatewayOutput() {
+        return new NWGatewayOutput(bucketName, tenant, account, region, amazonS3());
     }
 
 }

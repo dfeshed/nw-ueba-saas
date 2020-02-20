@@ -1,9 +1,8 @@
-from datetime import timedelta
 from airflow import LoggingMixin
 
-from presidio.operators.adapter.hour_is_ready_s3_operator import HourIsReadyS3Operator
-from presidio.utils.airflow.operators.sensor.hour_is_ready_on_prem_sensor_operator import \
-    HourIsReadyOnPremSensorOperator
+from presidio.operators.adapter.hour_is_ready_s3_operator import HourIsReadyAccordingToS3NWGatewaySensorOperator
+from presidio.utils.airflow.operators.sensor.hour_is_ready_according_to_system_time_sensor_operator import \
+    HourIsReadyAccordingToSystemTimeSensorOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
@@ -28,17 +27,17 @@ class HourIsReadySensorOperatorBuilder(LoggingMixin):
     def build(self, dag):
         task_id = 'adapter_sensor_{}'.format(self.schema)
         if self._sensor_type == "HourIsReadyAccordingToSystemTimeSensorOperator":
-            return HourIsReadyOnPremSensorOperator(dag=dag,
-                                                   task_id=task_id,
-                                                   poke_interval=self.time_to_sleep_in_seconds,
-                                                   timeout=self.timeout,
-                                                   schema_name=self.schema)
+            return HourIsReadyAccordingToSystemTimeSensorOperator(dag=dag,
+                                                                  task_id=task_id,
+                                                                  poke_interval=self.time_to_sleep_in_seconds,
+                                                                  timeout=self.timeout,
+                                                                  schema_name=self.schema)
 
         elif self._sensor_type == "HourIsReadyAccordingToS3NWGatewaySensorOperator":
-            return HourIsReadyS3Operator(dag=dag,
-                                         command=self._sensor_command,
-                                         task_id=task_id,
-                                         schema=self.schema,
-                                         run_clean_command_before_retry=False,
-                                         timeout=self.timeout,
-                                         time_to_sleep_in_seconds=self.time_to_sleep_in_seconds)
+            return HourIsReadyAccordingToS3NWGatewaySensorOperator(dag=dag,
+                                                                   command=self._sensor_command,
+                                                                   task_id=task_id,
+                                                                   schema=self.schema,
+                                                                   run_clean_command_before_retry=False,
+                                                                   timeout=self.timeout,
+                                                                   time_to_sleep_in_seconds=self.time_to_sleep_in_seconds)

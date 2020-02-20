@@ -251,14 +251,14 @@ dags:
         main_class: presidio.input.pre.processing.application.PresidioInputPreProcessingApplication
         xmx: 512
         xms: 512
-    HourIsReadyS3Operator:
+    HourIsReadyAccordingToS3NWGatewaySensorOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-s3.jar
         main_class: presidio.s3.S3NWGatewayOutputApplication
         xmx: 512
         xms: 512
       retry_args:
-        retries: 9999
+        retries: 99999
         retry_delay: 5
         retry_exponential_backoff: True
         max_retry_delay: 300

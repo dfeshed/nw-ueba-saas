@@ -1,32 +1,23 @@
 package presidio.s3.services;
 
 import com.amazonaws.services.s3.AmazonS3;
+import fortscale.common.s3.NWGatewayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.util.concurrent.TimeoutException;
 
-import static fortscale.common.s3.NWGateway.isHourReady;
-
 /**
- * A netwitness gateway service that supply services over s3.
+ * A netwitness gateway output service that supply services over S3.
  */
 
-public class NWGatewayService {
+public class NWGatewayOutput {
 
-    private static final Logger logger = LoggerFactory.getLogger(NWGatewayService.class);
-    private String bucketName;
-    private String tenant;
-    private String account;
-    private String region;
-    private AmazonS3 s3;
+    private static final Logger logger = LoggerFactory.getLogger(NWGatewayOutput.class);
+    private NWGatewayService nwGatewayService;
 
-    public NWGatewayService(String bucketName, String tenant, String account, String region, AmazonS3 s3) {
-        this.bucketName = bucketName;
-        this.tenant = tenant;
-        this.account = account;
-        this.region = region;
-        this.s3 = s3;
+    public NWGatewayOutput(String bucketName, String tenant, String account, String region, AmazonS3 s3) {
+        this.nwGatewayService = new NWGatewayService(bucketName, tenant, account, region, s3);
     }
 
     /**
@@ -45,7 +36,7 @@ public class NWGatewayService {
 
         while (true) {
             if (System.currentTimeMillis() < endTimeMillis) {
-                if (isHourReady(endDate, schema, bucketName, tenant, account, region, s3)){
+                if (nwGatewayService.isHourReady(endDate, schema)){
                 logger.info("Hour {} is ready!.", endDate);
                 return true;
                 }

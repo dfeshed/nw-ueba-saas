@@ -230,8 +230,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.11.699</version>
-            <scope>compile</scope>
+            <version>${aws-java-sdk-s3.version}</version>
         </dependency>
     </dependencies>
 

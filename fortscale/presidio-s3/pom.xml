@@ -32,14 +32,12 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-common</artifactId>
-            <version>11.5.0-0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.11.699</version>
-            <scope>compile</scope>
+            <version>${aws-java-sdk-s3.version}</version>
         </dependency>
     </dependencies>
 

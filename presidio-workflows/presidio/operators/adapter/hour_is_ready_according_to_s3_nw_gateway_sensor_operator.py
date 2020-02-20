@@ -7,7 +7,7 @@ from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBoot
 from presidio.utils.services.time_service import convert_to_utc
 
 
-class HourIsReadyS3Operator(SpringBootJarOperator):
+class HourIsReadyAccordingToS3NWGatewaySensorOperator(SpringBootJarOperator):
 
     ui_color = '#e0d576'  # yellow
     ui_fgcolor = '#000000'  # black
@@ -24,7 +24,7 @@ class HourIsReadyS3Operator(SpringBootJarOperator):
         }
 
         self.log.debug('hour_is_ready_s3 operator. command=%s', command)
-        super(HourIsReadyS3Operator, self).__init__(
+        super(HourIsReadyAccordingToS3NWGatewaySensorOperator, self).__init__(
             command=command,
             java_args=java_args,
             *args,
@@ -44,5 +44,5 @@ class HourIsReadyS3Operator(SpringBootJarOperator):
             'end_date': convert_to_utc(end_date)
         }
 
-        super(HourIsReadyS3Operator, self).update_java_args(java_args)
-        super(HourIsReadyS3Operator, self).execute(context)
+        super(HourIsReadyAccordingToS3NWGatewaySensorOperator, self).update_java_args(java_args)
+        super(HourIsReadyAccordingToS3NWGatewaySensorOperator, self).execute(context)
