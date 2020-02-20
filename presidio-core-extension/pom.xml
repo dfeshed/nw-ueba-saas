@@ -18,6 +18,7 @@
         <!-- NOTE: ALL dependencies' versions should be here -->
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
         <slf4j.version>1.7.25</slf4j.version>
+        <fortscale-core.version>11.5.0-0-SNAPSHOT</fortscale-core.version>
     </properties>
 
 
@@ -97,8 +98,17 @@
                 <artifactId>jul-to-slf4j</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>fortscale</groupId>
+                <artifactId>presidio-utils</artifactId>
+                <version>${fortscale-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fortscale</groupId>
+                <artifactId>presidio-common</artifactId>
+                <version>${fortscale-core.version}</version>
+            </dependency>
         </dependencies>
-
     </dependencyManagement>
 
 </project>
