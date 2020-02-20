@@ -6,7 +6,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import fortscale.common.general.Schema;
-import fortscale.common.s3.NWGateway;
+import fortscale.common.s3.NWGatewayService;
 import fortscale.utils.s3.S3DataIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +71,8 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
         S3DataIterator iterator;
 
         try {
-            Iterator<S3ObjectSummary> objects = NWGateway.getObjectsByRange(startDate, endDate, configSchema, bucket, tenant, account, region, s3);
+            NWGatewayService nwGatewayService = new NWGatewayService(bucket, tenant, account, region, s3);
+            Iterator<S3ObjectSummary> objects = nwGatewayService.getObjectsByRange(startDate, endDate, configSchema);
             iterator = new S3DataIterator(s3, bucket, objects);
         }
         catch (Exception e) {
