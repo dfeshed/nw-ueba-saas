@@ -2,10 +2,7 @@ package presidio.monitoring.sdk.impl.spring;
 
 import fortscale.utils.elasticsearch.config.ElasticsearchConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -29,7 +26,7 @@ import presidio.monitoring.services.export.MetricsExporterElasticImpl;
 
 @Configuration
 @EnableScheduling
-@PropertySource("classpath:monitoring.properties")
+@PropertySources({@PropertySource("classpath:monitoring.properties"),@PropertySource(value = "file:///etc/netwitness/presidio/configserver/configurations/application.properties", ignoreResourceNotFound=true)})
 @EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
 @Import({ElasticsearchConfig.class,MetricsAllIndexesRepositoryConfig.class})
 public class ExternalMonitoringConfiguration {
