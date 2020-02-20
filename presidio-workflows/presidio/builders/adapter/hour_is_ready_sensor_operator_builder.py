@@ -8,7 +8,7 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
     ConfigServerConfigurationReaderSingleton
 
 ADAPTER_HOUR_IS_READY_SENSOR_TYPE_CONF_KEY = "components.adapter.hour_is_ready_sensor.type"
-ADAPTER_HOUR_IS_READY_SENSOR_TYPE_DEFAULT_VALUE = "HourIsReadyAccordingToSystemTimeSensorOperator"
+ADAPTER_HOUR_IS_READY_SENSOR_TYPE_DEFAULT_VALUE = "HourIsReadyAccordingToSystemTime"
 ADAPTER_HOUR_IS_READY_SENSOR_COMMAND_CONF_KEY = "components.adapter.hour_is_ready_sensor.command"
 ADAPTER_HOUR_IS_READY_SENSOR_COMMAND_DEFAULT_VALUE = "waitTillHourIsReady"
 
@@ -27,14 +27,14 @@ class HourIsReadySensorOperatorBuilder(LoggingMixin):
 
     def build(self, dag):
         task_id = 'adapter_sensor_{}'.format(self.schema)
-        if self._sensor_type == "HourIsReadyAccordingToSystemTimeSensorOperator":
+        if self._sensor_type == "HourIsReadyAccordingToSystemTime":
             return HourIsReadyAccordingToSystemTimeSensorOperator(dag=dag,
                                                                   task_id=task_id,
                                                                   poke_interval=self.time_to_sleep_in_seconds,
                                                                   timeout=self.timeout,
                                                                   schema_name=self.schema)
 
-        elif self._sensor_type == "HourIsReadyAccordingToS3NWGatewaySensorOperator":
+        elif self._sensor_type == "HourIsReadyAccordingToS3NWGateway":
             return HourIsReadyAccordingToS3NWGatewaySensorOperator(dag=dag,
                                                                    command=self._sensor_command,
                                                                    task_id=task_id,
