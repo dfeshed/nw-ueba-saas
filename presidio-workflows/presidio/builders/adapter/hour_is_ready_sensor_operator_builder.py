@@ -1,6 +1,7 @@
 from airflow import LoggingMixin
 
-from presidio.operators.adapter.hour_is_ready_s3_operator import HourIsReadyAccordingToS3NWGatewaySensorOperator
+from presidio.operators.adapter.hour_is_ready_according_to_s3_nw_gateway_sensor_operator import \
+    HourIsReadyAccordingToS3NWGatewaySensorOperator
 from presidio.utils.airflow.operators.sensor.hour_is_ready_according_to_system_time_sensor_operator import \
     HourIsReadyAccordingToSystemTimeSensorOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
