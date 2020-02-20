@@ -511,6 +511,11 @@
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${jackson-dataformat-yaml.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-s3</artifactId>
+                <version>${aws-java-sdk-s3.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
