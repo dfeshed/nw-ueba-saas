@@ -6,7 +6,8 @@ pipeline {
 
         string(name: 'S3_BUCKET', defaultValue: 'presidio-automation-data', description: '')
         string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
-        string(name: 'S3_ACCOUNT', defaultValue: '123456789010', description: '')
+        string(name: 'S3_APPLICATION', defaultValue: 'NetWitness', description: '')
+        string(name: 'S3_ACCOUNT', defaultValue: '', description: 'Empty -> take last timestamp')
 
         choice(name: 'generator_format', choices: ['S3_JSON_GZIP','MONGO_ADAPTER'], description: '')
         choice(name: 'pre_processing_configuration_scenario', choices: ['E2E_S3','E2E_MONGO'], description: '')
@@ -27,6 +28,7 @@ pipeline {
         JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64'
         OLD_UEBA_RPMS = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
         SCRIPTS_DIR = '/ueba-automation-framework/src/main/resources/scripts/'
+        S3_ACCOUNT = getAccountID()
     }
 
     stages {
@@ -99,6 +101,24 @@ pipeline {
     }
 }
 
+
+def getAccountID() {
+    withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: 'us-east-1') {
+        String pathToSearch = "s3://${params.S3_BUCKET}/${params.S3_TENANT}/${params.S3_APPLICATION}/"
+        def accountsStr = sh(returnStdout: true, script: "aws s3 ls ${pathToSearch}").trim().replaceAll("PRE", "").replaceAll("\\s", "")
+        println "cli string: " + accountsStr
+        def accounts = accountsStr.split("/")
+        println "collected array size: " + accounts.size()
+
+        def timestamps = new ArrayList<Long>();
+        for (String i : accounts) {
+            timestamps.add(Long.valueOf(i))
+        }
+
+        println "latest timestamp found: " + timestamps.max()
+        return timestamps.max()
+    }
+}
 
 def runSuiteXmlFile(String suiteXmlFile) {
     sh 'pwd'
