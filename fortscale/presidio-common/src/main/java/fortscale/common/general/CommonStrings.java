@@ -11,4 +11,6 @@ public class CommonStrings {
     public static final String COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME = "smart_record_conf_name";
     public static final String COMMAND_LINE_ENTITY_TYPE_FIELD_NAME = "entity_type";
     public static final String CONTEXT_USERID = "userId";
+    public static final String COMMAND_LINE_TIMEOUT = "timeout";
+    public static final String COMMAND_LINE_TIME_TO_SLEEP = "time_to_sleep";
 }
