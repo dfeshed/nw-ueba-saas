@@ -29,6 +29,7 @@ pipeline {
         OLD_UEBA_RPMS = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
         SCRIPTS_DIR = '/ueba-automation-framework/src/main/resources/scripts/'
         S3_ACCOUNT = getAccountID()
+        AWS_REGION = 'us-east-1'
     }
 
     stages {
@@ -41,6 +42,7 @@ pipeline {
                 script { currentBuild.description = "${params.BRANCH_NAME}" }
                 cleanWs()
                 git branch: params.BRANCH_NAME, credentialsId: '67bd792d-ad28-4ebc-bd04-bef8526c3389', url: 'git@github.com:netwitness/ueba-automation-projects.git'
+                editApplicationProperties()
             }
         }
 
@@ -101,9 +103,16 @@ pipeline {
     }
 }
 
+def editApplicationProperties() {
+    def file = "/etc/netwitness/presidio/configserver/configurations/application.properties"
+    sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}editPropertiesFile.sh $file aws.bucket.name ${env.S3_BUCKET}"
+    sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}editPropertiesFile.sh $file aws.tenant ${env.S3_TENANT}"
+    sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}editPropertiesFile.sh $file aws.account ${env.S3_ACCOUNT}"
+    sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}editPropertiesFile.sh $file aws.region ${env.AWS_REGION}"
+}
 
 def getAccountID() {
-    withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: 'us-east-1') {
+    withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: env.AWS_REGION) {
         String pathToSearch = "s3://${params.S3_BUCKET}/${params.S3_TENANT}/${params.S3_APPLICATION}/"
         def accountsStr = sh(returnStdout: true, script: "aws s3 ls ${pathToSearch}").trim().replaceAll("PRE", "").replaceAll("\\s", "")
         println "cli string: " + accountsStr
@@ -123,7 +132,7 @@ def getAccountID() {
 def runSuiteXmlFile(String suiteXmlFile) {
     sh 'pwd'
     sh "echo JAVA_HOME=${env.JAVA_HOME}"
-    withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: 'us-east-1') {
+    withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: env.AWS_REGION) {
         sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS} -Dgenerator_format=${params.generator_format} -Dpre_processing_configuration_scenario=${pre_processing_configuration_scenario}"
     }
 }
