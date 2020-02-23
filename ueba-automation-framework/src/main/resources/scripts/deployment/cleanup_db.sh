@@ -37,6 +37,16 @@ curl -X DELETE http://localhost:9200/_all
 echo "############## cleanningElasticSearch finished ##############"
 }
 
+setupElasticSearch(){
+echo "############## setupElasticSearch started ##############"
+#Init Elasitc
+source /etc/sysconfig/airflow
+source $AIRFLOW_VENV/bin/activate
+OWB_ALLOW_NON_FIPS=on python /var/lib/netwitness/presidio/elasticsearch/init/init_elasticsearch.py --resources_path /var/lib/netwitness/presidio/elasticsearch/init/data/ --elasticsearch_url http://localhost:9200/
+deactivate
+echo "############## setupElasticSearch finished ##############"
+}
+
 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DBs & Logs Cleaning %%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 
 if [[ $(systemctl is-active airflow-scheduler) == 'active' ]]||[[ $(systemctl is-active airflow-webserver) == 'active' ]]; then
@@ -47,5 +57,6 @@ fi
 cleanningMongoCollections
 cleanningElasticSearch
 cleaningRedis
+setupElasticSearch
 
 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DBs & Logs Cleaning Completed Successfully %%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
