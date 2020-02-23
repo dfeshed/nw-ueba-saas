@@ -97,7 +97,7 @@ public class AlertsDataScenario extends DataPreparationBase {
                     .flatMap(e -> e.getIndicators().stream())
                     .flatMap(e -> e.generateEvents().stream());
 
-            Stream<TlsEvent> sessionSplit = new SessionSplitEnrichmentData().generateAll();
+            Stream<TlsEvent> sessionSplit = new SessionSplitEnrichmentData(historicalDaysBack).generateAll();
 
             return Stream.of(alertsScenarios, sessionSplit).flatMap(e -> e);
 
