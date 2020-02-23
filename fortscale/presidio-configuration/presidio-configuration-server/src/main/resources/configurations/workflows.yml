@@ -280,8 +280,7 @@ components:
         min_data_time_range_for_building_models_in_days: 14
   adapter:
     hour_is_ready_sensor:
-      type: HourIsReadyAccordingToS3NWGateway
-      command: waitTillHourIsReady
+      type: HourIsReadyAccordingToSystemTime
 
 retention:
   min_time_to_start_retention_in_days: 2
