@@ -155,14 +155,19 @@
             <artifactId>fortscale-flume-common</artifactId>
             <version>${flume.version}</version>
         </dependency>
-
-
         <dependency>
             <groupId>presidio.flume.core</groupId>
             <artifactId>fortscale-flume-sources</artifactId>
             <version>${flume.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-common</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.rsa.asoc.libraries</groupId>
             <artifactId>record-streams-source-netwitness</artifactId>
@@ -187,24 +192,6 @@
             <artifactId>libpam4j</artifactId>
             <version>1.9</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.rsa.netwitness.cba</groupId>
-            <artifactId>cba-aws-api</artifactId>
-            <version>${cba-aws-api.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-
     </dependencies>
 
 
