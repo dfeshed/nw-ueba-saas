@@ -126,6 +126,7 @@
         <apache-tomcat.version>9.0.24</apache-tomcat.version>
         <spring-cloud-config-aws-kms.version>4.0</spring-cloud-config-aws-kms.version>
         <jackson-dataformat-yaml.version>2.9.9</jackson-dataformat-yaml.version>
+        <aws-java-sdk-s3.version>1.11.699</aws-java-sdk-s3.version>
     </properties>
 
     <dependencyManagement>
@@ -516,6 +517,11 @@
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${jackson-dataformat-yaml.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-s3</artifactId>
+                <version>${aws-java-sdk-s3.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -749,6 +755,7 @@
         <module>presidio-output</module>
         <module>presidio-configuration</module>
         <module>presidio-manager</module>
+        <module>presidio-s3</module>
     </modules>
 
     <distributionManagement>

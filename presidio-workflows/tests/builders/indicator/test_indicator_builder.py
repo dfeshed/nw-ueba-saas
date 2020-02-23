@@ -39,4 +39,4 @@ def test_valid_build():
 
     dag = IndicatorDagBuilder().build(dag)
 
-    assert dag.task_count == 10
+    assert dag.task_count == 11
