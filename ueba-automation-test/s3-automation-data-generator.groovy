@@ -7,14 +7,14 @@ pipeline {
         string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
         string(name: 'S3_ACCOUNT', defaultValue: '', description: 'Empty value -> current millis')
         string(name: 'generator_format', defaultValue: 'S3_JSON_GZIP', description: '')
-        choice(name: 'NODE_LABEL', choices: ['UEBA01','UEBA02','UEBA03','UEBA04'], description: '')
+        choice(name: 'NODE_LABEL', choices: ['master','UEBA01','UEBA02','UEBA03','UEBA04'], description: '')
+        choice(name: 'JAVA_HOME', choices: ['/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.amzn2.x86_64/','/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64'], description: '')
     }
 
     agent { label env.NODE_LABEL }
 
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
-        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64'
         S3_ACCOUNT = getAccountID()
     }
 
@@ -53,7 +53,7 @@ def getAccountID() {
 
 def runSuiteXmlFile(String suiteXmlFile) {
     sh 'pwd'
-    sh "echo JAVA_HOME=${env.JAVA_HOME}"
+    sh "echo JAVA_HOME=$JAVA_HOME"
     withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: 'us-east-1') {
         sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS} -Dgenerator_format=${params.generator_format}"
     }
