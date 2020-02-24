@@ -33,7 +33,7 @@ pipeline {
 
         stage('Generate data') {
             steps {
-                runSuiteXmlFile('core/CoreDataInjection.xml')
+                runSuiteXmlFile('aws/S3_DataInjection.xml')
             }
         }
     }
