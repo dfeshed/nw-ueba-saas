@@ -234,6 +234,7 @@ public class AdapterTestManager {
     }
 
     public void setAdapterConfigurationPropertiesToProductionMode() {
+        LOGGER.info(" +++ setAdapterConfigurationPropertiesToProductionMode started +++");
         backupProductionAdapterConfigurationProperties();
 
         String command =
@@ -245,6 +246,7 @@ public class AdapterTestManager {
                         + "cp -f " + PROD_TLS_CONFIGURATION + " " + TLS_CONFIGURATION;
 
         sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
+        LOGGER.info(" +++ setAdapterConfigurationPropertiesToProductionMode finished +++");
     }
 
     public void setTestMode4EndPointOnly() {
@@ -262,6 +264,7 @@ public class AdapterTestManager {
     }
 
     public void runUebaServerConfigScript(Instant startTime) {
+        LOGGER.info(" +++ runUebaServerConfigScript started +++");
         String broker = ENVIRONMENT_PROPERTIES.brokerIp();
         /** Disabled forwarding **/
         String alertsForwardingFlag = ENVIRONMENT_PROPERTIES.esaAnalyticsServerIp().isBlank() ? "" : "-e";
@@ -273,9 +276,11 @@ public class AdapterTestManager {
 
         SshResponse p = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
         assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
+        LOGGER.info(" +++ runUebaServerConfigScript finished +++");
     }
 
     public void setEngineConfigurationParametersToTestingValues() {
+        LOGGER.info(" +++ setEngineConfigurationParametersToTestingValues started +++");
         URL url = this.getClass().getClassLoader()
                 .getResource("scripts/setConfiguration.sh");
 
@@ -283,9 +288,11 @@ public class AdapterTestManager {
         String command = "sh " + file.getAbsolutePath();
         SshResponse p = sshHelper.uebaHostExec().run(command);
         assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
+        LOGGER.info(" +++ setEngineConfigurationParametersToTestingValues finished +++");
     }
 
     public void setS3E2EConfigurationForAdapterAndTransformer() {
+        LOGGER.info(" +++ setS3E2EConfigurationForAdapterAndTransformer started +++");
         URL url = this.getClass().getClassLoader()
                 .getResource("scripts/setS3_E2E_InputConfiguration.sh");
 
@@ -293,6 +300,7 @@ public class AdapterTestManager {
         String command = "sh " + file.getAbsolutePath();
         SshResponse p = sshHelper.uebaHostExec().run(command);
         assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
+        LOGGER.info(" +++ setS3E2EConfigurationForAdapterAndTransformer finished +++");
     }
 
     public void setBrokerConfigurationForAdapterAndTransformer() {
@@ -316,6 +324,7 @@ public class AdapterTestManager {
     }
 
     public void setBuildingModelsRange(int enriched_records_days, int feature_aggregation_records_days, int smart_records_days) {
+        LOGGER.info(" +++ setBuildingModelsRange started +++");
         String workflows_default_file = "/etc/netwitness/presidio/configserver/configurations/airflow/workflows-default.json";
         ObjectMapper mapper = new ObjectMapper();
         JSONParser parser = new JSONParser();
@@ -350,14 +359,17 @@ public class AdapterTestManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        LOGGER.info(" +++ setBuildingModelsRange finished +++");
     }
 
     public void backupTransformerConfig() {
+        LOGGER.info(" +++ backupTransformerConfig started +++");
         String command = " mkdir -p /var/netwitness/presidio/flume/conf/adapter/transformers/backup " +
                 "&& cp -n /var/netwitness/presidio/flume/conf/adapter/transformers/*.json " +
                 "/var/netwitness/presidio/flume/conf/adapter/transformers/backup/";
 
         sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
+        LOGGER.info(" +++ backupTransformerConfig finished +++");
     }
 
     public void restoreDefaultTransformerConfig() {
