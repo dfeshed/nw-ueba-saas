@@ -359,7 +359,8 @@ public class AdapterTestManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        sshHelper.uebaHostExec().run("cat " + workflows_default_file);
+        SshResponse fileOutput = sshHelper.uebaHostExec().run("cat " + workflows_default_file);
+        fileOutput.output.forEach(System.out::println);
         LOGGER.info(" +++ setBuildingModelsRange finished +++");
     }
 
