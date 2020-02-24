@@ -14,7 +14,7 @@ pipeline {
     agent { label env.NODE_LABEL }
 
     environment {
-        JAVA_HOME = params.JAVA_HOME
+        JAVA_HOME = "${params.JAVA_HOME}"
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
         S3_ACCOUNT = getAccountID()
     }
@@ -54,7 +54,7 @@ def getAccountID() {
 
 def runSuiteXmlFile(String suiteXmlFile) {
     sh 'pwd'
-    sh "echo ${JAVA_HOME}"
+    sh "echo ${env.JAVA_HOME}"
     withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: 'us-east-1') {
         sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS} -Dgenerator_format=${params.generator_format}"
     }
