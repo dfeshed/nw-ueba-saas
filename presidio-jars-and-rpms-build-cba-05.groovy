@@ -286,7 +286,7 @@ def extractVersionAndStabilityFromPom(pomFile){
     String version = findVersionInPom(pomFile)
     def versionSplitted = version.split(/\.|-/)
     version = versionSplitted[0] + "." + versionSplitted[1] + "." + versionSplitted[2] + "." + versionSplitted[3]
-    String stability = versionSplitted.last().toLowerCase() == "snapshot" ? "1 - dev": "5 - gold"
+    String stability = versionSplitted.last().toLowerCase() == "snapshot" ? "4 - rc": "5 - gold"
     sh "echo Version: ${version}"
     sh "echo Stability: ${stability}"
 
