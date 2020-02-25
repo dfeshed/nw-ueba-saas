@@ -2,6 +2,7 @@ package com.rsa.netwitness.presidio.automation.test.integration;
 
 import ch.qos.logback.classic.Logger;
 import com.google.common.collect.ImmutableList;
+import com.rsa.netwitness.presidio.automation.config.EnvironmentProperties;
 import com.rsa.netwitness.presidio.automation.file.configurations.WorkflowsDefaultJson;
 import com.rsa.netwitness.presidio.automation.jdbc.AirflowTasksPostgres;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -91,15 +92,16 @@ public class AirflowTasksStartTimeTest extends AbstractTestNGSpringContextTests 
             .add(of("sslSubject_hourly_model_ueba_flow", "sslSubject_hourly_smart_model"))
             .add(of("ja3_hourly_model_ueba_flow", "ja3_hourly_smart_model"))
 
-            .add(of("userId_hourly_ueba_flow", "output_forwarding_task"))
-            .add(of("sslSubject_hourly_ueba_flow", "output_forwarding_task"))
-            .add(of("ja3_hourly_ueba_flow", "output_forwarding_task"))
-
             .add(of("userId_hourly_ueba_flow", "userId_hourly_score_processor"))
             .add(of("sslSubject_hourly_ueba_flow", "sslSubject_hourly_score_processor"))
             .add(of("ja3_hourly_ueba_flow", "ja3_hourly_score_processor"))
             .build();
 
+    private List<ImmutablePair<String, String>> forwardingTasksStartAfterMaxFeatureAggAndEnrichedRecPlusSmartRecTasks = ImmutableList.<ImmutablePair<String, String>>builder()
+            .add(of("userId_hourly_ueba_flow", "output_forwarding_task"))
+            .add(of("sslSubject_hourly_ueba_flow", "output_forwarding_task"))
+            .add(of("ja3_hourly_ueba_flow", "output_forwarding_task"))
+            .build();
 
     @BeforeClass
     public void setup() {
@@ -139,6 +141,9 @@ public class AirflowTasksStartTimeTest extends AbstractTestNGSpringContextTests 
                 .plus(smartRecordsModelsMinDays, DAYS);
         LOGGER.info("Reference start time =" + expectedStartTime);
         validateFirstSucceededTaskStartTime(expectedStartTime, startAfterMaxFeatureAggAndEnrichedRecPlusSmartRecTasks).assertAll();
+        if ( !EnvironmentProperties.ENVIRONMENT_PROPERTIES.esaAnalyticsServerIp().isBlank()) {
+            validateFirstSucceededTaskStartTime(expectedStartTime, forwardingTasksStartAfterMaxFeatureAggAndEnrichedRecPlusSmartRecTasks).assertAll();
+        }
     }
 
 
