@@ -1,7 +1,7 @@
 #### Run Ember build without testing each component
 #
 # 1) Will ensure node/npm, yarn, and ember-cli are
-#   installed and with the correct version
+#    installed and with the correct version
 # 2) Builds netwitness-ueba
 # 3) Builds RPM for netwitness-ueba
 # 4) Optionally Puts RPM into YUM repos
