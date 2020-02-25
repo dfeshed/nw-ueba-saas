@@ -40,7 +40,7 @@ exit_status=1
 while [ $exit_status -ne 0 ]
   do
     dialog \
-      --ok-label Close \
+      --ok-label Abort \
       --tailbox "$LOG" 60 150
 
     exit_status=$?

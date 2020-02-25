@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.datagen;
 
 import com.rsa.netwitness.presidio.datagen.scenarios.AlertsDataScenario;
+import com.rsa.netwitness.presidio.datagen.scenarios.AlertsDataScenarioNoSpring;
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
 
@@ -23,7 +24,13 @@ public class Application {
 
         // Run scenario:
         TestNG testSuite = new TestNG();
-        testSuite.setTestClasses(new Class[] { AlertsDataScenario.class });
+
+        if (APPLICATION_PROPERTIES.get("generatorFormat").equals("MONGO_ADAPTER")) {
+            testSuite.setTestClasses(new Class[] { AlertsDataScenario.class });
+        } else {
+            testSuite.setTestClasses(new Class[] { AlertsDataScenarioNoSpring.class });
+        }
+
         testSuite.addListener(new TestListenerAdapter());
         testSuite.setDefaultSuiteName("UEBA Events generator");
         testSuite.setDefaultTestName("UEBA Events generator");
