@@ -6,11 +6,9 @@ import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducer;
 import com.rsa.netwitness.presidio.automation.converter.producers.EventsProducerSupplier;
-import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.enums.GeneratorFormat;
 import fortscale.common.general.Schema;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
@@ -24,9 +22,6 @@ import java.util.stream.Stream;
 
 public abstract class DataPreparationBaseNoSping extends AbstractTestNGSpringContextTests {
     private static  Logger LOGGER = (Logger) LoggerFactory.getLogger(DataPreparationBaseNoSping.class);
-
-    @Autowired
-    private NetwitnessEventStore netwitnessEventStore;
 
     private GeneratorFormat generatorFormat;
     protected int historicalDaysBack;
@@ -66,7 +61,7 @@ public abstract class DataPreparationBaseNoSping extends AbstractTestNGSpringCon
     }
 
     private EventsProducer<NetwitnessEvent> getProducer() {
-        return new EventsProducerSupplier(netwitnessEventStore).get(generatorFormat);
+        return new EventsProducerSupplier().get(generatorFormat);
     }
 
     private EventConverter<Event> getConverter() {
