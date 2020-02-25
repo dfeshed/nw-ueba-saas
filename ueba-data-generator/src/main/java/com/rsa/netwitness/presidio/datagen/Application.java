@@ -37,6 +37,7 @@ public class Application {
         testSuite.run();
 
         System.out.println("*************************  DONE  *************************");
+        System.exit(0);
     }
 
     private static Properties parsePropertiesString(String s) {
