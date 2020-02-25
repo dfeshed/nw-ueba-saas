@@ -35,19 +35,14 @@ LOG=/tmp/data_gen_out.log
 echo "Execution command = ${CMD}" > $LOG
 $CMD &>> $LOG &
 
-exit_status=1
+pid=($!)
+echo "pid=${pid}" > $LOG
 
-while [ $exit_status -ne 0 ]
-  do
-    dialog \
-      --ok-label Abort \
-      --tailbox "$LOG" 60 150
+dialog --ok-label Close --tailbox "$LOG" 60 150
 
-    exit_status=$?
+ps cax | grep ${pid} > /dev/null
 
-    if [ $exit_status -eq 255 ]; then
-      dialog --textbox "$LOG" 21 80
-    fi
-  done
-
-kill -9 %%
+if [[ $? -eq 0 ]]; then
+  echo "Going to kill pid=${pid}"
+  kill -9 ${pid}
+fi
