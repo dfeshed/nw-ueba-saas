@@ -42,7 +42,7 @@
         <xerces.version>2.9.1</xerces.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
         <presidio.core.version>11.5.0-0-SNAPSHOT</presidio.core.version>
-        <jackson.version>2.9.8</jackson.version>
+        <jackson-core.version>2.9.9</jackson-core.version>
         <spring-data-mongodb.version>2.0.14.RELEASE</spring-data-mongodb.version>
     </properties>
 
@@ -762,11 +762,11 @@
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>1.7.25</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-core.version}</version>
             </dependency>
 
             <dependency>
