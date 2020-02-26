@@ -47,19 +47,19 @@ success "'ember build' for netwitness-ueba was successful"
 cd $CWD
 
 #### Build RPM
-. $scriptDir/rpm.sh
+#. $scriptDir/rpm.sh
 
 #### If selected, build Docker imaages and push to DTR
-if [ "${BUILD_DOCKER_IMAGE}" == "true" ]
-then
-  . $scriptDir/build-docker-image.sh
-fi
+#if [ "${BUILD_DOCKER_IMAGE}" == "true" ]
+#then
+#  . $scriptDir/build-docker-image.sh
+#fi
 
 #### Move RPM to Yum directory
-if [ "$PUBLISH_RPM" == "true" ]
-then
-  . $scriptDir/yum.sh
-fi
+#if [ "$PUBLISH_RPM" == "true" ]
+#then
+#  . $scriptDir/yum.sh
+#fi
 
 #### Victory, poppin bottles
 success "Finished Build!
