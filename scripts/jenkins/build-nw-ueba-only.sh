@@ -62,4 +62,4 @@ cd $CWD
 #fi
 
 #### Victory, poppin bottles
-success "Finished Build!
+success "Finished Build!"
