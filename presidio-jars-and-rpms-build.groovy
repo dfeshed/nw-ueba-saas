@@ -80,6 +80,7 @@ def environments = [
 
 global_version = ""
 global_stability = ""
+aws_branch="origin/CBA-0.5"
 
 pipeline {
     agent {
@@ -106,12 +107,12 @@ pipeline {
         BUILD_PRESIDIO_FLUME="${environments[env.BUILD_CAUSE].get('BUILD_PRESIDIO_FLUME')}"
         BUILD_PRESIDIO_NETWITNESS="${environments[env.BUILD_CAUSE].get('BUILD_PRESIDIO_NETWITNESS')}"
         BUILD_PRESIDIO_UI="${environments[env.BUILD_CAUSE].get('BUILD_PRESIDIO_UI')}"
-        DEPLOY_JARS="${environments[env.BUILD_CAUSE].get('DEPLOY_JARS')}"
         RUN_CORE_PACKAGES="${environments[env.BUILD_CAUSE].get('RUN_CORE_PACKAGES')}"
         RUN_FLUME_PACKAGES="${environments[env.BUILD_CAUSE].get('RUN_FLUME_PACKAGES')}"
         RUN_NW_PACKAGES="${environments[env.BUILD_CAUSE].get('RUN_NW_PACKAGES')}"
         RUN_PRESIDIO_UI_PACKAGES="${environments[env.BUILD_CAUSE].get('RUN_PRESIDIO_UI_PACKAGES')}"
-        DEPLOY_PACKAGES="${environments[env.BUILD_CAUSE].get('DEPLOY_PACKAGES')}"
+        DEPLOY_PACKAGES=getDeployFlag('DEPLOY_PACKAGES')
+        DEPLOY_JARS=getDeployFlag('DEPLOY_JARS')
     }
     stages {
         stage('Presidio JARs and RPMs Build Pipeline Initialization') {
@@ -284,7 +285,13 @@ def extractVersionAndStabilityFromPom(pomFile){
     String version = findVersionInPom(pomFile)
     def versionSplitted = version.split(/\.|-/)
     version = versionSplitted[0] + "." + versionSplitted[1] + "." + versionSplitted[2] + "." + versionSplitted[3]
-    String stability = versionSplitted.last().toLowerCase() == "snapshot" ? "1 - dev": "5 - gold"
+    String stability
+    if (env.BRANCH_NAME == aws_branch) {
+        stability = "4 - rc"
+    } else {
+        stability = versionSplitted.last().toLowerCase() == "snapshot" ? "1 - dev": "5 - gold"
+    }
+
     sh "echo Version: ${version}"
     sh "echo Stability: ${stability}"
 
@@ -308,4 +315,13 @@ def archivingJARsAndRPMs(){
     sh 'find . -regex ".*-presidio-.*.rpm" -exec cp {} RPMs \\;'
     archiveArtifacts artifacts: 'JARs/**', allowEmptyArchive: true
     archiveArtifacts artifacts: 'RPMs/**', allowEmptyArchive: true
+}
+
+def getDeployFlag(String key) {
+    if (env.BRANCH_NAME == aws_branch) {
+        println("Deployment of AWS branch artifacts is forced disabled")
+        return "false"
+    } else {
+        return "${environments[env.BUILD_CAUSE].get(key)}"
+    }
 }
