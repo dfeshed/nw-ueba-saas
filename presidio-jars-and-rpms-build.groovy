@@ -294,7 +294,6 @@ def extractVersionAndStabilityFromPom(pomFile){
 
     sh "echo Version: ${version}"
     sh "echo Stability: ${stability}"
-
     return [version, stability]
 }
 
