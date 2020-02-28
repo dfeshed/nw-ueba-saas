@@ -62,7 +62,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
     @Bean
     public Mongo mongo() throws Exception {
         MongoClient client;
-        initMongoPropeties();
+        initMongoProperties();
         if (!StringUtils.isEmpty(mongoUserName) && !StringUtils.isEmpty(mongoPassword)) {
             ServerAddress address = new ServerAddress(mongoHostName, mongoHostPort);
             List<MongoCredential> credentials = new ArrayList<>();
@@ -81,18 +81,24 @@ public class MongoConfig extends AbstractMongoConfiguration {
         return client;
     }
 
-    private void initMongoPropeties() throws Exception {
+    private void initMongoProperties() throws Exception {
         mongoPropertiesReader.initMongoPropeties();
         mongoHostName = mongoPropertiesReader.getMongoHostName();
         mongoHostPort = mongoPropertiesReader.getMongoHostPort();
         mongoDBName = mongoPropertiesReader.getMongoDBName();
-        mongoPassword = mongoPropertiesReader.getMongoPassword();
         mongoUserName = mongoPropertiesReader.getMongoUserName();
+
+        String password = mongoPropertiesReader.getMongoPassword();
+        if (password.endsWith("\r\n")) {
+            mongoPassword = password;
+        } else {
+            mongoPassword = EncryptionUtils.encrypt(password);
+        }
     }
 
     @Bean
     public com.mongodb.async.client.MongoClient asyncClient() throws Exception {
-        initMongoPropeties();
+        initMongoProperties();
         String connectionString = String.format("mongodb://%s:%s",mongoHostName, mongoHostPort);
         ClusterSettings clusterSettings = ClusterSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString)).build();
@@ -125,7 +131,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
     public MongoClient mongoClient() {
         MongoClient client;
         try {
-            initMongoPropeties();
+            initMongoProperties();
         } catch (Exception e) {
             e.printStackTrace();
         }
