@@ -1,8 +1,6 @@
 package com.rsa.netwitness.presidio.automation.converter.producers;
 
 import ch.qos.logback.classic.Logger;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.UnmodifiableIterator;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import com.rsa.netwitness.presidio.automation.converter.formatters.EventFormatter;
 import com.rsa.netwitness.presidio.automation.s3.S3_Helper;
@@ -72,25 +70,18 @@ public class S3JsonGzipProducer implements EventsProducer<NetwitnessEvent> {
     }
 
     private void processAllIntervals(Map<Instant, List<NetwitnessEvent>> eventsByInterval, List<S3_Interval> intervals, Schema schema) {
-        UnmodifiableIterator<List<S3_Interval>> partition = Iterators.partition(intervals.iterator(), PARTITION_SIZE);
+        List<S3_Interval> processed = intervals.parallelStream().peek(intervalObj -> {
+            Instant interval = intervalObj.getInterval();
+            if (eventsByInterval.containsKey(interval)) {
+                intervalObj.process(toStringLines(eventsByInterval.get(interval)));
+            }
+        }).collect(Collectors.toUnmodifiableList());
 
-        while (partition.hasNext()) {
-            List<S3_Interval> nextPartition = partition.next();
-            Stream<S3_Interval> process = IS_PARALLEL ? nextPartition.parallelStream() : nextPartition.stream().sequential();
+        Stream<S3_Interval> close = IS_PARALLEL ? processed.parallelStream() : processed.stream().sequential();
+        int totalUploaded = close.peek(S3_Interval::close).mapToInt(S3_Interval::getTotalUploaded).sum();
 
-            process.forEach(intervalObj -> {
-                Instant interval = intervalObj.getInterval();
-                if (eventsByInterval.containsKey(interval)) {
-                    intervalObj.process(toStringLines(eventsByInterval.get(interval)));
-                }
-                intervalObj.close();
-                resultingCount.putIfAbsent(schema, 0L);
-                resultingCount.computeIfPresent(schema, (s, i) -> i + intervalObj.getTotalUploaded());
-            });
-
-            LOGGER.info("Proceeding to the next partition");
-        }
-
+        resultingCount.putIfAbsent(schema, 0L);
+        resultingCount.computeIfPresent(schema, (s, i) -> i + totalUploaded);
         LOGGER.info("[" + schema + "] -- " + intervals.size() + " intervals upload is completed.");
     }
 
