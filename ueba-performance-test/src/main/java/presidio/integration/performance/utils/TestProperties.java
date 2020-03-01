@@ -6,6 +6,8 @@ import java.time.Instant;
 
 public class TestProperties {
 
+    public static final boolean PARALLEL_SCENARIOS_INSERT = System.getenv().getOrDefault("PARALLEL_SCENARIOS_INSERT", "").equalsIgnoreCase("true");
+
     public int NUM_OF_GLOBAL_SERVER_MACHINES = -1;
     public int NUM_OF_GLOBAL_SERVER_MACHINES_CLUSTERS = -1;
     public String GLOBAL_SERVER_MACHINES_CLUSTER_PREFIX = null;

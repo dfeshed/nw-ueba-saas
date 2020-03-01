@@ -25,14 +25,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static presidio.integration.performance.utils.TestProperties.PARALLEL_SCENARIOS_INSERT;
 
 public class PerfLogsNoSpringGenTest extends AbstractTestNGSpringContextTests {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(PerfLogsNoSpringGenTest.class);
-
     public static final TestProperties test = new TestProperties();
-
     private static final int EVENTS_GENERATION_CHUNK = 51000;
-    private static final boolean PARALLEL_SCENARIOS_INSERT = false;
 
     private void setTestProperties() {
 

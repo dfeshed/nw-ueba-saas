@@ -2,7 +2,7 @@
 pipeline {
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
-        string(name: 'MVN_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
+        string(name: 'PARALLEL_SCENARIOS_INSERT', defaultValue: 'true', description: '')
 
         string(name: 'SCHEMAS', defaultValue: 'TLS,FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS', description: '')
         string(name: 'GENERATOR_FORMAT', defaultValue: 'S3_JSON_GZIP_CHUNKS', description: '')
@@ -23,6 +23,7 @@ pipeline {
 
         choice(name: 'NODE_LABEL', choices: ['UEBA01','UEBA02','UEBA03','UEBA04','master'], description: '')
         choice(name: 'JAVA_HOME', choices: ['/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64','/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.amzn2.x86_64/'], description: '')
+        string(name: 'MVN_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
     }
 
     agent { label env.NODE_LABEL }
