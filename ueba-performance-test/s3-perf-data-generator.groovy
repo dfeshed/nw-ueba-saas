@@ -21,8 +21,7 @@ pipeline {
         string(name: 'S3_ACCOUNT', defaultValue: '', description: 'Empty value -> current millis')
         string(name: 'S3_APPLICATION', defaultValue: 'NetWitness', description: '')
 
-        string(name: 'generator_format', defaultValue: 'S3_JSON_GZIP', description: '')
-        choice(name: 'NODE_LABEL', choices: ['master','UEBA01','UEBA02','UEBA03','UEBA04'], description: '')
+        choice(name: 'NODE_LABEL', choices: ['UEBA01','UEBA02','UEBA03','UEBA04','master'], description: '')
         choice(name: 'JAVA_HOME', choices: ['/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64','/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.amzn2.x86_64/'], description: '')
     }
 

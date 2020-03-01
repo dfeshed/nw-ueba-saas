@@ -80,6 +80,14 @@ pipeline {
             }
         }
 
+        stage('Initiates Airflow') {
+            when {
+                expression { return params.INSTALL_UEBA_RPMS }
+            }
+            steps {
+                sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-app-services.sh"
+            }
+        }
 
         stage('Data Injection') {
             when {
