@@ -50,7 +50,7 @@ public class TestProperties {
         System.out.println("=================== TEST PARAMETERS =============== ");
         System.out.println("start_time: " + startInstant);
         System.out.println("end_time: " + endInstant);
-        System.out.println("probability_multiplier: " + usersProbabilityMultiplier);
+        System.out.println("users_probability_multiplier: " + usersProbabilityMultiplier);
         System.out.println("users_multiplier: " + usersMultiplier);
         System.out.println("tls_alerts_probability: " + tlsAlertsProbability);
         System.out.println("tls_groups_to_create: " + tlsGroupsToCreate);
