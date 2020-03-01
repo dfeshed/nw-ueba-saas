@@ -9,7 +9,7 @@ pipeline {
         string(name: 'START_TIME', defaultValue: '2020-02-01T00:00:00.00Z', description: '')
         string(name: 'END_TIME', defaultValue: '2020-02-07T00:00:00.00Z', description: '')
 
-        string(name: 'PROBABILITY_MULTIPLIER', defaultValue: '1', description: 'users probability multiplier')
+        string(name: 'USERS_PROBABILITY_MULTIPLIER', defaultValue: '1', description: '')
         string(name: 'USERS_MULTIPLIER', defaultValue: '1', description: '')
 
         string(name: 'TLS_ALERTS_PROBABILITY', defaultValue: '0.001', description: '')
