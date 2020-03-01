@@ -54,12 +54,29 @@ pipeline {
         }
 
 
-        stage('Install UEBA RPMs') {
+        stage('Update UEBA RPMs') {
             when {
                 expression { return params.INSTALL_UEBA_RPMS }
             }
             steps {
-                sh "echo 'add install ueba rpms step'"
+                script {
+                    println ' ********** Going to upgrade UEBA RPMs **********'
+                    def rpms_app = ['rsa-nw-presidio-airflow',
+                                    'rsa-nw-presidio-configserver',
+                                    'rsa-nw-presidio-core',
+                                    'rsa-nw-presidio-elasticsearch-init',
+                                    'rsa-nw-presidio-ext-netwitness',
+                                    'rsa-nw-presidio-flume',
+                                    'rsa-nw-presidio-manager',
+                                    'rsa-nw-presidio-output',
+                                    'rsa-nw-presidio-ui']
+
+                    for(String item: rpms_app) {
+                        println item
+                        sh "OWB_ALLOW_NON_FIPS=on && sudo yum -y update $item"
+                    }
+                    println ' ********** UEBA RPMs upgrade finished **********'
+                }
             }
         }
 
