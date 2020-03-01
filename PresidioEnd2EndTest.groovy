@@ -2,8 +2,8 @@ pipeline {
     parameters {
         string(name: 'generator_format', defaultValue: 'CEF_DAILY_BROKER', description: '')
         string(name: 'pre_processing_configuration_scenario', defaultValue: 'E2E_BROKER', description: '')
-        choice(name: 'IS_MONGO_PASSWORD_ENCRYPTED', choices: ['true','false'], description: '')
 
+        choice(name: 'IS_MONGO_PASSWORD_ENCRYPTED', choices: ['true','false'], description: '')
         string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
         string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
@@ -211,7 +211,10 @@ def runSuiteXmlFile(String suiteXmlFile) {
     println(env.REPOSITORY_NAME)
     sh "echo JAVA_HOME=${env.JAVA_HOME}"
     dir(env.REPOSITORY_NAME) {
-        sh "/usr/local/src/apache-maven/bin/mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS} -Dgenerator_format=${params.generator_format} -Dpre_processing_configuration_scenario=${params.pre_processing_configuration_scenario}"
+        sh "/usr/local/src/apache-maven/bin/mvn test -B --projects ueba-automation-test --also-make " +
+                "-DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS} " +
+                "-Dgenerator_format=${params.generator_format} " +
+                "-Dpre_processing_configuration_scenario=${params.pre_processing_configuration_scenario}"
     }
 }
 

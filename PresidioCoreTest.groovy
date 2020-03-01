@@ -2,8 +2,8 @@ pipeline {
     parameters {
         string(name: 'generator_format', defaultValue: 'MONGO_ADAPTER', description: '')
         string(name: 'pre_processing_configuration_scenario', defaultValue: 'CORE_MONGO', description: '')
-        choice(name: 'is_mongo_password_encrypted', choices: ['true','false'], description: '')
 
+        choice(name: 'IS_MONGO_PASSWORD_ENCRYPTED', choices: ['true','false'], description: '')
         string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
         string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
@@ -195,8 +195,7 @@ def runSuiteXmlFile(String suiteXmlFile) {
                 "-DsuiteXmlFile=${suiteXmlFile} " +
                 "${params.MVN_TEST_OPTIONS} " +
                 "-Dgenerator_format=${params.generator_format} " +
-                "-Dpre_processing_configuration_scenario=${params.pre_processing_configuration_scenario} " +
-                "-Dis_mongo_password_encrypted=${params.is_mongo_password_encrypted}"
+                "-Dpre_processing_configuration_scenario=${params.pre_processing_configuration_scenario}"
     }
 }
 
