@@ -16,8 +16,8 @@ pipeline {
         string(name: 'TLS_GROUPS_TO_CREATE', defaultValue: '1', description: '')
         string(name: 'TLS_EVENTS_PER_DAY_PER_GROUP', defaultValue: '1000', description: '')
 
-        string(name: 'S3_BUCKET', defaultValue: 'presidio-automation-data', description: '')
-        string(name: 'S3_TENANT', defaultValue: 'acme-perf', description: '')
+        string(name: 'S3_BUCKET', defaultValue: 'presido-performance-data', description: '')
+        string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
         string(name: 'S3_ACCOUNT', defaultValue: '', description: 'Empty value -> current millis')
         string(name: 'S3_APPLICATION', defaultValue: 'NetWitness', description: '')
 
