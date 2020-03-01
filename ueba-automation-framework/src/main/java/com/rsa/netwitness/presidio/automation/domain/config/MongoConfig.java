@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.rsa.netwitness.presidio.automation.config.AutomationConf.IS_MONGO_PASSWORD_ENCRYPTED;
+
 @Configuration
 @EnableMongoAuditing
 @Import({MongoPropertiesReaderConfig.class})
@@ -89,7 +91,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
         mongoUserName = mongoPropertiesReader.getMongoUserName();
 
         String password = mongoPropertiesReader.getMongoPassword();
-        if (password.endsWith("\r\n")) {
+        if (IS_MONGO_PASSWORD_ENCRYPTED) {
             mongoPassword = password;
         } else {
             mongoPassword = EncryptionUtils.encrypt(password);
