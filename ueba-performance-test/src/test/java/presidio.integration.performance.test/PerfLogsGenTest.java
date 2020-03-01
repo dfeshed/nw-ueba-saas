@@ -94,7 +94,7 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
         setTestProperties();
         test.startInstant = Instant.parse(startTimeStr);
         test.endInstant = Instant.parse(endTimeStr);
-        test.probabilityMultiplier = probabilityMultiplier;
+        test.usersProbabilityMultiplier = probabilityMultiplier;
         test.usersMultiplier = usersMultiplier;
         test.tlsAlertsProbability = tlsAlertsProbability;
         test.tlsGroupsToCreate = groupsToCreate;

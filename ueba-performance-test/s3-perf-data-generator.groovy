@@ -78,7 +78,7 @@ def runSuiteXmlFile(String suiteXmlFile) {
                 "-Dstart_time=${params.START_TIME} " +
                 "-Dend_time=${params.END_TIME} " +
 
-                "-Dprobability_multiplier=${params.PROBABILITY_MULTIPLIER} " +
+                "-Dusers_probability_multiplier=${params.USERS_PROBABILITY_MULTIPLIER} " +
                 "-Dusers_multiplier=${params.USERS_MULTIPLIER} " +
 
                 "-Dtls_alerts_probability=${params.TLS_ALERTS_PROBABILITY} " +

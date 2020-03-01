@@ -67,15 +67,15 @@ public class PerfLogsNoSpringGenTest extends AbstractTestNGSpringContextTests {
     }
 
 
-    @Parameters({"start_time", "end_time", "probability_multiplier", "users_multiplier", "tls_alerts_probability",
+    @Parameters({"start_time", "end_time", "users_probability_multiplier", "users_multiplier", "tls_alerts_probability",
             "tls_groups_to_create", "tls_events_per_day_per_group","schemas","generator_format"})
     @Test
     public void performance(@Optional("2020-01-01T00:00:00.00Z") String startTimeStr,
                             @Optional("2020-01-02T00:00:00.00Z") String endTimeStr,
-                            @Optional("1") double probabilityMultiplier,
+                            @Optional("1") double usersProbabilityMultiplier,
                             @Optional("1") double usersMultiplier,
                             @Optional("0.001") double tlsAlertsProbability,
-                            @Optional("1") int groupsToCreate,
+                            @Optional("1") int tlsGroupsToCreate,
                             @Optional("1000") double tlsEventsPerDayPerGroup,
                             @Optional("FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS") String schemas,
                             @Optional("S3_JSON_GZIP_CHUNKS") GeneratorFormat generatorFormat) {
@@ -83,10 +83,10 @@ public class PerfLogsNoSpringGenTest extends AbstractTestNGSpringContextTests {
         setTestProperties();
         test.startInstant = Instant.parse(startTimeStr);
         test.endInstant = Instant.parse(endTimeStr);
-        test.probabilityMultiplier = probabilityMultiplier;
+        test.usersProbabilityMultiplier = usersProbabilityMultiplier;
         test.usersMultiplier = usersMultiplier;
         test.tlsAlertsProbability = tlsAlertsProbability;
-        test.tlsGroupsToCreate = groupsToCreate;
+        test.tlsGroupsToCreate = tlsGroupsToCreate;
         test.tlsEventsPerDayPerGroup = tlsEventsPerDayPerGroup;
         test.schemas = schemas;
         test.generatorFormat = generatorFormat;

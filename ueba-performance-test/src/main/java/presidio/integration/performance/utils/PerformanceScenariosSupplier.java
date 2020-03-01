@@ -29,7 +29,7 @@ public class PerformanceScenariosSupplier implements Supplier<PerformanceScenari
 
     private PerformanceScenario getScenario(Instant from, Instant to) {
         double usersMultiplier = test.usersMultiplier;
-        double probabilityMultiplier = test.probabilityMultiplier;
+        double probabilityMultiplier = test.usersProbabilityMultiplier;
 
         if (schema.equals(Schema.TLS)) {
             TlsPerformanceStabilityScenario scenario = new TlsPerformanceStabilityScenario(from, to,

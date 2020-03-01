@@ -38,7 +38,7 @@ public class TestProperties {
     public Instant startInstant = null;
     public Instant endInstant = null;
     public GeneratorFormat generatorFormat;
-    public double probabilityMultiplier;
+    public double usersProbabilityMultiplier;
     public double usersMultiplier;
     public double tlsAlertsProbability;
     public int tlsGroupsToCreate;
@@ -50,7 +50,7 @@ public class TestProperties {
         System.out.println("=================== TEST PARAMETERS =============== ");
         System.out.println("start_time: " + startInstant);
         System.out.println("end_time: " + endInstant);
-        System.out.println("probability_multiplier: " + probabilityMultiplier);
+        System.out.println("probability_multiplier: " + usersProbabilityMultiplier);
         System.out.println("users_multiplier: " + usersMultiplier);
         System.out.println("tls_alerts_probability: " + tlsAlertsProbability);
         System.out.println("tls_groups_to_create: " + tlsGroupsToCreate);
