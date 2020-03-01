@@ -2,6 +2,7 @@ pipeline {
     parameters {
         string(name: 'generator_format', defaultValue: 'CEF_DAILY_BROKER', description: '')
         string(name: 'pre_processing_configuration_scenario', defaultValue: 'E2E_BROKER', description: '')
+        choice(name: 'IS_MONGO_PASSWORD_ENCRYPTED', choices: ['true','false'], description: '')
 
         string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
         string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
