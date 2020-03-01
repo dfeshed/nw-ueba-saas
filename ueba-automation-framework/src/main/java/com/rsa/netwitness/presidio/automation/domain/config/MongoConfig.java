@@ -91,6 +91,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
         mongoUserName = mongoPropertiesReader.getMongoUserName();
 
         String password = mongoPropertiesReader.getMongoPassword();
+        System.out.println("IS_MONGO_PASSWORD_ENCRYPTED=" + IS_MONGO_PASSWORD_ENCRYPTED);
         if (IS_MONGO_PASSWORD_ENCRYPTED) {
             mongoPassword = password;
         } else {
