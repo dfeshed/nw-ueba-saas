@@ -8,6 +8,7 @@ pipeline {
         string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
         string(name: 'S3_APPLICATION', defaultValue: 'NetWitness', description: '')
         string(name: 'S3_ACCOUNT', defaultValue: '', description: 'Empty -> take last timestamp')
+        choice(name: 'IS_MONGO_PASSWORD_ENCRYPTED', choices: ['false','true'], description: '')
 
         choice(name: 'generator_format', choices: ['S3_JSON_GZIP','MONGO_ADAPTER'], description: '')
         choice(name: 'pre_processing_configuration_scenario', choices: ['E2E_S3','E2E_MONGO'], description: '')
