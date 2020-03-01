@@ -88,7 +88,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
                     MongoCredential.createCredential(
                             mongoUserName,
                             mongoDBName,
-                            mongoPassword.toCharArray()
+                            StringUtils.chomp(mongoPassword).toCharArray()
                     )
             );
         }
@@ -117,7 +117,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
                     MongoCredential.createCredential(
                             mongoUserName,
                             mongoDBName,
-                            mongoPassword.toCharArray()
+                            StringUtils.chomp(mongoPassword).toCharArray()
                     )
             );
             client = new MongoClient(address, credentials);
