@@ -27,7 +27,7 @@ public class AutomationConf {
 
     public static final boolean IS_JENKINS_RUN = System.getenv().containsKey("JENKINS_HOME");
     public static final boolean LOCAL_MONGO_CONF_FLAG = System.getenv().containsKey("LOCAL_MONGO_CONF");
-    public static final boolean IS_MONGO_PASSWORD_ENCRYPTED = Boolean.getBoolean(System.getenv().getOrDefault("IS_MONGO_PASSWORD_ENCRYPTED", "true"));
+    public static final boolean IS_MONGO_PASSWORD_ENCRYPTED = System.getenv().getOrDefault("IS_MONGO_PASSWORD_ENCRYPTED", "").equalsIgnoreCase("true");
 
     public static final ImmutableList<String> CORE_SCHEMAS_TO_PROCESS = ImmutableList.copyOf(
             System.getenv().getOrDefault("SCHEMAS_TO_PROCESS", "ACTIVE_DIRECTORY,AUTHENTICATION,FILE,PROCESS,REGISTRY,TLS").split("\\s*,\\s*"));
