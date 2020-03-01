@@ -72,6 +72,7 @@ def runSuiteXmlFile(String suiteXmlFile) {
     withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: 'us-east-1') {
 
         sh "mvn test -B --projects ueba-performance-test --also-make " +
+                "-DsuiteXmlFile=${suiteXmlFile} " +
                 "-Dschemas=${params.SCHEMAS} " +
                 "-Dgenerator_format=${params.GENERATOR_FORMAT} " +
                 "-Dstart_time=${params.START_TIME} " +
