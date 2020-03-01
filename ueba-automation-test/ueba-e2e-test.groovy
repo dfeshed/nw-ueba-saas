@@ -14,7 +14,7 @@ pipeline {
         choice(name: 'pre_processing_configuration_scenario', choices: ['E2E_S3','E2E_MONGO'], description: '')
 
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
-        booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: false, description: '')
+        booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
         booleanParam(name: 'DATA_INJECTION', defaultValue: false, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
@@ -62,7 +62,24 @@ pipeline {
                 expression { return params.INSTALL_UEBA_RPMS }
             }
             steps {
-                sh "echo 'add install ueba rpms step'"
+                script {
+                    println ' ********** Going to upgrade UEBA RPMs **********'
+                    def rpms_app = ['rsa-nw-presidio-airflow',
+                                    'rsa-nw-presidio-configserver',
+                                    'rsa-nw-presidio-core',
+                                    'rsa-nw-presidio-elasticsearch-init',
+                                    'rsa-nw-presidio-ext-netwitness',
+                                    'rsa-nw-presidio-flume',
+                                    'rsa-nw-presidio-manager',
+                                    'rsa-nw-presidio-output',
+                                    'rsa-nw-presidio-ui']
+
+                    for(String item: rpms_app) {
+                        println item
+                        sh "OWB_ALLOW_NON_FIPS=on && sudo yum -y update $item"
+                    }
+                    println ' ********** UEBA RPMs upgrade finished **********'
+                }
             }
         }
 

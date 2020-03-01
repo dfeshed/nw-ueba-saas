@@ -14,7 +14,7 @@ pipeline {
         choice(name: 'pre_processing_configuration_scenario', choices: ['CORE_S3','CORE_MONGO'], description: '')
 
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
-        booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: false, description: '')
+        booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
         booleanParam(name: 'DATA_INJECTION', defaultValue: false, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
