@@ -4,13 +4,6 @@ pipeline {
         string(name: 'START_TIME', defaultValue: '2020-02-01T00:00:00.00Z', description: '')
         string(name: 'END_TIME', defaultValue: '2020-02-07T00:00:00.00Z', description: '')
 
-        properties([parameters([extendedChoice(defaultValue: 'TLS,FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS',
-                description: '', descriptionPropertyValue: '', multiSelectDelimiter: ',',
-                name: 'SCHEMAS', quoteValue: false, saveJSONParameterToFile: false, type: 'PT_CHECKBOX',
-                value: 'TLS,FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS', visibleItemCount: 6)]),
-                    [$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0,
-                     maxConcurrentTotal: 0, paramsToUseForLimit: '', throttleEnabled: false, throttleOption: 'project']])
-
         string(name: 'S3_BUCKET', defaultValue: 'presido-performance-data', description: '')
         string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
         string(name: 'S3_ACCOUNT', defaultValue: '', description: 'Empty value -> current millis')
