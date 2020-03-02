@@ -1,13 +1,24 @@
 
 pipeline {
     parameters {
-        string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
-        string(name: 'PARALLEL_SCENARIOS_INSERT', defaultValue: 'true', description: '')
-
-        string(name: 'SCHEMAS', defaultValue: 'TLS,FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS', description: '')
-        string(name: 'GENERATOR_FORMAT', defaultValue: 'S3_JSON_GZIP_CHUNKS', description: '')
         string(name: 'START_TIME', defaultValue: '2020-02-01T00:00:00.00Z', description: '')
         string(name: 'END_TIME', defaultValue: '2020-02-07T00:00:00.00Z', description: '')
+
+        properties([parameters([extendedChoice(defaultValue: 'TLS,FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS',
+                description: '', descriptionPropertyValue: '', multiSelectDelimiter: ',',
+                name: 'SCHEMAS', quoteValue: false, saveJSONParameterToFile: false, type: 'PT_CHECKBOX',
+                value: 'TLS,FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS', visibleItemCount: 6)]),
+                    [$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0,
+                     maxConcurrentTotal: 0, paramsToUseForLimit: '', throttleEnabled: false, throttleOption: 'project']])
+
+        string(name: 'S3_BUCKET', defaultValue: 'presido-performance-data', description: '')
+        string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
+        string(name: 'S3_ACCOUNT', defaultValue: '', description: 'Empty value -> current millis')
+        string(name: 'S3_APPLICATION', defaultValue: 'NetWitness', description: '')
+
+        choice(name: 'PARALLEL_SCENARIOS_INSERT', choices: ['true','false'], description: '')
+        string(name: 'SCENARIOS_SPLIT_INTERVAL_HOURS', defaultValue: '0', description: 'put 0 to disable split')
+        string(name: 'GENERATOR_FORMAT', defaultValue: 'S3_JSON_GZIP_CHUNKS', description: '')
 
         string(name: 'USERS_PROBABILITY_MULTIPLIER', defaultValue: '1', description: '')
         string(name: 'USERS_MULTIPLIER', defaultValue: '1', description: '')
@@ -16,11 +27,7 @@ pipeline {
         string(name: 'TLS_GROUPS_TO_CREATE', defaultValue: '1', description: '')
         string(name: 'TLS_EVENTS_PER_DAY_PER_GROUP', defaultValue: '1000', description: '')
 
-        string(name: 'S3_BUCKET', defaultValue: 'presido-performance-data', description: '')
-        string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
-        string(name: 'S3_ACCOUNT', defaultValue: '', description: 'Empty value -> current millis')
-        string(name: 'S3_APPLICATION', defaultValue: 'NetWitness', description: '')
-
+        string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
         choice(name: 'NODE_LABEL', choices: ['UEBA01','UEBA02','UEBA03','UEBA04','master'], description: '')
         choice(name: 'JAVA_HOME', choices: ['/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64','/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.amzn2.x86_64/'], description: '')
         string(name: 'MVN_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
