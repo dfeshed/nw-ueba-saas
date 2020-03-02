@@ -26,11 +26,12 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static presidio.integration.performance.utils.TestProperties.PARALLEL_SCENARIOS_INSERT;
+import static presidio.integration.performance.utils.TestProperties.SCENARIOS_SPLIT_INTERVAL_HOURS;
 
 public class PerfLogsNoSpringGenTest extends AbstractTestNGSpringContextTests {
-    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(PerfLogsNoSpringGenTest.class);
     public static final TestProperties test = new TestProperties();
     private static final int EVENTS_GENERATION_CHUNK = 51000;
+    private static Logger LOGGER = (Logger) LoggerFactory.getLogger(PerfLogsNoSpringGenTest.class);
 
     private void setTestProperties() {
 
@@ -66,7 +67,7 @@ public class PerfLogsNoSpringGenTest extends AbstractTestNGSpringContextTests {
 
 
     @Parameters({"start_time", "end_time", "users_probability_multiplier", "users_multiplier", "tls_alerts_probability",
-            "tls_groups_to_create", "tls_events_per_day_per_group","schemas","generator_format"})
+            "tls_groups_to_create", "tls_events_per_day_per_group", "schemas", "generator_format"})
     @Test
     public void performance(@Optional("2020-01-01T00:00:00.00Z") String startTimeStr,
                             @Optional("2020-01-02T00:00:00.00Z") String endTimeStr,
@@ -90,17 +91,16 @@ public class PerfLogsNoSpringGenTest extends AbstractTestNGSpringContextTests {
         test.generatorFormat = generatorFormat;
         test.print();
 
-
         List<Schema> schemasToProcess = Arrays.stream(schemas.split(",")).map(String::trim).map(Schema::valueOf).collect(toList());
 
         List<PerformanceScenario> scenarios = schemasToProcess.stream()
-                .map(e -> new PerformanceScenariosSupplier(e, test).get())
+                .flatMap(schema -> new PerformanceScenariosSupplier(schema, test, SCENARIOS_SPLIT_INTERVAL_HOURS).get().stream())
                 .collect(toList());
 
         LOGGER.info(" *****  Created scenarios  *****");
         scenarios.forEach(System.out::println);
 
-        Stream<PerformanceScenario> scenariosStream = PARALLEL_SCENARIOS_INSERT ?  scenarios.parallelStream() : scenarios.stream().sequential();
+        Stream<PerformanceScenario> scenariosStream = PARALLEL_SCENARIOS_INSERT ? scenarios.parallelStream() : scenarios.stream().sequential();
         scenariosStream.forEach(scenario ->
         {
             ChunksGenerator gen = new ChunksGenerator(scenario, EVENTS_GENERATION_CHUNK);
@@ -108,11 +108,10 @@ public class PerfLogsNoSpringGenTest extends AbstractTestNGSpringContextTests {
             EventsProducer<NetwitnessEvent> producer = getProducer();
 
             LOGGER.info("[" + scenario.getSchema() + "] -- Going to generate next chunk");
-            List<? extends Event> nextChunk= gen.getNextChunk();
+            List<? extends Event> nextChunk = gen.getNextChunk();
             LOGGER.info("[" + scenario.getSchema() + "] -- Generated chunk");
 
-            while ( !nextChunk.isEmpty()) {
-
+            while (!nextChunk.isEmpty()) {
                 LOGGER.info("[" + scenario.getSchema() + "] -- Going to convert and insert chunk");
                 Stream<NetwitnessEvent> converted = nextChunk.parallelStream().map(converter::convert);
                 producer.send(converted);
@@ -127,7 +126,6 @@ public class PerfLogsNoSpringGenTest extends AbstractTestNGSpringContextTests {
 
         LOGGER.info("Finished.");
     }
-
 
 
     private EventsProducer<NetwitnessEvent> getProducer() {
