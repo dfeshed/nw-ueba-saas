@@ -3,23 +3,26 @@ pipeline {
     parameters {
         string(name: 'START_TIME', defaultValue: '2020-02-01T00:00:00.00Z', description: '')
         string(name: 'END_TIME', defaultValue: '2020-02-07T00:00:00.00Z', description: '')
+        extendedChoice(defaultValue: 'TLS,FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS', description: '',
+                multiSelectDelimiter: ',', name: 'SCHEMAS', quoteValue: false,
+                saveJSONParameterToFile: false, type: 'PT_CHECKBOX',
+                value: 'TLS,FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS', visibleItemCount: 6)
 
         string(name: 'S3_BUCKET', defaultValue: 'presido-performance-data', description: '')
         string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
         string(name: 'S3_ACCOUNT', defaultValue: '', description: 'Empty value -> current millis')
         string(name: 'S3_APPLICATION', defaultValue: 'NetWitness', description: '')
 
-        choice(name: 'PARALLEL_SCENARIOS_INSERT', choices: ['true','false'], description: '')
-        string(name: 'SCENARIOS_SPLIT_INTERVAL_HOURS', defaultValue: '0', description: 'put 0 to disable split')
-        string(name: 'GENERATOR_FORMAT', defaultValue: 'S3_JSON_GZIP_CHUNKS', description: '')
-
         string(name: 'USERS_PROBABILITY_MULTIPLIER', defaultValue: '1', description: '')
         string(name: 'USERS_MULTIPLIER', defaultValue: '1', description: '')
 
+        string(name: 'TLS_GROUPS_TO_CREATE', defaultValue: '199', description: '')
+        string(name: 'TLS_EVENTS_PER_DAY_PER_GROUP', defaultValue: '93375', description: '')
         string(name: 'TLS_ALERTS_PROBABILITY', defaultValue: '0.001', description: '')
-        string(name: 'TLS_GROUPS_TO_CREATE', defaultValue: '1', description: '')
-        string(name: 'TLS_EVENTS_PER_DAY_PER_GROUP', defaultValue: '1000', description: '')
 
+        string(name: 'SCENARIOS_SPLIT_INTERVAL_HOURS', defaultValue: '0', description: 'put 0 to disable split')
+        choice(name: 'PARALLEL_SCENARIOS_INSERT', choices: ['true','false'], description: '')
+        string(name: 'GENERATOR_FORMAT', defaultValue: 'S3_JSON_GZIP_CHUNKS', description: '')
         string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
         choice(name: 'NODE_LABEL', choices: ['UEBA01','UEBA02','UEBA03','UEBA04','master'], description: '')
         choice(name: 'JAVA_HOME', choices: ['/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64','/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.amzn2.x86_64/'], description: '')
