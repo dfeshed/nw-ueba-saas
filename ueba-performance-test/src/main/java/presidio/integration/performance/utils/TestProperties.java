@@ -6,6 +6,9 @@ import java.time.Instant;
 
 public class TestProperties {
 
+    public static final boolean PARALLEL_SCENARIOS_INSERT = System.getenv().getOrDefault("PARALLEL_SCENARIOS_INSERT", "").equalsIgnoreCase("true");
+    public static final int SCENARIOS_SPLIT_INTERVAL_HOURS = Integer.parseInt(System.getenv().getOrDefault("SCENARIOS_SPLIT_INTERVAL_HOURS", "6"));
+
     public int NUM_OF_GLOBAL_SERVER_MACHINES = -1;
     public int NUM_OF_GLOBAL_SERVER_MACHINES_CLUSTERS = -1;
     public String GLOBAL_SERVER_MACHINES_CLUSTER_PREFIX = null;
@@ -38,7 +41,7 @@ public class TestProperties {
     public Instant startInstant = null;
     public Instant endInstant = null;
     public GeneratorFormat generatorFormat;
-    public double probabilityMultiplier;
+    public double usersProbabilityMultiplier;
     public double usersMultiplier;
     public double tlsAlertsProbability;
     public int tlsGroupsToCreate;
@@ -50,7 +53,7 @@ public class TestProperties {
         System.out.println("=================== TEST PARAMETERS =============== ");
         System.out.println("start_time: " + startInstant);
         System.out.println("end_time: " + endInstant);
-        System.out.println("probability_multiplier: " + probabilityMultiplier);
+        System.out.println("users_probability_multiplier: " + usersProbabilityMultiplier);
         System.out.println("users_multiplier: " + usersMultiplier);
         System.out.println("tls_alerts_probability: " + tlsAlertsProbability);
         System.out.println("tls_groups_to_create: " + tlsGroupsToCreate);

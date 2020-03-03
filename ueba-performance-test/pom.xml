@@ -19,9 +19,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <suiteXmlFile>
-            src/test/resources/PerformanceStabilityMongoGenTest.xml
-        </suiteXmlFile>
     </properties>
 
     <dependencies>
@@ -66,13 +63,20 @@
                 </executions>
                 <configuration>
                     <suiteXmlFiles>
-                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                        <suiteXmlFile>${project.build.testOutputDirectory}/${suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
                     <systemPropertyVariables>
+                        <schemas>${schemas}</schemas>
+                        <generator_format>${generator_format}</generator_format>
                         <start_time>${start_time}</start_time>
                         <end_time>${end_time}</end_time>
-                        <probability_multiplier>${probability_multiplier}</probability_multiplier>
+
+                        <users_probability_multiplier>${users_probability_multiplier}</users_probability_multiplier>
                         <users_multiplier>${users_multiplier}</users_multiplier>
+
+                        <tls_alerts_probability>${tls_alerts_probability}</tls_alerts_probability>
+                        <tls_groups_to_create>${tls_groups_to_create}</tls_groups_to_create>
+                        <tls_events_per_day_per_group>${tls_events_per_day_per_group}</tls_events_per_day_per_group>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
