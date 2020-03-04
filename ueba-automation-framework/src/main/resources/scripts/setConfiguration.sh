@@ -39,13 +39,12 @@ else
     echo "presidio.execute.ttl.cleanup=false" >>  /etc/netwitness/presidio/configserver/configurations/application.properties
 fi
 
-# Disable exporting metrics - the following block should be removed if everything will run properly !!!!!!
+# Disable exporting metrics - requared for core-automation performance improvement.
 if grep -q 'enable.metrics.export' /etc/netwitness/presidio/configserver/configurations/application.properties
 	then
-		#sed -i 's!enable.metrics.export.*!enable.metrics.export=false!g' /etc/netwitness/presidio/configserver/configurations/application.properties
-		sed -i 's!enable.metrics.export.*!!g' /etc/netwitness/presidio/configserver/configurations/application.properties
-	#else
-		#echo "enable.metrics.export=false" >> /etc/netwitness/presidio/configserver/configurations/application.properties
+		sed -i 's!enable.metrics.export.*!enable.metrics.export=false!g' /etc/netwitness/presidio/configserver/configurations/application.properties
+	else
+		echo "enable.metrics.export=false" >> /etc/netwitness/presidio/configserver/configurations/application.properties
 fi
 
 sudo systemctl start airflow-webserver
