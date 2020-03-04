@@ -20,6 +20,7 @@ pipeline {
         string(name: 'TLS_EVENTS_PER_DAY_PER_GROUP', defaultValue: '93375', description: '')
         string(name: 'TLS_ALERTS_PROBABILITY', defaultValue: '0.001', description: '')
 
+        string(name: 'SUREFIRE_ARG_LINE', defaultValue: '-Xms1g -Xmx10g', description: '')
         string(name: 'SCENARIOS_SPLIT_INTERVAL_HOURS', defaultValue: '0', description: 'put 0 to disable split')
         choice(name: 'PARALLEL_SCENARIOS_INSERT', choices: ['true','false'], description: '')
         string(name: 'GENERATOR_FORMAT', defaultValue: 'S3_JSON_GZIP_CHUNKS', description: '')
@@ -77,6 +78,7 @@ def runSuiteXmlFile(String suiteXmlFile) {
 
         sh "mvn test -B --projects ueba-performance-test --also-make " +
                 "-DsuiteXmlFile=${suiteXmlFile} " +
+                "-Dsurefire.argLine=${params.SUREFIRE_ARG_LINE} " +
                 "-Dschemas=${params.SCHEMAS} " +
                 "-Dgenerator_format=${params.GENERATOR_FORMAT} " +
                 "-Dstart_time=${params.START_TIME} " +

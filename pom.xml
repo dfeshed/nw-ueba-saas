@@ -24,6 +24,8 @@
     </parent>
 
     <properties>
+        <surefire.forkMode>never</surefire.forkMode>
+        <surefire.argLine>-Xms512m -Xmx3048m</surefire.argLine>
         <commons-lang3.version>3.5</commons-lang3.version>
         <commons-lang.version>2.6</commons-lang.version>
         <testng.version>6.11</testng.version>
