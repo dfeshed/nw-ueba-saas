@@ -78,7 +78,7 @@ def runSuiteXmlFile(String suiteXmlFile) {
 
         sh "mvn test -B --projects ueba-performance-test --also-make " +
                 "-DsuiteXmlFile=${suiteXmlFile} " +
-                "-Dsurefire.argLine=${params.SUREFIRE_ARG_LINE} " +
+                "'-Dsurefire.argLine=${params.SUREFIRE_ARG_LINE}' " +
                 "-Dschemas=${params.SCHEMAS} " +
                 "-Dgenerator_format=${params.GENERATOR_FORMAT} " +
                 "-Dstart_time=${params.START_TIME} " +
