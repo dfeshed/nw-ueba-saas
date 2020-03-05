@@ -35,7 +35,6 @@ class CefFilesPrinter {
     private Map<Schema, String> logPlayerFolders = Maps.newHashMap();
     private EventFormatter<NetwitnessEvent, String> formatter;
     private static final int EVENTS_CHUNK = 50000;
-    private StopWatch tlsStopWatch = new StopWatch();
 
     CefFilesPrinter(EventFormatter<NetwitnessEvent, String> formatter){
         this.formatter = Objects.requireNonNull(formatter);
@@ -51,8 +50,7 @@ class CefFilesPrinter {
     }
 
     private Map<Schema, Long> printFiles(Stream<NetwitnessEvent> eventsList, ChronoUnit truncatedTo) {
-        logPlayerFolders.clear();
-
+        StopWatch tlsStopWatch = new StopWatch();
         UnmodifiableIterator<List<NetwitnessEvent>> partition = Iterators.partition(eventsList.iterator(), EVENTS_CHUNK);
         Map<Schema, Long> totalResult = new HashMap<>();
         tlsStopWatch.start();
