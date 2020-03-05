@@ -46,7 +46,7 @@ pipeline {
                 sh 'pwd'
                 sh 'whoami'
                 script { currentBuild.displayName="#${BUILD_NUMBER} ${NODE_NAME}" }
-                script { currentBuild.description = "${env.START_TIME} - ${env.END_TIME}" }
+                script { currentBuild.description = "${env.START_TIME} - ${env.END_TIME}\n${SCHEMAS}\n${S3_BUCKET}/${S3_TENANT}/${S3_ACCOUNT}/${S3_APPLICATION}" }
                 cleanWs()
                 git branch: params.BRANCH_NAME, credentialsId: '67bd792d-ad28-4ebc-bd04-bef8526c3389', url: 'git@github.com:netwitness/ueba-automation-projects.git'
             }
