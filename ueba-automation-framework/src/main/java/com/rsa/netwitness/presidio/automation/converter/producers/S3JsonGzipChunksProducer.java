@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class S3JsonGzipChunksProducer implements EventsProducer<NetwitnessEvent> {
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(S3JsonGzipChunksProducer.class);
 
-    private boolean IS_PARALLEL = true;
+    private boolean IS_PARALLEL = false;
 
     private final EventFormatter<NetwitnessEvent, String> formatter;
     private AtomicInteger totalUploaded = new AtomicInteger(0);

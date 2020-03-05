@@ -104,7 +104,6 @@ public class PerfLogsNoSpringGenTest extends AbstractTestNGSpringContextTests {
         scenariosStream.forEach(scenario ->
         {
             ChunksGenerator gen = new ChunksGenerator(scenario, EVENTS_GENERATION_CHUNK);
-            EventConverter<Event> converter = getConverter();
             EventsProducer<NetwitnessEvent> producer = getProducer();
 
             LOGGER.info("[" + scenario.getSchema() + "] -- Going to generate next chunk");
@@ -113,7 +112,7 @@ public class PerfLogsNoSpringGenTest extends AbstractTestNGSpringContextTests {
 
             while (!nextChunk.isEmpty()) {
                 LOGGER.info("[" + scenario.getSchema() + "] -- Going to convert and insert chunk");
-                Stream<NetwitnessEvent> converted = nextChunk.parallelStream().map(converter::convert);
+                Stream<NetwitnessEvent> converted = nextChunk.parallelStream().map(getConverter()::convert);
                 producer.send(converted);
                 LOGGER.info("[" + scenario.getSchema() + "] -- Chunk insert is done");
 
