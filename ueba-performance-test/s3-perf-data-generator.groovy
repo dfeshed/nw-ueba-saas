@@ -23,9 +23,9 @@ pipeline {
         string(name: 'SUREFIRE_ARG_LINE', defaultValue: '-Xms1g -Xmx60g', description: '')
         string(name: 'SCENARIOS_SPLIT_INTERVAL_HOURS', defaultValue: '0', description: 'put 0 to disable split')
         choice(name: 'PARALLEL_SCENARIOS_INSERT', choices: ['true','false'], description: '')
-        string(name: 'GENERATOR_FORMAT', defaultValue: 'S3_JSON_GZIP_CHUNKS', description: '')
+        string(name: 'GENERATOR_FORMAT', defaultValue: 'S3_JSON_GZIP_CHUNKS', description: 'S3_JSON_GZIP_CHUNKS,CEF_HOURLY_FILE, CEF_DAILY_FILE')
         string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
-        choice(name: 'NODE_LABEL', choices: ['perf-s3-node','UEBA01','UEBA02','UEBA03','UEBA04','master'], description: '')
+        string(name: 'NODE_LABEL', defaultValue: 'perf-s3-node', description: '')
         string(name: 'MVN_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         choice(name: 'JAVA_HOME', choices: ['/usr/lib/jvm/java-11-amazon-corretto.x86_64',
                                             '/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.amzn2.x86_64/','/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64'], description: '')
