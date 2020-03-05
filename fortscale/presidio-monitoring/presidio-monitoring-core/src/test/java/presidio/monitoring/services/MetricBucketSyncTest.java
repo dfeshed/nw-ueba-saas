@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.monitoring.datadog.PresidioMetricDataDogService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.export.MetricsExporter;
-import presidio.monitoring.services.export.MetricsExporterElasticImpl;
+import presidio.monitoring.services.export.MetricsExporterImpl;
 import presidio.monitoring.spring.MetricPersistencyServiceTestConfig;
 import presidio.monitoring.spring.TestConfig;
 
@@ -35,6 +36,9 @@ public class MetricBucketSyncTest {
     @Autowired
     private PresidioMetricPersistencyService presidioMetricPersistencyService;
 
+    @Autowired
+    private PresidioMetricDataDogService presidioMetricDataDogService;
+
     @Test
     @Ignore
     public void testSynchronization() throws InterruptedException {
@@ -46,7 +50,7 @@ public class MetricBucketSyncTest {
             @Override
             public void run() {
                 System.out.println("start");
-                MetricsExporter metricsExporter = new MetricsExporterElasticImpl(presidioMetricBucket, presidioMetricPersistencyService, taskScheduler());
+                MetricsExporter metricsExporter = new MetricsExporterImpl(presidioMetricBucket, presidioMetricPersistencyService, presidioMetricDataDogService, taskScheduler());
 
                 while (true) {
                     try {

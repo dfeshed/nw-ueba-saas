@@ -1,6 +1,7 @@
 package presidio.monitoring.spring;
 
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,9 @@ public class TestConfig {
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
         properties.put("spring.application.name", "metricGeneratorTest");
+        properties.put("datadog.host", "localhost");
+        properties.put("datadog.port", 8125);
+        properties.put("datadog.metrics", Collections.emptyList());
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 
