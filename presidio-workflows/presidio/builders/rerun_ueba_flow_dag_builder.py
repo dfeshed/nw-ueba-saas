@@ -1,9 +1,8 @@
 import logging
 import os
-
 import psutil
-from copy import copy
 
+from copy import copy
 from airflow import configuration
 from airflow.bin import cli
 from airflow.models import DagRun, DAG, DagModel
@@ -22,6 +21,7 @@ from presidio.utils.airflow.operators import spring_boot_jar_operator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
+config_reader_singleton = ConfigServerConfigurationReaderSingleton()
 TASK_KILL_TIMEOUT = 60
 
 
@@ -40,8 +40,6 @@ class RerunUebaFlowDagBuilder(object):
         """
 
         logging.debug("populating the rerun full flow dag")
-        config_reader = ConfigServerConfigurationReaderSingleton().config_reader
-
         dags = get_registered_presidio_dags()
         dag_ids_to_clean = map(lambda x: x.dag_id, dags)
 
@@ -49,7 +47,7 @@ class RerunUebaFlowDagBuilder(object):
 
         kill_dags_task_instances_operator = build_kill_dags_task_instances_operator(dag, dag_ids_to_clean)
 
-        clean_mongo_operator = build_mongo_clean_bash_operator(config_reader, dag)
+        clean_mongo_operator = build_mongo_clean_bash_operator(dag)
 
         clean_redis_operator = build_redis_clean_bash_operator(dag)
 
@@ -231,18 +229,25 @@ def build_kill_dags_task_instances_operator(cleanup_dag, dag_ids_to_clean):
     return kill_dags_task_instances_operator
 
 
-def build_mongo_clean_bash_operator(config_reader, cleanup_dag):
-    encpass = config_reader.read(conf_key="mongo.db.password")
-    # build the mongo clean bash command
-    mongo_clean_bash_command = "MONGO_PASS=$(java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar decrypt {0})".format(
-        encpass) + "&& mongo presidio -u presidio -p $MONGO_PASS --eval \"db.getCollectionNames().forEach(function(t){if (0==t.startsWith('system')) {print('dropping: ' +t); db.getCollection(t).drop();}});\""
-    clean_mongo_operator = BashOperator(task_id='clean_mongo',
-                                        bash_command=mongo_clean_bash_command,
-                                        dag=cleanup_dag)
-    return clean_mongo_operator
+def build_mongo_clean_bash_operator(cleanup_dag):
+    mongo_host_name = config_reader_singleton.config_reader.read("mongo.host.name", "localhost")
+    mongo_host_port = config_reader_singleton.config_reader.read("mongo.host.port", "27017")
+    mongo_db_name = config_reader_singleton.config_reader.read("mongo.db.name", "presidio")
+    mongo_db_user = config_reader_singleton.config_reader.read("mongo.db.user", "presidio")
+    mongo_db_password = config_reader_singleton.config_server_configuration_reader.read("mongo.db.password")
+    eval_exp = "db.getCollectionNames().forEach(function(collectionName) {" \
+               "    if (collectionName.startsWith('system') == 0) {" \
+               "        print('Dropping collection ' + collectionName);" \
+               "        db.getCollection(collectionName).drop();" \
+               "    }" \
+               "});"
+    bash_command = "mongo -u {} -p {} {}:{}/{} --authenticationDatabase {} --eval \"{}\"".format(
+        mongo_db_user, mongo_db_password, mongo_host_name, mongo_host_port, mongo_db_name, mongo_db_name, eval_exp)
+    return BashOperator(task_id='clean_mongo', bash_command=bash_command, dag=cleanup_dag)
 
 
 def build_redis_clean_bash_operator(cleanup_dag):
-    redis_clean_bash_command = "redis-cli flushall"
-    clean_redis_operator = BashOperator(task_id='clean_redis', bash_command=redis_clean_bash_command, dag=cleanup_dag)
-    return clean_redis_operator
+    redis_host_name = config_reader_singleton.config_reader.read("presidio.redis.host.name", "localhost")
+    redis_host_port = config_reader_singleton.config_reader.read("presidio.redis.host.port", "6379")
+    bash_command = "redis-cli -h {} -p {} flushall".format(redis_host_name, redis_host_port)
+    return BashOperator(task_id='clean_redis', bash_command=bash_command, dag=cleanup_dag)
