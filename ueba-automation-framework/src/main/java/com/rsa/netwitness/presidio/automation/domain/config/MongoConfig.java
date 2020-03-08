@@ -65,7 +65,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
     public Mongo mongo() throws Exception {
         MongoClient client;
         initMongoProperties();
-        initMongoPassword();
         if (!StringUtils.isEmpty(mongoUserName) && !StringUtils.isEmpty(mongoPassword)) {
             ServerAddress address = new ServerAddress(mongoHostName, mongoHostPort);
             List<MongoCredential> credentials = new ArrayList<>();
@@ -85,15 +84,12 @@ public class MongoConfig extends AbstractMongoConfiguration {
     }
 
     private void initMongoProperties() throws Exception {
-        initMongoPassword();
         mongoPropertiesReader.initMongoPropeties();
         mongoHostName = mongoPropertiesReader.getMongoHostName();
         mongoHostPort = mongoPropertiesReader.getMongoHostPort();
         mongoDBName = mongoPropertiesReader.getMongoDBName();
         mongoUserName = mongoPropertiesReader.getMongoUserName();
-    }
 
-    private void initMongoPassword() throws Exception {
         String password = mongoPropertiesReader.getMongoPassword();
         System.out.println("IS_MONGO_PASSWORD_ENCRYPTED=" + IS_MONGO_PASSWORD_ENCRYPTED);
         if (IS_MONGO_PASSWORD_ENCRYPTED) {
@@ -106,7 +102,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
     @Bean
     public com.mongodb.async.client.MongoClient asyncClient() throws Exception {
         initMongoProperties();
-        initMongoPassword();
         String connectionString = String.format("mongodb://%s:%s",mongoHostName, mongoHostPort);
         ClusterSettings clusterSettings = ClusterSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString)).build();
@@ -138,12 +133,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
     @Override
     public MongoClient mongoClient() {
         MongoClient client;
-        try {
-            initMongoPassword();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         try {
             initMongoProperties();
         } catch (Exception e) {
@@ -186,4 +175,3 @@ public class MongoConfig extends AbstractMongoConfiguration {
     }
 
 }
-
