@@ -33,7 +33,6 @@ pipeline {
     agent { label env.NODE_LABEL }
 
     environment {
-        JAVA_HOME = "${params.JAVA_HOME}"
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
         S3_ACCOUNT = getAccountID()
     }
