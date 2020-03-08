@@ -30,7 +30,7 @@ import static presidio.integration.performance.utils.TestProperties.SCENARIOS_SP
 
 public class PerfLogsNoSpringGenTest extends AbstractTestNGSpringContextTests {
     public static final TestProperties test = new TestProperties();
-    private static final int EVENTS_GENERATION_CHUNK = 51000;
+    public static final int EVENTS_GENERATION_CHUNK = Integer.parseInt(System.getenv().getOrDefault("CHUNK_SIZE", "51000"));
     private static Logger LOGGER = (Logger) LoggerFactory.getLogger(PerfLogsNoSpringGenTest.class);
 
     private void setTestProperties() {

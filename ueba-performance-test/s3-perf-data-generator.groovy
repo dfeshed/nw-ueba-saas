@@ -22,6 +22,7 @@ pipeline {
 
         string(name: 'SUREFIRE_ARG_LINE', defaultValue: '-Xms1g -Xmx60g', description: '')
         string(name: 'SCENARIOS_SPLIT_INTERVAL_HOURS', defaultValue: '0', description: 'put 0 to disable split')
+        string(name: 'CHUNK_SIZE', defaultValue: '10000', description: '')
         choice(name: 'PARALLEL_SCENARIOS_INSERT', choices: ['true','false'], description: '')
         string(name: 'GENERATOR_FORMAT', defaultValue: 'S3_JSON_GZIP_CHUNKS', description: 'S3_JSON_GZIP_CHUNKS,CEF_HOURLY_FILE, CEF_DAILY_FILE')
         string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
