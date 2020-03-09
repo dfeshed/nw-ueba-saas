@@ -150,7 +150,7 @@ public class AlertsScenario {
 
         // process schema indicator events
         for (int i = 0; i < 4; i++) {
-            processEvents.addAll(ProcessOperationAnomalies.getAbnormalProcessInjectedIntoLSASS(userNameGenerator.getNext(), anomalyDay));           //"proc_lsass_" + i
+            processEvents.addAll(ProcessOperationAnomalies.getAbnormalProcessInjectedIntoLSASS("NT AUTHORITY\\\\SYSTEM", anomalyDay));           //"proc_lsass_" + i
             processEvents.addAll(ProcessOperationAnomalies.getAbnormalProcessInjectedIntoWindowsProcess(userNameGenerator.getNext(), anomalyDay));  //"proc_win_" + i
             processEvents.addAll(ProcessOperationAnomalies.getAbnormalReconnaissanceTool(userNameGenerator.getNext(), anomalyDay));                 //"proc_abn_recon_" + i
             processEvents.addAll(ProcessOperationAnomalies.getAbnormalProcessExecutesScript(userNameGenerator.getNext(), anomalyDay));              //"proc_exec_script_" + i
