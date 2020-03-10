@@ -2,8 +2,8 @@
 pipeline {
     parameters {
         booleanParam(name: 'NETWITNESS_DB_RESET', defaultValue: false, description: '')
-        booleanParam(name: 'RUN_GENERATOR', defaultValue: false, description: '')
-        booleanParam(name: 'SPLIT_FILES', defaultValue: false, description: '')
+        booleanParam(name: 'RUN_GENERATOR', defaultValue: true, description: '')
+        booleanParam(name: 'SPLIT_FILES', defaultValue: false, description: 'Split large files to FILE_SPLIT_SIZE parts')
         booleanParam(name: 'UPLOAD_TO_BROKER', defaultValue: false, description: '')
 
         string(name: 'FILES_DESTINATION_PATH', defaultValue: '/var/netwitness/s3_mount/perf_broker_cef', description: '')
@@ -45,10 +45,8 @@ pipeline {
         FRAMEWORK_SCRIPTS_DIR = '/ueba-automation-projects/ueba-automation-framework/src/main/resources/scripts/'
 
         PERF_GEN_TARGET_PATH="${env.WORKSPACE}/ueba-automation-projects/ueba-performance-test/target/netwitness_events_gen/*"
-        PERF_GEN_DATA_PATH="/var/netwitness/presidio/perf_data"
-        PERF_GEN_GENERATED_PATH="${PERF_GEN_DATA_PATH}/generated"
-        PERF_GEN_DONE_PATH="${PERF_GEN_DATA_PATH}/inserted"
-
+        PERF_GEN_GENERATED_PATH="${FILES_DESTINATION_PATH}/generated"
+        PERF_GEN_DONE_PATH="${FILES_DESTINATION_PATH}/inserted"
     }
 
     stages {
