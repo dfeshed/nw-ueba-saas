@@ -3,7 +3,7 @@ pipeline {
     parameters {
         booleanParam(name: 'NETWITNESS_DB_RESET', defaultValue: false, description: '')
         booleanParam(name: 'RUN_GENERATOR', defaultValue: true, description: '')
-        booleanParam(name: 'SPLIT_FILES', defaultValue: false, description: 'Split large files to FILE_SPLIT_SIZE parts')
+        booleanParam(name: 'SPLIT_FILES', defaultValue: false, description: '')
         booleanParam(name: 'UPLOAD_TO_BROKER', defaultValue: false, description: '')
 
         string(name: 'FILES_DESTINATION_PATH', defaultValue: '/var/netwitness/s3_mount/perf_broker_cef', description: '')
@@ -24,8 +24,8 @@ pipeline {
         string(name: 'TLS_EVENTS_PER_DAY_PER_GROUP', defaultValue: '93375', description: '')
         string(name: 'TLS_ALERTS_PROBABILITY', defaultValue: '0.001', description: '')
 
-        string(name: 'FILE_SPLIT_SIZE', defaultValue: '447000000', description: '')
-        string(name: 'DELAY_BETWEEN_FILES_INSERT_SEC', defaultValue: '60', description: '')
+        string(name: 'FILE_SPLIT_SIZE', defaultValue: '447000000', description: 'SPLIT_FILES stage parameter. Size bytes per output file')
+        string(name: 'DELAY_BETWEEN_FILES_INSERT_SEC', defaultValue: '60', description: 'Delay between files upload to the LogDecoder')
 
         string(name: 'SUREFIRE_ARG_LINE', defaultValue: '-Xms1g -Xmx5g', description: '')
         string(name: 'CHUNK_SIZE', defaultValue: '10000', description: '')
@@ -78,8 +78,8 @@ pipeline {
                 runSuiteXmlFile('PerfLogsNoSpringGenTest.xml')
 
                 sh "echo \"moving files to ${PERF_GEN_GENERATED_PATH}\""
-                sh "mkdir -p ${PERF_GEN_GENERATED_PATH}"
-                sh "mkdir -p ${PERF_GEN_DONE_PATH}"
+                sh "[ -d ${PERF_GEN_GENERATED_PATH} ] || mkdir -p ${PERF_GEN_GENERATED_PATH}"
+                sh "[ -d ${PERF_GEN_DONE_PATH} ] || mkdir -p ${PERF_GEN_DONE_PATH}"
                 sh "mv ${PERF_GEN_TARGET_PATH} ${PERF_GEN_GENERATED_PATH}"
             }
         }

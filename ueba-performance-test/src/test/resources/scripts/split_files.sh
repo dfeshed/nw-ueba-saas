@@ -7,7 +7,7 @@ SPLIT_SIZE=${1:-${DEFAULT_SIZE}}
 GENERATED_PATH="${2:-${DEFAULT_PATH}}/generated/*/*"
 
 echo "*****************************   SPLIT FILES Started  *****************************"
-mkdir -p $GENERATED_PATH
+[ -d $GENERATED_PATH ] || mkdir -p $GENERATED_PATH
 
 for FILE in $GENERATED_PATH; do
      FILESIZE=$(wc -c <"$FILE")
