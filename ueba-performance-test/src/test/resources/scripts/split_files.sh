@@ -4,12 +4,12 @@ DEFAULT_PATH="/var/netwitness/presidio/perf_data"
 DEFAULT_SIZE=447000000
 
 SPLIT_SIZE=${1:-${DEFAULT_SIZE}}
-GENERATED_PATH="${2:-${DEFAULT_PATH}}/generated/*/*"
+GENERATED_PATH="${2:-${DEFAULT_PATH}}/generated"
 
 echo "*****************************   SPLIT FILES Started  *****************************"
 [ -d $GENERATED_PATH ] || mkdir -p $GENERATED_PATH
 
-for FILE in $GENERATED_PATH; do
+for FILE in "$GENERATED_PATH/*/*"; do
      FILESIZE=$(wc -c <"$FILE")
 
      if [[ $FILESIZE -gt $SPLIT_SIZE ]] ;then
