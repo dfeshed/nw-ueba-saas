@@ -41,10 +41,10 @@ pipeline {
 
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
-        PERF_SCRIPTS_DIR = '/ueba-automation-projects/ueba-performance-test/src/test/resources/scripts/'
-        FRAMEWORK_SCRIPTS_DIR = '/ueba-automation-projects/ueba-automation-framework/src/main/resources/scripts/'
+        PERF_SCRIPTS_DIR = '/ueba-performance-test/src/test/resources/scripts/'
+        FRAMEWORK_SCRIPTS_DIR = '/ueba-automation-framework/src/main/resources/scripts/'
 
-        PERF_GEN_TARGET_PATH="${env.WORKSPACE}/ueba-automation-projects/ueba-performance-test/target/netwitness_events_gen/*"
+        PERF_GEN_TARGET_PATH="${env.WORKSPACE}/ueba-performance-test/target/netwitness_events_gen/*"
         PERF_GEN_GENERATED_PATH="${FILES_DESTINATION_PATH}/generated"
         PERF_GEN_DONE_PATH="${FILES_DESTINATION_PATH}/inserted"
     }
