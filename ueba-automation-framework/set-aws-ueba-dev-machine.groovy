@@ -14,7 +14,7 @@ pipeline {
         JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64'
         OLD_UEBA_RPMS = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
     }
-    
+
     stages {
         stage('Project Clone') {
             steps {
