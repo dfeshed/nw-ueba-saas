@@ -151,8 +151,8 @@ public class AlertsScenario {
         // process schema indicator events
         for (int i = 0; i < 4; i++) {
             processEvents.addAll(ProcessOperationAnomalies.getAbnormalProcessInjectedIntoLSASS("NT AUTHORITY\\\\SYSTEM", anomalyDay));           //"proc_lsass_" + i
-            processEvents.addAll(ProcessOperationAnomalies.getAbnormalProcessInjectedIntoWindowsProcess("NT2 AUTHORITY\\SYSTEM", anomalyDay));  //"proc_win_" + i
-            processEvents.addAll(ProcessOperationAnomalies.getAbnormalReconnaissanceTool("NT3 AUTHORITY\\\\\\SYSTEM", anomalyDay));                 //"proc_abn_recon_" + i
+            processEvents.addAll(ProcessOperationAnomalies.getAbnormalProcessInjectedIntoWindowsProcess("NT AUTHORITY\\\\LOCAL SERVICE", anomalyDay));  //"proc_win_" + i
+            processEvents.addAll(ProcessOperationAnomalies.getAbnormalReconnaissanceTool("NT AUTHORITY\\\\NETWORK SERVIC", anomalyDay));                 //"proc_abn_recon_" + i
             processEvents.addAll(ProcessOperationAnomalies.getAbnormalProcessExecutesScript(userNameGenerator.getNext(), anomalyDay));              //"proc_exec_script_" + i
             processEvents.addAll(ProcessOperationAnomalies.getAbnormalAppTriggeredByScript(userNameGenerator.getNext(), anomalyDay));               //"proc_trig_by_script_" + i
             processEvents.addAll(ProcessOperationAnomalies.getAbnormalProcessOpenedByScript(userNameGenerator.getNext(), anomalyDay));              // "proc_opened_by_script_" + i
