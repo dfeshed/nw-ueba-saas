@@ -77,7 +77,7 @@ pipeline {
             }
             steps {
                 println "Cleaning:  ${PERF_GEN_GENERATED_PATH}"
-                sh "[ -d ${PERF_GEN_GENERATED_PATH} ] || rm -rf ${PERF_GEN_GENERATED_PATH}"
+                sh "[ -d ${PERF_GEN_GENERATED_PATH} ] && rm -rf ${PERF_GEN_GENERATED_PATH}"
             }
         }
 
@@ -87,7 +87,7 @@ pipeline {
             }
             steps {
                 println "Cleaning:  ${PERF_GEN_UPLOADED_PATH}"
-                sh "[ -d ${PERF_GEN_UPLOADED_PATH} ] || rm -rf ${PERF_GEN_UPLOADED_PATH}"
+                sh "[ -d ${PERF_GEN_UPLOADED_PATH} ] && rm -rf ${PERF_GEN_UPLOADED_PATH}"
             }
         }
 
