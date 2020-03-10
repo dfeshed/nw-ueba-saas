@@ -49,26 +49,28 @@ pipeline {
         PERF_GEN_GENERATED_PATH = "${FILES_DESTINATION_PATH}/generated"
         PERF_GEN_UPLOADED_PATH = "${FILES_DESTINATION_PATH}/uploaded"
     }
-    stage('Project Clone') {
-        steps {
-            sh 'pwd'
-            sh 'whoami'
-            script { currentBuild.displayName = "#${BUILD_NUMBER} ${NODE_NAME}" }
-            cleanWs()
-            git branch: params.BRANCH_NAME, credentialsId: '67bd792d-ad28-4ebc-bd04-bef8526c3389', url: 'git@github.com:netwitness/ueba-automation-projects.git'
-        }
-    }
-
-    stage('Reset Broker and LogDecoder DBs') {
-        when {
-            expression { return params.NETWITNESS_DB_RESET }
-        }
-        steps {
-            sh "${env.WORKSPACE}${env.FRAMEWORK_SCRIPTS_DIR}deployment/reset_ld_and_concentrator_hybrid_dbs.sh ${params.LOG_DECODER_IP} ${params.BROKER_IP}"
-        }
-    }
 
     stages {
+
+        stage('Project Clone') {
+            steps {
+                sh 'pwd'
+                sh 'whoami'
+                script { currentBuild.displayName = "#${BUILD_NUMBER} ${NODE_NAME}" }
+                cleanWs()
+                git branch: params.BRANCH_NAME, credentialsId: '67bd792d-ad28-4ebc-bd04-bef8526c3389', url: 'git@github.com:netwitness/ueba-automation-projects.git'
+            }
+        }
+
+        stage('Reset Broker and LogDecoder DBs') {
+            when {
+                expression { return params.NETWITNESS_DB_RESET }
+            }
+            steps {
+                sh "${env.WORKSPACE}${env.FRAMEWORK_SCRIPTS_DIR}deployment/reset_ld_and_concentrator_hybrid_dbs.sh ${params.LOG_DECODER_IP} ${params.BROKER_IP}"
+            }
+        }
+
         stage('Clean previously generated files') {
             when {
                 expression { return params.GENERATED_FILES_CLEANUP }
@@ -111,6 +113,7 @@ pipeline {
                 sh "sh ${env.WORKSPACE}${env.PERF_SCRIPTS_DIR}split_files.sh $FILE_SPLIT_SIZE $FILES_DESTINATION_PATH"
             }
         }
+
         stage('Insert to Broker') {
             when {
                 expression { return params.UPLOAD_TO_BROKER }
