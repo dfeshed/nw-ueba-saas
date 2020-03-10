@@ -2,8 +2,7 @@
 pipeline {
     parameters {
         booleanParam(name: 'NETWITNESS_DB_RESET', defaultValue: false, description: '')
-        booleanParam(name: 'CLEAN_FILES', defaultValue: false, description: '')
-        booleanParam(name: 'CREATE_FILES', defaultValue: false, description: '')
+        booleanParam(name: 'RUN_GENERATOR', defaultValue: false, description: '')
         booleanParam(name: 'SPLIT_FILES', defaultValue: false, description: '')
         booleanParam(name: 'UPLOAD_TO_BROKER', defaultValue: false, description: '')
 
@@ -74,6 +73,9 @@ pipeline {
 
 
         stage('Generate data') {
+            when {
+                expression { return params.RUN_GENERATOR }
+            }
             steps {
                 runSuiteXmlFile('PerfLogsNoSpringGenTest.xml')
 
