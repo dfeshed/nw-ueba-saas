@@ -76,8 +76,8 @@ pipeline {
                 expression { return params.GENERATED_FILES_CLEANUP }
             }
             steps {
-                println "Cleaning:  ${GENERATED_PATH}"
-                sh "[ -d ${PERF_GEN_GENERATED_PATH} ] || rm -rf ${GENERATED_PATH}"
+                println "Cleaning:  ${PERF_GEN_GENERATED_PATH}"
+                sh "[ -d ${PERF_GEN_GENERATED_PATH} ] || rm -rf ${PERF_GEN_GENERATED_PATH}"
             }
         }
 
