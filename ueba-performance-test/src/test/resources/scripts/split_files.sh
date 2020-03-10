@@ -8,8 +8,9 @@ GENERATED_PATH="${2:-${DEFAULT_PATH}}/generated"
 
 echo "*****************************   SPLIT FILES Started  *****************************"
 [ -d $GENERATED_PATH ] || mkdir -p $GENERATED_PATH
+FILES_DIR="${GENERATED_PATH}/*/*"
 
-for FILE in "$GENERATED_PATH/*/*"; do
+for FILE in ${FILES_DIR}; do
      FILESIZE=$(wc -c <"$FILE")
 
      if [[ $FILESIZE -gt $SPLIT_SIZE ]] ;then
@@ -17,7 +18,7 @@ for FILE in "$GENERATED_PATH/*/*"; do
         split -b ${SPLIT_SIZE} $FILE $FILE
         rm -f $FILE
      else
-        echo "$(date +%F_%T:%S) Skipped:  $FILE; size=$FILESIZE"
+        echo "$(date +%F_%T:%S) Insufficient size, skipped:  $FILE; size=$FILESIZE"
      fi
 done
 
