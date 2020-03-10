@@ -10,7 +10,7 @@ pipeline {
         string(name: 'FILES_DESTINATION_PATH', defaultValue: '/var/netwitness/s3_mount/perf_broker_cef', description: '')
 
         string(name: 'LOG_DECODER_IP', defaultValue: '172.24.229.74', description: '')
-        string(name: 'BROKER_IP', defaultValue: '172.24.229.74', description: '')
+        string(name: 'BROKER_IP', defaultValue: '172.24.229.82', description: '')
         string(name: 'START_TIME', defaultValue: '2020-02-01T00:00:00.00Z', description: '')
         string(name: 'END_TIME', defaultValue: '2020-02-07T00:00:00.00Z', description: '')
         extendedChoice(defaultValue: 'TLS,FILE,ACTIVE_DIRECTORY,AUTHENTICATION,REGISTRY,PROCESS', description: '',
@@ -28,8 +28,8 @@ pipeline {
         string(name: 'FILE_SPLIT_SIZE', defaultValue: '447000000', description: '')
         string(name: 'DELAY_BETWEEN_FILES_INSERT_SEC', defaultValue: '60', description: '')
 
-        string(name: 'SUREFIRE_ARG_LINE', defaultValue: '-Xms1g -Xmx20g', description: '')
-        string(name: 'CHUNK_SIZE', defaultValue: '5000', description: '')
+        string(name: 'SUREFIRE_ARG_LINE', defaultValue: '-Xms1g -Xmx5g', description: '')
+        string(name: 'CHUNK_SIZE', defaultValue: '10000', description: '')
         choice(name: 'PARALLEL_SCENARIOS_INSERT', choices: ['true','false'], description: '')
 
         choice(name: 'GENERATOR_FORMAT', choices: ['CEF_HOURLY_FILE','CEF_DAILY_FILE'], description: '')
