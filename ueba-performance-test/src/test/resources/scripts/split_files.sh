@@ -1,19 +1,23 @@
 #!/bin/bash
 
-PROJECT_PATH=/var/netwitness/presidio/workspace/presidio-performance-network-gen/ueba-automation-projects/ueba-performance-test
-DEFAULT_PATH="/var/netwitness/presidio/perf_data/generated/*/*"
+DEFAULT_PATH="/var/netwitness/presidio/perf_data"
+DEFAULT_SIZE=447000000
+
+SPLIT_SIZE=${1:-${DEFAULT_SIZE}}
+GENERATED_PATH="${2:-${DEFAULT_PATH}}/generated/*/*"
 
 echo "*****************************   SPLIT FILES Started  *****************************"
+mkdir -p $GENERATED_PATH
 
-for FILE in $DEFAULT_PATH; do
+for FILE in $GENERATED_PATH; do
      FILESIZE=$(wc -c <"$FILE")
 
-     if [[ $FILESIZE -gt 447000000 ]] ;then
+     if [[ $FILESIZE -gt $SPLIT_SIZE ]] ;then
         echo "$(date +%F_%T:%S) Processing file:  $FILE"
-        split -b 450M $FILE $FILE
+        split -b ${SPLIT_SIZE} $FILE $FILE
         rm -f $FILE
      else
-        echo "$(date +%F_%T:%S) Skipped file:  $FILE; size=$FILESIZE"
+        echo "$(date +%F_%T:%S) Skipped:  $FILE; size=$FILESIZE"
      fi
 done
 
