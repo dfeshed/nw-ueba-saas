@@ -1,15 +1,16 @@
 import logging
 import os
 import psutil
+import subprocess
 
-from copy import copy
 from airflow import configuration
 from airflow.bin import cli
-from airflow.models import DagRun, DAG, DagModel
+from airflow.models import DAG, DagModel, DagRun
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
+from copy import copy
 
 from presidio.builders.adapter.adapter_properties_cleanup_operator_builder import \
     build_adapter_properties_cleanup_operator
@@ -230,20 +231,23 @@ def build_kill_dags_task_instances_operator(cleanup_dag, dag_ids_to_clean):
 
 
 def build_mongo_clean_bash_operator(cleanup_dag):
-    mongo_host_name = config_reader_singleton.config_reader.read("mongo.host.name", "localhost")
-    mongo_host_port = config_reader_singleton.config_reader.read("mongo.host.port", "27017")
-    mongo_db_name = config_reader_singleton.config_reader.read("mongo.db.name", "presidio")
-    mongo_db_user = config_reader_singleton.config_reader.read("mongo.db.user", "presidio")
-    mongo_db_password = config_reader_singleton.config_server_configuration_reader.read("mongo.db.password")
-    eval_exp = "db.getCollectionNames().forEach(function(collectionName) {" \
-               "    if (collectionName.startsWith('system') == 0) {" \
-               "        print('Dropping collection ' + collectionName);" \
-               "        db.getCollection(collectionName).drop();" \
-               "    }" \
-               "});"
-    bash_command = "mongo -u {} -p {} {}:{}/{} --authenticationDatabase {} --eval \"{}\"".format(
-        mongo_db_user, mongo_db_password, mongo_host_name, mongo_host_port, mongo_db_name, mongo_db_name, eval_exp)
-    return BashOperator(task_id='clean_mongo', bash_command=bash_command, dag=cleanup_dag)
+    def python_callable():
+        mongo_host_name = config_reader_singleton.config_reader.read("mongo.host.name", "localhost")
+        mongo_host_port = config_reader_singleton.config_reader.read("mongo.host.port", "27017")
+        mongo_db_name = config_reader_singleton.config_reader.read("mongo.db.name", "presidio")
+        mongo_db_user = config_reader_singleton.config_reader.read("mongo.db.user", "presidio")
+        mongo_db_password = config_reader_singleton.config_server_configuration_reader.read("mongo.db.password")
+        eval_exp = "db.getCollectionNames().forEach(function(collectionName) {" \
+                   "    if (collectionName.startsWith('system') == 0) {" \
+                   "        print('Dropping collection ' + collectionName);" \
+                   "        db.getCollection(collectionName).drop();" \
+                   "    }" \
+                   "});"
+        subprocess.check_output(["mongo", "-u", mongo_db_user, "-p", mongo_db_password,
+                                 "{}:{}/{}".format(mongo_host_name, mongo_host_port, mongo_db_name),
+                                 "--authenticationDatabase", mongo_db_name, "--eval", "\"{}\"".format(eval_exp)])
+
+    return PythonOperator(task_id='clean_mongo', python_callable=python_callable, dag=cleanup_dag)
 
 
 def build_redis_clean_bash_operator(cleanup_dag):
