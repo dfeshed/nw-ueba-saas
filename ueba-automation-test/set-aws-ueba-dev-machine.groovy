@@ -57,7 +57,7 @@ pipeline {
 
         stage('Update M2') {
             steps {
-                sh "cd ${DOWNLOADS_DIR} && tar -xf ueba-automation-repo_ee6b6e82dbad82aac0c3aa3d5dcf3f0742e894d1_2020-03-03T17-14-43.tar.gz"
+                sh "cd ${DOWNLOADS_DIR} && tar -xf m2.tar.gz"
                 sh "[ -d ${HOME_DIR}/.m2 ] && rm -rf ${HOME_DIR}/.m2/*"
                 sh "[ -d ${HOME_DIR}/.m2 ] || mkdir -p ${HOME_DIR}/.m2"
                 sh "cd ${DOWNLOADS_DIR} && mv repository ${HOME_DIR}/.m2"
