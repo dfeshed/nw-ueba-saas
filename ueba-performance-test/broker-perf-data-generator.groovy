@@ -26,7 +26,7 @@ pipeline {
         string(name: 'TLS_ALERTS_PROBABILITY', defaultValue: '0.001', description: '')
 
         string(name: 'FILE_SPLIT_SIZE', defaultValue: '447000000', description: 'SPLIT_FILES stage parameter. Size bytes per output file')
-        string(name: 'DELAY_BETWEEN_FILES_INSERT_SEC', defaultValue: '60', description: 'Delay between files upload to the LogDecoder')
+        string(name: 'DELAY_BETWEEN_FILES_INSERT_SEC', defaultValue: '10', description: 'Delay between files upload to the LogDecoder')
 
         string(name: 'SUREFIRE_ARG_LINE', defaultValue: '-Xms1g -Xmx5g', description: '')
         string(name: 'CHUNK_SIZE', defaultValue: '10000', description: '')
