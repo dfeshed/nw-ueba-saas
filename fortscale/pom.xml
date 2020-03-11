@@ -117,6 +117,7 @@
         <auto-service.version>1.0-rc5</auto-service.version>
         <spring-test.version>4.3.20.RELEASE</spring-test.version>
         <jackson-core.version>2.9.9</jackson-core.version>
+        <jackson-databind.version>2.9.10.2</jackson-databind.version>
         <jackson-bom.version>2.9.9.20190807</jackson-bom.version>
         <log4j.version>2.11.2</log4j.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
@@ -208,7 +209,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson-core.version}</version>
+                <version>${jackson-databind.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
