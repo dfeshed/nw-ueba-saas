@@ -1,7 +1,6 @@
 
 pipeline {
     parameters {
-        string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
         string(name: 'NODE_LABEL', defaultValue: '', description: '')
         string(name: 'MVN_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
     }
