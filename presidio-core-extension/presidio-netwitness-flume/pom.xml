@@ -21,6 +21,7 @@
         <junit.version>RELEASE</junit.version>
         <copyDependencies.version>3.1.1</copyDependencies.version>
         <cba-aws-api.version>0.3.0-SNAPSHOT</cba-aws-api.version>
+        <xstream.version>1.4.11.1</xstream.version>
     </properties>
 
     <build>
@@ -185,12 +186,21 @@
                     <groupId>org.jasypt</groupId>
                     <artifactId>jasypt</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.thoughtworks.xstream</groupId>
+                    <artifactId>xstream</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.kohsuke</groupId>
             <artifactId>libpam4j</artifactId>
             <version>1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>${xstream.version}</version>
         </dependency>
     </dependencies>
 
