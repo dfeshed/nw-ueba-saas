@@ -6,30 +6,62 @@ pipeline {
         string(name: 'MVN_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
     }
 
+    environment {
+        BUCKET_NAME="presidio-repo.rsa.com"
+        BUCKET_PATH="presidio-test-utils"
+        HOME_DIR="/home/presidio"
+        DOWNLOADS_DIR = "${HOME_DIR}/download"
+        BIN_DIR = "${HOME_DIR}/bin"
+    }
+
+
     agent {
         label env.NODE_LABEL
     }
 
-    environment {
-        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64'
-        OLD_UEBA_RPMS = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
-    }
-
     stages {
-        stage('Project Clone') {
+
+        stage('Download Files') {
             steps {
                 sh 'pwd'
                 sh 'whoami'
                 script { currentBuild.displayName="#${BUILD_NUMBER} ${NODE_NAME}" }
+                script { currentBuild.description = "${params.BRANCH_NAME}" }
                 cleanWs()
-                git branch: params.BRANCH_NAME, credentialsId: '67bd792d-ad28-4ebc-bd04-bef8526c3389', url: 'git@github.com:netwitness/ueba-automation-projects.git'
+                sh "[ -d ${DOWNLOADS_DIR} ] || mkdir -p ${DOWNLOADS_DIR}"
+                sh "[ -d ${BIN_DIR} ] || mkdir -p ${BIN_DIR}"
+                withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: 'us-east-1') {
+                    s3Download(file:'', bucket:"${env.BUCKET_NAME}", path:"${BUCKET_PATH}/",force:true)
+                }
+                sh "mv -f ${WORKSPACE}/${BUCKET_PATH}/* ${DOWNLOADS_DIR}/"
             }
         }
-        stage('Download Files') {
+
+        stage('Install Maven') {
             steps {
-                withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: 'us-east-1') {
-                    s3Download(file:'', bucket:'presidio-repo.rsa.com', path:'presidio-test-utils/',force:true)
-                }
+                sh "cd ${DOWNLOADS_DIR} && tar -xf apache-maven-3.6.2-bin.tar.gz"
+                sh "[ -f ${BIN_DIR}/mvn ] ||  ln -s ${DOWNLOADS_DIR}/apache-maven-3.6.2/bin/mvn ${BIN_DIR}"
+                // $PATH works after reboot
+                //  echo "export PATH=$PATH:$HOME/.local/bin:$HOME/bin" >> ${HOME_DIR}/.bashrc
+                sh 'echo $PATH'
+                sh "mvn -version"
+            }
+        }
+
+        stage('Install Git') {
+            steps {
+                // rpm location: http://172.24.229.44:8882/repo/external/
+                sh "git --version || sudo yum install -y git"
+                sh "git --version"
+            }
+        }
+
+        stage('Update M2') {
+            steps {
+                sh "cd ${DOWNLOADS_DIR} && tar -xf ueba-automation-repo_ee6b6e82dbad82aac0c3aa3d5dcf3f0742e894d1_2020-03-03T17-14-43.tar.gz"
+                sh "[ -d ${HOME_DIR}/.m2 ] && rm -rf ${HOME_DIR}/.m2/*"
+                sh "[ -d ${HOME_DIR}/.m2 ] || mkdir -p ${HOME_DIR}/.m2"
+                sh "cd ${DOWNLOADS_DIR} && mv repository ${HOME_DIR}/.m2"
             }
         }
     }

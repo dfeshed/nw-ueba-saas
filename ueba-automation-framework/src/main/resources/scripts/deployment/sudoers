@@ -125,6 +125,7 @@ presidio    ALL=(root)   NOPASSWD: /usr/bin/systemctl restart presidio-manager
 # enable yum command by presidio - as rpm upgrades/remove/install
 presidio    ALL=(root)   SETENV:NOPASSWD: /usr/bin/yum
 presidio    ALL=(root)   SETENV:NOPASSWD: /bin/rpm
+presidio    ALL=(root)   SETENV:NOPASSWD: /bin/su
 
 # enable elasticsearch init
 presidio    ALL=(root)   SETENV:NOPASSWD: /var/lib/netwitness/presidio/airflow/venv/bin/python /var/lib/netwitness/presidio/elasticsearch/init/init_elasticsearch.py --resources_path /var/lib/netwitness/presidio/elasticsearch/init/data/ --elasticsearch_url http\://localhost\:9200/
