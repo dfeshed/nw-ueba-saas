@@ -52,7 +52,9 @@ pipeline {
 
         stage('Generate data') {
             steps {
-                runSuiteXmlFile('PerfLogsNoSpringGenTest.xml')
+                retry(3) {
+                    runSuiteXmlFile('PerfLogsNoSpringGenTest.xml')
+                }
             }
         }
     }
