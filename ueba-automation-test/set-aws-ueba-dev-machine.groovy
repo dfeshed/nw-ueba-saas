@@ -24,7 +24,6 @@ pipeline {
                 sh 'pwd'
                 sh 'whoami'
                 script { currentBuild.displayName="#${BUILD_NUMBER} ${NODE_NAME}" }
-                script { currentBuild.description = "${params.BRANCH_NAME}" }
                 cleanWs()
                 sh "[ -d ${DOWNLOADS_DIR} ] || mkdir -p ${DOWNLOADS_DIR}"
                 sh "[ -d ${BIN_DIR} ] || mkdir -p ${BIN_DIR}"
@@ -57,8 +56,8 @@ pipeline {
         stage('Update M2') {
             steps {
                 sh "cd ${DOWNLOADS_DIR} && tar -xf m2.tar.gz"
-                sh "[ -d ${HOME_DIR}/.m2 ] && rm -rf ${HOME_DIR}/.m2/*"
                 sh "[ -d ${HOME_DIR}/.m2 ] || mkdir -p ${HOME_DIR}/.m2"
+                sh "rm -rf ${HOME_DIR}/.m2/*"
                 sh "cd ${DOWNLOADS_DIR} && mv repository ${HOME_DIR}/.m2"
             }
         }
