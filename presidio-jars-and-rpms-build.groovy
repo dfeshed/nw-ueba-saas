@@ -1,4 +1,4 @@
-def environments = [
+environments = [
         presidio_core_trigger: [
                 BUILD_PRESIDIO_TEST_UTILS: false,
                 BUILD_PRESIDIO_CORE: true,
