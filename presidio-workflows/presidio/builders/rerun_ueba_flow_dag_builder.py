@@ -48,7 +48,7 @@ class RerunUebaFlowDagBuilder(object):
 
         kill_dags_task_instances_operator = build_kill_dags_task_instances_operator(dag, dag_ids_to_clean)
 
-        clean_mongo_operator = build_mongo_clean_bash_operator(dag)
+        clean_mongo_operator = build_mongo_clean_python_operator(dag)
 
         clean_redis_operator = build_redis_clean_bash_operator(dag)
 
@@ -230,7 +230,7 @@ def build_kill_dags_task_instances_operator(cleanup_dag, dag_ids_to_clean):
     return kill_dags_task_instances_operator
 
 
-def build_mongo_clean_bash_operator(cleanup_dag):
+def build_mongo_clean_python_operator(cleanup_dag):
     def python_callable():
         mongo_host_name = config_reader_singleton.config_reader.read("mongo.host.name", "localhost")
         mongo_host_port = config_reader_singleton.config_reader.read("mongo.host.port", "27017")
