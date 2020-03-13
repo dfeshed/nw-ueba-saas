@@ -59,13 +59,12 @@ function uploadRpmsToS3ByUpdateS3YumRepo() {
   AWS_DIR_NAME=$(ls rsa-nw-presidio-core-*.el7.noarch.rpm | cut -d "-" -f6 | cut -d "." -f1)
   echo "$(update-s3-yum-repo s3://team-ueba/RSA/UEBA-Repo/builds/$AWS_DIR_NAME/)"
 
-  # lock is requared to syncronize build trigger
-  echo " " >lock && aws s3 cp lock s3://team-ueba/RSA/UEBA-Repo/builds/ && rm -f lock
   for f in $RPMS_DIR/*; do
     echo "going to upload  $f to S3"
     echo "$(update-s3-yum-repo s3://team-ueba/RSA/UEBA-Repo/builds/$AWS_DIR_NAME/ $f)"
   done
-  aws s3 rm s3://team-ueba/RSA/UEBA-Repo/builds/lock
+  # flag to reload link to the latest build
+  echo " " >reload && aws s3 cp reload s3://team-ueba/RSA/UEBA-Repo/builds/ && rm -f reload
 }
 
 if [[ "$1" == "only_upload" ]]; then
