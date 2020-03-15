@@ -15,7 +15,6 @@ pipeline {
 
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
-        booleanParam(name: 'DATA_INJECTION', defaultValue: false, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
         choice(name: 'NODE_LABEL', choices: ['UEBA02','UEBA01','UEBA03','UEBA04'], description: '')
@@ -26,7 +25,6 @@ pipeline {
 
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
-        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64'
         OLD_UEBA_RPMS = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
         SCRIPTS_DIR = '/ueba-automation-framework/src/main/resources/scripts/'
     }
