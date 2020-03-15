@@ -2,7 +2,7 @@ package presidio.sdk.api.domain.rawevents;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
+import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.domain.core.entityattributes.*;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class TlsRawEventTest {
         }
     }
 
-    @Test(expected = InvalidDefinitionException.class)
+    @Test(expected = ValueInstantiationException.class)
     public void testDeserialFailureOnMissingName() throws IOException {
         TlsRawEvent tlsRawEvent = createTlsRawEvent();
         String missingOccurrenceStr = objectMapper
