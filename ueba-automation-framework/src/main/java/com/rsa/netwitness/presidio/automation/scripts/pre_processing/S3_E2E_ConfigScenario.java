@@ -26,7 +26,7 @@ class S3_E2E_ConfigScenario implements PreProcessingConfigScenario {
     public void execute() {
         adapterTestManager.backupTransformerConfig();
         adapterTestManager.setAdapterConfigurationPropertiesToProductionMode();
-        adapterTestManager.runUebaServerConfigScript(startDate);
+        adapterTestManager.runAwsUebaServerConfigScript(startDate);
         adapterTestManager.setEngineConfigurationParametersToTestingValues();
         adapterTestManager.setS3E2EConfigurationForAdapterAndTransformer();
         adapterTestManager.setBuildingModelsRange(7, 2, 2);

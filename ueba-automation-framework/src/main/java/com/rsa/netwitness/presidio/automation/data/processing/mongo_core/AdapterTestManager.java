@@ -263,6 +263,19 @@ public class AdapterTestManager {
         sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
     }
 
+    public void runAwsUebaServerConfigScript(Instant startTime) {
+        LOGGER.info(" +++ runAwsUebaServerConfigScript started +++");
+
+       // sh /opt/rsa/saTools/bin/aws-ueba-server-config  -t 2020-02-20T00:00:00Z -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS'
+        String command = "sudo /opt/rsa/saTools/bin/aws-ueba-server-config " +
+                "-t " + startTime.toString()
+                + " -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS'";
+
+        SshResponse p = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
+        assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
+        LOGGER.info(" +++ runAwsUebaServerConfigScript finished +++");
+    }
+
     public void runUebaServerConfigScript(Instant startTime) {
         LOGGER.info(" +++ runUebaServerConfigScript started +++");
         String broker = ENVIRONMENT_PROPERTIES.brokerIp();
