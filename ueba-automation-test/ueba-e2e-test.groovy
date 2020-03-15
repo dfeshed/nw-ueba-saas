@@ -139,17 +139,14 @@ def editApplicationProperties() {
 
 def getAccountID() {
     withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: env.AWS_REGION) {
-        String pathToSearch = "s3://${params.S3_BUCKET}/${params.S3_TENANT}/${params.S3_APPLICATION}/"
-        def accountsStr = sh(returnStdout: true, script: "aws s3 ls ${pathToSearch}").trim().replaceAll("PRE", "").replaceAll("\\s", "")
-        println "cli string: " + accountsStr
-        def accounts = accountsStr.split("/")
-        println "collected array size: " + accounts.size()
+        files = s3FindFiles(bucket:"${params.S3_BUCKET}", path: "${params.S3_TENANT}/${params.S3_APPLICATION}", glob: "*")
+        println 'Folders found:'
+        for (file in files) { println file.name }
 
         def timestamps = new ArrayList<Long>();
-        for (String i : accounts) {
-            timestamps.add(Long.valueOf(i))
+        for (file in files) {
+            timestamps.add(Long.valueOf(file.name))
         }
-
         println "latest timestamp found: " + timestamps.max()
         return timestamps.max()
     }
