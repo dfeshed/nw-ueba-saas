@@ -138,17 +138,23 @@ def editApplicationProperties() {
 }
 
 def getAccountID() {
-    withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: env.AWS_REGION) {
-        files = s3FindFiles(bucket:"${params.S3_BUCKET}", path: "${params.S3_TENANT}/${params.S3_APPLICATION}", glob: "*")
-        println 'Folders found:'
-        for (file in files) { println file.name }
+    if (!"${params.S3_ACCOUNT}".isEmpty()) {
+        return params.S3_ACCOUNT
+    } else {
+        withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: env.AWS_REGION) {
+            files = s3FindFiles(bucket: "${params.S3_BUCKET}", path: "${params.S3_TENANT}/${params.S3_APPLICATION}", glob: "*")
+            println 'Folders found:'
+            for (file in files) {
+                println file.name
+            }
 
-        def timestamps = new ArrayList<Long>();
-        for (file in files) {
-            timestamps.add(Long.valueOf(file.name))
+            def timestamps = new ArrayList<Long>();
+            for (file in files) {
+                timestamps.add(Long.valueOf(file.name))
+            }
+            println "latest timestamp found: " + timestamps.max()
+            return timestamps.max()
         }
-        println "latest timestamp found: " + timestamps.max()
-        return timestamps.max()
     }
 }
 
