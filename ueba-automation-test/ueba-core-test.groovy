@@ -24,8 +24,7 @@ pipeline {
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
         choice(name: 'VERSION', choices: ['11.4.0.0','11.5.0.0'], description: 'RPMs version')
     }
-
-    agent { label env.NODE_LABEL }
+    agent none
 
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
@@ -36,6 +35,8 @@ pipeline {
     stages {
 
         stage ('Start UEBA VMs') {
+            agent { label 'master' }
+
             when { expression { return params.START_STOP_EC2_INSTANCE } }
 
             steps {
@@ -47,6 +48,8 @@ pipeline {
         }
 
         stage('Project Clone') {
+            agent { label env.NODE_LABEL }
+
             steps {
                 sh 'pwd'
                 sh 'whoami'
@@ -58,6 +61,7 @@ pipeline {
         }
 
         stage('Reset UEBA DBs') {
+            agent { label env.NODE_LABEL }
             when { expression { return params.RESET_UEBA_DBS } }
 
             steps {
@@ -67,6 +71,7 @@ pipeline {
 
 
         stage('Update UEBA RPMs') {
+            agent { label env.NODE_LABEL }
             when { expression { return params.INSTALL_UEBA_RPMS } }
 
             steps {
@@ -92,6 +97,7 @@ pipeline {
         }
 
         stage('Initiates Airflow') {
+            agent { label env.NODE_LABEL }
             when { expression { return params.INSTALL_UEBA_RPMS } }
 
             steps {
@@ -100,6 +106,7 @@ pipeline {
         }
 
         stage('Data Injection') {
+            agent { label env.NODE_LABEL }
             when {
                 expression { return params.DATA_INJECTION }
             }
@@ -109,6 +116,7 @@ pipeline {
         }
 
         stage('Data Processing') {
+            agent { label env.NODE_LABEL }
             when { expression { return params.DATA_PROCESSING } }
 
             steps {
@@ -117,6 +125,7 @@ pipeline {
         }
 
         stage('Tests') {
+            agent { label env.NODE_LABEL }
             when { expression { return params.RUN_TESTS } }
 
             steps {
