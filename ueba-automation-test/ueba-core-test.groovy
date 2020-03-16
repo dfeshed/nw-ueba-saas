@@ -38,10 +38,12 @@ pipeline {
         stage ('Start UEBA VMs') {
             when { expression { return params.START_STOP_EC2_INSTANCE } }
 
-            build job:'ueba-nodes-actions' , parameters:[
-                    string(name: 'NODE_LABEL', value: env.NODE_LABEL),
-                    string(name: 'ACTION', value: 'start')
-            ]
+            steps {
+                build job:'ueba-nodes-actions' , parameters:[
+                        string(name: 'NODE_LABEL', value: env.NODE_LABEL),
+                        string(name: 'ACTION', value: 'start')
+                ]
+            }
         }
 
         stage('Project Clone') {
