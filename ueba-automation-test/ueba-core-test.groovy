@@ -71,6 +71,7 @@ pipeline {
 
 
         stage('Install UEBA RPMs') {
+            agent { label env.NODE_LABEL }
             when { expression { return params.INSTALL_UEBA_RPMS } }
 
             steps {
