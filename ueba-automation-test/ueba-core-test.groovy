@@ -1,6 +1,6 @@
 pipeline {
     options {
-        timeout(time: 90, unit: 'MINUTES')
+        timeout(time: 70, unit: 'MINUTES')
     }
 
     parameters {
@@ -14,7 +14,7 @@ pipeline {
         string(name: 'S3_ACCOUNT', defaultValue: '', description: 'Empty -> take last timestamp')
 
         choice(name: 'generator_format', choices: ['S3_JSON_GZIP', 'MONGO_ADAPTER'], description: '')
-        choice(name: 'pre_processing_configuration_scenario', choices: ['CORE_S3', 'CORE_MONGO'], description: '')
+        choice(name: 'pre_processing_configuration_scenario', choices: ['CORE_S3'], description: '')
 
         booleanParam(name: 'START_STOP_EC2_INSTANCE', defaultValue: true, description: '')
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')

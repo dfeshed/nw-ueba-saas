@@ -25,5 +25,6 @@ class S3CoreConfigScenario implements PreProcessingConfigScenario {
     public void execute() {
         adapterTestManager.backupTransformerConfig();
         adapterTestManager.runAwsUebaServerConfigScript(startDate);
+        adapterTestManager.setEngineConfigurationParametersToTestingValues();
     }
 }
