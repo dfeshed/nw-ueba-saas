@@ -1,4 +1,3 @@
-
 pipeline {
     options {
         timeout(time: 90, unit: 'MINUTES')
@@ -24,7 +23,8 @@ pipeline {
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
         choice(name: 'VERSION', choices: ['11.4.0.0','11.5.0.0'], description: 'RPMs version')
     }
-    agent none
+
+    agent { label 'master' }
 
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
@@ -35,8 +35,6 @@ pipeline {
     stages {
 
         stage ('Start UEBA VMs') {
-            agent { label 'master' }
-
             when { expression { return params.START_STOP_EC2_INSTANCE } }
 
             steps {
@@ -137,13 +135,18 @@ pipeline {
 
     post {
         always {
+            agent { label env.NODE_LABEL }
+
             junit allowEmptyResults: true, testResults: '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
             archiveArtifacts allowEmptyArchive: true, artifacts: '**/ueba-automation-test/target/log/processing/*.log'
 
-            build job:'ueba-nodes-actions' , parameters:[
-                    string(name: 'NODE_LABEL', value: env.NODE_LABEL),
-                    string(name: 'ACTION', value: 'stop')
-            ]
+            script {
+                if (${params.START_STOP_EC2_INSTANCE})
+                    build job:'ueba-nodes-actions' , parameters:[
+                            string(name: 'NODE_LABEL', value: env.NODE_LABEL),
+                            string(name: 'ACTION', value: 'stop')
+                    ]
+            }
         }
     }
 }
