@@ -136,17 +136,17 @@ pipeline {
 
     post {
         always {
-            agent { label env.NODE_LABEL }
+            node(env.NODE_LABEL) {
+                script {
+                    junit allowEmptyResults: true, testResults: '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
+                    archiveArtifacts allowEmptyArchive: true, artifacts: '**/ueba-automation-test/target/log/processing/*.log'
 
-            junit allowEmptyResults: true, testResults: '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
-            archiveArtifacts allowEmptyArchive: true, artifacts: '**/ueba-automation-test/target/log/processing/*.log'
-
-            script {
-                if ($ { params.START_STOP_EC2_INSTANCE })
-                    build job: 'ueba-nodes-actions', parameters: [
-                            string(name: 'NODE_LABEL', value: env.NODE_LABEL),
-                            string(name: 'ACTION', value: 'stop')
-                    ]
+                    if (params.START_STOP_EC2_INSTANCE)
+                        build job: 'ueba-nodes-actions', parameters: [
+                                string(name: 'NODE_LABEL', value: env.NODE_LABEL),
+                                string(name: 'ACTION', value: 'stop')
+                        ]
+                }
             }
         }
     }
