@@ -1,5 +1,9 @@
 
 pipeline {
+    options {
+        timeout(time: 90, unit: 'MINUTES')
+    }
+
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
@@ -17,7 +21,6 @@ pipeline {
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
-        choice(name: 'NODE_LABEL', choices: ['UEBA02','UEBA01','UEBA03','UEBA04'], description: '')
         choice(name: 'VERSION', choices: ['11.4.0.0','11.5.0.0'], description: 'RPMs version')
     }
 
