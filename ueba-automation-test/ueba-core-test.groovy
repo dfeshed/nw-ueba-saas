@@ -17,6 +17,7 @@ pipeline {
         choice(name: 'generator_format', choices: ['S3_JSON_GZIP','MONGO_ADAPTER'], description: '')
         choice(name: 'pre_processing_configuration_scenario', choices: ['CORE_S3','CORE_MONGO'], description: '')
 
+        booleanParam(name: 'START_STOP_EC2_INSTANCE', defaultValue: true, description: '')
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
@@ -34,6 +35,15 @@ pipeline {
 
     stages {
 
+        stage ('Start UEBA VMs') {
+            when { expression { return params.START_STOP_EC2_INSTANCE } }
+
+            build job:'ueba-nodes-actions' , parameters:[
+                    string(name: 'NODE_LABEL', value: env.NODE_LABEL),
+                    string(name: 'ACTION', value: 'start')
+            ]
+        }
+
         stage('Project Clone') {
             steps {
                 sh 'pwd'
@@ -46,9 +56,8 @@ pipeline {
         }
 
         stage('Reset UEBA DBs') {
-            when {
-                expression { return params.RESET_UEBA_DBS }
-            }
+            when { expression { return params.RESET_UEBA_DBS } }
+
             steps {
                 cleanUebaDBs()
             }
@@ -56,9 +65,8 @@ pipeline {
 
 
         stage('Update UEBA RPMs') {
-            when {
-                expression { return params.INSTALL_UEBA_RPMS }
-            }
+            when { expression { return params.INSTALL_UEBA_RPMS } }
+
             steps {
                 script {
                     println ' ********** Going to upgrade UEBA RPMs **********'
@@ -82,9 +90,8 @@ pipeline {
         }
 
         stage('Initiates Airflow') {
-            when {
-                expression { return params.INSTALL_UEBA_RPMS }
-            }
+            when { expression { return params.INSTALL_UEBA_RPMS } }
+
             steps {
                 sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-app-services.sh"
             }
@@ -100,18 +107,16 @@ pipeline {
         }
 
         stage('Data Processing') {
-            when {
-                expression { return params.DATA_PROCESSING }
-            }
+            when { expression { return params.DATA_PROCESSING } }
+
             steps {
                 runSuiteXmlFile('core/CoreDataProcessing.xml')
             }
         }
 
         stage('Tests') {
-            when {
-                expression { return params.RUN_TESTS }
-            }
+            when { expression { return params.RUN_TESTS } }
+
             steps {
                 runSuiteXmlFile('core/CoreTests.xml')
             }
@@ -123,6 +128,11 @@ pipeline {
         always {
             junit allowEmptyResults: true, testResults: '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
             archiveArtifacts allowEmptyArchive: true, artifacts: '**/ueba-automation-test/target/log/processing/*.log'
+
+            build job:'ueba-nodes-actions' , parameters:[
+                    string(name: 'NODE_LABEL', value: env.NODE_LABEL),
+                    string(name: 'ACTION', value: 'stop')
+            ]
         }
     }
 }
