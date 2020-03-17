@@ -22,18 +22,19 @@ pipeline {
     stages {
         stage('Project Clone') {
             steps {
-                script { currentBuild.displayName="#${BUILD_NUMBER} ${NODE_NAME}" }
+                script { currentBuild.displayName = "#${BUILD_NUMBER} ${NODE_NAME}" }
                 script { currentBuild.description = "${env.INTEGRATION_TEST_BRANCH_NAME}" }
                 cleanWs()
                 buildIntegrationTestProject()
             }
         }
+
         stage('Prepare') {
             when {
                 expression { return params.RESET_UEBA_DBS }
             }
             steps {
-                build job: 'presidio-integration-test-core', parameters: [
+                build job: 'master-presidio-integration-test-core', parameters: [
                         string(name: 'NODE_LABEL', value: env.NODE_LABEL),
                         string(name: 'VERSION', value: env.VERSION),
                         booleanParam(name: 'RESET_UEBA_DBS', value: true),
@@ -119,20 +120,20 @@ def runSuiteXmlFile(String suiteXmlFile) {
 }
 
 def setVersion() {
-    if (params.VERSION && ! "${params.VERSION}".isEmpty()) {
+    if (params.VERSION && !"${params.VERSION}".isEmpty()) {
         return params.VERSION
     }
 
     def versions = ["11.4.1.0", "11.5.0.0"]
     def currentMillis = System.currentTimeMillis()
-    int days = ( currentMillis * versions.size() ) / (1000 * 60 * 60 * 24)
+    int days = (currentMillis * versions.size()) / (1000 * 60 * 60 * 24)
     int selectedIndex = days % versions.size()
     println("Version to be tested " + versions[selectedIndex].toString())
     return versions[selectedIndex].toString()
 }
 
 def setBranchForTheTests() {
-    if (params.INTEGRATION_TEST_BRANCH_NAME && ! "${params.INTEGRATION_TEST_BRANCH_NAME}".isEmpty()) {
+    if (params.INTEGRATION_TEST_BRANCH_NAME && !"${params.INTEGRATION_TEST_BRANCH_NAME}".isEmpty()) {
         return params.INTEGRATION_TEST_BRANCH_NAME
     }
 
