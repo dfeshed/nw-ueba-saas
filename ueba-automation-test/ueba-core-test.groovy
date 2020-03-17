@@ -4,7 +4,6 @@ pipeline {
     }
 
     parameters {
-        string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         choice(name: 'IS_MONGO_PASSWORD_ENCRYPTED', choices: ['false', 'true'], description: '')
 
