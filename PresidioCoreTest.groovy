@@ -5,7 +5,7 @@ pipeline {
 
         choice(name: 'IS_MONGO_PASSWORD_ENCRYPTED', choices: ['true','false'], description: '')
         string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
-        string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: '', description: '')
+        string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: '', description: 'Force overrides branch name. If empty, will be set by the version')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         string(name: 'SIDE_BRANCH_JOD_NUMBER', defaultValue: '', description: 'Write the "presidio-build-jars-and-packages" build number from which you want to install the PRMs')
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
@@ -123,7 +123,7 @@ def setBaseUrl(
         nwRsaBaseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/maintenance/11.4/promoted/14000/11.4.0.0/RSA/'
     }
     else if (env.VERSION == '11.4.1.0') {
-        nwOsBaseUrl = 'baseurl=https://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/maintenance/11.4/promoted/14436/11.4.0.0/OS/'
+        nwOsBaseUrl = 'baseurl=https://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/maintenance/11.4/promoted/14436/11.4.1.0/OS/'
         nwRsaBaseUrl = 'baseurl=http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.4/11.4.1/11.4.1.0-dev/'
     }
     else{
