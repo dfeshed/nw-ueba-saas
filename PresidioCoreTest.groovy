@@ -123,7 +123,7 @@ def setBaseUrl(
         nwRsaBaseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/maintenance/11.4/promoted/14000/11.4.0.0/RSA/'
     }
     else if (env.VERSION == '11.4.1.0') {
-        nwOsBaseUrl = 'baseurl=https://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/maintenance/11.4/promoted/14436/11.4.1.0/OS/'
+        nwOsBaseUrl = 'baseurl=https://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/maintenance/11.4/promoted/14466/11.4.1.0/OS/'
         nwRsaBaseUrl = 'baseurl=http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.4/11.4.1/11.4.1.0-dev/'
     }
     else{
