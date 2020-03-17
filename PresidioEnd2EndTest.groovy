@@ -258,9 +258,13 @@ def selectNodeByExecutionDay() {
 }
 
 def setBranchForTheTests() {
+    if (params.INTEGRATION_TEST_BRANCH_NAME && ! "${params.INTEGRATION_TEST_BRANCH_NAME}".isEmpty()) {
+        return params.INTEGRATION_TEST_BRANCH_NAME
+    }
+
     if (env.VERSION && "${env.VERSION})".contains("11.4.")) {
-        return "release/11.4.1"
+        return "origin/release/11.4.1"
     } else {
-        return "master"
+        return "origin/master"
     }
 }

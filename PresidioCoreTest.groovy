@@ -5,7 +5,7 @@ pipeline {
 
         choice(name: 'IS_MONGO_PASSWORD_ENCRYPTED', choices: ['true','false'], description: '')
         string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
-        string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
+        string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: '', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         string(name: 'SIDE_BRANCH_JOD_NUMBER', defaultValue: '', description: 'Write the "presidio-build-jars-and-packages" build number from which you want to install the PRMs')
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
@@ -213,9 +213,13 @@ def copyScripts() {
 }
 
 def setBranchForTheTests() {
+    if (params.INTEGRATION_TEST_BRANCH_NAME && ! "${params.INTEGRATION_TEST_BRANCH_NAME}".isEmpty()) {
+        return params.INTEGRATION_TEST_BRANCH_NAME
+    }
+
     if (env.VERSION && "${env.VERSION})".contains("11.4.")) {
-        return "release/11.4.1"
+        return "origin/release/11.4.1"
     } else {
-        return "master"
+        return "origin/master"
     }
 }
