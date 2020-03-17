@@ -45,11 +45,13 @@ pipeline {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
                     retry(100) {
-                        println "Going to resolve DB Host"
-                        def dbIpSearch = sh(script: "curl http://localhost:8888/application-null.properties -s | grep mongo.db.host.name", returnStdout: true).trim() as String
-                        def dbIp = dbIpSearch.split()[1]
-                        println dbIp
-                        sh "mongo -host "+ dbIp + " --eval \"print(\\\"Ready\\\")\" || sleep 20"
+                        script{
+                            println "Going to resolve DB Host"
+                            def dbIpSearch = sh(script: "curl http://localhost:8888/application-null.properties -s | grep mongo.db.host.name", returnStdout: true).trim() as String
+                            def dbIp = dbIpSearch.split()[1]
+                            println dbIp
+                            sh "mongo -host "+ dbIp + " --eval \"print(\\\"Ready\\\")\" || sleep 20"
+                        }
                     }
                 }
             }
