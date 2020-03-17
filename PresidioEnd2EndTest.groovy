@@ -27,6 +27,7 @@ pipeline {
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "ueba-automation-projects"
         OLD_UEBA_RPMS = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
+        INTEGRATION_TEST_BRANCH_NAME = setBranchForTheTests()
     }
 
     stages {
@@ -249,4 +250,12 @@ def selectNodeByExecutionDay() {
     int selectedIndex = days%nodes.size()
     println("DAILY_NODES=[${params.DAILY_NODES}]. Selected element id=" + selectedIndex)
     return nodes[selectedIndex].toString()
+}
+
+def setBranchForTheTests() {
+    if (env.VERSION && "${env.VERSION})".contains("11.4.")) {
+        return "release/11.4.1"
+    } else {
+        return "master"
+    }
 }
