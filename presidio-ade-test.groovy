@@ -7,7 +7,7 @@ pipeline {
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
     }
-    agent { label env.NODE_LABLE }
+    agent { label env.NODE_LABEL }
     //tools { jdk env.JDK }
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
