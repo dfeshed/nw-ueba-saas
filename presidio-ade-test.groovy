@@ -33,19 +33,17 @@ pipeline {
                 expression { return params.RESET_UEBA_DBS }
             }
             steps {
-                steps {
-                    build job: 'presidio-integration-test-core', parameters: [
-                            string(name: 'NODE_LABEL', value: env.NODE_LABEL),
-                            string(name: 'VERSION', value: env.VERSION),
-                            booleanParam(name: 'RESET_UEBA_DBS', value: true),
-                            booleanParam(name: 'INSTALL_UEBA_RPMS', value: true),
+                build job: 'presidio-integration-test-core', parameters: [
+                        string(name: 'NODE_LABEL', value: env.NODE_LABEL),
+                        string(name: 'VERSION', value: env.VERSION),
+                        booleanParam(name: 'RESET_UEBA_DBS', value: true),
+                        booleanParam(name: 'INSTALL_UEBA_RPMS', value: true),
 
-                            booleanParam(name: 'INSTALL_UEBA_UI_RPMS', value: false),
-                            booleanParam(name: 'DATA_INJECTION', value: false),
-                            booleanParam(name: 'DATA_PROCESSING', value: false),
-                            booleanParam(name: 'RUN_TESTS', value: false)
-                    ]
-                }
+                        booleanParam(name: 'INSTALL_UEBA_UI_RPMS', value: false),
+                        booleanParam(name: 'DATA_INJECTION', value: false),
+                        booleanParam(name: 'DATA_PROCESSING', value: false),
+                        booleanParam(name: 'RUN_TESTS', value: false)
+                ]
             }
         }
 
