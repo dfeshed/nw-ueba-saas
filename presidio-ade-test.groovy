@@ -121,6 +121,10 @@ def runSuiteXmlFile(String suiteXmlFile) {
 }
 
 def setVersion() {
+    if (params.VERSION && ! "${params.VERSION}".isEmpty()) {
+        return params.VERSION
+    }
+
     def versions = ["11.4.1.0", "11.5.0.0"]
     def currentMillis = System.currentTimeMillis()
     int days = ( currentMillis * versions.size() ) / (1000 * 60 * 60 * 24)
