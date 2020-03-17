@@ -61,7 +61,8 @@ pipeline {
         always {
             junit allowEmptyResults: true, testResults: '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
             archiveArtifacts allowEmptyArchive: true, artifacts: '**/ueba-automation-test/target/log/processing/*.log, **/ueba-automation-test/target/environment.properties'
-            emailext attachLog: true, body: '$DEFAULT_CONTENT', postsendScript: '$DEFAULT_POSTSEND_SCRIPT', presendScript: '$DEFAULT_PRESEND_SCRIPT', subject: '$DEFAULT_SUBJECT', to: 'Dmitry.Feshenko@rsa.com'
+            emailext attachLog: true, body: '$DEFAULT_CONTENT', postsendScript: '$DEFAULT_POSTSEND_SCRIPT', presendScript: '$DEFAULT_PRESEND_SCRIPT',
+                    subject: '$DEFAULT_SUBJECT. Branch: $INTEGRATION_TEST_BRANCH_NAME on $NODE_LABEL', to: 'Dmitry.Feshenko@rsa.com'
         }
     }
 }
