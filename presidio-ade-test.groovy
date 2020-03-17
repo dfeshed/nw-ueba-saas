@@ -1,7 +1,7 @@
 pipeline {
     parameters {
         string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
-        string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
+        string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: '', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         string(name: 'SIDE_BRANCH_JOD_NUMBER', defaultValue: '', description: 'Write the "presidio-build-jars-and-packages" build number from which you want to install the PRMs')
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
@@ -15,6 +15,8 @@ pipeline {
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "ueba-automation-projects"
         OLD_UEBA_RPMS = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
+        VERSION = setVersion()
+        INTEGRATION_TEST_BRANCH_NAME = setBranchForTheTests()
     }
 
     stages {
@@ -26,12 +28,24 @@ pipeline {
                 buildIntegrationTestProject()
             }
         }
-        stage('Reset UEBA DBs') {
+        stage('Prepare') {
             when {
                 expression { return params.RESET_UEBA_DBS }
             }
             steps {
-                cleanUebaDBs()
+                steps {
+                    build job: 'presidio-integration-test-core', parameters: [
+                            string(name: 'NODE_LABEL', value: env.NODE_LABEL),
+                            string(name: 'VERSION', value: env.VERSION),
+                            booleanParam(name: 'RESET_UEBA_DBS', value: true),
+                            booleanParam(name: 'INSTALL_UEBA_RPMS', value: true),
+
+                            booleanParam(name: 'INSTALL_UEBA_UI_RPMS', value: false),
+                            booleanParam(name: 'DATA_INJECTION', value: false),
+                            booleanParam(name: 'DATA_PROCESSING', value: false),
+                            booleanParam(name: 'RUN_TESTS', value: false)
+                    ]
+                }
             }
         }
 
@@ -83,13 +97,6 @@ def setBaseUrl(String rpmBuildPath = params.SPECIFIC_RPM_BUILD, String rpmVerios
     }
 }
 
-def cleanUebaDBs() {
-    sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/cleanup.sh $VERSION $env.OLD_UEBA_RPMS"
-    if (params.INSTALL_UEBA_RPMS == false) {
-        sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-services.sh $VERSION $env.OLD_UEBA_RPMS"
-    }
-}
-
 /**************************
  * Project Build Pipeline *  https://github.rsa.lab.emc.com/asoc/ueba-automation-projects.git
  **************************/
@@ -110,5 +117,26 @@ def runSuiteXmlFile(String suiteXmlFile) {
     sh "echo JAVA_HOME=${env.JAVA_HOME}"
     dir(env.REPOSITORY_NAME) {
         sh "/usr/local/src/apache-maven/bin/mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
+    }
+}
+
+def setVersion() {
+    def versions = ["11.4.1.0", "11.5.0.0"]
+    def currentMillis = System.currentTimeMillis()
+    int days = ( currentMillis * versions.size() ) / (1000 * 60 * 60 * 24)
+    int selectedIndex = days % versions.size()
+    println("Version to be tested " + versions[selectedIndex].toString())
+    return versions[selectedIndex].toString()
+}
+
+def setBranchForTheTests() {
+    if (params.INTEGRATION_TEST_BRANCH_NAME && ! "${params.INTEGRATION_TEST_BRANCH_NAME}".isEmpty()) {
+        return params.INTEGRATION_TEST_BRANCH_NAME
+    }
+
+    if (env.VERSION && "${env.VERSION})".contains("11.4.")) {
+        return "origin/release/11.4.1"
+    } else {
+        return "origin/master"
     }
 }
