@@ -304,6 +304,18 @@ public class AdapterTestManager {
         LOGGER.info(" +++ setEngineConfigurationParametersToTestingValues finished +++");
     }
 
+    public void setS3CoreConfigurationForAdapterAndTransformer() {
+        LOGGER.info(" +++ setS3CoreConfigurationForAdapterAndTransformer started +++");
+        URL url = this.getClass().getClassLoader()
+                .getResource("scripts/setS3_CORE_InputConfiguration.sh");
+
+        File file = new File(Objects.requireNonNull(url).getFile());
+        String command = "sh " + file.getAbsolutePath();
+        SshResponse p = sshHelper.uebaHostExec().run(command);
+        assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
+        LOGGER.info(" +++ setS3CoreConfigurationForAdapterAndTransformer finished +++");
+    }
+
     public void setS3E2EConfigurationForAdapterAndTransformer() {
         LOGGER.info(" +++ setS3E2EConfigurationForAdapterAndTransformer started +++");
         URL url = this.getClass().getClassLoader()
