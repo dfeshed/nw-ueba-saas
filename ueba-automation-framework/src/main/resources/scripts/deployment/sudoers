@@ -132,6 +132,7 @@ presidio    ALL=(root)   SETENV:NOPASSWD: /var/lib/netwitness/presidio/airflow/v
 
 # enable ueba config
 presidio    ALL=(ALL)    SETENV:NOPASSWD: /opt/rsa/saTools/bin/ueba-server-config *
+presidio    ALL=(ALL)    SETENV:NOPASSWD: /opt/rsa/saTools/bin/aws-ueba-server-config *
 presidio    ALL=(ALL)    SETENV:NOPASSWD: /usr/bin/sed
 presidio    ALL=(ALL)    SETENV:NOPASSWD: /usr/bin/rm -rf /var/cache/yum
 presidio    ALL=(ALL)    SETENV:NOPASSWD: /usr/bin/rm -rf /var/lib/netwitness/presidio/elasticsearch/init/data/indexes/presidio-output*

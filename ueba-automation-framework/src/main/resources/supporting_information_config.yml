@@ -1318,8 +1318,8 @@ indicators:
       - type: hourly_aggregations
         featureName: sumOfBytesSentToDstPortSslSubjectOutboundTlsHourly
         contexts:
-        - dstPort.name
-        - sslSubject.name
+          - dstPort.name
+          - sslSubject.name
       - type: hourly_aggregations
         featureName: sumOfBytesSentToDstPortOutboundTlsHourly
         contexts:
@@ -1775,7 +1775,7 @@ indicators:
     historicalData:
       - type: hourly_aggregations_last_day
         contexts:
-            - sslSubject.name
+          - sslSubject.name
       - type: hourly_aggregations_max_global
         skipAnomaly: true
     classification: phishing

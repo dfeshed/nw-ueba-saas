@@ -271,7 +271,7 @@ public class AdapterTestManager {
                 "-t " + startTime.toString()
                 + " -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS'";
 
-        SshResponse p = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
+        SshResponse p = sshHelper.uebaHostExec().withTimeout(2, TimeUnit.MINUTES).setUserDir(PRESIDIO_DIR).run(command);
         assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
         LOGGER.info(" +++ runAwsUebaServerConfigScript finished +++");
     }
@@ -287,7 +287,7 @@ public class AdapterTestManager {
                 + broker + " -o broker -t " + startTime.toString()
                 + " -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS' -v " + alertsForwardingFlag;
 
-        SshResponse p = sshHelper.uebaHostExec().setUserDir(PRESIDIO_DIR).run(command);
+        SshResponse p = sshHelper.uebaHostExec().withTimeout(2, TimeUnit.MINUTES).setUserDir(PRESIDIO_DIR).run(command);
         assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
         LOGGER.info(" +++ runUebaServerConfigScript finished +++");
     }
