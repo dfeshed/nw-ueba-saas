@@ -16,7 +16,7 @@ pipeline {
         REPOSITORY_NAME = "ueba-automation-projects"
         OLD_UEBA_RPMS = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
         VERSION = setVersion()
-        INTEGRATION_TEST_BRANCH_NAME = setBranchForTheTests()
+        INTEGRATION_TEST_BRANCH_NAME = setBranchForTheTests(VERSION)
     }
 
     stages {
@@ -133,15 +133,15 @@ def setVersion() {
     return versions[selectedIndex].toString()
 }
 
-def setBranchForTheTests() {
+def setBranchForTheTests(String version) {
     println "params.INTEGRATION_TEST_BRANCH_NAME = ${params.INTEGRATION_TEST_BRANCH_NAME}"
-    println "env.VERSION = ${env.VERSION}"
+    println "version = " + version
 
     if (params.INTEGRATION_TEST_BRANCH_NAME && !"${params.INTEGRATION_TEST_BRANCH_NAME}".isEmpty()) {
         return params.INTEGRATION_TEST_BRANCH_NAME
     }
 
-    if (env.VERSION && "${env.VERSION}".contains("11.4.")) {
+    if (version.contains("11.4.")) {
         return "origin/release/11.4.1"
     } else {
         return "origin/master"
