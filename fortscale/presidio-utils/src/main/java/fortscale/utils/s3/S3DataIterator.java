@@ -1,17 +1,14 @@
 package fortscale.utils.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -126,9 +123,10 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
      * @return An iterator to a List containing the lines of the file as {@link String}s
      */
     private BufferReaderIterator getS3Reader(String filePath) {
-        S3ObjectInputStream s3ObjectInputStream;
+        InputStream s3ObjectInputStream;
         try {
-            s3ObjectInputStream = s3.getObject(bucket, filePath).getObjectContent();
+            S3Object s3Object = s3.getObject(bucket, filePath);
+            s3ObjectInputStream = s3Object.getObjectContent();
         } catch (Exception e) {
             logger.error("Failed to get object key: {}, from S3 bucket: {}.", filePath, bucket, e);
             throw new RuntimeException(e);
