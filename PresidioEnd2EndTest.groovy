@@ -268,8 +268,8 @@ def setBranchForTheTests() {
 }
 
 def setOldRpmVersion() {
-    String oldVersion = sh "rpm -qa | grep rsa-nw-presidio-core | cut -d \"-\" -f5"
-    if (oldVersion.isemtpy) {
+    String oldVersion = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
+    if (oldVersion == "") {
         oldVersion = "11.9.0.0"
     }
     return oldVersion
