@@ -134,11 +134,14 @@ def setVersion() {
 }
 
 def setBranchForTheTests() {
+    println "params.INTEGRATION_TEST_BRANCH_NAME = ${params.INTEGRATION_TEST_BRANCH_NAME}"
+    println "env.VERSION = ${env.VERSION}"
+
     if (params.INTEGRATION_TEST_BRANCH_NAME && !"${params.INTEGRATION_TEST_BRANCH_NAME}".isEmpty()) {
         return params.INTEGRATION_TEST_BRANCH_NAME
     }
 
-    if (env.VERSION && "${env.VERSION})".contains("11.4.")) {
+    if (env.VERSION && "${env.VERSION}".contains("11.4.")) {
         return "origin/release/11.4.1"
     } else {
         return "origin/master"
