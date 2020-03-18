@@ -4,7 +4,7 @@ pipeline {
         string(name: 'pre_processing_configuration_scenario', defaultValue: 'E2E_BROKER', description: '')
 
         choice(name: 'IS_MONGO_PASSWORD_ENCRYPTED', choices: ['true', 'false'], description: '')
-        string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
+        string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/')
         string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: 'Force overrides branch name. If empty, will be set by the version')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         string(name: 'SIDE_BRANCH_JOD_NUMBER', defaultValue: '', description: 'Write the "presidio-build-jars-and-packages" build number from which you want to install the PRMs')
@@ -124,37 +124,40 @@ def setBaseUrl(
         String rpmVeriosn = env.VERSION,
         String stability = env.STABILITY
 ) {
-    String baseUrl = "baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/"
+    String osBaseUrl = "baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/"
+    String rsaBaseUrl = "baseurl="
     if (rpmBuildPath != '') {
-        baseUrl = "baseurl=" + rpmBuildPath
-    } else {
+        rsaBaseUrl = "baseurl=" + rpmBuildPath + "/RSA/"
+        osBaseUrl  = "baseurl=" + rpmBuildPath + "/OS/"
+    }
+    else if (env.VERSION == '11.4.0.0') {
+        rsaBaseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/maintenance/11.4/promoted/14000/11.4.0.0/RSA/'
+        osBaseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/maintenance/11.4/promoted/14000/11.4.0.0/OS/'
+    }
+    else {
         String[] versionArray = rpmVeriosn.split("\\.")
         FirstDir = versionArray[0] + "." + versionArray[1]
         SecondDir = FirstDir + "." + versionArray[2]
         if (versionArray[3] != '0') {
-            baseUrl = baseUrl + "release/" + SecondDir + "/promoted/latest/" + rpmVeriosn + "/"
+            osBaseUrl = osBaseUrl + "release/" + SecondDir + "/promoted/latest/" + rpmVeriosn + "/OS"
         } else if (versionArray[2] != '0') {
-            baseUrl = baseUrl + "maintenance/" + FirstDir + "/promoted/latest/" + rpmVeriosn + "/"
+            osBaseUrl = osBaseUrl + "maintenance/" + FirstDir + "/promoted/latest/" + rpmVeriosn + "/OS"
         } else {
-            baseUrl = baseUrl + "master/promoted/latest/" + rpmVeriosn + "/"
+            osBaseUrl = osBaseUrl + "master/promoted/latest/" + rpmVeriosn + "/OS"
         }
-        if (env.VERSION == '11.4.0.0') {
-            baseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/maintenance/11.4/promoted/14000/11.4.0.0/'
-        }
+        rsaBaseUrl = rsaBaseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/" + FirstDir + "/" + SecondDir + "/" + rpmVeriosn + "-" + stability + "/"
     }
-    baseUrlValidation = baseUrl.drop(8)
+
+    baseUrlValidation = rsaBaseUrl.drop(8)
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
     if (baseUrlresponsecode == '200') {
-        rsabaseUrl = baseUrl + "RSA/"
-        osbaseUrl = baseUrl + "OS/"
         sh "sudo sed -i \"s|enabled=.*|enabled=0|g\" /etc/yum.repos.d/bootstrap.repo"
         sh "sudo sed -i \"s|enabled=.*|enabled=0|g\" /etc/yum.repos.d/tier2*.repo"
         sh "sudo sed -i \"s|enabled=.*|enabled=1|g\" /etc/yum.repos.d/nw-*base.repo"
-        sh "sudo sed -i \"s|.*baseurl=.*|${rsabaseUrl}|g\" /etc/yum.repos.d/nw-rsa-base.repo"
-        sh "sudo sed -i \"s|.*baseurl=.*|${osbaseUrl}|g\" /etc/yum.repos.d/nw-os-base.repo"
+        sh "sudo sed -i \"s|.*baseurl=.*|${rsaBaseUrl}|g\" /etc/yum.repos.d/nw-rsa-base.repo"
+        sh "sudo sed -i \"s|.*baseurl=.*|${osBaseUrl}|g\" /etc/yum.repos.d/nw-os-base.repo"
         sh "OWB_ALLOW_NON_FIPS=on sudo yum clean all"
         sh "sudo rm -rf /var/cache/yum"
-        //libhq_baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/" + FirstDir + "/" + SecondDir + "/" + rpmVeriosn + "-" + stability + "/"
     } else {
         error("Invalid RPM Repository- ${baseUrlValidation}")
     }
