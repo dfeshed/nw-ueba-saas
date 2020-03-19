@@ -36,7 +36,6 @@ public class EncryptionUtils {
         switch (mode) {
             case "decrypt":
                 String decrypt = decrypt(value);
-                System.out.print("password1: "+ decrypt);
                 System.out.print("password: "+ StringUtils.chomp(decrypt));
                 break;
             default:

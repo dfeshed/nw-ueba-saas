@@ -236,7 +236,16 @@ def build_mongo_clean_python_operator(cleanup_dag):
         mongo_host_port = config_reader_singleton.config_reader.read("mongo.host.port", "27017")
         mongo_db_name = config_reader_singleton.config_reader.read("mongo.db.name", "presidio")
         mongo_db_user = config_reader_singleton.config_reader.read("mongo.db.user", "presidio")
-        mongo_db_password = config_reader_singleton.config_server_configuration_reader.read("mongo.db.password")
+        encrypted_mongo_db_password = config_reader_singleton.config_reader.read("mongo.db.password")
+
+        encryption_utils_output = subprocess.check_output(
+            ["java", "-jar", "/var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar", "decrypt",
+             encrypted_mongo_db_password])
+
+        password_position = encryption_utils_output.find("password: ") + len("password: ")
+
+        mongo_db_password = encryption_utils_output[password_position:]
+
         eval_exp = "db.getCollectionNames().forEach(function(collectionName) {" \
                    "    if (collectionName.startsWith('system') == 0) {" \
                    "        print('Dropping collection ' + collectionName);" \
