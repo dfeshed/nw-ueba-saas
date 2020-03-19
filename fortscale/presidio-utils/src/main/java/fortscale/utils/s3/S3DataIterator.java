@@ -27,9 +27,10 @@ import java.util.zip.GZIPInputStream;
 public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable {
 
     private static final Logger logger = LoggerFactory.getLogger(S3DataIterator.class);
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final TypeReference<HashMap<String, Object>> TYPE = new TypeReference<HashMap<String, Object>>() {
-    };
+//    private static final ObjectMapper MAPPER = new ObjectMapper();
+//    private static final TypeReference<HashMap<String, Object>> TYPE = new TypeReference<HashMap<String, Object>>() {
+//    };
+    private IMapExtractor mapExtractor;
     private final AmazonS3 s3;
     private final String bucket;
 
@@ -47,6 +48,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
     public S3DataIterator(AmazonS3 s3, String bucket, Iterator<S3ObjectSummary> objects) {
         this.s3 = s3;
         this.bucket = bucket;
+        this.mapExtractor = new MapExtractor();
 
         lineIterator = BufferReaderIterator.empty();
         fileIterator = objects;
@@ -83,7 +85,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
     public Map<String, Object> next() {
         String event = lineIterator.next();
         try {
-            return MAPPER.readValue(event, TYPE);
+            return mapExtractor.extract(event);
         } catch (Exception e) {
             logger.error("Failed to deserialize JSON string {}.", event, e);
             throw new IllegalArgumentException(e);
