@@ -1,12 +1,13 @@
-package fortscale.utils.s3;
+package fortscale.common.s3;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.s3.IMapExtractor;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class MapExtractor implements IMapExtractor{
+public class MapExtractor implements IMapExtractor {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 

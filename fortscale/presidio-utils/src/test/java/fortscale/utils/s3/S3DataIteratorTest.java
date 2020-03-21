@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -40,7 +39,7 @@ public class S3DataIteratorTest {
         s3ObjectSummary.setKey(filePath);
         Iterator<S3ObjectSummary> s3ObjectSummaryIterator = Collections.singletonList(s3ObjectSummary).iterator();
         AmazonS3 s3 = createMockedAmazonS3WithInputStream(dummyBucket, filePath);
-        S3DataIterator s3DataIterator = new S3DataIterator(s3, dummyBucket, s3ObjectSummaryIterator);
+        S3DataIterator s3DataIterator = new S3DataIterator(s3, dummyBucket, s3ObjectSummaryIterator, new MapExtractor());
         assertNextRecord(s3DataIterator, firstRecord);
         assertNextRecord(s3DataIterator, secondRecord);
         Assert.assertFalse(s3DataIterator.hasNext());
@@ -62,5 +61,16 @@ public class S3DataIteratorTest {
         Assert.assertNotNull(record);
         Assert.assertEquals(expectedRecord.size(), record.size());
         record.keySet().stream().forEach(k -> {Assert.assertEquals(expectedRecord.get(k),record.get(k));});
+    }
+
+
+    public static class MapExtractor implements IMapExtractor{
+        private static final TypeReference<HashMap<String, Object>> TYPE = new TypeReference<HashMap<String, Object>>() {};
+
+
+        @Override
+        public Map<String, Object> extract(String event) throws IOException {
+            return MAPPER.readValue(event, TYPE);
+        }
     }
 }

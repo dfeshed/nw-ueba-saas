@@ -3,14 +3,11 @@ package fortscale.utils.s3;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -45,10 +42,11 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
      * @param bucket       the S3 bucket to read from
      * @param objects      this s3 objects to iterate on.
      */
-    public S3DataIterator(AmazonS3 s3, String bucket, Iterator<S3ObjectSummary> objects) {
+    public S3DataIterator(AmazonS3 s3, String bucket, Iterator<S3ObjectSummary> objects
+                            , IMapExtractor mapExtractor) {
         this.s3 = s3;
         this.bucket = bucket;
-        this.mapExtractor = new MapExtractor();
+        this.mapExtractor = mapExtractor;
 
         lineIterator = BufferReaderIterator.empty();
         fileIterator = objects;
