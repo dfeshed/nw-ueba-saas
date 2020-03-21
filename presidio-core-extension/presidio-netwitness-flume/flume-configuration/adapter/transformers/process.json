@@ -24,7 +24,7 @@
     {
       "type": "copy_value",
       "name": "rename-event-source-id-to-event-id",
-      "sourceKey": "event_source_id",
+      "sourceKey": "eventSourceId",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "eventId"
@@ -33,7 +33,7 @@
     {
       "type": "copy_value",
       "name": "rename-device-type-to-data-source",
-      "sourceKey": "device_type",
+      "sourceKey": "deviceType",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dataSource"
@@ -42,7 +42,7 @@
     {
       "type": "regex_captor_and_formatter",
       "name": "user-id-normalization",
-      "sourceKey": "user_src",
+      "sourceKey": "userSrc",
       "destinationKey": "userId",
       "captureAndFormatConfigurations": [
         {
@@ -110,7 +110,7 @@
     {
       "type": "copy_value",
       "name": "copy-user-src",
-      "sourceKey": "user_src",
+      "sourceKey": "userSrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "userName",
@@ -120,7 +120,7 @@
     {
       "type": "regex_captor_and_formatter",
       "name": "machine-id-normalization",
-      "sourceKey": "alias_host[0]",
+      "sourceKey": "aliasHost[0]",
       "destinationKey": "machineId",
       "captureAndFormatConfigurations": [
         {
@@ -163,7 +163,7 @@
     {
       "type": "copy_value",
       "name": "rename-alias-host-to-machine-name",
-      "sourceKey": "alias_host[0]",
+      "sourceKey": "aliasHost[0]",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "machineName"
@@ -181,7 +181,7 @@
     {
       "type": "copy_value",
       "name": "rename-directory-src",
-      "sourceKey": "directory_src",
+      "sourceKey": "directorySrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "srcProcessDirectory"
@@ -190,7 +190,7 @@
     {
       "type": "copy_value",
       "name": "rename-file-src",
-      "sourceKey": "filename_src",
+      "sourceKey": "filenameSrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "srcProcessFileName"
@@ -199,7 +199,7 @@
     {
       "type": "copy_value",
       "name": "rename-cert-common",
-      "sourceKey": "cert_common",
+      "sourceKey": "certCommon",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "srcProcessCertificateIssuer"
@@ -208,7 +208,7 @@
     {
       "type": "copy_value",
       "name": "rename-directory-dst",
-      "sourceKey": "directory_dst",
+      "sourceKey": "directoryDst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dstProcessDirectory"
@@ -217,7 +217,7 @@
     {
       "type": "copy_value",
       "name": "rename-file-dst",
-      "sourceKey": "filename_dst",
+      "sourceKey": "filenameDst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dstProcessFileName"
@@ -226,13 +226,13 @@
     {
       "type": "epoch",
       "name": "date-time-millis-to-nano-representation",
-      "sourceKey": "event_time",
+      "sourceKey": "eventTime",
       "destinationKey": "dateTime"
     },
     {
       "type": "copy_value",
       "name": "rename-src-process-dir-group",
-      "sourceKey": "dir_path_src",
+      "sourceKey": "dirPathSrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "srcProcessDirectoryGroups"
@@ -249,7 +249,7 @@
     {
       "type": "copy_value",
       "name": "rename-dst-process-dir-group",
-      "sourceKey": "dir_path_dst",
+      "sourceKey": "dirPathDst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dstProcessDirectoryGroups"
@@ -266,7 +266,7 @@
     {
       "type": "copy_value",
       "name": "rename-src-process-categories",
-      "sourceKey": "file_cat_src",
+      "sourceKey": "fileCatSrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "srcProcessCategories"
@@ -283,7 +283,7 @@
     {
       "type": "copy_value",
       "name": "rename-dst-process-categories",
-      "sourceKey": "file_cat_dst",
+      "sourceKey": "fileCatDst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dstProcessCategories"
@@ -300,7 +300,7 @@
     {
       "type": "copy_value",
       "name": "checksum-id",
-      "sourceKey": "checksum_src",
+      "sourceKey": "checksumSrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "additionalInfo.srcChecksumId"
@@ -309,7 +309,7 @@
     {
       "type": "copy_value",
       "name": "checksum-dst",
-      "sourceKey": "checksum_dst",
+      "sourceKey": "checksumDst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "additionalInfo.dstChecksumId"
@@ -318,7 +318,7 @@
     {
       "type": "copy_value",
       "name": "agent-id",
-      "sourceKey": "agent_id",
+      "sourceKey": "agentId",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "additionalInfo.agentId"
@@ -327,7 +327,7 @@
     {
       "type": "copy_value",
       "name": "callback_id",
-      "sourceKey": "nwe_callback_id",
+      "sourceKey": "nweCallbackId",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "additionalInfo.callbackId"
@@ -336,7 +336,7 @@
     {
       "type": "copy_value",
       "name": "os-type",
-      "sourceKey": "OS[0]",
+      "sourceKey": "os[0]",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "additionalInfo.osType"
@@ -345,7 +345,7 @@
     {
       "type": "copy_value",
       "name": "process-vid-src",
-      "sourceKey": "process_vid_src",
+      "sourceKey": "processVidSrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "additionalInfo.srcProcessVid"
@@ -354,7 +354,7 @@
     {
       "type": "copy_value",
       "name": "process-vid-dst",
-      "sourceKey": "process_vid_dst",
+      "sourceKey": "processVidDst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "additionalInfo.dstProcessVid"

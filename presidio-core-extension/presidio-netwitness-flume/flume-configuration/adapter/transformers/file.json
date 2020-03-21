@@ -13,13 +13,13 @@
           {
             "type": "regex",
             "name": "user-dst-not-contain-machine",
-            "sourceKey": "user_dst",
+            "sourceKey": "userDst",
             "regex": "[^\\$]*"
           },
           {
             "type": "regex",
             "name": "device-type-snare-or-nic",
-            "sourceKey": "device_type",
+            "sourceKey": "deviceType",
             "regex": "winevent_snare|winevent_nic|windows"
           }
         ]
@@ -32,7 +32,7 @@
       "predicate": {
         "type": "regex",
         "name": "reference-id-equal-4670",
-        "sourceKey": "reference_id",
+        "sourceKey": "referenceId",
         "regex": "4670"
       },
       "ifTransformer": {
@@ -41,7 +41,7 @@
         "predicate": {
           "type": "regex",
           "name": "obj-type-equal-file",
-          "sourceKey": "obj_type",
+          "sourceKey": "objType",
           "regex": "File"
         },
         "filterIn": true
@@ -54,7 +54,7 @@
       "predicate": {
         "type": "regex",
         "name": "reference-id-equal-4663-or-4660",
-        "sourceKey": "reference_id",
+        "sourceKey": "referenceId",
         "regex": "4663|4660"
       },
       "ifTransformer": {
@@ -76,7 +76,7 @@
       "predicate": {
         "type": "regex",
         "name": "reference-id-equal-4663",
-        "sourceKey": "reference_id",
+        "sourceKey": "referenceId",
         "regex": "4663"
       },
       "ifTransformer": {
@@ -144,7 +144,7 @@
       "elseTransformer": {
         "type": "switch_case",
         "name": "operation_type-according-to-event-code",
-        "sourceKey": "reference_id",
+        "sourceKey": "referenceId",
         "destinationKey": "operationType",
         "destinationDefaultValue": null,
         "cases": [
@@ -169,7 +169,7 @@
     {
       "type": "regex_captor_and_formatter",
       "name": "user-id-normalization",
-      "sourceKey": "user_dst",
+      "sourceKey": "userDst",
       "destinationKey": "userId",
       "captureAndFormatConfigurations": [
         {
@@ -237,18 +237,18 @@
     {
       "type": "switch_case",
       "name": "src-file-path-switch-case",
-      "sourceKey": "reference_id",
+      "sourceKey": "referenceId",
       "destinationKey": "srcFilePath",
       "destinationDefaultValue": null,
       "cases": [
         {
           "caseKey": "4663",
-          "caseValue": "${obj_name}",
+          "caseValue": "${objName}",
           "isRegex": false
         },
         {
           "caseKey": "4670",
-          "caseValue": "${obj_name}",
+          "caseValue": "${objName}",
           "isRegex": false
         },
         {
@@ -312,13 +312,13 @@
       "predicate": {
         "type": "key_exist",
         "name": "event-type-exist",
-        "key": "event_type",
+        "key": "eventType",
         "testNull": false
       },
       "ifTransformer": {
         "type": "regex_captor_and_formatter",
         "name": "result-normalization-on-event-type",
-        "sourceKey": "event_type",
+        "sourceKey": "eventType",
         "destinationKey": "result",
         "captureAndFormatConfigurations": [
           {
@@ -336,7 +336,7 @@
       "elseTransformer": {
         "type": "switch_case",
         "name": "result-normalization-on-result-code",
-        "sourceKey": "result_code",
+        "sourceKey": "resultCode",
         "destinationKey": "result",
         "destinationDefaultValue": null,
         "cases": [
@@ -356,7 +356,7 @@
     {
       "type": "copy_value",
       "name": "rename-event-source-id-to-event-id",
-      "sourceKey": "event_source_id",
+      "sourceKey": "eventSourceId",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "eventId"
@@ -365,7 +365,7 @@
     {
       "type": "copy_value",
       "name": "rename-reference-id-to-data-source",
-      "sourceKey": "reference_id",
+      "sourceKey": "referenceId",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dataSource"
@@ -374,7 +374,7 @@
     {
       "type": "copy_value",
       "name": "copy-user-dst",
-      "sourceKey": "user_dst",
+      "sourceKey": "userDst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "userName"
@@ -392,7 +392,7 @@
     {
       "type": "epoch",
       "name": "date-time-millis-to-nano-representation",
-      "sourceKey": "event_time",
+      "sourceKey": "eventTime",
       "destinationKey": "dateTime"
     }
   ]

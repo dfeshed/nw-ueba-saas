@@ -19,7 +19,7 @@
       "predicate": {
         "type": "key_exist",
         "name": "tcp-srcport-not-null",
-        "key": "tcp_srcport",
+        "key": "tcpSrcPort",
         "testNull": true
       },
       "filterIn": true
@@ -30,7 +30,7 @@
       "predicate": {
         "type": "key_exist",
         "name": "tcp-dstport-not-null",
-        "key": "tcp_dstport",
+        "key": "tcpDstPort",
         "testNull": true
       },
       "filterIn": true
@@ -41,7 +41,7 @@
       "predicate": {
         "type": "key_exist",
         "name": "ip-src-not-null",
-        "key": "ip_src",
+        "key": "ipSrc",
         "testNull": true
       },
       "filterIn": true
@@ -52,7 +52,7 @@
       "predicate": {
         "type": "key_exist",
         "name": "ip_dst-not-null",
-        "key": "ip_dst",
+        "key": "ipDst",
         "testNull": true
       },
       "filterIn": true
@@ -72,7 +72,7 @@
     {
       "type": "copy_value",
       "name": "rename-event-source-id-to-event-id",
-      "sourceKey": "event_source_id",
+      "sourceKey": "eventSourceId",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "eventId"
@@ -89,7 +89,7 @@
     {
       "type": "copy_value",
       "name": "rename-ip-src",
-      "sourceKey": "ip_src",
+      "sourceKey": "ipSrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "srcIp"
@@ -98,7 +98,7 @@
     {
       "type": "copy_value",
       "name": "rename-ip-dst",
-      "sourceKey": "ip_dst",
+      "sourceKey": "ipDst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dstIp"
@@ -107,7 +107,7 @@
     {
       "type": "copy_value",
       "name": "rename-country-src",
-      "sourceKey": "country_src",
+      "sourceKey": "countrySrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "srcCountry"
@@ -116,7 +116,7 @@
     {
       "type": "copy_value",
       "name": "rename-country-dst",
-      "sourceKey": "country_dst",
+      "sourceKey": "countryDst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dstCountry.name"
@@ -125,7 +125,7 @@
     {
       "type": "copy_value",
       "name": "rename-ssl-subject",
-      "sourceKey": "ssl_subject",
+      "sourceKey": "sslSubject",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "sslSubject.name"
@@ -143,7 +143,7 @@
     {
       "type": "copy_value",
       "name": "rename-ssl-ca",
-      "sourceKey": "ssl_ca",
+      "sourceKey": "sslCA",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "sslCas"
@@ -152,14 +152,14 @@
     {
       "type": "top_level_domain",
       "name": "alias-host-to-top-level-domain",
-      "sourceKey": "alias_host[0]",
+      "sourceKey": "aliasHost[0]",
       "isRemoveSourceKey": false,
       "targetKey": "domain.name"
     },
     {
       "type": "copy_value",
       "name": "copy-alias-host-to-fqdn",
-      "sourceKey": "alias_host",
+      "sourceKey": "aliasHost",
       "isRemoveSourceKey": false,
       "destinationKeys": [
         "fqdn"
@@ -168,7 +168,7 @@
     {
       "type": "copy_value",
       "name": "rename-org-dst",
-      "sourceKey": "org_dst",
+      "sourceKey": "orgDst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dstOrg.name"
@@ -177,7 +177,7 @@
     {
       "type": "copy_value",
       "name": "rename-asn-dst",
-      "sourceKey": "asn_dst",
+      "sourceKey": "asnDst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dstAsn.name"
@@ -186,7 +186,7 @@
     {
       "type": "copy_value",
       "name": "rename-payload-req",
-      "sourceKey": "payload_req",
+      "sourceKey": "payloadReq",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "numOfBytesSent"
@@ -195,7 +195,7 @@
     {
       "type": "copy_value",
       "name": "rename-payload-res",
-      "sourceKey": "payload_res",
+      "sourceKey": "payloadRes",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "numOfBytesReceived"
@@ -236,7 +236,7 @@
     {
       "type": "copy_value",
       "name": "rename-tcp-dstport",
-      "sourceKey": "tcp_dstport",
+      "sourceKey": "tcpDstPort",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dstPort.name"
@@ -245,7 +245,7 @@
     {
       "type": "copy_value",
       "name": "rename-tcp-srcport",
-      "sourceKey": "tcp_srcport",
+      "sourceKey": "tcpSrcPort",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "srcPort"
@@ -254,7 +254,7 @@
     {
       "type": "copy_value",
       "name": "rename-session-split",
-      "sourceKey": "session_split",
+      "sourceKey": "sessionSplit",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "sessionSplit"
