@@ -128,13 +128,11 @@ def setBaseUrl(
     String rsaBaseUrl = "baseurl="
     if (rpmBuildPath != '') {
         rsaBaseUrl = "baseurl=" + rpmBuildPath + "/RSA/"
-        osBaseUrl  = "baseurl=" + rpmBuildPath + "/OS/"
-    }
-    else if (env.VERSION == '11.4.0.0') {
+        osBaseUrl = "baseurl=" + rpmBuildPath + "/OS/"
+    } else if (env.VERSION == '11.4.0.0') {
         rsaBaseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/maintenance/11.4/promoted/14000/11.4.0.0/RSA/'
         osBaseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/maintenance/11.4/promoted/14000/11.4.0.0/OS/'
-    }
-    else {
+    } else {
         String[] versionArray = rpmVeriosn.split("\\.")
         FirstDir = versionArray[0] + "." + versionArray[1]
         SecondDir = FirstDir + "." + versionArray[2]
