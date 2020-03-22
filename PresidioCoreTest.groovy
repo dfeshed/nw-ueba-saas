@@ -59,6 +59,7 @@ pipeline {
         stage('UEBA-UI RPMs Upgrade') {
             environment {
                 ADMIN_SERVER_IP = sh (script: 'sh /home/presidio/env_properties_manager.sh --get admin-server', returnStdout: true).trim()
+                RSA_BASE_URL = sh(script: 'grep baseurl /etc/yum.repos.d/nw-rsa-base.repo', returnStdout: true).trim()
             }
             when {
                 expression { return params.INSTALL_UEBA_UI_RPMS }
@@ -66,6 +67,7 @@ pipeline {
             steps {
                 script {
                     sh "echo ADMIN_SERVER_IP=${env.ADMIN_SERVER_IP}"
+                    sh "sudo sed -i \"s|ADMIN_SERVER_RPM_BASE_URL=.*|ADMIN_SERVER_RPM_BASE_URL=${RSA_BASE_URL}|g\" /home/presidio/presidio-ui-update.sh"
                     sh "sshpass -p \"netwitness\" ssh root@${env.ADMIN_SERVER_IP} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < /home/presidio/presidio-ui-update.sh"
                 }
             }
