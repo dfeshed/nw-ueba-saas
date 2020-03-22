@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 @ConditionalOnProperty(prefix = "aws.kms", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(KmsProperties.class)
 public class KmsEncryptionConfiguration {
-    public static final Logger logger = Logger.getLogger("KmsEncryptionConfiguration");
 
     private final KmsTextEncryptor kmsTextEncryptor;
 
