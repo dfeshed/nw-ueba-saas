@@ -151,8 +151,7 @@ def setBaseUrl(
     baseUrlValidation = rsaBaseUrl.drop(8)
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
     if (baseUrlresponsecode == '200') {
-        sh "sudo sed -i \"s|enabled=.*|enabled=0|g\" /etc/yum.repos.d/bootstrap.repo"
-        sh "sudo sed -i \"s|enabled=.*|enabled=0|g\" /etc/yum.repos.d/tier2*.repo"
+        sh "sudo sed -i \"s|enabled=.*|enabled=0|g\" /etc/yum.repos.d/*.repo"
         sh "sudo sed -i \"s|enabled=.*|enabled=1|g\" /etc/yum.repos.d/nw-*base.repo"
         sh "sudo sed -i \"s|.*baseurl=.*|${rsaBaseUrl}|g\" /etc/yum.repos.d/nw-rsa-base.repo"
         sh "sudo sed -i \"s|.*baseurl=.*|${osBaseUrl}|g\" /etc/yum.repos.d/nw-os-base.repo"
