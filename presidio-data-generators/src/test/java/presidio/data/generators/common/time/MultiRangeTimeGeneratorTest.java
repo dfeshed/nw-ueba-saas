@@ -3,15 +3,19 @@ package presidio.data.generators.common.time;
 import org.junit.Assert;
 import org.junit.Test;
 import presidio.data.generators.common.GeneratorException;
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Logger;
 
-import java.time.*;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class MultiRangeTimeGeneratorTest {
+    static Logger LOGGER = (Logger) LoggerFactory.getLogger(MultiRangeTimeGeneratorTest.class);
 
     @Test(expected = IllegalArgumentException.class)
     public void test_start_is_equal_to_end(){
@@ -101,8 +105,7 @@ public class MultiRangeTimeGeneratorTest {
                 rangesList, Duration.ofHours(1));
         int count = 0;
         while (TG.hasNext() != null) {
-            System.out.print(++count + " ");
-            System.out.println(TG.getNext().toString());
+            LOGGER.info(++count + " " + TG.getNext().toString());
         }
         Assert.assertEquals(60, count);
     }
@@ -113,8 +116,7 @@ public class MultiRangeTimeGeneratorTest {
                 Collections.emptyList(), Duration.ofHours(1));
         int count = 0;
         while (TG.hasNext() != null) {
-            System.out.print(++count + " ");
-            System.out.println(TG.getNext().toString());
+            LOGGER.info(++count + " " + TG.getNext().toString());
         }
         Assert.assertEquals(48, count);
     }
@@ -131,8 +133,7 @@ public class MultiRangeTimeGeneratorTest {
                 rangesList, null);
         int count = 0;
         while (TG.hasNext() != null) {
-            System.out.print(++count + " ");
-            System.out.println(TG.getNext().toString());
+            LOGGER.info(++count + " " + TG.getNext().toString());
         }
         Assert.assertEquals(42, count);
     }
@@ -149,8 +150,7 @@ public class MultiRangeTimeGeneratorTest {
                 rangesList, Duration.ofMinutes(30));
         int count = 0;
         while (TG.hasNext() != null) {
-            System.out.print(++count + " ");
-            System.out.println(TG.getNext().toString());
+            LOGGER.info(++count + " " + TG.getNext().toString());
         }
         Assert.assertEquals(94, count);
     }

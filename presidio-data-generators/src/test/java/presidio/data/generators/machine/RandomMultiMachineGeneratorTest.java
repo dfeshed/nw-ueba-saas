@@ -3,10 +3,13 @@ package presidio.data.generators.machine;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import presidio.data.generators.common.GeneratorException;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
 public class RandomMultiMachineGeneratorTest {
+    static Logger LOGGER = (Logger) LoggerFactory.getLogger(RandomMultiMachineGeneratorTest.class);
 
     @Test
     public void multiMachineTest() throws GeneratorException {
@@ -17,11 +20,11 @@ public class RandomMultiMachineGeneratorTest {
                 100, "M");
 
         String actualMachineId = generator.getNext().getMachineId();
-        System.out.println(actualMachineId);
+        LOGGER.info(actualMachineId);
         Assert.assertTrue(actualMachineId.equals("M60_CnIekKmgNlhOmUzLXjgyd_D1")||actualMachineId.equals("M60_CnIekKmgNlhOmUzLXjgyd_D2"));
 
         for (int i = 0; i< 100; i++) {
-            System.out.println(generator.getNext().getMachineId());
+            LOGGER.info(generator.getNext().getMachineId());
         }
     }
 }

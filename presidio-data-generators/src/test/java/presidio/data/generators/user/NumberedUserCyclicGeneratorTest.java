@@ -1,11 +1,15 @@
 package presidio.data.generators.user;
 
+import ch.qos.logback.classic.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 import presidio.data.domain.User;
 import presidio.data.generators.common.GeneratorException;
 
 public class NumberedUserCyclicGeneratorTest {
+    static Logger LOGGER = (Logger) LoggerFactory.getLogger(NumberedUserCyclicGeneratorTest.class);
+
     @Test
     public void UserGeneratorTest() {
         NumberedUserCyclicGenerator generator = null;
@@ -18,13 +22,13 @@ public class NumberedUserCyclicGeneratorTest {
         User user = generator.getNext();
         Assert.assertEquals(user.getUsername(), "user_000001");
         Assert.assertEquals(user.getUserId(), "user_000001_001");
-        System.out.println(user.getUsername() + " " + user.getUserId());
+        LOGGER.info(user.getUsername() + " " + user.getUserId());
         int isAdminCount = 0;
         if (user.isAdministrator()) isAdminCount++;
         for (int i = 2; i <= 3996; i++)
         {
             user = generator.getNext();
-            System.out.println(user.getUsername() + " " + user.getUserId() + (user.isAdministrator()?" admin":""));
+            LOGGER.info(user.getUsername() + " " + user.getUserId() + (user.isAdministrator()?" admin":""));
             if (user.isAdministrator()) isAdminCount++;
         }
 
