@@ -4,11 +4,14 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import presidio.data.domain.User;
 import presidio.data.generators.common.GeneratorException;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class RandomMultiUserGeneratorTest {
+    static Logger LOGGER = (Logger) LoggerFactory.getLogger(RandomMultiUserGeneratorTest.class);
 
     @Test
     public void multiUserTest() throws GeneratorException {
@@ -27,14 +30,14 @@ public class RandomMultiUserGeneratorTest {
             System.out.print(user.getUserId());
             if (user.getAdministrator())
             {
-                System.out.print(" admin");
+                LOGGER.info(" admin");
                 admins++;
             }
             if (user.getAnonymous()) {
-                System.out.print(" anonymous");
+                LOGGER.info(" anonymous");
                 anonymous++;
             }
-            System.out.println();
+            LOGGER.info("");
         }
         Assert.assertEquals(admins,14);
         Assert.assertEquals(anonymous,2);

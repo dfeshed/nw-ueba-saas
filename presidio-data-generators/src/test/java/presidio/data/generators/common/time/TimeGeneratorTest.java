@@ -3,6 +3,8 @@ package presidio.data.generators.common.time;
 import org.junit.Assert;
 import org.junit.Test;
 import presidio.data.generators.common.GeneratorException;
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Logger;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -13,6 +15,8 @@ import java.time.temporal.ChronoUnit;
  * Created by YaronDL on 8/8/2017.
  */
 public class TimeGeneratorTest {
+    static Logger LOGGER = (Logger) LoggerFactory.getLogger(TimeGeneratorTest.class);
+
     @Test
     public void DebugTest() throws GeneratorException {
         int startHour = 8;      int startMin = 0;
@@ -38,7 +42,7 @@ public class TimeGeneratorTest {
         LocalTime endTime = LocalTime.of(endHour,endMin, 20, 500);
 
         ITimeGenerator TG = new TimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
-        while (TG.hasNext() != null) System.out.println(TG.getNext().toString());
+        while (TG.hasNext() != null) LOGGER.info(TG.getNext().toString());
         Assert.assertTrue(true);
     }
 
