@@ -1,5 +1,7 @@
 import logging
 import os
+import re
+
 import psutil
 import subprocess
 
@@ -242,9 +244,7 @@ def build_mongo_clean_python_operator(cleanup_dag):
             ["java", "-jar", "/var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar", "decrypt",
              encrypted_mongo_db_password])
 
-        password_position = encryption_utils_output.find("password: ") + len("password: ")
-
-        mongo_db_password = encryption_utils_output[password_position:]
+        decrypted_mongo_db_password = re.compile('.*password: (.*)').match(encryption_utils_output.splitlines()[-1]).group(1)
 
         eval_exp = "db.getCollectionNames().forEach(function(collectionName) {" \
                    "    if (collectionName.startsWith('system') == 0) {" \
@@ -252,7 +252,7 @@ def build_mongo_clean_python_operator(cleanup_dag):
                    "        db.getCollection(collectionName).drop();" \
                    "    }" \
                    "});"
-        subprocess.check_output(["mongo", "-u", mongo_db_user, "-p", mongo_db_password,
+        subprocess.check_output(["mongo", "-u", mongo_db_user, "-p", decrypted_mongo_db_password,
                                  "{}:{}/{}".format(mongo_host_name, mongo_host_port, mongo_db_name),
                                  "--authenticationDatabase", mongo_db_name, "--eval", "\"{}\"".format(eval_exp)])
 
