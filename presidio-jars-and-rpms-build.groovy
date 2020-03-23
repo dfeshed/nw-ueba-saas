@@ -184,7 +184,7 @@ pipeline {
             archivingJARsAndRPMs()
             cleanWs()
             emailext attachLog: false, body: '$DEFAULT_CONTENT', postsendScript: '$DEFAULT_POSTSEND_SCRIPT', presendScript: '$DEFAULT_PRESEND_SCRIPT',
-                    subject: '$DEFAULT_SUBJECT. Branch: ' + "${env.BRANCH_NAME}" + ' on $NODE_LABEL', to: 'Dmitry.Feshenko@rsa.com,Yuval.Shachak@rsa.com'
+                    subject: '$DEFAULT_SUBJECT. Branch: ' + "${env.BRANCH_NAME}", to: 'Dmitry.Feshenko@rsa.com,Yuval.Shachak@rsa.com'
         }
     }
 }
