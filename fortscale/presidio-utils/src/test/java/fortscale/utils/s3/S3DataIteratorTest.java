@@ -58,13 +58,11 @@ public class S3DataIteratorTest {
     private void assertNextRecord(S3DataIterator s3DataIterator,Map<String, Object> expectedRecord){
         Assert.assertTrue(s3DataIterator.hasNext());
         Map<String, Object> record = s3DataIterator.next();
-        Assert.assertNotNull(record);
-        Assert.assertEquals(expectedRecord.size(), record.size());
-        record.keySet().stream().forEach(k -> {Assert.assertEquals(expectedRecord.get(k),record.get(k));});
+        Assert.assertEquals(expectedRecord, record);
     }
 
 
-    public static class MapExtractor implements IMapExtractor{
+    public static class MapExtractor implements IS3MapExtractor {
         private static final TypeReference<HashMap<String, Object>> TYPE = new TypeReference<HashMap<String, Object>>() {};
 
 

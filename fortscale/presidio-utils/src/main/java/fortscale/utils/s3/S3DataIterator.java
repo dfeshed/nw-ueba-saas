@@ -24,10 +24,7 @@ import java.util.zip.GZIPInputStream;
 public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable {
 
     private static final Logger logger = LoggerFactory.getLogger(S3DataIterator.class);
-//    private static final ObjectMapper MAPPER = new ObjectMapper();
-//    private static final TypeReference<HashMap<String, Object>> TYPE = new TypeReference<HashMap<String, Object>>() {
-//    };
-    private IMapExtractor mapExtractor;
+    private IS3MapExtractor mapExtractor;
     private final AmazonS3 s3;
     private final String bucket;
 
@@ -42,8 +39,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
      * @param bucket       the S3 bucket to read from
      * @param objects      this s3 objects to iterate on.
      */
-    public S3DataIterator(AmazonS3 s3, String bucket, Iterator<S3ObjectSummary> objects
-                            , IMapExtractor mapExtractor) {
+    public S3DataIterator(AmazonS3 s3, String bucket, Iterator<S3ObjectSummary> objects, IS3MapExtractor mapExtractor) {
         this.s3 = s3;
         this.bucket = bucket;
         this.mapExtractor = mapExtractor;
