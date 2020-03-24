@@ -24,6 +24,9 @@ import java.util.zip.GZIPInputStream;
 public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable {
 
     private static final Logger logger = LoggerFactory.getLogger(S3DataIterator.class);
+
+    private static final String EMPTY_FILE_FIRST_LINE = "{}";
+
     private IS3MapExtractor mapExtractor;
     private final AmazonS3 s3;
     private final String bucket;
@@ -145,8 +148,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
         private Iterator<String> iter;
         private BufferedReader reader;
-        private String first;
-        private boolean isFirst = true;
+        private String first = null;
 
         private BufferReaderIterator(BufferedReader reader) {
             if (reader != null) {
@@ -156,7 +158,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
                     close();
                 }else{
                     first = iter.next();
-                    if("{}".equals(first)){
+                    if(EMPTY_FILE_FIRST_LINE.equals(first)){
                         close();
                     }
                 }
@@ -171,7 +173,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
         @Override
         public void close() {
-            isFirst = false;
+            first = null;
             iter = Collections.emptyIterator();
             if (reader != null) {
                 try {
@@ -184,17 +186,23 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
         @Override
         public boolean hasNext() {
-            return isFirst || iter.hasNext();
+            return isFirst() || iter.hasNext();
+        }
+
+        private boolean isFirst(){
+            return (first != null);
         }
 
         @Override
         public String next() {
             try {
-                if(isFirst){
-                    isFirst = false;
-                    return first;
+                String next;
+                if(isFirst()){
+                    next = first;
+                    first = null;
+                } else {
+                    next = iter.next();
                 }
-                String next = iter.next();
                 if (!iter.hasNext()) {
                     close();
                 }
