@@ -2,6 +2,11 @@
 pipeline {
     parameters {
         string(name: 'NODE_LABEL', defaultValue: '', description: '')
+
+        booleanParam(name: 'S3_DOWNLOAD', defaultValue: true, description: '')
+        booleanParam(name: 'INSTALL_MAVEN', defaultValue: true, description: '')
+        booleanParam(name: 'INSTALL_GIT', defaultValue: true, description: '')
+        booleanParam(name: 'INSTALL_M2', defaultValue: true, description: '')
     }
 
     environment {
@@ -20,6 +25,8 @@ pipeline {
     stages {
 
         stage('Download Files') {
+            when { expression { return params.S3_DOWNLOAD } }
+
             steps {
                 sh 'pwd'
                 sh 'whoami'
@@ -35,6 +42,8 @@ pipeline {
         }
 
         stage('Install Maven') {
+            when { expression { return params.INSTALL_MAVEN } }
+
             steps {
                 sh "cd ${DOWNLOADS_DIR} && tar -xf apache-maven-3.6.2-bin.tar.gz"
                 sh "[ -f ${BIN_DIR}/mvn ] ||  ln -s ${DOWNLOADS_DIR}/apache-maven-3.6.2/bin/mvn ${BIN_DIR}"
@@ -46,6 +55,8 @@ pipeline {
         }
 
         stage('Install Git') {
+            when { expression { return params.INSTALL_GIT } }
+
             steps {
                 // rpm location: http://172.24.229.44:8882/repo/external/
                 sh "git --version || sudo yum install -y git"
@@ -54,6 +65,8 @@ pipeline {
         }
 
         stage('Update M2') {
+            when { expression { return params.INSTALL_M2 } }
+
             steps {
                 sh "cd ${DOWNLOADS_DIR} && tar -xf m2.tar.gz"
                 sh "[ -d ${HOME_DIR}/.m2 ] || mkdir -p ${HOME_DIR}/.m2"
