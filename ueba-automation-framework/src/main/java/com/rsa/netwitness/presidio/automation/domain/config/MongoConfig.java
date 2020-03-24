@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.rsa.netwitness.presidio.automation.config.AutomationConf.IS_MONGO_PASSWORD_ENCRYPTED;
-import static com.rsa.netwitness.presidio.automation.config.AutomationConf.USE_JAR_DECRYPT;
+import static com.rsa.netwitness.presidio.automation.config.AutomationConf.USE_AWS_KMS;
 
 @Configuration
 @EnableMongoAuditing
@@ -70,7 +70,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
                     MongoCredential.createCredential(
                             mongoUserName,
                             mongoDBName,
-                            EncryptionUtils.decrypt(mongoPassword, USE_JAR_DECRYPT).toCharArray()
+                            EncryptionUtils.decrypt(mongoPassword, USE_AWS_KMS).toCharArray()
                     )
             );
 
@@ -109,7 +109,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
                     MongoCredential.createCredential(
                             mongoUserName,
                             mongoDBName,
-                            EncryptionUtils.decrypt(mongoPassword, USE_JAR_DECRYPT).toCharArray()
+                            EncryptionUtils.decrypt(mongoPassword, USE_AWS_KMS).toCharArray()
                     )
             );
         }
@@ -144,7 +144,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
                         MongoCredential.createCredential(
                                 mongoUserName,
                                 mongoDBName,
-                                EncryptionUtils.decrypt(mongoPassword, USE_JAR_DECRYPT).toCharArray()
+                                EncryptionUtils.decrypt(mongoPassword, USE_AWS_KMS).toCharArray()
                         )
                 );
             } catch (Exception e) {

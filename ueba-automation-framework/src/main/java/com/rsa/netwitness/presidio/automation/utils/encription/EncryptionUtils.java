@@ -25,9 +25,9 @@ public class EncryptionUtils {
         return Base64.encodeBase64String(encryptedBytes);
     }
 
-    public static String decrypt(String encrypted, boolean useJar) throws Exception {
-        if (useJar) {
-            return byEncryptionUtilsJar("decrypt", encrypted);
+    public static String decrypt(String encrypted, boolean useAwsKms) throws Exception {
+        if (useAwsKms) {
+            return decryptByAwsKms(encrypted);
         } else {
             return decrypt(encrypted);
         }
@@ -40,14 +40,19 @@ public class EncryptionUtils {
         return new String(plainBytes);
     }
 
-    private static String byEncryptionUtilsJar(String jarParams, String encrypted) {
+    private static String decryptByAwsKms(String encrypted) {
+        String password = useEncryptionUtilsJar("decrypt", encrypted).replaceFirst("password: ", "");
+        System.out.println("  >>>>>>>>>> AWS KMS Decrypted=" + password);
+        return password;
+    }
+
+    private static String useEncryptionUtilsJar(String jarParams, String encrypted) {
         String cmdPrefix = "java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar ".concat(jarParams).concat(" ");
         String command = cmdPrefix.concat(encrypted);
-        SshResponse p = new SshHelper().uebaHostExec().withTimeout(20, TimeUnit.SECONDS).run(command);
-        p.output.forEach(System.out::println);
-        String out = p.output.get(p.output.size()-1);
-        System.out.println("Decrypted: " + out);
-        return out;
+        SshResponse p = new SshHelper().uebaHostExec().withTimeout(20, TimeUnit.SECONDS).withExitCodeValidation().run(command);
+        String scriptOut = p.output.get(p.output.size() - 1).trim();
+        System.out.println(scriptOut);
+        return scriptOut;
     }
 
     private static Cipher getCipher(int cipherMode) throws Exception
