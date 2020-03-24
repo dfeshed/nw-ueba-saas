@@ -27,7 +27,7 @@ public class EncryptionUtils {
 
     public static String decrypt(String encrypted, boolean useJar) throws Exception {
         if (useJar) {
-            return byEncryptionUtils("decrypt", encrypted);
+            return byEncryptionUtilsJar("decrypt", encrypted);
         } else {
             return decrypt(encrypted);
         }
@@ -40,9 +40,9 @@ public class EncryptionUtils {
         return new String(plainBytes);
     }
 
-    private static String byEncryptionUtils(String jarParams, String encrypted) {
-        String cmdPrefix = "java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar " + jarParams + " ";
-        String command = cmdPrefix + encrypted;
+    private static String byEncryptionUtilsJar(String jarParams, String encrypted) {
+        String cmdPrefix = "java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar ".concat(jarParams).concat(" ");
+        String command = cmdPrefix.concat(encrypted);
         SshResponse p = new SshHelper().uebaHostExec().withTimeout(20, TimeUnit.SECONDS).run(command);
         p.output.forEach(System.out::println);
         String out = p.output.get(p.output.size()-1);
