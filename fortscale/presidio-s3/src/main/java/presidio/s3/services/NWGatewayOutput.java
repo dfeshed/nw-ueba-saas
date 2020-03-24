@@ -2,8 +2,8 @@ package presidio.s3.services;
 
 import com.amazonaws.services.s3.AmazonS3;
 import fortscale.common.s3.NWGatewayService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import fortscale.utils.logging.Logger;
+
 import java.time.Instant;
 import java.util.concurrent.TimeoutException;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeoutException;
 
 public class NWGatewayOutput {
 
-    private static final Logger logger = LoggerFactory.getLogger(NWGatewayOutput.class);
+    private static final Logger logger = Logger.getLogger(NWGatewayOutput.class);
     private NWGatewayService nwGatewayService;
 
     public NWGatewayOutput(String bucketName, String tenant, String account, String region, AmazonS3 s3) {

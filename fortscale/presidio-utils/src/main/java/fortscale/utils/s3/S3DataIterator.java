@@ -145,6 +145,8 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
         private Iterator<String> iter;
         private BufferedReader reader;
+        private String first;
+        private boolean isFirst = true;
 
         private BufferReaderIterator(BufferedReader reader) {
             if (reader != null) {
@@ -152,6 +154,11 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
                 this.reader = reader;
                 if (!iter.hasNext()) {
                     close();
+                }else{
+                    first = iter.next();
+                    if("{}".equals(first)){
+                        close();
+                    }
                 }
             } else {
                 iter = Collections.emptyIterator();
@@ -164,6 +171,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
         @Override
         public void close() {
+            isFirst = false;
             iter = Collections.emptyIterator();
             if (reader != null) {
                 try {
@@ -176,12 +184,16 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
         @Override
         public boolean hasNext() {
-            return iter.hasNext();
+            return isFirst || iter.hasNext();
         }
 
         @Override
         public String next() {
             try {
+                if(isFirst){
+                    isFirst = false;
+                    return first;
+                }
                 String next = iter.next();
                 if (!iter.hasNext()) {
                     close();
