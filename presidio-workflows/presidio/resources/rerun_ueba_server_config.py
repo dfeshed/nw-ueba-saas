@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import socket
 import urllib
 
 # Read the current UEBA server configuration.
@@ -15,6 +16,19 @@ password = match.group(2)
 password = urllib.unquote(password).decode('utf8')
 host = match.group(3)
 port = match.group(4)
+
+# Extract the IP address of the Broker's host (or Concentrator).
+try:
+    # Leave 'host' as is if it is already a valid IPv4 address.
+    socket.inet_aton(host)
+    print("'host' is a valid IPv4 address.")
+except socket.error:
+    # Otherwise, 'host' is the ID of the Broker's host (or Concentrator).
+    # Use the Orchestration CLI Client and this ID to find the IP address.
+    json_filter = '$[?(@.id=="{}")]["ipv4"]'.format(host)
+    command = "orchestration-cli-client --list-hosts --quiet --json --filter '{}' | jq -r .[0]".format(json_filter)
+    host = os.popen(command).read().strip()
+    print("'host' was set to {}.".format(host))
 
 # Map the port number to the source type.
 if port in ['50003', '56003']:
