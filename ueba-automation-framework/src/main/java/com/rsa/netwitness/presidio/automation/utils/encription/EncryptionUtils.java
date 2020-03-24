@@ -41,7 +41,7 @@ public class EncryptionUtils {
     }
 
     private static String byEncryptionUtils(String jarParams, String encrypted) {
-        String cmdPrefix = "java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar " + jarParams;
+        String cmdPrefix = "java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar " + jarParams + " ";
         String command = cmdPrefix + encrypted;
         SshResponse p = new SshHelper().uebaHostExec().withTimeout(20, TimeUnit.SECONDS).run(command);
         p.output.forEach(System.out::println);
