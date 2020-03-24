@@ -14,7 +14,6 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.rsa.netwitness.presidio.automation.config.AutomationConf.IS_MONGO_PASSWORD_ENCRYPTED;
+import static com.rsa.netwitness.presidio.automation.config.AutomationConf.USE_JAR_DECRYPT;
 
 @Configuration
 @EnableMongoAuditing
@@ -45,8 +45,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
     @Autowired
     private MongoPropertiesReader mongoPropertiesReader;
-
-    private List<Converter<?,?>> converters = new ArrayList<Converter<?,?>>();
 
     @Override
     protected String getDatabaseName() {
@@ -72,7 +70,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
                     MongoCredential.createCredential(
                             mongoUserName,
                             mongoDBName,
-                            EncryptionUtils.decrypt(mongoPassword).toCharArray()
+                            EncryptionUtils.decrypt(mongoPassword, USE_JAR_DECRYPT).toCharArray()
                     )
             );
 
@@ -111,7 +109,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
                     MongoCredential.createCredential(
                             mongoUserName,
                             mongoDBName,
-                            EncryptionUtils.decrypt(mongoPassword).toCharArray()
+                            EncryptionUtils.decrypt(mongoPassword, USE_JAR_DECRYPT).toCharArray()
                     )
             );
         }
@@ -146,7 +144,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
                         MongoCredential.createCredential(
                                 mongoUserName,
                                 mongoDBName,
-                                EncryptionUtils.decrypt(mongoPassword).toCharArray()
+                                EncryptionUtils.decrypt(mongoPassword, USE_JAR_DECRYPT).toCharArray()
                         )
                 );
             } catch (Exception e) {

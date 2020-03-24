@@ -1,9 +1,12 @@
 package com.rsa.netwitness.presidio.automation.utils.encription;
 
+import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
+import com.rsa.netwitness.presidio.automation.ssh.helper.SshHelper;
 import org.apache.commons.net.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lirana on 17/05/2017.
@@ -22,11 +25,29 @@ public class EncryptionUtils {
         return Base64.encodeBase64String(encryptedBytes);
     }
 
+    public static String decrypt(String encrypted, boolean useJar) throws Exception {
+        if (useJar) {
+            return byEncryptionUtils("decrypt", encrypted);
+        } else {
+            return decrypt(encrypted);
+        }
+    }
+
     public static String decrypt(String encrypted) throws Exception {
         Cipher cipher = getCipher(Cipher.DECRYPT_MODE);
         byte[] plainBytes = cipher.doFinal(Base64.decodeBase64(encrypted));
 
         return new String(plainBytes);
+    }
+
+    private static String byEncryptionUtils(String jarParams, String encrypted) {
+        String cmdPrefix = "java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar " + jarParams;
+        String command = cmdPrefix + encrypted;
+        SshResponse p = new SshHelper().uebaHostExec().withTimeout(20, TimeUnit.SECONDS).run(command);
+        p.output.forEach(System.out::println);
+        String out = p.output.get(p.output.size()-1);
+        System.out.println("Decrypted: " + out);
+        return out;
     }
 
     private static Cipher getCipher(int cipherMode) throws Exception
