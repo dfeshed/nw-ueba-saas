@@ -69,7 +69,7 @@ public class S3_Interval implements Comparable<S3_Interval> {
 
     private UploadResult uploadEmpty() {
         totalUploaded = -1;
-        cache.add("");
+        cache.add("{\"records\":[]}");
         return uploadCache();
     }
 
