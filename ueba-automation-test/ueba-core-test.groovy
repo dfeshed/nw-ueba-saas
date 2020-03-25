@@ -8,9 +8,9 @@ pipeline {
         choice(name: 'USE_AWS_KMS', choices: ['true', 'false'], description: '')
 
         string(name: 'S3_BUCKET', defaultValue: 'presidio-automation-data', description: '')
-        string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
+        string(name: 'S3_TENANT', defaultValue: '', description: 'Empty value - take the latest timestamp')
         string(name: 'S3_APPLICATION', defaultValue: 'NetWitness', description: '')
-        string(name: 'S3_ACCOUNT', defaultValue: '', description: 'Empty -> take last timestamp')
+        string(name: 'S3_ACCOUNT', defaultValue: 'aws-account', description: '')
 
         choice(name: 'generator_format', choices: ['S3_JSON_GZIP', 'MONGO_ADAPTER'], description: '')
         choice(name: 'pre_processing_configuration_scenario', choices: ['CORE_S3'], description: '')
@@ -28,7 +28,7 @@ pipeline {
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
         SCRIPTS_DIR = '/ueba-automation-framework/src/main/resources/scripts/'
-        S3_ACCOUNT = getAccountID()
+        S3_TENANT = parseFromPathOrFromParams()
         AWS_REGION = 'us-east-1'
     }
 
@@ -160,12 +160,12 @@ def editApplicationProperties() {
     sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}editPropertiesFile.sh $file aws.region ${env.AWS_REGION}"
 }
 
-def getAccountID() {
-    if (!"${params.S3_ACCOUNT}".isEmpty()) {
-        return params.S3_ACCOUNT
+def parseFromPathOrFromParams() {
+    if (!"${params.S3_TENANT}".isEmpty()) {
+        return params.S3_TENANT
     } else {
         withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: env.AWS_REGION) {
-            files = s3FindFiles(bucket: "${params.S3_BUCKET}", path: "${params.S3_TENANT}/${params.S3_APPLICATION}", glob: "*")
+            files = s3FindFiles(bucket: "${params.S3_BUCKET}", path: "", glob: "*")
             println 'Folders found:'
             for (file in files) {
                 println file.name
