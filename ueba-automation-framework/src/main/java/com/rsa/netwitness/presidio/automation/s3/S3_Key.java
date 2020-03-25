@@ -46,14 +46,13 @@ public class S3_Key {
     private String toPath(Instant interval, Schema schema) {
         LocalDateTime intervalDate = LocalDateTime.ofInstant(interval, UTC);
 
-        return bucket.concat("/")
-                .concat(tenant).concat("/")
+        return tenant.concat("/")
                 .concat(S3_CONFIG.netwitness).concat("/")
                 .concat(getApplicationLabel(schema)).concat("/")
                 .concat(region).concat("/")
                 .concat(String.valueOf(intervalDate.getYear())).concat("/")
-                .concat(String.valueOf(String.format("%02d" , intervalDate.getMonthValue()))).concat("/")
-                .concat(String.valueOf(String.format("%02d" , intervalDate.getDayOfMonth()))).concat("/");
+                .concat(String.valueOf(intervalDate.getMonthValue())).concat("/")
+                .concat(String.valueOf(intervalDate.getDayOfMonth())).concat("/");
     }
 
 
