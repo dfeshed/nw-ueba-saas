@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Map.Entry.comparingByKey;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class AwsEvent extends NetwitnessEvent {
     private final Map<String, Object> awsEvent;
@@ -17,6 +16,7 @@ public class AwsEvent extends NetwitnessEvent {
         super(event.eventTimeEpoch, event.schema);
 
         Map<String, Object> brokerEvent = event.getEvent();
+        brokerEvent.put("event_time", event.timeMillis);
         awsEvent = brokerEvent.entrySet().parallelStream()
                 .filter(e -> FIELDS_MAPPER.get(event.schema).containsKey(e.getKey()))
                 .sorted(comparingByKey())
@@ -26,9 +26,6 @@ public class AwsEvent extends NetwitnessEvent {
                         (oldValue, newValue) -> oldValue,
                         LinkedHashMap::new
                 ));
-
-        assertThat(awsEvent).isNotNull().isNotEmpty();
-        awsEvent.put("eventTime", event.timeMillis);
     }
 
     private static final ImmutableMap<String, String> ACTIVE_DIRECTORY = new ImmutableMap.Builder<String, String>()
@@ -114,6 +111,7 @@ public class AwsEvent extends NetwitnessEvent {
             .build();
 
     private static final ImmutableMap<String, String> TLS = new ImmutableMap.Builder<String, String>()
+            .put("event_time", "time")
             .put("tcp_srcport", "tcpSrcPort")
             .put("tcp_dstport", "tcpDstPort")
             .put("ip_src", "ipSrc")
