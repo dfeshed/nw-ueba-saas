@@ -1,10 +1,12 @@
 package com.rsa.netwitness.presidio.automation.converter.events;
 
+import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;
 import fortscale.common.general.Schema;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static java.util.Map.Entry.comparingByKey;
@@ -15,14 +17,22 @@ public class AwsEvent extends NetwitnessEvent {
     public AwsEvent(NetwitnessEvent event) {
         super(event.eventTimeEpoch, event.schema);
 
+        UnaryOperator<Map.Entry<String, Object>> dashesToUnderscores = e -> Map.entry(e.getKey().replaceAll("-", "_"), e.getValue());
+        UnaryOperator<String> toCamelCase = st -> CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, st);
+        UnaryOperator<Map.Entry<String, Object>> keysToAnalysesServerFormat = e -> {
+            if (FIELDS_MAPPER.get(super.schema).containsKey(e.getKey())) {
+                return Map.entry(FIELDS_MAPPER.get(super.schema).get(e.getKey()), e.getValue());
+            } else {
+                return Map.entry(toCamelCase.apply(e.getKey()), e.getValue());
+            }
+        };
+
         Map<String, Object> brokerEvent = event.getEvent();
         brokerEvent.put("event_time", event.timeMillis);
         awsEvent = brokerEvent.entrySet().parallelStream()
-                .filter(e -> FIELDS_MAPPER.get(event.schema).containsKey(e.getKey()))
+                .map(dashesToUnderscores.andThen(keysToAnalysesServerFormat))
                 .sorted(comparingByKey())
-                .collect(Collectors.toMap(
-                        e -> FIELDS_MAPPER.get(event.schema).get(e.getKey()),
-                        e -> e.getValue(),
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue(),
                         (oldValue, newValue) -> oldValue,
                         LinkedHashMap::new
                 ));
