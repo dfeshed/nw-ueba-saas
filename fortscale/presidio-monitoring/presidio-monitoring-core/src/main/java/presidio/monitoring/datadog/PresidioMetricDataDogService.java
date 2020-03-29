@@ -4,38 +4,51 @@ import com.timgroup.statsd.*;
 import fortscale.utils.logging.Logger;
 import presidio.monitoring.records.MetricDocument;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
-import static presidio.monitoring.sdk.api.services.enums.MetricEnums.MetricValues.DEFAULT_METRIC_VALUE;
 
 public class PresidioMetricDataDogService {
 
     private final Logger logger = Logger.getLogger(PresidioMetricDataDogService.class);
-    private List<String> metricNames;
+    private List<String> validMetrics;
     private String hostname;
     private int port;
 
-    public PresidioMetricDataDogService(String hostname, int port, List<String> metricNames) {
-        this.metricNames = metricNames;
+    public PresidioMetricDataDogService(String hostname, int port, List<String> validMetrics) {
+        this.validMetrics = validMetrics;
         this.hostname = hostname;
         this.port = port;
     }
 
     public int saveCount(List<MetricDocument> metricDocument) {
-        List<MetricDocument> metricDocumentFiltered = metricDocument.stream().filter(this::shouldBeSent).collect(Collectors.toList());
-        metricDocumentFiltered.forEach(metric -> saveCount(metric, new String[]{}));
-        return metricDocumentFiltered.size();
+        Map<String, Long> metrics = new HashMap<>();
+        metricDocument.forEach(metric -> metrics.putAll(metricDocumentToMetricsMap(metric)));
+
+        Map<String, Long> metricsFiltered = metrics.entrySet().stream()
+                .filter(entry -> shouldBeSent(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        metricsFiltered.forEach((metricName, metricValue) -> saveCount(metricName, metricValue, new String[]{}));
+        return metricsFiltered.size();
     }
 
-    private void saveCount(MetricDocument metricDocument, String[] metricTags) {
+    private void saveCount(String metricName, Long value, String[] metricTags) {
         StatsDClient statsDClient = createClient(metricTags);
-        statsDClient.count(metricDocument.getName(), metricDocument.getValue().get(DEFAULT_METRIC_VALUE).longValue());
+        statsDClient.count(metricName, value);
         statsDClient.close();
     }
 
-    private boolean shouldBeSent(MetricDocument metric){
-        return metricNames.contains(metric.getName());
+    private boolean shouldBeSent(String metricName){
+        return validMetrics.contains(metricName);
+    }
+
+    private Map<String, Long> metricDocumentToMetricsMap(MetricDocument metricDocument){
+        Map<String, Long> metricsMap = new HashMap<>();
+        metricDocument.getValue().forEach((metricKey, metricValue) ->
+                metricsMap.put(String.format("%s.%s", metricDocument.getName(), metricKey), metricValue.longValue()));
+        return metricsMap;
     }
 
     /**
