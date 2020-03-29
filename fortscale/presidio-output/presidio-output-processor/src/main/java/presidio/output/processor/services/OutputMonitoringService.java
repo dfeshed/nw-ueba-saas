@@ -40,6 +40,7 @@ public class OutputMonitoringService {
     public static final String NUM_ACTIVE_ENTITIES_LAST_DAY_METRIC_NAME = "active_%s_count_last_day";
     public static final String SMARTS_COUNT_LAST_DAY_METRIC_NAME = "smarts_count_last_day";
     public static final String ALERTS_COUNT_LAST_DAY_METRIC_NAME = "alerts_count_last_day";
+    public static final String ALERTS_COUNT_HOURLY_METRIC_NAME = "alerts_count_hourly";
 
 
     private final AdeManagerSdk adeManagerSdk;
