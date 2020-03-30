@@ -22,8 +22,11 @@ import org.testng.annotations.Parameters;
 import presidio.data.domain.event.Event;
 import presidio.data.generators.common.GeneratorException;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})
@@ -49,10 +52,12 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
 
         setParams(historicalDaysBack, anomalyDay, generatorFormat);
         LOGGER.info("  ++++++ Going to generate.");
-        Stream<? extends Event> precidioEvents = generate();
+        Stream<? extends Event> presidioEvents = generate()
+                .filter(event -> event.getDateTime().isAfter(Instant.now().truncatedTo(DAYS).minus(historicalDaysBack, DAYS)))
+                .filter(event -> event.getDateTime().isBefore(Instant.now().truncatedTo(DAYS)));
 
         LOGGER.info("  ++++++ Going to convert.");
-        Stream<NetwitnessEvent> converted = precidioEvents.parallel().map(getConverter()::convert);
+        Stream<NetwitnessEvent> converted = presidioEvents.parallel().map(getConverter()::convert);
 
         LOGGER.info("  ++++++ Going to send.");
         generatorResultCount = getProducer().send(converted);
