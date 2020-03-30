@@ -32,6 +32,7 @@ import presidio.monitoring.services.MetricConventionApplyer;
 import presidio.monitoring.services.PresidioMetricConventionApplyer;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 
+import java.util.Collections;
 import java.util.Properties;
 
 @RunWith(SpringRunner.class)
@@ -109,6 +110,10 @@ public class FortscaleInputCoreApplicationTest {
             properties.put("dataPipeline.startTime", "2019-01-01T00:00:00Z");
             properties.put("transformers.file.path", "classpath:descriptors/");
             properties.put("folder.operation.types", "LOCAL_SHARE_FOLDER_PATH_CHANGED,FOLDER_RENAMED,FOLDER_OWNERSHIP_CHANGED,FOLDER_OPENED,FOLDER_MOVED,FOLDER_DELETED,FOLDER_CREATED,FOLDER_CLASSIFICATION_CHANGED,FOLDER_CENTRAL_ACCESS_POLICY_CHANGED,FOLDER_AUDITING_CHANGED,FOLDER_ATTRIBUTE_CHANGED,FOLDER_ACCESS_RIGHTS_CHANGED,FAILED_FOLDER_ACCESS,NETAPP_FOLDER_RENAMED,NETAPP_FOLDER_OWNERSHIP_CHANGED,NETAPP_FOLDER_MOVED,NETAPP_FOLDER_DELETED,NETAPP_FOLDER_CREATED,NETAPP_FOLDER_ACCESS_RIGHTS_CHANGED,EMC_FOLDER_RENAMED,EMC_FOLDER_OWNERSHIP_CHANGED,EMC_FLDER_MOVED,EMC_FOLDER_DELETED,EMC_FOLDER_CREATED,EMC_FOLDER_ACCESS_RIGHTS_CHANGED,FOLDER_RENAMED,FLUIDFS_FOLDER_OWNERSHIP_CHANGED,FLUIDFS_FOLDER_MOVED,FLUIDFS_FOLDER_DELETED,FLUIDFS_FOLDER_CREATED,FLUIDFS_FOLDER_AUDITING_CHANGED,FLUIDFS_FOLDER_ACCESS_RIGHTS_CHANGED");
+            properties.put("datadog.host", "localhost");
+            properties.put("datadog.port", 8125);
+            properties.put("datadog.metrics", Collections.emptyList());
+
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }
