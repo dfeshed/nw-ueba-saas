@@ -167,6 +167,9 @@ public class AdeManagerSdkTest {
             Properties properties = new Properties();
             properties.put("spring.application.name", "test-app-name");
             properties.put("enable.metrics.export", false);
+            properties.put("datadog.host", "localhost");
+            properties.put("datadog.port", 8125);
+            properties.put("datadog.metrics", Collections.emptyList());
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }

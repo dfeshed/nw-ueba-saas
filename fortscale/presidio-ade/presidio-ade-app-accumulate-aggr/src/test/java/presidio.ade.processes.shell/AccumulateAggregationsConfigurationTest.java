@@ -12,6 +12,7 @@ import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
+import java.util.Collections;
 import java.util.Properties;
 
 @Configuration
@@ -39,6 +40,9 @@ public class AccumulateAggregationsConfigurationTest extends AccumulateAggregati
 
         properties.put("enable.metrics.export", false);
         properties.put("monitoring.fixed.rate","60000");
+        properties.put("datadog.host", "localhost");
+        properties.put("datadog.port", 8125);
+        properties.put("datadog.metrics", Collections.emptyList());
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
+import java.util.Collections;
 import java.util.Properties;
 
 /**
@@ -47,6 +48,10 @@ public class SmartApplicationConfigurationTest extends SmartApplicationConfigura
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
         properties.put("monitoring.fixed.rate","60000");
+        properties.put("datadog.host", "localhost");
+        properties.put("datadog.port", 8125);
+        properties.put("datadog.metrics", Collections.emptyList());
+
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }
