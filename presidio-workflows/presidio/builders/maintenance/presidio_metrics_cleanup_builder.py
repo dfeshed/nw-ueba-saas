@@ -5,6 +5,12 @@ import json
 from airflow.operators.python_operator import PythonOperator
 from presidio.builders.maintenance.maintenance_dag_builder import MaintenanceDagBuilder
 from elasticsearch import Elasticsearch
+from presidio.utils.configuration.config_server_configuration_reader_singleton import \
+    ConfigServerConfigurationReaderSingleton
+
+config_reader = ConfigServerConfigurationReaderSingleton().config_reader
+elasticsearch_host = config_reader.read("elasticsearch.host", "localhost")
+elasticsearch_port = config_reader.read("elasticsearch.restPort", "9200")
 
 class PresidioMetircsCleanupDagBuilder(MaintenanceDagBuilder):
 
@@ -28,7 +34,7 @@ class PresidioMetircsCleanupDagBuilder(MaintenanceDagBuilder):
     @staticmethod
     def cleanup_app_metrics_function(**context):
 
-        es = Elasticsearch()
+        es = Elasticsearch(hosts=[elasticsearch_host], port=int(elasticsearch_port))
 
         logging.info("Running App Metrics Cleanup Process...")
         dag_run_conf = context.get("dag_run").conf
@@ -56,7 +62,7 @@ class PresidioMetircsCleanupDagBuilder(MaintenanceDagBuilder):
     @staticmethod
     def cleanup_sys_metrics_function(**context):
 
-        es = Elasticsearch()
+        es = Elasticsearch(hosts=[elasticsearch_host], port=int(elasticsearch_port))
 
         logging.info("Running System Metrics Cleanup Process...")
         dag_run_conf = context.get("dag_run").conf

@@ -6,7 +6,7 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 
 config_reader = ConfigServerConfigurationReaderSingleton().config_reader
 elasticsearch_host = config_reader.read("elasticsearch.host", "localhost")
-elasticsearch_port = config_reader.read("elasticsearch.port", "9300")
+elasticsearch_port = config_reader.read("elasticsearch.restPort", "9200")
 
 ELASTICSEARCH_CONF_KEY_NAME = "elasticsearch"
 CLEAN_DATA_KEY_NAME = "cleanData"
