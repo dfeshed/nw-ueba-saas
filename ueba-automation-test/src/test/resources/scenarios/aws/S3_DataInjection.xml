@@ -3,7 +3,6 @@
 <suite name="Core Test Data Injection">
     <parameter name="outputProcessingStartDaysBack" value="5" />
     <parameter name="outputProcessingEndDaysBack" value="1" />
-    <parameter name="historical_days_back" value="35" />
     <parameter name="anomaly_day" value="1" />
 
     <test name="Data Injection">
