@@ -37,26 +37,9 @@ export default Service.extend({
     });
   },
 
-  selected: computed({
-    get() {
-      isEmpty(this.get('_selected')) ? this.get('options').findBy('key', config.dateFormatDefault) : this.get('_selected');
-    },
-
-    set(key, value) {
-      if (value && value.key) {
-        if (!isNone(this.get('_selected'))) {
-          this.persist(value.key);
-        }
-        this.set('_selected', value);
-        return value;
-      } else {
-        if (!isNone(this.get('_selected'))) {
-          this.persist(value);
-        }
-        this.set('_selected', this.get('options').findBy('key', value));
-        return this.get('_selected');
-      }
-    }
-  })
-
+  selected: {
+    key: 'MM/dd/yyyy',
+    label: 'userPreferences.dateFormat.monthFirst',
+    format: 'MM/DD/YYYY'
+  }
 });

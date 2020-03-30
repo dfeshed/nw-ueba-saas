@@ -31,26 +31,9 @@ export default Service.extend({
     });
   },
 
-  selected: computed({
-    get() {
-      isEmpty(this.get('_selected')) ? this.get('options').findBy('key', config.timeFormatDefault) : this.get('_selected');
-    },
-
-    set(key, value) {
-      if (value && value.key) {
-        if (!isNone(this.get('_selected'))) {
-          this.persist(value.key);
-        }
-        this.set('_selected', value);
-        return value;
-      } else {
-        if (!isNone(this.get('_selected'))) {
-          this.persist(value);
-        }
-        this.set('_selected', this.get('options').findBy('key', value));
-        return this.get('_selected');
-      }
-    }
-  })
-
+  selected: {
+    key: 'HR24',
+    label: 'userPreferences.timeFormat.twentyFourHour',
+    format: 'HH:mm:ss.SSS'
+  }
 });
