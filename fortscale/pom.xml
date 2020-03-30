@@ -755,6 +755,7 @@
         <module>presidio-configuration</module>
         <module>presidio-manager</module>
         <module>presidio-s3</module>
+        <module>presidio-kms-encryptor</module>
     </modules>
 
     <distributionManagement>

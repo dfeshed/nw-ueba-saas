@@ -1,9 +1,7 @@
 package fortscale.configuration.spring;
 
-import fortscale.configuration.encryption.PresidioTextEncryptor;
 import fortscale.configuration.resource.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.config.server.environment.EnvironmentRepository;
@@ -11,21 +9,13 @@ import org.springframework.cloud.config.server.environment.JGitEnvironmentReposi
 import org.springframework.cloud.config.server.environment.SearchPathLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 
 @Configuration
 public class PresidioConfigServerConfiguration {
-
-    @Bean
-    @Primary
-    public TextEncryptor textEncryptor() {
-        return new PresidioTextEncryptor();
-    }
 
     @Configuration
     @ConditionalOnMissingBean(WritableResourceRepository.class)
