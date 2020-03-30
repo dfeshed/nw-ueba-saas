@@ -27,13 +27,13 @@ import java.util.List;
 public class MetricPersistencyServiceTestConfig {
 
     @Value("${datadog.port}")
-    int dataDogPort;
+    private int dataDogPort;
 
     @Value("${datadog.host}")
-    String dataDogHostName;
+    private String dataDogHostName;
 
     @Value("${datadog.metrics}")
-    List<String> dataDogMetricNames;
+    private List<String> dataDogMetricNames;
 
     @Bean
     public MetricGeneratorService metricGeneratorService() {
