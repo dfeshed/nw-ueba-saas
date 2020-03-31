@@ -4,7 +4,7 @@
   "predicate": {
     "type": "regex",
     "name": "device-type-equal-rsaacesrv",
-    "sourceKey": "device_type",
+    "sourceKey": "deviceType",
     "regex": "rsaacesrv"
   },
   "ifTransformer": {
@@ -14,13 +14,13 @@
       {
         "type": "epoch",
         "name": "date-time-millis-to-nano-representation",
-        "sourceKey": "event_time",
+        "sourceKey": "eventTime",
         "destinationKey": "dateTime"
       },
       {
         "type": "regex_captor_and_formatter",
         "name": "src-machine-id-normalization",
-        "sourceKey": "host_src",
+        "sourceKey": "hostSrc",
         "destinationKey": "srcMachineId",
         "captureAndFormatConfigurations": [
           {
@@ -63,7 +63,7 @@
       {
         "type": "regex_captor_and_formatter",
         "name": "user-id-normalization",
-        "sourceKey": "user_dst",
+        "sourceKey": "userDst",
         "destinationKey": "userId",
         "captureAndFormatConfigurations": [
           {
@@ -169,7 +169,7 @@
       {
         "type": "regex_captor_and_formatter",
         "name": "result-normalization",
-        "sourceKey": "ec_outcome",
+        "sourceKey": "ecOutcome",
         "destinationKey": "result",
         "captureAndFormatConfigurations": [
           {
@@ -193,7 +193,7 @@
       {
         "type": "copy_value",
         "name": "rename-session-id-to-event-id",
-        "sourceKey": "sessionid",
+        "sourceKey": "sessionId",
         "isRemoveSourceKey": true,
         "destinationKeys": [
           "eventId"
@@ -202,7 +202,7 @@
       {
         "type": "copy_value",
         "name": "rename-device-type-to-data-source",
-        "sourceKey": "device_type",
+        "sourceKey": "deviceType",
         "isRemoveSourceKey": true,
         "destinationKeys": [
           "dataSource"
@@ -235,7 +235,7 @@
     "predicate": {
       "type": "regex",
       "name": "device-type-equal-rhlinux",
-      "sourceKey": "device_type",
+      "sourceKey": "deviceType",
       "regex": "rhlinux"
     },
     "ifTransformer": {
@@ -248,7 +248,7 @@
           "predicate": {
             "type": "regex",
             "name": "user-unknown",
-            "sourceKey": "user_src",
+            "sourceKey": "userSrc",
             "regex": "^$|\\(unknown\\)"
           },
           "filterIn": false
@@ -259,7 +259,7 @@
           "predicate": {
             "type": "regex",
             "name": "event-type-is-auth",
-            "sourceKey": "event_type",
+            "sourceKey": "eventType",
             "regex": "USER_LOGIN|CRED_ACQ|USER_AUTH"
           },
           "filterIn": true
@@ -267,7 +267,7 @@
         {
           "type": "epoch",
           "name": "date-time-millis-to-nano-representation",
-          "sourceKey": "event_time",
+          "sourceKey": "eventTime",
           "destinationKey": "dateTime"
         },
         {
@@ -282,7 +282,7 @@
         {
           "type": "regex_captor_and_formatter",
           "name": "src-machine-id-normalization",
-          "sourceKey": "host_src",
+          "sourceKey": "hostSrc",
           "destinationKey": "srcMachineId",
           "captureAndFormatConfigurations": [
             {
@@ -325,7 +325,7 @@
         {
           "type": "regex_captor_and_formatter",
           "name": "user-id-normalization",
-          "sourceKey": "user_src",
+          "sourceKey": "userSrc",
           "destinationKey": "userId",
           "captureAndFormatConfigurations": [
             {
@@ -411,7 +411,7 @@
         {
           "type": "copy_value",
           "name": "copy-operation-type",
-          "sourceKey": "event_type",
+          "sourceKey": "eventType",
           "isRemoveSourceKey": false,
           "destinationKeys": [
             "operationType"
@@ -420,7 +420,7 @@
         {
           "type": "copy_value",
           "name": "rename-session-id-to-event-id",
-          "sourceKey": "sessionid",
+          "sourceKey": "sessionId",
           "isRemoveSourceKey": true,
           "destinationKeys": [
             "eventId"
@@ -462,13 +462,13 @@
               {
                 "type": "regex",
                 "name": "user-dst-not-contain-machine",
-                "sourceKey": "user_dst",
+                "sourceKey": "userDst",
                 "regex": "[^\\$]*"
               },
               {
                 "type": "regex",
                 "name": "device-type-snare-nic-or-windows",
-                "sourceKey": "device_type",
+                "sourceKey": "deviceType",
                 "regex": "winevent_snare|winevent_nic|windows"
               }
             ]
@@ -481,7 +481,7 @@
           "predicate": {
             "type": "regex",
             "name": "reference-id-equal-4769",
-            "sourceKey": "reference_id",
+            "sourceKey": "referenceId",
             "regex": "4769"
           },
           "ifTransformer": {
@@ -490,7 +490,7 @@
             "predicate": {
               "type": "regex",
               "name": "service-name-ends-with-dollar",
-              "sourceKey": "service_name",
+              "sourceKey": "serviceName",
               "regex": ".*\\$"
             },
             "filterIn": true
@@ -503,7 +503,7 @@
           "predicate": {
             "type": "regex",
             "name": "reference-id-equal-4624",
-            "sourceKey": "reference_id",
+            "sourceKey": "referenceId",
             "regex": "4624"
           },
           "ifTransformer": {
@@ -512,7 +512,7 @@
             "predicate": {
               "type": "regex",
               "name": "logon-type-equal-2-or-10",
-              "sourceKey": "logon_type",
+              "sourceKey": "logonType",
               "regex": "2|10"
             },
             "filterIn": true
@@ -525,7 +525,7 @@
           "predicate": {
             "type": "regex",
             "name": "reference-id-equal-4625",
-            "sourceKey": "reference_id",
+            "sourceKey": "referenceId",
             "regex": "4625"
           },
           "ifTransformer": {
@@ -534,7 +534,7 @@
             "predicate": {
               "type": "regex",
               "name": "logon-type-equal-2-or-3-or-10",
-              "sourceKey": "logon_type",
+              "sourceKey": "logonType",
               "regex": "2|3|10"
             },
             "filterIn": true
@@ -544,34 +544,34 @@
         {
           "type": "epoch",
           "name": "date-time-millis-to-nano-representation",
-          "sourceKey": "event_time",
+          "sourceKey": "eventTime",
           "destinationKey": "dateTime"
         },
         {
           "type": "switch_case",
           "name": "src-machine-name-switch-case",
-          "sourceKey": "reference_id",
+          "sourceKey": "referenceId",
           "destinationKey": "srcMachineName",
           "destinationDefaultValue": null,
           "cases": [
             {
               "caseKey": "4624",
-              "caseValue": "${alias_host[0]}",
+              "caseValue": "${aliasHost[0]}",
               "isRegex": false
             },
             {
               "caseKey": "4625",
-              "caseValue": "${alias_host[0]}",
+              "caseValue": "${aliasHost[0]}",
               "isRegex": false
             },
             {
               "caseKey": "4648",
-              "caseValue": "${alias_host[0]}",
+              "caseValue": "${aliasHost[0]}",
               "isRegex": false
             },
             {
               "caseKey": "4776",
-              "caseValue": "${host_src}",
+              "caseValue": "${hostSrc}",
               "isRegex": false
             }
           ]
@@ -579,13 +579,13 @@
         {
           "type": "switch_case",
           "name": "dst-machine-name-switch-case",
-          "sourceKey": "reference_id",
+          "sourceKey": "referenceId",
           "destinationKey": "dstMachineName",
           "destinationDefaultValue": null,
           "cases": [
             {
               "caseKey": "4648",
-              "caseValue": "${host_dst}",
+              "caseValue": "${hostDst}",
               "isRegex": false
             }
           ]
@@ -679,7 +679,7 @@
         {
           "type": "regex_captor_and_formatter",
           "name": "user-id-normalization",
-          "sourceKey": "user_dst",
+          "sourceKey": "userDst",
           "destinationKey": "userId",
           "captureAndFormatConfigurations": [
             {
@@ -788,13 +788,13 @@
           "predicate": {
             "type": "key_exist",
             "name": "event-type-exist",
-            "key": "event_type",
+            "key": "eventType",
             "testNull": false
           },
           "ifTransformer": {
             "type": "regex_captor_and_formatter",
             "name": "result-normalization-on-event-type",
-            "sourceKey": "event_type",
+            "sourceKey": "eventType",
             "destinationKey": "result",
             "captureAndFormatConfigurations": [
               {
@@ -812,7 +812,7 @@
           "elseTransformer": {
             "type": "switch_case",
             "name": "result-normalization-on-result-code",
-            "sourceKey": "result_code",
+            "sourceKey": "resultCode",
             "destinationKey": "result",
             "destinationDefaultValue": null,
             "cases": [
@@ -835,7 +835,7 @@
           "predicate": {
             "type": "regex",
             "name": "reference-id-equal-4648",
-            "sourceKey": "reference_id",
+            "sourceKey": "referenceId",
             "regex": "4648"
           },
           "ifTransformer": {
@@ -850,13 +850,13 @@
             "predicate": {
               "type": "regex",
               "name": "reference-id-equal-4624-or-4625",
-              "sourceKey": "reference_id",
+              "sourceKey": "referenceId",
               "regex": "4624|4625"
             },
             "ifTransformer": {
               "type": "switch_case",
               "name": "logon-type-to-operation-type-switch-case",
-              "sourceKey": "logon_type",
+              "sourceKey": "logonType",
               "destinationKey": "operationType",
               "destinationDefaultValue": null,
               "cases": [
@@ -888,7 +888,7 @@
         {
           "type": "copy_value",
           "name": "rename-event-source-id-to-event-id",
-          "sourceKey": "event_source_id",
+          "sourceKey": "eventSourceId",
           "isRemoveSourceKey": true,
           "destinationKeys": [
             "eventId"
@@ -897,7 +897,7 @@
         {
           "type": "copy_value",
           "name": "rename-reference-id-to-data-source",
-          "sourceKey": "reference_id",
+          "sourceKey": "referenceId",
           "isRemoveSourceKey": true,
           "destinationKeys": [
             "dataSource"
@@ -906,7 +906,7 @@
         {
           "type": "copy_value",
           "name": "copy-user-dst",
-          "sourceKey": "user_dst",
+          "sourceKey": "userDst",
           "isRemoveSourceKey": true,
           "destinationKeys": [
             "userName"
