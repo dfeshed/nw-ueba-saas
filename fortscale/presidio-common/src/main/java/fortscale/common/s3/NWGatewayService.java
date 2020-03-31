@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +22,8 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class NWGatewayService {
 
     private final static Logger logger = LoggerFactory.getLogger(NWGatewayService.class);
+    private final static String DATE_FOLDER_FORMAT = "yyyy/M/d";
+    private final static DateTimeFormatter DATE_FOLDER_FORMATTER = DateTimeFormatter.ofPattern(DATE_FOLDER_FORMAT);
     private final static String DEFAULT_DATE_FORMAT = "yyyyMMdd'T'HHmm'Z'";
     private final static String DATE_REGEX_FORMAT = ".*_(20\\d{6}T\\d{4}Z)_.*";
     private final static Comparator<S3ObjectSummary> defaultS3ObjectSummaryComparator = Comparator.comparing(S3ObjectSummary::getKey);
@@ -57,6 +60,7 @@ public class NWGatewayService {
                 return true;
             }
         }
+        logger.info("no relevant files in prefix: {}. existing files: {}", prefix, objects.getObjectSummaries());
         return false;
     }
 
@@ -150,7 +154,8 @@ public class NWGatewayService {
      * @return the streamPrefix.
      */
     private static String formStreamPrefix(String tenant, String account, String schema, String region) {
-        return tenant + "/NetWitness/" + account + "/" + schema + "/" + region + "/";
+        //return tenant + "/NetWitness/" + account + "/" + schema + "/" + region + "/";
+        return tenant + "/NetWitness/" + schema + "/" + region + "/";
     }
 
     /**
@@ -160,8 +165,9 @@ public class NWGatewayService {
      * @param date an instant in time
      * @return the time-part of the key prefix
      */
-    private static String generateDaySuffix(Instant date) {
+    public static String generateDaySuffix(Instant date) {
         ZonedDateTime dateTime = ZonedDateTime.ofInstant(date, ZoneId.of("UTC"));
-        return String.format("%1$tY/%1$tm/%1$td", dateTime);
+        //return String.format("%1$tY/%1$tm/%1$td", dateTime);
+        return dateTime.format(DATE_FOLDER_FORMATTER);
     }
 }
