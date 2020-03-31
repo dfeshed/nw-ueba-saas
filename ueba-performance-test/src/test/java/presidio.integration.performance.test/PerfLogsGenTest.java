@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static presidio.integration.performance.utils.TestProperties.SCENARIOS_SPLIT_INTERVAL_HOURS;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})
@@ -108,7 +107,7 @@ public class PerfLogsGenTest extends AbstractTestNGSpringContextTests {
         List<Schema> schemasToProcess = Arrays.stream(schemas.split(",")).map(String::trim).map(Schema::valueOf).collect(toList());
 
         List<PerformanceScenario> scenarios = schemasToProcess.stream()
-                .flatMap(schema -> new PerformanceScenariosSupplier(schema, test, SCENARIOS_SPLIT_INTERVAL_HOURS).get().stream())
+                .map(e -> new PerformanceScenariosSupplier(e, test).get())
                 .collect(toList());
 
         LOGGER.info(" *****  Created scenarios  *****");

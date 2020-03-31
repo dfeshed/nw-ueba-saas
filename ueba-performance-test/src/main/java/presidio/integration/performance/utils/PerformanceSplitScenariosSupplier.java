@@ -6,25 +6,53 @@ import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.RandomMultiMachineEntityGenerator;
 import presidio.integration.performance.scenario.*;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-public class PerformanceScenariosSupplier implements Supplier<PerformanceScenario> {
+public class PerformanceSplitScenariosSupplier implements Supplier<List<PerformanceScenario>> {
 
     private final Schema schema;
     private final TestProperties test;
+    private final int intervalHours;
 
-    public PerformanceScenariosSupplier(Schema schema, TestProperties test) {
+    public PerformanceSplitScenariosSupplier(Schema schema, TestProperties test, int intervalHours) {
         this.schema = schema;
         this.test = test;
+        this.intervalHours = intervalHours;
     }
 
     @Override
-    public PerformanceScenario get() {
-        return getScenario(test.startInstant, test.endInstant);
+    public List<PerformanceScenario> get() {
+        return split();
     }
 
+    private List<PerformanceScenario> split() {
+        int hours = (int) Duration.between(test.startInstant, test.endInstant).abs().toHours();
+        int intervals;
+
+        if (intervalHours > 0) {
+            intervals = hours / intervalHours;
+        } else {
+            intervals = 0;
+        }
+
+        List<PerformanceScenario> splitted = IntStream.range(0, intervals).mapToObj(i -> {
+            Instant start = test.startInstant.plus(i * intervalHours, ChronoUnit.HOURS);
+            Instant end = start.plus(intervalHours, ChronoUnit.HOURS).minusSeconds(1);
+            return getScenario(start, end);
+        }).collect(Collectors.toList());
+
+        Instant start = test.startInstant.plus(intervals * intervalHours, ChronoUnit.HOURS);
+        if (test.endInstant.isAfter(start)) {
+            splitted.add(getScenario(start, test.endInstant));
+        }
+        return splitted;
+    }
 
 
     private PerformanceScenario getScenario(Instant from, Instant to) {
