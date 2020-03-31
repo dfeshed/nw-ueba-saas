@@ -47,7 +47,7 @@ def getMillisOrParams() {
     } else {
         def currentMillis = System.currentTimeMillis()
         println "defaultVal as a timestamp " + currentMillis
-        return currentMillis
+        return 'tenant_' + currentMillis
     }
 }
 
