@@ -29,7 +29,7 @@ class S3_E2E_ConfigScenario implements PreProcessingConfigScenario {
         adapterTestManager.runAwsUebaServerConfigScript(startDate);
         adapterTestManager.setEngineConfigurationParametersToTestingValues();
         adapterTestManager.setS3E2EConfigurationForAdapterAndTransformer();
-        adapterTestManager.setBuildingModelsRange(7, 2, 2);
+        adapterTestManager.setBuildingModelsRange(7, 7, 2);
         AirflowHelper.INSTANCE.startAirflowScheduler().output.forEach(System.out::println);
     }
 }

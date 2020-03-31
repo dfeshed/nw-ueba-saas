@@ -32,7 +32,7 @@ class E2eMongoConfigScenario implements PreProcessingConfigScenario {
         adapterTestManager.runUebaServerConfigScript(startDate);
         adapterTestManager.setEngineConfigurationParametersToTestingValues();
         adapterTestManager.setMongoConfigurationForTransformer();
-        adapterTestManager.setBuildingModelsRange(7, 2, 2);
+        adapterTestManager.setBuildingModelsRange(7, 7, 2);
         if ( !ENVIRONMENT_PROPERTIES.esaAnalyticsServerIp().isBlank() ) {
             new RespondServerAlertCollectionHelper().truncateCollection();
         }

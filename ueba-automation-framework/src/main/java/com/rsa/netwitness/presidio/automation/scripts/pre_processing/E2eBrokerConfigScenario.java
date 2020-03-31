@@ -31,7 +31,7 @@ class E2eBrokerConfigScenario implements PreProcessingConfigScenario {
         adapterTestManager.runUebaServerConfigScript(startDate);
         adapterTestManager.setEngineConfigurationParametersToTestingValues();
         adapterTestManager.setBrokerConfigurationForAdapterAndTransformer();
-        adapterTestManager.setBuildingModelsRange(7, 2, 2);
+        adapterTestManager.setBuildingModelsRange(7, 7, 2);
         if ( !ENVIRONMENT_PROPERTIES.esaAnalyticsServerIp().isBlank() ) {
             new RespondServerAlertCollectionHelper().truncateCollection();
         }
