@@ -54,17 +54,23 @@ function uploadRpmsToS3ByUpdateS3YumRepo() {
   export AWS_ACCESS_KEY_ID=AKIA3AISCVGC73ZUJTJY
   export AWS_SECRET_ACCESS_KEY=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
   export AWS_DEFAULT_REGION=us-east-1
+  bucket_name='yum-repo-ueba-rsa'
 
   cd $RPMS_DIR
   AWS_DIR_NAME=$(ls rsa-nw-presidio-core-*.el7.noarch.rpm | cut -d "-" -f6 | cut -d "." -f1)
-  echo "$(update-s3-yum-repo s3://team-ueba/RSA/UEBA-Repo/builds/$AWS_DIR_NAME/)"
+  echo "$(update-s3-yum-repo s3://${bucket_name}/RSA/UEBA-Repo/builds/$AWS_DIR_NAME/)"
 
   for f in $RPMS_DIR/*; do
     echo "going to upload  $f to S3"
-    echo "$(update-s3-yum-repo s3://team-ueba/RSA/UEBA-Repo/builds/$AWS_DIR_NAME/ $f)"
+    update-s3-yum-repo s3://${bucket_name}/RSA/UEBA-Repo/builds/$AWS_DIR_NAME/ $f
   done
-  # flag to reload link to the latest build
-  echo " " >reload && aws s3 cp reload s3://team-ueba/RSA/UEBA-Repo/builds/ && rm -f reload
+
+  echo "updating latest build"
+  aws s3 rm s3://${bucket_name}/RSA/UEBA-Repo/builds/latest --recursive
+  aws s3 cp s3://${bucket_name}/RSA/UEBA-Repo/builds/$AWS_DIR_NAME s3://${bucket_name}/RSA/UEBA-Repo/builds/latest --recursive
+
+  # echo "automation trigger"
+  # echo " " > reload && aws s3 cp reload s3://${bucket_name}/RSA/UEBA-Repo/builds/ && rm -f reload
 }
 
 if [[ "$1" == "only_upload" ]]; then
