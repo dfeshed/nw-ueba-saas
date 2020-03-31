@@ -2,8 +2,8 @@ package presidio.data.generators.event.tls;
 
 import presidio.data.domain.event.network.NETWORK_DIRECTION_TYPE;
 import presidio.data.domain.event.network.TlsEvent;
-import presidio.data.generators.FixedValueGenerator;
 import presidio.data.generators.IBaseGenerator;
+import presidio.data.generators.NullGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.dictionary.SingleWordCyclicGenerator;
 import presidio.data.generators.common.list.random.RandomRangeCompanyGen;
@@ -44,7 +44,7 @@ public class TlsRangeEventsGen extends AbstractEventGenerator<TlsEvent> {
     private IBaseGenerator<Long> numOfBytesSentGenerator = new GaussianLongGenerator(500000.0D, 100000.0D);
     private IBaseGenerator<Long> numOfBytesReceivedGenerator = new GaussianLongGenerator(500000.0D, 100000.0D);
     private IBaseGenerator<Integer> srcPortGenerator = new RandomIntegerGenerator(0, 9999);
-    private IBaseGenerator<Integer> sessionSplitGenerator = new FixedValueGenerator<>(0);
+    private IBaseGenerator<Integer> sessionSplitGenerator = new NullGenerator<>();
 
 
     public TlsRangeEventsGen(int defaultRange) {
