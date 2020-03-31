@@ -81,6 +81,18 @@
       "clusterConfs": [
       ],
       "excludedAggregationRecords": [
+        "numberOfDistinctSrcIpForNewSslSubjectOutboundTlsHourly",
+        "numberOfDistinctSrcIpToNewDomainScoresSumSslSubjectOutboundTlsHourly",
+        "numberOfDistinctSrcIpToNewDstOrgScoresSumSslSubjectOutboundTlsHourly",
+        "numberOfDistinctSrcIpToNewDstPortScoresSumSslSubjectOutboundTlsHourly",
+        "maxSumOfBytesSentBySrcIpToNewSslSubjectOutboundTlsHourly",
+        "maxSumOfBytesSentBySrcIpToNewDomainScoresSumSslSubjectOutboundTlsHourly",
+        "maxSumOfBytesSentBySrcIpToNewDstOrgScoresSumSslSubjectOutboundTlsHourly",
+        "maxSumOfBytesSentBySrcIpToNewDstPortScoresSumSslSubjectOutboundTlsHourly",
+        "sumOfBytesSentToNewSslSubjectOutboundTlsHourly",
+        "sumOfBytesSentToNewDomainScoresSumSslSubjectOutboundTlsHourly",
+        "sumOfBytesSentToNewDstOrgScoresSumSslSubjectOutboundTlsHourly",
+        "sumOfBytesSentToNewDstPortScoresSumSslSubjectOutboundTlsHourly"
       ],
       "defaultWeight": 0.5,
       "fullCorrelations": [
@@ -136,6 +148,7 @@
       "clusterConfs": [
       ],
       "excludedAggregationRecords": [
+        "sumOfBytesSentToNewJa3OutboundTlsHourly"
       ],
       "defaultWeight": 0.5,
       "fullCorrelations": [
