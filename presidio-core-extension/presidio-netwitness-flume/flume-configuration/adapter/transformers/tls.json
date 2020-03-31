@@ -250,15 +250,6 @@
       "destinationKeys": [
         "srcPort"
       ]
-    },
-    {
-      "type": "copy_value",
-      "name": "rename-session-split",
-      "sourceKey": "sessionSplit",
-      "isRemoveSourceKey": true,
-      "destinationKeys": [
-        "sessionSplit"
-      ]
     }
   ]
 }
