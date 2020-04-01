@@ -4,20 +4,19 @@ pipeline {
         string(name: 'BRANCH_NAME', defaultValue: 'master', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -o -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         string(name: 'S3_BUCKET', defaultValue: 'presidio-automation-data', description: '')
-        string(name: 'S3_TENANT', defaultValue: 'acme', description: '')
-        string(name: 'S3_ACCOUNT', defaultValue: '', description: 'Empty value -> current millis')
+        string(name: 'S3_TENANT', defaultValue: '', description: 'Empty value - put current millis')
+        string(name: 'S3_ACCOUNT', defaultValue: 'aws-account', description: '')
+
         string(name: 'generator_format', defaultValue: 'S3_JSON_GZIP', description: '')
         string(name: 'historical_days_back', defaultValue: '35', description: '')
         choice(name: 'NODE_LABEL', choices: ['master','UEBA01','UEBA02','UEBA03','UEBA04'], description: '')
-        choice(name: 'JAVA_HOME', choices: ['/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.amzn2.x86_64/','/usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64'], description: '')
     }
 
     agent { label env.NODE_LABEL }
 
     environment {
-        JAVA_HOME = "${params.JAVA_HOME}"
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
-        S3_ACCOUNT = getAccountID()
+        S3_TENANT = getMillisOrParams()
     }
 
     stages {
@@ -41,15 +40,15 @@ pipeline {
     }
 }
 
-def getAccountID() {
-    String account = params.S3_ACCOUNT
-    if ( ! account.isEmpty()) {
-        println "account from the Job"
-        return account
+def getMillisOrParams() {
+    String defaultVal = params.S3_TENANT
+    if ( ! defaultVal.isEmpty()) {
+        println "defaultVal from the Job"
+        return defaultVal
     } else {
         def currentMillis = System.currentTimeMillis()
-        println "account as a timestamp " + currentMillis
-        return currentMillis
+        println "defaultVal as a timestamp " + currentMillis
+        return 'tenant_' + currentMillis
     }
 }
 

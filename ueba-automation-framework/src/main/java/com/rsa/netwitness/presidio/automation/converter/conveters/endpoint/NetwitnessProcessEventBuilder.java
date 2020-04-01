@@ -51,7 +51,7 @@ class NetwitnessProcessEventBuilder extends EndpointEvent {
         checksum$dash$id =  "c01b39c7a35ccc3b081a3e83d2c71fa9a767ebfeb45c69f08e17dfe3ef375a7b";
         agent$dash$id =  "agent_001";
         os$dash$type = event.getMachineEntity().getOsVersion();
-        process$dash$vid$dash$src = event.getEventId().replace("EV","pr");
+        // process$dash$vid$dash$src = event.getEventId().replace("EV","pr");
         nwe_callback_id = "nwe://64edb0e7-eda6-496f-8889-6c239b32bb5b";
         checksum_src = "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57";
         checksum_dst = "1fa5a6c8438a4e6d373d39c96b77c0c84540d38b80628effdec89e77d02d7e57";
