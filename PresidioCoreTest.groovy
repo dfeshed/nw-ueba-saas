@@ -51,11 +51,18 @@ pipeline {
             when {
                 expression { return params.INSTALL_UEBA_RPMS }
             }
+
             steps {
-                setBaseUrl()
-                uebaInstallRPMs()
+                timeout(time: 20, unit: 'MINUTES') {
+                    retry(200) {
+                        sleep(time: 10, unit: 'SECONDS')
+                        setBaseUrl()
+                        uebaInstallRPMs()
+                    }
+                }
             }
         }
+
         stage('UEBA-UI RPMs Upgrade') {
             environment {
                 ADMIN_SERVER_IP = sh (script: 'sh /home/presidio/env_properties_manager.sh --get admin-server', returnStdout: true).trim()
