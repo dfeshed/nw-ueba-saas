@@ -55,15 +55,22 @@ public class MetricsExporterImpl extends MetricsExporter {
     @Override
     public void manualExportMetrics(MetricBucketEnum metricBucketEnum) {
         logger.debug("Manual exporting metrics to elastic");
+        List<MetricDocument> metrics;
         switch (metricBucketEnum) {
             case APPLICATION:
+                metrics = getApplicationMetricsForExport();
                 presidioMetricPersistencyService.save(getApplicationMetricsForExport());
+                presidioMetricDataDogService.saveCount(metrics);
                 break;
             case SYSTEM:
-                presidioMetricPersistencyService.save(getSystemMetricsForExport());
+                metrics = getSystemMetricsForExport();
+                presidioMetricPersistencyService.save(metrics);
+                presidioMetricDataDogService.saveCount(metrics);
                 break;
             case ALL:
+                metrics = getMetricsForExport(REPORT_ONCE);
                 presidioMetricPersistencyService.save(getMetricsForExport(REPORT_ONCE));
+                presidioMetricDataDogService.saveCount(metrics);
                 break;
             default:
                 logger.info("Bad metricBucketEnum was given");
