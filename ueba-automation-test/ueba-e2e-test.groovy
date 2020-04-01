@@ -153,7 +153,7 @@ def parseFromPathOrFromParams() {
                 timestamps.add(Long.valueOf(ts))
             }
             println "latest timestamp found: " + timestamps.max()
-            return timestamps.max()
+            return "tenant_" + timestamps.max()
         }
     }
 }
