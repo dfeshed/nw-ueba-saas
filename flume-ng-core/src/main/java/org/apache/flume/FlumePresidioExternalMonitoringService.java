@@ -65,6 +65,7 @@ public class FlumePresidioExternalMonitoringService {
      * Single event metric success
      *
      * @param amount -  number of events to update
+     * @param metricName -  metric name
      */
     public void reportSuccessEventMetric(int amount, String metricName) {
         reportMetric(metricName, false, null, MetricEnums.MetricValues.SUCCESS_EVENTS, amount);
