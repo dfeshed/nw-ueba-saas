@@ -42,7 +42,7 @@ public class MonitoringConfiguration {
     @Value("${datadog.host}")
     private String dataDogHostName;
 
-    @Value("${datadog.metrics}")
+    @Value("#{'${datadog.metrics}'.split(',')}")
     private List<String> dataDogMetricNames;
 
     @Autowired

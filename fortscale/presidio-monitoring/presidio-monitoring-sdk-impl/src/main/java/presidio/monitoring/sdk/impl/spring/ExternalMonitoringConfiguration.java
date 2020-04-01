@@ -44,7 +44,7 @@ public class ExternalMonitoringConfiguration {
     @Value("${datadog.host}")
     String dataDogHostName;
 
-    @Value("${datadog.metrics}")
+    @Value("#{'${datadog.metrics}'.split(',')}")
     List<String> dataDogMetricNames;
 
     @Autowired
