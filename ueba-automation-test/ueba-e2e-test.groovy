@@ -140,7 +140,7 @@ def parseFromPathOrFromParams() {
         return params.S3_TENANT
     } else {
         withAWS(credentials: '5280fdc9-429c-4163-8328-fafbbccc75dc', region: env.AWS_REGION) {
-            files = s3FindFiles(bucket: "${params.S3_BUCKET}", path: "", glob: "*")
+            files = s3FindFiles(bucket: "${params.S3_BUCKET}", path: "", glob: "tenant_*")
             println 'Folders found:'
             for (file in files) {
                 println file.name
@@ -148,7 +148,9 @@ def parseFromPathOrFromParams() {
 
             def timestamps = new ArrayList<Long>();
             for (file in files) {
-                timestamps.add(Long.valueOf(file.name))
+                String fname = file.name
+                def ts = fname.replaceFirst("tenant_", "")
+                timestamps.add(Long.valueOf(ts))
             }
             println "latest timestamp found: " + timestamps.max()
             return timestamps.max()
