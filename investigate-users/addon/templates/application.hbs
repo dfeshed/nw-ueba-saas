@@ -1,9 +1,5 @@
-{{#investigate-header activeTab="investigate.investigate-users" as |section| }}
-  {{#if section.isMain}}
-    {{outlet}}
-  {{/if}}
-{{/investigate-header}}
-<div class="user-header">
+
+<div class='user-header'>
   <div class="rsa-nav-tab-group user-header_tab">
     {{#rsa-nav-tab align="left" compact=true isActive=(eq routePath "overview")  click=(action "controllerNavigateTo" "index")}}
       <div class="label">{{t "investigateUsers.overview.title"}}</div>

@@ -57,6 +57,7 @@ nukeNode ngcoreui
 nukeNode springboard
 nukeNode springboard-widget-lib
 nukeNode sa
+nukeNode netwitness-ueba
 
 red "                               ________________
                           ____/ (  (    )   )  \___

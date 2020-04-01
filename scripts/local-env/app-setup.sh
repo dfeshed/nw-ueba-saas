@@ -95,5 +95,6 @@ prepareApp ngcoreui
 prepareApp springboard
 prepareApp springboard-widget-lib
 prepareApp sa
+prepareApp netwitness-ueba
 
 cd $CWD

@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+/* Imports all styles from component-lib addon. */
+@import 'component-lib/manifest';
+
+/* putting the engines styles */
+@import "entity-details/manifest";
+
+/* Imports styles from investigate-users. */
+@import 'investigate-users/manifest';
+
+/* Imports styles specific for this sa app. */
+@import 'netwitness-ueba/manifest';
+
+@import 'admin/manifest';
