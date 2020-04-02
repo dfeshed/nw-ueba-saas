@@ -53,7 +53,7 @@ pipeline {
             }
 
             steps {
-                timeout(time: 20, unit: 'MINUTES') {
+                timeout(time: 40, unit: 'MINUTES') {
                     retry(200) {
                         sleep(time: 10, unit: 'SECONDS')
                         setBaseUrl()
