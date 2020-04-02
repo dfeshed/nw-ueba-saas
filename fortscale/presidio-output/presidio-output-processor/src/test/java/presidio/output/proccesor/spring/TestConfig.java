@@ -1,5 +1,6 @@
 package presidio.output.proccesor.spring;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +42,9 @@ public class TestConfig {
         properties.put("entity.severity.compute.data.low.percentage.of.entities", 80);
         properties.put("indicators.store.page.size", 80);
         properties.put("events.store.page.size", 80);
+        properties.put("datadog.host", "localhost");
+        properties.put("datadog.port", 8125);
+        properties.put("datadog.metrics", Collections.emptyList());
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 

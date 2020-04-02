@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.output.forwarder.shell.OutputForwarderServiceCommands;
 
+import java.util.Collections;
 import java.util.Properties;
 
 @Configuration
@@ -30,6 +31,9 @@ public class OutputForwarderTestConfig {
         properties.put("output.enriched.events.retention.in.days", 2);
         properties.put("indicators.store.page.size", 80);
         properties.put("events.store.page.size", 80);
+        properties.put("datadog.host", "localhost");
+        properties.put("datadog.port", 8125);
+        properties.put("datadog.metrics", Collections.emptyList());
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

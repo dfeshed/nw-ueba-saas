@@ -2,11 +2,13 @@ package presidio.monitoring.sdk.impl.spring;
 
 import fortscale.utils.elasticsearch.config.ElasticsearchConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import presidio.monitoring.datadog.PresidioMetricDataDogService;
 import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepositoryConfig;
 import presidio.monitoring.elastic.repositories.MetricRepository;
@@ -21,7 +23,9 @@ import presidio.monitoring.services.MetricConventionApplyer;
 import presidio.monitoring.services.PresidioMetricConventionApplyer;
 import presidio.monitoring.services.export.MetricExportingServiceImpl;
 import presidio.monitoring.services.export.MetricsExporter;
-import presidio.monitoring.services.export.MetricsExporterElasticImpl;
+import presidio.monitoring.services.export.MetricsExporterImpl;
+
+import java.util.List;
 
 
 @Configuration
@@ -33,6 +37,15 @@ public class ExternalMonitoringConfiguration {
 
     public static final int AWAIT_TERMINATION_SECONDS = 120;
     private final String EMPTY_APPLICATION_NAME = "";
+
+    @Value("${datadog.port}")
+    int dataDogPort;
+
+    @Value("${datadog.host}")
+    String dataDogHostName;
+
+    @Value("#{'${datadog.metrics}'.split(',')}")
+    List<String> dataDogMetricNames;
 
     @Autowired
     public MetricRepository metricRepository;
@@ -51,9 +64,13 @@ public class ExternalMonitoringConfiguration {
     }
 
     public MetricsExporter metricsExporter() {
-        return new MetricsExporterElasticImpl(presidioMetricEndPoint(), metricExportService(), taskScheduler());
+        return new MetricsExporterImpl(presidioMetricEndPoint(), metricExportService(), presidioMetricDataDogService(), taskScheduler());
     }
 
+    @Bean
+    public PresidioMetricDataDogService presidioMetricDataDogService() {
+        return new PresidioMetricDataDogService(dataDogHostName, dataDogPort, dataDogMetricNames);
+    }
 
     public ThreadPoolTaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler ts = new ThreadPoolTaskScheduler();
