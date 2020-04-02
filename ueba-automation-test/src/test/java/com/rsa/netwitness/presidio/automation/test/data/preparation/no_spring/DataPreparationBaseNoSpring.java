@@ -16,11 +16,8 @@ import org.testng.annotations.Parameters;
 import presidio.data.domain.event.Event;
 import presidio.data.generators.common.GeneratorException;
 
-import java.time.Instant;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import static java.time.temporal.ChronoUnit.DAYS;
 
 public abstract class DataPreparationBaseNoSpring extends AbstractTestNGSpringContextTests {
     private static  Logger LOGGER = (Logger) LoggerFactory.getLogger(DataPreparationBaseNoSpring.class);
@@ -41,9 +38,9 @@ public abstract class DataPreparationBaseNoSpring extends AbstractTestNGSpringCo
 
         setParams(historicalDaysBack, anomalyDay, generatorFormat);
         LOGGER.info("  ++++++ Going to generate.");
-        Stream<? extends Event> presidioEvents = generate()
-                .filter(event -> event.getDateTime().isAfter(Instant.now().truncatedTo(DAYS).minus(historicalDaysBack, DAYS)))
-                .filter(event -> event.getDateTime().isBefore(Instant.now().truncatedTo(DAYS)));
+        Stream<? extends Event> presidioEvents = generate();
+//                .filter(event -> event.getDateTime().isAfter(Instant.now().truncatedTo(DAYS).minus(historicalDaysBack, DAYS)))
+//                .filter(event -> event.getDateTime().isBefore(Instant.now().truncatedTo(DAYS).plus(3, HOURS)));
 
         LOGGER.info("  ++++++ Going to convert.");
         Stream<NetwitnessEvent> converted = presidioEvents.parallel().map(getConverter()::convert);
