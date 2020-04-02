@@ -207,7 +207,7 @@ def buildProject(
 
     dir(repositoryName) {
         checkoutBranch(branchName)
-        mvnCleanInstall(deploy == 'true', pomFile, updateSnapshots, debug)
+        mvnCleanInstall(deploy == 'true', pomFile, updateSnapshots, debug, repositoryName)
     }
 }
 
@@ -271,8 +271,8 @@ def checkoutBranch(String branchName) {
 /*******************
  * Maven Utilities *
  *******************/
-def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boolean debug) {
-    sh "mvn clean ${deploy ? "deploy" : "install"} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""} ${params.MVN_PARAMS}"
+def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boolean debug, String repositoryName) {
+    sh "mvn clean ${deploy ? "deploy" : "install"} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""} ${params.MVN_PARAMS} dependency:tree -DoutputType=dot -DoutputFile=${env.WORKSPACE}/Dependencies/${repositoryName}-dependency-tree.dot -DappendOutput=true"
 }
 
 def mvnCleanPackage(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug, boolean preStep) {
@@ -314,8 +314,10 @@ def archivingJARsAndRPMs(){
     sh 'mkdir JARs'
     sh 'find . -regex ".*/presidio-[^/]*.jar" -exec cp {} JARs \\;'
     sh 'find . -regex ".*-presidio-.*.rpm" -exec cp {} RPMs \\;'
+    sh 'find . -regex ".*-dependency-tree.dot" -exec cp {} Dependencies \\;'
     archiveArtifacts artifacts: 'JARs/**', allowEmptyArchive: true
     archiveArtifacts artifacts: 'RPMs/**', allowEmptyArchive: true
+    archiveArtifacts artifacts: 'Dependencies/**', allowEmptyArchive: true
 }
 
 def getDeployFlag(String key) {
