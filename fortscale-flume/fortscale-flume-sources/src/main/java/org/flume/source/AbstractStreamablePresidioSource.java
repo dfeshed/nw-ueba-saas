@@ -138,6 +138,7 @@ public abstract class AbstractStreamablePresidioSource extends AbstractPresidioS
         }
         if (failureReason == null) {
             flumePresidioExternalMonitoringService.reportSuccessEventMetric(1);
+            flumePresidioExternalMonitoringService.reportSuccessEventMetric(1, "source_events_processed");
         } else {
 
             flumePresidioExternalMonitoringService.reportFailedEventMetric(failureReason, 1);
