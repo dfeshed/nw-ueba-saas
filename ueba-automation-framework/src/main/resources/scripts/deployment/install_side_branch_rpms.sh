@@ -25,12 +25,16 @@ if [[ $(systemctl is-active airflow-scheduler) == 'active' ]]||[[ $(systemctl is
 	sudo systemctl stop airflow-scheduler
 fi
 
+set -x
+
 ########  Download Branch RPMS from Jenkins Artifacts
 wget -q -O- "http://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-build-jars-and-packages/${BUILD_ID}/api/json?tree=artifacts[relativePath]" | python -m json.tool > build_artifacts.json
 grep 'noarch.rpm' build_artifacts.json > build_rpms.txt
 if [ ! -s build_rpms.txt ]; then
 	echo "There is no RPM files in the requsted build id"
-	exit 1
+	exit 2
+else
+	cat build_rpms.txt
 fi
 
 while IFS= read -r line
@@ -44,6 +48,9 @@ for i in "${PRESIDIO_RPMS[@]}"
         url=$ARTIFACTORY_LINK$i"rpm"
         echo $(wget -q $url)
 done
+
+set +x
+
 
 ######## Removing and installing side branch RPMS
 echo "Removing Old Presidio RPMs"
