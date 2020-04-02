@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 public class PresidioMetricDataDogService {
 
     private final Logger logger = Logger.getLogger(PresidioMetricDataDogService.class);
-    private List<String> validMetrics;
+    private List<String> metricsShouldBeSent;
     private String hostname;
     private int port;
 
-    public PresidioMetricDataDogService(String hostname, int port, List<String> validMetrics) {
-        this.validMetrics = validMetrics;
+    public PresidioMetricDataDogService(String hostname, int port, List<String> metricsShouldBeSent) {
+        this.metricsShouldBeSent = metricsShouldBeSent;
         this.hostname = hostname;
         this.port = port;
     }
@@ -30,18 +30,18 @@ public class PresidioMetricDataDogService {
                 .filter(entry -> shouldBeSent(entry.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        metricsFiltered.forEach((metricName, metricValue) -> saveCount(metricName, metricValue, new String[]{}));
+        saveCount(metricsFiltered, new String[]{});
         return metricsFiltered.size();
     }
 
-    private void saveCount(String metricName, Long value, String[] metricTags) {
+    private void saveCount(Map<String, Long> metricsToSave, String[] metricTags){
         StatsDClient statsDClient = createClient(metricTags);
-        statsDClient.count(metricName, value);
+        metricsToSave.forEach((metricName, metricValue) -> statsDClient.count(metricName, metricValue));
         statsDClient.close();
     }
 
     private boolean shouldBeSent(String metricName){
-        return validMetrics.contains(metricName);
+        return metricsShouldBeSent.contains(metricName);
     }
 
     private Map<String, Long> metricDocumentToMetricsMap(MetricDocument metricDocument){
