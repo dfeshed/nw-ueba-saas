@@ -25,8 +25,6 @@ if [[ $(systemctl is-active airflow-scheduler) == 'active' ]]||[[ $(systemctl is
 	sudo systemctl stop airflow-scheduler
 fi
 
-set -x
-
 ########  Download Branch RPMS from Jenkins Artifacts
 wget -q -O- "http://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-build-jars-and-packages/${BUILD_ID}/api/json?tree=artifacts[relativePath]" | python -m json.tool > build_artifacts.json
 grep 'noarch.rpm' build_artifacts.json > build_rpms.txt
@@ -49,13 +47,10 @@ for i in "${PRESIDIO_RPMS[@]}"
         echo $(wget -q $url)
 done
 
-set +x
-
-
 ######## Removing and installing side branch RPMS
 echo "Removing Old Presidio RPMs"
 OWB_ALLOW_NON_FIPS=on && sudo -E yum -y remove $(rpm -qa | grep rsa-nw-presidio)
-cd $RPMS_DIR
+cd $RPMS_DIR ; ls -l
 OWB_ALLOW_NON_FIPS=on && sudo -E yum -y install --nogpgcheck rsa-nw-presidio*.rpm
 
 ######## Completing RPMs Instllation (installing missing RPMs from the master branch)
