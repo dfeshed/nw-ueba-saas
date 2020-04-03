@@ -44,7 +44,8 @@ cd $RPMS_DIR
 for i in "${PRESIDIO_RPMS[@]}"
     do
         url=$ARTIFACTORY_LINK$i"rpm"
-        echo $(wget -q $url)
+        echo "Going to download: $url"
+        wget -q $url && echo " Done"
 done
 
 ######## Removing and installing side branch RPMS
