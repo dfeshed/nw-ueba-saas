@@ -48,8 +48,10 @@ for i in "${PRESIDIO_RPMS[@]}"
 done
 
 ######## Removing and installing side branch RPMS
-echo "Removing Old Presidio RPMs"
+echo "Removing Old Presidio RPMs: "
+echo $(rpm -qa | grep rsa-nw-presidio)
 OWB_ALLOW_NON_FIPS=on && sudo -E yum -y remove $(rpm -qa | grep rsa-nw-presidio)
+echo "Installing New Presidio RPMs: "
 cd $RPMS_DIR ; ls -l
 OWB_ALLOW_NON_FIPS=on && sudo -E yum -y install --nogpgcheck rsa-nw-presidio*.rpm
 
