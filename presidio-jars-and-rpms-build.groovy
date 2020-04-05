@@ -207,7 +207,8 @@ def buildProject(
 
     dir(repositoryName) {
         checkoutBranch(branchName)
-        mvnCleanInstall(deploy == 'true', pomFile, updateSnapshots, debug, repositoryName)
+        mvnCleanInstall(deploy == 'true', pomFile, updateSnapshots, debug)
+        mvnDependencyTree(pomFile, repositoryName)
     }
 }
 
@@ -271,8 +272,12 @@ def checkoutBranch(String branchName) {
 /*******************
  * Maven Utilities *
  *******************/
-def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boolean debug, String repositoryName) {
-    sh "mvn clean ${deploy ? "deploy" : "install"} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""} ${params.MVN_PARAMS} dependency:tree -DoutputType=dot -DoutputFile=${env.WORKSPACE}/Dependencies/${repositoryName}-dependency-tree.dot -DappendOutput=true"
+def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boolean debug) {
+    sh "mvn clean ${deploy ? "deploy" : "install"} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""} ${params.MVN_PARAMS}"
+}
+
+def mvnDependencyTree( String pomFile, String repositoryName) {
+    sh "mvn -f ${pomFile} dependency:tree -DoutputType=dot -DoutputFile=${env.WORKSPACE}/Dependencies/${repositoryName}-dependency-tree.dot -DappendOutput=true"
 }
 
 def mvnCleanPackage(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug, boolean preStep) {
