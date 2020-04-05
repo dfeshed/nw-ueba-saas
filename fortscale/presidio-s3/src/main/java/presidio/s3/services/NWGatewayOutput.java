@@ -16,8 +16,8 @@ public class NWGatewayOutput {
     private static final Logger logger = Logger.getLogger(NWGatewayOutput.class);
     private NWGatewayService nwGatewayService;
 
-    public NWGatewayOutput(String bucketName, String tenant, String account, String region, AmazonS3 s3) {
-        this.nwGatewayService = new NWGatewayService(bucketName, tenant, account, region, s3);
+    public NWGatewayOutput(String bucketName, String tenant, String region, AmazonS3 s3) {
+        this.nwGatewayService = new NWGatewayService(bucketName, tenant, region, s3);
     }
 
     /**
