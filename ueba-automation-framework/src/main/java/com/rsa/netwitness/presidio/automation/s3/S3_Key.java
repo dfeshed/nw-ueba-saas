@@ -51,8 +51,8 @@ public class S3_Key {
                 .concat(getApplicationLabel(schema)).concat("/")
                 .concat(region).concat("/")
                 .concat(String.valueOf(intervalDate.getYear())).concat("/")
-                .concat(String.valueOf(intervalDate.getMonthValue())).concat("/")
-                .concat(String.valueOf(intervalDate.getDayOfMonth())).concat("/");
+                .concat(String.valueOf(String.format("%02d" , intervalDate.getMonthValue()))).concat("/")
+                .concat(String.valueOf(String.format("%02d" , intervalDate.getDayOfMonth()))).concat("/");
     }
 
 
@@ -72,8 +72,7 @@ public class S3_Key {
 
     // 123456789012_us-east-1_NetworkTraffic_20180620T1620Z
     private String toFileNamePrefix(Instant interval, Schema schema) {
-        return account.concat("_")
-                .concat(region).concat("_")
+        return region.concat("_")
                 .concat(getApplicationLabel(schema)).concat("_")
                 .concat(toFileTimestamp(interval));
     }
