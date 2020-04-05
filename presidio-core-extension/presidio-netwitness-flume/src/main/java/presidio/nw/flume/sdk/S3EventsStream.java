@@ -61,7 +61,6 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
         validateStartAndEndDate(startDate, endDate);
         String bucket = config.get("bucket");
         String tenant = config.get("tenant");
-        String account = config.get("account");
         String region = config.get("region");
         String configSchema = config.get("schema");
 
@@ -72,7 +71,7 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
         S3DataIterator iterator;
 
         try {
-            NWGatewayService nwGatewayService = new NWGatewayService(bucket, tenant, account, region, s3);
+            NWGatewayService nwGatewayService = new NWGatewayService(bucket, tenant, region, s3);
             Iterator<S3ObjectSummary> objects = nwGatewayService.getObjectsByRange(startDate, endDate, configSchema);
             iterator = new S3DataIterator(s3, bucket, objects, new NetwitnessS3EventExtractor());
         }
