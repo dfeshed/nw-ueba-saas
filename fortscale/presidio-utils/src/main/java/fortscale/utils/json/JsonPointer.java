@@ -90,7 +90,7 @@ public class JsonPointer {
 
         @Override
         public Object get(Object obj, boolean createPathIfNotExist) {
-            if(obj == null || !(obj instanceof JSONArray)) {
+            if(obj == null || !(obj instanceof JSONArray) || index >= ((JSONArray) obj).length()) {
                 return null;
             } else {
                 return ((JSONArray) obj).get(index);
