@@ -4,7 +4,6 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
-import com.amazonaws.services.s3.transfer.model.UploadResult;
 import com.rsa.netwitness.presidio.automation.config.AWS_Config;
 
 import java.io.ByteArrayInputStream;
@@ -23,7 +22,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 
 public class S3_Helper {
 
-    UploadResult upload(String key, byte[] zippedBytes) {
+    void upload(String key, byte[] zippedBytes) {
         ObjectMetadata omd = new ObjectMetadata();
         omd.setContentLength(zippedBytes.length);
         omd.setContentType("application/octet-stream");
@@ -33,11 +32,10 @@ public class S3_Helper {
                     key,
                     byteArrayInputStream,
                     omd);
-            return upload.waitForUploadResult();
+            upload.waitForCompletion();
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
-        return null;
     }
 
 

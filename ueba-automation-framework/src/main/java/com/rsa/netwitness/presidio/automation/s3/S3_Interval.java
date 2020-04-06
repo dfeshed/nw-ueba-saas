@@ -1,7 +1,6 @@
 package com.rsa.netwitness.presidio.automation.s3;
 
 import ch.qos.logback.classic.Logger;
-import com.amazonaws.services.s3.transfer.model.UploadResult;
 import com.rsa.netwitness.presidio.automation.converter.producers.stream_converters.GzipStreamConverter;
 import fortscale.common.general.Schema;
 import org.slf4j.LoggerFactory;
@@ -54,23 +53,21 @@ public class S3_Interval implements Comparable<S3_Interval> {
         }
     }
 
-    private UploadResult uploadCache() {
+    private void uploadCache() {
         S3_Helper helper = new S3_Helper();
         byte[] bytes = streamConverter.convert(cache);
-        UploadResult upload = helper.upload(keyBeginningPart.concat(keyGen.getKeyEndPart(fileUniqueId)), bytes);
+        helper.upload(keyBeginningPart.concat(keyGen.getKeyEndPart(fileUniqueId)), bytes);
         int uploadedCurrently = (totalUploaded < 0) ? 0 : cache.size();
         fileUniqueId++;
         totalUploaded += cache.size();
-        LOGGER.info(uploadedCurrently + " " + upload.getKey());
-
+        LOGGER.info(uploadedCurrently + " " + keyBeginningPart.concat(keyGen.getKeyEndPart(fileUniqueId)));
         cache.clear();
-        return upload;
     }
 
-    private UploadResult uploadEmpty() {
+    private void uploadEmpty() {
         totalUploaded = -1;
         cache.add("{}");
-        return uploadCache();
+        uploadCache();
     }
 
     @Override
