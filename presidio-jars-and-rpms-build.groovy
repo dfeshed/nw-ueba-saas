@@ -171,9 +171,9 @@ pipeline {
                                 [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
                         ], wait: false
                     } else {
-                        build job: 'master-presidio-integration-test-core', parameters: [
-                                [$class: 'StringParameterValue', name: 'SIDE_BRANCH_JOD_NUMBER', value: env.BUILD_NUMBER]
-                        ], wait: false
+//                        build job: 'master-presidio-integration-test-core', parameters: [
+//                                [$class: 'StringParameterValue', name: 'SIDE_BRANCH_JOD_NUMBER', value: env.BUILD_NUMBER]
+//                        ], wait: false
                     }
                 }
             }
