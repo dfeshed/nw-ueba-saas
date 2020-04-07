@@ -2,6 +2,7 @@ package com.rsa.netwitness.presidio.automation.scripts.pre_processing;
 
 import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.enums.ConfigurationScenario;
+import com.rsa.netwitness.presidio.automation.file.configurations.SmartRecordsJson;
 
 import java.time.Instant;
 
@@ -27,5 +28,6 @@ class S3CoreConfigScenario implements PreProcessingConfigScenario {
         adapterTestManager.runAwsUebaServerConfigScript(startDate);
         adapterTestManager.setEngineConfigurationParametersToTestingValues();
         adapterTestManager.setS3CoreConfigurationForAdapterAndTransformer();
+        SmartRecordsJson.getInstance().removeTlsNewAccuraciesFromExcludedAggregationRecords().flush();
     }
 }

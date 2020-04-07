@@ -3,6 +3,7 @@ package com.rsa.netwitness.presidio.automation.scripts.pre_processing;
 import com.rsa.netwitness.presidio.automation.data.processing.airflow.AirflowHelper;
 import com.rsa.netwitness.presidio.automation.data.processing.mongo_core.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.enums.ConfigurationScenario;
+import com.rsa.netwitness.presidio.automation.file.configurations.SmartRecordsJson;
 
 import java.time.Instant;
 
@@ -30,6 +31,7 @@ class S3_E2E_ConfigScenario implements PreProcessingConfigScenario {
         adapterTestManager.setEngineConfigurationParametersToTestingValues();
         adapterTestManager.setS3E2EConfigurationForAdapterAndTransformer();
         adapterTestManager.setBuildingModelsRange(7, 7, 2);
+        SmartRecordsJson.getInstance().removeTlsNewAccuraciesFromExcludedAggregationRecords().flush();
         AirflowHelper.INSTANCE.startAirflowScheduler().output.forEach(System.out::println);
     }
 }
