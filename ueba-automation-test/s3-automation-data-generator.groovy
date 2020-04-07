@@ -13,6 +13,7 @@ pipeline {
     }
 
     agent { label env.NODE_LABEL }
+    options { retry(3) }
 
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
