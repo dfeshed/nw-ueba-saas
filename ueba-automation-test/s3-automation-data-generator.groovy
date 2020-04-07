@@ -21,13 +21,12 @@ pipeline {
     }
 
     stages {
-
         stage('Project Clone') {
             steps {
                 sh 'pwd'
                 sh 'whoami'
                 script { currentBuild.displayName="#${BUILD_NUMBER} ${S3_TENANT}" }
-                script { currentBuild.description = "${params.BRANCH_NAME} on ${NODE_NAME}" }
+                script { currentBuild.description = "Branch ${params.BRANCH_NAME} on ${NODE_NAME}" }
                 cleanWs()
                 git branch: params.BRANCH_NAME, credentialsId: '67bd792d-ad28-4ebc-bd04-bef8526c3389', url: 'git@github.com:netwitness/ueba-automation-projects.git'
             }
