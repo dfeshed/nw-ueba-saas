@@ -1,12 +1,10 @@
 package com.rsa.netwitness.presidio.automation.s3;
 
-import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import fortscale.common.general.Schema;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.function.Function;
 
 import static com.rsa.netwitness.presidio.automation.config.AWS_Config.S3_CONFIG;
 import static java.time.ZoneOffset.UTC;
@@ -28,11 +26,6 @@ public class S3_Key {
     String getKeyEndPart(int fileUniqueId) {
         return "_".concat(String.valueOf(fileUniqueId)).concat(".json.gz");
     }
-
-    /** key with default index */
-    public Function<NetwitnessEvent, String> key = e -> S3_Helper.toChunkInterval
-                    .andThen(interval -> toPath(interval, e.schema).concat(toFileName(interval, e.schema)))
-                    .apply(e.eventTimeEpoch);
 
     private String getApplicationLabel(Schema schema) {
         return S3_CONFIG.applicationLabels.getOrDefault(schema, "ֹֹUNKNOWN_APPLICATION");
@@ -61,18 +54,10 @@ public class S3_Key {
      * 123456789012_us-east-1_NetworkTraffic_20180620T1620Z_0.json.gz
      ********************************************************************************************/
 
-    private String toFileName(Instant interval, Schema schema) {
-        return account.concat("_")
-                .concat(region).concat("_")
-                .concat(getApplicationLabel(schema)).concat("_")
-                .concat(toFileTimestamp(interval)).concat("_")
-                .concat(defaultUnique())
-                .concat(".json.gz");
-    }
-
     // 123456789012_us-east-1_NetworkTraffic_20180620T1620Z
     private String toFileNamePrefix(Instant interval, Schema schema) {
-        return region.concat("_")
+        return tenant.concat("_")
+                .concat(region).concat("_")
                 .concat(getApplicationLabel(schema)).concat("_")
                 .concat(toFileTimestamp(interval));
     }
