@@ -65,7 +65,11 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     private Map<String, String[]> distinctFeatureAggregationMap = new HashMap<>();
     private Map<String, String[]> allIndicatorsTypeNameSamples = new HashMap<>();
     private PresidioUrl allAlertsUrl = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
-
+    private Function<AlertsStoredRecord.Indicator, String> indicatorContextToString =
+            indicator ->
+                    indicator.getContexts().entrySet().parallelStream().sorted(comparingByKey())
+                            .map(entry -> entry.getKey() + "->" + entry.getValue())
+                            .collect(joining("#"));
 
     @BeforeClass
     public void preconditionCheckAndPrepare() {
@@ -147,7 +151,6 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         }
         softly.assertAll();
     }
-
 
     @Test
     public void alert_indicators_event_time_range_is_within_the_alert_time_range() {
@@ -275,21 +278,20 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                     Optional<Double> allValuesChartSample = getSample.apply(allValuesBuckets);
                     Optional<Double> singleValueChartSample = getSample.apply(singleValueBuckets);
 
-                    assertThat(allValuesChartSample).as(url+ "\nMultiple value chart sample is not found for timestamp = " + time
-                            + "\nall Values Chart Context: "  + contextsByLength.get(0)
-                            + "\nsingle Value Chart Context: "  + contextsByLength.get(1))
+                    assertThat(allValuesChartSample).as(url + "\nMultiple value chart sample is not found for timestamp = " + time
+                            + "\nall Values Chart Context: " + contextsByLength.get(0)
+                            + "\nsingle Value Chart Context: " + contextsByLength.get(1))
                             .isPresent();
 
                     assertThat(allValuesChartSample.get())
-                            .as(url+ "\nSingle value chart sample is greater then all values chart sample. Check timestamp = " + time
-                                    + "\nall Values Chart Context: "  + contextsByLength.get(0)
-                                    + "\nsingle Value Chart Context: "  + contextsByLength.get(1))
+                            .as(url + "\nSingle value chart sample is greater then all values chart sample. Check timestamp = " + time
+                                    + "\nall Values Chart Context: " + contextsByLength.get(0)
+                                    + "\nsingle Value Chart Context: " + contextsByLength.get(1))
                             .isGreaterThanOrEqualTo(singleValueChartSample.get());
                 }
             }
         }
     }
-
 
     @Test(dataProvider = "allIndicatorsDataProvider")
     public void historical_data_anomaly_true_indicator_count_is_equal_to_1(String indicator) {
@@ -385,7 +387,6 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     }
 
-
     @Test(dataProvider = "allIndicatorsDataProvider")
     public void successful_and_failure_indicator_names_should_match_all_result_values_in_related_events(String indicatorName) {
         SoftAssertions softly = new SoftAssertions();
@@ -432,7 +433,6 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                 .isEqualTo(expectedSchema);
     }
 
-
     @Test(dataProvider = "indicatorTypeStaticIndicator")
     public void event_count_of_static_indicator_should_match_indicator_events_response(String indicator) {
         String alertId = staticIndicatorMap.get(indicator)[0];
@@ -469,7 +469,6 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         }
     }
 
-
     @Test
     public void static_indicator_name_should_appear_only_once_in_alert() {
         SoftAssertions softly = new SoftAssertions();
@@ -492,7 +491,6 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         softly.assertAll();
     }
 
-
     // todo: ask Yuval
     @Test
     public void highNumberOfDistinctFilesOpenedAttemptsTest() throws JSONException {
@@ -510,20 +508,18 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         IndicatorREST actualIndicator = getIndicator(alertId, indicatorId);
         JSONArray events = getEvents(alertId, indicatorId);
 
-        List<String> filePaths = new ArrayList<>();
+        Set<String> distinctFilePaths = new HashSet<>();
         for (int i = 0; i < events.length(); i++) {
             String path = events.getJSONObject(i).getString("absoluteSrcFilePath");
-
-            if (!filePaths.contains(path) && !path.equals("null")) {
-                filePaths.add(path);
+            if ( !"null".equals(path) ) {
+                distinctFilePaths.add(path);
             }
         }
         int anomalyValueAsInteger = Integer.parseInt(actualIndicator.anomalyValue.split("\\.")[0]);
         assertThat(anomalyValueAsInteger)
-                .as("anomaly value is not matched to the event's distinct paths")
-                .isEqualByComparingTo(filePaths.size());
+                .as("anomaly value is not matching the event's distinct paths.\nIndicatorId=" + indicatorId + "\nAlertId=" + alertId)
+                .isEqualByComparingTo(distinctFilePaths.size());
     }
-
 
     @Test
     public void score_aggregation_indicator_is_unique_by_alertId_name_anomalyValue_and_context() {
@@ -568,22 +564,11 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         softly.assertAll();
     }
 
-    private Function<AlertsStoredRecord.Indicator, String> indicatorContextToString =
-            indicator ->
-                indicator.getContexts().entrySet().parallelStream().sorted(comparingByKey())
-                        .map(entry -> entry.getKey() + "->" + entry.getValue())
-                        .collect(joining("#"));
-
-
-
-
-
-
-
     private JSONArray getEvents(String alertId, String indicatorId) {
         PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId)
                 .events().url().withMaxSizeParameters();
 
+        LOGGER.info(url.URL);
         JSONObject indicatorsEvents = restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
         JSONArray eventsList = indicatorsEvents.getJSONArray("events");
         return eventsList;
@@ -591,6 +576,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     private IndicatorREST getIndicator(String alertId, String indicatorId) {
         PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
+        LOGGER.info(url.URL);
         RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
         assertThat(response).as(url + "\nnull response").isNotNull();
         return new IndicatorREST(new Gson().fromJson(response.getResultBody(), JsonElement.class));
