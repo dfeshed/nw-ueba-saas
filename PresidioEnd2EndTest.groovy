@@ -17,8 +17,6 @@ pipeline {
         booleanParam(name: 'LIVE_STATE_ON', defaultValue: true, description: ' Leave the scheduler run at the end of the test.\\rThe UEBA will continue to collect data at the end of the test (on Live State)')
     }
 
-    agent { label selectNodeLabel() }
-
     environment {
         JAVA_HOME = "${env.JAVA_HOME}"
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
@@ -26,14 +24,17 @@ pipeline {
         // The credentials (name + password) associated with the RSA build user.
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "ueba-automation-projects"
+        NODE_LABEL = selectNodeLabel()
         OLD_UEBA_RPMS = setOldRpmVersion()
         INTEGRATION_TEST_BRANCH_NAME = setBranchForTheTests()
     }
 
+    agent { label env.NODE_LABEL }
+
     stages {
         stage('Project Clone') {
             steps {
-                script { currentBuild.displayName = "#${BUILD_NUMBER} " + selectNodeLabel() }
+                script { currentBuild.displayName = "#${BUILD_NUMBER} ${env.NODE_LABEL}" }
                 script { currentBuild.description = "${env.INTEGRATION_TEST_BRANCH_NAME}" }
                 cleanWs()
                 buildIntegrationTestProject()
@@ -113,7 +114,8 @@ pipeline {
             junit allowEmptyResults: true, testResults: '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
             archiveArtifacts allowEmptyArchive: true, artifacts: '**/ueba-automation-test/target/log/**, **/ueba-automation-test/target/environment.properties'
             emailext attachLog: true, body: '$DEFAULT_CONTENT', postsendScript: '$DEFAULT_POSTSEND_SCRIPT', presendScript: '$DEFAULT_PRESEND_SCRIPT',
-                    subject: '$DEFAULT_SUBJECT. Branch: ' + "${env.INTEGRATION_TEST_BRANCH_NAME}" + ' on ' + selectNodeLabel(), to: 'Dmitry.Feshenko@rsa.com,Yuval.Shachak@rsa.com'
+                    subject: '$DEFAULT_SUBJECT. Branch: ' + "${env.INTEGRATION_TEST_BRANCH_NAME}" + ' on ' + "${env.NODE_LABEL}",
+                    to: 'Dmitry.Feshenko@rsa.com,Yuval.Shachak@rsa.com'
         }
     }
 }
