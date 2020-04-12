@@ -52,7 +52,7 @@ pipeline {
                 sh 'pwd'
                 sh 'whoami'
                 script { currentBuild.displayName = "#${BUILD_NUMBER} ${NODE_NAME}" }
-                script { currentBuild.description = "${params.BRANCH_NAME}" }
+                script { currentBuild.description = "${params.BRANCH_NAME}\n" + presidioCoreBuild() }
                 cleanWs()
                 git branch: params.BRANCH_NAME, credentialsId: '67bd792d-ad28-4ebc-bd04-bef8526c3389', url: 'git@github.com:netwitness/ueba-automation-projects.git'
                 editApplicationProperties()
@@ -198,4 +198,10 @@ def cleanUebaDBs() {
     println dbIp
     sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/cleanup_app.sh $VERSION $env.OLD_UEBA_RPMS"
     sh(script: "sshpass -p \"netwitness\" ssh root@${dbIp} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/cleanup_db.sh $VERSION $env.OLD_UEBA_RPM", returnStatus: true)
+}
+
+def presidioCoreBuild() {
+    def build = sh(script: "yum info rsa-nw-presidio-core 2>&1 | grep Release  | awk '{ print \$3; }'", returnStdout: true).trim() as String
+    println build
+    return build
 }
