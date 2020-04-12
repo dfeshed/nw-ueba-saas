@@ -69,6 +69,17 @@
                             <stripClassifier>true</stripClassifier>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>tree</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>tree</goal>
+                        </goals>
+                        <configuration>
+                            <outputType>dot</outputType>
+                            <outputFile>${project.build.outputDirectory}/rsa-nw-presidio-ui-dependency-tree.dot</outputFile>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <!-- create RPM -->
