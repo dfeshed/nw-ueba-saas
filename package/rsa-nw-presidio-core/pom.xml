@@ -119,7 +119,7 @@
                         </goals>
                         <configuration>
                             <outputType>dot</outputType>
-                            <outputFile>${project.build.outputDirectory}/rsa-nw-presidio-core-dependency-tree.dot</outputFile>
+                            <outputFile>${project.build.outputDirectory}/${project.artifactId}-dependency-tree.dot</outputFile>
                         </configuration>
                     </execution>
                 </executions>
