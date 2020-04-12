@@ -208,7 +208,6 @@ def buildProject(
     dir(repositoryName) {
         checkoutBranch(branchName)
         mvnCleanInstall(deploy == 'true', pomFile, updateSnapshots, debug)
-        mvnDependencyTree(pomFile, repositoryName)
     }
 }
 
@@ -276,10 +275,6 @@ def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boo
     sh "mvn clean ${deploy ? "deploy" : "install"} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""} ${params.MVN_PARAMS}"
 }
 
-def mvnDependencyTree( String pomFile, String repositoryName) {
-    sh "mvn -f ${pomFile} dependency:tree -DoutputType=dot -DoutputFile=${env.WORKSPACE}/Dependencies/${repositoryName}-dependency-tree.dot -DappendOutput=true"
-}
-
 def mvnCleanPackage(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug, boolean preStep) {
     if(preStep){
         sh "cp .pydistutils.cfg ~/.pydistutils.cfg"
@@ -317,6 +312,7 @@ def archivingJARsAndRPMs(){
     sh "cd ${env.WORKSPACE}"
     sh 'mkdir RPMs'
     sh 'mkdir JARs'
+    sh 'mkdir Dependencies'
     sh 'find . -regex ".*/presidio-[^/]*.jar" -exec cp {} JARs \\;'
     sh 'find . -regex ".*-presidio-.*.rpm" -exec cp {} RPMs \\;'
     sh 'find . -regex ".*-dependency-tree.dot" -exec cp {} Dependencies \\;'
