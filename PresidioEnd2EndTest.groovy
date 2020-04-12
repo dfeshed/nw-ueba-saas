@@ -17,6 +17,8 @@ pipeline {
         booleanParam(name: 'LIVE_STATE_ON', defaultValue: true, description: ' Leave the scheduler run at the end of the test.\\rThe UEBA will continue to collect data at the end of the test (on Live State)')
     }
 
+    agent { label selectNodeLabel() }
+
     environment {
         JAVA_HOME = "${env.JAVA_HOME}"
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
@@ -28,9 +30,7 @@ pipeline {
         OLD_UEBA_RPMS = setOldRpmVersion()
         INTEGRATION_TEST_BRANCH_NAME = setBranchForTheTests()
     }
-
-    agent { label env.NODE_LABEL }
-
+    
     stages {
         stage('Project Clone') {
             steps {
