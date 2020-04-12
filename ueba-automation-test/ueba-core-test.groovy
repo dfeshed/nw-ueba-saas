@@ -197,5 +197,5 @@ def cleanUebaDBs() {
 def presidioCoreBuild() {
     def build = sh(script: "rpm -qa | grep presidio-core | cut -d '-' -f 6 | cut -d '.' -f 1", returnStdout: true).trim() as String
     println build
-    return build
+    return "Build " + build
 }
