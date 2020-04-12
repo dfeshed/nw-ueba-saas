@@ -30,6 +30,23 @@
                     <commandlineArgs>--verbose scripts/build/download_pip_requirements.sh ${project.build.directory}/dependencies/pypackages/ ${py-requirements.file}</commandlineArgs>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>tree</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>tree</goal>
+                        </goals>
+                        <configuration>
+                            <outputType>dot</outputType>
+                            <outputFile>${project.build.outputDirectory}/rsa-nw-presidio-airflow-dependency-tree.dot</outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- create RPM -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
