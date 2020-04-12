@@ -52,7 +52,7 @@ pipeline {
                 sh 'pwd'
                 sh 'whoami'
                 script { currentBuild.displayName = "#${BUILD_NUMBER} ${NODE_NAME}" }
-                script { currentBuild.description = "${params.BRANCH_NAME}\n" + presidioCoreBuild() }
+                script { currentBuild.description = "${params.BRANCH_NAME}\n"}
                 cleanWs()
                 git branch: params.BRANCH_NAME, credentialsId: '67bd792d-ad28-4ebc-bd04-bef8526c3389', url: 'git@github.com:netwitness/ueba-automation-projects.git'
                 editApplicationProperties()
@@ -74,6 +74,7 @@ pipeline {
             when { expression { return params.INSTALL_UEBA_RPMS } }
 
             steps {
+                script { currentBuild.description = "${params.BRANCH_NAME}\n" + presidioCoreBuild() }
                 script {
                     println ' ********** Going to upgrade UEBA RPMs **********'
                     def rpms_app = ['rsa-nw-presidio-airflow',
@@ -92,6 +93,7 @@ pipeline {
                     }
                     println ' ********** UEBA RPMs upgrade finished **********'
                 }
+                script { currentBuild.description = "${params.BRANCH_NAME}\n" + presidioCoreBuild() }
             }
         }
 
@@ -104,21 +106,12 @@ pipeline {
             }
         }
 
-        stage('Data Injection') {
-            agent { label env.NODE_LABEL }
-            when {
-                expression { return params.DATA_INJECTION }
-            }
-            steps {
-                runSuiteXmlFile('core/CoreDataInjection.xml')
-            }
-        }
-
         stage('Data Processing') {
             agent { label env.NODE_LABEL }
             when { expression { return params.DATA_PROCESSING } }
 
             steps {
+                script { currentBuild.description = "${params.BRANCH_NAME}\n" + presidioCoreBuild() }
                 runSuiteXmlFile('core/CoreDataProcessing.xml')
             }
         }
@@ -128,6 +121,7 @@ pipeline {
             when { expression { return params.RUN_TESTS } }
 
             steps {
+                script { currentBuild.description = "${params.BRANCH_NAME}\n" + presidioCoreBuild() }
                 runSuiteXmlFile('core/CoreTests.xml')
             }
         }
@@ -201,7 +195,7 @@ def cleanUebaDBs() {
 }
 
 def presidioCoreBuild() {
-    def build = sh(script: "yum info rsa-nw-presidio-core 2>&1 | grep Release  | awk '{ print \$3; }'", returnStdout: true).trim() as String
+    def build = sh(script: "rpm -qa | grep presidio-core | cut -d '-' -f 6 | cut -d '.' -f 1", returnStdout: true).trim() as String
     println build
     return build
 }
