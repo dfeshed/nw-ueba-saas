@@ -7,6 +7,7 @@ pipeline {
         booleanParam(name: 'INSTALL_MAVEN', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_GIT', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_M2', defaultValue: true, description: '')
+        booleanParam(name: 'ENABLE_DATADOG', defaultValue: true, description: '')
     }
 
     environment {
@@ -17,14 +18,13 @@ pipeline {
         BIN_DIR = "${HOME_DIR}/bin"
     }
 
-
-    agent {
-        label env.NODE_LABEL
-    }
+    agent { label 'master' }
 
     stages {
 
         stage('Download Files') {
+            agent {label env.NODE_LABEL}
+
             when { expression { return params.S3_DOWNLOAD } }
 
             steps {
@@ -42,29 +42,32 @@ pipeline {
         }
 
         stage('Install Maven') {
+            agent {label env.NODE_LABEL}
+
             when { expression { return params.INSTALL_MAVEN } }
 
             steps {
                 sh "cd ${DOWNLOADS_DIR} && tar -xf apache-maven-3.6.2-bin.tar.gz"
                 sh "[ -f ${BIN_DIR}/mvn ] ||  ln -s ${DOWNLOADS_DIR}/apache-maven-3.6.2/bin/mvn ${BIN_DIR}"
-                // $PATH works after reboot
-                //  echo "export PATH=$PATH:$HOME/.local/bin:$HOME/bin" >> ${HOME_DIR}/.bashrc
                 sh 'echo $PATH'
                 sh "mvn -version"
             }
         }
 
         stage('Install Git') {
+            agent {label env.NODE_LABEL}
+
             when { expression { return params.INSTALL_GIT } }
 
             steps {
-                // rpm location: http://172.24.229.44:8882/repo/external/
                 sh "git --version || sudo yum install -y git"
                 sh "git --version"
             }
         }
 
         stage('Update M2') {
+            agent {label env.NODE_LABEL}
+
             when { expression { return params.INSTALL_M2 } }
 
             steps {
@@ -74,5 +77,6 @@ pipeline {
                 sh "cd ${DOWNLOADS_DIR} && mv repository ${HOME_DIR}/.m2"
             }
         }
+
     }
 }
