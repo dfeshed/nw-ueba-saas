@@ -59,7 +59,7 @@ public class MetricsExporterImpl extends MetricsExporter {
         switch (metricBucketEnum) {
             case APPLICATION:
                 metrics = getApplicationMetricsForExport();
-                presidioMetricPersistencyService.save(getApplicationMetricsForExport());
+                presidioMetricPersistencyService.save(metrics);
                 presidioMetricDataDogService.saveCount(metrics);
                 break;
             case SYSTEM:
@@ -69,7 +69,7 @@ public class MetricsExporterImpl extends MetricsExporter {
                 break;
             case ALL:
                 metrics = getMetricsForExport(REPORT_ONCE);
-                presidioMetricPersistencyService.save(getMetricsForExport(REPORT_ONCE));
+                presidioMetricPersistencyService.save(metrics);
                 presidioMetricDataDogService.saveCount(metrics);
                 break;
             default:
