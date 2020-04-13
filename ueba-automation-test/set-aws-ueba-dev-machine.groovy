@@ -6,7 +6,6 @@ pipeline {
         booleanParam(name: 'S3_DOWNLOAD', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_MAVEN', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_M2', defaultValue: true, description: '')
-        booleanParam(name: 'ENABLE_DATADOG', defaultValue: true, description: '')
     }
 
     environment {
