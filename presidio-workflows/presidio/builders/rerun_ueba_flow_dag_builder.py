@@ -254,7 +254,7 @@ def build_mongo_clean_python_operator(cleanup_dag):
                    "});"
         subprocess.check_output(["mongo", "-u", mongo_db_user, "-p", decrypted_mongo_db_password,
                                  "{}:{}/{}".format(mongo_host_name, mongo_host_port, mongo_db_name),
-                                 "--authenticationDatabase", mongo_db_name, "--eval", "\"{}\"".format(eval_exp)])
+                                 "--authenticationDatabase", mongo_db_name, "--eval", eval_exp])
 
     return PythonOperator(task_id='clean_mongo', python_callable=python_callable, dag=cleanup_dag)
 
