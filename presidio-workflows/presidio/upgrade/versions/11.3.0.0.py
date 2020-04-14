@@ -1,9 +1,9 @@
-import requests
-from presidio.utils.airflow.upgrade_utils import run_reset_presidio_for_upgrade
 import json
+import requests
+from presidio.utils.airflow.reset_presidio import reset_presidio
 
-# Run reset_presidio dag for upgrade
-run_reset_presidio_for_upgrade()
+# For an upgrade, trigger Reset Presidio with the default arguments.
+reset_presidio()
 
 data = {
     "script": {

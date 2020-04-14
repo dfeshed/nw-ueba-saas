@@ -1,14 +1,28 @@
 import os
+from airflow.models import DagModel
+from airflow.utils.db import provide_session
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
-from presidio.utils.airflow.upgrade_utils import run_reset_presidio_for_upgrade, get_dags_by_prefix
-from presidio.builders.rerun_ueba_flow_dag_builder import get_registered_presidio_dags, pause_dags, \
+from presidio.builders.rerun_ueba_flow_dag_builder import \
+    cleanup_dags_from_postgres, \
+    get_airflow_log_folders, \
+    get_registered_presidio_dags, \
     kill_dags_task_instances, \
-    cleanup_dags_from_postgres, get_airflow_log_folders
+    pause_dags
+from presidio.utils.airflow.reset_presidio import reset_presidio
 
-# clean old full flow and airflow_zombie_killer- logs and postgres
-old_dags_to_clean = get_dags_by_prefix("full_flow")
-old_dags_to_clean.extend(get_dags_by_prefix("airflow_zombie_killer"))
+
+@provide_session
+def get_dag_models_by_dag_id_prefix(dag_id_prefix, session=None):
+    try:
+        return session.query(DagModel).filter(DagModel.dag_id.startswith(dag_id_prefix)).all()
+    except Exception:
+        raise Exception("Exception caught while trying to get DAG models by DAG ID prefix {}.".format(dag_id_prefix))
+
+
+# Clean logs and Postgres data of old Full Flow DAG and Airflow Zombie Killer DAG.
+old_dags_to_clean = get_dag_models_by_dag_id_prefix("full_flow")
+old_dags_to_clean.extend(get_dag_models_by_dag_id_prefix("airflow_zombie_killer"))
 pause_dags(old_dags_to_clean)
 old_dag_ids_to_clean = map(lambda x: x.dag_id, old_dags_to_clean)
 cleanup_dags_from_postgres(old_dag_ids_to_clean)
@@ -274,5 +288,5 @@ if index_exists(INDEX_USER_SEVERITY_RANGE):
     # Remove user severities range index
     es.indices.delete(index=INDEX_USER_SEVERITY_RANGE)
 
-# Run reset_presidio dag for upgrade
-run_reset_presidio_for_upgrade()
+# For an upgrade, trigger Reset Presidio with the default arguments.
+reset_presidio()
