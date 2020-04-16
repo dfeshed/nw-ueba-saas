@@ -3,13 +3,14 @@ import json
 import requests
 import time
 import urllib
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 utc_now = datetime.utcnow()
+utc_now_date = utc_now.date()
 default_time_delta = timedelta(days=27)
 
 
-def reset_presidio(clean=False, schemas=None, date=utc_now - default_time_delta):
+def reset_presidio(clean=False, schemas=None, date=utc_now_date - default_time_delta):
     """
     Clean and/or reconfigure the UEBA engine by triggering a 'Reset Presidio' DAG run.
     @param clean:
@@ -24,7 +25,7 @@ def reset_presidio(clean=False, schemas=None, date=utc_now - default_time_delta)
            currently configured.
     @type schemas: list[str]
     @param date:
-           Reconfigure the UEBA engine to start from midnight UTC of this date (e.g. 2010-12-31 00:00:00).
+           Reconfigure the UEBA engine to start from midnight UTC of this date (e.g. 2010-12-31).
            By default, reset the start time to 27 days before the current system day, at midnight UTC - Since there
            should not be duplicate Alerts, every logical hour that was already processed should be skipped, including
            hours of the current system day. Presidio starts creating Alerts 28 logical days after the start time. So if
@@ -32,9 +33,9 @@ def reset_presidio(clean=False, schemas=None, date=utc_now - default_time_delta)
            creates will be of the following day (i.e. of tomorrow). As a result, Alerts of the current system day will
            not be created (at most 24 logical hours without Alerts), but there will not be duplicates.
            Cannot be None.
-    @type date: datetime
+    @type date: date
     """
-    if utc_now - default_time_delta > date:
+    if utc_now_date - default_time_delta > date:
         string = "Warning: 'date' ({}) is older than {} day(s), duplicate Alerts might be created."
         print(string.format(date, default_time_delta.days))
 
@@ -113,7 +114,7 @@ if __name__ == "__main__":
         help="reconfigure the UEBA engine to start from midnight UTC of this date (e.g. 2010-12-31)",
         metavar="<date>",
         required=False,
-        type=lambda argument: datetime.strptime(argument, "%Y-%m-%d")
+        type=lambda argument: datetime.strptime(argument, "%Y-%m-%d").date()
     )
 
     arguments = vars(argument_parser.parse_args())
