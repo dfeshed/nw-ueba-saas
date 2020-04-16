@@ -55,7 +55,7 @@ public class CopyValueTransformer extends AbstractJsonObjectTransformer {
     @Override
     public JSONObject transform(JSONObject jsonObject) {
         Object sourceValue = jsonValueExtractor.getValue(jsonObject);
-        if (sourceValue == null) return jsonObject;
+        if (sourceValue == null || sourceValue.equals(JSONObject.NULL)) return jsonObject;
 
         // Currently the removal of the source key is only supported for non-hierarchical keys.
         if (isRemoveSourceKey) jsonObject.remove(sourceKey);
