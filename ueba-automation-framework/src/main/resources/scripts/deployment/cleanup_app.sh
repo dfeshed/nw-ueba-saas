@@ -14,7 +14,7 @@ cleanningMongoCollections() {
   UI_ENC_PASS=$(cat /etc/netwitness/presidio/configserver/configurations/presidio-uiconf.properties | sed -E -n 's/.*\mongo\.db\.password=(.*)$/\1/p')
 
   echo "Encrypted password: $CORE_ENC_PASS"
-  CORE_DEC_PASS=$(java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar decrypt $CORE_ENC_PASS | grep password: | sed -E -n 's/password:\s+(.*)$/\1/p')
+  CORE_DEC_PASS=$(eval java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar decrypt "$CORE_ENC_PASS" | grep password: | sed -E -n 's/password:\s+(.*)$/\1/p')
   # UI_DEC_PASS=$(java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar decrypt "$UI_ENC_PASS" | grep password: | sed -E -n 's/password:\s+(.*)$/\1/p')
 
   echo "mongo -host $MONGO_HOST presidio -u presidio -p $CORE_DEC_PASS"
