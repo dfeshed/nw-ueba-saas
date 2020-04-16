@@ -55,10 +55,10 @@ bash /var/lib/netwitness/presidio/install/pypackages-install/install_workflows_e
 
 sudo  systemctl daemon-reload
 sudo systemctl start airflow-webserver
-echo "######################################## Initiate Elasticsearch #######################################"
-#source /etc/sysconfig/airflow
-#source $AIRFLOW_VENV/bin/activate
-#OWB_ALLOW_NON_FIPS=on sudo -E /var/lib/netwitness/presidio/airflow/venv/bin/python /var/lib/netwitness/presidio/elasticsearch/init/init_elasticsearch.py --resources_path /var/lib/netwitness/presidio/elasticsearch/init/data/ --elasticsearch_url http\://localhost\:9200/
-#deactivate
+echo "######################################## IUpdate Services #######################################"
+
+systemctl restart presidio-configserver.service
+while ! curl --output /dev/null --silent --head --fail http://localhost:8888/application-default.properties; do sleep 1 && echo -n .; done;
+sudo systemctl restart presidio-manager presidio-ui presidio-output
 
 echo "######################################## Initiate-presidio-services.sh completed successfully ########################################" 

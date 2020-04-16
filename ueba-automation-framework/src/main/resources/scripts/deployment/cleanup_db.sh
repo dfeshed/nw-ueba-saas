@@ -44,6 +44,7 @@ source /etc/sysconfig/airflow
 source $AIRFLOW_VENV/bin/activate
 OWB_ALLOW_NON_FIPS=on python /var/lib/netwitness/presidio/elasticsearch/init/init_elasticsearch.py --resources_path /var/lib/netwitness/presidio/elasticsearch/init/data/ --elasticsearch_url http://localhost:9200/
 deactivate
+systemctl restart elasticsearch kibana
 echo "############## setupElasticSearch finished ##############"
 }
 
