@@ -3,10 +3,14 @@ package org.apache.flume.persistency.mongo;
 
 import fortscale.domain.core.AbstractDocument;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.mongodb.config.MongoConfig;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.flume.Event;
 import org.json.JSONObject;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -28,8 +32,9 @@ public class PresidioFilteredEventsMongoRepository {
 
     static {
         try {
-            //todo: take params from config server
-            sinkMongoRepository = createRepository("presidio", "localhost", 27017, "presidio", "iYTLjyA0VryKhpkvBrMMLQ==");
+            ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(MongoConfig.class, PresidioInputPersistencyServiceConfig.class);
+            final MongoTemplate mongoTemplate = context.getBean(MongoTemplate.class);
+            sinkMongoRepository = new SinkMongoRepositoryImpl<>(mongoTemplate);
         } catch (Exception e) {
             logger.error("Failed to create PresidioFilteredEventsMongoRepository!!!", e);
         }
