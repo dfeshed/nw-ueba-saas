@@ -12,6 +12,7 @@ import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
+import java.util.Collections;
 import java.util.Properties;
 
 @Configuration
@@ -38,6 +39,9 @@ public class InputConfigTest {
         properties.put("input.events.retention.in.days", "2");
         properties.put("dataPipeline.startTime", "2019-01-01T00:00:00Z");
         properties.put("transformers.file.path", "classpath:descriptors/");
+        properties.put("datadog.host", "localhost");
+        properties.put("datadog.port", 8125);
+        properties.put("datadog.metrics", Collections.emptyList());
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

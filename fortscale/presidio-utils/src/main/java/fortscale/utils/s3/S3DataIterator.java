@@ -1,19 +1,13 @@
 package fortscale.utils.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -30,9 +24,10 @@ import java.util.zip.GZIPInputStream;
 public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable {
 
     private static final Logger logger = LoggerFactory.getLogger(S3DataIterator.class);
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final TypeReference<HashMap<String, Object>> TYPE = new TypeReference<HashMap<String, Object>>() {
-    };
+
+    private static final String EMPTY_FILE_FIRST_LINE = "{}";
+
+    private IS3MapExtractor mapExtractor;
     private final AmazonS3 s3;
     private final String bucket;
 
@@ -47,9 +42,10 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
      * @param bucket       the S3 bucket to read from
      * @param objects      this s3 objects to iterate on.
      */
-    public S3DataIterator(AmazonS3 s3, String bucket, Iterator<S3ObjectSummary> objects) {
+    public S3DataIterator(AmazonS3 s3, String bucket, Iterator<S3ObjectSummary> objects, IS3MapExtractor mapExtractor) {
         this.s3 = s3;
         this.bucket = bucket;
+        this.mapExtractor = mapExtractor;
 
         lineIterator = BufferReaderIterator.empty();
         fileIterator = objects;
@@ -86,7 +82,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
     public Map<String, Object> next() {
         String event = lineIterator.next();
         try {
-            return MAPPER.readValue(event, TYPE);
+            return mapExtractor.extract(event);
         } catch (Exception e) {
             logger.error("Failed to deserialize JSON string {}.", event, e);
             throw new IllegalArgumentException(e);
@@ -126,9 +122,10 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
      * @return An iterator to a List containing the lines of the file as {@link String}s
      */
     private BufferReaderIterator getS3Reader(String filePath) {
-        S3ObjectInputStream s3ObjectInputStream;
+        InputStream s3ObjectInputStream;
         try {
-            s3ObjectInputStream = s3.getObject(bucket, filePath).getObjectContent();
+            S3Object s3Object = s3.getObject(bucket, filePath);
+            s3ObjectInputStream = s3Object.getObjectContent();
         } catch (Exception e) {
             logger.error("Failed to get object key: {}, from S3 bucket: {}.", filePath, bucket, e);
             throw new RuntimeException(e);
@@ -151,6 +148,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
         private Iterator<String> iter;
         private BufferedReader reader;
+        private String first = null;
 
         private BufferReaderIterator(BufferedReader reader) {
             if (reader != null) {
@@ -158,6 +156,11 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
                 this.reader = reader;
                 if (!iter.hasNext()) {
                     close();
+                }else{
+                    first = iter.next();
+                    if(EMPTY_FILE_FIRST_LINE.equals(first)){
+                        close();
+                    }
                 }
             } else {
                 iter = Collections.emptyIterator();
@@ -170,6 +173,7 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
         @Override
         public void close() {
+            first = null;
             iter = Collections.emptyIterator();
             if (reader != null) {
                 try {
@@ -182,13 +186,23 @@ public class S3DataIterator implements Iterator<Map<String, Object>>, Closeable 
 
         @Override
         public boolean hasNext() {
-            return iter.hasNext();
+            return isFirst() || iter.hasNext();
+        }
+
+        private boolean isFirst(){
+            return (first != null);
         }
 
         @Override
         public String next() {
             try {
-                String next = iter.next();
+                String next;
+                if(isFirst()){
+                    next = first;
+                    first = null;
+                } else {
+                    next = iter.next();
+                }
                 if (!iter.hasNext()) {
                     close();
                 }

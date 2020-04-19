@@ -1,44 +1,24 @@
 package fortscale.utils;
 
-import org.apache.commons.net.util.Base64;
+import kms.KmsEncryptionConfiguration;
+import kms.KmsTextEncryptor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-
-/**
+ /*
  * Basic encryption utility, generally used to obfuscate configuration values.
  * This is not cryptographic encryption.
  */
 public class EncryptionUtils {
 
-    private static String encryptionKey = "FortScale4Ever!!";
-
-    // prevents initialization
     private EncryptionUtils() {
     }
 
-    public static String encrypt(String plainText) throws Exception {
-        Cipher cipher = getCipher(Cipher.ENCRYPT_MODE);
-        byte[] encryptedBytes = cipher.doFinal(plainText.getBytes());
-
-        return Base64.encodeBase64String(encryptedBytes);
-    }
-
     public static String decrypt(String encrypted) throws Exception {
-        Cipher cipher = getCipher(Cipher.DECRYPT_MODE);
-        byte[] plainBytes = cipher.doFinal(Base64.decodeBase64(encrypted));
-
-        return new String(plainBytes);
-    }
-
-    private static Cipher getCipher(int cipherMode) throws Exception {
-        String encryptionAlgorithm = "AES";
-        SecretKeySpec keySpecification = new SecretKeySpec(
-                encryptionKey.getBytes("UTF-8"), encryptionAlgorithm);
-        Cipher cipher = Cipher.getInstance(encryptionAlgorithm);
-        cipher.init(cipherMode, keySpecification);
-
-        return cipher;
+        ApplicationContext context = new AnnotationConfigApplicationContext(KmsEncryptionConfiguration.class);
+        KmsTextEncryptor kmsTextEncryptor = context.getBean(KmsTextEncryptor.class);
+        return  kmsTextEncryptor.decrypt(encrypted);
     }
 
     /**
@@ -46,7 +26,7 @@ public class EncryptionUtils {
      */
     public static void main(String[] args) throws Exception {
         if (args.length != 2) {
-            System.out.println("Usage: <encrypt/decrypt> <value>");
+            System.out.println("Usage: <decrypt> <value>");
             return;
         }
 
@@ -54,14 +34,12 @@ public class EncryptionUtils {
         String value = args[1];
 
         switch (mode) {
-            case "encrypt":
-                System.out.print(encrypt(value));
-                break;
             case "decrypt":
-                System.out.print(decrypt(value));
+                String decrypt = decrypt(value);
+                System.out.print("password: "+ StringUtils.chomp(decrypt));
                 break;
             default:
-                System.out.println("Usage: <encrypt/decrypt> <value>");
+                System.out.println("Usage: <decrypt> <value>");
                 return;
         }
 

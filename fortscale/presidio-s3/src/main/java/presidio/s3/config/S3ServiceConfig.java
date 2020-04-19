@@ -23,9 +23,6 @@ public class S3ServiceConfig {
     @Value("${aws.tenant}")
     private String tenant;
 
-    @Value("${aws.account}")
-    private String account;
-
     @Value("${aws.region}")
     private String region;
 
@@ -37,7 +34,7 @@ public class S3ServiceConfig {
 
     @Bean
     public NWGatewayOutput nwGatewayOutput() {
-        return new NWGatewayOutput(bucketName, tenant, account, region, amazonS3());
+        return new NWGatewayOutput(bucketName, tenant, region, amazonS3());
     }
 
 }

@@ -81,6 +81,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         List<SmartRecord> smarts = null;
         List<Alert> alerts = new ArrayList<>();
         int indicatorsCountHourly = 0;
+        int alertsCountHourly = 0;
 
         for(PageIterator<SmartRecord> smartPageIterator : smartPageIterators){
             while (smartPageIterator.hasNext()) {
@@ -116,6 +117,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                         String classification = alertEntity.alertPrimaryClassification();
                         outputMonitoringService.reportTotalAlertCount(1, alertEntity.getSeverity(), classification, startDate);
+                        alertsCountHourly++;
                     }
 
                     if (getCreatedEntity(entities, entity.getEntityId(), entity.getEntityType()) == null) {
@@ -138,6 +140,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         outputMonitoringService.reportTotalEntitiesCount(entities.size(), startDate, entityType);
         outputMonitoringService.reportNumericMetric(outputMonitoringService.INDICATORS_COUNT_HOURLY_METRIC_NAME, indicatorsCountHourly, startDate);
+        outputMonitoringService.reportNumericMetric(outputMonitoringService.ALERTS_COUNT_HOURLY_METRIC_NAME, alertsCountHourly, startDate);
+
 
         if (CollectionUtils.isNotEmpty(smarts)) {
             outputMonitoringService.reportLastSmartTimeProcessed(smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), startDate);

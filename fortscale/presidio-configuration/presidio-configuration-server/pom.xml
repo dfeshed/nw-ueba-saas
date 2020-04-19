@@ -21,6 +21,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-kms-encryptor</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-server</artifactId>
         </dependency>

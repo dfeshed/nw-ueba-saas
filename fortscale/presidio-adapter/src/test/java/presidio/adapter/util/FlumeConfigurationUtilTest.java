@@ -22,7 +22,7 @@ public class FlumeConfigurationUtilTest {
     public static final String mockedModuleName = "adapter";
     public static final String mockedSmartKit = "ca";
     private String mockedFlumeHome;
-    private final FlumeConfigurationUtil testedFlumeConfigurationUtil = new FlumeConfigurationUtil(mockedModuleName, mockedSmartKit);
+    private final FlumeConfigurationUtil testedFlumeConfigurationUtil = new FlumeConfigurationUtil(mockedModuleName, mockedSmartKit, "some-bucket", "some-tenant", "123456789", "us-east-2");
 
     @Rule
     public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
@@ -86,9 +86,25 @@ public class FlumeConfigurationUtilTest {
                     final String endDateProperty = props.getProperty(currProperty);
                     Assert.assertEquals("endDate is invalid", "1971-01-01T00:00:00Z", endDateProperty);
                     break;
+                case "something.something.something.bucket":
+                    final String bucketProperty = props.getProperty(currProperty);
+                    Assert.assertEquals("bucket is invalid", "some-bucket", bucketProperty);
+                    break;
+                case "something.something.something.tenant":
+                    final String tenantProperty = props.getProperty(currProperty);
+                    Assert.assertEquals("tenant is invalid", "some-tenant", tenantProperty);
+                    break;
+                case "something.something.something.account":
+                    final String accountProperty = props.getProperty(currProperty);
+                    Assert.assertEquals("account is invalid", "123456789", accountProperty);
+                    break;
+                case "something.something.something.region":
+                    final String regionProperty = props.getProperty(currProperty);
+                    Assert.assertEquals("region is invalid", "us-east-2", regionProperty);
+                    break;
                 case "something.something.something.some_field_doesn't_matter":
                     final String some_field_doesnt_matterProperty = props.getProperty(currProperty);
-                    Assert.assertEquals("endDate is invalid", "should stay the same", some_field_doesnt_matterProperty);
+                    Assert.assertEquals("some field is invalid", "should stay the same", some_field_doesnt_matterProperty);
                     break;
             }
         }

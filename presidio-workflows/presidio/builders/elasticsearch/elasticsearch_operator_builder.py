@@ -1,6 +1,12 @@
 from airflow.operators.python_operator import PythonOperator
 from elasticsearch import Elasticsearch
 from presidio.utils.airflow.context_conf_extractor import extract_context_conf
+from presidio.utils.configuration.config_server_configuration_reader_singleton import \
+    ConfigServerConfigurationReaderSingleton
+
+config_reader = ConfigServerConfigurationReaderSingleton().config_reader
+elasticsearch_host = config_reader.read("elasticsearch.host", "localhost")
+elasticsearch_port = config_reader.read("elasticsearch.restPort", "9200")
 
 ELASTICSEARCH_CONF_KEY_NAME = "elasticsearch"
 CLEAN_DATA_KEY_NAME = "cleanData"
@@ -20,7 +26,7 @@ def clean_elasticsearch_data(**context):
     if not elasticsearch_conf.get(CLEAN_DATA_KEY_NAME, True):
         return
 
-    elasticsearch = Elasticsearch(hosts=["localhost"])
+    elasticsearch = Elasticsearch(hosts=[elasticsearch_host], port=int(elasticsearch_port))
     indices = elasticsearch.cat.indices(h="index").encode("utf-8").split("\n")
 
     for index in indices:

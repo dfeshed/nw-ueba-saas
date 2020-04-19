@@ -17,6 +17,7 @@ public class MongoDbTestProperties {
         properties.put("mongo.db.password","");
         properties.put("mongo.map.dot.replacement","#dot#");
         properties.put("mongo.map.dollar.replacement","#dlr#");
+        properties.put("aws.kms.region","us-region-1");
 
         return properties;
     }

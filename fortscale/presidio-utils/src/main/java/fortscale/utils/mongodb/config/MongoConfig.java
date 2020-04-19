@@ -6,9 +6,10 @@ import com.mongodb.async.client.MongoClientSettings;
 import com.mongodb.async.client.MongoClients;
 import com.mongodb.connection.ClusterSettings;
 import com.mongodb.connection.netty.NettyStreamFactoryFactory;
-import fortscale.utils.EncryptionUtils;
 import fortscale.utils.mongodb.converter.FSMappingMongoConverter;
 import fortscale.utils.mongodb.index.DynamicIndexingApplicationListenerConfig;
+import kms.KmsEncryptionConfiguration;
+import kms.KmsTextEncryptor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,8 +31,11 @@ import java.util.List;
 
 @Configuration
 @EnableMongoAuditing
-@Import(DynamicIndexingApplicationListenerConfig.class)
+@Import({DynamicIndexingApplicationListenerConfig.class, KmsEncryptionConfiguration.class})
 public class MongoConfig extends AbstractMongoConfiguration {
+
+    @Autowired
+    public KmsTextEncryptor kmsTextEncryptor;
     @Value("${mongo.db.name}")
     protected String mongoDBName;
     @Autowired(required = false)
@@ -88,7 +92,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
                     MongoCredential.createCredential(
                             mongoUserName,
                             mongoDBName,
-                            EncryptionUtils.decrypt(mongoPassword).toCharArray()
+                            kmsTextEncryptor.decrypt(mongoPassword).toCharArray()
                     )
             );
         }
@@ -117,7 +121,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
                     MongoCredential.createCredential(
                             mongoUserName,
                             mongoDBName,
-                            EncryptionUtils.decrypt(mongoPassword).toCharArray()
+                            kmsTextEncryptor.decrypt(mongoPassword).toCharArray()
                     )
             );
             client = new MongoClient(address, credentials);

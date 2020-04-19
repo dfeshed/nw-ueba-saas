@@ -111,8 +111,20 @@
                             <stripClassifier>true</stripClassifier>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>tree</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>tree</goal>
+                        </goals>
+                        <configuration>
+                            <outputType>dot</outputType>
+                            <outputFile>${project.build.outputDirectory}/${project.artifactId}-dependency-tree.dot</outputFile>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <!--package presidio workflows python packages-->
                 <artifactId>exec-maven-plugin</artifactId>

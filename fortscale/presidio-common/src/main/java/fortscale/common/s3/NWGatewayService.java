@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,19 +22,18 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class NWGatewayService {
 
     private final static Logger logger = LoggerFactory.getLogger(NWGatewayService.class);
+    private final static String DATE_FOLDER_FORMAT = "%1$tY/%1$tm/%1$td";
     private final static String DEFAULT_DATE_FORMAT = "yyyyMMdd'T'HHmm'Z'";
     private final static String DATE_REGEX_FORMAT = ".*_(20\\d{6}T\\d{4}Z)_.*";
     private final static Comparator<S3ObjectSummary> defaultS3ObjectSummaryComparator = Comparator.comparing(S3ObjectSummary::getKey);
     private String bucketName;
     private String tenant;
-    private String account;
     private String region;
     private AmazonS3 s3;
 
-    public NWGatewayService(String bucketName, String tenant, String account, String region, AmazonS3 s3) {
+    public NWGatewayService(String bucketName, String tenant, String region, AmazonS3 s3) {
         this.bucketName = bucketName;
         this.tenant = tenant;
-        this.account = account;
         this.region = region;
         this.s3 = s3;
     }
@@ -48,7 +48,7 @@ public class NWGatewayService {
      */
     public boolean isHourReady(Instant endDate, String schema) {
         endDate = endDate.plusSeconds(60);
-        String prefix = getPrefix(tenant, account, schema, region, endDate);
+        String prefix = getPrefix(tenant, schema, region, endDate);
         ListObjectsV2Result objects = getListOfObjectsFromS3ByPrefix(prefix);
         for (S3ObjectSummary obj : objects.getObjectSummaries()) {
             boolean result = getS3FileDate(obj).compareTo(endDate) >= 0;
@@ -57,6 +57,7 @@ public class NWGatewayService {
                 return true;
             }
         }
+        logger.info("no relevant files in prefix: {}. existing files: {}", prefix, objects.getObjectSummaries());
         return false;
     }
 
@@ -81,7 +82,7 @@ public class NWGatewayService {
         List<String> days = new ArrayList<>();
         logger.info("Fetching events from inclusive {} to exclusive {}.", startDate, endDate);
         for (Instant time = startDate; time.compareTo(endDate) <= 0; time = time.plus(1, DAYS).truncatedTo(DAYS)) {
-            days.add(getPrefix(tenant, account, schema, region, time));
+            days.add(getPrefix(tenant, schema, region, time));
         }
         return days;
     }
@@ -135,33 +136,33 @@ public class NWGatewayService {
         }
     }
 
-    private static String getPrefix(String tenant, String account, String schema, String region, Instant date) {
-        return formStreamPrefix(tenant, account, schema, region) + generateDaySuffix(date);
+    private static String getPrefix(String tenant, String schema, String region, Instant date) {
+        return formStreamPrefix(tenant, schema, region) + generateDaySuffix(date);
     }
 
     /**
-     * Generates the streamPrefix string from tenant, account, schema and region values for the following format:
-     * <tenant>/NetWitness/<account>/<schema>/<region>
+     * Generates the streamPrefix string from tenant, schema and region values for the following format:
+     * <tenant>/NetWitness/<schema>/<region>
      *
      * @param tenant  the relevant tenant
-     * @param account s3 account number
      * @param schema  the data schema
      * @param region  s3 region
      * @return the streamPrefix.
      */
-    private static String formStreamPrefix(String tenant, String account, String schema, String region) {
-        return tenant + "/NetWitness/" + account + "/" + schema + "/" + region + "/";
+    private static String formStreamPrefix(String tenant, String schema, String region) {
+        //return tenant + "/NetWitness/" + schema + "/" + region + "/";
+        return tenant + "/NetWitness/" + schema + "/" + region + "/";
     }
 
     /**
-     * Generates the time-part of the path in S3. This is in the YYYY/MM/DD format. Along with the tenant, account, schema
-     * and region prefix, a object key would look like <tenant>/NetWitness/<account>/<schema>/<region>/year/month/day/events1.json.gz
+     * Generates the time-part of the path in S3. This is in the YYYY/MM/DD format. Along with the tenant, schema
+     * and region prefix, a object key would look like <tenant>/NetWitness/<schema>/<region>/year/month/day/events1.json.gz
      *
      * @param date an instant in time
      * @return the time-part of the key prefix
      */
-    private static String generateDaySuffix(Instant date) {
+    public static String generateDaySuffix(Instant date) {
         ZonedDateTime dateTime = ZonedDateTime.ofInstant(date, ZoneId.of("UTC"));
-        return String.format("%1$tY/%1$tm/%1$td", dateTime);
+        return String.format(DATE_FOLDER_FORMAT, dateTime);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import presidio.monitoring.datadog.PresidioMetricDataDogService;
 import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepositoryConfig;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
@@ -17,8 +18,10 @@ import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.services.export.MetricsExporter;
-import presidio.monitoring.services.export.MetricsExporterElasticImpl;
+import presidio.monitoring.services.export.MetricsExporterImpl;
 import presidio.monitoring.services.export.NullMetricsExporter;
+
+import java.util.List;
 
 @Configuration
 @EnableScheduling
@@ -31,7 +34,16 @@ public class MonitoringConfiguration {
     public static final int AWAIT_TERMINATION_SECONDS = 120;
 
     @Value("${enable.metrics.export}")
-    boolean enableMetricsExport;
+    private boolean enableMetricsExport;
+
+    @Value("${datadog.port}")
+    private int dataDogPort;
+
+    @Value("${datadog.host}")
+    private String dataDogHostName;
+
+    @Value("#{'${datadog.metrics}'.split(',')}")
+    private List<String> dataDogMetricNames;
 
     @Autowired
     public PresidioMetricBucket presidioMetricBucket;
@@ -39,7 +51,7 @@ public class MonitoringConfiguration {
     @Bean
     public MetricsExporter metricsExporter() {
         if(enableMetricsExport) {
-            return new MetricsExporterElasticImpl(presidioMetricBucket, presidioMetricPersistencyService(), taskScheduler());
+            return new MetricsExporterImpl(presidioMetricBucket, presidioMetricPersistencyService(), presidioMetricDataDogService(), taskScheduler());
         }
         else
         {
@@ -56,6 +68,11 @@ public class MonitoringConfiguration {
     @Bean
     public PresidioMetricPersistencyService presidioMetricPersistencyService() {
         return new PresidioMetricPersistencyServiceImpl(metricRepository, metricsAllIndexesRepository);
+    }
+
+    @Bean
+    public PresidioMetricDataDogService presidioMetricDataDogService() {
+        return new PresidioMetricDataDogService(dataDogHostName, dataDogPort, dataDogMetricNames);
     }
 
     @Bean
