@@ -76,6 +76,7 @@ pipeline {
                         sh "OWB_ALLOW_NON_FIPS=on && sudo yum -y update $item"
                     }
                     println ' ********** UEBA RPMs upgrade finished **********'
+                    script { currentBuild.description = "${params.BRANCH_NAME}\n" + presidioCoreBuild() }
                 }
             }
         }
@@ -88,21 +89,13 @@ pipeline {
                 sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-app-services.sh"
             }
         }
-        
-        stage('Data Injection') {
-            when {
-                expression { return params.DATA_INJECTION }
-            }
-            steps {
-                runSuiteXmlFile('e2e/E2E_DataInjection.xml')
-            }
-        }
 
         stage('Data Processing') {
             when {
                 expression { return params.DATA_PROCESSING }
             }
             steps {
+                script { currentBuild.description = "${params.BRANCH_NAME}\n" + presidioCoreBuild() }
                 runSuiteXmlFile('e2e/E2E_MongoDataProcessing.xml')
             }
         }
@@ -112,6 +105,7 @@ pipeline {
                 expression { return params.RUN_TESTS }
             }
             steps {
+                script { currentBuild.description = "${params.BRANCH_NAME}\n" + presidioCoreBuild() }
                 runSuiteXmlFile('e2e/E2E_Tests.xml')
             }
         }
@@ -168,9 +162,15 @@ def runSuiteXmlFile(String suiteXmlFile) {
 
 def cleanUebaDBs() {
     println "Going to resolve DB Host"
-    def dbIpSearch = sh(script: "curl http://localhost:8888/application-null.properties -s | grep mongo.db.host.name", returnStdout: true).trim() as String
+    def dbIpSearch = sh(script: "curl http://localhost:8888/application-null.properties -s | grep mongo.host.name", returnStdout: true).trim() as String
     def dbIp = dbIpSearch.split()[1]
     println dbIp
     sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/cleanup_app.sh $VERSION $env.OLD_UEBA_RPMS"
     sh(script: "sshpass -p \"netwitness\" ssh root@${dbIp} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'bash -s' < ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/cleanup_db.sh $VERSION $env.OLD_UEBA_RPM", returnStatus: true)
+}
+
+def presidioCoreBuild() {
+    def build = sh(script: "rpm -qa | grep presidio-core | cut -d '-' -f 6 | cut -d '.' -f 1", returnStdout: true).trim() as String
+    println build
+    return "Build " + build
 }
