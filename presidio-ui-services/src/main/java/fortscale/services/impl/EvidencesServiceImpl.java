@@ -344,9 +344,10 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 						link = nwInvestigateHelper.getLinkToInvestigate(unnormalizedValue,evidenceStartOfDay,evidenceEndOfDay);
 					}
 				}
-				if (link != null) {
-					additionalFields.put(uiKey+ LINK_POSTFIX_FOR_UI,link);
-				}
+
+				// As there isn't an environment to pivot back to in CBA v0.5,
+				// all the links in the table of events are disabled.
+				// if (link != null) additionalFields.put(uiKey + LINK_POSTFIX_FOR_UI, link);
 			}
 		}
 
