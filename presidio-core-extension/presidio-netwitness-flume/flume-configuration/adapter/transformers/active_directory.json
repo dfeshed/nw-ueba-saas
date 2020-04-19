@@ -8,13 +8,13 @@
       "predicate": {
         "type": "regex",
         "name": "device-type-equal-snare",
-        "sourceKey": "device_type",
+        "sourceKey": "deviceType",
         "regex": "winevent_snare"
       },
       "ifTransformer": {
         "type": "copy_value",
         "name": "copy-user-dst",
-        "sourceKey": "user_dst",
+        "sourceKey": "userDst",
         "isRemoveSourceKey": true,
         "destinationKeys": [
           "userName"
@@ -26,13 +26,13 @@
         "predicate": {
           "type": "regex",
           "name": "reference-id-equal-4740",
-          "sourceKey": "reference_id",
+          "sourceKey": "referenceId",
           "regex": "4740"
         },
         "ifTransformer": {
           "type": "copy_value",
           "name": "copy-user-src",
-          "sourceKey": "user_src",
+          "sourceKey": "userSrc",
           "isRemoveSourceKey": true,
           "destinationKeys": [
             "userName"
@@ -41,7 +41,7 @@
         "elseTransformer": {
           "type": "copy_value",
           "name": "copy-user-dst",
-          "sourceKey": "user_dst",
+          "sourceKey": "userDst",
           "isRemoveSourceKey": true,
           "destinationKeys": [
             "userName"
@@ -66,7 +66,7 @@
           {
             "type": "regex",
             "name": "device-type-snare-or-nic",
-            "sourceKey": "device_type",
+            "sourceKey": "deviceType",
             "regex": "winevent_snare|winevent_nic|windows"
           }
         ]
@@ -76,7 +76,7 @@
     {
       "type": "epoch",
       "name": "date-time-millis-to-nano-representation",
-      "sourceKey": "event_time",
+      "sourceKey": "eventTime",
       "destinationKey": "dateTime"
     },
     {
@@ -162,13 +162,13 @@
       "predicate": {
         "type": "key_exist",
         "name": "event-type-exist",
-        "key": "event_type",
+        "key": "eventType",
         "testNull": false
       },
       "ifTransformer": {
         "type": "regex_captor_and_formatter",
         "name": "result-normalization-on-event-type",
-        "sourceKey": "event_type",
+        "sourceKey": "eventType",
         "destinationKey": "result",
         "captureAndFormatConfigurations": [
           {
@@ -206,7 +206,7 @@
     {
       "type": "switch_case",
       "name": "operation_type-according-to-event-code",
-      "sourceKey": "reference_id",
+      "sourceKey": "referenceId",
       "destinationKey": "operationType",
       "destinationDefaultValue": null,
       "cases": [
@@ -602,158 +602,158 @@
     {
       "type": "switch_case",
       "name": "object-id-according-to-reference-id",
-      "sourceKey": "reference_id",
+      "sourceKey": "referenceId",
       "destinationKey": "objectId",
       "destinationDefaultValue": null,
       "cases": [
         {
           "caseKey": "4741",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4742",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4733",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4734",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4735",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4755",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "5136",
-          "caseValue": "${obj_name}",
+          "caseValue": "${objName}",
           "isRegex": false
         },
         {
           "caseKey": "4764",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4670",
-          "caseValue": "${obj_name}",
+          "caseValue": "${objName}",
           "isRegex": false
         },
         {
           "caseKey": "4743",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4737",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4727",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4728",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4754",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4756",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4757",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4758",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4720",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4722",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4723",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4724",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4725",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4726",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4738",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4767",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4717",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4729",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         },
         {
           "caseKey": "4730",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4731",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4732",
-          "caseValue": "${user_src}",
+          "caseValue": "${userSrc}",
           "isRegex": false
         }
       ]
@@ -761,28 +761,28 @@
     {
       "type": "switch_case",
       "name": "secondary-object-id-according-to-reference-id",
-      "sourceKey": "reference_id",
+      "sourceKey": "referenceId",
       "destinationKey": "additionalInfo.secondaryObjectId",
       "destinationDefaultValue": null,
       "cases": [
         {
           "caseKey": "4733",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4728",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4756",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4757",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
@@ -792,12 +792,12 @@
         },
         {
           "caseKey": "4729",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         },
         {
           "caseKey": "4732",
-          "caseValue": "${group}",
+          "caseValue": "${groupObjectId}",
           "isRegex": false
         }
       ]
@@ -805,7 +805,7 @@
     {
       "type": "copy_value",
       "name": "rename-event-source-id-to-event-id",
-      "sourceKey": "event_source_id",
+      "sourceKey": "eventSourceId",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "eventId"
@@ -814,7 +814,7 @@
     {
       "type": "copy_value",
       "name": "rename-reference-id-to-data-source",
-      "sourceKey": "reference_id",
+      "sourceKey": "referenceId",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dataSource"

@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import fortscale.common.general.Schema;
 import fortscale.common.s3.NWGatewayService;
+import fortscale.common.s3.NetwitnessS3EventExtractor;
 import fortscale.utils.s3.S3DataIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,6 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
         validateStartAndEndDate(startDate, endDate);
         String bucket = config.get("bucket");
         String tenant = config.get("tenant");
-        String account = config.get("account");
         String region = config.get("region");
         String configSchema = config.get("schema");
 
@@ -71,9 +71,9 @@ public class S3EventsStream extends AbstractNetwitnessEventsStream {
         S3DataIterator iterator;
 
         try {
-            NWGatewayService nwGatewayService = new NWGatewayService(bucket, tenant, account, region, s3);
+            NWGatewayService nwGatewayService = new NWGatewayService(bucket, tenant, region, s3);
             Iterator<S3ObjectSummary> objects = nwGatewayService.getObjectsByRange(startDate, endDate, configSchema);
-            iterator = new S3DataIterator(s3, bucket, objects);
+            iterator = new S3DataIterator(s3, bucket, objects, new NetwitnessS3EventExtractor());
         }
         catch (Exception e) {
             logger.error("start streaming failed", e);

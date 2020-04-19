@@ -24,7 +24,7 @@
     {
       "type": "copy_value",
       "name": "rename-event-source-id-to-event-id",
-      "sourceKey": "event_source_id",
+      "sourceKey": "eventSourceId",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "eventId"
@@ -33,13 +33,13 @@
     {
       "type": "epoch",
       "name": "date-time-millis-to-nano-representation",
-      "sourceKey": "event_time",
+      "sourceKey": "eventTime",
       "destinationKey": "dateTime"
     },
     {
       "type": "copy_value",
       "name": "rename-device-type-to-data-source",
-      "sourceKey": "device_type",
+      "sourceKey": "deviceType",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dataSource"
@@ -48,7 +48,7 @@
     {
       "type": "regex_captor_and_formatter",
       "name": "user-id-normalization",
-      "sourceKey": "user_src",
+      "sourceKey": "userSrc",
       "destinationKey": "userId",
       "captureAndFormatConfigurations": [
         {
@@ -116,7 +116,7 @@
     {
       "type": "copy_value",
       "name": "copy-user-src",
-      "sourceKey": "user_src",
+      "sourceKey": "userSrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "userName",
@@ -126,7 +126,7 @@
     {
       "type": "regex_captor_and_formatter",
       "name": "machine-id-normalization",
-      "sourceKey": "alias_host[0]",
+      "sourceKey": "aliasHost[0]",
       "destinationKey": "machineId",
       "captureAndFormatConfigurations": [
         {
@@ -169,7 +169,7 @@
     {
       "type": "copy_value",
       "name": "copy-alias-host-to-machine-name",
-      "sourceKey": "alias_host[0]",
+      "sourceKey": "aliasHost[0]",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "machineName"
@@ -187,7 +187,7 @@
     {
       "type": "copy_value",
       "name": "rename-cert-common",
-      "sourceKey": "cert_common",
+      "sourceKey": "certCommon",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "processCertificateIssuer"
@@ -196,7 +196,7 @@
     {
       "type": "copy_value",
       "name": "copy-process-directory",
-      "sourceKey": "directory_src",
+      "sourceKey": "directorySrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "processDirectory"
@@ -205,7 +205,7 @@
     {
       "type": "copy_value",
       "name": "copy-process-file-name",
-      "sourceKey": "filename_src",
+      "sourceKey": "filenameSrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "processFileName"
@@ -214,7 +214,7 @@
     {
       "type": "copy_value",
       "name": "copy-registry-key-group",
-      "sourceKey": "ec_subject",
+      "sourceKey": "ecSubject",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "registryKeyGroup"
@@ -231,7 +231,7 @@
     {
       "type": "regex_captor_and_formatter",
       "name": "create-registry-key",
-      "sourceKey": "registry_key",
+      "sourceKey": "registryKey",
       "destinationKey": "registryKey",
       "captureAndFormatConfigurations": [
         {
@@ -259,7 +259,7 @@
     {
       "type": "regex_captor_and_formatter",
       "name": "create-registry-value-name",
-      "sourceKey": "registry_key",
+      "sourceKey": "registryKey",
       "destinationKey": "registryValueName",
       "captureAndFormatConfigurations": [
         {
@@ -277,7 +277,7 @@
     {
       "type": "copy_value",
       "name": "rename-process-dir-group",
-      "sourceKey": "dir_path_src",
+      "sourceKey": "dirPathSrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "processDirectoryGroups"
@@ -294,7 +294,7 @@
     {
       "type": "copy_value",
       "name": "rename-process-categories",
-      "sourceKey": "file_cat_src",
+      "sourceKey": "fileCatSrc",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "processCategories"
@@ -312,7 +312,7 @@
     {
       "type": "copy_value",
       "name": "callback_id",
-      "sourceKey": "nwe_callback_id",
+      "sourceKey": "nweCallbackId",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "additionalInfo.callbackId"
