@@ -1,0 +1,13 @@
+[UEBA-Repo]
+name=UEBA-Repo
+baseurl=http://172.24.229.44:8882/repo/RSA/UEBA-Repo/latest/
+sslverify=false
+gpgcheck=0
+enabled=1
+
+[common-utils]
+name=Common Utils Repo
+baseurl=http://172.24.229.44:8882/repo/external/
+sslverify=false
+gpgcheck=0
+enabled=1

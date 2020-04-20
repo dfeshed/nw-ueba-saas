@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ueba-performance-test</artifactId>
+    <packaging>jar</packaging>
+
+    <name>ueba-performance-test</name>
+    <description>UEBA Performance Test</description>
+
+    <parent>
+        <artifactId>ueba-automation-projects</artifactId>
+        <groupId>com.rsa.netwitness.presidio.automation</groupId>
+        <version>11.5.0-0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>presidio-test-utils</groupId>
+            <artifactId>presidio-data-generators</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.rsa.netwitness.presidio.automation</groupId>
+            <artifactId>ueba-automation-framework</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <resources>
+            <resource>
+                <directory>resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <trimStackTrace>false</trimStackTrace>
+                    <forkMode>${surefire.forkMode}</forkMode>
+                    <argLine>${surefire.argLine}</argLine>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${project.build.testOutputDirectory}/${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <systemPropertyVariables>
+                        <schemas>${schemas}</schemas>
+                        <generator_format>${generator_format}</generator_format>
+                        <start_time>${start_time}</start_time>
+                        <end_time>${end_time}</end_time>
+
+                        <users_probability_multiplier>${users_probability_multiplier}</users_probability_multiplier>
+                        <users_multiplier>${users_multiplier}</users_multiplier>
+
+                        <tls_alerts_probability>${tls_alerts_probability}</tls_alerts_probability>
+                        <tls_groups_to_create>${tls_groups_to_create}</tls_groups_to_create>
+                        <tls_events_per_day_per_group>${tls_events_per_day_per_group}</tls_events_per_day_per_group>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

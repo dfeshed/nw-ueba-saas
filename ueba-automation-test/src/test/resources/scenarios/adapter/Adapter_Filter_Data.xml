@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Adapter_Filter_Data">
+    <parameter name="historical_days_back" value="35" />
+    <parameter name="anomaly_day" value="1" />
+    <test name="Adapter_Filter_Data">
+        <classes>
+            <class name="com.rsa.netwitness.presidio.automation.test.filtering.AdapterFilteringTest"/>
+        </classes>
+    </test>
+</suite>

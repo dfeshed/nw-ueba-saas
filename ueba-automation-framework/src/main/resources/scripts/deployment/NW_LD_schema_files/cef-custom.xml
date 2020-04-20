@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DEVICEMESSAGES>
+    <VendorProducts>
+        <Vendor2Device vendor="Unix" product="RedHat Linux" device="rhlinux" group="Unix"/>
+        <Vendor2Device vendor="RSA" product="endpoint" device="nwendpoint" group="Agent"/>
+        <Vendor2Device vendor="Microsoft" product="Windows Snare" device="winevent_snare" group="Windows Hosts"/>
+        <Vendor2Device vendor="RSA" product="Netwitness" device="network" group="network"/>
+    </VendorProducts>
+    <ExtensionKeys>
+        <!-- this maps the field named `alert` in a cef log to the table map mapping `envisionName="alert"`.  Note that that mapping is `Transient`. -->
+        <!-- metaName -> envisionName ; cefName ->  nwName-->
+        <ExtensionKey cefName="event.time" metaName="event_time"/>
+        <ExtensionKey cefName="reference.id" metaName="id"/>
+        <ExtensionKey cefName="host.src" metaName="shost"/>
+        <ExtensionKey cefName="host.dst" metaName="dhost"/>
+        <ExtensionKey cefName="alias.host" metaName="alias.host"/>
+        <ExtensionKey cefName="alias.ip" metaName="alias.ip"/>
+        <ExtensionKey cefName="ip.src" metaName="saddr"/>
+        <ExtensionKey cefName="ip.dst" metaName="daddr"/>
+        <ExtensionKey cefName="user.dst" metaName="username"/>
+        <ExtensionKey cefName="user.src" metaName="c_username"/>
+        <ExtensionKey cefName="event.type" metaName="event.type"/>
+        <ExtensionKey cefName="event.type" metaName="event.type"/>
+        <ExtensionKey cefName="event.source.id" metaName="event.source.id"/>
+        <ExtensionKey cefName="event.cat.name" metaName="event.cat.name"/>
+        <ExtensionKey cefName="event.desc" metaName="event.desc"/>
+        <ExtensionKey cefName="result.code" metaName="result.code"/>
+        <ExtensionKey cefName="result" metaName="result"/>
+        <ExtensionKey cefName="service.name" metaName="service"/>
+        <ExtensionKey cefName="logon.type" metaName="logon_type"/>
+        <ExtensionKey cefName="ec.activity" metaName="ec_activity"/>
+        <ExtensionKey cefName="ec.outcome" metaName="ec_outcome"/>
+        <ExtensionKey cefName="ec.subject" metaName="ec_subject"/>
+        <ExtensionKey cefName="analysis.service" metaName="analysis.service"/>
+        <ExtensionKey cefName="analysis.file" metaName="analysis.file"/>
+        <ExtensionKey cefName="action" metaName="action"/>
+        <ExtensionKey cefName="directory.dst" metaName="directory.dst"/>
+        <ExtensionKey cefName="directory.src" metaName="directory.src"/>
+        <ExtensionKey cefName="directory" metaName="directory"/>
+        <ExtensionKey cefName="filename" metaName="filename"/>
+        <ExtensionKey cefName="filename.src" metaName="filename_src"/>
+        <ExtensionKey cefName="filename.dst" metaName="filename_dst"/>
+        <ExtensionKey cefName="file.attributes" metaName="file.attributes"/>
+        <ExtensionKey cefName="param.src" metaName="param.src"/>
+        <ExtensionKey cefName="param.dst" metaName="param.dst"/>
+        <ExtensionKey cefName="checksum.src" metaName="checksum.src"/>
+        <ExtensionKey cefName="checksum.dst" metaName="checksum.dst"/>
+        <ExtensionKey cefName="process.vid.dst" metaName="process.vid.dst"/>
+        <ExtensionKey cefName="agent.id" metaName="agent.id"/>
+        <ExtensionKey cefName="dir.path.src" metaName="dir.path.src"/>
+        <ExtensionKey cefName="dir.path.dst" metaName="dir.path.dst"/>
+        <ExtensionKey cefName="os" metaName="os"/>
+        <ExtensionKey cefName="category" metaName="category"/>
+        <ExtensionKey cefName="registry.key" metaName="registry.key"/>
+        <ExtensionKey cefName="nwe.callback_id" metaName="nwe.callback_id"/>
+        <ExtensionKey cefName="obj.name" metaName="obj_name"/>
+        <ExtensionKey cefName="obj.type" metaName="obj_type"/>
+        <ExtensionKey cefName="accesses" metaName="accesses"/>
+        <ExtensionKey cefName="group" metaName="group"/>
+        <!-- network events -->
+        <ExtensionKey cefName="country.dst" metaName="location_dst"/>
+        <ExtensionKey cefName="country.src" metaName="location_src"/>
+        <ExtensionKey cefName="presidio.org.dst" metaName="presidio_org_dst"/>
+        <ExtensionKey cefName="payload.req" metaName="payload.req"/>
+        <ExtensionKey cefName="payload.res" metaName="payload.res"/>
+        <ExtensionKey cefName="direction" metaName="direction"/>
+        <ExtensionKey cefName="tcp.dstport" metaName="tcp.dstport"/>
+        <ExtensionKey cefName="tcp.srcport" metaName="tcp.srcport"/>
+        <ExtensionKey cefName="session.split" metaName="session.split"/>
+        <ExtensionKey cefName="presidio.netname" metaName="presidio_netname"/>
+        <!-- table-map-custom -->
+        <ExtensionKey cefName="ssl.subject" metaName="ssl.subject"/>
+        <ExtensionKey cefName="ssl.ca" metaName="ssl.ca"/>
+        <ExtensionKey cefName="asn.dst" metaName="asn.dst"/>
+        <ExtensionKey cefName="ja3" metaName="ja3"/>
+        <ExtensionKey cefName="ja3s" metaName="ja3s"/>
+        <!-- add mappings here.  `cefName` is the value name as it appears in the log, `metaName` is the `envisionName` of the table-map `mapping` to use -->
+    </ExtensionKeys>
+</DEVICEMESSAGES>

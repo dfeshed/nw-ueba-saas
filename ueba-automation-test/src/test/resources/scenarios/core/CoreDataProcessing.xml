@@ -1,0 +1,21 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Core Test Data Processing">
+    <parameter name="outputProcessingStartDaysBack" value="5" />
+    <parameter name="outputProcessingEndDaysBack" value="1" />
+    <parameter name="historical_days_back" value="35" />
+    <parameter name="anomaly_day" value="1" />
+
+    <test name="Data Processing">
+        <classes>
+            <class name="com.rsa.netwitness.presidio.automation.test.config.PreProcessingConfiguration"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.processing.AdapterProcessData"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.processing.InputPreProcessingData"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.processing.InputProcessData"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.processing.ProcessSmartsData"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.processing.OutputRunPrepareData"/>
+        </classes>
+    </test>
+</suite>
+
+

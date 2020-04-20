@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mappings>
+    <mapping envisionName="presidio_org_dst" nwName="presidio.org.dst" flags="None" format="Text"/>
+    <mapping envisionName="presidio_netname" nwName="presidio.netname" flags="None" format="Text"/>
+    <mapping envisionName="event.source.id" nwName="event.source.id" flags="None" format="Text"/>
+    <mapping envisionName="event.time" nwName="time" flags="Transient" format="TimeT"/>
+    <mapping envisionName="ssl.subject" nwName="ssl.subject" flags="None" format="Text"/>
+    <mapping envisionName="ssl.ca" nwName="ssl.ca" flags="None" format="Text"/>
+    <mapping envisionName="asn.dst" nwName="asn.dst" flags="None" format="Text"/>
+    <mapping envisionName="ja3" nwName="ja3" flags="None" format="Text"/>
+    <mapping envisionName="ja3s" nwName="ja3s" flags="None" format="Text"/>
+    <mapping envisionName="payload.req" nwName="payload.req" flags="None" format="UInt64"/>
+    <mapping envisionName="payload.res" nwName="payload.res" flags="None" format="UInt64"/>
+    <mapping envisionName="network" nwName="network" flags="None" format="Text"/>
+    <mapping envisionName="session.split" nwName="session.split" flags="None" format="UInt16"/>
+    <mapping envisionName="tcp.dstport" nwName="tcp.dstport" flags="None" format="UInt16"/>
+    <mapping envisionName="tcp.srcport" nwName="tcp.srcport" flags="None" format="UInt16"/>
+    <mapping envisionName="service" nwName="service" flags="None" format="UInt32"/>
+</mappings>

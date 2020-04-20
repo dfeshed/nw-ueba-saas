@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.rsa.netwitness.presidio.automation</groupId>
+    <artifactId>ueba-automation-projects</artifactId>
+    <version>11.5.0-0-SNAPSHOT</version>
+    <modules>
+        <module>ueba-automation-test</module>
+        <module>ueba-automation-framework</module>
+        <module>ueba-performance-test</module>
+    </modules>
+    <packaging>pom</packaging>
+
+    <name>UEBA Automation Projects</name>
+    <description>Netwitness UEBA Test Automation</description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.0.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <surefire.forkMode>never</surefire.forkMode>
+        <surefire.argLine>-Xms512m -Xmx3048m</surefire.argLine>
+        <commons-lang3.version>3.5</commons-lang3.version>
+        <commons-lang.version>2.6</commons-lang.version>
+        <testng.version>6.11</testng.version>
+        <logback-core.version>1.2.3</logback-core.version>
+        <joda-time.version>2.3</joda-time.version>
+        <guava.version>28.1-jre</guava.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>11</java.version>
+        <presidio.quest.ca.version>2.0.0-SNAPSHOT</presidio.quest.ca.version>
+        <presidio.core.version>${project.version}</presidio.core.version>
+        <flume.version>${project.version}</flume.version>
+        <presidio.test.utils>${project.version}</presidio.test.utils>
+        <slf4j.version>1.7.26</slf4j.version>
+        <springframework.version>2.1.0.RELEASE</springframework.version>
+        <assertj.version>3.12.2</assertj.version>
+        <jsch.version>0.1.55</jsch.version>
+    </properties>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>asoc-build-repo</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>asoc-releases</id>
+            <name>repo1.rsa.lab.emc.com-releases</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
+        </repository>
+        <repository>
+            <id>libs-release</id>
+            <name>libs-release</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/libs-release</url>
+        </repository>
+        <repository>
+            <id>asoc-snapshots</id>
+            <name>repo1.rsa.lab.emc.com-snapshots</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
+        </repository>
+        <repository>
+            <id>asoc-build-repo</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>presidio-test-utils</groupId>
+                <artifactId>presidio-data-generators</artifactId>
+                <version>${presidio.test.utils}</version>
+            </dependency>
+            <dependency>
+                <groupId>fortscale</groupId>
+                <artifactId>presidio-common</artifactId>
+                <version>${project.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>presidio.quest.ca</groupId>
+                <artifactId>presidio-quest-ca-flume</artifactId>
+                <version>${presidio.quest.ca.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons-lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-test</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-commons</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda-time.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-async -->
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-async</artifactId>
+                <version>3.10.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

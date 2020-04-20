@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ueba-automation-projects</artifactId>
+        <groupId>com.rsa.netwitness.presidio.automation</groupId>
+        <version>11.5.0-0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ueba-automation-test</artifactId>
+
+    <properties>
+        <generator_format>MONGO_ADAPTER</generator_format>
+        <pre_processing_configuration_scenario>CORE_MONGO</pre_processing_configuration_scenario>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.rsa.netwitness.presidio.automation</groupId>
+            <artifactId>ueba-automation-framework</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-common</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <trimStackTrace>false</trimStackTrace>
+                    <forkMode>never</forkMode>
+                    <argLine>-Xms512m -Xmx3048m</argLine>
+                    <systemPropertyVariables>
+                        <generator_format>${generator_format}</generator_format>
+                        <pre_processing_configuration_scenario>${pre_processing_configuration_scenario}</pre_processing_configuration_scenario>
+                    </systemPropertyVariables>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${project.build.testOutputDirectory}/scenarios/${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>
